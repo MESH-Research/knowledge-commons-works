@@ -1,12 +1,12 @@
 {
   "Servers": {
     "1": {
-      "Name": "kcrepository-db",
+      "Name": "knowledge-commons-repository-db",
       "Group": "Servers",
-      "Host": "kcrepository-db-1",
+      "Host": "knowledge-commons-repository-db-1",
       "Port": 5432,
       "MaintenanceDB": "postgres",
-      "Username": "kcrepository",
+      "Username": "knowledge-commons-repository",
       "SSLMode": "prefer"
     }
   }

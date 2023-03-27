@@ -1,4 +1,4 @@
-"""JS/CSS Webpack bundles for coretest."""
+"""JS/CSS Webpack bundles for Knowledge Commons Repository."""
 
 from invenio_assets.webpack import WebpackThemeBundle
 

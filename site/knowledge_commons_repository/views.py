@@ -8,7 +8,7 @@ from flask import Blueprint
 def create_blueprint(app):
     """Register blueprint routes on app."""
     blueprint = Blueprint(
-        "coretest",
+        "knowledge_commons_repository",
         __name__,
         template_folder="./templates",
     )

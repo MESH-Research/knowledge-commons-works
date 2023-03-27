@@ -16,12 +16,12 @@ services:
       - "INVENIO_CELERY_RESULT_BACKEND=redis://cache:6379/2"
       - "INVENIO_SEARCH_HOSTS=['search:9200']"
       - "INVENIO_SECRET_KEY=CHANGE_ME"
-      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://kcrepository:kcrepository@db/kcrepository"
+      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://knowledge-commons-repository:knowledge-commons-repository@db/knowledge-commons-repository"
       - "INVENIO_WSGI_PROXIES=2"
       - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
   frontend:
     build: ./docker/nginx/
-    image: kcrepository-frontend
+    image: knowledge-commons-repository-frontend
     restart: "unless-stopped"
     ports:
       - "80"
@@ -36,9 +36,9 @@ services:
     image: postgres:12.4
     restart: "unless-stopped"
     environment:
-      - "POSTGRES_USER=kcrepository"
-      - "POSTGRES_PASSWORD=kcrepository"
-      - "POSTGRES_DB=kcrepository"
+      - "POSTGRES_USER=knowledge-commons-repository"
+      - "POSTGRES_PASSWORD=knowledge-commons-repository"
+      - "POSTGRES_DB=knowledge-commons-repository"
     ports:
       - "5432:5432"
   pgadmin:
@@ -48,7 +48,7 @@ services:
       - "5050:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: "scottia4@msu.edu"
-      PGADMIN_DEFAULT_PASSWORD: "kcrepository"
+      PGADMIN_DEFAULT_PASSWORD: "knowledge-commons-repository"
     volumes:
       - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
   mq:
@@ -62,7 +62,7 @@ services:
     restart: "unless-stopped"
     environment:
       # settings only for development. DO NOT use in production!
-      # TODO: fix for production
+      # TODO: Fix for production
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - "DISABLE_INSTALL_DEMO_CONFIG=true"
@@ -87,6 +87,6 @@ services:
       - "5601"
     environment:
       # settings only for development. DO NOT use in production!
-      # TODO: change in prod
+      # TODO: change in production
       - 'OPENSEARCH_HOSTS=["http://search:9200"]'
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
