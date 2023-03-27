@@ -1,16 +1,16 @@
 # Knowledge Commons Repository
 
-This is the Knowledge Commons Repository InvenioRDM instance.
+This is the source code for the Knowledge Commons Repository, based on InvenioRDM.
 
-## License
+## Copyright
 
-Released under an MIT license.
+Copyright 2023 MESH Research. Released under the MIT license. (See the included LICENSE.txt file.)
+
+## Getting started
 
 **Note**: The instructions below are the default README for InvenioRDM. They
 are not usable as they stand for building the Knowledge Commons Repository
 instance. Updated installation instructions will follow.**
-
-## Getting started
 
 Run the following commands in order to start the InvenioRDM instance:
 
