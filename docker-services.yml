@@ -87,5 +87,6 @@ services:
       - "5601"
     environment:
       # settings only for development. DO NOT use in production!
+      # TODO: change in prod
       - 'OPENSEARCH_HOSTS=["http://search:9200"]'
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"

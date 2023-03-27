@@ -63,7 +63,7 @@ services:
       file: docker-services.yml
       service: app
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
-    image: coretest:latest
+    image: knowledge-commons-repository:latest
     ports:
       - "5000"
     volumes:
@@ -77,9 +77,9 @@ services:
       file: docker-services.yml
       service: app
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
-    image: coretest:latest
+    image: knowledge-commons-repository:latest
     ports:
-      - "5000"
+      - "5001"
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
@@ -90,7 +90,7 @@ services:
       file: docker-services.yml
       service: app
     command: ["celery -A invenio_app.celery worker --beat --loglevel=INFO"]
-    image: coretest:latest
+    image: knowledge-commons-repository:latest
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
     depends_on:

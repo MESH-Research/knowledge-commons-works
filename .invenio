@@ -1,0 +1,41 @@
+[cli]
+flavour = RDM
+logfile = /logs/invenio-cli.log
+
+[cookiecutter]
+project_name = Knowledge Commons Repository
+project_shortname = knowledge-commons-repository
+package_name = knowledge-commons-repository
+# TODO: change site url for production
+project_site = invenio-dev.hcommons-staging.org
+github_repo = MESH-Research/knowledge-commons-repository
+description = Knowledge Commons Repository
+author_name = MESH Research
+# TODO: change to proper admin url in production
+author_email = scottia4@msu.edu
+year = 2023
+database = postgresql
+search = opensearch2
+file_storage = local
+development_tools = yes
+site_code = yes
+_template = https://github.com/inveniosoftware/cookiecutter-invenio-rdm.git
+
+[files]
+app_data = {'vocabularies': {'affiliations_ror.yaml': '2e913fbecacd3694cba1b9a10739164911c2d45db3b32f1cb923027c48e0ac3e', 'subjects_oecd_fos.yaml': 'eef38714c506d956193c3be17e6004049525d252bf22424f4804dfc1ad46db44'}, 'README.md': 'd58978488626bdeddc791a15a39e341a4ed06f202b84d0c0d4aa9ef49481c6d9', 'vocabularies.yaml': '21218eeb7c8c08918e242d1ea8110328e37d7cd891ccc7ee142b6f4aba34ba08', 'pages': {'.gitkeep': '22818f8c9f68fb11b7ca893ad1c082f844ae9f691f082d2174e32738d9ae6114'}}
+docker = {'nginx': {'test.crt': '15e4694e48a294a1e0183ee5f8b04d5d89a56738a83e775e5eaa9c1aaabe1428', 'Dockerfile': '541326766beaba2e8492255c99e11aa76640d71329ceab5bcab1c8d6a979bd5c', 'test.key': '78f2085db7fbb3858c71708c16fd0f6ee5cfa6906747d1c25fc3b53ea6375b89', 'nginx.conf': '6c9a6e372fc340dfcd3b49e6a30bd7bd36af41d79d1d093b7b3ba5f4c9d781b4', 'conf.d': {'default.conf': '2501758a42cfeb912052daa5921dfb3bc38042ee97ce1f64ae1d0658f7fbedbd'}}, 'pgadmin': {'servers.json': '243cec7efc671e9d4c2c2571f0c82639bb2d228f3f3731fcf3333082af21b6c7'}, 'uwsgi': {'uwsgi_rest.ini': 'c36fc5021baf15f375b3b6c825f7753e5d166319c5fe38a85b604391ce5b37b6', 'uwsgi_ui.ini': 'aeb0797a1fadb462e0ed208c979d5152cc58a85958d4de9c4e989637c70b9005'}}
+invenio.cfg = 4c84ae2335a6cda82ae730dc264ba61278129cc8c077f4dd816d5daae7fcd955
+docker-services.yml = 07d4645133f914be3e2f9d91e2dee6d3de99f3eb37f9527923b820a55ae5b528
+dockerfile = 44e5c207cf3e82cddda086f73e6fa5f3bacfc06d11f55a95f954d744a773c605
+readme.md = b098a9e5637c86735705df17fe3edf189402a419724e37119552e96aa7e8e0ca
+pipfile = 3d8311f741947708d4b40282d38f8ca67d5a465f18183b305f377ce2532d49ad
+.dockerignore = 21241bc12cdf4ac5f209d6b191adc8f25eb89af93ce5c4c3f72c86661162d7b5
+.gitignore = af1182c70588e583daeb35809e6cdfe3408425d438c3ceb282b1f4b8360290e2
+static = {'images': {'invenio-rdm.svg': '50f09b4d83244a69c58f44aa436a3fa097726d9b47fd0e0782ea92d31f854b65', 'logo-invenio-white.svg': '5af2c7b67a09798cba3d50cc2e811ca9fd2ff73b40d9d2a52a97237b9ed44008'}, 'robots.txt': 'bb37b06b33e7d97f41aef939f8ef3052898c7f6d6fdfc7c9d37b6d0605c86ff3'}
+docker-compose.full.yml = 548897dc5709a807bb472054c701a0258f99380a577106cb0c7e78c8cacf86db
+site = {'pyproject.toml': 'e1acd833b38f03f26cc31439246cbeeb82e2edf56c751f28c3247cb44e95caca', '.gitkeep': 'baba7f0ef2b79f57ba3840039a0ce537a438fa1ad0a650427a54d2b1f8df1dd8', 'tests': {'.gitkeep': 'd4756cdf68d94c670c924f9d57d44718f666e457727701486435b57a97e52c5f'}, 'knowledge-commons-repository': {'webpack.py': '0421707d0f52caf098eaf39e10efff80e3f00f6fd6895504d0dc9f9f3f5984f4', '__init__.py': 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'templates': {'semantic-ui': {'knowledge-commons-repository': {'.gitkeep': 'd4756cdf68d94c670c924f9d57d44718f666e457727701486435b57a97e52c5f'}}}, 'assets': {'semantic-ui': {'less': {'knowledge-commons-repository': {'.gitkeep': 'de96a61fec5b6b168bced6dda58bd11e353f618ae9bee45aad9253cb0d6c5617'}}, 'js': {'knowledge-commons-repository': {'.gitkeep': '3253a6fe7fc74a1279fb374e67ffd3383eded63cd28c4877afd77dffc8cc5da4'}}}}, 'views.py': '001c6611eeb20a9b96c7149d4615571d11422bdc6e038ae58cf2edab2aa820e1'}, 'setup.py': '843ac26c38a41abae578250bc0f9419194b320a0f67327d941037a4268f6cfe7', 'setup.cfg': '6e1f454a8145f5562578ea76a8a13f213607105c82d5fb41889619e10af9a3e5'}
+templates = {'.gitkeep': 'd4756cdf68d94c670c924f9d57d44718f666e457727701486435b57a97e52c5f'}
+docker-compose.yml = 4751e900e590f0e93925cedf9ec0141042f6045333c7846c23758a822dc928d9
+assets = {'less': {'theme.config': 'ee68441b779400585a3a1ed4445ab5727e3a47a09aa708976dd506c0e081f0d8', 'site': {'globals': {'site.variables': 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'site.overrides': 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'}}}, 'js': {'invenio_app_rdm': {'overridableRegistry': {'mapping.js': '7fb63c1b801d11f1c1bb9b7d5cad6662ae475210df2bbba6919cda402684590a'}}}, 'templates': {'custom_fields': {'.gitkeep': 'd4756cdf68d94c670c924f9d57d44718f666e457727701486435b57a97e52c5f'}, 'search': {'.gitkeep': 'd4756cdf68d94c670c924f9d57d44718f666e457727701486435b57a97e52c5f'}}}
+translations = {'babel.ini': '3fb6bff73460aa031d4f90fc1e1d16235cab84d2385c9831efacb2ce32e5409b'}
+
