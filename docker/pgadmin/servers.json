@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "coretest-db",
+      "Group": "Servers",
+      "Host": "coretest-db-1",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "coretest",
+      "SSLMode": "prefer"
+    }
+  }
+}
