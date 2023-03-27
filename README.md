@@ -2,7 +2,11 @@
 
 This is the Knowledge Commons Repository InvenioRDM instance.
 
-**Note: The instructions below are the default README for InvenioRDM. They
+## License
+
+Released under an MIT license.
+
+**Note**: The instructions below are the default README for InvenioRDM. They
 are not usable as they stand for building the Knowledge Commons Repository
 instance. Updated installation instructions will follow.**
 
