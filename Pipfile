@@ -9,10 +9,10 @@ check-manifest = ">=0.25"
 [packages]
 invenio-app-rdm = {extras = ["postgresql", "opensearch2"], version = "~=11.0.0"}
 knowledge-commons-repository = {editable="True", path="./site"}
-
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
+greenlet = "*"
 
 [requires]
 python_version = "3.9"

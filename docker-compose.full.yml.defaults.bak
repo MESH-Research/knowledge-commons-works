@@ -13,10 +13,10 @@
 # - UI application: UWSGI (not exposed)
 # - API application: UWSGI (not exposed)
 # - Cache: Redis (exposed port: 6379)
-# - DB: (PostgresSQL) (exposed port: 5432 or 3306)
+# - DB: (PostgresSQL/MySQL) (exposed port: 5432 or 3306)
 # - Message queue: RabbitMQ (exposed ports: 5672, 15672)
-# - Search platform: (OpenSearch) (exposed ports: 9200, 9300)
-# - OpenSearch Dashboard (view OS indexes) (exposed ports: 5601)
+# - Search platform: (OpenSearch/Elasticsearch) (exposed ports: 9200, 9300)
+# - OpenSearch Dashboard/Kibana (view OS/ES indexes) (exposed ports: 5601)
 #
 version: '2.2'
 services:
@@ -58,8 +58,6 @@ services:
       - "80:80"
       - "443:443"
   # UI Application
-  # This container holds Python, pip, the virtualenv, and the invenio code
-  # Node.js, NPM and some standard libraries Invenio usually needs
   web-ui:
     extends:
       file: docker-services.yml
@@ -69,11 +67,6 @@ services:
     ports:
       - "5000"
     volumes:
-      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg:ro
-      - ./docker/uwsgi/uwsgi_ui.ini:/opt/invenio/var/instance/uwsgi_ui.ini:ro
-      - ./templates:/opt/invenio/var/instance/templates:ro
-      - ./app_data:/opt/invenio/var/instance/app_data:ro
-      - ./translations:/opt/invenio/var/instance/translations:ro
       - static_data:/opt/invenio/var/instance/static
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
@@ -88,11 +81,6 @@ services:
     ports:
       - "5001"
     volumes:
-      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg:ro
-      - ./docker/uwsgi/uwsgi_rest.ini:/opt/invenio/var/instance/uwsgi_rest.ini:ro
-      - ./templates:/opt/invenio/var/instance/templates:ro
-      - ./app_data:/opt/invenio/var/instance/app_data:ro
-      - ./translations:/opt/invenio/var/instance/translations:ro
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
 
