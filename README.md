@@ -14,11 +14,11 @@ Currently, the images *will* have to be rebuilt if you change any of the python 
 
 The installation requirements below are drawn in part from https://inveniordm.docs.cern.ch/install/requirements/.
 
-## Clone the knowledge-commons-repository code
+## Clone the knowledge-commons-repository Code
 
 Using GIT, clone this repository. You should then have a folder called `knowledge-commons-repository` (unless you chose to name it something else) on your local computer.
 
-## Install python and python tools
+## Install Python and Required Python Tools
 
 ### Ensure some version of python is installed
 
@@ -28,7 +28,7 @@ Most operating systems (especially MacOS and Linux) will already have a version 
 
 First install the **pyenv** tool to manage python versions, and the **pipenv** tool to manage virtual environments. (There are other tools to use for virtual environment management, but InvenioRDM is built to work with pipenv.)
 
-Instructions for Linux, MacOS, and Windows can be found here: [https://www.newline.co/courses/create-a-serverless-slackbot-with-aws-lambda-and-python/installing-python-3-and-pyenv-on-macos-windows-and-linux]
+Instructions for Linux, MacOS, and Windows can be found here: https://www.newline.co/courses/create-a-serverless-slackbot-with-aws-lambda-and-python/installing-python-3-and-pyenv-on-macos-windows-and-linux
 
 ### Install and enable the proper python version
 
@@ -53,7 +53,7 @@ From the same directory Use pip to install the **invenio-cli** python package. (
 pip install invenio-cli
 ```
 
-## install docker 20.10.10+ and docker-compose 1.17.0+
+## Install Docker 20.10.10+ and Docker-compose 1.17.0+
 
 
 ### Linux
@@ -71,7 +71,7 @@ You will likely want to configure Docker to start on system boot with systemd.
 
 ### MacOS
 
-If you are using MacOS, follow the steps for installing Docker desktop explained here: [https://docs.docker.com/desktop/install/mac-install/]
+If you are using MacOS, follow the steps for installing Docker desktop explained here: https://docs.docker.com/desktop/install/mac-install/
 
 You will then need to ensure Docker has enough memory to run all the InvenioRDM containers. In the Docker Desktop app,
 
@@ -80,14 +80,18 @@ You will then need to ensure Docker has enough memory to run all the InvenioRDM 
 
 Note: The environment variable recommended in the InvenioRDM documentation for MacOS 11 Big Sur is *not* necessary for newer MacOS versions.
 
-### Docker compose issues
+### Fixing docker-compose "not found" error
 
-With the release of compose v2, the command syntax changed from `docker-compose` to `docker compose` (a command followed by a sub-command instead of one hyphenated command). On some systems this will break the invenio-cli scripts, which use the `docker-compose` command and you will receive an error asking you to install the "docker-compose" package. The solution on Linux systems is to install Docker Compose standalone:
+With the release of compose v2, the command syntax changed from `docker-compose` to `docker compose` (a command followed by a sub-command instead of one hyphenated command). This will break the invenio-cli scripts, which use the `docker-compose` command and you will receive an error asking you to install the "docker-compose" package.
+
+The solution on Linux systems is to install Docker Compose standalone, which uses the old `docker-compose` syntax:
 
 ```
 sudo curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 suod chmod +x /usr/local/bin/docker-compose
 ```
+
+See further https://docs.docker.com/compose/install/other/
 
 #### Docker log rotation
 
@@ -154,7 +158,7 @@ You can perform the setup using invenio-cli:
 invenio-cli containers build
 ```
 
-### Create an admin user
+## Create an admin user
 
 From the command line run
 
@@ -163,7 +167,7 @@ pipenv run invenio users create <email> --password <password>
 pipenv run invenio users activate <email>
 ```
 
-### Use the application!
+## Use the application!
 
 You should now be able to access the following:
 - The Knowledge Commons Repository app (https://localhost)
@@ -171,9 +175,9 @@ You should now be able to access the following:
 - pgAdmin for database management (https://localhost:5050)
 - Opensearch Dashboards for managing search (https://localhost:5601)
 
-### Control the containerized services
+## Control the containerized services
 
-#### Start the containers
+### Start the containers
 
 With the invenio cli:
 ```
@@ -185,7 +189,7 @@ or directly with docker commands:
 docker-compose --file docker-compose.full.yml up -d
 ```
 
-#### Stop the containers
+### Stop the containers
 
 With the invenio cli:
 ```
@@ -197,7 +201,7 @@ or directly with docker commands:
 docker-compose --file docker-compose.full.yml stop
 ```
 
-#### View container logging output
+### View container logging output
 
 The logging output (and stdout) can be viewed with Docker Desktop using its convenient ui. It can also be viewed from the command line using:
 
