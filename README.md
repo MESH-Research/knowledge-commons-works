@@ -93,11 +93,11 @@ suod chmod +x /usr/local/bin/docker-compose
 
 See further https://docs.docker.com/compose/install/other/
 
-#### Docker log rotation
+### Docker log rotation
 
 Regardless of your operating system, you should set up log rotation for containers to keep the size of logging files from getting out of control. Either set your default logging driver to "local" (which rotates log files automatically) or set logging configuration if you use the "json-file" logging driver. See https://docs.docker.com/config/containers/logging/configure/
 
-#### Note about docker contexts
+### Note about docker contexts
 
 Make sure to always use the same Docker context to run all of the containers for InvenioRDM. See further, [https://docs.docker.com/engine/context/working-with-contexts/]
 
