@@ -14,23 +14,23 @@ Currently, the images *will* have to be rebuilt if you change any of the python 
 
 The installation requirements below are drawn in part from https://inveniordm.docs.cern.ch/install/requirements/.
 
-### Clone the knowledge-commons-repository code
+## Clone the knowledge-commons-repository code
 
 Using GIT, clone this repository. You should then have a folder called `knowledge-commons-repository` (unless you chose to name it something else) on your local computer.
 
-### Install python and python tools
+## Install python and python tools
 
-#### Ensure some version of python is installed
+### Ensure some version of python is installed
 
 Most operating systems (especially MacOS and Linux) will already have a version of Python installed. You can proceed directly to the next step.
 
-#### Install pyenv and pipenv
+### Install pyenv and pipenv
 
 First install the **pyenv** tool to manage python versions, and the **pipenv** tool to manage virtual environments. (There are other tools to use for virtual environment management, but InvenioRDM is built to work with pipenv.)
 
 Instructions for Linux, MacOS, and Windows can be found here: [https://www.newline.co/courses/create-a-serverless-slackbot-with-aws-lambda-and-python/installing-python-3-and-pyenv-on-macos-windows-and-linux]
 
-#### Install and enable the proper python version
+### Install and enable the proper python version
 
 Invenio's command line tools require a specific python version to work reliably. Currently this is python 3.9.16.  At the command line, first install this python version using pyenv:
 ```
@@ -45,7 +45,7 @@ cd ~/path/to/directory/knowledge-commons-repository
 pyenv local 3.9.16
 ```
 
-#### Install the Invenio command line tool
+### Install the Invenio command line tool
 
 From the same directory Use pip to install the **invenio-cli** python package. (Do not use pipenv yet or create a virtual environment.)
 
@@ -53,12 +53,13 @@ From the same directory Use pip to install the **invenio-cli** python package. (
 pip install invenio-cli
 ```
 
-### install docker 20.10.10+ and docker-compose 1.17.0+
+## install docker 20.10.10+ and docker-compose 1.17.0+
 
 
-#### Linux
+### Linux
 
-If you are using Ubuntu, follow the steps for installing Docker and Docker-compose explained here: [https://linux.how2shout.com/install-and-configure-docker-compose-on-ubuntu-22-04-lts-jammy/]
+If you are using Ubuntu, follow the steps for installing Docker and Docker-compose explained here: https://linux.how2shout.com/install-and-configure-docker-compose-on-ubuntu-22-04-lts-jammy/
+
 
 You must then create a `docker` group and add the current user to it (so that you can run docker commands without sudo). This is *required* for the invenio-cli scripts to work, and it must be done for the *same user* that will run the cli commands:
 
@@ -68,7 +69,7 @@ sudo usermod --append --groups docker $USER
 
 You will likely want to configure Docker to start on system boot with systemd.
 
-#### MacOS
+### MacOS
 
 If you are using MacOS, follow the steps for installing Docker desktop explained here: [https://docs.docker.com/desktop/install/mac-install/]
 
@@ -78,6 +79,15 @@ You will then need to ensure Docker has enough memory to run all the InvenioRDM 
 - set the memory slider under the "Resources" tab manually to at least 6-8GB
 
 Note: The environment variable recommended in the InvenioRDM documentation for MacOS 11 Big Sur is *not* necessary for newer MacOS versions.
+
+### Docker compose issues
+
+With the release of compose v2, the command syntax changed from `docker-compose` to `docker compose` (a command followed by a sub-command instead of one hyphenated command). On some systems this will break the invenio-cli scripts, which use the `docker-compose` command and you will receive an error asking you to install the "docker-compose" package. The solution on Linux systems is to install Docker Compose standalone:
+
+```
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+suod chmod +x /usr/local/bin/docker-compose
+```
 
 #### Docker log rotation
 
