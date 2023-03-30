@@ -10,13 +10,20 @@
 
 FROM registry.cern.ch/inveniosoftware/almalinux:1
 
+# TODO: Add env variables below?
+# ENV PYTHONDONTWRITEBYTECODE 1
+# ENV PYTHONFAULTHANDLER 1
+
 COPY site ./site
 COPY Pipfile Pipfile.lock ./
+# TODO: add PIPENV_VENV_IN_PROJECT=1 to command below to put virtual
+# environment in ./.venv/ rather than installing in container's system py?
 RUN pipenv install --deploy --system
 
-# Mounted directly for
-# COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
-# COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
+# These files and directories will be mounted directly in dev docker-compose
+# since the mounts override these points. Copied files to be used in production.
+COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
+COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
 COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
 COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
 COPY ./translations/ ${INVENIO_INSTANCE_PATH}/translations/

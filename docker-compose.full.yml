@@ -6,7 +6,7 @@
 #
 # Usage::
 #
-#   $ docker-compose up -f docker-compose.yml -d
+#   $ docker-compose up --file docker-compose.full.yml -d
 #
 # Following services are included:
 # - Frontend: Nginx (exposed ports: 80 and 443)
@@ -69,6 +69,7 @@ services:
     ports:
       - "5000"
     volumes:
+      # TODO: in production copy these files rather than mounting?
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg:ro
       - ./docker/uwsgi/uwsgi_ui.ini:/opt/invenio/var/instance/uwsgi_ui.ini:ro
       - ./templates:/opt/invenio/var/instance/templates:ro
@@ -88,6 +89,7 @@ services:
     ports:
       - "5001"
     volumes:
+      # TODO: in production copy these files rather than mounting?
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg:ro
       - ./docker/uwsgi/uwsgi_rest.ini:/opt/invenio/var/instance/uwsgi_rest.ini:ro
       - ./templates:/opt/invenio/var/instance/templates:ro
