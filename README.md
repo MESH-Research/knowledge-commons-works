@@ -6,7 +6,11 @@ This is the source code for the Knowledge Commons Repository, based on InvenioRD
 
 Copyright 2023 MESH Research. Released under the MIT license. (See the included LICENSE.txt file.)
 
-## Install for Development
+## Installation for Development
+
+These instructions allow you to run the Knowledge Commons Repository in a set of docker containers without installing any of the services locally. The app source files are copied onto your system, though, and changes to those files will take effect without rebuilding the docker images.
+
+Currently, the images *will* have to be rebuilt if you change any of the python package requirements. The images will also have to be rebuilt if you want to change the javascript or css (less) files, requiring that webpack build them again.
 
 The installation requirements below are drawn in part from https://inveniordm.docs.cern.ch/install/requirements/.
 
