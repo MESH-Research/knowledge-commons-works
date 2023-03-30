@@ -155,7 +155,7 @@ Note: This setup step takes much less time than the build step, but can still ta
 You can perform the setup using invenio-cli:
 
 ```
-invenio-cli containers build
+invenio-cli containers setup
 ```
 
 ## Create an admin user
