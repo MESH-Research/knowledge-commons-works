@@ -18,6 +18,25 @@ The installation requirements below are drawn in part from https://inveniordm.do
 
 Using GIT, clone this repository. You should then have a folder called `knowledge-commons-repository` (unless you chose to name it something else) on your local computer.
 
+## Add .env.private file
+
+Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own .env.private file and place it at the root level of the knowledge-commons-repository folder.
+
+This file should contain at least the following variables, substituting appropriate values after each = sign:
+
+SECRET_KEY=CHANGE_ME
+SECURITY_LOGIN_SALT='..put a long random value here..'
+CSRF_SECRET_SALT='..put a long random value here..'
+DATACITE_PASSWORD=myothersecurepassword
+PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
+PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
+
+## Customize .env.local file
+
+This repository does include a file of local environment variables that are
+not secret but should be customized for each installation. These are separated out from the main invenio.cfg file, which contains values that
+are fixed for all instances of the Knowledge Commons Repository.
+
 ## Install Python and Required Python Tools
 
 ### Ensure some version of python is installed
@@ -188,7 +207,7 @@ After this you will still be in the container's bash prompt. To leave the contai
 You should now be able to access the following:
 - The Knowledge Commons Repository app (https://localhost)
 - The Knowledge Commons Repository REST api (https://localhost/api)
-- pgAdmin for database management (https://localhost:5050)
+- pgAdmin for database management (https://localhost/pgadmin)
 - Opensearch Dashboards for managing search (https://localhost:5601)
 
 ## Control the containerized services
