@@ -160,14 +160,16 @@ invenio-cli containers setup
 
 ## Create an admin user
 
-From the command line run
-
+From the command line, enter a command line inside one of the main app containers:
 ```
-docker exec -it knowledge-commons-repository-web-ui-1
+docker exec -it knowledge-commons-repository-web-ui-1 bash
+```
+From inside the container, run these commands to create and activate the admin user:
+```
 pipenv run invenio users create <email> --password <password>
 pipenv run invenio users activate <email>
-exit
 ```
+After this you will still be in the container's bash prompt. To leave the container (without killing your ssh session when you're doing this remotely) simply press ctrl-P followed by ctrl-Q.
 
 ## Use the application!
 
