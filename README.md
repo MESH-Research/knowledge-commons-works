@@ -163,8 +163,10 @@ invenio-cli containers setup
 From the command line run
 
 ```
+docker exec -it knowledge-commons-repository-web-ui-1
 pipenv run invenio users create <email> --password <password>
 pipenv run invenio users activate <email>
+exit
 ```
 
 ## Use the application!
