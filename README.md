@@ -99,7 +99,7 @@ Regardless of your operating system, you should set up log rotation for containe
 
 ### Note about docker contexts
 
-Make sure to always use the same Docker context to run all of the containers for InvenioRDM. See further, [https://docs.docker.com/engine/context/working-with-contexts/]
+Make sure to always use the same Docker context to run all of the containers for InvenioRDM. See further, https://docs.docker.com/engine/context/working-with-contexts/
 
 ## Build and Configure the Containers
 
@@ -143,6 +143,7 @@ docker-compose --file docker-compose.full.yml build
 This stage is generally only performed once after building (or rebuilding) the main knowledge-commons-repository image. It does several things:
 
 - checks that all containers are running
+    - if they aren't starts them
 - destroys redis cache, database, index, and queue (if --force flag is True [not default])
 - creates database and table structure
 - creates Invenio admin role and assigns it superuser access
@@ -158,6 +159,13 @@ You can perform the setup using invenio-cli:
 invenio-cli containers setup
 ```
 
+**Note: This process sometimes gets impatient and stops, telling you that the search service could not be started. Running the command a second time should work. Alternately, you can manually start the services first by running**
+```
+docker-compose --file docker-compose.full.yml up -d
+```
+**before you run the setup function.**
+
+
 ## Create an admin user
 
 From the command line, enter a command line inside one of the main app containers:
@@ -168,6 +176,10 @@ From inside the container, run these commands to create and activate the admin u
 ```
 pipenv run invenio users create <email> --password <password>
 pipenv run invenio users activate <email>
+```
+If you want this user to have access to the administration panel in Invenio, you also need to run
+```
+pipenv run invenio access allow administration-access user <email>
 ```
 After this you will still be in the container's bash prompt. To leave the container (without killing your ssh session when you're doing this remotely) simply press ctrl-P followed by ctrl-Q.
 
@@ -204,6 +216,8 @@ or directly with docker commands:
 ```
 docker-compose --file docker-compose.full.yml stop
 ```
+
+Note that stopping the containers this way will not destroy the data and configuration which live in docker volumes. Those volumes persist as long as the containers are not destroyed.
 
 ### View container logging output
 
