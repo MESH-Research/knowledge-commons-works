@@ -239,6 +239,20 @@ The names of the various images are:
 - knowledge-commons-repository-pgadmin-1
 - knowledge-commons-repository-worker-1
 
+### Controlling containerized nginx server
+
+The frontend container is configured so that the configuration files in docker/nginx/ are bind mounted. This means that changes to those config files can be seen in the running container and enabled without rebuilding the container. To reload the nginx configuration, first enter the frontend container:
+```
+docker exec -it knowledge-commons-repository-frontend-1 bash
+```
+Then tell gninx to reload the config files:
+```
+nginx -s reload
+```
+You can also test the nginx config prior to reloading by running
+```
+nginx -t
+```
 
 ## DEPRECATED
 
