@@ -355,7 +355,11 @@ And then start the `watch` command again.
 
 ### Making changes to static files
 
-Because of Flask's decentralized structure, Static files like images must be collected into a central directory. After making changes to static files, enter the web-ui container and run:
+Because of Flask's decentralized structure, Static files like images must be collected into a central directory. After making changes to static files, enter the web-ui container:
+```console
+docker exec -it knowledge-commons-repository-web-ui-1 bash
+```
+and then run:
 ```console
 invenio collect -v
 ```
