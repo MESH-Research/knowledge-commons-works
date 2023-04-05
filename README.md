@@ -327,6 +327,7 @@ flask webpack create  # Copy all sources to the working directory
 flask webpack install # Run npm install and download all dependencies
 flask webpack build # Run npm run build.
 ```
+After the first run of the webpack build script, the webpack configuration files can be found in your local instance folder under `assets/build/`.
 
 #### Watching for changes to existing files
 
