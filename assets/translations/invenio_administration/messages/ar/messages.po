@@ -1,0 +1,81 @@
+# 
+# Translators:
+# Bessem Aamira <bessemamira@gmail.com>, 2022
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# Salaheddine Ben Ali <salaheddine.benali@cnudst.tn>, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:25:02.203Z\n"
+"PO-Revision-Date: 2022-10-12 07:22+0000\n"
+"Last-Translator: Salaheddine Ben Ali <salaheddine.benali@cnudst.tn>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/inveniosoftware/teams/23537/ar/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"mime-version: 1.0\n"
+
+msgid "Search ..."
+msgstr "البحث ..."
+
+msgid "There is no resources in this category."
+msgstr "لا توجد موارد في هذه الفئة."
+
+msgid "No matching resources found."
+msgstr "لا توجد موارد مطابقة."
+
+msgid "results per page"
+msgstr "عدد النتائج في الصّفحة"
+
+msgid "result(s) found"
+msgstr "النتيجة"
+
+msgid "Add"
+msgstr "إضافة"
+
+msgid "Remove field"
+msgstr "حذف الحقل"
+
+msgid "Sort"
+msgstr "رتّب"
+
+msgid "Resource is not editable."
+msgstr "المورد غير قابل للتّعديل."
+
+msgid "Edit"
+msgstr "تعديل"
+
+msgid "Resource is not deletable."
+msgstr "المورد غير قابل للحذف."
+
+msgid "Open list of actions"
+msgstr "فتح قائمة العمليّات"
+
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "Delete {{title}}"
+msgstr "حذف {{عنوان}}"
+
+msgid "Are you sure you want to delete {{resourceName}}? "
+msgstr "هل أنت متأكد من حذف {{إسم المورد}} ؟"
+
+msgid "Error"
+msgstr "خطأ"
+
+msgid "Server was not able to process your request."
+msgstr "الموزّع لم يتمكّن من معالجة طلبك."
+
+msgid "Save"
+msgstr "حفظ"
+
+msgid "Search"
+msgstr "بحث"
+
+msgid "Clear query"
+msgstr "محو الطّلب"

@@ -1,0 +1,23 @@
+{
+    "Search ...": "Otsi...",
+    "There is no resources in this category.": "Selles kategoorias pole ressursse.",
+    "No matching resources found.": "Ühtegi sobivat ressurssi ei leitud.",
+    "results per page": "tulemust lehel",
+    "result(s) found": "tulemus(t) leitud",
+    "Add": "Lisa",
+    "Remove field": "Eemalda väli",
+    "Sort": "Sorteeri",
+    "Resource is not editable.": "Ressursi ei saa redigeerida.",
+    "Edit": "Redigeeri",
+    "Resource is not deletable.": "Ressursi ei saa kustutada.",
+    "Open list of actions": "Avage toimingute loend",
+    "Delete": "Kustuta",
+    "Cancel": "Tühista",
+    "Delete {{title}}": "Kustuta {{title}}",
+    "Are you sure you want to delete {{resourceName}}? ": "Kas olete kindel, et soovite {{resourceName}} kustutada?",
+    "Error": "Viga",
+    "Server was not able to process your request.": "Server ei saanud teie taotlust töödelda.",
+    "Save": "Salvesta",
+    "Search": "Otsi",
+    "Clear query": "Puhasta otsinguväljad"
+}

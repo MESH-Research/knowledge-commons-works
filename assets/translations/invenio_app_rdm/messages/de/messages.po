@@ -1,0 +1,286 @@
+# 
+# Translators:
+# Hermann Schranzhofer <hermann.schranzhofer@tugraz.at>, 2022
+# chriz_uniba <christina.zeller@uni-bamberg.de>, 2022
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# Zacharias Zacharodimos <zacharias.zacharodimos@cern.ch>, 2022
+# David Eckhard <dabombeeer@gmail.com>, 2022
+# Mojib Wali <mojib.wali@tugraz.at>, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T06:58:21.832Z\n"
+"PO-Revision-Date: 2021-07-14 16:07+0000\n"
+"Last-Translator: Mojib Wali <mojib.wali@tugraz.at>, 2022\n"
+"Language-Team: German (https://www.transifex.com/inveniosoftware/teams/23537/de/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "Basic information"
+msgstr "Allgemeine Informationen"
+
+msgid "Copy to clipboard"
+msgstr "In die Zwischenablage kopieren"
+
+msgid "Copied!"
+msgstr "Kopiert!"
+
+msgid "Files"
+msgstr "Dateien"
+
+msgid "The record has no files."
+msgstr "Der Eintrag hat keine Dateien."
+
+msgid "Creators"
+msgstr "ErstellerInnen"
+
+msgid "Recommended information"
+msgstr "Empfohlene Informationen"
+
+msgid "Add contributor"
+msgstr "Mitwirkende hinzufügen"
+
+msgid "Contributors"
+msgstr "Mitwirkende"
+
+msgid "Alternate identifiers"
+msgstr "Alternative Kennungen"
+
+msgid "Related works"
+msgstr "Verwandte Arbeiten"
+
+msgid "Visibility"
+msgstr "Sichtbarkeit"
+
+msgid "Edit"
+msgstr "Editieren"
+
+msgid "An error occurred while generating the citation."
+msgstr "Beim Erzeugen der Zitierung ist ein Fehler aufgetreten."
+
+msgid "Citation"
+msgstr "Zitierung"
+
+msgid "Style"
+msgstr "Stil"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Preview"
+msgstr "Vorschau"
+
+msgid "Only published versions are displayed."
+msgstr "Es werden nur veröffentlichte Versionen angezeigt."
+
+msgid "View all {{total}} versions"
+msgstr "Alle {{total}}  Versionen anzeigen"
+
+msgid "You don't have permissions to share this record."
+msgstr "Sie haben nicht die Berechtigung diesen Eintrag zu teilen."
+
+msgid "Share"
+msgstr "Teilen"
+
+msgid "Can view"
+msgstr "Sichtrechte"
+
+msgid "Can preview"
+msgstr "Vorschaurechte"
+
+msgid "Can edit"
+msgstr "Bearbeitungsrechte"
+
+msgid "Get a link"
+msgstr "Link erstellen"
+
+msgid "Copy link"
+msgstr "Link kopieren"
+
+msgid "Delete link"
+msgstr "Link löschen"
+
+msgid "Done"
+msgstr "Erledigt"
+
+msgid ""
+"Anyone with this link <1>can view all versions</1> of this record & files."
+msgstr ""
+"Alle, die diesen Link haben, können <1>alle Versionen</1> dieses Eintrags "
+"und der Dateien <1>einsehen</1>."
+
+msgid ""
+"Anyone with this link <2>can view all published and unpublished versions</2>"
+" of this record & files."
+msgstr ""
+"Alle, die diesen Link haben, können <2>alle veröffentlichten und "
+"unveröffentlichten Versionen</2> dieses Eintrags und der Dateien "
+"<2>einsehen</2>."
+
+msgid "Uploaded on"
+msgstr "Hochgeladen am"
+
+msgid "Search"
+msgstr "Suchen"
+
+msgid "Search guide"
+msgstr "Suchanleitung"
+
+msgid "result(s) found"
+msgstr "Gefundene Ergebnisse"
+
+msgid "Sort by"
+msgstr "Sortieren nach"
+
+msgid "View"
+msgstr "Ansicht"
+
+msgid "New community"
+msgstr "Neue Community"
+
+msgid "Get started!"
+msgstr "Los geht's!"
+
+msgid "Open"
+msgstr "Offen"
+
+msgid "Closed"
+msgstr "Geschlossen"
+
+msgid "All done!"
+msgstr "Alles erledigt!"
+
+msgid "You've caught up with all open requests."
+msgstr "Sie haben alle offenen Anfragen gesehen."
+
+msgid "No creation date found."
+msgstr "Kein Erstellungsdatum gefunden."
+
+msgid "No description"
+msgstr "Keine Beschreibung"
+
+msgid "No publication date found."
+msgstr "Kein Veröffentlichungsdatum gefunden."
+
+msgid "No resource type"
+msgstr "Kein Ressource-Typ"
+
+msgid "No title"
+msgstr "Ohne Titel"
+
+msgid "Make your first upload!"
+msgstr "Machen Sie Ihren ersten Eintrag!"
+
+msgid "New upload"
+msgstr "Neuer Eintrag"
+
+msgid "ORCID profile"
+msgstr "ORCID Profil"
+
+msgid "ROR profile"
+msgstr "ROR Profil"
+
+msgid "GND profile"
+msgstr "GND Profil"
+
+msgid "No communities found!"
+msgstr "Keine Communitys gefunden!"
+
+msgid "No requests found!"
+msgstr "Keine Anfragen gefunden!"
+
+msgid "Copied"
+msgstr "Kopiert"
+
+msgid "Reset search"
+msgstr "Suche zurücksetzen"
+
+msgid "We couldn't find any matches for "
+msgstr "Wir konnten keine Treffer finden für "
+
+msgid "your search"
+msgstr "Ihre Suche"
+
+msgid "Start over"
+msgstr "Neu beginnen"
+
+msgid "ProTip"
+msgstr "ProTipp"
+
+msgid "For more tips, check out our "
+msgstr "Weitere Tipps finden Sie in unserer "
+
+msgid "search guide"
+msgstr "Suchanleitung"
+
+msgid "Export"
+msgstr "Exportieren"
+
+msgid "Filter results"
+msgstr "Ergebnisse filtern"
+
+msgid "In review"
+msgstr "In Begutachtung"
+
+msgid "Declined"
+msgstr "Abgelehnt"
+
+msgid "Expired"
+msgstr "Abgelaufen"
+
+msgid "Draft"
+msgstr "Entwurf"
+
+msgid "New version draft"
+msgstr "Entwurf einer neuen Version"
+
+msgid "Download file"
+msgstr "Datei herunterladen"
+
+msgid "No link has been created. Click on 'Get a Link' to make a new link."
+msgstr ""
+
+msgid ""
+"Anyone with an account and this link <1>can edit all versions</1> of this "
+"record & files."
+msgstr ""
+
+msgid "Search records..."
+msgstr ""
+
+msgid "will give you all the publications from 2017 until today."
+msgstr ""
+
+msgid " for defining advanced search queries."
+msgstr ""
+
+msgid "Public"
+msgstr "Öffentlich"
+
+msgid "Restricted"
+msgstr "Eingeschränkt"
+
+msgid "Search in my communities..."
+msgstr ""
+
+msgid "Opened {{difference}} by"
+msgstr ""
+
+msgid "Search in my requests..."
+msgstr ""
+
+msgid "Actions"
+msgstr "Aktionen"
+
+msgid "open"
+msgstr ""
+
+msgid "unlock"
+msgstr ""
+
+msgid "Search in my uploads..."
+msgstr ""

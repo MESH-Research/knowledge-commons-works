@@ -1,0 +1,23 @@
+{
+    "Search ...": "Sök ...",
+    "There is no resources in this category.": "Det finns inga resurser i denna kategori.",
+    "No matching resources found.": "Inga matchande resurser hittades.",
+    "results per page": "resultat per sida",
+    "result(s) found": "result(at) hittades",
+    "Add": "Lägg till",
+    "Remove field": "Ta bort fält",
+    "Sort": "Sortera",
+    "Resource is not editable.": "Resursen är inte redigerbar.",
+    "Edit": "Redigera",
+    "Resource is not deletable.": "Resursen går inte att radera.",
+    "Open list of actions": "Öppna listan över åtgärder",
+    "Delete": "Ta bort",
+    "Cancel": "Avbryt",
+    "Delete {{title}}": "Ta bort {{title}}",
+    "Are you sure you want to delete {{resourceName}}? ": "Är du säker på att du vill ta bort {{resourceName}}?",
+    "Error": "Fel",
+    "Server was not able to process your request.": "Servern kunde inte behandla din begäran.",
+    "Save": "Spara",
+    "Search": "Sök",
+    "Clear query": "Rensa query"
+}

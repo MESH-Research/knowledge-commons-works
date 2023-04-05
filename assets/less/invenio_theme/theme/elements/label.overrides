@@ -1,0 +1,54 @@
+/***********************************************
+         Invenio Theme Label Overrides
+***********************************************/
+
+/*--- Neutral ---*/
+
+.ui.neutral.label {
+  background-color: @neutralLabelColor;
+  border-color: @neutralBorderLabelColor;
+  color: @neutralTextLabelColor;
+}
+
+/*--- Primary ---*/
+
+.ui.primary.label {
+  background-color: @primaryLabelColor;
+  border-color: @primaryBorderLabelColor;
+  color: @primaryTextLabelColor;
+}
+
+/*--- Positive ---*/
+
+.ui.positive.label {
+  background-color: @positiveLabelColor;
+  border-color: @positiveBorderLabelColor;
+  color: @positiveTextLabelColor;
+}
+
+
+/*--- Warning ---*/
+
+.ui.warning.label {
+  background-color: @warningLabelColor;
+  border-color: @warningBorderLabelColor;
+  color: @warningTextLabelColor;
+}
+
+
+/*--- Expired ---*/
+
+.ui.expired.label {
+  background-color: @expiredLabelColor;
+  border-color: @expiredBorderLabelColor;
+  color: @expiredTextLabelColor;
+}
+
+
+/*--- Negative ---*/
+
+.ui.negative.label {
+  background-color: @negativeLabelColor;
+  border-color: @negativeBorderLabelColor;
+  color: @negativeTextLabelColor;
+}

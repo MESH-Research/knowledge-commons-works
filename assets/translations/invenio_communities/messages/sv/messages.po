@@ -1,0 +1,403 @@
+# 
+# Translators:
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# Sam Arbid, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:39:56.031Z\n"
+"PO-Revision-Date: 2022-03-10 09:30+0000\n"
+"Last-Translator: Sam Arbid, 2022\n"
+"Language-Team: Swedish (https://www.transifex.com/inveniosoftware/teams/23537/sv/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "Description"
+msgstr "Beskrivning"
+
+msgid "Search for organizations..."
+msgstr "Sök efter organisationer..."
+
+msgid "Delete"
+msgstr "Ta bort"
+
+msgid "Remove"
+msgstr "Ta bort"
+
+msgid "Cancel"
+msgstr "Avbryt"
+
+msgid "Maximum number of characters is 2000"
+msgstr "Maximalt antal tecken är 2000"
+
+msgid "Must be a valid URL"
+msgstr "Måste vara en giltig webbadress"
+
+msgid "Profile picture"
+msgstr "Profilbild"
+
+msgid "Upload new picture"
+msgstr "Ladda upp ny bild"
+
+msgid "Delete picture"
+msgstr "Ta bort bild"
+
+msgid "Are you sure you want to delete this picture?"
+msgstr "Är du säker på att du vill ta bort den här bilden?"
+
+msgid "Danger zone"
+msgstr "Farozon"
+
+msgid "Change identifier"
+msgstr "Ändra identifierare"
+
+msgid ""
+"Changing your community's unique identifier can have unintended side "
+"effects."
+msgstr ""
+"Att ändra din communitys unika identifierare kan få oavsiktliga "
+"biverkningar."
+
+msgid "Delete community"
+msgstr "Ta bort community"
+
+msgid "Once deleted, it will be gone forever. Please be certain."
+msgstr "När den är raderad kommer den att vara borta för alltid. Var säker."
+
+msgid "Are you sure you want to delete this community?"
+msgstr "Är du säker på att du vill ta bort den här community?"
+
+msgid "Community name"
+msgstr "Community namn"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Website"
+msgstr "Hemsida"
+
+msgid "Search for an organization by name"
+msgstr "Sök efter en organisation med namn"
+
+msgid "Organizations"
+msgstr "Organisationer"
+
+msgid "Save"
+msgstr "Spara"
+
+msgid "Change"
+msgstr "Förändra"
+
+msgid "Saved"
+msgstr "Sparad"
+
+msgid "Member"
+msgstr "Medlem"
+
+msgid "Members"
+msgstr "Medlemmar"
+
+msgid "Role"
+msgstr "Roll"
+
+msgid "Setup your new community"
+msgstr "Skapa din nya community"
+
+msgid "Identifier"
+msgstr "Identifierare"
+
+msgid "Community visibility"
+msgstr "Community synlighet"
+
+msgid "Create community"
+msgstr "Skapa community"
+
+msgid "Message"
+msgstr "Meddelande"
+
+msgid "View"
+msgstr "Vy"
+
+msgid "{{total}} result(s) found"
+msgstr "{{total}} result(at) hittades"
+
+msgid "Sort by"
+msgstr "Sortera efter"
+
+msgid "results per page"
+msgstr "resultat per sida"
+
+msgid "Search"
+msgstr "Sök"
+
+msgid "Search communities..."
+msgstr "Sök communities..."
+
+msgid "New community"
+msgstr "Ny community"
+
+msgid "Uploaded on"
+msgstr "Uppladdad på"
+
+msgid "Search guide"
+msgstr "Sökguide"
+
+msgid "We couldn't find any matches for "
+msgstr "Vi kunde inte hitta några matchningar för "
+
+msgid "your search"
+msgstr "din sökning"
+
+msgid "Start over"
+msgstr "Börja om"
+
+msgid "ProTip"
+msgstr "ProTip"
+
+msgid "will give you all the publications from 2017 until today"
+msgstr "kommer att ge dig alla publikationer från 2017 till idag"
+
+msgid "For more tips, check out our "
+msgstr "För fler tips, kolla in vår "
+
+msgid " for defining advanced search queries"
+msgstr " för att definiera avancerade sökfrågor"
+
+msgid "ORCID profile"
+msgstr "ORCID-profil"
+
+msgid "ROR profile"
+msgstr "ROR-profil"
+
+msgid "Filter results"
+msgstr "Filtrera resultat"
+
+msgid "search guide"
+msgstr "sökguide"
+
+msgid "members selected"
+msgstr "valda medlemmar"
+
+msgid "Leave community"
+msgstr "Lämna community"
+
+msgid "Leave"
+msgstr "Lämna"
+
+msgid "Remove user"
+msgstr "Ta bort användare"
+
+msgid "This action cannot be undone."
+msgstr "Denna åtgärd kan inte ångras."
+
+msgid "Clear all filters"
+msgstr "Rensa alla filter"
+
+msgid "Group"
+msgstr "Grupp"
+
+msgid "Search for groups"
+msgstr "Sök efter grupper"
+
+msgid "Add"
+msgstr "Lägg till"
+
+msgid "People"
+msgstr "Människor"
+
+msgid "Groups"
+msgstr "Grupper"
+
+msgid "Invite groups"
+msgstr "Bjud in grupper"
+
+msgid "Invite members"
+msgstr "Bjud in medlemmar"
+
+msgid "Search by email, full name or username"
+msgstr "Sök med e-post, fullständigt namn eller användarnamn"
+
+msgid "Invite"
+msgstr "Inbjudan"
+
+msgid "You are about to invite <1>{{selectedCount}}</1> users"
+msgid_plural "You are about to invite <1>{{selectedCount}}</1> users"
+msgstr[0] "Du är på väg att bjuda in <1>{{selectedCount}}</1> användare"
+msgstr[1] "Du är på väg att bjuda in <1>{{selectedCount}}</1> användare"
+
+msgid "Name"
+msgstr "Namn"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Expires"
+msgstr "Upphör att gälla"
+
+msgid "result(s) found"
+msgstr "result(at) hittades"
+
+msgid "Member since"
+msgstr "Medlem sedan"
+
+msgid "Visibility"
+msgstr "Synlighet"
+
+msgid "Search members..."
+msgstr "Sök medlemmar..."
+
+msgid "Public"
+msgstr "Offentlig"
+
+msgid "Hidden"
+msgstr "Dold"
+
+msgid "Change roles"
+msgstr "Byta roller"
+
+msgid "Change visibilities"
+msgstr "Ändra synlighet"
+
+msgid "Remove from community"
+msgstr "Ta bort från community"
+
+msgid "You have selected <1>{{selectedCount}}</1> users"
+msgid_plural "You have selected <1>{{selectedCount}}</1> users"
+msgstr[0] "Du har valt <1>{{selectedCount}}</1> användare"
+msgstr[1] "Du har valt <1>{{selectedCount}}</1> användare"
+
+msgid "You"
+msgstr "Du"
+
+msgid "Leave..."
+msgstr "Lämna..."
+
+msgid "Remove..."
+msgstr "Ta bort..."
+
+msgid "Open"
+msgstr "Öppen"
+
+msgid "Closed"
+msgstr "Stängd"
+
+msgid "Search requests..."
+msgstr "Sökförfrågningar..."
+
+msgid "All done!"
+msgstr "Allt klart!"
+
+msgid "You've caught up with all open requests."
+msgstr "Du har kommit ikapp med alla öppna förfrågningar."
+
+msgid "No requests found!"
+msgstr "Inga förfrågningar hittades!"
+
+msgid "Reset search"
+msgstr "Återställ sökning"
+
+msgid "Search records in community..."
+msgstr "Sök poster i community..."
+
+msgid ""
+"This is your community's unique identifier. You will be able to access your "
+"community through the URL:"
+msgstr ""
+"Detta är din communitys unika identifierare. Du kommer att kunna komma åt "
+"din community via URL:en:"
+
+msgid "bulk actions"
+msgstr "massåtgärder"
+
+msgid "remove {{name}}"
+msgstr "ta bort {{name}}"
+
+msgid "Submitted"
+msgstr "Lämnats"
+
+msgid "Accepted"
+msgstr "Accepterad"
+
+msgid "Declined"
+msgstr "Tackade nej"
+
+msgid "Expired"
+msgstr "Utgånget"
+
+msgid "Search in invitations..."
+msgstr "Sök i inbjudningar..."
+
+msgid "This community has no public members."
+msgstr "Denna community har inga offentliga medlemmar."
+
+msgid "No matching members found."
+msgstr "Inga matchande medlemmar hittades."
+
+msgid "Actions"
+msgstr "Aktioner"
+
+msgid "Add groups"
+msgstr "Lägg till grupper"
+
+msgid "Restricted"
+msgstr "Begränsad"
+
+msgid "Search records..."
+msgstr "Sök rekord..."
+
+msgid "Selected groups"
+msgstr "Utvalda grupper"
+
+msgid "Selected members"
+msgstr "Utvalda medlemmar"
+
+msgid "Search in members ..."
+msgstr "Sök i medlemmar..."
+
+msgid "You are about to leave this community."
+msgstr "Du är på väg att lämna denna community."
+
+msgid "You are about to remove this user from this community."
+msgstr "Du håller på att ta bort den här användaren från denna community."
+
+msgid "You are about to add <1>{{selectedCount}}</1> groups."
+msgid_plural "You are about to add <1>{{selectedCount}}</1> groups."
+msgstr[0] "Du håller på att lägga till <1>{{selectedCount}}</1> grupper."
+msgstr[1] "Du håller på att lägga till <1>{{selectedCount}}</1> grupper."
+
+msgid "Search..."
+msgstr "Sök..."
+
+msgid ""
+"Users must set profile visibility to \"Public\" in order to be invited to a "
+"community."
+msgstr ""
+"Användare måste ställa in profilens synlighet till \"Offentlig\" för att bli"
+" inbjuden till en grupp."
+
+msgid "Your community membership is visible to everyone."
+msgstr "Ditt communitymedlemskap är synligt för alla."
+
+msgid ""
+"Your community membership is only visible to other members of the community."
+msgstr ""
+"Ditt community medlemskap är endast synligt för andra medlemmar i community."
+
+msgid "Opened {{difference}} by"
+msgstr "Öppnad {{skillnad}} av"
+
+msgid "Expires at:"
+msgstr "Upphör att gälla:"
+
+msgid "File must be smaller than "
+msgstr "Filen måste vara mindre än"
+
+msgid "It may take a few moments for changes to be visible everywhere"
+msgstr "Det kan ta en stund innan ändringarna syns överallt"
+
+msgid "New unique identifier of the community"
+msgstr "Ny unik identifierare för community"

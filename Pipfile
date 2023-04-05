@@ -13,6 +13,8 @@ uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
 greenlet = "*"
+python-dotenv = "*"
+invenio-cli = "*"
 
 [requires]
 python_version = "3.9"

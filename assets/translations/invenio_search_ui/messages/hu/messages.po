@@ -1,0 +1,54 @@
+# 
+# Translators:
+# Andrea Dömötör, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: InvenioRDM\n"
+"POT-Creation-Date: 2022-10-12T08:17:06.372Z\n"
+"PO-Revision-Date: 2016-10-20 07:42+0000\n"
+"Last-Translator: Andrea Dömötör, 2022\n"
+"Language-Team: Hungarian (http://www.transifex.com/inveniosoftware/invenio/language/hu/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "Sort"
+msgstr "Rendezés"
+
+msgid "Filter results"
+msgstr "Találatok szűrése"
+
+msgid "filters"
+msgstr "szűrők"
+
+msgid "Versions"
+msgstr "Verziók"
+
+msgid "View all versions"
+msgstr "Minden verzió megjelenítése"
+
+msgid "Help"
+msgstr "Súgó"
+
+msgid "Search guide"
+msgstr "Keresési útmutató"
+
+msgid "Show all sub facets of "
+msgstr "Összes alfelület mutatása"
+
+msgid "Clear selection"
+msgstr "Kijelölés törlése"
+
+msgid "Clear"
+msgstr "Törlés"
+
+msgid "Search records..."
+msgstr "Rekordok keresése..."
+
+msgid "All records"
+msgstr "Összes rekord"
+
+msgid "Sort by"
+msgstr "Rendezési elv"

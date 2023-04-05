@@ -1,0 +1,39 @@
+/***********************************************
+         Invenio Theme Dropdown Overrides
+***********************************************/
+
+.ui.scrolling.dropdown{
+  .menu {
+    min-width: @menuMinWidth !important;
+  }
+}
+
+.ui.floating.dropdown > .menu.fluid-menu-mobile{
+  width: calc(100vw - 2 * @defaultPadding);
+  left: calc(-100vw/2 + 100%/2 + @defaultPadding);
+}
+
+.ui.dropdown{
+  .menu{
+    .item {
+      position: relative;
+      cursor: pointer;
+      display: block;
+      border: @itemBorder;
+      height: @itemHeight;
+      text-align: @itemTextAlign;
+
+      border-top: @itemDivider;
+      line-height: @itemLineHeight;
+      font-size: @itemFontSize;
+      color: @itemColor;
+
+      padding: @itemPadding !important;
+      font-size: @itemFontSize;
+      text-transform: @itemTextTransform;
+      font-weight: @itemFontWeight;
+      box-shadow: @itemBoxShadow;
+      -webkit-touch-callout: none;
+    }
+  }
+} 

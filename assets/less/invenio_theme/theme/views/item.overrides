@@ -1,0 +1,51 @@
+/***********************************************
+         Invenio Theme Item Overrides
+***********************************************/
+
+.ui.dropdown .menu > .item.dropdown-item {
+    &:first-of-type:last-of-type{
+        padding: 1em 1em 1em 1em !important;
+    }
+
+    &:first-of-type{
+        padding: 1em 1em 5px 1em !important;
+    }
+
+    &:last-of-type{
+        padding: 5px 1em 1em 1em !important;
+    }
+
+    padding: 5px 1em 5px 1em !important;    
+}
+
+.ui.items > .item {
+
+    .extra > *:last-child {
+        margin: (@extraRowSpacing / 2) 0 (@extraRowSpacing / 2) 0;
+    }
+
+    & > .content {
+        & > .ui.grid {
+            .header {
+                display: inline-block;
+                margin: @headerMargin;
+                font-family: @headerFont;
+                font-weight: @headerFontWeight;
+                color: @headerColor;
+
+                a {
+                    display: inline-block;
+                    padding: .5rem 0 .1rem;
+
+                    &:hover, &:focus {
+                    text-decoration: underline;
+                    }
+                }
+            }
+
+            .header:not(.ui) {
+                font-size: @headerFontSize;
+            }
+        }
+    }
+}

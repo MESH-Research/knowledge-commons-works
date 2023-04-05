@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "",
+    "result(s) found": "",
+    "Add": "დამატება",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "რედაქტირება",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "წაშლა",
+    "Cancel": "გაუქმება",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "შეცდომა",
+    "Server was not able to process your request.": "",
+    "Save": "დამახსოვრება",
+    "Search": "ძებნა",
+    "Clear query": ""
+}

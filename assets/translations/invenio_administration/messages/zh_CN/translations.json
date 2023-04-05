@@ -1,0 +1,23 @@
+{
+    "Search ...": "搜索...",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "每页的结果",
+    "result(s) found": "找到结果",
+    "Add": "添加",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "编辑",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "删除",
+    "Cancel": "取消",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "错误",
+    "Server was not able to process your request.": "",
+    "Save": "保存",
+    "Search": "搜索",
+    "Clear query": ""
+}

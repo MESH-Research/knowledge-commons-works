@@ -1,0 +1,122 @@
+
+.share-modal {
+  .share-content {
+    display: flex;
+
+    .input {
+      flex-grow: 1;
+      padding-right: 0.5em;
+    }
+  }
+
+  .share-description {
+    margin: 1em auto;
+  }
+}
+
+/* Styling for the community selection modal */
+
+#community-selection-modal {
+
+  .community-list-results.content {
+    height: calc(55vh - 10em);
+
+    .item {
+      padding: @defaultPadding;
+
+      &:first-child {
+        padding-top: @defaultPadding !important; //overriding semantic ui's !important
+      }
+
+      &.selected {
+        background-color: lighten(@borderColor, 65%);
+      }
+
+      .header {
+        a.ui.button.transparent {
+          color: @linkColor;
+        }
+      }
+
+      .extra {
+
+        &.flex {
+          display: flex;
+        }
+
+        &.width.auto {
+          width: auto;
+        }
+
+        &.mt-0 {
+          @media all and (max-width: @largestMobileScreen) {
+            margin-top: .5 * @defaultMargin !important;
+          }
+        }
+      }
+    }
+  }
+
+  .community-list-result-item {
+    .header {
+      white-space: normal;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .ui.segment {
+    box-shadow: none;
+  }
+
+  .community-selected-item-container {
+    min-height: 6rem;
+    overflow-y: hidden;
+  }
+}
+
+
+@media screen and (max-width: 850px) {
+  #community-selection-modal {
+
+    .community-selected-item-container {
+      overflow-y: auto;
+    }
+
+    .community-list-result-item {
+      margin: 0;
+      flex-direction: row;
+    }
+
+    .community-list-result-item {
+      overflow-y: auto;
+    }
+
+  }
+
+}
+
+// overrides default immediate parent rules
+.ui.modal {
+  .actions {
+    background: @actionBackground;
+    padding: @actionPadding;
+    border-top: @actionBorder;
+    text-align: @actionAlign;
+  }
+}
+.ui.modal .actions {
+  .button {
+    margin-left: @buttonDistance;
+  }
+}
+
+.ui.dimmer .ui.modal .ui.loader {
+  &:before {
+    border-color: @borderColor;
+  }
+
+  &:after {
+    border-color: @mutedTextColor transparent transparent;
+  }
+}

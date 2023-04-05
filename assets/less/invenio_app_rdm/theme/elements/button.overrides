@@ -1,0 +1,62 @@
+/***********************************************
+         Invenio App RDM Button Overrides
+***********************************************/
+
+
+/** Citation landing page */
+
+.copy.button {
+  margin-right: 0;
+}
+
+.ui.active.button {
+  &.request-search-filter {
+    cursor: default;
+  }
+}
+
+.ui.button.affiliations-button {
+  min-width: max-content;
+}
+
+.right.aligned.column {
+  .ui.button:last-child {
+    margin-right: 0 !important;
+  }
+}
+
+.auto-column-grid {
+  .ui.button.dropdown {
+    &:last-child {
+      margin-right: 0;
+    }
+
+    @media all and (max-width: @largestTabletScreen) {
+      margin-bottom: .5rem;
+    }
+  }
+}
+
+.ui.button{
+  &.fluid-responsive {
+    @media all and (max-width: @largestTabletScreen) {
+      width: 100%;
+      min-width: 7em;
+      display: block;
+    }
+  }
+}
+
+
+.ui.items {
+  & > .item.carousel {
+    & > .content {
+      & > .header {
+        a.ui.button {
+          padding: @verticalPadding @horizontalPadding (@verticalPadding + @shadowOffset);
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}

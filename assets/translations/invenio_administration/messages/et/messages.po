@@ -1,0 +1,80 @@
+# 
+# Translators:
+# Martin Jantson <martinjantson97@gmail.com>, 2022
+# Mart Jantson, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:25:02.203Z\n"
+"PO-Revision-Date: 2022-10-12 07:22+0000\n"
+"Last-Translator: Mart Jantson, 2022\n"
+"Language-Team: Estonian (https://www.transifex.com/inveniosoftware/teams/23537/et/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: et\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "Search ..."
+msgstr "Otsi..."
+
+msgid "There is no resources in this category."
+msgstr "Selles kategoorias pole ressursse."
+
+msgid "No matching resources found."
+msgstr "Ühtegi sobivat ressurssi ei leitud."
+
+msgid "results per page"
+msgstr "tulemust lehel"
+
+msgid "result(s) found"
+msgstr "tulemus(t) leitud"
+
+msgid "Add"
+msgstr "Lisa"
+
+msgid "Remove field"
+msgstr "Eemalda väli"
+
+msgid "Sort"
+msgstr "Sorteeri"
+
+msgid "Resource is not editable."
+msgstr "Ressursi ei saa redigeerida."
+
+msgid "Edit"
+msgstr "Redigeeri"
+
+msgid "Resource is not deletable."
+msgstr "Ressursi ei saa kustutada."
+
+msgid "Open list of actions"
+msgstr "Avage toimingute loend"
+
+msgid "Delete"
+msgstr "Kustuta"
+
+msgid "Cancel"
+msgstr "Tühista"
+
+msgid "Delete {{title}}"
+msgstr "Kustuta {{title}}"
+
+msgid "Are you sure you want to delete {{resourceName}}? "
+msgstr "Kas olete kindel, et soovite {{resourceName}} kustutada?"
+
+msgid "Error"
+msgstr "Viga"
+
+msgid "Server was not able to process your request."
+msgstr "Server ei saanud teie taotlust töödelda."
+
+msgid "Save"
+msgstr "Salvesta"
+
+msgid "Search"
+msgstr "Otsi"
+
+msgid "Clear query"
+msgstr "Puhasta otsinguväljad"

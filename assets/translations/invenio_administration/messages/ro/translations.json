@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "",
+    "result(s) found": "",
+    "Add": "Adaugă",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "Editează",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "Şterge",
+    "Cancel": "Anulează",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "Eroare",
+    "Server was not able to process your request.": "",
+    "Save": "",
+    "Search": "Caută",
+    "Clear query": ""
+}

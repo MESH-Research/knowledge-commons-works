@@ -1,0 +1,26 @@
+/***********************************************
+         Invenio Theme Icon Overrides
+***********************************************/
+
+/* Neutral */
+i.neutral.icon {
+  color: @neutralIconColor;
+}
+
+
+/* Primary */
+i.primary.icon {
+  color: @primaryIconColor;
+}
+
+
+/* Positive */
+i.positive.icon {
+  color: @positiveIconColor;
+}
+
+
+/* Negative */
+i.negative.icon {
+  color: @negativeIconColor;
+}

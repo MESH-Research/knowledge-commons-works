@@ -1,0 +1,135 @@
+.ui.accordion .active.title .icon:not(.button),
+.ui.accordion .accordion .active.title .icon:not(.button) {
+  transform: rotate(90deg);
+}
+
+/* use these classes to change accordion title when up/down */
+div.affiliations.accordion div.title.active span.up,
+div.affiliations.accordion div.title.active button.up {
+  display: none;
+}
+
+div.affiliations.accordion div.title.active span.down,
+div.affiliations.accordion div.title.active button.down {
+  display: inline-grid;
+}
+
+div.affiliations.accordion div.title span.up,
+div.affiliations.accordion div.title button.up {
+  display: inline-grid;
+}
+
+div.affiliations.accordion div.title span.down,
+div.affiliations.accordion div.title button.down {
+  display: none;
+}
+
+
+.ui.accordion {
+  &.invenio-accordion-field {
+    margin-bottom: 2rem;
+
+    .title {
+      background-color: @brandColor;
+      color: @white;
+      padding: 1em;
+      font-size: 1rem;
+      border-radius: @defaultBorderRadius;
+      margin-bottom: 1rem;
+
+      .icon {
+        float: right;
+        font-size: 1.5em;
+      }
+    }
+
+    &.error {
+      .title {
+        background-color: @red;
+      }
+
+      &.secondary.inverted {
+        .title {
+          background: @secondaryInvertedRedBackground;
+          color: @secondaryInvertedColor;
+        }
+
+      }
+    }
+  }
+
+  &.creatibutors {
+    .title {
+      cursor: default;
+    }
+  }
+
+  &.panel {
+    border-radius: @defaultBorderRadius;
+    border: 1px solid @borderColor;
+
+    &.restricted {
+      border-color: @restricted-components-border-color !important;
+    }
+
+    &.embargoed {
+      border-color: @embargoed-components-border-color !important;
+    }
+  }
+
+  .title:not(.ui).panel-heading {
+    border-radius: @defaultBorderRadius;
+    background-color: @mutedAccordionHeaderColor;
+    color: @primaryColor !important;
+    padding: @cellVerticalPadding @cellHorizontalPadding; // matching SUI's padding on <td> elements
+
+    &.active {
+      border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
+      border-bottom: 1px solid @borderColor;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    i {
+      &.angle {
+        float: right !important;
+      }
+    }
+
+    &.restricted {
+      background-color: @restricted-components-background-color;
+    }
+
+    &.embargoed {
+      background-color: @embargoed-components-background-color;
+    }
+  }
+
+  &.affiliations {
+    padding-bottom: 1.5rem;
+
+    &:last-child {
+      padding-bottom: 3rem;
+    }
+
+    .title {
+      cursor: default;
+    }
+
+    .content {
+      margin-top: 1rem;
+
+      ul {
+        list-style-type: none;
+        background-color: lighten(@borderColor, 72%);
+        color: @textMutedColorDarken;
+        font-size: @font-size-small;
+        padding: 1rem 1.5rem;
+        margin: 0;
+      }
+    }
+  }
+
+}

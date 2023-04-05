@@ -1,0 +1,123 @@
+/***********************************************
+         Invenio App RDM Grid Overrides
+***********************************************/
+
+/** Deposit search page */
+
+.ui.grid {
+
+  .row.highlight-background {
+    background-color: @highlightHeaderColor;
+  }
+
+  .column.community-header {
+    align-items: center;
+    display: flex;
+  }
+
+  &.record-citation {
+    border-top: 1px solid @borderColor;
+    border-bottom: 1px solid @borderColor;
+
+    label {
+      font-weight: 700;
+    }
+  }
+}
+
+#rdm-footer-element {
+  .ui.grid {
+
+    .row.footer-top {
+      background-color: @footerLightColor;
+      padding: 2rem 0 4rem;
+    }
+
+    .row.footer-bottom, .sub-footer {
+      background-color: @footerDarkColor;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, .2) inset;
+    }
+  }
+}
+
+#record-info .ui.grid.middle.aligned,
+.sixteen.wide.tablet.five.wide.computer.column.sidebar {
+  padding-top: 1rem;
+}
+
+.sixteen.wide.tablet.five.wide.computer.column.sidebar {
+
+  @media screen and (max-width: @largestTabletScreen) {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding-top: 0;
+  }
+
+  .ui.segment.rdm-sidebar:first-child {
+    margin-top: 0;
+  }
+}
+
+#mobile-record-management.ui.grid > .column {
+  border-bottom: 1px solid @borderColor;
+}
+
+.ui.grid .rdm-goal.column {
+  max-width: 30rem;
+}
+
+#frontpage-search-bar .ui.container.grid {
+  @media screen and (max-width: @largestMobileScreen) {
+    width: 100% !important; // overriding semantic ui !important
+  }
+}
+
+.ui.grid > .column:not(.row) {
+  &.left-btn-col {
+    padding-right: .25rem !important; // overriding semantic ui !important
+
+    @media all and (max-width: @largestTabletScreen) {
+      padding-right: 1.5rem !important;
+    }
+  }
+
+  &.right-btn-col {
+    padding-left: .25rem !important; // overriding semantic ui !important
+
+    @media all and (max-width: @largestTabletScreen) {
+      padding-left: 1.5rem !important;
+    }
+  }
+}
+
+.ui.grid .column.storage-col {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  @media all and (max-width: @largestMobileScreen) {
+    justify-content: flex-start;
+    margin-top: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ui.header {
+    display: inline-block;
+    width: max-content;
+    font-weight: 400;
+    margin-bottom: 0;
+
+    @media all and (max-width: @largestMobileScreen) {
+      margin-bottom: .5rem;
+    }
+  }
+}
+
+#request-detail .ui.stackable.grid > .column:not(.row) {
+  @media all and (max-width: @largestMobileScreen) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}

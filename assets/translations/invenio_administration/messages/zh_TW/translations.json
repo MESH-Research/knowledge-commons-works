@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "",
+    "result(s) found": "",
+    "Add": "",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "編輯",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "刪除",
+    "Cancel": "取消",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "錯誤",
+    "Server was not able to process your request.": "",
+    "Save": "",
+    "Search": "搜尋",
+    "Clear query": ""
+}

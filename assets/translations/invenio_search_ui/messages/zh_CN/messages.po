@@ -1,0 +1,54 @@
+# 
+# Translators:
+# Kalven Richie, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: InvenioRDM\n"
+"POT-Creation-Date: 2022-10-12T08:17:06.372Z\n"
+"PO-Revision-Date: 2016-10-20 07:42+0000\n"
+"Last-Translator: Kalven Richie, 2022\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/inveniosoftware/invenio/language/zh_CN/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"mime-version: 1.0\n"
+
+msgid "Sort"
+msgstr ""
+
+msgid "Filter results"
+msgstr "筛选结果"
+
+msgid "filters"
+msgstr "筛选"
+
+msgid "Versions"
+msgstr "版本"
+
+msgid "View all versions"
+msgstr "查看所有版本"
+
+msgid "Help"
+msgstr "帮助"
+
+msgid "Search guide"
+msgstr "搜索指南"
+
+msgid "Show all sub facets of "
+msgstr "显示所有的维度"
+
+msgid "Clear selection"
+msgstr "清除选择"
+
+msgid "Clear"
+msgstr "清除"
+
+msgid "Search records..."
+msgstr ""
+
+msgid "All records"
+msgstr ""
+
+msgid "Sort by"
+msgstr "排序方式"

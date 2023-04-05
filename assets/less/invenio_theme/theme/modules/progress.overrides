@@ -1,0 +1,11 @@
+/***********************************************
+         Invenio Theme Progress Overrides
+***********************************************/
+
+/* Primary */
+.ui.primary.progress .bar {
+  background-color: @primaryColor;
+}
+.ui.primary.inverted.progress .bar {
+  background-color: @lightPrimaryColor;
+}

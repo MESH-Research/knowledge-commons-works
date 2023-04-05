@@ -1,0 +1,79 @@
+# 
+# Translators:
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:25:02.203Z\n"
+"PO-Revision-Date: 2022-10-12 07:22+0000\n"
+"Last-Translator: Tibor Simko <tibor.simko@cern.ch>, 2022\n"
+"Language-Team: Lithuanian (https://www.transifex.com/inveniosoftware/teams/23537/lt/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
+"mime-version: 1.0\n"
+
+msgid "Search ..."
+msgstr ""
+
+msgid "There is no resources in this category."
+msgstr ""
+
+msgid "No matching resources found."
+msgstr ""
+
+msgid "results per page"
+msgstr ""
+
+msgid "result(s) found"
+msgstr ""
+
+msgid "Add"
+msgstr "Pridėti"
+
+msgid "Remove field"
+msgstr ""
+
+msgid "Sort"
+msgstr ""
+
+msgid "Resource is not editable."
+msgstr ""
+
+msgid "Edit"
+msgstr "Redaguoti"
+
+msgid "Resource is not deletable."
+msgstr ""
+
+msgid "Open list of actions"
+msgstr ""
+
+msgid "Delete"
+msgstr "Ištrinti"
+
+msgid "Cancel"
+msgstr "Atšaukti"
+
+msgid "Delete {{title}}"
+msgstr ""
+
+msgid "Are you sure you want to delete {{resourceName}}? "
+msgstr ""
+
+msgid "Error"
+msgstr "Klaida"
+
+msgid "Server was not able to process your request."
+msgstr ""
+
+msgid "Save"
+msgstr "Išsaugoti"
+
+msgid "Search"
+msgstr "Ieškoti"
+
+msgid "Clear query"
+msgstr ""

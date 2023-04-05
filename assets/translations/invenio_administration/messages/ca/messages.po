@@ -1,0 +1,79 @@
+# 
+# Translators:
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:25:02.203Z\n"
+"PO-Revision-Date: 2022-10-12 07:22+0000\n"
+"Last-Translator: Tibor Simko <tibor.simko@cern.ch>, 2022\n"
+"Language-Team: Catalan (https://www.transifex.com/inveniosoftware/teams/23537/ca/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "Search ..."
+msgstr ""
+
+msgid "There is no resources in this category."
+msgstr ""
+
+msgid "No matching resources found."
+msgstr ""
+
+msgid "results per page"
+msgstr ""
+
+msgid "result(s) found"
+msgstr ""
+
+msgid "Add"
+msgstr "Afegeix"
+
+msgid "Remove field"
+msgstr ""
+
+msgid "Sort"
+msgstr ""
+
+msgid "Resource is not editable."
+msgstr ""
+
+msgid "Edit"
+msgstr "Edita"
+
+msgid "Resource is not deletable."
+msgstr ""
+
+msgid "Open list of actions"
+msgstr ""
+
+msgid "Delete"
+msgstr "Suprimeix"
+
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgid "Delete {{title}}"
+msgstr ""
+
+msgid "Are you sure you want to delete {{resourceName}}? "
+msgstr ""
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Server was not able to process your request."
+msgstr ""
+
+msgid "Save"
+msgstr "Desa"
+
+msgid "Search"
+msgstr "Cerca"
+
+msgid "Clear query"
+msgstr ""

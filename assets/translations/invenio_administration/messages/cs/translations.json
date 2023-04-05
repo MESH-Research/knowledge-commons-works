@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "",
+    "result(s) found": "",
+    "Add": "Přidat",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "Úpravy",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "Smazat",
+    "Cancel": "Zrušit",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "Chyba",
+    "Server was not able to process your request.": "",
+    "Save": "Uložit",
+    "Search": "Hledej",
+    "Clear query": ""
+}

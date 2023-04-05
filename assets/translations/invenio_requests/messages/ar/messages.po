@@ -1,0 +1,132 @@
+# 
+# Translators:
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# Salaheddine Ben Ali <salaheddine.benali@cnudst.tn>, 2022
+# Bessem Aamira <bessemamira@gmail.com>, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T08:08:24.546Z\n"
+"PO-Revision-Date: 2022-02-18 11:12+0000\n"
+"Last-Translator: Bessem Aamira <bessemamira@gmail.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/inveniosoftware/teams/23537/ar/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"mime-version: 1.0\n"
+
+msgid "Save"
+msgstr "حفظ"
+
+msgid "Something went wrong."
+msgstr "هناك خطأ ما."
+
+msgid "Confirm"
+msgstr "تأكيد"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "{{action}} request"
+msgstr "{{action}} طلب"
+
+msgid "Request type"
+msgstr "نوع الطلب"
+
+msgid "Status"
+msgstr "الحالة"
+
+msgid "Expires"
+msgstr "تنتهي"
+
+msgid "Comment"
+msgstr "تعليق"
+
+msgid "commented"
+msgstr "تم التعليق"
+
+msgid "Edit"
+msgstr "تعديل"
+
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Edited"
+msgstr "تم التعديل"
+
+msgid "Deleted"
+msgstr "تمّ الحذف"
+
+msgid "Are you sure you want to delete this comment?"
+msgstr "هل انت متأكد من حذفك للتعليق؟"
+
+msgid "Decline"
+msgstr "رفض"
+
+msgid "Accept and publish"
+msgstr "قبول مع النشر"
+
+msgid "Accept"
+msgstr "مقبول"
+
+msgid "Add comment (optional)"
+msgstr "اضف تعليقا (إختياري)"
+
+msgid "Receiver"
+msgstr "المتلقي"
+
+msgid "Created"
+msgstr "تم الإنشاء"
+
+msgid "New submission"
+msgstr "إيداع جديد"
+
+msgid "New invitation"
+msgstr "دعوة جديدة"
+
+msgid "Cancel request"
+msgstr "إلغاء الطلب"
+
+msgid "Accept request"
+msgstr "قبول الطلب"
+
+msgid "accepted this request"
+msgstr "هذا الطلب مقبول"
+
+msgid "declined this request"
+msgstr "هذا الطلب مرفوض"
+
+msgid "this request expired"
+msgstr "هذا الطلب منتهي الصلوحيتة"
+
+msgid "cancelled this request"
+msgstr "هذا الطلب ملغى"
+
+msgid "unknown event"
+msgstr "حدث غير معلوم"
+
+msgid "Decline request"
+msgstr "رفض الطلب"
+
+msgid "Submitted"
+msgstr "تم الإيداع"
+
+msgid "Accepted"
+msgstr "تم القبول"
+
+msgid "Cancelled"
+msgstr "ملغى"
+
+msgid "Declined"
+msgstr "مرفوضة"
+
+msgid "Expired"
+msgstr "منتهي الصلاحية"
+
+msgid "Creator"
+msgstr "المنتج"
+
+msgid "deleted a comment"
+msgstr "حذف تعليق"

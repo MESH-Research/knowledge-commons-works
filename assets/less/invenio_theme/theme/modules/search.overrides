@@ -1,0 +1,21 @@
+/***********************************************
+         Invenio Theme Search Overrides
+***********************************************/
+
+#header-search-bar {
+    .ui.fluid.search.right-angle-search-content{
+        .ui.input{
+            input{
+                border-top-right-radius: 0px;
+                border-bottom-right-radius: 0px;
+            }
+
+            button{
+                border-top-left-radius: 0px;
+                border-bottom-left-radius: 0px;
+                margin: 0em;
+            }
+
+        }
+    }
+}

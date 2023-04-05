@@ -1,0 +1,15 @@
+diff --git a/node_modules/watchpack/lib/DirectoryWatcher.js b/node_modules/watchpack/lib/DirectoryWatcher.js
+index 78888f6..30dcfc8 100644
+--- a/node_modules/watchpack/lib/DirectoryWatcher.js
++++ b/node_modules/watchpack/lib/DirectoryWatcher.js
+@@ -53,8 +53,8 @@ function DirectoryWatcher(directoryPath, options) {
+ 	this.watcher = chokidar.watch(directoryPath, {
+ 		ignoreInitial: true,
+ 		persistent: true,
+-		followSymlinks: false,
+-		depth: 0,
++		followSymlinks: true,
++		depth: 1,
+ 		atomic: false,
+ 		alwaysStat: true,
+ 		ignorePermissionErrors: true,

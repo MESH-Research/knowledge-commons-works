@@ -1,0 +1,81 @@
+# 
+# Translators:
+# Zacharias Zacharodimos <zacharias.zacharodimos@cern.ch>, 2022
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# Jesús Martín <jesusmartin@sallep.net>, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:25:02.203Z\n"
+"PO-Revision-Date: 2022-10-12 07:22+0000\n"
+"Last-Translator: Jesús Martín <jesusmartin@sallep.net>, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/inveniosoftware/teams/23537/es/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"mime-version: 1.0\n"
+
+msgid "Search ..."
+msgstr "Buscar..."
+
+msgid "There is no resources in this category."
+msgstr "No hay recursos en esta categoría."
+
+msgid "No matching resources found."
+msgstr "No se encontraron recursos coincidentes."
+
+msgid "results per page"
+msgstr "resultados por página"
+
+msgid "result(s) found"
+msgstr "resultado(s) encontrado(s)"
+
+msgid "Add"
+msgstr "Añadir"
+
+msgid "Remove field"
+msgstr "Eliminar campo"
+
+msgid "Sort"
+msgstr "Ordenar"
+
+msgid "Resource is not editable."
+msgstr "El recurso no es editable."
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Resource is not deletable."
+msgstr "El recurso no se puede eliminar."
+
+msgid "Open list of actions"
+msgstr "Abrir lista de acciones"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Delete {{title}}"
+msgstr "Borrar {{title}}"
+
+msgid "Are you sure you want to delete {{resourceName}}? "
+msgstr "¿Está seguro de querer eliminar {{resourceName}}?"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Server was not able to process your request."
+msgstr "El servidor no pudo procesar su solicitud."
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Clear query"
+msgstr "Borrar consulta"

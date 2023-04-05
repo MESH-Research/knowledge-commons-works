@@ -1,0 +1,63 @@
+/*
+ * This file is part of Invenio.
+ * Copyright (C) 2016-2018 CERN.
+ *
+ * Invenio is free software; you can redistribute it and/or modify it
+ * under the terms of the MIT License; see LICENSE file for more details.
+ */
+
+$cover-panel-padding: 40px;
+$cover-panel-footer-bg: #e5e5e5;
+$brand-font-family: $font-family-sans-serif;
+$color1-gradient: $color1;
+
+html.cover-page,
+body.cover-page {
+  height: 100%;
+  position: relative;
+}
+
+body.cover-page {
+  text-align: center;
+  background-color: $color1;
+}
+
+/* Extra markup and styles for table-esque vertical and horizontal centering */
+.site-wrapper {
+  width: 100%;
+  height: 100%; /* For at least Firefox */
+  min-height: 100%;
+
+  .masthead-brand {
+    font-family: $brand-font-family;
+    margin: $cover-panel-padding * 2 0;
+  }
+  .panel {
+    color: #000;
+    border-radius: $border-radius-large * 2;
+  }
+  .panel-free-title {
+    margin: $cover-panel-padding 0;
+  }
+  .panel-body {
+    padding-left: $cover-panel-padding;
+    padding-right: $cover-panel-padding;
+    padding-bottom: $cover-panel-padding;
+  }
+  .panel-footer {
+    padding-left: $cover-panel-padding;
+    padding-right: $cover-panel-padding;
+    padding-top: $cover-panel-padding/2;
+    padding-bottom: $cover-panel-padding/2;
+    border-bottom-left-radius: $border-radius-large * 2;
+    border-bottom-right-radius: $border-radius-large * 2;
+    background-color: $cover-panel-footer-bg;
+  }
+  .panel-container a.text-muted {
+    color: white;
+    text-decoration: none;
+  }
+  .panel-container a.text-muted:hover {
+    text-decoration: underline;
+  }
+}

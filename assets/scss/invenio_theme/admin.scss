@@ -1,0 +1,76 @@
+/*
+ * This file is part of Invenio.
+ * Copyright (C) 2016-2018 CERN.
+ *
+ * Invenio is free software; you can redistribute it and/or modify it
+ * under the terms of the MIT License; see LICENSE file for more details.
+ */
+
+@import "~admin-lte/dist/css/AdminLTE";
+@import "~admin-lte/dist/css/skins/skin-blue";
+@import "~select2/dist/css/select2";
+
+.main-header {
+  background-color: #2c3e50;
+  border-bottom: 3px solid #3b97d3;
+}
+
+.main-sidebar {
+  background-color: #2c3e50;
+  padding-top: 75px;
+}
+
+.navbar-brand > img {
+  max-width: 100%;
+  max-height: 50px;
+  padding: 10px 0px 3px 0px;
+}
+
+.content-wrapper {
+  background-color: white;
+}
+
+.sidebar-toggle {
+  margin-top: 5px;
+}
+
+.treeview {
+  &.active {
+    background-color: #3b97d3;
+    padding-bottom: 10px;
+
+    a {
+      color: #2c3e50;
+    }
+  }
+
+  li.active {
+    font-weight: bolder;
+  }
+}
+
+.admin-form {
+  padding-top: 15px;
+
+  .form-control[type=checkbox] {
+    -webkit-appearance: checkbox;
+    appearance: checkbox;
+    width: 13px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 7px;
+  }
+}
+
+
+
+.dropdown-menu {
+  li > .navbar-content {
+    height: 70px;
+
+    .user-menu {
+      padding: 10px;
+      font-size: .9em;
+    }
+  }
+}

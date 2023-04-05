@@ -1,0 +1,28 @@
+/***********************************************
+         Invenio Theme Message Overrides
+***********************************************/
+
+.ui.flashed.message {
+    margin-top: 0;
+    border-radius: 0;
+    padding: 2px 0;
+
+    .ui.button.close-btn {
+      background-color: transparent;
+    }
+}
+
+.flashed.close.icon {
+    cursor: pointer;
+    margin: 0;
+    opacity: .7;
+    transition: opacity .1s ease;
+}
+
+.ui.success.flashed.message > .ui.grid.container {
+  padding-right: 0.5em;
+}
+
+.ui.message.code {
+  overflow: auto !important;
+}

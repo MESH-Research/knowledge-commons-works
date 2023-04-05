@@ -1,0 +1,81 @@
+# 
+# Translators:
+# Weizheng Lu, 2022
+# Kalven Richie, 2022
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:25:02.203Z\n"
+"PO-Revision-Date: 2022-10-12 07:22+0000\n"
+"Last-Translator: Tibor Simko <tibor.simko@cern.ch>, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/inveniosoftware/teams/23537/zh_CN/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"mime-version: 1.0\n"
+
+msgid "Search ..."
+msgstr "搜索..."
+
+msgid "There is no resources in this category."
+msgstr ""
+
+msgid "No matching resources found."
+msgstr ""
+
+msgid "results per page"
+msgstr "每页的结果"
+
+msgid "result(s) found"
+msgstr "找到结果"
+
+msgid "Add"
+msgstr "添加"
+
+msgid "Remove field"
+msgstr ""
+
+msgid "Sort"
+msgstr ""
+
+msgid "Resource is not editable."
+msgstr ""
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Resource is not deletable."
+msgstr ""
+
+msgid "Open list of actions"
+msgstr ""
+
+msgid "Delete"
+msgstr "删除"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Delete {{title}}"
+msgstr ""
+
+msgid "Are you sure you want to delete {{resourceName}}? "
+msgstr ""
+
+msgid "Error"
+msgstr "错误"
+
+msgid "Server was not able to process your request."
+msgstr ""
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Search"
+msgstr "搜索"
+
+msgid "Clear query"
+msgstr ""

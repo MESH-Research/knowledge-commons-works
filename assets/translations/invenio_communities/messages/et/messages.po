@@ -1,0 +1,403 @@
+# 
+# Translators:
+# Martin Jantson <martinjantson97@gmail.com>, 2022
+# Mart Jantson, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:39:56.031Z\n"
+"PO-Revision-Date: 2022-03-10 09:30+0000\n"
+"Last-Translator: Mart Jantson, 2022\n"
+"Language-Team: Estonian (https://www.transifex.com/inveniosoftware/teams/23537/et/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: et\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "Description"
+msgstr "Kirjeldus"
+
+msgid "Search for organizations..."
+msgstr "Otsi organisatsioone..."
+
+msgid "Delete"
+msgstr "Kustuta"
+
+msgid "Remove"
+msgstr "Eemalda"
+
+msgid "Cancel"
+msgstr "Tühista"
+
+msgid "Maximum number of characters is 2000"
+msgstr "Maksimaalne tähemärkide arv on 2000"
+
+msgid "Must be a valid URL"
+msgstr "Peab olema kehtiv URL"
+
+msgid "Profile picture"
+msgstr "Profiilipilt"
+
+msgid "Upload new picture"
+msgstr "Laadi üles uus pilt"
+
+msgid "Delete picture"
+msgstr "Kustuta pilt"
+
+msgid "Are you sure you want to delete this picture?"
+msgstr "Kas oled kindel, et soovid selle pildi kustutada?"
+
+msgid "Danger zone"
+msgstr "Ohutsoon"
+
+msgid "Change identifier"
+msgstr "Muuda identifikaatorit"
+
+msgid ""
+"Changing your community's unique identifier can have unintended side "
+"effects."
+msgstr ""
+"Oma grupi kordumatu identifikaatori muutmisel võib olla tahtmatuid "
+"tagajärgi."
+
+msgid "Delete community"
+msgstr "Kustuta grupp"
+
+msgid "Once deleted, it will be gone forever. Please be certain."
+msgstr ""
+"Kui grupp kustutatakse, on see jäädavalt nii. Palun ole oma otsuses kindel."
+
+msgid "Are you sure you want to delete this community?"
+msgstr "Kas oled kindel, et soovid selle grupi kustutada?"
+
+msgid "Community name"
+msgstr "Grupi nimi"
+
+msgid "Type"
+msgstr "Tüüp"
+
+msgid "Website"
+msgstr "Veebileht"
+
+msgid "Search for an organization by name"
+msgstr "Otsi organisatsiooni nime järgi"
+
+msgid "Organizations"
+msgstr "Organisatsioonid"
+
+msgid "Save"
+msgstr "Salvesta"
+
+msgid "Change"
+msgstr "Muuda"
+
+msgid "Saved"
+msgstr "Salvestatud"
+
+msgid "Member"
+msgstr "Liige"
+
+msgid "Members"
+msgstr "Liikmed"
+
+msgid "Role"
+msgstr "Roll"
+
+msgid "Setup your new community"
+msgstr "Seadista oma uus grupp"
+
+msgid "Identifier"
+msgstr "Identifikaator"
+
+msgid "Community visibility"
+msgstr "Grupi nähtavus"
+
+msgid "Create community"
+msgstr "Loo grupp"
+
+msgid "Message"
+msgstr "Sõnum"
+
+msgid "View"
+msgstr "Vaata"
+
+msgid "{{total}} result(s) found"
+msgstr "Kokku leiti {{total}} tulemus(t)"
+
+msgid "Sort by"
+msgstr "Sorteeri"
+
+msgid "results per page"
+msgstr "tulemust lehel"
+
+msgid "Search"
+msgstr "Otsi"
+
+msgid "Search communities..."
+msgstr "Otsi gruppe..."
+
+msgid "New community"
+msgstr "Uus grupp"
+
+msgid "Uploaded on"
+msgstr "Üles laetud"
+
+msgid "Search guide"
+msgstr "Otsingu juhend"
+
+msgid "We couldn't find any matches for "
+msgstr "Ei leitud ühtegi vastet"
+
+msgid "your search"
+msgstr "sinu otsingule"
+
+msgid "Start over"
+msgstr "Alusta uuesti"
+
+msgid "ProTip"
+msgstr "Profinipp"
+
+msgid "will give you all the publications from 2017 until today"
+msgstr "näitab kõiki publikatsioone alates 2017 kuni tänaseni"
+
+msgid "For more tips, check out our "
+msgstr "Rohkemate nõuannete jaoks vaata meie"
+
+msgid " for defining advanced search queries"
+msgstr "et teha täpsemaid otsingupäringuid"
+
+msgid "ORCID profile"
+msgstr "ORCID profiil"
+
+msgid "ROR profile"
+msgstr "ROR profiil"
+
+msgid "Filter results"
+msgstr "Filtreeri tulemusi"
+
+msgid "search guide"
+msgstr "otsingu juhendit"
+
+msgid "members selected"
+msgstr "valitud liikmed"
+
+msgid "Leave community"
+msgstr "Lahku grupist"
+
+msgid "Leave"
+msgstr "Lahku"
+
+msgid "Remove user"
+msgstr "Eemalda kasutaja"
+
+msgid "This action cannot be undone."
+msgstr "Seda tegevust ei saa tagasi võtta."
+
+msgid "Clear all filters"
+msgstr "Eemalda kõik filtrid"
+
+msgid "Group"
+msgstr "Grupp"
+
+msgid "Search for groups"
+msgstr "Otsi gruppe"
+
+msgid "Add"
+msgstr "Lisa"
+
+msgid "People"
+msgstr "Inimesed"
+
+msgid "Groups"
+msgstr "Grupid"
+
+msgid "Invite groups"
+msgstr "Kutsu gruppe"
+
+msgid "Invite members"
+msgstr "Kutsu liikmeid"
+
+msgid "Search by email, full name or username"
+msgstr "Otsi e-posti aaressi, täisnime või kasutajanime järgi"
+
+msgid "Invite"
+msgstr "Kutsu"
+
+msgid "You are about to invite <1>{{selectedCount}}</1> users"
+msgid_plural "You are about to invite <1>{{selectedCount}}</1> users"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Name"
+msgstr "Nimetus"
+
+msgid "Status"
+msgstr "Staatus"
+
+msgid "Expires"
+msgstr "Aegub"
+
+msgid "result(s) found"
+msgstr "tulemus(t) leitud"
+
+msgid "Member since"
+msgstr "Liige alates"
+
+msgid "Visibility"
+msgstr "Nähtavus"
+
+msgid "Search members..."
+msgstr "Otsi liikmeid..."
+
+msgid "Public"
+msgstr "Avalik"
+
+msgid "Hidden"
+msgstr "Varjatud"
+
+msgid "Change roles"
+msgstr "Muuda rolle"
+
+msgid "Change visibilities"
+msgstr "Muuda nähtavust"
+
+msgid "Remove from community"
+msgstr "Eemalda grupist"
+
+msgid "You have selected <1>{{selectedCount}}</1> users"
+msgid_plural "You have selected <1>{{selectedCount}}</1> users"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "You"
+msgstr "Sina"
+
+msgid "Leave..."
+msgstr "Lahku..."
+
+msgid "Remove..."
+msgstr "Eemalda..."
+
+msgid "Open"
+msgstr "Avatud"
+
+msgid "Closed"
+msgstr "Suletud"
+
+msgid "Search requests..."
+msgstr "Otsi taotlusi..."
+
+msgid "All done!"
+msgstr "Valmis!"
+
+msgid "You've caught up with all open requests."
+msgstr "Oled kõikide taotlustega kursis."
+
+msgid "No requests found!"
+msgstr "Ühtegi taotlust ei leitud!"
+
+msgid "Reset search"
+msgstr "Lähtesta otsing"
+
+msgid "Search records in community..."
+msgstr "Otsi grupist kirjeid..."
+
+msgid ""
+"This is your community's unique identifier. You will be able to access your "
+"community through the URL:"
+msgstr ""
+"See on sinu grupi unikaalne identifikaator. Oma gruppi pääsed läbi URL-i:"
+
+msgid "bulk actions"
+msgstr "hulgitegevused"
+
+msgid "remove {{name}}"
+msgstr "eemalda {{name}}"
+
+msgid "Submitted"
+msgstr "Lisatud"
+
+msgid "Accepted"
+msgstr "Aktsepteeritud"
+
+msgid "Declined"
+msgstr "Tagasi lükatud"
+
+msgid "Expired"
+msgstr "Aegunud"
+
+msgid "Search in invitations..."
+msgstr "Otsi kutsete seast..."
+
+msgid "This community has no public members."
+msgstr "Sellel grupil ei ole avalikke liikmeid."
+
+msgid "No matching members found."
+msgstr "Vastavaid liikmeid ei leitud."
+
+msgid "Actions"
+msgstr "Tegevused"
+
+msgid "Add groups"
+msgstr "Lisa gruppe"
+
+msgid "Restricted"
+msgstr "Piiratud"
+
+msgid "Search records..."
+msgstr "Otsi kirjeid..."
+
+msgid "Selected groups"
+msgstr "Valitud rühmad"
+
+msgid "Selected members"
+msgstr "Valitud liikmed"
+
+msgid "Search in members ..."
+msgstr "Otsi liikmete hulgast..."
+
+msgid "You are about to leave this community."
+msgstr "Olete sellest kogukonnast lahkumas."
+
+msgid "You are about to remove this user from this community."
+msgstr "Olete eemaldamas seda kasutajat sellest kogukonnast."
+
+msgid "You are about to add <1>{{selectedCount}}</1> groups."
+msgid_plural "You are about to add <1>{{selectedCount}}</1> groups."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Search..."
+msgstr "Otsi..."
+
+msgid ""
+"Users must set profile visibility to \"Public\" in order to be invited to a "
+"community."
+msgstr ""
+"Kasutajad peavad kogukonda kutsumiseks määrama profiili nähtavuse olekuks "
+"„Avalik”."
+
+msgid "Your community membership is visible to everyone."
+msgstr "Teie kogukonna liikmesus on kõigile nähtav."
+
+msgid ""
+"Your community membership is only visible to other members of the community."
+msgstr ""
+"Teie kogukonna liikmelisus on nähtav ainult teistele kogukonna liikmetele."
+
+msgid "Opened {{difference}} by"
+msgstr "Avas {{difference}}"
+
+msgid "Expires at:"
+msgstr "Aegub:"
+
+msgid "File must be smaller than "
+msgstr "Fail peab olema väiksem kui"
+
+msgid "It may take a few moments for changes to be visible everywhere"
+msgstr "Võib kuluda mõni hetk, enne kui muudatused on kõikjal nähtavad"
+
+msgid "New unique identifier of the community"
+msgstr "Kommuuni uus unikaalne identifikaator"

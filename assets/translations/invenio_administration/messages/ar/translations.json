@@ -1,0 +1,23 @@
+{
+    "Search ...": "البحث ...",
+    "There is no resources in this category.": "لا توجد موارد في هذه الفئة.",
+    "No matching resources found.": "لا توجد موارد مطابقة.",
+    "results per page": "عدد النتائج في الصّفحة",
+    "result(s) found": "النتيجة",
+    "Add": "إضافة",
+    "Remove field": "حذف الحقل",
+    "Sort": "رتّب",
+    "Resource is not editable.": "المورد غير قابل للتّعديل.",
+    "Edit": "تعديل",
+    "Resource is not deletable.": "المورد غير قابل للحذف.",
+    "Open list of actions": "فتح قائمة العمليّات",
+    "Delete": "حذف",
+    "Cancel": "إلغاء",
+    "Delete {{title}}": "حذف {{عنوان}}",
+    "Are you sure you want to delete {{resourceName}}? ": "هل أنت متأكد من حذف {{إسم المورد}} ؟",
+    "Error": "خطأ",
+    "Server was not able to process your request.": "الموزّع لم يتمكّن من معالجة طلبك.",
+    "Save": "حفظ",
+    "Search": "بحث",
+    "Clear query": "محو الطّلب"
+}

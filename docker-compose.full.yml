@@ -52,7 +52,7 @@ services:
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
-      - static_data:/opt/invenio/var/instance/static
+      - ./static:/opt/invenio/var/instance/static
     depends_on:
       - web-ui
       - web-api
@@ -77,7 +77,10 @@ services:
       - ./templates:/opt/invenio/var/instance/templates:ro
       - ./app_data:/opt/invenio/var/instance/app_data:ro
       - ./translations:/opt/invenio/var/instance/translations:ro
-      - static_data:/opt/invenio/var/instance/static
+      - ./assets:/opt/invenio/src/assets
+      - ./static:/opt/invenio/src/static
+      - ./assets:/opt/invenio/var/instance/assets
+      - ./static:/opt/invenio/var/instance/static
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
 
@@ -97,9 +100,12 @@ services:
       - ./templates:/opt/invenio/var/instance/templates:ro
       - ./app_data:/opt/invenio/var/instance/app_data:ro
       - ./translations:/opt/invenio/var/instance/translations:ro
+      - ./assets:/opt/invenio/src/assets
+      - ./static:/opt/invenio/src/static
+      - ./assets:/opt/invenio/var/instance/assets
+      - ./static:/opt/invenio/var/instance/static
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
-
   # Worker
   worker:
     extends:
@@ -119,6 +125,5 @@ services:
       mq:
         condition: service_started
 volumes:
-  static_data:
   uploaded_data:
   archived_data:

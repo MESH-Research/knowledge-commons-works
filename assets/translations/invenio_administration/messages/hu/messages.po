@@ -1,0 +1,80 @@
+# 
+# Translators:
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# Andrea Dömötör, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:25:02.203Z\n"
+"PO-Revision-Date: 2022-10-12 07:22+0000\n"
+"Last-Translator: Andrea Dömötör, 2022\n"
+"Language-Team: Hungarian (https://www.transifex.com/inveniosoftware/teams/23537/hu/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "Search ..."
+msgstr "Keresés..."
+
+msgid "There is no resources in this category."
+msgstr "Ebben a kategóriában nincsenek források."
+
+msgid "No matching resources found."
+msgstr "Nem találtunk a feltételeknek megfelelő forrást."
+
+msgid "results per page"
+msgstr "találat oldalanként"
+
+msgid "result(s) found"
+msgstr "találatot kaptunk"
+
+msgid "Add"
+msgstr "Hozzáadás"
+
+msgid "Remove field"
+msgstr "Mező eltávolítása"
+
+msgid "Sort"
+msgstr "Rendezés"
+
+msgid "Resource is not editable."
+msgstr "A forrás nem szerkeszthető."
+
+msgid "Edit"
+msgstr "Szerkesztés"
+
+msgid "Resource is not deletable."
+msgstr "A forrás nem törölhető."
+
+msgid "Open list of actions"
+msgstr "Tevékenységlista megnyitása"
+
+msgid "Delete"
+msgstr "Törlés"
+
+msgid "Cancel"
+msgstr "Mégsem"
+
+msgid "Delete {{title}}"
+msgstr "{{title}} törlése"
+
+msgid "Are you sure you want to delete {{resourceName}}? "
+msgstr "Biztosan törölni akarja? {{resourceName}}?"
+
+msgid "Error"
+msgstr "Hiba"
+
+msgid "Server was not able to process your request."
+msgstr "A szerver nem tudta feldolgozni az ön kérését."
+
+msgid "Save"
+msgstr "Mentés"
+
+msgid "Search"
+msgstr "Keresés"
+
+msgid "Clear query"
+msgstr "Lekérdezés törlése"

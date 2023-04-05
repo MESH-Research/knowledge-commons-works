@@ -1,0 +1,49 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2022-10-12T08:17:06.372Z\n"
+"PO-Revision-Date: 2022-10-12T08:17:06.372Z\n"
+"Language: en\n"
+
+msgid "Sort"
+msgstr "Sort"
+
+msgid "Filter results"
+msgstr "Filter results"
+
+msgid "filters"
+msgstr "filters"
+
+msgid "Versions"
+msgstr "Versions"
+
+msgid "View all versions"
+msgstr "View all versions"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "Search guide"
+msgstr "Search guide"
+
+msgid "Show all sub facets of "
+msgstr "Show all sub facets of "
+
+msgid "Clear selection"
+msgstr "Clear selection"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Search records..."
+msgstr "Search records..."
+
+msgid "All records"
+msgstr "All records"
+
+msgid "Sort by"
+msgstr "Sort by"

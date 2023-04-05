@@ -1,0 +1,63 @@
+/***********************************************
+         Invenio Theme Site Variables
+***********************************************/
+
+@defaultPadding : 2em;
+@defaultMargin  : 2em;
+
+
+/*--- Brand main colors ---*/
+
+@brandColor     : rgba(13, 95, 137, 0.8);
+
+@mutedTextColor      :  #757575;
+@textMutedColorDarken:  #4A4A4A;
+
+@neutralColor: @grey;
+@darkGray: #333;
+@warningColor: @yellow;
+
+@adminSideNavColor: #e0e1e2;
+
+/*--- Cover page margin ---*/
+
+@coverPageDefaultMargin: 3*@defaultMargin;
+
+
+/*--- code tag color ---*/
+
+@codeColor: @pink;
+@codeBackgroundColor: lighten(@pink, 42);
+
+
+/*--- Sign up color ---*/
+
+@signupColor: @orange;
+@signupColorHover: saturate(darken(@signupColor, 5), 10, relative);
+@signupColorFocus: saturate(darken(@signupColor, 8), 20, relative);
+@signupColorDown: darken(@signupColor, 10);
+@signupColorActive: saturate(darken(@signupColor, 5), 15, relative);
+
+
+/*--- Fonts ---*/
+
+@fontName          : 'Lato';
+@importGoogleFonts : false;
+
+/*-------------------
+     Em Sizes
+--------------------*/
+
+@75px : unit( (75 / @emSize), rem);
+@relative75px : unit( (75 / @emSize), em);
+
+
+/*-------------------
+    Breakpoints
+IMPORTANT: align changes with Media.js
+--------------------*/
+@mobileBreakpoint            : 320px;
+@tabletBreakpoint            : 768px;
+@computerBreakpoint          : 1300px;
+@largeMonitorBreakpoint      : 1680px;
+@widescreenMonitorBreakpoint : 1920px;

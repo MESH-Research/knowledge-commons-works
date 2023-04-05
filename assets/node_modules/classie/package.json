@@ -1,0 +1,64 @@
+{
+  "name": "classie",
+  "author": "Yaw Joseph Etse <yaw.etse@gmail.com> (https://github.com/yawetse)",
+  "description": "dom class helper functions, browserified, classie -from bonzo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yawetse/classie.git"
+  },
+  "bugs": {
+    "url": "git://github.com/yawetse/classie/issues"
+  },
+  "scripts": {
+    "test": "testem",
+    "ci": "testem ci"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "1.5.0",
+    "contributor": "^0.1.22",
+    "grunt": "0.4.1",
+    "grunt-browserify": "^2.1.4",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.5.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-jsbeautifier": "0.1.7",
+    "grunt-plato": "^1.3.0",
+    "jshint-stylish": "^0.4.0",
+    "mocha": "^1.21.4",
+    "testem": "^0.6.18",
+    "time-grunt": "^0.4.0"
+  },
+  "keywords": [
+    "Dom",
+    "browserify",
+    "class",
+    "dom manipulation"
+  ],
+  "contributors": [
+    {
+      "name": "Ernie Casilla",
+      "email": "ecasilla@icloud.com",
+      "url": "https://github.com/ecasilla",
+      "contributions": 6,
+      "additions": 17017,
+      "deletions": 16719,
+      "hireable": true
+    },
+    {
+      "name": "Yaw Etse",
+      "email": "yaw.etse@gmail.com",
+      "url": "https://github.com/yawetse",
+      "contributions": 4,
+      "additions": 385,
+      "deletions": 101,
+      "hireable": false
+    }
+  ]
+}

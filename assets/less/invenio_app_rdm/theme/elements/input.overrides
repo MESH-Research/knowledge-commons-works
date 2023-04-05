@@ -1,0 +1,41 @@
+/***********************************************
+         Invenio App RDM Input Overrides
+***********************************************/
+
+.input.invitation-searchbar {
+    width: 100%;
+}
+
+#header-search-bar {
+    .ui.fluid.search {
+        transition:all 0.3s;
+        width: @searchWidth;
+
+        &.active.visible, &.focus{
+            @media screen and (min-width: @largestTabletScreen) {
+                width: @activeSearchWidth;
+            }
+        }
+
+        .ui.input{
+            display: flex;
+
+            .prompt {
+                border-radius: @defaultBorderRadius;
+            }
+        }
+
+        .results {
+            box-shadow: none !important;
+            margin-top: 0 !important;
+            width: @searchWidth;
+
+            &.visible {
+                @media screen and (min-width: @largestTabletScreen) {
+                    width: @activeSearchWidth;
+                }
+            }
+        }
+    }
+}
+

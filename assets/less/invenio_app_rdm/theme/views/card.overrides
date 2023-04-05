@@ -1,0 +1,165 @@
+.ui.card.borderless.facet {
+  box-shadow: none;
+
+  & > .content {
+    border-top: none;
+    padding: 0;
+    margin-bottom: @defaultMargin;
+
+    h2.header:not(.ui) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 1.1em;
+    }
+  }
+}
+
+#deposit-form {
+  /**Protection Widget*/
+
+  .ui.card.access-right {
+
+    .field-label-class {
+      font-size: 15px;
+      margin-bottom: .5rem;
+    }
+
+    label[for="access.embargo.until"] {
+      font-size: 13px;
+    }
+
+    .ui.fitted.checkbox {
+      margin-top: .5rem;
+    }
+
+    .content {
+
+      p {
+        margin: 0;
+        font-size: 14px;
+        margin-top: 2px;
+
+        & b {
+          margin: 0 0 0.5em;
+          font-size: 15px;
+        }
+
+        .header {
+          font-size: 15px;
+        }
+      }
+
+      .ui.message {
+        padding: 1em 0.7em;
+        margin: 0;
+      }
+    }
+
+    .disabled.description {
+      margin-top: 3px;
+    }
+
+    .ui.divider {
+      margin: 0.3rem 0;
+    }
+  }
+}
+
+.community-frontpage-cards .ui.card {
+  .image {
+    height: @normalDesktopScreenCardHeight;
+    display: flex;
+    background: transparent;
+
+    img {
+      object-fit: scale-down;
+    }
+
+    &.fallback_image, &.placeholder {
+      img {
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: @largestSmallMonitor) {
+  .ui.community-frontpage-cards.cards .ui.card {
+    .image {
+      height: @largeDesktopScreenCardHeight;
+    }
+  }
+
+}
+
+@media only screen and (max-width: @largestMobileScreen) {
+  .ui.community-frontpage-cards.cards .ui.card {
+    margin-top: 2rem;
+    width: 70vw !important;
+    margin-left: auto;
+    margin-right: auto;
+
+    .image {
+      height: 70vw;
+    }
+  }
+}
+
+a.ui.card {
+  text-decoration: none;
+}
+
+/*---------------------------------------------------------
+     Content - overrides immediate child from semantic
+     https://github.com/Semantic-Org/Semantic-UI/blob/master/src/definitions/views/card.less
+---------------------------------------------------------*/
+
+.ui.cards > .card > .field > .content,
+.ui.card > .field > .content {
+  flex-grow: 1;
+  border: @contentBorder;
+  border-top: @contentDivider;
+  background: @contentBackground;
+  margin: @contentMargin;
+  padding: @contentPadding;
+  box-shadow: @contentBoxShadow;
+  font-size: @contentFontSize;
+  border-radius: @contentBorderRadius;
+}
+
+.ui.cards > .card > .field > .content:after,
+.ui.card > .field > .content:after {
+  display: block;
+  content: ' ';
+  height: 0;
+  clear: both;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.ui.cards > .card > .field > .content > .header,
+.ui.card > .field > .content > .header {
+  display: block;
+  margin: @headerMargin;
+  font-family: @headerFont;
+  color: @headerColor;
+}
+
+/* Default Header Size */
+.ui.cards > .card > .field > .content > .header:not(.ui),
+.ui.card > .field > .content > .header:not(.ui) {
+  font-weight: @headerFontWeight;
+  font-size: @headerFontSize;
+  margin-top: @headerLineHeightOffset;
+  line-height: @headerLineHeight;
+}
+
+.ui.cards > .card > .field > .content > .meta + .description,
+.ui.cards > .card > .field > .content > .header + .description,
+.ui.card > .field > .content > .meta + .description,
+.ui.card > .field > .content > .header + .description  {
+  margin-top: @descriptionDistance;
+}
+
+

@@ -1,0 +1,144 @@
+/***********************************************
+         Invenio App RDM Form Overrides
+***********************************************/
+
+
+#deposit-form {
+
+  .ui.form .required.fields:not(.grouped) > .field > .content > .header > label::after,
+  .ui.form .required.fields.grouped > .content > .header > label::after,
+  .ui.form .required.field > .content > .header > label::after  {
+    margin: -0.2em 0 0 0.2em;
+    content: '*';
+    color: @red;
+  }
+
+  .ck-editor__editable {
+    min-height: 8.5em;
+  }
+
+  .ui.form .field .ui.list {
+    margin-top: 0;
+  }
+
+  .deposit-sidebar .ui.card {
+    width: unset;
+  }
+
+  .sidebar-buttons {
+    display: flex;
+  }
+
+  .ui.form .invenio-accordion-field {
+
+    label.helptext {
+      margin-top: .5rem;
+      margin-bottom: 1rem;
+    }
+
+    .invenio-group-field.fields {
+      margin: 1rem 0 2rem 0;
+
+      .ui.icon.button.close-btn {
+        margin-top: 1.75rem;
+      }
+    }
+
+    .additional-descriptions .ui.grid .row,
+    .invenio-group-field.fields {
+      background-color: lighten(@borderColor, 60%);
+      padding: 1rem;
+      border-radius: .5rem;
+
+      .invenio-group-field.fields {
+        margin-bottom: 0;
+      }
+
+      @media all and (max-width: @largestMobileScreen) {
+        .column {
+          position: static;
+          padding-right: .3rem;
+          padding-left: .3rem;
+        }
+
+        position: relative;
+        padding-top: 3.5rem;
+
+        .ui.icon.button.close-btn {
+          position: absolute;
+          top: 1rem;
+          right: 1.3rem;
+          margin-top: 0;
+        }
+      }
+    }
+
+    .title-field.field {
+      margin-bottom: 1rem;
+    }
+
+    .additional-descriptions.field {
+
+      .ui.icon.button.close-btn {
+        margin-top: 0;
+      }
+
+      .ui.grid.description {
+        margin: 1rem 0 0 0;
+
+        .row {
+          padding-bottom: 2rem;
+        }
+      }
+    }
+
+
+    .field,
+    .invenio-group-field.fields {
+      margin-bottom: 0.5rem;
+
+      .field {
+        margin-bottom: 0.5rem;
+
+        &:last-child,
+        &.subjects-field {
+          margin-bottom: 0;
+        }
+
+        .ui.icon.button {
+          margin-right: 0;
+        }
+      }
+
+      & ~ label.helptext {
+        margin-top: 0;
+        margin-bottom: 2rem;
+      }
+
+      .invenio-group-field.fields {
+        margin-bottom: 0;
+      }
+    }
+
+    .main-group-field.fields {
+      margin-bottom: 0;
+
+      &,
+      .invenio-group-field,
+      .invenio-group-field .invenio-group-field {
+        padding: 0;
+        background-color: transparent;
+      }
+
+      .subjects-field {
+        margin-bottom: 0;
+
+        .invenio-group-field.fields {
+          @media all and (min-width: @tabletBreakpoint) {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+  }
+}

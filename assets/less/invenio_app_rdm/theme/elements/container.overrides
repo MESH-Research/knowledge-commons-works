@@ -1,0 +1,105 @@
+/***********************************************
+         Invenio App RDM Container Overrides
+***********************************************/
+
+.ui.container.page-subheader-outer {
+  background-color: @highlightHeaderColor;
+  padding-top: @celledPadding;
+  padding-bottom: @celledPadding;
+  margin-bottom: @defaultMargin;
+
+  &.with-submenu {
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  &:not(.compact):not(.with-submenu){
+    box-shadow: 0 -@secondaryPointingBorderWidth 0 @borderColor inset;
+  }
+
+  &.compact {
+    height: 5em;
+    .ui.container.page-subheader {
+      height: 3em;
+    }
+  }
+
+  & + #communities-carousel {
+    margin-top: -@defaultMargin;
+  }
+}
+
+.ui.container.page-subheader {
+  align-items: center;
+  display: flex;
+
+  @media all and (max-width: @largestMobileScreen) {
+      justify-content: center;
+  }
+
+  &.compact {
+    height: 3em;
+  }
+
+  &.stackable.menu {
+    @media all and (max-width: @largestMobileScreen) {
+      width: 100% !important; // Overwriting semantic-ui's `auto !important` for same breakpoint on .ui.container
+    }
+  }
+
+  .page-subheader-element{
+    height: inherit;
+    display: flex;
+    align-items: center;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+
+    &:first-of-type {
+      padding-left: 0;
+    }
+    &:last-of-type {
+      padding-right: 0;
+    }
+  }
+}
+
+.ui.container.carousel {
+  background-color: rgba(@brandColor, 0.1);
+
+  & > .ui.grid.container {
+    max-width: @computerBreakpoint !important;
+  }
+}
+
+.ui.container {
+  .frontpage-header {
+    display: flex;
+    align-items: center;
+    height: 20em;
+  }
+
+  &.flex {
+    display: flex !important;
+  }
+
+  &.fluid-mobile {
+    @media screen and (max-width: @largestMobileScreen) {
+      width: 100% !important; // Overwriting semantic-ui's !important. Please don't remove.
+    }
+  }
+  &.ml-0-mobile {
+    @media screen and (max-width: @largestMobileScreen) {
+      margin-left: 0 !important;
+    }
+  }
+
+  &.mr-0-mobile {
+    @media screen and (max-width: @largestMobileScreen) {
+      margin-right: 0 !important;
+    }
+  }
+}
+
+.ui.container.requests-feed-container {
+  position: relative;
+}

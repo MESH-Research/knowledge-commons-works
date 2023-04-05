@@ -1,0 +1,80 @@
+# 
+# Translators:
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# Sam Arbid, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:25:02.203Z\n"
+"PO-Revision-Date: 2022-10-12 07:22+0000\n"
+"Last-Translator: Sam Arbid, 2022\n"
+"Language-Team: Swedish (https://www.transifex.com/inveniosoftware/teams/23537/sv/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "Search ..."
+msgstr "Sök ..."
+
+msgid "There is no resources in this category."
+msgstr "Det finns inga resurser i denna kategori."
+
+msgid "No matching resources found."
+msgstr "Inga matchande resurser hittades."
+
+msgid "results per page"
+msgstr "resultat per sida"
+
+msgid "result(s) found"
+msgstr "result(at) hittades"
+
+msgid "Add"
+msgstr "Lägg till"
+
+msgid "Remove field"
+msgstr "Ta bort fält"
+
+msgid "Sort"
+msgstr "Sortera"
+
+msgid "Resource is not editable."
+msgstr "Resursen är inte redigerbar."
+
+msgid "Edit"
+msgstr "Redigera"
+
+msgid "Resource is not deletable."
+msgstr "Resursen går inte att radera."
+
+msgid "Open list of actions"
+msgstr "Öppna listan över åtgärder"
+
+msgid "Delete"
+msgstr "Ta bort"
+
+msgid "Cancel"
+msgstr "Avbryt"
+
+msgid "Delete {{title}}"
+msgstr "Ta bort {{title}}"
+
+msgid "Are you sure you want to delete {{resourceName}}? "
+msgstr "Är du säker på att du vill ta bort {{resourceName}}?"
+
+msgid "Error"
+msgstr "Fel"
+
+msgid "Server was not able to process your request."
+msgstr "Servern kunde inte behandla din begäran."
+
+msgid "Save"
+msgstr "Spara"
+
+msgid "Search"
+msgstr "Sök"
+
+msgid "Clear query"
+msgstr "Rensa query"

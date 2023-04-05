@@ -1,0 +1,170 @@
+/***********************************************
+    Invenio App RDM Item Overrides
+***********************************************/
+
+.ui.items > .item > .content > .header {
+  display: block;
+
+  a {
+    display: inline-block;
+    padding: .5rem 0 .1rem;
+
+    &:hover, &:focus {
+      text-decoration: underline;
+    }
+  }
+}
+
+.ui.items > .item .extra {
+  color: @mutedTextColor;
+}
+
+.ui.items > .item .content.centered .extra > *:last-child {
+  margin-right: 0;
+}
+
+.ui.items > .item .meta * {
+  margin-right: 0.1em;
+}
+
+.ui.unstackable.items > .item > .image.dashboard-header-avatar,
+.ui.unstackable.items > .item > .image.dashboard-header-avatar > img{
+// override default SUI for dashboard avatar
+    width: @userDashboardAvatarSize !important;
+    height: @userDashboardAvatarSize !important;
+    object-fit: contain;
+}
+
+
+.item.right-menu {
+  line-height: 44px !important;
+}
+
+.ui.items.link > .item:hover {
+  cursor: auto !important;
+}
+
+.item.deposits-list-item {
+  .ui.grid .checkbox-column {
+    display: flex;
+    align-items: center;
+
+    .icon {
+      padding-left: 0.5em;
+    }
+  }
+
+  .actions > a,
+  .stats > span {
+    padding-right: 0.5em;
+  }
+
+  .content {
+    word-wrap: anywhere;
+  }
+}
+
+.ui.items > .item .extra.labels-actions {
+  margin-bottom: 0.75em;
+}
+
+
+.item div.description:not(.license-item-description) {
+  display: initial !important;
+}
+
+.ui.items > .item.license-item {
+  cursor: pointer;
+
+  @media screen and (max-width: @largestMobileScreen) {
+    flex-direction: row;
+  }
+
+  .radio {
+    margin-right: 0.5em;
+  }
+
+  .content.license-item-content {
+
+    .description.license-item-description {
+      font-size: smaller;
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
+}
+
+.ui.items {
+
+  &.link > .item:hover .content .header {
+    color: @darkTextColor;
+  }
+
+  .item {
+    &.community-item {
+      .header {
+        word-break: break-word;
+        .header-link {
+          @media all and (max-width: @largestMobileScreen) {
+            margin-top: 1rem;
+          }
+        }
+      }
+    }
+
+    &.flex {
+      display: flex !important;
+    }
+
+    .content {
+      .header {
+        &.flex {
+          display: flex;
+        }
+      }
+    }
+
+    &.carousel {
+      min-height: 15rem;
+      min-width: 100%;
+      margin: 0;
+
+      @media all and (max-width: @largestMobileScreen) {
+        text-align: center;
+      }
+
+      .column.buttons {
+        text-align: right;
+
+        @media all and (max-width: @largestTabletScreen) {
+          text-align: left;
+        }
+
+        @media all and (max-width: @largestMobileScreen) {
+          text-align: center;
+        }
+      }
+
+      .ui.small.image {
+        @media all and (max-width: @largestMobileScreen) {
+          max-width: 150px !important;
+        }
+      }
+    }
+  }
+}
+
+.item {
+
+  &.align-no-checkbox {
+    margin-left: @defaultMargin / 2 + @checkboxSize;
+  }
+
+  .ui.fitted.checkbox {
+    margin-right: @defaultMargin / 2;
+    margin-top: @defaultMargin / 2.5;
+  }
+
+  .ui.avatar.image {
+    align-self: center;
+  }
+}

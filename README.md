@@ -18,18 +18,21 @@ The installation requirements below are drawn in part from https://inveniordm.do
 
 Using GIT, clone this repository. You should then have a folder called `knowledge-commons-repository` (unless you chose to name it something else) on your local computer.
 
-## Add .env.private file
+## Add .env file
 
-Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own .env.private file and place it at the root level of the knowledge-commons-repository folder.
+Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own .env.private file and place it at the root level of the knowledge-commons-repository folder. Any configuration variables to be picked up by Invenio should have the prefix "INVENIO_" added to the beginning of the variable name. Environment variables for other services (e.g., for pgadmin) should not.
 
 This file should contain at least the following variables, substituting appropriate values after each = sign:
 
-SECRET_KEY=CHANGE_ME
-SECURITY_LOGIN_SALT='..put a long random value here..'
-CSRF_SECRET_SALT='..put a long random value here..'
-DATACITE_PASSWORD=myothersecurepassword
+INVENIO_SECRET_KEY=CHANGE_ME
+INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
+INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
+INVENIO_DATACITE_PASSWORD=myothersecurepassword
 PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
 PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
+POSTGRES_USER=knowledge-commons-repository
+POSTGRES_PASSWORD=knowledge-commons-repository
+POSTGRES_DB=knowledge-commons-repository
 
 ## Customize .env.local file
 
@@ -157,6 +160,22 @@ pipenv lock
 docker-compose --file docker-compose.full.yml build
 ```
 
+### Build the static files
+
+Invenio (Flask) now needs to collect static files (like images) from the various modules and place them in the static directory. Similarly, we need to run the webpack build process to set up the css/less/scss and js files.
+
+First enter the web-ui container:
+```
+docker exec -it knowledge-commons-repository-web-ui-1 bash
+```
+Then run the cli build script from inside the container:
+```
+invenio collect -v
+invenio webpack buildall
+```
+
+The collected and built static and asset files will now be available outside the container in our local `assets` and `static` folders.
+
 ### Set up the services
 
 This stage is generally only performed once after building (or rebuilding) the main knowledge-commons-repository image. It does several things:
@@ -273,7 +292,80 @@ You can also test the nginx config prior to reloading by running
 nginx -t
 ```
 
-## DEPRECATED
+## Developing the Knowledge Commons Repository
+
+### Making changes to template files
+
+Changes made to jinja template files will be visible immediately in the running Knowledge Commons Repsitory instance.
+
+### Making changes to theme (CSS) and javascript files
+
+#### Building js and css assets
+
+Unlike python and config files, the less and javascript files you customize must go through a build process before they will be visible in the running Knowledge Commons Repository instance. The Invenio platform provides a convenient cli script for collecting all of these assets (both standard and your customized files) and running webpack to build them.
+
+First enter the web-ui container:
+```console
+docker exec -it knowledge-commons-repository-web-ui-1 bash
+```
+Then run the cli build script from inside the container:
+```console
+invenio collect -v
+invenio webpack buildall
+```
+Under the hood this second command runs
+```console
+flask webpack buildall
+```
+This command will copy all files from the src folder to the application
+instance folder designated for the Webpack project (???), download the npm packages
+and run Webpack to build our assets.
+
+Alternately, you can perform each of these steps separately:
+```console
+flask webpack create  # Copy all sources to the working directory
+flask webpack install # Run npm install and download all dependencies
+flask webpack build # Run npm run build.
+```
+
+#### Watching for changes to existing files
+
+In development, if you want to avoid having to build these files after every change, you can instead run
+```console
+pipenv run invenio-cli assets watch
+```
+or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the npm watch service using a separate node.js container:
+```console
+docker run --rm -it -u 1000:1000 -v $PWD/assets:/opt/invenio/var/instance/assets -v $PWD/static:/opt/invenio/var/instance/static/ -w /opt/invenio/var/instance/assets node:19 sh -c "NODE_OPTIONS=--openssl-legacy-provider npm run start"
+```
+That will watch for changes and automatically rebuild whatever assets are necessary as you go. You will need to run this command in its own terminal, since it will continue to feed output to the terminal until you stop watching the files.
+
+#### Adding new js or css files
+
+The `watch` command will only pick up changes to files that already existed during the last Webpack build. If you add a new javascript or css (less) file, you need to again run
+```console
+pipenv run invenio-cli assets build
+```
+or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the build operation using a separate node.js container:
+```
+docker run --rm -it -u 1000:1000 -v $PWD/assets:/opt/invenio/var/instance/assets -v $PWD/static:/opt/invenio/var/instance/static/ -w /opt/invenio/var/instance/assets node:19 sh -c "npm ci &&  NODE_OPTIONS=--openssl-legacy-provider npm run build"
+```
+
+And then start the `watch` command again.
+
+### Making changes to static files
+
+Because of Flask's decentralized structure, Static files like images must be collected into a central directory. After making changes to static files, enter the web-ui container and run:
+```console
+invenio collect -v
+```
+or
+```console
+flask collect -v
+```
+
+
+## DEPRECATED (Default README text from InvenioRDM)
 
 **Note**: The instructions below are the default README for InvenioRDM. They
 are not usable as they stand for building the Knowledge Commons Repository

@@ -1,0 +1,330 @@
+/***********************************************
+         Invenio Theme Menu Overrides
+***********************************************/
+
+.ui.inverted.menu {
+  border-radius: 0;
+}
+
+.ui.vertical.menu .item i.icon {
+  float: left;
+  margin-right: 0.5em;
+}
+
+/* Brand */
+
+.ui.inverted.menu .brand.active.item,
+.ui.inverted.brand.menu {
+  background-color: @brandColor;
+}
+
+.ui.inverted.brand.menu .item:before {
+  background-color: @invertedColoredDividerBackground;
+}
+
+.ui.inverted.brand.menu .active.item {
+  background-color: @invertedColoredActiveBackground !important;
+}
+
+.ui.menu .brand.active.item,
+.ui.brand.menu .active.item {
+  border-color: @brandColor !important;
+  background-color: @brandColor;
+  color: @white !important;
+  pointer-events: none;
+}
+
+
+// Administration styles
+
+.invenio-administration {
+
+  .ui.vertical.menu {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    .ui.header.item{
+      background-color: transparent !important;
+    }
+    .item {
+      display: flex;
+      align-items: baseline;
+      box-shadow: none;
+      border: none;
+      &:before{
+        background-color: transparent;
+      }
+    }
+
+  }
+
+
+  .ui.vertical.menu .item i.icon {
+    float: left;
+    margin-right: 0.5em;
+  }
+
+
+  .side-menu-toggle {
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    .icon.hidden {
+      display: none;
+    }
+  }
+
+  #invenio-admin-home-nav.ui.menu,
+  #invenio-admin-top-nav.ui.menu {
+    height: @relative75px;
+  }
+
+  #invenio-admin-top-nav.ui.menu {
+    position: relative;
+
+    .ui.menu {
+      box-shadow: none;
+      border-radius: 0;
+      background-color: transparent;
+
+      .item {
+        padding: 0;
+
+        a:not(.ui.button) {
+          padding: 2rem 1rem;
+
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: @white;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+
+    .item {
+
+      &.logo {
+        padding-right: 1rem;
+      }
+
+      &.search-bar {
+        padding-right: 1rem;
+      }
+
+      &:first-of-type {
+        padding-left: 0;
+      }
+
+      &:last-of-type {
+        padding-left: 0;
+      }
+
+      &.right.menu {
+        padding-right: 0;
+        display: flex;
+      }
+    }
+
+
+    #user-profile-dropdown {
+      width: 13em;
+
+      #user-profile-dropdown-btn {
+        width: inherit;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      #user-profile-menu.ui.menu {
+        width: inherit;
+        background-color: rgb(255, 255, 255);
+      }
+    }
+  }
+
+  @media all and (max-width: @largestTabletScreen) {
+    #invenio-admin-top-nav.ui.menu {
+
+      &.active #invenio-menu.ui.menu {
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        right: 0;
+        max-width: 25rem;
+        box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.2);
+        background-color: rgb(255, 255, 255);
+        height: 100vh;
+        z-index: 3;
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+        overflow-y: scroll;
+
+        .item {
+          width: 100%;
+          padding: .5rem 0;
+
+          &.search-bar {
+            margin-bottom: 1.5rem;
+          }
+
+          a:not(.ui.button) {
+            color: @textColor;
+            padding: 0;
+          }
+
+          &.search-bar {
+            width: 100%;
+
+            .ui.input {
+              width: 99% !important;
+            }
+          }
+
+          .icon.inverted {
+            color: @textColor;
+          }
+
+          &.right.menu {
+            padding: 0;
+            margin-left: unset !important;
+            flex-direction: column;
+            align-items: flex-start;
+
+            .sub-menu {
+              width: 100%;
+              margin: 2rem 0 0 0;
+
+              .ui.heading {
+                color: @textColor;
+              }
+
+              .item {
+                padding: .5rem 1rem;
+              }
+            }
+
+            form {
+              margin-top: 1rem;
+            }
+          }
+        }
+
+        #rdm-close-burger-menu-icon {
+          margin-left: auto;
+          margin-bottom: 2rem;
+
+          .navicon {
+            background: transparent;
+
+            &:before {
+              background: @darkGray;
+              transform: rotate(-45deg);
+            }
+
+            &:after {
+              background: @darkGray;
+              transform: rotate(45deg);
+            }
+          }
+        }
+      }
+
+
+      &:not(.active) {
+        .mobile-hidden {
+          display: none;
+        }
+      }
+    }
+  }
+
+
+  @media all and (min-width: @computerBreakpoint) {
+    #invenio-admin-top-nav #rdm-burger-toggle,
+    #invenio-menu #rdm-close-burger-menu-icon {
+      display: none;
+    }
+  }
+
+  /* menu icon (Hamburger icon) */
+
+  #rdm-burger-menu-icon,
+  #rdm-close-burger-menu-icon {
+    .navicon {
+      background: @white;
+      display: block;
+      height: 2px;
+      position: relative;
+      transition: background 0.2s ease-out;
+      width: 18px;
+
+      &:before,
+      &:after {
+        display: block;
+        background: @white;
+        content: "";
+        height: 100%;
+        position: absolute;
+        transition: all 0.2s ease-out;
+        width: 100%;
+      }
+    }
+  }
+
+  #rdm-burger-toggle {
+    font-size: 20px;
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+
+    #rdm-burger-menu-icon {
+      cursor: pointer;
+      display: inline-block;
+      float: right;
+      padding: 2rem 1.5rem;
+      position: relative;
+      user-select: none;
+
+      .navicon {
+
+        &::before {
+          top: 5px;
+        }
+
+        &:after {
+          top: -5px;
+        }
+      }
+    }
+  }
+
+  .side-bar.column .ui.secondary.inverted.vertical.menu {
+    background-color: transparent;
+
+    .sub-menu {
+      .item {
+
+        &:not(.header) {
+          padding-left: 1.5rem;
+          margin: 0;
+        }
+
+        &.header {
+          background-color: transparent !important;
+        }
+      }
+    }
+
+    .item {
+      text-transform: capitalize;
+
+      &.active, &:hover {
+        border-radius: 0 !important;
+      }
+    }
+  }
+}

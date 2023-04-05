@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "",
+    "result(s) found": "",
+    "Add": "Pridėti",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "Redaguoti",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "Ištrinti",
+    "Cancel": "Atšaukti",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "Klaida",
+    "Server was not able to process your request.": "",
+    "Save": "Išsaugoti",
+    "Search": "Ieškoti",
+    "Clear query": ""
+}

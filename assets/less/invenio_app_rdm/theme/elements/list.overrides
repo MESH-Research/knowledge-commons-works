@@ -1,0 +1,74 @@
+/***********************************************
+         Invenio App RDM List Overrides
+***********************************************/
+
+/* Deposit license field */
+
+.item.deposit-drag-listitem {
+  margin-bottom: 5px;
+
+  &.hidden {
+    opacity: 0;
+  }
+
+  .drag-anchor {
+    cursor: move;
+  }
+}
+
+
+.ui.list .disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ui.celled.list.separated-list {
+  > .item:first-child {
+    padding-left: 0;
+    border-left: none;
+  }
+
+  > .item:last-child {
+    padding-right: 0;
+    border-right: none;
+  }
+
+  .item > a {
+    margin: 3px;
+  }
+}
+
+.ui.list {
+  .version.active {
+    background-color: @versionActiveColor;
+  }
+}
+
+.versions {
+  .ui.divided.list .item {
+    padding: 1rem;
+
+    .doi {
+      display: block;
+      margin-top: .5rem;
+      word-wrap: break-word;
+    }
+  }
+}
+
+.ui.list.no-bullets li::before {
+  display: none;
+}
+
+.ui.horizontal.list.subjects {
+  margin: 0;
+
+  li.item {
+    padding: 0;
+    margin: 0 .3rem .3rem 0;
+
+    & ~ li.item {
+      padding: 0 !important; // overriding semantic ui !important
+    }
+  }
+}

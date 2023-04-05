@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "",
+    "result(s) found": "",
+    "Add": "افزودن",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "ویرایش",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "حذف",
+    "Cancel": "لغو",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "خطا",
+    "Server was not able to process your request.": "",
+    "Save": "",
+    "Search": "جستجو",
+    "Clear query": ""
+}

@@ -1,0 +1,12 @@
+/***********************************************
+         Invenio Theme Icon Variables
+***********************************************/
+
+
+@fontPath          : '../../themes/default/assets/fonts';
+
+
+@primaryIconColor: @primaryColor;
+@neutralIconColor: @neutralColor;
+@positiveIconColor: @positiveColor;
+@negativeIconColor: @negativeColor;

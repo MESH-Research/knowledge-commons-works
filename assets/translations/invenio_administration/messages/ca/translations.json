@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "",
+    "result(s) found": "",
+    "Add": "Afegeix",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "Edita",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "Suprimeix",
+    "Cancel": "Cancel·la",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "Error",
+    "Server was not able to process your request.": "",
+    "Save": "Desa",
+    "Search": "Cerca",
+    "Clear query": ""
+}

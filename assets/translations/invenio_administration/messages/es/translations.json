@@ -1,0 +1,23 @@
+{
+    "Search ...": "Buscar...",
+    "There is no resources in this category.": "No hay recursos en esta categoría.",
+    "No matching resources found.": "No se encontraron recursos coincidentes.",
+    "results per page": "resultados por página",
+    "result(s) found": "resultado(s) encontrado(s)",
+    "Add": "Añadir",
+    "Remove field": "Eliminar campo",
+    "Sort": "Ordenar",
+    "Resource is not editable.": "El recurso no es editable.",
+    "Edit": "Editar",
+    "Resource is not deletable.": "El recurso no se puede eliminar.",
+    "Open list of actions": "Abrir lista de acciones",
+    "Delete": "Eliminar",
+    "Cancel": "Cancelar",
+    "Delete {{title}}": "Borrar {{title}}",
+    "Are you sure you want to delete {{resourceName}}? ": "¿Está seguro de querer eliminar {{resourceName}}?",
+    "Error": "Error",
+    "Server was not able to process your request.": "El servidor no pudo procesar su solicitud.",
+    "Save": "Guardar",
+    "Search": "Buscar",
+    "Clear query": "Borrar consulta"
+}

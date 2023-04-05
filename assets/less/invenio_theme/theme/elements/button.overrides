@@ -1,0 +1,108 @@
+/***********************************************
+         Invenio Theme Button Overrides
+***********************************************/
+
+
+/*--- Sign up color ---*/
+
+.ui.signup.button {
+  background-color: @signupColor;
+  color: @signupColorTextColor;
+  text-shadow: @signupColorTextShadow;
+  background-image: @coloredBackgroundImage;
+  box-shadow: @coloredBoxShadow;
+}
+
+.ui.signup.button:hover {
+  background-color: @signupColorHover;
+  color: @signupColorTextColor;
+  text-shadow: @signupColorTextShadow;
+}
+
+.ui.signup.button:focus {
+  background-color: @signupColorFocus;
+  color: @signupColorTextColor;
+  text-shadow: @signupColorTextShadow;
+}
+
+.ui.signup.button:active {
+  background-color: @signupColorDown;
+  color: @signupColorTextColor;
+  text-shadow: @signupColorTextShadow;
+}
+
+
+/*--- Search icon button color ---*/
+
+.ui.search.button {
+  background-color: @searchButtonColor;
+  color: @searchButtonColorTextColor;
+  text-shadow: @searchButtonColorTextShadow;
+  background-image: @coloredBackgroundImage;
+  box-shadow: @coloredBoxShadow;
+}
+
+.ui.search.button:hover {
+  background-color: @searchButtonColorHover;
+  color: @searchButtonColorTextColor;
+  text-shadow: @searchButtonColorTextShadow;
+}
+
+.ui.search.button:focus {
+  background-color: @searchButtonColorFocus;
+  color: @searchButtonColorTextColor;
+  text-shadow: @searchButtonColorTextShadow;
+}
+
+.ui.search.button:active {
+  background-color: @searchButtonColorDown;
+  color: @searchButtonColorTextColor;
+  text-shadow: @searchButtonColorTextShadow;
+}
+
+
+/*--- Warning button color ---*/
+
+.ui.warning.button {
+  background-color: @warningButtonColor;
+  color: @warningButtonTextColor;
+  text-shadow: @warningButtonTextShadow;
+  background-image: @coloredBackgroundImage;
+  box-shadow: @coloredBoxShadow;
+}
+
+.ui.warning.button:hover {
+  background-color: @warningButtonHover;
+  color: @warningButtonTextColor;
+  text-shadow: @warningButtonTextShadow;
+}
+
+.ui.warning.button:focus {
+  background-color: @warningButtonFocus;
+  color: @warningButtonTextColor;
+  text-shadow: @warningButtonTextShadow;
+}
+
+.ui.warning.button:active {
+  background-color: @warningButtonDown;
+  color: @warningButtonTextColor;
+  text-shadow: @warningButtonTextShadow;
+}
+
+
+/*--- Transparent button color ---*/
+
+.ui.button.transparent {
+  background-color: transparent;
+  color: @transparentButtonTextColor;
+  padding: 0;
+}
+
+.ui.buttons.relaxed {
+  .button{
+    &:not(:last-child) {
+      margin-right: 0.5em !important;
+    }
+    border-radius: @borderRadius;
+  }
+}

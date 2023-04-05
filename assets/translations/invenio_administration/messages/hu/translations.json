@@ -1,0 +1,23 @@
+{
+    "Search ...": "Keresés...",
+    "There is no resources in this category.": "Ebben a kategóriában nincsenek források.",
+    "No matching resources found.": "Nem találtunk a feltételeknek megfelelő forrást.",
+    "results per page": "találat oldalanként",
+    "result(s) found": "találatot kaptunk",
+    "Add": "Hozzáadás",
+    "Remove field": "Mező eltávolítása",
+    "Sort": "Rendezés",
+    "Resource is not editable.": "A forrás nem szerkeszthető.",
+    "Edit": "Szerkesztés",
+    "Resource is not deletable.": "A forrás nem törölhető.",
+    "Open list of actions": "Tevékenységlista megnyitása",
+    "Delete": "Törlés",
+    "Cancel": "Mégsem",
+    "Delete {{title}}": "{{title}} törlése",
+    "Are you sure you want to delete {{resourceName}}? ": "Biztosan törölni akarja? {{resourceName}}?",
+    "Error": "Hiba",
+    "Server was not able to process your request.": "A szerver nem tudta feldolgozni az ön kérését.",
+    "Save": "Mentés",
+    "Search": "Keresés",
+    "Clear query": "Lekérdezés törlése"
+}

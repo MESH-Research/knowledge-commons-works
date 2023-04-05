@@ -1,0 +1,360 @@
+/***********************************************
+         Invenio App RDM Menu Overrides
+***********************************************/
+
+.ui.menu {
+
+  &.compact {
+    .item.active {
+      background-color: @primaryColor;
+      color: @white;
+      border-color: @primaryDarkenColor;
+
+      &:hover {
+        background-color: @primaryColorHover;
+      }
+    }
+  }
+
+  &.vertical {
+    &.computer {
+      @media screen and (min-width: @computerBreakpoint) {
+        display: flex;
+        flex-direction: column;
+
+        > .item {
+
+          &:first-child {
+            border-radius: @borderRadius @borderRadius 0px 0px;
+          }
+
+          &:last-child {
+            border-radius: 0px 0px @borderRadius @borderRadius;
+          }
+
+          &:only-child {
+            border-radius: @borderRadius;
+          }
+
+        }
+      }
+    }
+  }
+
+  &.horizontal {
+    &.mobile {
+      @media screen and (max-width: @largestMobileScreen) {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+
+        > .item {
+          flex: 1 0 0;
+
+          &:first-child {
+            border-radius: @borderRadius 0px 0px @borderRadius;
+          }
+
+          &:last-child {
+            border-radius: 0px @borderRadius @borderRadius 0px;
+          }
+
+          &:only-child {
+            border-radius: @borderRadius;
+          }
+        }
+      }
+    }
+
+    &.tablet {
+      @media screen and (max-width: @largestTabletScreen) {
+        display: flex;
+        flex-direction: row;
+
+        > .item {
+          flex: 1 0 0;
+
+          &:first-child {
+            border-radius: @borderRadius 0px 0px @borderRadius;
+          }
+
+          &:last-child {
+            border-radius: 0px @borderRadius @borderRadius 0px;
+          }
+
+          &:only-child {
+            border-radius: @borderRadius;
+          }
+        }
+      }
+    }
+  }
+}
+
+.ui.menu.secondary.pointing {
+  .item.active {
+    border-color: @secondaryColor;
+  }
+}
+
+#invenio-nav.ui.menu {
+  height: @relative75px;
+  position: relative;
+
+  .ui.menu {
+    background-color: transparent;
+    box-shadow: none;
+
+    .ui.dropdown.rdm-plus-menu {
+      padding: 1rem;
+    }
+
+    .item {
+      padding: 0;
+
+      a:not(.ui.button){
+        padding: 2rem 1rem;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+          color: @white;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .item {
+
+    &.logo {
+      padding-right: 1rem;
+    }
+
+    &.search-bar {
+      padding-right: 1rem;
+    }
+
+    &:first-of-type {
+      padding-left: 0;
+    }
+
+    &:last-of-type {
+      padding-left: 0;
+    }
+
+    &.right.menu {
+      padding-right: 0;
+      display: flex;
+    }
+  }
+
+  .rdm-plus-menu {
+    padding-right: 15px;
+  }
+
+  #user-profile-dropdown {
+    width: 13em;
+
+    #user-profile-dropdown-btn {
+      width: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #user-profile-menu.ui.menu {
+      width: inherit;
+      background-color: rgb(255,255,255);
+    }
+  }
+}
+
+#header-search-bar {
+  width: 100%;
+
+  .ui.input {
+    width: auto !important;
+
+    & > input {
+      width: auto !important;
+    }
+
+  }
+}
+
+@media all and (max-width: @largestTabletScreen) {
+  #invenio-nav.ui.menu {
+
+    &.active #invenio-menu.ui.menu {
+      flex-direction: column;
+      position: fixed;
+      right: 0;
+      max-width: 25rem;
+      box-shadow: 0px 0px 7px rgba(0,0,0,0.2);
+      background-color: rgb(255,255,255);
+      height: 100vh;
+      z-index: 3;
+      padding: 2rem 1.5rem 1.5rem 1.5rem;
+      overflow-y: scroll;
+
+      .item {
+        width: 100%;
+        padding: .5rem 0;
+
+        &.search-bar {
+          margin-bottom: 1.5rem;
+        }
+
+        a:not(.ui.button) {
+          color: @textColor;
+          padding: 0;
+        }
+
+        &.search-bar {
+          width: 100%;
+
+          .ui.input {
+            width: 99% !important;
+          }
+        }
+
+        .icon.inverted {
+          color: @textColor;
+        }
+
+        &.right.menu {
+          padding: 0;
+          margin-left: unset !important;
+          flex-direction: column;
+          align-items: flex-start;
+
+          .sub-menu {
+            width: 100%;
+            margin: 2rem 0 0 0;
+
+            .ui.heading {
+              color: @textColor;
+            }
+
+            .item {
+              padding: .5rem 1rem;
+            }
+          }
+
+          form {
+            margin-top: 1rem;
+          }
+        }
+      }
+
+      #rdm-close-burger-menu-icon {
+        margin-left: auto;
+        margin-bottom: 2rem;
+
+        .navicon {
+          background: transparent;
+
+          &:before {
+            transform: rotate(-45deg);
+          }
+
+          &:after {
+            transform: rotate(45deg);
+          }
+        }
+      }
+    }
+
+
+    &:not(.active) {
+      .mobile-hidden {
+        display: none;
+      }
+    }
+  }
+}
+
+#additional-details {
+  .ui.top.attached.menu {
+
+    @media screen and (max-width: @largestTabletScreen) {
+      flex-wrap: wrap;
+    }
+
+    &:not(.tabular) {
+      @media screen and (max-width: @largestTabletScreen) {
+        border-bottom: 0;
+      }
+    }
+
+    .item {
+      flex: 1 0 auto;
+
+      @media screen and (max-width: @largestTabletScreen) {
+        border-bottom: 1px solid #D4D4D5;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+@media all and (min-width: @computerBreakpoint) {
+  #invenio-nav #rdm-burger-toggle,
+  #invenio-menu #rdm-close-burger-menu-icon {
+    display: none;
+  }
+}
+
+/* menu icon (Hamburger icon) */
+
+#rdm-burger-menu-icon,
+#rdm-close-burger-menu-icon {
+  .navicon {
+    background: @darkGray;
+    display: block;
+    height: 2px;
+    position: relative;
+    transition: background 0.2s ease-out;
+    width: 18px;
+
+    &:before,
+    &:after {
+      display: block;
+      background: @darkGray;
+      content: "";
+      height: 100%;
+      position: absolute;
+      transition: all 0.2s ease-out;
+      width: 100%;
+    }
+  }
+}
+
+#rdm-burger-toggle {
+  font-size: 20px;
+  position: absolute;
+  right: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+
+  #rdm-burger-menu-icon {
+    cursor: pointer;
+    display: inline-block;
+    float: right;
+    padding: 2rem 1.5rem;
+    position: relative;
+    user-select: none;
+
+    .navicon {
+
+      &::before {
+        top: 5px;
+      }
+
+      &:after {
+        top: -5px;
+      }
+    }
+  }
+}
+

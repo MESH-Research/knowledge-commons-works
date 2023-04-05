@@ -1,0 +1,73 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2022-10-12T07:25:02.203Z\n"
+"PO-Revision-Date: 2022-10-12T07:25:02.203Z\n"
+"Language: en\n"
+
+msgid "Search ..."
+msgstr "Search ..."
+
+msgid "There is no resources in this category."
+msgstr "There is no resources in this category."
+
+msgid "No matching resources found."
+msgstr "No matching resources found."
+
+msgid "results per page"
+msgstr "results per page"
+
+msgid "result(s) found"
+msgstr "result(s) found"
+
+msgid "Add"
+msgstr "Add"
+
+msgid "Remove field"
+msgstr "Remove field"
+
+msgid "Sort"
+msgstr "Sort"
+
+msgid "Resource is not editable."
+msgstr "Resource is not editable."
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Resource is not deletable."
+msgstr "Resource is not deletable."
+
+msgid "Open list of actions"
+msgstr "Open list of actions"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Delete {{title}}"
+msgstr "Delete {{title}}"
+
+msgid "Are you sure you want to delete {{resourceName}}? "
+msgstr "Are you sure you want to delete {{resourceName}}? "
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Server was not able to process your request."
+msgstr "Server was not able to process your request."
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Clear query"
+msgstr "Clear query"

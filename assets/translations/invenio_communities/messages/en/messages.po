@@ -1,0 +1,338 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-03-3T16:07:00.0000\n"
+"PO-Revision-Date: 2022-03-3 16:07+0000\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"mime-version: 1.0\n"
+
+msgid "Required"
+msgstr "Required"
+
+msgid "Must be 32 characters or less"
+msgstr "Must be 32 characters or less"
+
+msgid "Must be 120 characters or less"
+msgstr "Must be 120 characters or less"
+
+msgid "Must be 250 characters or less"
+msgstr "Must be 250 characters or less"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Title"
+msgstr "Title"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Search for organizations..."
+msgstr "Search for organizations..."
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Are you sure you want to delete the collection:"
+msgstr "Are you sure you want to delete the collection:"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "New collection"
+msgstr "New collection"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Institution/Organization"
+msgstr "Institution/Organization"
+
+msgid "Event"
+msgstr "Event"
+
+msgid "Topic"
+msgstr "Topic"
+
+msgid "Project"
+msgstr "Project"
+
+msgid "Maximum number of characters is 2000"
+msgstr "Maximum number of characters is 2000"
+
+msgid "Must be a valid URL"
+msgstr "Must be a valid URL"
+
+msgid "Profile picture"
+msgstr "Profile picture"
+
+msgid "Upload new picture"
+msgstr "Upload new picture"
+
+msgid "Delete picture"
+msgstr "Delete picture"
+
+msgid "Are you sure you want to delete this picture?"
+msgstr "Are you sure you want to delete this picture?"
+
+msgid "Danger zone"
+msgstr "Danger zone"
+
+msgid "Change identifier"
+msgstr "Change identifier"
+
+msgid "Changing your community's unique identifier can have unintended side effects."
+msgstr "Changing your community's unique identifier can have unintended side effects."
+
+msgid "Delete community"
+msgstr "Delete community"
+
+msgid "Once deleted, it will be gone forever. Please be certain."
+msgstr "Once deleted, it will be gone forever. Please be certain."
+
+msgid "Are you sure you want to delete this community?"
+msgstr "Are you sure you want to delete this community?"
+
+msgid "Community name"
+msgstr "Community name"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Website"
+msgstr "Website"
+
+msgid "Search for an organization by name"
+msgstr "Search for an organization by name"
+
+msgid "Organizations"
+msgstr "Organizations"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Enter the new unique identifier of the community"
+msgstr "Enter the new unique identifier of the community"
+
+msgid "Change"
+msgstr "Change"
+
+msgid "Community permissions"
+msgstr "Community permissions"
+
+msgid "Saved"
+msgstr "Saved"
+
+msgid "Accept"
+msgstr "Accept"
+
+msgid "Reject"
+msgstr "Reject"
+
+msgid "Comment"
+msgstr "Comment"
+
+msgid "Record was successfully {{status}}ed"
+msgstr "Record was successfully {{status}}ed"
+
+msgid "Administrator"
+msgstr "Administrator"
+
+msgid "Curator"
+msgstr "Curator"
+
+msgid "Member"
+msgstr "Member"
+
+msgid "You have succesfully requested to join the community"
+msgstr "You have succesfully requested to join the community"
+
+msgid "Join this community"
+msgstr "Join this community"
+
+msgid "Members"
+msgstr "Members"
+
+msgid "Pending Memberships"
+msgstr "Pending Memberships"
+
+msgid "Rejected Memberships"
+msgstr "Rejected Memberships"
+
+msgid "Invite Member"
+msgstr "Invite Member"
+
+msgid "Community members"
+msgstr "Community members"
+
+msgid "Username"
+msgstr "Username"
+
+msgid "Role"
+msgstr "Role"
+
+msgid "Remove Member"
+msgstr "Remove Member"
+
+msgid "Community member requests"
+msgstr "Community member requests"
+
+msgid "Username or Email"
+msgstr "Username or Email"
+
+msgid "Request Type"
+msgstr "Request Type"
+
+msgid "Comments"
+msgstr "Comments"
+
+msgid "Remove request"
+msgstr "Remove request"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Setup your new community"
+msgstr "Setup your new community"
+
+msgid "Identifier"
+msgstr "Identifier"
+
+msgid "This is your community's unique identifier. You will be able to access your community through the URL: {{url}}"
+msgstr "This is your community's unique identifier. You will be able to access your community through the URL: {{url}}"
+
+msgid "Community visibility"
+msgstr "Community visibility"
+
+msgid "Create community"
+msgstr "Create community"
+
+msgid "Request to {{title}} submitted"
+msgstr "Request to {{title}} submitted"
+
+msgid "Add community"
+msgstr "Add community"
+
+msgid "Request for this record to be added to {{title}}"
+msgstr "Request for this record to be added to {{title}}"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Write a message for the community curator..."
+msgstr "Write a message for the community curator..."
+
+msgid "Send a message to the other party."
+msgstr "Send a message to the other party."
+
+msgid "Pending requests ({{length}})"
+msgstr "Pending requests ({{length}})"
+
+msgid "The collections for this record have been updated."
+msgstr "The collections for this record have been updated."
+
+msgid "collections"
+msgstr "collections"
+
+msgid "Done"
+msgstr "Done"
+
+msgid "You have been invited to join the Community: {{title}} as a (n) {{role}}"
+msgstr "You have been invited to join the Community: {{title}} as a (n) {{role}}"
+
+msgid "You have succesfully declined the invitation."
+msgstr "You have succesfully declined the invitation."
+
+msgid "Decline"
+msgstr "Decline"
+
+msgid "View"
+msgstr "View"
+
+msgid "{{total}} result(s) found"
+msgstr "{{total}} result(s) found"
+
+msgid "Sort by"
+msgstr "Sort by"
+
+msgid "results per page"
+msgstr "results per page"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Search communities..."
+msgstr "Search communities..."
+
+msgid "New community"
+msgstr "New community"
+
+msgid "Uploaded on"
+msgstr "Uploaded on"
+
+msgid "hide subfacets"
+msgstr "hide subfacets"
+
+msgid "show subfacets"
+msgstr "show subfacets"
+
+msgid "Search guide"
+msgstr "Search guide"
+
+msgid "Versions"
+msgstr "Versions"
+
+msgid "View all versions"
+msgstr "View all versions"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "Clear selection"
+msgstr "Clear selection"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "We couldn't find any matches for "
+msgstr "We couldn't find any matches for "
+
+msgid "your search"
+msgstr "your search"
+
+msgid "Start over"
+msgstr "Start over"
+
+msgid "ProTip"
+msgstr "ProTip"
+
+msgid "will give you all the publications from 2017 until today"
+msgstr "will give you all the publications from 2017 until today"
+
+msgid "For more tips, check out our "
+msgstr "For more tips, check out our "
+
+msgid " for defining advanced search queries"
+msgstr " for defining advanced search queries"
+
+msgid "ORCID profile"
+msgstr "ORCID profile"
+
+msgid "ROR profile"
+msgstr "ROR profile"
+
+msgid "Search for organizations..."
+msgstr "Search for organizations..."

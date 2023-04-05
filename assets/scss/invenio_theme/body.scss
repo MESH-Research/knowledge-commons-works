@@ -1,0 +1,33 @@
+/*
+ * This file is part of Invenio.
+ * Copyright (C) 2016-2018 CERN.
+ *
+ * Invenio is free software; you can redistribute it and/or modify it
+ * under the terms of the MIT License; see LICENSE file for more details.
+ */
+
+.error-page.container .row {
+  margin-left: 50px;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+.marketing {
+  padding-top: 50px;
+  padding-bottom: 50px;
+
+  h1, h2 {
+    font-weight: normal;
+    color: $color1;
+
+  }
+  h2 {
+    padding-bottom: 15px;
+  }
+  h1 {
+    padding-bottom: 50px;
+  }
+  .col-lg-4 {
+    text-align: center;
+  }
+}

@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "sayfa başına sonuç sayısı",
+    "result(s) found": "sonuç(lar) bulundu",
+    "Add": "Ekle",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "Düzenle",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "Sil",
+    "Cancel": "İptal",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "Hata",
+    "Server was not able to process your request.": "",
+    "Save": "Kaydet",
+    "Search": "Ara",
+    "Clear query": "Sorguyu temizle"
+}

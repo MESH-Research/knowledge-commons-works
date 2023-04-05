@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "",
+    "result(s) found": "",
+    "Add": "",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "Editar",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "Apagar",
+    "Cancel": "Cancelar",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "Erro",
+    "Server was not able to process your request.": "",
+    "Save": "",
+    "Search": "Pesquisar",
+    "Clear query": ""
+}

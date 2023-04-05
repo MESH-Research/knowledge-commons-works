@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "",
+    "result(s) found": "",
+    "Add": "",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "Редакция",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "Изтриване",
+    "Cancel": "Отказ",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "Грешка",
+    "Server was not able to process your request.": "",
+    "Save": "Запази",
+    "Search": "Търсене",
+    "Clear query": ""
+}

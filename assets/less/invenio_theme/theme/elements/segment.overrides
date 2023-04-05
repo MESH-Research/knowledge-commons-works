@@ -1,0 +1,29 @@
+/***********************************************
+         Invenio Theme Segment Overrides
+***********************************************/
+
+.ui.secondary.segment {
+    color: black;
+    padding: 0.7em;
+}
+
+
+/* Brand */
+.ui.brand.segment:not(.inverted) {
+  border-top: @coloredBorderSize solid @brandColor !important;
+}
+.ui.inverted.brand.segment {
+  background-color: @brandColor !important;
+  color: @white !important;
+}
+
+
+/* Negative */
+.ui.negative.segment:not(.inverted) {
+  border-top: @coloredBorderSize solid @negativeColor;
+}
+.ui.inverted.negative.segment {
+  background-color: @negativeColor;
+  color: @white;
+}
+

@@ -1,0 +1,23 @@
+/*
+ * This file is part of Invenio.
+ * Copyright (C) 2015-2018 CERN.
+ *
+ * Invenio is free software; you can redistribute it and/or modify it
+ * under the terms of the MIT License; see LICENSE file for more details.
+ */
+
+// Setting the path to fonts files.
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+$fa-font-path: "~font-awesome/fonts";
+
+@import "~bootstrap-sass/assets/stylesheets/_bootstrap";
+@import "~font-awesome/scss/font-awesome";
+
+@import "type";
+@import "navbar";
+@import "body";
+@import "cover";
+@import "header";
+@import "footer";
+@import "input-icon";
+@import "angular";

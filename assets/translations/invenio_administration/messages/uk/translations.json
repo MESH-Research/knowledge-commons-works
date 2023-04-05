@@ -1,0 +1,23 @@
+{
+    "Search ...": "",
+    "There is no resources in this category.": "",
+    "No matching resources found.": "",
+    "results per page": "",
+    "result(s) found": "",
+    "Add": "",
+    "Remove field": "",
+    "Sort": "",
+    "Resource is not editable.": "",
+    "Edit": "",
+    "Resource is not deletable.": "",
+    "Open list of actions": "",
+    "Delete": "",
+    "Cancel": "",
+    "Delete {{title}}": "",
+    "Are you sure you want to delete {{resourceName}}? ": "",
+    "Error": "",
+    "Server was not able to process your request.": "",
+    "Save": "",
+    "Search": "Пошук",
+    "Clear query": ""
+}

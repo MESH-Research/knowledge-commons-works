@@ -1,0 +1,72 @@
+.ui.label.access-status {
+  color: @white;
+  width: max-content;
+
+  &.open {
+    background-color: @positiveColor;
+  }
+
+  &.restricted {
+    background-color: @negativeColor;
+  }
+
+  &.embargoed {
+    background-color: @warningColor;
+  }
+
+  &.metadata-only {
+    background-color: @accessRightMetadataOnly;
+  }
+}
+
+.ui.label {
+  &.error {
+    border-color: @errorTextColor;
+    color: @errorTextColor;
+  }
+}
+
+.subject {
+  display: inline-block;
+  padding: .2rem .6rem;
+  box-sizing: border-box;
+  color: @mutedTextColor;
+  border: 1px solid @borderColor;
+  border-radius: @defaultBorderRadius;
+  cursor: pointer;
+}
+
+a.subject:hover {
+  background-color: lighten(@borderColor, 65%);
+  color: darken(@mutedTextColor, 15%);
+  text-decoration: none;
+}
+
+label.helptext {
+  display: block;
+  color: @mutedTextColor;
+  font-weight: normal;
+  font-size: 0.9em;
+  margin-top: -0.8em; // counterweight Form field bottom margin
+  margin-bottom: @defaultMargin;
+}
+
+.ui.form {
+  .field {
+
+    label.helptext {
+      display: block;
+      color: @mutedTextColor;
+      font-weight: normal;
+      font-size: 0.9em;
+      margin-top: -0.8em; // counterweight Form field bottom margin
+      margin-bottom: @defaultMargin;
+    }
+  }
+}
+
+label.mobile-hidden {
+  @media all and (max-width: @largestMobileScreen) {
+    display: none;
+  }
+}

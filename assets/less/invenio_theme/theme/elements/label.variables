@@ -1,0 +1,44 @@
+/***********************************************
+         Invenio Theme Label Variables
+***********************************************/
+
+
+/*--- Primary ---*/
+
+@primaryLabelColor: @primaryColor;
+@primaryBorderLabelColor: @primaryColor;
+@primaryTextLabelColor: @invertedTextColor;
+
+
+/*--- Neutral ---*/
+
+@neutralLabelColor: @neutralColor;
+@neutralBorderLabelColor: @neutralColor;
+@neutralTextLabelColor: @invertedTextColor;
+
+/*--- Positive ---*/
+
+@positiveLabelColor: @positiveColor;
+@positiveBorderLabelColor: @positiveColor;
+@positiveTextLabelColor: @invertedTextColor;
+
+
+/*--- Warning ---*/
+
+@warningLabelColor: @warningColor;
+@warningBorderLabelColor: @warningColor;
+@warningTextLabelColor: @invertedTextColor;
+
+
+/*--- Expired ---*/
+
+@expiredLabelColor: @orange;
+@expiredBorderLabelColor: @orange;
+@expiredTextLabelColor: @orangeTextColor;
+
+
+/*--- Negative ---*/
+
+@negativeLabelColor: @negativeColor;
+@negativeBorderLabelColor: @negativeColor;
+@negativeTextLabelColor: @invertedTextColor;

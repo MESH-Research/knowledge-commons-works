@@ -1,0 +1,132 @@
+# 
+# Translators:
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# Zacharias Zacharodimos <zacharias.zacharodimos@cern.ch>, 2022
+# Jesús Martín <jesusmartin@sallep.net>, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T08:08:24.546Z\n"
+"PO-Revision-Date: 2022-02-18 11:12+0000\n"
+"Last-Translator: Jesús Martín <jesusmartin@sallep.net>, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/inveniosoftware/teams/23537/es/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"mime-version: 1.0\n"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Something went wrong."
+msgstr "Algo salió mal."
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "{{action}} request"
+msgstr "{{action}} solicitud"
+
+msgid "Request type"
+msgstr "Tipo de solicitud"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Expires"
+msgstr "Expira"
+
+msgid "Comment"
+msgstr "Comentario"
+
+msgid "commented"
+msgstr "comentado"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Delete"
+msgstr "Suprimir"
+
+msgid "Edited"
+msgstr "Editado"
+
+msgid "Deleted"
+msgstr "Borrado"
+
+msgid "Are you sure you want to delete this comment?"
+msgstr "¿Está seguro de querer borrar este comentario?"
+
+msgid "Decline"
+msgstr "Rechazar"
+
+msgid "Accept and publish"
+msgstr "Aceptar y publicar"
+
+msgid "Accept"
+msgstr "Aceptar"
+
+msgid "Add comment (optional)"
+msgstr "Añadir comentario (opcional)"
+
+msgid "Receiver"
+msgstr "Receptor"
+
+msgid "Created"
+msgstr "Creado"
+
+msgid "New submission"
+msgstr "Nuevo envío"
+
+msgid "New invitation"
+msgstr "Nueva invitación"
+
+msgid "Cancel request"
+msgstr "Cancelar petición"
+
+msgid "Accept request"
+msgstr "Aceptar petición"
+
+msgid "accepted this request"
+msgstr "aceptó esta petición"
+
+msgid "declined this request"
+msgstr "declinó esta petición"
+
+msgid "this request expired"
+msgstr "esta petición caducó"
+
+msgid "cancelled this request"
+msgstr "canceló esta petición"
+
+msgid "unknown event"
+msgstr "evento desconocido"
+
+msgid "Decline request"
+msgstr "Declinar petición"
+
+msgid "Submitted"
+msgstr "Enviado"
+
+msgid "Accepted"
+msgstr "Aceptado"
+
+msgid "Cancelled"
+msgstr "Cancelado"
+
+msgid "Declined"
+msgstr "Rechazado"
+
+msgid "Expired"
+msgstr "Caducado"
+
+msgid "Creator"
+msgstr "Creador"
+
+msgid "deleted a comment"
+msgstr "borrado un comentario"

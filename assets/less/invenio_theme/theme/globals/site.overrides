@@ -1,0 +1,457 @@
+/***********************************************
+         Invenio Theme Site Overrides
+***********************************************/
+
+/*-------------------------
+       Fonts extension
+https://github.com/Semantic-Org/Semantic-UI/issues/5642
+-------------------------*/
+/* latin */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../../fonts/Lato-Regular.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-Regular.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-Regular.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-Regular.ttf') format('truetype');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../../fonts/Lato-Regular.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-Regular.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-Regular.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-Regular.ttf') format('truetype');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* cyrillic */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../../fonts/Lato-Regular.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-Regular.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-Regular.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-Regular.ttf') format('truetype');
+  unicode-range: U+04??, U+0500-052F, U+2DE0-2DFF, U+A640-A69F, U+1D2B-1D78;
+}
+
+/* latin */
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../../fonts/Lato-Italic.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-Italic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-Italic.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-Italic.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-Italic.ttf') format('truetype');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../../fonts/Lato-Italic.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-Italic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-Italic.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-Italic.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-Italic.ttf') format('truetype');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* cyrillic */
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../../fonts/Lato-Italic.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-Italic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-Italic.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-Italic.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-Italic.ttf') format('truetype');
+  unicode-range: U+04??, U+0500-052F, U+2DE0-2DFF, U+A640-A69F, U+1D2B-1D78;
+}
+
+/* latin */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../../fonts/Lato-Bold.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-Bold.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-Bold.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-Bold.ttf') format('truetype');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../../fonts/Lato-Bold.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-Bold.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-Bold.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-Bold.ttf') format('truetype');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* cyrillic */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../../fonts/Lato-Bold.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-Bold.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-Bold.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-Bold.ttf') format('truetype');
+  unicode-range: U+04??, U+0500-052F, U+2DE0-2DFF, U+A640-A69F, U+1D2B-1D78;
+}
+
+/* latin */
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 700;
+  src: url('../../fonts/Lato-BoldItalic.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-BoldItalic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-BoldItalic.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-BoldItalic.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-BoldItalic.ttf') format('truetype');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 700;
+  src: url('../../fonts/Lato-BoldItalic.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-BoldItalic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-BoldItalic.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-BoldItalic.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-BoldItalic.ttf') format('truetype');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* cyrillic */
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 700;
+  src: url('../../fonts/Lato-BoldItalic.eot'); /* IE9 Compat Modes */
+  src: url('../../fonts/Lato-BoldItalic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../../fonts/Lato-BoldItalic.woff2') format('woff2'), /* Modern Browsers */ url('../../fonts/Lato-BoldItalic.woff') format('woff'), /* Modern Browsers */ url('../../fonts/Lato-BoldItalic.ttf') format('truetype');
+  unicode-range: U+04??, U+0500-052F, U+2DE0-2DFF, U+A640-A69F, U+1D2B-1D78;
+}
+
+/*-------------------------
+           GLOBAL
+-------------------------*/
+
+@import "../../navbar/navbar.less";
+
+footer {
+  margin-top: 3*@defaultMargin;
+}
+
+
+html.cover-page {
+  background-color: @brandColor;
+}
+
+body.cover-page {
+  background-color: transparent;
+  width: auto;
+}
+
+.no-dots-list > .item {
+  padding-left: 3em !important;
+}
+
+li ~ .item {
+  padding-left: 2em !important;
+}
+
+.header.item {
+  background: #f3f4f5 !important;
+}
+
+.item.left-logo {
+  padding-left: 0 !important;
+}
+
+.text-muted {
+  color: @mutedTextColor;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+code {
+  color: @codeColor;
+  background-color: @codeBackgroundColor;
+  padding: 3px;
+}
+
+.text-muted {
+  color: @mutedTextColor;
+}
+
+.text-muted-darken {
+  color: @textMutedColorDarken;
+}
+
+.borderless {
+  border: 0 !important;
+}
+
+.media-inline-block > *{
+  display: inline-block;
+}
+
+.computer-flex-header{
+  @media screen and (min-width: @largestMobileScreen) {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+/* FACETS */
+.facet-wrapper.content:not(.parent) {
+  padding: .5em 0;
+  padding-left: 20px !important;
+}
+
+.facet-wrapper.title.parent {
+  .facet-wrapper.content:not(.parent) {
+    padding-left: 0 !important;
+  }
+
+}
+
+.facet-container {
+
+  .header {
+    min-height: 1.85em;
+  }
+
+  .facet-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+}
+
+.ui.circular.label.facet-count {
+  margin-left: auto;
+}
+
+.centered {
+  text-align: center !important;
+}
+
+/* Automatic margins */
+
+.m-auto {
+  margin: auto !important;
+}
+
+.mt-auto {
+  margin-top: auto !important;
+}
+
+.mb-auto {
+  margin-bottom: auto !important;
+}
+
+.ml-auto {
+  margin-left: auto !important;
+}
+
+.mr-auto {
+  margin-right: auto !important;
+}
+
+.flex {
+  display: flex !important;
+
+  &.column {
+    flex-direction: column !important;
+  }
+
+  &.wrap {
+    flex-wrap: wrap !important;
+  }
+}
+
+.block {
+  display: block !important;
+}
+
+.inline {
+  display: inline;
+}
+
+/* Generator functions */
+
+.generate-margins(@max, @direction, @alias, @i: 0) when (@i =< @max) {
+  .m@{alias}-@{i} {
+    margin@{direction}: unit(@i, px) !important;
+  }
+  .generate-margins(@max, @direction, @alias, (@i + 5));
+}
+
+.generate-padding(@max, @direction, @alias, @i: 0) when (@i =< @max) {
+  .p@{alias}-@{i} {
+    padding@{direction}: unit(@i, px) !important;
+  }
+  .generate-padding(@max, @direction, @alias, (@i + 5));
+}
+
+.generate-relative-margins(@max, @direction, @alias, @i: 1) when (@i =< @max) {
+  .rel-m@{alias}-@{i} {
+    margin@{direction}: unit(@i, em) !important;
+  }
+  .generate-relative-margins(@max, @direction, @alias, (@i + 1));
+}
+
+.generate-relative-padding(@max, @direction, @alias, @i: 1) when (@i =< @max) {
+  .rel-p@{alias}-@{i} {
+    padding@{direction}: unit(@i, em) !important;
+  }
+  .generate-relative-padding(@max, @direction, @alias, (@i + 1));
+}
+
+/*
+* The following classes will be generated:
+* .{m,p}-{0,5,10,15,20,25,30} {
+*     {margin, padding} {
+*       {0,5,10,15,20,25,30}px !important;
+*     }
+* }
+* .{m,p}r-{0,5,10,15,20,25,30} {
+*     {margin, padding}-right {
+*       {0,5,10,15,20,25,30}px !important;
+*     }
+* }
+* .{m,p}l-{0,5,10,15,20,25,30} {
+*     margin-left {
+*       {0,5,10,15,20,25,30}px !important;
+*     }
+* }
+* .{m,p}t-{0,5,10,15,20,25,30} {
+*     margin-top {
+*       {0,5,10,15,20,25,30}px !important;
+*     }
+* }
+* .{m,p}b-{0,5,10,15,20,25,30} {
+*     margin-bottom {
+*       {0,5,10,15,20,25,30}px !important;
+*     }
+* }
+* .{rel-m,rel-p}-{1,2,3,4,5} {
+*     {margin, padding} {
+*       {1,2,3,4,5}em !important;
+*     }
+* }
+* .{rel-m,rel-p}r-{1,2,3,4,5} {
+*     {margin, padding}-right {
+*       {1,2,3,4,5}em !important;
+*     }
+* }
+* .{rel-m,rel-p}l-{1,2,3,4,5} {
+*     margin-left {
+*       {1,2,3,4,5}em !important;
+*     }
+* }
+* .{rel-m,rel-p}t-{1,2,3,4,5} {
+*     margin-top {
+*       {1,2,3,4,5}em !important;
+*     }
+* }
+* .{rel-m,rel-p}b-{1,2,3,4,5} {
+*     margin-bottom {
+*       {1,2,3,4,5}em !important;
+*     }
+* }
+*/
+
+.generate-margins(30, ~'', ~'');
+.generate-margins(30, -right, r);
+.generate-margins(30, -left, l);
+.generate-margins(30, -bottom, b);
+.generate-margins(30, -top, t);
+
+.generate-padding(30, ~'', ~'');
+.generate-padding(30, -right, r);
+.generate-padding(30, -left, l);
+.generate-padding(30, -bottom, b);
+.generate-padding(30, -top, t);
+
+.generate-relative-margins(5, ~'', ~'');
+.generate-relative-margins(5, -right, r);
+.generate-relative-margins(5, -left, l);
+.generate-relative-margins(5, -bottom, b);
+.generate-relative-margins(5, -top, t);
+
+.generate-relative-padding(5, ~'', ~'');
+.generate-relative-padding(5, -right, r);
+.generate-relative-padding(5, -left, l);
+.generate-relative-padding(5, -bottom, b);
+.generate-relative-padding(5, -top, t);
+
+
+.generate-truncate-classes(@max, @i: 1) when (@i =< @max) {
+  .truncate-lines-@{i} {
+    display: -webkit-box !important;
+    -webkit-line-clamp: @i;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .generate-truncate-classes(@max, (@i + 1));
+}
+
+.generate-truncate-classes(10);
+
+.skip-link {
+  position: absolute;
+  z-index: -999;
+
+  &:focus {
+    z-index: 999;
+  }
+}
+
+
+#admin-notifications {
+  z-index: 9999;
+  margin-top: 1rem;
+
+  &.compact {
+    position: fixed;
+    right: 1em;
+    top: @relative75px+1em;
+    z-index: 9999;
+    margin: 0;
+  }
+
+  .message {
+    padding-right: 2.5em;
+  }
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+.word-break-all {
+  word-break: break-all;
+}
+
+.auto-column-grid {
+  // used on a container with two children <div>
+  // provides auto adjustment to the content of the left column
+  // and auto fills the width on the right
+  // [   COL1 (auto fill remaining space)  ] [  COL2 (max-content width)   ]
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: auto max-content;
+  align-items: center;
+  column-gap: 2rem;
+
+  @media all and (max-width: @largestTabletScreen) {
+    grid-auto-flow: row;
+    grid-auto-columns: 100%;
+    align-items: flex-start;
+    row-gap: 1rem;
+  }
+
+  > *:nth-child(2) {
+    @media all and (min-width: @computerBreakpoint) {
+      width: max-content; // Needed for Safari
+    }
+  }
+}

@@ -1,0 +1,134 @@
+# 
+# Translators:
+# Alizee Pace <alizee.pace@gmail.com>, 2022
+# Mojib Wali <mojib.wali@tugraz.at>, 2022
+# Tibor Simko <tibor.simko@cern.ch>, 2022
+# Hermann Schranzhofer <hermann.schranzhofer@tugraz.at>, 2022
+# chriz_uniba <christina.zeller@uni-bamberg.de>, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T08:08:24.546Z\n"
+"PO-Revision-Date: 2022-02-18 11:12+0000\n"
+"Last-Translator: chriz_uniba <christina.zeller@uni-bamberg.de>, 2022\n"
+"Language-Team: German (https://www.transifex.com/inveniosoftware/teams/23537/de/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Something went wrong."
+msgstr "Etwas ist schief gegangen."
+
+msgid "Confirm"
+msgstr "Bestätigen"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "{{action}} request"
+msgstr "{{action}} Anfrage"
+
+msgid "Request type"
+msgstr "Anfragetyp"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Expires"
+msgstr "Läuft ab"
+
+msgid "Comment"
+msgstr "Kommentieren"
+
+msgid "commented"
+msgstr "kommentiert"
+
+msgid "Edit"
+msgstr "Editieren"
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Edited"
+msgstr "Editiert"
+
+msgid "Deleted"
+msgstr "Gelöscht"
+
+msgid "Are you sure you want to delete this comment?"
+msgstr "Sind Sie sicher, dass Sie diesen Kommentar löschen wollen?"
+
+msgid "Decline"
+msgstr "Ablehnen"
+
+msgid "Accept and publish"
+msgstr "Annehmen und veröffentlichen"
+
+msgid "Accept"
+msgstr "Annehmen"
+
+msgid "Add comment (optional)"
+msgstr "Kommentar hinzufügen (optional)"
+
+msgid "Receiver"
+msgstr "EmpfängerIn"
+
+msgid "Created"
+msgstr "Erstellt"
+
+msgid "New submission"
+msgstr "Neue Einreichung"
+
+msgid "New invitation"
+msgstr "Neue Einladung"
+
+msgid "Cancel request"
+msgstr "Anfrage abbrechen"
+
+msgid "Accept request"
+msgstr "Anfrage annehmen"
+
+msgid "accepted this request"
+msgstr "hat diese Anfrage angenommen"
+
+msgid "declined this request"
+msgstr "hat diese Anfrage abgelehnt"
+
+msgid "this request expired"
+msgstr "diese Anfrage ist abgelaufen"
+
+msgid "cancelled this request"
+msgstr "hat diese Anfrage abgebrochen"
+
+msgid "unknown event"
+msgstr "unbekanntes Ereignis"
+
+msgid "Decline request"
+msgstr "Anfrage ablehnen"
+
+msgid "Submitted"
+msgstr "Eingereicht"
+
+msgid "Accepted"
+msgstr "Angenommen"
+
+msgid "Cancelled"
+msgstr "Abgebrochen"
+
+msgid "Declined"
+msgstr "Abgelehnt"
+
+msgid "Expired"
+msgstr "Abgelaufen"
+
+msgid "Creator"
+msgstr "ErstellerIn"
+
+msgid "deleted a comment"
+msgstr "hat einen Kommentar gelöscht"

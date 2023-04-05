@@ -1,0 +1,17 @@
+/***********************************************
+         Invenio Theme Image Overrides
+***********************************************/
+
+
+// Administration styles
+
+.invenio-administration {
+
+  .logo-link {
+    line-height: 0;
+  }
+  .rdm-logo {
+    width: 180px;
+    max-width: 100%;
+  }
+}

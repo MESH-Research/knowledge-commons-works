@@ -1,0 +1,80 @@
+# 
+# Translators:
+# Berat Aldemir <berataldemir@gmail.com>, 2022
+# Ben Translation and Interpreting Services <info@bentercume.com>, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"POT-Creation-Date: 2022-10-12T07:25:02.203Z\n"
+"PO-Revision-Date: 2022-10-12 07:22+0000\n"
+"Last-Translator: Ben Translation and Interpreting Services <info@bentercume.com>, 2022\n"
+"Language-Team: Turkish (https://www.transifex.com/inveniosoftware/teams/23537/tr/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"mime-version: 1.0\n"
+
+msgid "Search ..."
+msgstr ""
+
+msgid "There is no resources in this category."
+msgstr ""
+
+msgid "No matching resources found."
+msgstr ""
+
+msgid "results per page"
+msgstr "sayfa başına sonuç sayısı"
+
+msgid "result(s) found"
+msgstr "sonuç(lar) bulundu"
+
+msgid "Add"
+msgstr "Ekle"
+
+msgid "Remove field"
+msgstr ""
+
+msgid "Sort"
+msgstr ""
+
+msgid "Resource is not editable."
+msgstr ""
+
+msgid "Edit"
+msgstr "Düzenle"
+
+msgid "Resource is not deletable."
+msgstr ""
+
+msgid "Open list of actions"
+msgstr ""
+
+msgid "Delete"
+msgstr "Sil"
+
+msgid "Cancel"
+msgstr "İptal"
+
+msgid "Delete {{title}}"
+msgstr ""
+
+msgid "Are you sure you want to delete {{resourceName}}? "
+msgstr ""
+
+msgid "Error"
+msgstr "Hata"
+
+msgid "Server was not able to process your request."
+msgstr ""
+
+msgid "Save"
+msgstr "Kaydet"
+
+msgid "Search"
+msgstr "Ara"
+
+msgid "Clear query"
+msgstr "Sorguyu temizle"
