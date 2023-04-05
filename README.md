@@ -210,13 +210,13 @@ From the command line, enter a command line inside one of the main app container
 docker exec -it knowledge-commons-repository-web-ui-1 bash
 ```
 From inside the container, run these commands to create and activate the admin user:
-```
-pipenv run invenio users create <email> --password <password>
-pipenv run invenio users activate <email>
-```
+```console
+invenio users create <email> --password <password>
+invenio users activate <email>
+```console
 If you want this user to have access to the administration panel in Invenio, you also need to run
-```
-pipenv run invenio access allow administration-access user <email>
+```console
+invenio access allow administration-access user <email>
 ```
 After this you will still be in the container's bash prompt. To leave the container (without killing your ssh session when you're doing this remotely) simply press ctrl-P followed by ctrl-Q.
 
@@ -233,24 +233,24 @@ You should now be able to access the following:
 ### Start the containers
 
 With the invenio cli:
-```
+```console
 invenio-cli containers start
 ```
 
 or directly with docker commands:
-```
+```console
 docker-compose --file docker-compose.full.yml up -d
 ```
 
 ### Stop the containers
 
 With the invenio cli:
-```
+```console
 invenio-cli containers stop
 ```
 
 or directly with docker commands:
-```
+```console
 docker-compose --file docker-compose.full.yml stop
 ```
 
@@ -260,7 +260,7 @@ Note that stopping the containers this way will not destroy the data and configu
 
 The logging output (and stdout) can be viewed with Docker Desktop using its convenient ui. It can also be viewed from the command line using:
 
-```
+```console
 docker logs <image-name> -f
 ```
 
@@ -279,15 +279,15 @@ The names of the various images are:
 ### Controlling containerized nginx server
 
 The frontend container is configured so that the configuration files in docker/nginx/ are bind mounted. This means that changes to those config files can be seen in the running container and enabled without rebuilding the container. To reload the nginx configuration, first enter the frontend container:
-```
+```console
 docker exec -it knowledge-commons-repository-frontend-1 bash
 ```
 Then tell gninx to reload the config files:
-```
+```console
 nginx -s reload
 ```
 You can also test the nginx config prior to reloading by running
-```
+```console
 nginx -t
 ```
 
@@ -332,7 +332,7 @@ After the first run of the webpack build script, the webpack configuration files
 
 In development, if you want to avoid having to build these files after every change, you can instead run
 ```console
-pipenv run invenio-cli assets watch
+invenio-cli assets watch
 ```
 or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the npm watch service using a separate node.js container:
 ```console
@@ -344,10 +344,10 @@ That will watch for changes and automatically rebuild whatever assets are necess
 
 The `watch` command will only pick up changes to files that already existed during the last Webpack build. If you add a new javascript or css (less) file, you need to again run
 ```console
-pipenv run invenio-cli assets build
+invenio-cli assets build
 ```
 or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the build operation using a separate node.js container:
-```
+```console
 docker run --rm -it -u 1000:1000 -v $PWD/assets:/opt/invenio/var/instance/assets -v $PWD/static:/opt/invenio/var/instance/static/ -w /opt/invenio/var/instance/assets node:19 sh -c "npm ci &&  NODE_OPTIONS=--openssl-legacy-provider npm run build"
 ```
 
