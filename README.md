@@ -55,14 +55,14 @@ Instructions for Linux, MacOS, and Windows can be found here: https://www.newlin
 ### Install and enable the proper python version
 
 Invenio's command line tools require a specific python version to work reliably. Currently this is python 3.9.16.  At the command line, first install this python version using pyenv:
-```
+```console
 pyenv install 3.9.16
 ```
 Note: It is important to use cpython. Invenio does not support other python interpreters (like pypy) and advises against using anaconda python in particular for running the RDM application.
 
 Just because this python version is installed does not guarantee it will be used. Next, navigate to the directory where you cloned the source code, and set the correct python version to be used locally:
 
-```
+```console
 cd ~/path/to/directory/knowledge-commons-repository
 pyenv local 3.9.16
 ```
@@ -71,7 +71,7 @@ pyenv local 3.9.16
 
 From the same directory Use pip to install the **invenio-cli** python package. (Do not use pipenv yet or create a virtual environment.)
 
-```
+```console
 pip install invenio-cli
 ```
 
@@ -85,7 +85,7 @@ If you are using Ubuntu, follow the steps for installing Docker and Docker-compo
 
 You must then create a `docker` group and add the current user to it (so that you can run docker commands without sudo). This is *required* for the invenio-cli scripts to work, and it must be done for the *same user* that will run the cli commands:
 
-```
+```console
 sudo usermod --append --groups docker $USER
 ```
 
@@ -108,7 +108,7 @@ With the release of compose v2, the command syntax changed from `docker-compose`
 
 The solution on Linux systems is to install Docker Compose standalone, which uses the old `docker-compose` syntax:
 
-```
+```console
 sudo curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 suod chmod +x /usr/local/bin/docker-compose
 ```
@@ -149,15 +149,21 @@ Note: This build step will take a long time (at least several minutes). It is in
 
 You can perform the build using invenio-cli:
 
-```
+```console
 invenio-cli containers build
 ```
 
 Or you can run the commands that invenio-cli uses under the hood:
 
-```
+```console
 pipenv lock
 docker-compose --file docker-compose.full.yml build
+```
+
+### Start the containers
+
+```console
+docker-compose --file docker-compose.full.yml up -d
 ```
 
 ### Build the static files
@@ -165,11 +171,11 @@ docker-compose --file docker-compose.full.yml build
 Invenio (Flask) now needs to collect static files (like images) from the various modules and place them in the static directory. Similarly, we need to run the webpack build process to set up the css/less/scss and js files.
 
 First enter the web-ui container:
-```
+```console
 docker exec -it knowledge-commons-repository-web-ui-1 bash
 ```
 Then run the cli build script from inside the container:
-```
+```console
 invenio collect -v
 invenio webpack buildall
 ```
@@ -193,21 +199,14 @@ Note: This setup step takes much less time than the build step, but can still ta
 
 You can perform the setup using invenio-cli:
 
-```
+```console
 invenio-cli containers setup
 ```
-
-**Note: This process sometimes gets impatient and stops, telling you that the search service could not be started. Running the command a second time should work. Alternately, you can manually start the services first by running**
-```
-docker-compose --file docker-compose.full.yml up -d
-```
-**before you run the setup function.**
-
 
 ## Create an admin user
 
 From the command line, enter a command line inside one of the main app containers:
-```
+```console
 docker exec -it knowledge-commons-repository-web-ui-1 bash
 ```
 From inside the container, run these commands to create and activate the admin user:
