@@ -95,4 +95,3 @@ Thumbs.db
 # postgres_env.cfg
 # *.sql
 # *.gz
-static/dist/manifest.json
