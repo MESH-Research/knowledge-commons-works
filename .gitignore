@@ -14,9 +14,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-site/build/
 develop-eggs/
-site/dist/
 downloads/
 eggs/
 .eggs/
@@ -24,6 +22,9 @@ lib/
 lib64/
 parts/
 sdist/
+site/build/
+site/dist/
+static/dist/manifest.json
 var/
 *.egg-info/
 .installed.cfg
@@ -94,3 +95,4 @@ Thumbs.db
 # postgres_env.cfg
 # *.sql
 # *.gz
+static/dist/manifest.json
