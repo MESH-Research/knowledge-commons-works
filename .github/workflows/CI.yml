@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      # Cache docker images so they don't rebuild every time
+      - name: Cache Local Images
+        id: local-images
+        uses: actions/cache@v3
+        with:
+          path: /var/lib/docker/
+          key: local-docker-directory
+
+      - name: Build Images
+            working-directory: /
+            run: |
+              docker compose -f docker-compose.full.yml up -d --build
+
+      # Set up Python 3.9 environment
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.9"
+
+      #- name: Install dependencies
+      #  run: |
+      #    python -m pip install --upgrade pip
+      #    pip install -r requirements.txt
+
+      #- name: Run unit tests
+      #  run: |
+      #    python test_application.py
+          
+      - name: Stop containers
+        if: always()
+        run: docker compose -f "docker-compose.full.yml" down
