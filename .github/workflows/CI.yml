@@ -23,11 +23,9 @@ jobs:
       #   with:
       #     path: /var/lib/docker/
       #     key: local-docker-directory
-
       - name: Build Images
-            # working-directory: /
-            run: |
-              docker compose -f docker-compose.full.yml up -d --build
+        run: |
+          docker compose -f docker-compose.full.yml up -d --build
 
       # Set up Python 3.9 environment
       - name: Set up Python 3.9
