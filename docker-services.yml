@@ -87,4 +87,4 @@ services:
       # settings only for development. DO NOT use in production!
       # TODO: change in production
       - 'OPENSEARCH_HOSTS=["http://search:9200"]'
-      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=false"
+      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
