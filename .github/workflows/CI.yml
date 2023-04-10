@@ -17,12 +17,12 @@ jobs:
         uses: actions/checkout@v3
 
       # Cache docker images so they don't rebuild every time
-      - name: Cache Local Images
-        id: local-images
-        uses: actions/cache@v3
-        with:
-          path: /var/lib/docker/
-          key: local-docker-directory
+      # - name: Cache Local Images
+      #   id: local-images
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: /var/lib/docker/
+      #     key: local-docker-directory
 
       - name: Build Images
             # working-directory: /
