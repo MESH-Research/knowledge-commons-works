@@ -6,7 +6,7 @@ on:
   pull_request:
     branches:
       - main
-    
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,7 +15,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       # Cache docker images so they don't rebuild every time
       - name: Cache Local Images
         id: local-images
@@ -25,7 +25,7 @@ jobs:
           key: local-docker-directory
 
       - name: Build Images
-            working-directory: /
+            # working-directory: /
             run: |
               docker compose -f docker-compose.full.yml up -d --build
 
@@ -43,7 +43,7 @@ jobs:
       #- name: Run unit tests
       #  run: |
       #    python test_application.py
-          
+
       - name: Stop containers
         if: always()
         run: docker compose -f "docker-compose.full.yml" down
