@@ -115,6 +115,7 @@ services:
     image: knowledge-commons-repository:latest
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
+      - ./static:/opt/invenio/var/instance/static
     depends_on:
       search:
         condition: service_started
@@ -125,5 +126,6 @@ services:
       mq:
         condition: service_started
 volumes:
+  static_data:
   uploaded_data:
   archived_data:
