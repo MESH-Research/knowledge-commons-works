@@ -13,7 +13,7 @@ services:
     image: knowledge-commons-repository
     restart: "unless-stopped"
     env_file:
-      - ./.env
+      # - ./.env
       - ./.env.local
   frontend:
     build: ./docker/nginx/
@@ -33,15 +33,15 @@ services:
     restart: "unless-stopped"
     ports:
       - "5432:5432"
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
   pgadmin:
     image: dpage/pgadmin4:6
     restart: "unless-stopped"
     ports:
       - "5050:80"
-    env_file:
-      - ./.env
+    # env_file:
+    #   - ./.env
     volumes:
       - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
   mq:
