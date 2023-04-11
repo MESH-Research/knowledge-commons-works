@@ -15,6 +15,7 @@ uwsgi-tools = ">=1.1.1"
 greenlet = "*"
 python-dotenv = "*"
 invenio-cli = "*"
+pytest-invenio = "*"
 
 [requires]
 python_version = "3.9"
