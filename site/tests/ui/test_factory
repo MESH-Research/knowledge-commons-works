@@ -1,0 +1,7 @@
+from pytest_invenio.fixtures import app, app_config, appctx, base_client, base_app
+from flask import url_for
+
+def test_frontpage():
+    resp = base_client.get(url_for('frontpage'))
+    print(resp)
+    assert resp

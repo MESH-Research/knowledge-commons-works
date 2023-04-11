@@ -38,9 +38,8 @@ jobs:
       #    python -m pip install --upgrade pip
       #    pip install -r requirements.txt
 
-      #- name: Run unit tests
-      #  run: |
-      #    python test_application.py
+      - name: Run unit tests
+        run: cd site && pytest
 
       - name: Stop containers
         if: always()
