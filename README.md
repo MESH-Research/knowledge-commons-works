@@ -34,6 +34,11 @@ POSTGRES_USER=knowledge-commons-repository
 POSTGRES_PASSWORD=knowledge-commons-repository
 POSTGRES_DB=knowledge-commons-repository
 
+Random values for the INVENIO_SECRET_KEY can be generated in a terminal by running
+```console
+python -c 'import secrets; print(secrets.token_hex())'
+```
+
 ## Customize .env.local file
 
 This repository does include a file of local environment variables that are
