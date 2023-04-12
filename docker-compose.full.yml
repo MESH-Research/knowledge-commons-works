@@ -81,6 +81,7 @@ services:
       - ./static:/opt/invenio/src/static
       - ./assets:/opt/invenio/var/instance/assets
       - ./static:/opt/invenio/var/instance/static
+      - .:/opt/invenio/src
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
 
@@ -104,6 +105,7 @@ services:
       - ./static:/opt/invenio/src/static
       - ./assets:/opt/invenio/var/instance/assets
       - ./static:/opt/invenio/var/instance/static
+      - .:/opt/invenio/src
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
   # Worker
