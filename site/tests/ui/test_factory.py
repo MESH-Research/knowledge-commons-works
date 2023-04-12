@@ -7,8 +7,8 @@ def test_sample():
     assert True
 
 def test_frontpage(base_client, base_app):
-    pprint(dir(base_client))
-    pprint(dir(base_app))
-    # resp = base_client.get('/')
-    # print(resp)
+    # pprint(dir(base_client))
+    # pprint(dir(base_app))
+    resp = base_client.get('/')
+    pprint(resp.response)
     assert True

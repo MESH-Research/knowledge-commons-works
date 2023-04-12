@@ -5,7 +5,6 @@ import pytest
 
 @pytest.fixture(scope='module')
 def app_config(app_config):
-    app_config['MYCONF'] = True
     return app_config
 
 @pytest.fixture(scope='module')

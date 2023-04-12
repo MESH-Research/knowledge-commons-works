@@ -17,5 +17,5 @@ import pytest
 # Common application configuration goes here
 @pytest.fixture(scope='module')
 def app_config(app_config):
-    app_config['MYCONF'] = True
+    app_config['SQLALCHEMY_DATABASE_URI'] = "postgresql+psycopg2://knowledge-commons-repository:knowledge-commons-repository@db/knowledge-commons-repository"
     return app_config
