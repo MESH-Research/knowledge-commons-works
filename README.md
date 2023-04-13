@@ -298,6 +298,10 @@ nginx -t
 
 ## Developing the Knowledge Commons Repository
 
+### Branching and committing
+
+In general, all members of the development team should commit their work to the `main` branch on a daily basis. It is a good idea to create your own local `working` branch to use for your own development. This allows you to commit changes while work is unfinished without breaking the `main` branch for others. Normally, though, at least once a day you should merge your `working` branch with `main` and push your changes to Github. Only create a new feature branch to push to Github if your work (a) requires leaving things broken that others might rely on, and (b) will take more than a day to complete. This should, though, be regarded as an unusual, temporary measure. You should inform the rest of the development team when the new feature branch is created, and plan to merge it with `main` as soon as possible.
+
 ### Making changes to template files
 
 Changes made to jinja template files will be visible immediately in the running Knowledge Commons Repsitory instance.
@@ -372,6 +376,10 @@ or
 ```console
 flask collect -v
 ```
+
+### Running automated tests
+
+Automated tests (unit tests and integration tests) are run every time a commit is pushed to the knowledge-commons-repository Github repo. You can also run the test suite locally. Again, enter the web-ui
 
 
 ## DEPRECATED (Default README text from InvenioRDM)
