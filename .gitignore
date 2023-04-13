@@ -52,7 +52,9 @@ coverage.xml
 # PyBuilder
 # target/
 
+# Testing
 test.db
+.pytest_cache/
 
 # Environments
 # .venv/
