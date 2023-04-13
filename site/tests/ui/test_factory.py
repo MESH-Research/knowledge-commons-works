@@ -9,6 +9,8 @@ def test_sample():
 def test_frontpage(base_client, base_app):
     # pprint(dir(base_client))
     # pprint(dir(base_app))
-    resp = base_client.get('/')
-    pprint(resp.response)
+    response = base_client.get('/')
+    pprint(response.response)
+    assert response.status_code == 200
+    assert b'<span>Hello world</span>' in response.data
     assert True

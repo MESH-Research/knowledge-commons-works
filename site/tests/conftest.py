@@ -18,4 +18,5 @@ import pytest
 @pytest.fixture(scope='module')
 def app_config(app_config):
     app_config['SQLALCHEMY_DATABASE_URI'] = "postgresql+psycopg2://knowledge-commons-repository:knowledge-commons-repository@db/knowledge-commons-repository"
+    app_config['INVENIO_INSTANCE_PATH'] = "/opt/invenio/var/instance"
     return app_config
