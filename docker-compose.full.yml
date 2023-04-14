@@ -52,7 +52,8 @@ services:
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
-      - ./static:/opt/invenio/var/instance/static
+      # - ./static:/opt/invenio/var/instance/static
+      - static_data:/opt/invenio/var/instance/static
     depends_on:
       - web-ui
       - web-api
@@ -79,9 +80,10 @@ services:
       - ./translations:/opt/invenio/var/instance/translations:ro
       - ./assets:/opt/invenio/src/assets
       - ./static:/opt/invenio/src/static
-      - ./assets:/opt/invenio/var/instance/assets
-      - ./static:/opt/invenio/var/instance/static
-      - .:/opt/invenio/src
+      # - ./assets:/opt/invenio/var/instance/assets
+      # - ./static:/opt/invenio/var/instance/static
+      # - .:/opt/invenio/src
+      - static_data:/opt/invenio/var/instance/static
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
 
@@ -103,9 +105,9 @@ services:
       - ./translations:/opt/invenio/var/instance/translations:ro
       - ./assets:/opt/invenio/src/assets
       - ./static:/opt/invenio/src/static
-      - ./assets:/opt/invenio/var/instance/assets
-      - ./static:/opt/invenio/var/instance/static
-      - .:/opt/invenio/src
+      # - ./assets:/opt/invenio/var/instance/assets
+      # - ./static:/opt/invenio/var/instance/static
+      # - .:/opt/invenio/src
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
   # Worker
@@ -117,7 +119,7 @@ services:
     image: knowledge-commons-repository:latest
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
-      - ./static:/opt/invenio/var/instance/static
+      # - ./static:/opt/invenio/var/instance/static
     depends_on:
       search:
         condition: service_started
