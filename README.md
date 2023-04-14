@@ -218,7 +218,7 @@ From inside the container, run these commands to create and activate the admin u
 ```console
 invenio users create <email> --password <password>
 invenio users activate <email>
-```console
+```
 If you want this user to have access to the administration panel in Invenio, you also need to run
 ```console
 invenio access allow administration-access user <email>
