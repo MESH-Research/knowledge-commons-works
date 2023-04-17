@@ -171,7 +171,7 @@ docker-compose --file docker-compose.full.yml build
 docker-compose --file docker-compose.full.yml up -d
 ```
 
-### Build the static files
+<!-- ### Build the static files
 
 Invenio (Flask) now needs to collect static files (like images) from the various modules and place them in the static directory. Similarly, we need to run the webpack build process to set up the css/less/scss and js files.
 
@@ -185,7 +185,7 @@ invenio collect -v
 invenio webpack buildall
 ```
 
-The collected and built static and asset files will now be available outside the container in our local `assets` and `static` folders.
+The collected and built static and asset files will now be available outside the container in our local `assets` and `static` folders. -->
 
 ### Set up the services
 
