@@ -10,8 +10,6 @@
 #
 # Following services are included:
 # - Frontend: Nginx (exposed ports: 80 and 443)
-# - UI application: UWSGI (not exposed)
-# - API application: UWSGI (not exposed)
 # - Cache: Redis (exposed port: 6379)
 # - DB: (PostgresSQL/MySQL) (exposed port: 5432 or 3306)
 # - Message queue: RabbitMQ (exposed ports: 5672, 15672)
@@ -50,39 +48,10 @@ services:
       file: docker-services.yml
       service: frontend
     volumes:
-      - static_data:/opt/invenio/var/instance/static
-    depends_on:
-      - web-ui
-      - web-api
+      - ${INVENIO_INSTANCE_PATH}/static:/opt/invenio/var/instance/static
     ports:
       - "80:80"
       - "443:443"
-  # UI Application
-  web-ui:
-    extends:
-      file: docker-services.yml
-      service: app
-    command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
-    image: knowledge-commons-repository:latest
-    ports:
-      - "5000"
-    volumes:
-      - static_data:/opt/invenio/var/instance/static
-      - uploaded_data:/opt/invenio/var/instance/data
-      - archived_data:/opt/invenio/var/instance/archive
-
-  # API Rest Application
-  web-api:
-    extends:
-      file: docker-services.yml
-      service: app
-    command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
-    image: knowledge-commons-repository:latest
-    ports:
-      - "5001"
-    volumes:
-      - uploaded_data:/opt/invenio/var/instance/data
-      - archived_data:/opt/invenio/var/instance/archive
 
   # Worker
   worker:
@@ -92,7 +61,7 @@ services:
     command: ["celery -A invenio_app.celery worker --beat --loglevel=INFO"]
     image: knowledge-commons-repository:latest
     volumes:
-      - uploaded_data:/opt/invenio/var/instance/data
+      - ${INVENIO_INSTANCE_PATH}:/opt/invenio/var/instance/data
     depends_on:
       search:
         condition: service_started
@@ -102,7 +71,3 @@ services:
         condition: service_started
       mq:
         condition: service_started
-volumes:
-  static_data:
-  uploaded_data:
-  archived_data:

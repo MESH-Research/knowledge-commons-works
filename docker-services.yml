@@ -5,18 +5,18 @@
 
 version: '2.2'
 services:
-  app:
-    build:
-      context: ./
-      args:
-        - ENVIRONMENT=DEV
-    image: knowledge-commons-repository
-    restart: "unless-stopped"
-    environment:
-      - INVENIO_SECRET_KEY=${INVENIO_SECRET_KEY}
-    env_file:
-      # - ./.env
-      - ./.env.local
+  # app:
+  #   build:
+  #     context: ./
+  #     args:
+  #       - ENVIRONMENT=DEV
+  #   image: knowledge-commons-repository
+  #   restart: "unless-stopped"
+  #   environment:
+  #     - INVENIO_SECRET_KEY=${INVENIO_SECRET_KEY}
+  #   env_file:
+  #     # - ./.env
+  #     - ./.env.local
   frontend:
     build: ./docker/nginx/
     image: knowledge-commons-repository-frontend

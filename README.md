@@ -8,9 +8,7 @@ Copyright 2023 MESH Research. Released under the MIT license. (See the included 
 
 ## Installation for Development
 
-These instructions allow you to run the Knowledge Commons Repository in a set of docker containers without installing any of the services locally. The app source files are copied onto your system, though, and changes to those files will take effect without rebuilding the docker images.
-
-Currently, the images *will* have to be rebuilt if you change any of the python package requirements. The images will also have to be rebuilt if you want to change the javascript or css (less) files, requiring that webpack build them again.
+These instructions allow you to run the Knowledge Commons Repository for local development. The app source files are copied onto your system, and the Invenio python modules are installed locally. Most of the other services used by the app, however, are run from docker containers.
 
 The installation requirements below are drawn in part from https://inveniordm.docs.cern.ch/install/requirements/.
 
@@ -128,77 +126,74 @@ Regardless of your operating system, you should set up log rotation for containe
 
 Make sure to always use the same Docker context to run all of the containers for InvenioRDM. See further, https://docs.docker.com/engine/context/working-with-contexts/
 
-## Build and Configure the Containers
+## Install Node.js and NVM
 
-### Build the containers for the app and services
+Currently InvenioRDM (v. 11) requires Node.js version 16.19.1. The best way to install and manage Node.js versions is using the nvm version manager.
+???
+
+### Activate the correct Node.js version
+
+Navigate to the root knowledge-commons-repository folder and activate the required Node.js version:
+```console
+cd ~/path/to/directory/knowledge-commons-repository
+nvm use 16.19.1
+```
+
+## Install the Invenio Modules Locally
+
+Navigate to the root knowledge-commons-repository folder. Then run the installation script:
+```console
+cd ~/path/to/directory/knowledge-commons-repository
+invenio-cli install
+```
+Note: This installation step will take a long time (at least several minutes). It is installing several python packages and building quite a bit of js and css!
+
+This stage
+- locks the python package requirements and installs all the Invenio python packages, along with all of the other python dependencies.
+- ???
+
+## Build and Configure the Containerized Services
+
+### Build the containers for the services
 
 This step does several things:
 
-- locks the python package requirements
 - builds several images
-    - base app image (knowledge-commons-repository)
-        - using ./Dockerfile
-        - installs python dependencies
-        - builds javascript and css (less) assets using webpack
-    - the two images to actually run the app (web-ui and web-api)
-        - both based on the base knowledge-commons-repository image
     - web server image (frontend)
         - based on nginx, using ./docker/nginx/Dockerfile
-- pulls remote images for other services
-    - mq, search, db, cache, pgadmin, opensearch-dashboards, worker
+    - remote images for other services
+        - mq, search, db, cache, pgadmin, opensearch-dashboards, worker
 - starts all containers
-    - creates and mounts volumes for persisting and sharing data
-    - mounts application source and config files in web-ui and web-api containers
-
-Note: This build step will take a long time (at least several minutes). It is installing several python packages and building quite a bit of js and css!
-
-You can perform the build using invenio-cli:
-
-```console
-invenio-cli containers build
-```
-
-Or you can run the commands that invenio-cli uses under the hood:
-
-```console
-pipenv lock
-docker-compose --file docker-compose.full.yml build
-```
-
-### Start the containers
-
-```console
-docker-compose --file docker-compose.full.yml up -d
-```
-
-<!-- ### Build the static files
-
-Invenio (Flask) now needs to collect static files (like images) from the various modules and place them in the static directory. Similarly, we need to run the webpack build process to set up the css/less/scss and js files.
-
-First enter the web-ui container:
-```console
-docker exec -it knowledge-commons-repository-web-ui-1 bash
-```
-Then run the cli build script from inside the container:
-```console
-invenio collect -v
-invenio webpack buildall
-```
-
-The collected and built static and asset files will now be available outside the container in our local `assets` and `static` folders. -->
-
-### Set up the services
-
-This stage is generally only performed once after building (or rebuilding) the main knowledge-commons-repository image. It does several things:
-
-- checks that all containers are running
-    - if they aren't starts them
 - destroys redis cache, database, index, and queue (if --force flag is True [not default])
 - creates database and table structure
 - creates Invenio admin role and assigns it superuser access
 - begins indexing
 - creates invenio fixtures
 - inserts demo data into database (if --no-demo-data is False [default])
+
+You can perform the build using invenio-cli:
+
+```console
+invenio-cli services setup
+```
+
+Or you can run the commands that invenio-cli uses under the hood:
+
+```console
+pipenv lock
+docker-compose build
+```
+
+### Start the containers
+
+```console
+docker-compose up -d
+```
+
+### Set up the services
+
+This stage is generally only performed once after building (or rebuilding) the main knowledge-commons-repository image. It does several things:
+
 
 Note: This setup step takes much less time than the build step, but can still take a few minutes.
 
@@ -321,27 +316,22 @@ Then run the cli build script from inside the container:
 invenio collect -v
 invenio webpack buildall
 ```
-Under the hood this second command runs
-```console
-flask webpack buildall
-```
-This command will copy all files from the src folder to the application
-instance folder designated for the Webpack project (???), download the npm packages
-and run Webpack to build our assets.
+This command will copy all files from the `src` folder to the application
+instance folder project, download the npm packages and run Webpack to build our assets.
 
 Alternately, you can perform each of these steps separately:
 ```console
-flask webpack create  # Copy all sources to the working directory
-flask webpack install # Run npm install and download all dependencies
-flask webpack build # Run npm run build.
+invenio webpack create  # Copy all sources to the working directory
+invenio webpack install # Run npm install and download all dependencies
+invenio webpack build # Run npm run build.
 ```
 After the first run of the webpack build script, the webpack configuration files can be found in your local instance folder under `assets/build/`.
 
 #### Watching for changes to existing files
 
-In development, if you want to avoid having to build these files after every change, you can instead run
+In development, if you want to avoid having to build these files after every change, you can instead run (inside the web-ui container):
 ```console
-invenio-cli assets watch
+invenio webpack run start
 ```
 or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the npm watch service using a separate node.js container:
 ```console
