@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[13],{1156:function(n,o,t){"use strict";t.r(o);var c=t(48);c(document).ready((function(){c("#lang-code").on("change",(function(){c("#language-code-form").submit()}))}))},136:function(n,o){var t;t=function(){return this}();try{t=t||new Function("return this")()}catch(c){"object"===typeof window&&(t=window)}n.exports=t}},[[1156,0,3]]]);
-//# sourceMappingURL=13.dbdff8a1bc7188000a36.js.map

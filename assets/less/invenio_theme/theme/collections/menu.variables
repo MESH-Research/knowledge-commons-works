@@ -1,5 +1,0 @@
-/***********************************************
-         Invenio Theme Menu Variables
-***********************************************/
-
-@invertedBackground: @brandColor;
