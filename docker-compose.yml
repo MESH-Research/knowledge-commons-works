@@ -45,15 +45,15 @@ services:
       file: docker-services.yml
       service: pgadmin
   # Frontend
-  # frontend:
-  #   extends:
-  #     file: docker-services.yml
-  #     service: frontend
-  #   volumes:
-  #     - ${INVENIO_INSTANCE_PATH}/static:/opt/invenio/var/instance/static
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
+  frontend:
+    extends:
+      file: docker-services.yml
+      service: frontend
+    volumes:
+      - ${INVENIO_INSTANCE_PATH}/static:/opt/invenio/var/instance/static
+    ports:
+      - "80:80"
+      - "443:443"
 
   # UI Application
   # This container holds Python, pip, the virtualenv, and the invenio code
