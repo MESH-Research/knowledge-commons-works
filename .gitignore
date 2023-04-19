@@ -63,7 +63,7 @@ test.db
 # .venv/
 
 # Logs
-logs/
+logs/*
 
 # Invenio-cli per machine file
 .invenio.private
