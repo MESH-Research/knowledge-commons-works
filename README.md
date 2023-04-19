@@ -149,8 +149,15 @@ invenio-cli install
 Note: This installation step will take a long time (at least several minutes). It is installing several python packages and building quite a bit of js and css!
 
 This stage
-- locks the python package requirements and installs all the Invenio python packages, along with all of the other python dependencies.
-- ???
+- locks the python package requirements
+- updates the instance path to match your local installation
+- installs the Invenio python packages (with pipenv)
+- installs required python dependencies (with pipenv)
+- symlinks invenio.cfg, templates/, app_data/
+- finds and collects static files in {instance_folder}/static/
+- finds js and less/scss/css files and builds them in {instance_folder}/assets
+    - this build process uses Webpack and is configured in {instance_folder}/assets/webpack.config.js
+    - js requirements are installed by npm as node.js modules in the {instance_folder}/assets/node_modules folder
 
 ## Build and Configure the Containerized Services
 
