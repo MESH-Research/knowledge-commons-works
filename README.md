@@ -197,6 +197,13 @@ docker-compose build
 docker-compose up -d
 ```
 
+### Start uwsgi and celery
+
+/usr/local/bin/pipenv run celery --app invenio_app.celery worker --beat --events --loglevel INFO
+
+pipenv run uwsgi docker/uwsgi/uwsgi_ui.ini
+pipenv run uwsgi docker/uwsgi/uwsgi_rest.ini
+
 ### Set up the services
 
 This stage is generally only performed once after building (or rebuilding) the main knowledge-commons-repository image. It does several things:
