@@ -22,7 +22,15 @@ The process can be boiled down to a view steps and commands:
 6. `invenio-cli install`
 7. `docker-compose up -d`
 8. `invenio-cli services setup`
-9. `pipenv run kcr-startup.sh`
+9. `bash kcr-startup.sh`
+
+The application instance and its services can then be started and stopped using single  commands:
+```console
+bash kcr-startup.sh
+```
+```console
+bash kcr-shutdown.sh
+```
 
 What follows is a step-by-step walk through this process.
 
