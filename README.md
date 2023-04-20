@@ -12,6 +12,20 @@ These instructions allow you to run the Knowledge Commons Repository for local d
 
 The installation requirements below are drawn in part from https://inveniordm.docs.cern.ch/install/requirements/.
 
+The process can be boiled down to a view steps and commands:
+
+1. `git clone git@github.com:MESH-Research/knowledge-commons-repository.git`
+2. `cd knowledge-commons-repository`
+3. create and configure the .env file in this folder
+4. ensure that prerequisites are installed and active (python 3.9.16; pipenv; docker; node 16.19.1)
+5. `pip install invenio-cli`
+6. `invenio-cli install`
+7. `docker-compose up -d`
+8. `invenio-cli services setup`
+9. `pipenv run kcr-startup.sh`
+
+What follows is a step-by-step walk through this process.
+
 ## Clone the knowledge-commons-repository Code
 
 Using GIT, clone this repository. You should then have a folder called `knowledge-commons-repository` (unless you chose to name it something else) on your local computer.
