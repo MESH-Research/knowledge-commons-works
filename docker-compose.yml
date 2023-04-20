@@ -10,8 +10,6 @@
 #
 # Following services are included:
 # - Frontend: Nginx (exposed ports: 80 and 443)
-# - UI application: UWSGI (not exposed)
-# - API application: UWSGI (not exposed)
 # - Cache: Redis (exposed port: 6379)
 # - DB: (PostgresSQL/MySQL) (exposed port: 5432 or 3306)
 # - Message queue: RabbitMQ (exposed ports: 5672, 15672)

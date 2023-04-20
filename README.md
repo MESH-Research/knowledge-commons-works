@@ -37,11 +37,11 @@ Random values for the INVENIO_SECRET_KEY can be generated in a terminal by runni
 python -c 'import secrets; print(secrets.token_hex())'
 ```
 
-## Customize .env.local file
+<!-- ## Customize .env.local file
 
 This repository does include a file of local environment variables that are
 not secret but should be customized for each installation. These are separated out from the main invenio.cfg file, which contains values that
-are fixed for all instances of the Knowledge Commons Repository.
+are fixed for all instances of the Knowledge Commons Repository. -->
 
 ## Install Python and Required Python Tools
 
@@ -55,7 +55,7 @@ First install the **pyenv** tool to manage python versions, and the **pipenv** t
 
 Instructions for Linux, MacOS, and Windows can be found here: https://www.newline.co/courses/create-a-serverless-slackbot-with-aws-lambda-and-python/installing-python-3-and-pyenv-on-macos-windows-and-linux
 
-### Install and enable the proper python version
+### Install and enable Python 3.9.16
 
 Invenio's command line tools require a specific python version to work reliably. Currently this is python 3.9.16.  At the command line, first install this python version using pyenv:
 ```console
@@ -128,15 +128,17 @@ Make sure to always use the same Docker context to run all of the containers for
 
 ## Install Node.js and NVM
 
-Currently InvenioRDM (v. 11) requires Node.js version 16.19.1. The best way to install and manage Node.js versions is using the nvm version manager.
-???
+Currently InvenioRDM (v. 11) requires Node.js version 16.19.1. The best way to install and manage Node.js versions is using the nvm version manager. You can find instructions here: https://www.freecodecamp.org/news/node-version-manager-nvm-install-guide/
 
-### Activate the correct Node.js version
-
-Navigate to the root knowledge-commons-repository folder and activate the required Node.js version:
+Once nvm is installed, install the required Node.js version and set it as the active version:
 ```console
-cd ~/path/to/directory/knowledge-commons-repository
+nvm install v16.19.1
 nvm use 16.19.1
+```
+You may have other Node versions installed as well, so before a session working with Knowledge Commons Repository it's a good idea to make sure you're using the correct version. On MacOS and Linux you can check
+from the command line with
+```console
+which node
 ```
 
 ## Install the Invenio Modules Locally
@@ -161,60 +163,53 @@ This stage
 
 ## Build and Configure the Containerized Services
 
-### Build the containers for the services
+### Build and start the containers
 
-This step does several things:
+Make sure you are in the root knowledge-commons-repository folder and then run
+```console
+docker-compose up -d
+```
+This step will
+- build the docker image for the nginx web server (frontend) using ./docker/nginx/Dockerfile
+- pull remote images for other services: mq, search, db, cache, pgadmin, opensearch-dashboards
+- start containers from all of these images and mounts local files or folders into the containers as required in the docker-compose.yml and docker-services.yml files
 
-- builds several images
-    - web server image (frontend)
-        - based on nginx, using ./docker/nginx/Dockerfile
-    - remote images for other services
-        - mq, search, db, cache, pgadmin, opensearch-dashboards, worker
-- starts all containers
-- destroys redis cache, database, index, and queue (if --force flag is True [not default])
-- creates database and table structure
-- creates Invenio admin role and assigns it superuser access
-- begins indexing
-- creates invenio fixtures
-- inserts demo data into database (if --no-demo-data is False [default])
+### Create and initialize the database, search indexes, and task queue
 
-You can perform the build using invenio-cli:
-
+Again, from the root knowledge-commons-repository folder, run this command:
 ```console
 invenio-cli services setup
 ```
 
-Or you can run the commands that invenio-cli uses under the hood:
+This step will
+- create the postgresql database and table structure
+- create Invenio admin role and assigns it superuser access
+- begin indexing with OpenSearch
+- create Invenio fixtures
+- insert demo data into the database (unless you add the --no-demo-data flag)
 
+Note: If for some reason you need to run this step again, you will need to add the `--force` flag to the `docker-compose` command. This tells Invenio to destroy any existing redis cache, database, index, and task queue before recreating them all. Just be aware that performing this setup again with `--force` will **destroy all data in your database and all OpenSearch indexes**.
+
+### Start the uwsgi applications and celery worker
+
+Finally, you need to start the actual applications. Knowledge Commons Repository is actually run as two separate applications: one providing an html user interface, and one providing a REST api and serving JSON responses. Each application is served to the nginx web server by its own uwsgi process. The nginx server begins automatically when the `frontend` docker container starts, but the uwsgi applications run on your local machine and need to be started directly.
+
+These applications are also supported by a Celery worker process. This is a task queue that (with the help of the RabbitMQ docker container) frees up the python applications from being blocked by long-running tasks like indexing. The celery worker also runs on your local machine and must be started directly.
+
+If you want to quickly start all of these processes in the background (as daemons), you can run the kcr-startup.sh script in the root knowledge-commons-repository directory:
 ```console
-pipenv lock
-docker-compose build
+pipenv run kcr-startup.sh
 ```
 
-### Start the containers
-
+If you would like to view the real time log output of these processes, you can also start them individually in three separate terminals:
 ```console
-docker-compose up -d
-```
-
-### Start uwsgi and celery
-
 /usr/local/bin/pipenv run celery --app invenio_app.celery worker --beat --events --loglevel INFO
-
-pipenv run uwsgi docker/uwsgi/uwsgi_ui.ini
-pipenv run uwsgi docker/uwsgi/uwsgi_rest.ini
-
-### Set up the services
-
-This stage is generally only performed once after building (or rebuilding) the main knowledge-commons-repository image. It does several things:
-
-
-Note: This setup step takes much less time than the build step, but can still take a few minutes.
-
-You can perform the setup using invenio-cli:
-
+```
 ```console
-invenio-cli containers setup
+pipenv run uwsgi docker/uwsgi/uwsgi_ui.ini
+```
+```console
+pipenv run uwsgi docker/uwsgi/uwsgi_rest.ini
 ```
 
 ## Create an admin user
@@ -242,33 +237,33 @@ You should now be able to access the following:
 - pgAdmin for database management (https://localhost/pgadmin)
 - Opensearch Dashboards for managing search (https://localhost:5601)
 
-## Control the containerized services
+## Controlling the Application Services
 
-### Start the containers
+Once Knowledge Commons Repository is installed, you can manage its services from the command line. **Note: Unless otherwise specified, the commands below must be run from the root knowledge-commons-repository folder.**
 
-With the invenio cli:
-```console
-invenio-cli containers start
-```
-
-or directly with docker commands:
-```console
-docker-compose --file docker-compose.full.yml up -d
-```
-
-### Stop the containers
+### Start the containerized services (postgresql, RabbitMQ, redis, pgAdmin, OpenSearch, opensearch dashboards, nginx)
 
 With the invenio cli:
 ```console
-invenio-cli containers stop
+invenio-cli services start
 ```
-
-or directly with docker commands:
+or directly with docker command:
 ```console
-docker-compose --file docker-compose.full.yml stop
+docker-compose up -d
 ```
 
-Note that stopping the containers this way will not destroy the data and configuration which live in docker volumes. Those volumes persist as long as the containers are not destroyed.
+### Stop the containerized services
+
+With the invenio cli:
+```console
+invenio-cli services stop
+```
+or directly with the docker command:
+```console
+docker-compose stop
+```
+
+Note that stopping the containers this way will not destroy the data and configuration which live in docker volumes. Those volumes persist as long as the containers are not destroyed. **Do not use the `docker-compose down` command unless you want the containers to be destroyed.**
 
 ### View container logging output
 
@@ -279,20 +274,17 @@ docker logs <image-name> -f
 ```
 
 The names of the various images are:
-- knowledge-commons-repository-web-ui-1
-- knowledge-commons-repository-web-api-1
-- knowledge-commons-repository-frontend-1
-- knowledge-commons-repository-mq-1
-- knowledge-commons-repository-db-1
-- knowledge-commons-repository-search-1
-- knowledge-commons-repository-cache-1
-- knowledge-commons-repository-opensearch-dashboards-1
-- knowledge-commons-repository-pgadmin-1
-- knowledge-commons-repository-worker-1
+- nginx: knowledge-commons-repository-frontend-1
+- RabbitMQ: knowledge-commons-repository-mq-1
+- PostgreSQL: knowledge-commons-repository-db-1
+- OpenSearch: knowledge-commons-repository-search-1
+- Redis: knowledge-commons-repository-cache-1
+- OpenSearch Dashboards: knowledge-commons-repository-opensearch-dashboards-1
+- pgAdmin: knowledge-commons-repository-pgadmin-1
 
 ### Controlling containerized nginx server
 
-The frontend container is configured so that the configuration files in docker/nginx/ are bind mounted. This means that changes to those config files can be seen in the running container and enabled without rebuilding the container. To reload the nginx configuration, first enter the frontend container:
+The frontend container is configured so that the configuration files in docker/nginx/ are bind mounted. This means that changes to those config files can be seen in the running container and enabled without rebuilding the container. To reload the nginx configuration, first **enter the frontend container**:
 ```console
 docker exec -it knowledge-commons-repository-frontend-1 bash
 ```
@@ -303,6 +295,10 @@ nginx -s reload
 You can also test the nginx config prior to reloading by running
 ```console
 nginx -t
+```
+Alternately, you can rebuild and restart the frontend container by running
+```console
+docker-compose up -d --build frontend
 ```
 
 ## Developing the Knowledge Commons Repository
@@ -320,18 +316,17 @@ Changes made to jinja template files will be visible immediately in the running 
 #### Building js and css assets
 
 Unlike python and config files, the less and javascript files you customize must go through a build process before they will be visible in the running Knowledge Commons Repository instance. The Invenio platform provides a convenient cli script for collecting all of these assets (both standard and your customized files) and running webpack to build them.
-
-First enter the web-ui container:
 ```console
-docker exec -it knowledge-commons-repository-web-ui-1 bash
+invenio-cli assets buildall
 ```
-Then run the cli build script from inside the container:
+This command will copy all files from the `src` folder to the application
+instance folder project, download the npm packages and run Webpack to build our assets.
+
+Behind the scenes it is running the following lower-level commands:
 ```console
 invenio collect -v
 invenio webpack buildall
 ```
-This command will copy all files from the `src` folder to the application
-instance folder project, download the npm packages and run Webpack to build our assets.
 
 Alternately, you can perform each of these steps separately:
 ```console
@@ -339,18 +334,21 @@ invenio webpack create  # Copy all sources to the working directory
 invenio webpack install # Run npm install and download all dependencies
 invenio webpack build # Run npm run build.
 ```
-After the first run of the webpack build script, the webpack configuration files can be found in your local instance folder under `assets/build/`.
 
 #### Watching for changes to existing files
 
-In development, if you want to avoid having to build these files after every change, you can instead run (inside the web-ui container):
+In development, if you want to avoid having to build these files after every change, you can instead run
+```console
+invenio-cli assets watch
+```
+or
 ```console
 invenio webpack run start
 ```
-or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the npm watch service using a separate node.js container:
+<!-- or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the npm watch service using a separate node.js container:
 ```console
 docker run --rm -it -u 1000:1000 -v $PWD/assets:/opt/invenio/var/instance/assets -v $PWD/static:/opt/invenio/var/instance/static/ -w /opt/invenio/var/instance/assets node:19 sh -c "NODE_OPTIONS=--openssl-legacy-provider npm run start"
-```
+``` -->
 That will watch for changes and automatically rebuild whatever assets are necessary as you go. You will need to run this command in its own terminal, since it will continue to feed output to the terminal until you stop watching the files.
 
 #### Adding new js or css files
@@ -359,26 +357,17 @@ The `watch` command will only pick up changes to files that already existed duri
 ```console
 invenio-cli assets build
 ```
-or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the build operation using a separate node.js container:
+<!-- or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the build operation using a separate node.js container:
 ```console
 docker run --rm -it -u 1000:1000 -v $PWD/assets:/opt/invenio/var/instance/assets -v $PWD/static:/opt/invenio/var/instance/static/ -w /opt/invenio/var/instance/assets node:19 sh -c "npm ci &&  NODE_OPTIONS=--openssl-legacy-provider npm run build"
-```
-
-And then start the `watch` command again.
+``` -->
+Then start the `watch` command again.
 
 ### Making changes to static files
 
-Because of Flask's decentralized structure, Static files like images must be collected into a central directory. After making changes to static files, enter the web-ui container:
-```console
-docker exec -it knowledge-commons-repository-web-ui-1 bash
-```
-and then run:
+Because of Flask's decentralized structure, Static files like images must be collected into a central directory. After making changes to static files run
 ```console
 invenio collect -v
-```
-or
-```console
-flask collect -v
 ```
 
 ### Running automated tests
