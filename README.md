@@ -204,7 +204,7 @@ This step will
 
 Note: If for some reason you need to run this step again, you will need to add the `--force` flag to the `docker-compose` command. This tells Invenio to destroy any existing redis cache, database, index, and task queue before recreating them all. Just be aware that performing this setup again with `--force` will **destroy all data in your database and all OpenSearch indexes**.
 
-### Start the uwsgi applications and celery worker
+## Start the uwsgi applications and celery worker
 
 Finally, you need to start the actual applications. Knowledge Commons Repository is actually run as two separate applications: one providing an html user interface, and one providing a REST api and serving JSON responses. Each application is served to the nginx web server by its own uwsgi process. The nginx server begins automatically when the `frontend` docker container starts, but the uwsgi applications run on your local machine and need to be started directly.
 
@@ -212,19 +212,27 @@ These applications are also supported by a Celery worker process. This is a task
 
 If you want to quickly start all of these processes in the background (as daemons), you can run the kcr-startup.sh script in the root knowledge-commons-repository directory:
 ```console
-pipenv run kcr-startup.sh
+bash kcr-startup.sh
+```
+The processes will output request and error logging to files in the `logs` folder of your knowledge-commons-repository folder.
+
+To stop these processes, simply run
+```console
+bash kcr-shutdown.sh
 ```
 
 If you would like to view the real time log output of these processes, you can also start them individually in three separate terminals:
 ```console
-/usr/local/bin/pipenv run celery --app invenio_app.celery worker --beat --events --loglevel INFO
+pipenv run celery --app invenio_app.celery worker --beat --events --loglevel INFO
 ```
 ```console
-pipenv run uwsgi docker/uwsgi/uwsgi_ui.ini
+pipenv run uwsgi docker/uwsgi/uwsgi_ui.ini --pidfile=/tmp/kcr_ui.pid
 ```
 ```console
-pipenv run uwsgi docker/uwsgi/uwsgi_rest.ini
+pipenv run uwsgi docker/uwsgi/uwsgi_rest.ini  --pidfile=/tmp/kcr_api.pid
 ```
+These processes can be stopped individually by pressing CTRL-C
+
 
 ## Create an admin user
 
@@ -254,6 +262,22 @@ You should now be able to access the following:
 ## Controlling the Application Services
 
 Once Knowledge Commons Repository is installed, you can manage its services from the command line. **Note: Unless otherwise specified, the commands below must be run from the root knowledge-commons-repository folder.**
+
+### startup and shutdown scripts
+
+The bash script kcr-startup.sh will start
+    - the containerized services (if not running)
+    - the celery worker
+    - the two uwsgi processes
+Simply navigate to the root knowledge-commons-repository folder and run
+```console
+bash ./kcr-startup.sh
+```
+
+To stop the processes and containerized services, simply run
+```console
+bash ./kcr-shutdown.sh
+```
 
 ### Start the containerized services (postgresql, RabbitMQ, redis, pgAdmin, OpenSearch, opensearch dashboards, nginx)
 
