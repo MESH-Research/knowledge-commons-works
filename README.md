@@ -24,7 +24,12 @@ The process can be boiled down to a view steps and commands:
 8. `invenio-cli services setup`
 9. `bash kcr-startup.sh`
 
-You can then create an admin user and sign in.
+You can then create an admin user. From the command line, run
+```console
+pipenv run invenio users create <email> --password <password>
+pipenv run invenio users activate <email>
+pipenv run invenio access allow administration-access user <email>
+```
 
 The application instance and its services can be started and stopped using single  commands:
 ```console
@@ -246,20 +251,15 @@ These processes can be stopped individually by pressing CTRL-C
 
 ## Create an admin user
 
-From the command line, enter a command line inside one of the main app containers:
+From the command line, run these commands to create and activate the admin user:
 ```console
-docker exec -it knowledge-commons-repository-web-ui-1 bash
-```
-From inside the container, run these commands to create and activate the admin user:
-```console
-invenio users create <email> --password <password>
-invenio users activate <email>
+pipenv run invenio users create <email> --password <password>
+pipenv run invenio users activate <email>
 ```
 If you want this user to have access to the administration panel in Invenio, you also need to run
 ```console
-invenio access allow administration-access user <email>
+pipenv run invenio access allow administration-access user <email>
 ```
-After this you will still be in the container's bash prompt. To leave the container (without killing your ssh session when you're doing this remotely) simply press ctrl-P followed by ctrl-Q.
 
 ## Use the application!
 
