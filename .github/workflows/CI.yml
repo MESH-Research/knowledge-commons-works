@@ -42,6 +42,7 @@ jobs:
 
       - name: Build Images
         run: |
+          touch ./.env
           docker compose up -d --build
 
       - name: Set up services
