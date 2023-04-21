@@ -24,7 +24,9 @@ The process can be boiled down to a view steps and commands:
 8. `invenio-cli services setup`
 9. `bash kcr-startup.sh`
 
-The application instance and its services can then be started and stopped using single  commands:
+You can then create an admin user and sign in.
+
+The application instance and its services can be started and stopped using single  commands:
 ```console
 bash kcr-startup.sh
 ```
