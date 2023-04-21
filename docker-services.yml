@@ -15,8 +15,7 @@ services:
     environment:
       - INVENIO_SECRET_KEY=${INVENIO_SECRET_KEY}
     env_file:
-      # - ./.env
-      - ./.env.local
+      - ./.env
   frontend:
     build: ./docker/nginx/
     image: knowledge-commons-repository-frontend
@@ -24,6 +23,8 @@ services:
     ports:
       - "80"
       - "443"
+    env_file:
+      - ./.env
   cache:
     image: redis:7
     restart: "unless-stopped"
@@ -41,7 +42,6 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     env_file:
       - ./.env
-      - ./.env.local
   pgadmin:
     image: dpage/pgadmin4:6
     restart: "unless-stopped"
