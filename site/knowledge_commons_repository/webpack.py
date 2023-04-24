@@ -9,8 +9,12 @@ theme = WebpackThemeBundle(
     themes={
         "semantic-ui": dict(
             entry={
+                "user-guides": "./js/knowledge_commons_repository/guides.js",
                 # Add your webpack entrypoints
             },
+            dependencies={
+
+            }
         ),
     },
 )

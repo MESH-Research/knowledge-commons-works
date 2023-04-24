@@ -16,6 +16,7 @@ python-dotenv = "*"
 invenio-cli = "*"
 pytest-invenio = "*"
 knowledge-commons-repository = {editable = true, path = "./site"}
+selenium = "*"
 
 [requires]
 python_version = "3.9"
