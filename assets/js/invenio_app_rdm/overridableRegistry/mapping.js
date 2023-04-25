@@ -16,7 +16,6 @@
 //     id="ReactInvenioDeposit.FileUploaderToolbar.MetadataOnlyToggle.container"
 //     filesList={props.filesList}
 //     filesEnabled={props.filesEnabled}
-//     showMetadataOnlyToggle={props.showMetadataOnlyToggle}
 //     handleOnChangeMetadataOnly={props.handleOnChangeMetadataOnly}
 //     >
 //     {props.showMetadataOnlyToggle && (
