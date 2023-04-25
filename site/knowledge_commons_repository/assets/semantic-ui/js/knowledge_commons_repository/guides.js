@@ -12,3 +12,11 @@ ReactDOM.render(
   </Form>,
   rootContainer // Target container on where to render the React components.
 );
+
+function sum(a, b) {
+  return a + b;
+}
+
+export {
+  sum
+}
