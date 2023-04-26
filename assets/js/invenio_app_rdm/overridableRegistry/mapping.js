@@ -58,9 +58,6 @@
       setFieldValue("access.files", "public");
     };
 
-    console.log('my props!!!')
-    console.log(props)
-
     return (
       <Checkbox
         toggle

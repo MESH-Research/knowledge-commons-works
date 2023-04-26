@@ -1,22 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Button, Form } from "semantic-ui-react";
+import GuidesForm from "./components/guides-form";
 
 const rootContainer = document.getElementById("root-container");
 
-ReactDOM.render(
-  <Form>
-    <Form.Input label="Name" />
-    <Form.TextArea label="Message" placeholder="Write your message here" />
-    <Button type="submit">Submit</Button>
-  </Form>,
+ReactDOM.render(GuidesForm,
   rootContainer // Target container on where to render the React components.
 );
-
-function sum(a, b) {
-  return a + b;
-}
-
-export {
-  sum
-}
