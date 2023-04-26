@@ -1,6 +1,6 @@
 # Knowledge Commons Repository
 
-This is the source code for the Knowledge Commons Repository, based on InvenioRDM.
+The Knowledge Commons Repository is a collaborative tool for storing and sharing academic research. It is part of the Knowledge Commons and is built using InvenioRDM.
 
 ## Copyright
 
@@ -8,21 +8,20 @@ Copyright 2023 MESH Research. Released under the MIT license. (See the included 
 
 ## Installation for Development
 
-These instructions allow you to run the Knowledge Commons Repository for local development. The app source files are copied onto your system, and the Invenio python modules are installed locally. Most of the other services used by the app, however, are run from docker containers.
+These instructions allow you to run the Knowledge Commons Repository for local development. The app source files are copied onto your system, and the Invenio python modules and required Node.js packages are installed locally. The other services used by the application are run from docker containers.
 
-The installation requirements below are drawn in part from https://inveniordm.docs.cern.ch/install/requirements/.
+First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+), Python (3.9.16 with pipenv), and Node.js (16.19.1 with npm and nvm) installed on your system.
 
-The process can be boiled down to a view steps and commands:
+From there installation involves these steps and commands:
 
 1. `git clone git@github.com:MESH-Research/knowledge-commons-repository.git`
 2. `cd knowledge-commons-repository`
 3. create and configure the .env file in this folder
-4. ensure that prerequisites are installed and active (python 3.9.16; pipenv; docker; node 16.19.1)
-5. `pip install invenio-cli`
-6. `invenio-cli install`
-7. `docker-compose up -d`
-8. `invenio-cli services setup`
-9. `bash kcr-startup.sh`
+4. `pip install invenio-cli`
+5. `invenio-cli install`
+6. `docker-compose up -d`
+7. `invenio-cli services setup`
+8. `bash kcr-startup.sh`
 
 You can then create an admin user. From the command line, run
 ```console
@@ -39,38 +38,7 @@ bash kcr-startup.sh
 bash kcr-shutdown.sh
 ```
 
-What follows is a step-by-step walk through this process.
-
-## Clone the knowledge-commons-repository Code
-
-Using GIT, clone this repository. You should then have a folder called `knowledge-commons-repository` (unless you chose to name it something else) on your local computer.
-
-## Add .env file
-
-Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own .env.private file and place it at the root level of the knowledge-commons-repository folder. Any configuration variables to be picked up by Invenio should have the prefix "INVENIO_" added to the beginning of the variable name. Environment variables for other services (e.g., for pgadmin) should not.
-
-This file should contain at least the following variables, substituting appropriate values after each = sign:
-
-INVENIO_SECRET_KEY=CHANGE_ME
-INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
-INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
-INVENIO_DATACITE_PASSWORD=myothersecurepassword
-PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
-PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
-POSTGRES_USER=knowledge-commons-repository
-POSTGRES_PASSWORD=knowledge-commons-repository
-POSTGRES_DB=knowledge-commons-repository
-
-Random values for the INVENIO_SECRET_KEY can be generated in a terminal by running
-```console
-python -c 'import secrets; print(secrets.token_hex())'
-```
-
-<!-- ## Customize .env.local file
-
-This repository does include a file of local environment variables that are
-not secret but should be customized for each installation. These are separated out from the main invenio.cfg file, which contains values that
-are fixed for all instances of the Knowledge Commons Repository. -->
+What follows is a step-by-step walk through this process. Note that these instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
 
 ## Install Python and Required Python Tools
 
@@ -99,7 +67,7 @@ cd ~/path/to/directory/knowledge-commons-repository
 pyenv local 3.9.16
 ```
 
-### Install the Invenio command line tool
+### Install the invenio-cli command line tool
 
 From the same directory Use pip to install the **invenio-cli** python package. (Do not use pipenv yet or create a virtual environment.)
 
@@ -109,11 +77,9 @@ pip install invenio-cli
 
 ## Install Docker 20.10.10+ and Docker-compose 1.17.0+
 
-
 ### Linux
 
-If you are using Ubuntu, follow the steps for installing Docker and Docker-compose explained here: https://linux.how2shout.com/install-and-configure-docker-compose-on-ubuntu-22-04-lts-jammy/
-
+If you are using Ubuntu Linux, follow the steps for installing Docker and Docker-compose explained here: https://linux.how2shout.com/install-and-configure-docker-compose-on-ubuntu-22-04-lts-jammy/
 
 You must then create a `docker` group and add the current user to it (so that you can run docker commands without sudo). This is *required* for the invenio-cli scripts to work, and it must be done for the *same user* that will run the cli commands:
 
@@ -138,12 +104,14 @@ Note: The environment variable recommended in the InvenioRDM documentation for M
 
 With the release of compose v2, the command syntax changed from `docker-compose` to `docker compose` (a command followed by a sub-command instead of one hyphenated command). This will break the invenio-cli scripts, which use the `docker-compose` command and you will receive an error asking you to install the "docker-compose" package.
 
-The solution on Linux systems is to install Docker Compose standalone, which uses the old `docker-compose` syntax:
+One solution on Linux systems is to install Docker Compose standalone, which uses the old `docker-compose` syntax:
 
 ```console
 sudo curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 suod chmod +x /usr/local/bin/docker-compose
 ```
+
+Another approach is simply to alias the `docker compose` command to `docker-compose` in the configuration file for your command line shell (.bashrc, .zshrc, or whichever config file is used by your shell).
 
 See further https://docs.docker.com/compose/install/other/
 
@@ -169,26 +137,61 @@ from the command line with
 ```console
 which node
 ```
+## Clone the knowledge-commons-repository Code
 
-## Install the Invenio Modules Locally
+Using GIT, clone this repository. You should then have a folder called `knowledge-commons-repository` (unless you chose to name it something else) on your local computer.
+
+## Add and Configure an .env File
+
+Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own .env.private file and place it at the root level of the knowledge-commons-repository folder. Any configuration variables to be picked up by Invenio should have the prefix "INVENIO_" added to the beginning of the variable name. Environment variables for other services (e.g., for pgadmin) should not.
+
+This file should contain at least the following variables, substituting appropriate values after each = sign:
+
+INVENIO_SECRET_KEY=CHANGE_ME
+INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
+INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
+INVENIO_DATACITE_PASSWORD=myothersecurepassword
+PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
+PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
+POSTGRES_USER=knowledge-commons-repository
+POSTGRES_PASSWORD=knowledge-commons-repository
+POSTGRES_DB=knowledge-commons-repository
+
+Random values for the INVENIO_SECRET_KEY can be generated in a terminal by running
+```console
+python -c 'import secrets; print(secrets.token_hex())'
+```
+
+Another variable, INVENIO_INSTANCE_PATH, will be added automatically by the kcr-startup.sh script later on.
+
+## Install the Invenio Python Modules
 
 Navigate to the root knowledge-commons-repository folder. Then run the installation script:
 ```console
 cd ~/path/to/directory/knowledge-commons-repository
 invenio-cli install
 ```
-Note: This installation step will take a long time (at least several minutes). It is installing several python packages and building quite a bit of js and css!
+Note: This installation step will take several minutes.
 
 This stage
+- creates and initializes a Python virtual environment using pipenv
 - locks the python package requirements
-- updates the instance path to match your local installation
+- updates InvenioRDM's internal instance_path variable to match your local installation
+    - this is *not* the folder where you cloned the GIT project, but rather a separate folder where InvenioRDM will place the compiled files used to actually run the application.
+    - normally the instance folder is inside the folder for your new virtual environment. On MacOS this will often be ~/.local/share/virtualenvs/{virtual env name}/var/instance/
 - installs the Invenio python packages (with pipenv)
+    - these packages are again installed under your virtual environment folder. On MacOS this is often ~/.local/share/virtualenvs/{virtual env name}/lib/python3.9/site-packages/. You will find several modules installed here with names that start with "invenio_".
+- installs the knowledge-commons-repository Python package (with pipenv)
+    - alongside the Invenio packages you will also find a knowledge-commons-repository package containing any custom extensions to InvenioRDM defined in your `knowledge-commons-repository/sites/` folder
 - installs required python dependencies (with pipenv)
-- symlinks invenio.cfg, templates/, app_data/
-- finds and collects static files in {instance_folder}/static/
+- symlinks invenio.cfg, templates/, app_data/ to your instance folder
+- finds and collects static files into {instance_folder}/static/
+    - static files (like images) are scattered throughout the various Invenio python modules and your local knowledge-commons-repository folder. They must be copied to a central location accessible to the web server.
 - finds js and less/scss/css files and builds them in {instance_folder}/assets
+    - again, this gathers and combines js and style files from all of the Invenio python modules and your local knowledge-commons-repository instance. It also gathers a master list of node.js package requirements from these modules.
     - this build process uses Webpack and is configured in {instance_folder}/assets/webpack.config.js
     - js requirements are installed by npm as node.js modules in the {instance_folder}/assets/node_modules folder
+    - note, though, that you *cannot* directly modify the package.json, webpack.config.js files in your instance folder. This is because these files are created dynamically by InvenioRDM each time the build process runs.
 
 ## Build and Configure the Containerized Services
 
@@ -269,16 +272,18 @@ You should now be able to access the following:
 - pgAdmin for database management (https://localhost/pgadmin)
 - Opensearch Dashboards for managing search (https://localhost:5601)
 
-## Controlling the Application Services
+### Controlling the Application Services
 
 Once Knowledge Commons Repository is installed, you can manage its services from the command line. **Note: Unless otherwise specified, the commands below must be run from the root knowledge-commons-repository folder.**
 
-### startup and shutdown scripts
+### Startup and shutdown scripts
 
 The bash script kcr-startup.sh will start
     - the containerized services (if not running)
     - the celery worker
     - the two uwsgi processes
+It will also ensure that you have a .env file and copy your set your INVENIO_INSTANCE_PATH variable in that file to your local instance folder, matching the instance_path variable in your .invenio.private file.
+
 Simply navigate to the root knowledge-commons-repository folder and run
 ```console
 bash ./kcr-startup.sh
@@ -289,29 +294,30 @@ To stop the processes and containerized services, simply run
 bash ./kcr-shutdown.sh
 ```
 
-### Start the containerized services (postgresql, RabbitMQ, redis, pgAdmin, OpenSearch, opensearch dashboards, nginx)
+### Controlling just the containerized services (postgresql, RabbitMQ, redis, pgAdmin, OpenSearch, opensearch dashboards, nginx)
 
-With the invenio cli:
+If you want to stop or start just the containerized services (rather than the local processes), you can use the invenio cli:
 ```console
 invenio-cli services start
-```
-or directly with docker command:
-```console
-docker-compose up -d
-```
-
-### Stop the containerized services
-
-With the invenio cli:
-```console
 invenio-cli services stop
 ```
-or directly with the docker command:
+Or you can control them directly with the docker-compose command:
 ```console
+docker-compose up -d
 docker-compose stop
 ```
-
 Note that stopping the containers this way will not destroy the data and configuration which live in docker volumes. Those volumes persist as long as the containers are not destroyed. **Do not use the `docker-compose down` command unless you want the containers to be destroyed.**
+
+### View logging output for uwsgi processes
+
+Activity and error logging for the two uwsgi processes are written to date-stamped files in the knowledge-commons-repository/logs/ folder. To watch the live logging output from one of these processes, open a new terminal in your knowledge-commons-repository folder and run
+```console
+tail -f logs/uwsgi-ui-{date}.log
+```
+or
+```console
+tail -f logs/uwsgi-api-{date}.log
+```
 
 ### View container logging output
 
@@ -357,7 +363,7 @@ In general, all members of the development team should commit their work to the 
 
 ### Making changes to template files
 
-Changes made to jinja template files will be visible immediately in the running Knowledge Commons Repsitory instance.
+Changes made to jinja template files will be visible immediately in the running Knowledge Commons Repository instance.
 
 ### Making changes to theme (CSS) and javascript files
 
@@ -365,15 +371,15 @@ Changes made to jinja template files will be visible immediately in the running 
 
 Unlike python and config files, the less and javascript files you customize must go through a build process before they will be visible in the running Knowledge Commons Repository instance. The Invenio platform provides a convenient cli script for collecting all of these assets (both standard and your customized files) and running webpack to build them.
 ```console
-invenio-cli assets buildall
+invenio-cli assets build
 ```
 This command will copy all files from the `src` folder to the application
 instance folder project, download the npm packages and run Webpack to build our assets.
 
 Behind the scenes it is running the following lower-level commands:
 ```console
-invenio collect -v
-invenio webpack buildall
+pipenv run invenio collect -v
+pipenv run invenio webpack buildall
 ```
 
 Alternately, you can perform each of these steps separately:
@@ -383,7 +389,15 @@ invenio webpack install # Run npm install and download all dependencies
 invenio webpack build # Run npm run build.
 ```
 
+**Note:** Before you run these build commands, ensure that you have activated the correct Node.js version using nvm:
+```console
+nvm use 16.19.1
+```
+Otherwise you are likely to have errors during the build process.
+
 #### Watching for changes to existing files
+
+**Note: File watching is currently broken in InvenioRDM v.11. This is a known issue which will hopefully be fixed soon.**
 
 In development, if you want to avoid having to build these files after every change, you can instead run
 ```console
@@ -391,7 +405,7 @@ invenio-cli assets watch
 ```
 or
 ```console
-invenio webpack run start
+pipenv run invenio webpack run start
 ```
 <!-- or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the npm watch service using a separate node.js container:
 ```console
@@ -420,55 +434,35 @@ invenio collect -v
 
 ### Running automated tests
 
-Automated tests (unit tests and integration tests) are run every time a commit is pushed to the knowledge-commons-repository Github repo. You can also run the test suite locally. Again, enter the web-ui
+Automated tests (unit tests and integration tests) are run every time a commit is pushed to the knowledge-commons-repository Github repo. You can (and should) also run the test suite locally.
 
+There are currently two distinct sets of tests that have to be run separately: python tests run using invenio's fixtures, and javascript tests run separately using jest.
 
-## DEPRECATED (Default README text from InvenioRDM)
+### Python tests
 
-**Note**: The instructions below are the default README for InvenioRDM. They
-are not usable as they stand for building the Knowledge Commons Repository
-instance. Updated installation instructions will follow.**
-
-Run the following commands in order to start the InvenioRDM instance:
-
+The python test suite includes (a) unit tests for back end code, (b) tests of ui views and api requests run with a client fixture, (c) user interaction tests run with selenium webdriver. To run the unit tests and view/request tests, navigate to the root knowledge-commons-repository folder and run
 ```console
-invenio-cli containers start --lock --build --setup
+pipenv run pytest
+```
+By default the selenium browser interaction tests are not run. To include these, run pytest with the E2E environment variable set to "yes":
+```console
+pipenv run E2E=yes pytest
+```
+Running the selenium tests also requires that you have the Selenium Client and Chrome Webdriver installed locally.
+
+### Javascript tests
+
+Pytest does not directly test custom javascript files or React components. In order to test these, navigate to the root knowledge-commons-repository folder and run
+```console
+npm run test
+```
+These tests are run using the jest test runner, configured in the packages.json file in the root knowledge-commons-repository folder.
+
+Note that these tests run using a local npm configuration in the knowledge-commons-repository folder. Any packages that are normally available to InvenioRDM must be added to the local package.json configuration and will be installed in the local node_modules folder. Since this folder is not included in GIT version control, before you run the javascript tests you must ensure the required packages are installed locally by running
+```console
+npm install
 ```
 
-The above command first builds the application docker image and afterwards
-starts the application and related services (database, opensearch, Redis
-and RabbitMQ). The build and boot process will take some time to complete,
-especially the first time as docker images have to be downloaded during the
-process.
+## InvenioRDM Documentation
 
-Once running, visit https://127.0.0.1 in your browser.
-
-**Note**: The server is using a self-signed SSL certificate, so your browser
-will issue a warning that you will have to by-pass.
-
-## Overview
-
-Following is an overview of the generated files and folders:
-
-| Name | Description |
-|---|---|
-| ``Dockerfile`` | Dockerfile used to build your application image. |
-| ``Pipfile`` | Python requirements installed via [pipenv](https://pipenv.pypa.io) |
-| ``Pipfile.lock`` | Locked requirements (generated on first install). |
-| ``app_data`` | Application data such as vocabularies. |
-| ``assets`` | Web assets (CSS, JavaScript, LESS, JSX templates) used in the Webpack build. |
-| ``docker`` | Example configuration for NGINX and uWSGI. |
-| ``docker-compose.full.yml`` | Example of a full infrastructure stack. |
-| ``docker-compose.yml`` | Backend services needed for local development. |
-| ``docker-services.yml`` | Common services for the Docker Compose files. |
-| ``invenio.cfg`` | The Invenio application configuration. |
-| ``logs`` | Log files. |
-| ``static`` | Static files that need to be served as-is (e.g. images). |
-| ``templates`` | Folder for your Jinja templates. |
-| ``.invenio`` | Common file used by Invenio-CLI to be version controlled. |
-| ``.invenio.private`` | Private file used by Invenio-CLI *not* to be version controlled. |
-
-## Documentation
-
-To learn how to configure, customize, deploy and much more, visit
-the [InvenioRDM Documentation](https://inveniordm.docs.cern.ch/).
+The Knowledge Commons Repository is built as an instance of InvenioRDM. The InvenioRDM Documentation, including customization and development information, can be found at https://inveniordm.docs.cern.ch/.
