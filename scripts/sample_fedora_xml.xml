@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<foxml:digitalObject VERSION="1.1" PID="hc:12780"
+        xmlns:foxml="info:fedora/fedora-system:def/foxml#"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+        <foxml:objectProperties>
+                <foxml:property NAME="info:fedora/fedora-system:def/model#state"
+                        VALUE="Active" />
+                <foxml:property NAME="info:fedora/fedora-system:def/model#label"
+                        VALUE="informtoperform_surveyquestions.pdf" />
+                <foxml:property
+                        NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="" />
+                <foxml:property
+                        NAME="info:fedora/fedora-system:def/model#createdDate"
+                        VALUE="2017-04-29T20:14:17.534Z" />
+                <foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate"
+                        VALUE="2017-05-01T13:19:50.113Z" />
+        </foxml:objectProperties>
+        <foxml:datastream
+                ID="AUDIT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+                <foxml:datastreamVersion
+                        ID="AUDIT.0" LABEL="Audit Trail for this object"
+                        CREATED="2017-04-29T20:14:17.534Z"
+                        MIMETYPE="text/xml"
+                        FORMAT_URI="info:fedora/fedora-system:format/xml.fedora.audit">
+                        <foxml:xmlContent>
+                                <audit:auditTrail xmlns:audit="info:fedora/fedora-system:def/audit#">
+                                        <audit:record
+                                                ID="AUDREC1">
+                                                <audit:process type="Fedora API-M" />
+                                                <audit:action>
+                                                        addDatastream</audit:action>
+                                                <audit:componentID>CONTENT</audit:componentID>
+                                                <audit:responsibility>
+                                                        fedoraAdmin</audit:responsibility>
+                                                <audit:date>2017-04-29T20:14:17.639Z</audit:date>
+                                                <audit:justification></audit:justification>
+                                        </audit:record>
+                                        <audit:record ID="AUDREC2">
+                                                <audit:process type="Fedora API-M" />
+                                                <audit:action>
+                                                        modifyDatastreamByValue</audit:action>
+                                                <audit:componentID>DC</audit:componentID>
+                                                <audit:responsibility>
+                                                        fedoraAdmin</audit:responsibility>
+                                                <audit:date>2017-05-01T13:19:50.113Z</audit:date>
+                                                <audit:justification></audit:justification>
+                                        </audit:record>
+                                        <audit:record ID="AUDREC3">
+                                                <audit:process type="Fedora API-M" />
+                                                <audit:action>
+                                                        setDatastreamVersionable</audit:action>
+                                                <audit:componentID>DC</audit:componentID>
+                                                <audit:responsibility>
+                                                        fedoraAdmin</audit:responsibility>
+                                                <audit:date>2017-05-01T13:19:50.113Z</audit:date>
+                                                <audit:justification></audit:justification>
+                                        </audit:record>
+                                </audit:auditTrail>
+                        </foxml:xmlContent>
+                </foxml:datastreamVersion>
+        </foxml:datastream>
+        <foxml:datastream ID="DC" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+                <foxml:datastreamVersion
+                        ID="DC1.0" LABEL="Dublin Core Record for this object"
+                        CREATED="2017-04-29T20:14:16.000Z"
+                        MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                        SIZE="998">
+                        <foxml:xmlContent>
+                                <oai_dc:dc
+                                        xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                        xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+                                        <dc:title>Inform to Perform: Survey Questions</dc:title>
+                                        <dc:creator>Alison Pope</dc:creator>
+                                        <dc:subject>Information science</dc:subject>
+                                        <dc:subject>Library and information science</dc:subject>
+                                        <dc:description>The survey questions used in the athlete
+                                                survey for the Inform to Perform
+                                                project for any researcher wishing to reproduce this
+                                                study for comparative research. The project
+                                                dissertation is published at
+                                                http://dx.doi.org/10.17613/M67S9N and data set at
+                                                http://dx.doi.org/10.17613/M6436P.</dc:description>
+                                        <dc:date>2015</dc:date>
+                                        <dc:type>Other</dc:type>
+                                        <dc:format>application/pdf</dc:format>
+                                        <dc:identifier>hc:12780</dc:identifier>
+                                        <dc:identifier>
+                                                hc:12779</dc:identifier>
+                                </oai_dc:dc>
+                        </foxml:xmlContent>
+                </foxml:datastreamVersion>
+                <foxml:datastreamVersion
+                        ID="DC.1" LABEL="Dublin Core Record for this object"
+                        CREATED="2017-05-01T13:19:50.113Z"
+                        MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                        SIZE="997">
+                        <foxml:xmlContent>
+                                <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/"
+                                        xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                        xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+                                        <dc:title>Inform to Perform: Survey Questions</dc:title>
+                                        <dc:creator>Alison Pope</dc:creator>
+                                        <dc:subject>Information science</dc:subject>
+                                        <dc:subject>Library and information science</dc:subject>
+                                        <dc:description>The survey questions used in the athlete
+                                                survey for the Inform to Perform
+                                                project for any researcher wishing to reproduce this
+                                                study for comparative research. The project
+                                                dissertation is published at
+                                                http://dx.doi.org/10.17613/M67S9N and data set at
+                                                http://dx.doi.org/10.17613/M6436P.</dc:description>
+                                        <dc:date>2015</dc:date>
+                                        <dc:type>Other</dc:type>
+                                        <dc:format>application/pdf</dc:format>
+                                        <dc:identifier>hc:12780</dc:identifier>
+                                        <dc:identifier>
+                                                hc:12779</dc:identifier>
+                                </oai_dc:dc>
+                        </foxml:xmlContent>
+                </foxml:datastreamVersion>
+        </foxml:datastream>
+        <foxml:datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+                <foxml:datastreamVersion
+                        ID="RELS-EXT1.0" LABEL="RDF Statements about this object"
+                        CREATED="2017-04-29T20:14:16.000Z" MIMETYPE="application/rdf+xml"
+                        FORMAT_URI="info:fedora/fedora-system:FedoraRELSExt-1.0" SIZE="738">
+                        <foxml:xmlContent>
+                                <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#"
+                                        xmlns:dcmi="http://purl.org/dc/terms/"
+                                        xmlns:pcdm="http://pcdm.org/models#"
+                                        xmlns:rel="info:fedora/fedora-system:def/relations-external#"
+                                        xmlns:cc="http://creativecommons.org/ns#"
+                                        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                                        <rdf:Description
+                                                rdf:about="info:fedora/hc:12780">
+                                                <fedora-model:hasModel
+                                                        rdf:resource="info:fedora/ldpd:Resource"></fedora-model:hasModel>
+                                                <rdf:type
+                                                        rdf:resource="http://pcdm.org/models#File"></rdf:type>
+                                                <pcdm:memberOf
+                                                        rdf:resource="info:fedora/hc:12779"></pcdm:memberOf>
+                                                <cc:license
+                                                        rdf:resource="info:fedora/"></cc:license>
+                                        </rdf:Description>
+                                </rdf:RDF>
+                        </foxml:xmlContent>
+                </foxml:datastreamVersion>
+        </foxml:datastream>
+        <foxml:datastream
+                ID="CONTENT" STATE="A" CONTROL_GROUP="M" VERSIONABLE="false">
+                <foxml:datastreamVersion
+                        ID="CONTENT.0" LABEL="informtoperform_surveyquestions.pdf"
+                        CREATED="2017-04-29T20:14:17.639Z" MIMETYPE="application/pdf" SIZE="153313">
+                        <foxml:contentLocation
+                                TYPE="INTERNAL_ID" REF="hc:12780+CONTENT+CONTENT.0" />
+                </foxml:datastreamVersion>
+        </foxml:datastream>
+</foxml:digitalObject>
