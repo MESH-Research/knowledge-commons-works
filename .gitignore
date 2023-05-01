@@ -10,6 +10,7 @@ __pycache__/
 
 # VSCode workspace config
 *.code-workspace
+*.vscode
 
 # Node module files
 node_modules/
