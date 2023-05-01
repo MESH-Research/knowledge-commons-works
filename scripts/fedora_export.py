@@ -1,10 +1,12 @@
 #! /usr/bin/env python
+from copy import copy
 import csv
 import requests
 import xml.etree.ElementTree as ET
 # import numpy as np
 import os
 # import pandas as pd
+from pprint import pprint
 
 """
 Required fields:
@@ -93,6 +95,7 @@ invenio_json = {
       "client": ""
     },
 },
+"files": {"entries": []},
 "metadata" : {
     "resource_type": {
         "id": "",
@@ -172,7 +175,6 @@ invenio_json = {
         "scheme": ""
     }],
     "languages": [
-        {"id": "dan"},
         {"id": "eng"}
     ],
     "dates": [{
@@ -309,6 +311,7 @@ datacite_json = {
          ]
         }
     ],
+    "publication_date": "",
     "dates": [
         {"date": "",
          "dateType": "",
@@ -352,23 +355,151 @@ def fetch_records(records:list=[], count:int=20) -> list:
     """
     FEDORA_USER = os.environ['FEDORA_USER']
     FEDORA_PASSWORD = os.environ['FEDORA_PASSWORD']
-    fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:12780/objectXML"
+    fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:23276/objectXML"
+    # fedora_url = "https://comcore.devel.lib.msu.edu/fedora/search"
+
+    # query = urllib.quote('title:rome creator:staples')
+    # fedora_url = f'https://comcore.devel.lib.msu.edu/fedora/objects?pid=true&label=true&state=true&ownerId=true&cDate=true&mDate=true&dcmDate=true&title=true&creator=true&subject=true&description=true&publisher=true&contributor=true&date=true&type=true&format=true&identifier=true&source=true&language=true&relation=true&coverage=true&rights=true&terms=book&query=&resultFormat=xml&query={query}&maxResults={count}'
 
     r = requests.get(fedora_url, auth=(FEDORA_USER, FEDORA_PASSWORD))
-    print(r.status_code)
-    print(r.headers)
-    print(r.encoding)
+    # print(r.status_code)
+    # print(r.headers)
+    # print(r.encoding)
+    print(r.text)
     print(r.content)
 
-    root = ET.fromstring(r.content)
-    prefix = "{info:fedora/fedora-system:def/foxml#}"
-    oai_dc = "{http://www.openarchives.org/OAI/2.0/oai_dc/}"
-    contents = root.findall(f'./{prefix}datastream/{prefix}datastreamVersion/{prefix}xmlContent/{oai_dc}dc')
-    print('contents')
-    for c in contents:
-        print(c)
+    records = []
 
-    return []
+    root = ET.fromstring(r.text)
+    print(root)
+
+    def _getnode(base, fieldname):
+        # node = base.find(f'{dc}{fieldname}')
+        node = base.findall(f'{prefix}{fieldname}')
+        if len(node) > 0:
+            print('printing', node[0].text)
+            return node[0].text
+        else:
+            print('returning')
+            return None
+    def _getnodes(base, fieldname):
+        # nodes = base.findall(f'{dc}{fieldname}')
+        nodes = base.findall(f'{prefix}{fieldname}')
+        print('FOUND', len(nodes), fieldname)
+        return nodes
+
+    prefix = "{http://www.fedora.info/definitions/1/0/types/}"
+    # prefix = "{info:fedora/fedora-system:def/foxml#}"
+    # oai_dc = "{http://www.openarchives.org/OAI/2.0/oai_dc/}"
+    # dc = "{http://purl.org/dc/elements/1.1/}"
+    # basepath = f'./{prefix}datastream/{prefix}datastreamVersion/{prefix}xmlContent/{oai_dc}dc'
+
+    # rdf = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}"
+    # cc_rights = root.findall(f'./{prefix}datastream[@ID="RELS-EXT"]/{prefix}datastreamVersion/{prefix}xmlContent/{rdf}RDF/{rdf}Description/{{http://creativecommons.org/ns#}}license')
+
+    versions = root.findall(f'./{prefix}resultList/{prefix}objectFields')
+    print(versions)
+    for v in versions:
+        newrec = {'metadata': {
+                    'resource_type': {},
+                    'title': "",
+                    'creators': [],
+                    'publication_date': [],
+                    'identifiers': [],
+                    'dates': [],
+                    'subjects': [],
+                    'rights': [],
+                    'formats': []
+                    },
+                  'files': {'entries': []},
+        }
+
+        # TODO: standardize type vocabulary?
+        newrec['metadata']['resource_type'] = _getnode(v, 'type')
+        newrec['metadata']['title'] = _getnode(v, 'title')
+
+        for c in _getnodes(v, 'creator'):
+            newrec['metadata']['creators'].append(
+                {'person_or_org': {'type': "personal",
+                                'name': c.text}}
+            )
+        # TODO: given name and family name???
+        # TODO: Affiliation???
+        for o in _getnodes(v, 'contributor'):
+            newrec['metadata']['contributors'].append(
+                {'person_or_org': {'type': "personal",
+                                   'name': o.text}}
+            )
+        # TODO: given name and family name???
+        # TODO: Affiliation???
+
+        newrec['metadata']['description'] = _getnode(v, 'description')
+        for s in _getnodes(v, 'subject'):
+            newrec['metadata']['subjects'].append(
+                {'subject': s.text,
+                'scheme': "fast"}
+            )
+        newrec['metadata']['publication_date'] = _getnode(v, 'date')
+        newrec['metadata']['identifiers'].append(
+            {'identifier': _getnode(v, 'pid'),
+            'scheme': 'hc'}
+        )
+        if _getnode(v, 'rights') == None:
+            newrec['metadata']['rights'].append(
+                {"id": "cc-by-4.0",
+                 "description": {"en": "The Creative Commons Attribution "
+                                 "license allows re-distribution and re-use of "
+                                 "a licensed work on the condition that the "
+                                 "creator is appropriately credited."},
+                 "link": "https://creativecommons.org/licenses/by/4.0/"
+                }
+            )
+        else:
+            newrec['metadata']['rights'].append({"id": _getnode(v, 'rights')})
+
+        if _getnode(v, 'publisher'):
+            newrec['metadata']['publisher'] = _getnode(v, 'publisher')
+        if _getnode(v, 'format'):
+            newrec['metadata']['formats'] = [_getnode(v, 'format')]
+
+        # TODO: format language???
+        if _getnode(v, 'language'):
+            newrec['metadata']['language'] = _getnode(v, 'language')
+
+        newrec['metadata']['dates'].append(
+            {'date': _getnode(v, 'cdate'), 'description': 'record created',
+            'type': {'id': 'created', 'title': {'en': 'Record created'}}})
+        newrec['metadata']['dates'].append(
+            {'date':  _getnode(v, 'mdate'),
+            'description': 'record last updated',
+            'type': {'id': 'updated', 'title': {'en': 'Record updated'}}})
+
+        filename = _getnode(v, 'label')
+        newrec['files']['entries'].append({
+                f'{filename}':
+                    {"key": filename,
+                    "mimetype": _getnode(v, 'format')}
+            }
+        )
+
+        # TODO: ownerId???
+        # TODO: CORE tags?
+        # TODO: CORE url?
+        # TODO: CORE issn?
+        # TODO: CORE notes?
+
+
+        # TODO: CORE 'source', 'relation', 'coverage',
+
+        # TODO: CORE 'state',
+
+        records.append(newrec)
+
+    # newrec['status'] =
+
+    pprint(records)
+
+    return records
 
 def write_to_csv(rows:list[list[str]]) -> None:
     with open('csv_file', 'w', encoding='UTF8') as f:
