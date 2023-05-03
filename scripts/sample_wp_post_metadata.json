@@ -1,0 +1,101 @@
+{
+    "title": "Secularism and Religion in Multi-faith Societies: The Case of India by Ragini Sen, Wolfgang Wagner, and Caroline Howarth Book Review Prabuddha Bharata December 2015",
+    "title_unchanged": "Secularism and Religion in Multi-faith Societies: The Case of India by Ragini Sen, Wolfgang Wagner, and Caroline Howarth Book Review Prabuddha Bharata December 2015",
+    "abstract": "Secularism and Religion in Multi-faith Societies: The Case of India by Ragini Sen, Wolfgang Wagner, and Caroline Howarth Book Review Prabuddha Bharata December 2015",
+    "abstract_unchanged": "Secularism and Religion in Multi-faith Societies: The Case of India by Ragini Sen, Wolfgang Wagner, and Caroline Howarth Book Review Prabuddha Bharata December 2015",
+    "genre": "Book review",
+    "committee_deposit": "",
+    "committee_id": "",
+    "organization": "Advaita Ashrama",
+    "authors": [
+        {
+            "fullname": "Narasimhananda Swami",
+            "given": "Narasimhananda",
+            "family": "Swami",
+            "uni": "sudhavedanta",
+            "role": "author",
+            "affiliation": "Advaita Ashrama"
+        }
+    ],
+    "author_info": "Swami, Narasimhananda : sudhavedanta : personal : author : Advaita Ashrama; ",
+    "group": [
+        "Hinduisms",
+        "Indology",
+        "Philosophy of Religion",
+        "Religious Studies",
+        "Theology"
+    ],
+    "group_ids": [
+        "1000714",
+        "1000675",
+        "1000789",
+        "1000641",
+        "1000788"
+    ],
+    "subject": [
+        "948442:Group identity:topical",
+        "1210276:India:geographic",
+        "1093763:Religion:topical",
+        "1123875:Sociology:topical"
+    ],
+    "keyword": {
+        "1": "religious pluralism",
+        "2": "Indian Studies",
+        "3": "Social identity",
+        "4": "Religious studies",
+        "5": "Indian culture"
+    },
+    "type_of_resource": "Text",
+    "language": "English",
+    "notes": "",
+    "notes_unchanged": "",
+    "type_of_license": "All Rights Reserved",
+    "published": "published",
+    "publication-type": "book-review",
+    "publisher": "Advaita Ashrama",
+    "date": "December 2015",
+    "date_issued": "2015",
+    "doi": "",
+    "embargoed": "no",
+    "id": "hc:23275",
+    "pid": "hc:23275",
+    "creator": "HumCORE",
+    "submitter": 1009653,
+    "society_id": [
+        "hc"
+    ],
+    "member_of": "hccollection:1",
+    "record_content_source": "HumCORE",
+    "record_creation_date": "2019-02-27T20:47:10Z",
+    "record_change_date": "2019-02-27T20:47:10Z",
+    "subject_ids": [
+        "1023650",
+        "1006649",
+        "2060",
+        "1006659",
+        "1007333",
+        "1015887"
+    ],
+    "keyword_ids": [
+        "1020629",
+        "1017028"
+    ],
+    "handle": "http:\/\/dx.doi.org\/10.17613\/1c4h-y775",
+    "deposit_doi": "doi:10.17613\/1c4h-y775",
+    "record_identifier": "1000360-20782"
+}
+
+{
+    "files": [
+        {
+            "pid": "hc:23276",
+            "datastream_id": "CONTENT",
+            "filename": "secularism-and-religion-in-multi-faith-societies-prabuddha-bharata-december-2015.pdf",
+            "filetype": "application\/pdf",
+            "filesize": "947862",
+            "fileloc": "\/srv\/www\/commons\/current\/web\/app\/uploads\/humcore\/2019\/02\/o_1d4ob1ctj14ld11th1mfu1831kvq7.pdf.secularism-and-religion-in-multi-faith-societies-prabuddha-bharata-december-2015.pdf",
+            "thumb_datastream_id": "",
+            "thumb_filename": ""
+        }
+    ]
+}

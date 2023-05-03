@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result xmlns="http://www.fedora.info/definitions/1/0/types/"
+    xmlns:types="http://www.fedora.info/definitions/1/0/types/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.fedora.info/definitions/1/0/types/ http://localhost:8080/fedora/schema/findObjects.xsd">
+    <resultList>
+        <objectFields>
+            <pid>hc:23276</pid>
+            <label>
+                secularism-and-religion-in-multi-faith-societies-prabuddha-bharata-december-2015.pdf</label>
+            <state>A</state>
+            <ownerId></ownerId>
+            <cDate>2019-02-27T20:47:14.307Z</cDate>
+            <mDate>2019-02-27T20:47:14.494Z</mDate>
+            <dcmDate>2019-02-27T20:47:11.000Z</dcmDate>
+            <title>Secularism and Religion in Multi-faith Societies: The Case of India by Ragini
+                Sen, Wolfgang Wagner, and Caroline Howarth Book Review Prabuddha Bharata December
+                2015</title>
+            <creator>Narasimhananda Swami</creator>
+            <subject>Social identity</subject>
+            <subject>India</subject>
+            <subject>Religion</subject>
+            <subject>Religious studies</subject>
+            <subject>Indian culture</subject>
+            <subject>Sociology</subject>
+            <description>Secularism and Religion in Multi-faith Societies: The Case of India by
+                Ragini Sen, Wolfgang Wagner, and Caroline Howarth Book Review Prabuddha Bharata
+                December 2015</description>
+            <publisher>Advaita Ashrama</publisher>
+            <date>2015</date>
+            <type>Book review</type>
+            <format>application/pdf</format>
+            <identifier>hc:23276</identifier>
+            <identifier>hc:23275</identifier>
+        </objectFields>
+    </resultList>
+</result>
