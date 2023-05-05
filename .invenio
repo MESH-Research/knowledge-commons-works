@@ -6,8 +6,9 @@ logfile = /logs/invenio-cli.log
 project_name = Knowledge Commons Repository
 project_shortname = knowledge-commons-repository
 package_name = knowledge_commons_repository
-# TODO: Change for production
-project_site = invenio-dev.hcommons-staging.org
+# TODO: Change for production deployment
+# project_site = invenio-dev.hcommons-staging.org
+project_site = localhost
 github_repo = MESH-Research/knowledge-commons-repository
 description = Knowledge Commons Repository InvenioRDM Instance
 author_name = MESH Research
