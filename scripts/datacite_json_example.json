@@ -1,0 +1,100 @@
+{
+    "id": "",
+    "doi": "",
+    "url": "",
+    "types": {
+        "ris": "",
+        "bibtex": "",
+        "citeproc": "",
+        "schemaOrg": "",
+        "resourceType": "",
+        "resourceTypeGeneral": ""
+    },
+    "identifiers": [
+        {"identifierType": "",
+         "identifier": ""}
+    ],
+    "creators": [
+        {"name": "",
+         "nameType": "",
+        "givenName": "",
+        "familyName": "",
+        "nameIdentifiers": [
+            {"schemeUri": "",
+             "nameIdentifier": "",
+             "nameIdentifierScheme": ""
+             }
+        ],
+        "affiliation": ""
+        }
+    ],
+    "titles": [{
+        "title": "",
+        "titleType": ""
+        }
+    ],
+    "container": {
+        "type": "Series",
+        "identifier": "",
+        "identifierType": ""
+    },
+    "publisher": "",
+    "publicationYear": "",
+    "Resource Type":
+        {"Type Description"},
+    "subjects": [
+        {"subject": "",
+         "schemeUri": "",
+         "subjectScheme": ""
+         }
+    ],
+    "contributors": [
+        {"name": "",
+         "nameType": "",
+         "affiliation": [],
+         "contributorType": "",
+         "nameIdentifiers": [
+            {"schemeUri": "",
+             "nameIdentifier": "",
+             "nameIdentifierScheme": ""
+            }
+         ]
+        }
+    ],
+    "publication_date": "",
+    "dates": [
+        {"date": "",
+         "dateType": "",
+         "dateInformation": ""}
+    ],
+    "sizes": [],
+    "formats": [],
+    "descriptions": [
+        {"lang": "",
+         "description": "",
+         "descriptionType": ""}
+    ],
+    "geolocations": [],
+    "fundingReferences": [
+    ],
+    "relatedIdentifiers": [
+        {"relatedIdentifier": "",
+         "relationType": "",
+         "resourceTypeGeneral": "",
+         "relatedIdentifierType": ""
+        },
+    ],
+    "relatedItems": [],
+    "language": "",
+    "version": "",
+    "schemaVersion": "",
+    "providerId": "",
+    "clientId": "",
+    "rightsList": [
+        {"rightsURI": "",
+         "rightsIdentifier": "",
+         "rightsIdentifierScheme": "",
+         "schemeURI": "",
+        }
+    ]
+}

@@ -1,0 +1,293 @@
+/* invenio_rdm_records/records/jsonschemas/records/record-v6.0.0.json */
+/* invenio_rdm_records/records/jsonschemas/records/parent-v2.0.0.json */
+/* invenio_rdm_records/records/jsonschemas/records/definitions-v2.0.0.json */
+{
+    "$schema": "local://records/record-v1.0.0.json",
+    "id": "q5jr8-hny72",
+    "pid": {},
+    "parent": {
+        "access": {
+            "links": [],
+            "owned_by": [
+                { "user": 3 }
+            ],
+            "grants": {
+                "subject": "",
+                "id": "",
+                "level": ""
+            }
+        },
+        "communities": {
+            "default": "36ece3f3-1c5b-49bd-9053-c75b3f1b2aa5",
+            "ids": [
+                "36ece3f3-1c5b-49bd-9053-c75b3f1b2aa5"
+            ]
+        },
+        "id": "erbmr-xha04",
+        "pid": ""
+    },
+    "access": {
+        "embargo": {
+            "active": true,
+            "until": "2023-06-06",
+            "reason": null
+        },
+        "files": "restricted",
+        "record": "restricted",
+        "status": "metadata-only"
+    },
+    "created": "2023-03-31T15:01:04.598290+00:00",
+    "custom_fields": {
+        "hcommons_domain": "ajs.hcommons.org",
+        "hcommons_organization": "University of Toronto",
+        "hcommons_groups": {
+            "group_name": "",
+            "group_identifier": ""
+        },
+        "hcommons_committee_deposit": [],
+        "hcommons_previously_published": "",
+        "user_defined_tags": [
+            {"tag_label": "",
+             "tag_identifier": 123
+            }],
+        "legacy_resource_type": "",
+        "society": "",
+    },
+    "is_draft": true,
+    "is_published": false,
+    "links": {
+        "access_links": "https://invenio-dev.hcommons-staging.org/api/records/8m07p-smh19/access/links",
+        "archive": "https://invenio-dev.hcommons-staging.org/api/records/8m07p-smh19/files-archive",
+        "draft": "https://invenio-dev.hcommons-staging.org/api/records/8m07p-smh19/draft",
+        "files": "https://invenio-dev.hcommons-staging.org/api/records/8m07p-smh19/files",
+        "latest": "https://invenio-dev.hcommons-staging.org/api/records/8m07p-smh19/versions/latest",
+        "latest_html": "https://invenio-dev.hcommons-staging.org/records/8m07p-smh19/latest",
+        "reserve_doi": "https://invenio-dev.hcommons-staging.org/api/records/8m07p-smh19/draft/pids/doi",
+        "self": "https://invenio-dev.hcommons-staging.org/api/records/8m07p-smh19",
+        "self_html": "https://invenio-dev.hcommons-staging.org/records/8m07p-smh19",
+        "self_iiif_manifest": "https://invenio-dev.hcommons-staging.org/api/iiif/record:8m07p-smh19/manifest",
+        "self_iiif_sequence": "https://invenio-dev.hcommons-staging.org/api/iiif/record:8m07p-smh19/sequence/default",
+        "versions": "https://invenio-dev.hcommons-staging.org/api/records/8m07p-smh19/versions"
+    },
+    "revision_id": 1,
+    "status": "published",
+    "versions": {
+        "index": 2,
+        "is_latest": true,
+        "is_latest_draft": true
+    },
+    "pids" : {
+        "oai": {
+          "identifier": "",
+          "provider": ""
+        },
+        "doi": {
+          "identifier": "",
+          "provider": "",
+          "client": ""
+        },
+        "concept-doi": {
+          "identifier": "",
+          "provider": "",
+          "client": ""
+        }
+    },
+    "metadata": {
+        "resource_type": {
+            "id": "",
+            "title": {"en": ""}
+            },
+        "creators": [
+            {"person_or_org": {
+                "type": "personal|organizational",
+                "given_name": "",
+                "family_name":  "",
+                "name": "",
+                "identifiers": [
+                    {"scheme": "",
+                    "identifier": ""}
+                ]
+            },
+            "role": "",
+            "affiliations": [
+                {"id": "",
+                "name": ""}
+                ]
+            }
+        ],
+        "title": "",
+        "additional_titles": [
+            {"title": "",
+            "type": {
+                "id": "",
+                "title": ""
+            },
+            "lang": {"id": ""}
+            }
+        ],
+        "description": "",
+        "additional_descriptions": [
+            {"description": "",
+            "type": {
+                "id": "",
+                "title": {
+                    "en": ""
+                }
+            },
+            "lang": {"id": ""}}
+        ],
+        "rights": [
+            {
+            "id": "",
+            "icon": "",
+            "props": {
+                "scheme": "spdx",
+                "url": ""
+            },
+            "title": {"en": ""},
+            "description": {"en": ""}
+            }
+        ],
+        "formats": [ "" ],
+        "sizes": [ "" ],
+        "contributors": [{
+            "person_or_org": {
+            "name": "",
+            "type": "personal",
+            "given_name": "",
+            "family_name": "",
+            "identifiers": [{
+                "scheme": "",
+                "identifier": ""
+            }]
+            },
+            "role": {"id": ""},
+            "affiliations": [{
+            "id": "",
+            "name": ""
+            }]
+        }],
+        "subjects": [{
+            "id": "",
+            "subject": "",
+            "scheme": ""
+        }],
+        "languages": [
+            {"id": "eng"}
+        ],
+        "dates": [{
+            "date": "",
+            "type": {
+            "id": "",
+            "title": { "en": "" }
+            },
+            "description": ""
+        }],
+        "version": "",
+        "publisher": "",
+        "identifiers": [{
+            "identifier": "hc:10053",
+            "scheme": "hc_legacy_pid"
+            },
+            {"identifier": 1000361,
+             "scheme": "hc_legacy_id"}
+        ],
+        "related_identifiers": [{
+            "identifier": "",
+            "scheme": "",
+            "relation_type": {
+                "id": "",
+                "title": { "en": "" }
+            },
+            "resource_type": {
+                "id": "",
+                "title": { "en": "" }
+            }
+        }],
+        "locations": {
+            "features": [{
+                "geometry": {
+                    "type": "",
+                    "coordinates": [46.23333, 6.05]
+                },
+                "identifiers": [{
+                    "scheme": "",
+                    "identifier": ""
+                }],
+                "place": "",
+                "description": ""
+            }]
+        },
+        "funding": [
+            {
+                "funder": {
+                    "id": ""
+                },
+                "award": {
+                    "id": ""
+                }
+            },
+            {
+                "funder": {
+                    "id": ""
+                },
+                "award": {
+                    "title": { "en": "" },
+                    "number": "",
+                    "identifiers": [{
+                        "scheme": "",
+                        "identifier": ""
+                    }]
+                }
+            }
+        ],
+        "references": [{
+            "reference": "",
+            "identifier": "",
+            "scheme": ""
+        }]
+    },
+    "files" : {
+        "enabled": "true",
+        "entries": {
+            "path/paper.pdf": {
+                "bucket_id": "",
+                "checksum": "",
+                "created": "",
+                "file_id": "",
+                "key": "path/paper.pdf",
+                "links": {
+                    "self": "",
+                    "content": "",
+                    "iiif_canvas": "",
+                    "iiif_base": "",
+                    "iiif_info": "",
+                    "iiif_api": ""
+                },
+                "metadata": {
+                    "width": 0,
+                    "height": 0
+                },
+                "mimetype": "",
+                "size": 0,
+                "status": "",
+                "storage_class": "",
+                "updated": "",
+                "version_id": ""
+            }
+        },
+        "default_preview": "path/paper.pdf"
+    },
+    "tombstone" : {
+        "reason": "",
+        "category": "",
+        "removed_by": {"user": 1},
+        "timestamp": ""
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+}
