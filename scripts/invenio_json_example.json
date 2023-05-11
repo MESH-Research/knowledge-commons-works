@@ -38,20 +38,52 @@
     },
     "created": "2023-03-31T15:01:04.598290+00:00",
     "custom_fields": {
-        "hcommons_domain": "ajs.hcommons.org",
-        "hcommons_organization": "University of Toronto",
-        "hcommons_groups": {
+        "code:codeRepository": "https://github.com/monotasker",
+        "code:developmentStatus": {
+        "id": "active",
+        "title": {
+            "en": "Active"
+        }
+        },
+        "code:operatingSystem": "Windows 10, MacOS",
+        "code:programmingLanguage": "Python",
+        "code:runtimePlatform": "Python 3.8",
+        "imprint:imprint": {
+            "isbn": "978-3-16-148410-0",
+            "pages": "46-89",
+            "place": "Paris, France",
+            "title": "My Book Title"
+        },
+        "journal:journal": {
+            "issn": "2049-3630",
+            "issue": "23",
+            "pages": "46-89",
+            "title": "My Journal Title",
+            "volume": "5"
+        },
+        "meeting:meeting": {
+            "acronym": "ANC",
+            "dates": "4-8 December, 2022",
+            "place": "Detroit",
+            "session": "VII",
+            "session_part": "3",
+            "title": "A nice conference",
+            "url": "https://mysite.edu"
+        },
+        "kcr:commons_domain": "ajs.hcommons.org",
+        "kcr:hcommons_organization": "University of Toronto",
+        "kcr:hcommons_groups": {
             "group_name": "",
             "group_identifier": ""
         },
-        "hcommons_committee_deposit": [],
-        "hcommons_previously_published": "",
-        "user_defined_tags": [
+        "kcr:user_defined_tags": [
             {"tag_label": "",
              "tag_identifier": 123
             }],
-        "legacy_resource_type": "",
-        "society": "",
+        "hclegacy:society": "",
+        "hclegacy:committee_deposit": 123,
+        "hclegacy:previously_published": "",
+        "hclegacy:publication_type": "",
     },
     "is_draft": true,
     "is_published": false,

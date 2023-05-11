@@ -16,7 +16,8 @@ invenio-cli = "*"
 pytest-invenio = "*"
 knowledge-commons-repository = {editable = true, path = "./site"}
 selenium = "*"
-invenio-app-rdm = {version = "==12.0.0b1", extras = ["opensearch2", "postgresql"]}
+invenio-app-rdm = {version = ">=12.0.0b1", extras = ["opensearch2", "postgresql"]}
+invenio-rdm-records = "==2.13.0"
 
 [requires]
 python_version = "3.9"

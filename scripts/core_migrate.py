@@ -1,17 +1,19 @@
 #! /usr/bin/env python
 import click
-from copy import copy
+from copy import deepcopy
 import csv
 from datetime import datetime
 from fedoraapi import FedoraApi
+from itertools import zip_longest
 import requests
-import xml.etree.ElementTree as ET
 # import numpy as np
 from typing import Optional
 import os
 # import pandas as pd
 from pprint import pprint
 import re
+import xml.etree.ElementTree as ET
+from xml.sax.saxutils import escape, unescape
 
 
 def valid_date(datestring:str) -> bool:
@@ -37,6 +39,265 @@ def valid_date(datestring:str) -> bool:
             return False
     return True
 
+
+def add_resource_type(rec, pubtype, genre, filetype):
+    """
+    """
+    bad_data = []
+    kcr_resource_types = {"dataset": ["other"],
+                            "image": ["chart", "diagram", "map", "visualArt", "other"],
+                            "instructionalResource": ["curriculum", "syllabus", "other"],
+                            "presentation": ["slides", "speech", "conferencePaper", "conferencePoster", "lecture", "other"],
+                            "publication": [
+                                "abstract", "blogPost", "book", "bookSection", "review",
+                                "conferenceProceeding", "dataPaper",
+                                "bookReview", "dissertation", "documentation", "fictionalWork", "interviewTranscript", "journal", "journalArticle", "legalResponse", "legalComment", "magazineArticle", "newspaperArticle", "onlinePublication",
+                                "other", "preprint", "report",
+                                "monograph", "proceedingsArticle", "translation", "whitePaper"
+                            ],
+                            "software": [
+                                "3dModel", "computationalModel", "computationalNotebook", "outputManagementPlan", "service", "application"
+                            ],
+                            "audiovisual": ["documentary", "interviewRecording",
+                                "video", "soundRecording", "musicalRecording", "other", "podcast"
+                            ],
+                            "other": [
+                                "bibliography", "catalog", "collection", "essay", "event", "findingAid", "interactiveResource", "notes", "peerReview", "physicalObject", "standard", "workflow", "mixedMaterial", "text"
+                            ]
+                            }
+    types_of_resource = {"Audio": "audiovisual:soundRecording",
+                         "Image": "image:other",
+                         "Mixed material": "other:mixedMaterial",
+                         "Software": "software:application",
+                         "Text": "other:text",
+                         "Video": "audiovisual:video"}
+    genres = {"Abstract": "publication:abstract",
+              "Article": "publication:journalArticle",
+              "Bibliography": "other:bibliography",
+              "Blog Post": "publication:blogPost",
+              "Book": "publication:book",
+              "Book chapter": "publication:bookChapter",
+              "Book review": "publication:review",
+              "Book section": "publication:bookSection",
+              "Catalog": "other:catalog",
+              "Chart": "image:chart",
+              "Code or software": "software: application",
+              "Conference paper": "presentation:conferencePaper",
+              "Conference poster": "presentation:conferencePoster",
+              "Conference proceeding": "publication:conferenceProceeding",
+              "Course material or learning objects": "instructionalResource:other",
+              "Course Material or learning objects": "instructionalResource: other",
+              "Data set": "dataset:other",
+              "Dissertation": "publication:dissertation",
+              "Documentary": "audiovisual:documentary",
+              "Editorial": "publication:editorial",
+              "Essay": "other:essay",
+              "Fictional work": "publication:fictionalWork",
+              "Finding aid": "other:other",
+              "Image": "image:other",
+              "Interview": "publication:interviewTranscript",
+              "Lecture": "presentation:lecture",
+              "Legal Comment": "publication:legalComment",
+              "Legal response": "publication:legalResponse",
+              "Magazine section": "publication:magazineArticle",
+              "Map": "image:map",
+              "Monograph": "publication:monograph",
+              "Music": "audiovisual:musicalRecording",
+              "Newspaper article": "publication:newspaperArticle",
+              "Online publication": "publication:onlinePublication",
+              "Online Publication": "publication:onlinePublication",
+              "Other": "other:other",
+              "Performance": "other:other",
+              "Photograph": "image:other",
+              "Podcast": "audiovisual:podcast",
+              "Poetry": "publication:poeticWork",
+              "Presentation": "presentation:other",
+              "Report": "publication:report",
+              "Review": "publication:review",
+              "Sound recording-musical": "audiovisual:musicalRecording",
+              "Sound recording-non musical": "audiovisual:soundRecording", "Syllabus": "instructionalResource:syllabus",
+              "Technical report": "publication:report",
+              "Thesis": "publication:dissertation",
+              "Translation": "publication:translation",
+              "Video": "audiovisual:videoRecording",
+              "Video essay": "audiovisual:videoRecording",
+              "Visual art": "image:visualArt",
+              "White paper": "publication:whitePaper"}
+
+    publication_types = {"book-chapter": "publication:bookSection",
+                            "book-review": "publication:review",
+                            "book-section": "publication:bookSection",
+                            "journal-article": "publication:journalArticle",
+                            "magazine-section": "publication:magazineArticle",
+                            "monograph": "publication:monograph",
+                            "newspaper-article": "publication:newspaperArticle",
+                            "online-publication": "publication:onlinePublication",
+                            "podcast": "audiovisual:podcast",
+                            "proceedings-article": "publication:proceedingsArticle"}
+    if genre in genres.keys():
+        rec['metadata']['resource_type'] = genres[genre]
+        if (pubtype == "Interview") and (filetype in ['audio/mpeg', 'audio/ogg', 'audio/wav', 'video/mp4', 'video/quicktime']):
+            rec['metadata']['resource_type'] = "audiovisual:interviewRecording"
+        if (pubtype in publication_types.keys() and
+                genres[genre] != publication_types[pubtype]):
+            rec['custom_fields']['hclegacy:publication_type'] = pubtype
+    else:
+        rec['metadata']['resource_type'] = None
+        bad_data.append(('genre', genre))
+        rec['custom_fields']['hclegacy:publication_type'] = pubtype
+        if pubtype in publication_types.keys():
+            rec['metadata']['resource_type'] = publication_types[pubtype]
+        else:
+            bad_data.append(('publication-type', pubtype))
+
+    return rec, bad_data
+
+
+def parse_csv():
+    """
+    """
+
+    roles_list = []
+    baserec:dict = {'parent': {
+                        'access': {
+                            'owned_by': []
+                        }
+                    },
+                    'custom_fields': {
+                    },
+                    'metadata': {
+                        'resource_type': {},
+                        'title': "",
+                        'additional_titles': [],
+                        'additional_descriptions': [],
+                        'creators': [],
+                        'publication_date': [],
+                        'identifiers': [],
+                        'dates': [],
+                        'subjects': [],
+                        'languages': [],
+                        'rights': [],
+                        'formats': []
+                    },
+                    'files': {'entries': []},
+    }
+
+    newrec_list:list[dict] = []
+    bad_data_dict:dict[str: list] = {}
+
+    with open('../kcr-untracked-files/core-may-4-2023.csv') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        line_count:int = 0
+        for row in csv_reader:
+            newrec = deepcopy(baserec)
+            newrec['custom_fields']['kcr:commons_domain'] = row['domain']
+
+            newrec['metadata']['title'] = row['title_unchanged']
+            newrec['metadata']['additional_titles'].append(
+                {"title": row['title'],
+                    "type": {
+                        "id": "other",
+                        "title": {"en": "Primary title with HTML stripped"}
+                    },
+                }
+            )
+            newrec['metadata']['description'] = row['abstract_unchanged']
+            newrec['metadata']['additional_descriptions'].append(
+                {"description": row['abstract'],
+                 "type": {
+                     "id": "other",
+                     "title": {"en": "Primary description with HTML stripped"}
+                 }
+                }
+            )
+
+            newrec, bad_data = add_resource_type(newrec,
+                                                 row['publication-type'],
+                                                 row['genre'], row['filetype'])
+            if bad_data:
+                for i in bad_data:
+                    bad_data_dict.setdefault(row['id'], []).append(i)
+
+
+
+            newrec['metadata']['identifiers'].append(
+                {'identifier': row['id'], 'scheme': 'hclegacy'}
+            )
+
+            if row['committee_deposit'] == "yes":
+                try:
+                    cid = int(row['committee_id'])
+                    newrec['custom_fields'][
+                           'hclegacy:committee_deposit'] = cid
+                except ValueError:
+                    bad_data_dict.setdefault(row['id'], []).append(
+                        ('committee_id', row['committee_id'])
+                    )
+
+            if row['submitter']:
+                try:
+                    row['submitter'] = int(row['submitter'])
+                    # Doesn't work because not Invenio user id
+                    newrec['parent']['access']['owned_by'].append(
+                        {'user': row['submitter']}
+                    )
+                except ValueError:
+
+
+            if row['authors']:
+                # Escaping/unescaping necessary to avoid splitting string on
+                # escaped html entities
+                row['authors'] = unescape(row['authors'])
+                # Replace necessary because some affiliation values are
+                # semicolon separated internally
+                row['authors'] = row['authors'].replace('; ', '~~')
+                for a in row['authors'].split(';'):
+                    a_fields = ['name', 'given', 'family', 'username',
+                                'role', 'affiliation']
+                    # Replace necessary because some affiliation values are bar
+                    # separated internally
+                    a = a.replace(' |', '~~')
+                    a_values = a.split('|')
+                    if len(a_values) == 6:
+                        a_dict = dict(zip_longest(a_fields, a_values))
+                        newrec['metadata']['creators'].append(
+                            {'person_or_org':
+                                {'type': "personal",  # FIXME: can't hard code
+                                 'name': escape(a_dict['name']),
+                                 'given_name': escape(a_dict['given']),
+                                 'family_name': escape(a_dict['family']),
+                                 'identifiers': {
+                                    'identifiers': escape(a_dict['username']),
+                                    'scheme': 'hc_username'
+                                  }
+                                 },
+                            'role': escape(a_dict['role']),
+                            'affiliations': [
+                                escape(a_dict['affiliation']).split('~~')]
+                            }
+                        )
+                        if a_dict['role'] not in roles_list:
+                            roles_list.append(a_dict['role'])
+                    else:
+                        bad_data_dict.setdefault(row['id'], []).append(
+                            ('authors', row['authors'], len(a_values))
+                        )
+            else:
+                bad_data_dict.setdefault(row['id'], []).append(
+                    ('authors', row['authors'])
+                )
+
+            newrec_list.append(newrec)
+            line_count += 1
+
+        pprint(newrec_list[0])
+
+        pprint(bad_data_dict)
+        print(f'Processed {line_count} lines.')
+        print(f'Found {len(bad_data_dict)} records with bad data.')
+    return newrec_list, bad_data_dict
+
+
 fedora_fields = ["pid", "label", "state", "ownerId", "cDate", "mDate",
                  "dcmDate", "title", "creator", "subject", "description",
                  "publisher", "contributor", "date", "type", "format",
@@ -56,9 +317,10 @@ def fetch_records(query:Optional[str], pid:Optional[str], terms:Optional[str],
     Fetch deposit records from the Fedora CORE datastream.
     """
     fields_list = fields.split(',') if fields is not None else fedora_fields
+    pprint(os.environ)
     FEDORA_USER = os.environ['FEDORA_USER']
     FEDORA_PASSWORD = os.environ['FEDORA_PASSWORD']
-    fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:23276/objectXML" # whole datastream object
+    fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:44598/objectXML" # whole datastream object
     # fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:23276/datastreams/DC?format=xml" # dc metadata
     # fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:23276/datastreams/RELS-EXT?format=xml" # rdf
     # fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:23276/datastreams/CONTENT?format=xml" # file size, etc.
@@ -68,9 +330,8 @@ def fetch_records(query:Optional[str], pid:Optional[str], terms:Optional[str],
 
     # query = urllib.quote('title:rome creator:staples')
     # fedora_url = f'https://comcore.devel.lib.msu.edu/fedora/objects?pid=true&label=true&state=true&ownerId=true&cDate=true&mDate=true&dcmDate=true&title=true&creator=true&subject=true&description=true&publisher=true&contributor=true&date=true&type=true&format=true&identifier=true&source=true&language=true&relation=true&coverage=true&rights=true&terms=&query=title~gothic&resultFormat=xml&query=title~Gothic creator~*K*&maxResults=3'
-    # r = requests.get(fedora_url, auth=(FEDORA_USER, FEDORA_PASSWORD))
-    # pprint(r.text)
-
+    r = requests.get(fedora_url, auth=(FEDORA_USER, FEDORA_PASSWORD))
+    pprint(r.text)
 
     f = FedoraApi(base_url="https://comcore.devel.lib.msu.edu/fedora",
                      username=os.environ['FEDORA_USER'],
@@ -317,12 +578,6 @@ def fetch_records(query:Optional[str], pid:Optional[str], terms:Optional[str],
 
     return records
 
-def write_to_csv(rows:list[list[str]]) -> None:
-    with open('csv_file', 'w', encoding='UTF8') as f:
-        # create the csv writer
-        writer = csv.writer(f)
-        for row in rows:
-            writer.writerow(row)
-
 if __name__=="__main__":
-    fetch_records()
+    parse_csv()
+    # fetch_records()
