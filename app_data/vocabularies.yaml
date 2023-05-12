@@ -1,3 +1,12 @@
+creatorsroles:
+  pid-type: crr
+  data-file: vocabularies/roles_creator.yaml
+contributorsroles:
+  pid-type: cor
+  data-file: vocabularies/roles_contributor.yaml
+resourcetypes:
+  pid-type: rsrct
+  data-file: vocabularies/resource_types.yaml
 subjects:
   pid-type: sub
   schemes:

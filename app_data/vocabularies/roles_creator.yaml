@@ -1,0 +1,64 @@
+- id: author
+  props:
+    datacite: Author
+  title:
+    en: Author
+- id: editor
+  props:
+    datacite: Editor
+  title:
+    en: Editor
+    de: EditorIn
+- id: producer
+  props:
+    datacite: Producer
+  title:
+    en: Producer
+    de: ProduzentIn
+- id: projectleader
+  props:
+    datacite: ProjectLeader
+  title:
+    en: Project leader
+    de: ProjektleiterIn
+- id: projectmanager
+  props:
+    datacite: ProjectManager
+  title:
+    en: Project manager
+    de: ProjektmanagerIn
+- id: projectmember
+  props:
+    datacite: ProjectMember
+  title:
+    en: Project member
+    de: Projektmitglied
+- id: researcher
+  props:
+    datacite: Researcher
+  title:
+    en: Researcher
+    de: WissenschaftlerIn
+- id: researchgroup
+  props:
+    datacite: ResearchGroup
+  title:
+    en: Research group
+    de: Forschungsgruppe
+- id: supervisor
+  props:
+    datacite: Supervisor
+  title:
+    en: Supervisor
+    de: SupervisorIn
+- id: translator
+  props:
+    datacite: Translator
+  title:
+    en: Translator
+- id: other
+  props:
+    datacite: Other
+  title:
+    en: Other
+    de: Andere
