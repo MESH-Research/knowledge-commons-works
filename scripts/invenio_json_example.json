@@ -84,6 +84,8 @@
         "hclegacy:committee_deposit": 123,
         "hclegacy:previously_published": "",
         "hclegacy:publication_type": "",
+        "hclegacy:submitter_id": 123,
+        "hclegacy:submitter_org_memberships": []
     },
     "is_draft": true,
     "is_published": false,

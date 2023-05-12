@@ -1,10 +1,12 @@
 #! /usr/bin/env python
+from ast import literal_eval
 import click
 from copy import deepcopy
 import csv
 from datetime import datetime
 from fedoraapi import FedoraApi
 from itertools import zip_longest
+import json
 import requests
 # import numpy as np
 from typing import Optional
@@ -14,6 +16,17 @@ from pprint import pprint
 import re
 import xml.etree.ElementTree as ET
 from xml.sax.saxutils import escape, unescape
+
+@click.group()
+def cli():
+    pass
+
+def append_bad_data(rowid:str, content:tuple, bad_data_dict:dict):
+    """
+    Add info on bad data to dictionary of bad data
+    """
+    bad_data_dict.setdefault(rowid, []).append(content)
+    return bad_data_dict
 
 
 def valid_date(datestring:str) -> bool:
@@ -124,7 +137,7 @@ def add_resource_type(rec, pubtype, genre, filetype):
               "Visual art": "image:visualArt",
               "White paper": "publication:whitePaper"}
 
-    publication_types = {"book-chapter": "publication:bookSection",
+    publication_types = {"book-chapter": "publication:bookChapter",
                             "book-review": "publication:review",
                             "book-section": "publication:bookSection",
                             "journal-article": "publication:journalArticle",
@@ -153,11 +166,94 @@ def add_resource_type(rec, pubtype, genre, filetype):
     return rec, bad_data
 
 
-def parse_csv():
+def add_author_data(newrec:dict, row:dict, bad_data_dict:dict
+                    ) -> tuple[dict, dict]:
     """
+    Add information about authors to the supplied record from supplied row.
+
+    Processes data from the 'authors' and 'author_info' csv export fields.
     """
 
-    roles_list = []
+    creators = []
+    contributors_misplaced = []
+    creators_misplaced = []
+    # FIXME: What roles do we allow? Submitter?
+    allowed_roles = ['author', 'editor', 'contributor', 'submitter',
+                     'translator', 'creator', 'project director']
+    if row['authors']:
+        print(row['pid'])
+        try:
+            authors = literal_eval(row['authors'])
+
+            for a in authors:
+                new_person = {}
+
+                new_person['person_or_org'] = {
+                    'type': "personal",  # FIXME: can't hard code
+                    'name': a['fullname'],
+                    'given_name': a['given'],
+                    'family_name': a['family']
+                }
+                if a['role'] and a['role'] in allowed_roles:
+                    new_person['role'] = a['role']
+                else:
+                    append_bad_data(row['id'],
+                                    (f'authors:{a["fullname"]}:role', a['role']),
+                                    bad_data_dict)
+                if a['affiliation']:
+                    new_person['affiliations'] = a['affiliation'].split('|')
+                if a['uni']:  # uni is the hc username
+                    new_person['person_or_org']['identifiers'] = [
+                        {'identifier': a['uni'], 'scheme': 'hc_username'}]
+                if a['role'] in allowed_roles:
+                    if a['role'] == 'contributor':
+                        contributors_misplaced.append(new_person)
+                    else:
+                        creators.append(new_person)
+            if len(creators) > 0:
+                newrec['metadata'].setdefault('creators', []).extend(
+                    creators
+                )
+                if contributors_misplaced:
+                    newrec['metadata'].setdefault('contributors', []).extend(
+                        contributors_misplaced
+                    )
+                    append_bad_data(row['id'], ('authors', row['authors'],
+                                                'contributor moved from authors'),
+                                    bad_data_dict)
+            elif len(contributors_misplaced) > 0:
+                newrec['metadata'].setdefault('creators', []).extend(
+                    contributors_misplaced
+                )
+                append_bad_data(row['id'], ('authors', row['authors'],
+                                            'contributor as only author'),
+                                bad_data_dict)
+        except (SyntaxError, ValueError):
+            append_bad_data(row['id'], ('authors', row['authors']),
+                            bad_data_dict)
+    else:
+        append_bad_data(row['id'], ('authors', row['authors']),
+                        bad_data_dict)
+
+    if row['author_info']:
+        pass
+
+    return newrec, bad_data_dict
+
+
+@cli.command(name="csv")
+def csv_command_wrapper():
+    """
+    Isolates click registration for ease of unit testing.
+    """
+    parse_csv()
+
+
+def parse_csv() -> tuple[dict, dict]:
+    """
+    Parse and serialize csv data into Invenio JSON format.
+    """
+
     baserec:dict = {'parent': {
                         'access': {
                             'owned_by': []
@@ -184,14 +280,21 @@ def parse_csv():
 
     newrec_list:list[dict] = []
     bad_data_dict:dict[str: list] = {}
+    line_count:int = 0
 
-    with open('../kcr-untracked-files/core-may-4-2023.csv') as csv_file:
+    with open('../../kcr-untracked-files/core-may-12-2023.csv') as csv_file:
         csv_reader = csv.DictReader(csv_file)
-        line_count:int = 0
         for row in csv_reader:
             newrec = deepcopy(baserec)
+
+            # HC admin information
+            newrec['metadata']['identifiers'].append(
+                {'identifier': row['id'], 'scheme': 'hclegacy'}
+            )
+
             newrec['custom_fields']['kcr:commons_domain'] = row['domain']
 
+            # Titles
             newrec['metadata']['title'] = row['title_unchanged']
             newrec['metadata']['additional_titles'].append(
                 {"title": row['title'],
@@ -201,6 +304,7 @@ def parse_csv():
                     },
                 }
             )
+            # Descriptions/Abstracts
             newrec['metadata']['description'] = row['abstract_unchanged']
             newrec['metadata']['additional_descriptions'].append(
                 {"description": row['abstract'],
@@ -211,28 +315,24 @@ def parse_csv():
                 }
             )
 
+            # Resource type
             newrec, bad_data = add_resource_type(newrec,
                                                  row['publication-type'],
                                                  row['genre'], row['filetype'])
             if bad_data:
                 for i in bad_data:
-                    bad_data_dict.setdefault(row['id'], []).append(i)
+                    append_bad_data(row['id'], i, bad_data_dict)
 
-
-
-            newrec['metadata']['identifiers'].append(
-                {'identifier': row['id'], 'scheme': 'hclegacy'}
-            )
-
+            # Committee deposit
             if row['committee_deposit'] == "yes":
                 try:
                     cid = int(row['committee_id'])
                     newrec['custom_fields'][
                            'hclegacy:committee_deposit'] = cid
                 except ValueError:
-                    bad_data_dict.setdefault(row['id'], []).append(
-                        ('committee_id', row['committee_id'])
-                    )
+                    append_bad_data(row['id'],
+                                    ('committee_id', row['committee_id']),
+                                    bad_data_dict)
 
             if row['submitter']:
                 try:
@@ -241,60 +341,33 @@ def parse_csv():
                     newrec['parent']['access']['owned_by'].append(
                         {'user': row['submitter']}
                     )
+                    newrec['custom_fields'
+                           ]['hclegacy:submitter_id'] = row['submitter']
                 except ValueError:
+                    row['submitter'] = None
+                    append_bad_data(row['id'],
+                                    ('submitter', row['submitter']),
+                                    bad_data_dict)
 
+            # Author info
+            newrec, bad_data_dict = add_author_data(newrec, row, bad_data_dict)
 
-            if row['authors']:
-                # Escaping/unescaping necessary to avoid splitting string on
-                # escaped html entities
-                row['authors'] = unescape(row['authors'])
-                # Replace necessary because some affiliation values are
-                # semicolon separated internally
-                row['authors'] = row['authors'].replace('; ', '~~')
-                for a in row['authors'].split(';'):
-                    a_fields = ['name', 'given', 'family', 'username',
-                                'role', 'affiliation']
-                    # Replace necessary because some affiliation values are bar
-                    # separated internally
-                    a = a.replace(' |', '~~')
-                    a_values = a.split('|')
-                    if len(a_values) == 6:
-                        a_dict = dict(zip_longest(a_fields, a_values))
-                        newrec['metadata']['creators'].append(
-                            {'person_or_org':
-                                {'type': "personal",  # FIXME: can't hard code
-                                 'name': escape(a_dict['name']),
-                                 'given_name': escape(a_dict['given']),
-                                 'family_name': escape(a_dict['family']),
-                                 'identifiers': {
-                                    'identifiers': escape(a_dict['username']),
-                                    'scheme': 'hc_username'
-                                  }
-                                 },
-                            'role': escape(a_dict['role']),
-                            'affiliations': [
-                                escape(a_dict['affiliation']).split('~~')]
-                            }
-                        )
-                        if a_dict['role'] not in roles_list:
-                            roles_list.append(a_dict['role'])
-                    else:
-                        bad_data_dict.setdefault(row['id'], []).append(
-                            ('authors', row['authors'], len(a_values))
-                        )
-            else:
-                bad_data_dict.setdefault(row['id'], []).append(
-                    ('authors', row['authors'])
-                )
+            if row['organization']:
+                newrec['custom_fields'
+                       ].setdefault('hclegacy:submitter_org_memberships',
+                                    []).append(row['organization'])
 
             newrec_list.append(newrec)
             line_count += 1
 
-        pprint(newrec_list[0])
+        pprint(newrec_list[16])
 
-        pprint(bad_data_dict)
-        print(f'Processed {line_count} lines.')
-        print(f'Found {len(bad_data_dict)} records with bad data.')
+        auth_errors = {k:v for k, v in bad_data_dict.items() for i in v if i[0][:8] == 'authors' and len(i) == 2}
+        pprint(auth_errors)
+        print(len(auth_errors))
+    print(f'Processed {line_count} lines.')
+    print(f'Found {len(bad_data_dict)} records with bad data.')
+
     return newrec_list, bad_data_dict
 
 
@@ -304,50 +377,64 @@ fedora_fields = ["pid", "label", "state", "ownerId", "cDate", "mDate",
                  "identifier", "source", "language", "relation", "coverage",
                  "rights"]
 
-@click.command()
+@cli.command(name="fedora")
 @click.option("--count", default=20, help="Maximum number of records to return")
 @click.option("--query", default=None, help="A query string to limit the records")
+@click.option("--protocol", default="fedora-xml", help="The api protocol to use for the request")
 @click.option("--pid", default=None, help="A pid or regular expression to select records by pid")
 @click.option("--terms", default=None, help="One or more subject terms to filter the records")
 @click.option("--fields", default=None, help="A comma separated string list of "
               "fields to return for each record")
-def fetch_records(query:Optional[str], pid:Optional[str], terms:Optional[str],
-                  fields: Optional[str], count:int) -> list[dict]:
+def fetch_fedora(query:Optional[str], protocol:str, pid:Optional[str],
+                 terms:Optional[str], fields: Optional[str], count:int
+                 ) -> list[dict]:
     """
     Fetch deposit records from the Fedora CORE datastream.
     """
     fields_list = fields.split(',') if fields is not None else fedora_fields
-    pprint(os.environ)
     FEDORA_USER = os.environ['FEDORA_USER']
     FEDORA_PASSWORD = os.environ['FEDORA_PASSWORD']
-    fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:44598/objectXML" # whole datastream object
-    # fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:23276/datastreams/DC?format=xml" # dc metadata
-    # fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:23276/datastreams/RELS-EXT?format=xml" # rdf
-    # fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:23276/datastreams/CONTENT?format=xml" # file size, etc.
+
+    f = FedoraApi(base_url="https://comcore.devel.lib.msu.edu/fedora",
+                     username=os.environ['FEDORA_USER'],
+                     password=os.environ['FEDORA_PASSWORD'])
+    r = ""
+    if protocol == "fedora-xml":
+        fedora_url = f"https://comcore.devel.lib.msu.edu/fedora/objects/{pid}/objectXML" # whole datastream object
+        r = requests.get(fedora_url, auth=(FEDORA_USER, FEDORA_PASSWORD))
+        pprint(r.text)
+    if protocol == "DC":
+        fedora_url = f"https://comcore.devel.lib.msu.edu/fedora/objects/{pid}/datastreams/DC?format=xml" # dc metadata
+        r = requests.get(fedora_url, auth=(FEDORA_USER, FEDORA_PASSWORD))
+        pprint(r.text)
+    elif protocol == "ext":
+        fedora_url = f"https://comcore.devel.lib.msu.edu/fedora/objects/{pid}/datastreams/RELS-EXT?format=xml" # rdf
+        r = requests.get(fedora_url, auth=(FEDORA_USER, FEDORA_PASSWORD))
+        pprint(r.text)
+    elif protocol == "content":
+        fedora_url = f"https://comcore.devel.lib.msu.edu/fedora/objects/{pid}/datastreams/CONTENT?format=xml" # file size, etc.
+        r = requests.get(fedora_url, auth=(FEDORA_USER, FEDORA_PASSWORD))
+        pprint(r.text)
     # fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:23276/relationships?format=xml" # rdf
     # fedora_url = "https://comcore.devel.lib.msu.edu/fedora/objects/hc:23276/datastreams?format=xml" # rdf
     # fedora_url = "https://comcore.devel.lib.msu.edu/fedora/search"
 
     # query = urllib.quote('title:rome creator:staples')
     # fedora_url = f'https://comcore.devel.lib.msu.edu/fedora/objects?pid=true&label=true&state=true&ownerId=true&cDate=true&mDate=true&dcmDate=true&title=true&creator=true&subject=true&description=true&publisher=true&contributor=true&date=true&type=true&format=true&identifier=true&source=true&language=true&relation=true&coverage=true&rights=true&terms=&query=title~gothic&resultFormat=xml&query=title~Gothic creator~*K*&maxResults=3'
-    r = requests.get(fedora_url, auth=(FEDORA_USER, FEDORA_PASSWORD))
-    pprint(r.text)
-
-    f = FedoraApi(base_url="https://comcore.devel.lib.msu.edu/fedora",
-                     username=os.environ['FEDORA_USER'],
-                     password=os.environ['FEDORA_PASSWORD'])
-    # all_objects = f.find_all_objects_by_id("hc:4477*", fields_list,
-    #                                        maxResults=str(count))
+    elif protocol == "fedora-terms":
+        r = f.find_all_objects(terms, fields=fields_list, query=f"identifier~{pid}")
+        pprint(r)
+    elif protocol == "fedora-pid":
+        r = f.find_all_objects_by_id(f"{pid}", fields=fields_list)
+        pprint(r)
     # all_objects = f.find_all_objects("", fields=fields_list,
     #                                  query="'title~Gothic'", maxResults=count)
-    all_objects = f.find_objects(terms, fields=fields_list)
-    print(all_objects)
 
     records = []
     aggregator_pid = 0
     main_pid = 0
 
-    root = ET.fromstring(all_objects[1])
+    root = ET.fromstring(r[1])
 
     def _getnode(base, fieldname):
         # node = base.find(f'{dc}{fieldname}')
@@ -412,7 +499,7 @@ def fetch_records(query:Optional[str], pid:Optional[str], terms:Optional[str],
         for s in _getnodes(v, 'subject'):
             newrec['metadata']['subjects'].append(
                 {'subject': s.text,
-                'scheme': "fast"}
+                 'scheme': "fast"}
             )
         # TODO: put this in pids?
         main_pid = _getnode(v, 'pid')
@@ -579,5 +666,4 @@ def fetch_records(query:Optional[str], pid:Optional[str], terms:Optional[str],
     return records
 
 if __name__=="__main__":
-    parse_csv()
-    # fetch_records()
+    cli()
