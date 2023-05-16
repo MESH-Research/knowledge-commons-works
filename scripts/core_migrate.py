@@ -21,6 +21,20 @@ from xml.sax.saxutils import escape, unescape
 def cli():
     pass
 
+
+def flatten_list(list_of_lists, flat_list=[]):
+    if not list_of_lists:
+        return flat_list
+    else:
+        for item in list_of_lists:
+            if type(item) == list:
+                flatten_list(item, flat_list)
+            else:
+                flat_list.append(item)
+
+    return flat_list
+
+
 def append_bad_data(rowid:str, content:tuple, bad_data_dict:dict):
     """
     Add info on bad data to dictionary of bad data
@@ -181,11 +195,10 @@ def add_author_data(newrec:dict, row:dict, bad_data_dict:dict
     allowed_roles = ['author', 'editor', 'contributor', 'submitter',
                      'translator', 'creator', 'project director']
     if row['authors']:
-        print(row['pid'])
+        # print(row['pid'])
         try:
-            authors = literal_eval(row['authors'])
-
-            for a in authors:
+            # row['authors'] = row['authors'].replace('\\', '&quot;')
+            for a in row['authors']:
                 new_person = {}
 
                 new_person['person_or_org'] = {
@@ -194,8 +207,9 @@ def add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                     'given_name': a['given'],
                     'family_name': a['family']
                 }
-                if a['role'] and a['role'] in allowed_roles:
-                    new_person['role'] = a['role']
+                if a['role'] and a['role'] in allowed_roles or not a['role']:
+                    # TODO: are null roles a problem?
+                    new_person['role'] = {'id': a['role']}
                 else:
                     append_bad_data(row['id'],
                                     (f'authors:{a["fullname"]}:role', a['role']),
@@ -218,25 +232,36 @@ def add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                     newrec['metadata'].setdefault('contributors', []).extend(
                         contributors_misplaced
                     )
-                    append_bad_data(row['id'], ('authors', row['authors'],
-                                                'contributor moved from authors'),
-                                    bad_data_dict)
+                    # append_bad_data(row['id'], ('authors', row['authors'],
+                    #                             'contributor moved from Authors'),
+                    #                 bad_data_dict)
             elif len(contributors_misplaced) > 0:
                 newrec['metadata'].setdefault('creators', []).extend(
                     contributors_misplaced
                 )
-                append_bad_data(row['id'], ('authors', row['authors'],
-                                            'contributor as only author'),
-                                bad_data_dict)
-        except (SyntaxError, ValueError):
-            append_bad_data(row['id'], ('authors', row['authors']),
-                            bad_data_dict)
+                # append_bad_data(row['id'], ('authors', row['authors'],
+                #                             'contributor as only author'),
+                #                 bad_data_dict)
+        except (SyntaxError, ValueError) as e:
+            print(row['authors'])
+            append_bad_data(row['id'], ('authors:Syntax or ValueError',
+                                        row['authors']), bad_data_dict)
     else:
-        append_bad_data(row['id'], ('authors', row['authors']),
+        append_bad_data(row['id'], ('authors:no value', row['authors']),
                         bad_data_dict)
 
-    if row['author_info']:
-        pass
+    # TODO: Compare these fields?
+    # if row['author_info']:
+    #     try:
+    #         # row['authors'] = row['authors'].replace('\\', '&quot;')
+    #         authors = json.loads(row['authors'])
+
+    #         for a in authors:
+    #             new_person = {}
+    #     except (SyntaxError, ValueError) as e:
+    #         print(row['author_info'])
+    #         append_bad_data(row['id'], ('author_info:Syntax or ValueError',
+    #                                     row['author_info']), bad_data_dict)
 
     return newrec, bad_data_dict
 
@@ -282,9 +307,11 @@ def parse_csv() -> tuple[dict, dict]:
     bad_data_dict:dict[str: list] = {}
     line_count:int = 0
 
-    with open('../../kcr-untracked-files/core-may-12-2023.csv') as csv_file:
-        csv_reader = csv.DictReader(csv_file)
-        for row in csv_reader:
+    with open('../../kcr-untracked-files/core-export-may-15-23.json') as json_file:
+        # top_object = json.loads('{"data": ' + json_file.read() + '}')
+        top_object = json.loads(json_file.read())
+        pprint(top_object[0])
+        for row in top_object:
             newrec = deepcopy(baserec)
 
             # HC admin information
@@ -293,6 +320,10 @@ def parse_csv() -> tuple[dict, dict]:
             )
 
             newrec['custom_fields']['kcr:commons_domain'] = row['domain']
+            newrec['custom_fields']['kcr:submitter_email'
+                                    ] = row['submitter_email']
+            newrec['custom_fields']['kcr:submitter_username'
+                                    ] = row['submitter_login']
 
             # Titles
             newrec['metadata']['title'] = row['title_unchanged']
@@ -305,9 +336,11 @@ def parse_csv() -> tuple[dict, dict]:
                 }
             )
             # Descriptions/Abstracts
-            newrec['metadata']['description'] = row['abstract_unchanged']
+            # FIXME: handle double-escaped slashes?
+            # FIXME: handle windows newlines?
+            newrec['metadata']['description'] = row['abstract_unchanged'].replace('\r\n', '\n')
             newrec['metadata']['additional_descriptions'].append(
-                {"description": row['abstract'],
+                {"description": row['abstract'].replace('\r\n', '\n'),
                  "type": {
                      "id": "other",
                      "title": {"en": "Primary description with HTML stripped"}
@@ -360,10 +393,147 @@ def parse_csv() -> tuple[dict, dict]:
             newrec_list.append(newrec)
             line_count += 1
 
+            # Group info for deposit
+            try:
+                # print(row['group'])
+                # print(row['group_ids'])A. Pifferetti, A. & I. Dosztal (comps.i
+                if row['group'] not in [None, [], ""]:
+                    row['group'] = row['group']
+                if row['group_ids'] not in [None, [], ""]:
+                    row['group_ids'] = row['group_ids']
+                assert len(row['group']) == len(row['group_ids'])
+                group_list = []
+                if len(row['group']) > 0:
+                    for i, n in enumerate(row['group_ids']):
+                        group_list.append({"group_identifier": n,
+                                           "group_name": row['group'][i]})
+                    newrec['custom_fields']['hclegacy:groups_for_deposit'
+                                            ] = group_list
+            except AssertionError:
+                row['hclegacy:groups_for_deposit'] = None
+                append_bad_data(row['id'],
+                                ('group or group_ids', row['group'], row['group_ids']),
+                                bad_data_dict)
+            except json.decoder.JSONDecodeError as e:
+                # print(e)
+                # print(row['group'], row['group_ids'])
+                row['hclegacy:groups_for_deposit'] = None
+                append_bad_data(row['id'],
+                                ('group or group_ids', row['group'], row['group_ids']),
+                                bad_data_dict)
+
+            # book info
+            # FIXME: Need to augment out-of-the-box imprint custom fields
+            if row['book_author']:
+                newrec['custom_fields']['imprint:imprint'] = {}
+                # print(row['book_author'])
+
+                def invert_flipped_name(terms):
+                    return [terms[1], terms[0]]
+
+                def find_comma_delineated_names(focus):
+                    # print('focus', focus)
+                    if focus[-1] == ',':
+                        focus = focus[:-1]
+                    focus = focus.strip()
+                    if ', ' in focus:
+                        level1parts = focus.split(', ')
+                        # print('level1parts', level1parts)
+                        first = level1parts[0]
+                        # print('first', first)
+                        if len(first.split(' ')) > 1:
+                            focus = [f.strip().split(' ') for f in level1parts]
+                            # print('a focus', focus)
+                        elif len(first.split(' ')) == 1:
+                            focus = invert_flipped_name(level1parts)
+                            # print('b focus', focus)
+                        if len(level1parts) > 2:
+                            focus = focus + find_comma_delineated_names(', '.join(level1parts[2:]))
+                    else:
+                        focus = focus.strip().split(' ')
+                        # print('space split', focus)
+                        if len(focus) > 2:
+                            focus = [' '.join(focus[:-1]), focus[-1]]
+                    if isinstance(focus[0], str):
+                        focus = [focus]
+                    for i, f in enumerate(focus):
+                        if len(f) > 2:
+                            focus[i] = [' '.join(f[:-1]), f[-1]]
+                    return focus
+
+                is_editor = False
+                if re.search(r'.*\(?[Ee]d(it(or|ed( by)?)?)?s?\.?.*', row['book_author']):
+                    # print(row['book_author'])
+                    row['book_author'] = re.sub(r'(,? )?\(?[Ee]d(itor)?s?\.?\)?', '', row['book_author'])
+                    row['book_author'] = re.sub(r'^[Ee]d(it(ed( by)?|or)?)?s?[\.,]? ', '', row['book_author'])
+                    is_editor = True
+
+                try:
+                    bas = row['book_author']
+                    # print('***********', bas)
+                    if bas[-1] in ['.', ';']:
+                        bas = bas[:-1]
+                    if re.search(r'( and| y| &|;| \/) ', row['book_author']):
+                        bas = re.split(r' and | y | & | \/ |;', bas)
+                        new_bas = []
+                        for focus in bas:
+                            new_bas = new_bas + find_comma_delineated_names(focus)
+                        bas = new_bas
+                    elif ', ' in row['book_author']:
+                        bas = find_comma_delineated_names(bas)
+                    elif len(bas.split(' ')) < 4:
+                        bas = find_comma_delineated_names(bas)
+                    for b in bas:
+                        newrec['custom_fields']['imprint:imprint'].setdefault('creators', []).append(
+                            {
+                                'person_or_org': {
+                                    'name': (f'{b[0]} {b[1]}'
+                                             if len(b) > 1 else b[0]),
+                                    "type": "personal",
+                                    "given_name": b[0] if len(b) > 1 else '',
+                                    "family_name": b[1] if len(b) > 1 else ''
+                                },
+                                'role': {
+                                    'id': ('editor' if is_editor else 'author')
+                                }
+                            }
+                        )
+                except TypeError as e:
+                    append_bad_data(row['id'], ('book_author', row['book_author']), bad_data_dict)
+                # FIXME: handle simple spaced names with no delimiters
+                # FIXME: last name repeated like "Kate Holland"?
+                # FIXME: "Coarelli, F. Patterson, H."
+                # FIXME: "Hamilton, Portnoy, Wacks"
+                # FIXME: ['M. Antoni J. Üçerler', 'SJ']
+                # FIXME: Edited by Koenraad Verboven, Ghent University and Christian Laes, University of Antwerp, University of Tampere
+                # FIXME: two last names???
+                # FIXME: handle et. al.
+                # FIXME: Joshua Davies and Sarah Salih, ed. by Karl Fugelso
+                # FIXME: A. Pifferetti, A. & I. Dosztal (comps.)
+
+
+                # FIXME: add in periods and spaces for initials?
+                    # else:
+                    #     bas = bas.split(',')
+                    # for i, b in enumerate(bas):
+                    #     if isinstance(b, str):
+                    #         b = b.strip()
+                    #         if len(b.split(',')) == 2:
+                    #             bas[i] = [b.split(',')[1].strip(), b.split(',')[0].strip()]
+                    #         elif len(b.split(' ')) == 2:
+                    #             bas[i] = b.split(' ')
+                    # for i, b in enumerate(bas):
+                    #     for l, n in enumerate(b):
+                    #         if re.search(r'^[A-Z]{2,}$', n):
+                    #             bas[i][l] = '. '.join([*n]) + '.'
+                    # bas = [b.strip() for b in bas]
+                # print('*****', bas)
+
         pprint(newrec_list[16])
 
         auth_errors = {k:v for k, v in bad_data_dict.items() for i in v if i[0][:8] == 'authors' and len(i) == 2}
-        pprint(auth_errors)
+        # pprint(auth_errors)
+        pprint(bad_data_dict)
         print(len(auth_errors))
     print(f'Processed {line_count} lines.')
     print(f'Found {len(bad_data_dict)} records with bad data.')

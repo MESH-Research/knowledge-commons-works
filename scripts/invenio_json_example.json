@@ -52,7 +52,20 @@
             "isbn": "978-3-16-148410-0",
             "pages": "46-89",
             "place": "Paris, France",
-            "title": "My Book Title"
+            "title": "My Book Title",
+            "creators": [{
+                "person_or_org": {
+                "name": "",
+                "type": "personal",
+                "given_name": "",
+                "family_name": "",
+                "identifiers": [{
+                    "scheme": "",
+                    "identifier": ""
+                }]
+                },
+                "role": {"id": ""}
+            }]
         },
         "journal:journal": {
             "issn": "2049-3630",
@@ -72,14 +85,14 @@
         },
         "kcr:commons_domain": "ajs.hcommons.org",
         "kcr:hcommons_organization": "University of Toronto",
-        "kcr:hcommons_groups": {
-            "group_name": "",
-            "group_identifier": ""
-        },
         "kcr:user_defined_tags": [
             {"tag_label": "",
              "tag_identifier": 123
             }],
+        "hclegacy:groups_for_deposit": {
+            "group_name": "",
+            "group_identifier": ""
+        },
         "hclegacy:society": "",
         "hclegacy:committee_deposit": 123,
         "hclegacy:previously_published": "",

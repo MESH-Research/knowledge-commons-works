@@ -4,9 +4,17 @@ import pytest
 
 json22625 = {
     'custom_fields':
-        {'hclegacy:submitter_id': 1017065,
+        {'kcr:submitter_email': "wojciech.tworek.09@ucl.ac.uk",
+         'kcr:submitter_username': "wtworek",
+         'kcr:commons_domain': 'ajs.hcommons.org',
+         'hclegacy:submitter_id': 1017065,
          'hclegacy:submitter_org_memberships': ['University Of Toronto'],
-         'kcr:commons_domain': 'ajs.hcommons.org'
+         'hclegacy:groups_for_deposit': [
+             {'group_identifier': '1000610',
+              'group_name': 'Jewish Mysticism'},
+             {'group_identifier': '1000611',
+              'group_name': 'Modern Jewish Thought and Theology'}
+         ]
          },
     'files':
         {'entries': []},
@@ -66,7 +74,8 @@ json22625 = {
                                                    'scheme': 'hc_username'}],
                                    'name': 'Wojciech Tworek',
                                    'type': 'personal'},
-                 'role': 'author'}
+                 'role': {'id': 'author'}
+                 }
             ],
             'dates': [],
             'description': 'The issue of gender has been a topic of '
@@ -117,9 +126,16 @@ json22625 = {
 
 json45177 = {
     'custom_fields': {
+        'kcr:submitter_email': "aprovo@gmail.com",
+        'kcr:submitter_username': "aprovo",
+        'kcr:commons_domain': 'arlisna.hcommons.org',
         'hclegacy:submitter_id': 1006873,
         'hclegacy:submitter_org_memberships': ['New York University'],
-        'kcr:commons_domain': 'arlisna.hcommons.org'},
+        'hclegacy:groups_for_deposit': [{'group_identifier': '1003999',
+                                         'group_name': 'ARLIS/NA '
+                                                       'Cataloging Advisory '
+                                                       'Committee'}],
+        },
     'files': {'entries': []},
     'metadata': {
         'additional_descriptions': [
@@ -157,52 +173,52 @@ json45177 = {
                                'given_name': 'Bronwen',
                                'name': 'Bronwen Bitetti',
                                'type': 'personal'},
-             'role': 'contributor'},
+             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Blueher',
                                'given_name': 'William',
                                'name': 'William Blueher',
                                'type': 'personal'},
-             'role': 'contributor'},
+             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Clarke',
                                'given_name': 'Sherman',
                                'name': 'Sherman Clarke',
                                'type': 'personal'},
-             'role': 'contributor'},
+             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Fultz',
                               'given_name': 'Tamara',
                               'name': 'Tamara Fultz',
                               'type': 'personal'},
-            'role': 'contributor'},
+            'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': "L\\'Ecuyer-Coelho",
                               'given_name': 'Marie-Chantal',
                               'name': "Marie-Chantal L\\'Ecuyer-Coelho",
                               'type': 'personal'},
-            'role': 'contributor'},
+            'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Maier',
                               'given_name': 'John',
                               'name': 'John Maier',
                               'type': 'personal'},
-            'role': 'contributor'},
+            'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Neumann',
                               'given_name': 'Calli',
                               'name': 'Calli Neumann',
                               'type': 'personal'},
-            'role': 'contributor'},
+            'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Oldal',
                               'given_name': 'Maria',
                               'name': 'Maria Oldal',
                               'type': 'personal'},
-            'role': 'contributor'},
+            'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Osborne Bender',
                                 'given_name': 'Sarah',
                                 'name': 'Sarah Osborne Bender',
                                 'type': 'personal'},
-            'role': 'contributor'},
+            'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'O’Keefe',
                                 'given_name': 'Elizabeth',
                                 'name': 'Elizabeth O’Keefe',
                                 'type': 'personal'},
-            'role': 'contributor'},
+            'role': {'id': 'contributor'}},
             {'affiliations': ['New York University'],
             'person_or_org': {'family_name': 'Provo',
                                 'given_name': 'Alexandra',
@@ -210,22 +226,23 @@ json45177 = {
                                                 'scheme': 'hc_username'}],
                                 'name': 'Alexandra Provo',
                                 'type': 'personal'},
-            'role': 'contributor'},
+            'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Puccio',
                                 'given_name': 'Andrea',
                                 'name': 'Andrea Puccio',
                                 'type': 'personal'},
-            'role': 'contributor'},
+            'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Stafford',
                                 'given_name': 'Karen',
                                 'name': 'Karen Stafford',
                                 'type': 'personal'},
-            'role': 'contributor'},
+            'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Wildenhaus',
                                 'given_name': 'Karly',
                                 'name': 'Karly Wildenhaus',
                                 'type': 'personal'},
-            'role': 'contributor'}],
+            'role': {'id': 'contributor'}}
+            ],
               'dates': [],
               'description': 'The ARLIS/NA Cataloging Advisory Committee has '
                              'drafted these best practices to provide '
@@ -256,8 +273,12 @@ json45177 = {
  'parent': {'access': {'owned_by': [{'user': 1006873}]}}}
 
 json44881 = {
-    'custom_fields': {'hclegacy:submitter_id': 1018587,
-                      'kcr:commons_domain': 'arlisna.hcommons.org'},
+    'custom_fields': {
+        'kcr:submitter_email': "runmerd@gmail.com",
+        'kcr:submitter_username': "mlhale7",
+        'kcr:commons_domain': 'arlisna.hcommons.org',
+        'hclegacy:submitter_id': 1018587
+        },
     'files': {'entries': []},
     'metadata': {
         'additional_descriptions': [
@@ -295,17 +316,19 @@ json44881 = {
                                             'given_name': 'Emily',
                                             'name': 'Emily Walz',
                                             'type': 'personal'},
-                         'role': 'contributor'}],
+                         'role': {'id': 'contributor'}}
+                         ],
         'creators': [{'person_or_org': {'family_name': 'Clarke',
                                         'given_name': 'Sherman',
                                         'name': 'Sherman Clarke',
                                         'type': 'personal'},
-                      'role': 'author'},
+                      'role': {'id': 'author'}},
                      {'person_or_org': {'family_name': 'Starr',
                                         'given_name': 'Daniel',
                                         'name': 'Daniel Starr',
                                         'type': 'personal'},
-                      'role': 'author'}],
+                      'role': {'id': 'author'}}
+                      ],
         'dates': [],
         'description': 'Emily Walz interviews Distinguished Service '
                         'Award winners Sherman Clarke (2005) and Daniel '
