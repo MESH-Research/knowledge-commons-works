@@ -3,35 +3,140 @@
     datacite: Author
   title:
     en: Author
+- id: analyst
+  props:
+    datacite: Other
+  title:
+    en: Analyst
+- id: arranger
+  props:
+    datacite: Other
+  title:
+    en: Arranger
+- id: artisan
+  props:
+    datacite: Other
+  title:
+    en: Artisan
+- id: artist
+  props:
+    datacite: Other
+  title:
+    en: Artist
+- id: authorOfIntroduction
+  props:
+    datacite: Other
+  title:
+    en: Author of Introduction
+- id: authorOfForeword
+  props:
+    datacite: Other
+  title:
+    en: Author of Foreword
+- id: authorOfAfterword
+  props:
+    datacite: Other
+  title:
+    en: Author of Afterword
+- id: designer
+  props:
+    datacite: Other
+  title:
+    en: Designer
+- id: choreographer
+  props:
+    datacite: Other
+  title:
+    en: Choreographer
+- id: cinematographer
+  props:
+    datacite: Other
+  title:
+    en: Cinematographer
+- id: composer
+  props:
+    datacite: Other
+  title:
+    en: Composer
+- id: conductor
+  props:
+    datacite: Other
+  title:
+    en: Conductor
+- id: director
+  props:
+    datacite: Other
+  title:
+    en: Director
 - id: editor
   props:
     datacite: Editor
   title:
     en: Editor
     de: EditorIn
+- id: illustrator
+  props:
+    datacite: Other
+  title:
+    en: Illustrator
+- id: interviewee
+  props:
+    datacite: Other
+  title:
+    en: Interviewee
+- id: interviewer
+  props:
+    datacite: Other
+  title:
+    en: Interviewer
+- id: inventor
+  props:
+    datacite: Other
+  title:
+    en: Inventor
+- id: lyricist
+  props:
+    datacite: Other
+  title:
+    en: Lyricist
+- id: manufacturer
+  props:
+    datacite: Other
+  title:
+    en: Manufacturer
+- id: performer
+  props:
+    datacite: Other
+  title:
+    en: Performer
+- id: photographer
+  props:
+    datacite: Other
+  title:
+    en: Photographer
 - id: producer
   props:
     datacite: Producer
   title:
     en: Producer
     de: ProduzentIn
-- id: projectleader
+- id: projectLeader
   props:
     datacite: ProjectLeader
   title:
-    en: Project leader
+    en: Project or team leader
     de: ProjektleiterIn
-- id: projectmanager
+- id: projectManager
   props:
     datacite: ProjectManager
   title:
     en: Project manager
     de: ProjektmanagerIn
-- id: projectmember
+- id: projectMember
   props:
     datacite: ProjectMember
   title:
-    en: Project member
+    en: Project of team member
     de: Projektmitglied
 - id: researcher
   props:
@@ -45,6 +150,16 @@
   title:
     en: Research group
     de: Forschungsgruppe
+- id: screenplayAuthor
+  props:
+    datacite: Other
+  title:
+    en: Screenplay author
+- id: speaker
+  props:
+    datacite: Other
+  title:
+    en: Speaker
 - id: supervisor
   props:
     datacite: Supervisor
