@@ -162,23 +162,139 @@ def add_resource_type(rec, pubtype, genre, filetype):
                             "podcast": "audiovisual:podcast",
                             "proceedings-article": "publication:proceedingsArticle"}
     if genre in genres.keys():
-        rec['metadata']['resource_type'] = genres[genre]
+        rec['metadata']['resource_type'] = {'id': genres[genre]}
         if (pubtype == "Interview") and (filetype in ['audio/mpeg', 'audio/ogg', 'audio/wav', 'video/mp4', 'video/quicktime']):
-            rec['metadata']['resource_type'] = "audiovisual:interviewRecording"
+            rec['metadata']['resource_type'
+                            ] = {"id": "audiovisual:interviewRecording"}
         if (pubtype in publication_types.keys() and
                 genres[genre] != publication_types[pubtype]):
             rec['custom_fields']['hclegacy:publication_type'] = pubtype
     else:
-        rec['metadata']['resource_type'] = None
+        rec['metadata']['resource_type'] = {"id": ''}
         bad_data.append(('genre', genre))
         rec['custom_fields']['hclegacy:publication_type'] = pubtype
         if pubtype in publication_types.keys():
-            rec['metadata']['resource_type'] = publication_types[pubtype]
+            rec['metadata']['resource_type'
+                            ] = {"id": publication_types[pubtype]}
         else:
             bad_data.append(('publication-type', pubtype))
 
     return rec, bad_data
 
+
+def add_book_authors(author_string:str, bad_data_dict:dict,
+                     row_id) -> tuple[list[dict], dict]:
+    """
+    Convert the "book_author" string to JSON objects for Invenio
+    """
+    author_list = []
+
+    def invert_flipped_name(terms):
+        return [terms[1], terms[0]]
+
+    def find_comma_delineated_names(focus):
+        # print('focus', focus)
+        if focus[-1] == ',':
+            focus = focus[:-1]
+        focus = focus.strip()
+        if ', ' in focus:
+            level1parts = focus.split(', ')
+            # print('level1parts', level1parts)
+            first = level1parts[0]
+            # print('first', first)
+            if len(first.split(' ')) > 1:
+                focus = [f.strip().split(' ') for f in level1parts]
+                # print('a focus', focus)
+            elif len(first.split(' ')) == 1:
+                focus = invert_flipped_name(level1parts)
+                # print('b focus', focus)
+            if len(level1parts) > 2:
+                focus = focus + find_comma_delineated_names(', '.join(level1parts[2:]))
+        else:
+            focus = focus.strip().split(' ')
+            # print('space split', focus)
+            if len(focus) > 2:
+                focus = [' '.join(focus[:-1]), focus[-1]]
+        if isinstance(focus[0], str):
+            focus = [focus]
+        for i, f in enumerate(focus):
+            if len(f) > 2:
+                focus[i] = [' '.join(f[:-1]), f[-1]]
+        return focus
+
+    is_editor = False
+    if re.search(r'.*\(?([Hh]e?r(au)?sg(egeben)?|[Ee]d(it(or|ed( by)?)?)?s?)\.?.*', author_string):
+        # print(row['book_author'])
+        author_string = re.sub(
+            r'(,? )?\(?([Hh]e?r(au)?sg(egeben)?|[Ee]d(itor)?s?\.?)\)?',
+            '', author_string)
+        author_string = re.sub(
+            r'^([Hh]e?r(au)?sg(egeben|eber(in)?)?|[Ee]d(it)?(ed|or)?s?( [Bb]y)?)[\.,]? ',
+            '', author_string)
+        is_editor = True
+    try:
+        bas = author_string
+        # print('***********', bas)
+        if bas[-1] in ['.', ';']:
+            bas = bas[:-1]
+        if re.search(r'( and| y| &|;| \/) ', author_string):
+            bas = re.split(r' and | y | & | \/ |;', bas)
+            new_bas = []
+            for focus in bas:
+                new_bas = new_bas + find_comma_delineated_names(focus)
+            bas = new_bas
+        elif ', ' in author_string:
+            bas = find_comma_delineated_names(bas)
+        elif len(bas.split(' ')) < 4:
+            bas = find_comma_delineated_names(bas)
+        if isinstance(bas, str):
+            bas = [bas]
+        for b in bas:
+            # print(b, type(b))
+            if isinstance(b, str):
+                fullname = b
+                given, family = '', ''
+            else:
+                fullname = f'{b[0]} {b[1]}' if len(b) > 1 else b[0]
+                given = b[0] if len(b) > 1 else ''
+                family = b[1] if len(b) > 1 else ''
+            author_list.append(
+                {
+                    'person_or_org': {
+                        'name': fullname,
+                        "type": "personal",
+                        "given_name": given,
+                        "family_name": family
+                    },
+                    'role': {
+                        'id': ('editor' if is_editor else 'author')
+                    }
+                }
+            )
+    except TypeError as e:
+        append_bad_data(row_id,
+                        ('book_author', author_string), bad_data_dict)
+    # FIXME: handle simple spaced names with no delimiters
+    # FIXME: last name repeated like "Kate Holland"?
+    # FIXME: "Coarelli, F. Patterson, H."
+    # FIXME: "Hamilton, Portnoy, Wacks"
+    # FIXME: ['M. Antoni J. Üçerler', 'SJ']
+    # FIXME: Edited by Koenraad Verboven, Ghent University and Christian Laes, University of Antwerp, University of Tampere
+    # FIXME: two last names???
+    # FIXME: handle et. al.; et ali
+    # FIXME: Joshua Davies and Sarah Salih, ed. by Karl Fugelso
+    # FIXME: A. Pifferetti, A. & I. Dosztal (comps.)
+    # FIXME: mark institution names as corporate?
+
+
+    # FIXME: add in periods and spaces for initials?
+        # for i, b in enumerate(bas):
+        #     for l, n in enumerate(b):
+        #         if re.search(r'^[A-Z]{2,}$', n):
+        #             bas[i][l] = '. '.join([*n]) + '.'
+        # bas = [b.strip() for b in bas]
+    # print('*****', bas, type(bas))
+    return author_list, bad_data_dict
 
 def add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                     ) -> tuple[dict, dict]:
@@ -314,6 +430,75 @@ def parse_csv() -> tuple[dict, dict]:
         for row in top_object:
             newrec = deepcopy(baserec)
 
+            if row['chapter']:
+
+                def normalize(mystring):
+                    mystring = mystring.casefold()
+                    mystring = re.sub(r'\\*"', '"', mystring)
+                    mystring = re.sub(r"\\*'", "'", mystring)
+                    mystring = mystring.replace('  ', ' ')
+                    mystring = mystring.replace('’', "'")
+                    mystring = mystring.replace('“', "'")
+                    try:
+                        if mystring[0] in ['"', "'"]:
+                            mystring = mystring[1:]
+                        if mystring[-1] in ['"', "'"]:
+                            mystring = mystring[:-1]
+                    except IndexError:
+                        pass
+                    return mystring
+                mychap = normalize(row['chapter'])
+                mytitle = normalize(row['title'])
+                mybooktitle = normalize(row['book_journal_title'])
+                if mychap == mytitle:
+                    pass
+                # FIXME: This needs work
+                elif mychap in mytitle and len(mychap) > 18:
+                    append_bad_data(row['id'],
+                                    ('chapter in title', row['chapter'],
+                                     row['title']), bad_data_dict)
+                    # print('~~~~', row['chapter'])
+                    # print('~~~~', row['title'])
+                else:
+                    rn = r'^M{0,3}(CM|CD|D?C{0,3})?(XC|XL|L?X{0,3})?(IX|IV|V?I{0,3})?$'
+                    if re.search(r'^([Cc]hapter )?\d+[\.,;]?\d*$',
+                                 row['chapter']) or \
+                            re.search(rn, row['chapter']):
+                        newrec['custom_fields'][
+                            'kcr:chapter_label'] = row['chapter']
+                        # print('&&&&&', row['chapter'], row['title'])
+                        # print('&&&&&', newrec['custom_fields']['kcr:chapter_label'])
+                    # elif mytitle in mychap \
+                    #         and re.search(r'^([Cc]hapter )?\d+[\.,;]?\d*\s?',
+                    #                       mychap.replace(mytitle, '')):
+                    #     # print('~~~~', row['chapter'])
+                    #     # print('~~~~~~~', row['title'])
+                    #     shortchap = row['chapter'
+                    #                     ].replace(row['title'], '').strip()
+                    #     shortchap = re.sub(r'[Cc]hap(ter)\s?', '', shortchap)
+                    #     shortchap = re.sub(r'[\.,:]?\s?-?$', '', shortchap)
+                        # print('~~~~~~~', shortchap)
+                        # newrec['custom_fields']['kcr:chapter_label'] = shortchap
+                    elif re.search(r'^[Cc]hapter', row['chapter']):
+                        shortchap = re.sub(r'^[Cc]hapter\s*', '',
+                                           row['chapter'])
+                        newrec['custom_fields']['kcr:chapter_label'] = shortchap
+                        # print('&&&&&', row['chapter'], row['title'])
+                        # print('&&&&&', newrec['custom_fields']['kcr:chapter_label'])
+                    # elif mytitle == mybooktitle:
+                    #     print('----', row['chapter'])
+                    #     row['title'] = row['chapter']
+                    #     newrec['metadata']['title'] = row['chapter']
+                    #     print('-------', newrec['metadata']['title'])
+                    elif row['chapter'] == 'N/A':
+                        pass
+                    else:
+                        # print(row['chapter'])
+                        # print('**', row['title'])
+                        # print('**', row['title_unchanged'])
+                        newrec['custom_fields']['kcr:chapter_label'
+                                                ] = row['chapter']
+
             # HC admin information
             newrec['metadata']['identifiers'].append(
                 {'identifier': row['id'], 'scheme': 'hclegacy'}
@@ -326,6 +511,7 @@ def parse_csv() -> tuple[dict, dict]:
                                     ] = row['submitter_login']
 
             # Titles
+            # FIXME: Filter out titles with punctuation from full biblio ref in #   field?
             newrec['metadata']['title'] = row['title_unchanged']
             newrec['metadata']['additional_titles'].append(
                 {"title": row['title'],
@@ -355,6 +541,23 @@ def parse_csv() -> tuple[dict, dict]:
             if bad_data:
                 for i in bad_data:
                     append_bad_data(row['id'], i, bad_data_dict)
+
+            # Identifiers
+            # FIXME: Is it right that these are all datacite dois?
+            if row['deposit_doi']:
+                newrec.setdefault('pids', {})[
+                    'doi'] = {"identifier": row['deposit_doi'],
+                              "provider": "datacite",
+                              "client": "datacite"}
+            if row['doi']:
+                newrec['metadata'].setdefault('identifiers', []).append(
+                    {"identifier": row['doi'],
+                     "scheme": "doi"}
+                )
+
+            # Edition
+            if row['edition']:
+                newrec['custom_fields']['kcr:edition'] = row['edition']
 
             # Committee deposit
             if row['committee_deposit'] == "yes":
@@ -393,6 +596,21 @@ def parse_csv() -> tuple[dict, dict]:
             newrec_list.append(newrec)
             line_count += 1
 
+            # Date info
+            # FIXME: does "issued" work here?
+            newrec['metadata']['publication_date'] = row['date_issued']
+            if row['date_issued'] != row['date']:
+                newrec['metadata'].setdefault('dates', []).append(
+                    {
+                        "date": row['date'],
+                        "type": {
+                            "id": "issued",
+                            "title": { "en": "Issued" }
+                        },
+                        "description": "Human readable publication date"
+                    }
+                )
+
             # Group info for deposit
             try:
                 # print(row['group'])
@@ -427,114 +645,71 @@ def parse_csv() -> tuple[dict, dict]:
             if row['book_author']:
                 newrec['custom_fields']['imprint:imprint'] = {}
                 # print(row['book_author'])
+                book_names, bad_data_dict = add_book_authors(
+                    row['book_author'], bad_data_dict, row['id'])
+                newrec['custom_fields']['imprint:imprint'][
+                    'creators'] = book_names
 
-                def invert_flipped_name(terms):
-                    return [terms[1], terms[0]]
+            if row['book_journal_title']:
+                myfield = 'imprint:imprint'
+                article_types = ['publication:journalArticle',
+                                 'publication:abstract',
+                                 'publication:review',
+                                 'publication:newspaperArticle',
+                                 'publication:editorial',
+                                 'publication:magazineArticle',
+                                 'publication:onlinePublication'
+                                 ]
+                if newrec['metadata']['resource_type'][
+                        'id'] in article_types:
+                    myfield = 'journal:journal'
+                if newrec['metadata']['resource_type']['id'] not in [
+                        'publication:bookChapter', 'publication:bookSection',
+                        'publication:book', 'publication:monograph',
+                        'publication:dissertation', 'publication:report',
+                        'publication:whitePaper',
+                        'other:bibliography',
+                        'presentation:conferencePaper',
+                        'publication:conferenceProceeding',
+                        'presentation:conferencePaper',
+                        'other:essay',
+                        *article_types]:
+                    # print('****', newrec['metadata']['resource_type']['id'])
+                    append_bad_data(row['id'],
+                                    ('resource_type for book_journal_title',
+                                     newrec['metadata']['resource_type']['id']),
+                                     bad_data_dict)
+                # FIXME: check right field for legalComment, bibliography, lecture, conferencePaper, legalResponse, other:other, other:essay, translation, videoRecording, blogPost, interviewTranscript, poeticWork, fictionalWork, image:visualArt, image:map, instructionalResource:syllabus, onlinePublication, presentation:other, instructionalResource:other, musicalRecording, catalog, dataset:other, audiovisual:documentary, lecture
+                if myfield not in newrec['custom_fields'].keys():
+                    newrec['custom_fields'][myfield] = {}
+                newrec['custom_fields'][myfield][
+                    'title'] = row['book_journal_title']
 
-                def find_comma_delineated_names(focus):
-                    # print('focus', focus)
-                    if focus[-1] == ',':
-                        focus = focus[:-1]
-                    focus = focus.strip()
-                    if ', ' in focus:
-                        level1parts = focus.split(', ')
-                        # print('level1parts', level1parts)
-                        first = level1parts[0]
-                        # print('first', first)
-                        if len(first.split(' ')) > 1:
-                            focus = [f.strip().split(' ') for f in level1parts]
-                            # print('a focus', focus)
-                        elif len(first.split(' ')) == 1:
-                            focus = invert_flipped_name(level1parts)
-                            # print('b focus', focus)
-                        if len(level1parts) > 2:
-                            focus = focus + find_comma_delineated_names(', '.join(level1parts[2:]))
-                    else:
-                        focus = focus.strip().split(' ')
-                        # print('space split', focus)
-                        if len(focus) > 2:
-                            focus = [' '.join(focus[:-1]), focus[-1]]
-                    if isinstance(focus[0], str):
-                        focus = [focus]
-                    for i, f in enumerate(focus):
-                        if len(f) > 2:
-                            focus[i] = [' '.join(f[:-1]), f[-1]]
-                    return focus
+                # conference/meeting info
+                if row['conference_date']:
+                    # if not newrec['custom_fields']['meeting:meeting']:
+                    #     newrec['custom_fields']['meeting:meeting'] = {}
+                    newrec['custom_fields'].setdefault('meeting:meeting', {})[
+                        'dates'] = row['conference_date']
+                if row['conference_location']:
+                    newrec['custom_fields'].setdefault('meeting:meeting', {})[
+                        'place'] = row['conference_location']
+                if row['conference_organization']:
+                    newrec['custom_fields']['kcr:meeting_organization'] = row['conference_organization']
+                if row['conference_title']:
+                    newrec['custom_fields'].setdefault('meeting:meeting', {})[
+                        'title'] = row['conference_title']
 
-                is_editor = False
-                if re.search(r'.*\(?[Ee]d(it(or|ed( by)?)?)?s?\.?.*', row['book_author']):
-                    # print(row['book_author'])
-                    row['book_author'] = re.sub(r'(,? )?\(?[Ee]d(itor)?s?\.?\)?', '', row['book_author'])
-                    row['book_author'] = re.sub(r'^[Ee]d(it(ed( by)?|or)?)?s?[\.,]? ', '', row['book_author'])
-                    is_editor = True
+        # pprint(newrec_list[16])
 
-                try:
-                    bas = row['book_author']
-                    # print('***********', bas)
-                    if bas[-1] in ['.', ';']:
-                        bas = bas[:-1]
-                    if re.search(r'( and| y| &|;| \/) ', row['book_author']):
-                        bas = re.split(r' and | y | & | \/ |;', bas)
-                        new_bas = []
-                        for focus in bas:
-                            new_bas = new_bas + find_comma_delineated_names(focus)
-                        bas = new_bas
-                    elif ', ' in row['book_author']:
-                        bas = find_comma_delineated_names(bas)
-                    elif len(bas.split(' ')) < 4:
-                        bas = find_comma_delineated_names(bas)
-                    for b in bas:
-                        newrec['custom_fields']['imprint:imprint'].setdefault('creators', []).append(
-                            {
-                                'person_or_org': {
-                                    'name': (f'{b[0]} {b[1]}'
-                                             if len(b) > 1 else b[0]),
-                                    "type": "personal",
-                                    "given_name": b[0] if len(b) > 1 else '',
-                                    "family_name": b[1] if len(b) > 1 else ''
-                                },
-                                'role': {
-                                    'id': ('editor' if is_editor else 'author')
-                                }
-                            }
-                        )
-                except TypeError as e:
-                    append_bad_data(row['id'], ('book_author', row['book_author']), bad_data_dict)
-                # FIXME: handle simple spaced names with no delimiters
-                # FIXME: last name repeated like "Kate Holland"?
-                # FIXME: "Coarelli, F. Patterson, H."
-                # FIXME: "Hamilton, Portnoy, Wacks"
-                # FIXME: ['M. Antoni J. Üçerler', 'SJ']
-                # FIXME: Edited by Koenraad Verboven, Ghent University and Christian Laes, University of Antwerp, University of Tampere
-                # FIXME: two last names???
-                # FIXME: handle et. al.
-                # FIXME: Joshua Davies and Sarah Salih, ed. by Karl Fugelso
-                # FIXME: A. Pifferetti, A. & I. Dosztal (comps.)
+        # pprint([r for r in newrec_list if r['metadata']['resource_type']['id'] == 'publication:journalArticle'])
 
+        pprint([r for r in newrec_list if r['metadata']['identifiers'][0]['identifier'] == 'hc:16079'])
 
-                # FIXME: add in periods and spaces for initials?
-                    # else:
-                    #     bas = bas.split(',')
-                    # for i, b in enumerate(bas):
-                    #     if isinstance(b, str):
-                    #         b = b.strip()
-                    #         if len(b.split(',')) == 2:
-                    #             bas[i] = [b.split(',')[1].strip(), b.split(',')[0].strip()]
-                    #         elif len(b.split(' ')) == 2:
-                    #             bas[i] = b.split(' ')
-                    # for i, b in enumerate(bas):
-                    #     for l, n in enumerate(b):
-                    #         if re.search(r'^[A-Z]{2,}$', n):
-                    #             bas[i][l] = '. '.join([*n]) + '.'
-                    # bas = [b.strip() for b in bas]
-                # print('*****', bas)
-
-        pprint(newrec_list[16])
-
-        auth_errors = {k:v for k, v in bad_data_dict.items() for i in v if i[0][:8] == 'authors' and len(i) == 2}
+        # auth_errors = {k:v for k, v in bad_data_dict.items() for i in v if i[0][:8] == 'authors' and len(i) == 2}
         # pprint(auth_errors)
-        pprint(bad_data_dict)
-        print(len(auth_errors))
+        # pprint(bad_data_dict)
+        # print(len(auth_errors))
     print(f'Processed {line_count} lines.')
     print(f'Found {len(bad_data_dict)} records with bad data.')
 

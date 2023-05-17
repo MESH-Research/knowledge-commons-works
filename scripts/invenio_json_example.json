@@ -83,8 +83,11 @@
             "title": "A nice conference",
             "url": "https://mysite.edu"
         },
+        "kcr:edition": "",
+        "kcr:meeting_organization": "",
         "kcr:commons_domain": "ajs.hcommons.org",
         "kcr:hcommons_organization": "University of Toronto",
+        "kcr:chapter_label": "10",
         "kcr:user_defined_tags": [
             {"tag_label": "",
              "tag_identifier": 123
@@ -141,8 +144,7 @@
     },
     "metadata": {
         "resource_type": {
-            "id": "",
-            "title": {"en": ""}
+            "id": ""
             },
         "creators": [
             {"person_or_org": {
@@ -222,6 +224,7 @@
         "languages": [
             {"id": "eng"}
         ],
+        "publication_date": "",
         "dates": [{
             "date": "",
             "type": {
