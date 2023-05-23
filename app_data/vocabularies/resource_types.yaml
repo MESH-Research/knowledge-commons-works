@@ -1,7 +1,9 @@
 - id: audiovisual
   icon: film
   props:
-    csl: motion_picture ???
+    coar: Video
+    coar_type: c_12_ce
+    csl: motion_picture
     datacite_general: Audiovisual
     datacite_type: ''
     openaire_resourceType: '33' ???
@@ -12,20 +14,22 @@
     type: audiovisual
   title:
     en: Audiovisual
-    de: Video/Audio ???
+    de: Video/Audio
   tags:
     - depositable
     - linkable
 - id: audiovisual-documentary
   icon: film
   props:
+    coar: Video
+    coar_type: c_12_ce
     csl: motion_picture
     datacite_general: Audiovisual
-    datacite_type: ''
+    datacite_type: Documentary
     openaire_resourceType: '33'
     openaire_type: dataset
     eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/MediaObject
+    schema.org: https://schema.org/Movie
     subtype: audiovisual-documentary
     type: audiovisual
   title:
@@ -37,9 +41,11 @@
 - id: audiovisual-interviewRecording
   icon: film
   props:
-    csl: motion_picture ???
-    datacite_general: Audiovisual ???
-    datacite_type: ''
+    coar: Video
+    coar_type: c_12_ce
+    csl: interview
+    datacite_general: Audiovisual
+    datacite_type: Interview Recording
     openaire_resourceType: '33' ???
     openaire_type: dataset ???
     eurepo: info:eu-repo/semantics/other
@@ -55,9 +61,11 @@
 - id: audiovisual-musicalRecording
   icon: film
   props:
-    csl: motion_picture ???
-    datacite_general: Audiovisual ???
-    datacite_type: ''
+    coar: sound
+    coar_type: c_18cc
+    csl: song
+    datacite_general: Audiovisual
+    datacite_type: Musical Recording
     openaire_resourceType: '33' ???
     openaire_type: dataset ???
     eurepo: info:eu-repo/semantics/other
@@ -73,8 +81,10 @@
 - id: audiovisual-other
   icon: film
   props:
-    csl: motion_picture ???
-    datacite_general: Audiovisual ???
+    coar: Video
+    coar_type: c_12_ce
+    csl: motion_picture
+    datacite_general: Audiovisual
     datacite_type: ''
     openaire_resourceType: '33' ???
     openaire_type: dataset ???
@@ -91,9 +101,11 @@
 - id: audiovisual-performance
   icon: film
   props:
-    csl: motion_picture ???
-    datacite_general: Audiovisual ???
-    datacite_type: ''
+    coar: Video
+    coar_type: c_12_ce
+    csl: performance
+    datacite_general: Audiovisual
+    datacite_type: Performance
     openaire_resourceType: '33' ???
     openaire_type: dataset ???
     eurepo: info:eu-repo/semantics/other
@@ -109,9 +121,11 @@
 - id: audiovisual-podcastEpisode
   icon: film
   props:
-    csl: motion_picture ???
-    datacite_general: Audiovisual ???
-    datacite_type: ''
+    coar: sound
+    coar_type: c_18cc
+    csl: podcast
+    datacite_general: Audiovisual
+    datacite_type: Podcast
     openaire_resourceType: '33' ???
     openaire_type: dataset ???
     eurepo: info:eu-repo/semantics/other
@@ -127,9 +141,11 @@
 - id: audiovisual-audioRecording
   icon: film
   props:
-    csl: motion_picture ???
-    datacite_general: Audiovisual ???
-    datacite_type: ''
+    coar: sound
+    coar_type: c_18cc
+    csl: song
+    datacite_general: Audiovisual
+    datacite_type: Sound Recording
     openaire_resourceType: '33' ???
     openaire_type: dataset ???
     eurepo: info:eu-repo/semantics/other
@@ -145,6 +161,8 @@
 - id: audiovisual-videoRecording
   icon: film
   props:
+    coar: Video
+    coar_type: c_18cc
     csl: motion_picture
     datacite_general: Audiovisual
     datacite_type: ''
@@ -156,13 +174,15 @@
     type: audiovisual
   title:
     en: Video recording
-    de: Video/Audio ???
+    de: Video
   tags:
     - depositable
     - linkable
 - id: dataset
   icon: table
   props:
+    coar: dataset
+    coar_type: c_ddb1
     csl: dataset
     datacite_general: Dataset
     datacite_type: ''
@@ -181,7 +201,9 @@
 - id: image
   icon: chart bar outline
   props:
-    csl: figure
+    coar: image
+    coar_type: c_c513
+    csl: graphic
     datacite_general: Image
     datacite_type: ''
     openaire_resourceType: '25'
@@ -199,9 +221,11 @@
 - id: image-chart
   icon: chart bar outline
   props:
+    coar: still image
+    coar_type: c_ecc8
     csl: figure
     datacite_general: Image
-    datacite_type: Plot ???
+    datacite_type: Chart
     openaire_resourceType: '25'
     openaire_type: dataset
     eurepo: info:eu-repo/semantics/other
@@ -235,6 +259,8 @@
 - id: image-figure
   icon: chart bar outline
   props:
+    coar: still image
+    coar_type: c_ecc8
     csl: figure
     datacite_general: Image
     datacite_type: Figure
@@ -253,9 +279,11 @@
 - id: image-map
   icon: chart bar outline ???
   props:
-    csl: figure ???
-    datacite_general: Image ???
-    datacite_type: Figure ???
+    coar: map
+    coar_type: c_12_cd
+    csl: map
+    datacite_general: Image
+    datacite_type: Map
     openaire_resourceType: '25' ???
     openaire_type: dataset
     eurepo: info:eu-repo/semantics/other
@@ -264,20 +292,22 @@
     type: image
   title:
     en: Map
-    de: Abbildung ???
+    de: Karte
   tags:
     - depositable
     - linkable
 - id: image-visualArt
   icon: chart bar outline
   props:
+    coar: still image
+    coar_type: c_ecc8
     csl: graphic
     datacite_general: Image
-    datacite_type: Drawing
+    datacite_type: Visual Art
     openaire_resourceType: '25'
     openaire_type: dataset
     eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/ImageObject ???
+    schema.org: https://schema.org/ImageObject
     subtype: image-visualArt
     type: image
   title:
@@ -286,12 +316,14 @@
   tags:
     - depositable
     - linkable
-- id: image-photo ???
+- id: image-photo
   icon: chart bar outline
   props:
+    coar: still image
+    coar_type: c_ecc8
     csl: graphic
     datacite_general: Image
-    datacite_type: Photo
+    datacite_type: Photograph
     openaire_resourceType: '25'
     openaire_type: dataset
     eurepo: info:eu-repo/semantics/other
@@ -299,7 +331,7 @@
     subtype: image-photo
     type: image
   title:
-    en: Photo
+    en: Photograph
     de: Foto
   tags:
     - depositable
@@ -307,6 +339,8 @@
 - id: image-other
   icon: chart bar outline
   props:
+    coar: still image
+    coar_type: c_ecc8
     csl: graphic
     datacite_general: Image
     datacite_type: Other
@@ -317,17 +351,19 @@
     subtype: image-other
     type: image
   title:
-    en: Other
-    de: Sonstiges
+    en: Other image
+    de: Sonstiges ???
   tags:
     - depositable
     - linkable
 - id: instructionalResource
   icon: graduation
   props:
-    csl: speech ???
-    datacite_general: InteractiveResource ???
-    datacite_type: ''
+    coar: learning object
+    coar_type: c_e059
+    csl: document
+    datacite_general: Other
+    datacite_type: Instructional resource
     openaire_resourceType: '10' ???
     openaire_type: other
     eurepo: info:eu-repo/semantics/lecture ???
@@ -343,9 +379,11 @@
 - id: instructionalResource-curriculum
   icon: graduation
   props:
-    csl: speech ???
-    datacite_general: InteractiveResource ???
-    datacite_type: ''
+    coar: other
+    coar_type: c_1843
+    csl: document
+    datacite_general: Other
+    datacite_type: Educational Curriculum
     openaire_resourceType: '10'
     openaire_type: other
     eurepo: info:eu-repo/semantics/lecture ???
@@ -358,12 +396,34 @@
   tags:
     - depositable
     - linkable
+- id: instructionalResource-lessonPlan
+  icon: graduation
+  props:
+    coar: other
+    coar_type: c_1843
+    csl: document
+    datacite_general: Other
+    datacite_type: Lesson Plan
+    openaire_resourceType: '10'
+    openaire_type: other
+    eurepo: info:eu-repo/semantics/lecture ???
+    schema.org: https://schema.org/CreativeWork
+    subtype: instructionalResource-lessonPlan
+    type: instructionalResource
+  title:
+    en: Lesson plan
+    de: Unterrichtseinheit ???
+  tags:
+    - depositable
+    - linkable
 - id: instructionalResource-syllabus
   icon: graduation
   props:
-    csl: speech ???
-    datacite_general: InteractiveResource ???
-    datacite_type: ''
+    coar: other
+    coar_type: c_1843
+    csl: document
+    datacite_general: Other
+    datacite_type: Syllabus
     openaire_resourceType: '10' ???
     openaire_type: other
     eurepo: info:eu-repo/semantics/lecture ???
@@ -379,9 +439,11 @@
 - id: instructionalResource-other
   icon: graduation
   props:
-    csl: speech ???
-    datacite_general: InteractiveResource ???
-    datacite_type: ''
+    coar: learning object
+    coar_type: c_e059
+    csl: document
+    datacite_general: Other
+    datacite_type: Instructional Resource
     openaire_resourceType: '10' ???
     openaire_type: other
     eurepo: info:eu-repo/semantics/lecture ???
@@ -397,6 +459,8 @@
 - id: presentation
   icon: group
   props:
+    coar: lecture
+    coar_type: c_8544
     csl: speech
     datacite_general: Text
     datacite_type: Presentation
@@ -415,9 +479,11 @@
 - id: presentation-conferencePaper
   icon: file alternate???
   props:
-    csl: paper-conference
-    datacite_general: Text
-    datacite_type: Conference paper
+    coar: conference paper not in proceedings
+    coar_type: c_18cp
+    csl: speech
+    datacite_general: ConferencePaper
+    datacite_type: ''
     openaire_resourceType: '4'
     openaire_type: publication???
     eurepo: info:eu-repo/semantics/conferencePaper
@@ -444,7 +510,7 @@
     type: presentation
   title:
     en: Conference poster
-    de: Poster ???
+    de: Konferenzposter
   tags:
     - depositable
     - linkable
@@ -469,6 +535,8 @@
 - id: presentation-slides
   icon: group
   props:
+    coar: conference presentation
+    coar_type: R60J-J5BD
     csl: speech
     datacite_general: Text
     datacite_type: Presentation
@@ -487,6 +555,8 @@
 - id: presentation-other
   icon: group
   props:
+    coar: lecture
+    coar_type: c_8544
     csl: speech
     datacite_general: Text
     datacite_type: Presentation
@@ -505,7 +575,9 @@
 - id: software
   icon: code
   props:
-    csl: article
+    coar: software
+    coar_type: c_5ce6
+    csl: software
     datacite_general: Software
     datacite_type: ''
     openaire_resourceType: '29'
@@ -523,9 +595,11 @@
 - id: software-3dModel
   icon: code
   props:
-    csl: article
+    coar: source code
+    coar_type: QH80-2R4E
+    csl: software
     datacite_general: Software
-    datacite_type: ''
+    datacite_type: 3D Model
     openaire_resourceType: '29'
     openaire_type: software
     eurepo: info:eu-repo/semantics/other
@@ -534,16 +608,18 @@
     type: software
   title:
     en: 3D Model
-    de: Software
+    de: Software ???
   tags:
     - depositable
     - linkable
 - id: software-application
   icon: code
   props:
-    csl: article
+    coar: software
+    coar_type: c_5ce6
+    csl: software
     datacite_general: Software
-    datacite_type: ''
+    datacite_type: Application
     openaire_resourceType: '29'
     openaire_type: software
     eurepo: info:eu-repo/semantics/other
@@ -552,20 +628,22 @@
     type: software
   title:
     en: Application
-    de: Software
+    de: Software ???
   tags:
     - depositable
     - linkable
 - id: software-computationalModel
   icon: code
   props:
-    csl: article
+    coar: source code
+    coar_type: QH80-2R4E
+    csl: software
     datacite_general: Software
-    datacite_type: ''
+    datacite_type: Computational Model
     openaire_resourceType: '29'
     openaire_type: software
     eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/SoftwareSourceCode ???
+    schema.org: https://schema.org/SoftwareSourceCode
     subtype: software-computationalModel
     type: software
   title:
@@ -577,13 +655,15 @@
 - id: software-computationalNotebook
   icon: code
   props:
-    csl: article
-    datacite_general: Software
+    coar: source code
+    coar_type: QH80-2R4E
+    csl: software
+    datacite_general: ComputationalNotebook
     datacite_type: ''
     openaire_resourceType: '29'
     openaire_type: software
     eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/SoftwareSourceCode ???
+    schema.org: https://schema.org/SoftwareSourceCode
     subtype: software-computationalNotebook
     type: software
   title:
@@ -592,30 +672,14 @@
   tags:
     - depositable
     - linkable
-- id: software-outputManagementPlan
-  icon: code
-  props:
-    csl: article
-    datacite_general: Software ???
-    datacite_type: ''
-    openaire_resourceType: '29'
-    openaire_type: software
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/SoftwareSourceCode ???
-    subtype: software-outputManagementPlan
-    type: software
-  title:
-    en: Output management plan
-    de: Software ???
-  tags:
-    - depositable
-    - linkable
 - id: software-service
   icon: code
   props:
-    csl: article
-    datacite_general: Software ???
-    datacite_type: ''
+    coar: software
+    coar_type: c_5ce6
+    csl: software
+    datacite_general: Software
+    datacite_type: Software Service
     openaire_resourceType: '29'
     openaire_type: software
     eurepo: info:eu-repo/semantics/other
@@ -631,8 +695,10 @@
 - id: software-other
   icon: code
   props:
-    csl: article
-    datacite_general: Software ???
+    coar: software
+    coar_type: c_5ce6
+    csl: software
+    datacite_general: Software
     datacite_type: ''
     openaire_resourceType: '29'
     openaire_type: software
@@ -649,7 +715,7 @@
 - id: textDocument
   icon: file alternate
   props:
-    csl: report???
+    csl: document
     datacite_general: Text
     datacite_type: ''
     openaire_resourceType: '17'???
@@ -664,82 +730,10 @@
   tags:
     - depositable
     - linkable
-- id: publication-preprint???
-  icon: file alternate
-  props:
-    csl: article
-    datacite_general: Text
-    datacite_type: Preprint
-    openaire_resourceType: '16'
-    openaire_type: publication
-    eurepo: info:eu-repo/semantics/preprint
-    schema.org: https://schema.org/ScholarlyArticle
-    subtype: publication-preprint
-    type: publication
-  title:
-    en: Preprint
-    de: Preprint
-  tags:
-    - depositable
-    - linkable
-- id: publication-deliverable ????
-  icon: file alternate
-  props:
-    csl: report
-    datacite_general: Text
-    datacite_type: Project deliverable
-    openaire_resourceType: '34'
-    openaire_type: publication
-    eurepo: info:eu-repo/semantics/report
-    schema.org: https://schema.org/CreativeWork
-    subtype: publication-deliverable
-    type: publication
-  title:
-    en: Project deliverable
-    de: Projektergebnis
-  tags:
-    - depositable
-    - linkable
-- id: publication-milestone ????
-  icon: file alternate
-  props:
-    csl: report
-    datacite_general: Text
-    datacite_type: Project milestone
-    openaire_resourceType: '35'
-    openaire_type: publication
-    eurepo: info:eu-repo/semantics/report
-    schema.org: https://schema.org/CreativeWork
-    subtype: publication-milestone
-    type: publication
-  title:
-    en: Project milestone
-    de: Projektmeilenstein
-  tags:
-    - depositable
-    - linkable
-- id: publication-proposal ????
-  icon: file alternate
-  props:
-    csl: article
-    datacite_general: Text
-    datacite_type: Proposal
-    openaire_resourceType: '36'
-    openaire_type: publication
-    eurepo: info:eu-repo/semantics/researchProposal
-    schema.org: https://schema.org/CreativeWork
-    subtype: publication-proposal
-    type: publication
-  title:
-    en: Proposal
-    de: Antrag
-  tags:
-    - depositable
-    - linkable
 - id: textDocument-abstract
   icon: file alternate
   props:
-    csl: book ???
+    csl: article
     datacite_general: Text
     datacite_type: Book ???
     openaire_resourceType: '2'
@@ -757,9 +751,11 @@
 - id: textDocument-bibliography
   icon: file alternate
   props:
-    csl: book ???
+    coar: bibliography
+    coar_type: c_86bc
+    csl: document
     datacite_general: Text
-    datacite_type: Book ???
+    datacite_type: Bibliography
     openaire_resourceType: '2'
     openaire_type: publication
     eurepo: info:eu-repo/semantics/book ???
@@ -775,9 +771,11 @@
 - id: textDocument-blogPost
   icon: file alternate
   props:
-    csl: book ???
+    coar: blog post
+    coar_type: c_6947
+    csl: post-weblog
     datacite_general: Text
-    datacite_type: Book ???
+    datacite_type: Blog Post
     openaire_resourceType: '2'
     openaire_type: publication
     eurepo: info:eu-repo/semantics/book ???
@@ -793,14 +791,16 @@
 - id: textDocument-book
   icon: file alternate
   props:
+    coar: book
+    coar_type: c_2f33
     csl: book
-    datacite_general: Text
+    datacite_general: Book
     datacite_type: Book
     openaire_resourceType: '2'
     openaire_type: publication
     eurepo: info:eu-repo/semantics/book
     schema.org: https://schema.org/Book
-    subtype: publication-book
+    subtype: textDocument-book
     type: textDocument
   title:
     en: Book
@@ -829,9 +829,11 @@
 - id: textDocument-conferenceProceeding
   icon: file alternate???
   props:
-    csl: paper-conference ???
-    datacite_general: Text
-    datacite_type: Conference paper ???
+    coar: conference proceedings
+    coar_type: c_f744
+    csl: paper-conference
+    datacite_general: ConferenceProceeding
+    datacite_type: ''
     openaire_resourceType: '4'
     openaire_type: publication???
     eurepo: info:eu-repo/semantics/conferencePaper ???
@@ -844,11 +846,13 @@
   tags:
     - depositable
     - linkable
-- id: textDocument-datamanagementplan????
+- id: textDocument-datamanagementplan
   icon: file alternate
   props:
+    coar: data management plan
+    coar_type: c_ab20
     csl: report
-    datacite_general: Text
+    datacite_general: Report
     datacite_type: Data management plan
     openaire_resourceType: '9'
     openaire_type: publication
@@ -865,13 +869,15 @@
 - id: textDocument-documentation
   icon: file alternate
   props:
-    csl: article
+    coar: technical documentation
+    coar_type: c_71bd
+    csl: report
     datacite_general: Text
-    datacite_type: Software documentation
+    datacite_type: Technical documentation
     openaire_resourceType: '9'
     openaire_type: publication
     eurepo: info:eu-repo/semantics/technicalDocumentation
-    schema.org: https://schema.org/CreativeWork
+    schema.org: https://schema.org/CreativeWork ???
     subtype: textDocument-documentation
     type: textDocument
   title:
@@ -883,9 +889,11 @@
 - id: textDocument-editorial
   icon: file alternate
   props:
-    csl: article-journal ???
+    coar: Editorial
+    coar_type: c_b239
+    csl: article
     datacite_general: Text
-    datacite_type: Journal article ???
+    datacite_type: Editorial article
     openaire_resourceType: '1'
     openaire_type: publication
     eurepo: info:eu-repo/semantics/article
@@ -901,9 +909,11 @@
 - id: textDocument-essay
   icon: file alternate
   props:
+    coar: other periodical
+    coar_type: QX5C-AR31
     csl: article
     datacite_general: Text
-    datacite_type: Working paper ???
+    datacite_type: Essay
     openaire_resourceType: '14' ???
     openaire_type: publication
     eurepo: info:eu-repo/semantics/workingPaper ???
@@ -919,13 +929,15 @@
 - id: textDocument-fictionalWork
   icon: file alternate
   props:
-    csl: article-journal ???
+    coar: other
+    coar_type: c_1843
+    csl: book ???
     datacite_general: Text
-    datacite_type: Journal article ???
-    openaire_resourceType: '1'
+    datacite_type: Fictional work
+    openaire_resourceType: '1' ???
     openaire_type: publication
-    eurepo: info:eu-repo/semantics/article
-    schema.org: https://schema.org/ScholarlyArticle
+    eurepo: info:eu-repo/semantics/article ???
+    schema.org: https://schema.org/ScholarlyArticle ???
     subtype: textDocument-fictionalWork
     type: textDocument
   title:
@@ -937,7 +949,7 @@
 - id: textDocument-interviewTranscript
   icon: file alternate
   props:
-    csl: article-journal ???
+    csl: interview
     datacite_general: Text
     datacite_type: Journal article ???
     openaire_resourceType: '1'
@@ -955,8 +967,10 @@
 - id: textDocument-journalArticle
   icon: file alternate
   props:
+    coar: journal article
+    coar_type: c_6501
     csl: article-journal
-    datacite_general: Text
+    datacite_general: JournalArticle
     datacite_type: Journal article
     openaire_resourceType: '1'
     openaire_type: publication
@@ -973,9 +987,11 @@
 - id: textDocument-legalComment
   icon: file alternate
   props:
-    csl: article-journal ???
+    coar: other periodical
+    coar_type: QX5C-AR31
+    csl: legal-case
     datacite_general: Text
-    datacite_type: Journal article ???
+    datacite_type: Legal Comment
     openaire_resourceType: '1'
     openaire_type: publication
     eurepo: info:eu-repo/semantics/article ???
@@ -991,9 +1007,11 @@
 - id: textDocument-legalResponse
   icon: file alternate
   props:
-    csl: article-journal ???
+    coar: other periodical
+    coar_type: QX5C-AR31
+    csl: legal-case
     datacite_general: Text
-    datacite_type: Journal article ???
+    datacite_type: Legal Response
     openaire_resourceType: '1'
     openaire_type: publication
     eurepo: info:eu-repo/semantics/article ???
@@ -1009,9 +1027,11 @@
 - id: textDocument-magazineArticle
   icon: file alternate
   props:
-    csl: article
+    coar: Magazine
+    coar_type: c_2cd9
+    csl: article-magazine
     datacite_general: Text
-    datacite_type: Report ???
+    datacite_type: Magazine article
     openaire_resourceType: '17'
     openaire_type: publication
     eurepo: info:eu-repo/semantics/report ???
@@ -1027,13 +1047,15 @@
 - id: textDocument-monograph
   icon: file alternate
   props:
-    csl: article
-    datacite_general: Text
-    datacite_type: Report ???
-    openaire_resourceType: '17'
+    coar: book
+    coar_type: c_2f33
+    csl: book
+    datacite_general: Book
+    datacite_type: Book
+    openaire_resourceType: '17' ???
     openaire_type: publication
-    eurepo: info:eu-repo/semantics/report ???
-    schema.org: https://schema.org/ScholarlyArticle ???
+    eurepo: info:eu-repo/semantics/book
+    schema.org: https://schema.org/Book
     subtype: textDocument-monograph
     type: textDocument
   title:
@@ -1045,10 +1067,12 @@
 - id: textDocument-newspaperArticle
   icon: file alternate
   props:
-    csl: article
+    coar: Newspaper article
+    coar_type: c_998f
+    csl: article-newspaper
     datacite_general: Text
-    datacite_type: Report ???
-    openaire_resourceType: '17'
+    datacite_type: Newspaper article
+    openaire_resourceType: '17' ???
     openaire_type: publication
     eurepo: info:eu-repo/semantics/report ???
     schema.org: https://schema.org/ScholarlyArticle ???
@@ -1063,10 +1087,12 @@
 - id: textDocument-onlinePublication
   icon: file alternate
   props:
-    csl: article
+    coar: website
+    coar_type: c_7ad9
+    csl: webpage
     datacite_general: Text
-    datacite_type: Report ???
-    openaire_resourceType: '17'
+    datacite_type: Online publication
+    openaire_resourceType: '17' ???
     openaire_type: publication
     eurepo: info:eu-repo/semantics/report ???
     schema.org: https://schema.org/ScholarlyArticle ???
@@ -1081,10 +1107,12 @@
 - id: textDocument-poeticWork
   icon: file alternate
   props:
+    coar: other
+    coar_type: c_1843
     csl: article
     datacite_general: Text
-    datacite_type: Report ???
-    openaire_resourceType: '17'
+    datacite_type: Poetic work
+    openaire_resourceType: '17' ???
     openaire_type: publication
     eurepo: info:eu-repo/semantics/report ???
     schema.org: https://schema.org/ScholarlyArticle ???
@@ -1099,13 +1127,15 @@
 - id: textDocument-report
   icon: file alternate
   props:
-    csl: article
-    datacite_general: Text
+    coar: report
+    coar_type: c_93fc
+    csl: report
+    datacite_general: Report
     datacite_type: Report
     openaire_resourceType: '17'
     openaire_type: publication
     eurepo: info:eu-repo/semantics/report
-    schema.org: https://schema.org/ScholarlyArticle
+    schema.org: https://schema.org/ScholarlyArticle ???
     subtype: textDocument-report
     type: textDocument
   title:
@@ -1117,10 +1147,12 @@
 - id: textDocument-review
   icon: file alternate
   props:
-    csl: article
-    datacite_general: Text
-    datacite_type: Report ???
-    openaire_resourceType: '17'
+    coar: review
+    coar_type: c_efa0
+    csl: review
+    datacite_general: JournalArticle
+    datacite_type: Review
+    openaire_resourceType: '17' ???
     openaire_type: publication
     eurepo: info:eu-repo/semantics/report ???
     schema.org: https://schema.org/ScholarlyArticle ???
@@ -1135,9 +1167,11 @@
 - id: textDocument-technicalStandard
   icon: file alternate
   props:
-    csl: article
+    coar: technical documentation
+    coar_type: c_71bd
+    csl: standard
     datacite_general: Text
-    datacite_type: Taxonomic treatment ???
+    datacite_type: Technical standard
     openaire_resourceType: '20' ???
     openaire_type: publication
     eurepo: info:eu-repo/semantics/other ???
@@ -1153,13 +1187,15 @@
 - id: textDocument-thesis
   icon: file alternate
   props:
+    coar: thesis
+    coar_type: c_46ec
     csl: thesis
     datacite_general: Text
     datacite_type: Thesis
     openaire_resourceType: '6'
     openaire_type: publication
     eurepo: info:eu-repo/semantics/doctoralThesis
-    schema.org: https://schema.org/ScholarlyArticle
+    schema.org: https://schema.org/ScholarlyArticle ???
     subtype: textDocument-thesis
     type: textDocument
   title:
@@ -1171,9 +1207,11 @@
 - id: textDocument-whitePaper
   icon: file alternate
   props:
-    csl: article
-    datacite_general: Text
-    datacite_type: Technical note ???
+    coar: technical report
+    coar_type: c_18gh
+    csl: report
+    datacite_general: Report
+    datacite_type: White paper
     openaire_resourceType: '9' ???
     openaire_type: publication
     eurepo: info:eu-repo/semantics/technicalDocumentation ???
@@ -1189,7 +1227,9 @@
 - id: textDocument-other
   icon: file alternate
   props:
-    csl: article
+    coar: other
+    coar_type: c_1843
+    csl: document
     datacite_general: Text
     datacite_type: Other
     openaire_resourceType: '20'
@@ -1207,7 +1247,9 @@
 - id: other
   icon: asterisk
   props:
-    csl: article
+    coar: other
+    coar_type: c_1843
+    csl: document
     datacite_general: Other
     datacite_type: ''
     openaire_resourceType: '20'
@@ -1225,9 +1267,11 @@
 - id: other-catalog
   icon: file alternate
   props:
-    csl: report
-    datacite_general: Collection ???
-    datacite_type: ''
+    coar: other
+    coar_type: c_1843
+    csl: collection
+    datacite_general: Collection
+    datacite_type: Catalog
     openaire_resourceType: '9' ???
     openaire_type: publication
     eurepo: info:eu-repo/semantics/technicalDocumentation ???
@@ -1243,7 +1287,9 @@
 - id: other-collection
   icon: file alternate
   props:
-    csl: report
+    coar: other
+    coar_type: c_1843
+    csl: collection
     datacite_general: Collection
     datacite_type: ''
     openaire_resourceType: '9'
@@ -1261,8 +1307,10 @@
 - id: other-event
   icon: file alternate
   props:
-    csl: report
-    datacite_general: Collection ???
+    coar: other
+    coar_type: c_1843
+    csl: event
+    datacite_general: Event
     datacite_type: ''
     openaire_resourceType: '9' ???
     openaire_type: publication ???
@@ -1279,8 +1327,10 @@
 - id: other-interactiveResource
   icon: file alternate
   props:
-    csl: report
-    datacite_general: Collection ???
+    coar: interactive resource
+    coar_type: c_e9a0
+    csl: software
+    datacite_general: InteractiveResource
     datacite_type: ''
     openaire_resourceType: '9' ???
     openaire_type: publication ???
@@ -1297,6 +1347,8 @@
 - id: other-patent ???
   icon: file alternate???
   props:
+    coar: patent
+    coar_type: c_15cd
     csl: patent
     datacite_general: Text
     datacite_type: Patent
@@ -1315,8 +1367,10 @@
 - id: other-peerReview
   icon: file alternate
   props:
-    csl: report
-    datacite_general: Collection ???
+    coar: peer review
+    coar_type: H9BQ-739P
+    csl: review
+    datacite_general: PeerReview
     datacite_type: ''
     openaire_resourceType: '9' ???
     openaire_type: publication ???
@@ -1333,8 +1387,10 @@
 - id: other-physicalObject
   icon: file alternate
   props:
-    csl: report
-    datacite_general: Collection ???
+    coar: other
+    coar_type: c_1843
+    csl: entry
+    datacite_general: PhysicalObject
     datacite_type: ''
     openaire_resourceType: '9' ???
     openaire_type: publication ???
@@ -1351,8 +1407,10 @@
 - id: other-workflow
   icon: file alternate
   props:
+    coar: Workflow
+    coar_type: c_393c
     csl: report
-    datacite_general: Collection ???
+    datacite_general: Workflow
     datacite_type: ''
     openaire_resourceType: '9' ???
     openaire_type: publication ???
@@ -1362,7 +1420,7 @@
     type: other
   title:
     en: Workflow
-    de: Anmerkungssammlung ???
+    de: Workflow
   tags:
     - depositable
     - linkable
