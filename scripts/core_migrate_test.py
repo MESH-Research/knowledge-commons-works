@@ -1,5 +1,5 @@
 from click.testing import CliRunner
-from core_migrate import parse_csv
+from core_migrate import serialize_json
 import pytest
 
 json28491 = {
@@ -170,16 +170,12 @@ json28491 = {
                               'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}],
-        'subjects': [{'id': ['1108387:Science--Study and '
-                             'teaching:topical',
-                             '1145221:Technology--Study and '
-                             'teaching:topical'],
+        'subjects': [{'id': '1108387:Science--Study and '
+                            'teaching:topical',
                       'scheme': 'fast'},
-                     {'id': ['1108387:Science--Study and '
-                             'teaching:topical',
-                             '1145221:Technology--Study and '
-                             'teaching:topical'],
-                      'scheme': 'fast'}],
+                    {'id': '1145221:Technology--Study and teaching:topical',
+                     'scheme': 'fast'}
+                     ],
         'title': 'TRATAMIENTO de los RESIDUOS de la INDUSTRIA del '
                  'PROCESADO de ALIMENTOS'
     },
@@ -337,18 +333,29 @@ json583 = {
                             '21st century.',
             'formats': [],
             'identifiers': [{'identifier': 'mla:583', 'scheme': 'hclegacy-pid'},
-                            {'identifier': 'mla:583',
+                            {'identifier': 10664,
                              'scheme': 'hclegacy-record-id'},
                             {'identifier': 'http://dx.doi.org/10.17613/M6930Z',
                             'scheme': 'handle'}],
             'languages': [{'id': 'eng'}],
             'publication_date': '2016',
             'resource_type': {'id': 'presentation:other'},
-            'rights': [],
-            'subjects': [],
+            'rights': [{'description': {'en': ''},
+                        'id': 'all-rights-reserved',
+                        'props': {'scheme': 'spdx',
+                                  'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
+                        'title': {'en': 'Proprietary. All rights '
+                                        'reserved.'}}],
+            'subjects': [{'id': '903005:Education, Higher:topical',
+                          'scheme': 'fast'},
+                         {'id': '963599:Digital humanities:topical',
+                          'scheme': 'fast'},
+                         {'id': '911989:English literature:topical',
+                          'scheme': 'fast'}
+            ],
             'publisher': 'Open Library of Humanities',
             'title': 'The New Open Access Environment: Innovation in '
-                    'Research, Editing and Publishing'
+                     'Research, Editing and Publishing'
     },
     'parent': {'access': {'owned_by': [{'user': 3365}]}},
     'pids': {'doi': {'client': 'datacite',
@@ -543,14 +550,31 @@ json38367 = {
                         'model is that it is a closed economy without '
                         'government.',
         'formats': [],
-        'identifiers': [{'identifier': 'hc:38367', 'scheme': 'hclegacy'},
+        'identifiers': [{'identifier': 'hc:38367', 'scheme': 'hclegacy-pid'},
+                        {'identifier': '1000360-44555',
+                         'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/5ehz-cb19',
-                         'scheme': 'handle'}],
+                         'scheme': 'handle'},
+                        {'identifier': 'http://132.248.9.195/ptd2018/mayo/0774053/Index.html',
+                         'scheme': 'url'}
+        ],
         'languages': [{'id': 'spa'}],
         'publication_date': '2018',
         'resource_type': {'id': 'publication:dissertation'},
-        'rights': [],
-        'subjects': [],
+        'rights': [{'description': {'en': ''},
+                    'id': 'all-rights-reserved',
+                    'props': {'scheme': 'spdx',
+                            'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
+                    'title': {'en': 'Proprietary. All rights '
+                                    'reserved.'}}
+        ],
+        'subjects': [{'id': '902116:Economics:topical',
+                      'scheme': 'fast'},
+                     {'id': '958235:History:topical',
+                      'scheme': 'fast'},
+                     {'id': '1012163:Mathematics:topical',
+                      'scheme': 'fast'}
+        ],
         'publisher': 'Universidad Nacional Autónoma de Mexico (UNAM)',
         'title': 'The macroeconomic evolution of the USA, 1970 - 2010. '
                  'A heterodox mathematical modelling approach with '
@@ -692,14 +716,25 @@ json48799 = {
                         'capitalism’s transformational shape.',
         'formats': [],
         'identifiers': [{'identifier': 'hc:48799',
-                         'scheme': 'hclegacy'},
+                         'scheme': 'hclegacy-pid'},
+                        {'identifier': '1000360-61936',
+                         'scheme': 'hclegacy-record-id'},
                         {'identifier': 'https://doi.org/10.17613/y30x-r594',
-                         'scheme': 'handle'}],
+                         'scheme': 'handle'},
+                        {'identifier': 'https://www.theplatformlab.com/'
+                                       'super-apps',
+                         'scheme': 'url'}],
         'languages': [{'id': 'eng'}],
         'publication_date': '2022',
         'publisher': 'The Platform Lab',
         'resource_type': {'id': 'publication:whitePaper'},
-        'rights': [],
+        'rights': [{'description': {'en': ''},
+                    'id': 'cc-by-4.0',
+                    'props': {'scheme': 'spdx',
+                              'url': 'https://creativecommons.org/licenses/by/4.0/legalcode'},
+                    'title': {'en': 'Creative Commons Attribution 4.0 '
+                                    'International'}}
+        ],
         'subjects': [],
         'title': 'Super Apps: A Platform Lab Report'},
     'parent': {'access': {'owned_by': [{'user': 1011375}]}},
@@ -742,7 +777,8 @@ json33383 = {
         'journal:journal': {'title': 'Philological Encounters',
                             'issue': '3',
                             'pages': '308-352',
-                            'issn': ['2451-9189', '2451-9197']
+                            'issn': ['2451-9189', '2451-9197'],
+                            'volume': '5'
                             },
         'kcr:commons_domain': 'hcommons.org',
         'kcr:submitter_email': 'alexandre.roberts@gmail.com',
@@ -839,7 +875,9 @@ json33383 = {
                         'mathematics—that is, we should read it '
                         'philologically.',
         'formats': [],
-        'identifiers': [{'identifier': 'hc:33383', 'scheme': 'hclegacy'},
+        'identifiers': [{'identifier': 'hc:33383', 'scheme': 'hclegacy-pid'},
+                        {'identifier': '1000360-40298',
+                         'scheme': 'hclegacy-record-id'},
                         {'identifier': '10.1163/24519197-BJA10007',
                          'scheme': 'doi'},
                         {'identifier': 'http://dx.doi.org/10.17613/xxxj-e936',
@@ -847,8 +885,22 @@ json33383 = {
         'languages': [{'id': 'eng'}],
         'publication_date': '2020',
         'resource_type': {'id': 'publication:journalArticle'},
-        'rights': [],
-        'subjects': [],
+        'rights': [{'description': {'en': ''},
+                    'id': 'all-rights-reserved',
+                    'props': {'scheme': 'spdx',
+                              'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
+                    'title': {'en': 'Proprietary. All rights '
+                                    'reserved.'}}
+        ],
+        'subjects': [{'id': '1108176:Science:topical',
+                      'scheme': 'fast'},
+                     {'id': '958235:History:topical',
+                      'scheme': 'fast'},
+                     {'id': '1012213:Mathematics--Philosophy:topical',
+                      'scheme': 'fast'},
+                     {'id': '1012163:Mathematics:topical',
+                      'scheme': 'fast'}
+        ],
         'publisher': 'Brill',
         'title': 'Mathematical Philology in the Treatise on Double '
                 'False Position in an Arabic Manuscript at Columbia '
@@ -978,24 +1030,39 @@ json16079 = {
                               'Joyce and Samuel Beckett.',
                'formats': [],
                'identifiers': [{'identifier': 'hc:16079',
-                                'scheme': 'hclegacy'},
+                                'scheme': 'hclegacy-pid'},
+                               {'identifier': '1000360-8725',
+                                'scheme': 'hclegacy-record-id'},
                                {'identifier': 'https://doi.org/10.5281/zenodo.1009526',
                                 'scheme': 'doi'},
                                {'identifier': 'http://dx.doi.org/10.17613'
                                               '/M6M225',
                                 'scheme': 'handle'}
                                ],
-               'languages': [{'id': 'eng'}],
-               'resource_type': {'id': 'publication:conferenceProceeding'},
-               'rights': [],
-               'subjects': [],
-               'publication_date': '2015',
-               'dates': [{'date': '8 June 2015',
-                          'description': 'Human readable publication date',
-                          'type': {'id': 'issued',
-                          'title': {'en': 'Issued'}}}
-                         ],
-               'title': 'Digitization and Exogenesis'},
+                'languages': [{'id': 'eng'}],
+                'resource_type': {'id': 'publication:conferenceProceeding'},
+                'rights': [{'description': {'en': ''},
+                            'id': 'cc-by-4.0',
+                            'props': {'scheme': 'spdx',
+                                        'url': 'https://creativecommons.org/licenses/by/4.0/legalcode'},
+                            'title': {'en': 'Creative Commons Attribution 4.0 '
+                                            'International'}}],
+                'subjects': [{'id': '1159810:Twentieth century:topical',
+                              'scheme': 'fast'},
+                             {'id': '963599:Digital humanities:topical',
+                              'scheme': 'fast'},
+                             {'id': '979030:Irish literature:topical',
+                              'scheme': 'fast'},
+                             {'id': '883762:Criticism, Textual:topical',
+                              'scheme': 'fast'}
+                ],
+                'publication_date': '2015',
+                'dates': [{'date': '8 June 2015',
+                            'description': 'Human readable publication date',
+                            'type': {'id': 'issued',
+                            'title': {'en': 'Issued'}}}
+                            ],
+                'title': 'Digitization and Exogenesis'},
     'parent': {'access': {'owned_by': [{'user': 1010997}]}},
     'updated': '2017-10-27T14:27:17Z'
 }
@@ -1089,13 +1156,30 @@ json34031 = {
                         'of the Nag Hammadi Codices.',
         'formats': [],
         'identifiers': [{'identifier': 'hc:34031',
-                         'scheme': 'hclegacy'},
+                         'scheme': 'hclegacy-pid'},
+                        {'identifier': '1000360-41326',
+                         'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/0qxh-ed23',
                          'scheme': 'handle'}],
         'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'publication:bookChapter'},
-        'rights': [],
-        'subjects': [],
+        'rights': [{'description': {'en': ''},
+                    'id': 'all-rights-reserved',
+                    'props': {'scheme': 'spdx',
+                              'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
+                    'title': {'en': 'Proprietary. All rights '
+                                    'reserved.'}}
+        ],
+        'subjects': [{'id': '943906:Gnosticism:topical',
+                      'scheme': 'fast'},
+                     {'id': '1043123:Occultism:topical',
+                      'scheme': 'fast'},
+                     {'id': '1245064:Europe:geographic',
+                      'scheme': 'fast'},
+                     {'id': '1710945:Church history--Primitive and early '
+                            'church:topical',
+                      'scheme': 'fast'}
+        ],
         'title': 'Gnosticism Theorized: Major Trends and Approaches to '
                 'the Study of Gnosticism'
     },
@@ -1361,7 +1445,9 @@ json11451 = {
                               'femininity.',
                'formats': [],
                'identifiers': [{'identifier': 'hc:11451',
-                                'scheme': 'hclegacy'},
+                                'scheme': 'hclegacy-pid'},
+                               {'identifier': '1-1013793',
+                                'scheme': 'hclegacy-record-id'},
                                {'identifier': '10.1057/9781137016461',
                                 'scheme': 'doi'},
                                {'identifier': 'http://dx.doi.org/10.17613/'
@@ -1370,8 +1456,23 @@ json11451 = {
                 ],
                'languages': [{'id': 'eng'}],
                'resource_type': {'id': 'publication:bookChapter'},
-               'rights': [],
-               'subjects': [],
+                'rights': [{'description': {'en': ''},
+                            'id': 'cc-by-nc-4.0',
+                            'props': {'scheme': 'spdx',
+                                      'url': 'https://creativecommons.org/licenses/by-nc/4.0/legalcode'},
+                            'title': {'en': 'Creative Commons Attribution Non '
+                                            'Commercial 4.0 International'}}
+                ],
+                'subjects': [{'id': '900999:East Asian literature:topical',
+                              'scheme': 'fast'},
+                             {'id': '1027285:Motion pictures:topical',
+                              'scheme': 'fast'},
+                             {'id': '958235:History:topical',
+                              'scheme': 'fast'},
+                             {'id': '29048:Shakespeare, William, '
+                                    '1564-1616:personal',
+                              'scheme': 'fast'}
+                ],
                'publisher': 'Palgrave',
                'title': 'The Paradox of Female Agency: Ophelia and East Asian '
                         'Sensibilities'},
@@ -1570,14 +1671,33 @@ json22647 = {
                         '‘fixed’ and ‘unfixed’ elements.',
         'formats': [],
         'identifiers': [{'identifier': 'hc:22647',
-                         'scheme': 'hclegacy'},
+                         'scheme': 'hclegacy-pid'},
+                        {'identifier': '1000360-19934',
+                         'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/1d2d-2y15',
                          'scheme': 'handle'}
         ],
         'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'publication:bookChapter'},
-        'rights': [],
-        'subjects': [],
+        'rights': [{'description': {'en': ''},
+                    'id': 'all-rights-reserved',
+                    'props': {'scheme': 'spdx',
+                              'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
+                    'title': {'en': 'Proprietary. All rights '
+                                    'reserved.'}}],
+        'subjects': [{'id': '863509:Classsical literature:topical',
+                      'scheme': 'fast'},
+                     {'id': '1411635:Criticism, interpretation, '
+                         'etc.:topical',
+                      'scheme': 'fast'},
+                     {'id': '1149217:Theater:topical',
+                      'scheme': 'fast'},
+                     {'id': '1027285:Motion pictures:topical',
+                      'scheme': 'fast'},
+                     {'id': '29137:Homer:personal',
+                      'scheme': 'fast'},
+                     {'id': '913799:Epic poetry:topical',
+                      'scheme': 'fast'}],
         'publisher': 'Oxford University Press',
         'title': 'Unfixing Epic: Homeric Orality and Contemporary '
                  'Performance'
@@ -1587,6 +1707,7 @@ json22647 = {
 }
 
 json42615 = {
+    'created': '2021-11-10T15:06:20Z',
     'pids': {'doi': {'client': 'datacite',
                                'identifier': 'doi:10.17613/6v9q-8878',
                                'provider': 'datacite'}},
@@ -1597,6 +1718,8 @@ json42615 = {
                                       'g6mfcf7.pdf.palazzo-vernacular_pa'
                                       'tterns_in_portugal_and_brazil-2021.pdf',
             'hclegacy:file_pid': 'hc:42616',
+            'hclegacy:record_change_date': '2021-11-10T15:06:20Z',
+            'hclegacy:record_creation_date': '2021-11-10T15:06:20Z',
             'hclegacy:submitter_affiliation': 'University of Brasilia '
                                               'School of Architecture '
                                               'and Urbanism',
@@ -1722,22 +1845,50 @@ json42615 = {
                         'urbanization requirements.',
         'formats': [],
         'identifiers': [{'identifier': 'hc:42615',
-                         'scheme': 'hclegacy'},
+                         'scheme': 'hclegacy-pid'},
+                        {'identifier': '1001712-776',
+                         'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/6v9q-8878',
                          'scheme': 'handle'}],
         'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'publication:journalArticle'},
-        'rights': [],
-        'subjects': [],
+        'rights': [{'description': {'en': ''},
+                    'id': 'cc-by-nc-nd-4.0',
+                    'props': {'scheme': 'spdx',
+                              'url': 'https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode'},
+                    'title': {'en': 'Creative Commons Attribution Non '
+                                    'Commercial No Derivatives 4.0 '
+                                    'International'}}
+        ],
+        'subjects': [{'id': '862177:City planning:topical',
+                      'scheme': 'fast'},
+                     {'id': '861853:Cities and towns--Study and '
+                            'teaching:topical',
+                      'scheme': 'fast'},
+                     {'id': '1208476:Portugal:geographic',
+                      'scheme': 'fast'},
+                     {'id': '1930859:Portuguese colonies:geographic',
+                      'scheme': 'fast'},
+                     {'id': '813346:Architecture:topical',
+                      'scheme': 'fast'},
+                     {'id': '958235:History:topical',
+                      'scheme': 'fast'},
+                     {'id': '904058:Eighteenth century:topical',
+                      'scheme': 'fast'},
+                     {'id': '1037841:Nineteenth century:topical',
+                      'scheme': 'fast'}
+        ],
         'publisher': 'Toledo: INTBAU Spain',
         'title': 'Vernacular Patterns in Portugal and Brazil: Evolution '
                  'and Adaptations'},
     'parent': {
         'access': {'owned_by': [{'user': 1011841}]}
-    }
+    },
+    'updated': '2021-11-10T15:06:20Z'
 }
 
 json22625 = {
+    'created': '2019-01-29T03:57:00Z',
     'pids': {'doi': {'client': 'datacite',
                                'identifier': 'doi:10.17613/hrhn-3k43',
                                'provider': 'datacite'}},
@@ -1784,7 +1935,9 @@ json22625 = {
              'group_name': 'Jewish Mysticism'},
             {'group_identifier': '1000611',
              'group_name': 'Modern Jewish Thought and Theology'}
-        ]
+        ],
+        'hclegacy:record_change_date': '2019-01-29T03:57:00Z',
+        'hclegacy:record_creation_date': '2019-01-29T03:57:00Z'
     },
     'files': {
         'default_preview': '55710426.pdf',
@@ -1894,20 +2047,36 @@ json22625 = {
                              'followers.',
             'formats': [],
             'identifiers': [{'identifier': 'hc:22625',
-                             'scheme': 'hclegacy'},
+                             'scheme': 'hclegacy-pid'},
+                            {'identifier': '1000361-383',
+                             'scheme': 'hclegacy-record-id'},
                             {'identifier': 'http://dx.doi.org/10.17613/'
                                            'hrhn-3k43',
                              'scheme': 'handle'}],
             'languages': [{'id': 'heb'}],
             'resource_type': {'id': 'publication:bookChapter'},
-            'rights': [],
-            'subjects': [],
+            'rights': [{'description': {'en': ''},
+                        'id': 'all-rights-reserved',
+                        'props': {'scheme': 'spdx',
+                                  'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
+                        'title': {'en': 'Proprietary. All rights '
+                                        'reserved.'}}
+            ],
+            'subjects': [{'id': '983377:Jews--Study and teaching:topical',
+                          'scheme': 'fast'},
+                         {'id': '1031646:Mysticism--Judaism:topical',
+                          'scheme': 'fast'},
+                         {'id': '1730516:Jewish philosophy:topical',
+                          'scheme': 'fast'}
+            ],
             'publisher': 'Zalman Shazar Center',
             'title': 'מגדר וזמן בכתבי ר׳ שניאור זלמן מלאדי'},
-    'parent': {'access': {'owned_by': [{'user': 1017065}]}}
+    'parent': {'access': {'owned_by': [{'user': 1017065}]}},
+    'updated': '2019-01-29T03:57:00Z'
 }
 
 json45177 = {
+    'created': '2022-03-31T13:53:16Z',
     'pids': {'doi': {'client': 'datacite',
                                'identifier': '10.17613/zhmh-c741',
                                'provider': 'datacite'}},
@@ -1918,6 +2087,8 @@ json45177 = {
                                   'sqs1uqplep7.pdf.cep_notes_revised_2022-03-30'
                                   '.pdf',
         'hclegacy:file_pid': 'hc:45178',
+        'hclegacy:record_change_date': '2022-03-31T13:55:13Z',
+        'hclegacy:record_creation_date': '2022-03-31T13:53:16Z',
         'imprint:imprint': {
             'creators': [
                 {'person_or_org':
@@ -2096,18 +2267,29 @@ json45177 = {
                              'importance.',
               'formats': [],
               'identifiers': [{'identifier': 'hc:45177',
-                               'scheme': 'hclegacy'},
+                               'scheme': 'hclegacy-pid'},
+                              {'identifier': '1001634-246',
+                               'scheme': 'hclegacy-record-id'},
                               {'identifier': 'https://doi.org/10.17613/'
                                              'zhmh-c741',
                                'scheme': 'handle'}
               ],
               'languages': [{'id': 'eng'}],
               'resource_type': {'id': 'publication:bookSection'},
-              'rights': [],
+            'rights': [{'description': {'en': ''},
+                        'id': 'cc-by-nc-nd-4.0',
+                        'props': {'scheme': 'spdx',
+                                  'url': 'https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode'},
+                        'title': {'en': 'Creative Commons Attribution Non '
+                                        'Commercial No Derivatives 4.0 '
+                                        'International'}}
+                ],
               'subjects': [],
               'publisher': 'Art Libraries Society of North America',
               'title': 'Notes'},
- 'parent': {'access': {'owned_by': [{'user': 1006873}]}}}
+    'parent': {'access': {'owned_by': [{'user': 1006873}]}},
+    'updated': '2022-03-31T13:55:13Z',
+}
 
 json44881 = {
     'pids': {'doi': {'client': 'datacite',
@@ -2115,6 +2297,11 @@ json44881 = {
                                'provider': 'datacite'}},
     'created': '2022-03-08T21:57:49Z',
     'custom_fields': {
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/'
+                                  'uploads/humcore/2022/03/'
+                                  'o_1ftlo8pia8cm1ptgmrh1l1s10607.pdf'
+                                  '.clarkestarr-transcript.pdf',
+        'hclegacy:file_pid': 'hc:44882',
         'hclegacy:record_change_date': '2022-03-08T21:57:49Z',
         'hclegacy:record_creation_date': '2022-03-08T21:57:49Z',
         'hclegacy:collection': 'hccollection:1',
@@ -2123,7 +2310,14 @@ json44881 = {
         'kcr:commons_domain': 'arlisna.hcommons.org',
         'hclegacy:submitter_id': 1018587
         },
-    'files': {'entries': []},
+    'files': {'default_preview': 'clarkestarr-transcript.pdf',
+                'enabled': 'true',
+                'entries': {
+                    'clarkestarr-transcript.pdf': {
+                        'key': 'clarkestarr-transcript.pdf',
+                        'mimetype': 'application/pdf',
+                        'size': '183968'}}
+    },
     'metadata': {
         'additional_descriptions': [
             {'description': 'Emily Walz interviews Distinguished '
@@ -2197,13 +2391,28 @@ json44881 = {
                         'conferences.',
         'formats': [],
         'identifiers': [{'identifier': 'hc:44881',
-                         'scheme': 'hclegacy'},
+                         'scheme': 'hclegacy-pid'},
+                        {'identifier': '1001634-235',
+                         'scheme': 'hclegacy-record-id'},
                         {'identifier': 'https://doi.org/10.17613/82yy-vj44',
                          'scheme': 'handle'}],
         'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'publication:interviewTranscript'},
-        'rights': [],
-        'subjects': [],
+        'rights': [{'description': {'en': ''},
+                    'id': 'cc-by-nc-nd-4.0',
+                    'props': {'scheme': 'spdx',
+                              'url': 'https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode'},
+                    'title': {'en': 'Creative Commons Attribution Non '
+                                    'Commercial No Derivatives 4.0 '
+                                    'International'}}
+        ],
+        'subjects': [{'id': '815177:Art:topical',
+                      'scheme': 'fast'},
+                     {'id': '1047055:Oral history:topical',
+                      'scheme': 'fast'},
+                     {'id': '997341:Libraries:topical',
+                      'scheme': 'fast'}
+        ],
         'title': 'ARLIS/NA Oral History for Distinguished Service Award '
                  'Winners, Sherman Clarke and Daniel Starr'},
     'parent': {'access': {'owned_by': [{'user': 1018587}]}},
@@ -2222,9 +2431,47 @@ def test_parse_csv(expected_json):
     # assert result.exit_code == 0
     # assert result.output[0] == json1
 
-    actual_json, actual_bad_data = parse_csv()
+    actual_json, actual_bad_data = serialize_json()
+
     expected_pid = expected_json['metadata']['identifiers'][0]['identifier']
     actual_json_item = [j for j in actual_json
                         for i in j['metadata']['identifiers']
                         if i['identifier'] == expected_pid][0]
+    for k in expected_json.keys():
+        if k in ['custom_fields', 'metadata']:
+            for i in expected_json[k].keys():
+                assert actual_json_item[k][i] == expected_json[k][i]
+        else:
+            assert actual_json_item[k] == expected_json[k]
+
+    assert expected_json.keys() == actual_json_item.keys()
+    # assert actual_json_item['created'] == expected_json['created']
+    # assert actual_json_item['custom_fields']['hclegacy:file_location'] == expected_json['custom_fields']['hclegacy:file_location']
+    # assert actual_json_item['custom_fields']['hclegacy:file_pid'] == expected_json['custom_fields']['hclegacy:file_pid']
+    # assert actual_json_item['custom_fields']['hclegacy:record_change_date'] == expected_json['custom_fields']['hclegacy:record_change_date']
+    # assert actual_json_item['custom_fields']['hclegacy:record_creation_date'] == expected_json['custom_fields']['hclegacy:record_creation_date']
+    # assert actual_json_item['custom_fields']['hclegacy:collection'] == expected_json['custom_fields']['hclegacy:collection']
+    # assert actual_json_item['custom_fields']['hclegacy:submitter_id'] == expected_json['custom_fields']['hclegacy:submitter_id']
+    # assert actual_json_item['custom_fields']['kcr:submitter_email'] == expected_json['custom_fields']['kcr:submitter_email']
+    # assert actual_json_item['custom_fields']['kcr:submitter_username'] == expected_json['custom_fields']['kcr:submitter_username']
+    # assert actual_json_item['custom_fields']['kcr:commons_domain'] == expected_json['custom_fields']['kcr:commons_domain']
+    # assert actual_json_item['files'] == expected_json['files']
+    # assert actual_json_item['metadata']['additional_descriptions'] == expected_json['metadata']['additional_descriptions']
+    # assert actual_json_item['metadata']['additional_titles'] == expected_json['metadata']['additional_titles']
+    # assert actual_json_item['metadata']['contributors'] == expected_json['metadata']['contributors']
+    # assert actual_json_item['metadata']['creators'] == expected_json['metadata']['creators']
+    # assert actual_json_item['metadata']['dates'] == expected_json['metadata']['dates']
+    # assert actual_json_item['metadata']['publication_date'] == expected_json['metadata']['publication_date']
+    # assert actual_json_item['metadata']['description'] == expected_json['metadata']['description']
+    # assert actual_json_item['metadata']['formats'] == expected_json['metadata']['formats']
+    # assert actual_json_item['metadata']['identifiers'] == expected_json['metadata']['identifiers']
+    # assert actual_json_item['metadata']['identifiers'] == expected_json['metadata']['identifiers']
+    # assert actual_json_item['metadata']['resource_type'] == expected_json['metadata']['resource_type']
+    # assert actual_json_item['metadata']['rights'] == expected_json['metadata']['rights']
+    # assert actual_json_item['metadata']['subjects'] == expected_json['metadata']['subjects']
+    # assert actual_json_item['metadata']['keywords'] == expected_json['metadata']['keywords']
+    # assert actual_json_item['metadata']['title'] == expected_json['metadata']['title']
+    # assert actual_json_item['parent'] == expected_json['parent']
+    # assert actual_json_item['updated'] == expected_json['updated']
+
     assert actual_json_item == expected_json

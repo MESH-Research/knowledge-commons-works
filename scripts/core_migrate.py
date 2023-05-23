@@ -480,15 +480,15 @@ def add_author_data(newrec:dict, row:dict, bad_data_dict:dict
     return newrec, bad_data_dict
 
 
-@cli.command(name="csv")
-def csv_command_wrapper():
+@cli.command(name="serialize")
+def serialize_command_wrapper():
     """
     Isolates click registration for ease of unit testing.
     """
-    parse_csv()
+    serialize_json()
 
 
-def parse_csv() -> tuple[dict, dict]:
+def serialize_json() -> tuple[dict, dict]:
     """
     Parse and serialize csv data into Invenio JSON format.
     """
@@ -699,7 +699,8 @@ def parse_csv() -> tuple[dict, dict]:
                             "scheme": "url"}
                         )
                     else:
-                        print(row['id'], url)
+                        # print(row['id'], url)
+                        pass
 
             # Language info
             # FIXME: Deal with all of these exceptions and the 'else' condition
@@ -1052,30 +1053,33 @@ def parse_csv() -> tuple[dict, dict]:
                     if s not in covered_subjects:
                         newrec['metadata'].setdefault('subjects', []).append(
                             {
-                                "id": row['subject'],
+                                "id": s,
                                 "scheme": "fast"
                             }
                         )
                     covered_subjects.append(s)
 
-                # uploaded file info
-                # FIXME: Is this right? How are we handling upload?
-                if row['file_pid']:
-                    newrec['custom_fields']['hclegacy:file_location'
-                                            ] = row['fileloc']
-                    newrec['custom_fields']['hclegacy:file_pid'
-                                            ] = row['file_pid']
-                    newrec['files'] = {
-                        "enabled": "true",
-                        "entries": {
-                            f'{row["filename"]}': {
-                                "key": row["filename"],
-                                "mimetype": row["filetype"],
-                                "size": row['filesize'],
-                            }
-                        },
-                        "default_preview": row['filename']
-                    }
+            # uploaded file info
+            # FIXME: Is this right? How are we handling upload?
+            if row['id'] == 'hc:45177':
+                print('files...')
+                print(row['file_pid'], row['fileloc'], row['filename'])
+            if row['file_pid'] or row['fileloc'] or row['filename']:
+                newrec['custom_fields']['hclegacy:file_location'
+                                        ] = row['fileloc']
+                newrec['custom_fields']['hclegacy:file_pid'
+                                        ] = row['file_pid']
+                newrec['files'] = {
+                    "enabled": "true",
+                    "entries": {
+                        f'{row["filename"]}': {
+                            "key": row["filename"],
+                            "mimetype": row["filetype"],
+                            "size": row['filesize'],
+                        }
+                    },
+                    "default_preview": row['filename']
+                }
 
             if row['type_of_license']:
                 license_id, license_name, license_url = licenses[row['type_of_license']]
@@ -1091,11 +1095,10 @@ def parse_csv() -> tuple[dict, dict]:
                     }
                 )
 
-        pprint(licenses_list)
-
         # pprint([r for r in newrec_list if r['metadata']['resource_type']['id'] == 'publication:journalArticle'])
 
-        # pprint([r for r in newrec_list if r['metadata']['identifiers'][0]['identifier'] == 'hc:28491'])
+        pprint([r for r in newrec_list if r['metadata']['identifiers'][0]['identifier'] == 'hc:45177'])
+        pprint([r for r in top_object if r['id'] == 'hc:45177'])
 
         # auth_errors = {k:v for k, v in bad_data_dict.items() for i in v if i[0][:8] == 'authors' and len(i) == 2}
         # pprint(auth_errors)
