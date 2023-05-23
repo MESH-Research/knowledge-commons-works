@@ -5,21 +5,60 @@ from copy import deepcopy
 import csv
 from datetime import datetime
 from fedoraapi import FedoraApi
-from itertools import zip_longest
+from isbnlib import is_isbn10, is_isbn13, get_isbnlike, clean
+import iso639
 import json
+from langdetect import detect_langs
+from stdnum import issn
 import requests
 # import numpy as np
+from titlecase import titlecase
 from typing import Optional
 import os
 # import pandas as pd
 from pprint import pprint
 import re
+import validators
 import xml.etree.ElementTree as ET
 from xml.sax.saxutils import escape, unescape
 
 @click.group()
 def cli():
     pass
+
+book_types = [
+    'publication:bookChapter',
+    'publication:bookSection',
+    'publication:book',
+    'publication:monograph',
+    'publication:dissertation',
+    'publication:report',
+    'publication:whitePaper',
+    'other:bibliography',
+    'presentation:conferencePaper',
+    'publication:conferenceProceeding',
+    'presentation:conferencePaper',
+    'other:essay'
+]
+
+article_types = ['publication:journalArticle',
+                    'publication:abstract',
+                    'publication:review',
+                    'publication:newspaperArticle',
+                    'publication:editorial',
+                    'publication:magazineArticle',
+                    'publication:onlinePublication'
+                    ]
+
+ambiguous_types = [
+    'publication:fictionalWork',
+    'other:other',
+    'publication:interviewTranscript',
+    'publication:legalComment',
+    'publication:legalResponse',
+    'publication:poeticWork',
+    'publication:translation'
+    ]
 
 
 def flatten_list(list_of_lists, flat_list=[]):
@@ -34,6 +73,55 @@ def flatten_list(list_of_lists, flat_list=[]):
 
     return flat_list
 
+licenses = {'All Rights Reserved': (
+                'all-rights-reserved',
+                'Proprietary. All rights reserved.',
+                'https://en.wikipedia.org/wiki/All_rights_reserved'
+            ),
+            'Attribution-NonCommercial-NoDerivatives': (
+                'cc-by-nc-nd-4.0',
+                'Creative Commons Attribution Non Commercial No Derivatives '
+                '4.0 International',
+                'https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode'
+            ),
+            'Attribution-NonCommercial-ShareAlike': (
+                'cc-by-nc-sa-4.0',
+                'Creative Commons Attribution Non Commercial Share '
+                'Alike 4.0 International',
+                'https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode'
+            ),
+            'Attribution': (
+                'cc-by-4.0',
+                'Creative Commons Attribution 4.0 International',
+                'https://creativecommons.org/licenses/by/4.0/legalcode'
+            ),
+            'Attribution-NonCommercial': (
+                'cc-by-nc-4.0',
+                'Creative Commons Attribution Non Commercial '
+                '4.0 International',
+                'https://creativecommons.org/licenses/by-nc/4.0/legalcode'
+            ),
+            'Attribution-NoDerivatives': (
+                'cc-by-nd-4.0',
+                'Creative Commons Attribution No Derivatives 4.0 International',
+                'https://creativecommons.org/licenses/by-nd/4.0/legalcode'
+                ),
+            'Attribution-ShareAlike': (
+                'cc-by-sa-4.0',
+                'Creative Commons Attribution Share Alike 4.0 International',
+                'https://creativecommons.org/licenses/by-sa/4.0/legalcode'
+            ),
+            'All-Rights-Granted': (
+                '0bsd',
+                'BSD Zero Clause License',
+                'https://spdx.org/licenses/0BSD.html'
+            ),
+            'All Rights Granted': (
+                '0bsd',
+                'BSD Zero Clause License',
+                'https://spdx.org/licenses/0BSD.html'
+            )
+            }
 
 def append_bad_data(rowid:str, content:tuple, bad_data_dict:dict):
     """
@@ -41,6 +129,15 @@ def append_bad_data(rowid:str, content:tuple, bad_data_dict:dict):
     """
     bad_data_dict.setdefault(rowid, []).append(content)
     return bad_data_dict
+
+
+def valid_isbn(isbn:str) -> bool:
+    if is_isbn10(isbn) or (is_isbn13(isbn)):
+        return isbn
+    elif is_isbn10(clean(isbn)) or is_isbn13(clean(isbn)):
+        return clean(isbn)
+    else:
+        return False
 
 
 def valid_date(datestring:str) -> bool:
@@ -98,6 +195,7 @@ def add_resource_type(rec, pubtype, genre, filetype):
                          "Software": "software:application",
                          "Text": "other:text",
                          "Video": "audiovisual:video"}
+
     genres = {"Abstract": "publication:abstract",
               "Article": "publication:journalArticle",
               "Bibliography": "other:bibliography",
@@ -134,7 +232,7 @@ def add_resource_type(rec, pubtype, genre, filetype):
               "Online publication": "publication:onlinePublication",
               "Online Publication": "publication:onlinePublication",
               "Other": "other:other",
-              "Performance": "other:other",
+              "Performance": "audioVisual:performance",
               "Photograph": "image:other",
               "Podcast": "audiovisual:podcast",
               "Poetry": "publication:poeticWork",
@@ -394,6 +492,9 @@ def parse_csv() -> tuple[dict, dict]:
     """
     Parse and serialize csv data into Invenio JSON format.
     """
+    keywords_global_dict = {}
+    current_keyword_id = 0
+    licenses_list = []
 
     baserec:dict = {'parent': {
                         'access': {
@@ -431,7 +532,6 @@ def parse_csv() -> tuple[dict, dict]:
             newrec = deepcopy(baserec)
 
             if row['chapter']:
-
                 def normalize(mystring):
                     mystring = mystring.casefold()
                     mystring = re.sub(r'\\*"', '"', mystring)
@@ -499,20 +599,41 @@ def parse_csv() -> tuple[dict, dict]:
                         newrec['custom_fields']['kcr:chapter_label'
                                                 ] = row['chapter']
 
-            # HC admin information
+            # HC legacy admin information
             newrec['metadata']['identifiers'].append(
-                {'identifier': row['id'], 'scheme': 'hclegacy'}
+                {'identifier': row['id'], 'scheme': 'hclegacy-pid'}
             )
-
+            assert row['id'] == row['pid']
+            newrec['metadata']['identifiers'].append(
+                {'identifier': row['record_identifier'], 'scheme': 'hclegacy-record-id'}
+            )
             newrec['custom_fields']['kcr:commons_domain'] = row['domain']
+
+            # HC submitter info
             newrec['custom_fields']['kcr:submitter_email'
                                     ] = row['submitter_email']
             newrec['custom_fields']['kcr:submitter_username'
                                     ] = row['submitter_login']
+            if row['organization']:
+                newrec['custom_fields']['hclegacy:submitter_affiliation'
+                                        ] = row['organization']
+
+            # Access information
+            if row['embargoed'] == 'yes' and row['embargo_end_date']:
+                end_date_dt = datetime.strptime(row['embargo_end_date'].strip(),
+                                                '%m/%d/%Y').date()
+                end_date_iso = end_date_dt.isoformat()
+                newrec.setdefault('access', {})['embargo'] = {
+                    "active": True,
+                    "until": end_date_iso,
+                    "reason": None
+                },
 
             # Titles
             # FIXME: Filter out titles with punctuation from full biblio ref in #   field?
-            newrec['metadata']['title'] = row['title_unchanged']
+            # FIXME: Remove things like surrounding quotation marks
+            mytitle = row['title_unchanged']
+            newrec['metadata']['title'] = mytitle
             newrec['metadata']['additional_titles'].append(
                 {"title": row['title'],
                     "type": {
@@ -534,6 +655,15 @@ def parse_csv() -> tuple[dict, dict]:
                 }
             )
 
+            # Notes
+            if row['notes']:
+                newrec['custom_fields'].setdefault('kcr:notes', []).append(
+                    {'note_text': row['notes_unchanged'],
+                     'note_text_sanitized': row['notes'],
+                     'note_description': 'general'
+                     }
+                )
+
             # Resource type
             newrec, bad_data = add_resource_type(newrec,
                                                  row['publication-type'],
@@ -554,8 +684,72 @@ def parse_csv() -> tuple[dict, dict]:
                     {"identifier": row['doi'],
                      "scheme": "doi"}
                 )
+            if row['handle']:
+                newrec['metadata'].setdefault('identifiers', []).append(
+                    {"identifier": row['handle'],
+                     "scheme": "handle"}
+                )
+            if row['url']:
+                my_urls = re.split(r' and |;', row['url'])
+                for url in my_urls:
+                    url = row['url'].replace(' ', '')
+                    if validators.url(url) or validators.url(f'https://{url}'):
+                        newrec['metadata'].setdefault('identifiers', []).append(
+                            {"identifier": row['url'],
+                            "scheme": "url"}
+                        )
+                    else:
+                        print(row['id'], url)
+
+            # Language info
+            # FIXME: Deal with all of these exceptions and the 'else' condition
+            if row['language']:
+                if row['language'] == 'Greek':
+                    row['language'] = 'Greek, Modern (1453-)'
+                mylang = iso639.Language.from_name(row['language']).part3
+                newrec['metadata']['languages'] = [{"id": mylang}]
+            else:
+                exceptions = [
+                    'hc:11565', 'hc:48435', 'hc:48455', 'hc:11007', 'hc:11263', 'hc:11481', 'hc:12907', 'hc:13285', 'hc:13321', 'hc:13347', 'hc:13351', 'hc:13353', 'hc:13377', 'hc:13381', 'hc:13461', 'hc:13469', 'hc:13477', 'hc:13479', 'hc:13503', 'hc:13505', 'hc:13507', 'hc:13539', 'hc:13569', 'hc:13571', 'hc:13577', 'hc:13601', 'hc:13643', 'hc:13651', 'hc:13673', 'hc:13715', 'hc:13785', 'hc:13823', 'hc:13841', 'hc:13847', 'hc:13939', 'hc:13995', 'hc:13997', 'hc:14007', 'hc:14065', 'hc:14089', 'hc:14093', 'hc:14167', 'hc:14169', 'hc:14171', 'hc:14173', 'hc:14175', 'hc:14179', 'hc:14183', 'hc:14187', 'hc:14189', 'hc:14193', 'hc:14195', 'hc:14207', 'hc:14269', 'hc:14271', 'hc:14285', 'hc:14331', 'hc:14333', 'hc:14343', 'hc:14345', 'hc:14393', 'hc:14405', 'hc:14407', 'hc:14421', 'hc:14425', 'hc:14427', 'hc:14433', 'hc:14435', 'hc:14437', 'hc:14439', 'hc:14461', 'hc:14463', 'hc:14465', 'hc:14467', 'hc:14469',
+                    'hc:14473', 'hc:14477', 'hc:14479', 'hc:14481', 'hc:14485',
+                    'hc:14517', 'hc:14519', 'hc:14523', 'hc:14535', 'hc:14537',
+                    'hc:14539', 'hc:14615', 'hc:14691', 'hc:14695', 'hc:14975',
+                    'hc:15237', 'hc:15387', 'hc:16197', 'hc:16353', 'hc:16473',
+                    'hc:16493', 'hc:21289', 'hc:29719', 'hc:38161', 'hc:40031',
+                    'hc:40185', 'hc:41065', 'hc:41659', ''
+                ]
+                lang1, lang2 = None, None
+                if row['title']:
+                    t = titlecase(row['title'])
+                    lang1 = [{'code': lang.lang, 'prob': lang.prob}
+                              for lang in detect_langs(t)]
+                if row['abstract']:
+                    try:
+                        lang2 = [{'code': lang.lang, 'prob': lang.prob}
+                                for lang in detect_langs(row['abstract'])]
+                    except Exception:
+                        pass
+                        # print('language exception with abstract!!!!')
+                        # print(row['abstract'])
+
+                if (lang1[0]['code'] == 'en' and lang2 and
+                        lang2[0]['code'] == 'en'):
+                    newrec['metadata']['languages'] = [{"id": 'eng'}]
+                elif lang1[0]['prob'] > 0.99 and row['id'] not in exceptions:
+                    newrec['metadata']['languages'] = [{"id": lang1[0]['code']}]
+                elif (lang1[0]['prob'] < 0.9 and lang2 and
+                        lang2[0]['prob'] >= 0.9 and
+                        row['id'] not in exceptions):
+                    newrec['metadata']['languages'] = [{"id": lang2[0]['code']}]
+                elif row['id'] in exceptions:
+                    pass
+                else:
+                    # print(titlecase(row['title']))
+                    # print(row['id'], 'detected', lang1, lang2)
+                    pass
 
             # Edition
+            # FIXME: There's some bad data here, like ISSNs
             if row['edition']:
                 newrec['custom_fields']['kcr:edition'] = row['edition']
 
@@ -570,6 +764,12 @@ def parse_csv() -> tuple[dict, dict]:
                                     ('committee_id', row['committee_id']),
                                     bad_data_dict)
 
+            # HC legacy collection
+            if row['member_of']:
+                newrec['custom_fields']['hclegacy:collection'
+                                        ] = row['member_of']
+
+            # ORiginal submitter
             if row['submitter']:
                 try:
                     row['submitter'] = int(row['submitter'])
@@ -611,6 +811,19 @@ def parse_csv() -> tuple[dict, dict]:
                     }
                 )
 
+            if row['record_change_date']:
+                assert valid_date(row['record_change_date'])
+                # except AssertionError:
+                #     print(row['id'])
+                #     print(row['record_change_date'])
+                #     print(valid_date(row['record_change_date']))
+                newrec['updated'] = row['record_change_date']
+                newrec['custom_fields']['hclegacy:record_change_date'] = row['record_change_date']
+            if row['record_creation_date']:
+                assert valid_date(row['record_creation_date'])
+                newrec['created'] = row['record_creation_date']
+                newrec['custom_fields']['hclegacy:record_creation_date'] = row['record_creation_date']
+
             # Group info for deposit
             try:
                 # print(row['group'])
@@ -650,30 +863,50 @@ def parse_csv() -> tuple[dict, dict]:
                 newrec['custom_fields']['imprint:imprint'][
                     'creators'] = book_names
 
+            # volume info
+            # FIXME: distinguish volume meaning for ambiguous resource types
+            if row['volume']:
+                if newrec['metadata']['resource_type']['id'] in article_types:
+                    newrec['custom_fields'].setdefault('journal:journal', {}
+                        )['volume'] = row['volume']
+                elif newrec['metadata']['resource_type']['id'] in book_types:
+                    newrec['custom_fields'].setdefault('kcr:volume', {}
+                        )['volume'] = row['volume']
+                else:
+                    # print(row['id'], newrec['metadata']['resource_type']['id'], row['volume'])
+                    newrec['custom_fields'].setdefault('kcr:volume', {}
+                        )['volume'] = row['volume']
+
+            if row['isbn']:
+                row['isbn'] = row['isbn'].replace(r'\\0', '')
+                isbn = get_isbnlike(row['isbn'])
+
+                # FIXME: make isbn a list
+                # FIXME: still record invalid isbns?
+                newrec['custom_fields'].setdefault('imprint:imprint', {}
+                                                   )['isbn'] = []
+                for i in isbn:
+                    checked_i = valid_isbn(i)
+                    if not checked_i:
+                        # print(isbn)
+                        # print('invalid isbn', ':', checked_i, ':', clean(i), ':', row['isbn'])
+                        append_bad_data(row['id'],
+                                        ('invalid isbn', row['isbn']),
+                                        bad_data_dict)
+                    else:
+                        newrec['custom_fields'][
+                            'imprint:imprint']['isbn'].append(checked_i)
+
+            if row['publisher']:
+                newrec['metadata']['publisher'] = row['publisher']
+
             if row['book_journal_title']:
                 myfield = 'imprint:imprint'
-                article_types = ['publication:journalArticle',
-                                 'publication:abstract',
-                                 'publication:review',
-                                 'publication:newspaperArticle',
-                                 'publication:editorial',
-                                 'publication:magazineArticle',
-                                 'publication:onlinePublication'
-                                 ]
                 if newrec['metadata']['resource_type'][
                         'id'] in article_types:
                     myfield = 'journal:journal'
                 if newrec['metadata']['resource_type']['id'] not in [
-                        'publication:bookChapter', 'publication:bookSection',
-                        'publication:book', 'publication:monograph',
-                        'publication:dissertation', 'publication:report',
-                        'publication:whitePaper',
-                        'other:bibliography',
-                        'presentation:conferencePaper',
-                        'publication:conferenceProceeding',
-                        'presentation:conferencePaper',
-                        'other:essay',
-                        *article_types]:
+                    *book_types, *article_types]:
                     # print('****', newrec['metadata']['resource_type']['id'])
                     append_bad_data(row['id'],
                                     ('resource_type for book_journal_title',
@@ -685,26 +918,184 @@ def parse_csv() -> tuple[dict, dict]:
                 newrec['custom_fields'][myfield][
                     'title'] = row['book_journal_title']
 
+                # article/chapter info
+                if row['start_page']:
+                    pages = row['start_page']
+                    if row['end_page']:
+                        pages = f'{pages}-{row["end_page"]}'
+                    if newrec['metadata']['resource_type']['id'
+                            ] in article_types:
+                        newrec['custom_fields'].setdefault(
+                            'journal:journal', {})['pages'] = pages
+                    else:
+                        newrec['custom_fields'].setdefault(
+                            'imprint:imprint', {})['pages'] = pages
+                    if newrec['metadata']['resource_type']['id'
+                            ] not in [*book_types, *article_types,
+                                      *ambiguous_types]:
+                        append_bad_data(row['id'],
+                            ('resource_type for start_page/end_page',
+                             newrec['metadata']['resource_type']['id']),
+                            bad_data_dict)
+
+                if row['issue']:
+                    issue = re.sub(r'([Ii]ssue|[nN][Oo]?\.?)\s?', '', row['issue'])
+                    issue = re.sub(r'\((.*)\)', r'\1', issue)
+                    issue = re.sub(r'[\.,]$', '', issue)
+                    newrec['custom_fields'].setdefault('journal:journal', {}
+                                                       )['issue'] = issue
+
+                # FIXME: make issn a list
+                if row['issn']:
+                    if valid_isbn(row['issn']):
+                        # print('isbn', row['issn'])
+                        newrec['custom_fields'].setdefault(
+                            'imprint:imprint', {})['isbn'] = [row['issn']]
+                        append_bad_data(row['id'],
+                            ('issn', 'isbn in issn field', row['issn']),
+                            bad_data_dict)
+                    else:
+                        newrec['custom_fields'].setdefault(
+                            'journal:journal', {})['issn'] = []
+
+                        # myissn = row['issn'].replace(b'\xe2\x80\x94'.decode('utf-8'), '-')
+
+                        # myissn = myissn.replace('\x97', '-')
+                        myissn = row['issn'].replace(u'\u2013', '-')
+                        myissn = myissn.replace(u'\u2014', '-')
+                        myissn = re.sub(r'\s?-\s?', '-', myissn)
+                        myissn = myissn.replace('Х', 'X')
+                        myissn = myissn.replace('.', '')
+                        myissnx = re.findall(r'\d{4}[-\s\.]?\d{3}[\dxX]', myissn)
+                        if len(myissnx) < 1:
+                            append_bad_data(row['id'],
+                                ('issn', 'malformed', row['issn']),
+                                bad_data_dict)
+                        else:
+                            for i in myissnx:
+                                i = re.sub(r'ISSN:? ?', '', i)
+                                try:
+                                    if issn.validate(i):
+                                        newrec['custom_fields'][
+                                            'journal:journal']['issn'].append(i)
+                                except Exception:
+                                    # print('exception', i, row['issn'])
+                                    append_bad_data(row['id'],
+                                        ('issn', 'invalid last digit',
+                                         row['issn']),
+                                        bad_data_dict)
+
+
+                # extra for dissertations and reports
+                if row['institution']:
+                    # print(row['id'])
+                    # print(newrec['metadata']['resource_type']['id'])
+                    newrec['custom_fields']['kcr:sponsoring_institution'
+                                            ] = row['institution']
+                    if newrec['metadata']['resource_type']['id'] not in [
+                            'publication:dissertation', 'publication:report',
+                            'publication:whitePaper']:
+                        append_bad_data(row['id'],
+                            ('resource_type for institution',
+                             newrec['metadata']['resource_type']['id']),
+                            bad_data_dict)
+
                 # conference/meeting info
-                if row['conference_date']:
+                if row['conference_date'] or row['meeting_date']:
                     # if not newrec['custom_fields']['meeting:meeting']:
                     #     newrec['custom_fields']['meeting:meeting'] = {}
                     newrec['custom_fields'].setdefault('meeting:meeting', {})[
-                        'dates'] = row['conference_date']
-                if row['conference_location']:
+                        'dates'] = row['conference_date'] or row['meeting_date']
+                if row['conference_location'] or row['meeting_location']:
                     newrec['custom_fields'].setdefault('meeting:meeting', {})[
-                        'place'] = row['conference_location']
-                if row['conference_organization']:
-                    newrec['custom_fields']['kcr:meeting_organization'] = row['conference_organization']
-                if row['conference_title']:
+                        'place'] = row['conference_location'
+                                       ] or row['meeting_location']
+                if row['conference_organization'] or row['meeting_organization']:
+                    newrec['custom_fields'][
+                        'kcr:meeting_organization'] = row[
+                            'conference_organization'] or row[
+                                'meeting_organization']
+                if row['conference_title'] or row['meeting_title']:
                     newrec['custom_fields'].setdefault('meeting:meeting', {})[
-                        'title'] = row['conference_title']
+                        'title'] = row['conference_title'] or row['meeting_title']
 
-        # pprint(newrec_list[16])
+                # subjects and keywords
+                # FIXME: keyword ids filled in and harmonized where possible
+                #   with subject headings below
+                # FIXME: use named entity recognition to regularize
+                #   capitalization?
+                if row['keyword']:
+                    keywords = []
+                    if isinstance(row['keyword'], dict):
+                        row['keyword'] = row['keyword'].values()
+                    for k in row['keyword']:
+                        kid = None
+                        if k.casefold() in keywords_global_dict.keys():
+                            kid = keywords_global_dict[k.casefold()][0]
+                            if k not in keywords_global_dict[k.casefold()][1]:
+                                keywords_global_dict[k.casefold()][1].append(k)
+                            # print('got id from global for keyword', k)
+                        else:
+                            kid = current_keyword_id
+                            keywords_global_dict[k.casefold()] = (kid, [k])
+                            current_keyword_id += 1
+                            # print('missing id for keyword', k)
+                        keywords.append({'tag_label': k,
+                                         'tag_identifier': kid})
+                    if keywords:
+                        newrec['custom_fields'][
+                            'kcr:user_defined_tags'] = keywords
+
+            if row['subject']:
+                covered_subjects = []
+                for s in row['subject']:
+                    if s not in covered_subjects:
+                        newrec['metadata'].setdefault('subjects', []).append(
+                            {
+                                "id": row['subject'],
+                                "scheme": "fast"
+                            }
+                        )
+                    covered_subjects.append(s)
+
+                # uploaded file info
+                # FIXME: Is this right? How are we handling upload?
+                if row['file_pid']:
+                    newrec['custom_fields']['hclegacy:file_location'
+                                            ] = row['fileloc']
+                    newrec['custom_fields']['hclegacy:file_pid'
+                                            ] = row['file_pid']
+                    newrec['files'] = {
+                        "enabled": "true",
+                        "entries": {
+                            f'{row["filename"]}': {
+                                "key": row["filename"],
+                                "mimetype": row["filetype"],
+                                "size": row['filesize'],
+                            }
+                        },
+                        "default_preview": row['filename']
+                    }
+
+            if row['type_of_license']:
+                license_id, license_name, license_url = licenses[row['type_of_license']]
+                newrec['metadata'].setdefault('rights', []).append(
+                    {
+                    "id": license_id,
+                    "props": {
+                        "scheme": "spdx",
+                        "url": license_url
+                    },
+                    "title": {"en": license_name},
+                    "description": {"en": ""}
+                    }
+                )
+
+        pprint(licenses_list)
 
         # pprint([r for r in newrec_list if r['metadata']['resource_type']['id'] == 'publication:journalArticle'])
 
-        pprint([r for r in newrec_list if r['metadata']['identifiers'][0]['identifier'] == 'hc:16079'])
+        # pprint([r for r in newrec_list if r['metadata']['identifiers'][0]['identifier'] == 'hc:28491'])
 
         # auth_errors = {k:v for k, v in bad_data_dict.items() for i in v if i[0][:8] == 'authors' and len(i) == 2}
         # pprint(auth_errors)

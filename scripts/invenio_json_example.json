@@ -1,10 +1,62 @@
 /* invenio_rdm_records/records/jsonschemas/records/record-v6.0.0.json */
 /* invenio_rdm_records/records/jsonschemas/records/parent-v2.0.0.json */
 /* invenio_rdm_records/records/jsonschemas/records/definitions-v2.0.0.json */
+
+{
+    "enabled": true,
+    "links": {
+        "self": "https://localhost/api/records/jznz9-qhx89/files",
+        "archive": "https://localhost/api/records/jznz9-qhx89/files-archive"
+    },
+    "entries": [
+        {
+            "status": "completed",
+            "metadata": null,
+            "size": 14650039,
+            "links": {
+                "self": "https://localhost/api/records/jznz9-qhx89/files/Introducing_Semantics.pdf",
+                "content": "https://localhost/api/records/jznz9-qhx89/files/Introducing_Semantics.pdf/content"
+            },
+            "created": "2023-05-18T18:07:16.419732+00:00",
+            "version_id": "c471ad11-2314-461b-ae05-e833a37dfb9c",
+            "updated": "2023-05-18T18:07:16.425408+00:00",
+            "file_id": "da26d87c-72ae-4577-acc7-8080cfab30a2",
+            "storage_class": "L",
+            "bucket_id": "80df3a0b-1c5b-4cc0-8c28-ec553bc7656c",
+            "mimetype": "application/pdf",
+            "checksum": "md5:c33a005e113159ec01ef303e97b374d9",
+            "key": "Introducing_Semantics.pdf"
+        },
+        {
+            "status": "completed",
+            "metadata": null,
+            "size": 26062,
+            "links": {
+                "self": "https://localhost/api/records/jznz9-qhx89/files/4Q548%20Full%20OCP%20Edition%208.3.17.docx",
+                "content": "https://localhost/api/records/jznz9-qhx89/files/4Q548%20Full%20OCP%20Edition%208.3.17.docx/content"
+            },
+            "created": "2023-05-18T18:07:16.431012+00:00",
+            "version_id": "55682f05-2565-4a9c-9285-f790087f0412",
+            "updated": "2023-05-18T18:07:16.434983+00:00",
+            "file_id": "7adef313-0abd-40b0-8443-d4891603a1a1",
+            "storage_class": "L",
+            "bucket_id": "80df3a0b-1c5b-4cc0-8c28-ec553bc7656c",
+            "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "checksum": "md5:d9042ed3631ae2b36167b65b227474a6",
+            "key": "4Q548 Full OCP Edition 8.3.17.docx"
+        }
+    ],
+    "default_preview": "Introducing_Semantics.pdf",
+    "order": []
+}
+
+
 {
     "$schema": "local://records/record-v1.0.0.json",
     "id": "q5jr8-hny72",
     "pid": {},
+    "updated": "2023-04-26T13:37:35.522594+00:00",
+    "created": "2023-04-26T13:37:35.447236+00:00",
     "parent": {
         "access": {
             "links": [],
@@ -32,9 +84,9 @@
             "until": "2023-06-06",
             "reason": null
         },
-        "files": "restricted",
-        "record": "restricted",
-        "status": "metadata-only"
+        "files": "restricted|public",
+        "record": "restricted|public",
+        "status": "metadata-only|open"
     },
     "created": "2023-03-31T15:01:04.598290+00:00",
     "custom_fields": {
@@ -65,7 +117,7 @@
                 }]
                 },
                 "role": {"id": ""}
-            }]
+            }],
         },
         "journal:journal": {
             "issn": "2049-3630",
@@ -83,11 +135,25 @@
             "title": "A nice conference",
             "url": "https://mysite.edu"
         },
+        "kcr:series": {
+            "title": {"en": ""},
+            "series_volume": ""
+        },
+        "kcr:volumes": {
+            "total_volumes": "",
+            "volume": ""
+        },
+        "kcr:sponsoring_institution": "",
         "kcr:edition": "",
         "kcr:meeting_organization": "",
         "kcr:commons_domain": "ajs.hcommons.org",
         "kcr:hcommons_organization": "University of Toronto",
         "kcr:chapter_label": "10",
+        "kcr:notes": [{
+            "note_text": "",
+            "note_text_sanitized": "",
+            "note_description": ""
+            }],
         "kcr:user_defined_tags": [
             {"tag_label": "",
              "tag_identifier": 123
@@ -97,9 +163,13 @@
             "group_identifier": ""
         },
         "hclegacy:society": "",
+        "hclegacy:collection": "",
         "hclegacy:committee_deposit": 123,
         "hclegacy:previously_published": "",
         "hclegacy:publication_type": "",
+        "hclegacy:record_change_date": "",
+        "hclegacy:record_creation_date": "",
+        "hclegacy:record_identifier": 123,
         "hclegacy:submitter_id": 123,
         "hclegacy:submitter_org_memberships": []
     },
@@ -298,6 +368,7 @@
         }]
     },
     "files" : {
+        "order": [],
         "enabled": "true",
         "entries": {
             "path/paper.pdf": {
@@ -333,11 +404,5 @@
         "category": "",
         "removed_by": {"user": 1},
         "timestamp": ""
-    },
-    "notes": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
     }
 }

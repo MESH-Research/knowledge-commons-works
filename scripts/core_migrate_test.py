@@ -2,100 +2,969 @@ from click.testing import CliRunner
 from core_migrate import parse_csv
 import pytest
 
+json28491 = {
+    'created': '2020-01-30T16:46:54Z',
+    'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads'
+                                  '/humcore/2020/01/o_1dvrj3578'
+                                  'b4822agim1fh81efg7.pdf.tratamiento-de-los-re'
+                                  'siduos-de-la-industria-del-pro'
+                                  'cesado-de-alimentos.pdf',
+        'hclegacy:file_pid': 'hc:28492',
+        'hclegacy:groups_for_deposit': [
+            {'group_identifier': '1000807',
+             'group_name': 'Environmental Humanities'},
+            {'group_identifier': '1003089',
+             'group_name': 'Foreign Language Teaching and the Environment'},
+            {'group_identifier': '1003408',
+             'group_name': 'Sustainability'},
+            {'group_identifier': '1002912',
+             'group_name': 'World-Ecology Research Network'}
+        ],
+        'hclegacy:submitter_id': 1020225,
+        'hclegacy:record_change_date': '2020-01-30T16:46:54Z',
+        'hclegacy:record_creation_date': '2020-01-30T16:46:54Z',
+        'imprint:imprint': {'isbn': ['978-84-200-1103-5']},
+        'kcr:commons_domain': 'hcommons.org',
+        'kcr:edition': 'Spanish',
+        'kcr:submitter_email': 'lenox.institute@gmail.com',
+        'kcr:submitter_username': 'lenoxinstitute100',
+        'kcr:notes': [{
+            'note_description': 'general',
+            'note_text': 'An  English version of the same book is published by '
+                         'CRC Press in 2006:       Wang, Lawrence K, Hung, '
+                         'Yung-Tse, Lo, Howard H, and Yapijakis, '
+                         'Constantine (2006).   Waste Treatment in the Food '
+                         'Processing Industry.   CRC Press, Boca Raton, '
+                         'Florida, USA.   333 pages.  ISBN  0-8493-7236-4.',
+            'note_text_sanitized': 'An English version of the same book is '
+                                   'published by CRC Press in 2006: Wang, '
+                                   'Lawrence K, Hung, Yung-Tse, Lo, Howard '
+                                   'H, and Yapijakis, Constantine (2006). '
+                                   'Waste Treatment in the Food Processing '
+                                   'Industry. CRC Press, Boca Raton, Florida, '
+                                   'USA. 333 pages. ISBN 0-8493-7236-4.'}
+        ],
+    },
+    'files': {'default_preview':    'tratamiento-de-los-residuos-de-la-'
+                                    'industria-del-procesado-de-alimentos.pdf',
+              'enabled': 'true',
+              'entries': {'tratamiento-de-los-residuos-de-'
+                          'la-industria-del-procesado-de-alimentos'
+                          '.pdf': {
+                              'key': 'tratamiento-de-los-residuos-de-la-industria-del-procesado-de-alimentos.pdf',
+                              'mimetype': 'application/pdf',
+                              'size': '21928738'}
+              }
+    },
+    'metadata': {
+        'additional_descriptions': [
+            {'description': 'Wang, Lawrence K, Hung, Yung-Tse, Lo, Howard H, '
+                            'Yapijakis, Constantine  and  Ribas, Alberto '
+                            'lbarz (2008).  TRATAMIENTO de los RESIDUOS de la '
+                            'INDUSTRIA del PROCESADO de ALIMENTOS  '
+                            '(Spanish).  Waste Treatment in the Food Processing '
+                            'Industry.   Editorial ACRIBIA, S. A.,, Apartado '
+                            '466, 50080, Zaragoza, Espana. 398 pages. ISBN  '
+                            '978-84-200-1103-5  ---------------ABSTRACT:  This book '
+                            'emphasizes in-depth presentation of '
+                            'environmental pollution sources, waste '
+                            'characteristics, control technologies, '
+                            'management strategies, facility '
+                            'innovations, process alternatives, '
+                            'costs, case histories, effluent '
+                            'standards, and future trends for the food '
+                            'industry, and in-depth presentation of methodologies, '
+                            'technologies, alternatives, regional effects, '
+                            'and global effects of important pollution control '
+                            'practice that may be applied to the industry.  '
+                            'Important waste treatment topics covered in this '
+                            'book include: dairies, seafood processing plants, '
+                            'olive oil manufacturing factories, potato '
+                            'processing installations, soft drink '
+                            'production plants, bakeries and various other food '
+                            'processing facilities.',
+             'type': {'id': 'other',
+                      'title': {'en': 'Primary description with HTML '
+                                      'stripped'}}
+        }],
+        'additional_titles': [{
+            'title': 'TRATAMIENTO de los RESIDUOS de la INDUSTRIA del '
+                     'PROCESADO de ALIMENTOS',
+            'type': {'id': 'other',
+                     'title': {'en': 'Primary title with HTML stripped'}}
+        }],
+        'creators': [{'person_or_org': {'family_name': 'Hung',
+                                        'given_name': 'Yung-Tse',
+                                        'name': 'Yung-Tse Hung',
+                                        'type': 'personal'},
+                      'role': {'id': 'editor'}},
+                     {'person_or_org': {'family_name': 'Lo',
+                                         'given_name': 'Howard H',
+                                         'name': 'Howard H Lo',
+                                         'type': 'personal'},
+                      'role': {'id': 'editor'}},
+                     {'person_or_org': {'family_name': 'Ribas',
+                                         'given_name': 'Alberto lbarz',
+                                         'name': 'Alberto lbarz Ribas',
+                                         'type': 'personal'},
+                      'role': {'id': 'translator'}},
+                     {'person_or_org': {'family_name': 'Wang',
+                                         'given_name': 'Lawrence K',
+                                         'identifiers': [{'identifier': 'lenoxinstitute100',
+                                                         'scheme': 'hc_username'}],
+                                         'name': 'Lawrence K Wang',
+                                         'type': 'personal'},
+                      'role': {'id': 'editor'}},
+                     {'person_or_org': {'family_name': 'Yapijakis',
+                                         'given_name': 'Constantine',
+                                         'name': 'Constantine Yapijakis',
+                                         'type': 'personal'},
+                      'role': {'id': 'editor'}
+                      }
+        ],
+        'dates': [],
+        'description': 'Wang, Lawrence K, Hung, Yung-Tse, Lo, Howard H, '
+                       'Yapijakis, Constantine  and  Ribas, Alberto '
+                       'lbarz (2008).  TRATAMIENTO de los RESIDUOS de '
+                       'la INDUSTRIA del PROCESADO de ALIMENTOS  '
+                       '(Spanish).  Waste Treatment in the Food '
+                       'Processing Industry.   Editorial ACRIBIA, S. '
+                       'A.,, Apartado 466, 50080, Zaragoza, Espana. 398 '
+                       'pages. ISBN  978-84-200-1103-5  '
+                       '---------------ABSTRACT:  This book emphasizes '
+                       'in-depth presentation of environmental '
+                       'pollution sources, waste characteristics, '
+                       'control technologies, management strategies, '
+                       'facility innovations, process alternatives, '
+                       'costs, case histories, effluent standards, and '
+                       'future trends for the food industry, and '
+                       'in-depth presentation of methodologies, '
+                       'technologies, alternatives, regional effects, '
+                       'and global effects of important pollution '
+                       'control practice that may be applied to the '
+                       'industry.  Important waste treatment topics '
+                       'covered in this book include: dairies, seafood '
+                       'processing plants, olive oil manufacturing '
+                       'factories, potato processing installations, '
+                       'soft drink production plants, bakeries and '
+                       'various other food processing facilities.  ',
+        'formats': [],
+        'identifiers': [{'identifier': 'hc:28491', 'scheme': 'hclegacy-pid'},
+                        {'identifier': '1000360-28455',
+                         'scheme': 'hclegacy-record-id'},
+                        {'identifier': 'http://dx.doi.org/10.17613/g0rz-0930',
+                         'scheme': 'handle'}
+        ],
+        'languages': [{'id': 'spa'}],
+        'publication_date': '2008',
+        'resource_type': {'id': 'publication:book'},
+        'rights': [],
+        'subjects': [],
+        'publisher': 'Editorial ACRIBIA, S. A., Apartado 466, 50080, '
+                     'Zaragoza, Espana.',
+        'rights': [{'description': {'en': ''},
+                    'id': 'all-rights-reserved',
+                    'props': {'scheme': 'spdx',
+                              'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
+                    'title': {'en': 'Proprietary. All rights '
+                                    'reserved.'}}],
+        'subjects': [{'id': ['1108387:Science--Study and '
+                             'teaching:topical',
+                             '1145221:Technology--Study and '
+                             'teaching:topical'],
+                      'scheme': 'fast'},
+                     {'id': ['1108387:Science--Study and '
+                             'teaching:topical',
+                             '1145221:Technology--Study and '
+                             'teaching:topical'],
+                      'scheme': 'fast'}],
+        'title': 'TRATAMIENTO de los RESIDUOS de la INDUSTRIA del '
+                 'PROCESADO de ALIMENTOS'
+    },
+    'updated': '2020-01-30T16:46:54Z',
+    'parent': {'access': {'owned_by': [{'user': 1020225}]}},
+    'pids': {'doi': {'client': 'datacite',
+                    'identifier': 'doi:10.17613/g0rz-0930',
+                    'provider': 'datacite'}},
+    'updated': '2020-01-30T16:46:54Z'
+}
+
+json583 = {
+    'created': '2016-02-29T13:11:39Z',
+    'custom_fields': {
+        'hclegacy:collection': 'mlacollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads/humcore/o_1acmi0cu8sf62q1m9jhmp154q7.pdf.the-new-open-access-environment-innovation-in-research-editing-publishing.pdf',
+        'hclegacy:file_pid': 'mla:584',
+        'hclegacy:groups_for_deposit': [
+            {'group_identifier': '69',
+             'group_name': 'HEP Part-Time and Contingent '
+                           'Faculty Issues'},
+             {'group_identifier': '47',
+                 'group_name': 'HEP Teaching as a Profession'},
+             {'group_identifier': '51',
+                 'group_name': 'TC Digital Humanities'},
+             {'group_identifier': '66',
+                 'group_name': 'TM Bibliography and Scholarly '
+                               'Editing'},
+             {'group_identifier': '71',
+                 'group_name': 'TM Libraries and Research'}
+        ],
+        'hclegacy:publication_type': 'proceedings-article',
+        'hclegacy:record_change_date': '2017-11-21T19:18:37Z',
+        'hclegacy:record_creation_date': '2016-02-29T13:11:39Z',
+        'hclegacy:submitter_affiliation': 'U of London, Birkbeck C',
+        'hclegacy:submitter_id': 3365,
+        'hclegacy:submitter_org_memberships': ['U of London, '
+                                               'Birkbeck C'],
+        'imprint:imprint': {'title': 'The New Open Access '
+                                     'Environment: Innovation in '
+                                     'Research, Editing and '
+                                     'Publishing'},
+        'kcr:commons_domain': 'mla.hcommons.org',
+        'kcr:meeting_organization': 'Modern Languages Association',
+        'kcr:submitter_email': 'caroline.edwards@bbk.ac.uk',
+        'kcr:submitter_username': 'cai247',
+        'kcr:user_defined_tags': [{'tag_identifier': 1052,
+                                   'tag_label': 'digital humanities'},
+                                  {'tag_identifier': 15201,
+                                   'tag_label': 'editing'},
+                                  {'tag_identifier': 57,
+                                   'tag_label': 'open access'},
+                                  {'tag_identifier': 1041,
+                                   'tag_label': 'scholarly communication'},
+                                  {'tag_identifier': 1047,
+                                   'tag_label': 'the profession'},
+                                  {'tag_identifier': 1050,
+                                   'tag_label': 'Academe'},
+                                  {'tag_identifier': 1722,
+                                   'tag_label': 'Public humanities'},
+                                  {'tag_identifier': 1041,
+                                   'tag_label': 'Scholarly communication'}],
+        'meeting:meeting': {'dates': '10 January 2016',
+                            'place': 'Marriott Hotel, Austin, Texas',
+                            'title': '131st Annual Convention of '
+                                     'the Modern Languages Association'}
+    },
+    'files': {
+        'default_preview': 'the-new-open-access-environment-innovation-in-research-editing-publishing.pdf',
+        'enabled': 'true',
+        'entries': {
+            'the-new-open-access-environment-innovation-in-research-editing-publishing.pdf': {
+                'key': 'the-new-open-access-environment-innovation-in-research-editing-publishing.pdf',
+                'mimetype': 'application/pdf',
+                'size': '4004498'}
+        }
+    },
+    'metadata': {
+        'additional_descriptions': [
+            {'description': 'This panel was designed to address the '
+                            "convention's featured issues of the academic "
+                            'profession, publishing & editing, open '
+                            'access, and new technologies. Using a roundtable '
+                            'format, the panel discussed how open access '
+                            'publications are transforming the kind of research '
+                            'that is possible and necessitating new editorial '
+                            'practices. The session hosted an informed '
+                            'discussion with the audience about the current '
+                            'changes in scholarly publishing and the '
+                            'opportunities, as well as challenges, that '
+                            'open access brings to literary scholarship in the '
+                            '21st century.',
+             'type': {'id': 'other',
+                      'title': {'en': 'Primary description with HTML '
+                                      'stripped'}
+                      }
+            }],
+            'additional_titles': [{'title': 'The New Open Access '
+                                            'Environment: Innovation in '
+                                            'Research, Editing and '
+                                            'Publishing',
+                                    'type': {'id': 'other',
+                                            'title': {'en': 'Primary title '
+                                                            'with HTML '
+                                                            'stripped'}}}],
+            'creators': [{'person_or_org': {'family_name': 'Eaglestone',
+                                            'given_name': 'Robert',
+                                            'identifiers': [{'identifier': 'roberteaglestone',
+                                                            'scheme': 'hc_username'}],
+                                            'name': 'Robert Eaglestone',
+                                            'type': 'personal'},
+                            'role': {'id': 'author'}},
+                        {'affiliations': ['U of London, Birkbeck C'],
+                            'person_or_org': {'family_name': 'Edwards',
+                                            'given_name': 'Caroline',
+                                            'identifiers': [{'identifier': 'cai247',
+                                                            'scheme': 'hc_username'}],
+                                            'name': 'Caroline Edwards',
+                                            'type': 'personal'},
+                            'role': {'id': 'author'}},
+                        {'person_or_org': {'family_name': 'Gundry',
+                                            'given_name': 'Jenifer',
+                                            'name': 'Jenifer Gundry',
+                                            'type': 'personal'},
+                            'role': {'id': 'author'}},
+                        {'person_or_org': {'family_name': 'Mueller',
+                                            'given_name': 'Alex',
+                                            'identifiers': [{'identifier': 'alexmueller',
+                                                            'scheme': 'hc_username'}],
+                                            'name': 'Alex Mueller',
+                                            'type': 'personal'},
+                            'role': {'id': 'author'}},
+                        {'person_or_org': {'family_name': 'Zellinger',
+                                            'given_name': 'Elissa',
+                                            'identifiers': [{'identifier': 'ezell',
+                                                            'scheme': 'hc_username'}],
+                                            'name': 'Elissa Zellinger',
+                                            'type': 'personal'},
+                            'role': {'id': 'author'}}],
+            'dates': [{'date': '',
+                       'description': 'Human readable publication date',
+                       'type': {'id': 'issued', 'title': {'en': 'Issued'}}}],
+            'description': 'This panel was designed to address the '
+                            "convention's featured issues of the academic "
+                            'profession, publishing &amp; editing, open '
+                            'access, and new technologies. Using a '
+                            'roundtable format, the panel discussed how open '
+                            'access publications are transforming the kind '
+                            'of research that is possible and necessitating '
+                            'new editorial practices. The session hosted an '
+                            'informed discussion with the audience about the '
+                            'current changes in scholarly publishing and the '
+                            'opportunities, as well as challenges, that open '
+                            'access brings to literary scholarship in the '
+                            '21st century.',
+            'formats': [],
+            'identifiers': [{'identifier': 'mla:583', 'scheme': 'hclegacy-pid'},
+                            {'identifier': 'mla:583',
+                             'scheme': 'hclegacy-record-id'},
+                            {'identifier': 'http://dx.doi.org/10.17613/M6930Z',
+                            'scheme': 'handle'}],
+            'languages': [{'id': 'eng'}],
+            'publication_date': '2016',
+            'resource_type': {'id': 'presentation:other'},
+            'rights': [],
+            'subjects': [],
+            'publisher': 'Open Library of Humanities',
+            'title': 'The New Open Access Environment: Innovation in '
+                    'Research, Editing and Publishing'
+    },
+    'parent': {'access': {'owned_by': [{'user': 3365}]}},
+    'pids': {'doi': {'client': 'datacite',
+                    'identifier': 'doi:10.17613/M6930Z',
+                    'provider': 'datacite'}
+    },
+    'updated': '2017-11-21T19:18:37Z'
+}
+
+json38367 = {
+    'created': '2021-04-26T05:57:56Z',
+    'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads/'
+                                  'humcore/2021/04/o_1f46c249h11hjav61sv'
+                                  'd1l318047.pdf.system-dynamics-growt'
+                                  'h-distribution-and-financialization.pdf',
+        'hclegacy:file_pid': 'hc:38368',
+        'hclegacy:groups_for_deposit': [
+            {'group_identifier': '1002960',
+             'group_name': 'Literature and Economics'}
+        ],
+        'hclegacy:publication_type': 'online-publication',
+        'hclegacy:record_change_date': '2021-04-27T16:36:31Z',
+        'hclegacy:record_creation_date': '2021-04-26T05:57:56Z',
+        'hclegacy:submitter_affiliation': 'Université Sorbonne Paris Nord',
+        'hclegacy:submitter_id': 1028135,
+        'hclegacy:submitter_org_memberships': ['Université Sorbonne Paris '
+                                               'Nord'],
+        'imprint:imprint': {
+            'title': 'https://tesiunam.dgb.unam.mx/F/KVS7IYBX26S3PMEDX1SXFF6XRKP48FV5JRD21J7UNV85V8U82E-42627?func=full-set-set&set_number=198105&set_entry=000001&format=999'
+        },
+        'kcr:commons_domain': 'hcommons.org',
+        'kcr:sponsoring_institution': 'Universidad Nacional Autónoma de México'
+                                      ' (UNAM)',
+        'kcr:submitter_email': 'eduardoalo1234@gmail.com',
+        'kcr:submitter_username': 'gabogabito123',
+        'kcr:user_defined_tags': [{'tag_identifier': 904,
+                                   'tag_label': 'Computer Simulation'},
+                                  {'tag_identifier': 10373,
+                                   'tag_label': 'financialization'},
+                                  {'tag_identifier': 10374,
+                                   'tag_label': 'macroeconomics'},
+                                  {'tag_identifier': 10375,
+                                   'tag_label': 'modelling'}]
+    },
+    'files': {'default_preview': 'system-dynamics-growth-distribution'
+                                 '-and-financialization.pdf',
+              'enabled': 'true',
+              'entries': {
+                  'system-dynamics-growth-distribution-and-financiali'
+                  'zation.pdf': {
+                      'key': 'system-dynamics-growth-distribution-and-financ'
+                             'ialization.pdf',
+                      'mimetype': 'application/pdf',
+                      'size': '2185244'}
+              }
+    },
+    'metadata': {
+        'additional_descriptions': [{
+            'description': 'These models are a representation of '
+                           'the macroeconomic evolution of the '
+                           'US economy from 1970 to 2010. The main variables '
+                           'addressed are economic growth, income ' 'distribution and private debt. The '
+                           'theoretical basis of the model '
+                           'relies on what Bhaduri labeled as '
+                           'the "Marx-Keynes-Kalecki" '
+                           'tradition that has four distinctive '
+                           'assumptions: 1) The price of this '
+                           'one-commidty model is determined by a '
+                           'mark-up over the production costs. '
+                           '2) Aggregate demand determines '
+                           '(AD) the level of production (Y). 3) '
+                           'Investment (I) is the key variable '
+                           'within aggregate demand. 4) The '
+                           'level of aggregate supply (Yt) is '
+                           'equal to aggregate demand (ADt). '
+                           'There are other features of the '
+                           'model that are also worth to '
+                           'pinpoint. The baseline model has '
+                           'three sectors: workers, '
+                           'industrial capital and private '
+                           'banking. The first two sectors are '
+                           'clearly differentiated by '
+                           'the marginal propensities of '
+                           'their members to consume and their '
+                           'access to credit. Workers have a '
+                           'marginal propensity to '
+                           'consume that goes from 0.5 to 1.3. '
+                           'The propensity of consumption of '
+                           'this sector varies with respect to '
+                           'two macro-level "shaping '
+                           'structures" that determine this '
+                           "sector's microeconomic "
+                           "behavior. Workers' propensity to "
+                           'consume varies non-linearly '
+                           'regarding inflation, and it '
+                           'exhibits a positive and '
+                           'linear relationship with '
+                           'respect to the industrial '
+                           "capital's share on total income. On "
+                           'the other hand, capitalists can '
+                           'save or become indebted depending '
+                           'on the saving-investment gap. Any investment '
+                           'decision over savings is always financed by the '
+                           'acquisition of private debt '
+                           'provided by private banks, and '
+                           'the excess of savings is used to '
+                           'pay the debt contracted by the '
+                           'capitalists. Whilst the '
+                           'activity of private banking is '
+                           'limited only to the granting of '
+                           'credit, the accumulation of '
+                           'private debt represents its '
+                           'source of profits. A subsidiary '
+                           'assumption that is maintained '
+                           'throughout this model is that it '
+                           'is a closed economy without '
+                           'government.',
+            'type': {'id': 'other',
+                     'title': {
+                         'en': 'Primary description with HTML stripped'}
+            }
+        }],
+        'additional_titles': [{
+            'title': 'The macroeconomic evolution of '
+                     'the USA, 1970 - 2010. A heterodox mathematical '
+                     'modelling approach with System Dynamics.',
+            'type': {'id': 'other',
+                     'title': {
+                         'en': 'Primary title with HTML stripped'}
+            }
+        }],
+        'creators': [
+            {'affiliations': ['Université Sorbonne Paris Nord'],
+             'person_or_org': {'family_name': 'Martínez Hernández',
+                               'given_name': 'Alberto-Gabino',
+                               'identifiers': [{'identifier': 'gabogabito123',
+                                                'scheme': 'hc_username'}],
+                               'name': 'Alberto-Gabino Martínez Hernández',
+                               'type': 'personal'},
+             'role': {'id': 'author'}
+            }
+        ],
+        'dates': [],
+        'description': 'These models are a representation of the '
+                        'macroeconomic evolution of the US economy from '
+                        '1970 to 2010. The main variables addressed are '
+                        'economic growth, income distribution and '
+                        'private debt. The theoretical basis of the '
+                        'model relies on what Bhaduri labeled as the '
+                        '"Marx-Keynes-Kalecki" tradition that has four '
+                        'distinctive assumptions: \n'
+                        '\n'
+                        '1) The price of this one-commidty model is '
+                        'determined by a mark-up over the production '
+                        'costs. \n'
+                        '2) Aggregate demand determines (AD) the level '
+                        'of production (Y).\n'
+                        '3) Investment (I) is the key variable within '
+                        'aggregate demand. \n'
+                        '4) The level of aggregate supply (Yt) is equal '
+                        'to aggregate demand (ADt). \n'
+                        '\n'
+                        'There are other features of the model that are '
+                        'also worth to pinpoint. The baseline model has '
+                        'three sectors: workers, industrial capital and '
+                        'private banking. The first two sectors are '
+                        'clearly differentiated by the marginal '
+                        'propensities of their members to consume and '
+                        'their access to credit. Workers have a marginal '
+                        'propensity to consume that goes from 0.5 to '
+                        '1.3. The propensity of consumption of this '
+                        'sector varies with respect to two macro-level '
+                        '"shaping structures" that determine this '
+                        "sector's microeconomic behavior. Workers' "
+                        'propensity to consume varies non-linearly '
+                        'regarding inflation, and it exhibits a positive '
+                        'and linear relationship with respect to the '
+                        "industrial capital's share on total income. On "
+                        'the other hand, capitalists can save or become '
+                        'indebted depending on the saving-investment '
+                        'gap. Any investment decision over savings is '
+                        'always financed by the acquisition of private '
+                        'debt provided by private banks, and the excess '
+                        'of savings is used to pay the debt contracted '
+                        'by the capitalists. Whilst the activity of '
+                        'private banking is limited only to the granting '
+                        'of credit, the accumulation of private debt '
+                        'represents its source of profits. A subsidiary '
+                        'assumption that is maintained throughout this '
+                        'model is that it is a closed economy without '
+                        'government.',
+        'formats': [],
+        'identifiers': [{'identifier': 'hc:38367', 'scheme': 'hclegacy'},
+                        {'identifier': 'http://dx.doi.org/10.17613/5ehz-cb19',
+                         'scheme': 'handle'}],
+        'languages': [{'id': 'spa'}],
+        'publication_date': '2018',
+        'resource_type': {'id': 'publication:dissertation'},
+        'rights': [],
+        'subjects': [],
+        'publisher': 'Universidad Nacional Autónoma de Mexico (UNAM)',
+        'title': 'The macroeconomic evolution of the USA, 1970 - 2010. '
+                 'A heterodox mathematical modelling approach with '
+                 'System Dynamics.'
+        },
+    'parent': {'access': {'owned_by': [{'user': 1028135}]}},
+    'pids': {'doi': {'client': 'datacite',
+                     'identifier': 'doi:10.17613/5ehz-cb19',
+                     'provider': 'datacite'}
+    },
+    'updated': '2021-04-27T16:36:31Z'
+}
+
+json48799 = {
+    'created': '2022-09-29T14:34:36Z',
+    'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads/'
+                                  'humcore/2022/09/o_1ge4qi6ga1aqnfqk12h'
+                                  'h1sei18377.pdf.super-apps_final.pdf',
+        'hclegacy:file_pid': 'hc:48800',
+        'hclegacy:publication_type': 'online-publication',
+        'hclegacy:record_change_date': '2022-09-29T14:34:36Z',
+        'hclegacy:record_creation_date': '2022-09-29T14:34:36Z',
+        'hclegacy:submitter_affiliation': 'Concordia University',
+        'hclegacy:submitter_id': 1011375,
+        'hclegacy:submitter_org_memberships': ['Concordia University'],
+        'imprint:imprint': {
+            'title': 'theplatformlab.com'
+        },
+        'kcr:commons_domain': 'hcommons.org',
+        'kcr:sponsoring_institution': 'The Platform Lab',
+        'kcr:submitter_email': 'jacqueline.ristola@mail.concordia.ca',
+        'kcr:user_defined_tags': [{'tag_identifier': 6991,
+                                   'tag_label': 'platform studies'}],
+        'kcr:submitter_username': 'jristola009'
+    },
+    'files': {'default_preview': 'super-apps_final.pdf',
+              'enabled': 'true',
+              'entries': {
+                  'super-apps_final.pdf': {
+                      'key': 'super-apps_final.pdf',
+                      'mimetype': 'application/pdf',
+                      'size': '1523200'}
+              }
+    },
+    'metadata': {
+        'additional_descriptions': [
+            {'description': 'This whitepaper report gives an overview of a '
+                            'variety of "superapps," apps designed to bring '
+                            'together a vast number of services within a '
+                            'single interface. The purpose of this '
+                            'report is to provide a general '
+                            'understanding of the super app form '
+                            'as it becomes a dominant global '
+                            'framework, and to consider platform '
+                            'capitalism’s transformational shape.',
+             'type': {'id': 'other',
+                      'title': {'en': 'Primary description with HTML '
+                                      'stripped'}
+             }
+            }
+        ],
+        'additional_titles': [{
+            'title': 'Super Apps: A Platform Lab Report',
+            'type': {'id': 'other',
+                     'title': {'en': 'Primary title with HTML stripped'}
+                     }
+        }],
+        'contributors': [{'person_or_org': {'family_name': 'Altheman',
+                                            'given_name': 'Elena',
+                                            'name': 'Elena Altheman',
+                                            'type': 'personal'},
+                          'role': {'id': 'contributor'}},
+                         {'person_or_org': {'family_name': 'Chai',
+                                            'given_name': 'Roslina',
+                                            'name': 'Roslina Chai',
+                                            'type': 'personal'},
+                          'role': {'id': 'contributor'}},
+                         {'person_or_org': {'family_name': 'Ciarma',
+                                            'given_name': 'Santino',
+                                            'name': 'Santino Ciarma',
+                                            'type': 'personal'},
+                          'role': {'id': 'contributor'}},
+                         {'person_or_org': {'family_name': 'Crawford',
+                                            'given_name': 'Colin',
+                                            'name': 'Colin Crawford',
+                                            'type': 'personal'},
+                          'role': {'id': 'contributor'}},
+                         {'person_or_org': {'family_name': 'Kumar',
+                                            'given_name': 'Sneha',
+                                            'name': 'Sneha Kumar',
+                                            'type': 'personal'},
+                          'role': {'id': 'contributor'}},
+                         {'person_or_org': {'family_name': 'Petit',
+                                            'given_name': 'Aurélie',
+                                            'name': 'Aurélie Petit',
+                                            'type': 'personal'},
+                          'role': {'id': 'contributor'}},
+                         {'affiliations': ['Concordia University'],
+                          'person_or_org': {'family_name': 'Ristola',
+                                            'given_name': 'Jacqueline',
+                                            'identifiers': [
+                                                {'identifier': 'jristola009',
+                                                 'scheme': 'hc_username'}
+                                            ],
+                                            'name': 'Jacqueline Ristola',
+                                            'type': 'personal'},
+                          'role': {'id': 'contributor'}},
+                         {'person_or_org': {'family_name': 'Steinberg',
+                                            'given_name': 'Marc',
+                                            'name': 'Marc Steinberg',
+                                            'type': 'personal'},
+                          'role': {'id': 'contributor'}},
+                         {'person_or_org': {'family_name': 'Zhou',
+                                            'given_name': 'Xin',
+                                            'name': 'Xin Zhou',
+                                            'type': 'personal'},
+                          'role': {'id': 'contributor'}}
+        ],
+        'creators': [{
+            'person_or_org': {'family_name': 'Pitre',
+                              'given_name': 'Jake',
+                              'name': 'Jake Pitre',
+                              'type': 'personal'},
+                              'role': {'id': 'editor'}
+        }],
+        'dates': [{'date': 'Septemebr 29, 2022',
+                   'description': 'Human readable publication date',
+                   'type': {'id': 'issued', 'title': {'en': 'Issued'}}}
+        ],
+        'description': 'This whitepaper report gives an overview of a '
+                        'variety of "superapps," apps designed to bring '
+                        'together a vast number of services within a '
+                        'single interface. The purpose of this report is '
+                        'to provide a general understanding of the super '
+                        'app form as it becomes a dominant global '
+                        'framework, and to consider platform '
+                        'capitalism’s transformational shape.',
+        'formats': [],
+        'identifiers': [{'identifier': 'hc:48799',
+                         'scheme': 'hclegacy'},
+                        {'identifier': 'https://doi.org/10.17613/y30x-r594',
+                         'scheme': 'handle'}],
+        'languages': [{'id': 'eng'}],
+        'publication_date': '2022',
+        'publisher': 'The Platform Lab',
+        'resource_type': {'id': 'publication:whitePaper'},
+        'rights': [],
+        'subjects': [],
+        'title': 'Super Apps: A Platform Lab Report'},
+    'parent': {'access': {'owned_by': [{'user': 1011375}]}},
+    'pids': {'doi': {'client': 'datacite',
+                     'identifier': '10.17613/y30x-r594',
+                     'provider': 'datacite'}
+    },
+    'updated': '2022-09-29T14:34:36Z'
+}
+
+json33383 = {
+    'access': {'embargo': ({'active': True,
+                            'reason': None,
+                            'until': '2021-11-25'},)},
+    'created': '2020-11-25T12:35:10Z',
+    'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads/'
+                                  'humcore/2020/11/o_1envm12vp11cmvs61ic'
+                                  'r7g3oqk7.pdf.24519197_005_03-04_s004_text.'
+                                  'pdf',
+        'hclegacy:file_pid': 'hc:33384',
+        'hclegacy:groups_for_deposit': [
+            {'group_identifier': '1004129',
+             'group_name': 'Arabic script manuscripts'},
+             {'group_identifier': '1001234',
+              'group_name': 'Islamicate Studies'},
+             {'group_identifier': '1000753',
+              'group_name': 'Medieval Studies'},
+             {'group_identifier': '1000830',
+              'group_name': 'Science Studies and the History of '
+                            'Science'}],
+        'hclegacy:record_change_date': '2023-01-23T14:20:48Z',
+        'hclegacy:record_creation_date': '2020-11-25T12:35:10Z',
+        'hclegacy:submitter_affiliation': 'University of Southern '
+                                          'California',
+        'hclegacy:submitter_id': 1008812,
+        'hclegacy:submitter_org_memberships': ['University of '
+                                               'Southern California'],
+        'journal:journal': {'title': 'Philological Encounters',
+                            'issue': '3',
+                            'pages': '308-352',
+                            'issn': ['2451-9189', '2451-9197']
+                            },
+        'kcr:commons_domain': 'hcommons.org',
+        'kcr:submitter_email': 'alexandre.roberts@gmail.com',
+        'kcr:submitter_username': 'amroberts',
+        'kcr:user_defined_tags': [{'tag_identifier': 1531,
+                                   'tag_label': 'History of science'},
+                                  {'tag_identifier': 6519,
+                                   'tag_label': 'History and philosophy of '
+                                                'mathematics'}
+        ]
+    },
+    'files': {'default_preview': '24519197_005_03-04_s004_text.pdf',
+                'enabled': 'true',
+                'entries': {'24519197_005_03-04_s004_text.pdf':
+                            {'key': '24519197_005_03-04_s004_text.pdf',
+                            'mimetype': 'application/pdf',
+                            'size': '1278745'}
+                            }
+    },
+    'metadata': {
+        'additional_descriptions': [
+            {'description': 'This article examines an Arabic mathematical '
+                            'manuscript at Columbia University’s Rare '
+                            'Book and Manuscript Library (or. 45), focusing '
+                            'on a previously unpublished set of texts: the '
+                            'treatise on the mathematical method known as '
+                            'Double False Position, as supplemented by '
+                            'Jābir ibn Ibrāhīm al-Ṣābī (tenth century?), and the '
+                            'commentaries by Aḥmad ibn al-Sarī (d. 548/1153–4) '
+                            'and Saʿd al-Dīn Asʿad ibn Saʿīd al-Hamadhānī '
+                            '(12th/13th century?), the latter previously '
+                            'unnoticed. The article sketches the contents of '
+                            'the manuscript, then offers an editio princeps, '
+                            'translation, and analysis of the treatise. It then '
+                            'considers how the Swiss historian of mathematics '
+                            'Heinrich Suter (1848–1922) read Jābir’s treatise '
+                            '(as contained in a different manuscript) before '
+                            'concluding with my own proposal for how to go about '
+                            'reading this mathematical text: as a witness of '
+                            'multiple stages of a complex textual tradition of '
+                            'teaching, extending, and rethinking '
+                            'mathematics—that is, we should read it philologically.',
+             'type': {'id': 'other',
+                      'title': {'en': 'Primary description with HTML '
+                                      'stripped'}
+                      }
+             }
+        ],
+        'additional_titles': [
+            {'title': 'Mathematical Philology in the '
+                    'Treatise on Double False Position in an Arabic '
+                    'Manuscript at Columbia University',
+            'type': {'id': 'other',
+                    'title': {'en': 'Primary title with HTML '
+                                    'stripped'}}
+            }
+        ],
+        'creators': [
+            {'affiliations': ['University of Southern California'],
+            'person_or_org': {'family_name': 'Roberts',
+                            'given_name': 'Alexandre',
+                            'identifiers': [{'identifier': 'amroberts',
+                                            'scheme': 'hc_username'}],
+                            'name': 'Alexandre Roberts',
+                            'type': 'personal'},
+            'role': {'id': 'author'}
+            }
+        ],
+        'dates': [{'date': '2020-10-13',
+                   'description': 'Human readable publication date',
+                   'type': {'id': 'issued', 'title': {'en': 'Issued'}}}
+        ],
+        'description': 'This article examines an Arabic mathematical '
+                        'manuscript at Columbia University’s Rare Book '
+                        'and Manuscript Library (or. 45), focusing on a '
+                        'previously unpublished set of texts: the '
+                        'treatise on the mathematical method known as '
+                        'Double False Position, as supplemented by Jābir '
+                        'ibn Ibrāhīm al-Ṣābī (tenth century?), and the '
+                        'commentaries by Aḥmad ibn al-Sarī (d. '
+                        '548/1153–4) and Saʿd al-Dīn Asʿad ibn Saʿīd '
+                        'al-Hamadhānī (12th/13th century?), the latter '
+                        'previously unnoticed. The article sketches the '
+                        'contents of the manuscript, then offers an '
+                        'editio princeps, translation, and analysis of '
+                        'the treatise. It then considers how the Swiss '
+                        'historian of mathematics Heinrich Suter '
+                        '(1848–1922) read Jābir’s treatise (as contained '
+                        'in a different manuscript) before concluding '
+                        'with my own proposal for how to go about '
+                        'reading this mathematical text: as a witness of '
+                        'multiple stages of a complex textual tradition '
+                        'of teaching, extending, and rethinking '
+                        'mathematics—that is, we should read it '
+                        'philologically.',
+        'formats': [],
+        'identifiers': [{'identifier': 'hc:33383', 'scheme': 'hclegacy'},
+                        {'identifier': '10.1163/24519197-BJA10007',
+                         'scheme': 'doi'},
+                        {'identifier': 'http://dx.doi.org/10.17613/xxxj-e936',
+                         'scheme': 'handle'}],
+        'languages': [{'id': 'eng'}],
+        'publication_date': '2020',
+        'resource_type': {'id': 'publication:journalArticle'},
+        'rights': [],
+        'subjects': [],
+        'publisher': 'Brill',
+        'title': 'Mathematical Philology in the Treatise on Double '
+                'False Position in an Arabic Manuscript at Columbia '
+                'University'
+    },
+    'parent': {'access': {'owned_by': [{'user': 1008812}]}},
+    'pids': {'doi': {'client': 'datacite',
+                     'identifier': 'doi:10.17613/xxxj-e936',
+                     'provider': 'datacite'}
+             },
+    'updated': '2023-01-23T14:20:48Z'
+}
+
 json16079 = {
+    'created': '2017-10-26T12:31:39Z',
     'pids': {'doi': {'client': 'datacite',
                      'identifier': 'doi:10.17613/M6M225',
                      'provider': 'datacite'}
              },
-    'custom_fields': {'hclegacy:groups_for_deposit': [{'group_identifier': '1000551',
-                                                     'group_name': 'Digital '
-                                                                   'Humanists'},
-                                                    {'group_identifier': '1000697',
-                                                     'group_name': 'Textual '
-                                                                   'Scholarship'}],
-                    'hclegacy:publication_type': 'proceedings-article',
-                    'hclegacy:submitter_id': 1010997,
-                    'imprint:imprint': {'title': 'DHBenelux 2. Book of '
-                                                 'Abstracts for the Second '
-                                                 'Digital Humanities Benelux '
-                                                 'Conference'},
-                    'kcr:commons_domain': 'hcommons.org',
-                    'kcr:meeting_organization': 'University of Antwerp',
-                    'kcr:submitter_email': 'wout.dillen@uantwerpen.be',
-                    'kcr:submitter_username': 'woutdillen',
-                    'meeting:meeting': {'dates': '8-9 June 2015',
-                                        'place': 'Antwerp, Belgium',
-                                        'title': 'DH Benelux 2015'}},
-  'files': {'entries': []},
-  'metadata': {'additional_descriptions': [{'description': 'Within the field '
-                                                           'of genetic '
-                                                           'criticism, '
-                                                           'Raymonde Debray '
-                                                           'Genette coined the '
-                                                           'terms ‘en- '
-                                                           'dogenesis’ and '
-                                                           '‘exogenesis’ to '
-                                                           'denote '
-                                                           'respectively the '
-                                                           'writing of drafts '
-                                                           'and the '
-                                                           'interaction with '
-                                                           'external source '
-                                                           'texts during the '
-                                                           'writing process. '
-                                                           'The proposed panel '
-                                                           'focuses on the '
-                                                           'ways in which '
-                                                           'exogenesis and its '
-                                                           'relationship with '
-                                                           'endogenesis can be '
-                                                           'given shape in a '
-                                                           'digital '
-                                                           'infrastructure. '
-                                                           'The case studies '
-                                                           'are the works, '
-                                                           'reading notes and '
-                                                           'personal libraries '
-                                                           'of James Joyce and '
-                                                           'Samuel Beckett.',
-                                            'type': {'id': 'other',
-                                                     'title': {'en': 'Primary '
-                                                                     'description '
-                                                                     'with '
-                                                                     'HTML '
-                                                                     'stripped'}}}],
-               'additional_titles': [{'title': 'Digitization and Exogenesis',
-                                      'type': {'id': 'other',
-                                               'title': {'en': 'Primary title '
-                                                               'with HTML '
-                                                               'stripped'}}}],
-               'creators': [{'person_or_org': {'family_name': 'Crowley',
-                                               'given_name': 'Ronan',
-                                               'name': 'Ronan Crowley',
-                                               'type': 'personal'},
-                             'role': {'id': 'author'}},
-                            {'person_or_org': {'family_name': 'De Keyser',
-                                               'given_name': 'Tom',
-                                               'name': 'Tom De Keyser',
-                                               'type': 'personal'},
-                             'role': {'id': 'author'}},
-                            {'person_or_org': {'family_name': 'Dillen',
-                                               'given_name': 'Wout',
-                                               'identifiers': [{'identifier': 'woutdillen',
-                                                                'scheme': 'hc_username'}],
-                                               'name': 'Wout Dillen',
-                                               'type': 'personal'},
-                             'role': {'id': 'author'}},
-                            {'person_or_org': {'family_name': 'Neyt',
-                                               'given_name': 'Vincent',
-                                               'name': 'Vincent Neyt',
-                                               'type': 'personal'},
-                             'role': {'id': 'author'}},
-                            {'person_or_org': {'family_name': 'Van Hulle',
-                                               'given_name': 'Dirk',
-                                               'name': 'Dirk Van Hulle',
-                                               'type': 'personal'},
-                             'role': {'id': 'author'}}],
+    'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads/'
+                                  'humcore/2017/10/o_1btcal4jbimf52817p91'
+                                  '1ojlp57.pdf.dhbenelux-digitization'
+                                  '-and-exogenesis.pdf',
+        'hclegacy:file_pid': 'hc:16080',
+        'hclegacy:groups_for_deposit': [{'group_identifier': '1000551',
+                                         'group_name': 'Digital '
+                                                       'Humanists'},
+                                        {'group_identifier': '1000697',
+                                         'group_name': 'Textual '
+                                                        'Scholarship'}
+        ],
+        'hclegacy:publication_type': 'proceedings-article',
+        'hclegacy:record_change_date': '2017-10-27T14:27:17Z',
+        'hclegacy:record_creation_date': '2017-10-26T12:31:39Z',
+        'hclegacy:submitter_id': 1010997,
+        'imprint:imprint': {'pages': '28-29',
+                            'title': 'DHBenelux 2. Book of '
+                                        'Abstracts for the Second '
+                                        'Digital Humanities Benelux '
+                                        'Conference'
+        },
+        'kcr:commons_domain': 'hcommons.org',
+        'kcr:meeting_organization': 'University of Antwerp',
+        'kcr:submitter_email': 'wout.dillen@uantwerpen.be',
+        'kcr:submitter_username': 'woutdillen',
+        'kcr:user_defined_tags': [{'tag_identifier': 131,
+                                   'tag_label': '20th century'},
+                                  {'tag_identifier': 1987,
+                                   'tag_label': 'Textual criticism'}
+        ],
+        'meeting:meeting': {'dates': '8-9 June 2015',
+                            'place': 'Antwerp, Belgium',
+                            'title': 'DH Benelux 2015'}
+    },
+    'files': {'default_preview': 'dhbenelux-digitization-and-exogenesis.pdf',
+              'enabled': 'true',
+              'entries': {
+                  'dhbenelux-digitization-and-exogenesis.pdf': {
+                      'key': 'dhbenelux-digitization-and-exogenesis.pdf',
+                      'mimetype': 'application/pdf',
+                      'size': '205462'}
+              }
+    },
+    'metadata': {
+        'additional_descriptions': [
+            {'description': 'Within the field of genetic criticism, '
+                            'Raymonde Debray Genette coined the terms ‘en- '
+                            'dogenesis’ and ‘exogenesis’ to denote '
+                            'respectively the writing of drafts and the '
+                            'interaction with external source texts during the '
+                            'writing process. The proposed panel focuses on the '
+                            'ways in which exogenesis and its relationship with '
+                            'endogenesis can be given shape in a digital '
+                            'infrastructure. The case studies are the works, '
+                            'reading notes and personal libraries '
+                            'of James Joyce and Samuel Beckett.',
+             'type': {'id': 'other',
+                      'title': {'en': 'Primary description with '
+                                      'HTML stripped'}
+                      }
+            }
+        ],
+        'additional_titles': [{'title': 'Digitization and Exogenesis',
+                                'type': {'id': 'other',
+                                        'title': {'en': 'Primary title '
+                                                        'with HTML '
+                                                        'stripped'}}}],
+        'creators': [{'person_or_org': {'family_name': 'Crowley',
+                                        'given_name': 'Ronan',
+                                        'name': 'Ronan Crowley',
+                                        'type': 'personal'},
+                        'role': {'id': 'author'}},
+                    {'person_or_org': {'family_name': 'De Keyser',
+                                        'given_name': 'Tom',
+                                        'name': 'Tom De Keyser',
+                                        'type': 'personal'},
+                        'role': {'id': 'author'}},
+                    {'person_or_org': {'family_name': 'Dillen',
+                                        'given_name': 'Wout',
+                                        'identifiers': [{'identifier': 'woutdillen',
+                                                        'scheme': 'hc_username'}],
+                                        'name': 'Wout Dillen',
+                                        'type': 'personal'},
+                        'role': {'id': 'author'}},
+                    {'person_or_org': {'family_name': 'Neyt',
+                                        'given_name': 'Vincent',
+                                        'name': 'Vincent Neyt',
+                                        'type': 'personal'},
+                        'role': {'id': 'author'}},
+                    {'person_or_org': {'family_name': 'Van Hulle',
+                                        'given_name': 'Dirk',
+                                        'name': 'Dirk Van Hulle',
+                                        'type': 'personal'},
+                        'role': {'id': 'author'}}],
                'description': 'Within the field of genetic criticism, Raymonde '
                               'Debray Genette coined the terms ‘en- dogenesis’ '
                               'and ‘exogenesis’ to denote respectively the '
@@ -111,8 +980,12 @@ json16079 = {
                'identifiers': [{'identifier': 'hc:16079',
                                 'scheme': 'hclegacy'},
                                {'identifier': 'https://doi.org/10.5281/zenodo.1009526',
-                                'scheme': 'doi'}],
-               'languages': [],
+                                'scheme': 'doi'},
+                               {'identifier': 'http://dx.doi.org/10.17613'
+                                              '/M6M225',
+                                'scheme': 'handle'}
+                               ],
+               'languages': [{'id': 'eng'}],
                'resource_type': {'id': 'publication:conferenceProceeding'},
                'rights': [],
                'subjects': [],
@@ -123,119 +996,186 @@ json16079 = {
                           'title': {'en': 'Issued'}}}
                          ],
                'title': 'Digitization and Exogenesis'},
-  'parent': {'access': {'owned_by': [{'user': 1010997}]}}}
+    'parent': {'access': {'owned_by': [{'user': 1010997}]}},
+    'updated': '2017-10-27T14:27:17Z'
+}
 
 json34031 = {
+    'created': '2021-01-11T23:48:41Z',
     'pids': {'doi': {'client': 'datacite',
-                            'identifier': 'doi:10.17613/0qxh-ed23',
-                            'provider': 'datacite'}},
-'custom_fields': {'hclegacy:submitter_id': 1025015,
-                    'hclegacy:submitter_org_memberships': ['Rice University'],
-                    'imprint:imprint': {'creators': [{'person_or_org': {'family_name': 'DeConick',
-                                                                        'given_name': 'April',
-                                                                        'name': 'April '
-                                                                                'DeConick',
-                                                                        'type': 'personal'},
-                                                      'role': {'id': 'author'}}],
-                                        'title': 'Secret Religion:'},
-                    'kcr:commons_domain': 'hcommons.org',
-                    'kcr:submitter_email': 'mjdillon@alumni.rice.edu',
-                    'kcr:submitter_username': 'matthewjdillon'},
-  'files': {'entries': []},
-  'metadata': {'additional_descriptions': [{'description': 'Overview of the '
-                                                           'major trends and '
-                                                           'approaches to the '
-                                                           'study of '
-                                                           "'Gnosticism' after "
-                                                           'the discovery of '
-                                                           'the Nag Hammadi '
-                                                           'Codices.',
-                                            'type': {'id': 'other',
-                                                     'title': {'en': 'Primary '
-                                                                     'description '
-                                                                     'with '
-                                                                     'HTML '
-                                                                     'stripped'}}}],
-               'publication_date': '2016',
-               'additional_titles': [{'title': 'Gnosticism Theorized: Major '
-                                               'Trends and Approaches to the '
-                                               'Study of Gnosticism',
-                                      'type': {'id': 'other',
-                                               'title': {'en': 'Primary title '
-                                                               'with HTML '
-                                                               'stripped'}}}],
-               'creators': [{'affiliations': ['Rice University'],
-                             'person_or_org': {'family_name': 'Dillon',
-                                               'given_name': 'M.',
-                                               'identifiers': [{'identifier': 'matthewjdillon',
-                                                                'scheme': 'hc_username'}],
-                                               'name': 'M. Dillon',
-                                               'type': 'personal'},
-                             'role': {'id': 'author'}}],
-               'dates': [],
-               'description': 'Overview of the major trends and approaches to '
-                              "the study of 'Gnosticism' after the discovery "
-                              'of the Nag Hammadi Codices.',
-               'formats': [],
-               'identifiers': [{'identifier': 'hc:34031',
-                                'scheme': 'hclegacy'}],
-               'languages': [],
-               'resource_type': {'id': 'publication:bookChapter'},
-               'rights': [],
-               'subjects': [],
-               'title': 'Gnosticism Theorized: Major Trends and Approaches to '
-                        'the Study of Gnosticism'},
-  'parent': {'access': {'owned_by': [{'user': 1025015}]}}
+                     'identifier': 'doi:10.17613/0qxh-ed23',
+                     'provider': 'datacite'}
+             },
+    'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads/'
+                                  'humcore/2021/01/o_1erptio851p4e9e41ep'
+                                  'f1p4o15eq7.pdf.gnosticism-theorized-'
+                                  'major-trends-and-approaches-dillon.pdf',
+        'hclegacy:file_pid': 'hc:34032',
+        'hclegacy:record_change_date': '2021-01-11T23:48:41Z',
+        'hclegacy:record_creation_date': '2021-01-11T23:48:41Z',
+        'hclegacy:submitter_affiliation': 'Rice University',
+        'hclegacy:submitter_id': 1025015,
+        'hclegacy:submitter_org_memberships': ['Rice University'],
+        'imprint:imprint': {'pages': '23-38',
+                            'isbn': ['9780028663500'],
+                            'creators': [
+                                {'person_or_org': {'family_name': 'DeConick',
+                                                   'given_name': 'April',
+                                                   'name': 'April DeConick',
+                                                   'type': 'personal'},
+                                 'role': {'id': 'author'}
+                                 }
+                                ],
+                            'title': 'Secret Religion:'
+                            },
+        'kcr:commons_domain': 'hcommons.org',
+        'kcr:submitter_email': 'mjdillon@alumni.rice.edu',
+        'kcr:submitter_username': 'matthewjdillon',
+        'kcr:user_defined_tags': [{'tag_identifier': 8769,
+                                   'tag_label': 'Western esotericism'},
+                                  {'tag_identifier': 1230,
+                                   'tag_label': 'Early Christianity'}
+        ]
+    },
+    'files': {
+        'default_preview': 'gnosticism-theorized-major-trends-and-approaches-dillon.pdf',
+        'enabled': 'true',
+        'entries': {
+            'gnosticism-theorized-major-trends-and-approaches-dillon.pdf': {
+                'key': 'gnosticism-theorized-major-trends-and-approaches-'
+                       'dillon.pdf',
+                'mimetype': 'application/pdf',
+                'size': '322864'}
+        }
+    },
+    'metadata': {
+        'additional_descriptions': [
+            {'description': 'Overview of the major trends and approaches to '
+                            "the study of 'Gnosticism' after the discovery of "
+                            'the Nag Hammadi Codices.',
+             'type': {'id': 'other',
+                      'title': {'en': 'Primary description with HTML '
+                                      'stripped'}
+                      }
+             }
+        ],
+        'publication_date': '2016',
+        'publisher': 'MacMillan Reference USA',
+        'additional_titles': [
+            {'title': 'Gnosticism Theorized: Major Trends and Approaches to '
+                      'the Study of Gnosticism',
+             'type': {'id': 'other',
+                      'title': {'en': 'Primary title with HTML '
+                                    'stripped'}
+                      }
+             }
+        ],
+        'creators': [
+            {'affiliations': ['Rice University'],
+             'person_or_org': {'family_name': 'Dillon',
+                               'given_name': 'M.',
+                               'identifiers': [{'identifier': 'matthewjdillon',
+                                                'scheme': 'hc_username'}],
+                               'name': 'M. Dillon',
+                               'type': 'personal'},
+             'role': {'id': 'author'}
+             }
+        ],
+        'dates': [],
+        'description': 'Overview of the major trends and approaches to '
+                        "the study of 'Gnosticism' after the discovery "
+                        'of the Nag Hammadi Codices.',
+        'formats': [],
+        'identifiers': [{'identifier': 'hc:34031',
+                         'scheme': 'hclegacy'},
+                        {'identifier': 'http://dx.doi.org/10.17613/0qxh-ed23',
+                         'scheme': 'handle'}],
+        'languages': [{'id': 'eng'}],
+        'resource_type': {'id': 'publication:bookChapter'},
+        'rights': [],
+        'subjects': [],
+        'title': 'Gnosticism Theorized: Major Trends and Approaches to '
+                'the Study of Gnosticism'
+    },
+    'parent': {'access': {'owned_by': [{'user': 1025015}]}},
+    'updated': '2021-01-11T23:48:41Z'
   }
 
 
 json11451 = {
+    'created': '2017-03-08T05:01:44Z',
     'pids': {'doi': {'client': 'datacite',
                                'identifier': 'doi:10.17613/M6733G',
                                'provider': 'datacite'}},
-    'custom_fields': {'hclegacy:groups_for_deposit': [{'group_identifier': '174',
-                                                     'group_name': 'East Asian '
-                                                                   'Languages '
-                                                                   'and '
-                                                                   'Literatures '
-                                                                   'after '
-                                                                   '1900'},
-                                                    {'group_identifier': '246',
-                                                     'group_name': 'Global '
-                                                                   'Shakespeares'},
-                                                    {'group_identifier': '97',
-                                                     'group_name': 'GS Drama '
-                                                                   'and '
-                                                                   'Performance'},
-                                                    {'group_identifier': '25',
-                                                     'group_name': 'LLC '
-                                                                   'Shakespeare'},
-                                                    {'group_identifier': '91',
-                                                     'group_name': 'TC '
-                                                                   'Translation '
-                                                                   'Studies'}],
-                    'hclegacy:submitter_id': 49,
-                    'hclegacy:submitter_org_memberships': ['George Washington '
-                                                           'U'],
-                    'imprint:imprint': {'creators': [{'person_or_org': {'family_name': 'Peterson',
-                                                                        'given_name': 'Kaara',
-                                                                        'name': 'Kaara '
-                                                                                'Peterson',
-                                                                        'type': 'personal'},
-                                                      'role': {'id': 'author'}},
-                                                     {'person_or_org': {'family_name': 'Williams',
-                                                                        'given_name': 'Deanne',
-                                                                        'name': 'Deanne '
-                                                                                'Williams',
-                                                                        'type': 'personal'},
-                                                      'role': {'id': 'author'}}],
-                                        'title': 'The Afterlife of Ophelia'},
-                    'kcr:chapter_label': '5',
-                    'kcr:commons_domain': 'mla.hcommons.org',
-                    'kcr:submitter_email': 'ajoubin@gwu.edu',
-                    'kcr:submitter_username': 'joubin'},
-  'files': {'entries': []},
-  'metadata': {'additional_descriptions': [{'description': 'There are three '
+    'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads/'
+                                  'humcore/o_1bam4ggaprbg1t5b1jb9ck83hh7.pdf.'
+                                  'female_agency_ophelia.pdf',
+        'hclegacy:file_pid': 'hc:11452',
+        'hclegacy:groups_for_deposit': [
+            {'group_identifier': '174',
+             'group_name': 'East Asian Languages and Literatures '
+                           'after 1900'},
+            {'group_identifier': '246',
+             'group_name': 'Global Shakespeares'},
+            {'group_identifier': '97',
+             'group_name': 'GS Drama and Performance'},
+            {'group_identifier': '25',
+             'group_name': 'LLC Shakespeare'},
+            {'group_identifier': '91',
+             'group_name': 'TC Translation Studies'}
+        ],
+        'hclegacy:submitter_id': 49,
+        'hclegacy:record_change_date': '2017-09-16T16:41:52Z',
+        'hclegacy:record_creation_date': '2017-03-08T05:01:44Z',
+        'hclegacy:submitter_affiliation': 'George Washington U',
+        'hclegacy:submitter_org_memberships': ['George Washington U'],
+        'imprint:imprint': {
+            'isbn': ['978-1-349-29760-3'],
+            'pages': '79-100',
+            'creators': [
+                {'person_or_org': {'family_name': 'Peterson',
+                                   'given_name': 'Kaara',
+                                   'name': 'Kaara Peterson',
+                                   'type': 'personal'},
+                 'role': {'id': 'author'}},
+                {'person_or_org': {'family_name': 'Williams',
+                                   'given_name': 'Deanne',
+                                   'name': 'Deanne Williams',
+                                   'type': 'personal'},
+                 'role': {'id': 'author'}}
+            ],
+            'title': 'The Afterlife of Ophelia'
+        },
+        'kcr:chapter_label': '5',
+        'kcr:commons_domain': 'mla.hcommons.org',
+        'kcr:submitter_email': 'ajoubin@gwu.edu',
+        'kcr:submitter_username': 'joubin',
+        'kcr:user_defined_tags': [{'tag_identifier': 1366,
+                                   'tag_label': 'Adaptation'},
+                                  {'tag_identifier': 15396,
+                                   'tag_label': 'East Asian literatures'},
+                                  {'tag_identifier': 2478,
+                                   'tag_label': 'Film history'},
+                                  {'tag_identifier': 121,
+                                   'tag_label': 'Gender studies'},
+                                  {'tag_identifier': 1228,
+                                   'tag_label': 'Shakespeare'}
+        ]
+    },
+    'files': {'default_preview': 'female_agency_ophelia.pdf',
+              'enabled': 'true',
+              'entries': {
+                  'female_agency_ophelia.pdf': {
+                      'key': 'female_agency_ophelia.pdf',
+                      'mimetype': 'application/pdf',
+                      'size': '48666405'}
+              }
+    },
+    'metadata': {'additional_descriptions': [{'description': 'There are three '
                                                            'main East Asian '
                                                            'approaches to '
                                                            'interpreting '
@@ -423,20 +1363,33 @@ json11451 = {
                'identifiers': [{'identifier': 'hc:11451',
                                 'scheme': 'hclegacy'},
                                {'identifier': '10.1057/9781137016461',
-                                'scheme': 'doi'}],
-               'languages': [],
+                                'scheme': 'doi'},
+                               {'identifier': 'http://dx.doi.org/10.17613/'
+                                              'M6733G',
+                                'scheme': 'handle'}
+                ],
+               'languages': [{'id': 'eng'}],
                'resource_type': {'id': 'publication:bookChapter'},
                'rights': [],
                'subjects': [],
+               'publisher': 'Palgrave',
                'title': 'The Paradox of Female Agency: Ophelia and East Asian '
                         'Sensibilities'},
-  'parent': {'access': {'owned_by': [{'user': 49}]}}}
+    'parent': {'access': {'owned_by': [{'user': 49}]}},
+    'updated': '2017-09-16T16:41:52Z'
+}
 
 json22647 = {
+    'created': '2019-02-01T19:30:52Z',
     'pids': {'doi': {'client': 'datacite',
                                'identifier': 'doi:10.17613/1d2d-2y15',
                                'provider': 'datacite'}},
     'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads/'
+                                  'humcore/2019/02/o_1d2l8l61vl7ouij402qpl35p7.'
+                                  'pdf.sh-unfixing-epic-2018.pdf',
+        'hclegacy:file_pid': 'hc:22648',
         'hclegacy:groups_for_deposit': [{'group_identifier': '1000636',
                                                      'group_name': 'Ancient '
                                                                    'Greece '
@@ -449,9 +1402,14 @@ json22647 = {
                                                      'group_name': 'Poetics '
                                                                    'and '
                                                                    'Poetry'}],
+        'hclegacy:record_change_date': '2019-02-01T19:30:52Z',
+        'hclegacy:record_creation_date': '2019-02-01T19:30:52Z',
+        'hclegacy:submitter_affiliation': 'Liverpool Hope University',
         'hclegacy:submitter_id': 1012453,
         'hclegacy:submitter_org_memberships': ['Liverpool Hope University'],
         'imprint:imprint': {
+            'isbn': ['9780198804215'],
+            'pages': '262-274',
             'creators': [
                 {'person_or_org': {'family_name': 'Macintosh',
                                   'given_name': 'Fiona',
@@ -490,8 +1448,24 @@ json22647 = {
         'kcr:chapter_label': '18 - Unfixing Epic: Homeric Orality '
                              'and Contemporary Performance',
         'kcr:submitter_email': 'stephe_harrop@hotmail.co.uk',
-        'kcr:submitter_username': 'stepheharrop'},
-    'files': {'entries': []},
+        'kcr:submitter_username': 'stepheharrop',
+        'kcr:user_defined_tags': [{'tag_identifier': 3734,
+                                   'tag_label': 'Classical reception'},
+                                  {'tag_identifier': 6091,
+                                   'tag_label': 'Theater and film'},
+                                  {'tag_identifier': 1319,
+                                   'tag_label': 'Performance'}
+        ]
+    },
+    'files': {'default_preview': 'sh-unfixing-epic-2018.pdf',
+              'enabled': 'true',
+              'entries': {
+                  'sh-unfixing-epic-2018.pdf': {
+                      'key': 'sh-unfixing-epic-2018.pdf',
+                      'mimetype': 'application/pdf',
+                      'size': '599103'}
+               }
+    },
     'metadata': {
         'additional_descriptions': [
             {'description': 'This chapter examines the '
@@ -596,32 +1570,87 @@ json22647 = {
                         '‘fixed’ and ‘unfixed’ elements.',
         'formats': [],
         'identifiers': [{'identifier': 'hc:22647',
-                         'scheme': 'hclegacy'}],
-        'languages': [],
+                         'scheme': 'hclegacy'},
+                        {'identifier': 'http://dx.doi.org/10.17613/1d2d-2y15',
+                         'scheme': 'handle'}
+        ],
+        'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'publication:bookChapter'},
         'rights': [],
         'subjects': [],
+        'publisher': 'Oxford University Press',
         'title': 'Unfixing Epic: Homeric Orality and Contemporary '
-                 'Performance'},
-        'parent': {'access': {'owned_by': [{'user': 1012453}]}}}
+                 'Performance'
+    },
+    'parent': {'access': {'owned_by': [{'user': 1012453}]}},
+    'updated': '2019-02-01T19:30:52Z'
+}
 
 json42615 = {
     'pids': {'doi': {'client': 'datacite',
                                'identifier': 'doi:10.17613/6v9q-8878',
                                'provider': 'datacite'}},
     'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+            'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads'
+                                      '/humcore/2021/11/o_1fk563qmpqgs1on0ue'
+                                      'g6mfcf7.pdf.palazzo-vernacular_pa'
+                                      'tterns_in_portugal_and_brazil-2021.pdf',
+            'hclegacy:file_pid': 'hc:42616',
+            'hclegacy:submitter_affiliation': 'University of Brasilia '
+                                              'School of Architecture '
+                                              'and Urbanism',
             'hclegacy:submitter_id': 1011841,
             'hclegacy:submitter_org_memberships': ['University of '
                                                    'Brasilia School of '
                                                    'Architecture and '
                                                    'Urbanism'],
-            'journal:journal': {'title': 'Journal of Traditional '
-                                         'Building, Architecture and '
-                                         'Urbanism'},
+            'journal:journal': {
+                'issn': ['2660-583X'],
+                'issue': '2',
+                'pages': '359-370',
+                'title': 'Journal of Traditional Building, Architecture and '
+                         'Urbanism'},
             'kcr:commons_domain': 'sah.hcommons.org',
             'kcr:submitter_email': 'pedro.palazzo@gmail.com',
-            'kcr:submitter_username': 'palazzo'},
-    'files': {'entries': []},
+            'kcr:submitter_username': 'palazzo',
+            'kcr:user_defined_tags': [{'tag_identifier': 15855,
+                                       'tag_label': 'renaisance'},
+                                      {'tag_identifier': 15856,
+                                       'tag_label': 'lot sizes'},
+                                      {'tag_identifier': 15857,
+                                       'tag_label': 'building types'},
+                                      {'tag_identifier': 2941,
+                                       'tag_label': 'Urbanism/urban planning'},
+                                      {'tag_identifier': 1142,
+                                       'tag_label': 'Portuguese empire'},
+                                      {'tag_identifier': 15858,
+                                       'tag_label': 'Luso-Brazilian '
+                                                      'studies'},
+                                      {'tag_identifier': 1505,
+                                       'tag_label': 'Architectural '
+                                                      'history'},
+                                      {'tag_identifier': 1599,
+                                       'tag_label': 'Urban history'},
+                                      {'tag_identifier': 1210,
+                                       'tag_label': '18th century'},
+                                      {'tag_identifier': 116,
+                                       'tag_label': '19th century'}
+            ]
+    },
+    'files': {
+        'default_preview': 'palazzo-vernacular_patterns_in_'
+                           'portugal_and_brazil-2021.pdf',
+        'enabled': 'true',
+        'entries': {
+            'palazzo-vernacular_patterns_in_portugal_and_brazil-2021.'
+            'pdf': {
+                'key': 'palazzo-vernacular_patterns_in_portugal_and_b'
+                       'razil-2021.pdf',
+                'mimetype': 'application/pdf',
+                'size': '498676'}
+        }
+    },
     'metadata': {
         'additional_descriptions': [
             {'description':
@@ -693,11 +1722,14 @@ json42615 = {
                         'urbanization requirements.',
         'formats': [],
         'identifiers': [{'identifier': 'hc:42615',
-                         'scheme': 'hclegacy'}],
-        'languages': [],
+                         'scheme': 'hclegacy'},
+                        {'identifier': 'http://dx.doi.org/10.17613/6v9q-8878',
+                         'scheme': 'handle'}],
+        'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'publication:journalArticle'},
         'rights': [],
         'subjects': [],
+        'publisher': 'Toledo: INTBAU Spain',
         'title': 'Vernacular Patterns in Portugal and Brazil: Evolution '
                  'and Adaptations'},
     'parent': {
@@ -709,35 +1741,61 @@ json22625 = {
     'pids': {'doi': {'client': 'datacite',
                                'identifier': 'doi:10.17613/hrhn-3k43',
                                'provider': 'datacite'}},
-    'custom_fields':
-        {'kcr:submitter_email': "wojciech.tworek.09@ucl.ac.uk",
-         'kcr:submitter_username': "wtworek",
-         'kcr:commons_domain': 'ajs.hcommons.org',
-         'hclegacy:submitter_id': 1017065,
-         'hclegacy:submitter_org_memberships': ['University Of Toronto'],
-         'imprint:imprint': {
-             'creators': [
-                 {'person_or_org': {'family_name': 'Sagiv',
-                  'given_name': 'Gadi',
-                  'name': 'Gadi Sagiv',
-                  'type': 'personal'},
-                  'role': {'id': 'author'}},
-                 {'person_or_org': {'family_name': 'Meir',
-                  'given_name': 'Jonatan',
-                  'name': 'Jonatan Meir',
-                  'type': 'personal'},
-                  'role': {'id': 'author'}}],
-             'title': 'Habad Hasidism: History, Thought, Image'
-         },
-         'hclegacy:groups_for_deposit': [
-             {'group_identifier': '1000610',
-              'group_name': 'Jewish Mysticism'},
-             {'group_identifier': '1000611',
-              'group_name': 'Modern Jewish Thought and Theology'}
-         ]
-         },
-    'files':
-        {'entries': []},
+    'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads/'
+                                  'humcore/2019/01/o_1d2bs18df1fnlt45186'
+                                  '1gk91rer7.pdf.55710426.pdf',
+        'hclegacy:file_pid': 'hc:22626',
+        'kcr:submitter_email': "wojciech.tworek.09@ucl.ac.uk",
+        'kcr:submitter_username': "wtworek",
+        'kcr:commons_domain': 'ajs.hcommons.org',
+        'kcr:user_defined_tags': [{'tag_identifier': 20,
+                                   'tag_label': 'Hasidism'},
+                                  {'tag_identifier': 21,
+                                   'tag_label': 'Chabad'},
+                                  {'tag_identifier': 0,
+                                   'tag_label': 'Jewish studies'},
+                                  {'tag_identifier': 24,
+                                   'tag_label': 'Jewish mysticism'},
+                                  {'tag_identifier': 19,
+                                   'tag_label': 'Jewish thought'}
+        ],
+        'hclegacy:submitter_affiliation': 'University Of Toronto',
+        'hclegacy:submitter_id': 1017065,
+        'hclegacy:submitter_org_memberships': ['University Of Toronto'],
+        'imprint:imprint': {
+            'pages': '57-74',
+            'creators': [
+                {'person_or_org': {'family_name': 'Sagiv',
+                 'given_name': 'Gadi',
+                 'name': 'Gadi Sagiv',
+                 'type': 'personal'},
+                 'role': {'id': 'author'}},
+                {'person_or_org': {'family_name': 'Meir',
+                 'given_name': 'Jonatan',
+                 'name': 'Jonatan Meir',
+                 'type': 'personal'},
+                 'role': {'id': 'author'}}],
+            'title': 'Habad Hasidism: History, Thought, Image'
+        },
+        'hclegacy:groups_for_deposit': [
+            {'group_identifier': '1000610',
+             'group_name': 'Jewish Mysticism'},
+            {'group_identifier': '1000611',
+             'group_name': 'Modern Jewish Thought and Theology'}
+        ]
+    },
+    'files': {
+        'default_preview': '55710426.pdf',
+        'enabled': 'true',
+        'entries': {
+            '55710426.pdf': {
+                'key': '55710426.pdf',
+                'mimetype': 'application/pdf',
+                'size': '266856'}
+        }
+    },
     'metadata':
         {'additional_descriptions':
             [{'description': ('The issue of gender has been a topic of '
@@ -835,11 +1893,16 @@ json22625 = {
                              'life of wives and daughters of Shneur Zalman’s '
                              'followers.',
             'formats': [],
-            'identifiers': [{'identifier': 'hc:22625', 'scheme': 'hclegacy'}],
-            'languages': [],
+            'identifiers': [{'identifier': 'hc:22625',
+                             'scheme': 'hclegacy'},
+                            {'identifier': 'http://dx.doi.org/10.17613/'
+                                           'hrhn-3k43',
+                             'scheme': 'handle'}],
+            'languages': [{'id': 'heb'}],
             'resource_type': {'id': 'publication:bookChapter'},
             'rights': [],
             'subjects': [],
+            'publisher': 'Zalman Shazar Center',
             'title': 'מגדר וזמן בכתבי ר׳ שניאור זלמן מלאדי'},
     'parent': {'access': {'owned_by': [{'user': 1017065}]}}
 }
@@ -849,6 +1912,12 @@ json45177 = {
                                'identifier': '10.17613/zhmh-c741',
                                'provider': 'datacite'}},
     'custom_fields': {
+        'hclegacy:collection': 'hccollection:1',
+        'hclegacy:file_location': '/srv/www/commons/current/web/app/uploads/'
+                                  'humcore/2022/03/o_1fvg3cpqe1hv61shk1'
+                                  'sqs1uqplep7.pdf.cep_notes_revised_2022-03-30'
+                                  '.pdf',
+        'hclegacy:file_pid': 'hc:45178',
         'imprint:imprint': {
             'creators': [
                 {'person_or_org':
@@ -865,14 +1934,40 @@ json45177 = {
         'kcr:submitter_email': "aprovo@gmail.com",
         'kcr:submitter_username': "aprovo",
         'kcr:commons_domain': 'arlisna.hcommons.org',
+        'kcr:user_defined_tags': [{'tag_identifier': 26,
+                                   'tag_label': 'Cataloging'},
+                                  {'tag_identifier': 27,
+                                   'tag_label': 'Cataloging standards'},
+                                  {'tag_identifier': 28,
+                                   'tag_label': 'Cataloging Exhibition '
+                                                'Publications: Best '
+                                                'Practices'},
+                                  {'tag_identifier': 29,
+                                   'tag_label': 'Notes'},
+                                  {'tag_identifier': 30,
+                                   'tag_label': 'Exhibition publications'},
+                                  {'tag_identifier': 31,
+                                   'tag_label': 'Art librarianship'}
+        ],
+        'hclegacy:submitter_affiliation': 'New York University',
         'hclegacy:submitter_id': 1006873,
         'hclegacy:submitter_org_memberships': ['New York University'],
         'hclegacy:groups_for_deposit': [{'group_identifier': '1003999',
                                          'group_name': 'ARLIS/NA '
                                                        'Cataloging Advisory '
-                                                       'Committee'}],
-        },
-    'files': {'entries': []},
+                                                       'Committee'}
+        ],
+    },
+    'files': {
+        'default_preview': 'cep_notes_revised_2022-03-30.pdf',
+        'enabled': 'true',
+        'entries': {
+            'cep_notes_revised_2022-03-30.pdf': {
+                'key': 'cep_notes_revised_2022-03-30.pdf',
+                'mimetype': 'application/pdf',
+                'size': '251202'}
+        }
+    },
     'metadata': {
         'additional_descriptions': [
             {'description': 'The ARLIS/NA Cataloging Advisory Committee has '
@@ -1000,11 +2095,17 @@ json45177 = {
                              'decided that a particular note is of primary '
                              'importance.',
               'formats': [],
-              'identifiers': [{'identifier': 'hc:45177', 'scheme': 'hclegacy'}],
-              'languages': [],
+              'identifiers': [{'identifier': 'hc:45177',
+                               'scheme': 'hclegacy'},
+                              {'identifier': 'https://doi.org/10.17613/'
+                                             'zhmh-c741',
+                               'scheme': 'handle'}
+              ],
+              'languages': [{'id': 'eng'}],
               'resource_type': {'id': 'publication:bookSection'},
               'rights': [],
               'subjects': [],
+              'publisher': 'Art Libraries Society of North America',
               'title': 'Notes'},
  'parent': {'access': {'owned_by': [{'user': 1006873}]}}}
 
@@ -1012,7 +2113,11 @@ json44881 = {
     'pids': {'doi': {'client': 'datacite',
                                'identifier': '10.17613/82yy-vj44',
                                'provider': 'datacite'}},
+    'created': '2022-03-08T21:57:49Z',
     'custom_fields': {
+        'hclegacy:record_change_date': '2022-03-08T21:57:49Z',
+        'hclegacy:record_creation_date': '2022-03-08T21:57:49Z',
+        'hclegacy:collection': 'hccollection:1',
         'kcr:submitter_email': "runmerd@gmail.com",
         'kcr:submitter_username': "mlhale7",
         'kcr:commons_domain': 'arlisna.hcommons.org',
@@ -1091,19 +2196,24 @@ json44881 = {
                         'and Starr are long-standing roommates at annual '
                         'conferences.',
         'formats': [],
-        'identifiers': [{'identifier': 'hc:44881', 'scheme': 'hclegacy'}],
-        'languages': [],
+        'identifiers': [{'identifier': 'hc:44881',
+                         'scheme': 'hclegacy'},
+                        {'identifier': 'https://doi.org/10.17613/82yy-vj44',
+                         'scheme': 'handle'}],
+        'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'publication:interviewTranscript'},
         'rights': [],
         'subjects': [],
         'title': 'ARLIS/NA Oral History for Distinguished Service Award '
                  'Winners, Sherman Clarke and Daniel Starr'},
-    'parent': {'access': {'owned_by': [{'user': 1018587}]}}
+    'parent': {'access': {'owned_by': [{'user': 1018587}]}},
+    'updated': '2022-03-08T21:57:49Z'
 }
 
 @pytest.mark.parametrize("expected_json", [(json42615), (json22625),
     (json45177), (json44881), (json22647), (json11451), (json34031),
-    (json16079)])
+    (json16079), (json33383), (json38367), (json48799), (json583),
+    (json28491)])
 def test_parse_csv(expected_json):
     """
     """
