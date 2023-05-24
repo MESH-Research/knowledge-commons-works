@@ -1110,6 +1110,49 @@ def serialize_json() -> tuple[dict, dict]:
     return newrec_list, bad_data_dict
 
 
+def api_request(method:str='GET', endpoint:str='records', server:str='',
+                args:str='', token:str='', json_dict:dict={}) -> dict:
+    """
+    Make an api request and return the response
+    """
+    if not server:
+        server = 'localhost'
+    if not token:
+        token = os.environ['API_TOKEN']
+
+    payload_args = {}
+    if json_dict:
+        payload_args['json'] = json.dumps(json_dict)
+
+    api_url = f'https://{server}/api/{endpoint}/{args}'
+    print('url:', api_url)
+    callfunc = requests.get
+    if method == 'POST':
+        callfunc = requests.post
+    response = callfunc(api_url,
+        headers={'Authorization': f'Bearer {token}'},
+        **payload_args,
+        verify=False)
+
+    return {'status_code': response.status_code,
+            'headers': response.headers,
+            'json': response.json(),
+            'text': response.text}
+
+
+def create_invenio_record(metadata:dict, server:str='',
+                          token:str='', secure:bool=False) -> bool:
+    """
+    Create a new Invenio record from the provided dictionary of metadata
+    """
+    # Make draft and publish
+    result = api_request(method='POST', json=metadata)
+    if result.status_code != 201:
+        raise Exception(result.text)
+    idv = result.json()["id"]
+    publish_link = result.json()["links"]["publish"]
+
+
 fedora_fields = ["pid", "label", "state", "ownerId", "cDate", "mDate",
                  "dcmDate", "title", "creator", "subject", "description",
                  "publisher", "contributor", "date", "type", "format",

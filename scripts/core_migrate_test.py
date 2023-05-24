@@ -1,5 +1,6 @@
 from click.testing import CliRunner
-from core_migrate import serialize_json
+from core_migrate import serialize_json, api_request, create_invenio_record
+import json
 import pytest
 
 json28491 = {
@@ -2475,3 +2476,32 @@ def test_parse_csv(expected_json):
     # assert actual_json_item['updated'] == expected_json['updated']
 
     assert actual_json_item == expected_json
+
+top_level_record_keys = ["revision_id", "status", "metadata", "links", "custom_fields", "created", "is_draft", "access", "updated", "pids", "files", "is_published", "parent", "stats", "versions", "id"]
+
+request_header_keys = ['Server', 'Date', 'Content-Type', 'Transfer-Encoding', 'Connection', 'Vary', 'X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'Retry-After', 'Permissions-Policy', 'X-Frame-Options', 'X-XSS-Protection', 'X-Content-Type-Options', 'Content-Security-Policy', 'Strict-Transport-Security', 'Referrer-Policy', 'X-Request-ID', 'Content-Encoding']
+
+@pytest.mark.parametrize("method,server,endpoint,args,json_dict,expected_response", [
+    ('GET', 'localhost', 'records', 'jznz9-qhx89', '', {'text': '',
+                                                        'headers': ''})
+    ])
+def test_api_request(method, server, endpoint, args, json_dict,
+                     expected_response):
+    """
+    """
+    other_args = {}
+    if json_dict:
+        other_args['json_dict'] = json_dict
+    actual = api_request(method=method, endpoint=endpoint, server=server,
+                         args=args, **other_args)
+    assert actual['status_code'] == 200
+    assert list(json.loads(actual['text']).keys()) == top_level_record_keys
+    assert list(actual['json'].keys()) == top_level_record_keys
+    assert list(actual['headers'].keys()) == request_header_keys
+
+
+@pytest.mark.parametrize("expected_response", [({})])
+def test_create_invenio_record(expected_response):
+    """
+    """
+    pass
