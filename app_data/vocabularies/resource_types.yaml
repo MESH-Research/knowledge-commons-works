@@ -286,7 +286,7 @@
   tags:
     - depositable
     - linkable
-- id: image-photo
+- id: image-photograph
   icon: chart bar outline
   props:
     coar: still image
@@ -296,7 +296,7 @@
     datacite_type: Photograph
     eurepo: info:eu-repo/semantics/other
     schema.org: https://schema.org/Photograph
-    subtype: image-photo
+    subtype: image-photograph
     type: image
   title:
     en: Photograph
@@ -538,7 +538,7 @@
   tags:
     - depositable
     - linkable
-- id: software-3dModel
+- id: software-3DModel
   icon: code
   props:
     coar: source code
@@ -548,7 +548,7 @@
     datacite_type: 3D Model
     eurepo: info:eu-repo/semantics/other
     schema.org: https://schema.org/3DModel
-    subtype: software-3dModel
+    subtype: software-3DModel
     type: software
   title:
     en: 3D Model
@@ -770,7 +770,7 @@
   tags:
     - depositable
     - linkable
-- id: textDocument-datamanagementplan
+- id: textDocument-dataManagementPlan
   icon: file alternate
   props:
     coar: data management plan
@@ -780,7 +780,7 @@
     datacite_type: Data management plan
     eurepo: info:eu-repo/semantics/technicalDocumentation
     schema.org: https://schema.org/CreativeWork
-    subtype: textDocument-datamanagementplan
+    subtype: textDocument-dataManagementPlan
     type: textDocument
   title:
     en: Data management plan
@@ -842,24 +842,6 @@
   tags:
     - depositable
     - linkable
-- id: textDocument-fictionalWork
-  icon: file alternate
-  props:
-    coar: other
-    coar_type: c_1843
-    csl: article
-    datacite_general: Text
-    datacite_type: Fictional work
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/CreativeWork
-    subtype: textDocument-fictionalWork
-    type: textDocument
-  title:
-    en: Fictional work
-    de: fictionales Werk
-  tags:
-    - depositable
-    - linkable
 - id: textDocument-interviewTranscript
   icon: file alternate
   props:
@@ -897,12 +879,12 @@
 - id: textDocument-legalComment
   icon: file alternate
   props:
-    coar: other periodical
-    coar_type: QX5C-AR31
+    coar: annotation
+    coar_type: c_1162
     csl: legal-case
     datacite_general: Text
     datacite_type: Legal Comment
-    eurepo: info:eu-repo/semantics/article
+    eurepo: info:eu-repo/semantics/annotation
     schema.org: https://schema.org/ScholarlyArticle
     subtype: textDocument-legalComment
     type: textDocument
@@ -915,12 +897,12 @@
 - id: textDocument-legalResponse
   icon: file alternate
   props:
-    coar: other periodical
-    coar_type: QX5C-AR31
+    coar: annotation
+    coar_type: c_1162
     csl: legal-case
     datacite_general: Text
     datacite_type: Legal Response
-    eurepo: info:eu-repo/semantics/article
+    eurepo: info:eu-repo/semantics/annotation
     schema.org: https://schema.org/ScholarlyArticle
     subtype: textDocument-legalResponse
     type: textDocument
@@ -1017,6 +999,24 @@
   title:
     en: Poetic work
     de: poetisches Werk
+  tags:
+    - depositable
+    - linkable
+- id: textDocument-preprint
+  icon: file alternate
+  props:
+    csl: article
+    datacite_general: Text
+    datacite_type: Preprint
+    openaire_resourceType: '16'
+    openaire_type: publication
+    eurepo: info:eu-repo/semantics/preprint
+    schema.org: https://schema.org/ScholarlyArticle
+    subtype: textDocument-preprint
+    type: textDocument
+  title:
+    en: Preprint
+    de: Preprint
   tags:
     - depositable
     - linkable
@@ -1235,6 +1235,24 @@
   title:
     en: Interactive resource
     de: interaktive Ressource
+  tags:
+    - depositable
+    - linkable
+- id: other-notes
+  icon: file alternate
+  props:
+    coar: text
+    coar_type: c_18cf
+    csl: document
+    datacite_general: Text
+    datacite_type: Notes
+    eurepo: info:eu-repo/semantics/other
+    schema.org: https://schema.org/CreativeWork
+    subtype: other-notes
+    type: other
+  title:
+    en: Notes
+    de: Notizen
   tags:
     - depositable
     - linkable

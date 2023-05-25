@@ -168,97 +168,102 @@ def add_resource_type(rec, pubtype, genre, filetype):
     """
     """
     bad_data = []
-    kcr_resource_types = {"dataset": ["other"],
-                            "image": ["chart", "diagram", "map", "visualArt", "other"],
-                            "instructionalResource": ["curriculum", "syllabus", "other"],
-                            "presentation": ["slides", "speech", "conferencePaper", "conferencePoster", "lecture", "other"],
-                            "publication": [
-                                "abstract", "blogPost", "book", "bookSection", "review",
-                                "conferenceProceeding", "dataPaper",
-                                "bookReview", "dissertation", "documentation", "fictionalWork", "interviewTranscript", "journal", "journalArticle", "legalResponse", "legalComment", "magazineArticle", "newspaperArticle", "onlinePublication",
-                                "other", "preprint", "report",
-                                "monograph", "proceedingsArticle", "translation", "whitePaper"
+    kcr_resource_types = {"audiovisual": ["documentary", "interviewRecording",
+                                "videoRecording", "audioRecording", "musicalRecording", "other", "performance", "podcastEpisode"
+                           ],
+                           "dataset": ["other"],
+                           "image": ["chart", "diagram", "figure", "map",
+                                     "visualArt", "photograph", "other"
                             ],
+                            "instructionalResource": ["curriculum",
+                                                      "lessonPlan", "syllabus",
+                                                       "other"
+                            ],
+                            "presentation": ["slides",
+                                             "conferencePaper", "conferencePoster", "presentationText", "other"],
                             "software": [
-                                "3dModel", "computationalModel", "computationalNotebook", "outputManagementPlan", "service", "application"
+                                "3DModel", "computationalModel", "computationalNotebook", "service", "application"
                             ],
-                            "audiovisual": ["documentary", "interviewRecording",
-                                "video", "soundRecording", "musicalRecording", "other", "podcast"
+                            "textDocument": [
+                                "abstract", "bibliography", "blogPost", "book", "bookSection", "conferenceProceeding", "dataManagementPlan",
+                                "documentation", "editorial", "essay", "interviewTranscript", "journalArticle", "legalResponse", "legalComment", "magazineArticle", "monograph", "newspaperArticle", "onlinePublication",
+                                "other", "poeticWork", "preprint", "report", "workingPaper", "review",
+                                "technicalStandard", "thesis", "whitePaper"
                             ],
                             "other": [
-                                "bibliography", "catalog", "collection", "essay", "event", "findingAid", "interactiveResource", "notes", "peerReview", "physicalObject", "standard", "workflow", "mixedMaterial", "text"
+                                "catalog", "collection", "event", "interactiveResource", "notes", "peerReview", "physicalObject", "workflow", "text"
                             ]
                             }
-    types_of_resource = {"Audio": "audiovisual:soundRecording",
+    types_of_resource = {"Audio": "audiovisual:audioRecording",
                          "Image": "image:other",
-                         "Mixed material": "other:mixedMaterial",
+                         "Mixed material": "other:other",
                          "Software": "software:application",
-                         "Text": "other:text",
-                         "Video": "audiovisual:video"}
+                         "Text": "textDocument:other",
+                         "Video": "audiovisual:videoRecording"}
 
-    genres = {"Abstract": "publication:abstract",
-              "Article": "publication:journalArticle",
+    genres = {"Abstract": "textDocument:abstract",
+              "Article": "textDocument:journalArticle",
               "Bibliography": "other:bibliography",
-              "Blog Post": "publication:blogPost",
-              "Book": "publication:book",
-              "Book chapter": "publication:bookChapter",
-              "Book review": "publication:review",
-              "Book section": "publication:bookSection",
+              "Blog Post": "textDocument:blogPost",
+              "Book": "textDocument:book",
+              "Book chapter": "textDocument:bookSection",
+              "Book review": "textDocument:review",
+              "Book section": "textDocument:bookSection",
               "Catalog": "other:catalog",
               "Chart": "image:chart",
-              "Code or software": "software: application",
+              "Code or software": "software:application",
               "Conference paper": "presentation:conferencePaper",
               "Conference poster": "presentation:conferencePoster",
-              "Conference proceeding": "publication:conferenceProceeding",
+              "Conference proceeding": "textDocument:conferenceProceeding",
               "Course material or learning objects": "instructionalResource:other",
               "Course Material or learning objects": "instructionalResource: other",
               "Data set": "dataset:other",
-              "Dissertation": "publication:dissertation",
+              "Dissertation": "textDocument:thesis",
               "Documentary": "audiovisual:documentary",
-              "Editorial": "publication:editorial",
+              "Editorial": "textDocument:editorial",
               "Essay": "other:essay",
-              "Fictional work": "publication:fictionalWork",
+              "Fictional work": "textDocument:bookSection",  # FIXME: indicate ficiontal???
               "Finding aid": "other:other",
               "Image": "image:other",
-              "Interview": "publication:interviewTranscript",
-              "Lecture": "presentation:lecture",
-              "Legal Comment": "publication:legalComment",
-              "Legal response": "publication:legalResponse",
-              "Magazine section": "publication:magazineArticle",
+              "Interview": "textDocument:interviewTranscript",
+              "Lecture": "presentation:presentationText",
+              "Legal Comment": "textDocument:legalComment",
+              "Legal response": "textDocument:legalResponse",
+              "Magazine section": "textDocument:magazineArticle",
               "Map": "image:map",
-              "Monograph": "publication:monograph",
+              "Monograph": "textDocument:monograph",
               "Music": "audiovisual:musicalRecording",
-              "Newspaper article": "publication:newspaperArticle",
-              "Online publication": "publication:onlinePublication",
-              "Online Publication": "publication:onlinePublication",
+              "Newspaper article": "textDocument:newspaperArticle",
+              "Online textDocument": "textDocument:onlinePublication",
+              "Online textDocument": "textDocument:onlinePublication",
               "Other": "other:other",
-              "Performance": "audioVisual:performance",
+              "Performance": "audiovisual:performance",
               "Photograph": "image:other",
-              "Podcast": "audiovisual:podcast",
-              "Poetry": "publication:poeticWork",
+              "Podcast": "audiovisual:podcastEpisode",
+              "Poetry": "textDocument:poeticWork",
               "Presentation": "presentation:other",
-              "Report": "publication:report",
-              "Review": "publication:review",
+              "Report": "textDocument:report",
+              "Review": "textDocument:review",
               "Sound recording-musical": "audiovisual:musicalRecording",
-              "Sound recording-non musical": "audiovisual:soundRecording", "Syllabus": "instructionalResource:syllabus",
-              "Technical report": "publication:report",
-              "Thesis": "publication:dissertation",
-              "Translation": "publication:translation",
+              "Sound recording-non musical": "audiovisual:audioRecording", "Syllabus": "instructionalResource:syllabus",
+              "Technical report": "textDocument:report",
+              "Thesis": "textDocument:thesis",
+              "Translation": "textDocument:other",
               "Video": "audiovisual:videoRecording",
               "Video essay": "audiovisual:videoRecording",
               "Visual art": "image:visualArt",
-              "White paper": "publication:whitePaper"}
+              "White paper": "textDocument:whitePaper"}
 
-    publication_types = {"book-chapter": "publication:bookChapter",
-                            "book-review": "publication:review",
-                            "book-section": "publication:bookSection",
-                            "journal-article": "publication:journalArticle",
-                            "magazine-section": "publication:magazineArticle",
-                            "monograph": "publication:monograph",
-                            "newspaper-article": "publication:newspaperArticle",
-                            "online-publication": "publication:onlinePublication",
-                            "podcast": "audiovisual:podcast",
-                            "proceedings-article": "publication:proceedingsArticle"}
+    publication_types = {"book-chapter": "textDocument:bookSection",
+                            "book-review": "textDocument:review",
+                            "book-section": "textDocument:bookSection",
+                            "journal-article": "textDocument:journalArticle",
+                            "magazine-section": "textDocument:magazineArticle",
+                            "monograph": "textDocument:monograph",
+                            "newspaper-article": "textDocument:newspaperArticle",
+                            "online-textDocument": "textDocument:onlinePublication",
+                            "podcast": "audiovisual:podcastEpisode",
+                            "proceedings-article": "textDocument:conferenceProceeding"}
     if genre in genres.keys():
         rec['metadata']['resource_type'] = {'id': genres[genre]}
         if (pubtype == "Interview") and (filetype in ['audio/mpeg', 'audio/ogg', 'audio/wav', 'video/mp4', 'video/quicktime']):
@@ -614,9 +619,6 @@ def serialize_json() -> tuple[dict, dict]:
                                     ] = row['submitter_email']
             newrec['custom_fields']['kcr:submitter_username'
                                     ] = row['submitter_login']
-            if row['organization']:
-                newrec['custom_fields']['hclegacy:submitter_affiliation'
-                                        ] = row['organization']
 
             # Access information
             if row['embargoed'] == 'yes' and row['embargo_end_date']:
@@ -770,6 +772,15 @@ def serialize_json() -> tuple[dict, dict]:
                 newrec['custom_fields']['hclegacy:collection'
                                         ] = row['member_of']
 
+            # Original submitter's HC society memberships
+            if row['society_id']:
+                newrec['custom_fields']['hclegacy:society'] = row['society_id']
+
+            # Was CORE deposit previously published?
+            if row['published']:
+                newrec['custom_fields']['hclegacy:previously_published'
+                                        ] = row['published']
+
             # ORiginal submitter
             if row['submitter']:
                 try:
@@ -871,11 +882,11 @@ def serialize_json() -> tuple[dict, dict]:
                     newrec['custom_fields'].setdefault('journal:journal', {}
                         )['volume'] = row['volume']
                 elif newrec['metadata']['resource_type']['id'] in book_types:
-                    newrec['custom_fields'].setdefault('kcr:volume', {}
+                    newrec['custom_fields'].setdefault('kcr:volumes', {}
                         )['volume'] = row['volume']
                 else:
                     # print(row['id'], newrec['metadata']['resource_type']['id'], row['volume'])
-                    newrec['custom_fields'].setdefault('kcr:volume', {}
+                    newrec['custom_fields'].setdefault('kcr:volumes', {}
                         )['volume'] = row['volume']
 
             if row['isbn']:
