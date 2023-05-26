@@ -135,43 +135,45 @@
             "title": "A nice conference",
             "url": "https://mysite.edu"
         },
-        "kcr:series": {
-            "title": {"en": ""},
-            "series_volume": ""
-        },
-        "kcr:volumes": {
-            "total_volumes": "",
-            "volume": ""
-        },
-        "kcr:sponsoring_institution": "",
+        "kcr:chapter_label": "10",
+        "kcr:commons_domain": "ajs.hcommons.org",
         "kcr:edition": "",
         "kcr:meeting_organization": "",
-        "kcr:commons_domain": "ajs.hcommons.org",
-        "kcr:hcommons_organization": "University of Toronto",
-        "kcr:chapter_label": "10",
         "kcr:notes": [{
             "note_text": "",
             "note_text_sanitized": "",
             "note_description": ""
             }],
+        "kcr:series": {
+            "title": {"en": ""},
+            "series_volume": ""
+        },
+        "kcr:sponsoring_institution": "",
+        "kcr:submitter_username": 123,
         "kcr:user_defined_tags": [
             {"tag_label": "",
              "tag_identifier": 123
             }],
+        "kcr:volumes": {
+            "total_volumes": "",
+            "volume": ""
+        },
+        "hclegacy:collection": "",
+        "hclegacy:committee_deposit": 123,
+        "hclegacy:file_location": "",
+        "hclegacy:file_pid": "",
         "hclegacy:groups_for_deposit": {
             "group_name": "",
             "group_identifier": ""
         },
-        "hclegacy:society": "",
-        "hclegacy:collection": "",
-        "hclegacy:committee_deposit": 123,
         "hclegacy:previously_published": "",
         "hclegacy:publication_type": "",
         "hclegacy:record_change_date": "",
         "hclegacy:record_creation_date": "",
         "hclegacy:record_identifier": 123,
-        "hclegacy:submitter_id": 123,
-        "hclegacy:submitter_org_memberships": []
+        "hclegacy:society": "",
+        "hclegacy:submitter_org_memberships": [],
+        "hclegacy:submitter_id": 123
     },
     "is_draft": true,
     "is_published": false,
