@@ -35,7 +35,7 @@
     - depositable
     - linkable
 - id: audiovisual-interviewRecording
-  icon: film
+  icon: conversation
   props:
     coar: Video
     coar_type: c_12_ce
@@ -53,7 +53,7 @@
     - depositable
     - linkable
 - id: audiovisual-musicalRecording
-  icon: film
+  icon: music
   props:
     coar: sound
     coar_type: c_18cc
@@ -89,7 +89,7 @@
     - depositable
     - linkable
 - id: audiovisual-performance
-  icon: film
+  icon: ticket alternate
   props:
     coar: Video
     coar_type: c_12_ce
@@ -107,7 +107,7 @@
     - depositable
     - linkable
 - id: audiovisual-podcastEpisode
-  icon: film
+  icon: microphone
   props:
     coar: sound
     coar_type: c_18cc
@@ -125,7 +125,7 @@
     - depositable
     - linkable
 - id: audiovisual-audioRecording
-  icon: film
+  icon: sound
   props:
     coar: sound
     coar_type: c_18cc
@@ -146,7 +146,7 @@
   icon: film
   props:
     coar: Video
-    coar_type: c_18cc
+    coar_type: c_12_ce
     csl: motion_picture
     datacite_general: Audiovisual
     datacite_type: ''
@@ -181,7 +181,7 @@
     - depositable
     - linkable
 - id: image
-  icon: chart bar outline
+  icon: picture
   props:
     coar: image
     coar_type: c_c513
@@ -217,7 +217,7 @@
     - depositable
     - linkable
 - id: image-diagram
-  icon: chart bar outline
+  icon: sitemap
   props:
     csl: figure
     datacite_general: Image
@@ -233,7 +233,7 @@
     - depositable
     - linkable
 - id: image-figure
-  icon: chart bar outline
+  icon: picture
   props:
     coar: still image
     coar_type: c_ecc8
@@ -251,7 +251,7 @@
     - depositable
     - linkable
 - id: image-map
-  icon: chart bar outline
+  icon: map outline
   props:
     coar: map
     coar_type: c_12_cd
@@ -269,7 +269,7 @@
     - depositable
     - linkable
 - id: image-visualArt
-  icon: chart bar outline
+  icon: paint brush
   props:
     coar: still image
     coar_type: c_ecc8
@@ -287,7 +287,7 @@
     - depositable
     - linkable
 - id: image-photograph
-  icon: chart bar outline
+  icon: camera
   props:
     coar: still image
     coar_type: c_ecc8
@@ -305,7 +305,7 @@
     - depositable
     - linkable
 - id: image-other
-  icon: chart bar outline
+  icon: picture
   props:
     coar: still image
     coar_type: c_ecc8
@@ -433,7 +433,7 @@
     - depositable
     - linkable
 - id: presentation-conferencePaper
-  icon: file alternate
+  icon: file alternate outline
   props:
     coar: conference paper not in proceedings
     coar_type: c_18cp
@@ -467,7 +467,7 @@
     - depositable
     - linkable
 - id: presentation-presentationText
-  icon: group
+  icon: file alternate outline
   props:
     csl: speech
     datacite_general: Text
@@ -485,7 +485,7 @@
     - depositable
     - linkable
 - id: presentation-slides
-  icon: group
+  icon: images outline
   props:
     coar: conference presentation
     coar_type: R60J-J5BD
@@ -539,7 +539,7 @@
     - depositable
     - linkable
 - id: software-3DModel
-  icon: code
+  icon: cube
   props:
     coar: source code
     coar_type: QH80-2R4E
@@ -577,7 +577,7 @@
     - depositable
     - linkable
 - id: software-computationalModel
-  icon: code
+  icon: calculator
   props:
     coar: source code
     coar_type: QH80-2R4E
@@ -595,7 +595,7 @@
     - depositable
     - linkable
 - id: software-computationalNotebook
-  icon: code
+  icon: book
   props:
     coar: source code
     coar_type: QH80-2R4E
@@ -681,7 +681,7 @@
     - depositable
     - linkable
 - id: textDocument-bibliography
-  icon: file alternate
+  icon: list alternate outline
   props:
     coar: bibliography
     coar_type: c_86bc
@@ -771,7 +771,7 @@
     - depositable
     - linkable
 - id: textDocument-dataManagementPlan
-  icon: file alternate
+  icon: hdd outline
   props:
     coar: data management plan
     coar_type: c_ab20
@@ -843,7 +843,7 @@
     - depositable
     - linkable
 - id: textDocument-interviewTranscript
-  icon: file alternate
+  icon: conversation
   props:
     csl: interview
     datacite_general: Text
@@ -877,7 +877,7 @@
     - depositable
     - linkable
 - id: textDocument-legalComment
-  icon: file alternate
+  icon: law
   props:
     coar: annotation
     coar_type: c_1162
@@ -895,7 +895,7 @@
     - depositable
     - linkable
 - id: textDocument-legalResponse
-  icon: file alternate
+  icon: law
   props:
     coar: annotation
     coar_type: c_1162
@@ -931,7 +931,7 @@
     - depositable
     - linkable
 - id: textDocument-monograph
-  icon: file alternate
+  icon: book
   props:
     coar: book
     coar_type: c_2f33
@@ -949,7 +949,7 @@
     - depositable
     - linkable
 - id: textDocument-newspaperArticle
-  icon: file alternate
+  icon: newspaper outline
   props:
     coar: Newspaper article
     coar_type: c_998f
@@ -967,7 +967,7 @@
     - depositable
     - linkable
 - id: textDocument-onlinePublication
-  icon: file alternate
+  icon: cloud
   props:
     coar: website
     coar_type: c_7ad9
@@ -985,7 +985,7 @@
     - depositable
     - linkable
 - id: textDocument-poeticWork
-  icon: file alternate
+  icon: paragraph
   props:
     coar: other
     coar_type: c_1843
@@ -1003,7 +1003,7 @@
     - depositable
     - linkable
 - id: textDocument-preprint
-  icon: file alternate
+  icon: eraser
   props:
     csl: article
     datacite_general: Text
@@ -1041,7 +1041,7 @@
     - depositable
     - linkable
 - id: textDocument-workingPaper
-  icon: file alternate
+  icon: edit
   props:
     csl: article
     datacite_general: Text
@@ -1057,7 +1057,7 @@
     - depositable
     - linkable
 - id: textDocument-review
-  icon: file alternate
+  icon: thumbs up outline
   props:
     coar: review
     coar_type: c_efa0
@@ -1075,7 +1075,7 @@
     - depositable
     - linkable
 - id: textDocument-technicalStandard
-  icon: file alternate
+  icon: file code outline
   props:
     coar: technical documentation
     coar_type: c_71bd
@@ -1093,7 +1093,7 @@
     - depositable
     - linkable
 - id: textDocument-thesis
-  icon: file alternate
+  icon: graduation
   props:
     coar: thesis
     coar_type: c_46ec
@@ -1167,7 +1167,7 @@
     - depositable
     - linkable
 - id: other-catalog
-  icon: file alternate
+  icon: ordered list
   props:
     coar: other
     coar_type: c_1843
@@ -1185,7 +1185,7 @@
     - depositable
     - linkable
 - id: other-collection
-  icon: file alternate
+  icon: archive
   props:
     coar: other
     coar_type: c_1843
@@ -1203,7 +1203,7 @@
     - depositable
     - linkable
 - id: other-event
-  icon: file alternate
+  icon: calendar alternate outline
   props:
     coar: other
     coar_type: c_1843
@@ -1221,7 +1221,7 @@
     - depositable
     - linkable
 - id: other-interactiveResource
-  icon: file alternate
+  icon: hand pointer outline
   props:
     coar: interactive resource
     coar_type: c_e9a0
@@ -1239,7 +1239,7 @@
     - depositable
     - linkable
 - id: other-notes
-  icon: file alternate
+  icon: pencil
   props:
     coar: text
     coar_type: c_18cf
@@ -1257,7 +1257,7 @@
     - depositable
     - linkable
 - id: other-patent
-  icon: file alternate
+  icon: certificate
   props:
     coar: patent
     coar_type: c_15cd
@@ -1277,7 +1277,7 @@
     - depositable
     - linkable
 - id: other-peerReview
-  icon: file alternate
+  icon: thumbs up outline
   props:
     coar: peer review
     coar_type: H9BQ-739P
@@ -1295,7 +1295,7 @@
     - depositable
     - linkable
 - id: other-physicalObject
-  icon: file alternate
+  icon: trophy
   props:
     coar: other
     coar_type: c_1843
