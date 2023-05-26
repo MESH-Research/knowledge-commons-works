@@ -1,0 +1,9 @@
+{% if field_value.get('note_text') %}
+<dt class="ui tiny header">{{ _("Note text")}}</dt>
+<dd>{{field_value.get('note_text')}}</dd>
+{% endif %}
+
+{% if field_value.get('note_description') %}
+<dt class="ui tiny header">{{ _("Description")}}</dt>
+<dd>{{field_value.get('note_description')}}</dd>
+{% endif %}

@@ -49,8 +49,83 @@ hclegacy:submitter_id       The user id number (in the HC database) for the
                             user who originally deposited the CORE upload.
 """
 
+from invenio_i18n import lazy_gettext as _
+from invenio_records_resources.services.custom_fields import BaseCF, TextCF, IntegerCF, VocabularyCF
+from marshmallow import fields, validate
+from marshmallow_utils.fields import SanitizedUnicode, SanitizedHTML, StrippedHTML
 
-hclegacy:groups_for_deposit {
-    "group_name": "",
-    "group_identifier": ""
-},
+class GroupsForDepositCF(BaseCF):
+    """Nested custom field."""
+
+    @property
+    def field(self):
+        """groups_for_deposit fields definitions."""
+        return fields.Nested(
+            {
+                "group_name": SanitizedHTML(),
+                "group_identifier": StrippedHTML(),
+            }
+        )
+
+
+HCLEGACY_NAMESPACE = {
+    "hclegacy": "",
+}
+
+HCLEGACY_CUSTOM_FIELDS = [
+    VocabularyCF(
+        name="hclegacy:collection",
+        vocabulary_id="hcCollections",  # controlled vocabulary id defined in the vocabularies.yaml file
+        dump_options=True,  # True when the list of all possible values will be visible in the dropdown UI component, typically for small vocabularies
+        multiple=False, # if the field accepts a list of values (True) or single value (False)
+        field_cls=SanitizedUnicode,
+    ),
+    IntegerCF(
+        name="hclegacy:committee_deposit",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:file_location",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:file_pid",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:groups_for_deposit",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:previously_published",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:publication_type",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:record_change_date",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:record_creation_date",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:record_identifier",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:society",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:submitter_org_memberships",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:submitter_id",
+        field_cls=SanitizedUnicode,
+    )
+]

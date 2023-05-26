@@ -1,0 +1,9 @@
+{% if field_value.get('total_volumes') %}
+  <dt class="ui tiny header">{{ _("Total volumes")}}</dt>
+  <dd>{{field_value.get('total_volumes')}}</dd>
+{% endif %}
+
+{% if field_value.get('volume') %}
+  <dt class="ui tiny header">{{ _("Volume")}}</dt>
+  <dd>{{field_value.get('volume')}}</dd>
+{% endif %}
