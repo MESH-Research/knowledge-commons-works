@@ -1,7 +1,7 @@
 from flask import url_for
 from pprint import pprint
 
-def test_frontpage(client, base_app):
+def test_frontpage(client):
     # pprint(dir(base_client))
     # pprint(dir(base_app))
     response = client.get('/guides')
