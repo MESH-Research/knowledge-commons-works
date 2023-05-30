@@ -13,13 +13,20 @@ from invenio_records_resources.services.custom_fields import (
     TextCF,
     IntegerCF
 )
-from marshmallow import fields, validate
+from marshmallow import fields, Schema, validate
 from marshmallow_utils.fields import (
     SanitizedUnicode,
     SanitizedHTML,
     StrippedHTML
 )
 from .kcr_metadata_fields import KCR_NAMESPACE
+
+
+class UserTagSchema(Schema):
+    """
+    """
+    tag_label = SanitizedUnicode()
+    tag_identifier = SanitizedUnicode()
 
 
 class UserTagsCF(BaseListCF):
@@ -32,11 +39,10 @@ class UserTagsCF(BaseListCF):
             field_cls=fields.Nested,
             field_args={
                 "nested": {
-                    "tag_label": SanitizedUnicode(),
-                    "tag_identifier": SanitizedUnicode()
+                    "tag": fields.List(fields.Nested(UserTagSchema)),
                 }
             },
-            multiple=True,
+            multiple=False,
             **kwargs
         )
 
@@ -56,8 +62,12 @@ class UserTagsCF(BaseListCF):
         return {
             "type": "object",
             "properties": {
-                "tag_label": {"type": "keyword"},
-                "tag_identifier": {"type": "keyword"}
+                "tag": {
+                    "properties": {
+                        "tag_label": {"type": "text"},
+                        "tag_identifier": {"type": "text"}
+                    }
+                }
             },
         }
 
@@ -76,20 +86,22 @@ KCR_USER_TAGS_SECTION_UI = {
             "template": "user_defined_tags.html",
             "props": {
                 "label": _("Tags"),
-                "tag_label": {
-                    "label": _("Tag"),
-                    "placeholder": _("Enter your tags here"),
-                    "description": _("Tags for this deposit that do not appear in the subject terms."),
-                    "multiple": True
-                },
-                "tag_identifier": {
-                    "label": _("Tag id"),
-                    "placeholder": "",
-                    "description": "",
-                    "multiple": True
+                "tag": {
+                    "props": {
+                        "tag_label": {
+                            "label": _("Tags"),
+                            "placeholder": _("Enter your tags here"),
+                            "description": _()
+                        },
+                        "tag_identifier": {
+                            "label": _("Tag ids"),
+                            "placeholder": "",
+                            "description": ""
+                        }
+                    }
                 },
                 "icon": "tags",
-                "description": "Tags",
+                "description": "Tags for this deposit that do not appear in the subject terms.",
             },
         }
     ],

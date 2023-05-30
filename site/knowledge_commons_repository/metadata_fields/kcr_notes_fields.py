@@ -19,59 +19,59 @@ from marshmallow_utils.fields import (
 from .kcr_metadata_fields import KCR_NAMESPACE
 
 
-class NotesCF(BaseCF):
-    """Nested custom field."""
+# class NotesCF(BaseCF):
+#     """Nested custom field."""
 
-    @property
-    def field(self):
-        """Notes fields definitions."""
-        return fields.Nested(
-            {
-                "note_text": SanitizedHTML(),
-                "note_text_sanitized": StrippedHTML(),
-                "note_description": SanitizedUnicode(),
-            }
-        )
+#     @property
+#     def field(self):
+#         """Notes fields definitions."""
+#         return fields.Nested(
+#             {
+#                 "note_text": SanitizedHTML(),
+#                 "note_text_sanitized": StrippedHTML(),
+#                 "note_description": SanitizedUnicode(),
+#             }
+#         )
 
-    @property
-    def mapping(self):
-        """Notes search mappings."""
-        return {
-            "type": "object",
-            "properties": {
-                "note_text": {"type": "text"},
-                "note_text_sanitized": {"type": "text"},
-                "note_description": {"type": "text"},
-            },
-        }
+#     @property
+#     def mapping(self):
+#         """Notes search mappings."""
+#         return {
+#             "type": "object",
+#             "properties": {
+#                 "note_text": {"type": "text"},
+#                 "note_text_sanitized": {"type": "text"},
+#                 "note_description": {"type": "text"},
+#             },
+#         }
 
 
 KCR_NOTES_FIELDS = [
-    NotesCF(name="kcr:notes"),
+    TextCF(name="kcr:notes"),
 ]
+
 
 KCR_NOTES_SECTION_UI = {
     "section": _("Notes"),
     "fields": [
         {
             "field": "kcr:notes",
-            "ui_widget": "Notes",
-            "template": "notes.html",
+            "ui_widget": "RichInput",
             "props": {
                 "label": _("Notes"),
+                "note_description": {
+                    "label": _("Description"),
+                    "placeholder": "",
+                    "description": _(
+                        "A few words describing the kind of notes recorded here."
+                    ),
+                },
                 "note_text": {
                     "label": _("Note"),
                     "placeholder": _("Type your note content here"),
                     "description": _("The text of your note"),
                 },
-                "note_description": {
-                    "label": _("Description"),
-                    "placeholder": "",
-                    "description": _(
-                        "Title of the book or report which this upload is part of."
-                    ),
-                },
-                "icon": "book",
+                "icon": "pencil",
                 "description": "Notes",
             },
         }

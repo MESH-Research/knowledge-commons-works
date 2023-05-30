@@ -1,9 +1,20 @@
 {% if field_value.get('tag_label') %}
-<dt class="ui tiny header">{{ _("Tag")}}</dt>
-<dd>{{field_value.get('tag_label')}}</dd>
-{% endif %}
+<dt class="ui tiny header">{{ _("Tags")}}</dt>
+{{field_value}}
 
-{% if field_value.get('tag_identifier') %}
-<dt class="ui tiny header">{{ _("Tag id")}}</dt>
-<dd>{{field_value.get('tag_identifier')}}</dd>
+  <!-- <ul class="ui horizontal list no-bullets subjects">
+    {%- for tag in keywords %}
+    <li class="item">
+      {%- set q = 'metadata.subjects.subject:"' + subject.subject + '"' %}
+      <a href="{{ url_for('invenio_search_ui.search', q=q) }}"
+          class="subject"
+          title="{{ _('Search results for ') + subject.subject }}"
+      >
+        {{ subject.subject }}
+      </a>
+    </li>
+    {%- endfor %}
+  </ul>
+  {% endif %} -->
+
 {% endif %}

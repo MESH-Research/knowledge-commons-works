@@ -79,11 +79,11 @@ KCR_CHAPTER_LABEL_FIELD_UI = {
 }
 
 KCR_EDITION_FIELD_UI = {
-    "field": "kcr:chapter_label",
+    "field": "kcr:edition",
     "ui_widget": "Input",
     "props": {
-        "label": _("Chapter"),
-        "description": "The number or title of the chapter "
+        "label": _("Edition"),
+        "description": "The edition of the item "
                         "being deposited"
     },
     "icon": "book"
