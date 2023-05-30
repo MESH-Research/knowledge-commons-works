@@ -2477,7 +2477,10 @@ def test_parse_csv(expected_json):
 
     assert actual_json_item == expected_json
 
-top_level_record_keys = ["revision_id", "status", "metadata", "links", "custom_fields", "created", "is_draft", "access", "updated", "pids", "files", "is_published", "parent", "stats", "versions", "id"]
+top_level_record_keys = ["links", "updated", "parent", "revision_id",
+                         "is_draft", "custom_fields", "pids",
+                         "is_published", "metadata", "stats", "status",
+                         "id", "created", "files", "versions", "access"]
 
 request_header_keys = ['Server', 'Date', 'Content-Type', 'Transfer-Encoding', 'Connection', 'Vary', 'X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'Retry-After', 'Permissions-Policy', 'X-Frame-Options', 'X-XSS-Protection', 'X-Content-Type-Options', 'Content-Security-Policy', 'Strict-Transport-Security', 'Referrer-Policy', 'X-Request-ID', 'Content-Encoding']
 
@@ -2500,8 +2503,155 @@ def test_api_request(method, server, endpoint, args, json_dict,
     assert list(actual['headers'].keys()) == request_header_keys
 
 
-@pytest.mark.parametrize("expected_response", [({})])
-def test_create_invenio_record(expected_response):
+@pytest.mark.parametrize("json_payload,expected_headers,expected_status_code,expected_json", [(
+{
+    "access": {
+        "record": "public",
+        "files": "public"
+    },
+    "files": {
+        "enabled": True
+    },
+    "metadata": {
+        "creators": [
+        {
+            "person_or_org": {
+            "family_name": "Brown",
+            "given_name": "Troy",
+            "type": "personal"
+            }
+        },
+        {
+            "person_or_org": {
+            "family_name": "Collins",
+            "given_name": "Thomas",
+            "identifiers": [
+                {"scheme": "orcid", "identifier": "0000-0002-1825-0097"}
+            ],
+            "name": "Collins, Thomas",
+            "type": "personal"
+            },
+            "affiliations": [
+            {
+                "id": "01ggx4157",
+                "name": "Entity One"
+            }
+            ]
+        },
+        {"person_or_org": {"name": "Troy Inc.", "type": "organizational"}}
+        ],
+        "publication_date": "2020-06-01",
+        "resource_type": { "id": "image-photo" },
+        "title": "A Romans story",
+    }
+},
+{
+    'Server': 'nginx/1.23.4',
+     'Date': 'Tue, 30 May 2023 19:07:31 GMT',
+     'Content-Type': 'application/json',
+     'Content-Length': '182',
+     'Connection': 'keep-alive',
+     'Set-Cookie': 'csrftoken=eyJhbGciOiJIUzUxMiIsImlhdCI6MTY4NTQ3MzY1MSwiZXhwIjoxNjg1NTYwMDUxfQ.IkZIODNHR0h2bThxZHdmRVMwaE9JRzgzaE9OaHJhaDFzIg.Te5wJA-7cO-jc29ydK-b2NvEkF17jZNclMIhpGfBou77Ib-I50Qiy4XCBxgttNGGBhkcbeYBRWOm_-2K7YsEBg; Expires=Tue, 06 Jun 2023 19:07:31 GMT; Max-Age=604800; Secure; Path=/; SameSite=Lax',
+     'X-RateLimit-Limit': '500',
+     'X-RateLimit-Remaining': '499',
+     'X-RateLimit-Reset': '1685473712',
+     'Retry-After': '60',
+     'Permissions-Policy': 'interest-cohort=()',
+     'X-Frame-Options': 'sameorigin',
+     'X-XSS-Protection': '1; mode=block',
+     'X-Content-Type-Options': 'nosniff',
+     'Content-Security-Policy': "default-src 'self' data: 'unsafe-inline' blob:",
+     'Strict-Transport-Security': 'max-age=31556926; includeSubDomains',
+     'Referrer-Policy': 'strict-origin-when-cross-origin'
+},
+201,
+{
+    "links": {
+        "self": "https://localhost/api/records/###/draft",
+        "self_html": "https://localhost/uploads/###",
+        "self_iiif_manifest": "https://localhost/api/iiif/draft:###/manifest",
+        "self_iiif_sequence": "https://localhost/api/iiif/draft:###/sequence/default",
+        "files": "https://localhost/api/records/###/draft/files",
+        "archive": "https://localhost/api/records/###/draft/files-archive",
+        "record": "https://localhost/api/records/###",
+        "record_html": "https://localhost/records/###",
+        "publish": "https://localhost/api/records/###/draft/actions/publish",
+        "review": "https://localhost/api/records/###/draft/review",
+        "versions": "https://localhost/api/records/###/versions",
+        "access_links": "https://localhost/api/records/###/access/links",
+        "reserve_doi": "https://localhost/api/records/###/draft/pids/doi",
+        "communities": "https://localhost/api/records/###/communities",
+        "communities-suggestions": "https://localhost/api/records/###/communities-suggestions",
+        "requests": "https://localhost/api/records/###/requests"
+    },
+    "updated": "2023-05-30T18:57:05.296257+00:00",
+    "parent": {
+        "communities": {},
+        "id": "###",
+        "access": {"links": [], "owned_by": [{"user": 3}]}
+    },
+    "revision_id": 4,
+    "is_draft": True,
+    "custom_fields": {},
+    "pids": {},
+    "is_published": False,
+    "metadata": {
+        "title": "A Romans story",
+        "creators": [
+            {"person_or_org": {"name": "Brown, Troy", "given_name": "Troy", "family_name": "Brown", "type": "personal"}},
+            {
+                "person_or_org": {
+                "family_name": "Collins",
+                "given_name": "Thomas",
+                "identifiers": [
+                    {"scheme": "orcid", "identifier": "0000-0002-1825-0097"}
+                ],
+                "name": "Collins, Thomas",
+                "type": "personal"
+                },
+                "affiliations": [
+                {
+                    "id": "01ggx4157",
+                    'name': 'European Organization for Nuclear '
+                            'Research'}
+                ]
+            },
+            {"person_or_org": {"name": "Troy Inc.", "type": "organizational"}}
+        ],
+        "publication_date": "2020-06-01",
+        "resource_type": {
+            "title": {"de": "Foto", "en": "Photo"},
+            "id": "image-photo"}
+    },
+    "status": "draft",
+    "id": "4gqj3-d0z12",
+    "created": "2023-05-30T18:57:05.271354+00:00",
+    "expires_at": "2023-05-30 18:57:05.271380",
+    "files": {"enabled": True, "order": []},
+    "versions": {"is_latest_draft": True, "index": 1, "is_latest": False},
+    "access": {
+        "files": "public",
+        "embargo": {"active": False, "reason": None},
+        "record": "public",
+        "status": "metadata-only"
+    }
+}
+)])
+def test_create_invenio_record(json_payload, expected_headers,
+                               expected_status_code, expected_json):
     """
     """
-    pass
+    actual = create_invenio_record(json_payload)
+    actual_id = actual['json']['id']
+    actual_parent = actual['json']['parent']['id']
+
+    simple_fields = [f for f in actual['json'].keys() if f not in [
+        'links', 'parent', 'id', 'created', 'updated', 'expires_at'
+    ]]
+    for s in simple_fields:
+        assert actual['json'][s] == expected_json[s]
+
+    for label, link in actual['json']['links'].items():
+        assert link == expected_json['links'][label].replace('###', actual_id)
+
+    # assert actual['json'] == expected_json
