@@ -9,6 +9,7 @@ from isbnlib import is_isbn10, is_isbn13, get_isbnlike, clean
 import iso639
 import json
 from langdetect import detect_langs
+from pathlib import Path
 from stdnum import issn
 import requests
 # import numpy as np
@@ -21,6 +22,9 @@ import re
 import validators
 import xml.etree.ElementTree as ET
 from xml.sax.saxutils import escape, unescape
+
+GLOBAL_DEBUG = False
+FILES_LOCATION = Path(Path(__file__).parents[1], 'kcr-untracked-files', 'humcore')
 
 @click.group()
 def cli():
@@ -1122,32 +1126,42 @@ def serialize_json() -> tuple[dict, dict]:
 
 
 def api_request(method:str='GET', endpoint:str='records', server:str='',
-                args:str='', token:str='', json_dict:dict={}) -> dict:
+                args:str='', token:str='', json_dict:dict={},
+                file_data:bytes=None) -> dict:
     """
     Make an api request and return the response
     """
+    debug = GLOBAL_DEBUG or False
     if not server:
         server = 'localhost'
     if not token:
         token = os.environ['API_TOKEN']
 
     payload_args = {}
-    if json_dict:
-        payload_args['data'] = json.dumps(json_dict)
 
     api_url = f'https://{server}/api/{endpoint}'
     if args:
         api_url = f'{api_url}/{args}'
+    if debug: print('url:', api_url)
 
-    print('url:', api_url)
-    callfunc = requests.get
-    if method == 'POST':
-        callfunc = requests.post
-    response = callfunc(api_url,
-        headers={'Authorization': f'Bearer {token}',
-                 'Content-Type': 'application/json'},
-        **payload_args,
-        verify=False)
+    callfuncs = {'GET': requests.get,
+                 'POST': requests.post,
+                 'DELETE': requests.delete,
+                 'PUT': requests.put,
+                 'PATCH': requests.patch}
+    callfunc = callfuncs[method]
+
+    headers={'Authorization': f'Bearer {token}'}
+    if json_dict and method in ['POST', 'PUT', 'PATCH']:
+        headers['Content-Type'] = 'application/json'
+        payload_args['data'] = json.dumps(json_dict)
+    elif file_data and method == 'POST':
+        headers['Content-Type'] = 'application/octet-stream'
+        payload_args['data'] = file_data
+
+    # files = {'file': ('report.xls', open('report.xls', 'rb'), 'application/vnd.ms-excel', {'Expires': '0'})}
+    response = callfunc(api_url, headers=headers, **payload_args, verify=False)
+    if debug: pprint(response)
 
     return {'status_code': response.status_code,
             'headers': response.headers,
@@ -1160,24 +1174,107 @@ def create_invenio_record(metadata:dict, server:str='',
     """
     Create a new Invenio record from the provided dictionary of metadata
     """
+    debug = GLOBAL_DEBUG or True
+    # FIXME: create necessary user account and community?
+
     # Make draft and publish
     result = api_request(method='POST', endpoint='records',
                          json_dict=metadata)
-    pprint(result)
     if result['status_code'] != 201:
-        raise Exception(result.text)
-    idv = result['json']["id"]
-    print('created id:', idv)
+        raise requests.HTTPError(result.text)
     publish_link = result['json']["links"]["publish"]
-    print('publish link:', publish_link)
+    if debug: print('publish link:', publish_link)
+
+    # FIXME: upload files here and then publish the draft?
+
     return(result)
+
+
+def upload_draft_files(draft_id:str, files_dict:dict[str]) -> dict:
+    """
+    Upload the files for one draft record using the REST api.
+
+    This process involves three api calls: one to initialize the
+    upload, another to actually send the file content, and a third
+    to commit the uploaded data.
+
+    :param str draft_id:    The id number for the Invenio draft record
+                            for which the files are to be uploaded.
+    :param dict files_dict:     A dictionary whose keys are the filenames to
+                                be used for the uploaded files. The
+                                values are the corresponding full filenames
+                                used in the humcore folder. (The latter is
+                                prefixed with a hashed (?) string.)
+    """
+    filenames_list = [{'key': f[0]} for f in files_dict.keys()]
+    output = {}
+
+    # initialize upload
+    initialization = api_request(method='POST', endpoint='records',
+                         args=f'/{draft_id}/draft/files',
+                         json_dict=filenames_list)
+    if initialization['status_code'] != 201:
+        raise requests.HTTPError(initialization.text)
+    output['initialization'] = initialization
+    output['file_transactions'] = []
+
+    # upload files
+    for f in initialization['json']['entries']:
+        output['file_transcations'][f['key']] = {}
+        content_args = f['links']['content'].replace('/api/records', '')
+        assert re.findall(draft_id, content_args)
+        commit_args = f['links']['commit'].replace('/api/records', '')
+        assert re.findall(draft_id, commit_args)
+
+        filename = content_args.split('/')[5]
+        assert filename in files_dict.keys()
+        long_filename = files_dict[filename]
+        file_data = open(Path(FILES_LOCATION, long_filename), "rb")
+
+        content_upload = api_request(method='PUT', endpoint='records',
+                                     args=content_args, file_data=file_data)
+        if content_upload['status_code'] != 201:
+            raise requests.HTTPError(content_upload.text)
+        output['file_transactions'][f['key']]['content_upload'] = content_upload
+
+        assert content_upload['json']['key'] == filename
+        assert content_upload['json']['metadata']['status'] == 'pending'
+        assert content_upload['json']['metadata'][
+            'links']['commit'] == f['links']['commit']
+
+        # commit uploaded data
+        upload_commit = api_request(method='POST', endpoint='records',
+                                     args=commit_args)
+        if upload_commit['status_code'] != 200:
+            raise requests.HTTPError(upload_commit.text)
+        output['file_transactions'][f['key']]['upload_commit'] = upload_commit
+        assert upload_commit['json']['key'] == filename
+        assert valid_date(upload_commit['json']['created'])
+        assert valid_date(upload_commit['json']['updated'])
+        assert upload_commit['json']['status'] == "completed"
+        assert upload_commit['json']['metadata'] == None
+        assert upload_commit['json']['links']['content'] == f['links']['content']
+        assert upload_commit['json']['links']['self'] == f['links']['self']
+        assert upload_commit['json']['links']['commit'] == f['links']['commit']
+
+    # confirm uploads for deposit
+    confirmation = api_request('GET', 'records', args=f'{id}/draft/files/{filename}')
+    if confirmation['status_code'] != 200:
+        raise requests.HTTPError(confirmation.text)
+    output['confirmation'] = confirmation
+    pprint('confirmation')
+    pprint(confirmation)
+    return(output)
 
 
 def delete_invenio_record(record_id:str) -> dict:
     """
     Delete an Invenio record with the provided Id
     """
-
+    result = api_request(method='DELETE', endpoint='records',
+                         args=f'/{record_id}/draft')
+    assert result['status_code'] == 204
+    return(result)
 
 
 fedora_fields = ["pid", "label", "state", "ownerId", "cDate", "mDate",
