@@ -50,39 +50,29 @@ hclegacy:submitter_id       The user id number (in the HC database) for the
 """
 
 from invenio_i18n import lazy_gettext as _
-from invenio_records_resources.services.custom_fields import BaseCF, TextCF, IntegerCF, VocabularyCF
+from invenio_records_resources.services.custom_fields import BaseCF, TextCF
+from invenio_records_resources.services.custom_fields.number import IntegerCF
+from invenio_vocabularies.services.custom_fields import VocabularyCF
 from marshmallow import fields, validate
-from marshmallow_utils.fields import SanitizedUnicode, SanitizedHTML, StrippedHTML
-
-class GroupsForDepositCF(BaseCF):
-    """Nested custom field."""
-
-    @property
-    def field(self):
-        """groups_for_deposit fields definitions."""
-        return fields.Nested(
-            {
-                "group_name": SanitizedHTML(),
-                "group_identifier": StrippedHTML(),
-            }
-        )
-
+from marshmallow_utils.fields import SanitizedUnicode, SanitizedHTML, StrippedHTML, EDTFDateString
 
 HCLEGACY_NAMESPACE = {
     "hclegacy": "",
 }
 
 HCLEGACY_CUSTOM_FIELDS = [
-    VocabularyCF(
-        name="hclegacy:collection",
-        vocabulary_id="hcCollections",  # controlled vocabulary id defined in the vocabularies.yaml file
-        dump_options=True,  # True when the list of all possible values will be visible in the dropdown UI component, typically for small vocabularies
-        multiple=False, # if the field accepts a list of values (True) or single value (False)
-        field_cls=SanitizedUnicode,
+    # VocabularyCF(
+    #     name="hclegacy:collection",
+    #     vocabulary_id="hcCollections",  # controlled vocabulary id defined in the vocabularies.yaml file
+    #     dump_options=True,  # True when the list of all possible values will be visible in the dropdown UI component, typically for small vocabularies
+    #     multiple=False, # if the field accepts a list of values (True) or single value (False)
+    #     field_cls=SanitizedUnicode,
+    # ),
+    TextCF(
+        name="hclegacy:collection"
     ),
     IntegerCF(
-        name="hclegacy:committee_deposit",
-        field_cls=SanitizedUnicode,
+        name="hclegacy:committee_deposit"
     ),
     TextCF(
         name="hclegacy:file_location",
@@ -90,10 +80,6 @@ HCLEGACY_CUSTOM_FIELDS = [
     ),
     TextCF(
         name="hclegacy:file_pid",
-        field_cls=SanitizedUnicode,
-    ),
-    TextCF(
-        name="hclegacy:groups_for_deposit",
         field_cls=SanitizedUnicode,
     ),
     TextCF(
@@ -106,11 +92,11 @@ HCLEGACY_CUSTOM_FIELDS = [
     ),
     TextCF(
         name="hclegacy:record_change_date",
-        field_cls=SanitizedUnicode,
+        field_cls=EDTFDateString,
     ),
     TextCF(
         name="hclegacy:record_creation_date",
-        field_cls=SanitizedUnicode,
+        field_cls=EDTFDateString,
     ),
     TextCF(
         name="hclegacy:record_identifier",

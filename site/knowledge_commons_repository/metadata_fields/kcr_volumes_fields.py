@@ -27,7 +27,7 @@ class VolumesCF(BaseCF):
 
     @property
     def field(self):
-        """Notes fields definitions."""
+        """Volumes fields definitions."""
         return fields.Nested(
             {
                 "total_volumes": SanitizedUnicode(),
@@ -51,10 +51,10 @@ KCR_VOLUMES_FIELDS = [
 ]
 
 
-KCR_VOLUMES_FIELDS_UI = {
+KCR_VOLUMES_FIELDS_UI = [{
     "field": "kcr:volumes",
     "ui_widget": "Volumes",
-    "template": "volumes.html",
+    "template": "knowledge_commons_repository/volumes.html",
     "props": {
         "label": _("Volumes"),
         "total_volumes": {
@@ -71,5 +71,5 @@ KCR_VOLUMES_FIELDS_UI = {
         }
     },
     "icon": "book"
-}
+}]
 

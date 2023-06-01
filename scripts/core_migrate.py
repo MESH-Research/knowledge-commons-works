@@ -127,7 +127,7 @@ licenses = {'All Rights Reserved': (
             )
             }
 
-def append_bad_data(rowid:str, content:tuple, bad_data_dict:dict):
+def _append_bad_data(rowid:str, content:tuple, bad_data_dict:dict):
     """
     Add info on bad data to dictionary of bad data
     """
@@ -168,7 +168,7 @@ def valid_date(datestring:str) -> bool:
     return True
 
 
-def add_resource_type(rec, pubtype, genre, filetype):
+def _add_resource_type(rec, pubtype, genre, filetype):
     """
     """
     bad_data = []
@@ -289,7 +289,7 @@ def add_resource_type(rec, pubtype, genre, filetype):
     return rec, bad_data
 
 
-def add_book_authors(author_string:str, bad_data_dict:dict,
+def _add_book_authors(author_string:str, bad_data_dict:dict,
                      row_id) -> tuple[list[dict], dict]:
     """
     Convert the "book_author" string to JSON objects for Invenio
@@ -379,7 +379,7 @@ def add_book_authors(author_string:str, bad_data_dict:dict,
                 }
             )
     except TypeError as e:
-        append_bad_data(row_id,
+        _append_bad_data(row_id,
                         ('book_author', author_string), bad_data_dict)
     # FIXME: handle simple spaced names with no delimiters
     # FIXME: last name repeated like "Kate Holland"?
@@ -403,7 +403,7 @@ def add_book_authors(author_string:str, bad_data_dict:dict,
     # print('*****', bas, type(bas))
     return author_list, bad_data_dict
 
-def add_author_data(newrec:dict, row:dict, bad_data_dict:dict
+def _add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                     ) -> tuple[dict, dict]:
     """
     Add information about authors to the supplied record from supplied row.
@@ -434,7 +434,7 @@ def add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                     # TODO: are null roles a problem?
                     new_person['role'] = {'id': a['role']}
                 else:
-                    append_bad_data(row['id'],
+                    _append_bad_data(row['id'],
                                     (f'authors:{a["fullname"]}:role', a['role']),
                                     bad_data_dict)
                 if a['affiliation']:
@@ -467,10 +467,10 @@ def add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                 #                 bad_data_dict)
         except (SyntaxError, ValueError) as e:
             print(row['authors'])
-            append_bad_data(row['id'], ('authors:Syntax or ValueError',
+            _append_bad_data(row['id'], ('authors:Syntax or ValueError',
                                         row['authors']), bad_data_dict)
     else:
-        append_bad_data(row['id'], ('authors:no value', row['authors']),
+        _append_bad_data(row['id'], ('authors:no value', row['authors']),
                         bad_data_dict)
 
     # TODO: Compare these fields?
@@ -563,7 +563,7 @@ def serialize_json() -> tuple[dict, dict]:
                     pass
                 # FIXME: This needs work
                 elif mychap in mytitle and len(mychap) > 18:
-                    append_bad_data(row['id'],
+                    _append_bad_data(row['id'],
                                     ('chapter in title', row['chapter'],
                                      row['title']), bad_data_dict)
                     # print('~~~~', row['chapter'])
@@ -671,12 +671,12 @@ def serialize_json() -> tuple[dict, dict]:
                 )
 
             # Resource type
-            newrec, bad_data = add_resource_type(newrec,
+            newrec, bad_data = _add_resource_type(newrec,
                                                  row['publication-type'],
                                                  row['genre'], row['filetype'])
             if bad_data:
                 for i in bad_data:
-                    append_bad_data(row['id'], i, bad_data_dict)
+                    _append_bad_data(row['id'], i, bad_data_dict)
 
             # Identifiers
             # FIXME: Is it right that these are all datacite dois?
@@ -767,7 +767,7 @@ def serialize_json() -> tuple[dict, dict]:
                     newrec['custom_fields'][
                            'hclegacy:committee_deposit'] = cid
                 except ValueError:
-                    append_bad_data(row['id'],
+                    _append_bad_data(row['id'],
                                     ('committee_id', row['committee_id']),
                                     bad_data_dict)
 
@@ -797,12 +797,12 @@ def serialize_json() -> tuple[dict, dict]:
                            ]['hclegacy:submitter_id'] = row['submitter']
                 except ValueError:
                     row['submitter'] = None
-                    append_bad_data(row['id'],
+                    _append_bad_data(row['id'],
                                     ('submitter', row['submitter']),
                                     bad_data_dict)
 
             # Author info
-            newrec, bad_data_dict = add_author_data(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = _add_author_data(newrec, row, bad_data_dict)
 
             if row['organization']:
                 newrec['custom_fields'
@@ -858,14 +858,14 @@ def serialize_json() -> tuple[dict, dict]:
                                             ] = group_list
             except AssertionError:
                 row['hclegacy:groups_for_deposit'] = None
-                append_bad_data(row['id'],
+                _append_bad_data(row['id'],
                                 ('group or group_ids', row['group'], row['group_ids']),
                                 bad_data_dict)
             except json.decoder.JSONDecodeError as e:
                 # print(e)
                 # print(row['group'], row['group_ids'])
                 row['hclegacy:groups_for_deposit'] = None
-                append_bad_data(row['id'],
+                _append_bad_data(row['id'],
                                 ('group or group_ids', row['group'], row['group_ids']),
                                 bad_data_dict)
 
@@ -874,7 +874,7 @@ def serialize_json() -> tuple[dict, dict]:
             if row['book_author']:
                 newrec['custom_fields']['imprint:imprint'] = {}
                 # print(row['book_author'])
-                book_names, bad_data_dict = add_book_authors(
+                book_names, bad_data_dict = _add_book_authors(
                     row['book_author'], bad_data_dict, row['id'])
                 newrec['custom_fields']['imprint:imprint'][
                     'creators'] = book_names
@@ -906,7 +906,7 @@ def serialize_json() -> tuple[dict, dict]:
                     if not checked_i:
                         # print(isbn)
                         # print('invalid isbn', ':', checked_i, ':', clean(i), ':', row['isbn'])
-                        append_bad_data(row['id'],
+                        _append_bad_data(row['id'],
                                         ('invalid isbn', row['isbn']),
                                         bad_data_dict)
                     else:
@@ -924,7 +924,7 @@ def serialize_json() -> tuple[dict, dict]:
                 if newrec['metadata']['resource_type']['id'] not in [
                     *book_types, *article_types]:
                     # print('****', newrec['metadata']['resource_type']['id'])
-                    append_bad_data(row['id'],
+                    _append_bad_data(row['id'],
                                     ('resource_type for book_journal_title',
                                      newrec['metadata']['resource_type']['id']),
                                      bad_data_dict)
@@ -949,7 +949,7 @@ def serialize_json() -> tuple[dict, dict]:
                     if newrec['metadata']['resource_type']['id'
                             ] not in [*book_types, *article_types,
                                       *ambiguous_types]:
-                        append_bad_data(row['id'],
+                        _append_bad_data(row['id'],
                             ('resource_type for start_page/end_page',
                              newrec['metadata']['resource_type']['id']),
                             bad_data_dict)
@@ -967,7 +967,7 @@ def serialize_json() -> tuple[dict, dict]:
                         # print('isbn', row['issn'])
                         newrec['custom_fields'].setdefault(
                             'imprint:imprint', {})['isbn'] = [row['issn']]
-                        append_bad_data(row['id'],
+                        _append_bad_data(row['id'],
                             ('issn', 'isbn in issn field', row['issn']),
                             bad_data_dict)
                     else:
@@ -984,7 +984,7 @@ def serialize_json() -> tuple[dict, dict]:
                         myissn = myissn.replace('.', '')
                         myissnx = re.findall(r'\d{4}[-\s\.]?\d{3}[\dxX]', myissn)
                         if len(myissnx) < 1:
-                            append_bad_data(row['id'],
+                            _append_bad_data(row['id'],
                                 ('issn', 'malformed', row['issn']),
                                 bad_data_dict)
                         else:
@@ -996,7 +996,7 @@ def serialize_json() -> tuple[dict, dict]:
                                             'journal:journal']['issn'].append(i)
                                 except Exception:
                                     # print('exception', i, row['issn'])
-                                    append_bad_data(row['id'],
+                                    _append_bad_data(row['id'],
                                         ('issn', 'invalid last digit',
                                          row['issn']),
                                         bad_data_dict)
@@ -1011,7 +1011,7 @@ def serialize_json() -> tuple[dict, dict]:
                     if newrec['metadata']['resource_type']['id'] not in [
                             'publication:dissertation', 'publication:report',
                             'publication:whitePaper']:
-                        append_bad_data(row['id'],
+                        _append_bad_data(row['id'],
                             ('resource_type for institution',
                              newrec['metadata']['resource_type']['id']),
                             bad_data_dict)
@@ -1121,6 +1121,7 @@ def serialize_json() -> tuple[dict, dict]:
         # print(len(auth_errors))
     print(f'Processed {line_count} lines.')
     print(f'Found {len(bad_data_dict)} records with bad data.')
+    print(domains)
 
     return newrec_list, bad_data_dict
 
@@ -1165,7 +1166,7 @@ def api_request(method:str='GET', endpoint:str='records', server:str='',
 
     return {'status_code': response.status_code,
             'headers': response.headers,
-            'json': response.json(),
+            'json': response.json() if method != 'DELETE' else None,
             'text': response.text}
 
 
@@ -1211,7 +1212,7 @@ def upload_draft_files(draft_id:str, files_dict:dict[str]) -> dict:
 
     # initialize upload
     initialization = api_request(method='POST', endpoint='records',
-                         args=f'/{draft_id}/draft/files',
+                         args=f'{draft_id}/draft/files',
                          json_dict=filenames_list)
     if initialization['status_code'] != 201:
         raise requests.HTTPError(initialization.text)
@@ -1221,9 +1222,9 @@ def upload_draft_files(draft_id:str, files_dict:dict[str]) -> dict:
     # upload files
     for f in initialization['json']['entries']:
         output['file_transcations'][f['key']] = {}
-        content_args = f['links']['content'].replace('/api/records', '')
+        content_args = f['links']['content'].replace('/api/records/', '')
         assert re.findall(draft_id, content_args)
-        commit_args = f['links']['commit'].replace('/api/records', '')
+        commit_args = f['links']['commit'].replace('/api/records/', '')
         assert re.findall(draft_id, commit_args)
 
         filename = content_args.split('/')[5]
@@ -1272,10 +1273,82 @@ def delete_invenio_record(record_id:str) -> dict:
     Delete an Invenio record with the provided Id
     """
     result = api_request(method='DELETE', endpoint='records',
-                         args=f'/{record_id}/draft')
+                         args=f'{record_id}/draft')
     assert result['status_code'] == 204
     return(result)
 
+
+def create_invenio_community(community_label:str) -> dict:
+    """
+    """
+    top_level_communities = [
+        'ajs.hcommons.org', 'arlisna.hcommons.org', 'aseees.hcommons.org',
+        'caa.hcommons.org', 'commons.msu.edu', 'hastac.hcommons.org',
+        'hcommons.org', 'mla.hcommons.org', 'sah.hcommons.org',
+        'up.hcommons.org'
+    ]
+    data = {
+        "access": {
+                "visibility": "restricted",
+                "member_policy": "closed",
+                "record_policy": "closed",
+                "owned_by": [{"user": ""}]
+                },
+        "slug": "tccon",
+        "metadata": {
+                "title": "",
+                "description": "",
+                "website": "",
+                "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+        }
+    }
+    community_data = {}
+    result = api_request("POST", endpoint="communities",
+                         json_dict=community_data)
+    print(result.text)
+    return(result)
+
+
+def create_full_invenio_record(core_data:dict) -> dict:
+    """
+    Create an invenio record with file uploads, ownership, communities.
+    """
+    result = {}
+    domains = [
+        'ajs.hcommons.org', 'arlisna.hcommons.org', 'aseees.hcommons.org',
+        'caa.hcommons.org', 'commons.msu.edu', 'hastac.hcommons.org',
+        'hcommons.org', 'mla.hcommons.org', 'sah.hcommons.org',
+        'up.hcommons.org'
+    ]
+    # Create/find the necessary communities
+    if 'kcr:commons_domain' in core_data['custom_fields'].keys() \
+            and core_data['custom_fields']['kcr:commons_domain']:
+        if core_data['kcr:commons_domain'] != 'hcommons.org:
+            community_label = core_data['kcr:commons_domain'].split('.')[0]
+        else:
+            community_label = 'hcommons'
+
+        # try to look up a matching community
+        community_check = api_request('GET', endpoint='communities'
+                                      args=community_label)
+
+        {"updated": "created": "revision_id": 2, "id": "36ece3f3-1c5b-49bd-9053-c75b3f1b2aa5", "slug": "", "custom_fields": {}, "metadata": {"title": "Ian's first community"}, "access": {"record_policy": "open", "visibility": "public", "member_policy": "open"}, "links": {}}
+        pass
+
+        # otherwise create it
+
+
+    # Create the basic metadata record
+
+    # Attach the record to the communities
+
+    # Upload the files
+
+    # Create/find the necessary user account
+
+    # Change the ownership of the record
+
+    return(result)
 
 fedora_fields = ["pid", "label", "state", "ownerId", "cDate", "mDate",
                  "dcmDate", "title", "creator", "subject", "description",
@@ -1296,6 +1369,8 @@ def fetch_fedora(query:Optional[str], protocol:str, pid:Optional[str],
                  ) -> list[dict]:
     """
     Fetch deposit records from the Fedora CORE datastream.
+
+    DEPRECATED AND NOT CURRENTLY FUNCTIONAL
     """
     fields_list = fields.split(',') if fields is not None else fedora_fields
     FEDORA_USER = os.environ['FEDORA_USER']

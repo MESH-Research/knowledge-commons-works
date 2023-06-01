@@ -1,5 +1,6 @@
-{% if field_value.get('tag_label') %}
+{% if field_value %}
 <dt class="ui tiny header">{{ _("Tags")}}</dt>
+{{ field_value|pprint }}
 {{field_value}}
 
   <!-- <ul class="ui horizontal list no-bullets subjects">

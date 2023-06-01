@@ -1,7 +1,18 @@
 from click.testing import CliRunner
-from core_migrate import serialize_json, api_request, create_invenio_record
+from core_migrate import (
+    serialize_json,
+    api_request,
+    create_invenio_record,
+    delete_invenio_record,
+    valid_date,
+    valid_isbn
+)
+import datetime
 import json
+from pprint import pprint
 import pytest
+import pytz
+from dateutil.parser import isoparse
 
 json28491 = {
     'created': '2020-01-30T16:46:54Z',
@@ -51,13 +62,10 @@ json28491 = {
     'files': {'default_preview':    'tratamiento-de-los-residuos-de-la-'
                                     'industria-del-procesado-de-alimentos.pdf',
               'enabled': 'true',
-              'entries': {'tratamiento-de-los-residuos-de-'
-                          'la-industria-del-procesado-de-alimentos'
-                          '.pdf': {
-                              'key': 'tratamiento-de-los-residuos-de-la-industria-del-procesado-de-alimentos.pdf',
-                              'mimetype': 'application/pdf',
-                              'size': '21928738'}
-              }
+              'order': ['tratamiento-de-los-residuos-de-'
+                         'la-industria-del-procesado-de-alimentos'
+                         '.pdf'
+              ]
     },
     'metadata': {
         'additional_descriptions': [
@@ -184,8 +192,7 @@ json28491 = {
     'parent': {'access': {'owned_by': [{'user': 1020225}]}},
     'pids': {'doi': {'client': 'datacite',
                     'identifier': 'doi:10.17613/g0rz-0930',
-                    'provider': 'datacite'}},
-    'updated': '2020-01-30T16:46:54Z'
+                    'provider': 'datacite'}}
 }
 
 json583 = {
@@ -2641,10 +2648,18 @@ def test_create_invenio_record(json_payload, expected_headers,
                                expected_status_code, expected_json):
     """
     """
+    # Send everything from test JSON fixtures except
+    #  - created
+    #  - updated
+    #  - parent
+    #  - pids
+    #  -
+    print('Starting')
     actual = create_invenio_record(json_payload)
     actual_id = actual['json']['id']
     actual_parent = actual['json']['parent']['id']
 
+    # Test response content
     simple_fields = [f for f in actual['json'].keys() if f not in [
         'links', 'parent', 'id', 'created', 'updated', 'expires_at'
     ]]
@@ -2653,5 +2668,33 @@ def test_create_invenio_record(json_payload, expected_headers,
 
     for label, link in actual['json']['links'].items():
         assert link == expected_json['links'][label].replace('###', actual_id)
+
+    assert actual['json']['files'] == {'enabled': True, 'order': []}
+    assert valid_date(actual['json']['created'])
+    assert isoparse(actual['json']['created']) - \
+        pytz.utc.localize(datetime.datetime.utcnow()) \
+        <= datetime.timedelta(seconds=60)
+    assert valid_date(actual['json']['updated'])
+    assert isoparse(actual['json']['updated']) - \
+        pytz.utc.localize(datetime.datetime.utcnow()) \
+        <= datetime.timedelta(seconds=60)
+    print('ACTUAL &&&&')
+    pprint(actual)
+
+    # Confirm the record is retrievable
+    confirm_created = api_request('GET', endpoint='records',
+                                  args=f'{actual_id}')
+    pprint(actual_id)
+    pprint(confirm_created)
+    assert confirm_created['status_code'] == 200
+
+    # Clean up created record from live db
+    deleted = delete_invenio_record(actual_id)
+    assert deleted['status_code'] == 204
+
+    # Confirm it no longer exists
+    confirm_deleted = api_request('GET', endpoint='records',
+                                  args=f'{actual_id}')
+    assert confirm_deleted['status_code'] == 404
 
     # assert actual['json'] == expected_json

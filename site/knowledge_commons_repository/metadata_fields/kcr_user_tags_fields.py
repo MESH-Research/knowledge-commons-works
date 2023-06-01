@@ -22,13 +22,6 @@ from marshmallow_utils.fields import (
 from .kcr_metadata_fields import KCR_NAMESPACE
 
 
-class UserTagSchema(Schema):
-    """
-    """
-    tag_label = SanitizedUnicode()
-    tag_identifier = SanitizedUnicode()
-
-
 class UserTagsCF(BaseListCF):
     """Nested custom field."""
 
@@ -36,13 +29,10 @@ class UserTagsCF(BaseListCF):
         """Constructor."""
         super().__init__(
             name,
-            field_cls=fields.Nested,
+            field_cls=SanitizedUnicode(),
             field_args={
-                "nested": {
-                    "tag": fields.List(fields.Nested(UserTagSchema)),
-                }
             },
-            multiple=False,
+            multiple=True,
             **kwargs
         )
 
@@ -58,22 +48,22 @@ class UserTagsCF(BaseListCF):
 
     @property
     def mapping(self):
-        """user_definted_tags search mappings."""
+        """user_defined_tags search mappings."""
         return {
-            "type": "object",
+            "type": "keyword",
             "properties": {
-                "tag": {
-                    "properties": {
-                        "tag_label": {"type": "text"},
-                        "tag_identifier": {"type": "text"}
-                    }
-                }
-            },
+                    # "properties": {
+                    #     "tag_label": {"type": "text"},
+                    #     "tag_identifier": {"type": "text"}
+                    # }
+            }
         }
 
 
 KCR_USER_TAGS_FIELDS = [
-    UserTagsCF(name="kcr:user_defined_tags"),
+    TextCF(name="kcr:user_defined_tags",
+           field_cls=SanitizedUnicode,
+           multiple=True)
 ]
 
 
@@ -82,24 +72,11 @@ KCR_USER_TAGS_SECTION_UI = {
     "fields": [
         {
             "field": "kcr:user_defined_tags",
-            "ui_widget": "UserDefinedTags",
-            "template": "user_defined_tags.html",
+            "ui_widget": "MultiInput",
+            # "template": "knowledge_commons_repository/user_defined_tags.html",
             "props": {
                 "label": _("Tags"),
-                "tag": {
-                    "props": {
-                        "tag_label": {
-                            "label": _("Tags"),
-                            "placeholder": _("Enter your tags here"),
-                            "description": _()
-                        },
-                        "tag_identifier": {
-                            "label": _("Tag ids"),
-                            "placeholder": "",
-                            "description": ""
-                        }
-                    }
-                },
+                "placeholder": _("Enter your tags here"),
                 "icon": "tags",
                 "description": "Tags for this deposit that do not appear in the subject terms.",
             },
