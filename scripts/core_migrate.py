@@ -1044,20 +1044,21 @@ def serialize_json() -> tuple[dict, dict]:
                     keywords = []
                     if isinstance(row['keyword'], dict):
                         row['keyword'] = row['keyword'].values()
-                    for k in row['keyword']:
-                        kid = None
-                        if k.casefold() in keywords_global_dict.keys():
-                            kid = keywords_global_dict[k.casefold()][0]
-                            if k not in keywords_global_dict[k.casefold()][1]:
-                                keywords_global_dict[k.casefold()][1].append(k)
+                        for k in row['keyword']:
+                        # kid = None
+                        # if k.casefold() in keywords_global_dict.keys():
+                        #     kid = keywords_global_dict[k.casefold()][0]
+                        #     if k not in keywords_global_dict[k.casefold()][1]:
+                        #         keywords_global_dict[k.casefold()][1].append(k)
                             # print('got id from global for keyword', k)
-                        else:
-                            kid = current_keyword_id
-                            keywords_global_dict[k.casefold()] = (kid, [k])
-                            current_keyword_id += 1
+                        # else:
+                        #     kid = current_keyword_id
+                        #     keywords_global_dict[k.casefold()] = (kid, [k])
+                        #     current_keyword_id += 1
                             # print('missing id for keyword', k)
-                        keywords.append({'tag_label': k,
-                                         'tag_identifier': kid})
+                        # keywords.append({'tag_label': k,
+                        #                  'tag_identifier': kid})
+                            keywords.append(k)
                     if keywords:
                         newrec['custom_fields'][
                             'kcr:user_defined_tags'] = keywords
@@ -1121,7 +1122,6 @@ def serialize_json() -> tuple[dict, dict]:
         # print(len(auth_errors))
     print(f'Processed {line_count} lines.')
     print(f'Found {len(bad_data_dict)} records with bad data.')
-    print(domains)
 
     return newrec_list, bad_data_dict
 
@@ -1323,16 +1323,16 @@ def create_full_invenio_record(core_data:dict) -> dict:
     # Create/find the necessary communities
     if 'kcr:commons_domain' in core_data['custom_fields'].keys() \
             and core_data['custom_fields']['kcr:commons_domain']:
-        if core_data['kcr:commons_domain'] != 'hcommons.org:
+        if core_data['kcr:commons_domain'] != 'hcommons.org':
             community_label = core_data['kcr:commons_domain'].split('.')[0]
         else:
             community_label = 'hcommons'
 
         # try to look up a matching community
-        community_check = api_request('GET', endpoint='communities'
+        community_check = api_request('GET', endpoint='communities',
                                       args=community_label)
 
-        {"updated": "created": "revision_id": 2, "id": "36ece3f3-1c5b-49bd-9053-c75b3f1b2aa5", "slug": "", "custom_fields": {}, "metadata": {"title": "Ian's first community"}, "access": {"record_policy": "open", "visibility": "public", "member_policy": "open"}, "links": {}}
+        # {"updated": "created": "revision_id": 2, "id": "36ece3f3-1c5b-49bd-9053-c75b3f1b2aa5", "slug": "", "custom_fields": {}, "metadata": {"title": "Ian's first community"}, "access": {"record_policy": "open", "visibility": "public", "member_policy": "open"}, "links": {}}
         pass
 
         # otherwise create it

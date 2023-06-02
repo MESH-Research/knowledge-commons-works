@@ -230,22 +230,14 @@ json583 = {
         'kcr:meeting_organization': 'Modern Languages Association',
         'kcr:submitter_email': 'caroline.edwards@bbk.ac.uk',
         'kcr:submitter_username': 'cai247',
-        'kcr:user_defined_tags': [{'tag_identifier': 1052,
-                                   'tag_label': 'digital humanities'},
-                                  {'tag_identifier': 15201,
-                                   'tag_label': 'editing'},
-                                  {'tag_identifier': 57,
-                                   'tag_label': 'open access'},
-                                  {'tag_identifier': 1041,
-                                   'tag_label': 'scholarly communication'},
-                                  {'tag_identifier': 1047,
-                                   'tag_label': 'the profession'},
-                                  {'tag_identifier': 1050,
-                                   'tag_label': 'Academe'},
-                                  {'tag_identifier': 1722,
-                                   'tag_label': 'Public humanities'},
-                                  {'tag_identifier': 1041,
-                                   'tag_label': 'Scholarly communication'}],
+        'kcr:user_defined_tags': ['digital humanities',
+                                   'editing',
+                                   'open access',
+                                   'scholarly communication',
+                                   'the profession',
+                                   'Academe',
+                                   'Public humanities',
+                                   'Scholarly communication'],
         'meeting:meeting': {'dates': '10 January 2016',
                             'place': 'Marriott Hotel, Austin, Texas',
                             'title': '131st Annual Convention of '
@@ -401,14 +393,10 @@ json38367 = {
                                       ' (UNAM)',
         'kcr:submitter_email': 'eduardoalo1234@gmail.com',
         'kcr:submitter_username': 'gabogabito123',
-        'kcr:user_defined_tags': [{'tag_identifier': 904,
-                                   'tag_label': 'Computer Simulation'},
-                                  {'tag_identifier': 10373,
-                                   'tag_label': 'financialization'},
-                                  {'tag_identifier': 10374,
-                                   'tag_label': 'macroeconomics'},
-                                  {'tag_identifier': 10375,
-                                   'tag_label': 'modelling'}]
+        'kcr:user_defined_tags': ['Computer Simulation',
+                                  'financialization',
+                                  'macroeconomics',
+                                  'modelling']
     },
     'files': {'default_preview': 'system-dynamics-growth-distribution'
                                  '-and-financialization.pdf',
@@ -616,8 +604,7 @@ json48799 = {
         'kcr:commons_domain': 'hcommons.org',
         'kcr:sponsoring_institution': 'The Platform Lab',
         'kcr:submitter_email': 'jacqueline.ristola@mail.concordia.ca',
-        'kcr:user_defined_tags': [{'tag_identifier': 6991,
-                                   'tag_label': 'platform studies'}],
+        'kcr:user_defined_tags': ['platform studies'],
         'kcr:submitter_username': 'jristola009'
     },
     'files': {'default_preview': 'super-apps_final.pdf',
@@ -791,11 +778,9 @@ json33383 = {
         'kcr:commons_domain': 'hcommons.org',
         'kcr:submitter_email': 'alexandre.roberts@gmail.com',
         'kcr:submitter_username': 'amroberts',
-        'kcr:user_defined_tags': [{'tag_identifier': 1531,
-                                   'tag_label': 'History of science'},
-                                  {'tag_identifier': 6519,
-                                   'tag_label': 'History and philosophy of '
-                                                'mathematics'}
+        'kcr:user_defined_tags': ['History of science',
+                                  'History and philosophy of '
+                                  'mathematics'
         ]
     },
     'files': {'default_preview': '24519197_005_03-04_s004_text.pdf',
@@ -956,10 +941,8 @@ json16079 = {
         'kcr:meeting_organization': 'University of Antwerp',
         'kcr:submitter_email': 'wout.dillen@uantwerpen.be',
         'kcr:submitter_username': 'woutdillen',
-        'kcr:user_defined_tags': [{'tag_identifier': 131,
-                                   'tag_label': '20th century'},
-                                  {'tag_identifier': 1987,
-                                   'tag_label': 'Textual criticism'}
+        'kcr:user_defined_tags': ['20th century',
+                                  'Textual criticism'
         ],
         'meeting:meeting': {'dates': '8-9 June 2015',
                             'place': 'Antwerp, Belgium',
@@ -1108,10 +1091,8 @@ json34031 = {
         'kcr:commons_domain': 'hcommons.org',
         'kcr:submitter_email': 'mjdillon@alumni.rice.edu',
         'kcr:submitter_username': 'matthewjdillon',
-        'kcr:user_defined_tags': [{'tag_identifier': 8769,
-                                   'tag_label': 'Western esotericism'},
-                                  {'tag_identifier': 1230,
-                                   'tag_label': 'Early Christianity'}
+        'kcr:user_defined_tags': ['Western esotericism',
+                                  'Early Christianity'
         ]
     },
     'files': {
@@ -1246,16 +1227,11 @@ json11451 = {
         'kcr:commons_domain': 'mla.hcommons.org',
         'kcr:submitter_email': 'ajoubin@gwu.edu',
         'kcr:submitter_username': 'joubin',
-        'kcr:user_defined_tags': [{'tag_identifier': 1366,
-                                   'tag_label': 'Adaptation'},
-                                  {'tag_identifier': 15396,
-                                   'tag_label': 'East Asian literatures'},
-                                  {'tag_identifier': 2478,
-                                   'tag_label': 'Film history'},
-                                  {'tag_identifier': 121,
-                                   'tag_label': 'Gender studies'},
-                                  {'tag_identifier': 1228,
-                                   'tag_label': 'Shakespeare'}
+        'kcr:user_defined_tags': ['Adaptation',
+                                  'East Asian literatures',
+                                  'Film history',
+                                  'Gender studies',
+                                  'Shakespeare'
         ]
     },
     'files': {'default_preview': 'female_agency_ophelia.pdf',
@@ -1558,12 +1534,9 @@ json22647 = {
                              'and Contemporary Performance',
         'kcr:submitter_email': 'stephe_harrop@hotmail.co.uk',
         'kcr:submitter_username': 'stepheharrop',
-        'kcr:user_defined_tags': [{'tag_identifier': 3734,
-                                   'tag_label': 'Classical reception'},
-                                  {'tag_identifier': 6091,
-                                   'tag_label': 'Theater and film'},
-                                  {'tag_identifier': 1319,
-                                   'tag_label': 'Performance'}
+        'kcr:user_defined_tags': ['Classical reception',
+                                  'Theater and film',
+                                  'Performance'
         ]
     },
     'files': {'default_preview': 'sh-unfixing-epic-2018.pdf',
@@ -1745,28 +1718,18 @@ json42615 = {
             'kcr:commons_domain': 'sah.hcommons.org',
             'kcr:submitter_email': 'pedro.palazzo@gmail.com',
             'kcr:submitter_username': 'palazzo',
-            'kcr:user_defined_tags': [{'tag_identifier': 15855,
-                                       'tag_label': 'renaisance'},
-                                      {'tag_identifier': 15856,
-                                       'tag_label': 'lot sizes'},
-                                      {'tag_identifier': 15857,
-                                       'tag_label': 'building types'},
-                                      {'tag_identifier': 2941,
-                                       'tag_label': 'Urbanism/urban planning'},
-                                      {'tag_identifier': 1142,
-                                       'tag_label': 'Portuguese empire'},
-                                      {'tag_identifier': 15858,
-                                       'tag_label': 'Luso-Brazilian '
-                                                      'studies'},
-                                      {'tag_identifier': 1505,
-                                       'tag_label': 'Architectural '
-                                                      'history'},
-                                      {'tag_identifier': 1599,
-                                       'tag_label': 'Urban history'},
-                                      {'tag_identifier': 1210,
-                                       'tag_label': '18th century'},
-                                      {'tag_identifier': 116,
-                                       'tag_label': '19th century'}
+            'kcr:user_defined_tags': ['renaisance',
+                                      'lot sizes',
+                                      'building types',
+                                      'Urbanism/urban planning',
+                                      'Portuguese empire',
+                                      'Luso-Brazilian '
+                                        'studies',
+                                      'Architectural '
+                                        'history',
+                                      'Urban history',
+                                      '18th century',
+                                      '19th century'
             ]
     },
     'files': {
@@ -1909,16 +1872,11 @@ json22625 = {
         'kcr:submitter_email': "wojciech.tworek.09@ucl.ac.uk",
         'kcr:submitter_username': "wtworek",
         'kcr:commons_domain': 'ajs.hcommons.org',
-        'kcr:user_defined_tags': [{'tag_identifier': 20,
-                                   'tag_label': 'Hasidism'},
-                                  {'tag_identifier': 21,
-                                   'tag_label': 'Chabad'},
-                                  {'tag_identifier': 0,
-                                   'tag_label': 'Jewish studies'},
-                                  {'tag_identifier': 24,
-                                   'tag_label': 'Jewish mysticism'},
-                                  {'tag_identifier': 19,
-                                   'tag_label': 'Jewish thought'}
+        'kcr:user_defined_tags': ['Hasidism',
+                                  'Chabad',
+                                  'Jewish studies',
+                                  'Jewish mysticism',
+                                  'Jewish thought'
         ],
         'hclegacy:submitter_affiliation': 'University Of Toronto',
         'hclegacy:submitter_id': 1017065,
@@ -2113,20 +2071,14 @@ json45177 = {
         'kcr:submitter_email': "aprovo@gmail.com",
         'kcr:submitter_username': "aprovo",
         'kcr:commons_domain': 'arlisna.hcommons.org',
-        'kcr:user_defined_tags': [{'tag_identifier': 26,
-                                   'tag_label': 'Cataloging'},
-                                  {'tag_identifier': 27,
-                                   'tag_label': 'Cataloging standards'},
-                                  {'tag_identifier': 28,
-                                   'tag_label': 'Cataloging Exhibition '
-                                                'Publications: Best '
-                                                'Practices'},
-                                  {'tag_identifier': 29,
-                                   'tag_label': 'Notes'},
-                                  {'tag_identifier': 30,
-                                   'tag_label': 'Exhibition publications'},
-                                  {'tag_identifier': 31,
-                                   'tag_label': 'Art librarianship'}
+        'kcr:user_defined_tags': ['Cataloging',
+                                  'Cataloging standards',
+                                  'Cataloging Exhibition '
+                                  'Publications: Best '
+                                  'Practices',
+                                  'Notes',
+                                  'Exhibition publications',
+                                  'Art librarianship'
         ],
         'hclegacy:submitter_affiliation': 'New York University',
         'hclegacy:submitter_id': 1006873,
@@ -2431,7 +2383,7 @@ json44881 = {
     (json45177), (json44881), (json22647), (json11451), (json34031),
     (json16079), (json33383), (json38367), (json48799), (json583),
     (json28491)])
-def test_parse_csv(expected_json):
+def test_serialize_json(expected_json):
     """
     """
     # runner = CliRunner()
