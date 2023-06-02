@@ -34,6 +34,7 @@ json28491 = {
             {'group_identifier': '1002912',
              'group_name': 'World-Ecology Research Network'}
         ],
+        'hclegacy:previously_published': 'published',
         'hclegacy:submitter_id': 1020225,
         'hclegacy:record_change_date': '2020-01-30T16:46:54Z',
         'hclegacy:record_creation_date': '2020-01-30T16:46:54Z',
@@ -41,6 +42,7 @@ json28491 = {
         'kcr:commons_domain': 'hcommons.org',
         'kcr:edition': 'Spanish',
         'kcr:submitter_email': 'lenox.institute@gmail.com',
+        'hclegacy:submitter_org_memberships': ['hc'],
         'kcr:submitter_username': 'lenoxinstitute100',
         'kcr:notes': [{
             'note_description': 'general',
@@ -58,14 +60,20 @@ json28491 = {
                                    'Industry. CRC Press, Boca Raton, Florida, '
                                    'USA. 333 pages. ISBN 0-8493-7236-4.'}
         ],
+        'kcr:user_defined_tags': ['Steam',
+                                  'STEM',
+                                  'Science and technology studies '
+                                  '(STS)'],
     },
     'files': {'default_preview':    'tratamiento-de-los-residuos-de-la-'
                                     'industria-del-procesado-de-alimentos.pdf',
               'enabled': 'true',
-              'order': ['tratamiento-de-los-residuos-de-'
-                         'la-industria-del-procesado-de-alimentos'
-                         '.pdf'
-              ]
+              'entries': {
+                    'tratamiento-de-los-residuos-de-la-industria-del-procesado-de-alimentos.pdf': {
+                        'key': 'tratamiento-de-los-residuos-de-la-industria-del-procesado-de-alimentos.pdf',
+                        'mimetype': 'application/pdf',
+                        'size': '21928738'}
+              }
     },
     'metadata': {
         'additional_descriptions': [
@@ -168,7 +176,7 @@ json28491 = {
         ],
         'languages': [{'id': 'spa'}],
         'publication_date': '2008',
-        'resource_type': {'id': 'publication:book'},
+        'resource_type': {'id': 'textDocument:book'},
         'rights': [],
         'subjects': [],
         'publisher': 'Editorial ACRIBIA, S. A., Apartado 466, 50080, '
@@ -216,12 +224,12 @@ json583 = {
                  'group_name': 'TM Libraries and Research'}
         ],
         'hclegacy:publication_type': 'proceedings-article',
+        'hclegacy:previously_published': 'published',
         'hclegacy:record_change_date': '2017-11-21T19:18:37Z',
         'hclegacy:record_creation_date': '2016-02-29T13:11:39Z',
         'hclegacy:submitter_affiliation': 'U of London, Birkbeck C',
         'hclegacy:submitter_id': 3365,
-        'hclegacy:submitter_org_memberships': ['U of London, '
-                                               'Birkbeck C'],
+        'hclegacy:submitter_org_memberships': ['hc', 'mla'],
         'imprint:imprint': {'title': 'The New Open Access '
                                      'Environment: Innovation in '
                                      'Research, Editing and '
@@ -250,8 +258,7 @@ json583 = {
             'the-new-open-access-environment-innovation-in-research-editing-publishing.pdf': {
                 'key': 'the-new-open-access-environment-innovation-in-research-editing-publishing.pdf',
                 'mimetype': 'application/pdf',
-                'size': '4004498'}
-        }
+                'size': '4004498'}},
     },
     'metadata': {
         'additional_descriptions': [
@@ -556,7 +563,7 @@ json38367 = {
         ],
         'languages': [{'id': 'spa'}],
         'publication_date': '2018',
-        'resource_type': {'id': 'publication:dissertation'},
+        'resource_type': {'id': 'textDocument:dissertation'},
         'rights': [{'description': {'en': ''},
                     'id': 'all-rights-reserved',
                     'props': {'scheme': 'spdx',
@@ -722,7 +729,7 @@ json48799 = {
         'languages': [{'id': 'eng'}],
         'publication_date': '2022',
         'publisher': 'The Platform Lab',
-        'resource_type': {'id': 'publication:whitePaper'},
+        'resource_type': {'id': 'textDocument:whitePaper'},
         'rights': [{'description': {'en': ''},
                     'id': 'cc-by-4.0',
                     'props': {'scheme': 'spdx',
@@ -762,13 +769,13 @@ json33383 = {
              {'group_identifier': '1000830',
               'group_name': 'Science Studies and the History of '
                             'Science'}],
+        'hclegacy:previously_published': 'published',
         'hclegacy:record_change_date': '2023-01-23T14:20:48Z',
         'hclegacy:record_creation_date': '2020-11-25T12:35:10Z',
         'hclegacy:submitter_affiliation': 'University of Southern '
                                           'California',
         'hclegacy:submitter_id': 1008812,
-        'hclegacy:submitter_org_memberships': ['University of '
-                                               'Southern California'],
+        'hclegacy:submitter_org_memberships': ['hc'],
         'journal:journal': {'title': 'Philological Encounters',
                             'issue': '3',
                             'pages': '308-352',
@@ -866,7 +873,7 @@ json33383 = {
                         'multiple stages of a complex textual tradition '
                         'of teaching, extending, and rethinking '
                         'mathematics—that is, we should read it '
-                        'philologically.',
+                    'philologically.',
         'formats': [],
         'identifiers': [{'identifier': 'hc:33383', 'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-40298',
@@ -877,7 +884,7 @@ json33383 = {
                          'scheme': 'handle'}],
         'languages': [{'id': 'eng'}],
         'publication_date': '2020',
-        'resource_type': {'id': 'publication:journalArticle'},
+        'resource_type': {'id': 'textDocument:journalArticle'},
         'rights': [{'description': {'en': ''},
                     'id': 'all-rights-reserved',
                     'props': {'scheme': 'spdx',
@@ -1031,7 +1038,7 @@ json16079 = {
                                 'scheme': 'handle'}
                                ],
                 'languages': [{'id': 'eng'}],
-                'resource_type': {'id': 'publication:conferenceProceeding'},
+                'resource_type': {'id': 'textDocument:conferenceProceeding'},
                 'rights': [{'description': {'en': ''},
                             'id': 'cc-by-4.0',
                             'props': {'scheme': 'spdx',
@@ -1071,11 +1078,12 @@ json34031 = {
                                   'f1p4o15eq7.pdf.gnosticism-theorized-'
                                   'major-trends-and-approaches-dillon.pdf',
         'hclegacy:file_pid': 'hc:34032',
+        'hclegacy:previously_published': 'published',
         'hclegacy:record_change_date': '2021-01-11T23:48:41Z',
         'hclegacy:record_creation_date': '2021-01-11T23:48:41Z',
         'hclegacy:submitter_affiliation': 'Rice University',
         'hclegacy:submitter_id': 1025015,
-        'hclegacy:submitter_org_memberships': ['Rice University'],
+        'hclegacy:submitter_org_memberships': ['hc'],
         'imprint:imprint': {'pages': '23-38',
                             'isbn': ['9780028663500'],
                             'creators': [
@@ -1151,7 +1159,7 @@ json34031 = {
                         {'identifier': 'http://dx.doi.org/10.17613/0qxh-ed23',
                          'scheme': 'handle'}],
         'languages': [{'id': 'eng'}],
-        'resource_type': {'id': 'publication:bookChapter'},
+        'resource_type': {'id': 'textDocument:bookSection'},
         'rights': [{'description': {'en': ''},
                     'id': 'all-rights-reserved',
                     'props': {'scheme': 'spdx',
@@ -1202,10 +1210,11 @@ json11451 = {
              'group_name': 'TC Translation Studies'}
         ],
         'hclegacy:submitter_id': 49,
+        'hclegacy:previously_published': 'published',
         'hclegacy:record_change_date': '2017-09-16T16:41:52Z',
         'hclegacy:record_creation_date': '2017-03-08T05:01:44Z',
         'hclegacy:submitter_affiliation': 'George Washington U',
-        'hclegacy:submitter_org_memberships': ['George Washington U'],
+        'hclegacy:submitter_org_memberships': ['hc', 'mla'],
         'imprint:imprint': {
             'isbn': ['978-1-349-29760-3'],
             'pages': '79-100',
@@ -1439,7 +1448,7 @@ json11451 = {
                                 'scheme': 'handle'}
                 ],
                'languages': [{'id': 'eng'}],
-               'resource_type': {'id': 'publication:bookChapter'},
+               'resource_type': {'id': 'textDocument:bookSection'},
                 'rights': [{'description': {'en': ''},
                             'id': 'cc-by-nc-4.0',
                             'props': {'scheme': 'spdx',
@@ -1487,11 +1496,12 @@ json22647 = {
                                                      'group_name': 'Poetics '
                                                                    'and '
                                                                    'Poetry'}],
+        'hclegacy:previously_published': 'published',
         'hclegacy:record_change_date': '2019-02-01T19:30:52Z',
         'hclegacy:record_creation_date': '2019-02-01T19:30:52Z',
         'hclegacy:submitter_affiliation': 'Liverpool Hope University',
         'hclegacy:submitter_id': 1012453,
-        'hclegacy:submitter_org_memberships': ['Liverpool Hope University'],
+        'hclegacy:submitter_org_memberships': ['hc'],
         'imprint:imprint': {
             'isbn': ['9780198804215'],
             'pages': '262-274',
@@ -1659,7 +1669,7 @@ json22647 = {
                          'scheme': 'handle'}
         ],
         'languages': [{'id': 'eng'}],
-        'resource_type': {'id': 'publication:bookChapter'},
+        'resource_type': {'id': 'textDocument:bookSection'},
         'rights': [{'description': {'en': ''},
                     'id': 'all-rights-reserved',
                     'props': {'scheme': 'spdx',
@@ -1699,16 +1709,14 @@ json42615 = {
                                       'g6mfcf7.pdf.palazzo-vernacular_pa'
                                       'tterns_in_portugal_and_brazil-2021.pdf',
             'hclegacy:file_pid': 'hc:42616',
+            'hclegacy:previously_published': 'published',
             'hclegacy:record_change_date': '2021-11-10T15:06:20Z',
             'hclegacy:record_creation_date': '2021-11-10T15:06:20Z',
             'hclegacy:submitter_affiliation': 'University of Brasilia '
                                               'School of Architecture '
                                               'and Urbanism',
             'hclegacy:submitter_id': 1011841,
-            'hclegacy:submitter_org_memberships': ['University of '
-                                                   'Brasilia School of '
-                                                   'Architecture and '
-                                                   'Urbanism'],
+            'hclegacy:submitter_org_memberships': ['hc', 'sah'],
             'journal:journal': {
                 'issn': ['2660-583X'],
                 'issue': '2',
@@ -1822,7 +1830,7 @@ json42615 = {
                         {'identifier': 'http://dx.doi.org/10.17613/6v9q-8878',
                          'scheme': 'handle'}],
         'languages': [{'id': 'eng'}],
-        'resource_type': {'id': 'publication:journalArticle'},
+        'resource_type': {'id': 'textDocument:journalArticle'},
         'rights': [{'description': {'en': ''},
                     'id': 'cc-by-nc-nd-4.0',
                     'props': {'scheme': 'spdx',
@@ -1878,9 +1886,10 @@ json22625 = {
                                   'Jewish mysticism',
                                   'Jewish thought'
         ],
+        'hclegacy:previously_published': 'published',
         'hclegacy:submitter_affiliation': 'University Of Toronto',
         'hclegacy:submitter_id': 1017065,
-        'hclegacy:submitter_org_memberships': ['University Of Toronto'],
+        'hclegacy:submitter_org_memberships': ['ajs', 'hc'],
         'imprint:imprint': {
             'pages': '57-74',
             'creators': [
@@ -2020,7 +2029,7 @@ json22625 = {
                                            'hrhn-3k43',
                              'scheme': 'handle'}],
             'languages': [{'id': 'heb'}],
-            'resource_type': {'id': 'publication:bookChapter'},
+            'resource_type': {'id': 'textDocument:bookSection'},
             'rights': [{'description': {'en': ''},
                         'id': 'all-rights-reserved',
                         'props': {'scheme': 'spdx',
@@ -2080,9 +2089,10 @@ json45177 = {
                                   'Exhibition publications',
                                   'Art librarianship'
         ],
+        'hclegacy:previously_published': 'published',
         'hclegacy:submitter_affiliation': 'New York University',
         'hclegacy:submitter_id': 1006873,
-        'hclegacy:submitter_org_memberships': ['New York University'],
+        'hclegacy:submitter_org_memberships': ['arlisna', 'hc'],
         'hclegacy:groups_for_deposit': [{'group_identifier': '1003999',
                                          'group_name': 'ARLIS/NA '
                                                        'Cataloging Advisory '
@@ -2235,7 +2245,7 @@ json45177 = {
                                'scheme': 'handle'}
               ],
               'languages': [{'id': 'eng'}],
-              'resource_type': {'id': 'publication:bookSection'},
+              'resource_type': {'id': 'textDocument:bookSection'},
             'rights': [{'description': {'en': ''},
                         'id': 'cc-by-nc-nd-4.0',
                         'props': {'scheme': 'spdx',
@@ -2262,11 +2272,20 @@ json44881 = {
                                   'o_1ftlo8pia8cm1ptgmrh1l1s10607.pdf'
                                   '.clarkestarr-transcript.pdf',
         'hclegacy:file_pid': 'hc:44882',
+        'hclegacy:previously_published': 'not-published',
         'hclegacy:record_change_date': '2022-03-08T21:57:49Z',
         'hclegacy:record_creation_date': '2022-03-08T21:57:49Z',
         'hclegacy:collection': 'hccollection:1',
         'kcr:submitter_email': "runmerd@gmail.com",
+        'hclegacy:submitter_org_memberships': ['arlisna', 'hc'],
         'kcr:submitter_username': "mlhale7",
+        'kcr:user_defined_tags': ['Society history',
+                                  'Art Libraries Society of North '
+                                  'America',
+                                  'Anniversary',
+                                  'Gay librarians',
+                                  'Vietnam War',
+                                  'Art librarianship'],
         'kcr:commons_domain': 'arlisna.hcommons.org',
         'hclegacy:submitter_id': 1018587
         },
@@ -2357,7 +2376,7 @@ json44881 = {
                         {'identifier': 'https://doi.org/10.17613/82yy-vj44',
                          'scheme': 'handle'}],
         'languages': [{'id': 'eng'}],
-        'resource_type': {'id': 'publication:interviewTranscript'},
+        'resource_type': {'id': 'textDocument:interviewTranscript'},
         'rights': [{'description': {'en': ''},
                     'id': 'cc-by-nc-nd-4.0',
                     'props': {'scheme': 'spdx',
@@ -2379,10 +2398,12 @@ json44881 = {
     'updated': '2022-03-08T21:57:49Z'
 }
 
+actual_serialized_json, actual_bad_data = serialize_json()
+
 @pytest.mark.parametrize("expected_json", [(json42615), (json22625),
-    (json45177), (json44881), (json22647), (json11451), (json34031),
-    (json16079), (json33383), (json38367), (json48799), (json583),
-    (json28491)])
+        (json45177), (json44881), (json22647), (json11451), (json34031),
+        (json16079), (json33383), (json38367), (json48799), (json583),
+        (json28491)])
 def test_serialize_json(expected_json):
     """
     """
@@ -2391,7 +2412,7 @@ def test_serialize_json(expected_json):
     # assert result.exit_code == 0
     # assert result.output[0] == json1
 
-    actual_json, actual_bad_data = serialize_json()
+    actual_json = actual_serialized_json
 
     expected_pid = expected_json['metadata']['identifiers'][0]['identifier']
     actual_json_item = [j for j in actual_json
@@ -2405,6 +2426,8 @@ def test_serialize_json(expected_json):
             assert actual_json_item[k] == expected_json[k]
 
     assert expected_json.keys() == actual_json_item.keys()
+    assert not any([k for k in actual_json_item.keys()
+                    if k not in expected_json.keys()])
     # assert actual_json_item['created'] == expected_json['created']
     # assert actual_json_item['custom_fields']['hclegacy:file_location'] == expected_json['custom_fields']['hclegacy:file_location']
     # assert actual_json_item['custom_fields']['hclegacy:file_pid'] == expected_json['custom_fields']['hclegacy:file_pid']

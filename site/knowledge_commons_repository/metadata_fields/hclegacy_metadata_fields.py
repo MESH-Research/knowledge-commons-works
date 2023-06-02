@@ -45,6 +45,8 @@ hclegacy:society            The HC societies to which the original uploader of
                             the CORE deposit belonged. It should include the society from whose site the deposit was made, although this may not be the case for bulk uploads. Possible values are: arlisna, hc, msu, ajs, hastac, sah, aseees, caa, up.
 hclegacy:submitter_org_memberships  The HC organizations to which the user
                                     who uploaded the deposit belonged.
+hclegacy:submitter_affiliation  The institutional affiliation of the user
+                                who uploaded the deposit.
 hclegacy:submitter_id       The user id number (in the HC database) for the
                             user who originally deposited the CORE upload.
 """
@@ -108,6 +110,10 @@ HCLEGACY_CUSTOM_FIELDS = [
     ),
     TextCF(
         name="hclegacy:submitter_org_memberships",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="hclegacy:submitter_affiliation",
         field_cls=SanitizedUnicode,
     ),
     TextCF(

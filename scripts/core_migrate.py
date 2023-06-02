@@ -31,37 +31,37 @@ def cli():
     pass
 
 book_types = [
-    'publication:bookChapter',
-    'publication:bookSection',
-    'publication:book',
-    'publication:monograph',
-    'publication:dissertation',
-    'publication:report',
-    'publication:whitePaper',
+    'textDocument:bookChapter',
+    'textDocument:bookSection',
+    'textDocument:book',
+    'textDocument:monograph',
+    'textDocument:dissertation',
+    'textDocument:report',
+    'textDocument:whitePaper',
     'other:bibliography',
     'presentation:conferencePaper',
-    'publication:conferenceProceeding',
+    'textDocument:conferenceProceeding',
     'presentation:conferencePaper',
     'other:essay'
 ]
 
-article_types = ['publication:journalArticle',
-                    'publication:abstract',
-                    'publication:review',
-                    'publication:newspaperArticle',
-                    'publication:editorial',
-                    'publication:magazineArticle',
-                    'publication:onlinePublication'
+article_types = ['textDocument:journalArticle',
+                    'textDocument:abstract',
+                    'textDocument:review',
+                    'textDocument:newspaperArticle',
+                    'textDocument:editorial',
+                    'textDocument:magazineArticle',
+                    'textDocument:onlinetextDocument'
                     ]
 
 ambiguous_types = [
-    'publication:fictionalWork',
+    'textDocument:fictionalWork',
     'other:other',
-    'publication:interviewTranscript',
-    'publication:legalComment',
-    'publication:legalResponse',
-    'publication:poeticWork',
-    'publication:translation'
+    'textDocument:interviewTranscript',
+    'textDocument:legalComment',
+    'textDocument:legalResponse',
+    'textDocument:poeticWork',
+    'textDocument:translation'
     ]
 
 
@@ -536,7 +536,7 @@ def serialize_json() -> tuple[dict, dict]:
     with open('../../kcr-untracked-files/core-export-may-15-23.json') as json_file:
         # top_object = json.loads('{"data": ' + json_file.read() + '}')
         top_object = json.loads(json_file.read())
-        pprint(top_object[0])
+        pprint([t for t in top_object if t['id'] == 'mla:583'][0])
         for row in top_object:
             newrec = deepcopy(baserec)
 
@@ -778,7 +778,7 @@ def serialize_json() -> tuple[dict, dict]:
 
             # Original submitter's HC society memberships
             if row['society_id']:
-                newrec['custom_fields']['hclegacy:society'] = row['society_id']
+                newrec['custom_fields']['hclegacy:submitter_org_memberships'] = row['society_id']
 
             # Was CORE deposit previously published?
             if row['published']:
@@ -806,8 +806,7 @@ def serialize_json() -> tuple[dict, dict]:
 
             if row['organization']:
                 newrec['custom_fields'
-                       ].setdefault('hclegacy:submitter_org_memberships',
-                                    []).append(row['organization'])
+                       ]['hclegacy:submitter_affiliation'] = row['organization']
 
             newrec_list.append(newrec)
             line_count += 1
@@ -934,134 +933,142 @@ def serialize_json() -> tuple[dict, dict]:
                 newrec['custom_fields'][myfield][
                     'title'] = row['book_journal_title']
 
-                # article/chapter info
-                if row['start_page']:
-                    pages = row['start_page']
-                    if row['end_page']:
-                        pages = f'{pages}-{row["end_page"]}'
-                    if newrec['metadata']['resource_type']['id'
-                            ] in article_types:
-                        newrec['custom_fields'].setdefault(
-                            'journal:journal', {})['pages'] = pages
+            # article/chapter info
+
+            if row['id'] == 'hc:33383':
+                print('pagess...')
+                print(row['start_page'], row['end_page'])
+                print(newrec['metadata']['resource_type']['id'])
+            if row['start_page']:
+                pages = row['start_page']
+                if row['end_page']:
+                    pages = f'{pages}-{row["end_page"]}'
+                if newrec['metadata']['resource_type']['id'
+                        ] in article_types:
+                    newrec['custom_fields'].setdefault(
+                        'journal:journal', {})['pages'] = pages
+                else:
+                    newrec['custom_fields'].setdefault(
+                        'imprint:imprint', {})['pages'] = pages
+                if newrec['metadata']['resource_type']['id'
+                        ] not in [*book_types, *article_types,
+                                    *ambiguous_types]:
+                    _append_bad_data(row['id'],
+                        ('resource_type for start_page/end_page',
+                            newrec['metadata']['resource_type']['id']),
+                        bad_data_dict)
+
+            if row['issue']:
+                issue = re.sub(r'([Ii]ssue|[nN][Oo]?\.?)\s?', '', row['issue'])
+                issue = re.sub(r'\((.*)\)', r'\1', issue)
+                issue = re.sub(r'[\.,]$', '', issue)
+                newrec['custom_fields'].setdefault('journal:journal', {}
+                                                    )['issue'] = issue
+
+            # FIXME: make issn a list
+            if row['issn']:
+                if valid_isbn(row['issn']):
+                    # print('isbn', row['issn'])
+                    newrec['custom_fields'].setdefault(
+                        'imprint:imprint', {})['isbn'] = [row['issn']]
+                    _append_bad_data(row['id'],
+                        ('issn', 'isbn in issn field', row['issn']),
+                        bad_data_dict)
+                else:
+                    newrec['custom_fields'].setdefault(
+                        'journal:journal', {})['issn'] = []
+
+                    # myissn = row['issn'].replace(b'\xe2\x80\x94'.decode('utf-8'), '-')
+
+                    # myissn = myissn.replace('\x97', '-')
+                    myissn = row['issn'].replace(u'\u2013', '-')
+                    myissn = myissn.replace(u'\u2014', '-')
+                    myissn = re.sub(r'\s?-\s?', '-', myissn)
+                    myissn = myissn.replace('Х', 'X')
+                    myissn = myissn.replace('.', '')
+                    myissnx = re.findall(r'\d{4}[-\s\.]?\d{3}[\dxX]', myissn)
+                    if len(myissnx) < 1:
+                        _append_bad_data(row['id'],
+                            ('issn', 'malformed', row['issn']),
+                            bad_data_dict)
                     else:
-                        newrec['custom_fields'].setdefault(
-                            'imprint:imprint', {})['pages'] = pages
-                    if newrec['metadata']['resource_type']['id'
-                            ] not in [*book_types, *article_types,
-                                      *ambiguous_types]:
-                        _append_bad_data(row['id'],
-                            ('resource_type for start_page/end_page',
-                             newrec['metadata']['resource_type']['id']),
-                            bad_data_dict)
-
-                if row['issue']:
-                    issue = re.sub(r'([Ii]ssue|[nN][Oo]?\.?)\s?', '', row['issue'])
-                    issue = re.sub(r'\((.*)\)', r'\1', issue)
-                    issue = re.sub(r'[\.,]$', '', issue)
-                    newrec['custom_fields'].setdefault('journal:journal', {}
-                                                       )['issue'] = issue
-
-                # FIXME: make issn a list
-                if row['issn']:
-                    if valid_isbn(row['issn']):
-                        # print('isbn', row['issn'])
-                        newrec['custom_fields'].setdefault(
-                            'imprint:imprint', {})['isbn'] = [row['issn']]
-                        _append_bad_data(row['id'],
-                            ('issn', 'isbn in issn field', row['issn']),
-                            bad_data_dict)
-                    else:
-                        newrec['custom_fields'].setdefault(
-                            'journal:journal', {})['issn'] = []
-
-                        # myissn = row['issn'].replace(b'\xe2\x80\x94'.decode('utf-8'), '-')
-
-                        # myissn = myissn.replace('\x97', '-')
-                        myissn = row['issn'].replace(u'\u2013', '-')
-                        myissn = myissn.replace(u'\u2014', '-')
-                        myissn = re.sub(r'\s?-\s?', '-', myissn)
-                        myissn = myissn.replace('Х', 'X')
-                        myissn = myissn.replace('.', '')
-                        myissnx = re.findall(r'\d{4}[-\s\.]?\d{3}[\dxX]', myissn)
-                        if len(myissnx) < 1:
-                            _append_bad_data(row['id'],
-                                ('issn', 'malformed', row['issn']),
-                                bad_data_dict)
-                        else:
-                            for i in myissnx:
-                                i = re.sub(r'ISSN:? ?', '', i)
-                                try:
-                                    if issn.validate(i):
-                                        newrec['custom_fields'][
-                                            'journal:journal']['issn'].append(i)
-                                except Exception:
-                                    # print('exception', i, row['issn'])
-                                    _append_bad_data(row['id'],
-                                        ('issn', 'invalid last digit',
-                                         row['issn']),
-                                        bad_data_dict)
+                        for i in myissnx:
+                            i = re.sub(r'ISSN:? ?', '', i)
+                            try:
+                                if issn.validate(i):
+                                    newrec['custom_fields'][
+                                        'journal:journal']['issn'].append(i)
+                            except Exception:
+                                # print('exception', i, row['issn'])
+                                _append_bad_data(row['id'],
+                                    ('issn', 'invalid last digit',
+                                        row['issn']),
+                                    bad_data_dict)
 
 
-                # extra for dissertations and reports
-                if row['institution']:
-                    # print(row['id'])
-                    # print(newrec['metadata']['resource_type']['id'])
-                    newrec['custom_fields']['kcr:sponsoring_institution'
-                                            ] = row['institution']
-                    if newrec['metadata']['resource_type']['id'] not in [
-                            'publication:dissertation', 'publication:report',
-                            'publication:whitePaper']:
-                        _append_bad_data(row['id'],
-                            ('resource_type for institution',
-                             newrec['metadata']['resource_type']['id']),
-                            bad_data_dict)
+            # extra for dissertations and reports
+            if row['institution']:
+                # print(row['id'])
+                # print(newrec['metadata']['resource_type']['id'])
+                newrec['custom_fields']['kcr:sponsoring_institution'
+                                        ] = row['institution']
+                if newrec['metadata']['resource_type']['id'] not in [
+                        'publication:dissertation', 'publication:report',
+                        'publication:whitePaper']:
+                    _append_bad_data(row['id'],
+                        ('resource_type for institution',
+                            newrec['metadata']['resource_type']['id']),
+                        bad_data_dict)
 
-                # conference/meeting info
-                if row['conference_date'] or row['meeting_date']:
-                    # if not newrec['custom_fields']['meeting:meeting']:
-                    #     newrec['custom_fields']['meeting:meeting'] = {}
-                    newrec['custom_fields'].setdefault('meeting:meeting', {})[
-                        'dates'] = row['conference_date'] or row['meeting_date']
-                if row['conference_location'] or row['meeting_location']:
-                    newrec['custom_fields'].setdefault('meeting:meeting', {})[
-                        'place'] = row['conference_location'
-                                       ] or row['meeting_location']
-                if row['conference_organization'] or row['meeting_organization']:
+            # conference/meeting info
+            if row['conference_date'] or row['meeting_date']:
+                # if not newrec['custom_fields']['meeting:meeting']:
+                #     newrec['custom_fields']['meeting:meeting'] = {}
+                newrec['custom_fields'].setdefault('meeting:meeting', {})[
+                    'dates'] = row['conference_date'] or row['meeting_date']
+            if row['conference_location'] or row['meeting_location']:
+                newrec['custom_fields'].setdefault('meeting:meeting', {})[
+                    'place'] = row['conference_location'
+                                    ] or row['meeting_location']
+            if row['conference_organization'] or row['meeting_organization']:
+                newrec['custom_fields'][
+                    'kcr:meeting_organization'] = row[
+                        'conference_organization'] or row[
+                            'meeting_organization']
+            if row['conference_title'] or row['meeting_title']:
+                newrec['custom_fields'].setdefault('meeting:meeting', {})[
+                    'title'] = row['conference_title'] or row['meeting_title']
+
+            # subjects and keywords
+            # FIXME: keyword ids filled in and harmonized where possible
+            #   with subject headings below
+            # FIXME: use named entity recognition to regularize
+            #   capitalization?
+            if row['keyword']:
+                keywords = []
+                if isinstance(row['keyword'], dict):
+                    row['keyword'] = row['keyword'].values()
+                    for k in row['keyword']:
+                    # kid = None
+                    # if k.casefold() in keywords_global_dict.keys():
+                    #     kid = keywords_global_dict[k.casefold()][0]
+                    #     if k not in keywords_global_dict[k.casefold()][1]:
+                    #         keywords_global_dict[k.casefold()][1].append(k)
+                        # print('got id from global for keyword', k)
+                    # else:
+                    #     kid = current_keyword_id
+                    #     keywords_global_dict[k.casefold()] = (kid, [k])
+                    #     current_keyword_id += 1
+                        # print('missing id for keyword', k)
+                    # keywords.append({'tag_label': k,
+                    #                  'tag_identifier': kid})
+                        keywords.append(k)
+                else:
+                    keywords = row['keyword']
+
+                if keywords:
                     newrec['custom_fields'][
-                        'kcr:meeting_organization'] = row[
-                            'conference_organization'] or row[
-                                'meeting_organization']
-                if row['conference_title'] or row['meeting_title']:
-                    newrec['custom_fields'].setdefault('meeting:meeting', {})[
-                        'title'] = row['conference_title'] or row['meeting_title']
-
-                # subjects and keywords
-                # FIXME: keyword ids filled in and harmonized where possible
-                #   with subject headings below
-                # FIXME: use named entity recognition to regularize
-                #   capitalization?
-                if row['keyword']:
-                    keywords = []
-                    if isinstance(row['keyword'], dict):
-                        row['keyword'] = row['keyword'].values()
-                        for k in row['keyword']:
-                        # kid = None
-                        # if k.casefold() in keywords_global_dict.keys():
-                        #     kid = keywords_global_dict[k.casefold()][0]
-                        #     if k not in keywords_global_dict[k.casefold()][1]:
-                        #         keywords_global_dict[k.casefold()][1].append(k)
-                            # print('got id from global for keyword', k)
-                        # else:
-                        #     kid = current_keyword_id
-                        #     keywords_global_dict[k.casefold()] = (kid, [k])
-                        #     current_keyword_id += 1
-                            # print('missing id for keyword', k)
-                        # keywords.append({'tag_label': k,
-                        #                  'tag_identifier': kid})
-                            keywords.append(k)
-                    if keywords:
-                        newrec['custom_fields'][
-                            'kcr:user_defined_tags'] = keywords
+                        'kcr:user_defined_tags'] = keywords
 
             if row['subject']:
                 covered_subjects = []
@@ -1113,8 +1120,8 @@ def serialize_json() -> tuple[dict, dict]:
 
         # pprint([r for r in newrec_list if r['metadata']['resource_type']['id'] == 'publication:journalArticle'])
 
-        pprint([r for r in newrec_list if r['metadata']['identifiers'][0]['identifier'] == 'hc:45177'])
-        pprint([r for r in top_object if r['id'] == 'hc:45177'])
+        # pprint([r for r in newrec_list if r['metadata']['identifiers'][0]['identifier'] == 'hc:45177'])
+        # pprint([r for r in top_object if r['id'] == 'hc:45177'])
 
         # auth_errors = {k:v for k, v in bad_data_dict.items() for i in v if i[0][:8] == 'authors' and len(i) == 2}
         # pprint(auth_errors)
