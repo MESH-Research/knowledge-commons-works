@@ -5,6 +5,7 @@ from copy import deepcopy
 import csv
 from datetime import datetime
 from fedoraapi import FedoraApi
+from invenio_accounts import current_accounts
 from isbnlib import is_isbn10, is_isbn13, get_isbnlike, clean
 import iso639
 import json
@@ -685,6 +686,10 @@ def serialize_json() -> tuple[dict, dict]:
                     'doi'] = {"identifier": row['deposit_doi'],
                               "provider": "datacite",
                               "client": "datacite"}
+                newrec['metadata'].setdefault('identifiers', []).append(
+                    {"identifier": row['deposit_doi'],
+                     "scheme": "datacite-doi"}
+                )
             if row['doi']:
                 newrec['metadata'].setdefault('identifiers', []).append(
                     {"identifier": row['doi'],
@@ -1189,7 +1194,7 @@ def create_invenio_record(metadata:dict, server:str='',
     result = api_request(method='POST', endpoint='records',
                          json_dict=metadata)
     if result['status_code'] != 201:
-        raise requests.HTTPError(result.text)
+        raise requests.HTTPError(result)
     publish_link = result['json']["links"]["publish"]
     if debug: print('publish link:', publish_link)
 
@@ -1288,31 +1293,168 @@ def delete_invenio_record(record_id:str) -> dict:
 def create_invenio_community(community_label:str) -> dict:
     """
     """
-    top_level_communities = [
-        'ajs.hcommons.org', 'arlisna.hcommons.org', 'aseees.hcommons.org',
-        'caa.hcommons.org', 'commons.msu.edu', 'hastac.hcommons.org',
-        'hcommons.org', 'mla.hcommons.org', 'sah.hcommons.org',
-        'up.hcommons.org'
-    ]
-    data = {
-        "access": {
-                "visibility": "restricted",
-                "member_policy": "closed",
-                "record_policy": "closed",
-                "owned_by": [{"user": ""}]
-                },
-        "slug": "tccon",
-        "metadata": {
-                "title": "",
-                "description": "",
-                "website": "",
-                "organizations": [{"id": "<ROR id>"}, {"name": ""}]
-        }
+    community_data = {
+        "hcommons": {
+            "access": {
+                    "visibility": "restricted",
+                    "member_policy": "closed",
+                    "record_policy": "open",
+                    "review_policy": "open",
+                    # "owned_by": [{"user": ""}]
+                    },
+            "slug": "hcommons",
+            "metadata": {
+                    "title": "Humanities Commons",
+                    "description": "A community representing the main humanities commons domain.",
+                    "website": "https://hcommons.org",
+                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+            }
+        },
+        "msu": {
+            "access": {
+                    "visibility": "restricted",
+                    "member_policy": "closed",
+                    "record_policy": "closed",
+                    # "owned_by": [{"user": ""}]
+                    },
+            "slug": "ajs",
+            "metadata": {
+                    "title": "MSU Commons",
+                    "description": "A community representing the MSU Commons domain",
+                    "website": "https://commons.msu.edu",
+                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+            }
+        },
+        "ajs": {
+            "access": {
+                    "visibility": "restricted",
+                    "member_policy": "closed",
+                    "record_policy": "closed",
+                    # "owned_by": [{"user": ""}]
+                    },
+            "slug": "ajs",
+            "metadata": {
+                    "title": "AJS Commons",
+                    "description": "AJS is no longer a member of Humanities Commons",
+                    "website": "https://ajs.hcommons.org",
+                    "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+            }
+        },
+        "arlisna": {
+            "access": {
+                    "visibility": "restricted",
+                    "member_policy": "closed",
+                    "record_policy": "closed",
+                    # "owned_by": [{"user": ""}]
+                    },
+            "slug": "arlisna",
+            "metadata": {
+                    "title": "ARLIS/NA Commons",
+                    "description": "A community representing the ARLIS/NA Commons domain",
+                    "website": "https://arlisna.hcommons.org",
+                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+            }
+        },
+        "aseees": {
+            "access": {
+                    "visibility": "restricted",
+                    "member_policy": "closed",
+                    "record_policy": "closed",
+                    # "owned_by": [{"user": ""}]
+                    },
+            "slug": "aseees",
+            "metadata": {
+                    "title": "ASEEES Commons",
+                    "description": "A community representing the ASEEES Commons domain",
+                    "website": "https://aseees.hcommons.org",
+                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+            }
+        },
+        "hastac": {
+            "access": {
+                    "visibility": "restricted",
+                    "member_policy": "closed",
+                    "record_policy": "closed",
+                    # "owned_by": [{"user": ""}]
+                    },
+            "slug": "hastac",
+            "metadata": {
+                    "title": "HASTAC Commons",
+                    "description": "",
+                    "website": "https://hastac.hcommons.org",
+                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+            }
+        },
+        "caa": {
+            "access": {
+                    "visibility": "restricted",
+                    "member_policy": "closed",
+                    "record_policy": "closed",
+                    # "owned_by": [{"user": ""}]
+                    },
+            "slug": "caa",
+            "metadata": {
+                    "title": "CAA Commons",
+                    "description": "CAA is no longer a member of Humanities Commons",
+                    "website": "https://caa.hcommons.org",
+                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+            }
+        },
+        "mla": {
+            "access": {
+                    "visibility": "restricted",
+                    "member_policy": "closed",
+                    "record_policy": "closed",
+                    # "owned_by": [{"user": ""}]
+                    },
+            "slug": "mla",
+            "metadata": {
+                    "title": "MLA Commons",
+                    "description": "A community representing the MLA Commons domain",
+                    "website": "https://mla.hcommons.org",
+                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+            }
+        },
+        "sah": {
+            "access": {
+                    "visibility": "restricted",
+                    "member_policy": "closed",
+                    "record_policy": "closed",
+                    # "owned_by": [{"user": ""}]
+                    },
+            "slug": "sah",
+            "metadata": {
+                    "title": "SAH Commons",
+                    "description": "A community representing the SAH Commons domain",
+                    "website": "https://sah.hcommons.org",
+                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+            }
+        },
+        "up": {
+            "access": {
+                    "visibility": "restricted",
+                    "member_policy": "closed",
+                    "record_policy": "closed",
+                    # "owned_by": [{"user": ""}]
+                    },
+            "slug": "up",
+            "metadata": {
+                    "title": "UP Commons",
+                    "description": "A community representing the UP Commons domain",
+                    "website": "https://up.hcommons.org",
+                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+            }
+        },
     }
-    community_data = {}
+    my_community_data = community_data[community_label]
+    # admin_user_id = os.environ['ADMIN_USER_ID']
+    # my_community_data['access']['owned_by'] = [{"user": admin_user_id}]
+    # FIXME: a better way to get the current user?
     result = api_request("POST", endpoint="communities",
-                         json_dict=community_data)
-    print(result.text)
+                         json_dict=my_community_data)
+    print(result)
+    if result['status_code'] != 201:
+        raise requests.HTTPError(result)
     return(result)
 
 
@@ -1321,6 +1463,14 @@ def create_full_invenio_record(core_data:dict) -> dict:
     Create an invenio record with file uploads, ownership, communities.
     """
     result = {}
+    file_data = core_data['files']
+    submitted_data = {'custom_fields': core_data['custom_fields'],
+                      'metadata': core_data['metadata'],
+                      'pids': core_data['pids']
+                      }
+    submitted_data['access'] = {'records': 'public', 'files': 'public'}
+    submitted_data['files'] = {'enabled': True}
+
     domains = [
         'ajs.hcommons.org', 'arlisna.hcommons.org', 'aseees.hcommons.org',
         'caa.hcommons.org', 'commons.msu.edu', 'hastac.hcommons.org',
@@ -1330,26 +1480,41 @@ def create_full_invenio_record(core_data:dict) -> dict:
     # Create/find the necessary communities
     if 'kcr:commons_domain' in core_data['custom_fields'].keys() \
             and core_data['custom_fields']['kcr:commons_domain']:
-        if core_data['kcr:commons_domain'] != 'hcommons.org':
-            community_label = core_data['kcr:commons_domain'].split('.')[0]
+        community_label = core_data['custom_fields']['kcr:commons_domain'].split('.')
+        if community_label[1] == 'msu':
+            community_label = community_label[1]
         else:
-            community_label = 'hcommons'
+            community_label = community_label[0]
 
         # try to look up a matching community
         community_check = api_request('GET', endpoint='communities',
                                       args=community_label)
-
-        # {"updated": "created": "revision_id": 2, "id": "36ece3f3-1c5b-49bd-9053-c75b3f1b2aa5", "slug": "", "custom_fields": {}, "metadata": {"title": "Ian's first community"}, "access": {"record_policy": "open", "visibility": "public", "member_policy": "open"}, "links": {}}
-        pass
-
         # otherwise create it
-
+        if community_check['status_code'] == 404:
+            print('Community', community_label, 'does not exist. Creating...')
+            create_invenio_community(community_label)
+            # and set curation policy
+            # api_request(https://localhost/communities/{community_label}/settings/curation-policy
 
     # Create the basic metadata record
+    metadata_record = create_invenio_record(core_data)
+    result['metadata_record_created'] = metadata_record
+    pprint(metadata_record)
 
     # Attach the record to the communities
+    # POST /api/records/{id}/draft/actions/submit-review
+    # {
+    # "payload": {
+    #     "content": "Thank you in advance for the review.",
+    #     "format": "html"
+    # }
+    # }
 
     # Upload the files
+
+    # Publish the record
+    # POST /api/records/{id}/draft/actions/publish HTTP/1.1
+    # response is 202
 
     # Create/find the necessary user account
 

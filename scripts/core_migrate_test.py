@@ -4,6 +4,8 @@ from core_migrate import (
     api_request,
     create_invenio_record,
     delete_invenio_record,
+    create_invenio_community,
+    create_full_invenio_record,
     valid_date,
     valid_isbn
 )
@@ -884,7 +886,7 @@ json33383 = {
                          'scheme': 'handle'}],
         'languages': [{'id': 'eng'}],
         'publication_date': '2020',
-        'resource_type': {'id': 'textDocument:journalArticle'},
+        'resource_type': {'id': 'textdocument:journalarticle'},
         'rights': [{'description': {'en': ''},
                     'id': 'all-rights-reserved',
                     'props': {'scheme': 'spdx',
@@ -1830,7 +1832,7 @@ json42615 = {
                         {'identifier': 'http://dx.doi.org/10.17613/6v9q-8878',
                          'scheme': 'handle'}],
         'languages': [{'id': 'eng'}],
-        'resource_type': {'id': 'textDocument:journalArticle'},
+        'resource_type': {'id': 'textDocument-journalArticle'},
         'rights': [{'description': {'en': ''},
                     'id': 'cc-by-nc-nd-4.0',
                     'props': {'scheme': 'spdx',
@@ -2485,12 +2487,14 @@ def test_api_request(method, server, endpoint, args, json_dict,
     assert list(actual['headers'].keys()) == request_header_keys
 
 
-@pytest.mark.parametrize("json_payload,expected_headers,expected_status_code,expected_json", [(
+@pytest.mark.parametrize("json_payload,expected_status_code,expected_json", [(
 {
     "access": {
         "record": "public",
         "files": "public"
     },
+    "custom_fields": {},
+    "pids": {},
     "files": {
         "enabled": True
     },
@@ -2523,28 +2527,10 @@ def test_api_request(method, server, endpoint, args, json_dict,
         {"person_or_org": {"name": "Troy Inc.", "type": "organizational"}}
         ],
         "publication_date": "2020-06-01",
-        "resource_type": { "id": "image-photo" },
+        "publisher": "MESH Research",
+        "resource_type": { "id": "image-photograph" },
         "title": "A Romans story",
     }
-},
-{
-    'Server': 'nginx/1.23.4',
-     'Date': 'Tue, 30 May 2023 19:07:31 GMT',
-     'Content-Type': 'application/json',
-     'Content-Length': '182',
-     'Connection': 'keep-alive',
-     'Set-Cookie': 'csrftoken=eyJhbGciOiJIUzUxMiIsImlhdCI6MTY4NTQ3MzY1MSwiZXhwIjoxNjg1NTYwMDUxfQ.IkZIODNHR0h2bThxZHdmRVMwaE9JRzgzaE9OaHJhaDFzIg.Te5wJA-7cO-jc29ydK-b2NvEkF17jZNclMIhpGfBou77Ib-I50Qiy4XCBxgttNGGBhkcbeYBRWOm_-2K7YsEBg; Expires=Tue, 06 Jun 2023 19:07:31 GMT; Max-Age=604800; Secure; Path=/; SameSite=Lax',
-     'X-RateLimit-Limit': '500',
-     'X-RateLimit-Remaining': '499',
-     'X-RateLimit-Reset': '1685473712',
-     'Retry-After': '60',
-     'Permissions-Policy': 'interest-cohort=()',
-     'X-Frame-Options': 'sameorigin',
-     'X-XSS-Protection': '1; mode=block',
-     'X-Content-Type-Options': 'nosniff',
-     'Content-Security-Policy': "default-src 'self' data: 'unsafe-inline' blob:",
-     'Strict-Transport-Security': 'max-age=31556926; includeSubDomains',
-     'Referrer-Policy': 'strict-origin-when-cross-origin'
 },
 201,
 {
@@ -2601,9 +2587,10 @@ def test_api_request(method, server, endpoint, args, json_dict,
             {"person_or_org": {"name": "Troy Inc.", "type": "organizational"}}
         ],
         "publication_date": "2020-06-01",
+        "publisher": "MESH Research",
         "resource_type": {
-            "title": {"de": "Foto", "en": "Photo"},
-            "id": "image-photo"}
+            "title": {"de": "Foto", "en": "Photograph"},
+            "id": "image-photograph"}
     },
     "status": "draft",
     "id": "4gqj3-d0z12",
@@ -2618,9 +2605,22 @@ def test_api_request(method, server, endpoint, args, json_dict,
         "status": "metadata-only"
     }
 }
-)])
-def test_create_invenio_record(json_payload, expected_headers,
-                               expected_status_code, expected_json):
+),
+(json42615, 201, json42615),
+# (json22625),
+# (json45177),
+# (json44881),
+# (json22647),
+# (json11451),
+# (json34031),
+# (json16079),
+# (json33383),
+# (json38367),
+# (json48799),
+# (json583),
+# (json28491)
+])
+def test_create_invenio_record(json_payload, expected_status_code, expected_json):
     """
     """
     # Send everything from test JSON fixtures except
@@ -2630,6 +2630,34 @@ def test_create_invenio_record(json_payload, expected_headers,
     #  - pids
     #  -
     print('Starting')
+
+    expected_headers = {
+    'Server': 'nginx/1.23.4',
+     'Date': 'Tue, 30 May 2023 19:07:31 GMT',
+     'Content-Type': 'application/json',
+     'Content-Length': '182',
+     'Connection': 'keep-alive',
+     'Set-Cookie': 'csrftoken=eyJhbGciOiJIUzUxMiIsImlhdCI6MTY4NTQ3MzY1MSwiZXhwIjoxNjg1NTYwMDUxfQ.IkZIODNHR0h2bThxZHdmRVMwaE9JRzgzaE9OaHJhaDFzIg.Te5wJA-7cO-jc29ydK-b2NvEkF17jZNclMIhpGfBou77Ib-I50Qiy4XCBxgttNGGBhkcbeYBRWOm_-2K7YsEBg; Expires=Tue, 06 Jun 2023 19:07:31 GMT; Max-Age=604800; Secure; Path=/; SameSite=Lax',
+     'X-RateLimit-Limit': '500',
+     'X-RateLimit-Remaining': '499',
+     'X-RateLimit-Reset': '1685473712',
+     'Retry-After': '60',
+     'Permissions-Policy': 'interest-cohort=()',
+     'X-Frame-Options': 'sameorigin',
+     'X-XSS-Protection': '1; mode=block',
+     'X-Content-Type-Options': 'nosniff',
+     'Content-Security-Policy': "default-src 'self' data: 'unsafe-inline' blob:",
+     'Strict-Transport-Security': 'max-age=31556926; includeSubDomains',
+     'Referrer-Policy': 'strict-origin-when-cross-origin'
+    }
+
+    json_payload = {'custom_fields': json_payload['custom_fields'],
+                      'metadata': json_payload['metadata'],
+                      'pids': json_payload['pids']
+                      }
+    json_payload['access'] = {'record': 'public', 'files': 'public'}
+    json_payload['files'] = {'enabled': True}
+
     actual = create_invenio_record(json_payload)
     actual_id = actual['json']['id']
     actual_parent = actual['json']['parent']['id']
@@ -2639,6 +2667,7 @@ def test_create_invenio_record(json_payload, expected_headers,
         'links', 'parent', 'id', 'created', 'updated', 'expires_at'
     ]]
     for s in simple_fields:
+        print(actual['json'][s])
         assert actual['json'][s] == expected_json[s]
 
     for label, link in actual['json']['links'].items():
@@ -2661,15 +2690,39 @@ def test_create_invenio_record(json_payload, expected_headers,
                                   args=f'{actual_id}')
     pprint(actual_id)
     pprint(confirm_created)
+    print('Confirming record was created...')
     assert confirm_created['status_code'] == 200
 
     # Clean up created record from live db
-    deleted = delete_invenio_record(actual_id)
+    # deleted = delete_invenio_record(actual_id)
+    # assert deleted['status_code'] == 204
+
+    # # Confirm it no longer exists
+    # confirm_deleted = api_request('GET', endpoint='records',
+    #                               args=f'{actual_id}')
+    # assert confirm_deleted['status_code'] == 404
+
+    # assert actual['json'] == expected_json
+
+def test_create_invenio_community():
+    slug = 'mla'
+    actual_community = create_invenio_community(slug)
+    actual_community_id = actual_community['metadata']['id']
+    assert actual_community['status_code'] == 201
+    assert actual_community['metadata']['slug'] == slug
+
+    # Clean up created record from live db
+    deleted = api_request('DELETE', endpoint='communities',
+                          args=actual_community_id)
     assert deleted['status_code'] == 204
 
     # Confirm it no longer exists
-    confirm_deleted = api_request('GET', endpoint='records',
-                                  args=f'{actual_id}')
+    confirm_deleted = api_request('GET', endpoint='communities',
+                                  args=actual_community_id)
     assert confirm_deleted['status_code'] == 404
 
-    # assert actual['json'] == expected_json
+@pytest.mark.parametrize("json_in", [(json42615)])
+def test_create_full_invenio_record(json_in):
+    actual_full_record = create_full_invenio_record(json_in)
+    print(actual_full_record)
+    assert False

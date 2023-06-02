@@ -23,7 +23,9 @@ from .kcr_metadata_fields import KCR_NAMESPACE
 
 
 class UserTagsCF(BaseListCF):
-    """Nested custom field."""
+    """Nested custom field.
+    DEPRECATED
+    """
 
     def __init__(self, name, **kwargs):
         """Constructor."""
@@ -51,19 +53,17 @@ class UserTagsCF(BaseListCF):
         """user_defined_tags search mappings."""
         return {
             "type": "keyword",
-            "properties": {
                     # "properties": {
                     #     "tag_label": {"type": "text"},
                     #     "tag_identifier": {"type": "text"}
                     # }
-            }
         }
 
 
 KCR_USER_TAGS_FIELDS = [
     TextCF(name="kcr:user_defined_tags",
            field_cls=SanitizedUnicode,
-           multiple=True)
+           multiple=True),
 ]
 
 

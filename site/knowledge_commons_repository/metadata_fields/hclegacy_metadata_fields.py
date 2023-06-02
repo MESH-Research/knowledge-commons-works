@@ -111,6 +111,7 @@ HCLEGACY_CUSTOM_FIELDS = [
     TextCF(
         name="hclegacy:submitter_org_memberships",
         field_cls=SanitizedUnicode,
+        multiple=True
     ),
     TextCF(
         name="hclegacy:submitter_affiliation",
