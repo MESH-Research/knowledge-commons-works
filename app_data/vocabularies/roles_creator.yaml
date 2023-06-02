@@ -136,7 +136,7 @@
   props:
     datacite: ProjectMember
   title:
-    en: Project of team member
+    en: Project or team member
     de: Projektmitglied
 - id: researcher
   props:

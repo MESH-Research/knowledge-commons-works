@@ -1048,8 +1048,8 @@
     datacite_type: Working paper
     eurepo: info:eu-repo/semantics/workingPaper
     schema.org: https://schema.org/ScholarlyArticle
-    subtype: publication-workingpaper
-    type: publication
+    subtype: textDocument-workingPaper
+    type: textDocument
   title:
     en: Working paper
     de: Arbeitspapier
@@ -1122,8 +1122,8 @@
     datacite_type: White paper
     eurepo: info:eu-repo/semantics/technicalDocumentation
     schema.org: https://schema.org/Article
-    subtype: publication-whitePaper
-    type: publication
+    subtype: textDocument-whitePaper
+    type: textDocument
   title:
     en: White paper
     de: weißes Papier
