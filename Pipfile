@@ -27,6 +27,7 @@ invenio-subjects-fast = {editable = true, path = "./scripts/invenio-subjects-fas
 tqdm = "*"
 halo = "*"
 invenio-utilities-tuw = "*"
+invenio-subjects-mesh = "*"
 
 [requires]
 python_version = "3.9"
