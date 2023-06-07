@@ -3,6 +3,7 @@ from core_migrate import (
     serialize_json,
     api_request,
     create_invenio_record,
+    create_invenio_user,
     delete_invenio_record,
     create_invenio_community,
     create_full_invenio_record,
@@ -11,6 +12,7 @@ from core_migrate import (
 )
 import datetime
 import json
+import re
 from pprint import pprint
 import pytest
 import pytz
@@ -174,7 +176,9 @@ json28491 = {
                         {'identifier': '1000360-28455',
                          'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/g0rz-0930',
-                         'scheme': 'handle'}
+                         'scheme': 'handle'},
+                        {'identifier': 'doi:10.17613/g0rz-0930',
+                         'scheme': 'datacite-doi'}
         ],
         'languages': [{'id': 'spa'}],
         'publication_date': '2008',
@@ -191,9 +195,9 @@ json28491 = {
                                     'reserved.'}}],
         'subjects': [{'id': '1108387:Science--Study and '
                             'teaching:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                     {'id': '1145221:Technology--Study and teaching:topical',
-                     'scheme': 'fast'}
+                     'scheme': 'FAST'}
                      ],
         'title': 'TRATAMIENTO de los RESIDUOS de la INDUSTRIA del '
                  'PROCESADO de ALIMENTOS'
@@ -356,11 +360,11 @@ json583 = {
                         'title': {'en': 'Proprietary. All rights '
                                         'reserved.'}}],
             'subjects': [{'id': '903005:Education, Higher:topical',
-                          'scheme': 'fast'},
+                          'scheme': 'FAST'},
                          {'id': '963599:Digital humanities:topical',
-                          'scheme': 'fast'},
+                          'scheme': 'FAST'},
                          {'id': '911989:English literature:topical',
-                          'scheme': 'fast'}
+                          'scheme': 'FAST'}
             ],
             'publisher': 'Open Library of Humanities',
             'title': 'The New Open Access Environment: Innovation in '
@@ -574,11 +578,11 @@ json38367 = {
                                     'reserved.'}}
         ],
         'subjects': [{'id': '902116:Economics:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '958235:History:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1012163:Mathematics:topical',
-                      'scheme': 'fast'}
+                      'scheme': 'FAST'}
         ],
         'publisher': 'Universidad Nacional Autónoma de Mexico (UNAM)',
         'title': 'The macroeconomic evolution of the USA, 1970 - 2010. '
@@ -895,13 +899,13 @@ json33383 = {
                                     'reserved.'}}
         ],
         'subjects': [{'id': '1108176:Science:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '958235:History:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1012213:Mathematics--Philosophy:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1012163:Mathematics:topical',
-                      'scheme': 'fast'}
+                      'scheme': 'FAST'}
         ],
         'publisher': 'Brill',
         'title': 'Mathematical Philology in the Treatise on Double '
@@ -1048,13 +1052,13 @@ json16079 = {
                             'title': {'en': 'Creative Commons Attribution 4.0 '
                                             'International'}}],
                 'subjects': [{'id': '1159810:Twentieth century:topical',
-                              'scheme': 'fast'},
+                              'scheme': 'FAST'},
                              {'id': '963599:Digital humanities:topical',
-                              'scheme': 'fast'},
+                              'scheme': 'FAST'},
                              {'id': '979030:Irish literature:topical',
-                              'scheme': 'fast'},
+                              'scheme': 'FAST'},
                              {'id': '883762:Criticism, Textual:topical',
-                              'scheme': 'fast'}
+                              'scheme': 'FAST'}
                 ],
                 'publication_date': '2015',
                 'dates': [{'date': '8 June 2015',
@@ -1170,14 +1174,14 @@ json34031 = {
                                     'reserved.'}}
         ],
         'subjects': [{'id': '943906:Gnosticism:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1043123:Occultism:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1245064:Europe:geographic',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1710945:Church history--Primitive and early '
                             'church:topical',
-                      'scheme': 'fast'}
+                      'scheme': 'FAST'}
         ],
         'title': 'Gnosticism Theorized: Major Trends and Approaches to '
                 'the Study of Gnosticism'
@@ -1459,14 +1463,14 @@ json11451 = {
                                             'Commercial 4.0 International'}}
                 ],
                 'subjects': [{'id': '900999:East Asian literature:topical',
-                              'scheme': 'fast'},
+                              'scheme': 'FAST'},
                              {'id': '1027285:Motion pictures:topical',
-                              'scheme': 'fast'},
+                              'scheme': 'FAST'},
                              {'id': '958235:History:topical',
-                              'scheme': 'fast'},
+                              'scheme': 'FAST'},
                              {'id': '29048:Shakespeare, William, '
                                     '1564-1616:personal',
-                              'scheme': 'fast'}
+                              'scheme': 'FAST'}
                 ],
                'publisher': 'Palgrave',
                'title': 'The Paradox of Female Agency: Ophelia and East Asian '
@@ -1679,18 +1683,18 @@ json22647 = {
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}],
         'subjects': [{'id': '863509:Classsical literature:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1411635:Criticism, interpretation, '
                          'etc.:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1149217:Theater:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1027285:Motion pictures:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '29137:Homer:personal',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '913799:Epic poetry:topical',
-                      'scheme': 'fast'}],
+                      'scheme': 'FAST'}],
         'publisher': 'Oxford University Press',
         'title': 'Unfixing Epic: Homeric Orality and Contemporary '
                  'Performance'
@@ -1842,22 +1846,22 @@ json42615 = {
                                     'International'}}
         ],
         'subjects': [{'id': '862177:City planning:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '861853:Cities and towns--Study and '
                             'teaching:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1208476:Portugal:geographic',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1930859:Portuguese colonies:geographic',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '813346:Architecture:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '958235:History:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '904058:Eighteenth century:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1037841:Nineteenth century:topical',
-                      'scheme': 'fast'}
+                      'scheme': 'FAST'}
         ],
         'publisher': 'Toledo: INTBAU Spain',
         'title': 'Vernacular Patterns in Portugal and Brazil: Evolution '
@@ -2040,11 +2044,11 @@ json22625 = {
                                         'reserved.'}}
             ],
             'subjects': [{'id': '983377:Jews--Study and teaching:topical',
-                          'scheme': 'fast'},
+                          'scheme': 'FAST'},
                          {'id': '1031646:Mysticism--Judaism:topical',
-                          'scheme': 'fast'},
+                          'scheme': 'FAST'},
                          {'id': '1730516:Jewish philosophy:topical',
-                          'scheme': 'fast'}
+                          'scheme': 'FAST'}
             ],
             'publisher': 'Zalman Shazar Center',
             'title': 'מגדר וזמן בכתבי ר׳ שניאור זלמן מלאדי'},
@@ -2388,11 +2392,11 @@ json44881 = {
                                     'International'}}
         ],
         'subjects': [{'id': '815177:Art:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '1047055:Oral history:topical',
-                      'scheme': 'fast'},
+                      'scheme': 'FAST'},
                      {'id': '997341:Libraries:topical',
-                      'scheme': 'fast'}
+                      'scheme': 'FAST'}
         ],
         'title': 'ARLIS/NA Oral History for Distinguished Service Award '
                  'Winners, Sherman Clarke and Daniel Starr'},
@@ -2707,9 +2711,9 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
 def test_create_invenio_community():
     slug = 'mla'
     actual_community = create_invenio_community(slug)
-    actual_community_id = actual_community['metadata']['id']
+    actual_community_id = actual_community['json']['metadata']['id']
     assert actual_community['status_code'] == 201
-    assert actual_community['metadata']['slug'] == slug
+    assert actual_community['json']['metadata']['slug'] == slug
 
     # Clean up created record from live db
     deleted = api_request('DELETE', endpoint='communities',
@@ -2726,3 +2730,14 @@ def test_create_full_invenio_record(json_in):
     actual_full_record = create_full_invenio_record(json_in)
     print(actual_full_record)
     assert False
+
+
+@pytest.mark.parametrize("email_in,new_user_flag", [
+    ('myaddress3@somedomain.edu', True),
+    ('scottia4@msu.edu', False)
+])
+def test_create_invenio_user(email_in, new_user_flag):
+    actual_user = create_invenio_user(email_in)
+    print(actual_user)
+    assert re.match(r'\d+', actual_user['user_id'])
+    assert actual_user['new_user'] == new_user_flag

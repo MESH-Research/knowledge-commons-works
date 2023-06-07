@@ -5,16 +5,23 @@ from copy import deepcopy
 import csv
 from datetime import datetime
 from fedoraapi import FedoraApi
+from flask import current_app
+from flask.cli import with_appcontext
+from invenio_access.permissions import any_user, system_identity
+from invenio_access.utils import get_identity
 from invenio_accounts import current_accounts
+from invenio_rdm_records.proxies import current_rdm_records
 from isbnlib import is_isbn10, is_isbn13, get_isbnlike, clean
 import iso639
 import json
 from langdetect import detect_langs
 from pathlib import Path
-from stdnum import issn
 import requests
 # import numpy as np
+from stdnum import issn
+import subprocess
 from titlecase import titlecase
+from traceback import print_exc
 from typing import Optional
 import os
 # import pandas as pd
@@ -64,7 +71,6 @@ ambiguous_types = [
     'textDocument:poeticWork',
     'textDocument:translation'
     ]
-
 
 def flatten_list(list_of_lists, flat_list=[]):
     if not list_of_lists:
@@ -698,7 +704,7 @@ def serialize_json() -> tuple[dict, dict]:
             if row['handle']:
                 newrec['metadata'].setdefault('identifiers', []).append(
                     {"identifier": row['handle'],
-                     "scheme": "handle"}
+                     "scheme": "url"}
                 )
             if row['url']:
                 my_urls = re.split(r' and |;', row['url'])
@@ -1078,20 +1084,23 @@ def serialize_json() -> tuple[dict, dict]:
             if row['subject']:
                 covered_subjects = []
                 for s in row['subject']:
+                    # normalize inconsistent facet labels
+                    s = s.replace('Corporate Name', 'corporate')
+                    s = s.replace('Topic', 'topical')
+                    s = s.replace('Event', 'event')
+                    s = s.replace('Form\/Genre', 'form')
+                    s = s.replace('Geographic', 'geographic')
+                    s = s.replace('Meeting', 'meeting')
+                    s = s.replace('Personal Name', 'personal')
                     if s not in covered_subjects:
                         newrec['metadata'].setdefault('subjects', []).append(
                             {
                                 "id": s,
-                                "scheme": "fast"
+                                "scheme": "FAST"
                             }
                         )
                     covered_subjects.append(s)
 
-            # uploaded file info
-            # FIXME: Is this right? How are we handling upload?
-            if row['id'] == 'hc:45177':
-                print('files...')
-                print(row['file_pid'], row['fileloc'], row['filename'])
             if row['file_pid'] or row['fileloc'] or row['filename']:
                 newrec['custom_fields']['hclegacy:file_location'
                                         ] = row['fileloc']
@@ -1290,18 +1299,85 @@ def delete_invenio_record(record_id:str) -> dict:
     return(result)
 
 
+def create_invenio_user(user_email:str) -> dict:
+    """
+    Create a new user account in the Invenio instance
+    """
+    user_id:str
+    new_user_flag = True
+    existing_user = subprocess.Popen(['pipenv', 'run', 'invenio', 'shell', 'core_migrate_users.py', 'get-user-id', user_email],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        universal_newlines=True,
+                        text=True)
+    stdout_eu, stderr_eu = existing_user.communicate()
+    pprint('****')
+    pprint(stdout_eu)
+    pprint(stderr_eu)
+    pprint(existing_user.returncode)
+    if existing_user.returncode == 0 and 'success' in stdout_eu:
+        user_id = re.search(r'success: user id is (\d+)\'\n', stdout_eu)[1]
+        new_user_flag = False
+    else:
+        try:
+            make_user = subprocess.Popen(['pipenv', 'run', 'invenio', 'users',
+                                        'create', user_email,
+                                        '--password=password'],
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.PIPE,
+                                        universal_newlines=True)
+            stdout, stderr = make_user.communicate()
+            pprint('#####')
+            pprint(stdout)
+            pprint(stderr)
+            assert make_user.returncode == 0  # will be 2 if user exists
+            assert f'\'email\': \'{user_email}\'' in stdout
+            print('created new user...')
+            # ('User created successfully.\n'
+            # "{'email': 'myaddress2@somedomain.edu', 'password': '****', 'active': "
+            # 'False}\n')
+            activate_user = subprocess.Popen(['pipenv', 'run', 'invenio', 'users',
+                                            'activate', user_email],
+                                            stdout=subprocess.PIPE,
+                                            stderr=subprocess.PIPE,
+                                            text=True,
+                                            universal_newlines=True)
+            stdout2, stderr2 = activate_user.communicate()
+            pprint('&&&&')
+            pprint(stdout2)
+            pprint(stderr2)
+            assert activate_user.returncode == 0
+            print('activated new user...')
+
+            user_confirmed = subprocess.Popen(['pipenv', 'run', 'invenio', 'shell',
+                                            'core_migrate_users.py',
+                                            'get-user-id', user_email],
+                                            stdout=subprocess.PIPE,
+                                            stderr=subprocess.PIPE,
+                                            text=True,
+                                            universal_newlines=True)
+            stdout3, stderr3 = user_confirmed.communicate()
+            pprint('****')
+            pprint(stdout3)
+            pprint(stderr3)
+            pprint(user_confirmed.returncode)
+            assert user_confirmed.returncode == 0 and 'success' in stdout3
+            user_id = re.search(r'success: user id is (\d+)\'\n', stdout3)[1]
+            new_user_flag = True
+        except AssertionError:
+            print('Error: Failed to create new user')
+            print_exc()
+
+    # u = get_user_by_identifier(user_email)
+    return({'user_id': user_id,
+            'new_user': new_user_flag})
+
+
 def create_invenio_community(community_label:str) -> dict:
     """
     """
     community_data = {
         "hcommons": {
-            "access": {
-                    "visibility": "restricted",
-                    "member_policy": "closed",
-                    "record_policy": "open",
-                    "review_policy": "open",
-                    # "owned_by": [{"user": ""}]
-                    },
             "slug": "hcommons",
             "metadata": {
                     "title": "Humanities Commons",
@@ -1311,12 +1387,6 @@ def create_invenio_community(community_label:str) -> dict:
             }
         },
         "msu": {
-            "access": {
-                    "visibility": "restricted",
-                    "member_policy": "closed",
-                    "record_policy": "closed",
-                    # "owned_by": [{"user": ""}]
-                    },
             "slug": "ajs",
             "metadata": {
                     "title": "MSU Commons",
@@ -1326,12 +1396,6 @@ def create_invenio_community(community_label:str) -> dict:
             }
         },
         "ajs": {
-            "access": {
-                    "visibility": "restricted",
-                    "member_policy": "closed",
-                    "record_policy": "closed",
-                    # "owned_by": [{"user": ""}]
-                    },
             "slug": "ajs",
             "metadata": {
                     "title": "AJS Commons",
@@ -1341,12 +1405,6 @@ def create_invenio_community(community_label:str) -> dict:
             }
         },
         "arlisna": {
-            "access": {
-                    "visibility": "restricted",
-                    "member_policy": "closed",
-                    "record_policy": "closed",
-                    # "owned_by": [{"user": ""}]
-                    },
             "slug": "arlisna",
             "metadata": {
                     "title": "ARLIS/NA Commons",
@@ -1356,12 +1414,6 @@ def create_invenio_community(community_label:str) -> dict:
             }
         },
         "aseees": {
-            "access": {
-                    "visibility": "restricted",
-                    "member_policy": "closed",
-                    "record_policy": "closed",
-                    # "owned_by": [{"user": ""}]
-                    },
             "slug": "aseees",
             "metadata": {
                     "title": "ASEEES Commons",
@@ -1371,12 +1423,6 @@ def create_invenio_community(community_label:str) -> dict:
             }
         },
         "hastac": {
-            "access": {
-                    "visibility": "restricted",
-                    "member_policy": "closed",
-                    "record_policy": "closed",
-                    # "owned_by": [{"user": ""}]
-                    },
             "slug": "hastac",
             "metadata": {
                     "title": "HASTAC Commons",
@@ -1386,12 +1432,6 @@ def create_invenio_community(community_label:str) -> dict:
             }
         },
         "caa": {
-            "access": {
-                    "visibility": "restricted",
-                    "member_policy": "closed",
-                    "record_policy": "closed",
-                    # "owned_by": [{"user": ""}]
-                    },
             "slug": "caa",
             "metadata": {
                     "title": "CAA Commons",
@@ -1401,12 +1441,6 @@ def create_invenio_community(community_label:str) -> dict:
             }
         },
         "mla": {
-            "access": {
-                    "visibility": "restricted",
-                    "member_policy": "closed",
-                    "record_policy": "closed",
-                    # "owned_by": [{"user": ""}]
-                    },
             "slug": "mla",
             "metadata": {
                     "title": "MLA Commons",
@@ -1416,12 +1450,6 @@ def create_invenio_community(community_label:str) -> dict:
             }
         },
         "sah": {
-            "access": {
-                    "visibility": "restricted",
-                    "member_policy": "closed",
-                    "record_policy": "closed",
-                    # "owned_by": [{"user": ""}]
-                    },
             "slug": "sah",
             "metadata": {
                     "title": "SAH Commons",
@@ -1447,6 +1475,13 @@ def create_invenio_community(community_label:str) -> dict:
         },
     }
     my_community_data = community_data[community_label]
+    my_community_data["access"] = {
+        "visibility": "restricted",
+        "member_policy": "closed",
+        "record_policy": "open",
+        "review_policy": "open",
+        # "owned_by": [{"user": ""}]
+    }
     # admin_user_id = os.environ['ADMIN_USER_ID']
     # my_community_data['access']['owned_by'] = [{"user": admin_user_id}]
     # FIXME: a better way to get the current user?
@@ -1471,12 +1506,12 @@ def create_full_invenio_record(core_data:dict) -> dict:
     submitted_data['access'] = {'records': 'public', 'files': 'public'}
     submitted_data['files'] = {'enabled': True}
 
-    domains = [
-        'ajs.hcommons.org', 'arlisna.hcommons.org', 'aseees.hcommons.org',
-        'caa.hcommons.org', 'commons.msu.edu', 'hastac.hcommons.org',
-        'hcommons.org', 'mla.hcommons.org', 'sah.hcommons.org',
-        'up.hcommons.org'
-    ]
+    # domains = [
+    #     'ajs.hcommons.org', 'arlisna.hcommons.org', 'aseees.hcommons.org',
+    #     'caa.hcommons.org', 'commons.msu.edu', 'hastac.hcommons.org',
+    #     'hcommons.org', 'mla.hcommons.org', 'sah.hcommons.org',
+    #     'up.hcommons.org'
+    # ]
     # Create/find the necessary communities
     if 'kcr:commons_domain' in core_data['custom_fields'].keys() \
             and core_data['custom_fields']['kcr:commons_domain']:
@@ -1492,29 +1527,35 @@ def create_full_invenio_record(core_data:dict) -> dict:
         # otherwise create it
         if community_check['status_code'] == 404:
             print('Community', community_label, 'does not exist. Creating...')
-            create_invenio_community(community_label)
-            # and set curation policy
-            # api_request(https://localhost/communities/{community_label}/settings/curation-policy
+            community_check = create_invenio_community(community_label)
+        community_id = community_check['json']['id']
+        result['communiy']
 
     # Create the basic metadata record
     metadata_record = create_invenio_record(core_data)
     result['metadata_record_created'] = metadata_record
     pprint(metadata_record)
+    draft_id = metadata_record['json']['id']
+
+    # Upload the files
+
+    # Publish the record
+    my_files = {file_data['entries'][0]['key']:
+        metadata_record['json']['custom_fields']['hclegacy:file_location']}
+    uploaded_files = upload_draft_files(draft_id=draft_id, files_dict=my_files)
+    pprint(uploaded_files)
 
     # Attach the record to the communities
-    # POST /api/records/{id}/draft/actions/submit-review
+    review_body = {"receiver":
+                   {"community": f'{community_id}'},"type":"community-submission"}
+    submitted_to_community = api_request('PUT', endpoint='records',
+        args=f'{draft_id}/draft/actions/review', json_dict=review_body)
     # {
     # "payload": {
     #     "content": "Thank you in advance for the review.",
     #     "format": "html"
     # }
     # }
-
-    # Upload the files
-
-    # Publish the record
-    # POST /api/records/{id}/draft/actions/publish HTTP/1.1
-    # response is 202
 
     # Create/find the necessary user account
 
