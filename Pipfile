@@ -23,6 +23,10 @@ python-stdnum = "*"
 python-iso639 = "*"
 langdetect = "*"
 titlecase = "*"
+invenio-subjects-fast = {editable = true, path = "./scripts/invenio-subjects-fast"}
+tqdm = "*"
+halo = "*"
+invenio-utilities-tuw = "*"
 
 [requires]
 python_version = "3.9"
