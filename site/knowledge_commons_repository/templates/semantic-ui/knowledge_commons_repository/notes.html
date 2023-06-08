@@ -1,9 +1,5 @@
-{% if field_value.get('note_text') %}
-<dt class="ui tiny header">{{ _("Note text")}}</dt>
-<dd>{{field_value.get('note_text')}}</dd>
-{% endif %}
+<dt class="ui tiny header">{{ _("Notes")}}</dt>
 
-{% if field_value.get('note_description') %}
-<dt class="ui tiny header">{{ _("Description")}}</dt>
-<dd>{{field_value.get('note_description')}}</dd>
-{% endif %}
+{% for value in field_value %} {{value.get("note_text", "Unknown")}} ({{
+_("Description") }}: {{value.get("note_description", "Unknown")}}) {{ ", " if not loop.last
+}} {% endfor %}

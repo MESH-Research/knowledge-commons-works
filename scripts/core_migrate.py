@@ -1373,6 +1373,35 @@ def create_invenio_user(user_email:str) -> dict:
             'new_user': new_user_flag})
 
 
+def get_invenio_user(user_email:str) -> str:
+    """
+    Retrieve the user id of the user with the provided email address.
+    """
+    return create_invenio_user(user_email)['user_id']
+
+
+def change_record_ownership(record_id:str, old_owner_id:str, new_owner_id:str
+                            ) -> dict:
+    """
+    Change the owner of the specified record to a new user.
+    """
+    changed_ownership = subprocess.Popen(['pipenv', 'run', 'invenio', 'shell',
+                                          'core_migrate_users.py', 'change-owner',
+                                          f'--recid={record_id}',
+                                          f'--owner={old_owner_id}',
+                                          f'--user={new_owner_id}',
+                                          ],
+                                         stdout=subprocess.PIPE,
+                                         stderr=subprocess.PIPE,
+                                         text=True,
+                                         universal_newlines=True)
+    stdout, stderr = changed_ownership.communicate()
+    pprint('&&&& change_record_ownership')
+    pprint(stdout)
+    pprint(stderr)
+    assert changed_ownership.returncode == 0
+
+
 def create_invenio_community(community_label:str) -> dict:
     """
     """
@@ -1512,7 +1541,8 @@ def create_full_invenio_record(core_data:dict) -> dict:
     #     'hcommons.org', 'mla.hcommons.org', 'sah.hcommons.org',
     #     'up.hcommons.org'
     # ]
-    # Create/find the necessary communities
+
+    # Create/find the necessary domain communities
     if 'kcr:commons_domain' in core_data['custom_fields'].keys() \
             and core_data['custom_fields']['kcr:commons_domain']:
         community_label = core_data['custom_fields']['kcr:commons_domain'].split('.')
@@ -1529,7 +1559,7 @@ def create_full_invenio_record(core_data:dict) -> dict:
             print('Community', community_label, 'does not exist. Creating...')
             community_check = create_invenio_community(community_label)
         community_id = community_check['json']['id']
-        result['communiy']
+        result['community'] = community_check
 
     # Create the basic metadata record
     metadata_record = create_invenio_record(core_data)
@@ -1538,28 +1568,48 @@ def create_full_invenio_record(core_data:dict) -> dict:
     draft_id = metadata_record['json']['id']
 
     # Upload the files
-
-    # Publish the record
     my_files = {file_data['entries'][0]['key']:
         metadata_record['json']['custom_fields']['hclegacy:file_location']}
     uploaded_files = upload_draft_files(draft_id=draft_id, files_dict=my_files)
     pprint(uploaded_files)
+    result['uploaded_files'] = uploaded_files
+
 
     # Attach the record to the communities
     review_body = {"receiver":
                    {"community": f'{community_id}'},"type":"community-submission"}
-    submitted_to_community = api_request('PUT', endpoint='records',
+    request_to_community = api_request('PUT', endpoint='records',
         args=f'{draft_id}/draft/actions/review', json_dict=review_body)
-    # {
-    # "payload": {
-    #     "content": "Thank you in advance for the review.",
-    #     "format": "html"
-    # }
-    # }
+    pprint(request_to_community)
+    assert request_to_community['status_code'] == 200
+    submit_url = request_to_community['json']['links']['actions']['submit']
+    print(submit_url)
+    request_id = request_to_community['json']['id']
+    request_community = request_to_community['json']['receiver']['community']
+    assert request_community == community_id
+
+    submitted_body = {"payload": {
+                         "content": "Thank you in advance for the review.",
+                         "format": "html"
+                      }
+    }
+    review_submitted = api_request('POST', endpoint='records',
+        args=f'{draft_id}/draft/actions/review', json_dict=review_body)
+    result['review_submitted'] = review_submitted
+
+    # Publish the record
 
     # Create/find the necessary user account
+    new_owner_email = core_data['custom_fields']['kcr:submitter_email']
+    created_user = create_invenio_user(new_owner_email)
+    result['created_user'] = created_user
+    new_owner_id = created_user['user_id']
 
     # Change the ownership of the record
+    current_owner_id = get_invenio_user('scottia4@msu.edu')
+    changed_ownership = change_record_ownership(draft_id, current_owner_id,
+                                                new_owner_id)
+    result['changed_ownership'] = changed_ownership
 
     return(result)
 

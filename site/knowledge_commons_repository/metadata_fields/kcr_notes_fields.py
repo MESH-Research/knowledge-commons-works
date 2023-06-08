@@ -19,31 +19,35 @@ from marshmallow_utils.fields import (
 from .kcr_metadata_fields import KCR_NAMESPACE
 
 
-# class NotesCF(BaseCF):
+class NotesCF(BaseCF):
 #     """Nested custom field."""
+    def __init__(self, name, **kwargs):
+        """Constructor."""
+        super().__init__(
+          name,
+          field_cls=fields.Nested,
+          field_args={
+            'nested': {
+                "note_text": SanitizedHTML(),
+                "note_text_sanitized": StrippedHTML(),
+                "note_description": SanitizedUnicode(),
+            }
+          },
+          multiple=True,
+          **kwargs
+        )
 
-#     @property
-#     def field(self):
-#         """Notes fields definitions."""
-#         return fields.Nested(
-#             {
-#                 "note_text": SanitizedHTML(),
-#                 "note_text_sanitized": StrippedHTML(),
-#                 "note_description": SanitizedUnicode(),
-#             }
-#         )
-
-#     @property
-#     def mapping(self):
-#         """Notes search mappings."""
-#         return {
-#             "type": "object",
-#             "properties": {
-#                 "note_text": {"type": "text"},
-#                 "note_text_sanitized": {"type": "text"},
-#                 "note_description": {"type": "text"},
-#             },
-#         }
+    @property
+    def mapping(self):
+        """Notes search mappings."""
+        return {
+            "type": "object",
+            "properties": {
+                "note_text": {"type": "text"},
+                "note_text_sanitized": {"type": "text"},
+                "note_description": {"type": "text"},
+            },
+        }
 
 
 KCR_NOTES_FIELDS = [
