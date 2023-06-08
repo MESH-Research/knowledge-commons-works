@@ -101,3 +101,4 @@ Thumbs.db
 # postgres_env.cfg
 # *.sql
 # *.gz
+scripts/invenio-subjects-fast/invenio_subjects_fast/vocabularies/subjects_fast.yaml
