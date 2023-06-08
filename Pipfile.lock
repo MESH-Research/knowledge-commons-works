@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7343c8ece9228bd3108557309ad0ae951906777de947489bae5850d60f1f1783"
+            "sha256": "2b9f75e69f7b8abe19f01b258216ffcd0169b1da7f4f0f76a83e5352f05427cb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1149,11 +1149,11 @@
         },
         "invenio-communities": {
             "hashes": [
-                "sha256:39e67fdc8a74378d2f17dda24fee41a60ec41c0c3682b54ca9e0603219f1d431",
-                "sha256:7da85e524e328233f511751a2bf56efb316ac2b2be497331963fbe4f4602d9d7"
+                "sha256:0272e75ebc6abaa29fabf870f35eb785c2333af6a24c7a0dbf85e6e2f272f9bc",
+                "sha256:f3c8767c176ee4402b7a7a43201cb50e5c09ba6488b68dcc80f8fee48e672059"
             ],
             "index": "pypi",
-            "version": "==6.6.1"
+            "version": "==6.6.0"
         },
         "invenio-config": {
             "hashes": [
