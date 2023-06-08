@@ -127,7 +127,7 @@ def convert_to_yaml() -> bool:
                         label = label_fields[0].text
                     # escape quotation marks
                     label = label.replace('"', '\\"')
-                    label = re.sub(r'\\([a-z A-Z])', r'\\\1', label)
+                    label = re.sub(r'\\([a-z A-Z])', r'\\\\1', label)
                     # Note: CORE facets were inconsistent, but have been normalized
                     # 110 corporate "Corporate Name"
                     # 150 topical "Topic"
