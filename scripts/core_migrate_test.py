@@ -176,7 +176,7 @@ json28491 = {
                         {'identifier': '1000360-28455',
                          'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/g0rz-0930',
-                         'scheme': 'handle'},
+                         'scheme': 'url'},
                         {'identifier': 'doi:10.17613/g0rz-0930',
                          'scheme': 'datacite-doi'}
         ],
@@ -349,7 +349,7 @@ json583 = {
                             {'identifier': 10664,
                              'scheme': 'hclegacy-record-id'},
                             {'identifier': 'http://dx.doi.org/10.17613/M6930Z',
-                            'scheme': 'handle'}],
+                            'scheme': 'url'}],
             'languages': [{'id': 'eng'}],
             'publication_date': '2016',
             'resource_type': {'id': 'presentation:other'},
@@ -563,7 +563,7 @@ json38367 = {
                         {'identifier': '1000360-44555',
                          'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/5ehz-cb19',
-                         'scheme': 'handle'},
+                         'scheme': 'url'},
                         {'identifier': 'http://132.248.9.195/ptd2018/mayo/0774053/Index.html',
                          'scheme': 'url'}
         ],
@@ -728,7 +728,7 @@ json48799 = {
                         {'identifier': '1000360-61936',
                          'scheme': 'hclegacy-record-id'},
                         {'identifier': 'https://doi.org/10.17613/y30x-r594',
-                         'scheme': 'handle'},
+                         'scheme': 'url'},
                         {'identifier': 'https://www.theplatformlab.com/'
                                        'super-apps',
                          'scheme': 'url'}],
@@ -887,7 +887,7 @@ json33383 = {
                         {'identifier': '10.1163/24519197-BJA10007',
                          'scheme': 'doi'},
                         {'identifier': 'http://dx.doi.org/10.17613/xxxj-e936',
-                         'scheme': 'handle'}],
+                         'scheme': 'url'}],
         'languages': [{'id': 'eng'}],
         'publication_date': '2020',
         'resource_type': {'id': 'textdocument:journalarticle'},
@@ -1041,7 +1041,7 @@ json16079 = {
                                 'scheme': 'doi'},
                                {'identifier': 'http://dx.doi.org/10.17613'
                                               '/M6M225',
-                                'scheme': 'handle'}
+                                'scheme': 'url'}
                                ],
                 'languages': [{'id': 'eng'}],
                 'resource_type': {'id': 'textDocument:conferenceProceeding'},
@@ -1163,7 +1163,7 @@ json34031 = {
                         {'identifier': '1000360-41326',
                          'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/0qxh-ed23',
-                         'scheme': 'handle'}],
+                         'scheme': 'url'}],
         'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'textDocument:bookSection'},
         'rights': [{'description': {'en': ''},
@@ -1451,7 +1451,7 @@ json11451 = {
                                 'scheme': 'doi'},
                                {'identifier': 'http://dx.doi.org/10.17613/'
                                               'M6733G',
-                                'scheme': 'handle'}
+                                'scheme': 'url'}
                 ],
                'languages': [{'id': 'eng'}],
                'resource_type': {'id': 'textDocument:bookSection'},
@@ -1672,7 +1672,7 @@ json22647 = {
                         {'identifier': '1000360-19934',
                          'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/1d2d-2y15',
-                         'scheme': 'handle'}
+                         'scheme': 'url'}
         ],
         'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'textDocument:bookSection'},
@@ -1834,7 +1834,7 @@ json42615 = {
                         {'identifier': '1001712-776',
                          'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/6v9q-8878',
-                         'scheme': 'handle'}],
+                         'scheme': 'url'}],
         'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'textDocument-journalArticle'},
         'rights': [{'description': {'en': ''},
@@ -2033,7 +2033,7 @@ json22625 = {
                              'scheme': 'hclegacy-record-id'},
                             {'identifier': 'http://dx.doi.org/10.17613/'
                                            'hrhn-3k43',
-                             'scheme': 'handle'}],
+                             'scheme': 'url'}],
             'languages': [{'id': 'heb'}],
             'resource_type': {'id': 'textDocument:bookSection'},
             'rights': [{'description': {'en': ''},
@@ -2248,7 +2248,7 @@ json45177 = {
                                'scheme': 'hclegacy-record-id'},
                               {'identifier': 'https://doi.org/10.17613/'
                                              'zhmh-c741',
-                               'scheme': 'handle'}
+                               'scheme': 'url'}
               ],
               'languages': [{'id': 'eng'}],
               'resource_type': {'id': 'textDocument:bookSection'},
@@ -2380,7 +2380,7 @@ json44881 = {
                         {'identifier': '1001634-235',
                          'scheme': 'hclegacy-record-id'},
                         {'identifier': 'https://doi.org/10.17613/82yy-vj44',
-                         'scheme': 'handle'}],
+                         'scheme': 'url'}],
         'languages': [{'id': 'eng'}],
         'resource_type': {'id': 'textDocument:interviewTranscript'},
         'rights': [{'description': {'en': ''},
@@ -2728,6 +2728,11 @@ def test_create_invenio_community():
 @pytest.mark.parametrize("json_in", [(json42615)])
 def test_create_full_invenio_record(json_in):
     actual_full_record = create_full_invenio_record(json_in)
+    assert actual_full_record['community'] == {}
+    assert actual_full_record['metadata_record_created'] == {}
+    assert actual_full_record['uploaded_files'] == {}
+    assert actual_full_record['created_user'] == {}
+    assert actual_full_record['changed_ownership'] == {}
     print(actual_full_record)
     assert False
 

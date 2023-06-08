@@ -21,10 +21,10 @@ def get_user_id(user_email):
     pprint(f'success: user id is {v.id}')
     return(v.id)
 
-# @click.command('change_owner')
-# @click.argument('recid', type=str)
-# @click.argument('owner', type=int)
-# @click.argument('user', type=int)
+@click.command('change_owner')
+@click.argument('recid', type=str)
+@click.argument('owner', type=int)
+@click.argument('user', type=int)
 def change_owner(recid, owner, user):
     u = get_identity_for_user(user)
     service = get_record_service()
@@ -33,6 +33,9 @@ def change_owner(recid, owner, user):
     set_record_owners(record, all_owners)
     if service.indexer:
         service.indexer.index(record)
+    pprint(service.read(id_=recid, identity=u)._record)
+    return(service.read(id_=recid, identity=u)._record)
+
 
 @click.command('change_owners')
 @click.argument('owner_file', type=click.File('r'))
@@ -43,7 +46,7 @@ def change_owners(owner_file):
         change_owner(line[0],int(line[1]),2)
         exit()
 
-#cli.add_command(change_owner)
+cli.add_command(change_owner)
 cli.add_command(change_owners)
 cli.add_command(get_user_id)
 
