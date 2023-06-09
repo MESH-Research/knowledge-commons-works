@@ -16,7 +16,6 @@ invenio-cli = "*"
 pytest-invenio = "*"
 knowledge-commons-repository = {editable = true, path = "./site"}
 selenium = "*"
-invenio-app-rdm = {version = "~=12.0.0b1", extras = ["opensearch2", "postgresql"]}
 isbnlib = "*"
 python-stdnum = "*"
 python-iso639 = "*"
@@ -26,8 +25,7 @@ invenio-subjects-fast = {editable = true, path = "./scripts/invenio-subjects-fas
 tqdm = "*"
 halo = "*"
 invenio-utilities-tuw = "*"
-invenio-communities = "==6.6.0"
-invenio-rdm-records = "==2.13.0"
+invenio-app-rdm = {version = "~=12.0.0b1", extras = ["opensearch2", "postgresql"]}
 
 [requires]
 python_version = "3.9"
