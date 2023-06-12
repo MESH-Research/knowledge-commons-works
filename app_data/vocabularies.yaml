@@ -14,10 +14,42 @@ subjects:
       name: Fields of Science and Technology
       uri: "http://www.oecd.org/science/inno/38235147.pdf"
       data-file: vocabularies/subjects_oecd_fos.yaml
-    - id: FAST
+    - id: FAST-chronological
       name: Faceted Application of Subject Terminology
       uri: "https://www.loc.gov/catworkshop/FAST/index.html"
-      data-file: vocabularies/subjects_fast.yaml
+      data-file: vocabularies/subjects_fast_chronological.yaml
+    - id: FAST-corporate
+      name: Faceted Application of Subject Terminology
+      uri: "https://www.loc.gov/catworkshop/FAST/index.html"
+      data-file: vocabularies/subjects_fast_corporate.yaml
+    - id: FAST-event
+      name: Faceted Application of Subject Terminology
+      uri: "https://www.loc.gov/catworkshop/FAST/index.html"
+      data-file: vocabularies/subjects_fast_event.yaml
+    - id: FAST-formgenre
+      name: Faceted Application of Subject Terminology
+      uri: "https://www.loc.gov/catworkshop/FAST/index.html"
+      data-file: vocabularies/subjects_fast_formgenre.yaml
+    - id: FAST-geographic
+      name: Faceted Application of Subject Terminology
+      uri: "https://www.loc.gov/catworkshop/FAST/index.html"
+      data-file: vocabularies/subjects_fast_geographic.yaml
+    - id: FAST-meeting
+      name: Faceted Application of Subject Terminology
+      uri: "https://www.loc.gov/catworkshop/FAST/index.html"
+      data-file: vocabularies/subjects_fast_meeting.yaml
+    - id: FAST-personal
+      name: Faceted Application of Subject Terminology
+      uri: "https://www.loc.gov/catworkshop/FAST/index.html"
+      data-file: vocabularies/subjects_fast_personal.yaml
+    - id: FAST-title
+      name: Faceted Application of Subject Terminology
+      uri: "https://www.loc.gov/catworkshop/FAST/index.html"
+      data-file: vocabularies/subjects_fast_title.yaml
+    - id: FAST-topical
+      name: Faceted Application of Subject Terminology
+      uri: "https://www.loc.gov/catworkshop/FAST/index.html"
+      data-file: vocabularies/subjects_fast_topical.yaml
 # TODO: Uncoment this if you want to have all affiliations with ROR identifiers.
 # affiliations:
 #   pid-type: aff

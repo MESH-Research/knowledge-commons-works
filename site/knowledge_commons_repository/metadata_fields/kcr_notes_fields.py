@@ -67,7 +67,8 @@ KCR_NOTES_SECTION_UI = {
                     "label": _("Description"),
                     "placeholder": "",
                     "description": _(
-                        "A few words describing the kind of notes recorded here."
+                        "A few words describing the kind of notes recorded "
+                        "here."
                     ),
                 },
                 "note_text": {
