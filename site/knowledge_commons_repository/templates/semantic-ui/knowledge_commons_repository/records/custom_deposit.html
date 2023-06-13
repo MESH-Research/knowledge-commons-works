@@ -1,0 +1,39 @@
+{#
+  Copyright (C) 2020 CERN.
+  Copyright (C) 2020 Northwestern University.
+
+  Invenio App RDM is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+{%- if not record.is_published and record.versions.index and record.versions.index > 1%}
+  {%- set title = _("New version") %}
+{%- elif not record.is_published %}
+  {%- set title = _("New upload") %}
+{% else %}
+  {%- set title = _("Edit upload") %}
+{%- endif %}
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block page_body %}
+  {%- if record %}
+  <input id="deposits-record" type="hidden" name="deposits-record" value='{{record | tojson }}'></input>
+  {%- endif %}
+  {%- if preselectedCommunity %}
+  <input id="deposits-draft-community" type="hidden" name="deposits-draft-community" value='{{preselectedCommunity | tojson }}'></input>
+  {%- endif %}
+  {%- if files %}
+  <input id="deposits-record-files" type="hidden" name="deposits-record-files" value='{{files | tojson }}'></input>
+  {%- endif %}
+  {%- if forms_config %}
+  <input type="hidden" name="deposits-config" value='{{forms_config | tojson }}'></input>
+  {%- endif %}
+  {%- if permissions %}
+  <input id="deposits-record-permissions" type="hidden" name="deposits-record-permissions" value='{{permissions | tojson }}'></input>
+  {%- endif %}
+  <div id="deposit-form"></div>
+{%- endblock page_body %}
+
+{%- block javascript %}
+    {{ super() }}
+    {{ webpack['knowledge-commons-repository-deposit.js'] }}
+{%- endblock %}
