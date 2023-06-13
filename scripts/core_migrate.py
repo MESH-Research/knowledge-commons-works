@@ -1308,8 +1308,8 @@ def create_invenio_user(user_email:str) -> dict:
     existing_user = subprocess.Popen(['pipenv', 'run', 'invenio', 'shell', 'core_migrate_users.py', 'get-user-id', user_email],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
-                        universal_newlines=True,
-                        text=True)
+                        universal_newlines=True
+                        )
     stdout_eu, stderr_eu = existing_user.communicate()
     pprint('****')
     pprint(stdout_eu)
