@@ -193,10 +193,10 @@ json28491 = {
                               'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}],
-        'subjects': [{'id': '1108387:Science--Study and '
+        'subjects': [{'id': 'Science--Study and '
                             'teaching',
                       'scheme': 'FAST-topical'},
-                    {'id': '1145221:Technology--Study and teaching',
+                    {'id': 'Technology--Study and teaching',
                      'scheme': 'FAST-topical'}
                      ],
         'title': 'TRATAMIENTO de los RESIDUOS de la INDUSTRIA del '
@@ -359,11 +359,11 @@ json583 = {
                                   'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                         'title': {'en': 'Proprietary. All rights '
                                         'reserved.'}}],
-            'subjects': [{'id': '903005:Education, Higher',
+            'subjects': [{'id': 'Education, Higher',
                           'scheme': 'FAST-topical'},
-                         {'id': '963599:Digital humanities',
+                         {'id': 'Digital humanities',
                           'scheme': 'FAST-topical'},
-                         {'id': '911989:English literature',
+                         {'id': 'English literature',
                           'scheme': 'FAST-topical'}
             ],
             'publisher': 'Open Library of Humanities',
@@ -577,11 +577,11 @@ json38367 = {
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}
         ],
-        'subjects': [{'id': '902116:Economics',
+        'subjects': [{'id': 'Economics',
                       'scheme': 'FAST-topical'},
-                     {'id': '958235:History',
+                     {'id': 'History',
                       'scheme': 'FAST-topical'},
-                     {'id': '1012163:Mathematics',
+                     {'id': 'Mathematics',
                       'scheme': 'FAST-topical'}
         ],
         'publisher': 'Universidad Nacional Autónoma de Mexico (UNAM)',
@@ -898,13 +898,13 @@ json33383 = {
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}
         ],
-        'subjects': [{'id': '1108176:Science',
+        'subjects': [{'id': 'Science',
                       'scheme': 'FAST-topical'},
-                     {'id': '958235:History',
+                     {'id': 'History',
                       'scheme': 'FAST-topical'},
-                     {'id': '1012213:Mathematics--Philosophy',
+                     {'id': 'Mathematics--Philosophy',
                       'scheme': 'FAST-topical'},
-                     {'id': '1012163:Mathematics',
+                     {'id': 'Mathematics',
                       'scheme': 'FAST-topical'}
         ],
         'publisher': 'Brill',
@@ -1051,13 +1051,13 @@ json16079 = {
                                         'url': 'https://creativecommons.org/licenses/by/4.0/legalcode'},
                             'title': {'en': 'Creative Commons Attribution 4.0 '
                                             'International'}}],
-                'subjects': [{'id': '1159810:Twentieth century',
+                'subjects': [{'id': 'Twentieth century',
                               'scheme': 'FAST-topical'},
-                             {'id': '963599:Digital humanities',
+                             {'id': 'Digital humanities',
                               'scheme': 'FAST-topical'},
-                             {'id': '979030:Irish literature',
+                             {'id': 'Irish literature',
                               'scheme': 'FAST-topical'},
-                             {'id': '883762:Criticism, Textual',
+                             {'id': 'Criticism, Textual',
                               'scheme': 'FAST-topical'}
                 ],
                 'publication_date': '2015',
@@ -1173,13 +1173,13 @@ json34031 = {
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}
         ],
-        'subjects': [{'id': '943906:Gnosticism',
+        'subjects': [{'id': 'Gnosticism',
                       'scheme': 'FAST-topical'},
-                     {'id': '1043123:Occultism',
+                     {'id': 'Occultism',
                       'scheme': 'FAST-topical'},
-                     {'id': '1245064:Europe',
+                     {'id': 'Europe',
                       'scheme': 'FAST-geographic'},
-                     {'id': '1710945:Church history--Primitive and early '
+                     {'id': 'Church history--Primitive and early '
                             'church',
                       'scheme': 'FAST-topical'}
         ],
@@ -1462,13 +1462,13 @@ json11451 = {
                             'title': {'en': 'Creative Commons Attribution Non '
                                             'Commercial 4.0 International'}}
                 ],
-                'subjects': [{'id': '900999:East Asian literature',
+                'subjects': [{'id': 'East Asian literature',
                               'scheme': 'FAST-topical'},
-                             {'id': '1027285:Motion pictures',
+                             {'id': 'Motion pictures',
                               'scheme': 'FAST-topical'},
-                             {'id': '958235:History',
+                             {'id': 'History',
                               'scheme': 'FAST-topical'},
-                             {'id': '29048:Shakespeare, William, '
+                             {'id': 'Shakespeare, William, '
                                     '1564-1616',
                               'scheme': 'FAST-personal'}
                 ],
@@ -1682,18 +1682,18 @@ json22647 = {
                               'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}],
-        'subjects': [{'id': '863509:Classsical literature',
+        'subjects': [{'id': 'Classsical literature',
                       'scheme': 'FAST-topical'},
-                     {'id': '1411635:Criticism, interpretation, '
+                     {'id': 'Criticism, interpretation, '
                          'etc.',
                       'scheme': 'FAST-topical'},
-                     {'id': '1149217:Theater',
+                     {'id': 'Theater',
                       'scheme': 'FAST-topical'},
-                     {'id': '1027285:Motion pictures',
+                     {'id': 'Motion pictures',
                       'scheme': 'FAST-topical'},
-                     {'id': '29137:Homer',
+                     {'id': 'Homer',
                       'scheme': 'FAST-personal'},
-                     {'id': '913799:Epic poetry',
+                     {'id': 'Epic poetry',
                       'scheme': 'FAST-topical'}],
         'publisher': 'Oxford University Press',
         'title': 'Unfixing Epic: Homeric Orality and Contemporary '
@@ -1706,7 +1706,7 @@ json22647 = {
 json42615 = {
     'created': '2021-11-10T15:06:20Z',
     'pids': {'doi': {'client': 'datacite',
-                               'identifier': 'doi:10.17613/6v9q-8878',
+                               'identifier': '10.17613/6v9q-8878',
                                'provider': 'datacite'}},
     'custom_fields': {
         'hclegacy:collection': 'hccollection:1',
@@ -1721,10 +1721,10 @@ json42615 = {
             'hclegacy:submitter_affiliation': 'University of Brasilia '
                                               'School of Architecture '
                                               'and Urbanism',
-            'hclegacy:submitter_id': 1011841,
+            'hclegacy:submitter_id': '1011841',
             'hclegacy:submitter_org_memberships': ['hc', 'sah'],
             'journal:journal': {
-                'issn': ['2660-583X'],
+                'issn': '2660-583X',
                 'issue': '2',
                 'pages': '359-370',
                 'title': 'Journal of Traditional Building, Architecture and '
@@ -1749,7 +1749,7 @@ json42615 = {
     'files': {
         'default_preview': 'palazzo-vernacular_patterns_in_'
                            'portugal_and_brazil-2021.pdf',
-        'enabled': 'true',
+        'enabled': True,
         'entries': {
             'palazzo-vernacular_patterns_in_portugal_and_brazil-2021.'
             'pdf': {
@@ -1760,52 +1760,23 @@ json42615 = {
         }
     },
     'metadata': {
-        'additional_descriptions': [
-            {'description':
-                'Traditional towns in Portugal and Brazil have evolved a '
-                'finely tuned coordination between, on the one hand, modular '
-                'dimensions for street widths and lot sizes, and on '
-                'the other, a typology of room shapes and layouts within '
-                'houses. Despite being well documented in urban history, '
-                'this coordination was in the last century often interpreted '
-                'as contingent, a result of the limited material means of '
-                'pre-industrial societies. But the continued application and '
-                'gradual adaptation of these urban and architectural '
-                'patterns through periods of industrialization and economic '
-                'development suggests that they respond both to '
-                'enduring housing requirements and to piecemeal urban '
-                'growth. This article surveys the persistence of urban and '
-                'architectural patterns up to the early 20th century, showing '
-                'their resilience in addressing modern housing and '
-                'urbanization requirements.',
-             'type': {'id': 'other',
-                      'title': {'en': 'Primary description with '
-                                      'HTML stripped'}
-                      }
-             }
-        ],
-        'additional_titles': [
-            {'title': 'Vernacular Patterns in Portugal and Brazil: Evolution '
-                      'and Adaptations',
-             'type': {'id': 'other',
-                      'title': {'en': 'Primary title with HTML stripped'}}
-             }
-        ],
-        'creators': [{'affiliations': ['University of Brasilia School '
-                                       'of Architecture and Urbanism'],
-                      'person_or_org': {'family_name': 'P. Palazzo',
+        'creators': [{'affiliations': [{'name': 'University of Brasilia School '
+                                       'of Architecture and Urbanism'}],
+                      'person_or_org': {'family_name': 'P. Palazzo',  # FIXME: why is initial with family name?
                                         'given_name': 'Pedro',
                                         'identifiers': [{
                                             'identifier': 'palazzo',
                                             'scheme': 'hc_username'}],
-                                        'name': 'Pedro P. Palazzo',
+                                        'name': 'P. Palazzo, Pedro',  # Why is name switched to family, given?
                                         'type': 'personal'},
-                      'role': {'id': 'author'}}
+                      'role': {'id': 'author',
+                               'title': {'en': 'Author'}}}
                     ],
         'dates': [{'date': '2021-11-10',
                    'description': 'Human readable publication date',
                    'type': {'id': 'issued',
-                   'title': {'en': 'Issued'}}}
+                   'title': {'en': 'Issued',
+                             'de': 'Veröffentlicht'}}}
                   ],
         'publication_date': '2021',
         'description': 'Traditional towns in Portugal and Brazil have '
@@ -1828,39 +1799,43 @@ json42615 = {
                         'up to the early 20th century, showing their '
                         'resilience in addressing modern housing and '
                         'urbanization requirements.',
-        'formats': [],
         'identifiers': [{'identifier': 'hc:42615',
                          'scheme': 'hclegacy-pid'},
                         {'identifier': '1001712-776',
                          'scheme': 'hclegacy-record-id'},
                         {'identifier': 'http://dx.doi.org/10.17613/6v9q-8878',
                          'scheme': 'url'}],
-        'languages': [{'id': 'eng'}],
-        'resource_type': {'id': 'textDocument-journalArticle'},
-        'rights': [{'description': {'en': ''},
-                    'id': 'cc-by-nc-nd-4.0',
-                    'props': {'scheme': 'spdx',
-                              'url': 'https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode'},
-                    'title': {'en': 'Creative Commons Attribution Non '
-                                    'Commercial No Derivatives 4.0 '
-                                    'International'}}
-        ],
-        'subjects': [{'id': '862177:City planning',
+        'languages': [{'id': 'eng',
+                       'title': {'en': 'English'}}],
+        'resource_type': {'id': 'textDocument-journalArticle',
+                          'title': {'de': 'Zeitschriftenartikel',
+                                    'en': 'Journal article'}},
+        'rights': [{'id': 'cc-by-nc-nd-4.0'
+        }],
+        'subjects': [{'id': "http://id.worldcat.org/fast/862177",
+                      'subject': 'City planning',
                       'scheme': 'FAST-topical'},
-                     {'id': '861853:Cities and towns--Study and '
-                            'teaching',
+                     {'id': "http://id.worldcat.org/fast/861853",
+                      'subject': 'Cities and towns--Study and '
+                                 'teaching',
                       'scheme': 'FAST-topical'},
-                     {'id': '1208476:Portugal',
+                     {'id': "http://id.worldcat.org/fast/1208476",
+                      'subject': 'Portugal',
                       'scheme': 'FAST-geographic'},
-                     {'id': '1930859:Portuguese colonies',
-                      'scheme': 'FAST-geographic'},
-                     {'id': '813346:Architecture',
+                     {"id": "http://id.worldcat.org/fast/1930859",
+                      'subject': 'Portuguese colonies',
                       'scheme': 'FAST-topical'},
-                     {'id': '958235:History',
+                     {"id": "http://id.worldcat.org/fast/813346",
+                      'subject': 'Architecture',
                       'scheme': 'FAST-topical'},
-                     {'id': '904058:Eighteenth century',
+                     {"id": "http://id.worldcat.org/fast/958235",
+                      'subject': 'History',
                       'scheme': 'FAST-topical'},
-                     {'id': '1037841:Nineteenth century',
+                     {"id": "http://id.worldcat.org/fast/904058",
+                      'subject': 'Eighteenth century',
+                      'scheme': 'FAST-topical'},
+                     {"id": "http://id.worldcat.org/fast/1037841",
+                      'subject': 'Nineteenth century',
                       'scheme': 'FAST-topical'}
         ],
         'publisher': 'Toledo: INTBAU Spain',
@@ -2043,11 +2018,11 @@ json22625 = {
                         'title': {'en': 'Proprietary. All rights '
                                         'reserved.'}}
             ],
-            'subjects': [{'id': '983377:Jews--Study and teaching',
+            'subjects': [{'id': 'Jews--Study and teaching',
                           'scheme': 'FAST-topical'},
-                         {'id': '1031646:Mysticism--Judaism',
+                         {'id': 'Mysticism--Judaism',
                           'scheme': 'FAST-topical'},
-                         {'id': '1730516:Jewish philosophy',
+                         {'id': 'Jewish philosophy',
                           'scheme': 'FAST-topical'}
             ],
             'publisher': 'Zalman Shazar Center',
@@ -2391,11 +2366,11 @@ json44881 = {
                                     'Commercial No Derivatives 4.0 '
                                     'International'}}
         ],
-        'subjects': [{'id': '815177:Art',
+        'subjects': [{'id': 'Art',
                       'scheme': 'FAST-topical'},
-                     {'id': '1047055:Oral history',
+                     {'id': 'Oral history',
                       'scheme': 'FAST-topical'},
-                     {'id': '997341:Libraries',
+                     {'id': 'Libraries',
                       'scheme': 'FAST-topical'}
         ],
         'title': 'ARLIS/NA Oral History for Distinguished Service Award '
@@ -2539,24 +2514,6 @@ def test_api_request(method, server, endpoint, args, json_dict,
 },
 201,
 {
-    "links": {
-        "self": "https://localhost/api/records/###/draft",
-        "self_html": "https://localhost/uploads/###",
-        "self_iiif_manifest": "https://localhost/api/iiif/draft:###/manifest",
-        "self_iiif_sequence": "https://localhost/api/iiif/draft:###/sequence/default",
-        "files": "https://localhost/api/records/###/draft/files",
-        "archive": "https://localhost/api/records/###/draft/files-archive",
-        "record": "https://localhost/api/records/###",
-        "record_html": "https://localhost/records/###",
-        "publish": "https://localhost/api/records/###/draft/actions/publish",
-        "review": "https://localhost/api/records/###/draft/review",
-        "versions": "https://localhost/api/records/###/versions",
-        "access_links": "https://localhost/api/records/###/access/links",
-        "reserve_doi": "https://localhost/api/records/###/draft/pids/doi",
-        "communities": "https://localhost/api/records/###/communities",
-        "communities-suggestions": "https://localhost/api/records/###/communities-suggestions",
-        "requests": "https://localhost/api/records/###/requests"
-    },
     "updated": "2023-05-30T18:57:05.296257+00:00",
     "parent": {
         "communities": {},
@@ -2601,7 +2558,8 @@ def test_api_request(method, server, endpoint, args, json_dict,
     "id": "4gqj3-d0z12",
     "created": "2023-05-30T18:57:05.271354+00:00",
     "expires_at": "2023-05-30 18:57:05.271380",
-    "files": {"enabled": True, "order": []},
+    "files": {"enabled": True, "order": [], 'count': 0,
+              'entries': {}, 'total_bytes': 0},
     "versions": {"is_latest_draft": True, "index": 1, "is_latest": False},
     "access": {
         "files": "public",
@@ -2669,16 +2627,68 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
 
     # Test response content
     simple_fields = [f for f in actual['json'].keys() if f not in [
-        'links', 'parent', 'id', 'created', 'updated', 'expires_at'
+        'links', 'parent', 'id', 'created', 'updated', 'versions',
+        'expires_at', 'is_draft', 'access', 'files', 'status', 'revision_id',
+        'is_published'
     ]]
     for s in simple_fields:
         print(actual['json'][s])
+        if s == 'errors':
+            print('*****')
+            pprint(actual['json']['errors'])
+        if s == 'metadata' and 'rights' in actual['json'][s].keys():
+            del actual['json'][s]['rights'][0]['icon']
+            expected_json[s]['rights'][0]['description'] = {'en': ''}
+            expected_json[s]['rights'][0]['title'] = {'en':
+                'Creative Commons Attribution Non Commercial No '
+                'Derivatives 4.0 International'}
+            expected_json[s]['rights'][0]['props'] = {
+                 'scheme': 'spdx',
+                 'url': 'https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode'
+            }
         assert actual['json'][s] == expected_json[s]
+    assert actual['json']['versions'] == {"is_latest_draft": True,
+                                          "index": 1,
+                                          "is_latest": False}
+    assert actual['json']['is_draft'] == True
+    assert actual['json']['access'] == {
+        "files": "public",
+        "embargo": {"active": False, "reason": None},
+        "record": "public",
+        "status": "metadata-only"
+    }
+    assert actual['json']['status'] == "draft"
+    assert type(actual['json']["revision_id"]) ==  int
+    assert actual['json']['is_published'] == False
 
+    links = {
+        "self": "https://localhost/api/records/###/draft",
+        "self_html": "https://localhost/uploads/###",
+        "self_iiif_manifest": "https://localhost/api/iiif/draft:###/manifest",
+        "self_iiif_sequence": "https://localhost/api/iiif/draft:###/sequence/default",
+        "files": "https://localhost/api/records/###/draft/files",
+        "archive": "https://localhost/api/records/###/draft/files-archive",
+        "record": "https://localhost/api/records/###",
+        "record_html": "https://localhost/records/###",
+        "publish": "https://localhost/api/records/###/draft/actions/publish",
+        "review": "https://localhost/api/records/###/draft/review",
+        "versions": "https://localhost/api/records/###/versions",
+        "access_links": "https://localhost/api/records/###/access/links",
+        "reserve_doi": "https://localhost/api/records/###/draft/pids/doi",
+        "communities": "https://localhost/api/records/###/communities",
+        "communities-suggestions": "https://localhost/api/records/###/communities-suggestions",
+        "requests": "https://localhost/api/records/###/requests"
+    }
+    actual_doi = ''
+    if 'doi' in actual['json']['links'].keys():
+        actual_doi = actual['json']['pids']['doi']['identifier']
+        links['doi'] = 'https://handle.stage.datacite.org/$$$'
     for label, link in actual['json']['links'].items():
-        assert link == expected_json['links'][label].replace('###', actual_id)
+        assert link == links[label].replace('###', actual_id).replace('$$$', actual_doi)
 
-    assert actual['json']['files'] == {'enabled': True, 'order': []}
+    assert actual['json']['files'] == {'enabled': True, 'entries': {},
+                                       'count': 0, 'order': [],
+                                       'total_bytes': 0}
     assert valid_date(actual['json']['created'])
     assert isoparse(actual['json']['created']) - \
         pytz.utc.localize(datetime.datetime.utcnow()) \
@@ -2692,7 +2702,7 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
 
     # Confirm the record is retrievable
     confirm_created = api_request('GET', endpoint='records',
-                                  args=f'{actual_id}')
+                                  args=f'{actual_id}/draft')
     pprint(actual_id)
     pprint(confirm_created)
     print('Confirming record was created...')

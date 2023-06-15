@@ -54,6 +54,7 @@ hclegacy:submitter_id       The user id number (in the HC database) for the
 from invenio_i18n import lazy_gettext as _
 from invenio_records_resources.services.custom_fields import BaseCF, TextCF
 from invenio_records_resources.services.custom_fields.number import IntegerCF
+from invenio_records_resources.services.custom_fields.date import ISODateStringCF
 from invenio_vocabularies.services.custom_fields import VocabularyCF
 from marshmallow import fields, validate
 from marshmallow_utils.fields import SanitizedUnicode, SanitizedHTML, StrippedHTML, EDTFDateString
@@ -93,12 +94,11 @@ HCLEGACY_CUSTOM_FIELDS = [
         field_cls=SanitizedUnicode,
     ),
     TextCF(
-        name="hclegacy:record_change_date",
-        field_cls=EDTFDateString,
+        name="hclegacy:record_change_date"
     ),
-    TextCF(
-        name="hclegacy:record_creation_date",
-        field_cls=EDTFDateString,
+    TextCF(  # FIXME: This should be date formatted, but EDTFDateString doesn't accept time
+        name="hclegacy:record_creation_date"
+        # field_cls=EDTFDateString,
     ),
     TextCF(
         name="hclegacy:record_identifier",

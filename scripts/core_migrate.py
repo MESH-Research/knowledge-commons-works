@@ -647,6 +647,7 @@ def serialize_json() -> tuple[dict, dict]:
             # FIXME: Remove things like surrounding quotation marks
             mytitle = row['title_unchanged']
             newrec['metadata']['title'] = mytitle
+            # FIXME: types here are CV, need to expand to accommodate stripped desc
             newrec['metadata']['additional_titles'].append(
                 {"title": row['title'],
                     "type": {
@@ -659,6 +660,7 @@ def serialize_json() -> tuple[dict, dict]:
             # FIXME: handle double-escaped slashes?
             # FIXME: handle windows newlines?
             newrec['metadata']['description'] = row['abstract_unchanged'].replace('\r\n', '\n')
+            # FIXME: types here are CV, need to expand to accommodate stripped desc
             newrec['metadata']['additional_descriptions'].append(
                 {"description": row['abstract'].replace('\r\n', '\n'),
                  "type": {
@@ -1148,7 +1150,7 @@ def serialize_json() -> tuple[dict, dict]:
 
 
 def api_request(method:str='GET', endpoint:str='records', server:str='',
-                args:str='', token:str='', json_dict:dict={},
+                args:str='', token:str='', params:dict={}, json_dict:dict={},
                 file_data:bytes=None) -> dict:
     """
     Make an api request and return the response
@@ -1182,7 +1184,8 @@ def api_request(method:str='GET', endpoint:str='records', server:str='',
         payload_args['data'] = file_data
 
     # files = {'file': ('report.xls', open('report.xls', 'rb'), 'application/vnd.ms-excel', {'Expires': '0'})}
-    response = callfunc(api_url, headers=headers, **payload_args, verify=False)
+    response = callfunc(api_url, headers=headers, params=params,
+                        **payload_args, verify=False)
     if debug: pprint(response)
 
     return {'status_code': response.status_code,
