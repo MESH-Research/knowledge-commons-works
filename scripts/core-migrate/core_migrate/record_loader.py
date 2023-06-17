@@ -295,8 +295,11 @@ def change_record_ownership(record_id:str, old_owner_id:str, new_owner_id:str
     if debug: print('&&&& change_record_ownership')
     # if debug: pprint(''.join(chr(s) for s in stdout))
     # if debug: pprint(''.join(chr(s) for s in stderr))
-    if debug: pprint(stdout.encode('latin1').decode('unicode_escape').encode('latin1').decode('utf8'))
-    if debug: pprint(chr(stderr))
+    # if debug: pprint(stdout.encode('latin1').decode('unicode_escape').encode('latin1').decode('utf8'))
+    # if debug: pprint(chr(stderr))
+    if debug: print(stdout)
+    if debug: print(stderr)
+    if debug: print(type(stderr))
     assert changed_ownership.returncode == 0
 
 
@@ -482,11 +485,11 @@ def create_full_invenio_record(core_data:dict) -> dict:
                    {"community": f'{community_id}'},"type":"community-submission"}
     request_to_community = api_request('PUT', endpoint='records',
         args=f'{draft_id}/draft/review', json_dict=review_body)
-    if debug: print('&&&& request_to_community')
-    if debug: pprint(request_to_community)
+    # if debug: print('&&&& request_to_community')
+    # if debug: pprint(request_to_community)
     assert request_to_community['status_code'] == 200
     submit_url = request_to_community['json']['links']['actions']['submit']
-    if debug: print(submit_url)
+    # if debug: print(submit_url)
     request_id = request_to_community['json']['id']
     request_community = request_to_community['json']['receiver']['community']
     assert request_community == community_id
@@ -501,20 +504,26 @@ def create_full_invenio_record(core_data:dict) -> dict:
         args=f'{request_id}/actions/submit',
         json_dict=submitted_body)
     result['review_submitted'] = review_submitted
-    if debug: print('!!!!!!')
-    if debug: pprint(review_submitted)
+    assert review_submitted['status_code'] == 200
+    # if debug: print('!!!!!!')
+    # if debug: pprint(review_submitted)
 
     review_accepted = api_request('POST', endpoint='requests',
         args=f'{request_id}/actions/accept',
         json_dict={})
+    assert review_accepted['status_code'] == 200
     result['review_accepted'] = review_accepted
-    if debug: print('!!!!!!')
-    if debug: pprint(review_accepted)
+    # if debug: print('!!!!!!')
+    # if debug: pprint(review_accepted)
 
-    # Publish the record
-    published = api_request('POST', endpoint='records',
-        args=f'{draft_id}/draft/actions/publish')
-    result['published'] = published
+    # Publish the record (BELOW NOT NECESSARY BECAUSE PUBLISHED
+    # AT COMMUNITY REVIEW ACCEPTANCE)
+    # published = api_request('POST', endpoint='records',
+    #     args=f'{draft_id}/draft/actions/publish')
+    # result['published'] = published
+    # if debug: print('^^^^^^')
+    # if debug: pprint(published)
+    # assert published['status_code'] == 202
 
     # Create/find the necessary user account
     new_owner_email = core_data['custom_fields']['kcr:submitter_email']
@@ -523,10 +532,14 @@ def create_full_invenio_record(core_data:dict) -> dict:
     new_owner_id = created_user['user_id']
 
     # Change the ownership of the record
-    # current_owner_id = get_invenio_user('scottia4@msu.edu')
-    # changed_ownership = change_record_ownership(draft_id, current_owner_id,
-    #                                             new_owner_id)
-    # result['changed_ownership'] = changed_ownership
+    current_owner_id = get_invenio_user('scottia4@msu.edu')
+    changed_ownership = change_record_ownership(draft_id, new_owner_id,
+                                                current_owner_id)
+    result['changed_ownership'] = changed_ownership
+    assert changed_ownership.returncode == 0
+    result['changed_ownership']['return_code'] = changed_ownership.returncode
+    if debug: print('++++++++')
+    if debug: pprint(changed_ownership)
 
     return(result)
 

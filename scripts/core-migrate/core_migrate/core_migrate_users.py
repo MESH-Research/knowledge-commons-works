@@ -15,6 +15,8 @@ from invenio_utilities_tuw.utils import get_identity_for_user, get_record_servic
 from invenio_utilities_tuw.cli.utils import set_record_owners
 from pprint import pprint
 
+from core_migrate.config import GLOBAL_DEBUG
+
 cli = click.Group()
 
 @cli.command("get-user-id")
@@ -27,24 +29,18 @@ def get_user_id(user_email):
 
 @cli.command("change-owner")
 @click.argument("recid", required=True, type=str)
-@click.argument("owner", required=True, type=str)
-@click.argument("user", required=True, type=str)
-def change_owner(recid, owner, user):
-    u = get_identity_for_user(user)
-    print('a')
+@click.argument("new_owner", required=True, type=str)
+@click.argument("old_owner", required=True, type=str)
+def change_owner(recid, new_owner, old_owner):
+    debug = GLOBAL_DEBUG or False
+    u = get_identity_for_user(old_owner)
     service = get_record_service()
-    print('b')
     record = service.read(id_=recid, identity=u)._record
-    print('c')
-    all_owners = [get_user_by_identifier(owner)]
-    print('d')
+    all_owners = [get_user_by_identifier(new_owner)]
     set_record_owners(record, all_owners)
-    print('e')
     if service.indexer:
-        print('f')
         service.indexer.index(record)
-    print('g')
-    pprint(service.read(id_=recid, identity=u)._record)
+    if debug: pprint(service.read(id_=recid, identity=u)._record)
     return(service.read(id_=recid, identity=u)._record)
 
 
