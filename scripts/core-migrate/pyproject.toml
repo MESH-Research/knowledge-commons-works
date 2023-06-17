@@ -1,0 +1,42 @@
+[project]
+name = "core-migrate"
+version = "2023.06.15"
+description = "Migrate deposits from the Humanities Commons CORE repository to the Knowledge Commons Repository InvenioRDM instance"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+  {name = "Ian Scott", email = "scottia4@msu.edu" }
+]
+
+dependencies = [
+    'click',
+    'isbnlib',
+    'jsonlines',
+    'python-iso639',
+    'langdetect ',
+    'requests',
+    'python-stdnum',
+    'titlecase',
+    'validators',
+    'invenio_utilities_tuw',
+    'pytest',
+    'pytz',
+    'python-dateutil'
+]
+
+# [project.optional-dependencies]
+# dev = ["check-manifest"]
+# test = ["coverage"]
+
+[project.scripts]
+core-migrate = "core_migrate.main:cli"
+
+[tool.setuptools]
+# If there are data files included in your packages that need to be
+# installed, specify them here.
+# package-data = {"sample" = ["*.dat"]}
+
+[build-system]
+requires = ["setuptools>=43.0.0", "wheel"]
+build-backend = "setuptools.build_meta"

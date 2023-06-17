@@ -11,6 +11,7 @@ name = "testpypi"
 [dev-packages]
 check-manifest = ">=0.25"
 halo = "*"
+jsonlines = "*"
 
 [packages]
 uwsgi = ">=2.0"

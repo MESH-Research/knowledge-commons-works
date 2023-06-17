@@ -1,14 +1,24 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2023 MESH Research
+#
+# core-migrate is free software; you can redistribute it and/or
+# modify it under the terms of the MIT License; see LICENSE file for more
+# details.
+
 from click.testing import CliRunner
-from core_migrate import (
-    serialize_json,
+from core_migrate.utils import valid_date
+from core_migrate.serializer import (
+    serialize_json
+)
+from core_migrate.record_loader import (
     api_request,
     create_invenio_record,
     create_invenio_user,
     delete_invenio_record,
     create_invenio_community,
     create_full_invenio_record,
-    valid_date,
-    valid_isbn,
     upload_draft_files
 )
 import datetime
@@ -146,7 +156,6 @@ json28491 = {
                       'role': {'id': 'editor'}
                       }
         ],
-        'dates': [],
         'description': 'Wang, Lawrence K, Hung, Yung-Tse, Lo, Howard H, '
                        'Yapijakis, Constantine  and  Ribas, Alberto '
                        'lbarz (2008).  TRATAMIENTO de los RESIDUOS de '
@@ -172,7 +181,6 @@ json28491 = {
                        'factories, potato processing installations, '
                        'soft drink production plants, bakeries and '
                        'various other food processing facilities.  ',
-        'formats': [],
         'identifiers': [{'identifier': 'hc:28491', 'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-28455',
                          'scheme': 'hclegacy-record-id'},
@@ -184,7 +192,6 @@ json28491 = {
         'languages': [{'id': 'spa'}],
         'publication_date': '2008',
         'resource_type': {'id': 'textDocument:book'},
-        'rights': [],
         'publisher': 'Editorial ACRIBIA, S. A., Apartado 466, 50080, '
                      'Zaragoza, Espana.',
         'rights': [{'description': {'en': ''},
@@ -344,7 +351,6 @@ json583 = {
                             'opportunities, as well as challenges, that open '
                             'access brings to literary scholarship in the '
                             '21st century.',
-            'formats': [],
             'identifiers': [{'identifier': 'mla:583', 'scheme': 'hclegacy-pid'},
                             {'identifier': 10664,
                              'scheme': 'hclegacy-record-id'},
@@ -509,7 +515,6 @@ json38367 = {
              'role': {'id': 'author'}
             }
         ],
-        'dates': [],
         'description': 'These models are a representation of the '
                         'macroeconomic evolution of the US economy from '
                         '1970 to 2010. The main variables addressed are '
@@ -558,7 +563,6 @@ json38367 = {
                         'assumption that is maintained throughout this '
                         'model is that it is a closed economy without '
                         'government.',
-        'formats': [],
         'identifiers': [{'identifier': 'hc:38367', 'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-44555',
                          'scheme': 'hclegacy-record-id'},
@@ -722,7 +726,6 @@ json48799 = {
                         'app form as it becomes a dominant global '
                         'framework, and to consider platform '
                         'capitalism’s transformational shape.',
-        'formats': [],
         'identifiers': [{'identifier': 'hc:48799',
                          'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-61936',
@@ -743,7 +746,6 @@ json48799 = {
                     'title': {'en': 'Creative Commons Attribution 4.0 '
                                     'International'}}
         ],
-        'subjects': [],
         'title': 'Super Apps: A Platform Lab Report'},
     'parent': {'access': {'owned_by': [{'user': 1011375}]}},
     'pids': {'doi': {'client': 'datacite',
@@ -880,7 +882,6 @@ json33383 = {
                         'of teaching, extending, and rethinking '
                         'mathematics—that is, we should read it '
                     'philologically.',
-        'formats': [],
         'identifiers': [{'identifier': 'hc:33383', 'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-40298',
                          'scheme': 'hclegacy-record-id'},
@@ -1032,7 +1033,6 @@ json16079 = {
                               'infrastructure. The case studies are the works, '
                               'reading notes and personal libraries of James '
                               'Joyce and Samuel Beckett.',
-               'formats': [],
                'identifiers': [{'identifier': 'hc:16079',
                                 'scheme': 'hclegacy-pid'},
                                {'identifier': '1000360-8725',
@@ -1153,11 +1153,9 @@ json34031 = {
              'role': {'id': 'author'}
              }
         ],
-        'dates': [],
         'description': 'Overview of the major trends and approaches to '
                         "the study of 'Gnosticism' after the discovery "
                         'of the Nag Hammadi Codices.',
-        'formats': [],
         'identifiers': [{'identifier': 'hc:34031',
                          'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-41326',
@@ -1399,7 +1397,6 @@ json11451 = {
                                                'name': 'Alexa Alice Joubin',
                                                'type': 'personal'},
                              'role': {'id': 'author'}}],
-               'dates': [],
                'publication_date': '2012',
                'description': 'There are three main East Asian approaches to '
                               'interpreting Ophelia. The first is informed by '
@@ -1442,7 +1439,6 @@ json11451 = {
                               'Victorian interpretations. They do so by '
                               'aligning Ophelia with East Asian ideals of '
                               'femininity.',
-               'formats': [],
                'identifiers': [{'identifier': 'hc:11451',
                                 'scheme': 'hclegacy-pid'},
                                {'identifier': '1-1013793',
@@ -1634,7 +1630,6 @@ json22647 = {
                                },
              'role': {'id': 'author'}}],
         'publication_date': '2018',
-        'dates': [],
         'description': 'This chapter examines the impact of a putative '
                         'oral Homer upon the work of recent '
                         'performance-makers. The influence of '
@@ -1666,7 +1661,6 @@ json22647 = {
                         'New Ancients is analysed as a striking recent '
                         'example of creative interplay between such '
                         '‘fixed’ and ‘unfixed’ elements.',
-        'formats': [],
         'identifiers': [{'identifier': 'hc:22647',
                          'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-19934',
@@ -1964,7 +1958,6 @@ json22625 = {
                  'role': {'id': 'author'}
                  }
             ],
-            'dates': [],
             'publication_date': '2016',
             'description': 'The issue of gender has been a topic of '
                              'discussion in the research of Hasidism since S. '
@@ -2001,7 +1994,6 @@ json22625 = {
                              'century, could have any relevance to the daily '
                              'life of wives and daughters of Shneur Zalman’s '
                              'followers.',
-            'formats': [],
             'identifiers': [{'identifier': 'hc:22625',
                              'scheme': 'hclegacy-pid'},
                             {'identifier': '1000361-383',
@@ -2196,7 +2188,6 @@ json45177 = {
                                 'type': 'personal'},
             'role': {'id': 'contributor'}}
             ],
-              'dates': [],
               'publication_date': '2022',
               'description': 'The ARLIS/NA Cataloging Advisory Committee has '
                              'drafted these best practices to provide '
@@ -2216,7 +2207,6 @@ json45177 = {
                              'adjusted for local practice or when it has been '
                              'decided that a particular note is of primary '
                              'importance.',
-              'formats': [],
               'identifiers': [{'identifier': 'hc:45177',
                                'scheme': 'hclegacy-pid'},
                               {'identifier': '1001634-246',
@@ -2235,7 +2225,6 @@ json45177 = {
                                         'Commercial No Derivatives 4.0 '
                                         'International'}}
                 ],
-              'subjects': [],
               'publisher': 'Art Libraries Society of North America',
               'title': 'Notes'},
     'parent': {'access': {'owned_by': [{'user': 1006873}]}},
@@ -2349,7 +2338,6 @@ json44881 = {
                         'its inclusion of gay and lesbian members. Clarke '
                         'and Starr are long-standing roommates at annual '
                         'conferences.',
-        'formats': [],
         'identifiers': [{'identifier': 'hc:44881',
                          'scheme': 'hclegacy-pid'},
                         {'identifier': '1001634-235',
@@ -2379,14 +2367,17 @@ json44881 = {
     'updated': '2022-03-08T21:57:49Z'
 }
 
-# actual_serialized_json, actual_bad_data = serialize_json()
-actual_serialized_json, actual_bad_data = None, None
+@pytest.fixture
+def serialized_records():
+    actual_serialized_json, actual_bad_data = serialize_json()
+    return {'actual_serialized_json': actual_serialized_json,
+            'actual_bad_data': actual_bad_data}
 
 @pytest.mark.parametrize("expected_json", [(json42615), (json22625),
         (json45177), (json44881), (json22647), (json11451), (json34031),
         (json16079), (json33383), (json38367), (json48799), (json583),
         (json28491)])
-def test_serialize_json(expected_json):
+def test_serialize_json(expected_json, serialized_records):
     """
     """
     # runner = CliRunner()
@@ -2394,7 +2385,7 @@ def test_serialize_json(expected_json):
     # assert result.exit_code == 0
     # assert result.output[0] == json1
 
-    actual_json = actual_serialized_json
+    actual_json = serialized_records['actual_serialized_json']
 
     expected_pid = expected_json['metadata']['identifiers'][0]['identifier']
     actual_json_item = [j for j in actual_json
@@ -2709,23 +2700,22 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
     assert confirm_created['status_code'] == 200
 
     # Clean up created record from live db
-    # deleted = delete_invenio_record(actual_id)
-    # assert deleted['status_code'] == 204
+    deleted = delete_invenio_record(actual_id)
+    assert deleted['status_code'] == 204
 
     # # Confirm it no longer exists
-    # confirm_deleted = api_request('GET', endpoint='records',
-    #                               args=f'{actual_id}')
-    # assert confirm_deleted['status_code'] == 404
+    confirm_deleted = api_request('GET', endpoint='records',
+                                  args=f'{actual_id}')
+    assert confirm_deleted['status_code'] == 404
 
-    # assert actual['json'] == expected_json
 
 def test_upload_draft_files():
 
     my_record = json42615
 
-    json_payload = {'custom_fields': json_payload['custom_fields'],
-                      'metadata': json_payload['metadata'],
-                      'pids': json_payload['pids']
+    json_payload = {'custom_fields': my_record['custom_fields'],
+                      'metadata': my_record['metadata'],
+                      'pids': my_record['pids']
                       }
     json_payload['access'] = {'record': 'public', 'files': 'public'}
     json_payload['files'] = {'enabled': True}
@@ -2742,15 +2732,13 @@ def test_upload_draft_files():
 
     actual_upload = upload_draft_files(draft_id=actual_draft_id,
                                        files_dict=files_in)
-    actual_trans = actual_upload['file_transactions'][files_in.keys()[0]]['json']
-    assert actual_trans['key'] == files_in.keys()[0]
-    assert valid_date(actual_trans['created'])
-    assert valid_date(actual_trans['updated'])
-    assert actual_trans['status'] == "completed"
-    assert actual_trans['metadata'] == None
-    # assert actual_trans['links']['content'] == f['links']['content']
-    # assert actual_trans['links']['self'] == f['links']['self']
-    # assert actual_trans['links']['commit'] == f['links']['commit']
+    pprint(actual_upload)
+    for k, v in actual_upload['file_transactions'].items():
+        assert k in files_in.keys()
+        assert valid_date(v['upload_commit']['json']['created'])
+        assert valid_date(v['upload_commit']['json']['updated'])
+        assert v['upload_commit']['json']['status'] == "completed"
+        assert v['upload_commit']['json']['metadata'] == None
     assert actual_upload['confirmation']['status_code'] == 200
 
 
@@ -2771,24 +2759,69 @@ def test_create_invenio_community():
                                   args=actual_community_id)
     assert confirm_deleted['status_code'] == 404
 
+
 @pytest.mark.parametrize("json_in", [(json42615)])
 def test_create_full_invenio_record(json_in):
+    json_in['pids']['doi']['identifier'] = json_in['pids']['doi']['identifier']+ 'g'
     actual_full_record = create_full_invenio_record(json_in)
-    assert actual_full_record['community'] == {}
-    assert actual_full_record['metadata_record_created'] == {}
+    assert actual_full_record['community']['json']['metadata']['website'] == f'https://{json_in["custom_fields"]["kcr:commons_domain"]}'
+    assert actual_full_record['community']['status_code'] == 200
+    assert actual_full_record['community']['json']['access']['record_policy'] == 'open'
+    assert actual_full_record['community']['json']['access']['review_policy'] == 'open'
+
+    assert actual_full_record['metadata_record_created']['json']['access']['files'] == 'public'
+    assert actual_full_record['metadata_record_created']['json']['access']['record'] == 'public'
+    assert actual_full_record['metadata_record_created']['json']['access']['status'] == 'metadata-only'
+    assert actual_full_record['metadata_record_created']['json']['is_draft'] == True
+    assert actual_full_record['metadata_record_created']['json']['is_published'] == False
 
     afu = actual_full_record['uploaded_files']
-    my_files = {json_in['entries'][0]['key']:
-        json_in['json']['custom_fields']['hclegacy:file_location']}
-    actual_trans = afu['file_transactions'][my_files.keys()[0]]['json']
-    assert actual_trans['key'] == my_files.keys()[0]
-    assert valid_date(actual_trans['created'])
-    assert valid_date(actual_trans['updated'])
-    assert actual_trans['status'] == "completed"
-    assert actual_trans['metadata'] == None
-    assert afu['confirmation']['status_code'] == 200
+    for k, v in json_in['files']['entries'].items():
+        actual_trans = afu['file_transactions'][k]
+        assert actual_trans['content_upload']['json']['key'] == k
+        assert actual_trans['content_upload']['status_code'] == 200
+        assert actual_trans['upload_commit']['status_code'] == 200
+        assert actual_trans['upload_commit']['json']['key'] == k
+        assert actual_trans['upload_commit']['json']['size'] > 1000
+        assert actual_trans['upload_commit']['json']['status'] == "completed"
+        assert valid_date(actual_trans['upload_commit']['json']['created'])
+        assert valid_date(actual_trans['upload_commit']['json']['updated'])
+        assert afu['confirmation']['status_code'] == 200
 
-    assert actual_full_record['created_user'] == {}
+    assert type(actual_full_record['created_user']['new_user']) == bool
+    assert int(actual_full_record['created_user']['user_id']) > 2 < 10000
+
+    assert actual_full_record['request_to_community']['status_code'] == 200
+    assert valid_date(actual_full_record['request_to_community']['json']['created'])
+    assert actual_full_record['request_to_community']['json']['created_by'] == {'user': '3'}
+    assert actual_full_record['request_to_community']['json']['is_closed'] == False
+    assert actual_full_record['request_to_community']['json']['is_expired'] == False
+    assert actual_full_record['request_to_community']['json']['is_open'] == False
+    assert actual_full_record['request_to_community']['json']['receiver']['community'] == actual_full_record['community']['json']['id']
+    assert actual_full_record['request_to_community']['json']['status'] == "created"
+    assert actual_full_record['request_to_community']['json']['type'] == "community-submission"
+    assert actual_full_record['request_to_community']['json']['topic'] == {'record': actual_full_record['metadata_record_created']['json']['id']}
+
+    assert valid_date(actual_full_record['review_submitted']['json']['created'])
+    assert actual_full_record['review_submitted']['json']['created_by']['user'] == '3'
+    assert actual_full_record['review_submitted']['json']['is_closed'] == False
+    assert actual_full_record['review_submitted']['json']['is_open'] == True
+    assert actual_full_record['review_submitted']['json']['receiver']['community'] == actual_full_record['community']['json']['id']
+    assert actual_full_record['review_submitted']['json']['status'] == "submitted"
+    assert actual_full_record['review_submitted']['json']['topic']['record'] == actual_full_record['metadata_record_created']['json']['id']
+    assert actual_full_record['review_submitted']['json']['title'] == actual_full_record['metadata_record_created']['json']['metadata']['title']
+    assert actual_full_record['review_submitted']['json']['type'] == "community-submission"
+    assert actual_full_record['review_submitted']['status_code'] == 202
+
+    assert actual_full_record['review_accepted']['json']['is_closed'] == True
+    assert actual_full_record['review_accepted']['json']['is_open'] == False
+    assert actual_full_record['review_accepted']['json']['receiver']['community'] == actual_full_record['community']['json']['id']
+    assert actual_full_record['review_accepted']['json']['status'] == "accepted"
+    assert actual_full_record['review_accepted']['json']['topic']['record'] == actual_full_record['metadata_record_created']['json']['id']
+    assert actual_full_record['review_accepted']['json']['title'] == actual_full_record['metadata_record_created']['json']['metadata']['title']
+    assert actual_full_record['review_accepted']['json']['type'] == "community-submission"
+    assert actual_full_record['review_accepted']['status_code'] == 200
+
     assert actual_full_record['changed_ownership'] == {}
     print(actual_full_record)
     assert False

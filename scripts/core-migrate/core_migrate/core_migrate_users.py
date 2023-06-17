@@ -1,43 +1,54 @@
-# Run with `pipenv run invenio shell change_owner.py`
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# adapted from scripts in invenio-utilities-tuw
+# <https://gitlab.tuwien.ac.at/fairdata/invenio-utilities-tuw>
+# copyright TU Wien <tudata@tuwien.ac.at>
+#
+# Run with `pipenv run invenio shell core_migrate_users.py`
+# to ensure that the script has access to a current Flask app
+# instance.
 
 import click,csv
 
-from flask.cli import with_appcontext
-from invenio_db import db
-from invenio_accounts import current_accounts
 from invenio_utilities_tuw.utils import get_identity_for_user, get_record_service, get_user_by_identifier
 from invenio_utilities_tuw.cli.utils import set_record_owners
 from pprint import pprint
 
-@click.group()
-def cli():
-    pass
+cli = click.Group()
 
-
-@click.command()
+@cli.command("get-user-id")
 @click.argument('user_email', type=str)
 def get_user_id(user_email):
     v = get_user_by_identifier(user_email)
     pprint(f'success: user id is {v.id}')
     return(v.id)
 
-@click.command('change_owner')
-@click.argument('recid', type=str)
-@click.argument('owner', type=int)
-@click.argument('user', type=int)
+
+@cli.command("change-owner")
+@click.argument("recid", required=True, type=str)
+@click.argument("owner", required=True, type=str)
+@click.argument("user", required=True, type=str)
 def change_owner(recid, owner, user):
     u = get_identity_for_user(user)
+    print('a')
     service = get_record_service()
+    print('b')
     record = service.read(id_=recid, identity=u)._record
+    print('c')
     all_owners = [get_user_by_identifier(owner)]
+    print('d')
     set_record_owners(record, all_owners)
+    print('e')
     if service.indexer:
+        print('f')
         service.indexer.index(record)
+    print('g')
     pprint(service.read(id_=recid, identity=u)._record)
     return(service.read(id_=recid, identity=u)._record)
 
 
-@click.command('change_owners')
+@cli.command()
 @click.argument('owner_file', type=click.File('r'))
 def change_owners(owner_file):
     reader = csv.reader(owner_file)
@@ -46,9 +57,5 @@ def change_owners(owner_file):
         change_owner(line[0],int(line[1]),2)
         exit()
 
-cli.add_command(change_owner)
-cli.add_command(change_owners)
-cli.add_command(get_user_id)
-
 if __name__=="__main__":
-    cli()
+    exit(cli())
