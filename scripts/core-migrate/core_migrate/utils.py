@@ -13,8 +13,18 @@ Utility functions for core-migrate
 
 from datetime import datetime
 from isbnlib import is_isbn10, is_isbn13, clean
+import random
 import re
+import string
 from typing import Union
+
+def generate_random_string(length):
+    """
+    Generate a random string of lowercase letters and integer numbers.
+    """
+    res = ''.join(random.choices(string.ascii_lowercase +
+                                 string.digits, k=length))
+    return(res)
 
 def flatten_list(list_of_lists, flat_list=[]):
     if not list_of_lists:

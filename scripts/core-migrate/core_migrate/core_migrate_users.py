@@ -32,7 +32,9 @@ def get_user_id(user_email):
 @click.argument("new_owner", required=True, type=str)
 @click.argument("old_owner", required=True, type=str)
 def change_owner(recid, new_owner, old_owner):
-    debug = GLOBAL_DEBUG or False
+    debug = GLOBAL_DEBUG or True
+    print('__________')
+    print(f'Changing ownership of record {recid}')
     u = get_identity_for_user(old_owner)
     service = get_record_service()
     record = service.read(id_=recid, identity=u)._record
@@ -40,7 +42,8 @@ def change_owner(recid, new_owner, old_owner):
     set_record_owners(record, all_owners)
     if service.indexer:
         service.indexer.index(record)
-    if debug: pprint(service.read(id_=recid, identity=u)._record)
+    print('final record is:')
+    pprint(service.read(id_=recid, identity=u)._record)
     return(service.read(id_=recid, identity=u)._record)
 
 

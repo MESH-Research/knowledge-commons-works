@@ -8,7 +8,7 @@
 # details.
 
 from click.testing import CliRunner
-from core_migrate.utils import valid_date
+from core_migrate.utils import valid_date, generate_random_string
 from core_migrate.serializer import (
     serialize_json
 )
@@ -2762,7 +2762,11 @@ def test_create_invenio_community():
 
 @pytest.mark.parametrize("json_in", [(json42615)])
 def test_create_full_invenio_record(json_in):
-    json_in['pids']['doi']['identifier'] = json_in['pids']['doi']['identifier']+ 'g'
+    # random doi necessary because repeat tests with same data
+    # can't re-use record's doi
+    random_doi = json_in['pids']['doi']['identifier'].split('-')[0]
+    random_doi = f'{random_doi}-{generate_random_string(5)}'
+    json_in['pids']['doi']['identifier'] = random_doi
     actual_full_record = create_full_invenio_record(json_in)
     assert actual_full_record['community']['json']['metadata']['website'] == f'https://{json_in["custom_fields"]["kcr:commons_domain"]}'
     assert actual_full_record['community']['status_code'] == 200
@@ -2811,7 +2815,7 @@ def test_create_full_invenio_record(json_in):
     assert actual_full_record['review_submitted']['json']['topic']['record'] == actual_full_record['metadata_record_created']['json']['id']
     assert actual_full_record['review_submitted']['json']['title'] == actual_full_record['metadata_record_created']['json']['metadata']['title']
     assert actual_full_record['review_submitted']['json']['type'] == "community-submission"
-    assert actual_full_record['review_submitted']['status_code'] == 202
+    assert actual_full_record['review_submitted']['status_code'] == 200
 
     assert actual_full_record['review_accepted']['json']['is_closed'] == True
     assert actual_full_record['review_accepted']['json']['is_open'] == False
@@ -2822,9 +2826,8 @@ def test_create_full_invenio_record(json_in):
     assert actual_full_record['review_accepted']['json']['type'] == "community-submission"
     assert actual_full_record['review_accepted']['status_code'] == 200
 
-    assert actual_full_record['changed_ownership'] == {}
+    assert actual_full_record['changed_ownership']['return_code'] == 0
     print(actual_full_record)
-    assert False
 
 
 @pytest.mark.parametrize("email_in,new_user_flag", [

@@ -300,7 +300,7 @@ def change_record_ownership(record_id:str, old_owner_id:str, new_owner_id:str
     if debug: print(stdout)
     if debug: print(stderr)
     if debug: print(type(stderr))
-    assert changed_ownership.returncode == 0
+    return(changed_ownership.returncode)
 
 
 def create_invenio_community(community_label:str) -> dict:
@@ -535,9 +535,8 @@ def create_full_invenio_record(core_data:dict) -> dict:
     current_owner_id = get_invenio_user('scottia4@msu.edu')
     changed_ownership = change_record_ownership(draft_id, new_owner_id,
                                                 current_owner_id)
-    result['changed_ownership'] = changed_ownership
-    assert changed_ownership.returncode == 0
-    result['changed_ownership']['return_code'] = changed_ownership.returncode
+    result.setdefault('changed_ownership', {})['return_code'] = changed_ownership
+    assert changed_ownership == 0
     if debug: print('++++++++')
     if debug: pprint(changed_ownership)
 
