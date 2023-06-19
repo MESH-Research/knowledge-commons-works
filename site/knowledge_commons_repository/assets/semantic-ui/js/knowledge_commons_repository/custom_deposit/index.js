@@ -8,7 +8,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { getInputFromDOM } from "@js/invenio_rdm_records/";
-import { RDMDepositForm } from "./RDMDepositForm";
+import { RDMDepositForm } from "./custom_RDMDepositForm";
 import { OverridableContext, overrideStore } from "react-overridable";
 
 const overriddenComponents = overrideStore.getAll();
