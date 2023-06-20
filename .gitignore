@@ -79,6 +79,7 @@ data/.minio.sys
 
 # Celery
 celerybeat-schedule
+celerybeat-schedule.*
 
 # OS-specific things to ignore:
 # .............................................................................
