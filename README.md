@@ -154,15 +154,19 @@ Private environment variables (like security keys) should never be committed to 
 
 This file should contain at least the following variables, substituting appropriate values after each = sign:
 
+INVENIO_SITE_UI_URL = "https://myhostname"
+INVENIO_SITE_API_URL = "https://myhostname/api"
 INVENIO_SECRET_KEY=CHANGE_ME
 INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
 INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
-INVENIO_DATACITE_PASSWORD=myothersecurepassword
 PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
 PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
 POSTGRES_USER=knowledge-commons-repository
 POSTGRES_PASSWORD=knowledge-commons-repository
 POSTGRES_DB=knowledge-commons-repository
+INVENIO_DATACITE_USERNAME=MSU.CORE
+INVENIO_DATACITE_PASSWORD=myinveniodatacitepassword
+INVENIO_INSTANCE_PATH=/full/path/to/my/instance/directory
 
 Random values for the INVENIO_SECRET_KEY can be generated in a terminal by running
 ```console
