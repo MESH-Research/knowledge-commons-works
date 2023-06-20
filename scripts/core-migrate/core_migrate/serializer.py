@@ -16,6 +16,7 @@ one json object per line, separated by newlines.
 
 from copy import deepcopy
 from datetime import datetime
+from timefhuman import timefhuman
 from isbnlib import get_isbnlike
 import iso639
 import json
@@ -32,44 +33,44 @@ from core_migrate.config import (
     DATA_DIR,
     GLOBAL_DEBUG,
 )
-from core_migrate.utils import valid_date, valid_isbn
+from core_migrate.utils import valid_date, valid_isbn, generate_random_string
 
 book_types = [
-    'textDocument:bookChapter',
-    'textDocument:bookSection',
-    'textDocument:book',
-    'textDocument:monograph',
-    'textDocument:dissertation',
-    'textDocument:report',
-    'textDocument:whitePaper',
-    'other:bibliography',
-    'presentation:conferencePaper',
-    'textDocument:conferenceProceeding',
-    'presentation:conferencePaper',
-    'other:essay'
+    'textDocument-bookChapter',
+    'textDocument-bookSection',
+    'textDocument-book',
+    'textDocument-monograph',
+    'textDocument-dissertation',
+    'textDocument-report',
+    'textDocument-whitePaper',
+    'other-bibliography',
+    'presentation-conferencePaper',
+    'textDocument-conferenceProceeding',
+    'presentation-conferencePaper',
+    'other-essay'
 ]
 
-article_types = ['textDocument:journalArticle',
-                    'textDocument:abstract',
-                    'textDocument:review',
-                    'textDocument:newspaperArticle',
-                    'textDocument:editorial',
-                    'textDocument:magazineArticle',
-                    'textDocument:onlinetextDocument'
+article_types = ['textDocument-journalArticle',
+                    'textDocument-abstract',
+                    'textDocument-review',
+                    'textDocument-newspaperArticle',
+                    'textDocument-editorial',
+                    'textDocument-magazineArticle',
+                    'textDocument-onlinetextDocument'
                     ]
 
 ambiguous_types = [
-    'textDocument:fictionalWork',
-    'other:other',
-    'textDocument:interviewTranscript',
-    'textDocument:legalComment',
-    'textDocument:legalResponse',
-    'textDocument:poeticWork',
-    'textDocument:translation'
+    'textDocument-fictionalWork',
+    'other-other',
+    'textDocument-interviewTranscript',
+    'textDocument-legalComment',
+    'textDocument-legalResponse',
+    'textDocument-poeticWork',
+    'textDocument-translation'
     ]
 
 licenses = {'All Rights Reserved': (
-                'all-rights-reserved',
+                'arr',
                 'Proprietary. All rights reserved.',
                 'https://en.wikipedia.org/wiki/All_rights_reserved'
             ),
@@ -156,81 +157,81 @@ def _add_resource_type(rec, pubtype, genre, filetype):
                                 "catalog", "collection", "event", "interactiveResource", "notes", "peerReview", "physicalObject", "workflow", "text"
                             ]
                             }
-    types_of_resource = {"Audio": "audiovisual:audioRecording",
-                         "Image": "image:other",
-                         "Mixed material": "other:other",
-                         "Software": "software:application",
-                         "Text": "textDocument:other",
-                         "Video": "audiovisual:videoRecording"}
+    types_of_resource = {"Audio": "audiovisual-audioRecording",
+                         "Image": "image-other",
+                         "Mixed material": "other-other",
+                         "Software": "software-application",
+                         "Text": "textDocument-other",
+                         "Video": "audiovisual-videoRecording"}
 
-    genres = {"Abstract": "textDocument:abstract",
-              "Article": "textDocument:journalArticle",
-              "Bibliography": "other:bibliography",
-              "Blog Post": "textDocument:blogPost",
-              "Book": "textDocument:book",
-              "Book chapter": "textDocument:bookSection",
-              "Book review": "textDocument:review",
-              "Book section": "textDocument:bookSection",
-              "Catalog": "other:catalog",
-              "Chart": "image:chart",
-              "Code or software": "software:application",
-              "Conference paper": "presentation:conferencePaper",
-              "Conference poster": "presentation:conferencePoster",
-              "Conference proceeding": "textDocument:conferenceProceeding",
-              "Course material or learning objects": "instructionalResource:other",
-              "Course Material or learning objects": "instructionalResource: other",
-              "Data set": "dataset:other",
-              "Dissertation": "textDocument:thesis",
-              "Documentary": "audiovisual:documentary",
-              "Editorial": "textDocument:editorial",
-              "Essay": "other:essay",
-              "Fictional work": "textDocument:bookSection",  # FIXME: indicate ficiontal???
-              "Finding aid": "other:other",
-              "Image": "image:other",
-              "Interview": "textDocument:interviewTranscript",
-              "Lecture": "presentation:presentationText",
-              "Legal Comment": "textDocument:legalComment",
-              "Legal response": "textDocument:legalResponse",
-              "Magazine section": "textDocument:magazineArticle",
-              "Map": "image:map",
-              "Monograph": "textDocument:monograph",
-              "Music": "audiovisual:musicalRecording",
-              "Newspaper article": "textDocument:newspaperArticle",
-              "Online textDocument": "textDocument:onlinePublication",
-              "Online textDocument": "textDocument:onlinePublication",
-              "Other": "other:other",
-              "Performance": "audiovisual:performance",
-              "Photograph": "image:other",
-              "Podcast": "audiovisual:podcastEpisode",
-              "Poetry": "textDocument:poeticWork",
-              "Presentation": "presentation:other",
-              "Report": "textDocument:report",
-              "Review": "textDocument:review",
-              "Sound recording-musical": "audiovisual:musicalRecording",
-              "Sound recording-non musical": "audiovisual:audioRecording", "Syllabus": "instructionalResource:syllabus",
-              "Technical report": "textDocument:report",
-              "Thesis": "textDocument:thesis",
-              "Translation": "textDocument:other",
-              "Video": "audiovisual:videoRecording",
-              "Video essay": "audiovisual:videoRecording",
-              "Visual art": "image:visualArt",
-              "White paper": "textDocument:whitePaper"}
+    genres = {"Abstract": "textDocument-abstract",
+              "Article": "textDocument-journalArticle",
+              "Bibliography": "other-bibliography",
+              "Blog Post": "textDocument-blogPost",
+              "Book": "textDocument-book",
+              "Book chapter": "textDocument-bookSection",
+              "Book review": "textDocument-review",
+              "Book section": "textDocument-bookSection",
+              "Catalog": "other-catalog",
+              "Chart": "image-chart",
+              "Code or software": "software-application",
+              "Conference paper": "presentation-conferencePaper",
+              "Conference poster": "presentation-conferencePoster",
+              "Conference proceeding": "textDocument-conferenceProceeding",
+              "Course material or learning objects": "instructionalResource-other",
+              "Course Material or learning objects": "instructionalResource- other",
+              "Data set": "dataset-other",
+              "Dissertation": "textDocument-thesis",
+              "Documentary": "audiovisual-documentary",
+              "Editorial": "textDocument-editorial",
+              "Essay": "other-essay",
+              "Fictional work": "textDocument-bookSection",  # FIXME: indicate ficiontal???
+              "Finding aid": "other-other",
+              "Image": "image-other",
+              "Interview": "textDocument-interviewTranscript",
+              "Lecture": "presentation-presentationText",
+              "Legal Comment": "textDocument-legalComment",
+              "Legal response": "textDocument-legalResponse",
+              "Magazine section": "textDocument-magazineArticle",
+              "Map": "image-map",
+              "Monograph": "textDocument-monograph",
+              "Music": "audiovisual-musicalRecording",
+              "Newspaper article": "textDocument-newspaperArticle",
+              "Online textDocument": "textDocument-onlinePublication",
+              "Online textDocument": "textDocument-onlinePublication",
+              "Other": "other-other",
+              "Performance": "audiovisual-performance",
+              "Photograph": "image-other",
+              "Podcast": "audiovisual-podcastEpisode",
+              "Poetry": "textDocument-poeticWork",
+              "Presentation": "presentation-other",
+              "Report": "textDocument-report",
+              "Review": "textDocument-review",
+              "Sound recording-musical": "audiovisual-musicalRecording",
+              "Sound recording-non musical": "audiovisual-audioRecording", "Syllabus": "instructionalResource-syllabus",
+              "Technical report": "textDocument-report",
+              "Thesis": "textDocument-thesis",
+              "Translation": "textDocument-other",
+              "Video": "audiovisual-videoRecording",
+              "Video essay": "audiovisual-videoRecording",
+              "Visual art": "image-visualArt",
+              "White paper": "textDocument-whitePaper"}
 
-    publication_types = {"book-chapter": "textDocument:bookSection",
-                            "book-review": "textDocument:review",
-                            "book-section": "textDocument:bookSection",
-                            "journal-article": "textDocument:journalArticle",
-                            "magazine-section": "textDocument:magazineArticle",
-                            "monograph": "textDocument:monograph",
-                            "newspaper-article": "textDocument:newspaperArticle",
-                            "online-textDocument": "textDocument:onlinePublication",
-                            "podcast": "audiovisual:podcastEpisode",
-                            "proceedings-article": "textDocument:conferenceProceeding"}
+    publication_types = {"book-chapter": "textDocument-bookSection",
+                            "book-review": "textDocument-review",
+                            "book-section": "textDocument-bookSection",
+                            "journal-article": "textDocument-journalArticle",
+                            "magazine-section": "textDocument-magazineArticle",
+                            "monograph": "textDocument-monograph",
+                            "newspaper-article": "textDocument-newspaperArticle",
+                            "online-publication": "textDocument-onlinePublication",
+                            "podcast": "audiovisual-podcastEpisode",
+                            "proceedings-article": "textDocument-conferenceProceeding"}
     if genre in genres.keys():
         rec['metadata']['resource_type'] = {'id': genres[genre]}
         if (pubtype == "Interview") and (filetype in ['audio/mpeg', 'audio/ogg', 'audio/wav', 'video/mp4', 'video/quicktime']):
             rec['metadata']['resource_type'
-                            ] = {"id": "audiovisual:interviewRecording"}
+                            ] = {"id": "audiovisual-interviewRecording"}
         if (pubtype in publication_types.keys() and
                 genres[genre] != publication_types[pubtype]):
             rec['custom_fields']['hclegacy:publication_type'] = pubtype
@@ -320,7 +321,7 @@ def _add_book_authors(author_string:str, bad_data_dict:dict,
                 fullname = b
                 given, family = '', ''
             else:
-                fullname = f'{b[0]} {b[1]}' if len(b) > 1 else b[0]
+                fullname = f'{b[1]}, {b[0]}' if len(b) > 1 else b[0]
                 given = b[0] if len(b) > 1 else ''
                 family = b[1] if len(b) > 1 else ''
             author_list.append(
@@ -384,7 +385,8 @@ def _add_author_data(newrec:dict, row:dict, bad_data_dict:dict
 
                 new_person['person_or_org'] = {
                     'type': "personal",  # FIXME: can't hard code
-                    'name': a['fullname'],
+                    # 'name': a['fullname'],
+                    'name': f'{a["family"]}, {a["given"]}',
                     'given_name': a['given'],
                     'family_name': a['family']
                 }
@@ -396,7 +398,7 @@ def _add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                                     (f'authors:{a["fullname"]}:role', a['role']),
                                     bad_data_dict)
                 if a['affiliation']:
-                    new_person['affiliations'] = a['affiliation'].split('|')
+                    new_person['affiliations'] = [{'name': f} for f in a['affiliation'].split('|')]
                 if a['uni']:  # uni is the hc username
                     new_person['person_or_org']['identifiers'] = [
                         {'identifier': a['uni'], 'scheme': 'hc_username'}]
@@ -447,11 +449,85 @@ def _add_author_data(newrec:dict, row:dict, bad_data_dict:dict
     return newrec, bad_data_dict
 
 
+def _get_subject_from_jsonl(subject:str) -> str:
+    """
+    Retrieve the full subject string corresponding to the subject label provided
+    """
+    # FIXME: Finish finding id numbers
+    existing_subjects = {
+        'Linguistics': '999202',
+        'Digital humanities': "963599",
+        'Arabic language': '812287',
+        'Spanish language': '1128292',
+        'American literature': '807113',
+        'English literature': '911989',
+        'Poetics': '1067682',
+        'Comparative literature': '1734553',
+        'Literature and science': '1000093',
+        'German language': '941408',
+        'Philosophy': '1060777',
+        'Ethics': '915833',
+        'Religion': '1093763',
+        # 'Rhetoric': '',
+        # 'Portuguese literature',
+        # 'Biopolitics',
+        # 'Irish literature',
+        # 'Literature',
+        # 'Church history',
+        # 'British literature',
+        # 'Animal rights',
+        # 'Art criticism',
+        # 'Sculpture',
+        # 'Research libraries',
+        # 'Writing',
+        # 'Anthropology',
+        # 'Environmental sociology',
+        # 'Ethnomusicology',
+        # 'Film criticism',
+        # 'Continental philosophy',
+        # 'Critical geography',
+        # 'Earth sciences',
+        # 'Arts',
+        # 'Geography',
+        # 'History',
+        # 'Greek literature',
+        # 'Jewish literature',
+        # 'Spanish literature',
+        # 'Ethnic studies',
+        # 'Library science',
+        # 'Music',
+        # 'Psychiatry',
+        # 'Aesthetics',
+        # 'Ecocriticism',
+        # 'Economics',
+        # 'Intertextuality',
+        # 'American poetry',
+        # 'Beat literature',
+        # 'Dutch literature',
+        # 'Italian literature',
+        # 'Feminism',
+        # 'Music libraries',
+        # 'Musicology',
+        # 'Character',
+        # 'Sustainability',
+        # 'Cognitive science',
+        # 'Polish language',
+        # 'Postmodernism',
+        # 'Neoliberalism',
+        # 'Imperialism'
+        }
+    if subject in existing_subjects.keys():
+        return f'{existing_subjects[subject]}:{subject}:topical'
+    else:
+        return ''
+
+
 def serialize_json() -> tuple[list[dict], dict]:
     """
     Parse and serialize csv data into Invenio JSON format.
     """
     debug = GLOBAL_DEBUG or True
+    multiple_issn_list = []
 
     baserec:dict = {'parent': {
                         'access': {
@@ -468,11 +544,8 @@ def serialize_json() -> tuple[list[dict], dict]:
                         'creators': [],
                         'publication_date': [],
                         'identifiers': [],
-                        'dates': [],
-                        'subjects': [],
                         'languages': [],
                         'rights': [],
-                        'formats': []
                     },
                     'files': {'entries': []},
     }
@@ -632,11 +705,11 @@ def serialize_json() -> tuple[list[dict], dict]:
             # FIXME: Is it right that these are all datacite dois?
             if row['deposit_doi']:
                 newrec.setdefault('pids', {})[
-                    'doi'] = {"identifier": row['deposit_doi'],
+                    'doi'] = {"identifier": row['deposit_doi'].replace('doi:', ''),
                               "provider": "datacite",
                               "client": "datacite"}
                 newrec['metadata'].setdefault('identifiers', []).append(
-                    {"identifier": row['deposit_doi'],
+                    {"identifier": row["deposit_doi"].replace('doi:', ''),
                      "scheme": "datacite-doi"}
                 )
             if row['doi']:
@@ -646,7 +719,7 @@ def serialize_json() -> tuple[list[dict], dict]:
                 )
             if row['handle']:
                 newrec['metadata'].setdefault('identifiers', []).append(
-                    {"identifier": row['handle'],
+                    {"identifier": row['handle'].replace('http://dx.', 'https://'),
                      "scheme": "url"}
                 )
             if row['url']:
@@ -655,7 +728,7 @@ def serialize_json() -> tuple[list[dict], dict]:
                     url = row['url'].replace(' ', '')
                     if validators.url(url) or validators.url(f'https://{url}'):
                         newrec['metadata'].setdefault('identifiers', []).append(
-                            {"identifier": row['url'],
+                            {"identifier": row['url'].replace('http://dx.', 'https://'),
                             "scheme": "url"}
                         )
                     else:
@@ -732,7 +805,10 @@ def serialize_json() -> tuple[list[dict], dict]:
 
             # Original submitter's HC society memberships
             if row['society_id']:
-                newrec['custom_fields']['hclegacy:submitter_org_memberships'] = row['society_id']
+                row['society_id'] = row['society_id'] \
+                    if type(row['society_id']) == list else [row['society_id']]
+                newrec['custom_fields'][
+                    'hclegacy:submitter_org_memberships'] = row['society_id']
 
             # Was CORE deposit previously published?
             if row['published']:
@@ -767,18 +843,29 @@ def serialize_json() -> tuple[list[dict], dict]:
 
             # Date info
             # FIXME: does "issued" work here?
-            newrec['metadata']['publication_date'] = row['date_issued']
-            if row['date_issued'] != row['date']:
-                newrec['metadata'].setdefault('dates', []).append(
-                    {
-                        "date": row['date'],
-                        "type": {
-                            "id": "issued",
-                            "title": { "en": "Issued" }
-                        },
-                        "description": "Human readable publication date"
-                    }
-                )
+            newrec['metadata']['publication_date'] = row['date_issued'].split('T')[0]
+            if row['date_issued'] != row['date'] and row['date'] != '':
+                row['date'] = row['date'].split('T')[0]
+                if valid_date(row['date']):
+                    newrec['metadata'].setdefault('dates', []).append(
+                        { "date": row['date'],
+                            "type": { "id": "issued", "title": { "en": "Issued" } },
+                            "description": "Human readable publication date" }
+                    )
+                else:
+                    # FIXME: Handle these random dates better
+                    mydate = row['date_issued'].split('T')[0]
+                    try:
+                        mydate = timefhuman(row['date']).isoformat().split('T')[0]
+                    except (ValueError, TypeError, IndexError):
+                        _append_bad_data(row['id'],
+                                ('bad date', row['date']),
+                                bad_data_dict)
+                    newrec['metadata'].setdefault('dates', []).append(
+                        { "date": mydate,
+                            "type": { "id": "issued", "title": { "en": "Issued" } },
+                            "description": "Human readable publication date" }
+                    )
 
             if row['record_change_date']:
                 assert valid_date(row['record_change_date'])
@@ -866,8 +953,11 @@ def serialize_json() -> tuple[list[dict], dict]:
                         newrec['custom_fields'][
                             'imprint:imprint']['isbn'].append(checked_i)
 
+            # Handle missing publishers?
             if row['publisher']:
                 newrec['metadata']['publisher'] = row['publisher']
+            else:
+                newrec['metadata']['publisher'] = "unknown"
 
             if row['book_journal_title']:
                 myfield = 'imprint:imprint'
@@ -921,44 +1011,49 @@ def serialize_json() -> tuple[list[dict], dict]:
 
             # FIXME: make issn a list
             if row['issn']:
-                if valid_isbn(row['issn']):
+                myissn = row['issn']
+                if isinstance(row['issn'], list):
+                    multiple_issn_list.append((row['id'], row['issn']))
+                    myissn = row['issn'][0]
+
+                if valid_isbn(myissn):
                     # print('isbn', row['issn'])
                     newrec['custom_fields'].setdefault(
-                        'imprint:imprint', {})['isbn'] = [row['issn']]
+                        'imprint:imprint', {})['isbn'] = myissn
                     _append_bad_data(row['id'],
-                        ('issn', 'isbn in issn field', row['issn']),
+                        ('issn', 'isbn in issn field', myissn),
                         bad_data_dict)
                 else:
-                    newrec['custom_fields'].setdefault(
-                        'journal:journal', {})['issn'] = []
-
                     # myissn = row['issn'].replace(b'\xe2\x80\x94'.decode('utf-8'), '-')
-
                     # myissn = myissn.replace('\x97', '-')
-                    myissn = row['issn'].replace(u'\u2013', '-')
+                    assert type(myissn) == str
+                    myissn = myissn.replace(u'\u2013', '-')
                     myissn = myissn.replace(u'\u2014', '-')
                     myissn = re.sub(r'\s?-\s?', '-', myissn)
                     myissn = myissn.replace('Х', 'X')
                     myissn = myissn.replace('.', '')
                     myissnx = re.findall(r'\d{4}[-\s\.]?\d{3}[\dxX]', myissn)
+                    if isinstance(myissnx, list) and len(myissnx) >= 1:
+                        if len(myissnx) > 1:
+                            multiple_issn_list.append((row['id'], row['issn']))
+                        myissnx = myissnx[0]
                     if len(myissnx) < 1:
                         _append_bad_data(row['id'],
                             ('issn', 'malformed', row['issn']),
                             bad_data_dict)
                     else:
-                        for i in myissnx:
-                            i = re.sub(r'ISSN:? ?', '', i)
-                            try:
-                                if issn.validate(i):
-                                    newrec['custom_fields'][
-                                        'journal:journal']['issn'].append(i)
-                            except Exception:
-                                # print('exception', i, row['issn'])
-                                _append_bad_data(row['id'],
-                                    ('issn', 'invalid last digit',
-                                        row['issn']),
-                                    bad_data_dict)
-
+                        assert type(myissn) == str
+                        myissnx = re.sub(r'ISSN:? ?', '', myissnx)
+                        try:
+                            if issn.validate(myissnx):
+                                newrec['custom_fields'].setdefault(
+                                    'journal:journal', {})['issn'] = myissnx
+                        except Exception:
+                            # print('exception', i, row['issn'])
+                            _append_bad_data(row['id'],
+                                ('issn', 'invalid last digit',
+                                    row['issn']),
+                                bad_data_dict)
 
             # extra for dissertations and reports
             if row['institution']:
@@ -1025,24 +1120,174 @@ def serialize_json() -> tuple[list[dict], dict]:
                         'kcr:user_defined_tags'] = keywords
 
             if row['subject']:
+                missing_subjects = ['Public humanities',
+                                    'Scholarly communication',
+                                    'European history',
+                                    'African American culture',
+                                    'Literature and philosophy',
+                                    'Asian history',
+                                    'Modern history',
+                                    'Postcolonial literature',
+                                    'Ancient history',
+                                    'Ancient Mediterranean religions',
+                                    'Early Christianity',
+                                    'Religions of late Antiquity',
+                                    'Literature and economics',
+                                    'Contemporary art',
+                                    'Translation studies',
+                                    'Classical studies',
+                                    'Sociology of development',
+                                    'African studies',
+                                    'Data sharing',
+                                    'Cultural anthropology',
+                                    'Criticism of the arts',
+                                    'Theory of the arts',
+                                    'Music criticism',
+                                    'African American studies',
+                                    'Ancient literature',
+                                    'Biblical studies',
+                                    'Hebrew bible',
+                                    'Literary criticism',
+                                    'Pentateuchal studies',
+                                    'Medieval studies',
+                                    'Urban studies',
+                                    'Comparative religious ethics',
+                                    'American studies',
+                                    'Asian-American studies',
+                                    'Film studies',
+                                    '17th century',
+                                    'Migration studies',
+                                    'Music analysis',
+                                    'Ancient Greece',
+                                    'Music information retrieval',
+                                    'Archival studies',
+                                    'Native American literature',
+                                    'Coming-of-age literature',
+                                    'Poesia',
+                                    'American art',
+                                    'Late Antiquity',
+                                    'Music composition',
+                                    'Accelerationism',
+                                    'Behavioral anthropology',
+                                    '20th century',
+                                    'Immigration history',
+                                    'Bibliography',
+                                    'Biography',
+                                    'Education',
+                                    'English',
+                                    'Poetry',
+                                    'Romanticism',
+                                    '19th-century German literature',
+                                    'Polish culture',
+                                    'Polish studies'
+                                    ]
+                bad_subjects = {
+                    'Art history': "815264:Art--History:topical",
+                    'Medieval literature': "1000151:Literature, Medieval:topical",
+                    'Literary theory':
+                        "1353577:Literature--Theory:topical",
+                    'Cultural studies': "885059:Culture:topical",
+                    'Political philosophy': "1060799:Philosophy--Political aspects:topical",
+                    'History of religions': "1093783:Religion--History:topical",
+                    'Religious studies': "1093763:Religion:topical",
+                    'Translation': "1154795:Translating and interpreting:topical",
+                    'Australasian/Pacific literature': "821406:Australasian literature:topical",
+                    'Comics': "1921613:Comics (Graphic works):form",
+                    'Graphic novels': "1726630:Graphic novels:form",
+                    'Cultural history': "885069:Culture--History:topical",
+                    'Epigraphy': "973837:Inscriptions:topical",
+                    'Latin American studies': "1245945:Latin America:geographic",
+                    'Sociology of agriculture': "801646:Agriculture--Social aspects:topical",
+                    'Ancient law': "993683:Law--Antiquities:topical",
+                    'Digital communication': "893634:Digital communications:topical",
+                    'Internet sociology': "1766793:Internet--Social aspects:topical",
+                    'Library and information science': "997916:Library science:topical",
+                    'Social anthropology': "810233:Anthropology--Social aspects:topical",
+                    'History of the arts': "817758:Arts--History:topical",
+                    'Music history': "1030330:Music--History:topical",
+                    'Interdisciplinary studies': "976131:Interdisciplinary research:topical",
+                    'Illuminated manuscripts': "967235:Illumination of books and manuscripts:topical",
+                    'India': "1210276:India:geographic",
+                    'Apostle Paul': "288253:St. Paul:personal",
+                    'Academic librarianship': "794993:Academic librarians:topical",
+                    'Sociology of aging': "800348:Aging--Social aspects:topical",
+                    'Sociology of culture': "885083:Culture--Social aspects:topical",
+                    'Holocaust studies': "958866:Jewish Holocaust (1939-1945):topical",
+                    'Literature and psychology': "1081551:Psychology and literature:topical",
+                    'Gender studies': "939598:Gender identity--Research:topical",
+                    'Historical musicology': "1030896:Musicology--History:topical",
+                    'Shakespeare': "314312:Shakespeare, William, 1849-1931:personal",
+                    'Sociology of finance': "842573:Business enterprises--Finance--Social aspects:topical",
+                    'Central Europe': "1244544:Central Europe:geographic",
+                    'Contemporary history': "1865054:History of contemporary events:topical",
+                    'Labor history': "989812:Labor--History:topical",
+                    'Epicurus': "44478:Epicurus:personal",
+                    'Stanley Cavell': "28565:Cavell, Stanley, 1926-2018:personal",
+                    'Translation of poetry': "1067745:Poetry--Translating:topical",
+                    'James Joyce': "370728:Joyce, James:personal",
+                    'Jack Kerouac': "52352:Kerouac, Jack, 1922-1969:personal",
+                    'Feminisms': "922671:Feminism:topical",
+                    'Feminist art history': "922756:Feminist art criticism:topical",
+                    'Gospels': "1766655:Bible stories, English--N.T. Gospels:topical",
+                    'Manuscript studies': "1008230:Manuscripts:topical",
+                    'Book history': "836420:Books--History:topical",
+                    'Harlem Renaissance': "951467:Harlem Renaissance:topical",
+                    'Music performance': "1030398:Music--Performance:topical",
+                    'Latin America': "1245945:Latin America:topical",
+                    'Portuguese culture': "1072404:Portuguese--Ethnic identity:topical",
+                    'Venezuela': "1204166:Venezuela:geographic",
+                    'Aesthetic theory': "798702:Aesthetics:topical",
+                    '21st-century American literature': "807113:American literature:topical",
+                    'Poetics and poetry': "1067682:Poetics:topical"
+                }
                 covered_subjects = []
+                if isinstance(row['subject'], dict):
+                    row['subject'] = row['subject'].values()
                 for s in row['subject']:
-                    # normalize inconsistent facet labels
-                    s = s.replace('Corporate Name', 'corporate')
-                    s = s.replace('Topic', 'topical')
-                    s = s.replace('Event', 'event')
-                    s = s.replace('Form\/Genre', 'form')
-                    s = s.replace('Geographic', 'geographic')
-                    s = s.replace('Meeting', 'meeting')
-                    s = s.replace('Personal Name', 'personal')
-                    if s not in covered_subjects:
-                        newrec['metadata'].setdefault('subjects', []).append(
-                            {
-                                "id": s,
-                                "scheme": "FAST"
-                            }
-                        )
-                    covered_subjects.append(s)
+                    if s in missing_subjects:
+                        newrec['custom_fields'].setdefault(
+                            'kcr:user_defined_tags', []).append(s)
+                    else:
+                        if s in bad_subjects.keys():
+                            s = bad_subjects[s]
+                        # normalize inconsistent facet labels
+                        pieces = s.split(':')
+                        if len(pieces) < 3:
+                            try:
+                                s = _get_subject_from_jsonl(s)
+                                pieces = s.split(':')
+                                assert s != ''
+                            except AssertionError:
+                                # print('%%%%')
+                                # print('record', row['id'])
+                                # print(row['subject'])
+                                # print(s.split(':'))
+                                newrec['custom_fields'].setdefault(
+                                    'kcr:user_defined_tags', []).append(s)
+                                _append_bad_data(row['id'],
+                                        ('invalid subject', s),
+                                        bad_data_dict)
+                        id_num = pieces[0]
+                        subject = ':'.join(pieces[1:-1])
+                        facet_label = pieces[-1]
+                        subs = {'Corporate Name': 'corporate',
+                                'Topic': 'topical',
+                                'Event': 'event',
+                                'Form\/Genre': 'form',
+                                'Geographic': 'geographic',
+                                'Meeting': 'meeting',
+                                'Personal Name': 'personal'}
+                        if facet_label in subs.keys():
+                            facet_label = subs[facet_label]
+                        if s not in covered_subjects:
+                            newrec['metadata'].setdefault('subjects', []).append(
+                                {
+                                    "id": f'http://id.worldcat.org/fast/{id_num}',
+                                    "subject": subject,
+                                    "scheme": f"FAST-{facet_label}"
+                                }
+                            )
+                        covered_subjects.append(s)
 
             if row['file_pid'] or row['fileloc'] or row['filename']:
                 newrec['custom_fields']['hclegacy:file_location'
@@ -1050,7 +1295,7 @@ def serialize_json() -> tuple[list[dict], dict]:
                 newrec['custom_fields']['hclegacy:file_pid'
                                         ] = row['file_pid']
                 newrec['files'] = {
-                    "enabled": "true",
+                    "enabled": True,
                     "entries": {
                         f'{row["filename"]}': {
                             "key": row["filename"],
@@ -1086,9 +1331,12 @@ def serialize_json() -> tuple[list[dict], dict]:
         # print(len(auth_errors))
     print(f'Processed {line_count} lines.')
     print(f'Found {len(bad_data_dict)} records with bad data.')
+    # FIXME: make issn field multiple?
+    print(len(multiple_issn_list), 'records with multiple issns')
 
-    with open(Path(__file__).parent / 'data' / 'serialized_core_data.json',
-              'w') as output_file:
-        output_file.write(json.dumps(newrec_list))
+    with jsonlines.open(Path(__file__).parent / 'data' /
+                        'serialized_core_data.jsonl', mode="w") as output_file:
+        for rec in newrec_list:
+            output_file.write(rec)
 
     return newrec_list, bad_data_dict

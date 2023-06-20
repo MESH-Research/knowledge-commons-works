@@ -34,6 +34,7 @@ invenio-utilities-tuw = "*"
 invenio-app-rdm = {version = "~=12.0.0b1", extras = ["opensearch2", "postgresql"]}
 invenio-subjects-mesh = "*"
 cchardet = "==2.1.7"
+timefhuman = "*"
 
 [requires]
 python_version = "3.9"

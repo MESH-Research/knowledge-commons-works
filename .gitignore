@@ -102,3 +102,4 @@ Thumbs.db
 # *.sql
 # *.gz
 subjects_fast.yaml
+serialized_core_data.jsonl
