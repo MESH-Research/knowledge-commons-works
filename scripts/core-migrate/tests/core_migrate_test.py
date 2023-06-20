@@ -24,10 +24,13 @@ from core_migrate.record_loader import (
 import datetime
 import json
 import re
+import os
 from pprint import pprint
 import pytest
 import pytz
 from dateutil.parser import isoparse
+
+TESTING_SERVER_DOMAIN = os.environ['TESTING_SERVER_DOMAIN']
 
 json28491 = {
     'created': '2020-01-30T16:46:54Z',
@@ -2500,7 +2503,7 @@ top_level_record_keys = ["links", "updated", "parent", "revision_id",
 request_header_keys = ['Server', 'Date', 'Content-Type', 'Transfer-Encoding', 'Connection', 'Vary', 'X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'Retry-After', 'Permissions-Policy', 'X-Frame-Options', 'X-XSS-Protection', 'X-Content-Type-Options', 'Content-Security-Policy', 'Strict-Transport-Security', 'Referrer-Policy', 'X-Request-ID', 'Content-Encoding']
 
 @pytest.mark.parametrize("method,server,endpoint,args,json_dict,expected_response", [
-    ('GET', 'localhost', 'records', 'jznz9-qhx89', '', {'text': '',
+    ('GET', TESTING_SERVER_DOMAIN, 'records', 'jznz9-qhx89', '', {'text': '',
                                                         'headers': ''})
     ])
 def test_api_request(method, server, endpoint, args, json_dict,
@@ -2719,22 +2722,22 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
     assert actual['json']['is_published'] == False
 
     links = {
-        "self": "https://localhost/api/records/###/draft",
-        "self_html": "https://localhost/uploads/###",
-        "self_iiif_manifest": "https://localhost/api/iiif/draft:###/manifest",
-        "self_iiif_sequence": "https://localhost/api/iiif/draft:###/sequence/default",
-        "files": "https://localhost/api/records/###/draft/files",
-        "archive": "https://localhost/api/records/###/draft/files-archive",
-        "record": "https://localhost/api/records/###",
-        "record_html": "https://localhost/records/###",
-        "publish": "https://localhost/api/records/###/draft/actions/publish",
-        "review": "https://localhost/api/records/###/draft/review",
-        "versions": "https://localhost/api/records/###/versions",
-        "access_links": "https://localhost/api/records/###/access/links",
-        "reserve_doi": "https://localhost/api/records/###/draft/pids/doi",
-        "communities": "https://localhost/api/records/###/communities",
-        "communities-suggestions": "https://localhost/api/records/###/communities-suggestions",
-        "requests": "https://localhost/api/records/###/requests"
+        "self": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft',
+        "self_html": f'https://{TESTING_SERVER_DOMAIN}/uploads/###',
+        "self_iiif_manifest": f'https://{TESTING_SERVER_DOMAIN}/api/iiif/draft:###/manifest',
+        "self_iiif_sequence": f'https://{TESTING_SERVER_DOMAIN}/api/iiif/draft:###/sequence/default',
+        "files": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/files',
+        "archive": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/files-archive',
+        "record": f'https://{TESTING_SERVER_DOMAIN}/api/records/###',
+        "record_html": f'https://{TESTING_SERVER_DOMAIN}/records/###',
+        "publish": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/actions/publish',
+        "review": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/review',
+        "versions": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/versions',
+        "access_links": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/access/links',
+        "reserve_doi": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/pids/doi',
+        "communities": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/communities',
+        "communities-suggestions": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/communities-suggestions',
+        "requests": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/requests'
     }
     actual_doi = ''
     if 'doi' in actual['json']['links'].keys():
