@@ -5,6 +5,9 @@ __pycache__/
 # C extensions
 *.so
 
+# vi(m) swap files
+*.swp
+
 # pyenv version files
 .python-version
 
