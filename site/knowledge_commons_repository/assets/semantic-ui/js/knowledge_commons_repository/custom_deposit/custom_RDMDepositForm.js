@@ -165,8 +165,8 @@ export class RDMDepositForm extends Component {
   }
 
   handleFormPageChange = (event) => {
-    console.log(event.target.value);
-    this.setState({currentFormPage: event.target.value});
+    console.log(event.target.getAttribute("href"));
+    this.setState({currentFormPage: event.target.getAttribute("href")});
     event.preventDefault();
   };
 
@@ -199,28 +199,30 @@ export class RDMDepositForm extends Component {
           <CommunityHeader imagePlaceholderLink="/static/images/square-placeholder.png" />
         </Overridable>
         <Container id="rdm-deposit-form" className="rel-mt-1">
+          <h2>{this.state.currentFormPage}</h2>
           <div className="upload-form-pager">
-            {/* {["1", "5"].map((pageNum) => (
-              <Button
-                // disabled={!draftExists || isSubmitting}
-                key={`upload-form-pager-button-${pageNum}`}
-                onClick={this.handleFormPageChange}
-                className={`upload-form-pager-button page-${pageNum}`}
-                // icon
-                // loading={isSubmitting && actionState === DRAFT_DELETE_STARTED}
-                labelPosition="left"
-                // {...uiProps}
-                content={`page ${pageNum}`}
-              />
-            ))} */}
+            {["1", "5"].map((pageNum) => (
+              // <Button
+              //   // disabled={!draftExists || isSubmitting}
+              //   key={`upload-form-pager-button-${pageNum}`}
+              //   onClick={this.handleFormPageChange}
+              //   className={`upload-form-pager-button page-${pageNum}`}
+              //   // icon
+              //   // loading={isSubmitting && actionState === DRAFT_DELETE_STARTED}
+              //   labelPosition="left"
+              //   // {...uiProps}
+              //   content={`page ${pageNum}`}
+              // />
+              <a href={`page ${pageNum}`} onClick={this.handleFormPageChange}>{`page ${pageNum}`}</a>
+            ))}
           </div>
-          {/* {this.currentFormPage=="page 1" && */}
+          {this.state.currentFormPage=="page 1" && (
             <FormPage formPageNum={1}>
               <h3>Page 1</h3>
             </FormPage>
-          {/* } */}
+          )}
 
-          {/* {this.currentFormPage=="page 5" && */}
+          {this.state.currentFormPage=="page 5" && (
             <FormPage formPageNum={5}>
               <h3>Page 5</h3>
               <FilesField config={this.config}
@@ -229,7 +231,7 @@ export class RDMDepositForm extends Component {
                 permissions={permissions}>
               </FilesField>
             </FormPage>
-          {/* } */}
+          )}
 
           <Grid className="mt-25">
             <Grid.Column mobile={16} tablet={16} computer={11}>
