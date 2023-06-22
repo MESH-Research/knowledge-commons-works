@@ -119,6 +119,35 @@ licenses = {'All Rights Reserved': (
             )
             }
 
+
+def _normalize_string(mystring:str) -> str:
+    mystring = mystring.casefold()
+    mystring = _clean_string(mystring)
+    mystring = mystring.replace('’', "'")
+    mystring = mystring.replace('“', "'")
+    try:
+        if mystring[0] in ['"', "'"]:
+            mystring = mystring[1:]
+        if mystring[-1] in ['"', "'"]:
+            mystring = mystring[:-1]
+    except IndexError:
+        pass
+    return mystring
+
+
+def _clean_string(mystring:str) -> str:
+    """
+    Remove unwanted characters from a string and return it.
+    """
+    if re.search(r"[\'\"]", mystring):
+        mystring = re.sub(r"\\+'", r"'", mystring)
+        mystring = re.sub(r'\\+"', r'"', mystring)
+    else:
+        mystring = re.sub(r'\\+', r'\\', mystring)
+    mystring = mystring.replace('  ', ' ')
+    return mystring
+
+
 def _append_bad_data(rowid:str, content:tuple, bad_data_dict:dict):
     """
     Add info on bad data to dictionary of bad data
@@ -327,10 +356,10 @@ def _add_book_authors(author_string:str, bad_data_dict:dict,
             author_list.append(
                 {
                     'person_or_org': {
-                        'name': fullname,
+                        'name': _clean_string(fullname),
                         "type": "personal",
-                        "given_name": given,
-                        "family_name": family
+                        "given_name": _clean_string(given),
+                        "family_name": _clean_string(family)
                     },
                     'role': {
                         'id': ('editor' if is_editor else 'author')
@@ -375,12 +404,14 @@ def _add_author_data(newrec:dict, row:dict, bad_data_dict:dict
     creators_misplaced = []
     # FIXME: What roles do we allow? Submitter?
     allowed_roles = ['author', 'editor', 'contributor', 'submitter',
-                     'translator', 'creator', 'project director']
+                     'translator', 'creator', 'other', 'project director']
     if row['authors']:
         # print(row['pid'])
         try:
             # row['authors'] = row['authors'].replace('\\', '&quot;')
             for a in row['authors']:
+                a['family']= _clean_string(a['family'])
+                a['given'] = _clean_string(a['given'])
                 new_person = {}
 
                 new_person['person_or_org'] = {
@@ -404,6 +435,7 @@ def _add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                         {'identifier': a['uni'], 'scheme': 'hc_username'}]
                 if a['role'] in allowed_roles:
                     if a['role'] == 'contributor':
+                        new_person['role'] = {'id': 'other'}
                         contributors_misplaced.append(new_person)
                     else:
                         creators.append(new_person)
@@ -562,24 +594,9 @@ def serialize_json() -> tuple[list[dict], dict]:
             newrec = deepcopy(baserec)
 
             if row['chapter']:
-                def normalize(mystring):
-                    mystring = mystring.casefold()
-                    mystring = re.sub(r'\\*"', '"', mystring)
-                    mystring = re.sub(r"\\*'", "'", mystring)
-                    mystring = mystring.replace('  ', ' ')
-                    mystring = mystring.replace('’', "'")
-                    mystring = mystring.replace('“', "'")
-                    try:
-                        if mystring[0] in ['"', "'"]:
-                            mystring = mystring[1:]
-                        if mystring[-1] in ['"', "'"]:
-                            mystring = mystring[:-1]
-                    except IndexError:
-                        pass
-                    return mystring
-                mychap = normalize(row['chapter'])
-                mytitle = normalize(row['title'])
-                mybooktitle = normalize(row['book_journal_title'])
+                mychap = _normalize_string(row['chapter'])
+                mytitle = _normalize_string(row['title'])
+                mybooktitle = _normalize_string(row['book_journal_title'])
                 if mychap == mytitle:
                     pass
                 # FIXME: This needs work
@@ -595,7 +612,7 @@ def serialize_json() -> tuple[list[dict], dict]:
                                  row['chapter']) or \
                             re.search(rn, row['chapter']):
                         newrec['custom_fields'][
-                            'kcr:chapter_label'] = row['chapter']
+                            'kcr:chapter_label'] = _clean_string(row['chapter'])
                         # print('&&&&&', row['chapter'], row['title'])
                         # print('&&&&&', newrec['custom_fields']['kcr:chapter_label'])
                     # elif mytitle in mychap \
@@ -609,10 +626,12 @@ def serialize_json() -> tuple[list[dict], dict]:
                     #     shortchap = re.sub(r'[\.,:]?\s?-?$', '', shortchap)
                         # print('~~~~~~~', shortchap)
                         # newrec['custom_fields']['kcr:chapter_label'] = shortchap
+                    #FIXME: label being truncated with \\\\\\\\\ in hc:27769
                     elif re.search(r'^[Cc]hapter', row['chapter']):
                         shortchap = re.sub(r'^[Cc]hapter\s*', '',
                                            row['chapter'])
-                        newrec['custom_fields']['kcr:chapter_label'] = shortchap
+                        newrec['custom_fields']['kcr:chapter_label'
+                                                ] = _clean_string(shortchap)
                         # print('&&&&&', row['chapter'], row['title'])
                         # print('&&&&&', newrec['custom_fields']['kcr:chapter_label'])
                     # elif mytitle == mybooktitle:
@@ -627,7 +646,7 @@ def serialize_json() -> tuple[list[dict], dict]:
                         # print('**', row['title'])
                         # print('**', row['title_unchanged'])
                         newrec['custom_fields']['kcr:chapter_label'
-                                                ] = row['chapter']
+                            ] = _clean_string(row['chapter'])
 
             # HC legacy admin information
             newrec['metadata']['identifiers'].append(
@@ -660,10 +679,10 @@ def serialize_json() -> tuple[list[dict], dict]:
             # FIXME: Filter out titles with punctuation from full biblio ref in #   field?
             # FIXME: Remove things like surrounding quotation marks
             mytitle = row['title_unchanged']
-            newrec['metadata']['title'] = mytitle
+            newrec['metadata']['title'] = _clean_string(mytitle)
             # FIXME: types here are CV, need to expand to accommodate stripped desc
             newrec['metadata']['additional_titles'].append(
-                {"title": row['title'],
+                {"title": _clean_string(row['title']),
                     "type": {
                         "id": "other",
                         "title": {"en": "Primary title with HTML stripped"}
@@ -713,10 +732,14 @@ def serialize_json() -> tuple[list[dict], dict]:
                      "scheme": "datacite-doi"}
                 )
             if row['doi']:
-                newrec['metadata'].setdefault('identifiers', []).append(
-                    {"identifier": row['doi'],
-                     "scheme": "doi"}
-                )
+                # FIXME: hc:24459 is getting description as doi value
+                if len(row['doi']) < 40:
+                    newrec['metadata'].setdefault('identifiers', []).append(
+                        {"identifier": row['doi'],
+                        "scheme": "doi"}
+                    )
+                else:
+                    _append_bad_data(row['id'], ('doi too long', row['doi']), bad_data_dict)
             if row['handle']:
                 newrec['metadata'].setdefault('identifiers', []).append(
                     {"identifier": row['handle'].replace('http://dx.', 'https://'),
@@ -785,7 +808,7 @@ def serialize_json() -> tuple[list[dict], dict]:
             # Edition
             # FIXME: There's some bad data here, like ISSNs
             if row['edition']:
-                newrec['custom_fields']['kcr:edition'] = row['edition']
+                newrec['custom_fields']['kcr:edition'] = _clean_string(row['edition'])
 
             # Committee deposit
             if row['committee_deposit'] == "yes":
@@ -955,7 +978,8 @@ def serialize_json() -> tuple[list[dict], dict]:
 
             # Handle missing publishers?
             if row['publisher']:
-                newrec['metadata']['publisher'] = row['publisher']
+                newrec['metadata']['publisher'] = _clean_string(
+                    row['publisher'])
             else:
                 newrec['metadata']['publisher'] = "unknown"
 
@@ -974,8 +998,10 @@ def serialize_json() -> tuple[list[dict], dict]:
                 # FIXME: check right field for legalComment, bibliography, lecture, conferencePaper, legalResponse, other:other, other:essay, translation, videoRecording, blogPost, interviewTranscript, poeticWork, fictionalWork, image:visualArt, image:map, instructionalResource:syllabus, onlinePublication, presentation:other, instructionalResource:other, musicalRecording, catalog, dataset:other, audiovisual:documentary, lecture
                 if myfield not in newrec['custom_fields'].keys():
                     newrec['custom_fields'][myfield] = {}
+                # FIXME: in hc:24459 title replaced by just \\\\
+                # FIXME: in hc:52887, hc:27377 title truncated with \\\\
                 newrec['custom_fields'][myfield][
-                    'title'] = row['book_journal_title']
+                    'title'] = _clean_string(row['book_journal_title'])
 
             # article/chapter info
 
@@ -1060,7 +1086,7 @@ def serialize_json() -> tuple[list[dict], dict]:
                 # print(row['id'])
                 # print(newrec['metadata']['resource_type']['id'])
                 newrec['custom_fields']['kcr:sponsoring_institution'
-                                        ] = row['institution']
+                                        ] = _clean_string(row['institution'])
                 if newrec['metadata']['resource_type']['id'] not in [
                         'publication:dissertation', 'publication:report',
                         'publication:whitePaper']:
@@ -1077,16 +1103,17 @@ def serialize_json() -> tuple[list[dict], dict]:
                     'dates'] = row['conference_date'] or row['meeting_date']
             if row['conference_location'] or row['meeting_location']:
                 newrec['custom_fields'].setdefault('meeting:meeting', {})[
-                    'place'] = row['conference_location'
-                                    ] or row['meeting_location']
+                    'place'] = _clean_string(row['conference_location'
+                                    ] or row['meeting_location'])
             if row['conference_organization'] or row['meeting_organization']:
                 newrec['custom_fields'][
-                    'kcr:meeting_organization'] = row[
+                    'kcr:meeting_organization'] = _clean_string(row[
                         'conference_organization'] or row[
-                            'meeting_organization']
+                            'meeting_organization'])
+            # FIXME: meeting_title being truncated with \\\\ in hc:46017, hc:19211
             if row['conference_title'] or row['meeting_title']:
                 newrec['custom_fields'].setdefault('meeting:meeting', {})[
-                    'title'] = row['conference_title'] or row['meeting_title']
+                    'title'] = _clean_string(row['conference_title'] or row['meeting_title'])
 
             # subjects and keywords
             # FIXME: keyword ids filled in and harmonized where possible

@@ -71,6 +71,8 @@ def create_invenio_record(metadata:dict, server:str='',
     """
     debug = GLOBAL_DEBUG or True
     # FIXME: create necessary user account and community?
+    if debug: print('~~~~~~~~')
+    if debug: pprint(metadata)
 
     # Make draft and publish
     result = api_request(method='POST', endpoint='records',
@@ -83,6 +85,14 @@ def create_invenio_record(metadata:dict, server:str='',
     # FIXME: upload files here and then publish the draft?
 
     return(result)
+
+
+def fetch_draft_files(files_dict:dict[str, str]) -> dict:
+    """
+    Fetch listed files from a remote address.
+    """
+    url = 'https://www.facebook.com/favicon.ico'
+    r = requests.get(url, allow_redirects=True)
 
 
 def upload_draft_files(draft_id:str, files_dict:dict[str, str]) -> dict:
@@ -585,3 +595,15 @@ def load_records_into_invenio():
                     record_counter += 1
     print('Finished!')
     print(f'Created {str(record_counter)} records in InvenioRDM')
+
+
+def delete_records_from_invenio(record_ids):
+    """
+    Delete the selected records from the invenioRDM instance.
+    """
+    print('Starting to delete records')
+    for r in record_ids:
+        print(f'deleting {r}')
+        deleted = api_request('DELETE', f'records/{r}')
+        pprint(deleted)
+    print('finished deleting records')

@@ -121,14 +121,13 @@ json28491 = {
                             'production plants, bakeries and various other food '
                             'processing facilities.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}}
+                      'title': {'en': 'Other'}}
         }],
         'additional_titles': [{
             'title': 'TRATAMIENTO de los RESIDUOS de la INDUSTRIA del '
                      'PROCESADO de ALIMENTOS',
             'type': {'id': 'other',
-                     'title': {'en': 'Primary title with HTML stripped'}}
+                     'title': {'en': 'Other'}}
         }],
         'creators': [{'person_or_org': {'family_name': 'Hung',
                                         'given_name': 'Yung-Tse',
@@ -294,8 +293,7 @@ json583 = {
                             'open access brings to literary scholarship in the '
                             '21st century.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}
+                      'title': {'en': 'Other'}
                       }
             }],
             'additional_titles': [{'title': 'The New Open Access '
@@ -303,9 +301,7 @@ json583 = {
                                             'Research, Editing and '
                                             'Publishing',
                                     'type': {'id': 'other',
-                                            'title': {'en': 'Primary title '
-                                                            'with HTML '
-                                                            'stripped'}}}],
+                                            'title': {'en': 'Other'}}}],
             'creators': [{'person_or_org': {'family_name': 'Eaglestone',
                                             'given_name': 'Robert',
                                             'identifiers': [{'identifier': 'roberteaglestone',
@@ -502,7 +498,7 @@ json38367 = {
                            'government.',
             'type': {'id': 'other',
                      'title': {
-                         'en': 'Primary description with HTML stripped'}
+                         'en': 'Other'}
             }
         }],
         'additional_titles': [{
@@ -511,7 +507,7 @@ json38367 = {
                      'modelling approach with System Dynamics.',
             'type': {'id': 'other',
                      'title': {
-                         'en': 'Primary title with HTML stripped'}
+                         'en': 'Other'}
             }
         }],
         'creators': [
@@ -661,15 +657,14 @@ json48799 = {
                             'framework, and to consider platform '
                             'capitalism’s transformational shape.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}
+                      'title': {'en': 'Other'}
              }
             }
         ],
         'additional_titles': [{
             'title': 'Super Apps: A Platform Lab Report',
             'type': {'id': 'other',
-                     'title': {'en': 'Primary title with HTML stripped'}
+                     'title': {'en': 'Other'}
                      }
         }],
         'contributors': [{'person_or_org': {'family_name': 'Altheman',
@@ -848,8 +843,7 @@ json33383 = {
                             'teaching, extending, and rethinking '
                             'mathematics—that is, we should read it philologically.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}
+                      'title': {'en': 'Other'}
                       }
              }
         ],
@@ -858,8 +852,7 @@ json33383 = {
                     'Treatise on Double False Position in an Arabic '
                     'Manuscript at Columbia University',
             'type': {'id': 'other',
-                    'title': {'en': 'Primary title with HTML '
-                                    'stripped'}}
+                    'title': {'en': 'Other'}}
             }
         ],
         'creators': [
@@ -1010,16 +1003,13 @@ json16079 = {
                             'reading notes and personal libraries '
                             'of James Joyce and Samuel Beckett.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with '
-                                      'HTML stripped'}
+                      'title': {'en': 'Other'}
                       }
             }
         ],
         'additional_titles': [{'title': 'Digitization and Exogenesis',
                                 'type': {'id': 'other',
-                                        'title': {'en': 'Primary title '
-                                                        'with HTML '
-                                                        'stripped'}}}],
+                                        'title': {'en': 'Other'}}}],
         'creators': [{'person_or_org': {'family_name': 'Crowley',
                                         'given_name': 'Ronan',
                                         'name': 'Crowley, Ronan',
@@ -1157,8 +1147,7 @@ json34031 = {
                             "the study of 'Gnosticism' after the discovery of "
                             'the Nag Hammadi Codices.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}
+                      'title': {'en': 'Other'}
                       }
              }
         ],
@@ -1168,8 +1157,7 @@ json34031 = {
             {'title': 'Gnosticism Theorized: Major Trends and Approaches to '
                       'the Study of Gnosticism',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary title with HTML '
-                                    'stripped'}
+                      'title': {'en': 'Other'}
                       }
              }
         ],
@@ -1414,18 +1402,12 @@ json11451 = {
                                                            'ideals of '
                                                            'femininity.',
                                             'type': {'id': 'other',
-                                                     'title': {'en': 'Primary '
-                                                                     'description '
-                                                                     'with '
-                                                                     'HTML '
-                                                                     'stripped'}}}],
+                                                     'title': {'en': 'Other'}}}],
                'additional_titles': [{'title': 'The Paradox of Female Agency: '
                                                'Ophelia and East Asian '
                                                'Sensibilities',
                                       'type': {'id': 'other',
-                                               'title': {'en': 'Primary title '
-                                                               'with HTML '
-                                                               'stripped'}}}],
+                                               'title': {'en': 'Other'}}}],
                'creators': [{'affiliations': [{'name': 'George Washington U'}],
                              'person_or_org': {'family_name': 'Alice Joubin',
                                                'given_name': 'Alexa',
@@ -1650,8 +1632,7 @@ json22647 = {
                             'between such ‘fixed’ and '
                             '‘unfixed’ elements.',
             'type': {'id': 'other',
-                     'title': {'en': 'Primary description with '
-                                     'HTML stripped'}
+                     'title': {'en': 'Other'}
                      }
             }
         ],
@@ -1659,7 +1640,7 @@ json22647 = {
             {'title': 'Unfixing Epic: Homeric Orality '
                       'and Contemporary Performance',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary title with HTML stripped'}}
+                      'title': {'en': 'Other'}}
              }
         ],
         'creators': [
@@ -1987,15 +1968,13 @@ json22625 = {
                              'wives and daughters of Shneur Zalman’s '
                              'followers.'),
               'type': {'id': 'other',
-                       'title': {'en': 'Primary description with HTML '
-                                       'stripped'}
+                       'title': {'en': 'Other'}
                        }
             }],
             'additional_titles': [
                 {'title': 'מגדר וזמן בכתבי ר׳ שניאור זלמן מלאדי',
                  'type': {'id': 'other',
-                          'title': {'en': 'Primary title with HTML '
-                                          'stripped'}}
+                          'title': {'en': 'Other'}}
                 }
             ],
             'creators': [
@@ -2159,14 +2138,13 @@ json45177 = {
                             'decided that a particular note is of primary '
                             'importance.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}}
+                      'title': {'en': 'Other'}}
             }
         ],
         'additional_titles': [
             {'title': 'Notes',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary title with HTML stripped'}}
+                      'title': {'en': 'Other'}}
              }
         ],
         'creators': [
@@ -2344,8 +2322,7 @@ json44881 = {
                             'and lesbian members. Clarke and Starr are '
                             'long-standing roommates at annual conferences.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}
+                      'title': {'en': 'Other'}
                       }
              }
         ],
@@ -2353,7 +2330,7 @@ json44881 = {
             {'title': 'ARLIS/NA Oral History for Distinguished Service Award '
                       'Winners, Sherman Clarke and Daniel Starr',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary title with HTML stripped'}
+                      'title': {'en': 'Other'}
                       }
              }
         ],
