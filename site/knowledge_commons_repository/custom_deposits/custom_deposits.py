@@ -49,7 +49,7 @@ from invenio_app_rdm.records_ui.views.deposits import (
 )
 
 CUSTOM_DEPOSIT_FORM_TEMPLATE = \
-    "knowledge_commons_repository/records/deposit.html"
+    "knowledge_commons_repository/records/custom_deposit.html"
 
 
 def get_search_url():
