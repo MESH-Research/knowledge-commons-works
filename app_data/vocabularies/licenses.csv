@@ -1,5 +1,5 @@
 id;title__en;description__en;icon;tags;props__url;props__scheme;props__osi_approved
-0bsd;BSD Zero Clause License;;;all,software;http://landley.net/toybox/license.html;spdx;y
+0bsd;BSD Zero Clause License;;;all,software;http://landley.net/toybox/license.html;spdx;
 arr;All Rights Reserved;Proprietary material. No permissions are granted for any kind of copyring or re-use. All rights reserved;copyright;all,data,software;https://en.wikipedia.org/wiki/All_rights_reserved;;y
 aal;Attribution Assurance License;;;all,software;https://opensource.org/licenses/attribution;spdx;y
 adsl;Amazon Digital Services License;;;all;https://fedoraproject.org/wiki/Licensing/AmazonDigitalServicesLicense;spdx;
