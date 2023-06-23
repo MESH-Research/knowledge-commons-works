@@ -1,0 +1,56 @@
+- subsets:
+  - book_detail:
+    - publisher_doi
+    - publisher
+    - publication_location
+    - total_pages
+    - series_title
+    - series_number
+    - total_volumes
+    - volume
+    - version
+- common_fields:
+  "1":
+    - previously_published
+    - doi
+    - resource_type
+    - title
+    - subtitle
+    - additional_titles
+    - date
+    - additional_dates
+    - abstract
+    - additional_description
+  "2":
+    - creators
+    - contributors
+    - ai
+  "3":
+    - subjects
+    - keywords
+    - content_warning
+  "4":
+    - alternate_identifiers
+    - related_works
+    - funding
+  "5":
+    - file_upload
+    - metadata_only
+- book:
+  "1":
+    fields:
+    subsets:
+  "2":
+    fields:
+    subsets:
+  "3":
+    fields:
+    subsets:
+      - language
+  "4":
+    fields:
+    subsets:
+      - book_detail
+  "5":
+    fields:
+    subsets:
