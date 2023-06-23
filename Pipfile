@@ -14,28 +14,28 @@ halo = "*"
 jsonlines = "*"
 
 [packages]
+cchardet = "==2.1.7"
+halo = "*"
+invenio-app-rdm = {version = "~=12.0.0b1", extras = ["opensearch2", "postgresql"]}
+invenio-cli = "*"
+invenio-s3 = "*"
+invenio-subjects-mesh = "*"
+invenio-utilities-tuw = "*"
+isbnlib = "*"
+knowledge-commons-repository = {editable = true, path = "./site"}
+langdetect = "*"
+pytest-invenio = "*"
+python-dotenv = "*"
+python-iso639 = "*"
+python-stdnum = "*"
+selenium = "*"
+sqlalchemy = {version = "*", extras = ["asyncio"]}
+titlecase = "*"
+tqdm = "*"
+timefhuman = "*"
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
-greenlet = "*"
-python-dotenv = "*"
-invenio-cli = "*"
-pytest-invenio = "*"
-knowledge-commons-repository = {editable = true, path = "./site"}
-selenium = "*"
-isbnlib = "*"
-python-stdnum = "*"
-python-iso639 = "*"
-langdetect = "*"
-titlecase = "*"
-tqdm = "*"
-halo = "*"
-invenio-utilities-tuw = "*"
-invenio-app-rdm = {version = "~=12.0.0b1", extras = ["opensearch2", "postgresql"]}
-invenio-subjects-mesh = "*"
-cchardet = "==2.1.7"
-timefhuman = "*"
-invenio-s3 = "*"
 
 [requires]
 python_version = "3.9"
