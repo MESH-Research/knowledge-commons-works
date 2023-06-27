@@ -585,14 +585,11 @@ def load_records_into_invenio():
     'Starting to load records into Invenio...'
     with jsonlines.open(Path(__file__).parent / 'data' /
                         'serialized_core_data.jsonl', "r") as json_source:
-            import itertools
-            top_100 = itertools.islice(json_source, 100)
-            for rec in top_100:
-                if rec['metadata']['rights'][0]['id'] == 'arr':
-                    record_counter += 1
-                else:
-                    create_full_invenio_record(rec)
-                    record_counter += 1
+        import itertools
+        top = itertools.islice(json_source, 101, 120)
+        for rec in top:
+            create_full_invenio_record(rec)
+            record_counter += 1
     print('Finished!')
     print(f'Created {str(record_counter)} records in InvenioRDM')
 
