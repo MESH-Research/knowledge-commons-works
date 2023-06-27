@@ -7,10 +7,10 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { Component, createRef, Fragment } from "react";
+import { i18next } from "@translations/invenio_app_rdm/i18next";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import React, { Component, createRef, Fragment } from "react";
 import { AccordionField, CustomFields } from "react-invenio-forms";
 import {
   AccessRightField,
@@ -40,249 +40,15 @@ import {
   SaveButton,
 } from "@js/invenio_rdm_records";
 import { FundingField } from "@js/invenio_vocabularies";
-import {
-  Button,
-  Card,
-  Container,
-  Grid,
-  Ref,
-  Sticky,
-  Transition
-} from "semantic-ui-react";
+import { Button, Card, Container, Grid, Ref, Sticky } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
-
-const AbstractComponent = () => {
-  return(<></>)
-}
-
-const AdditionalDatesComponent = () => {
-  return(<></>)
-}
-
-const AdditionalDescriptionComponent = () => {
-  return(<></>)
-}
-
-const AdditionalTitlesComponent = () => {
-  return(<></>)
-}
-
-const AIComponent = () => {
-  return(<></>)
-}
-
-const AlternateIdentifiersComponent = () => {
-  return(<></>)
-}
-
-const ContentWarningComponent = () => {
-  return(<></>)
-}
-
-const ContributorsComponent = () => {
-  return(<></>)
-}
-
-const CreatorsComponent = () => {
-  return(<></>)
-}
-
-const DateComponent = () => {
-  return(<></>)
-}
-
-const DoiComponent = () => {
-  return(<></>)
-}
-
-const FilesUploadComponent = ({config, noFiles, record, permissions}) => {
-  return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.AccordionFieldFiles.container"
-      record={record}
-      config={config}
-      noFiles={noFiles}
-    >
-      <AccordionField
-        includesPaths={["files.enabled"]}
-        active
-        label={i18next.t("Files")}
-      >
-        {noFiles && record.is_published && (
-          <div className="text-align-center pb-10">
-            <em>{i18next.t("The record has no files.")}</em>
-          </div>
-        )}
-        <Overridable
-          id="InvenioAppRdm.Deposit.FileUploader.container"
-          record={record}
-          config={config}
-        >
-          <FileUploader
-            isDraftRecord={!record.is_published}
-            quota={config.quota}
-            decimalSizeDisplay={config.decimal_size_display}
-            showMetadataOnlyToggle={permissions?.can_manage_files}
-          />
-        </Overridable>
-      </AccordionField>
-    </Overridable>
-  )
-}
-
-const FundingComponent = () => {
-  return(<></>)
-}
-
-const KeywordsComponent = () => {
-  return(<></>)
-}
-
-const LanguagesComponent = () => {
-  return(<></>)
-}
-
-const MetadataOnlyComponent = () => {
-  return(<></>)
-}
-
-const PreviouslyPublishedComponent = () => {
-  return(<></>)
-}
-
-const PublisherDoiComponent = () => {
-  return(<></>)
-}
-
-const PublisherComponent = () => {
-  return(<></>)
-}
-
-const PublicationLocationComponent = () => {
-  return(<></>)
-}
-
-const RelatedWorksComponent = () => {
-  return(<></>)
-}
-
-const ResourceTypeComponent = ({vocabularies}) => {
-  return(
-  <Overridable
-    id="InvenioAppRdm.Deposit.ResourceTypeField.container"
-    vocabularies={vocabularies}
-    fieldPath="metadata.resource_type"
-  >
-    <ResourceTypeField
-      options={vocabularies.metadata.resource_type}
-      fieldPath="metadata.resource_type"
-      required
-    />
-  </Overridable>
-  )
-}
-
-const SubjectsComponent = () => {
-  return(<></>)
-}
-
-const SubtitleComponent = () => {
-  return(<></>)
-}
-
-const TitleComponent = () => {
-  return(<></>)
-}
-
-const TotalPagesComponent = () => {
-  return(<></>)
-}
-
-const SeriesTitleComponent = () => {
-  return(<></>)
-}
-
-const SeriesNumberComponent = () => {
-  return(<></>)
-}
-
-const TotalVolumesComponent = () => {
-  return(<></>)
-}
-
-const VolumeComponent = () => {
-  return(<></>)
-}
-
-const VersionComponent = () => {
-  return(<></>)
-}
-
-const fieldComponents = {
-    abstract: AbstractComponent,
-    additional_dates: AdditionalDatesComponent,
-    additional_description: AdditionalDescriptionComponent,
-    additional_titles: AdditionalTitlesComponent,
-    ai: AIComponent,
-    alternate_identifiers: AlternateIdentifiersComponent,
-    content_warning: ContentWarningComponent,
-    contributors: ContributorsComponent,
-    creators: CreatorsComponent,
-    date: DateComponent,
-    doi: DoiComponent,
-    funding: FundingComponent,
-    file_upload: FilesUploadComponent,
-    keywords: KeywordsComponent,
-    language: LanguagesComponent,
-    metadata_only: MetadataOnlyComponent,
-    previously_published: PreviouslyPublishedComponent,
-    publisher_doi: PublisherDoiComponent,
-    publisher: PublisherComponent,
-    publication_location: PublicationLocationComponent,
-    related_works: RelatedWorksComponent,
-    resource_type: ResourceTypeComponent,
-    subjects: SubjectsComponent,
-    subtitle: SubtitleComponent,
-    title: TitleComponent,
-    total_pages: TotalPagesComponent,
-    series_title: SeriesTitleComponent,
-    series_number: SeriesNumberComponent,
-    total_volumes: TotalVolumesComponent,
-    volume: VolumeComponent,
-    version: VersionComponent
-}
-
-const BookDetailComponent = ({}) => {
-  return('')
-}
-
-const fieldSetComponents = {
-  book_detail: BookDetailComponent
-}
-
-const FormPage = ({ children }) => {
-  return(
-    <Container id="rdm-deposit-form form-page-component" className="rel-mt-1">
-      <Grid className="mt-25">
-        <Grid.Column mobile={16} tablet={16} computer={11}>
-          {children}
-        </Grid.Column>
-      </Grid>
-      <Button primary type="button" content="Save and continue" floated="right" />
-    </Container>
-  )
-}
 
 export class RDMDepositForm extends Component {
   constructor(props) {
     super(props);
     this.config = props.config || {};
     const { files, record } = this.props;
-    this.state = {
-      currentFormPage: "page 5",
-      showPage1: false
-    }
 
     // TODO: Make ALL vocabulary be generated by backend.
     // Currently, some vocabulary is generated by backend and some is
@@ -323,22 +89,21 @@ export class RDMDepositForm extends Component {
       this.noFiles = true;
     }
 
-    this.handleFormPageChange = this.handleFormPageChange.bind(this)
+    // this.handleFormPageChange = this.handleFormPageChange.bind(this)
   }
 
-  handleFormPageChange = (event) => {
-    console.log(event.target.getAttribute("href"));
-    this.setState({currentFormPage: event.target.value});
-    event.preventDefault();
-  };
+//   handleFormPageChange = (event) => {
+//     console.log(event.target.target);
+//     this.setState({currentFormPage: event.target.value});
+//     event.preventDefault();
+//   };
 
   formFeedbackRef = createRef();
   sidebarRef = createRef();
 
   render() {
-    const { record, files, permissions, preselectedCommunity } = this.props;
+    const { record, files, permissions, preselectedCommunity, currentFormPage } = this.props;
     const customFieldsUI = this.config.custom_fields.ui;
-    const currentFormPage = this.state.currentFormPage;
     return (
       <DepositFormApp
         config={this.config}
@@ -362,7 +127,7 @@ export class RDMDepositForm extends Component {
           <CommunityHeader imagePlaceholderLink="/static/images/square-placeholder.png" />
         </Overridable>
         <Container id="rdm-deposit-form" className="rel-mt-1">
-          <div className="upload-form-pager">
+          {/* <div className="upload-form-pager">
             {["1", "2", "3", "4", "5"].map((pageNum) => (
               <>
               <Button
@@ -380,36 +145,40 @@ export class RDMDepositForm extends Component {
               />
               </>
             ))}
-          </div>
-        <Transition.Group
-          animation="fade"
-          duration={{show: 1000, hide: 20}}
-        >
-          {currentFormPage=='page 1' && (
-            <div>
-              <FormPage formPageNum={1}>
-                <h3>Page 1</h3>
-                <ResourceTypeComponent vocabularies={this.vocabularies} />
-              </FormPage>
-            </div>
-          )}
-
-          {currentFormPage=='page 5' && (
-            <div>
-            <FormPage formPageNum={5}>
-              <h3>Page 5</h3>
-              <FilesUploadComponent config={this.config}
-                noFiles={this.noFiles}
-                record={record}
-                permissions={permissions}
-              />
-            </FormPage>
-            </div>
-          )}
-          </Transition.Group>
-
+          </div> */}
+          <h2>{currentFormPage}</h2>
           <Grid className="mt-25">
             <Grid.Column mobile={16} tablet={16} computer={11}>
+              <Overridable
+                id="InvenioAppRdm.Deposit.AccordionFieldFiles.container"
+                record={record}
+                config={this.config}
+                noFiles={this.noFiles}
+              >
+                <AccordionField
+                  includesPaths={["files.enabled"]}
+                  active
+                  label={i18next.t("Files")}
+                >
+                  {this.noFiles && record.is_published && (
+                    <div className="text-align-center pb-10">
+                      <em>{i18next.t("The record has no files.")}</em>
+                    </div>
+                  )}
+                  <Overridable
+                    id="InvenioAppRdm.Deposit.FileUploader.container"
+                    record={record}
+                    config={this.config}
+                  >
+                    <FileUploader
+                      isDraftRecord={!record.is_published}
+                      quota={this.config.quota}
+                      decimalSizeDisplay={this.config.decimal_size_display}
+                      showMetadataOnlyToggle={permissions?.can_manage_files}
+                    />
+                  </Overridable>
+                </AccordionField>
+              </Overridable>
               <Overridable
                 id="InvenioAppRdm.Deposit.AccordionFieldBasicInformation.container"
                 config={this.config}
@@ -460,6 +229,17 @@ export class RDMDepositForm extends Component {
                     </Fragment>
                   </Overridable>
 
+                  <Overridable
+                    id="InvenioAppRdm.Deposit.ResourceTypeField.container"
+                    vocabularies={this.vocabularies}
+                    fieldPath="metadata.resource_type"
+                  >
+                    <ResourceTypeField
+                      options={this.vocabularies.metadata.resource_type}
+                      fieldPath="metadata.resource_type"
+                      required
+                    />
+                  </Overridable>
 
                   <Overridable
                     id="InvenioAppRdm.Deposit.TitlesField.container"
