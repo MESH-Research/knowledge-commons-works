@@ -43,36 +43,9 @@
 //   </div>
 //   );
 // }
-
-  import React from "react";
-  import { Checkbox } from "semantic-ui-react";
-  import { useFormikContext } from "formik";
-  import PropTypes from "prop-types";
-
-  const MetadataOnlyToggle = (props) => {
-    const { filesEnabled } = props;
-    const { setFieldValue } = useFormikContext();
-
-    const handleOnChangeMetadataOnly = () => {
-      setFieldValue("files.enabled", !filesEnabled);
-      setFieldValue("access.files", "public");
-    };
-
-    return (
-      <Checkbox
-        toggle
-        label="Metadata-only record"
-        onChange={handleOnChangeMetadataOnly}
-      />
-    );
-  };
-
-  MetadataOnlyToggle.propTypes = {
-    filesEnabled: PropTypes.bool.isRequired,
-  };
-
-export default MetadataOnlyToggle;
+import MetadataOnlyToggle from "./fields/MetadataOnlyToggle";
 
 export const overriddenComponents = {
-    "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle
+    "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
+    // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
 }
