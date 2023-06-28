@@ -402,14 +402,17 @@ def _add_author_data(newrec:dict, row:dict, bad_data_dict:dict
     creators = []
     contributors_misplaced = []
     creators_misplaced = []
-    # FIXME: What roles do we allow? Submitter?
-    allowed_roles = ['author', 'editor', 'contributor', 'submitter',
+    # FIXME: "HC Admin" showing up with "submitter" role?
+    allowed_roles = ['author', 'editor', 'contributor',
                      'translator', 'creator', 'other', 'project director']
     if row['authors']:
         # print(row['pid'])
         try:
             # row['authors'] = row['authors'].replace('\\', '&quot;')
             for a in row['authors']:
+                # Some records have "hcadmin" in role of "submitter"
+                if a['uni'] == "hcadmin":
+                    continue
                 a['family']= _clean_string(a['family'])
                 a['given'] = _clean_string(a['given'])
                 new_person = {}
