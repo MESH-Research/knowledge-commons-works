@@ -40,7 +40,7 @@ common_fields:
     - licenses
   "6":
 extras_by_type:
-  book:
+  textDocument-book:
     "1":
       fields:
       subsets:
@@ -55,6 +55,27 @@ extras_by_type:
       fields:
       subsets:
         - book_detail
+    "5":
+      fields:
+      subsets:
+    "6":
+      fields:
+      subsets:
+        - admin_metadata
+  audiovisual:
+    "1":
+      fields:
+      subsets:
+    "2":
+      fields:
+      subsets:
+    "3":
+      fields:
+        - language
+      subsets:
+    "4":
+      fields:
+      subsets:
     "5":
       fields:
       subsets:
