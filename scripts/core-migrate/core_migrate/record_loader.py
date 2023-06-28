@@ -14,7 +14,7 @@ from core_migrate.config import (
     FILES_LOCATION,
     SERVER_DOMAIN
 )
-from core_migrate.utils import valid_date
+from core_migrate.utils import valid_date, generate_random_string
 
 
 def api_request(method:str='GET', endpoint:str='records', server:str='',
@@ -71,6 +71,8 @@ def create_invenio_record(metadata:dict, server:str='',
     """
     debug = GLOBAL_DEBUG or True
     # FIXME: create necessary user account and community?
+    if debug: print('~~~~~~~~')
+    if debug: pprint(metadata)
 
     # Make draft and publish
     result = api_request(method='POST', endpoint='records',
@@ -83,6 +85,14 @@ def create_invenio_record(metadata:dict, server:str='',
     # FIXME: upload files here and then publish the draft?
 
     return(result)
+
+
+def fetch_draft_files(files_dict:dict[str, str]) -> dict:
+    """
+    Fetch listed files from a remote address.
+    """
+    url = 'https://www.facebook.com/favicon.ico'
+    r = requests.get(url, allow_redirects=True)
 
 
 def upload_draft_files(draft_id:str, files_dict:dict[str, str]) -> dict:
@@ -313,7 +323,7 @@ def create_invenio_community(community_label:str) -> dict:
                     "title": "Humanities Commons",
                     "description": "A community representing the main humanities commons domain.",
                     "website": "https://hcommons.org",
-                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+                    "organizations": [{"name": "Humanities Commons"}]
             }
         },
         "msu": {
@@ -322,7 +332,7 @@ def create_invenio_community(community_label:str) -> dict:
                     "title": "MSU Commons",
                     "description": "A community representing the MSU Commons domain",
                     "website": "https://commons.msu.edu",
-                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+                    "organizations": [{"name": "MSU Commons"}]
             }
         },
         "ajs": {
@@ -331,7 +341,7 @@ def create_invenio_community(community_label:str) -> dict:
                     "title": "AJS Commons",
                     "description": "AJS is no longer a member of Humanities Commons",
                     "website": "https://ajs.hcommons.org",
-                    "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+                    "organizations": [{"name": "AJS Commons"}]
             }
         },
         "arlisna": {
@@ -340,7 +350,7 @@ def create_invenio_community(community_label:str) -> dict:
                     "title": "ARLIS/NA Commons",
                     "description": "A community representing the ARLIS/NA Commons domain",
                     "website": "https://arlisna.hcommons.org",
-                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+                    "organizations": [{"name": "ARLISNA Commons"}]
             }
         },
         "aseees": {
@@ -349,7 +359,7 @@ def create_invenio_community(community_label:str) -> dict:
                     "title": "ASEEES Commons",
                     "description": "A community representing the ASEEES Commons domain",
                     "website": "https://aseees.hcommons.org",
-                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+                    "organizations": [{"name": "ASEEES Commons"}]
             }
         },
         "hastac": {
@@ -358,7 +368,7 @@ def create_invenio_community(community_label:str) -> dict:
                     "title": "HASTAC Commons",
                     "description": "",
                     "website": "https://hastac.hcommons.org",
-                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+                    "organizations": [{"name": "HASTAC Commons"}]
             }
         },
         "caa": {
@@ -367,7 +377,7 @@ def create_invenio_community(community_label:str) -> dict:
                     "title": "CAA Commons",
                     "description": "CAA is no longer a member of Humanities Commons",
                     "website": "https://caa.hcommons.org",
-                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+                    "organizations": [{"name": "CAA Commons"}]
             }
         },
         "mla": {
@@ -376,7 +386,7 @@ def create_invenio_community(community_label:str) -> dict:
                     "title": "MLA Commons",
                     "description": "A community representing the MLA Commons domain",
                     "website": "https://mla.hcommons.org",
-                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+                    "organizations": [{"name": "MLA Commons"}]
             }
         },
         "sah": {
@@ -385,7 +395,7 @@ def create_invenio_community(community_label:str) -> dict:
                     "title": "SAH Commons",
                     "description": "A community representing the SAH Commons domain",
                     "website": "https://sah.hcommons.org",
-                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+                    "organizations": [{"name": "SAH Commons"}]
             }
         },
         "up": {
@@ -400,7 +410,7 @@ def create_invenio_community(community_label:str) -> dict:
                     "title": "UP Commons",
                     "description": "A community representing the UP Commons domain",
                     "website": "https://up.hcommons.org",
-                    # "organizations": [{"id": "<ROR id>"}, {"name": ""}]
+                    "organizations": [{"name": "UP Commons"}]
             }
         },
     }
@@ -433,6 +443,11 @@ def create_full_invenio_record(core_data:dict) -> dict:
                       'metadata': core_data['metadata'],
                       'pids': core_data['pids']
                       }
+    # FIXME: only for testing!!!
+    random_doi = submitted_data['pids']['doi']['identifier'].split('-')[0]
+    random_doi = f'{random_doi}-{generate_random_string(5)}'
+    submitted_data['pids']['doi']['identifier'] = random_doi
+
     submitted_data['access'] = {'records': 'public', 'files': 'public'}
     submitted_data['files'] = {'enabled': True}
 
@@ -504,17 +519,36 @@ def create_full_invenio_record(core_data:dict) -> dict:
         args=f'{request_id}/actions/submit',
         json_dict=submitted_body)
     result['review_submitted'] = review_submitted
+    if debug: print('!!!!!!')
+    if debug: pprint(review_submitted)
+    if debug: pprint('%%%%%')
+    if debug: print(submitted_data['metadata'])
     assert review_submitted['status_code'] == 200
-    # if debug: print('!!!!!!')
-    # if debug: pprint(review_submitted)
 
     review_accepted = api_request('POST', endpoint='requests',
         args=f'{request_id}/actions/accept',
         json_dict={})
+    if debug: print('!!!!!!')
+    if debug: pprint(review_accepted)
+    if review_accepted['status_code'] != 200:
+        invite = {
+            "members":[
+                {
+                    "id":"3",
+                    "type":"user"
+                }
+            ],
+            "role":"owner",
+            "message":"<p>Hi</p>"
+        }
+        send_invite = api_request('POST', endpoint='communities',
+                                  args=f'{community_id}/invitations',
+                                  json_dict=invite,
+                                  token="ehdWRDeM9ZSkwxwTZEPDnbZCdWYIaDa4YXxRcFJ61oQLvWy5OK1czlIoVoxd")
+        print(send_invite)
+
     assert review_accepted['status_code'] == 200
     result['review_accepted'] = review_accepted
-    # if debug: print('!!!!!!')
-    # if debug: pprint(review_accepted)
 
     # Publish the record (BELOW NOT NECESSARY BECAUSE PUBLISHED
     # AT COMMUNITY REVIEW ACCEPTANCE)
@@ -549,10 +583,24 @@ def load_records_into_invenio():
     """
     record_counter = 0
     'Starting to load records into Invenio...'
-    with jsonlines.open(Path(__file__).parent, 'data',
-                        'serialized_core_data.jsonl') as json_source:
-        for rec in json_source[:10]:
+    with jsonlines.open(Path(__file__).parent / 'data' /
+                        'serialized_core_data.jsonl', "r") as json_source:
+        import itertools
+        top = itertools.islice(json_source, 101, 120)
+        for rec in top:
             create_full_invenio_record(rec)
             record_counter += 1
     print('Finished!')
     print(f'Created {str(record_counter)} records in InvenioRDM')
+
+
+def delete_records_from_invenio(record_ids):
+    """
+    Delete the selected records from the invenioRDM instance.
+    """
+    print('Starting to delete records')
+    for r in record_ids:
+        print(f'deleting {r}')
+        deleted = api_request('DELETE', f'records/{r}')
+        pprint(deleted)
+    print('finished deleting records')

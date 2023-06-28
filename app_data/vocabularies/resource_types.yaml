@@ -744,7 +744,7 @@
     openaire_type: publication
     eurepo: info:eu-repo/semantics/bookPart
     schema.org: https://schema.org/Chapter
-    subtype: textDocument-section
+    subtype: textDocument-bookSection
     type: textDocument
   title:
     en: Book section

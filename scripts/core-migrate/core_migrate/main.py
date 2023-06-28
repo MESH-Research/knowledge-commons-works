@@ -28,7 +28,10 @@ import click
 from typing import Optional
 
 from core_migrate.serializer import serialize_json
-from core_migrate.record_loader import load_records_into_invenio
+from core_migrate.record_loader import (
+    load_records_into_invenio,
+    delete_records_from_invenio
+)
 from core_migrate.fedora_fetcher import fetch_fedora_records
 
 
@@ -56,6 +59,20 @@ def load_records():
     and transfer ownership of the Invenio record to the correct users.
     """
     load_records_into_invenio()
+
+
+@cli.command(name="delete")
+@click.argument("records", nargs=-1)
+def delete_records(records):
+    """
+    Load all serialized CORE deposits into InvenioRDM as new records.
+
+    Where necessary, create top-level domain communities, assign the
+    records to the correct domain communities, create new Invenio users
+    corresponding to the HC users who uploaded the original deposits,
+    and transfer ownership of the Invenio record to the correct users.
+    """
+    delete_records_from_invenio(records)
 
 
 @cli.command(name="fedora")

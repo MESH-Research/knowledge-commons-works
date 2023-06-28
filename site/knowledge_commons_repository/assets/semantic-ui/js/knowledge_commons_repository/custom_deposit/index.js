@@ -5,13 +5,14 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { getInputFromDOM } from "@js/invenio_rdm_records/";
 import { RDMDepositForm } from "./custom_RDMDepositForm";
 import { OverridableContext, overrideStore } from "react-overridable";
 
 const overriddenComponents = overrideStore.getAll();
+
 
 ReactDOM.render(
   <OverridableContext.Provider value={overriddenComponents}>
@@ -25,3 +26,4 @@ ReactDOM.render(
   </OverridableContext.Provider>,
   document.getElementById("deposit-form")
 );
+

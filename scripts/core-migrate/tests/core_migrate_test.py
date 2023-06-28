@@ -24,10 +24,13 @@ from core_migrate.record_loader import (
 import datetime
 import json
 import re
+import os
 from pprint import pprint
 import pytest
 import pytz
 from dateutil.parser import isoparse
+
+TESTING_SERVER_DOMAIN = os.environ['TESTING_SERVER_DOMAIN']
 
 json28491 = {
     'created': '2020-01-30T16:46:54Z',
@@ -82,7 +85,7 @@ json28491 = {
     },
     'files': {'default_preview':    'tratamiento-de-los-residuos-de-la-'
                                     'industria-del-procesado-de-alimentos.pdf',
-              'enabled': 'true',
+              'enabled': True,
               'entries': {
                     'tratamiento-de-los-residuos-de-la-industria-del-procesado-de-alimentos.pdf': {
                         'key': 'tratamiento-de-los-residuos-de-la-industria-del-procesado-de-alimentos.pdf',
@@ -118,40 +121,39 @@ json28491 = {
                             'production plants, bakeries and various other food '
                             'processing facilities.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}}
+                      'title': {'en': 'Other'}}
         }],
         'additional_titles': [{
             'title': 'TRATAMIENTO de los RESIDUOS de la INDUSTRIA del '
                      'PROCESADO de ALIMENTOS',
             'type': {'id': 'other',
-                     'title': {'en': 'Primary title with HTML stripped'}}
+                     'title': {'en': 'Other'}}
         }],
         'creators': [{'person_or_org': {'family_name': 'Hung',
                                         'given_name': 'Yung-Tse',
-                                        'name': 'Yung-Tse Hung',
+                                        'name': 'Hung, Yung-Tse',
                                         'type': 'personal'},
                       'role': {'id': 'editor'}},
                      {'person_or_org': {'family_name': 'Lo',
                                          'given_name': 'Howard H',
-                                         'name': 'Howard H Lo',
+                                         'name': 'Lo, Howard H',
                                          'type': 'personal'},
                       'role': {'id': 'editor'}},
                      {'person_or_org': {'family_name': 'Ribas',
                                          'given_name': 'Alberto lbarz',
-                                         'name': 'Alberto lbarz Ribas',
+                                         'name': 'Ribas, Alberto lbarz',
                                          'type': 'personal'},
                       'role': {'id': 'translator'}},
                      {'person_or_org': {'family_name': 'Wang',
                                          'given_name': 'Lawrence K',
                                          'identifiers': [{'identifier': 'lenoxinstitute100',
                                                          'scheme': 'hc_username'}],
-                                         'name': 'Lawrence K Wang',
+                                         'name': 'Wang, Lawrence K',
                                          'type': 'personal'},
                       'role': {'id': 'editor'}},
                      {'person_or_org': {'family_name': 'Yapijakis',
                                          'given_name': 'Constantine',
-                                         'name': 'Constantine Yapijakis',
+                                         'name': 'Yapijakis, Constantine',
                                          'type': 'personal'},
                       'role': {'id': 'editor'}
                       }
@@ -184,26 +186,28 @@ json28491 = {
         'identifiers': [{'identifier': 'hc:28491', 'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-28455',
                          'scheme': 'hclegacy-record-id'},
-                        {'identifier': 'http://dx.doi.org/10.17613/g0rz-0930',
-                         'scheme': 'url'},
-                        {'identifier': 'doi:10.17613/g0rz-0930',
-                         'scheme': 'datacite-doi'}
+                        {'identifier': '10.17613/g0rz-0930',
+                         'scheme': 'datacite-doi'},
+                        {'identifier': 'https://doi.org/10.17613/g0rz-0930',
+                         'scheme': 'url'}
         ],
         'languages': [{'id': 'spa'}],
         'publication_date': '2008',
-        'resource_type': {'id': 'textDocument:book'},
+        'resource_type': {'id': 'textDocument-book'},
         'publisher': 'Editorial ACRIBIA, S. A., Apartado 466, 50080, '
                      'Zaragoza, Espana.',
         'rights': [{'description': {'en': ''},
-                    'id': 'all-rights-reserved',
+                    'id': 'arr',
                     'props': {'scheme': 'spdx',
                               'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}],
-        'subjects': [{'id': 'Science--Study and '
+        'subjects': [{'id': "http://id.worldcat.org/fast/1108387",
+                      'subject': 'Science--Study and '
                             'teaching',
                       'scheme': 'FAST-topical'},
-                    {'id': 'Technology--Study and teaching',
+                    {'id': "http://id.worldcat.org/fast/1145221",
+                     'subject': 'Technology--Study and teaching',
                      'scheme': 'FAST-topical'}
                      ],
         'title': 'TRATAMIENTO de los RESIDUOS de la INDUSTRIA del '
@@ -212,7 +216,7 @@ json28491 = {
     'updated': '2020-01-30T16:46:54Z',
     'parent': {'access': {'owned_by': [{'user': 1020225}]}},
     'pids': {'doi': {'client': 'datacite',
-                    'identifier': 'doi:10.17613/g0rz-0930',
+                    'identifier': '10.17613/g0rz-0930',
                     'provider': 'datacite'}}
 }
 
@@ -266,7 +270,7 @@ json583 = {
     },
     'files': {
         'default_preview': 'the-new-open-access-environment-innovation-in-research-editing-publishing.pdf',
-        'enabled': 'true',
+        'enabled': True,
         'entries': {
             'the-new-open-access-environment-innovation-in-research-editing-publishing.pdf': {
                 'key': 'the-new-open-access-environment-innovation-in-research-editing-publishing.pdf',
@@ -289,8 +293,7 @@ json583 = {
                             'open access brings to literary scholarship in the '
                             '21st century.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}
+                      'title': {'en': 'Other'}
                       }
             }],
             'additional_titles': [{'title': 'The New Open Access '
@@ -298,41 +301,39 @@ json583 = {
                                             'Research, Editing and '
                                             'Publishing',
                                     'type': {'id': 'other',
-                                            'title': {'en': 'Primary title '
-                                                            'with HTML '
-                                                            'stripped'}}}],
+                                            'title': {'en': 'Other'}}}],
             'creators': [{'person_or_org': {'family_name': 'Eaglestone',
                                             'given_name': 'Robert',
                                             'identifiers': [{'identifier': 'roberteaglestone',
                                                             'scheme': 'hc_username'}],
-                                            'name': 'Robert Eaglestone',
+                                            'name': 'Eaglestone, Robert',
                                             'type': 'personal'},
                             'role': {'id': 'author'}},
-                        {'affiliations': ['U of London, Birkbeck C'],
+                        {'affiliations': [{'name': 'U of London, Birkbeck C'}],
                             'person_or_org': {'family_name': 'Edwards',
                                             'given_name': 'Caroline',
                                             'identifiers': [{'identifier': 'cai247',
                                                             'scheme': 'hc_username'}],
-                                            'name': 'Caroline Edwards',
+                                            'name': 'Edwards, Caroline',
                                             'type': 'personal'},
                             'role': {'id': 'author'}},
                         {'person_or_org': {'family_name': 'Gundry',
                                             'given_name': 'Jenifer',
-                                            'name': 'Jenifer Gundry',
+                                            'name': 'Gundry, Jenifer',
                                             'type': 'personal'},
                             'role': {'id': 'author'}},
                         {'person_or_org': {'family_name': 'Mueller',
                                             'given_name': 'Alex',
                                             'identifiers': [{'identifier': 'alexmueller',
                                                             'scheme': 'hc_username'}],
-                                            'name': 'Alex Mueller',
+                                            'name': 'Mueller, Alex',
                                             'type': 'personal'},
                             'role': {'id': 'author'}},
                         {'person_or_org': {'family_name': 'Zellinger',
                                             'given_name': 'Elissa',
                                             'identifiers': [{'identifier': 'ezell',
                                                             'scheme': 'hc_username'}],
-                                            'name': 'Elissa Zellinger',
+                                            'name': 'Zellinger, Elissa',
                                             'type': 'personal'},
                             'role': {'id': 'author'}}],
             'dates': [{'date': '',
@@ -354,22 +355,27 @@ json583 = {
             'identifiers': [{'identifier': 'mla:583', 'scheme': 'hclegacy-pid'},
                             {'identifier': 10664,
                              'scheme': 'hclegacy-record-id'},
-                            {'identifier': 'http://dx.doi.org/10.17613/M6930Z',
+                            {'identifier': '10.17613/M6930Z',
+                             'scheme': 'datacite-doi'},
+                            {'identifier': 'https://doi.org/10.17613/M6930Z',
                             'scheme': 'url'}],
             'languages': [{'id': 'eng'}],
             'publication_date': '2016',
-            'resource_type': {'id': 'presentation:other'},
+            'resource_type': {'id': 'presentation-other'},
             'rights': [{'description': {'en': ''},
-                        'id': 'all-rights-reserved',
+                        'id': 'arr',
                         'props': {'scheme': 'spdx',
                                   'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                         'title': {'en': 'Proprietary. All rights '
                                         'reserved.'}}],
-            'subjects': [{'id': 'Education, Higher',
+            'subjects': [{'id': "http://id.worldcat.org/fast/903005",
+                          'subject': 'Education, Higher',
                           'scheme': 'FAST-topical'},
-                         {'id': 'Digital humanities',
+                         {'id': "http://id.worldcat.org/fast/963599",
+                          'subject': 'Digital humanities',
                           'scheme': 'FAST-topical'},
-                         {'id': 'English literature',
+                         {'id': "http://id.worldcat.org/fast/911989",
+                          'subject': 'English literature',
                           'scheme': 'FAST-topical'}
             ],
             'publisher': 'Open Library of Humanities',
@@ -378,7 +384,7 @@ json583 = {
     },
     'parent': {'access': {'owned_by': [{'user': 3365}]}},
     'pids': {'doi': {'client': 'datacite',
-                    'identifier': 'doi:10.17613/M6930Z',
+                    'identifier': '10.17613/M6930Z',
                     'provider': 'datacite'}
     },
     'updated': '2017-11-21T19:18:37Z'
@@ -397,13 +403,13 @@ json38367 = {
             {'group_identifier': '1002960',
              'group_name': 'Literature and Economics'}
         ],
+        'hclegacy:previously_published': 'published',
         'hclegacy:publication_type': 'online-publication',
         'hclegacy:record_change_date': '2021-04-27T16:36:31Z',
         'hclegacy:record_creation_date': '2021-04-26T05:57:56Z',
         'hclegacy:submitter_affiliation': 'Université Sorbonne Paris Nord',
         'hclegacy:submitter_id': 1028135,
-        'hclegacy:submitter_org_memberships': ['Université Sorbonne Paris '
-                                               'Nord'],
+        'hclegacy:submitter_org_memberships': ['hc'],
         'imprint:imprint': {
             'title': 'https://tesiunam.dgb.unam.mx/F/KVS7IYBX26S3PMEDX1SXFF6XRKP48FV5JRD21J7UNV85V8U82E-42627?func=full-set-set&set_number=198105&set_entry=000001&format=999'
         },
@@ -419,7 +425,7 @@ json38367 = {
     },
     'files': {'default_preview': 'system-dynamics-growth-distribution'
                                  '-and-financialization.pdf',
-              'enabled': 'true',
+              'enabled': True,
               'entries': {
                   'system-dynamics-growth-distribution-and-financiali'
                   'zation.pdf': {
@@ -492,7 +498,7 @@ json38367 = {
                            'government.',
             'type': {'id': 'other',
                      'title': {
-                         'en': 'Primary description with HTML stripped'}
+                         'en': 'Other'}
             }
         }],
         'additional_titles': [{
@@ -501,16 +507,16 @@ json38367 = {
                      'modelling approach with System Dynamics.',
             'type': {'id': 'other',
                      'title': {
-                         'en': 'Primary title with HTML stripped'}
+                         'en': 'Other'}
             }
         }],
         'creators': [
-            {'affiliations': ['Université Sorbonne Paris Nord'],
+            {'affiliations': [{'name': 'Université Sorbonne Paris Nord'}],
              'person_or_org': {'family_name': 'Martínez Hernández',
                                'given_name': 'Alberto-Gabino',
                                'identifiers': [{'identifier': 'gabogabito123',
                                                 'scheme': 'hc_username'}],
-                               'name': 'Alberto-Gabino Martínez Hernández',
+                               'name': 'Martínez Hernández, Alberto-Gabino',
                                'type': 'personal'},
              'role': {'id': 'author'}
             }
@@ -566,26 +572,31 @@ json38367 = {
         'identifiers': [{'identifier': 'hc:38367', 'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-44555',
                          'scheme': 'hclegacy-record-id'},
-                        {'identifier': 'http://dx.doi.org/10.17613/5ehz-cb19',
+                        {'identifier': '10.17613/5ehz-cb19',
+                         'scheme': 'datacite-doi'},
+                        {'identifier': 'https://doi.org/10.17613/5ehz-cb19',
                          'scheme': 'url'},
                         {'identifier': 'http://132.248.9.195/ptd2018/mayo/0774053/Index.html',
                          'scheme': 'url'}
         ],
         'languages': [{'id': 'spa'}],
         'publication_date': '2018',
-        'resource_type': {'id': 'textDocument:dissertation'},
+        'resource_type': {'id': 'textDocument-thesis'},
         'rights': [{'description': {'en': ''},
-                    'id': 'all-rights-reserved',
+                    'id': 'arr',
                     'props': {'scheme': 'spdx',
                             'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}
         ],
-        'subjects': [{'id': 'Economics',
+        'subjects': [{'id': 'http://id.worldcat.org/fast/902116',
+                      'subject': 'Economics',
                       'scheme': 'FAST-topical'},
-                     {'id': 'History',
+                     {'id': 'http://id.worldcat.org/fast/958235',
+                      'subject': 'History',
                       'scheme': 'FAST-topical'},
-                     {'id': 'Mathematics',
+                     {'id': 'http://id.worldcat.org/fast/1012163',
+                      'subject': 'Mathematics',
                       'scheme': 'FAST-topical'}
         ],
         'publisher': 'Universidad Nacional Autónoma de Mexico (UNAM)',
@@ -595,7 +606,7 @@ json38367 = {
         },
     'parent': {'access': {'owned_by': [{'user': 1028135}]}},
     'pids': {'doi': {'client': 'datacite',
-                     'identifier': 'doi:10.17613/5ehz-cb19',
+                     'identifier': '10.17613/5ehz-cb19',
                      'provider': 'datacite'}
     },
     'updated': '2021-04-27T16:36:31Z'
@@ -609,12 +620,13 @@ json48799 = {
                                   'humcore/2022/09/o_1ge4qi6ga1aqnfqk12h'
                                   'h1sei18377.pdf.super-apps_final.pdf',
         'hclegacy:file_pid': 'hc:48800',
+        'hclegacy:previously_published': 'published',
         'hclegacy:publication_type': 'online-publication',
         'hclegacy:record_change_date': '2022-09-29T14:34:36Z',
         'hclegacy:record_creation_date': '2022-09-29T14:34:36Z',
         'hclegacy:submitter_affiliation': 'Concordia University',
         'hclegacy:submitter_id': 1011375,
-        'hclegacy:submitter_org_memberships': ['Concordia University'],
+        'hclegacy:submitter_org_memberships': ['hc'],
         'imprint:imprint': {
             'title': 'theplatformlab.com'
         },
@@ -625,7 +637,7 @@ json48799 = {
         'kcr:submitter_username': 'jristola009'
     },
     'files': {'default_preview': 'super-apps_final.pdf',
-              'enabled': 'true',
+              'enabled': True,
               'entries': {
                   'super-apps_final.pdf': {
                       'key': 'super-apps_final.pdf',
@@ -645,72 +657,71 @@ json48799 = {
                             'framework, and to consider platform '
                             'capitalism’s transformational shape.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}
+                      'title': {'en': 'Other'}
              }
             }
         ],
         'additional_titles': [{
             'title': 'Super Apps: A Platform Lab Report',
             'type': {'id': 'other',
-                     'title': {'en': 'Primary title with HTML stripped'}
+                     'title': {'en': 'Other'}
                      }
         }],
         'contributors': [{'person_or_org': {'family_name': 'Altheman',
                                             'given_name': 'Elena',
-                                            'name': 'Elena Altheman',
+                                            'name': 'Altheman, Elena',
                                             'type': 'personal'},
                           'role': {'id': 'contributor'}},
                          {'person_or_org': {'family_name': 'Chai',
                                             'given_name': 'Roslina',
-                                            'name': 'Roslina Chai',
+                                            'name': 'Chai, Roslina',
                                             'type': 'personal'},
                           'role': {'id': 'contributor'}},
                          {'person_or_org': {'family_name': 'Ciarma',
                                             'given_name': 'Santino',
-                                            'name': 'Santino Ciarma',
+                                            'name': 'Ciarma, Santino',
                                             'type': 'personal'},
                           'role': {'id': 'contributor'}},
                          {'person_or_org': {'family_name': 'Crawford',
                                             'given_name': 'Colin',
-                                            'name': 'Colin Crawford',
+                                            'name': 'Crawford, Colin',
                                             'type': 'personal'},
                           'role': {'id': 'contributor'}},
                          {'person_or_org': {'family_name': 'Kumar',
                                             'given_name': 'Sneha',
-                                            'name': 'Sneha Kumar',
+                                            'name': 'Kumar, Sneha',
                                             'type': 'personal'},
                           'role': {'id': 'contributor'}},
                          {'person_or_org': {'family_name': 'Petit',
                                             'given_name': 'Aurélie',
-                                            'name': 'Aurélie Petit',
+                                            'name': 'Petit, Aurélie',
                                             'type': 'personal'},
                           'role': {'id': 'contributor'}},
-                         {'affiliations': ['Concordia University'],
+                         {'affiliations': [{'name': 'Concordia University'}],
                           'person_or_org': {'family_name': 'Ristola',
                                             'given_name': 'Jacqueline',
                                             'identifiers': [
                                                 {'identifier': 'jristola009',
                                                  'scheme': 'hc_username'}
                                             ],
-                                            'name': 'Jacqueline Ristola',
+                                            'name': 'Ristola, Jacqueline',
                                             'type': 'personal'},
                           'role': {'id': 'contributor'}},
                          {'person_or_org': {'family_name': 'Steinberg',
                                             'given_name': 'Marc',
-                                            'name': 'Marc Steinberg',
+                                            'name': 'Steinberg, Marc',
                                             'type': 'personal'},
                           'role': {'id': 'contributor'}},
                          {'person_or_org': {'family_name': 'Zhou',
                                             'given_name': 'Xin',
-                                            'name': 'Xin Zhou',
+                                            'name': 'Zhou, Xin',
                                             'type': 'personal'},
                           'role': {'id': 'contributor'}}
         ],
         'creators': [{
             'person_or_org': {'family_name': 'Pitre',
                               'given_name': 'Jake',
-                              'name': 'Jake Pitre',
+                              'name': 'Pitre, Jake',
                               'type': 'personal'},
                               'role': {'id': 'editor'}
         }],
@@ -730,6 +741,8 @@ json48799 = {
                          'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-61936',
                          'scheme': 'hclegacy-record-id'},
+                        {'identifier': '10.17613/y30x-r594',
+                         'scheme': 'datacite-doi'},
                         {'identifier': 'https://doi.org/10.17613/y30x-r594',
                          'scheme': 'url'},
                         {'identifier': 'https://www.theplatformlab.com/'
@@ -738,7 +751,7 @@ json48799 = {
         'languages': [{'id': 'eng'}],
         'publication_date': '2022',
         'publisher': 'The Platform Lab',
-        'resource_type': {'id': 'textDocument:whitePaper'},
+        'resource_type': {'id': 'textDocument-whitePaper'},
         'rights': [{'description': {'en': ''},
                     'id': 'cc-by-4.0',
                     'props': {'scheme': 'spdx',
@@ -787,7 +800,7 @@ json33383 = {
         'journal:journal': {'title': 'Philological Encounters',
                             'issue': '3',
                             'pages': '308-352',
-                            'issn': ['2451-9189', '2451-9197'],
+                            'issn': '2451-9189',
                             'volume': '5'
                             },
         'kcr:commons_domain': 'hcommons.org',
@@ -799,7 +812,7 @@ json33383 = {
         ]
     },
     'files': {'default_preview': '24519197_005_03-04_s004_text.pdf',
-                'enabled': 'true',
+                'enabled': True,
                 'entries': {'24519197_005_03-04_s004_text.pdf':
                             {'key': '24519197_005_03-04_s004_text.pdf',
                             'mimetype': 'application/pdf',
@@ -830,8 +843,7 @@ json33383 = {
                             'teaching, extending, and rethinking '
                             'mathematics—that is, we should read it philologically.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}
+                      'title': {'en': 'Other'}
                       }
              }
         ],
@@ -840,17 +852,16 @@ json33383 = {
                     'Treatise on Double False Position in an Arabic '
                     'Manuscript at Columbia University',
             'type': {'id': 'other',
-                    'title': {'en': 'Primary title with HTML '
-                                    'stripped'}}
+                    'title': {'en': 'Other'}}
             }
         ],
         'creators': [
-            {'affiliations': ['University of Southern California'],
+            {'affiliations': [{'name': 'University of Southern California'}],
             'person_or_org': {'family_name': 'Roberts',
                             'given_name': 'Alexandre',
                             'identifiers': [{'identifier': 'amroberts',
                                             'scheme': 'hc_username'}],
-                            'name': 'Alexandre Roberts',
+                            'name': 'Roberts, Alexandre',
                             'type': 'personal'},
             'role': {'id': 'author'}
             }
@@ -885,27 +896,33 @@ json33383 = {
         'identifiers': [{'identifier': 'hc:33383', 'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-40298',
                          'scheme': 'hclegacy-record-id'},
+                        {'identifier': '10.17613/xxxj-e936',
+                         'scheme': 'datacite-doi'},
                         {'identifier': '10.1163/24519197-BJA10007',
                          'scheme': 'doi'},
-                        {'identifier': 'http://dx.doi.org/10.17613/xxxj-e936',
+                        {'identifier': 'https://doi.org/10.17613/xxxj-e936',
                          'scheme': 'url'}],
         'languages': [{'id': 'eng'}],
         'publication_date': '2020',
-        'resource_type': {'id': 'textdocument:journalarticle'},
+        'resource_type': {'id': 'textDocument-journalArticle'},
         'rights': [{'description': {'en': ''},
-                    'id': 'all-rights-reserved',
+                    'id': 'arr',
                     'props': {'scheme': 'spdx',
                               'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}
         ],
-        'subjects': [{'id': 'Science',
+        'subjects': [{'id': 'http://id.worldcat.org/fast/1108176',
+                      'subject': 'Science',
                       'scheme': 'FAST-topical'},
-                     {'id': 'History',
+                     {'id': 'http://id.worldcat.org/fast/958235',
+                      'subject': 'History',
                       'scheme': 'FAST-topical'},
-                     {'id': 'Mathematics--Philosophy',
+                     {'id': 'http://id.worldcat.org/fast/1012213',
+                      'subject': 'Mathematics--Philosophy',
                       'scheme': 'FAST-topical'},
-                     {'id': 'Mathematics',
+                     {'id': 'http://id.worldcat.org/fast/1012163',
+                      'subject': 'Mathematics',
                       'scheme': 'FAST-topical'}
         ],
         'publisher': 'Brill',
@@ -915,7 +932,7 @@ json33383 = {
     },
     'parent': {'access': {'owned_by': [{'user': 1008812}]}},
     'pids': {'doi': {'client': 'datacite',
-                     'identifier': 'doi:10.17613/xxxj-e936',
+                     'identifier': '10.17613/xxxj-e936',
                      'provider': 'datacite'}
              },
     'updated': '2023-01-23T14:20:48Z'
@@ -924,7 +941,7 @@ json33383 = {
 json16079 = {
     'created': '2017-10-26T12:31:39Z',
     'pids': {'doi': {'client': 'datacite',
-                     'identifier': 'doi:10.17613/M6M225',
+                     'identifier': '10.17613/M6M225',
                      'provider': 'datacite'}
              },
     'custom_fields': {
@@ -941,7 +958,8 @@ json16079 = {
                                          'group_name': 'Textual '
                                                         'Scholarship'}
         ],
-        'hclegacy:publication_type': 'proceedings-article',
+        'hclegacy:previously_published': 'published',
+        'hclegacy:submitter_org_memberships': ['hc'],
         'hclegacy:record_change_date': '2017-10-27T14:27:17Z',
         'hclegacy:record_creation_date': '2017-10-26T12:31:39Z',
         'hclegacy:submitter_id': 1010997,
@@ -963,7 +981,7 @@ json16079 = {
                             'title': 'DH Benelux 2015'}
     },
     'files': {'default_preview': 'dhbenelux-digitization-and-exogenesis.pdf',
-              'enabled': 'true',
+              'enabled': True,
               'entries': {
                   'dhbenelux-digitization-and-exogenesis.pdf': {
                       'key': 'dhbenelux-digitization-and-exogenesis.pdf',
@@ -985,41 +1003,38 @@ json16079 = {
                             'reading notes and personal libraries '
                             'of James Joyce and Samuel Beckett.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with '
-                                      'HTML stripped'}
+                      'title': {'en': 'Other'}
                       }
             }
         ],
         'additional_titles': [{'title': 'Digitization and Exogenesis',
                                 'type': {'id': 'other',
-                                        'title': {'en': 'Primary title '
-                                                        'with HTML '
-                                                        'stripped'}}}],
+                                        'title': {'en': 'Other'}}}],
         'creators': [{'person_or_org': {'family_name': 'Crowley',
                                         'given_name': 'Ronan',
-                                        'name': 'Ronan Crowley',
+                                        'name': 'Crowley, Ronan',
                                         'type': 'personal'},
                         'role': {'id': 'author'}},
                     {'person_or_org': {'family_name': 'De Keyser',
                                         'given_name': 'Tom',
-                                        'name': 'Tom De Keyser',
+                                        'name': 'De Keyser, Tom',
                                         'type': 'personal'},
                         'role': {'id': 'author'}},
                     {'person_or_org': {'family_name': 'Dillen',
                                         'given_name': 'Wout',
                                         'identifiers': [{'identifier': 'woutdillen',
                                                         'scheme': 'hc_username'}],
-                                        'name': 'Wout Dillen',
+                                        'name': 'Dillen, Wout',
                                         'type': 'personal'},
                         'role': {'id': 'author'}},
                     {'person_or_org': {'family_name': 'Neyt',
                                         'given_name': 'Vincent',
-                                        'name': 'Vincent Neyt',
+                                        'name': 'Neyt, Vincent',
                                         'type': 'personal'},
                         'role': {'id': 'author'}},
                     {'person_or_org': {'family_name': 'Van Hulle',
                                         'given_name': 'Dirk',
-                                        'name': 'Dirk Van Hulle',
+                                        'name': 'Van Hulle, Dirk',
                                         'type': 'personal'},
                         'role': {'id': 'author'}}],
                'description': 'Within the field of genetic criticism, Raymonde '
@@ -1037,27 +1052,33 @@ json16079 = {
                                 'scheme': 'hclegacy-pid'},
                                {'identifier': '1000360-8725',
                                 'scheme': 'hclegacy-record-id'},
+                               {'identifier': '10.17613/M6M225',
+                                'scheme': 'datacite-doi'},
                                {'identifier': 'https://doi.org/10.5281/zenodo.1009526',
                                 'scheme': 'doi'},
-                               {'identifier': 'http://dx.doi.org/10.17613'
+                               {'identifier': 'https://doi.org/10.17613'
                                               '/M6M225',
                                 'scheme': 'url'}
                                ],
                 'languages': [{'id': 'eng'}],
-                'resource_type': {'id': 'textDocument:conferenceProceeding'},
+                'resource_type': {'id': 'textDocument-conferenceProceeding'},
                 'rights': [{'description': {'en': ''},
                             'id': 'cc-by-4.0',
                             'props': {'scheme': 'spdx',
                                         'url': 'https://creativecommons.org/licenses/by/4.0/legalcode'},
                             'title': {'en': 'Creative Commons Attribution 4.0 '
                                             'International'}}],
-                'subjects': [{'id': 'Twentieth century',
+                'subjects': [{'id': 'http://id.worldcat.org/fast/1159810',
+                      'subject': 'Twentieth century',
                               'scheme': 'FAST-topical'},
-                             {'id': 'Digital humanities',
+                             {'id': 'http://id.worldcat.org/fast/963599',
+                      'subject': 'Digital humanities',
                               'scheme': 'FAST-topical'},
-                             {'id': 'Irish literature',
+                             {'id': 'http://id.worldcat.org/fast/979030',
+                      'subject': 'Irish literature',
                               'scheme': 'FAST-topical'},
-                             {'id': 'Criticism, Textual',
+                             {'id': 'http://id.worldcat.org/fast/883762',
+                      'subject': 'Criticism, Textual',
                               'scheme': 'FAST-topical'}
                 ],
                 'publication_date': '2015',
@@ -1074,7 +1095,7 @@ json16079 = {
 json34031 = {
     'created': '2021-01-11T23:48:41Z',
     'pids': {'doi': {'client': 'datacite',
-                     'identifier': 'doi:10.17613/0qxh-ed23',
+                     'identifier': '10.17613/0qxh-ed23',
                      'provider': 'datacite'}
              },
     'custom_fields': {
@@ -1095,7 +1116,7 @@ json34031 = {
                             'creators': [
                                 {'person_or_org': {'family_name': 'DeConick',
                                                    'given_name': 'April',
-                                                   'name': 'April DeConick',
+                                                   'name': 'DeConick, April',
                                                    'type': 'personal'},
                                  'role': {'id': 'author'}
                                  }
@@ -1111,7 +1132,7 @@ json34031 = {
     },
     'files': {
         'default_preview': 'gnosticism-theorized-major-trends-and-approaches-dillon.pdf',
-        'enabled': 'true',
+        'enabled': True,
         'entries': {
             'gnosticism-theorized-major-trends-and-approaches-dillon.pdf': {
                 'key': 'gnosticism-theorized-major-trends-and-approaches-'
@@ -1126,8 +1147,7 @@ json34031 = {
                             "the study of 'Gnosticism' after the discovery of "
                             'the Nag Hammadi Codices.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}
+                      'title': {'en': 'Other'}
                       }
              }
         ],
@@ -1137,18 +1157,17 @@ json34031 = {
             {'title': 'Gnosticism Theorized: Major Trends and Approaches to '
                       'the Study of Gnosticism',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary title with HTML '
-                                    'stripped'}
+                      'title': {'en': 'Other'}
                       }
              }
         ],
         'creators': [
-            {'affiliations': ['Rice University'],
+            {'affiliations': [{'name': 'Rice University'}],
              'person_or_org': {'family_name': 'Dillon',
                                'given_name': 'M.',
                                'identifiers': [{'identifier': 'matthewjdillon',
                                                 'scheme': 'hc_username'}],
-                               'name': 'M. Dillon',
+                               'name': 'Dillon, M.',
                                'type': 'personal'},
              'role': {'id': 'author'}
              }
@@ -1160,24 +1179,30 @@ json34031 = {
                          'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-41326',
                          'scheme': 'hclegacy-record-id'},
-                        {'identifier': 'http://dx.doi.org/10.17613/0qxh-ed23',
+                        {'identifier': '10.17613/0qxh-ed23',
+                         'scheme': 'datacite-doi'},
+                        {'identifier': 'https://doi.org/10.17613/0qxh-ed23',
                          'scheme': 'url'}],
         'languages': [{'id': 'eng'}],
-        'resource_type': {'id': 'textDocument:bookSection'},
+        'resource_type': {'id': 'textDocument-bookSection'},
         'rights': [{'description': {'en': ''},
-                    'id': 'all-rights-reserved',
+                    'id': 'arr',
                     'props': {'scheme': 'spdx',
                               'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}
         ],
-        'subjects': [{'id': 'Gnosticism',
+        'subjects': [{'id': 'http://id.worldcat.org/fast/943906',
+                      'subject': 'Gnosticism',
                       'scheme': 'FAST-topical'},
-                     {'id': 'Occultism',
+                     {'id': 'http://id.worldcat.org/fast/1043123',
+                      'subject': 'Occultism',
                       'scheme': 'FAST-topical'},
-                     {'id': 'Europe',
+                     {'id': 'http://id.worldcat.org/fast/1245064',
+                      'subject': 'Europe',
                       'scheme': 'FAST-geographic'},
-                     {'id': 'Church history--Primitive and early '
+                     {'id': 'http://id.worldcat.org/fast/1710945',
+                      'subject': 'Church history--Primitive and early '
                             'church',
                       'scheme': 'FAST-topical'}
         ],
@@ -1192,7 +1217,7 @@ json34031 = {
 json11451 = {
     'created': '2017-03-08T05:01:44Z',
     'pids': {'doi': {'client': 'datacite',
-                               'identifier': 'doi:10.17613/M6733G',
+                               'identifier': '10.17613/M6733G',
                                'provider': 'datacite'}},
     'custom_fields': {
         'hclegacy:collection': 'hccollection:1',
@@ -1225,12 +1250,12 @@ json11451 = {
             'creators': [
                 {'person_or_org': {'family_name': 'Peterson',
                                    'given_name': 'Kaara',
-                                   'name': 'Kaara Peterson',
+                                   'name': 'Peterson, Kaara',
                                    'type': 'personal'},
                  'role': {'id': 'author'}},
                 {'person_or_org': {'family_name': 'Williams',
                                    'given_name': 'Deanne',
-                                   'name': 'Deanne Williams',
+                                   'name': 'Williams, Deanne',
                                    'type': 'personal'},
                  'role': {'id': 'author'}}
             ],
@@ -1248,7 +1273,7 @@ json11451 = {
         ]
     },
     'files': {'default_preview': 'female_agency_ophelia.pdf',
-              'enabled': 'true',
+              'enabled': True,
               'entries': {
                   'female_agency_ophelia.pdf': {
                       'key': 'female_agency_ophelia.pdf',
@@ -1377,24 +1402,18 @@ json11451 = {
                                                            'ideals of '
                                                            'femininity.',
                                             'type': {'id': 'other',
-                                                     'title': {'en': 'Primary '
-                                                                     'description '
-                                                                     'with '
-                                                                     'HTML '
-                                                                     'stripped'}}}],
+                                                     'title': {'en': 'Other'}}}],
                'additional_titles': [{'title': 'The Paradox of Female Agency: '
                                                'Ophelia and East Asian '
                                                'Sensibilities',
                                       'type': {'id': 'other',
-                                               'title': {'en': 'Primary title '
-                                                               'with HTML '
-                                                               'stripped'}}}],
-               'creators': [{'affiliations': ['George Washington U'],
+                                               'title': {'en': 'Other'}}}],
+               'creators': [{'affiliations': [{'name': 'George Washington U'}],
                              'person_or_org': {'family_name': 'Alice Joubin',
                                                'given_name': 'Alexa',
                                                'identifiers': [{'identifier': 'joubin',
                                                                 'scheme': 'hc_username'}],
-                                               'name': 'Alexa Alice Joubin',
+                                               'name': 'Alice Joubin, Alexa',
                                                'type': 'personal'},
                              'role': {'id': 'author'}}],
                'publication_date': '2012',
@@ -1443,14 +1462,16 @@ json11451 = {
                                 'scheme': 'hclegacy-pid'},
                                {'identifier': '1-1013793',
                                 'scheme': 'hclegacy-record-id'},
+                               {'identifier': '10.17613/M6733G',
+                                'scheme': 'datacite-doi'},
                                {'identifier': '10.1057/9781137016461',
                                 'scheme': 'doi'},
-                               {'identifier': 'http://dx.doi.org/10.17613/'
+                               {'identifier': 'https://doi.org/10.17613/'
                                               'M6733G',
                                 'scheme': 'url'}
                 ],
                'languages': [{'id': 'eng'}],
-               'resource_type': {'id': 'textDocument:bookSection'},
+               'resource_type': {'id': 'textDocument-bookSection'},
                 'rights': [{'description': {'en': ''},
                             'id': 'cc-by-nc-4.0',
                             'props': {'scheme': 'spdx',
@@ -1458,13 +1479,17 @@ json11451 = {
                             'title': {'en': 'Creative Commons Attribution Non '
                                             'Commercial 4.0 International'}}
                 ],
-                'subjects': [{'id': 'East Asian literature',
+                'subjects': [{'id': 'http://id.worldcat.org/fast/900999',
+                      'subject': 'East Asian literature',
                               'scheme': 'FAST-topical'},
-                             {'id': 'Motion pictures',
+                             {'id': 'http://id.worldcat.org/fast/1027285',
+                      'subject': 'Motion pictures',
                               'scheme': 'FAST-topical'},
-                             {'id': 'History',
+                             {'id': 'http://id.worldcat.org/fast/958235',
+                      'subject': 'History',
                               'scheme': 'FAST-topical'},
-                             {'id': 'Shakespeare, William, '
+                             {'id': 'http://id.worldcat.org/fast/29048',
+                      'subject': 'Shakespeare, William, '
                                     '1564-1616',
                               'scheme': 'FAST-personal'}
                 ],
@@ -1478,7 +1503,7 @@ json11451 = {
 json22647 = {
     'created': '2019-02-01T19:30:52Z',
     'pids': {'doi': {'client': 'datacite',
-                               'identifier': 'doi:10.17613/1d2d-2y15',
+                               'identifier': '10.17613/1d2d-2y15',
                                'provider': 'datacite'}},
     'custom_fields': {
         'hclegacy:collection': 'hccollection:1',
@@ -1510,31 +1535,31 @@ json22647 = {
             'creators': [
                 {'person_or_org': {'family_name': 'Macintosh',
                                   'given_name': 'Fiona',
-                                  'name': 'Fiona Macintosh',
+                                  'name': 'Macintosh, Fiona',
                                   'type': 'personal'},
                 'role': {'id': 'author'}
                 },
                 {'person_or_org': {'family_name': 'McConnell',
                                    'given_name': 'Justine',
-                                   'name': 'Justine McConnell',
+                                   'name': 'McConnell, Justine',
                                    'type': 'personal'},
                  'role': {'id': 'author'}
                  },
                 {'person_or_org': {'family_name': 'Harrison',
                                    'given_name': 'Stephen',
-                                   'name': 'Stephen Harrison',
+                                   'name': 'Harrison, Stephen',
                                    'type': 'personal'},
                  'role': {'id': 'author'}
                  },
                 {'person_or_org': {'family_name': 'Harrison',
                                    'given_name': 'Stephen',
-                                   'name': 'Stephen Harrison',
+                                   'name': 'Harrison, Stephen',
                                    'type': 'personal'},
                  'role': {'id': 'author'}
                  },
                 {'person_or_org': {'family_name': 'Kenward',
                                    'given_name': 'Claire',
-                                   'name': 'Claire Kenward',
+                                   'name': 'Kenward, Claire',
                                    'type': 'personal'},
                  'role': {'id': 'author'}
                  }
@@ -1552,7 +1577,7 @@ json22647 = {
         ]
     },
     'files': {'default_preview': 'sh-unfixing-epic-2018.pdf',
-              'enabled': 'true',
+              'enabled': True,
               'entries': {
                   'sh-unfixing-epic-2018.pdf': {
                       'key': 'sh-unfixing-epic-2018.pdf',
@@ -1607,8 +1632,7 @@ json22647 = {
                             'between such ‘fixed’ and '
                             '‘unfixed’ elements.',
             'type': {'id': 'other',
-                     'title': {'en': 'Primary description with '
-                                     'HTML stripped'}
+                     'title': {'en': 'Other'}
                      }
             }
         ],
@@ -1616,16 +1640,16 @@ json22647 = {
             {'title': 'Unfixing Epic: Homeric Orality '
                       'and Contemporary Performance',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary title with HTML stripped'}}
+                      'title': {'en': 'Other'}}
              }
         ],
         'creators': [
-            {'affiliations': ['Liverpool Hope University'],
+            {'affiliations': [{'name': 'Liverpool Hope University'}],
              'person_or_org': {'family_name': 'Harrop',
                                'given_name': 'Stephe',
                                'identifiers': [{'identifier': 'stepheharrop',
                                                 'scheme': 'hc_username'}],
-                               'name': 'Stephe Harrop',
+                               'name': 'Harrop, Stephe',
                                'type': 'personal'
                                },
              'role': {'id': 'author'}}],
@@ -1665,29 +1689,37 @@ json22647 = {
                          'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-19934',
                          'scheme': 'hclegacy-record-id'},
-                        {'identifier': 'http://dx.doi.org/10.17613/1d2d-2y15',
+                        {'identifier': '10.17613/1d2d-2y15',
+                         'scheme': 'datacite-doi'},
+                        {'identifier': 'https://doi.org/10.17613/1d2d-2y15',
                          'scheme': 'url'}
         ],
         'languages': [{'id': 'eng'}],
-        'resource_type': {'id': 'textDocument:bookSection'},
+        'resource_type': {'id': 'textDocument-bookSection'},
         'rights': [{'description': {'en': ''},
-                    'id': 'all-rights-reserved',
+                    'id': 'arr',
                     'props': {'scheme': 'spdx',
                               'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                     'title': {'en': 'Proprietary. All rights '
                                     'reserved.'}}],
-        'subjects': [{'id': 'Classsical literature',
+        'subjects': [{'id': 'http://id.worldcat.org/fast/863509',
+                      'subject': 'Classsical literature',
                       'scheme': 'FAST-topical'},
-                     {'id': 'Criticism, interpretation, '
+                     {'id': 'http://id.worldcat.org/fast/1411635',
+                      'subject': 'Criticism, interpretation, '
                          'etc.',
+                      'scheme': 'FAST-form'},
+                     {'id': 'http://id.worldcat.org/fast/1149217',
+                      'subject': 'Theater',
                       'scheme': 'FAST-topical'},
-                     {'id': 'Theater',
+                     {'id': 'http://id.worldcat.org/fast/1027285',
+                      'subject': 'Motion pictures',
                       'scheme': 'FAST-topical'},
-                     {'id': 'Motion pictures',
-                      'scheme': 'FAST-topical'},
-                     {'id': 'Homer',
+                     {'id': 'http://id.worldcat.org/fast/29137',
+                      'subject': 'Homer',
                       'scheme': 'FAST-personal'},
-                     {'id': 'Epic poetry',
+                     {'id': 'http://id.worldcat.org/fast/913799',
+                      'subject': 'Epic poetry',
                       'scheme': 'FAST-topical'}],
         'publisher': 'Oxford University Press',
         'title': 'Unfixing Epic: Homeric Orality and Contemporary '
@@ -1715,7 +1747,7 @@ json42615 = {
             'hclegacy:submitter_affiliation': 'University of Brasilia '
                                               'School of Architecture '
                                               'and Urbanism',
-            'hclegacy:submitter_id': '1011841',
+            'hclegacy:submitter_id': 1011841,
             'hclegacy:submitter_org_memberships': ['hc', 'sah'],
             'journal:journal': {
                 'issn': '2660-583X',
@@ -1797,7 +1829,7 @@ json42615 = {
                          'scheme': 'hclegacy-pid'},
                         {'identifier': '1001712-776',
                          'scheme': 'hclegacy-record-id'},
-                        {'identifier': 'http://dx.doi.org/10.17613/6v9q-8878',
+                        {'identifier': 'https://doi.org/10.17613/6v9q-8878',
                          'scheme': 'url'}],
         'languages': [{'id': 'eng',
                        'title': {'en': 'English'}}],
@@ -1844,7 +1876,7 @@ json42615 = {
 json22625 = {
     'created': '2019-01-29T03:57:00Z',
     'pids': {'doi': {'client': 'datacite',
-                               'identifier': 'doi:10.17613/hrhn-3k43',
+                               'identifier': '10.17613/hrhn-3k43',
                                'provider': 'datacite'}},
     'custom_fields': {
         'hclegacy:collection': 'hccollection:1',
@@ -1870,12 +1902,12 @@ json22625 = {
             'creators': [
                 {'person_or_org': {'family_name': 'Sagiv',
                  'given_name': 'Gadi',
-                 'name': 'Gadi Sagiv',
+                 'name': 'Sagiv, Gadi',
                  'type': 'personal'},
                  'role': {'id': 'author'}},
                 {'person_or_org': {'family_name': 'Meir',
                  'given_name': 'Jonatan',
-                 'name': 'Jonatan Meir',
+                 'name': 'Meir, Jonatan',
                  'type': 'personal'},
                  'role': {'id': 'author'}}],
             'title': 'Habad Hasidism: History, Thought, Image'
@@ -1891,7 +1923,7 @@ json22625 = {
     },
     'files': {
         'default_preview': '55710426.pdf',
-        'enabled': 'true',
+        'enabled': True,
         'entries': {
             '55710426.pdf': {
                 'key': '55710426.pdf',
@@ -1936,24 +1968,22 @@ json22625 = {
                              'wives and daughters of Shneur Zalman’s '
                              'followers.'),
               'type': {'id': 'other',
-                       'title': {'en': 'Primary description with HTML '
-                                       'stripped'}
+                       'title': {'en': 'Other'}
                        }
             }],
             'additional_titles': [
                 {'title': 'מגדר וזמן בכתבי ר׳ שניאור זלמן מלאדי',
                  'type': {'id': 'other',
-                          'title': {'en': 'Primary title with HTML '
-                                          'stripped'}}
+                          'title': {'en': 'Other'}}
                 }
             ],
             'creators': [
-                {'affiliations': ['University Of Toronto'],
+                {'affiliations': [{'name': 'University Of Toronto'}],
                  'person_or_org': {'family_name': 'Tworek',
                                    'given_name': 'Wojciech',
                                    'identifiers': [{'identifier': 'wtworek',
                                                    'scheme': 'hc_username'}],
-                                   'name': 'Wojciech Tworek',
+                                   'name': 'Tworek, Wojciech',
                                    'type': 'personal'},
                  'role': {'id': 'author'}
                  }
@@ -1998,23 +2028,28 @@ json22625 = {
                              'scheme': 'hclegacy-pid'},
                             {'identifier': '1000361-383',
                              'scheme': 'hclegacy-record-id'},
-                            {'identifier': 'http://dx.doi.org/10.17613/'
+                            {'identifier': '10.17613/hrhn-3k43',
+                             'scheme': 'datacite-doi'},
+                            {'identifier': 'https://doi.org/10.17613/'
                                            'hrhn-3k43',
                              'scheme': 'url'}],
             'languages': [{'id': 'heb'}],
-            'resource_type': {'id': 'textDocument:bookSection'},
+            'resource_type': {'id': 'textDocument-bookSection'},
             'rights': [{'description': {'en': ''},
-                        'id': 'all-rights-reserved',
+                        'id': 'arr',
                         'props': {'scheme': 'spdx',
                                   'url': 'https://en.wikipedia.org/wiki/All_rights_reserved'},
                         'title': {'en': 'Proprietary. All rights '
                                         'reserved.'}}
             ],
-            'subjects': [{'id': 'Jews--Study and teaching',
+            'subjects': [{'id': 'http://id.worldcat.org/fast/983377',
+                      'subject': 'Jews--Study and teaching',
                           'scheme': 'FAST-topical'},
-                         {'id': 'Mysticism--Judaism',
+                         {'id': 'http://id.worldcat.org/fast/1031646',
+                      'subject': 'Mysticism--Judaism',
                           'scheme': 'FAST-topical'},
-                         {'id': 'Jewish philosophy',
+                         {'id': 'http://id.worldcat.org/fast/1730516',
+                      'subject': 'Jewish philosophy',
                           'scheme': 'FAST-topical'}
             ],
             'publisher': 'Zalman Shazar Center',
@@ -2074,7 +2109,7 @@ json45177 = {
     },
     'files': {
         'default_preview': 'cep_notes_revised_2022-03-30.pdf',
-        'enabled': 'true',
+        'enabled': True,
         'entries': {
             'cep_notes_revised_2022-03-30.pdf': {
                 'key': 'cep_notes_revised_2022-03-30.pdf',
@@ -2103,88 +2138,87 @@ json45177 = {
                             'decided that a particular note is of primary '
                             'importance.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}}
+                      'title': {'en': 'Other'}}
             }
         ],
         'additional_titles': [
             {'title': 'Notes',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary title with HTML stripped'}}
+                      'title': {'en': 'Other'}}
              }
         ],
         'creators': [
             {'person_or_org': {'family_name': 'Bitetti',
                                'given_name': 'Bronwen',
-                               'name': 'Bronwen Bitetti',
+                               'name': 'Bitetti, Bronwen',
                                'type': 'personal'},
              'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Blueher',
                                'given_name': 'William',
-                               'name': 'William Blueher',
+                               'name': 'Blueher, William',
                                'type': 'personal'},
              'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Clarke',
                                'given_name': 'Sherman',
-                               'name': 'Sherman Clarke',
+                               'name': 'Clarke, Sherman',
                                'type': 'personal'},
              'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Fultz',
                               'given_name': 'Tamara',
-                              'name': 'Tamara Fultz',
+                              'name': 'Fultz, Tamara',
                               'type': 'personal'},
             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': "L\\'Ecuyer-Coelho",
                               'given_name': 'Marie-Chantal',
-                              'name': "Marie-Chantal L\\'Ecuyer-Coelho",
+                              'name': "L\\'Ecuyer-Coelho, Marie-Chantal",
                               'type': 'personal'},
             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Maier',
                               'given_name': 'John',
-                              'name': 'John Maier',
+                              'name': 'Maier, John',
                               'type': 'personal'},
             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Neumann',
                               'given_name': 'Calli',
-                              'name': 'Calli Neumann',
+                              'name': 'Neumann, Calli',
                               'type': 'personal'},
             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Oldal',
                               'given_name': 'Maria',
-                              'name': 'Maria Oldal',
+                              'name': 'Oldal, Maria',
                               'type': 'personal'},
             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Osborne Bender',
                                 'given_name': 'Sarah',
-                                'name': 'Sarah Osborne Bender',
+                                'name': 'Osborne Bender, Sarah',
                                 'type': 'personal'},
             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'O’Keefe',
                                 'given_name': 'Elizabeth',
-                                'name': 'Elizabeth O’Keefe',
+                                'name': 'O’Keefe, Elizabeth',
                                 'type': 'personal'},
             'role': {'id': 'contributor'}},
-            {'affiliations': ['New York University'],
+            {'affiliations': [{'name': 'New York University'}],
             'person_or_org': {'family_name': 'Provo',
                                 'given_name': 'Alexandra',
                                 'identifiers': [{'identifier': 'aprovo',
                                                 'scheme': 'hc_username'}],
-                                'name': 'Alexandra Provo',
+                                'name': 'Provo, Alexandra',
                                 'type': 'personal'},
             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Puccio',
                                 'given_name': 'Andrea',
-                                'name': 'Andrea Puccio',
+                                'name': 'Puccio, Andrea',
                                 'type': 'personal'},
             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Stafford',
                                 'given_name': 'Karen',
-                                'name': 'Karen Stafford',
+                                'name': 'Stafford, Karen',
                                 'type': 'personal'},
             'role': {'id': 'contributor'}},
             {'person_or_org': {'family_name': 'Wildenhaus',
                                 'given_name': 'Karly',
-                                'name': 'Karly Wildenhaus',
+                                'name': 'Wildenhaus, Karly',
                                 'type': 'personal'},
             'role': {'id': 'contributor'}}
             ],
@@ -2211,12 +2245,14 @@ json45177 = {
                                'scheme': 'hclegacy-pid'},
                               {'identifier': '1001634-246',
                                'scheme': 'hclegacy-record-id'},
+                              {'identifier': '10.17613/zhmh-c741',
+                               'scheme': 'datacite-doi'},
                               {'identifier': 'https://doi.org/10.17613/'
                                              'zhmh-c741',
                                'scheme': 'url'}
               ],
               'languages': [{'id': 'eng'}],
-              'resource_type': {'id': 'textDocument:bookSection'},
+              'resource_type': {'id': 'textDocument-bookSection'},
             'rights': [{'description': {'en': ''},
                         'id': 'cc-by-nc-nd-4.0',
                         'props': {'scheme': 'spdx',
@@ -2260,7 +2296,7 @@ json44881 = {
         'hclegacy:submitter_id': 1018587
         },
     'files': {'default_preview': 'clarkestarr-transcript.pdf',
-                'enabled': 'true',
+                'enabled': True,
                 'entries': {
                     'clarkestarr-transcript.pdf': {
                         'key': 'clarkestarr-transcript.pdf',
@@ -2286,8 +2322,7 @@ json44881 = {
                             'and lesbian members. Clarke and Starr are '
                             'long-standing roommates at annual conferences.',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary description with HTML '
-                                      'stripped'}
+                      'title': {'en': 'Other'}
                       }
              }
         ],
@@ -2295,24 +2330,24 @@ json44881 = {
             {'title': 'ARLIS/NA Oral History for Distinguished Service Award '
                       'Winners, Sherman Clarke and Daniel Starr',
              'type': {'id': 'other',
-                      'title': {'en': 'Primary title with HTML stripped'}
+                      'title': {'en': 'Other'}
                       }
              }
         ],
         'contributors': [{'person_or_org': {'family_name': 'Walz',
                                             'given_name': 'Emily',
-                                            'name': 'Emily Walz',
+                                            'name': 'Walz, Emily',
                                             'type': 'personal'},
                          'role': {'id': 'contributor'}}
                          ],
         'creators': [{'person_or_org': {'family_name': 'Clarke',
                                         'given_name': 'Sherman',
-                                        'name': 'Sherman Clarke',
+                                        'name': 'Clarke, Sherman',
                                         'type': 'personal'},
                       'role': {'id': 'author'}},
                      {'person_or_org': {'family_name': 'Starr',
                                         'given_name': 'Daniel',
-                                        'name': 'Daniel Starr',
+                                        'name': 'Starr, Daniel',
                                         'type': 'personal'},
                       'role': {'id': 'author'}}
                       ],
@@ -2342,10 +2377,12 @@ json44881 = {
                          'scheme': 'hclegacy-pid'},
                         {'identifier': '1001634-235',
                          'scheme': 'hclegacy-record-id'},
+                        {'identifier': '10.17613/82yy-vj44',
+                         'scheme': 'datacite-doi'},
                         {'identifier': 'https://doi.org/10.17613/82yy-vj44',
                          'scheme': 'url'}],
         'languages': [{'id': 'eng'}],
-        'resource_type': {'id': 'textDocument:interviewTranscript'},
+        'resource_type': {'id': 'textDocument-interviewTranscript'},
         'rights': [{'description': {'en': ''},
                     'id': 'cc-by-nc-nd-4.0',
                     'props': {'scheme': 'spdx',
@@ -2354,11 +2391,14 @@ json44881 = {
                                     'Commercial No Derivatives 4.0 '
                                     'International'}}
         ],
-        'subjects': [{'id': 'Art',
+        'subjects': [{'id': "http://id.worldcat.org/fast/815177",
+                      'subject': 'Art',
                       'scheme': 'FAST-topical'},
-                     {'id': 'Oral history',
+                     {'id': "http://id.worldcat.org/fast/1047055",
+                      'subject': 'Oral history',
                       'scheme': 'FAST-topical'},
-                     {'id': 'Libraries',
+                     {'id': "http://id.worldcat.org/fast/997341",
+                      'subject': 'Libraries',
                       'scheme': 'FAST-topical'}
         ],
         'title': 'ARLIS/NA Oral History for Distinguished Service Award '
@@ -2367,7 +2407,7 @@ json44881 = {
     'updated': '2022-03-08T21:57:49Z'
 }
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def serialized_records():
     actual_serialized_json, actual_bad_data = serialize_json()
     return {'actual_serialized_json': actual_serialized_json,
@@ -2440,7 +2480,7 @@ top_level_record_keys = ["links", "updated", "parent", "revision_id",
 request_header_keys = ['Server', 'Date', 'Content-Type', 'Transfer-Encoding', 'Connection', 'Vary', 'X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'Retry-After', 'Permissions-Policy', 'X-Frame-Options', 'X-XSS-Protection', 'X-Content-Type-Options', 'Content-Security-Policy', 'Strict-Transport-Security', 'Referrer-Policy', 'X-Request-ID', 'Content-Encoding']
 
 @pytest.mark.parametrize("method,server,endpoint,args,json_dict,expected_response", [
-    ('GET', 'localhost', 'records', 'jznz9-qhx89', '', {'text': '',
+    ('GET', TESTING_SERVER_DOMAIN, 'records', 'jznz9-qhx89', '', {'text': '',
                                                         'headers': ''})
     ])
 def test_api_request(method, server, endpoint, args, json_dict,
@@ -2561,18 +2601,18 @@ def test_api_request(method, server, endpoint, args, json_dict,
 }
 ),
 (json42615, 201, json42615),
-# (json22625),
-# (json45177),
-# (json44881),
-# (json22647),
-# (json11451),
-# (json34031),
-# (json16079),
-# (json33383),
-# (json38367),
-# (json48799),
-# (json583),
-# (json28491)
+(json22625, 201, json22625),
+(json45177, 201, json45177),
+(json44881, 201, json44881),
+(json22647, 201, json22647),
+(json11451, 201, json11451),
+(json34031, 201, json34031),
+(json16079, 201, json16079),
+(json33383, 201, json33383),
+(json38367, 201, json38367),
+(json48799, 201, json48799),
+(json583, 201, json583),
+(json28491, 201, json28491)
 ])
 def test_create_invenio_record(json_payload, expected_status_code, expected_json):
     """
@@ -2604,6 +2644,12 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
      'Strict-Transport-Security': 'max-age=31556926; includeSubDomains',
      'Referrer-Policy': 'strict-origin-when-cross-origin'
     }
+    # fix because can't create duplicate dois
+    if 'doi' in json_payload['pids'].keys():
+        random_doi = json_payload['pids']['doi']['identifier'].split('-')[0]
+        random_doi = f'{random_doi}-{generate_random_string(5)}'
+        json_payload['pids']['doi']['identifier'] = random_doi
+        expected_json['pids']['doi']['identifier'] = random_doi
 
     json_payload = {'custom_fields': json_payload['custom_fields'],
                       'metadata': json_payload['metadata'],
@@ -2653,22 +2699,22 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
     assert actual['json']['is_published'] == False
 
     links = {
-        "self": "https://localhost/api/records/###/draft",
-        "self_html": "https://localhost/uploads/###",
-        "self_iiif_manifest": "https://localhost/api/iiif/draft:###/manifest",
-        "self_iiif_sequence": "https://localhost/api/iiif/draft:###/sequence/default",
-        "files": "https://localhost/api/records/###/draft/files",
-        "archive": "https://localhost/api/records/###/draft/files-archive",
-        "record": "https://localhost/api/records/###",
-        "record_html": "https://localhost/records/###",
-        "publish": "https://localhost/api/records/###/draft/actions/publish",
-        "review": "https://localhost/api/records/###/draft/review",
-        "versions": "https://localhost/api/records/###/versions",
-        "access_links": "https://localhost/api/records/###/access/links",
-        "reserve_doi": "https://localhost/api/records/###/draft/pids/doi",
-        "communities": "https://localhost/api/records/###/communities",
-        "communities-suggestions": "https://localhost/api/records/###/communities-suggestions",
-        "requests": "https://localhost/api/records/###/requests"
+        "self": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft',
+        "self_html": f'https://{TESTING_SERVER_DOMAIN}/uploads/###',
+        "self_iiif_manifest": f'https://{TESTING_SERVER_DOMAIN}/api/iiif/draft:###/manifest',
+        "self_iiif_sequence": f'https://{TESTING_SERVER_DOMAIN}/api/iiif/draft:###/sequence/default',
+        "files": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/files',
+        "archive": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/files-archive',
+        "record": f'https://{TESTING_SERVER_DOMAIN}/api/records/###',
+        "record_html": f'https://{TESTING_SERVER_DOMAIN}/records/###',
+        "publish": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/actions/publish',
+        "review": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/review',
+        "versions": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/versions',
+        "access_links": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/access/links',
+        "reserve_doi": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/pids/doi',
+        "communities": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/communities',
+        "communities-suggestions": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/communities-suggestions',
+        "requests": f'https://{TESTING_SERVER_DOMAIN}/api/records/###/requests'
     }
     actual_doi = ''
     if 'doi' in actual['json']['links'].keys():

@@ -1,0 +1,29 @@
+- id: alternative-title
+  props:
+    datacite: AlternativeTitle
+  title:
+    en: Alternative title
+    de: Alternativer Titel
+- id: primary-stripped
+  props:
+    datacite: Other
+  title:
+    en: Primary title, html stripped
+- id: subtitle
+  props:
+    datacite: Subtitle
+  title:
+    en: Subtitle
+    de: Untertitel
+- id: translated-title
+  props:
+    datacite: TranslatedTitle
+  title:
+    en: Translated title
+    de: Übersetzter Titel
+- id: other
+  props:
+    datacite: Other
+  title:
+    en: Other
+    de: Sonstiger Titel

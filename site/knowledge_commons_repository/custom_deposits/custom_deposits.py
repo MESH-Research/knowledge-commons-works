@@ -47,9 +47,12 @@ from invenio_app_rdm.records_ui.views.deposits import (
     get_record_permissions,
     new_record
 )
+from pathlib import Path
+from pprint import pprint
+import yaml
 
 CUSTOM_DEPOSIT_FORM_TEMPLATE = \
-    "knowledge_commons_repository/records/deposit.html"
+    "knowledge_commons_repository/records/custom_deposit.html"
 
 
 def get_search_url():
@@ -57,6 +60,14 @@ def get_search_url():
     # TODO: this should not be used
     return current_app.config["APP_RDM_ROUTES"]["record_search"]
 
+def get_form_fields_config():
+    """
+    Read the form fields config for different resource types from file
+    """
+    with open(Path(__file__).parent / "field_config.yaml", 'rb') as configfile:
+        myconfig =  yaml.safe_load(configfile)
+        pprint(myconfig)
+    return myconfig
 
 #
 # Views
@@ -65,9 +76,11 @@ def get_search_url():
 @pass_draft_community
 def custom_deposit_create(community=None):
     """Create a new deposit."""
+    form_config = get_form_config(createUrl="/api/records")
+    form_config['fields_config'] = get_form_fields_config();
     return render_template(
         CUSTOM_DEPOSIT_FORM_TEMPLATE,
-        forms_config=get_form_config(createUrl="/api/records"),
+        forms_config=form_config,
         searchbar_config=dict(searchUrl=get_search_url()),
         record=new_record(),
         files=dict(default_preview=None, entries=[], links={}),
@@ -91,9 +104,12 @@ def custom_deposit_edit(pid_value, draft=None, draft_files=None):
     ui_serializer = UIJSONSerializer()
     record = ui_serializer.dump_obj(draft.to_dict())
 
+    form_config = get_form_config(apiUrl=f"/api/records/{pid_value}/draft")
+    form_config['fields_config'] = get_form_fields_config();
+
     return render_template(
         CUSTOM_DEPOSIT_FORM_TEMPLATE,
-        forms_config=get_form_config(apiUrl=f"/api/records/{pid_value}/draft"),
+        forms_config=form_config,
         record=record,
         files=files_dict,
         searchbar_config=dict(searchUrl=get_search_url()),
