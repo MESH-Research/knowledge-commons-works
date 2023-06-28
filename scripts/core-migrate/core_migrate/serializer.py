@@ -426,7 +426,10 @@ def _add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                 }
                 if a['role'] and a['role'] in allowed_roles or not a['role']:
                     # TODO: are null roles a problem?
-                    new_person['role'] = {'id': a['role']}
+                    if a['role'] == 'project director':
+                        new_person['role'] = {'id': "projectLeader"}
+                    else:
+                        new_person['role'] = {'id': a['role']}
                 else:
                     _append_bad_data(row['id'],
                                     (f'authors:{a["fullname"]}:role', a['role']),
