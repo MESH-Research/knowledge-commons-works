@@ -163,7 +163,7 @@ def _add_resource_type(rec, pubtype, genre, filetype):
     kcr_resource_types = {"audiovisual": ["documentary", "interviewRecording",
                                 "videoRecording", "audioRecording", "musicalRecording", "other", "performance", "podcastEpisode"
                            ],
-                           "dataset": ["other"],
+                           "dataset": [""],
                            "image": ["chart", "diagram", "figure", "map",
                                      "visualArt", "photograph", "other"
                             ],
@@ -209,7 +209,7 @@ def _add_resource_type(rec, pubtype, genre, filetype):
               "Conference proceeding": "textDocument-conferenceProceeding",
               "Course material or learning objects": "instructionalResource-other",
               "Course Material or learning objects": "instructionalResource- other",
-              "Data set": "dataset-other",
+              "Data set": "dataset",
               "Dissertation": "textDocument-thesis",
               "Documentary": "audiovisual-documentary",
               "Editorial": "textDocument-editorial",
@@ -1001,7 +1001,7 @@ def serialize_json() -> tuple[list[dict], dict]:
                                     ('resource_type for book_journal_title',
                                      newrec['metadata']['resource_type']['id']),
                                      bad_data_dict)
-                # FIXME: check right field for legalComment, bibliography, lecture, conferencePaper, legalResponse, other:other, other:essay, translation, videoRecording, blogPost, interviewTranscript, poeticWork, fictionalWork, image:visualArt, image:map, instructionalResource:syllabus, onlinePublication, presentation:other, instructionalResource:other, musicalRecording, catalog, dataset:other, audiovisual:documentary, lecture
+                # FIXME: check right field for legalComment, bibliography, lecture, conferencePaper, legalResponse, other:other, other:essay, translation, videoRecording, blogPost, interviewTranscript, poeticWork, fictionalWork, image:visualArt, image:map, instructionalResource:syllabus, onlinePublication, presentation:other, instructionalResource:other, musicalRecording, catalog, dataset, audiovisual:documentary, lecture
                 if myfield not in newrec['custom_fields'].keys():
                     newrec['custom_fields'][myfield] = {}
                 # FIXME: in hc:24459 title replaced by just \\\\
