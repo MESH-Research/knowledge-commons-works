@@ -49,7 +49,9 @@ def serialize_command_wrapper():
 
 
 @cli.command(name="load")
-def load_records():
+@click.argument("start", default=0)
+@click.argument("stop", default=-1)
+def load_records(start, stop):
     """
     Load all serialized CORE deposits into InvenioRDM as new records.
 
@@ -58,7 +60,7 @@ def load_records():
     corresponding to the HC users who uploaded the original deposits,
     and transfer ownership of the Invenio record to the correct users.
     """
-    load_records_into_invenio()
+    load_records_into_invenio(start, stop)
 
 
 @cli.command(name="delete")

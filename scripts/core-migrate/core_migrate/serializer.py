@@ -61,7 +61,7 @@ article_types = ['textDocument-journalArticle',
 
 ambiguous_types = [
     'textDocument-fictionalWork',
-    'other-other',
+    'other',
     'textDocument-interviewTranscript',
     'textDocument-legalComment',
     'textDocument-legalResponse',
@@ -188,7 +188,7 @@ def _add_resource_type(rec, pubtype, genre, filetype):
                             }
     types_of_resource = {"Audio": "audiovisual-audioRecording",
                          "Image": "image-other",
-                         "Mixed material": "other-other",
+                         "Mixed material": "other",
                          "Software": "software-application",
                          "Text": "textDocument-other",
                          "Video": "audiovisual-videoRecording"}
@@ -215,7 +215,7 @@ def _add_resource_type(rec, pubtype, genre, filetype):
               "Editorial": "textDocument-editorial",
               "Essay": "other-essay",
               "Fictional work": "textDocument-bookSection",  # FIXME: indicate ficiontal???
-              "Finding aid": "other-other",
+              "Finding aid": "other",
               "Image": "image-other",
               "Interview": "textDocument-interviewTranscript",
               "Lecture": "presentation-presentationText",
@@ -228,7 +228,7 @@ def _add_resource_type(rec, pubtype, genre, filetype):
               "Newspaper article": "textDocument-newspaperArticle",
               "Online textDocument": "textDocument-onlinePublication",
               "Online textDocument": "textDocument-onlinePublication",
-              "Other": "other-other",
+              "Other": "other",
               "Performance": "audiovisual-performance",
               "Photograph": "image-other",
               "Podcast": "audiovisual-podcastEpisode",

@@ -8,6 +8,7 @@ from typing import Optional, Union
 import os
 from pprint import pprint
 import re
+from urllib.parse import unquote
 
 from core_migrate.config import (
     GLOBAL_DEBUG,
@@ -137,8 +138,9 @@ def upload_draft_files(draft_id:str, files_dict:dict[str, str]) -> dict:
         assert re.findall(draft_id, commit_args)
 
         filename = content_args.split('/')[3]
-        assert filename in files_dict.keys()
-        long_filename = files_dict[filename].replace('/srv/www/commons/current/web/app/uploads/humcore/', '')
+        # handle @ characters in filenames
+        assert unquote(filename) in files_dict.keys()
+        long_filename = files_dict[unquote(filename)].replace('/srv/www/commons/current/web/app/uploads/humcore/', '')
         with open(Path(FILES_LOCATION) / long_filename, "rb") as binary_file_data:
             if debug: print('^^^^^^^^')
             if debug: print(f'filesize is {len(binary_file_data.read())} bytes')
@@ -153,7 +155,7 @@ def upload_draft_files(draft_id:str, files_dict:dict[str, str]) -> dict:
                 raise requests.HTTPError(content_upload)
             output['file_transactions'][f['key']]['content_upload'] = content_upload
 
-            assert content_upload['json']['key'] == filename
+            assert content_upload['json']['key'] == unquote(filename)
             assert content_upload['json']['status'] == 'pending'
             assert content_upload['json']['links']['commit'] == f['links']['commit']
 
@@ -168,7 +170,7 @@ def upload_draft_files(draft_id:str, files_dict:dict[str, str]) -> dict:
         if debug: print('&&&&&&&')
         if debug: pprint(upload_commit)
         output['file_transactions'][f['key']]['upload_commit'] = upload_commit
-        assert upload_commit['json']['key'] == filename
+        assert upload_commit['json']['key'] == unquote(filename)
         assert valid_date(upload_commit['json']['created'])
         assert valid_date(upload_commit['json']['updated'])
         assert upload_commit['json']['status'] == "completed"
@@ -327,7 +329,7 @@ def create_invenio_community(community_label:str) -> dict:
             }
         },
         "msu": {
-            "slug": "ajs",
+            "slug": "msu",
             "metadata": {
                     "title": "MSU Commons",
                     "description": "A community representing the MSU Commons domain",
@@ -577,21 +579,26 @@ def create_full_invenio_record(core_data:dict) -> dict:
     return(result)
 
 
-def load_records_into_invenio():
+def load_records_into_invenio(start:int=0, stop:int=-1) -> None:
     """
     Create new InvenioRDM records (including deposit files) for serialized CORE deposits.
     """
     record_counter = 0
+    args = [start]
+    if stop > -1:
+        args.append(stop)
     'Starting to load records into Invenio...'
     with jsonlines.open(Path(__file__).parent / 'data' /
                         'serialized_core_data.jsonl', "r") as json_source:
         import itertools
-        top = itertools.islice(json_source, 101, 120)
+        top = itertools.islice(json_source, *args)
         for rec in top:
             create_full_invenio_record(rec)
             record_counter += 1
+            print(f'=====loaded record index {start + record_counter}')
     print('Finished!')
-    print(f'Created {str(record_counter)} records in InvenioRDM')
+    print(f'Created {str(record_counter)} records in InvenioRDM '
+          '({start} to {start + record_counter})')
 
 
 def delete_records_from_invenio(record_ids):
