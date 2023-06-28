@@ -22,6 +22,7 @@ common_fields:
     - abstract
     - additional_description
   "2":
+    - communities
     - creators
     - contributors
     - ai
@@ -36,6 +37,8 @@ common_fields:
   "5":
     - file_upload
     - metadata_only
+    - licenses
+  "6":
 extras_by_type:
   book:
     "1":
@@ -46,8 +49,8 @@ extras_by_type:
       subsets:
     "3":
       fields:
-      subsets:
         - language
+      subsets:
     "4":
       fields:
       subsets:
@@ -55,3 +58,7 @@ extras_by_type:
     "5":
       fields:
       subsets:
+    "6":
+      fields:
+      subsets:
+        - admin_metadata
