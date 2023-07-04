@@ -1,0 +1,5 @@
+<dt class="ui tiny header">{{ _("AI Usage")}}</dt>
+
+{% for value in field_value %} {{value.get("ai_used", "Unknown")}} ({{
+_("AI Used") }}: {{value.get("ai_description", "Unknown")}}) {{ ", " if not loop.last
+}} {% endfor %}
