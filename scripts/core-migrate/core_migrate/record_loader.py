@@ -446,9 +446,9 @@ def create_full_invenio_record(core_data:dict) -> dict:
                       'pids': core_data['pids']
                       }
     # FIXME: only for testing!!!
-    random_doi = submitted_data['pids']['doi']['identifier'].split('-')[0]
-    random_doi = f'{random_doi}-{generate_random_string(5)}'
-    submitted_data['pids']['doi']['identifier'] = random_doi
+    # random_doi = submitted_data['pids']['doi']['identifier'].split('-')[0]
+    # random_doi = f'{random_doi}-{generate_random_string(5)}'
+    # submitted_data['pids']['doi']['identifier'] = random_doi
 
     submitted_data['access'] = {'records': 'public', 'files': 'public'}
     submitted_data['files'] = {'enabled': True}
