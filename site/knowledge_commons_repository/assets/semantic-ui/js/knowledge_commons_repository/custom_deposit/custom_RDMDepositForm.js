@@ -7,11 +7,12 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { Component, createContext, createRef, Fragment } from "react";
+import React, { Component, createContext, createRef, Fragment,
+                useEffect, useState } from "react";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
-import { AccordionField, CustomFields } from "react-invenio-forms";
+import { AccordionField, CustomFields, importWidget, loadWidgetsFromConfig } from "react-invenio-forms";
 import {
   AccessRightField,
   DescriptionsField,
@@ -44,44 +45,130 @@ import {
   Card,
   Container,
   Grid,
+  Icon,
   Ref,
+  Step,
   Sticky,
   Transition
 } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
-import ResourceTypeField from "./ResourceTypeField";
+import ResourceTypeField from "../metadata_fields/ResourceTypeField";
 
-const ResourceTypeContext = createContext();
+// React Context to track the current form values.
+// Will contain the Formik values object passed up from a
+// form field.
+const FormValuesContext = createContext();
+
+/**
+ * A React component to insert UI for a single custom fields section
+ *
+ * @param {string} sectionName  The label for the form section containing the
+ *                              custom field(s) to be injected. Taken from the
+ *                              custom field ui declaration for the field.
+ * @param {string} idString  The string identifier to be used in building
+ *                           the id for this field's container
+ * @param {object} customFieldsUI  The whole custom fields ui declaration
+ *                                 taken from the form's config
+ */
+const CustomFieldInjector = ({ sectionName, fieldName, idString, customFieldsUI }) => {
+  const [ MyWidget, setMyWidget ] = useState();
+  const chosenSetConfig = new Array(customFieldsUI.find(
+    item => item.section === sectionName));
+  const chosenFieldConfig = chosenSetConfig[0].fields.find(item => item.field === fieldName);
+  const templateLoaders = [
+    (widget) => import(`@templates/custom_fields/${widget}.js`),
+    (widget) =>
+      import(`@js/invenio_rdm_records/src/deposit/customFields`),
+    (widget) => import(`react-invenio-forms`),
+  ];
+  const fieldPathPrefix = "custom_fields";
+  useEffect(() => {
+    loadWidgetsFromConfig({
+      templateLoaders: templateLoaders,
+      fieldPathPrefix: fieldPathPrefix,
+      fields: new Array(chosenFieldConfig)
+    }).then(x => setMyWidget(x[0]));
+  }, []
+  )
+
+  return(
+    <Overridable
+      id={`InvenioAppRdm.Deposit.${idString}.container`}
+      customFieldsUI={chosenSetConfig}
+    >
+      <>
+      {MyWidget}
+      {/* <CustomFields
+        config={chosenSetConfig}
+        templateLoaders={templateLoaders}
+        fieldPathPrefix="custom_fields"
+      /> */}
+      </>
+    </Overridable>
+  )
+}
+
+const CustomFieldSectionInjector = ({sectionName, idString,
+                                     customFieldsUI
+                                    }) => {
+  const chosenSetConfig = new Array(customFieldsUI.find(
+    item => item.section === sectionName));
+  const templateLoaders = [
+    (widget) => import(`@templates/custom_fields/${widget}.js`),
+    (widget) =>
+      import(`@js/invenio_rdm_records/src/deposit/customFields`),
+    (widget) => import(`react-invenio-forms`),
+  ];
+
+  return(
+    <Overridable
+      id={`InvenioAppRdm.Deposit.${idString}.container`}
+      customFieldsUI={chosenSetConfig}
+    >
+      <CustomFields
+        config={chosenSetConfig}
+        templateLoaders={templateLoaders}
+        fieldPathPrefix="custom_fields"
+      />
+    </Overridable>
+  )
+}
 
 const AbstractComponent = ({record, vocabularies}) => {
   return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.DescriptionsField.container"
-      record={record}
-      vocabularies={vocabularies}
-      fieldPath="metadata.description"
+    <Card fluid
+    id={'InvenioAppRdm.Deposit.TypeTitleComponents.container'}
     >
-      <DescriptionsField
-        fieldPath="metadata.description"
-        options={vocabularies.metadata.descriptions}
-        recordUI={_get(record, "ui", null)}
-        editorConfig={{
-          removePlugins: [
-            "Image",
-            "ImageCaption",
-            "ImageStyle",
-            "ImageToolbar",
-            "ImageUpload",
-            "MediaEmbed",
-            "Table",
-            "TableToolbar",
-            "TableProperties",
-            "TableCellProperties",
-          ],
-        }}
-      />
-    </Overridable>
+      <Card.Content>
+        <Overridable
+          id="InvenioAppRdm.Deposit.DescriptionsField.container"
+          record={record}
+          vocabularies={vocabularies}
+          fieldPath="metadata.description"
+        >
+          <DescriptionsField
+            fieldPath="metadata.description"
+            options={vocabularies.metadata.descriptions}
+            recordUI={_get(record, "ui", null)}
+            editorConfig={{
+              removePlugins: [
+                "Image",
+                "ImageCaption",
+                "ImageStyle",
+                "ImageToolbar",
+                "ImageUpload",
+                "MediaEmbed",
+                "Table",
+                "TableToolbar",
+                "TableProperties",
+                "TableCellProperties",
+              ],
+            }}
+          />
+        </Overridable>
+      </Card.Content>
+    </Card>
 )
 }
 
@@ -136,8 +223,21 @@ const AdditionalTitlesComponent = () => {
   return(<></>)
 }
 
-const AIComponent = () => {
-  return(<></>)
+const AIComponent = ({ customFieldsUI }) => {
+  // const sectionConfig = customFieldsUI.find(item => item.section === "AI Usage");
+  // const fieldConfig = sectionConfig.find(item => item.field === "ai_used");
+  return(
+    <Card fluid>
+      <Card.Content>
+        <CustomFieldInjector
+          sectionName="AI Usage"
+          fieldName="kcr:ai_usage"
+          idString="AIUsageField"
+          customFieldsUI={customFieldsUI}
+        />
+      </Card.Content>
+    </Card>
+  )
 }
 
 const AlternateIdentifiersComponent = ({vocabularies}) => {
@@ -183,48 +283,60 @@ const ContentWarningComponent = () => {
 
 const ContributorsComponent = ({config, vocabularies}) => {
   return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.ContributorsField.container"
-      fieldPath="metadata.contributors"
-      vocabularies={vocabularies}
-      config={config}
+    <Card fluid
+      id={'InvenioAppRdm.Deposit.TypeTitleComponents.container'}
     >
-      <CreatibutorsField
-        addButtonLabel={i18next.t("Add contributor")}
-        label={i18next.t("Contributors")}
-        labelIcon="user plus"
-        fieldPath="metadata.contributors"
-        roleOptions={vocabularies.metadata.contributors.role}
-        schema="contributors"
-        autocompleteNames={config.autocomplete_names}
-        modal={{
-          addLabel: "Add contributor",
-          editLabel: "Edit contributor",
-        }}
-      />
-    </Overridable>
+      <Card.Content>
+        <Overridable
+          id="InvenioAppRdm.Deposit.ContributorsField.container"
+          fieldPath="metadata.contributors"
+          vocabularies={vocabularies}
+          config={config}
+        >
+          <CreatibutorsField
+            addButtonLabel={i18next.t("Add contributor")}
+            label={i18next.t("Contributors")}
+            labelIcon="user plus"
+            fieldPath="metadata.contributors"
+            roleOptions={vocabularies.metadata.contributors.role}
+            schema="contributors"
+            autocompleteNames={config.autocomplete_names}
+            modal={{
+              addLabel: "Add contributor",
+              editLabel: "Edit contributor",
+            }}
+          />
+        </Overridable>
+    </Card.Content>
+  </Card>
 )
 }
 
 const CreatorsComponent = ({config, vocabularies}) => {
   return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.CreatorsField.container"
-      vocabularies={vocabularies}
-      config={config}
-      fieldPath="metadata.creators"
+    <Card fluid
+      id={'InvenioAppRdm.Deposit.TypeTitleComponents.container'}
     >
-      <CreatibutorsField
-        label={i18next.t("Creators")}
-        labelIcon="user"
-        fieldPath="metadata.creators"
-        roleOptions={vocabularies.metadata.creators.role}
-        schema="creators"
-        autocompleteNames={config.autocomplete_names}
-        required
-      />
-    </Overridable>
-)
+      <Card.Content>
+        <Overridable
+          id="InvenioAppRdm.Deposit.CreatorsField.container"
+          vocabularies={vocabularies}
+          config={config}
+          fieldPath="metadata.creators"
+        >
+          <CreatibutorsField
+            label={i18next.t("Creators")}
+            labelIcon="user"
+            fieldPath="metadata.creators"
+            roleOptions={vocabularies.metadata.creators.role}
+            schema="creators"
+            autocompleteNames={config.autocomplete_names}
+            required
+          />
+        </Overridable>
+      </Card.Content>
+    </Card>
+  )
 }
 
 const DateComponent = () => {
@@ -243,35 +355,40 @@ const DateComponent = () => {
 
 const DoiComponent = ({config, record}) => {
   return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.PIDField.container"
-      config={config}
-      record={record}
+    <Card fluid
     >
-      <Fragment>
-        {config.pids.map((pid) => (
-          <Fragment key={pid.scheme}>
-            <PIDField
-              btnLabelDiscardPID={pid.btn_label_discard_pid}
-              btnLabelGetPID={pid.btn_label_get_pid}
-              canBeManaged={pid.can_be_managed}
-              canBeUnmanaged={pid.can_be_unmanaged}
-              fieldPath={`pids.${pid.scheme}`}
-              fieldLabel={pid.field_label}
-              isEditingPublishedRecord={
-                record.is_published === true // is_published is `null` at first upload
-              }
-              managedHelpText={pid.managed_help_text}
-              pidLabel={pid.pid_label}
-              pidPlaceholder={pid.pid_placeholder}
-              pidType={pid.scheme}
-              unmanagedHelpText={pid.unmanaged_help_text}
-              required
-            />
+      <Card.Content>
+        <Overridable
+          id="InvenioAppRdm.Deposit.PIDField.container"
+          config={config}
+          record={record}
+        >
+          <Fragment>
+            {config.pids.map((pid) => (
+              <Fragment key={pid.scheme}>
+                <PIDField
+                  btnLabelDiscardPID={pid.btn_label_discard_pid}
+                  btnLabelGetPID={pid.btn_label_get_pid}
+                  canBeManaged={pid.can_be_managed}
+                  canBeUnmanaged={pid.can_be_unmanaged}
+                  fieldPath={`pids.${pid.scheme}`}
+                  fieldLabel={pid.field_label}
+                  isEditingPublishedRecord={
+                    record.is_published === true // is_published is `null` at first upload
+                  }
+                  managedHelpText={pid.managed_help_text}
+                  pidLabel={pid.pid_label}
+                  pidPlaceholder={pid.pid_placeholder}
+                  pidType={pid.scheme}
+                  unmanagedHelpText={pid.unmanaged_help_text}
+                  required
+                />
+              </Fragment>
+            ))}
           </Fragment>
-        ))}
-      </Fragment>
-    </Overridable>
+        </Overridable>
+    </Card.Content>
+    </Card>
 )}
 
 const FilesUploadComponent = ({config, noFiles, record, permissions}) => {
@@ -627,6 +744,130 @@ const VersionComponent = () => {
   )
 }
 
+const AdminMetadataComponent = ({customFieldsUI}) => {
+  return(
+    <Card fluid>
+      <Card.Content>
+        <CustomFieldInjector
+          sectionName="Commons admin info"
+          idString="AdminMetadataFields"
+          customFieldsUI={customFieldsUI}
+        />
+      </Card.Content>
+    </Card>
+)}
+
+const BookDetailComponent = ({customFieldsUI}) => {
+  return(
+    <Card fluid>
+      <Card.Content>
+        <CustomFieldInjector
+          sectionName="Book information"
+          idString="BookDetailFields"
+          customFieldsUI={customFieldsUI}
+        />
+      </Card.Content>
+    </Card>
+)}
+
+const TypeTitleComponents = ({vocabularies, record}) => {
+  return(
+    <Card fluid
+      id={'InvenioAppRdm.Deposit.TypeTitleComponents.container'}
+    >
+      <Card.Content>
+        <ResourceTypeComponent vocabularies={vocabularies} />
+        <TitleComponent vocabularies={vocabularies} record={record} />
+      </Card.Content>
+    </Card>
+  )
+};
+
+const SubmissionComponent = () => {
+  return(
+    <Overridable id="InvenioAppRdm.Deposit.CardDepositStatusBox.container">
+      <Card fluid>
+        <Card.Content>
+          <DepositStatusBox />
+        </Card.Content>
+        <Card.Content>
+          <Grid relaxed>
+            <Grid.Column
+              computer={8}
+              mobile={16}
+              className="pb-0 left-btn-col"
+            >
+              <SaveButton fluid />
+            </Grid.Column>
+
+            <Grid.Column
+              computer={8}
+              mobile={16}
+              className="pb-0 right-btn-col"
+            >
+              <PreviewButton fluid />
+            </Grid.Column>
+
+            <Grid.Column width={16} className="pt-10">
+              <PublishButton fluid />
+            </Grid.Column>
+          </Grid>
+        </Card.Content>
+      </Card>
+    </Overridable>
+  )
+}
+
+const AccessRightsComponent = ({ permissions }) => {
+  return(
+    <Overridable
+      id="InvenioAppRdm.Deposit.AccessRightField.container"
+      fieldPath="access"
+    >
+      <AccessRightField
+        label={i18next.t("Visibility")}
+        labelIcon="shield"
+        fieldPath="access"
+        showMetadataAccess={permissions?.can_manage_record_access}
+        fluid
+      />
+    </Overridable>
+  )
+}
+
+const CombinedDatesComponents = ({ vocabularies }) => {
+  return(
+    <Card fluid
+      id={'InvenioAppRdm.Deposit.CombinedDatesComponents.container'}
+    >
+      <Card.Content>
+        <DateComponent />
+        <AdditionalDatesComponent vocabularies={vocabularies} />
+      </Card.Content>
+    </Card>
+  )
+}
+
+const DeleteComponent = ({ permissions, record }) => {
+  return(
+    <>
+    {permissions?.can_delete_draft && (
+      <Overridable
+        id="InvenioAppRdm.Deposit.CardDeleteButton.container"
+        record={record}
+      >
+        <Card fluid>
+          <Card.Content>
+            <DeleteButton fluid />
+          </Card.Content>
+        </Card>
+      </Overridable>
+    )}
+    </>
+  )
+}
+
+
 const fieldComponents = {
     abstract: AbstractComponent,
     additional_dates: AdditionalDatesComponent,
@@ -660,53 +901,15 @@ const fieldComponents = {
     series_number: SeriesNumberComponent,
     total_volumes: TotalVolumesComponent,
     volume: VolumeComponent,
-    version: VersionComponent
-}
-
-const AdminMetadataComponent = ({customFieldsUI}) => {
-  const kcrAdminInfoConfig = new Array(customFieldsUI.find(item => item.section === ''));
-  return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.AdminMetadataFields.container"
-      customFieldsUI={kcrAdminInfoConfig}
-    >
-      <CustomFields
-        config={kcrAdminInfoConfig}
-        templateLoaders={[
-          (widget) => import(`@templates/custom_fields/${widget}.js`),
-          (widget) =>
-            import(`@js/invenio_rdm_records/src/deposit/customFields`),
-          (widget) => import(`react-invenio-forms`),
-        ]}
-        fieldPathPrefix="custom_fields"
-      />
-    </Overridable>
-)}
-
-const BookDetailComponent = ({customFieldsUI}) => {
-  const bookDetailConfig = new Array(customFieldsUI.find(item => item.section === 'Book information'));
-  return(
-    <Overridable
-      // id="InvenioAppRdm.Deposit.CustomFields.container"
-      id="InvenioAppRdm.Deposit.BookDetailFields.container"
-      customFieldsUI={bookDetailConfig}
-    >
-      <CustomFields
-        config={bookDetailConfig}
-        templateLoaders={[
-          (widget) => import(`@templates/custom_fields/${widget}.js`),
-          (widget) =>
-            import(`@js/invenio_rdm_records/src/deposit/customFields`),
-          (widget) => import(`react-invenio-forms`),
-        ]}
-        fieldPathPrefix="custom_fields"
-      />
-    </Overridable>
-)}
-
-const fieldSetComponents = {
-  admin_metadata: AdminMetadataComponent,
-  book_detail: BookDetailComponent
+    version: VersionComponent,
+    // below are composite field components
+    admin_metadata: AdminMetadataComponent,
+    book_detail: BookDetailComponent,
+    type_title: TypeTitleComponents,
+    combined_dates: CombinedDatesComponents,
+    submission: SubmissionComponent,
+    access_rights: AccessRightsComponent,
+    delete: DeleteComponent
 }
 
 const FormPage = ({ children, id, pageNums,
@@ -751,7 +954,7 @@ export class RDMDepositForm extends Component {
     const { files, record } = this.props;
     this.state = {
       currentFormPage: "1",
-      currentResourceType: "textDocument-book"
+      currentValues: {}
     }
 
     // TODO: Make ALL vocabulary be generated by backend.
@@ -794,34 +997,26 @@ export class RDMDepositForm extends Component {
     }
 
     this.handleFormPageChange = this.handleFormPageChange.bind(this)
-    this.handleResourceTypeChange = this.handleResourceTypeChange.bind(this)
+    this.handleValuesChange = this.handleValuesChange.bind(this)
   }
 
   formFeedbackRef = createRef();
   sidebarRef = createRef();
 
   componentDidUpdate() {
-    console.log(this.config.fields_config);
-    console.log(`currentFormPage: ${this.state.currentFormPage}`);
-    console.log(`currentResourceType: ${this.state.currentResourceType}`);
-    console.log(this.config.fields_config.extras_by_type);
   };
   componentWillMount() {
-    console.log(`currentFormPage: ${this.state.currentFormPage}`);
-    console.log(`currentResourceType: ${this.state.currentResourceType}`);
-    console.log(this.config.fields_config.extras_by_type[this.state.currentResourceType]['1']['subsets']);
-    console.log(this.state.currentFormPage==="1");
-    console.log(typeof this.state.currentFormPage);
-    console.log(!!this.config.fields_config.extras_by_type[this.state.currentResourceType]['1']['subsets']);
   };
 
-  handleFormPageChange = (event) => {
-    this.setState({currentFormPage: event.target.value});
-    event.preventDefault();
+  handleFormPageChange = (event, { value }) => {
+    this.setState({currentFormPage: value});
   };
 
-  handleResourceTypeChange = (resourceType) => {
-    this.setState({currentResourceType: resourceType});
+  handleValuesChange= (values) => {
+    this.setState({values: values});
+    console.log('changed values');
+    console.log(values);
+    localStorage.setItem('depositFormValues', JSON.stringify(values));
   }
 
   formPages = {
@@ -830,7 +1025,8 @@ export class RDMDepositForm extends Component {
     '3': 'Subjects',
     '4': 'Deposit Details',
     '5': 'File Upload',
-    '6': 'Admin Metadata'
+    '6': 'Admin Metadata',
+    '7': 'Submit'
   }
   render() {
     const {
@@ -840,13 +1036,14 @@ export class RDMDepositForm extends Component {
     const config = this.config;
     const vocabularies = this.vocabularies;
     const currentFormPage = this.state.currentFormPage;
-    const currentResourceType = this.state.currentResourceType;
-    const handleResourceTypeChange = this.handleResourceTypeChange;
-    const currentTypeExtraFields = this.config.fields_config.extras_by_type[this.state.currentResourceType]
+    const currentValues = this.state.values;
+    const currentResourceType = !!currentValues ? currentValues.metadata.resource_type : 'textDocument-book';
+    const handleValuesChange = this.handleValuesChange;
+    const currentTypeExtraFields = this.config.fields_config.extras_by_type[currentResourceType]
 
     return (
-      <ResourceTypeContext.Provider
-        value={{ currentResourceType, handleResourceTypeChange }}
+      <FormValuesContext.Provider
+        value={{ currentValues, handleValuesChange }}
       >
       <DepositFormApp
         config={config}
@@ -854,7 +1051,6 @@ export class RDMDepositForm extends Component {
         preselectedCommunity={preselectedCommunity}
         files={files}
         permissions={permissions}
-        handleResourceTypeChange={handleResourceTypeChange}
       >
         <Overridable
           id="InvenioAppRdm.Deposit.FormFeedback.container"
@@ -869,25 +1065,35 @@ export class RDMDepositForm extends Component {
 
         <Container id="rdm-deposit-form" className="rel-mt-1">
           <Grid className="mt-25">
-            <Grid.Column mobile={16} tablet={16} computer={11}>
-              <h2>{currentResourceType}</h2>
-              <Button.Group widths={this.formPages.length}
+            <Grid.Column mobile={16} tablet={16} computer={16}>
+              <h2>New Deposit: {currentResourceType}</h2>
+              <Step.Group
+                widths={this.formPages.length}
                 className="upload-form-pager"
                 fluid={true}
+                // ordered={true}
+                size={"small"}
               >
                 {Object.keys(this.formPages).map((pageNum, index) => (
-                  <Button
+                  <Step
                     key={index}
+                    active={currentFormPage === pageNum}
+                    // icon='truck'
+                    link
                     onClick={this.handleFormPageChange}
-                    className={`upload-form-pager-button page-${pageNum}`}
-                    content={this.formPages[pageNum]}
-                    type="button"
+                    title={this.formPages[pageNum]}
                     value={pageNum}
-                    // basic={pageNum<=currentFormPage ? false : true}
-                    color={pageNum<=currentFormPage ? "green" : "grey"}
-                  />
+                    className={`upload-form-stepper-step page-${pageNum}`}
+                    // description='Choose your shipping options'
+                  >
+                    {/* <Icon name='truck' /> */}
+                    {/* <Step.Content> */}
+                      {/* <Step.Title>{this.formPages[pageNum]}</Step.Title> */}
+                      {/* <Step.Description>Choose your shipping options</Step.Description> */}
+                    {/* </Step.Content> */}
+                  </Step>
                 ))}
-              </Button.Group>
+              </Step.Group>
 
               <Transition.Group
                 animation="fade"
@@ -918,25 +1124,9 @@ export class RDMDepositForm extends Component {
                             />)
                           }
                           )}
-                          {!!currentTypeExtraFields[pageNum]['subsets'] ?
-                           currentTypeExtraFields[pageNum]['subsets'].map((component_label, index) => {
-                            const MyField = fieldSetComponents[component_label]
-                            return (<MyField
-                              key={index}
-                              config={config}
-                              noFiles={this.noFiles}
-                              record={record}
-                              vocabularies={vocabularies}
-                              permissions={permissions}
-                              accordionStyle={this.accordionStyle}
-                              customFieldsUI={customFieldsUI}
-                              currentResourceType={currentResourceType}
-                            />)
-                          }) : ""
-                          }
                           {!!currentResourceType &&
-                           !!currentTypeExtraFields[pageNum]['fields'] ?
-                           currentTypeExtraFields[pageNum]['fields'].map((component_label, index) => {
+                           !!currentTypeExtraFields[pageNum] ?
+                           currentTypeExtraFields[pageNum].map((component_label, index) => {
                             const MyField = fieldComponents[component_label]
                             return (<MyField
                               key={index}
@@ -960,74 +1150,11 @@ export class RDMDepositForm extends Component {
 
 
             </Grid.Column>
-            <Ref innerRef={this.sidebarRef}>
-              <Grid.Column
-                mobile={16}
-                tablet={16}
-                computer={5}
-                className="deposit-sidebar"
-              >
-                <Sticky context={this.sidebarRef} offset={20}>
-                  <Overridable id="InvenioAppRdm.Deposit.CardDepositStatusBox.container">
-                    <Card>
-                      <Card.Content>
-                        <DepositStatusBox />
-                      </Card.Content>
-                      <Card.Content>
-                        <Grid relaxed>
-                          <Grid.Column
-                            computer={8}
-                            mobile={16}
-                            className="pb-0 left-btn-col"
-                          >
-                            <SaveButton fluid />
-                          </Grid.Column>
 
-                          <Grid.Column
-                            computer={8}
-                            mobile={16}
-                            className="pb-0 right-btn-col"
-                          >
-                            <PreviewButton fluid />
-                          </Grid.Column>
-
-                          <Grid.Column width={16} className="pt-10">
-                            <PublishButton fluid />
-                          </Grid.Column>
-                        </Grid>
-                      </Card.Content>
-                    </Card>
-                  </Overridable>
-                  <Overridable
-                    id="InvenioAppRdm.Deposit.AccessRightField.container"
-                    fieldPath="access"
-                  >
-                    <AccessRightField
-                      label={i18next.t("Visibility")}
-                      labelIcon="shield"
-                      fieldPath="access"
-                      showMetadataAccess={permissions?.can_manage_record_access}
-                    />
-                  </Overridable>
-                  {permissions?.can_delete_draft && (
-                    <Overridable
-                      id="InvenioAppRdm.Deposit.CardDeleteButton.container"
-                      record={record}
-                    >
-                      <Card>
-                        <Card.Content>
-                          <DeleteButton fluid />
-                        </Card.Content>
-                      </Card>
-                    </Overridable>
-                  )}
-                </Sticky>
-              </Grid.Column>
-            </Ref>
           </Grid>
         </Container>
       </DepositFormApp>
-    </ResourceTypeContext.Provider>
+    </FormValuesContext.Provider>
     );
   }
 }
@@ -1046,4 +1173,4 @@ RDMDepositForm.defaultProps = {
   files: null,
 };
 
-export { ResourceTypeContext };
+export { FormValuesContext as ResourceTypeContext };
