@@ -34,7 +34,7 @@ from invenio_records_resources.services.errors import (
     PermissionDeniedError,
 )
 
-from .custom_deposits.custom_deposits import (
+from .custom_deposit.custom_deposit import (
     custom_deposit_create,
     custom_deposit_edit
 )

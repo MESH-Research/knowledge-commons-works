@@ -13,7 +13,7 @@ import _get from "lodash/get";
 import { FieldLabel, SelectField } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { useFormikContext } from "formik";
-import { ResourceTypeContext } from "./custom_RDMDepositForm";
+import { ResourceTypeContext } from "../custom_deposit/custom_RDMDepositForm";
 
 const ResourceTypeField = ({fieldPath,
                             label=i18next.t("Resource type"),
@@ -24,13 +24,13 @@ const ResourceTypeField = ({fieldPath,
                             ...restProps}) => {
 
   const { values, submitForm } = useFormikContext();
-  const { currentResourceType, handleResourceTypeChange } = useContext(ResourceTypeContext);
+  const { currentResourceType, handleValuesChange } = useContext(ResourceTypeContext);
   console.log(values.metadata.resource_type);
   console.log(currentResourceType);
 
   useEffect(() => {
     if ( currentResourceType !== values.metadata.resource_type ) {
-      handleResourceTypeChange(values.metadata.resource_type)
+      handleValuesChange(values);
     }
   }, [values]
   );

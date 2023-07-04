@@ -66,7 +66,6 @@ def get_form_fields_config():
     """
     with open(Path(__file__).parent / "field_config.yaml", 'rb') as configfile:
         myconfig =  yaml.safe_load(configfile)
-        pprint(myconfig)
     return myconfig
 
 #
