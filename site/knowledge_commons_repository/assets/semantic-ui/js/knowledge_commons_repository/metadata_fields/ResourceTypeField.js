@@ -7,13 +7,14 @@
 // you can redistribute them and/or modify them
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import _get from "lodash/get";
 import { FieldLabel, SelectField } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { useFormikContext } from "formik";
 import { ResourceTypeContext } from "../custom_deposit/custom_RDMDepositForm";
+import { Icon, Menu } from "semantic-ui-react";
 
 const ResourceTypeField = ({fieldPath,
                             label=i18next.t("Resource type"),
@@ -23,7 +24,9 @@ const ResourceTypeField = ({fieldPath,
                             required=false,
                             ...restProps}) => {
 
-  const { values, submitForm } = useFormikContext();
+  const [ otherToggleActive, setOtherToggleActive ] = useState(false);
+  const { values, setFieldValue } = useFormikContext();
+  const selectedType = values[fieldPath];
   const { currentResourceType, handleValuesChange } = useContext(ResourceTypeContext);
   console.log(values.metadata.resource_type);
   console.log(currentResourceType);
@@ -73,17 +76,83 @@ const ResourceTypeField = ({fieldPath,
   };
   const frontEndOptions = createOptions(options);
 
+  const handleItemClick = (event, { name }) => {
+    setFieldValue("metadata.resource_type", name);
+    setOtherToggleActive(false);
+  }
+
+  const handleOtherToggleClick = () => {
+    setFieldValue("metadata.resource_type", null);
+    setOtherToggleActive(true);
+  }
+
   return (
-    <SelectField
-        fieldPath={fieldPath}
-        label={(
-            <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
-        )}
-        optimized
-        options={frontEndOptions}
-        selectOnBlur={false}
-        {...restProps}
-    />
+    <>
+      <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} /><br />
+      <Menu compact icon='labeled'>
+        <Menu.Item
+          name='textDocument-journalArticle'
+          active={values.metadata.resource_type === 'textDocument-journalArticle'}
+          onClick={handleItemClick}
+        >
+          <Icon name='file text' />
+          Journal Article
+        </Menu.Item>
+
+        <Menu.Item
+          name='textDocument-review'
+          active={values.metadata.resource_type === 'textDocument-review'}
+          onClick={handleItemClick}
+        >
+          <Icon name='thumbs up' />
+          Review
+        </Menu.Item>
+
+        <Menu.Item
+          name='textDocument-book'
+          active={values.metadata.resource_type === 'textDocument-book'}
+          onClick={handleItemClick}
+        >
+          <Icon name='book' />
+          Book
+        </Menu.Item>
+        <Menu.Item
+          name='textDocument-bookSection'
+          active={values.metadata.resource_type === 'textDocument-bookSection'}
+          onClick={handleItemClick}
+        >
+          <Icon name='book' />
+          Book Section
+        </Menu.Item>
+        <Menu.Item
+          name='instructionalResource-syllabus'
+          active={values.metadata.resource_type === 'instructionalResource-syllabus'}
+          onClick={handleItemClick}
+        >
+          <Icon name='graduation' />
+          Syllabus
+        </Menu.Item>
+        <Menu.Item
+          name='otherToggle'
+          active={otherToggleActive === true}
+          onClick={handleOtherToggleClick}
+        >
+          <Icon name='asterisk' />
+          Other...
+        </Menu.Item>
+      </Menu>
+      {!!otherToggleActive &&
+        <SelectField
+            fieldPath={fieldPath}
+            label={""}
+            optimized
+            options={frontEndOptions}
+            selectOnBlur={false}
+            placeholder={"choose another resource type..."}
+            {...restProps}
+        />
+      }
+    </>
 );
 }
 

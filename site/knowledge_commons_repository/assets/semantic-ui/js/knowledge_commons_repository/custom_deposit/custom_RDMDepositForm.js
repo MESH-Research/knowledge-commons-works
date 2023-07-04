@@ -17,14 +17,12 @@ import {
   AccessRightField,
   DescriptionsField,
   CreatibutorsField,
-  DatesField,
   DeleteButton,
   DepositFormApp,
   DepositStatusBox,
   FileUploader,
   FormFeedback,
   IdentifiersField,
-  PIDField,
   PreviewButton,
   LanguagesField,
   LicenseField,
@@ -54,6 +52,8 @@ import {
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 import ResourceTypeField from "../metadata_fields/ResourceTypeField";
+import { PIDField } from "../metadata_fields/PIDField";
+import { DatesField } from "../metadata_fields/DatesField";
 
 // React Context to track the current form values.
 // Will contain the Formik values object passed up from a
@@ -71,11 +71,12 @@ const FormValuesContext = createContext();
  * @param {object} customFieldsUI  The whole custom fields ui declaration
  *                                 taken from the form's config
  */
-const CustomFieldInjector = ({ sectionName, fieldName, idString, customFieldsUI }) => {
+const CustomFieldInjector = ({ sectionName, fieldName, idString, customFieldsUI, ...restArgs }) => {
   const [ MyWidget, setMyWidget ] = useState();
   const chosenSetConfig = new Array(customFieldsUI.find(
     item => item.section === sectionName));
   const chosenFieldConfig = chosenSetConfig[0].fields.find(item => item.field === fieldName);
+  chosenFieldConfig.props = {...chosenFieldConfig.props, ...restArgs};
   const templateLoaders = [
     (widget) => import(`@templates/custom_fields/${widget}.js`),
     (widget) =>
@@ -136,6 +137,7 @@ const CustomFieldSectionInjector = ({sectionName, idString,
 }
 
 const AbstractComponent = ({record, vocabularies}) => {
+
   return(
     <Card fluid
     id={'InvenioAppRdm.Deposit.TypeTitleComponents.container'}
@@ -151,6 +153,7 @@ const AbstractComponent = ({record, vocabularies}) => {
             fieldPath="metadata.description"
             options={vocabularies.metadata.descriptions}
             recordUI={_get(record, "ui", null)}
+            label="Abstract"
             editorConfig={{
               removePlugins: [
                 "Image",
@@ -182,7 +185,7 @@ const AdditionalDatesComponent = ({vocabularies}) => {
       <DatesField
         fieldPath="metadata.dates"
         options={vocabularies.metadata.dates}
-        showEmptyValue
+        showEmptyValue={false}
       />
     </Overridable>
   )
@@ -242,15 +245,8 @@ const AIComponent = ({ customFieldsUI }) => {
 
 const AlternateIdentifiersComponent = ({vocabularies}) => {
   return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.AccordionFieldAlternateIdentifiers.container"
-      vocabularies={vocabularies}
-    >
-      <AccordionField
-        includesPaths={["metadata.identifiers"]}
-        active
-        label={i18next.t("Alternate identifiers")}
-      >
+    <Card fluid>
+      <Card.Content>
         <Overridable
           id="InvenioAppRdm.Deposit.IdentifiersField.container"
           vocabularies={vocabularies}
@@ -264,8 +260,8 @@ const AlternateIdentifiersComponent = ({vocabularies}) => {
             showEmptyValue
           />
         </Overridable>
-      </AccordionField>
-    </Overridable>
+      </Card.Content>
+    </Card>
   )
 }
 
@@ -393,7 +389,9 @@ const DoiComponent = ({config, record}) => {
 
 const FilesUploadComponent = ({config, noFiles, record, permissions}) => {
   return(
-    <Overridable
+    <Card fluid>
+      <Card.Content>
+    {/* <Overridable
       id="InvenioAppRdm.Deposit.AccordionFieldFiles.container"
       record={record}
       config={config}
@@ -403,7 +401,7 @@ const FilesUploadComponent = ({config, noFiles, record, permissions}) => {
         includesPaths={["files.enabled"]}
         active
         label={i18next.t("Files")}
-      >
+      > */}
         {noFiles && record.is_published && (
           <div className="text-align-center pb-10">
             <em>{i18next.t("The record has no files.")}</em>
@@ -421,23 +419,19 @@ const FilesUploadComponent = ({config, noFiles, record, permissions}) => {
             showMetadataOnlyToggle={permissions?.can_manage_files}
           />
         </Overridable>
-      </AccordionField>
-    </Overridable>
+      {/* </AccordionField>
+    </Overridable> */}
+      </Card.Content>
+    </Card>
   )
 }
 
-const FundingComponent = ({accordionStyle}) => {
+const FundingComponent = ({}) => {
   return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.AccordionFieldFunding.container"
-      ui={accordionStyle}
-    >
-      <AccordionField
-        includesPaths={["metadata.funding"]}
-        active
-        label="Funding"
-        ui={accordionStyle}
+      <Card fluid
+        id="InvenioAppRdm.Deposit.AccordionFieldFunding.container"
       >
+        <Card.Content>
         <Overridable
           id="InvenioAppRdm.Deposit.FundingField.container"
           fieldPath="metadata.funding"
@@ -462,7 +456,7 @@ const FundingComponent = ({accordionStyle}) => {
                 size: 5,
               },
             }}
-            label="Awards"
+            label="Funding"
             labelIcon="money bill alternate outline"
             deserializeAward={(award) => {
               return {
@@ -515,13 +509,27 @@ const FundingComponent = ({accordionStyle}) => {
             }}
           />
         </Overridable>
-      </AccordionField>
-    </Overridable>
+      </Card.Content>
+    </Card>
   )
 }
 
-const KeywordsComponent = () => {
-  return(<></>)
+const KeywordsComponent = ({ customFieldsUI }) => {
+  return(
+    <>
+    {/* <Card fluid>
+      <Card.Content> */}
+        <CustomFieldInjector
+          sectionName="Tags"
+          label="User-defined Keywords"
+          fieldName="kcr:user_defined_tags"
+          idString="KCRKeywordsField"
+          customFieldsUI={customFieldsUI}
+        />
+      {/* </Card.Content>
+    </Card> */}
+    </>
+  )
 }
 
 const LanguagesComponent = ({record}) => {
@@ -550,34 +558,38 @@ const LanguagesComponent = ({record}) => {
 
 const LicensesComponent = () => {
   return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.LicenseField.container"
-      fieldPath="metadata.rights"
-    >
-      <LicenseField
-        fieldPath="metadata.rights"
-        searchConfig={{
-          searchApi: {
-            axios: {
-              headers: {
-                Accept: "application/vnd.inveniordm.v1+json",
+    <Card fluid>
+      <Card.Content>
+        <Overridable
+          id="InvenioAppRdm.Deposit.LicenseField.container"
+          fieldPath="metadata.rights"
+        >
+          <LicenseField
+            fieldPath="metadata.rights"
+            searchConfig={{
+              searchApi: {
+                axios: {
+                  headers: {
+                    Accept: "application/vnd.inveniordm.v1+json",
+                  },
+                  url: "/api/vocabularies/licenses",
+                  withCredentials: false,
+                },
               },
-              url: "/api/vocabularies/licenses",
-              withCredentials: false,
-            },
-          },
-          initialQueryState: {
-            filters: [["tags", "recommended"]],
-          },
-        }}
-        serializeLicenses={(result) => ({
-          title: result.title_l10n,
-          description: result.description_l10n,
-          id: result.id,
-          link: result.props.url,
-        })}
-      />
-    </Overridable>
+              initialQueryState: {
+                filters: [["tags", "recommended"]],
+              },
+            }}
+            serializeLicenses={(result) => ({
+              title: result.title_l10n,
+              description: result.description_l10n,
+              id: result.id,
+              link: result.props.url,
+            })}
+          />
+        </Overridable>
+      </Card.Content>
+    </Card>
 )
 }
 
@@ -633,15 +645,8 @@ const ReferencesComponent = ({vocabularies}) => {
 
 const RelatedWorksComponent = ({vocabularies}) => {
   return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.AccordionFieldRelatedWorks.container"
-      vocabularies={vocabularies}
-    >
-      <AccordionField
-        includesPaths={["metadata.related_identifiers"]}
-        active
-        label={i18next.t("Related works")}
-      >
+    <Card fluid>
+      <Card.Content>
         <Overridable
           id="InvenioAppRdm.Deposit.RelatedWorksField.container"
           fieldPath="metadata.related_identifiers"
@@ -653,41 +658,54 @@ const RelatedWorksComponent = ({vocabularies}) => {
             showEmptyValue
           />
         </Overridable>
-      </AccordionField>
-    </Overridable>
+      </Card.Content>
+    </Card>
   )
 }
 
 const ResourceTypeComponent = ({vocabularies}) => {
   return(
-  <Overridable
-    id="InvenioAppRdm.Deposit.ResourceTypeField.container"
-    vocabularies={vocabularies}
-    fieldPath="metadata.resource_type"
-  >
-    <ResourceTypeField
-      options={vocabularies.metadata.resource_type}
-      fieldPath="metadata.resource_type"
-      required
-    />
-  </Overridable>
+    <Card fluid
+      id={'InvenioAppRdm.Deposit.ResourceTypeComponent.container'}
+    >
+      <Card.Content>
+        <Overridable
+          id="InvenioAppRdm.Deposit.ResourceTypeField.container"
+          vocabularies={vocabularies}
+          fieldPath="metadata.resource_type"
+        >
+          <ResourceTypeField
+            options={vocabularies.metadata.resource_type}
+            fieldPath="metadata.resource_type"
+            required
+          />
+        </Overridable>
+      </Card.Content>
+    </Card>
   )
 }
 
 const SubjectsComponent = ({record, vocabularies}) => {
   return(
-    <Overridable
-      id="InvenioAppRdm.Deposit.SubjectsField.container"
-      vocabularies={vocabularies}
-      fieldPath="metadata.subjects"
-      record={record}
-    >
-      <SubjectsField
-        fieldPath="metadata.subjects"
-        initialOptions={_get(record, "ui.subjects", null)}
-        limitToOptions={vocabularies.metadata.subjects.limit_to}
-      />
-    </Overridable>
+    <>
+    {/* <Card fluid>
+      <Card.Content> */}
+        <Overridable
+          id="InvenioAppRdm.Deposit.SubjectsField.container"
+          vocabularies={vocabularies}
+          fieldPath="metadata.subjects"
+          record={record}
+        >
+          <SubjectsField
+            fieldPath="metadata.subjects"
+            label="Subjects"
+            initialOptions={_get(record, "ui.subjects", null)}
+            limitToOptions={vocabularies.metadata.subjects.limit_to}
+          />
+        </Overridable>
+      {/* </Card.Content>
+    </Card> */}
+  </>
   )
 }
 
@@ -761,8 +779,14 @@ const BookDetailComponent = ({customFieldsUI}) => {
   return(
     <Card fluid>
       <Card.Content>
-        <CustomFieldInjector
+        {/* <CustomFieldInjector
           sectionName="Book information"
+          idString="BookDetailFields"
+          customFieldsUI={customFieldsUI}
+        /> */}
+        <CustomFieldInjector
+          sectionName="Book / Report / Chapter"
+          fieldName="imprint:imprint"
           idString="BookDetailFields"
           customFieldsUI={customFieldsUI}
         />
@@ -770,14 +794,26 @@ const BookDetailComponent = ({customFieldsUI}) => {
     </Card>
 )}
 
-const TypeTitleComponents = ({vocabularies, record}) => {
+const CombinedTitlesComponent = ({vocabularies, record}) => {
   return(
     <Card fluid
-      id={'InvenioAppRdm.Deposit.TypeTitleComponents.container'}
+      id={'InvenioAppRdm.Deposit.CombinedTitlesComponent.container'}
     >
       <Card.Content>
-        <ResourceTypeComponent vocabularies={vocabularies} />
         <TitleComponent vocabularies={vocabularies} record={record} />
+      </Card.Content>
+    </Card>
+  )
+}
+
+const TypeTitleComponent = ({vocabularies, record}) => {
+  return(
+    <Card fluid
+      id={'InvenioAppRdm.Deposit.TypeTitleComponent.container'}
+    >
+      <Card.Content>
+        <TitleComponent vocabularies={vocabularies} record={record} />
+        <ResourceTypeComponent vocabularies={vocabularies} />
       </Card.Content>
     </Card>
   )
@@ -835,10 +871,10 @@ const AccessRightsComponent = ({ permissions }) => {
   )
 }
 
-const CombinedDatesComponents = ({ vocabularies }) => {
+const CombinedDatesComponent = ({ vocabularies }) => {
   return(
     <Card fluid
-      id={'InvenioAppRdm.Deposit.CombinedDatesComponents.container'}
+      id={'InvenioAppRdm.Deposit.CombinedDatesComponent.container'}
     >
       <Card.Content>
         <DateComponent />
@@ -905,8 +941,9 @@ const fieldComponents = {
     // below are composite field components
     admin_metadata: AdminMetadataComponent,
     book_detail: BookDetailComponent,
-    type_title: TypeTitleComponents,
-    combined_dates: CombinedDatesComponents,
+    type_title: TypeTitleComponent,
+    combined_titles: CombinedTitlesComponent,
+    combined_dates: CombinedDatesComponent,
     submission: SubmissionComponent,
     access_rights: AccessRightsComponent,
     delete: DeleteComponent
@@ -918,13 +955,14 @@ const FormPage = ({ children, id, pageNums,
   const currentPageIndex = pageNums.indexOf(currentFormPage);
   const nextPageIndex = currentPageIndex + 1;
   const previousPageIndex = currentPageIndex - 1;
-  const nextPage = nextPageIndex < pageNums.length - 1 ? pageNums[nextPageIndex] : null;
+  const nextPage = nextPageIndex < pageNums.length ? pageNums[nextPageIndex] : null;
   const previousPage = previousPageIndex >= 0 ? pageNums[previousPageIndex] : null;
   return(
-    <Card fluid
-      id={id}
-    >
-      <Card.Content>
+    <>
+    {/* // <Card fluid
+    //   id={id}
+    // >
+    //   <Card.Content> */}
         {children}
         {!!previousPage &&
         <Button primary
@@ -942,8 +980,9 @@ const FormPage = ({ children, id, pageNums,
           onClick={handleFormPageChange}
           value={nextPage}
         />}
-      </Card.Content>
-    </Card>
+      {/* </Card.Content>
+    </Card> */}
+  </>
   )
 }
 
@@ -1020,12 +1059,12 @@ export class RDMDepositForm extends Component {
   }
 
   formPages = {
-    '1': 'Title Information',
+    '1': 'Title',
     '2': 'People',
     '3': 'Subjects',
-    '4': 'Deposit Details',
-    '5': 'File Upload',
-    '6': 'Admin Metadata',
+    '4': 'Details',
+    '5': 'Files',
+    // '6': 'Admin',
     '7': 'Submit'
   }
   render() {
@@ -1066,7 +1105,7 @@ export class RDMDepositForm extends Component {
         <Container id="rdm-deposit-form" className="rel-mt-1">
           <Grid className="mt-25">
             <Grid.Column mobile={16} tablet={16} computer={16}>
-              <h2>New Deposit: {currentResourceType}</h2>
+              <h2>New Deposit</h2>
               <Step.Group
                 widths={this.formPages.length}
                 className="upload-form-pager"
@@ -1109,21 +1148,6 @@ export class RDMDepositForm extends Component {
                         handleFormPageChange={this.handleFormPageChange}
                         currentResourceType={currentResourceType}
                       >
-                          {config.fields_config.common_fields[pageNum].map((component_label, index) => {
-                            const MyField = fieldComponents[component_label]
-                            return (<MyField
-                              key={index}
-                              config={config}
-                              noFiles={this.noFiles}
-                              record={record}
-                              vocabularies={vocabularies}
-                              permissions={permissions}
-                              accordionStyle={this.accordionStyle}
-                              customFieldsUI={customFieldsUI}
-                              currentResourceType={currentResourceType}
-                            />)
-                          }
-                          )}
                           {!!currentResourceType &&
                            !!currentTypeExtraFields[pageNum] ?
                            currentTypeExtraFields[pageNum].map((component_label, index) => {
@@ -1141,6 +1165,21 @@ export class RDMDepositForm extends Component {
                             />)
                           }) : ""
                           }
+                          {config.fields_config.common_fields[pageNum].map((component_label, index) => {
+                            const MyField = fieldComponents[component_label]
+                            return (<MyField
+                              key={index}
+                              config={config}
+                              noFiles={this.noFiles}
+                              record={record}
+                              vocabularies={vocabularies}
+                              permissions={permissions}
+                              accordionStyle={this.accordionStyle}
+                              customFieldsUI={customFieldsUI}
+                              currentResourceType={currentResourceType}
+                            />)
+                          }
+                          )}
                       </FormPage>
                     </div>
                   )

@@ -2,9 +2,8 @@ common_fields:
   "1":
     - previously_published
     - doi
-    - type_title
-    - subtitle
-    - additional_titles
+    - resource_type
+    - combined_titles
     - combined_dates
     - abstract
   "2":
@@ -31,6 +30,32 @@ common_fields:
     - access_rights
     - delete
 extras_by_type:
+  audiovisual:
+    "1":
+    "2":
+    "3":
+      - language
+    "4":
+    "5":
+    "6":
+      - admin_metadata
+  instructionalResource-syllabus:
+    "1":
+    "2":
+    "3":
+      - language
+    "4":
+    "5":
+    "6":
+      - admin_metadata
+  other:
+    "1":
+    "2":
+    "3":
+      - language
+    "4":
+    "5":
+    "6":
   textDocument-book:
     "1":
     "2":
@@ -40,8 +65,23 @@ extras_by_type:
       - book_detail
     "5":
     "6":
-      - admin_metadata
-  audiovisual:
+  textDocument-bookSection:
+    "1":
+    "2":
+    "3":
+      - language
+    "4":
+    "5":
+    "6":
+  textDocument-journalArticle:
+    "1":
+    "2":
+    "3":
+      - language
+    "4":
+    "5":
+    "6":
+  textDocument-review:
     "1":
     "2":
     "3":
