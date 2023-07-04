@@ -7,7 +7,7 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-from .lib.fedoraapi import FedoraApi
+from .libs.fedoraapi import FedoraApi
 import requests
 from typing import Optional
 import os
