@@ -25,7 +25,7 @@ def api_request(method:str='GET', endpoint:str='records', server:str='',
     """
     Make an api request and return the response
     """
-    debug = GLOBAL_DEBUG or False
+    debug = GLOBAL_DEBUG or True
     if not server:
         server = SERVER_DOMAIN
     if not token:

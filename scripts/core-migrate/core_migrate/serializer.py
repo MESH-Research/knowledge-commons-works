@@ -686,28 +686,35 @@ def serialize_json() -> tuple[list[dict], dict]:
             # FIXME: Remove things like surrounding quotation marks
             mytitle = row['title_unchanged']
             newrec['metadata']['title'] = _clean_string(mytitle)
+            if row['id'] == "hc:36367":
+                newrec['metadata']['title'] = 'Do "Creatures of the State" Have Constitutional Rights? Standing for Municipalities to Assert Procedural Due Process Claims against the State'
             # FIXME: types here are CV, need to expand to accommodate stripped desc
-            newrec['metadata']['additional_titles'].append(
-                {"title": _clean_string(row['title']),
-                    "type": {
-                        "id": "other",
-                        "title": {"en": "Primary title with HTML stripped"}
-                    },
-                }
-            )
+            if row['title_unchanged'] != row['title']:
+                if row['id'] == "hc:36367":
+                    pass
+                else:
+                    newrec['metadata']['additional_titles'].append(
+                        {"title": _clean_string(row['title']),
+                            "type": {
+                                "id": "other",
+                                "title": {"en": "Primary title with HTML stripped"}
+                            },
+                        }
+                    )
             # Descriptions/Abstracts
             # FIXME: handle double-escaped slashes?
             # FIXME: handle windows newlines?
             newrec['metadata']['description'] = row['abstract_unchanged'].replace('\r\n', '\n')
             # FIXME: types here are CV, need to expand to accommodate stripped desc
-            newrec['metadata']['additional_descriptions'].append(
-                {"description": row['abstract'].replace('\r\n', '\n'),
-                 "type": {
-                     "id": "other",
-                     "title": {"en": "Primary description with HTML stripped"}
-                 }
-                }
-            )
+            if row['abstract_unchanged'] != row['abstract']:
+                newrec['metadata']['additional_descriptions'].append(
+                    {"description": row['abstract'].replace('\r\n', '\n'),
+                    "type": {
+                        "id": "other",
+                        "title": {"en": "Primary description with HTML stripped"}
+                    }
+                    }
+                )
 
             # Notes
             if row['notes']:
