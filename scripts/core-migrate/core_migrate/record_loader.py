@@ -593,6 +593,8 @@ def load_records_into_invenio(start:int=0, stop:int=-1) -> None:
         import itertools
         top = itertools.islice(json_source, *args)
         for rec in top:
+            print(f'*****starting record {record_counter}')
+            pprint(rec)
             create_full_invenio_record(rec)
             record_counter += 1
             print(f'=====loaded record index {start + record_counter}')
