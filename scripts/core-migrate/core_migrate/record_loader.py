@@ -55,6 +55,11 @@ def api_request(method:str='GET', endpoint:str='records', server:str='',
         payload_args['data'] = file_data
 
     # files = {'file': ('report.xls', open('report.xls', 'rb'), 'application/vnd.ms-excel', {'Expires': '0'})}
+    if debug:
+        print(f'request to {api_url}')
+        print(f'headers: {headers}')
+        print(f'params: {params}')
+        print(f'payload_args: {payload_args}')
     response = callfunc(api_url, headers=headers, params=params,
                         **payload_args, verify=False)
     if debug: pprint(response)
@@ -469,6 +474,8 @@ def create_full_invenio_record(core_data:dict) -> dict:
         else:
             community_label = community_label[0]
 
+        if debug:
+            print(f'checking for community {community_label}')
         # try to look up a matching community
         community_check = api_request('GET', endpoint='communities',
                                       args=community_label)
