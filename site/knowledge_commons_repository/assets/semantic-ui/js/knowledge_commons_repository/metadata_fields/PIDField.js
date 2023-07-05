@@ -118,14 +118,14 @@ class ManagedUnmanagedSwitch extends Component {
   };
 
   render() {
-    const { disabled, isManagedSelected, pidLabel } = this.props;
+    const { disabled, isManagedSelected, fieldPath, pidLabel } = this.props;
 
     return (
       <Form.Group inline>
         <Form.Field>
-          {i18next.t("Do you already have a {{pidLabel}} for this upload?", {
+          <FieldLabel htmlFor={fieldPath} icon={"barcode"} label={i18next.t("Do you already have a {{pidLabel}} for this upload?", {
             pidLabel: pidLabel,
-          })}
+          })} />
         </Form.Field>
         <Form.Field width={2}>
           <Radio
@@ -417,9 +417,9 @@ class CustomPIDField extends Component {
     const fieldError = getFieldErrors(form, fieldPath);
     return (
       <>
-        <Form.Field required={required} error={fieldError}>
+        {/* <Form.Field required={required} error={fieldError}>
           <FieldLabel htmlFor={fieldPath} icon={pidIcon} label={fieldLabel} />
-        </Form.Field>
+        </Form.Field> */}
 
         {this.canBeManagedAndUnmanaged && (
           <ManagedUnmanagedSwitch

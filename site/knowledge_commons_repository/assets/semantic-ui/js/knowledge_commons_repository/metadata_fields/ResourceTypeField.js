@@ -10,6 +10,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import _get from "lodash/get";
+import { Form } from "semantic-ui-react";
 import { FieldLabel, SelectField } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { useFormikContext } from "formik";
@@ -91,7 +92,9 @@ const ResourceTypeField = ({fieldPath,
 
   return (
     <>
-      <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} /><br />
+      <Form.Field required={required}>
+        <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+      </Form.Field>
       <Menu compact icon='labeled'>
         <Menu.Item
           name='textDocument-journalArticle'
