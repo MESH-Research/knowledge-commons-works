@@ -13,7 +13,7 @@ import _get from "lodash/get";
 import { FieldLabel, SelectField } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { useFormikContext } from "formik";
-import { ResourceTypeContext } from "../custom_deposit/custom_RDMDepositForm";
+import { FormValuesContext } from "../custom_deposit/custom_RDMDepositForm";
 import { Icon, Menu } from "semantic-ui-react";
 
 const ResourceTypeField = ({fieldPath,
@@ -25,11 +25,14 @@ const ResourceTypeField = ({fieldPath,
                             ...restProps}) => {
 
   const [ otherToggleActive, setOtherToggleActive ] = useState(false);
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue, initialValues } = useFormikContext();
   const selectedType = values[fieldPath];
-  const { currentResourceType, handleValuesChange } = useContext(ResourceTypeContext);
-  console.log(values.metadata.resource_type);
-  console.log(currentResourceType);
+  const { currentResourceType, handleValuesChange } = useContext(FormValuesContext);
+
+
+  useEffect(() => {
+
+  }, []);
 
   useEffect(() => {
     if ( currentResourceType !== values.metadata.resource_type ) {

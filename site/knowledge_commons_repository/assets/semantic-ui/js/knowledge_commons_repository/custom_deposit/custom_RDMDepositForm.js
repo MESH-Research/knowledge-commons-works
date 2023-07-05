@@ -516,19 +516,13 @@ const FundingComponent = ({}) => {
 
 const KeywordsComponent = ({ customFieldsUI }) => {
   return(
-    <>
-    {/* <Card fluid>
-      <Card.Content> */}
-        <CustomFieldInjector
-          sectionName="Tags"
-          label="User-defined Keywords"
-          fieldName="kcr:user_defined_tags"
-          idString="KCRKeywordsField"
-          customFieldsUI={customFieldsUI}
-        />
-      {/* </Card.Content>
-    </Card> */}
-    </>
+    <CustomFieldInjector
+      sectionName="Tags"
+      label="User-defined Keywords"
+      fieldName="kcr:user_defined_tags"
+      idString="KCRKeywordsField"
+      customFieldsUI={customFieldsUI}
+    />
   )
 }
 
@@ -687,25 +681,19 @@ const ResourceTypeComponent = ({vocabularies}) => {
 
 const SubjectsComponent = ({record, vocabularies}) => {
   return(
-    <>
-    {/* <Card fluid>
-      <Card.Content> */}
-        <Overridable
-          id="InvenioAppRdm.Deposit.SubjectsField.container"
-          vocabularies={vocabularies}
-          fieldPath="metadata.subjects"
-          record={record}
-        >
-          <SubjectsField
-            fieldPath="metadata.subjects"
-            label="Subjects"
-            initialOptions={_get(record, "ui.subjects", null)}
-            limitToOptions={vocabularies.metadata.subjects.limit_to}
-          />
-        </Overridable>
-      {/* </Card.Content>
-    </Card> */}
-  </>
+    <Overridable
+      id="InvenioAppRdm.Deposit.SubjectsField.container"
+      vocabularies={vocabularies}
+      fieldPath="metadata.subjects"
+      record={record}
+    >
+      <SubjectsField
+        fieldPath="metadata.subjects"
+        label="Subjects"
+        initialOptions={_get(record, "ui.subjects", null)}
+        limitToOptions={vocabularies.metadata.subjects.limit_to}
+      />
+    </Overridable>
   )
 }
 
@@ -818,6 +806,17 @@ const TypeTitleComponent = ({vocabularies, record}) => {
     </Card>
   )
 };
+
+const SubjectKeywordsComponent = ({ record, vocabularies, customFieldsUI }) => {
+  return(
+    <Card fluid>
+      <Card.Content>
+        <SubjectsComponent record={record} vocabularies={vocabularies} />
+        <KeywordsComponent customFieldsUI={customFieldsUI} />
+      </Card.Content>
+    </Card>
+  )
+}
 
 const SubmissionComponent = () => {
   return(
@@ -939,14 +938,15 @@ const fieldComponents = {
     volume: VolumeComponent,
     version: VersionComponent,
     // below are composite field components
+    access_rights: AccessRightsComponent,
     admin_metadata: AdminMetadataComponent,
     book_detail: BookDetailComponent,
-    type_title: TypeTitleComponent,
     combined_titles: CombinedTitlesComponent,
     combined_dates: CombinedDatesComponent,
+    delete: DeleteComponent,
+    subject_keywords: SubjectKeywordsComponent,
     submission: SubmissionComponent,
-    access_rights: AccessRightsComponent,
-    delete: DeleteComponent
+    type_title: TypeTitleComponent,
 }
 
 const FormPage = ({ children, id, pageNums,
@@ -1212,4 +1212,4 @@ RDMDepositForm.defaultProps = {
   files: null,
 };
 
-export { FormValuesContext as ResourceTypeContext };
+export { FormValuesContext };

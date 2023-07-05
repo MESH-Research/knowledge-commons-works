@@ -1,8 +1,11 @@
-import React, {useState} from "react";
+
+import React, { useContext, useEffect } from "react";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
-import { FastField } from "formik";
-import { Form, Icon, Radio, } from "semantic-ui-react";
-import { BooleanCheckbox, TextArea, BooleanField, FieldLabel } from "react-invenio-forms";
+import { useFormikContext } from "formik";
+// import { Form, Icon, Radio, } from "semantic-ui-react";
+import { BooleanCheckbox, TextArea } from "react-invenio-forms";
+// import { ResourceTypeContext } from "@js/knowledge_commons_repository/custom_deposit/custom_RDMDepositForm";
+import { FormValuesContext } from "../../js/knowledge_commons_repository/custom_deposit/custom_RDMDepositForm";
 
 const AIUsageField = ({fieldPath,
                        label,
@@ -12,12 +15,21 @@ const AIUsageField = ({fieldPath,
                        ai_description,
                        ...restProps
                       }) => {
-  const [ aiWasUsed, setAiWasUsed ] = useState(false);
+  const { values, setFieldValue } = useFormikContext();
+  const { currentResourceType, handleValuesChange } = useContext(FormValuesContext);
 
-  const handleChange = (e, value) => {
-      console.log(`ai used? ${value}`);
-      setAiWasUsed(value === "yes");
-  };
+  useEffect(() => {
+    setFieldValue(fieldPath, {'ai_used': false});
+  }, []
+  );
+
+  useEffect(() => {
+      console.log('changed');
+      handleValuesChange(values);
+      console.log(values.custom_fields);
+  }, [values]
+  );
+
 
   return (
     <>
@@ -25,19 +37,25 @@ const AIUsageField = ({fieldPath,
       fieldPath={`${fieldPath}.ai_used`}
       // label="Did generative AI contribute to the production of this work?"
       label={ai_used.description}
-      trueLabel="probably"
+      trueLabel="yes"
       falseLabel="no"
       // icon={ai_used.icon}
       required={false}
       description=""
       icon={ai_used.icon}
+      value={false}
     />
-    <TextArea
-      fieldPath={`${fieldPath}.ai_description`}
-      label={ai_description.label}
-      description={ai_description.description}
-      required={false}
-    />
+    {!!values.custom_fields ? (
+      values.custom_fields['kcr:ai_usage'].ai_used === true &&
+      <TextArea
+        fieldPath={`${fieldPath}.ai_description`}
+        // label={ai_description.label}
+        description={ai_description.description}
+        required={false}
+        defaultNewValue={""}
+      />
+    ) : ""
+    }
     </>
   );
 }

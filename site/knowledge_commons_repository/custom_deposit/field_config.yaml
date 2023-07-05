@@ -13,8 +13,7 @@ common_fields:
     - ai
     - funding
   "3":
-    - subjects
-    - keywords
+    - subjects_keywords
     - content_warning
   "4":
     - alternate_identifiers
