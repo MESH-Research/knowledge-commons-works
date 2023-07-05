@@ -19,7 +19,7 @@ const AIUsageField = ({fieldPath,
   const { currentResourceType, handleValuesChange } = useContext(FormValuesContext);
 
   useEffect(() => {
-    setFieldValue(fieldPath, {'ai_used': false});
+        setFieldValue(fieldPath, {'ai_used': false});
   }, []
   );
 
