@@ -273,8 +273,19 @@ const CommunitiesComponent = () => {
     </Overridable>
 )}
 
-const ContentWarningComponent = () => {
-  return(<></>)
+const ContentWarningComponent = ({ customFieldsUI }) => {
+  return(
+    <Card fluid>
+      <Card.Content>
+        <CustomFieldInjector
+          fieldName="kcr:content_warning"
+          sectionName="Content warning"
+          idString="ContentWarning"
+          customFieldsUI={customFieldsUI}
+        />
+      </Card.Content>
+    </Card>
+  )
 }
 
 const ContributorsComponent = ({config, vocabularies}) => {
@@ -944,7 +955,7 @@ const fieldComponents = {
     combined_titles: CombinedTitlesComponent,
     combined_dates: CombinedDatesComponent,
     delete: DeleteComponent,
-    subject_keywords: SubjectKeywordsComponent,
+    subjects_keywords: SubjectKeywordsComponent,
     submission: SubmissionComponent,
     type_title: TypeTitleComponent,
 }
@@ -1106,7 +1117,7 @@ export class RDMDepositForm extends Component {
             <Grid.Column mobile={16} tablet={16} computer={16}>
               <h2>
                 {record.id !== null ? "Updating " : "New "}
-                {record.is_draft === true ? "Draft " : "Published "}Deposit
+                {record.status === "draft" ? "Draft " : "Published "}Deposit
               </h2>
               <Step.Group
                 widths={this.formPages.length}

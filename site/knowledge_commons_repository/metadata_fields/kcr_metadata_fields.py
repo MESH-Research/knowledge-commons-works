@@ -65,6 +65,10 @@ KCR_CUSTOM_FIELDS = [
         name="kcr:submitter_username",
         field_cls=SanitizedUnicode,
     ),
+    TextCF(
+        name="kcr:content_warning",
+        field_cls=SanitizedUnicode,
+    ),
 ]
 
 KCR_CHAPTER_LABEL_FIELD_UI = {
@@ -141,6 +145,17 @@ KCR_SPONSORING_INSTITUTION_FIELD_UI = {
     "icon": "group"
 }
 
+KCR_CONTENT_WARNING_FIELD_UI = {
+    "field": "kcr:content_warning",
+    "ui_widget": "RichInput",
+    "props": {
+        "label": _("Content warning"),
+        "description": "Does this deposit contain any potentially difficult content you would like to flag for viewers?",
+        "icon": "warning sign"
+    },
+    "icon": "warning sign"
+}
+
 KCR_ADMIN_INFO_SECTION_UI = {
     "section": _("Commons admin info"),
     "fields": [
@@ -159,3 +174,4 @@ KCR_IMPRINT_SECTION_EXTRAS_UI = [
 KCR_MEETING_SECTION_EXTRAS_UI = [
     KCR_MEETING_ORGANIZATION_FIELD_UI
 ]
+
