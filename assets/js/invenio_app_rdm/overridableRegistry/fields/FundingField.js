@@ -12,7 +12,7 @@ import { FieldArray, getIn } from "formik";
 // import { DndProvider } from "react-dnd";
 import { Button, Form, Icon, List } from "semantic-ui-react";
 import { FieldLabel } from "react-invenio-forms";
-import { GlobalDndContext } from "./GlobalDndContext";
+// import { GlobalDndContext } from "./GlobalDndContext";
 
 import { FundingFieldItem } from "./FundingFieldItem";
 import FundingModal from "./FundingModal";
@@ -82,7 +82,7 @@ function FundingFieldForm(props) {
       };
   return (
     // <DndProvider backend={HTML5Backend}>
-    <GlobalDndContext>
+    // <GlobalDndContext>
       <Form.Field required={required}>
         <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
         <List>
@@ -151,8 +151,8 @@ function FundingFieldForm(props) {
           />
         </List>
       </Form.Field>
-    {/* </DndProvider> */}
-    </GlobalDndContext>
+    // {/* </DndProvider> */}
+    // {/* </GlobalDndContext> */}
   );
 }
 

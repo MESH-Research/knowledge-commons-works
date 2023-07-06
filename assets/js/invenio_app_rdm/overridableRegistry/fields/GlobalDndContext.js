@@ -5,9 +5,9 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 //const DNDManager = createDragDropManager(HTML5Backend);
-export const GlobalDndContext = (props) =>
+export const GlobalDndContext = ({key, children}) =>
 {
    //const manager = useRef(DNDManager);
    // the following line solve the problem only with key property
-   return <DndProvider backend={HTML5Backend} key={Math.random()}>{props.children}</DndProvider>
+   return <DndProvider backend={HTML5Backend} key={key}>{children}</DndProvider>
 }

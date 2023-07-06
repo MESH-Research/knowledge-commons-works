@@ -54,6 +54,8 @@ import Overridable from "react-overridable";
 import ResourceTypeField from "../metadata_fields/ResourceTypeField";
 import { PIDField } from "../metadata_fields/PIDField";
 import { DatesField } from "../metadata_fields/DatesField";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
 
 // React Context to track the current form values.
 // Will contain the Formik values object passed up from a
@@ -976,6 +978,10 @@ const FormPage = ({ children, id, pageNums,
     //   id={id}
     // >
     //   <Card.Content> */}
+
+      <DndProvider backend={HTML5Backend}
+        // options={{ rootElement: rootElement}}
+      >
         {children}
         {!!previousPage &&
         <Button primary
@@ -993,6 +999,7 @@ const FormPage = ({ children, id, pageNums,
           onClick={handleFormPageChange}
           value={nextPage}
         />}
+      </DndProvider>
       {/* </Card.Content>
     </Card> */}
   </>

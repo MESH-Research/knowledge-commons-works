@@ -18,7 +18,7 @@ import { DndProvider } from "react-dnd";
 import { CreatibutorsModal } from "./CreatibutorsModal";
 import { CreatibutorsFieldItem } from "./CreatibutorsFieldItem";
 import { CREATIBUTOR_TYPE } from "./types";
-import { GlobalDndContext } from "./GlobalDndContext";
+// import { GlobalDndContext } from "./GlobalDndContext";
 // import { sortOptions } from "../../utils";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 
@@ -83,7 +83,7 @@ class CreatibutorsFieldForm extends Component {
 
     return (
       // <DndProvider backend={HTML5Backend} options={{ rootElement: rootElement}}>
-      <GlobalDndContext>
+      // <GlobalDndContext key={Math.random()}>
         <Form.Field
           required={schema === "creators"}
           className={creatibutorsError ? "error" : ""}
@@ -140,8 +140,8 @@ class CreatibutorsFieldForm extends Component {
             )}
           </List>
         </Form.Field>
-      {/* </DndProvider> */}
-      </GlobalDndContext>
+      // {/* </DndProvider> */}
+      // </GlobalDndContext>
     );
   }
 }
