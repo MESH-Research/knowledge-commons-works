@@ -291,7 +291,7 @@ const ContentWarningComponent = ({ customFieldsUI }) => {
 const ContributorsComponent = ({config, vocabularies}) => {
   return(
     <Card fluid
-      id={'InvenioAppRdm.Deposit.TypeTitleComponents.container'}
+      id={'InvenioAppRdm.Deposit.ContributorsField.card'}
     >
       <Card.Content>
         <Overridable
@@ -312,6 +312,7 @@ const ContributorsComponent = ({config, vocabularies}) => {
               addLabel: "Add contributor",
               editLabel: "Edit contributor",
             }}
+            id="InvenioAppRdm.Deposit.ContributorsField.card"
           />
         </Overridable>
     </Card.Content>
@@ -322,7 +323,7 @@ const ContributorsComponent = ({config, vocabularies}) => {
 const CreatorsComponent = ({config, vocabularies}) => {
   return(
     <Card fluid
-      id={'InvenioAppRdm.Deposit.TypeTitleComponents.container'}
+      id={'InvenioAppRdm.Deposit.CreatorsField.card'}
     >
       <Card.Content>
         <Overridable
@@ -339,6 +340,7 @@ const CreatorsComponent = ({config, vocabularies}) => {
             schema="creators"
             autocompleteNames={config.autocomplete_names}
             required
+            id="InvenioAppRdm.Deposit.CreatorsField.card"
           />
         </Overridable>
       </Card.Content>
@@ -440,7 +442,7 @@ const FilesUploadComponent = ({config, noFiles, record, permissions}) => {
 const FundingComponent = ({}) => {
   return(
       <Card fluid
-        id="InvenioAppRdm.Deposit.AccordionFieldFunding.container"
+        id="InvenioAppRdm.Deposit.AccordionFieldFunding.card"
       >
         <Card.Content>
         <Overridable
@@ -1077,6 +1079,7 @@ export class RDMDepositForm extends Component {
     // '6': 'Admin',
     '7': 'Submit'
   }
+
   render() {
     const {
       record, files, permissions, preselectedCommunity

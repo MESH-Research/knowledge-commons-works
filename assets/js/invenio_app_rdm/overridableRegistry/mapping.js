@@ -43,9 +43,14 @@
 //   </div>
 //   );
 // }
-import MetadataOnlyToggle from "./fields/MetadataOnlyToggle";
+import { CreatibutorsField } from "./fields/CreatibutorsField";
+import { FundingField } from "./fields/FundingField";
+import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 
 export const overriddenComponents = {
     "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
+    "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
+    "InvenioAppRdm.Deposit.ContributorsField.container": CreatibutorsField,
+    "InvenioAppRdm.Deposit.FundingField.container": FundingField,
     // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
 }

@@ -35,4 +35,4 @@ MetadataOnlyToggle.propTypes = {
     filesEnabled: PropTypes.bool.isRequired,
 };
 
-export default MetadataOnlyToggle;
+export { MetadataOnlyToggle };
