@@ -43,7 +43,7 @@ book_types = [
     'textDocument-dissertation',
     'textDocument-report',
     'textDocument-whitePaper',
-    'other-bibliography',
+    'textDocument-bibliography',
     'presentation-conferencePaper',
     'textDocument-conferenceProceeding',
     'presentation-conferencePaper',
@@ -195,7 +195,7 @@ def _add_resource_type(rec, pubtype, genre, filetype):
 
     genres = {"Abstract": "textDocument-abstract",
               "Article": "textDocument-journalArticle",
-              "Bibliography": "other-bibliography",
+              "Bibliography": "textDocument-bibliography",
               "Blog Post": "textDocument-blogPost",
               "Book": "textDocument-book",
               "Book chapter": "textDocument-bookSection",
