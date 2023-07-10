@@ -45,12 +45,18 @@
 // }
 import { CreatibutorsField } from "./fields/CreatibutorsField";
 import { FundingField } from "./fields/FundingField";
+import { IdentifiersField } from "./fields/IdentifiersField";
 import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
+import { PublisherField } from "./fields/PublisherField";
+import { VersionField } from "./fields/VersionField";
 
 export const overriddenComponents = {
     "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
     "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
     "InvenioAppRdm.Deposit.ContributorsField.container": CreatibutorsField,
     "InvenioAppRdm.Deposit.FundingField.container": FundingField,
+    "InvenioAppRdm.Deposit.PublisherField.container": PublisherField,
+    "InvenioAppRdm.Deposit.IdentifiersField.container": IdentifiersField,
+    "InvenioAppRdm.Deposit.VersionField.container": VersionField
     // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
 }

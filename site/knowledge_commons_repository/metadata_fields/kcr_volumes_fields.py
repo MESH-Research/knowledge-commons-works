@@ -60,14 +60,14 @@ KCR_VOLUMES_FIELDS_UI = [{
         "total_volumes": {
             "label": _("Total volumes"),
             "placeholder": "",
-            "description": _(
-                "Total number of volumes in the work"
-            ),
+            # "description": _("Total number of volumes in the work"),
+            "icon": ""
         },
         "volume": {
             "label": _("Volume"),
             "placeholder": "",
-            "description": _("The number or label of the volume containing this deposit")
+            # "description": _("The number or label of the volume containing this deposit")
+            "icon": ""
         }
     },
     "icon": "book"

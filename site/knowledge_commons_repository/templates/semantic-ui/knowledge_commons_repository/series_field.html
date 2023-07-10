@@ -1,0 +1,5 @@
+<dt class="ui tiny header">{{ _("Series")}}</dt>
+
+{% for value in field_value %} {{value.get("series_title", "Unknown")}} ({{
+_("Series Title") }}: {{value.get("series_volume", "Series Volume")}}) {{ ", " if not loop.last
+}} {% endfor %}

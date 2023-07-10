@@ -12,7 +12,7 @@ import React, { Component, createContext, createRef, Fragment,
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
-import { AccordionField, CustomFields, importWidget, loadWidgetsFromConfig } from "react-invenio-forms";
+import { AccordionField, CustomFields, FieldLabel, loadWidgetsFromConfig } from "react-invenio-forms";
 import {
   AccessRightField,
   DescriptionsField,
@@ -42,6 +42,7 @@ import {
   Button,
   Card,
   Container,
+  Divider,
   Grid,
   Icon,
   Ref,
@@ -256,7 +257,7 @@ const AlternateIdentifiersComponent = ({vocabularies}) => {
         >
           <IdentifiersField
             fieldPath="metadata.identifiers"
-            label={i18next.t("Alternate identifiers")}
+            label={i18next.t("URL or Alternate Identifiers")}
             labelIcon="barcode"
             schemeOptions={vocabularies.metadata.identifiers.scheme}
             showEmptyValue
@@ -267,12 +268,27 @@ const AlternateIdentifiersComponent = ({vocabularies}) => {
   )
 }
 
+const BookTitleComponent = ({customFieldsUI}) => {
+  return(
+    <CustomFieldInjector
+      sectionName="Book / Report / Chapter"
+      fieldName="imprint:imprint.title"
+      idString="ImprintTitleField"
+      customFieldsUI={customFieldsUI}
+      description={""}
+    />
+  )
+}
 
 const CommunitiesComponent = () => {
   return(
-    <Overridable id="InvenioAppRdm.Deposit.CommunityHeader.container">
-      <CommunityHeader imagePlaceholderLink="/static/images/square-placeholder.png" />
-    </Overridable>
+    <Card fluid>
+      <Card.Content>
+        <Overridable id="InvenioAppRdm.Deposit.CommunityHeader.container">
+          <CommunityHeader imagePlaceholderLink="/static/images/square-placeholder.png" />
+        </Overridable>
+      </Card.Content>
+    </Card>
 )}
 
 const ContentWarningComponent = ({ customFieldsUI }) => {
@@ -620,13 +636,27 @@ const PublisherComponent = ({}) => {
       id="InvenioAppRdm.Deposit.PublisherField.container"
       fieldPath="metadata.publisher"
     >
-      <PublisherField fieldPath="metadata.publisher" />
+      <PublisherField
+        fieldPath="metadata.publisher"
+        description=""
+        labelIcon=""
+        helpText=""
+      />
     </Overridable>
   )
 }
 
-const PublicationLocationComponent = () => {
-  return(<></>)
+const PublicationLocationComponent = ({customFieldsUI}) => {
+  return(
+    <CustomFieldInjector
+      sectionName="Book / Report / Chapter"
+      fieldName="imprint:imprint.place"
+      idString="ImprintPlaceField"
+      customFieldsUI={customFieldsUI}
+      label={"Place of Publication"}
+      description={""}
+    />
+  )
 }
 
 
@@ -746,21 +776,29 @@ const SeriesNumberComponent = () => {
   return(<></>)
 }
 
-const TotalVolumesComponent = () => {
-  return(<></>)
+const VolumeComponent = ({ customFieldsUI }) => {
+  return(
+    <CustomFieldInjector
+      sectionName="KCR Book information"
+      fieldName="kcr:volumes"
+      idString="KcrVolumes"
+      customFieldsUI={customFieldsUI}
+    />
+  )
 }
 
-const VolumeComponent = () => {
-  return(<></>)
-}
-
-const VersionComponent = () => {
+const VersionComponent = ({description, label, icon}) => {
   return(
     <Overridable
       id="InvenioAppRdm.Deposit.VersionField.container"
       fieldPath="metadata.version"
     >
-      <VersionField fieldPath="metadata.version" />
+      <VersionField fieldPath="metadata.version"
+        description={description}
+        label={label}
+        labelIcon={icon}
+        helpText=""
+      />
     </Overridable>
   )
 }
@@ -782,17 +820,53 @@ const BookDetailComponent = ({customFieldsUI}) => {
   return(
     <Card fluid>
       <Card.Content>
-        {/* <CustomFieldInjector
-          sectionName="Book information"
-          idString="BookDetailFields"
-          customFieldsUI={customFieldsUI}
-        /> */}
-        <CustomFieldInjector
-          sectionName="Book / Report / Chapter"
-          fieldName="imprint:imprint"
-          idString="BookDetailFields"
-          customFieldsUI={customFieldsUI}
+        <FieldLabel htmlFor={"imprint:imprint"}
+          icon={"book"}
+          label={"Book details"}
         />
+        <Divider fitted />
+        <Grid padded>
+          <Grid.Row>
+            <Grid.Column width="8">
+              <CustomFieldInjector
+                sectionName="Book / Report / Chapter"
+                fieldName="imprint:imprint.isbn"
+                idString="ImprintISBNField"
+                description=""
+                customFieldsUI={customFieldsUI}
+              />
+            </Grid.Column>
+            <Grid.Column width="8">
+              <VersionComponent description=""
+                label="Edition or Version"
+                icon=""
+              />
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column width="8">
+              <PublisherComponent />
+            </Grid.Column>
+            <Grid.Column width="8">
+              <PublicationLocationComponent customFieldsUI={customFieldsUI} />
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <VolumeComponent customFieldsUI={customFieldsUI} />
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column width="8">
+              <CustomFieldInjector
+                sectionName="Book / Report / Chapter"
+                fieldName="imprint:imprint.pages"
+                idString="ImprintPagesField"
+                customFieldsUI={customFieldsUI}
+                description={""}
+                label="Number of Pages"
+              />
+            </Grid.Column>
+          </Grid.Row>
+      </Grid>
       </Card.Content>
     </Card>
 )}
@@ -949,7 +1023,6 @@ const fieldComponents = {
     total_pages: TotalPagesComponent,
     series_title: SeriesTitleComponent,
     series_number: SeriesNumberComponent,
-    total_volumes: TotalVolumesComponent,
     volume: VolumeComponent,
     version: VersionComponent,
     // below are composite field components
