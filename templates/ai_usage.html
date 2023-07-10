@@ -3,7 +3,7 @@
     {{value.get("ai_used", "Unknown")}}
 {% endif %}
 
-<dt class="ui tiny header">{{ _("Usage Description")}}</dt>
-    <dd>{{field_value.get('total_volumes')}}</dd>
+{% if field_value.get('ai_description') %}
+    <dt class="ui tiny header">{{ _("Usage Description")}}</dt>
     {{value.get("ai_description", "Unknown")}}
 {% endif %}
