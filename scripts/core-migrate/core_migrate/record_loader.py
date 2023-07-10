@@ -135,11 +135,14 @@ def upload_draft_files(draft_id:str, files_dict:dict[str, str]) -> dict:
     for f in initialization['json']['entries']:
         # {'updated': '2023-06-15T21:00:14.644204+00:00', 'status': 'pending', 'links': {'self': 'https://localhost/api/records/5bge2-p9906/draft/files/p', 'content': 'https://localhost/api/records/5bge2-p9906/draft/files/p/content', 'commit': 'https://localhost/api/records/5bge2-p9906/draft/files/p/commit'}, 'created': '2023-06-15T21:00:14.642209+00:00', 'key': 'p', 'metadata': None}
         output['file_transactions'][f['key']] = {}
+        server_string = SERVER_DOMAIN
+        if SERVER_DOMAIN == "10.98.11.40":
+            server_string = "invenio-dev.hcommons-staging.org"
         content_args = f['links']['content'
-            ].replace(f'https://{SERVER_DOMAIN}/api/records/', '')
+            ].replace(f'https://{server_string}/api/records/', '')
         assert re.findall(draft_id, content_args)
         commit_args = f['links']['commit'
-            ].replace(f'https://{SERVER_DOMAIN}/api/records/', '')
+            ].replace(f'https://{server_string}/api/records/', '')
         assert re.findall(draft_id, commit_args)
 
         filename = content_args.split('/')[3]
