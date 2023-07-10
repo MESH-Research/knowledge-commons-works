@@ -15,7 +15,7 @@ import { FieldLabel, SelectField } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { useFormikContext } from "formik";
 import { FormValuesContext } from "../custom_deposit/custom_RDMDepositForm";
-import { Icon, Menu } from "semantic-ui-react";
+import { Button, Icon, Menu } from "semantic-ui-react";
 
 const ResourceTypeField = ({fieldPath,
                             label=i18next.t("Resource type"),
@@ -90,58 +90,52 @@ const ResourceTypeField = ({fieldPath,
     setOtherToggleActive(true);
   }
 
+  const buttonTypes = [
+    {id: 'textDocument-journalArticle',
+     label: 'Journal Article',
+     icon: 'file text'
+    },
+    {id: 'textDocument-review',
+     label: 'Review',
+     icon: 'thumbs up'
+    },
+    {id: 'textDocument-book',
+     label: 'Book',
+     icon: 'book'
+    },
+    {id: 'textDocument-bookSection',
+     label: 'Book Section',
+     icon: 'book'
+    },
+    {id: 'instructionalResource-syllabus',
+     label: 'Syllabus',
+     icon: 'graduation'
+    },
+  ]
+
   return (
     <>
       <Form.Field required={required}>
         <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
       </Form.Field>
       <Menu compact icon='labeled'>
+      {buttonTypes.map((buttonType) => (
         <Menu.Item
-          name='textDocument-journalArticle'
-          active={values.metadata.resource_type === 'textDocument-journalArticle'}
+          name={buttonType.id}
+          as={Button}
+          active={values.metadata.resource_type === buttonType.id}
           onClick={handleItemClick}
         >
-          <Icon name='file text' />
-          Journal Article
+          <Icon name={buttonType.icon} />
+          {buttonType.label}
         </Menu.Item>
-
-        <Menu.Item
-          name='textDocument-review'
-          active={values.metadata.resource_type === 'textDocument-review'}
-          onClick={handleItemClick}
-        >
-          <Icon name='thumbs up' />
-          Review
-        </Menu.Item>
-
-        <Menu.Item
-          name='textDocument-book'
-          active={values.metadata.resource_type === 'textDocument-book'}
-          onClick={handleItemClick}
-        >
-          <Icon name='book' />
-          Book
-        </Menu.Item>
-        <Menu.Item
-          name='textDocument-bookSection'
-          active={values.metadata.resource_type === 'textDocument-bookSection'}
-          onClick={handleItemClick}
-        >
-          <Icon name='book' />
-          Book Section
-        </Menu.Item>
-        <Menu.Item
-          name='instructionalResource-syllabus'
-          active={values.metadata.resource_type === 'instructionalResource-syllabus'}
-          onClick={handleItemClick}
-        >
-          <Icon name='graduation' />
-          Syllabus
-        </Menu.Item>
+        )
+      )}
         <Menu.Item
           name='otherToggle'
           active={otherToggleActive === true}
           onClick={handleOtherToggleClick}
+          as={Button}
         >
           <Icon name='asterisk' />
           Other...
@@ -154,6 +148,7 @@ const ResourceTypeField = ({fieldPath,
             optimized
             options={frontEndOptions}
             selectOnBlur={false}
+            search={true}
             placeholder={"choose another resource type..."}
             {...restProps}
         />

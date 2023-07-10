@@ -768,8 +768,15 @@ const TotalPagesComponent = () => {
   return(<></>)
 }
 
-const SeriesTitleComponent = () => {
-  return(<></>)
+const SeriesTitleComponent = ({ customFieldsUI }) => {
+  return(
+    <CustomFieldInjector
+      sectionName="Series"
+      fieldName="kcr:series"
+      idString="KcrSeries"
+      customFieldsUI={customFieldsUI}
+    />
+)
 }
 
 const SeriesNumberComponent = () => {
@@ -1017,6 +1024,7 @@ const fieldComponents = {
     publication_location: PublicationLocationComponent,
     related_works: RelatedWorksComponent,
     resource_type: ResourceTypeComponent,
+    series: SeriesTitleComponent,
     subjects: SubjectsComponent,
     subtitle: SubtitleComponent,
     title: TitleComponent,
@@ -1212,6 +1220,7 @@ export class RDMDepositForm extends Component {
                 {Object.keys(this.formPages).map((pageNum, index) => (
                   <Step
                     key={index}
+                    as={Button}
                     active={currentFormPage === pageNum}
                     // icon='truck'
                     link
