@@ -7,8 +7,8 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { Component, createContext, createRef, Fragment,
-                useEffect, useRef, useState } from "react";
+import React, { Component, createContext, createRef, forwardRef, Fragment,
+                useEffect, useLayoutEffect, useRef, useState } from "react";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
@@ -1058,21 +1058,20 @@ const fieldComponents = {
     type_title: TypeTitleComponent,
 }
 
-const FormPage = ({ children, id, pageNums,
+const FormPage = forwardRef(({ children, id, pageNums,
                     currentFormPage, handleFormPageChange
-                  }) => {
+                  }, ref) => {
   const currentPageIndex = pageNums.indexOf(currentFormPage);
   const nextPageIndex = currentPageIndex + 1;
   const previousPageIndex = currentPageIndex - 1;
   const nextPage = nextPageIndex < pageNums.length ? pageNums[nextPageIndex] : null;
   const previousPage = previousPageIndex >= 0 ? pageNums[previousPageIndex] : null;
   return(
-    <>
+    <div className="formPageWrapper" id={id} ref={ref}>
     {/* // <Card fluid
     //   id={id}
     // >
     //   <Card.Content> */}
-
       <DndProvider backend={HTML5Backend}
         // options={{ rootElement: rootElement}}
       >
@@ -1096,9 +1095,9 @@ const FormPage = ({ children, id, pageNums,
       </DndProvider>
       {/* </Card.Content>
     </Card> */}
-  </>
+    </div>
   )
-}
+});
 
 export const RDMDepositForm = ({ config, files, record, permissions, preselectedCommunity}) => {
     config = config || {};
@@ -1106,14 +1105,16 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
     const [formValues, setFormValues] = useState({});
     const [currentResourceType, setCurrentResourceType] = useState('textDocument-journalArticle');
     const [currentTypeExtraFields, setCurrentTypeExtraFields] = useState(config.fields_config.extras_by_type[currentResourceType]);
+    const ref1 = useRef(null);
+    const ref2 = useRef(null);
     const formPages = {
-      '1': ['Title', useRef()],
-      '2': ['People', useRef()],
-      '3': ['Subjects', useRef()],
-      '4': ['Details', useRef()],
-      '5': ['Files', useRef()],
+      '1': ['Title', ref1],
+      '2': ['People', ref2],
+      '3': ['Subjects', useRef(null)],
+      '4': ['Details', useRef(null)],
+      '5': ['Files', useRef(null)],
       // '6': 'Admin',
-      '7': ['Submit', useRef()],
+      '7': ['Submit', useRef(null)],
     }
     const customFieldsUI = config.custom_fields.ui;
 
@@ -1159,10 +1160,15 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       noFiles = true;
     }
 
+    useLayoutEffect(() => {
+      const newPageWrapper = document.getElementById(`InvenioAppRdm.Deposit.FormPage${currentFormPage}`);
+      const newFirstInput = newPageWrapper.querySelectorAll('button, input')[0];
+      newFirstInput.focus();
+    }
+    );
+
     const handleFormPageChange = (event, { value }) => {
       setCurrentFormPage(value);
-      const newPageRef = formPages[value][1];
-      newPageRef.current.focus();
     };
 
     const handleValuesChange= (values) => {
