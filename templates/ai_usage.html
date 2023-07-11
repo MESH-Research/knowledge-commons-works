@@ -1,9 +1,9 @@
 {% if field_value.get('ai_used') %}
     <dt class="ui tiny header">{{ _("AI Used")}}</dt>
-    {{value.get("ai_used", "Unknown")}}
+    {{field_value.get("ai_used", "Unknown")}}
 {% endif %}
 
 {% if field_value.get('ai_description') %}
     <dt class="ui tiny header">{{ _("Usage Description")}}</dt>
-    {{value.get("ai_description", "Unknown")}}
+    {{field_value.get("ai_description", "Unknown")}}
 {% endif %}

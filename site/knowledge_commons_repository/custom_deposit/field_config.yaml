@@ -17,6 +17,7 @@ common_fields:
     - content_warning
   "4":
     - alternate_identifiers
+    - series
     - related_works
   "5":
     - file_upload
