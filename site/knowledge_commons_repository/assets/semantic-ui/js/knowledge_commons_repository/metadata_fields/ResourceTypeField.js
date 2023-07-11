@@ -119,8 +119,9 @@ const ResourceTypeField = ({fieldPath,
         <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
       </Form.Field>
       <Menu compact icon='labeled'>
-      {buttonTypes.map((buttonType) => (
+      {buttonTypes.map((buttonType, index) => (
         <Menu.Item
+          key={index}
           name={buttonType.id}
           as={Button}
           active={values.metadata.resource_type === buttonType.id}
