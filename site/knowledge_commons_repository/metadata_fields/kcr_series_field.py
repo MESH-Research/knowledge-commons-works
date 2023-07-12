@@ -22,7 +22,7 @@ from marshmallow_utils.fields import (
 from .kcr_metadata_fields import KCR_NAMESPACE
 
 
-class SeriesCF(BaseListCF):
+class BookSeriesCF(BaseListCF):
 #     """Nested custom field."""
 
     def __init__(self, name, **kwargs):
@@ -48,12 +48,12 @@ class SeriesCF(BaseListCF):
             "properties": {
                 "series_title": {"type": "text"},
                 "series_volume": {"type": "text"},
-            },
+            }
         }
 
 
 KCR_SERIES_FIELDS = [
-    TextCF(name="kcr:series"),
+    BookSeriesCF(name="kcr:book_series"),
 ]
 
 
@@ -61,9 +61,9 @@ KCR_SERIES_FIELDS_UI = {
     "section": _("Series"),
     "fields": [
         {
-            "field": "kcr:series",
-            "ui_widget": "SeriesField",
-            "template": "series_field.html",
+            "field": "kcr:book_series",
+            "ui_widget": "BookSeriesField",
+            "template": "book_series_field.html",
             "props": {
                 "label": _("Series"),
                 "series_title": {
@@ -72,7 +72,7 @@ KCR_SERIES_FIELDS_UI = {
                     "description": _(""),
                 },
                 "series_volume": {
-                    "label": _("Series Number"),
+                    "label": _("Volume Identifier"),
                     "placeholder": "",
                     "description": "",
                 },
