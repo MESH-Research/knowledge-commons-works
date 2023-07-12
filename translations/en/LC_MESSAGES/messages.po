@@ -1,0 +1,280 @@
+# English translations for PROJECT.
+# Copyright (C) 2023 MESH Research
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: scottia4@msu.edu\n"
+"POT-Creation-Date: 2023-07-11 13:28-0400\n"
+"PO-Revision-Date: 2023-07-12 09:33-0400\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:129
+msgid "KCR Book information"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:138
+msgid "KCR Conference information"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:144
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:152
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:152
+msgid "Content warning"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:347
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:354
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:391
+msgid "DOI"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:359
+msgid "OAI ID"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:365
+msgid "hclegacy-pid"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:370
+msgid "hclegacy-record-id"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:375
+msgid "datacite-doi"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:382
+msgid "hcid"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:383
+msgid "hc_username"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/invenio.cfg:398
+msgid "OAI"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/imprint_fields.py:5
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/imprint_fields.py:5
+msgid "Book / Report / Chapter"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/imprint_fields.py:12
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/imprint_fields.py:12
+msgid "Book title"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/imprint_fields.py:14
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/imprint_fields.py:14
+msgid "Title of the book or report which this upload is part of."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/imprint_fields.py:24
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/imprint_fields.py:24
+msgid "Place"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/imprint_fields.py:25
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/imprint_fields.py:25
+msgid "e.g. city, country"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/imprint_fields.py:26
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/imprint_fields.py:26
+msgid "Place where the imprint was published"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/imprint_fields.py:34
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/imprint_fields.py:34
+msgid "ISBN"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/imprint_fields.py:35
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/imprint_fields.py:35
+msgid "e.g. 0-06-251587-X"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/imprint_fields.py:36
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/imprint_fields.py:36
+msgid "International Standard Book Number"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/imprint_fields.py:44
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/imprint_fields.py:44
+msgid "Pages"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_ai_field.py:62
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_ai_field.py:62
+msgid "AI Usage"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_ai_field.py:64
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_ai_field.py:64
+#: /Users/ianscott/Development/knowledge-commons-repository/templates/ai_usage.html:2
+msgid "AI Used"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_ai_field.py:66
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_ai_field.py:66
+msgid "Did generative AI contribute to the production of this work?"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_ai_field.py:69
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_ai_field.py:69
+msgid "Description of use"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_ai_field.py:70
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_ai_field.py:70
+msgid "Describe how artificial intelligence or machine learning were used."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:78
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:78
+msgid "Chapter"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:89
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:89
+msgid "Edition"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:100
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:100
+msgid "Commons domain"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:131
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:131
+msgid "Meeting organization"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:142
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:142
+msgid "Sponsoring institution"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:160
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_metadata_fields.py:160
+msgid "Commons admin info"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:59
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:65
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:59
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:65
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/notes.html:11
+msgid "Notes"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:67
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:67
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/notes.html:7
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/notes.html:14
+msgid "Description"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:69
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:69
+msgid "A few words describing the kind of notes recorded here."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:75
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:75
+msgid "Note"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:76
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:76
+msgid "Type your note content here"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:77
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_notes_fields.py:77
+msgid "The text of your note"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_series_field.py:61
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_series_field.py:68
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_series_field.py:61
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_series_field.py:68
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/series_field.html:1
+msgid "Series"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_series_field.py:70
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_series_field.py:70
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/series_field.html:4
+msgid "Series Title"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_series_field.py:75
+msgid "Series Number"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_user_tags_fields.py:71
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_user_tags_fields.py:78
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_user_tags_fields.py:71
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_user_tags_fields.py:78
+msgid "Tags"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_user_tags_fields.py:79
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_user_tags_fields.py:79
+msgid "Enter your tags here"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_volumes_fields.py:59
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_volumes_fields.py:59
+msgid "Volumes"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_volumes_fields.py:61
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_volumes_fields.py:61
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/volumes.html:2
+msgid "Total volumes"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/build/lib/knowledge_commons_repository/metadata_fields/kcr_volumes_fields.py:67
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_volumes_fields.py:67
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/volumes.html:7
+msgid "Volume"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/metadata_fields/kcr_series_field.py:75
+msgid "Volume Identifier"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/notes.html:2
+msgid "Note text"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/records/custom_deposit.html:9
+msgid "New version"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/records/custom_deposit.html:11
+msgid "New upload"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/site/knowledge_commons_repository/templates/semantic-ui/knowledge_commons_repository/records/custom_deposit.html:13
+msgid "Edit upload"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-repository/templates/ai_usage.html:7
+msgid "Usage Description"
+msgstr ""
+
