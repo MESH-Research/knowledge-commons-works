@@ -69,10 +69,12 @@ export const IdentifiersField = ({
                   label={i18next.t(!isUrl ? "Identifier" : "URL")}
                   required={!isUrl && hasScheme}
                   width={!!isUrl ? 14 : 9}
+                  id={`${fieldPathPrefix}.identifier`}
                 />
                 {schemeOptions && !isUrl && (
                   <SelectField
                     fieldPath={`${fieldPathPrefix}.scheme`}
+                    id={`${fieldPathPrefix}.scheme`}
                     label={i18next.t("Scheme")}
                     options={schemeOptions}
                     optimized
@@ -83,6 +85,7 @@ export const IdentifiersField = ({
                 {!schemeOptions && (
                   <TextField
                     fieldPath={`${fieldPathPrefix}.scheme`}
+                    id={`${fieldPathPrefix}.scheme`}
                     label={i18next.t("Scheme")}
                     required
                     width={5}
