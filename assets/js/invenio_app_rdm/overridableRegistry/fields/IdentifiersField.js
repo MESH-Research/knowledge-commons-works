@@ -44,11 +44,12 @@ export const IdentifiersField = ({
     const { values, submitForm } = useFormikContext();
     const addButtonLabel = i18next.t("Add identifier");
     const defaultNewValue = emptyIdentifier;
-    console.log(values.metadata);
+    // console.log(values.metadata);
     return (
       <FieldArray
         name={fieldPath}
         className="invenio-array-field"
+        showEmptyValue={showEmptyValue}
         render={arrayHelpers => (
           <>
 
