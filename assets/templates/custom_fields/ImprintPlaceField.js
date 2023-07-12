@@ -40,7 +40,7 @@ export class ImprintPlaceField extends Component {
 
 ImprintPlaceField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  place: PropTypes.object.isRequired,
+  place: PropTypes.object,
   icon: PropTypes.string,
   label: PropTypes.string,
   placeholder: PropTypes.string,

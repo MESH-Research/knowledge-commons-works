@@ -39,7 +39,7 @@ export class ImprintISBNField extends Component {
 
 ImprintISBNField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  isbn: PropTypes.object.string,
+  isbn: PropTypes.object,
   icon: PropTypes.string,
   label: PropTypes.string,
   description: PropTypes.string,

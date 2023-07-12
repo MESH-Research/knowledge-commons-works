@@ -40,7 +40,7 @@ export class ImprintPagesField extends Component {
 
 ImprintPagesField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  pages: PropTypes.object.isRequired,
+  pages: PropTypes.object,
   icon: PropTypes.string,
   label: PropTypes.string,
   placeholder: PropTypes.string,
