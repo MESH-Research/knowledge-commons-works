@@ -274,7 +274,6 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       // const newCurrentURL = `${currentBaseURL}${currentPath}${currentParams}depositFormPage=${currentFormPage}`;
 
       handleFormPageParam();
-      window.setTimeout(1000);
       setFormPageInHistory();
       // window.history.pushState('fake-route', document.title, window.history.href);
       // console.log(window.history.state);
