@@ -17,28 +17,28 @@ export class Volumes extends Component {
       icon,
       description,
       label,
+      width1,
+      width2
     } = this.props;
 
     return (
       <>
-        <Grid.Column width="8">
         <Input
             fieldPath={`${fieldPath}.total_volumes`}
             label={total_volumes.label}
             icon={total_volumes.icon}
             placeholder={total_volumes.placeholder}
             description={total_volumes.description}
+            width={width1 || 8}
         ></Input>
-        </Grid.Column>
-        <Grid.Column width="8">
         <Input
             fieldPath={`${fieldPath}.volume`}
             label={volume.label}
             icon={volume.icon}
             placeholder={volume.placeholder}
             description={volume.description}
+            width={width2 || 8}
         ></Input>
-        </Grid.Column>
       </>
     );
 }}
