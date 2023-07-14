@@ -61,7 +61,8 @@ extras_by_type:
     "3":
       - language
     "4":
-      - book_detail
+      - publication_detail
+      - book_volume_pages
     "5":
     "6":
   textDocument-bookSection:

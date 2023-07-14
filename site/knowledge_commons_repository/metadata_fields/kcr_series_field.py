@@ -72,7 +72,7 @@ KCR_SERIES_FIELDS_UI = {
                     "description": _(""),
                 },
                 "series_volume": {
-                    "label": _("Volume Identifier"),
+                    "label": _("Volume"),
                     "placeholder": "",
                     "description": "",
                 },

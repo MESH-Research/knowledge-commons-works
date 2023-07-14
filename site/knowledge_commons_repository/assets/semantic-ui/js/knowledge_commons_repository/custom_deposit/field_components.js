@@ -252,7 +252,7 @@ const AIComponent = ({ customFieldsUI }) => {
 
 const AlternateIdentifiersComponent = ({vocabularies}) => {
   return(
-    <Card fluid>
+    <Card fluid as="fieldset">
       <Card.Content>
         <Overridable
           id="InvenioAppRdm.Deposit.IdentifiersField.container"
@@ -735,6 +735,22 @@ const ResourceTypeComponent = ({vocabularies}) => {
   )
 }
 
+const SeriesComponent = ({ customFieldsUI }) => {
+  return(
+    <Card fluid as="fieldset">
+      <Card.Content>
+    <CustomFieldInjector
+      sectionName="Series"
+      fieldName="kcr:book_series"
+      idString="KcrBookSeries"
+      icon="list"
+      customFieldsUI={customFieldsUI}
+    />
+    </Card.Content>
+    </Card>
+)
+}
+
 const SubjectsComponent = ({record, vocabularies}) => {
   return(
     <Overridable
@@ -777,21 +793,6 @@ const TitleComponent = ({vocabularies, record}) => {
 
 const TotalPagesComponent = () => {
   return(<></>)
-}
-
-const SeriesComponent = ({ customFieldsUI }) => {
-  return(
-    <Card fluid as="fieldset">
-      <Card.Content>
-    <CustomFieldInjector
-      sectionName="Series"
-      fieldName="kcr:book_series"
-      idString="KcrBookSeries"
-      customFieldsUI={customFieldsUI}
-    />
-    </Card.Content>
-    </Card>
-)
 }
 
 const VolumeComponent = ({ customFieldsUI }) => {

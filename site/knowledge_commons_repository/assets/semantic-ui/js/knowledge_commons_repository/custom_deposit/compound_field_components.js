@@ -47,6 +47,7 @@ import {
   Card,
   Container,
   Divider,
+  Form,
   Grid,
   Icon,
   Ref,
@@ -112,18 +113,16 @@ const AdminMetadataComponent = ({customFieldsUI}) => {
     </Card>
 )}
 
-const BookDetailComponent = ({customFieldsUI}) => {
+const PublicationDetailsComponent = ({customFieldsUI}) => {
   return(
     <Card fluid>
       <Card.Content>
-        <FieldLabel htmlFor={"imprint:imprint"}
+        {/* <FieldLabel htmlFor={"imprint:imprint"}
           icon={"book"}
-          label={"Book details"}
-        />
-        <Divider fitted />
-        <Grid padded>
-          <Grid.Row>
-            <Grid.Column width="8">
+          label={"Publication Details"}
+        /> */}
+        {/* <Divider fitted /> */}
+          <Form.Group widths="equal">
               <CustomFieldInjector
                 sectionName="Book / Report / Chapter"
                 fieldName="imprint:imprint.isbn"
@@ -131,27 +130,50 @@ const BookDetailComponent = ({customFieldsUI}) => {
                 description=""
                 customFieldsUI={customFieldsUI}
               />
-            </Grid.Column>
-            <Grid.Column width="8">
               <VersionComponent description=""
                 label="Edition or Version"
                 icon=""
               />
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column width="8">
+          </Form.Group>
+          <Form.Group widths="equal">
               <PublisherComponent />
-            </Grid.Column>
-            <Grid.Column width="8">
               <PublicationLocationComponent customFieldsUI={customFieldsUI} />
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
+          </Form.Group>
+      </Card.Content>
+    </Card>
+  )
+}
+
+const BookDetailComponent = ({customFieldsUI}) => {
+  return(
+    <Card fluid>
+      <Card.Content>
+        {/* <FieldLabel htmlFor={"imprint:imprint"}
+          icon={"book"}
+          label={"Book details"}
+        />
+        <Divider fitted /> */}
+        <Form.Group>
+            <CustomFieldInjector
+            sectionName="Book / Report / Chapter"
+            fieldName="imprint:imprint.isbn"
+            idString="ImprintISBNField"
+            description=""
+            customFieldsUI={customFieldsUI}
+            />
+            <VersionComponent description=""
+            label="Edition or Version"
+            icon=""
+            />
+        </Form.Group>
+        <Form.Group>
+              <PublisherComponent />
+              <PublicationLocationComponent customFieldsUI={customFieldsUI} />
+        </Form.Group>
+        <Form.Group>
             <VolumeComponent customFieldsUI={customFieldsUI} />
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column width="8">
+        </Form.Group>
+        <Form.Group>
               <CustomFieldInjector
                 sectionName="Book / Report / Chapter"
                 fieldName="imprint:imprint.pages"
@@ -160,12 +182,40 @@ const BookDetailComponent = ({customFieldsUI}) => {
                 description={""}
                 label="Number of Pages"
               />
-            </Grid.Column>
-          </Grid.Row>
-      </Grid>
+        </Form.Group>
+        <Form.Group>
+            <CustomFieldInjector
+            sectionName="Series"
+            fieldName="kcr:book_series"
+            idString="KcrBookSeries"
+            customFieldsUI={customFieldsUI}
+            />
+        </Form.Group>
       </Card.Content>
     </Card>
 )}
+
+const BookVolumePagesComponent = ({customFieldsUI}) => {
+    return(
+      <Card fluid>
+        <Card.Content>
+          <Form.Group>
+            <VolumeComponent customFieldsUI={customFieldsUI} />
+          </Form.Group>
+          <Form.Group>
+            <CustomFieldInjector
+            sectionName="Book / Report / Chapter"
+            fieldName="imprint:imprint.pages"
+            idString="ImprintPagesField"
+            customFieldsUI={customFieldsUI}
+            description={""}
+            label="Number of Pages"
+            />
+          </Form.Group>
+        </Card.Content>
+      </Card>
+    )
+}
 
 const CombinedTitlesComponent = ({vocabularies, record}) => {
   return(
@@ -289,13 +339,15 @@ const DeleteComponent = ({ permissions, record }) => {
   )
 }
 
-export {AdminMetadataComponent,
+export {AccessRightsComponent,
+        AdminMetadataComponent,
         BookDetailComponent,
+        BookVolumePagesComponent,
+        CombinedDatesComponent,
         CombinedTitlesComponent,
-        TypeTitleComponent,
+        DeleteComponent,
+        PublicationDetailsComponent,
         SubjectKeywordsComponent,
         SubmissionComponent,
-        AccessRightsComponent,
-        CombinedDatesComponent,
-        DeleteComponent
+        TypeTitleComponent,
 };

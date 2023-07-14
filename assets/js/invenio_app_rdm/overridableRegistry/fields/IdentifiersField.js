@@ -14,7 +14,7 @@ import {
   SelectField,
   TextField,
 } from "react-invenio-forms";
-import { Button, Form, Icon } from "semantic-ui-react";
+import { Button, Form, Grid, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 // import { emptyIdentifier } from "./initialValues";
 import { FieldArray, Field, useFormikContext } from "formik";
@@ -42,9 +42,32 @@ export const IdentifiersField = ({
   placeholder
   }) => {
     const { values, submitForm } = useFormikContext();
+    const [identifiersLength, setIdentifiersLength] = useState(0);
+    const [haveChangedNumber, setHaveChangedNumber] = useState(false);
     const addButtonLabel = i18next.t("Add identifier");
-    const defaultNewValue = emptyIdentifier;
-    // console.log(values.metadata);
+
+    useEffect(() => {
+      if ( !!haveChangedNumber ) {
+        if ( identifiersLength < 0 ) {
+          document.getElementById(`${fieldPath}.add-url-button`)?.focus();
+        } else {
+          document.getElementById(`${fieldPath}.${identifiersLength}.identifier`)?.focus();
+        }
+      }
+    }, [identifiersLength]);
+
+    const handleAddNew = (arrayHelpers, newItem) => {
+      setHaveChangedNumber(true);
+      arrayHelpers.push(newItem);
+      setIdentifiersLength(identifiersLength + 1);
+    }
+
+    const handleRemove = (arrayHelpers, index) => {
+      setHaveChangedNumber(true);
+      arrayHelpers.remove(index);
+      setIdentifiersLength(identifiersLength - 1);
+    }
+
     return (
       <FieldArray
         name={fieldPath}
@@ -53,9 +76,9 @@ export const IdentifiersField = ({
         render={arrayHelpers => (
           <>
 
-            <Form.Field required={required}>
+            {/* <Form.Field required={required}>
               <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
-            </Form.Field>
+            </Form.Field> */}
 
             {values.metadata.identifiers.map(({scheme, identifier}, index) => {
               const fieldPathPrefix = `${fieldPath}.${index}`;
@@ -63,114 +86,77 @@ export const IdentifiersField = ({
               const hasText = (!!identifier || identifier!=="");
               const hasScheme = (!!scheme || scheme!=="");
               return(
-              <GroupField key={index} inline>
-                <TextField
-                  fieldPath={`${fieldPathPrefix}.identifier`}
-                  label={i18next.t(!isUrl ? "Identifier" : "URL")}
-                  required={!isUrl && hasScheme}
-                  width={!!isUrl ? 14 : 9}
-                  id={`${fieldPathPrefix}.identifier`}
-                />
-                {schemeOptions && !isUrl && (
-                  <SelectField
-                    fieldPath={`${fieldPathPrefix}.scheme`}
-                    id={`${fieldPathPrefix}.scheme`}
-                    label={i18next.t("Scheme")}
-                    options={schemeOptions}
-                    optimized
-                    required={!isUrl && hasText}
-                    width={5}
-                  />
-                )}
+                <Form.Group key={index} className="identifier-item-row">
+              {/* <GroupField key={index} inline> */}
+                    <TextField
+                      fieldPath={`${fieldPathPrefix}.identifier`}
+                      label={<label><Icon name={!isUrl ? labelIcon : "linkify"} />{i18next.t(!isUrl ? "Identifier" : "URL")}</label>}
+                      required={!isUrl && hasScheme}
+                      id={`${fieldPathPrefix}.identifier`}
+                      width={!!isUrl ? 14 : 9}
+                    />
+                  {schemeOptions && !isUrl && (
+                      <SelectField
+                        fieldPath={`${fieldPathPrefix}.scheme`}
+                        id={`${fieldPathPrefix}.scheme`}
+                        label={i18next.t("Scheme")}
+                        options={schemeOptions}
+                        optimized
+                        required={!isUrl && hasText}
+                        width={5}
+                      />
+                  )}
                 {!schemeOptions && (
-                  <TextField
-                    fieldPath={`${fieldPathPrefix}.scheme`}
-                    id={`${fieldPathPrefix}.scheme`}
-                    label={i18next.t("Scheme")}
-                    required
-                    width={5}
-                  />
+                    <TextField
+                      fieldPath={`${fieldPathPrefix}.scheme`}
+                      id={`${fieldPathPrefix}.scheme`}
+                      label={i18next.t("Scheme")}
+                      required
+                      width={5}
+                    />
                 )}
-                <Form.Field>
+                <Form.Field
+                  width={2}
+                >
                   <Button
                     aria-label={i18next.t("Remove field")}
                     className="close-btn"
                     icon="close"
-                    onClick={() => arrayHelpers.remove(index)}
+                    onClick={() => handleRemove(arrayHelpers, index)}
                   />
                 </Form.Field>
                 {description && (
                   <label className="helptext mb-0">{description}</label>
                 )}
-              </GroupField>
+              </Form.Group>
             )})}
-            <Button
-              type="button"
-              onClick={() => arrayHelpers.push(emptyURL)}
-              icon
-              className="align-self-end"
-              labelPosition="left"
-            >
-              <Icon name="add" />
-              Add new URL
-            </Button>
-            <Button
-              type="button"
-              onClick={() => arrayHelpers.push(emptyIdentifier)}
-              icon
-              className="align-self-end"
-              labelPosition="left"
-            >
-              <Icon name="add" />
-              Add another identifier
-            </Button>
+                <Button
+                  type="button"
+                  onClick={() => handleAddNew(arrayHelpers, emptyURL)}
+                  icon
+                  className="align-self-end"
+                  labelPosition="left"
+                  id={`${fieldPath}.add-url-button`}
+                >
+                  <Icon name="add" />
+                  Add new URL
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => handleAddNew(arrayHelpers, emptyIdentifier)}
+                  icon
+                  className="align-self-end"
+                  labelPosition="left"
+                  id={`${fieldPath}.add-id-button`}
+                >
+                  <Icon name="add" />
+                  Add another identifier
+                </Button>
           </>
         )}
       />
     )
 }
-
-      // <ArrayField
-      //   addButtonLabel={i18next.t("Add identifier")}
-      //   defaultNewValue={emptyIdentifier}
-      //   fieldPath={fieldPath}
-      //   label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
-      //   required={required}
-      //   showEmptyValue={showEmptyValue}
-      // >
-      //   {({ arrayHelpers, indexPath }) => {
-      //     const fieldPathPrefix = `${fieldPath}.${indexPath}`;
-      //     return (
-      //       <GroupField>
-      //         <SelfAwareFormFields
-      //           fieldPathPrefix={fieldPathPrefix}
-      //           schemeOptions={schemeOptions}
-      //           fieldPath={fieldPath}
-      //           indexPath={indexPath}
-      //         />
-      //         {!schemeOptions && (
-      //           <TextField
-      //             fieldPath={`${fieldPathPrefix}.scheme`}
-      //             label={i18next.t("Scheme")}
-      //             required
-      //             width={5}
-      //           />
-      //         )}
-      //         <Form.Field>
-      //           <Button
-      //             aria-label={i18next.t("Remove field")}
-      //             className="close-btn"
-      //             icon="close"
-      //             onClick={() => arrayHelpers.remove(indexPath)}
-      //           />
-      //         </Form.Field>
-      //       </GroupField>
-      //     );
-      //   }}
-      // </ArrayField>
-//     );
-//   }
-// }
 
 IdentifiersField.propTypes = {
   fieldPath: PropTypes.string.isRequired,

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import { FieldLabel,
          GroupField,
          Input,
@@ -15,39 +15,6 @@ const newSeries = {
   series_volume: "",
 };
 
-const SeriesItem = ({index, fieldPathPrefix, series_title, series_volume, required, arrayHelpers}) => {
-  console.log('series item *******');
-  console.log(fieldPathPrefix);
-  return(
-  <Grid key={index} inline>
-    <Input
-      fieldPath={`${fieldPathPrefix}.series_title`}
-      label={i18next.t(series_title.label)}
-      required={required}
-      width={14}
-      placeholder={series_title.placeholder}
-      description={series_title.description}
-    />
-    <Input
-      fieldPath={`${fieldPathPrefix}.series_volume`}
-      label={i18next.t(series_volume.label)}
-      required={required}
-      width={4}
-      placeholder={series_volume.placeholder}
-      description={series_volume.description}
-    />
-    <Form.Field style={{ marginTop: "1.75rem", float: "right" }}>
-      <Button
-        aria-label={i18next.t("Remove field")}
-        className="close-btn"
-        icon="close"
-        onClick={() => arrayHelpers.remove(index)}
-        type="button"
-      />
-    </Form.Field>
-  </Grid>
-  )
-}
 
 const BookSeriesField = ({
       fieldPath, // injected by the custom field loader via the `field` config property
@@ -56,123 +23,104 @@ const BookSeriesField = ({
       icon="list",
       description = "",
       required = false,
-      label = i18next.t("Series"),
+      label = "",
       showEmptyValue = true,
       addButtonLabel = "Add new series"
     }) => {
     const { values, submitForm } = useFormikContext();
-    console.log(`working?????????${fieldPath}`);
-    return (
-      <Array
-        fieldPath={fieldPath}
-        // className="invenio-array-field"
-        showEmptyValue={showEmptyValue}
-        addButtonLabel={addButtonLabel}
-        defaultNewValue={newSeries}
-        description={description}
-        icon={icon}
-      >
-        {/* <Form.Field required={required}>
-          <FieldLabel htmlFor={fieldPath} labelIcon={icon} label={label} />
-        </Form.Field> */}
-        {({arrayHelpers, indexPath, arrayPath}) => {
-              const fieldPathPrefix = `${arrayPath}.${indexPath}`;
+    const [seriesLength, setSeriesLength] = useState(0);
+    const [haveChangedNumber, setHaveChangedNumber] = useState(false);
 
-              console.log(`working?????????${fieldPathPrefix}`);
+    useEffect(() => {
+      if ( !!haveChangedNumber ) {
+        if ( seriesLength < 0 ) {
+          document.getElementById(`${fieldPath}.add-button`)?.focus();
+        } else {
+          document.getElementById(`${fieldPath}.${seriesLength}.identifier`)?.focus();
+        }
+      }
+    }, [seriesLength]);
+
+    const handleAddNew = (arrayHelpers, newItem) => {
+      console.log(arrayHelpers);
+      setHaveChangedNumber(true);
+      arrayHelpers.push(newItem);
+      setSeriesLength(seriesLength + 1);
+    }
+
+    const handleRemove = (arrayHelpers, index) => {
+      setHaveChangedNumber(true);
+      arrayHelpers.remove(index);
+      setSeriesLength(seriesLength - 1);
+    }
+
+    return (
+
+      <FieldArray
+        name={fieldPath}
+        className="invenio-array-field"
+        showEmptyValue={showEmptyValue}
+        // addButtonLabel={addButtonLabel}
+        // defaultNewValue={newSeries}
+        // description={description}
+        // icon={icon}
+        // label={""}
+        render={arrayHelpers => (
+          <>
+            {/* <Form.Field required={required}>
+              <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+            </Form.Field> */}
+
+            {values.custom_fields['kcr:book_series'].map(({title, volume}, index) => {
+              const fieldPathPrefix = `${fieldPath}.${index}`;
               // const hasNumber = (!!my_volume || my_volume!=="");
               return(
-                <Grid inline>
-                  <Input
-                    fieldPath={`${fieldPathPrefix}.series_title`}
-                    label={i18next.t(series_title.label)}
-                    required={required}
-                    width={14}
-                    placeholder={series_title.placeholder}
-                    description={series_title.description}
-                  />
-                  <Input
-                    fieldPath={`${fieldPathPrefix}.series_volume`}
-                    label={i18next.t(series_volume.label)}
-                    required={required}
-                    width={4}
-                    placeholder={series_volume.placeholder}
-                    description={series_volume.description}
-                  />
-                  <Form.Field style={{ marginTop: "1.75rem", float: "right" }}>
-                    <Button
-                      aria-label={i18next.t("Remove field")}
-                      className="close-btn"
-                      icon="close"
-                      onClick={() => arrayHelpers.remove(indexPath)}
-                      type="button"
+                <Form.Group key={index}>
+                    <TextField
+                      fieldPath={`${fieldPathPrefix}.series_title`}
+                      id={`${fieldPathPrefix}.series_title`}
+                      label={<label><Icon name={icon} />{i18next.t(series_title.label)}</label>}
+                      required={required}
+                      placeholder={series_title.placeholder}
+                      description={series_title.description}
+                      width={11}
                     />
-                  </Form.Field>
-                </Grid>
-
-                // <Grid key={index} inline>
-                //   <Input
-                //     fieldPath={`${fieldPathPrefix}.series_title`}
-                //     label={i18next.t(series_title.label)}
-                //     required={required}
-                //     width={14}
-                //     placeholder={series_title.placeholder}
-                //     description={series_title.description}
-                //   />
-                //   <Input
-                //     fieldPath={`${fieldPathPrefix}.series_volume`}
-                //     label={i18next.t(series_volume.label)}
-                //     required={required}
-                //     width={4}
-                //     placeholder={series_volume.placeholder}
-                //     description={series_volume.description}
-                //   />
-                //   <Form.Field style={{ marginTop: "1.75rem", float: "right" }}>
-                //     <Button
-                //       aria-label={i18next.t("Remove field")}
-                //       className="close-btn"
-                //       icon="close"
-                //       onClick={() => arrayHelpers.remove(index)}
-                //       type="button"
-                //     />
-                //   </Form.Field>
-                // </Grid>
-
-                // <SeriesItem index={indexPath}
-                //   key={indexPath}
-                //   fieldPathPrefix={fieldPathPrefix}
-                //   series_title={series_title}
-                //   series_volume={series_volume}
-                //   required={required}
-                //   // hasNumber={hasNumber}
-                //   arrayHelpers={arrayHelpers}
-                // />
-
-            )}}
-            {/* : (!!showEmptyValue && ("" */}
-                {/* // <SeriesItem index={-1} */}
-                {/* //   fieldPathPrefix={`${fieldPath}.0`}
-                //   series_title={series_title}
-                //   series_volume={series_volume}
-                //   required={required}
-                //   arrayHelpers={arrayHelpers}
-                // /> */}
-            {/* {description && (
-              <label className="helptext mb-0">{description}</label>
-            )}
-            <Button
-              type="button"
-              onClick={() => arrayHelpers.push(newSeries)}
-              icon
-              className="align-self-end"
-              labelPosition="left"
-            >
-              <Icon name="add" />
-              Add another series
-            </Button>
+                    <TextField
+                      fieldPath={`${fieldPathPrefix}.series_volume`}
+                      id={`${fieldPathPrefix}.series_title`}
+                      label={i18next.t(series_volume.label)}
+                      required={required}
+                      placeholder={series_volume.placeholder}
+                      description={series_volume.description}
+                      width={3}
+                    />
+                    <Form.Field>
+                      <Button
+                        aria-label={i18next.t("Remove field")}
+                        className="close-btn"
+                        icon="close"
+                        onClick={() => handleRemove(arrayHelpers, index)}
+                        type="button"
+                        width={2}
+                      />
+                    </Form.Field>
+                  </Form.Group>
+            )})}
+                <Button
+                  type="button"
+                  onClick={() => handleAddNew(arrayHelpers, newSeries)}
+                  icon
+                  className="align-self-end"
+                  labelPosition="left"
+                  id={`${fieldPath}.add-button`}
+                >
+                  <Icon name="add" />
+                  {addButtonLabel}
+                </Button>
           </>
-        )} */}
-      </Array>
-    )
+      )}
+    />
+  )
 }
 
 BookSeriesField.propTypes = {
