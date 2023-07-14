@@ -48,6 +48,7 @@ import { FundingField } from "./fields/FundingField";
 import { IdentifiersField } from "./fields/IdentifiersField";
 import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 import { PublisherField } from "./fields/PublisherField";
+import { RelatedWorksField } from "./fields/RelatedWorksField";
 import { VersionField } from "./fields/VersionField";
 
 export const overriddenComponents = {
@@ -57,6 +58,7 @@ export const overriddenComponents = {
     "InvenioAppRdm.Deposit.FundingField.container": FundingField,
     "InvenioAppRdm.Deposit.PublisherField.container": PublisherField,
     "InvenioAppRdm.Deposit.IdentifiersField.container": IdentifiersField,
-    "InvenioAppRdm.Deposit.VersionField.container": VersionField
+    "InvenioAppRdm.Deposit.VersionField.container": VersionField,
+    "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
     // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
 }
