@@ -1,3 +1,7 @@
-@primaryColor: rgb(0, 153, 120);
+@primaryColor: rgb(0, 102, 80);
+@footerLightColor: desaturate(lighten(rgb(0, 102, 80), 20%), 5%);
 
-@navbarBackgroundImage: linear-gradient(12deg, rgb(0, 153, 120) 0%, desaturate(lighten(rgb(0, 153, 120), 10%), 10%) 90%);
+@navbarBackgroundImage: linear-gradient(12deg, rgb(0, 102, 80) 0%, desaturate(lighten(rgb(0, 102, 80), 5%), 5%) 90%);
+
+// font: Atkinson hyperlegible
+// #006650

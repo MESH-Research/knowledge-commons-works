@@ -1,0 +1,15 @@
+
+.ui.icon.button.close-btn {
+  margin-top: 1.75rem;
+  float: right;
+}
+
+ui.form {
+  .formPageWrapper {
+    .inline.fields {
+      .field.invenio-select-field>.selection.dropdown {
+        width: 100%;
+      }
+    }
+  }
+}
