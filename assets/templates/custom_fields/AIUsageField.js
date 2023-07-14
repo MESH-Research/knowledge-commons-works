@@ -25,9 +25,9 @@ const AIUsageField = ({fieldPath,
   );
 
   useEffect(() => {
-      console.log('changed');
+      // console.log('changed');
       handleValuesChange(values);
-      console.log(values.custom_fields);
+      // console.log(values.custom_fields);
   }, [values]
   );
 
