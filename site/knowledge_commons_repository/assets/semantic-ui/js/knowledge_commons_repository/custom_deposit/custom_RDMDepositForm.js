@@ -97,15 +97,17 @@ import { CustomFieldInjector,
          VolumeComponent,
          VersionComponent
           } from "./field_components";
-import {AdminMetadataComponent,
+import {AccessRightsComponent,
+        AdminMetadataComponent,
         BookDetailComponent,
+        BookVolumePagesComponent,
+        CombinedDatesComponent,
         CombinedTitlesComponent,
-        TypeTitleComponent,
+        DeleteComponent,
+        PublicationDetailsComponent,
         SubjectKeywordsComponent,
         SubmissionComponent,
-        AccessRightsComponent,
-        CombinedDatesComponent,
-        DeleteComponent
+        TypeTitleComponent,
 } from "./compound_field_components";
 
 
@@ -151,9 +153,11 @@ const fieldComponents = {
     access_rights: AccessRightsComponent,
     admin_metadata: AdminMetadataComponent,
     book_detail: BookDetailComponent,
+    book_volume_pages: BookVolumePagesComponent,
     combined_titles: CombinedTitlesComponent,
     combined_dates: CombinedDatesComponent,
     delete: DeleteComponent,
+    publication_detail: PublicationDetailsComponent,
     subjects_keywords: SubjectKeywordsComponent,
     submission: SubmissionComponent,
     type_title: TypeTitleComponent,
@@ -203,6 +207,7 @@ const FormPage = forwardRef(({ children, id, pageNums,
 export const RDMDepositForm = ({ config, files, record, permissions, preselectedCommunity}) => {
     config = config || {};
     const [currentFormPage, setCurrentFormPage] = useState("1");
+    console.log(`current form page at top: ${currentFormPage}`);
     const [formValues, setFormValues] = useState({});
     const [currentResourceType, setCurrentResourceType] = useState('textDocument-journalArticle');
     const [currentTypeExtraFields, setCurrentTypeExtraFields] = useState(config.fields_config.extras_by_type[currentResourceType]);
@@ -219,18 +224,47 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
     }
     const customFieldsUI = config.custom_fields.ui;
 
-    // function goBack() {
-    //     console.log('back!') // do whatever you need to close this component
-    // }
+    const setFormPageInHistory = (value) => {
+      if ( value === undefined ) {
+        value = currentFormPage;
+      }
+      console.log(`setting page in history to ${value}`);
+      console.log(window.history.length);
+      let urlParams = new URLSearchParams(window.location.search);
+      console.log(urlParams.toString());
+      if ( !urlParams.has('depositFormPage') ) {
+        urlParams.append('depositFormPage', value);
+      } else if ( !urlParams.depositFormPage !== value) {
+        urlParams.set("depositFormPage", value);
+      }
+      console.log(urlParams.toString());
+      const currentBaseURL = window.location.origin;
+      const currentPath = window.location.pathname;
+      const currentParams = urlParams.toString();
+      const newCurrentURL = `${currentBaseURL}${currentPath}?${currentParams}`;
+      window.history.pushState('fake-route', document.title, newCurrentURL);
+    }
+
+    const handleFormPageParam = () => {
+      console.log(`setting current page based on param`);
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlFormPage = urlParams.get('depositFormPage');
+      console.log(`urlFormPage is ${urlFormPage}`);
+      console.log(`currentFormPage is ${currentFormPage}`);
+      // if ( !!urlFormPage && urlFormPage !== currentFormPage ) {
+      if ( !!urlFormPage ) {
+        console.log(`changing current to ${urlFormPage}`);
+        setCurrentFormPage(urlFormPage);
+      }
+    }
 
     // useEffect(() => {
-    //   const queryString = window.location.search;
-    //   const urlParams = new URLSearchParams(queryString);
-    //   console.log(urlParams);
+    //   setFormPageInHistory();
     // }, [currentFormPage]
     // )
 
-    // useEffect(() => {
+    useEffect(() => {
+      console.log('initial setup');
       // Add a fake history event so that the back button does nothing if pressed once
       // console.log(window.history.state);
       // console.log(window.history.href);
@@ -238,21 +272,25 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       // const currentPath = window.location.pathname;
       // const currentParams = window.location.search || "?";
       // const newCurrentURL = `${currentBaseURL}${currentPath}${currentParams}depositFormPage=${currentFormPage}`;
-      // window.history.pushState('fake-route', document.title, newCurrentURL);
+
+      handleFormPageParam();
+      window.setTimeout(1000);
+      setFormPageInHistory();
+      // window.history.pushState('fake-route', document.title, window.history.href);
       // console.log(window.history.state);
       // console.log(window.history.href);
-
-      // window.addEventListener('popstate', goBack);
+      window.addEventListener('popstate', handleFormPageParam);
 
       // // Here is the cleanup when this component unmounts
-      // return () => {
-      //   window.removeEventListener('popstate', goBack);
-      //   // If we left without using the back button, aka by using a button on the page, we need to clear out that fake history event
-      //   if (window.history.state === 'fake-route') {
-      //     window.history.back();
-      //   }
+      return () => {
+        window.removeEventListener('popstate', handleFormPageParam);
+        // If we left without using the back button, aka by using a button on the page, we need to clear out that fake history event
+        if (window.history.state === 'fake-route') {
+          window.history.back();
+        }
+      }
     //   console.log("");
-    // }, []);
+    }, []);
 
     let formFeedbackRef = useRef(0);
     let sidebarRef = useRef(0);
@@ -305,6 +343,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
 
     const handleFormPageChange = (event, { value }) => {
       setCurrentFormPage(value);
+      setFormPageInHistory(value);
     };
 
     const handleValuesChange= (values) => {
