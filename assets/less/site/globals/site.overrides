@@ -1,14 +1,46 @@
+@import (css) url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
+// @font-face {
+//     font-family: 'cblockbold';
+//     src: url('assets/fonts/creabbb_-webfont.eot');
+//     src: url('assets/fonts/creabbb_-webfont.eot?#iefix') format('embedded-opentype'),
+//           url('assets/fonts/creabbb_-webfont.woff') format('woff'),
+//           url('assets/fonts/AtkinsonHyperlegible-Regular.ttf) format('truetype'),
+//           url('assets/fonts/creabbb_-webfont.svg#CreativeBlockBBBold') format('svg');
+//     font-weight: normal;
+//     font-style: normal;
+
+// }
+
+// Forms
 .ui.icon.button.close-btn {
   margin-top: 1.75rem;
   float: right;
 }
 
-ui.form {
+.ui.form {
   .formPageWrapper {
     .inline.fields {
       .field.invenio-select-field>.selection.dropdown {
         width: 100%;
+      }
+    }
+    fieldset .content {
+      .field:last-child,
+      .field:last-child .fields:last-child,
+      .fields:last-child .field {
+        margin-bottom: 0;
+      }
+      .field.pid-field {
+        .inline.fields .invenio-field-label {
+          margin-bottom: .28571429rem;
+        }
+      }
+      .field.additional-titles .fields:last-child {
+        margin-bottom: 0;
+      }
+      .helptext:last-child {
+        margin-bottom: 0;
       }
     }
   }
