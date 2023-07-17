@@ -71,7 +71,8 @@ const BookSeriesField = ({
               <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
             </Form.Field> */}
 
-            {values.custom_fields['kcr:book_series'].map(({title, volume}, index) => {
+            {!!values.custom_fields['kcr:book_series'] &&
+             values.custom_fields['kcr:book_series'].map(({title, volume}, index) => {
               const fieldPathPrefix = `${fieldPath}.${index}`;
               // const hasNumber = (!!my_volume || my_volume!=="");
               return(
