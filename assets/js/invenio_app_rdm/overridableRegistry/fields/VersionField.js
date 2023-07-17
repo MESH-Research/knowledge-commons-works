@@ -16,8 +16,9 @@ import { Trans } from "react-i18next";
 export class VersionField extends Component {
   render() {
     const { fieldPath, label, labelIcon, placeholder, helpText } = this.props;
-    if ( helpText===undefined ) {
-        helpText = (
+    let myHelpText = helpText;
+    if ( myHelpText===undefined ) {
+        myHelpText = (
             <span>
                 <Trans>
                 Mostly relevant for software and dataset uploads. A semantic version string is
@@ -35,7 +36,7 @@ export class VersionField extends Component {
     return (
       <TextField
         fieldPath={fieldPath}
-        helpText={helpText}
+        helpText={myHelpText}
         label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
         placeholder={placeholder}
       />
