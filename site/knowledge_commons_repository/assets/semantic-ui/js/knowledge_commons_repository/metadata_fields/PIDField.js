@@ -123,7 +123,7 @@ class ManagedUnmanagedSwitch extends Component {
     return (
       <Form.Group inline>
         <Form.Field>
-          <FieldLabel htmlFor={fieldPath} icon={"barcode"} label={i18next.t("Do you already have a {{pidLabel}} for this upload?", {
+          <FieldLabel htmlFor={fieldPath} icon={"barcode"} label={i18next.t("Do you already have a {{pidLabel}} for this material?", {
             pidLabel: pidLabel,
           })} />
         </Form.Field>
@@ -361,17 +361,26 @@ class CustomPIDField extends Component {
 
   onExternalIdentifierChanged = (identifier) => {
     const { form, fieldPath } = this.props;
-
-    const pid = {
+    let pid = {
       identifier: identifier,
       provider: PROVIDER_EXTERNAL,
     };
 
-    this.debounced && this.debounced.cancel();
-    this.debounced = _debounce(() => {
-      form.setFieldValue(fieldPath, pid);
-    }, UPDATE_PID_DEBOUNCE_MS);
-    this.debounced();
+    if ( identifier !== "" ) {
+      this.setState({isManagedSelected: false});
+      this.debounced && this.debounced.cancel();
+      this.debounced = _debounce(() => {
+        form.setFieldValue(fieldPath, pid);
+      }, UPDATE_PID_DEBOUNCE_MS);
+      this.debounced();
+    } else {
+      this.setState({isManagedSelected: true});
+      this.debounced && this.debounced.cancel();
+      this.debounced = _debounce(() => {
+        form.setFieldValue('pids', {});
+      }, UPDATE_PID_DEBOUNCE_MS);
+      this.debounced();
+      }
   };
 
   render() {
@@ -455,7 +464,8 @@ class CustomPIDField extends Component {
         // )
         }
 
-        {canBeUnmanaged && !_isManagedSelected && (
+        {/* {canBeUnmanaged && !_isManagedSelected && ( */}
+        {canBeUnmanaged && (
           <UnmanagedIdentifierCmp
             identifier={unmanagedIdentifier}
             onIdentifierChanged={(identifier) => {
@@ -464,7 +474,7 @@ class CustomPIDField extends Component {
             form={form}
             fieldPath={fieldPath}
             pidPlaceholder={pidPlaceholder}
-            helpText={unmanagedHelpText}
+            helpText={"A unique registered Digital Object Identifier allows the deposit to be cited unambiguously. We'll create one for you if you don't have one already." || unmanagedHelpText}
           />
         )}
       </>
