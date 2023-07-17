@@ -12,7 +12,8 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import React, { Component, createContext, createRef, forwardRef, Fragment,
-                useEffect, useLayoutEffect, useRef, useState } from "react";
+                useContext, useEffect, useLayoutEffect, useRef,
+                useState } from "react";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
@@ -107,8 +108,10 @@ import {AccessRightsComponent,
         PublicationDetailsComponent,
         SubjectKeywordsComponent,
         SubmissionComponent,
+        SubmitActionsComponent,
         TypeTitleComponent,
 } from "./compound_field_components";
+import { useFormikContext } from "formik";
 
 
 // React Context to track the current form values.
@@ -203,20 +206,47 @@ const fieldComponents = {
       ['metadata.subjects', 'custom_fields.kcr:user_defined_tags']],
     submission: [SubmissionComponent,
       []],
+    submit_actions: [SubmitActionsComponent,
+      ['access']],
     type_title: [TypeTitleComponent,
       ['metadata.title', 'metadata.resource_type']],
 }
 
-const FormPage = forwardRef(({ children, id, pageNums,
+const FormPage = ({ children, id, pageNums,
                     currentFormPage, handleFormPageChange
-                  }, ref) => {
+                  }) => {
+
+  const { values, errors, setFieldValue, initialValues } = useFormikContext();
+  console.log('atop formPage...')
+  console.log(values);
+  console.log(errors);
+  const { currentValues, handleValuesChange,
+          currentErrors, handleErrorsChange } = useContext(FormValuesContext);
   const currentPageIndex = pageNums.indexOf(currentFormPage);
   const nextPageIndex = currentPageIndex + 1;
   const previousPageIndex = currentPageIndex - 1;
   const nextPage = nextPageIndex < pageNums.length ? pageNums[nextPageIndex] : null;
   const previousPage = previousPageIndex >= 0 ? pageNums[previousPageIndex] : null;
+
+  //pass values up from Formik context to main form context
+  useEffect(() => {
+    if ( !!currentValues &&
+      currentValues.metadata?.resource_type !== values.metadata.resource_type ) {
+      handleValuesChange(values);
+    }
+  }, [values]
+  );
+
+  //pass errors up from Formik context to main form context
+  useEffect(() => {
+    if ( currentErrors !== errors ) {
+      handleErrorsChange(errors);
+    }
+  }, [errors]
+  );
+
   return(
-    <div className="formPageWrapper" id={id} ref={ref}>
+    <div className="formPageWrapper" id={id}>
     {/* // <Card fluid
     //   id={id}
     // >
@@ -246,14 +276,14 @@ const FormPage = forwardRef(({ children, id, pageNums,
     </Card> */}
     </div>
   )
-});
+}
 
 export const RDMDepositForm = ({ config, files, record, permissions, preselectedCommunity}) => {
     config = config || {};
     const [currentFormPage, setCurrentFormPage] = useState("1");
     console.log(`current form page at top: ${currentFormPage}`);
-    const [formValues, setFormValues] = useState({});
-    const [formErrors, setFormErrors] = useState({});
+    const [currentValues, setCurrentValues] = useState({});
+    const [currentErrors, setCurrentErrors] = useState({});
     const [pagesWithErrors, setPagesWithErrors] = useState([]);
     const [currentResourceType, setCurrentResourceType] = useState('textDocument-journalArticle');
     const [currentTypeExtraFields, setCurrentTypeExtraFields] = useState(config.fields_config.extras_by_type[currentResourceType]);
@@ -377,7 +407,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
     };
 
     const handleValuesChange= (values) => {
-      setFormValues(values);
+      setCurrentValues(values);
       // console.log('changed values');
       // console.log(values);
       localStorage.setItem('depositFormValues', JSON.stringify(values));
@@ -385,37 +415,53 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       setCurrentTypeExtraFields(config.fields_config.extras_by_type[values.metadata.resource_type]);
     }
 
+    function flattenKeysDotJoined(val) {
+      const keysArray = Object.keys(val);
+      console.log(keysArray);
+      let newArray = []
+      for ( let i=0; i<keysArray.length; i++ ) {
+        const myValue = val[keysArray[i]];
+        if ( typeof(myValue) === "object" &&
+            !Array.isArray(myValue) && myValue !== null
+        ) {
+          console.log(`checking value for ${keysArray[i]}`);
+          console.log(`value is ${val[keysArray[i]]}`);
+          const childKeys = flattenKeysDotJoined(val[keysArray[i]]).map(
+            (k) => `${keysArray[i]}.${k}`
+          );
+          console.log(`child keys are ${childKeys}`);
+          newArray = newArray.concat(childKeys);
+        } else {
+          newArray.push(keysArray[i]);
+          console.log(`no object: adding key ${keysArray[i]}`);
+        }
+        console.log(newArray);
+      }
+      return newArray;
+    }
     const handleErrorsChange = (errors) => {
       if ( errors !== {} ) {
-        setFormErrors(errors);
+        setCurrentErrors(errors);
         let errorPages = [];
-        function flattenKeysDotJoined(val) {
-          let myArray = Object.keys(val);
-          let newArray = []
-          for ( let i=0; i<myArray.length; i++ ) {
-            if ( typeof(val[myArray[i]]) === Object ) {
-              const childKeys = flattenKeysDotJoined(val[myArray[i]]).map(
-                (k) => myArray[i] = `${myArray[i]}.${k}`
-              );
-              newArray = [...newArray, ...childKeys];
-            } else {
-              continue;
-            }
-          }
-          return newArray;
-        }
+        // for each page...
         for ( let p of Object.keys(formPages) ) {
+          // collect form widget slugs
           let pageFields = config.fields_config.common_fields[p];
-          console.log(pageFields);
           if ( !!currentTypeExtraFields[p] ) {
-            pageFields = [...pageFields, ...currentTypeExtraFields[p]];
+            pageFields = pageFields.concat(currentTypeExtraFields[p]);
           }
+          if ( pageFields.length == 1 ) {
+            pageFields = [pageFields];
+          }
+          // get form field label for each slug
           let pageMetaFields = pageFields.reduce((accum, curr) =>
-            [ ...accum, ...fieldComponents[curr][1]]
-          );
+            {accum = accum.concat(fieldComponents[curr][1]); return accum},
+          []);
           console.log(pageMetaFields);
+          // get form field labels for current errors
           const errorFields = flattenKeysDotJoined(errors);
           console.log(errorFields);
+          // add page to error pages if the two lists overlap
           if ( pageMetaFields.some(item => errorFields.includes(item)) ) {
             errorPages.push(p);
           }
@@ -427,8 +473,8 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
 
     return (
       <FormValuesContext.Provider
-        value={{ formValues, handleValuesChange,
-                 formErrors, handleErrorsChange }}
+        value={{ currentValues, handleValuesChange,
+                 currentErrors, handleErrorsChange }}
       >
       <DepositFormApp
         config={config}
@@ -471,7 +517,8 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                     link
                     onClick={handleFormPageChange}
                     value={pageNum}
-                    className={`upload-form-stepper-step page-${pageNum}`}
+                    className={`upload-form-stepper-step page-${pageNum}
+                     ${pagesWithErrors.includes(pageNum) ? "has-error" : ""}`}
                     // description='Choose your shipping options'
                   >
                     {/* <Icon name='truck' /> */}

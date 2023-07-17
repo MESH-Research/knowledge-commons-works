@@ -16,10 +16,11 @@ const AIUsageField = ({fieldPath,
                        ...restProps
                       }) => {
   const { values, setFieldValue } = useFormikContext();
-  const { currentValues, handleValuesChange } = useContext(FormValuesContext);
+  const { currentValues, handleValuesChange,
+          currentErrors, handleErrorsChange } = useContext(FormValuesContext);
 
   useEffect(() => {
-        setFieldValue(fieldPath, {'ai_used': false});
+        setFieldValue(fieldPath, {ai_used: false, ai_description: ""});
         handleValuesChange(values);
   }, []
   );

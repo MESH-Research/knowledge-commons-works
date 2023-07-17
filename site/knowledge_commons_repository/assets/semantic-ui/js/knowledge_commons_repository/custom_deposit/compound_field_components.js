@@ -12,6 +12,7 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import React, { Component, createContext, createRef, forwardRef, Fragment,
+                useContext,
                 useEffect, useLayoutEffect, useRef, useState } from "react";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -98,6 +99,8 @@ import { CustomFieldInjector,
          VolumeComponent,
          VersionComponent
           } from "./field_components";
+import { useFormikContext } from "formik";
+import { FormValuesContext } from "./custom_RDMDepositForm";
 
 
 const AdminMetadataComponent = ({customFieldsUI}) => {
@@ -199,17 +202,15 @@ const BookVolumePagesComponent = ({customFieldsUI}) => {
     return(
       <Card fluid>
         <Card.Content>
-          <Form.Group>
+          <Form.Group widths="equal">
             <VolumeComponent customFieldsUI={customFieldsUI} />
-          </Form.Group>
-          <Form.Group>
             <CustomFieldInjector
             sectionName="Book / Report / Chapter"
             fieldName="imprint:imprint.pages"
             idString="ImprintPagesField"
             customFieldsUI={customFieldsUI}
             description={""}
-            label="Number of Pages"
+            label="Total pages"
             />
           </Form.Group>
         </Card.Content>
@@ -255,6 +256,7 @@ const SubjectKeywordsComponent = ({ record, vocabularies, customFieldsUI }) => {
 }
 
 const SubmissionComponent = () => {
+
   return(
     <Overridable id="InvenioAppRdm.Deposit.CardDepositStatusBox.container">
       <Card fluid>
@@ -339,6 +341,20 @@ const DeleteComponent = ({ permissions, record }) => {
   )
 }
 
+const SubmitActionsComponent = ({permissions, record}) => {
+  return(
+    <Grid>
+      <Grid.Column width="8">
+        <SubmissionComponent />
+        <DeleteComponent permissions={permissions} record={record} />
+      </Grid.Column>
+      <Grid.Column width="8">
+        <AccessRightsComponent permissions={permissions} />
+      </Grid.Column>
+    </Grid>
+  )
+}
+
 export {AccessRightsComponent,
         AdminMetadataComponent,
         BookDetailComponent,
@@ -349,5 +365,6 @@ export {AccessRightsComponent,
         PublicationDetailsComponent,
         SubjectKeywordsComponent,
         SubmissionComponent,
+        SubmitActionsComponent,
         TypeTitleComponent,
 };

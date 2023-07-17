@@ -26,9 +26,7 @@ common_fields:
   "6":
     - admin_metadata
   "7":
-    - submission
-    - access_rights
-    - delete
+    - submit_actions
 extras_by_type:
   audiovisual:
     "1":

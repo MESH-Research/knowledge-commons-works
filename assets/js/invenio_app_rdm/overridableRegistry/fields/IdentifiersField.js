@@ -37,11 +37,11 @@ export const IdentifiersField = ({
   labelIcon,
   required,
   schemeOptions,
-  showEmptyValue,
+  showEmptyValue=true,
   description,
   placeholder
   }) => {
-    const { values, submitForm } = useFormikContext();
+    const { values, setFieldValue } = useFormikContext();
     const [identifiersLength, setIdentifiersLength] = useState(0);
     const [haveChangedNumber, setHaveChangedNumber] = useState(false);
     const addButtonLabel = i18next.t("Add identifier");
@@ -55,6 +55,12 @@ export const IdentifiersField = ({
         }
       }
     }, [identifiersLength]);
+
+    useEffect(() => {
+      if ( values.metadata.identifiers.length < 1 ) {
+        setFieldValue(fieldPath, [emptyURL]);
+      }
+    }, []);
 
     const handleAddNew = (arrayHelpers, newItem) => {
       setHaveChangedNumber(true);
@@ -139,7 +145,7 @@ export const IdentifiersField = ({
                   id={`${fieldPath}.add-url-button`}
                 >
                   <Icon name="add" />
-                  Add new URL
+                  Add URL
                 </Button>
                 <Button
                   type="button"

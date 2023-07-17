@@ -143,7 +143,7 @@ const AbstractComponent = ({record, vocabularies}) => {
 
   return(
     <Card fluid
-      id={'InvenioAppRdm.Deposit.TypeTitleComponents.container'}
+      id={'InvenioAppRdm.Deposit.AbstractComponent.container'}
       as="fieldset"
     >
       <Card.Content>

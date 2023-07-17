@@ -85,6 +85,7 @@ export class CreatibutorsModal extends Component {
   };
 
   closeModal = () => {
+    this.props.focusAddButtonHandler();
     this.setState({ open: false, action: null });
   };
 

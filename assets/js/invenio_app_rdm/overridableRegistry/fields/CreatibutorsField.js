@@ -6,7 +6,7 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
 import { getIn, FieldArray } from "formik";
 import { Button, Form, Label, List, Icon } from "semantic-ui-react";
@@ -51,10 +51,20 @@ const creatibutorNameDisplay = (value) => {
 };
 
 class CreatibutorsFieldForm extends Component {
+  constructor(props) {
+      super(props);
+      this.focusAddButtonHandler = this.focusAddButtonHandler.bind(this);
+      this.handleOnContributorChange = this.handleOnContributorChange.bind(this);
+  }
+
   handleOnContributorChange = (selectedCreatibutor) => {
     const { push: formikArrayPush } = this.props;
     formikArrayPush(selectedCreatibutor);
   };
+
+  focusAddButtonHandler = () => {
+    document.getElementById(`${this.props.fieldPath}.add-button`).focus();
+  }
 
   render() {
     const {
@@ -80,6 +90,8 @@ class CreatibutorsFieldForm extends Component {
     const initialError = getIn(initialErrors, fieldPath, null);
     const creatibutorsError =
       error || (creatibutorsList === formikInitialValues && initialError);
+
+
 
     return (
       // <DndProvider backend={HTML5Backend} options={{ rootElement: rootElement}}>
@@ -127,11 +139,16 @@ class CreatibutorsFieldForm extends Component {
               schema={schema}
               autocompleteNames={autocompleteNames}
               trigger={
-                <Button type="button" icon labelPosition="left">
+                <Button type="button" icon labelPosition="left"
+                 id={`${fieldPath}.add-button`}
+                 ref={this.adderRef}
+                >
                   <Icon name="add" />
                   {addButtonLabel}
                 </Button>
               }
+              adderRef={this.adderRef}
+              focusAddButtonHandler={this.focusAddButtonHandler}
             />
             {creatibutorsError && typeof creatibutorsError == "string" && (
               <Label pointing="left" prompt>

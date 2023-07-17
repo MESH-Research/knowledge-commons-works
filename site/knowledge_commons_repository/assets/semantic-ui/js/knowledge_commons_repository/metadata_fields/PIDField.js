@@ -127,7 +127,8 @@ class ManagedUnmanagedSwitch extends Component {
             pidLabel: pidLabel,
           })} />
         </Form.Field>
-        <Form.Field width={2}>
+        {/* Hidden because value is set implicitly */}
+        {/* <Form.Field width={2}>
           <Radio
             label={i18next.t("Yes")}
             name="radioGroup"
@@ -146,7 +147,7 @@ class ManagedUnmanagedSwitch extends Component {
             checked={isManagedSelected}
             onChange={this.handleChange}
           />
-        </Form.Field>
+        </Form.Field> */}
       </Form.Group>
     );
   }

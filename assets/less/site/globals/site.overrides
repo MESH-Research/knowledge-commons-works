@@ -32,6 +32,13 @@
       font-weight: normal;
     }
 
+    .upload-form-stepper-step.has-error {
+      color: @errorTextColor;
+      background-color: #F6D5E5;
+      &:after {
+        background-color: #F6D5E5;
+      }
+    }
     .formPageWrapper {
       .inline.fields {
         .field.invenio-select-field>.selection.dropdown {

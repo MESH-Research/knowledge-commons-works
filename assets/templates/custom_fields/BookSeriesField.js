@@ -34,12 +34,21 @@ const BookSeriesField = ({
     useEffect(() => {
       if ( !!haveChangedNumber ) {
         if ( seriesLength < 0 ) {
+          // console.log(document.getElementById(`${fieldPath}.add-button`));
           document.getElementById(`${fieldPath}.add-button`)?.focus();
         } else {
-          document.getElementById(`${fieldPath}.${seriesLength}.identifier`)?.focus();
+          document.getElementById(`${fieldPath}.${seriesLength}.series_title`)?.focus();
+          // console.log(document.getElementById(`${fieldPath}.${seriesLength}.series_title`));
         }
       }
     }, [seriesLength]);
+
+    useEffect(() => {
+      if ( showEmptyValue===true &&
+          (!values.custom_fields || !values.custom_fields['kcr:book_series']) ) {
+        setFieldValue(fieldPath, [newSeries]);
+      }
+    });
 
     const handleAddNew = (arrayHelpers, newItem) => {
       console.log(arrayHelpers);
@@ -53,18 +62,13 @@ const BookSeriesField = ({
       arrayHelpers.remove(index);
       setSeriesLength(seriesLength - 1);
     }
-    console.log(values);
-
-    if ( !values.custom_fields || !values.custom_fields['kcr:book_series'] ) {
-      values.custom_fields['kcr:book_series'].map(({title, volume}, index) => {
-    }
 
     return (
 
       <FieldArray
         name={fieldPath}
         className="invenio-array-field"
-        showEmptyValue={showEmptyValue}
+        // showEmptyValue={showEmptyValue}
         // addButtonLabel={addButtonLabel}
         defaultNewValue={newSeries}
         // description={description}
@@ -77,7 +81,7 @@ const BookSeriesField = ({
             </Form.Field> */}
 
             {!!values.custom_fields ? (
-             values.custom_fields['kcr:book_series'].map(({title, volume}, index) => {
+             values.custom_fields['kcr:book_series']?.map(({title, volume}, index) => {
               const fieldPathPrefix = `${fieldPath}.${index}`;
               // const hasNumber = (!!my_volume || my_volume!=="");
               return(

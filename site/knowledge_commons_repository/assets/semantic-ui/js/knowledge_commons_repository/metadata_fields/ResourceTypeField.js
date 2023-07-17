@@ -7,7 +7,7 @@
 // you can redistribute them and/or modify them
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import _get from "lodash/get";
 import { Form } from "semantic-ui-react";
@@ -27,28 +27,6 @@ const ResourceTypeField = ({fieldPath,
 
   const [ otherToggleActive, setOtherToggleActive ] = useState(false);
   const { values, errors, setFieldValue, initialValues } = useFormikContext();
-  const selectedType = values[fieldPath];
-  const { uiValues, handleValuesChange,
-          uiErrors, handleErrorsChange } = useContext(FormValuesContext);
-
-  useEffect(() => {
-
-  }, []);
-
-  useEffect(() => {
-    if ( !!uiValues &&
-      uiValues.metadata.resource_type !== values.metadata.resource_type ) {
-      handleValuesChange(values);
-    }
-  }, [values]
-  );
-
-  useEffect(() => {
-    if ( uiErrors !== errors ) {
-      handleErrorsChange(errors);
-    }
-  }, [errors]
-  );
 
   const groupErrors = (errors, fieldPath) => {
     const fieldErrors = _get(errors, fieldPath);
