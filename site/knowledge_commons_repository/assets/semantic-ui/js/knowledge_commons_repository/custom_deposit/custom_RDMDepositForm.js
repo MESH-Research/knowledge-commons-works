@@ -54,7 +54,7 @@ import {
   Sticky,
   Transition
 } from "semantic-ui-react";
-import PropTypes from "prop-types";
+import PropTypes, { object } from "prop-types";
 import Overridable from "react-overridable";
 import ResourceTypeField from "../metadata_fields/ResourceTypeField";
 import { PIDField } from "../metadata_fields/PIDField";
@@ -116,51 +116,95 @@ import {AccessRightsComponent,
 // form field.
 const FormValuesContext = createContext();
 
-
 const fieldComponents = {
-    abstract: AbstractComponent,
-    additional_dates: AdditionalDatesComponent,
-    additional_description: AdditionalDescriptionComponent,
-    additional_titles: AdditionalTitlesComponent,
-    ai: AIComponent,
-    alternate_identifiers: AlternateIdentifiersComponent,
-    communities: CommunitiesComponent,
-    content_warning: ContentWarningComponent,
-    contributors: ContributorsComponent,
-    creators: CreatorsComponent,
-    date: DateComponent,
-    doi: DoiComponent,
-    funding: FundingComponent,
-    file_upload: FilesUploadComponent,
-    keywords: KeywordsComponent,
-    language: LanguagesComponent,
-    licenses: LicensesComponent,
-    metadata_only: MetadataOnlyComponent,
-    previously_published: PreviouslyPublishedComponent,
-    publisher_doi: PublisherDoiComponent,
-    publisher: PublisherComponent,
-    publication_location: PublicationLocationComponent,
-    related_works: RelatedWorksComponent,
-    resource_type: ResourceTypeComponent,
-    series: SeriesComponent,
-    subjects: SubjectsComponent,
-    subtitle: SubtitleComponent,
-    title: TitleComponent,
-    total_pages: TotalPagesComponent,
-    volume: VolumeComponent,
-    version: VersionComponent,
+    abstract: [AbstractComponent,
+      ['metadata.description']],
+    additional_dates: [AdditionalDatesComponent,
+      ['metadata.dates']],
+    additional_description: [AdditionalDescriptionComponent,
+      ['metadata.additional_descriptions']],
+    additional_titles: [AdditionalTitlesComponent,
+      ['metadata.additional_titles']],
+    ai: [AIComponent,
+      ['custom_fields.kcr:ai_usage']],
+    alternate_identifiers: [AlternateIdentifiersComponent,
+      ['metadata.identifiers']],
+    communities: [CommunitiesComponent,
+      []],
+    content_warning: [ContentWarningComponent,
+      ['custom_fields.kcr:content_warning']],
+    contributors: [ContributorsComponent,
+      ['metadata.contributors']],
+    creators: [CreatorsComponent,
+      ['metadata.creators']],
+    date: [DateComponent,
+      ['metadata.publication_date']],
+    doi: [DoiComponent,
+      ['pids.doi']],
+    funding: [FundingComponent,
+      ['metadata.funding']],
+    isbn: [null,
+      ['custom_fields.imprint:imprint.isbn']],
+    file_upload: [FilesUploadComponent,
+      ['files']],
+    keywords: [KeywordsComponent,
+      ['custom_fields.kcr:user_defined_tags']],
+    language: [LanguagesComponent,
+      ['metadata.languages']],
+    licenses: [LicensesComponent,
+      ['metadata.rights']],
+    metadata_only: [MetadataOnlyComponent,
+      ['access.status']],
+    previously_published: [PreviouslyPublishedComponent,
+      []],
+    publisher: [PublisherComponent,
+      ['metadata.publisher']],
+    publication_location: [PublicationLocationComponent,
+      ['custom_fields.imprint:imprint.place']],
+    related_works: [RelatedWorksComponent,
+      ['metadata.related_identifiers']],
+    resource_type: [ResourceTypeComponent,
+      ['metadata.resource_type']],
+    series: [SeriesComponent,
+      ['custom_fields.kcr:book_series']],
+    subjects: [SubjectsComponent,
+      ['metadata.subjects']],
+    subtitle: [SubtitleComponent,
+      ['metadata.additional_titles']],
+    title: [TitleComponent,
+      ['metadata.title']],
+    total_pages: [TotalPagesComponent,
+      ['custom_fields.imprint:imprint.pages']],
+    volume: [VolumeComponent,
+      ['custom_fields.kcr:volumes']],
+    version: [VersionComponent,
+      ['metadata.version']],
     // below are composite field components
-    access_rights: AccessRightsComponent,
-    admin_metadata: AdminMetadataComponent,
-    book_detail: BookDetailComponent,
-    book_volume_pages: BookVolumePagesComponent,
-    combined_titles: CombinedTitlesComponent,
-    combined_dates: CombinedDatesComponent,
-    delete: DeleteComponent,
-    publication_detail: PublicationDetailsComponent,
-    subjects_keywords: SubjectKeywordsComponent,
-    submission: SubmissionComponent,
-    type_title: TypeTitleComponent,
+    access_rights: [AccessRightsComponent,
+      ['access']],
+    admin_metadata: [AdminMetadataComponent,
+      []],
+    book_detail: [BookDetailComponent,
+      ['custom_fields.imprint:imprint.isbn', 'metadata.version',
+       'metadata.publisher', 'custom_fields.kcr:volume',
+       'custom_fields.imprint:imprint.pages', 'custom_fields.kcr:book_series']],
+    book_volume_pages: [BookVolumePagesComponent,
+      ['custom_fields.kcr:volume', 'custom_fields.imprint:imprint.pages']],
+    combined_titles: [CombinedTitlesComponent,
+      ['metadata.title', 'metadata.additional_titles']],
+    combined_dates: [CombinedDatesComponent,
+      ['metadata.publication_date', 'metadata.dates']],
+    delete: [DeleteComponent,
+      []],
+    publication_detail: [PublicationDetailsComponent,
+      ['custom_fields.imprint:imprint.isbn', 'metadata.version',
+       'metadata.publisher', 'custom_fields.imprint:imprint.place']],
+    subjects_keywords: [SubjectKeywordsComponent,
+      ['metadata.subjects', 'custom_fields.kcr:user_defined_tags']],
+    submission: [SubmissionComponent,
+      []],
+    type_title: [TypeTitleComponent,
+      ['metadata.title', 'metadata.resource_type']],
 }
 
 const FormPage = forwardRef(({ children, id, pageNums,
@@ -209,6 +253,8 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
     const [currentFormPage, setCurrentFormPage] = useState("1");
     console.log(`current form page at top: ${currentFormPage}`);
     const [formValues, setFormValues] = useState({});
+    const [formErrors, setFormErrors] = useState({});
+    const [pagesWithErrors, setPagesWithErrors] = useState([]);
     const [currentResourceType, setCurrentResourceType] = useState('textDocument-journalArticle');
     const [currentTypeExtraFields, setCurrentTypeExtraFields] = useState(config.fields_config.extras_by_type[currentResourceType]);
     const ref1 = useRef(null);
@@ -258,26 +304,12 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       }
     }
 
-    // useEffect(() => {
-    //   setFormPageInHistory();
-    // }, [currentFormPage]
-    // )
-
     useEffect(() => {
       console.log('initial setup');
-      // Add a fake history event so that the back button does nothing if pressed once
-      // console.log(window.history.state);
-      // console.log(window.history.href);
-      // const currentBaseURL = window.location.origin;
-      // const currentPath = window.location.pathname;
-      // const currentParams = window.location.search || "?";
-      // const newCurrentURL = `${currentBaseURL}${currentPath}${currentParams}depositFormPage=${currentFormPage}`;
-
       handleFormPageParam();
+      // Add a fake history event so that the back button does nothing if pressed once
       setFormPageInHistory();
       // window.history.pushState('fake-route', document.title, window.history.href);
-      // console.log(window.history.state);
-      // console.log(window.history.href);
       window.addEventListener('popstate', handleFormPageParam);
 
       // // Here is the cleanup when this component unmounts
@@ -288,7 +320,6 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
           window.history.back();
         }
       }
-    //   console.log("");
     }, []);
 
     let formFeedbackRef = useRef(0);
@@ -354,9 +385,50 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       setCurrentTypeExtraFields(config.fields_config.extras_by_type[values.metadata.resource_type]);
     }
 
+    const handleErrorsChange = (errors) => {
+      if ( errors !== {} ) {
+        setFormErrors(errors);
+        let errorPages = [];
+        function flattenKeysDotJoined(val) {
+          let myArray = Object.keys(val);
+          let newArray = []
+          for ( let i=0; i<myArray.length; i++ ) {
+            if ( typeof(val[myArray[i]]) === Object ) {
+              const childKeys = flattenKeysDotJoined(val[myArray[i]]).map(
+                (k) => myArray[i] = `${myArray[i]}.${k}`
+              );
+              newArray = [...newArray, ...childKeys];
+            } else {
+              continue;
+            }
+          }
+          return newArray;
+        }
+        for ( let p of Object.keys(formPages) ) {
+          let pageFields = config.fields_config.common_fields[p];
+          console.log(pageFields);
+          if ( !!currentTypeExtraFields[p] ) {
+            pageFields = [...pageFields, ...currentTypeExtraFields[p]];
+          }
+          let pageMetaFields = pageFields.reduce((accum, curr) =>
+            [ ...accum, ...fieldComponents[curr][1]]
+          );
+          console.log(pageMetaFields);
+          const errorFields = flattenKeysDotJoined(errors);
+          console.log(errorFields);
+          if ( pageMetaFields.some(item => errorFields.includes(item)) ) {
+            errorPages.push(p);
+          }
+          console.log(errorPages);
+        }
+        setPagesWithErrors(errorPages);
+      }
+    }
+
     return (
       <FormValuesContext.Provider
-        value={{ formValues, handleValuesChange }}
+        value={{ formValues, handleValuesChange,
+                 formErrors, handleErrorsChange }}
       >
       <DepositFormApp
         config={config}
@@ -429,7 +501,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                           {!!currentResourceType &&
                            !!currentTypeExtraFields[pageNum] ?
                            currentTypeExtraFields[pageNum].map((component_label, index) => {
-                            const MyField = fieldComponents[component_label]
+                            const MyField = fieldComponents[component_label][0]
                             return (<MyField
                               key={index}
                               config={config}
@@ -444,7 +516,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                           }) : ""
                           }
                           {config.fields_config.common_fields[pageNum].map((component_label, index) => {
-                            const MyField = fieldComponents[component_label]
+                            const MyField = fieldComponents[component_label][0]
                             return (<MyField
                               key={index}
                               config={config}

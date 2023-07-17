@@ -26,20 +26,28 @@ const ResourceTypeField = ({fieldPath,
                             ...restProps}) => {
 
   const [ otherToggleActive, setOtherToggleActive ] = useState(false);
-  const { values, setFieldValue, initialValues } = useFormikContext();
+  const { values, errors, setFieldValue, initialValues } = useFormikContext();
   const selectedType = values[fieldPath];
-  const { currentResourceType, handleValuesChange } = useContext(FormValuesContext);
-
+  const { uiValues, handleValuesChange,
+          uiErrors, handleErrorsChange } = useContext(FormValuesContext);
 
   useEffect(() => {
 
   }, []);
 
   useEffect(() => {
-    if ( currentResourceType !== values.metadata.resource_type ) {
+    if ( !!uiValues &&
+      uiValues.metadata.resource_type !== values.metadata.resource_type ) {
       handleValuesChange(values);
     }
   }, [values]
+  );
+
+  useEffect(() => {
+    if ( uiErrors !== errors ) {
+      handleErrorsChange(errors);
+    }
+  }, [errors]
   );
 
   const groupErrors = (errors, fieldPath) => {
@@ -118,7 +126,7 @@ const ResourceTypeField = ({fieldPath,
       <Form.Field required={required}>
         <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
       </Form.Field>
-      <Menu compact icon='labeled'>
+      <Menu compact icon='labeled' fluid widths={6}>
       {buttonTypes.map((buttonType, index) => (
         <Menu.Item
           key={index}
