@@ -12,35 +12,56 @@
 
 // }
 
+// Header
+
+.rdm-logo {
+  width: auto;
+}
+
 // Forms
 .ui.icon.button.close-btn {
   margin-top: 1.75rem;
   float: right;
 }
 
-.ui.form {
-  .formPageWrapper {
-    .inline.fields {
-      .field.invenio-select-field>.selection.dropdown {
-        width: 100%;
-      }
+#deposit-form   {
+
+  .ui.form {
+
+    h2 {
+      font-weight: normal;
     }
-    fieldset .content {
-      .field:last-child,
-      .field:last-child .fields:last-child,
-      .fields:last-child .field {
-        margin-bottom: 0;
-      }
-      .field.pid-field {
-        .inline.fields .invenio-field-label {
-          margin-bottom: .28571429rem;
+
+    .formPageWrapper {
+      .inline.fields {
+        .field.invenio-select-field>.selection.dropdown {
+          width: 100%;
         }
       }
-      .field.additional-titles .fields:last-child {
-        margin-bottom: 0;
-      }
-      .helptext:last-child {
-        margin-bottom: 0;
+      fieldset {
+        .field:last-child,
+        .field:last-child .fields:last-child,
+        .fields:last-child .field {
+          margin-bottom: 0;
+        }
+        .field.pid-field {
+          .inline.fields {
+            margin-bottom: .28571429rem;
+          }
+        }
+        .field.resource-type-field {
+          .ui.menu.compact .item.active {
+            border-radius: 0;
+            border-color: @primaryColor;
+            margin: 0;
+          }
+        }
+        .field.additional-titles .fields:last-child {
+          margin-bottom: 0;
+        }
+        .helptext:last-child {
+          margin-bottom: 0;
+        }
       }
     }
   }
