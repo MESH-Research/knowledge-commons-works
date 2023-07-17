@@ -27,7 +27,7 @@ const BookSeriesField = ({
       showEmptyValue = true,
       addButtonLabel = "Add new series"
     }) => {
-    const { values, submitForm } = useFormikContext();
+    const { values, setFieldValue } = useFormikContext();
     const [seriesLength, setSeriesLength] = useState(0);
     const [haveChangedNumber, setHaveChangedNumber] = useState(false);
 
@@ -53,6 +53,11 @@ const BookSeriesField = ({
       arrayHelpers.remove(index);
       setSeriesLength(seriesLength - 1);
     }
+    console.log(values);
+
+    if ( !values.custom_fields || !values.custom_fields['kcr:book_series'] ) {
+      values.custom_fields['kcr:book_series'].map(({title, volume}, index) => {
+    }
 
     return (
 
@@ -61,7 +66,7 @@ const BookSeriesField = ({
         className="invenio-array-field"
         showEmptyValue={showEmptyValue}
         // addButtonLabel={addButtonLabel}
-        // defaultNewValue={newSeries}
+        defaultNewValue={newSeries}
         // description={description}
         // icon={icon}
         // label={""}
@@ -71,7 +76,7 @@ const BookSeriesField = ({
               <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
             </Form.Field> */}
 
-            {!!values.custom_fields['kcr:book_series'] &&
+            {!!values.custom_fields ? (
              values.custom_fields['kcr:book_series'].map(({title, volume}, index) => {
               const fieldPathPrefix = `${fieldPath}.${index}`;
               // const hasNumber = (!!my_volume || my_volume!=="");
@@ -106,7 +111,8 @@ const BookSeriesField = ({
                       />
                     </Form.Field>
                   </Form.Group>
-            )})}
+            )})) : ""
+            }
                 <Button
                   type="button"
                   onClick={() => handleAddNew(arrayHelpers, newSeries)}
