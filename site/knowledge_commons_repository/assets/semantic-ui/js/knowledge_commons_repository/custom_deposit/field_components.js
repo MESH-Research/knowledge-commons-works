@@ -393,7 +393,7 @@ const DoiComponent = ({config, record}) => {
   return(
     <Card fluid as="fieldset"
     >
-      <Card.Content>
+      <Card.Content className="field pid-field">
         <Overridable
           id="InvenioAppRdm.Deposit.PIDField.container"
           config={config}
@@ -718,7 +718,7 @@ const ResourceTypeComponent = ({vocabularies}) => {
       id={'InvenioAppRdm.Deposit.ResourceTypeComponent.container'}
       as="fieldset"
     >
-      <Card.Content>
+      <Card.Content className="field resource-type-field">
         <Overridable
           id="InvenioAppRdm.Deposit.ResourceTypeField.container"
           vocabularies={vocabularies}
