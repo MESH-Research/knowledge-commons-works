@@ -44,17 +44,10 @@ import {
 } from "@js/invenio_rdm_records";
 import { FundingField } from "@js/invenio_vocabularies";
 import {
-  Button,
   Card,
-  Container,
-  Divider,
   Form,
   Grid,
-  Icon,
-  Ref,
-  Step,
-  Sticky,
-  Transition
+  Segment,
 } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
@@ -330,11 +323,9 @@ const DeleteComponent = ({ permissions, record }) => {
         id="InvenioAppRdm.Deposit.CardDeleteButton.container"
         record={record}
       >
-        <Card fluid>
-          <Card.Content>
-            <DeleteButton fluid />
-          </Card.Content>
-        </Card>
+        <Segment as="fieldset">
+          <DeleteButton fluid />
+        </Segment>
       </Overridable>
     )}
     </>

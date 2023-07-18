@@ -43,18 +43,12 @@ import {
 } from "@js/invenio_rdm_records";
 import { FundingField } from "@js/invenio_vocabularies";
 import {
-  Button,
   Card,
   Container,
   Divider,
-  Grid,
-  Icon,
-  Ref,
-  Step,
-  Sticky,
-  Transition
+  Segment,
 } from "semantic-ui-react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 import ResourceTypeField from "../metadata_fields/ResourceTypeField";
 import { PIDField } from "../metadata_fields/PIDField";
@@ -142,40 +136,38 @@ const CustomFieldSectionInjector = ({sectionName, idString,
 const AbstractComponent = ({record, vocabularies}) => {
 
   return(
-    <Card fluid
+    <Segment
       id={'InvenioAppRdm.Deposit.AbstractComponent.container'}
       as="fieldset"
     >
-      <Card.Content>
-        <Overridable
-          id="InvenioAppRdm.Deposit.DescriptionsField.container"
-          record={record}
-          vocabularies={vocabularies}
+      <Overridable
+        id="InvenioAppRdm.Deposit.DescriptionsField.container"
+        record={record}
+        vocabularies={vocabularies}
+        fieldPath="metadata.description"
+      >
+        <DescriptionsField
           fieldPath="metadata.description"
-        >
-          <DescriptionsField
-            fieldPath="metadata.description"
-            options={vocabularies.metadata.descriptions}
-            recordUI={_get(record, "ui", null)}
-            label="Abstract"
-            editorConfig={{
-              removePlugins: [
-                "Image",
-                "ImageCaption",
-                "ImageStyle",
-                "ImageToolbar",
-                "ImageUpload",
-                "MediaEmbed",
-                "Table",
-                "TableToolbar",
-                "TableProperties",
-                "TableCellProperties",
-              ],
-            }}
-          />
-        </Overridable>
-      </Card.Content>
-    </Card>
+          options={vocabularies.metadata.descriptions}
+          recordUI={_get(record, "ui", null)}
+          label="Abstract"
+          editorConfig={{
+            removePlugins: [
+              "Image",
+              "ImageCaption",
+              "ImageStyle",
+              "ImageToolbar",
+              "ImageUpload",
+              "MediaEmbed",
+              "Table",
+              "TableToolbar",
+              "TableProperties",
+              "TableCellProperties",
+            ],
+          }}
+        />
+      </Overridable>
+    </Segment>
 )
 }
 
