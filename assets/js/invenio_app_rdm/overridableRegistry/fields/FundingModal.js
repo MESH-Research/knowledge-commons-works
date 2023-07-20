@@ -106,6 +106,7 @@ function FundingModal({
   deserializeAward,
   deserializeFunder,
   computeFundingContents,
+  focusAddButtonHandler,
   ...props
 }) {
   const [open, setOpen] = useState(false);
@@ -114,6 +115,7 @@ function FundingModal({
   const closeModal = () => {
     setMode(initialMode);
     setOpen(false);
+    focusAddButtonHandler();
   };
   const onSubmit = (values, formikBag) => {
     formikBag.setSubmitting(false);
@@ -121,6 +123,7 @@ function FundingModal({
     setMode(initialMode);
     closeModal();
     onAwardChange(values.selectedFunding);
+    focusAddButtonHandler();
   };
 
   const searchApi = new InvenioSearchApi(searchConfig.searchApi);

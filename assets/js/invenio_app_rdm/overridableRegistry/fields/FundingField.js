@@ -36,6 +36,10 @@ function FundingFieldForm(props) {
     searchConfig,
   } = props;
 
+  const focusAddButtonHandler = () => {
+    document.getElementById(`${fieldPath}.add-button`).focus();
+  }
+
   const deserializeAward = deserializeAwardFunc
     ? deserializeAwardFunc
     : (award) => ({
@@ -115,12 +119,13 @@ function FundingFieldForm(props) {
               <Button
                 type="button"
                 key="custom"
+                id={`${fieldPath}.add-button`}
                 icon
                 labelPosition="left"
                 className="mb-5"
               >
                 <Icon name="add" />
-                {i18next.t("Add award")}
+                {i18next.t("Add award from list")}
               </Button>
             }
             onAwardChange={(selectedFunding) => {
@@ -131,6 +136,7 @@ function FundingFieldForm(props) {
             deserializeAward={deserializeAward}
             deserializeFunder={deserializeFunder}
             computeFundingContents={computeFundingContents}
+            focusAddButtonHandler={focusAddButtonHandler}
           />
           <FundingModal
             searchConfig={searchConfig}
@@ -148,6 +154,7 @@ function FundingFieldForm(props) {
             deserializeAward={deserializeAward}
             deserializeFunder={deserializeFunder}
             computeFundingContents={computeFundingContents}
+            focusAddButtonHandler={focusAddButtonHandler}
           />
         </List>
       </Form.Field>
