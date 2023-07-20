@@ -32,7 +32,7 @@ export const emptyRelatedWork = {
 
 const RelatedWorksField = ({fieldPath,
                             label=i18next.t("Related works"),
-                            labelIcon="barcode",
+                            labelIcon="sitemap",
                             required=false,
                             options,
                             showEmptyValue=false }) => {
@@ -119,7 +119,7 @@ const RelatedWorksField = ({fieldPath,
                   aria-label={i18next.t("Remove field")}
                   className="close-btn"
                   icon
-                  onClick={() => arrayHelpers.remove(indexPath)}
+                  onClick={() => handleRemove(arrayHelpers, index)}
                 >
                   <Icon name="close" />
                 </Button>
@@ -139,14 +139,14 @@ const RelatedWorksField = ({fieldPath,
           </Button>
           <Button
               type="button"
-              onClick={() => handleAddNew(arrayHelpers, emptyAlternateTitle)}
+              onClick={() => handleAddNew(arrayHelpers, emptyRelatedWork)}
               icon
               className="align-self-end add-btn"
               labelPosition="left"
-              id={`${fieldPath}.add-alternate-button`}
+              id={`${fieldPath}.add-button`}
           >
               <Icon name="add" />
-              Add alternative title
+              Add related work
           </Button>
           <label className="helptext" style={{ marginBottom: "10px" }}>
             {/* {i18next.t(
