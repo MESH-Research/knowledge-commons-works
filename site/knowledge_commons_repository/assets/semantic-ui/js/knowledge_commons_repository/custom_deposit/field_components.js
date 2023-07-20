@@ -38,7 +38,6 @@ import {
   SubjectsField,
   TitlesField,
   VersionField,
-  CommunityHeader,
   SaveButton,
 } from "@js/invenio_rdm_records";
 import { FundingField } from "@js/invenio_vocabularies";
