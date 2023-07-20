@@ -11,13 +11,13 @@
 // you can redistribute them and/or modify them
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { Component, createContext, createRef, forwardRef, Fragment,
-                useContext, useEffect, useLayoutEffect, useRef,
+import React, { createContext, useContext, useEffect,
+                useLayoutEffect, useRef,
                 useState } from "react";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
-import { AccordionField, CustomFields, FieldLabel, loadWidgetsFromConfig } from "react-invenio-forms";
+import { FieldLabel } from "react-invenio-forms";
 import {
   AccessRightField,
   DescriptionsField,
@@ -217,9 +217,9 @@ const FormPage = ({ children, id, pageNums,
                   }) => {
 
   const { values, errors, setFieldValue, initialValues } = useFormikContext();
-  console.log('atop formPage...')
-  console.log(values);
-  console.log(errors);
+  // console.log('atop formPage...')
+  // console.log(values);
+  // console.log(errors);
   const { currentValues, handleValuesChange,
           currentErrors, handleErrorsChange } = useContext(FormValuesContext);
   const currentPageIndex = pageNums.indexOf(currentFormPage);
@@ -227,6 +227,7 @@ const FormPage = ({ children, id, pageNums,
   const previousPageIndex = currentPageIndex - 1;
   const nextPage = nextPageIndex < pageNums.length ? pageNums[nextPageIndex] : null;
   const previousPage = previousPageIndex >= 0 ? pageNums[previousPageIndex] : null;
+  const buttonBarRef = useRef(null);
 
   //pass values up from Formik context to main form context
   useEffect(() => {
@@ -246,7 +247,7 @@ const FormPage = ({ children, id, pageNums,
   );
 
   return(
-    <div className="formPageWrapper" id={id}>
+    <div className="formPageWrapper" id={id} ref={buttonBarRef}>
     {/* // <Card fluid
     //   id={id}
     // >
@@ -255,22 +256,30 @@ const FormPage = ({ children, id, pageNums,
         // options={{ rootElement: rootElement}}
       >
         {children}
-        {!!previousPage &&
-        <Button primary
-          type="button"
-          content={"Back"}
-          floated="left"
-          onClick={handleFormPageChange}
-          value={previousPage}
-        />}
-        {!!nextPage &&
-        <Button primary
-          type="button"
-          content={"Continue"}
-          floated="right"
-          onClick={handleFormPageChange}
-          value={nextPage}
-        />}
+        <Sticky context={buttonBarRef}
+          pushing
+          bottomOffset={50}
+          attached="bottom"
+        >
+          <Container width={16}>
+          {!!previousPage &&
+          <Button primary
+            type="button"
+            content={"Back"}
+            floated="left"
+            onClick={handleFormPageChange}
+            value={previousPage}
+          />}
+          {!!nextPage &&
+          <Button primary
+            type="button"
+            content={"Continue"}
+            floated="right"
+            onClick={handleFormPageChange}
+            value={nextPage}
+          />}
+        </Container>
+        </Sticky>
       </DndProvider>
       {/* </Card.Content>
     </Card> */}
@@ -287,16 +296,14 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
     const [pagesWithErrors, setPagesWithErrors] = useState([]);
     const [currentResourceType, setCurrentResourceType] = useState('textDocument-journalArticle');
     const [currentTypeExtraFields, setCurrentTypeExtraFields] = useState(config.fields_config.extras_by_type[currentResourceType]);
-    const ref1 = useRef(null);
-    const ref2 = useRef(null);
     const formPages = {
-      '1': ['Title', ref1],
-      '2': ['People', ref2],
-      '3': ['Subjects', useRef(null)],
-      '4': ['Details', useRef(null)],
-      '5': ['Files', useRef(null)],
-      // '6': 'Admin',
-      '7': ['Submit', useRef(null)],
+      '1': 'Title',
+      '2': 'People',
+      '3': 'Subjects',
+      '4': 'Details',
+      '5': 'Files',
+      // '6' ,'
+      '7': 'Submit',
     }
     const customFieldsUI = config.custom_fields.ui;
 
@@ -332,13 +339,14 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
         console.log(`changing current to ${urlFormPage}`);
         setCurrentFormPage(urlFormPage);
       }
+      return urlFormPage;
     }
 
     useEffect(() => {
       console.log('initial setup');
-      handleFormPageParam();
+      const startingParam = handleFormPageParam();
       // Add a fake history event so that the back button does nothing if pressed once
-      setFormPageInHistory();
+      setFormPageInHistory(startingParam);
       // window.history.pushState('fake-route', document.title, window.history.href);
       window.addEventListener('popstate', handleFormPageParam);
 
@@ -424,16 +432,12 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
         if ( typeof(myValue) === "object" &&
             !Array.isArray(myValue) && myValue !== null
         ) {
-          console.log(`checking value for ${keysArray[i]}`);
-          console.log(`value is ${val[keysArray[i]]}`);
           const childKeys = flattenKeysDotJoined(val[keysArray[i]]).map(
             (k) => `${keysArray[i]}.${k}`
           );
-          console.log(`child keys are ${childKeys}`);
           newArray = newArray.concat(childKeys);
         } else {
           newArray.push(keysArray[i]);
-          console.log(`no object: adding key ${keysArray[i]}`);
         }
         console.log(newArray);
       }
@@ -508,7 +512,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                 // ordered={true}
                 size={"small"}
               >
-                {Object.keys(formPages).map(([pageNum, pageRef], index) => (
+                {Object.keys(formPages).map((pageNum, index) => (
                   <Step
                     key={index}
                     as={Button}
@@ -517,13 +521,15 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                     link
                     onClick={handleFormPageChange}
                     value={pageNum}
-                    className={`upload-form-stepper-step page-${pageNum}
+                    formnovalidate
+                    className={`ui button upload-form-stepper-step page-${pageNum}
                      ${pagesWithErrors.includes(pageNum) ? "has-error" : ""}`}
                     // description='Choose your shipping options'
+                    type="button"
                   >
                     {/* <Icon name='truck' /> */}
                     <Step.Content>
-                      <Step.Title>{formPages[pageNum][0]}</Step.Title>
+                      <Step.Title>{formPages[pageNum]}</Step.Title>
                       {/* <Step.Description>Choose your shipping options</Step.Description> */}
                     </Step.Content>
                   </Step>
@@ -534,7 +540,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                 animation="fade"
                 duration={{show: 1000, hide: 20}}
               >
-                {Object.keys(formPages).map(([pageNum, pageRef], index) => (
+                {Object.keys(formPages).map((pageNum, index) => (
                   currentFormPage===pageNum && (
                     <div key={index}>
                       <FormPage
@@ -543,7 +549,6 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                         currentFormPage={pageNum}
                         handleFormPageChange={handleFormPageChange}
                         currentResourceType={currentResourceType}
-                        ref={pageRef}
                       >
                           {!!currentResourceType &&
                            !!currentTypeExtraFields[pageNum] ?
