@@ -98,153 +98,141 @@ import { FormValuesContext } from "./custom_RDMDepositForm";
 
 const AdminMetadataComponent = ({customFieldsUI}) => {
   return(
-    <Card fluid>
-      <Card.Content>
+    <Segment as="fieldset">
         <CustomFieldInjector
           sectionName="Commons admin info"
           idString="AdminMetadataFields"
           customFieldsUI={customFieldsUI}
         />
-      </Card.Content>
-    </Card>
+    </Segment>
 )}
 
 const PublicationDetailsComponent = ({customFieldsUI}) => {
   return(
-    <Card fluid>
-      <Card.Content>
+    <Segment as="fieldset">
         {/* <FieldLabel htmlFor={"imprint:imprint"}
           icon={"book"}
           label={"Publication Details"}
         /> */}
         {/* <Divider fitted /> */}
-          <Form.Group widths="equal">
-              <CustomFieldInjector
-                sectionName="Book / Report / Chapter"
-                fieldName="imprint:imprint.isbn"
-                idString="ImprintISBNField"
-                description=""
-                customFieldsUI={customFieldsUI}
-              />
-              <VersionComponent description=""
-                label="Edition or Version"
-                icon=""
-              />
-          </Form.Group>
-          <Form.Group widths="equal">
-              <PublisherComponent />
-              <PublicationLocationComponent customFieldsUI={customFieldsUI} />
-          </Form.Group>
-      </Card.Content>
-    </Card>
+        <Form.Group widths="equal">
+            <CustomFieldInjector
+              sectionName="Book / Report / Chapter"
+              fieldName="imprint:imprint.isbn"
+              idString="ImprintISBNField"
+              description="e.g. 0-06-251587-X"
+              placeholder=""
+              customFieldsUI={customFieldsUI}
+            />
+            <VersionComponent description=""
+              label="Edition or Version"
+              icon=""
+            />
+        </Form.Group>
+        <Form.Group widths="equal">
+            <PublisherComponent />
+            <PublicationLocationComponent customFieldsUI={customFieldsUI} />
+        </Form.Group>
+    </Segment>
   )
 }
 
 const BookDetailComponent = ({customFieldsUI}) => {
   return(
-    <Card fluid>
-      <Card.Content>
-        {/* <FieldLabel htmlFor={"imprint:imprint"}
-          icon={"book"}
-          label={"Book details"}
-        />
-        <Divider fitted /> */}
-        <Form.Group>
+    <Segment as="fieldset">
+      {/* <FieldLabel htmlFor={"imprint:imprint"}
+        icon={"book"}
+        label={"Book details"}
+      />
+      <Divider fitted /> */}
+      <Form.Group>
+          <CustomFieldInjector
+          sectionName="Book / Report / Chapter"
+          fieldName="imprint:imprint.isbn"
+          idString="ImprintISBNField"
+          description=""
+          customFieldsUI={customFieldsUI}
+          />
+          <VersionComponent description=""
+          label="Edition or Version"
+          icon=""
+          />
+      </Form.Group>
+      <Form.Group>
+            <PublisherComponent />
+            <PublicationLocationComponent customFieldsUI={customFieldsUI} />
+      </Form.Group>
+      <Form.Group>
+          <VolumeComponent customFieldsUI={customFieldsUI} />
+      </Form.Group>
+      <Form.Group>
             <CustomFieldInjector
-            sectionName="Book / Report / Chapter"
-            fieldName="imprint:imprint.isbn"
-            idString="ImprintISBNField"
-            description=""
-            customFieldsUI={customFieldsUI}
+              sectionName="Book / Report / Chapter"
+              fieldName="imprint:imprint.pages"
+              idString="ImprintPagesField"
+              customFieldsUI={customFieldsUI}
+              description={""}
+              label="Number of Pages"
             />
-            <VersionComponent description=""
-            label="Edition or Version"
-            icon=""
-            />
-        </Form.Group>
-        <Form.Group>
-              <PublisherComponent />
-              <PublicationLocationComponent customFieldsUI={customFieldsUI} />
-        </Form.Group>
-        <Form.Group>
-            <VolumeComponent customFieldsUI={customFieldsUI} />
-        </Form.Group>
-        <Form.Group>
-              <CustomFieldInjector
-                sectionName="Book / Report / Chapter"
-                fieldName="imprint:imprint.pages"
-                idString="ImprintPagesField"
-                customFieldsUI={customFieldsUI}
-                description={""}
-                label="Number of Pages"
-              />
-        </Form.Group>
-        <Form.Group>
-            <CustomFieldInjector
-            sectionName="Series"
-            fieldName="kcr:book_series"
-            idString="KcrBookSeries"
-            customFieldsUI={customFieldsUI}
-            />
-        </Form.Group>
-      </Card.Content>
-    </Card>
+      </Form.Group>
+      <Form.Group>
+          <CustomFieldInjector
+          sectionName="Series"
+          fieldName="kcr:book_series"
+          idString="KcrBookSeries"
+          customFieldsUI={customFieldsUI}
+          />
+      </Form.Group>
+    </Segment>
 )}
 
 const BookVolumePagesComponent = ({customFieldsUI}) => {
     return(
-      <Card fluid>
-        <Card.Content>
-          <Form.Group widths="equal">
-            <VolumeComponent customFieldsUI={customFieldsUI} />
-            <CustomFieldInjector
-            sectionName="Book / Report / Chapter"
-            fieldName="imprint:imprint.pages"
-            idString="ImprintPagesField"
-            customFieldsUI={customFieldsUI}
-            description={""}
-            label="Total pages"
-            />
-          </Form.Group>
-        </Card.Content>
-      </Card>
+      <Segment as="fieldset">
+        <Form.Group widths="equal">
+          <VolumeComponent customFieldsUI={customFieldsUI} />
+          <CustomFieldInjector
+          sectionName="Book / Report / Chapter"
+          fieldName="imprint:imprint.pages"
+          idString="ImprintPagesField"
+          customFieldsUI={customFieldsUI}
+          description={""}
+          label="Total pages"
+          />
+        </Form.Group>
+      </Segment>
     )
 }
 
 const CombinedTitlesComponent = ({vocabularies, record}) => {
   return(
-    <Card fluid
+    <Segment
       id={'InvenioAppRdm.Deposit.CombinedTitlesComponent.container'}
       as="fieldset"
     >
-      <Card.Content>
-        <TitleComponent vocabularies={vocabularies} record={record} />
-      </Card.Content>
-    </Card>
+      <TitleComponent vocabularies={vocabularies} record={record} />
+    </Segment>
   )
 }
 
 const TypeTitleComponent = ({vocabularies, record}) => {
   return(
-    <Card fluid
+    <Segment
       id={'InvenioAppRdm.Deposit.TypeTitleComponent.container'}
+      as="fieldset"
     >
-      <Card.Content>
-        <TitleComponent vocabularies={vocabularies} record={record} />
-        <ResourceTypeComponent vocabularies={vocabularies} />
-      </Card.Content>
-    </Card>
+      <TitleComponent vocabularies={vocabularies} record={record} />
+      <ResourceTypeComponent vocabularies={vocabularies} />
+    </Segment>
   )
 };
 
 const SubjectKeywordsComponent = ({ record, vocabularies, customFieldsUI }) => {
   return(
-    <Card fluid>
-      <Card.Content>
-        <SubjectsComponent record={record} vocabularies={vocabularies} />
-        <KeywordsComponent customFieldsUI={customFieldsUI} />
-      </Card.Content>
-    </Card>
+    <Segment as="fieldset">
+      <SubjectsComponent record={record} vocabularies={vocabularies} />
+      <KeywordsComponent customFieldsUI={customFieldsUI} />
+    </Segment>
   )
 }
 
@@ -252,11 +240,8 @@ const SubmissionComponent = () => {
 
   return(
     <Overridable id="InvenioAppRdm.Deposit.CardDepositStatusBox.container">
-      <Card fluid>
-        <Card.Content>
+      <Segment as="fieldset">
           <DepositStatusBox />
-        </Card.Content>
-        <Card.Content>
           <Grid relaxed>
             <Grid.Column
               computer={8}
@@ -278,8 +263,7 @@ const SubmissionComponent = () => {
               <PublishButton fluid />
             </Grid.Column>
           </Grid>
-        </Card.Content>
-      </Card>
+      </Segment>
     </Overridable>
   )
 }
@@ -303,15 +287,14 @@ const AccessRightsComponent = ({ permissions }) => {
 
 const CombinedDatesComponent = ({ vocabularies }) => {
   return(
-    <Card fluid
+    <Segment
       id={'InvenioAppRdm.Deposit.CombinedDatesComponent.container'}
       as="fieldset"
+      className="combined-dates-field"
     >
-      <Card.Content>
-        <DateComponent />
-        <AdditionalDatesComponent vocabularies={vocabularies} />
-      </Card.Content>
-    </Card>
+      <DateComponent />
+      <AdditionalDatesComponent vocabularies={vocabularies} />
+    </Segment>
   )
 }
 
