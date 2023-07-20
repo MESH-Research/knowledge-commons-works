@@ -25,12 +25,51 @@
   margin-top: 1.75rem;
   float: right;
 }
+// outside #rdm-deposit-form to include modal forms
+.ui.form,
+.ui.modal {
+  .required.field>.checkbox:after,
+  .required.field>label:after,
+  .required.fields.grouped>label:after,
+  .required.fields:not(.grouped)>.field>.checkbox:after,
+  .required.fields:not(.grouped)>.field>label:after {
+    color: @primaryColor;
+    content: "(required)";
+    margin: 0 0 0 0.5em;
+    font-weight: normal;
+  }
+
+  .ui.button {
+    font-weight: normal;
+  }
+  .ui.mini.ui.button {
+    font-size: 1em;
+  }
+
+}
 
 #deposit-form   {
 
   .ui.form {
-
+    #rdm-deposit-form {
+      margin-top: 0 !important;
+      >.ui.grid.mt-25 {
+        margin-top: 0 !important;
+        padding-top: 25px;
+      }
+    }
     h2 {
+      font-weight: normal;
+    }
+
+    .required.field>.checkbox:after,
+    .required.field>label:after,
+    .required.fields.grouped>label:after,
+    .required.fields:not(.grouped)>.field>.checkbox:after,
+    .required.fields:not(.grouped)>.field>label:after {
+      color: @primaryColor;
+      content: "(required)";
+      margin: 0 0 0 0.5em;
       font-weight: normal;
     }
 
@@ -50,27 +89,71 @@
         }
       }
 
+      .ui.segment {
+        box-shadow: none;
+        border-color: rgba(34, 36, 38, 0.08);
+        background-color: #f9f9f9;
+      }
+
       fieldset {
         .field:last-child,
+        .fields:last-child,
         .field:last-child .fields:last-child,
         .fields:last-child .field {
           margin-bottom: 0;
         }
 
-        .field.pid-field {
+        .helptext {
+          font-size: 1em;
+        }
+        .add-btn {
+          margin: -0.5em 0.5em 0 0;
+          font-weight: normal;
+        }
+
+        &.pid-field {
           .inline.fields {
             margin-bottom: @labelBottomMargin;
           }
+          label.helptext {
+            margin-top: -0.5em;
+          }
         }
 
-        .field.resource-type-field {
+        &.resource-type-field {
           >.field {
             margin-bottom: 0;
           }
-          .ui.menu.compact .item.active {
-            border-radius: 0;
-            border-color: @primaryColor;
-            margin: 0;
+          .ui.menu.compact {
+            border: 0;
+            box-shadow: none;
+            background: transparent;
+            .item {
+              min-width: 0;
+              flex-direction: column;
+              &.active {
+                border-radius: @defaultBorderRadius;
+                border-color: @primaryColor;
+                margin: 0;
+              }
+            }
+          }
+        }
+
+        &.combined-dates-field {
+          label.helptext {
+            margin-top: 1.5em;
+          }
+        }
+
+        &.communities-field {
+          .container {
+            width: auto;
+            margin-bottom: 0;
+            &.page-subheader-outer.compact {
+              padding: 0;
+              background-color: transparent;
+            }
           }
         }
 

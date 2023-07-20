@@ -1,9 +1,10 @@
 // @primaryColor: rgb(0, 102, 80); // #006650
 @primaryColor: #009374;
 @footerLightColor: rgb(0, 102, 80);
+@footerDarkColor: #009374;
 
-@navbarBackgroundColor: #e9f6f3;
-@navbarBackgroundImage: #e9f6f3;
+@navbarBackgroundColor: #5eae9b;
+@navbarBackgroundImage: #5eae9b;
 // @navbarBackgroundImage: linear-gradient(12deg, rgb(0, 102, 80) 0%, desaturate(lighten(rgb(0, 102, 80), 5%), 5%) 90%);
 
 @fontName: 'Atkinson Hyperlegible';
