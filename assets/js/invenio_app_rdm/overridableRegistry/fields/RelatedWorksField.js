@@ -6,7 +6,7 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -21,6 +21,7 @@ import { Button, Form, Icon } from "semantic-ui-react";
 // import { emptyRelatedWork } from "./initialValues";
 import { ResourceTypeField } from "@js/invenio_rdm_records";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { FieldArray, useFormikContext } from "formik";
 
 export const emptyRelatedWork = {
   scheme: "",
@@ -29,85 +30,133 @@ export const emptyRelatedWork = {
   relation_type: "",
 };
 
-export class RelatedWorksField extends Component {
-  render() {
-    const { fieldPath, label, labelIcon, required, options, showEmptyValue } =
-      this.props;
+const RelatedWorksField = ({fieldPath,
+                            label=i18next.t("Related works"),
+                            labelIcon="barcode",
+                            required=false,
+                            options,
+                            showEmptyValue=false }) => {
 
-    return (
-      <>
-        <ArrayField
-          addButtonLabel={i18next.t("Add related work")}
-          defaultNewValue={emptyRelatedWork}
-          fieldPath={fieldPath}
-          label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
-          required={required}
-          showEmptyValue={showEmptyValue}
-        >
-          {({ arrayHelpers, indexPath }) => {
-            const fieldPathPrefix = `${fieldPath}.${indexPath}`;
+  const { values, setFieldValue } = useFormikContext();
+  const [relatedWorksLength, setRelatedWorksLength] = useState(-1);
+  const [haveChangedNumber, setHaveChangedNumber] = useState(false);
 
-            return (
-              <GroupField optimized>
-                <SelectField
-                  clearable
-                  fieldPath={`${fieldPathPrefix}.relation_type`}
-                  label={i18next.t("Relation")}
-                  optimized
-                  options={options.relations}
-                  placeholder={i18next.t("Select relation...")}
-                  required
-                  width={3}
-                />
+  useEffect(() => {
+    if ( !!haveChangedNumber ) {
+      if ( relatedWorksLength < 0 ) {
+        document.getElementById(`${fieldPath}.add-button`)?.focus();
+      } else {
+        document.getElementById(`${fieldPath}.${relatedWorksLength}.relation_type`)?.focus();
+      }
+    }
+  }, [relatedWorksLength]);
 
-                <TextField
-                  fieldPath={`${fieldPathPrefix}.identifier`}
-                  label={i18next.t("Identifier")}
-                  required
-                  width={4}
-                />
-
-                <SelectField
-                  clearable
-                  fieldPath={`${fieldPathPrefix}.scheme`}
-                  label={i18next.t("Scheme")}
-                  optimized
-                  options={options.scheme}
-                  required
-                  width={2}
-                />
-
-                <ResourceTypeField
-                  clearable
-                  fieldPath={`${fieldPathPrefix}.resource_type`}
-                  labelIcon="" // Otherwise breaks alignment
-                  options={options.resource_type}
-                  width={7}
-                  labelclassname="small field-label-class"
-                />
-
-                <Form.Field>
-                  <Button
-                    aria-label={i18next.t("Remove field")}
-                    className="close-btn"
-                    icon
-                    onClick={() => arrayHelpers.remove(indexPath)}
-                  >
-                    <Icon name="close" />
-                  </Button>
-                </Form.Field>
-              </GroupField>
-            );
-          }}
-        </ArrayField>
-        <label className="helptext" style={{ marginBottom: "10px" }}>
-          {/* {i18next.t(
-            "Specify identifiers of related works. Supported identifiers include DOI, Handle, ARK, PURL, ISSN, ISBN, PubMed ID, PubMed Central ID, ADS Bibliographic Code, arXiv, Life Science Identifiers (LSID), EAN-13, ISTC, URNs, and URLs."
-          )} */}
-        </label>
-      </>
-    );
+  const handleAddNew = (arrayHelpers, newItem) => {
+    setHaveChangedNumber(true);
+    arrayHelpers.push(newItem);
+    setRelatedWorksLength(relatedWorksLength + 1);
   }
+
+  const handleRemove = (arrayHelpers, index) => {
+    setHaveChangedNumber(true);
+    arrayHelpers.remove(index);
+    setRelatedWorksLength(relatedWorksLength - 1);
+  }
+
+  return (
+    <FieldArray
+      addButtonLabel={i18next.t("Add related work")}
+      name={fieldPath}
+      label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
+      required={required}
+      render={arrayHelpers => (
+      <>
+        {values.metadata.related_identifiers.map(({
+          relation_type, identifier, scheme, resource_type
+        }, index) => {
+          const fieldPathPrefix = `${fieldPath}.${index}`;
+          return (
+            <Form.Group key={index} className="additional-identifiers-item-row">
+              <SelectField
+                clearable
+                fieldPath={`${fieldPathPrefix}.relation_type`}
+                label={i18next.t("Relation")}
+                optimized
+                options={options.relations}
+                placeholder={i18next.t("Select relation...")}
+                required
+                width={6}
+              />
+
+              <TextField
+                fieldPath={`${fieldPathPrefix}.identifier`}
+                label={i18next.t("Identifier")}
+                required
+                width={6}
+              />
+
+              <SelectField
+                clearable
+                fieldPath={`${fieldPathPrefix}.scheme`}
+                label={i18next.t("Scheme")}
+                optimized
+                options={options.scheme}
+                required
+                width={2}
+              />
+
+              <ResourceTypeField
+                clearable
+                fieldPath={`${fieldPathPrefix}.resource_type`}
+                labelIcon="" // Otherwise breaks alignment
+                options={options.resource_type}
+                width={7}
+                labelclassname="small field-label-class"
+              />
+
+              <Form.Field>
+                <Button
+                  aria-label={i18next.t("Remove field")}
+                  className="close-btn"
+                  icon
+                  onClick={() => arrayHelpers.remove(indexPath)}
+                >
+                  <Icon name="close" />
+                </Button>
+              </Form.Field>
+            </Form.Group>
+          )})}
+          <Button
+              type="button"
+              onClick={() => handleAddNew(arrayHelpers, emptyRelatedWork)}
+              icon
+              className="align-self-end add-btn"
+              labelPosition="left"
+              id={`${fieldPath}.add-button`}
+          >
+              <Icon name="add" />
+              Add related work
+          </Button>
+          <Button
+              type="button"
+              onClick={() => handleAddNew(arrayHelpers, emptyAlternateTitle)}
+              icon
+              className="align-self-end add-btn"
+              labelPosition="left"
+              id={`${fieldPath}.add-alternate-button`}
+          >
+              <Icon name="add" />
+              Add alternative title
+          </Button>
+          <label className="helptext" style={{ marginBottom: "10px" }}>
+            {/* {i18next.t(
+              "Specify identifiers of related works. Supported identifiers include DOI, Handle, ARK, PURL, ISSN, ISBN, PubMed ID, PubMed Central ID, ADS Bibliographic Code, arXiv, Life Science Identifiers (LSID), EAN-13, ISTC, URNs, and URLs."
+            )} */}
+          </label>
+      </>
+    )}
+    />
+  )
 }
 
 RelatedWorksField.propTypes = {
@@ -119,10 +168,4 @@ RelatedWorksField.propTypes = {
   showEmptyValue: PropTypes.bool,
 };
 
-RelatedWorksField.defaultProps = {
-  label: i18next.t("Related works"),
-  labelIcon: "barcode",
-  required: undefined,
-  showEmptyValue: false,
-};
-
+export { RelatedWorksField };
