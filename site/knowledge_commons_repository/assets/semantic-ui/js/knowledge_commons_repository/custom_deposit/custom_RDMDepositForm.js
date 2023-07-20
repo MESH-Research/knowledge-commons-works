@@ -57,7 +57,7 @@ import {
 } from "semantic-ui-react";
 import PropTypes, { object } from "prop-types";
 import Overridable from "react-overridable";
-import ResourceTypeField from "../metadata_fields/ResourceTypeField";
+import ResourceTypeSelectorField from "../metadata_fields/ResourceTypeSelectorField";
 import { PIDField } from "../metadata_fields/PIDField";
 import { DatesField } from "../metadata_fields/DatesField";
 import { HTML5Backend } from "react-dnd-html5-backend";

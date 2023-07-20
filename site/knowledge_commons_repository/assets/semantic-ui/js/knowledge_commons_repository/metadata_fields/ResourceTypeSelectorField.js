@@ -14,10 +14,10 @@ import { Form } from "semantic-ui-react";
 import { FieldLabel, SelectField } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { useFormikContext } from "formik";
-import { FormValuesContext } from "../custom_deposit/custom_RDMDepositForm";
+// import { FormValuesContext } from "../custom_deposit/custom_RDMDepositForm";
 import { Button, Icon, Menu } from "semantic-ui-react";
 
-const ResourceTypeField = ({fieldPath,
+const ResourceTypeSelectorField = ({fieldPath,
                             label=i18next.t("Resource type"),
                             labelIcon="tag",
                             options,
@@ -172,7 +172,7 @@ const ResourceTypeField = ({fieldPath,
 );
 }
 
-ResourceTypeField.propTypes = {
+ResourceTypeSelectorField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
   labelIcon: PropTypes.string,
@@ -188,4 +188,4 @@ ResourceTypeField.propTypes = {
   required: PropTypes.bool,
 };
 
-export default ResourceTypeField;
+export default ResourceTypeSelectorField;

@@ -20,6 +20,7 @@ import { AccordionField, CustomFields, FieldLabel, loadWidgetsFromConfig } from 
 import {
   AccessRightField,
   DescriptionsField,
+  CommunityHeader,
   CreatibutorsField,
   DeleteButton,
   DepositFormApp,
@@ -51,11 +52,11 @@ import {
 // import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 import { CommunityField } from "../metadata_fields/CommunityField";
-import ResourceTypeField from "../metadata_fields/ResourceTypeField";
+import ResourceTypeSelectorField from "../metadata_fields/ResourceTypeField";
 import { PIDField } from "../metadata_fields/PIDField";
 import { DatesField } from "../metadata_fields/DatesField";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { DndProvider } from "react-dnd";
+// import { HTML5Backend } from "react-dnd-html5-backend";
+// import { DndProvider } from "react-dnd";
 
 
 /**
@@ -682,7 +683,12 @@ const ResourceTypeComponent = ({vocabularies}) => {
       as="fieldset"
       className="resource-type-field"
     >
-      <Overridable
+      <ResourceTypeSelectorField
+        options={vocabularies.metadata.resource_type}
+        fieldPath="metadata.resource_type"
+        required
+      />
+      {/* <Overridable
         id="InvenioAppRdm.Deposit.ResourceTypeField.container"
         vocabularies={vocabularies}
         fieldPath="metadata.resource_type"
@@ -692,7 +698,7 @@ const ResourceTypeComponent = ({vocabularies}) => {
           fieldPath="metadata.resource_type"
           required
         />
-      </Overridable>
+      </Overridable> */}
     </Segment>
   )
 }
