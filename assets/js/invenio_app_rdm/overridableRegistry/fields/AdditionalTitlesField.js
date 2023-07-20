@@ -28,11 +28,10 @@ const emptyTranslatedTitle = {
   type: "translated-title",
 };
 
-export const AdditionalTitlesField = ({fieldPath, options, recordUI}) => {
+const AdditionalTitlesField = ({fieldPath, options, recordUI}) => {
     const { values } = useFormikContext();
     const [titlesLength, setTitlesLength] = useState(-1);
     const [haveChangedNumber, setHaveChangedNumber] = useState(false);
-    console.log(`titlesLength: ${titlesLength}`);
 
     useEffect(() => {
       if ( !!haveChangedNumber ) {
@@ -41,9 +40,6 @@ export const AdditionalTitlesField = ({fieldPath, options, recordUI}) => {
         } else {
           document.getElementById(`${fieldPath}.${titlesLength}.title`)?.focus();
         }
-        console.log(document.getElementById(`${fieldPath}.${titlesLength}.title`));
-        console.log(`${fieldPath}.${titlesLength}.title`);
-        console.log(titlesLength);
       }
     }, [titlesLength]);
 
@@ -66,17 +62,19 @@ export const AdditionalTitlesField = ({fieldPath, options, recordUI}) => {
         className="additional-titles"
         render={arrayHelpers => (
         <>
-          {values.metadata.additional_titles.map(({title, type, lang}, index) => {
+          {values.metadata.additional_titles.map((value, index) => {
           const fieldPathPrefix = `${fieldPath}.${index}`;
+          let titleWord = value.type==="translated-title" ? "Translated" : "Additional";
+          titleWord = value.type==="alternative-title" ? "Alternative" : titleWord;
 
           return (
             <Form.Group key={index} className="additional-titles-item-row">
               <TextField
                 fieldPath={`${fieldPathPrefix}.title`}
-                label="Additional title"
+                label={`${titleWord} title`}
                 id={`${fieldPathPrefix}.title`}
                 required
-                width={5}
+                width={7}
               />
               <SelectField
                 fieldPath={`${fieldPathPrefix}.type`}
@@ -85,7 +83,7 @@ export const AdditionalTitlesField = ({fieldPath, options, recordUI}) => {
                 optimized
                 options={options.type}
                 required
-                width={5}
+                width={4}
               />
               <LanguagesField
                 serializeSuggestions={(suggestions) =>
@@ -105,15 +103,15 @@ export const AdditionalTitlesField = ({fieldPath, options, recordUI}) => {
                 id={`${fieldPathPrefix}.lang`}
                 label="Language"
                 multiple={false}
-                placeholder="Select language"
+                placeholder=""
                 labelIcon={null}
                 clearable
                 selectOnBlur={false}
-                width={5}
+                width={4}
               />
               <Form.Field>
                 <Button
-                  aria-label={i18next.t("Remove field")}
+                  aria-label={i18next.t("Remove item")}
                   className="close-btn"
                   icon
                   onClick={() => handleRemove(arrayHelpers, index)}
@@ -127,7 +125,7 @@ export const AdditionalTitlesField = ({fieldPath, options, recordUI}) => {
                 type="button"
                 onClick={() => handleAddNew(arrayHelpers, emptyTranslatedTitle)}
                 icon
-                className="align-self-end"
+                className="align-self-end add-btn"
                 labelPosition="left"
                 id={`${fieldPath}.add-translated-button`}
             >
@@ -138,12 +136,12 @@ export const AdditionalTitlesField = ({fieldPath, options, recordUI}) => {
                 type="button"
                 onClick={() => handleAddNew(arrayHelpers, emptyAlternateTitle)}
                 icon
-                className="align-self-end"
+                className="align-self-end add-btn"
                 labelPosition="left"
                 id={`${fieldPath}.add-alternate-button`}
             >
                 <Icon name="add" />
-                Add alternate title
+                Add alternative title
             </Button>
       </>
     )}
@@ -175,3 +173,5 @@ AdditionalTitlesField.defaultProps = {
   options: undefined,
   recordUI: undefined,
 };
+
+export { AdditionalTitlesField };
