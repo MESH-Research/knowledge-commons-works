@@ -46,10 +46,12 @@ import {
   Card,
   Container,
   Divider,
+  Icon,
   Segment,
 } from "semantic-ui-react";
 // import PropTypes from "prop-types";
 import Overridable from "react-overridable";
+import { CommunityField } from "../metadata_fields/CommunityField";
 import ResourceTypeField from "../metadata_fields/ResourceTypeField";
 import { PIDField } from "../metadata_fields/PIDField";
 import { DatesField } from "../metadata_fields/DatesField";
@@ -274,9 +276,10 @@ const BookTitleComponent = ({customFieldsUI}) => {
 const CommunitiesComponent = () => {
   return(
     <Segment as="fieldset" className="communities-field">
-      <Overridable id="InvenioAppRdm.Deposit.CommunityHeader.container">
+      <CommunityField imagePlaceholderLink="/static/images/square-placeholder.png" />
+      {/* <Overridable id="InvenioAppRdm.Deposit.CommunityHeader.container">
         <CommunityHeader imagePlaceholderLink="/static/images/square-placeholder.png" />
-      </Overridable>
+      </Overridable> */}
     </Segment>
 )}
 
