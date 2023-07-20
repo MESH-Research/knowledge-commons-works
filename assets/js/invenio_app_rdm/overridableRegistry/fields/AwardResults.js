@@ -60,7 +60,7 @@ export const AwardResults = withState(
                         {awardOrFunder === "award"
                           ? award.url && (
                               <a
-                                href={`${award.url}`}
+                                href={award.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >

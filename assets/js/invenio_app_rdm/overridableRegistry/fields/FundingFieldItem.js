@@ -109,7 +109,7 @@ export const FundingFieldItem = ({
                 {awardOrFunder === "award"
                   ? fundingItem?.award?.url && (
                       <a
-                        href={`${fundingItem.award.url}`}
+                        href={fundingItem.award.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={i18next.t("Open external link")}
