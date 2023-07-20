@@ -290,7 +290,6 @@ const FormPage = ({ children, id, pageNums,
 export const RDMDepositForm = ({ config, files, record, permissions, preselectedCommunity}) => {
     config = config || {};
     const [currentFormPage, setCurrentFormPage] = useState("1");
-    console.log(`current form page at top: ${currentFormPage}`);
     const [currentValues, setCurrentValues] = useState({});
     const [currentErrors, setCurrentErrors] = useState({});
     const [pagesWithErrors, setPagesWithErrors] = useState([]);
@@ -311,16 +310,12 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       if ( value === undefined ) {
         value = currentFormPage;
       }
-      console.log(`setting page in history to ${value}`);
-      console.log(window.history.length);
       let urlParams = new URLSearchParams(window.location.search);
-      console.log(urlParams.toString());
       if ( !urlParams.has('depositFormPage') ) {
         urlParams.append('depositFormPage', value);
       } else if ( !urlParams.depositFormPage !== value) {
         urlParams.set("depositFormPage", value);
       }
-      console.log(urlParams.toString());
       const currentBaseURL = window.location.origin;
       const currentPath = window.location.pathname;
       const currentParams = urlParams.toString();
@@ -329,21 +324,15 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
     }
 
     const handleFormPageParam = () => {
-      console.log(`setting current page based on param`);
       const urlParams = new URLSearchParams(window.location.search);
       const urlFormPage = urlParams.get('depositFormPage');
-      console.log(`urlFormPage is ${urlFormPage}`);
-      console.log(`currentFormPage is ${currentFormPage}`);
-      // if ( !!urlFormPage && urlFormPage !== currentFormPage ) {
       if ( !!urlFormPage ) {
-        console.log(`changing current to ${urlFormPage}`);
         setCurrentFormPage(urlFormPage);
       }
       return urlFormPage;
     }
 
     useEffect(() => {
-      console.log('initial setup');
       const startingParam = handleFormPageParam();
       // Add a fake history event so that the back button does nothing if pressed once
       setFormPageInHistory(startingParam);
@@ -416,8 +405,6 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
 
     const handleValuesChange= (values) => {
       setCurrentValues(values);
-      // console.log('changed values');
-      // console.log(values);
       localStorage.setItem('depositFormValues', JSON.stringify(values));
       setCurrentResourceType(values.metadata.resource_type);
       setCurrentTypeExtraFields(config.fields_config.extras_by_type[values.metadata.resource_type]);
@@ -425,7 +412,6 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
 
     function flattenKeysDotJoined(val) {
       const keysArray = Object.keys(val);
-      console.log(keysArray);
       let newArray = []
       for ( let i=0; i<keysArray.length; i++ ) {
         const myValue = val[keysArray[i]];
@@ -439,7 +425,6 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
         } else {
           newArray.push(keysArray[i]);
         }
-        console.log(newArray);
       }
       return newArray;
     }
@@ -461,15 +446,12 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
           let pageMetaFields = pageFields.reduce((accum, curr) =>
             {accum = accum.concat(fieldComponents[curr][1]); return accum},
           []);
-          console.log(pageMetaFields);
           // get form field labels for current errors
           const errorFields = flattenKeysDotJoined(errors);
-          console.log(errorFields);
           // add page to error pages if the two lists overlap
           if ( pageMetaFields.some(item => errorFields.includes(item)) ) {
             errorPages.push(p);
           }
-          console.log(errorPages);
         }
         setPagesWithErrors(errorPages);
       }
