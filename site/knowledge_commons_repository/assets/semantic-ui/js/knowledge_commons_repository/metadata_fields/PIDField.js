@@ -313,18 +313,20 @@ class UnmanagedIdentifierCmp extends Component {
     const { form, fieldPath, helpText, pidPlaceholder } = this.props;
     const fieldError = getFieldErrors(form, fieldPath);
     return (
-      <>
+      <Form.Group>
         <Form.Field width={8} error={fieldError}>
           <Form.Input
             onChange={(e, { value }) => this.onChange(value)}
             value={localIdentifier}
             placeholder={pidPlaceholder}
-            width={16}
             error={fieldError}
+            aria-describedby={`${fieldPath}.help-text`}
           />
         </Form.Field>
-        {helpText && <label className="helptext">{helpText}</label>}
-      </>
+        <Form.Field width={8}>
+        {helpText && <label id={`${fieldPath}.help-text`} className="helptext">{helpText}</label>}
+        </Form.Field>
+      </Form.Group>
     );
   }
 }
@@ -475,7 +477,7 @@ class CustomPIDField extends Component {
             form={form}
             fieldPath={fieldPath}
             pidPlaceholder={pidPlaceholder}
-            helpText={"A unique registered Digital Object Identifier allows the deposit to be cited unambiguously. We'll create one for you if you don't have one already." || unmanagedHelpText}
+            helpText={"We will register a unique Digital Object Identifier for your deposit if you don't have one already." || unmanagedHelpText}
           />
         )}
       </>
