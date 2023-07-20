@@ -66,14 +66,16 @@ const ResourceTypeField = ({fieldPath,
   };
   const frontEndOptions = createOptions(options);
 
-  const handleItemClick = (event, { name }) => {
-    setFieldValue("metadata.resource_type", name);
+  const handleItemClick = (event) => {
+    setFieldValue("metadata.resource_type",
+                  event.target.closest('button').name);
     setOtherToggleActive(false);
   }
 
   const handleOtherToggleClick = () => {
     setFieldValue("metadata.resource_type", null);
     setOtherToggleActive(true);
+    document.querySelectorAll(".resource-type-field .invenio-select-field input")[0].focus();
   }
 
   const buttonTypes = [
@@ -104,21 +106,47 @@ const ResourceTypeField = ({fieldPath,
       <Form.Field required={required}>
         <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
       </Form.Field>
-      <Menu compact icon='labeled' fluid widths={6}>
+      <div
+        className="ui compact fluid icon labeled six item menu"
+      >
       {buttonTypes.map((buttonType, index) => (
-        <Menu.Item
+        // <Menu.Item
+        //   key={index}
+        //   name={buttonType.id}
+        //   as={Button}
+        //   active={values.metadata.resource_type === buttonType.id}
+        //   onClick={handleItemClick}
+        //   formnovalidate
+        // >
+        //   <Icon name={buttonType.icon} />
+        //   {buttonType.label}
+        // </Menu.Item>
+        <button
           key={index}
+          id={buttonType.id}
           name={buttonType.id}
-          as={Button}
-          active={values.metadata.resource_type === buttonType.id}
           onClick={handleItemClick}
+          className={`ui button item ${values.metadata.resource_type === buttonType.id ? "active" : ""}`}
+          formnovalidate
+          type="button"
         >
           <Icon name={buttonType.icon} />
           {buttonType.label}
-        </Menu.Item>
+        </button>
         )
       )}
-        <Menu.Item
+        <button
+          id={'otherToggle'}
+          name={'otherToggle'}
+          onClick={handleOtherToggleClick}
+          className={`ui button item ${otherToggleActive === true ? "active" : ""}`}
+          formnovalidate
+          type="button"
+        >
+          <Icon name="asterisk" />
+          Other...
+        </button>
+        {/* <Menu.Item
           name='otherToggle'
           active={otherToggleActive === true}
           onClick={handleOtherToggleClick}
@@ -126,8 +154,8 @@ const ResourceTypeField = ({fieldPath,
         >
           <Icon name='asterisk' />
           Other...
-        </Menu.Item>
-      </Menu>
+        </Menu.Item>*/}
+      </div>
       {!!otherToggleActive &&
         <SelectField
             fieldPath={fieldPath}
