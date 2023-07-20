@@ -13,13 +13,28 @@ import React, { Component } from "react";
 import { FieldLabel } from "react-invenio-forms";
 import { connect } from "react-redux";
 import { Form, Popup, Radio } from "semantic-ui-react";
-import {
-  DepositFormSubmitActions,
-  DepositFormSubmitContext,
-} from "@js/invenio_rdm_records";
+// import {
+//   DepositFormSubmitActions,
+//   DepositFormSubmitContext,
+// } from "@js/invenio_rdm_records";
 // } from "../../api/DepositFormSubmitContext";
 // import { DISCARD_PID_STARTED, RESERVE_PID_STARTED
 // } from "../../state/types";
+
+const DepositFormSubmitActions = {
+  SAVE: "SAVE",
+  PUBLISH: "PUBLISH",
+  PUBLISH_WITHOUT_COMMUNITY: "PUBLISH_WITHOUT_COMMUNITY",
+  PREVIEW: "PREVIEW",
+  DELETE: "DELETE",
+  RESERVE_PID: "RESERVE_PID",
+  DISCARD_PID: "DISCARD_PID",
+  SUBMIT_REVIEW: "SUBMIT_REVIEW",
+};
+
+const DepositFormSubmitContext = React.createContext({
+  setSubmitContext: undefined,
+});
 
 const PROVIDER_EXTERNAL = "external";
 const UPDATE_PID_DEBOUNCE_MS = 200;
