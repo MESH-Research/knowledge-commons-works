@@ -91,8 +91,6 @@ class CreatibutorsFieldForm extends Component {
     const creatibutorsError =
       error || (creatibutorsList === formikInitialValues && initialError);
 
-
-
     return (
       // <DndProvider backend={HTML5Backend} options={{ rootElement: rootElement}}>
       // <GlobalDndContext key={Math.random()}>

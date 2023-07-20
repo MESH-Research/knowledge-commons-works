@@ -182,7 +182,9 @@ export class CreatibutorsModal extends Component {
       case "saveAndContinue":
         // Needed to close and open the modal to reset the internal
         // state of the cmp inside the modal
+        console.log('closing modal ...');
         this.closeModal();
+        console.log('opening modal again...');
         this.openModal();
         this.changeContent();
         break;
