@@ -605,10 +605,6 @@ const PreviouslyPublishedComponent = () => {
   return(<></>)
 }
 
-const PublisherDoiComponent = () => {
-  return(<></>)
-}
-
 const PublisherComponent = ({}) => {
   return(
     <Overridable
@@ -618,7 +614,6 @@ const PublisherComponent = ({}) => {
       <PublisherField
         fieldPath="metadata.publisher"
         description=""
-        labelIcon=""
         helpText=""
       />
     </Overridable>
@@ -633,6 +628,7 @@ const PublicationLocationComponent = ({customFieldsUI}) => {
       idString="ImprintPlaceField"
       customFieldsUI={customFieldsUI}
       label={"Place of Publication"}
+      icon={"map marker alternate"}
       description={""}
     />
   )
@@ -815,7 +811,6 @@ export { CustomFieldInjector,
          LicensesComponent,
          MetadataOnlyComponent,
          PreviouslyPublishedComponent,
-         PublisherDoiComponent,
          PublisherComponent,
          PublicationLocationComponent,
          ReferencesComponent,
