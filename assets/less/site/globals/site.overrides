@@ -33,10 +33,10 @@
   .required.fields.grouped>label:after,
   .required.fields:not(.grouped)>.field>.checkbox:after,
   .required.fields:not(.grouped)>.field>label:after {
-    color: @primaryColor;
-    content: "(required)";
-    margin: 0 0 0 0.5em;
-    font-weight: normal;
+    color: @primaryColor !important;
+    content: "(required)" !important;
+    margin: 0 0 0 0.5em !important;
+    font-weight: normal !important;
   }
 
   .ui.button {
@@ -52,11 +52,12 @@
 
   .ui.form {
     #rdm-deposit-form {
-      margin-top: 0 !important;
-      >.ui.grid.mt-25 {
-        margin-top: 0 !important;
-        padding-top: 25px;
-      }
+      max-width: 900px !important;
+      // margin-top: 0 !important;
+      // >.ui.grid.mt-25 {
+      //   margin-top: 0 !important;
+      //   padding-top: 25px;
+      // }
     }
     h2 {
       font-weight: normal;
@@ -101,6 +102,10 @@
         .field:last-child .fields:last-child,
         .fields:last-child .field {
           margin-bottom: 0;
+        }
+
+        .field>label {
+          margin-bottom: 0.5em;
         }
 
         .helptext {
