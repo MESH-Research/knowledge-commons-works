@@ -28,10 +28,11 @@ export class ImprintISBNField extends Component {
             fieldPath={fieldPath}
             label={label}
             placeholder={placeholder}
+            type="text"
         />
-        {description && (
+        {/* {description && (
             <label className="helptext mb-0">{description}</label>
-        )}
+        )}  */}
       </>
     );
   }
