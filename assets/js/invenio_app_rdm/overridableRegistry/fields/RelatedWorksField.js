@@ -16,7 +16,7 @@ import {
   FieldLabel,
   SelectField,
 } from "react-invenio-forms";
-import { Button, Form, Icon } from "semantic-ui-react";
+import { Button, Form, Grid, Icon, Segment } from "semantic-ui-react";
 
 // import { emptyRelatedWork } from "./initialValues";
 import { ResourceTypeField } from "@js/invenio_rdm_records";
@@ -76,55 +76,56 @@ const RelatedWorksField = ({fieldPath,
         }, index) => {
           const fieldPathPrefix = `${fieldPath}.${index}`;
           return (
-            <Form.Group key={index} className="additional-identifiers-item-row">
-              <SelectField
-                clearable
-                fieldPath={`${fieldPathPrefix}.relation_type`}
-                label={i18next.t("Relation")}
-                optimized
-                options={options.relations}
-                placeholder={i18next.t("Select relation...")}
-                required
-                width={6}
-              />
-
-              <TextField
-                fieldPath={`${fieldPathPrefix}.identifier`}
-                label={i18next.t("Identifier")}
-                required
-                width={6}
-              />
-
-              <SelectField
-                clearable
-                fieldPath={`${fieldPathPrefix}.scheme`}
-                label={i18next.t("Scheme")}
-                optimized
-                options={options.scheme}
-                required
-                width={2}
-              />
-
-              <ResourceTypeField
-                clearable
-                fieldPath={`${fieldPathPrefix}.resource_type`}
-                labelIcon="" // Otherwise breaks alignment
-                options={options.resource_type}
-                width={7}
-                labelclassname="small field-label-class"
-              />
-
-              <Form.Field>
-                <Button
-                  aria-label={i18next.t("Remove field")}
-                  className="close-btn"
-                  icon
-                  onClick={() => handleRemove(arrayHelpers, index)}
-                >
-                  <Icon name="close" />
-                </Button>
-              </Form.Field>
-            </Form.Group>
+            <Segment key={index} fluid className="additional-identifiers-item-row">
+                <Form.Group>
+                  <SelectField
+                    clearable
+                    fieldPath={`${fieldPathPrefix}.relation_type`}
+                    label={i18next.t("Relation")}
+                    optimized
+                    options={options.relations}
+                    placeholder={i18next.t("Select relation...")}
+                    required
+                    width={6}
+                  />
+                  <TextField
+                    fieldPath={`${fieldPathPrefix}.identifier`}
+                    label={i18next.t("Identifier")}
+                    required
+                    width={8}
+                  />
+                  <Form.Field>
+                    <Button
+                      aria-label={i18next.t("Remove field")}
+                      className="close-btn"
+                      icon
+                      onClick={() => handleRemove(arrayHelpers, index)}
+                      width={2}
+                    >
+                      <Icon name="close" />
+                    </Button>
+                  </Form.Field>
+                </Form.Group>
+                <Form.Group>
+                  <SelectField
+                    clearable
+                    fieldPath={`${fieldPathPrefix}.scheme`}
+                    label={i18next.t("Scheme")}
+                    optimized
+                    options={options.scheme}
+                    required
+                    width={8}
+                  />
+                  <ResourceTypeField
+                    clearable
+                    fieldPath={`${fieldPathPrefix}.resource_type`}
+                    labelIcon="" // Otherwise breaks alignment
+                    options={options.resource_type}
+                    labelclassname="small field-label-class"
+                    width={8}
+                  />
+                </Form.Group>
+            </Segment>
           )})}
           <Button
               type="button"
