@@ -12,6 +12,7 @@ import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 import { PublicationDateField } from "./fields/PublicationDateField";
 import { PublisherField } from "./fields/PublisherField";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
+import { SubjectsField } from "./fields/SubjectsField";
 import { TitlesField } from "./fields/TitlesField";
 import { VersionField } from "./fields/VersionField";
 
@@ -27,5 +28,6 @@ export const overriddenComponents = {
     "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
     "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
     "InvenioAppRdm.Deposit.VersionField.container": VersionField,
+    "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
     // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
 }
