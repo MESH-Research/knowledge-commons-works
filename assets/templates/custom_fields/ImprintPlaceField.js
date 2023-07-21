@@ -28,7 +28,9 @@ export class ImprintPlaceField extends Component {
             <Input
                 fieldPath={fieldPath}
                 label={label}
+                icon={"map marker alternate"}
                 placholder={placeholder}
+                type={"text"}
             />
             {description && (
                 <label className="helptext mb-0">{description}</label>
@@ -48,7 +50,7 @@ ImprintPlaceField.propTypes = {
 };
 
 ImprintPlaceField.defaultProps = {
-  icon: undefined,
+  icon: "map marker alternate",
   label: undefined,
   placeholder: undefined,
   description: undefined,

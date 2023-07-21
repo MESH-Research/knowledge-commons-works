@@ -29,6 +29,7 @@ export class ImprintISBNField extends Component {
             label={label}
             placeholder={placeholder}
             type="text"
+            icon="barcode"
         />
         {/* {description && (
             <label className="helptext mb-0">{description}</label>

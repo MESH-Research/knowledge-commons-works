@@ -29,6 +29,7 @@ export class ImprintPagesField extends Component {
             fieldPath={fieldPath}
             label={label}
             placeholder={placeholder}
+            icon={icon}
         />
         {description && (
             <label className="helptext mb-0">{description}</label>
@@ -48,7 +49,7 @@ ImprintPagesField.propTypes = {
 };
 
 ImprintPagesField.defaultProps = {
-  icon: undefined,
+  icon: "file outline",
   label: undefined,
   placeholder: undefined,
   description: undefined,
