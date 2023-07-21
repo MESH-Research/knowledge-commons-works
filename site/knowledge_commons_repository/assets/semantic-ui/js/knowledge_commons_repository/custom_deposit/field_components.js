@@ -52,7 +52,7 @@ import {
 // import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 import { CommunityField } from "../metadata_fields/CommunityField";
-import ResourceTypeSelectorField from "../metadata_fields/ResourceTypeField";
+import ResourceTypeSelectorField from "../metadata_fields/ResourceTypeSelectorField";
 import { PIDField } from "../metadata_fields/PIDField";
 import { DatesField } from "../metadata_fields/DatesField";
 // import { HTML5Backend } from "react-dnd-html5-backend";
@@ -301,6 +301,7 @@ const ContributorsComponent = ({config, vocabularies}) => {
     <Segment
       id={'InvenioAppRdm.Deposit.ContributorsField.card'}
       as="fieldset"
+      className="contributors-field"
     >
       <Overridable
         id="InvenioAppRdm.Deposit.ContributorsField.container"
@@ -332,6 +333,7 @@ const CreatorsComponent = ({config, vocabularies}) => {
     <Segment
       id={'InvenioAppRdm.Deposit.CreatorsField.card'}
       as="fieldset"
+      className="creators-field"
     >
       <Overridable
         id="InvenioAppRdm.Deposit.CreatorsField.container"
@@ -439,6 +441,7 @@ const FundingComponent = ({}) => {
     <Segment
       id="InvenioAppRdm.Deposit.AccordionFieldFunding.card"
       as="fieldset"
+      className="funding-field"
     >
       <Overridable
         id="InvenioAppRdm.Deposit.FundingField.container"
