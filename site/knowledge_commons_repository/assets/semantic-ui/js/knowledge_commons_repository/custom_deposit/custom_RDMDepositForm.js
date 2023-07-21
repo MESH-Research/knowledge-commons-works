@@ -480,7 +480,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
           />
         </Overridable>
 
-        <Container id="rdm-deposit-form" className="rel-mt-1">
+        <Container text id="rdm-deposit-form" className="rel-mt-1">
           <Grid className="mt-25">
             <Grid.Column mobile={16} tablet={16} computer={16}>
               <h2>
