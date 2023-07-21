@@ -76,7 +76,7 @@ def get_form_fields_config():
 def custom_deposit_create(community=None):
     """Create a new deposit."""
     form_config = get_form_config(createUrl="/api/records")
-    form_config['fields_config'] = get_form_fields_config();
+    form_config['fields_config'] = get_form_fields_config()
     return render_template(
         CUSTOM_DEPOSIT_FORM_TEMPLATE,
         forms_config=form_config,

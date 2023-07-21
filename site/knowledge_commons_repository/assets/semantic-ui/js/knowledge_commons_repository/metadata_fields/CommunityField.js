@@ -93,7 +93,6 @@ const CommunityFieldComponent = ({community=undefined,
                         className="community-field-button"
                         disabled={disableCommunitySelectionButton}
                         onClick={() => setModalOpen(true)}
-                        primary
                         name="setting"
                         type="button"
                         floated={"right"}
