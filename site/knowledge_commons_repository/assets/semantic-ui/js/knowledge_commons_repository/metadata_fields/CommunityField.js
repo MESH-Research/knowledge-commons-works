@@ -11,9 +11,13 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { Image } from "react-invenio-forms";
 import { connect } from "react-redux";
-import { Button, Icon } from "semantic-ui-react";
+import { Button,
+         Icon,
+         Grid
+        } from "semantic-ui-react";
 // import { changeSelectedCommunity } from "../../state/actions";
-import { CommunitySelectionModal } from "@js/invenio_rdm_records";
+// import { CommunitySelectionModal } from "@js/invenio_rdm_records";
+import { CommunitySelectionModal } from "./CommunitySelectionModal/CommunitySelectionModal";
 
 export const changeSelectedCommunity = (community) => {
   return async (dispatch) => {
@@ -21,6 +25,7 @@ export const changeSelectedCommunity = (community) => {
       type: "SET_COMMUNITY",
       payload: { community },
     });
+    window.setTimeout(() => {document.querySelectorAll(`.community-field-button`)[0].focus();}, 50);
   };
 };
 
@@ -33,43 +38,53 @@ const CommunityFieldComponent = ({community=undefined,
 
     const [ modalOpen, setModalOpen ] = useState();
 
+    const focusAddButtonHandler = () => {
+        document.querySelectorAll(`.community-field-button`)[0].focus();
+    }
+
     return (
         <>
-            <h4 for="" class="field-label-class invenio-field-label">
+            <h5 for="" class="field-label-class invenio-field-label">
                 <Icon name="users" />
-                Resource type
-            </h4>
+                Community submission
+            </h5>
+            <Grid fluid>
+              <Grid.Row>
             {community ? (
-              <>
-                <div className="page-subheader-element">
+                <>
+                <Grid.Column width={2}>
                   <Image
                     size="tiny"
                     className="community-header-logo"
                     src={community.links?.logo || imagePlaceholderLink} // logo is undefined when new draft and no selection
                     fallbackSrc={imagePlaceholderLink}
                   />
-                </div>
-                <div className="page-subheader-element flex align-items-center">
-                  {community.metadata.title}
-                </div>
-              </>
+                </Grid.Column>
+                <Grid.Column width={5}>
+                    {community.metadata.title}
+                </Grid.Column>
+                </>
             ) : (
-              <div className="page-subheader-element">
+              <Grid.Column width={8}>
                 {i18next.t(
-                  "Select a community where you want your record to be published."
+                  "Select a community where you want this deposit to be published."
                 )}
-              </div>
+              </Grid.Column>
             )}
 
-            <div className="community-field-element rel-ml-1">
+            <Grid.Column className="rel-ml-1" width={community ? 8 : 5}>
               {showCommunitySelectionButton && (
                 <>
                   <CommunitySelectionModal
                     onCommunityChange={(community) => {
                       changeSelectedCommunity(community);
+                      focusAddButtonHandler();
                       setModalOpen(false);
                     }}
-                    onModalChange={(value) => setModalOpen(value)}
+                    onModalChange={(value) => {
+                      value===false && focusAddButtonHandler();
+                      setModalOpen(value);
+                    }}
                     modalOpen={modalOpen}
                     chosenCommunity={community}
                     displaySelected
@@ -77,10 +92,11 @@ const CommunityFieldComponent = ({community=undefined,
                       <Button
                         className="community-field-button"
                         disabled={disableCommunitySelectionButton}
-                        onClick={() => this.setState({ modalOpen: true })}
+                        onClick={() => setModalOpen(true)}
                         primary
                         name="setting"
                         type="button"
+                        floated={"right"}
                         content={
                           community
                             ? i18next.t("Change")
@@ -88,6 +104,7 @@ const CommunityFieldComponent = ({community=undefined,
                         }
                       />
                     }
+                    focusAddButtonHandler={focusAddButtonHandler}
                   />
                   {community && (
                     <Button
@@ -97,11 +114,14 @@ const CommunityFieldComponent = ({community=undefined,
                       content={i18next.t("Remove")}
                       icon="close"
                       disabled={disableCommunitySelectionButton}
+                      floated={"right"}
                     />
                   )}
                 </>
               )}
-            </div>
+            </Grid.Column>
+            </Grid.Row>
+            </Grid>
         </>
     )
 }
