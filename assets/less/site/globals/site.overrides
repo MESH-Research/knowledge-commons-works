@@ -41,6 +41,12 @@
 
   .ui.button {
     font-weight: normal;
+    &.add-btn,
+    &.add-id-button,
+    &.add-url-button,
+    &.add-button {
+      background-color: @secondaryColor;
+    }
   }
   .ui.mini.ui.button {
     font-size: 1em;
@@ -96,7 +102,7 @@
         background-color: #f9f9f9;
       }
 
-      fieldset {
+      fieldset.ui.segment {
         .field:last-child,
         .fields:last-child,
         .field:last-child .fields:last-child,
@@ -114,6 +120,11 @@
         .add-btn {
           margin: -0.5em 0.5em 0 0;
           font-weight: normal;
+        }
+
+        &.save-submit-buttons {
+          background-color: transparent;
+          border: 0;
         }
 
         &.pid-field {
