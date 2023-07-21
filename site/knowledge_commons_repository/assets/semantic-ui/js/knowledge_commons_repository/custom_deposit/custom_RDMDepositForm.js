@@ -436,8 +436,10 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
         for ( let p of Object.keys(formPages) ) {
           // collect form widget slugs
           let pageFields = config.fields_config.common_fields[p];
-          if ( !!currentTypeExtraFields[p] ) {
-            pageFields = pageFields.concat(currentTypeExtraFields[p]);
+          if ( currentTypeExtraFields ) {
+            if ( !!currentTypeExtraFields[p] ) {
+              pageFields = pageFields.concat(currentTypeExtraFields[p]);
+            }
           }
           if ( pageFields.length == 1 ) {
             pageFields = [pageFields];
@@ -454,6 +456,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
           }
         }
         setPagesWithErrors(errorPages);
+        errorPages.length && setCurrentFormPage(errorPages[0]);
       }
     }
 
@@ -534,7 +537,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                       >
                           {!!currentResourceType &&
                            !!currentTypeExtraFields[pageNum] ?
-                           currentTypeExtraFields[pageNum].map((component_label, index) => {
+                           currentTypeExtraFields[pageNum]?.map((component_label, index) => {
                             const MyField = fieldComponents[component_label][0]
                             return (<MyField
                               key={index}
