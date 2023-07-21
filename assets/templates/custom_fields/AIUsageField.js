@@ -48,7 +48,7 @@ const AIUsageField = ({fieldPath,
       value={false}
     />
     {!!values.custom_fields ? (
-      values.custom_fields['kcr:ai_usage'].ai_used === true &&
+      values.custom_fields['kcr:ai_usage']?.ai_used === true &&
       <TextArea
         fieldPath={`${fieldPath}.ai_description`}
         // label={ai_description.label}
