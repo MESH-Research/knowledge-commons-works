@@ -4,6 +4,7 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import { AccessRightField } from "./fields/AccessRightField";
 import { CreatibutorsField } from "./fields/CreatibutorsField";
 import { DescriptionsField } from "./fields/DescriptionsField";
 import { FundingField } from "./fields/FundingField";
@@ -17,6 +18,7 @@ import { TitlesField } from "./fields/TitlesField";
 import { VersionField } from "./fields/VersionField";
 
 export const overriddenComponents = {
+    "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
     "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
     "InvenioAppRdm.Deposit.ContributorsField.container": CreatibutorsField,
     "InvenioAppRdm.Deposit.DescriptionsField.container": DescriptionsField,
