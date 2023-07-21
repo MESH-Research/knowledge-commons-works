@@ -126,7 +126,7 @@ const PublicationDetailsComponent = ({customFieldsUI}) => {
             />
             <VersionComponent description=""
               label="Edition or Version"
-              icon=""
+              icon="copy outline"
             />
         </Form.Group>
         <Form.Group widths="equal">
@@ -173,6 +173,7 @@ const BookDetailComponent = ({customFieldsUI}) => {
               customFieldsUI={customFieldsUI}
               description={""}
               label="Number of Pages"
+              icon="file outline"
             />
       </Form.Group>
       <Form.Group>
@@ -198,6 +199,7 @@ const BookVolumePagesComponent = ({customFieldsUI}) => {
           customFieldsUI={customFieldsUI}
           description={""}
           label="Total pages"
+          icon="file outline"
           />
         </Form.Group>
       </Segment>
@@ -236,19 +238,36 @@ const SubjectKeywordsComponent = ({ record, vocabularies, customFieldsUI }) => {
   )
 }
 
-const SubmissionComponent = () => {
+const SubmissionComponent = ({record, permissions}) => {
+  const { values, setFieldValue } = useFormikContext();
+
+  const filterEmptyIdentifiers = () => {
+    if ( values.metadata.identifiers.length ) {
+      let filteredIdentifiers = values.metadata.identifiers.reduce((newList, item) => {
+        if (item.identifier!=="" && item.scheme!=="") newList.push(item);
+        return newList;
+      }, []);
+      setFieldValue("metadata.identifiers", filteredIdentifiers);
+    }
+  }
+
+  // FIXME: This is a cludge to handle the automatic assignment of
+  // the "url" scheme to the default empty URL identifier field
+  useEffect(() => {
+    filterEmptyIdentifiers();
+  }, []
+  );
 
   return(
     <Overridable id="InvenioAppRdm.Deposit.CardDepositStatusBox.container">
-      <Segment as="fieldset">
-          <DepositStatusBox />
-          <Grid relaxed>
+          {/* <DepositStatusBox /> */}
+        <Grid relaxed className="save-submit-buttons">
             <Grid.Column
               computer={8}
               mobile={16}
               className="pb-0 left-btn-col"
             >
-              <SaveButton fluid />
+              <SaveButton fluid aria-describedby="submit-buttons-description" />
             </Grid.Column>
 
             <Grid.Column
@@ -256,14 +275,17 @@ const SubmissionComponent = () => {
               mobile={16}
               className="pb-0 right-btn-col"
             >
-              <PreviewButton fluid />
+              <PreviewButton fluid aria-describedby="submit-buttons-description" />
             </Grid.Column>
 
             <Grid.Column width={16} className="pt-10">
-              <PublishButton fluid />
+              <PublishButton fluid aria-describedby="submit-buttons-description" />
+            </Grid.Column>
+
+            <Grid.Column width={16}>
+              <DeleteComponent permissions={permissions} record={record} />
             </Grid.Column>
           </Grid>
-      </Segment>
     </Overridable>
   )
 }
@@ -306,9 +328,7 @@ const DeleteComponent = ({ permissions, record }) => {
         id="InvenioAppRdm.Deposit.CardDeleteButton.container"
         record={record}
       >
-        <Segment as="fieldset">
           <DeleteButton fluid />
-        </Segment>
       </Overridable>
     )}
     </>
@@ -318,13 +338,21 @@ const DeleteComponent = ({ permissions, record }) => {
 const SubmitActionsComponent = ({permissions, record}) => {
   return(
     <Grid>
-      <Grid.Column width="8">
-        <SubmissionComponent />
-        <DeleteComponent permissions={permissions} record={record} />
-      </Grid.Column>
-      <Grid.Column width="8">
-        <AccessRightsComponent permissions={permissions} />
-      </Grid.Column>
+      <Grid.Row>
+        <Grid.Column width="6" computer="8" tablet="6">
+          <SubmissionComponent record={record} permissions={permissions} />
+        </Grid.Column>
+        <Grid.Column width="10" tablet="10" computer="8" id="submit-buttons-description">
+          <p>Draft deposits can be edited{permissions?.can_delete_draft && ", deleted,"} and the files can be added or changed.</p>
+          <p>Published deposits can still be edited, but you will no longer
+            be able to {permissions?.can_delete_draft && "delete the deposit or "}change the attached files. To add or change files for a published deposit you must create a new version of the record.</p>
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row>
+        <Grid.Column width="16">
+          <AccessRightsComponent permissions={permissions} />
+        </Grid.Column>
+      </Grid.Row>
     </Grid>
   )
 }
