@@ -137,12 +137,12 @@ class ManagedUnmanagedSwitch extends Component {
 
     return (
       <Form.Group inline>
-        <Form.Field>
-          <FieldLabel htmlFor={fieldPath} icon={"barcode"} label={i18next.t("Do you already have a {{pidLabel}} for this material?", {
+        {/* Hidden because value is set implicitly */}
+        {/* <Form.Field>
+          <FieldLabel htmlFor={fieldPath} icon={"barcode"} label={i18next.t("Existing {{pidLabel}} (if any)", {
             pidLabel: pidLabel,
           })} />
-        </Form.Field>
-        {/* Hidden because value is set implicitly */}
+        </Form.Field> */}
         {/* <Form.Field width={2}>
           <Radio
             label={i18next.t("Yes")}
@@ -190,6 +190,7 @@ class ManagedIdentifierComponent extends Component {
   handleReservePID = (event, formik) => {
     const { pidType } = this.props;
     const { setSubmitContext } = this.context;
+    console.log(this.context);
     setSubmitContext(DepositFormSubmitActions.RESERVE_PID, {
       pidType: pidType,
     });
@@ -216,6 +217,8 @@ class ManagedIdentifierComponent extends Component {
       identifier,
       pidPlaceholder,
       pidType,
+      isEditingPublishedRecord,
+      form,
     } = this.props;
     const hasIdentifier = identifier !== "";
 
@@ -242,22 +245,32 @@ class ManagedIdentifierComponent extends Component {
       />
     );
 
+    const provider = form.values.pids.doi?.provider;
+
     return (
       <>
-        <Form.Group inline>
           {hasIdentifier ? (
+          <Form.Group inline>
             <Form.Field>
-              <label>{identifier}</label>
+              <label>{`https://doi.org/${identifier}`}</label>
             </Form.Field>
-          ) : (
-            <Form.Field width={4}>
-              <Form.Input disabled value="" placeholder={pidPlaceholder} width={16} />
-            </Form.Field>
+          </Form.Group>
+          ) : (""
+            // <Form.Field width={4}>
+            //   <Form.Input disabled value="" placeholder={pidPlaceholder} width={16} />
+            // </Form.Field>
           )}
 
+        {/* {!isEditingPublishedRecord &&
           <Form.Field>{identifier ? UnreserveBtn : ReserveBtn}</Form.Field>
-        </Form.Group>
-        {helpText && <label className="helptext">{helpText}</label>}
+        } */}
+        {isEditingPublishedRecord ?
+        <label className="helptext">A unique identifier for this deposit registered with {provider!=="external" ?
+          provider.charAt(0).toUpperCase() + provider.slice(1)
+          : "an external provider"}</label>
+        : ""
+        // helpText && <label className="helptext">{helpText}</label>
+        }
       </>
     );
   }
@@ -377,6 +390,13 @@ class CustomPIDField extends Component {
     };
   }
 
+  componentDidMount() {
+    console.log(this.props.form.values.pids);
+    if ( this.props.form.values.pids?.doi?.identifier=="" ) {
+      this.props.form.setFieldValue('pids', {});
+    }
+  }
+
   onExternalIdentifierChanged = (identifier) => {
     const { form, fieldPath } = this.props;
     let pid = {
@@ -444,11 +464,12 @@ class CustomPIDField extends Component {
     const fieldError = getFieldErrors(form, fieldPath);
     return (
       <>
-        {/* <Form.Field required={required} error={fieldError}>
+        <Form.Field required={required} error={fieldError}>
           <FieldLabel htmlFor={fieldPath} icon={pidIcon} label={fieldLabel} />
-        </Form.Field> */}
+        </Form.Field>
 
-        {this.canBeManagedAndUnmanaged && (
+        {/* Hidden because value set implicitly */}
+        {/* {this.canBeManagedAndUnmanaged && (
           <ManagedUnmanagedSwitch
             disabled={isEditingPublishedRecord || hasManagedIdentifier}
             isManagedSelected={_isManagedSelected}
@@ -464,26 +485,27 @@ class CustomPIDField extends Component {
             }}
             pidLabel={pidLabel}
           />
-        )}
+        )} */}
 
         {canBeManaged && _isManagedSelected
-        // && (
-        //   <ManagedIdentifierCmp
-        //     disabled={isEditingPublishedRecord}
-        //     btnLabelDiscardPID={btnLabelDiscardPID}
-        //     btnLabelGetPID={btnLabelGetPID}
-        //     form={form}
-        //     identifier={managedIdentifier}
-        //     helpText={managedHelpText}
-        //     pidPlaceholder={pidPlaceholder}
-        //     pidType={pidType}
-        //     pidLabel={pidLabel}
-        //   />
-        // )
+        && (
+          <ManagedIdentifierCmp
+            disabled={isEditingPublishedRecord}
+            btnLabelDiscardPID={btnLabelDiscardPID}
+            btnLabelGetPID={btnLabelGetPID}
+            form={form}
+            identifier={managedIdentifier}
+            helpText={managedHelpText}
+            pidPlaceholder={pidPlaceholder}
+            pidType={pidType}
+            pidLabel={pidLabel}
+            isEditingPublishedRecord={isEditingPublishedRecord}
+          />
+        )
         }
 
         {/* {canBeUnmanaged && !_isManagedSelected && ( */}
-        {canBeUnmanaged && (
+        {canBeUnmanaged && !hasManagedIdentifier && (
           <UnmanagedIdentifierCmp
             identifier={unmanagedIdentifier}
             onIdentifierChanged={(identifier) => {
@@ -492,7 +514,7 @@ class CustomPIDField extends Component {
             form={form}
             fieldPath={fieldPath}
             pidPlaceholder={pidPlaceholder}
-            helpText={"We will register a unique Digital Object Identifier for your deposit if you don't have one already." || unmanagedHelpText}
+            helpText={"If you don't have a registered Digital Object Identifier for your deposit materials, leave this field blank and we will create one for you." || unmanagedHelpText}
           />
         )}
       </>
