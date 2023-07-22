@@ -90,6 +90,18 @@
 
     .formPageWrapper {
 
+      .sticky-footer-fixed {
+        position: fixed;
+        bottom: 0;
+        padding-bottom: 0.5em;
+        padding-top: 0.5em;
+        background-color: #ffffff;
+        border-top: 2px solid #efefef;
+      }
+      .sticky-footer-static {
+        position: relative;
+      }
+
       .inline.fields {
         .field.invenio-select-field>.selection.dropdown {
           width: 100%;

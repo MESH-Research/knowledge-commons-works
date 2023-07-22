@@ -12,7 +12,7 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import React, { createContext, useContext, useEffect,
-                useLayoutEffect, useRef,
+                useLayoutEffect, useMemo, useRef,
                 useState } from "react";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -112,6 +112,7 @@ import {AccessRightsComponent,
         TypeTitleComponent,
 } from "./compound_field_components";
 import { useFormikContext } from "formik";
+import { Segment } from "semantic-ui-react";
 
 
 // React Context to track the current form values.
@@ -212,6 +213,29 @@ const fieldComponents = {
       ['metadata.title', 'metadata.resource_type']],
 }
 
+function useIsInViewport(ref) {
+  console.log(ref);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+
+  const observer = useMemo(
+    () =>
+      new IntersectionObserver(([entry]) =>
+        setIsIntersecting(entry.isIntersecting),
+      ),
+    [],
+  );
+
+  useEffect(() => {
+    observer.observe(ref.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [ref, observer]);
+
+  return isIntersecting;
+}
+
 const FormPage = ({ children, id, pageNums,
                     currentFormPage, handleFormPageChange
                   }) => {
@@ -227,7 +251,8 @@ const FormPage = ({ children, id, pageNums,
   const previousPageIndex = currentPageIndex - 1;
   const nextPage = nextPageIndex < pageNums.length ? pageNums[nextPageIndex] : null;
   const previousPage = previousPageIndex >= 0 ? pageNums[previousPageIndex] : null;
-  const buttonBarRef = useRef(null);
+  const pageTargetRef = useRef(null);
+  const pageTargetInViewport = useIsInViewport(pageTargetRef);
 
   //pass values up from Formik context to main form context
   useEffect(() => {
@@ -247,43 +272,50 @@ const FormPage = ({ children, id, pageNums,
   );
 
   return(
-    <div className="formPageWrapper" id={id} ref={buttonBarRef}>
-    {/* // <Card fluid
-    //   id={id}
-    // >
-    //   <Card.Content> */}
-      <DndProvider backend={HTML5Backend}
-        // options={{ rootElement: rootElement}}
-      >
+    <DndProvider backend={HTML5Backend} >
+    <div className="formPageWrapper" id={id}>
         {children}
-        <Sticky context={buttonBarRef}
+        {/* <Sticky context={pageWrapperRef}
           pushing
           bottomOffset={50}
-          attached="bottom"
-        >
-          <Container width={16}>
+          offset={50}
+        > */}
+          <div
+            className={`ui container ${(pageTargetInViewport) ? "sticky-footer-static" : "sticky-footer-fixed"}`}
+          >
+
           {!!previousPage &&
-          <Button primary
-            type="button"
-            content={"Back"}
-            floated="left"
-            onClick={handleFormPageChange}
-            value={previousPage}
-          />}
+            <Button secondary
+              type="button"
+              floated="left"
+              onClick={handleFormPageChange}
+              value={previousPage}
+              icon
+              labelPosition="left"
+            >
+              <Icon name="left arrow" />
+              "Back"
+            </Button>
+          }
+
           {!!nextPage &&
-          <Button primary
-            type="button"
-            content={"Continue"}
-            floated="right"
-            onClick={handleFormPageChange}
-            value={nextPage}
-          />}
-        </Container>
-        </Sticky>
-      </DndProvider>
-      {/* </Card.Content>
-    </Card> */}
+            <Button primary
+              type="button"
+              floated="right"
+              onClick={handleFormPageChange}
+              value={nextPage}
+              icon
+              labelPosition="right"
+            >
+              <Icon name="right arrow" />
+              Continue
+            </Button>
+          }
+        </div>
+        {/* </Sticky> */}
+        <div id="sticky-footer-observation-target" ref={pageTargetRef}></div>
     </div>
+    </DndProvider>
   )
 }
 
