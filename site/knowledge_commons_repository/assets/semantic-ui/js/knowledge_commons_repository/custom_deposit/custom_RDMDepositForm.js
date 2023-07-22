@@ -325,9 +325,11 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
 
     const handleFormPageParam = () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const urlFormPage = urlParams.get('depositFormPage');
-      if ( !!urlFormPage ) {
+      let urlFormPage = urlParams.get('depositFormPage');
+      if ( !!urlFormPage && Object.keys(formPages).includes(urlFormPage)) {
         setCurrentFormPage(urlFormPage);
+      } else {
+        urlFormPage = '1';
       }
       return urlFormPage;
     }
