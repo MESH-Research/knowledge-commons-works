@@ -9,6 +9,7 @@ import { CreatibutorsField } from "./fields/CreatibutorsField";
 import { DescriptionsField } from "./fields/DescriptionsField";
 import { FundingField } from "./fields/FundingField";
 import { IdentifiersField } from "./fields/IdentifiersField";
+import { LicenseField } from "./fields/LicenseField";
 import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 import { PublicationDateField } from "./fields/PublicationDateField";
 import { PublisherField } from "./fields/PublisherField";
@@ -24,6 +25,7 @@ export const overriddenComponents = {
     "InvenioAppRdm.Deposit.DescriptionsField.container": DescriptionsField,
     "InvenioAppRdm.Deposit.FundingField.container": FundingField,
     "InvenioAppRdm.Deposit.IdentifiersField.container": IdentifiersField,
+    "InvenioAppRdm.Deposit.LicenseField.container": LicenseField,
     "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
     "InvenioAppRdm.Deposit.PublicationDateField.container": PublicationDateField,
     "InvenioAppRdm.Deposit.PublisherField.container": PublisherField,
