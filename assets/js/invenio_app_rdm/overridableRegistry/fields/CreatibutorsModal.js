@@ -78,7 +78,10 @@ export class CreatibutorsModal extends Component {
     }),
   });
 
-  focusInput = () => this.inputRef.current.focus();
+  focusInput = () => {
+    this.inputRef.current.focus();
+    console.log(this.inputRef.current);
+  }
 
   openModal = () => {
     this.setState({ open: true, action: null }, () => {});
@@ -174,6 +177,7 @@ export class CreatibutorsModal extends Component {
   onSubmit = (values, formikBag) => {
     const { onCreatibutorChange } = this.props;
     const { action } = this.state;
+    console.log(this.inputRef.current);
 
     onCreatibutorChange(this.serializeCreatibutor(values));
     formikBag.setSubmitting(false);
@@ -182,9 +186,11 @@ export class CreatibutorsModal extends Component {
       case "saveAndContinue":
         // Needed to close and open the modal to reset the internal
         // state of the cmp inside the modal
+        console.log(this.inputRef.current);
         console.log('closing modal ...');
         this.closeModal();
         console.log('opening modal again...');
+        console.log(this.inputRef.current);
         this.openModal();
         this.changeContent();
         break;

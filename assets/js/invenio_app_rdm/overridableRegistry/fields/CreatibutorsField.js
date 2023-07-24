@@ -12,8 +12,8 @@ import { getIn, FieldArray } from "formik";
 import { Button, Form, Label, List, Icon } from "semantic-ui-react";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { DndProvider } from "react-dnd";
+// import { HTML5Backend } from "react-dnd-html5-backend";
+// import { DndProvider } from "react-dnd";
 
 import { CreatibutorsModal } from "./CreatibutorsModal";
 import { CreatibutorsFieldItem } from "./CreatibutorsFieldItem";
@@ -51,11 +51,11 @@ const creatibutorNameDisplay = (value) => {
 };
 
 class CreatibutorsFieldForm extends Component {
-  constructor(props) {
-      super(props);
-      this.focusAddButtonHandler = this.focusAddButtonHandler.bind(this);
-      this.handleOnContributorChange = this.handleOnContributorChange.bind(this);
-  }
+  // constructor(props) {
+  //     super(props);
+  //     this.focusAddButtonHandler = this.focusAddButtonHandler.bind(this);
+  //     this.handleOnContributorChange = this.handleOnContributorChange.bind(this);
+  // }
 
   handleOnContributorChange = (selectedCreatibutor) => {
     const { push: formikArrayPush } = this.props;
@@ -139,13 +139,12 @@ class CreatibutorsFieldForm extends Component {
               trigger={
                 <Button type="button" icon labelPosition="left"
                  id={`${fieldPath}.add-button`}
-                 ref={this.adderRef}
+                //  ref={this.adderRef}
                 >
                   <Icon name="add" />
                   {addButtonLabel}
                 </Button>
               }
-              adderRef={this.adderRef}
               focusAddButtonHandler={this.focusAddButtonHandler}
             />
             {creatibutorsError && typeof creatibutorsError == "string" && (
