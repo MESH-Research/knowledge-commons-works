@@ -190,7 +190,6 @@ class ManagedIdentifierComponent extends Component {
   handleReservePID = (event, formik) => {
     const { pidType } = this.props;
     const { setSubmitContext } = this.context;
-    console.log(this.context);
     setSubmitContext(DepositFormSubmitActions.RESERVE_PID, {
       pidType: pidType,
     });
@@ -391,7 +390,6 @@ class CustomPIDField extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.form.values.pids);
     if ( this.props.form.values.pids?.doi?.identifier=="" ) {
       this.props.form.setFieldValue('pids', {});
     }
