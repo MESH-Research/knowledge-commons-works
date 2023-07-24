@@ -94,13 +94,13 @@ def create_blueprint(app):
     # )
 
     blueprint.add_url_rule(
-        f'/uploads/new',  # /uploads/new
+        f'/deposits/new',  # /uploads/new
         view_func=custom_deposit_create,
         # APP_RDM_DEPOSIT_FORM_TEMPLATE = "invenio_app_rdm/records/deposit.html"
     )
 
     blueprint.add_url_rule(
-        f'/uploads/<pid_value>',  # /uploads/<pid_value>
+        f'/deposits/<pid_value>',  # /uploads/<pid_value>
         view_func=custom_deposit_edit,
     )
 
