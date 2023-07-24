@@ -80,11 +80,33 @@
       font-weight: normal;
     }
 
+    .field.error {
+      input[type=text] {
+        &::before {
+          content: "\f071";
+          margin-right: 0.5em;
+          font-family: Icons;
+        }
+      }
+      .prompt.label {
+        background-color: @errorTextColor !important;
+        border-color: @errorTextColor !important;
+        color: #fff !important;
+      }
+    }
+
     .upload-form-stepper-step.has-error {
       color: @errorTextColor;
-      background-color: #F6D5E5;
+      background-color: @negativeBackgroundColor;
+      border: 1px solid #e0b4b4;
       &:after {
-        background-color: #F6D5E5;
+        background-color: @negativeBackgroundColor;
+        border-color: #e0b4b4;
+      }
+      &:before {
+        content:"\f06a";
+        margin-right: 0.5em;
+        font-family: Icons;
       }
     }
 
@@ -97,6 +119,7 @@
         padding-top: 0.5em;
         background-color: #ffffff;
         border-top: 2px solid #efefef;
+        max-width: 900px !important;
       }
       .sticky-footer-static {
         position: relative;
