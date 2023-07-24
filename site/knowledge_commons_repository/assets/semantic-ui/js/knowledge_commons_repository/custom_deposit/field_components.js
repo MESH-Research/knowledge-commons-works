@@ -349,7 +349,7 @@ const CreatorsComponent = ({config, vocabularies}) => {
           schema="creators"
           autocompleteNames={config.autocomplete_names}
           required
-          id="InvenioAppRdm.Deposit.CreatorsField.card"
+          // id="InvenioAppRdm.Deposit.CreatorsField.card"
         />
       </Overridable>
     </Segment>
