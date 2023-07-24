@@ -138,17 +138,6 @@ const RelatedWorksField = ({fieldPath,
               <Icon name="add" />
               Add related work
           </Button>
-          <Button
-              type="button"
-              onClick={() => handleAddNew(arrayHelpers, emptyRelatedWork)}
-              icon
-              className="align-self-end add-btn"
-              labelPosition="left"
-              id={`${fieldPath}.add-button`}
-          >
-              <Icon name="add" />
-              Add related work
-          </Button>
           <label className="helptext" style={{ marginBottom: "10px" }}>
             {/* {i18next.t(
               "Specify identifiers of related works. Supported identifiers include DOI, Handle, ARK, PURL, ISSN, ISBN, PubMed ID, PubMed Central ID, ADS Bibliographic Code, arXiv, Life Science Identifiers (LSID), EAN-13, ISTC, URNs, and URLs."
