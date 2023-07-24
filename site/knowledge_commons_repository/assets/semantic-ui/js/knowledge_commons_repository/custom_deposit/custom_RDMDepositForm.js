@@ -214,7 +214,6 @@ const fieldComponents = {
 }
 
 function useIsInViewport(ref) {
-  console.log(ref);
   const [isIntersecting, setIsIntersecting] = useState(false);
 
   const observer = useMemo(
