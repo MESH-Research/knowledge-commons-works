@@ -285,7 +285,7 @@ const FormPage = ({ children, id, pageNums,
           >
 
           {!!previousPage &&
-            <Button secondary
+            <Button
               type="button"
               floated="left"
               onClick={handleFormPageChange}
@@ -294,7 +294,7 @@ const FormPage = ({ children, id, pageNums,
               labelPosition="left"
             >
               <Icon name="left arrow" />
-              "Back"
+              Back
             </Button>
           }
 
