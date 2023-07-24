@@ -41,12 +41,12 @@
 
   .ui.button {
     font-weight: normal;
-    &.add-btn,
-    &.add-id-button,
-    &.add-url-button,
-    &.add-button {
-      background-color: @secondaryColor;
-    }
+    // &.add-btn,
+    // &.add-id-button,
+    // &.add-url-button,
+    // &.add-button {
+    //   background-color: @secondaryColor;
+    // }
   }
   .ui.mini.ui.button {
     font-size: 1em;
