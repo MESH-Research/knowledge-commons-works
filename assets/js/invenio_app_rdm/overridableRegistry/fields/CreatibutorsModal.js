@@ -9,7 +9,12 @@
 
 import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
-import { Button, Form, Grid, Header, Modal } from "semantic-ui-react";
+import { Button,
+         Divider,
+         Form,
+         Grid,
+         Header,
+         Modal } from "semantic-ui-react";
 import { Formik } from "formik";
 import {
   Image,
@@ -55,6 +60,7 @@ export class CreatibutorsModal extends Component {
     this.identifiersRef = createRef();
     this.affiliationsRef = createRef();
     this.namesAutocompleteRef = createRef();
+    this.surnameRef = createRef();
   }
 
   CreatorSchema = Yup.object({
@@ -62,12 +68,12 @@ export class CreatibutorsModal extends Component {
       type: Yup.string(),
       family_name: Yup.string().when("type", (type, schema) => {
         if (type === CREATIBUTOR_TYPE.PERSON && this.isCreator()) {
-          return schema.required(i18next.t("Family name is a required field."));
+          return schema.required(i18next.t("Surname is a required field."));
         }
       }),
       name: Yup.string().when("type", (type, schema) => {
         if (type === CREATIBUTOR_TYPE.ORGANIZATION && this.isCreator()) {
-          return schema.required(i18next.t("Name is a required field."));
+          return schema.required(i18next.t("Organization name is a required field."));
         }
       }),
     }),
@@ -360,6 +366,7 @@ export class CreatibutorsModal extends Component {
           error: false,
           open: false,
         });
+        window.setTimeout(() => document.getElementById(`${this.props.parentFieldPath}.role-select`).querySelectorAll('input')[0].focus(), 50);
       }
     );
   };
@@ -400,6 +407,7 @@ export class CreatibutorsModal extends Component {
               }}
               closeIcon
               closeOnDimmerClick={false}
+              className="deposit-creatibutor-modal"
             >
               <Modal.Header as="h6" className="pt-10 pb-10">
                 <Grid>
@@ -446,21 +454,26 @@ export class CreatibutorsModal extends Component {
                   {_get(values, typeFieldPath, "") === CREATIBUTOR_TYPE.PERSON ? (
                     <div>
                       {autocompleteNames !== NamesAutocompleteOptions.OFF && (
+                        <>
+                        <label id={`${this.props.parentFieldPath}.person-search-select`}>
+                          Search our existing list by name, identifier (e.g., ORCID id), or affiliation; or enter a new person below.
+                        </label>
                         <RemoteSelectField
                           selectOnBlur={false}
                           selectOnNavigation={false}
                           searchInput={{
                             autoFocus: _isEmpty(initialCreatibutor),
+                            ariaLabeledby: `${this.props.parentFieldPath}.person-search-select`,
                           }}
                           fieldPath="creators"
                           clearable
                           multiple={false}
                           allowAdditions={false}
                           placeholder={i18next.t(
-                            "Search for persons by name, identifier, or affiliation..."
+                            "name, identifier, or affiliation..."
                           )}
                           noQueryMessage={i18next.t(
-                            "Search for persons by name, identifier, or affiliation..."
+                            "name, identifier, or affiliation..."
                           )}
                           required={false}
                           // Disable UI-side filtering of search results
@@ -470,19 +483,25 @@ export class CreatibutorsModal extends Component {
                           onValueChange={this.onPersonSearchChange}
                           ref={this.namesAutocompleteRef}
                         />
+                        </>
                       )}
                       {showPersonForm && (
+                        <>
+                        <Divider />
                         <div>
                           <Form.Group widths="equal">
                             <TextField
-                              label={i18next.t("Family name")}
-                              placeholder={i18next.t("Family name")}
+                              label={i18next.t("Surname")}
+                              placeholder={i18next.t("Surname")}
                               fieldPath={familyNameFieldPath}
                               required={this.isCreator()}
+                              input={{ ref: this.surnameRef,
+                                       autoFocus: !_isEmpty(initialCreatibutor),
+                              }}
                             />
                             <TextField
-                              label={i18next.t("Given names")}
-                              placeholder={i18next.t("Given names")}
+                              label={i18next.t("Personal names")}
+                              placeholder={i18next.t("Personal names")}
                               fieldPath={givenNameFieldPath}
                             />
                           </Form.Group>
@@ -498,15 +517,17 @@ export class CreatibutorsModal extends Component {
                               )}
                               fieldPath={identifiersFieldPath}
                               ref={this.identifiersRef}
+                              label={"Personal identifiers (ORCID, ISNI, or GND)"}
                             />
                           </Form.Group>
                         </div>
+                      </>
                       )}
                     </div>
                   ) : (
                     <>
                       <TextField
-                        label={i18next.t("Name")}
+                        label={i18next.t("Organization name")}
                         placeholder={i18next.t("Organization name")}
                         fieldPath={nameFieldPath}
                         required={this.isCreator()}
@@ -525,6 +546,7 @@ export class CreatibutorsModal extends Component {
                         )}
                         fieldPath={identifiersFieldPath}
                         placeholder={i18next.t("e.g. ROR, ISNI or GND.")}
+                        label={"Organization identifiers (ROR, ISNI, or GND)"}
                       />
                     </>
                   )}
@@ -532,10 +554,6 @@ export class CreatibutorsModal extends Component {
                     (showPersonForm &&
                       _get(values, typeFieldPath) === CREATIBUTOR_TYPE.PERSON)) && (
                     <div>
-                      <AffiliationsField
-                        fieldPath={affiliationsFieldPath}
-                        selectRef={this.affiliationsRef}
-                      />
                       <SelectField
                         fieldPath={roleFieldPath}
                         label={i18next.t("Role")}
@@ -545,6 +563,12 @@ export class CreatibutorsModal extends Component {
                         required={!this.isCreator()}
                         optimized
                         scrolling
+                        search
+                        id={`${this.props.parentFieldPath}.role-select`}
+                      />
+                      <AffiliationsField
+                        fieldPath={affiliationsFieldPath}
+                        selectRef={this.affiliationsRef}
                       />
                     </div>
                   )}

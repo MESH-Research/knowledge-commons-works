@@ -39,14 +39,14 @@ export class AffiliationsField extends Component {
               }}
               initialSuggestions={getIn(values, fieldPath, [])}
               serializeSuggestions={this.serializeAffiliations}
-              placeholder={i18next.t("Search or create affiliation'")}
+              placeholder={i18next.t("Search or enter an organization")}
               label={
                 <FieldLabel
                   htmlFor={`${fieldPath}.name`}
                   label={i18next.t("Affiliations")}
                 />
               }
-              noQueryMessage={i18next.t("Search for affiliations..")}
+              noQueryMessage={i18next.t("Search for organizations..")}
               allowAdditions
               clearable
               multiple

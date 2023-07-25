@@ -51,11 +51,14 @@ const creatibutorNameDisplay = (value) => {
 };
 
 class CreatibutorsFieldForm extends Component {
-  // constructor(props) {
-  //     super(props);
-  //     this.focusAddButtonHandler = this.focusAddButtonHandler.bind(this);
-  //     this.handleOnContributorChange = this.handleOnContributorChange.bind(this);
-  // }
+  constructor(props) {
+      super(props);
+      // this.focusAddButtonHandler = this.focusAddButtonHandler.bind(this);
+      // this.handleOnContributorChange = this.handleOnContributorChange.bind(this);
+      this.state = {
+        currentRoleOptions: this.props.currentRoleOptions,
+      }
+  }
 
   handleOnContributorChange = (selectedCreatibutor) => {
     const { push: formikArrayPush } = this.props;
@@ -64,6 +67,30 @@ class CreatibutorsFieldForm extends Component {
 
   focusAddButtonHandler = () => {
     document.getElementById(`${this.props.fieldPath}.add-button`).focus();
+  }
+
+  moveCommonRolesToTop = (roleArray) => {
+      let newRoleArray = [...roleArray];
+      console.log('starting...........................');
+      let commonRoles = ["translator", "editor", "author"];
+      if ( this.props.parentFieldPath === 'metadata.creators' ) {
+        commonRoles = ['collaborator', 'editor', 'projectOrTeamLeader', 'projectOrTeamMember', 'translator'];
+      }
+      for ( const role of commonRoles ) {
+        console.log(role);
+        const index = newRoleArray.findIndex(({value}) => value === role);
+        console.log(index);
+        newRoleArray.unshift(...newRoleArray.splice(index, 1));
+        console.log(newRoleArray);
+      }
+      newRoleArray.push(...newRoleArray.splice(newRoleArray.findIndex(({value}) => value==="other"), 1));
+      return newRoleArray;
+  }
+
+  componentDidMount() {
+    const newRoleOptions = this.moveCommonRolesToTop(this.props.roleOptions);
+    console.log(newRoleOptions);
+    this.setState({currentRoleOptions: newRoleOptions});
   }
 
   render() {
@@ -125,6 +152,8 @@ class CreatibutorsFieldForm extends Component {
                     editLabel: modal.editLabel,
                     autocompleteNames: autocompleteNames,
                   }}
+                  focusAddButtonHandler={this.focusAddButtonHandler}
+                  parentFieldPath={fieldPath}
                 />
               );
             })}
@@ -146,6 +175,7 @@ class CreatibutorsFieldForm extends Component {
                 </Button>
               }
               focusAddButtonHandler={this.focusAddButtonHandler}
+              parentFieldPath={fieldPath}
             />
             {creatibutorsError && typeof creatibutorsError == "string" && (
               <Label pointing="left" prompt>

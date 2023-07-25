@@ -28,6 +28,8 @@ export const CreatibutorsFieldItem = ({
   roleOptions,
   schema,
   autocompleteNames,
+  focusAddButtonHandler,
+  parentFieldPath
 }) => {
   const dropRef = React.useRef(null);
   // eslint-disable-next-line no-unused-vars
@@ -95,6 +97,8 @@ export const CreatibutorsFieldItem = ({
                 {i18next.t("Edit")}
               </Button>
             }
+            focusAddButtonHandler={focusAddButtonHandler}
+            parentFieldPath={parentFieldPath}
           />
           <Button size="mini" type="button" onClick={() => removeCreatibutor(index)}>
             {i18next.t("Remove")}
