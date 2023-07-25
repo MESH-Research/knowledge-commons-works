@@ -51,14 +51,11 @@ const creatibutorNameDisplay = (value) => {
 };
 
 class CreatibutorsFieldForm extends Component {
-  constructor(props) {
-      super(props);
+  // constructor(props) {
+  //     super(props);
       // this.focusAddButtonHandler = this.focusAddButtonHandler.bind(this);
       // this.handleOnContributorChange = this.handleOnContributorChange.bind(this);
-      this.state = {
-        currentRoleOptions: this.props.currentRoleOptions,
-      }
-  }
+  // }
 
   handleOnContributorChange = (selectedCreatibutor) => {
     const { push: formikArrayPush } = this.props;
@@ -73,7 +70,7 @@ class CreatibutorsFieldForm extends Component {
       let newRoleArray = [...roleArray];
       console.log('starting...........................');
       let commonRoles = ["translator", "editor", "author"];
-      if ( this.props.parentFieldPath === 'metadata.creators' ) {
+      if ( this.props.fieldPath === 'metadata.contributors' ) {
         commonRoles = ['collaborator', 'editor', 'projectOrTeamLeader', 'projectOrTeamMember', 'translator'];
       }
       for ( const role of commonRoles ) {
@@ -87,10 +84,9 @@ class CreatibutorsFieldForm extends Component {
       return newRoleArray;
   }
 
-  componentDidMount() {
-    const newRoleOptions = this.moveCommonRolesToTop(this.props.roleOptions);
-    console.log(newRoleOptions);
-    this.setState({currentRoleOptions: newRoleOptions});
+  orderOptions = (optionList) => {
+    let newOptionList = sortOptions(optionList);
+    return this.moveCommonRolesToTop(newOptionList);
   }
 
   render() {
@@ -117,6 +113,7 @@ class CreatibutorsFieldForm extends Component {
     const initialError = getIn(initialErrors, fieldPath, null);
     const creatibutorsError =
       error || (creatibutorsList === formikInitialValues && initialError);
+    const orderedRoleOptions = this.orderOptions(roleOptions);
 
     return (
       // <DndProvider backend={HTML5Backend} options={{ rootElement: rootElement}}>
@@ -141,7 +138,7 @@ class CreatibutorsFieldForm extends Component {
                   {...{
                     displayName,
                     index,
-                    roleOptions,
+                    roleOptions: orderedRoleOptions,
                     schema,
                     compKey: key,
                     initialCreatibutor: value,
@@ -162,7 +159,7 @@ class CreatibutorsFieldForm extends Component {
               action="add"
               addLabel={modal.addLabel}
               editLabel={modal.editLabel}
-              roleOptions={sortOptions(roleOptions)}
+              roleOptions={orderedRoleOptions}
               schema={schema}
               autocompleteNames={autocompleteNames}
               trigger={
