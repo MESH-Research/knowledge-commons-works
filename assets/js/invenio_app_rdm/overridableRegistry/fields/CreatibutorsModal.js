@@ -455,7 +455,7 @@ export class CreatibutorsModal extends Component {
                     <div>
                       {autocompleteNames !== NamesAutocompleteOptions.OFF && (
                         <>
-                        <label id={`${this.props.parentFieldPath}.person-search-select`}>
+                        <label for={`${this.props.parentFieldPath}.person-search-select`}>
                           Search our existing list by name, identifier (e.g., ORCID id), or affiliation; or enter a new person below.
                         </label>
                         <RemoteSelectField
@@ -463,7 +463,7 @@ export class CreatibutorsModal extends Component {
                           selectOnNavigation={false}
                           searchInput={{
                             autoFocus: _isEmpty(initialCreatibutor),
-                            ariaLabeledby: `${this.props.parentFieldPath}.person-search-select`,
+                            id: `${this.props.parentFieldPath}.person-search-select`,
                           }}
                           fieldPath="creators"
                           clearable
