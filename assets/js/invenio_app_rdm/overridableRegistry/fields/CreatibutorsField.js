@@ -71,7 +71,7 @@ class CreatibutorsFieldForm extends Component {
       console.log('starting...........................');
       let commonRoles = ["translator", "editor", "author"];
       if ( this.props.fieldPath === 'metadata.contributors' ) {
-        commonRoles = ['collaborator', 'editor', 'projectOrTeamLeader', 'projectOrTeamMember', 'translator'];
+        commonRoles = ['translator', 'projectOrTeamLeader', 'projectOrTeamMember', 'editor', 'collaborator'];
       }
       for ( const role of commonRoles ) {
         console.log(role);
