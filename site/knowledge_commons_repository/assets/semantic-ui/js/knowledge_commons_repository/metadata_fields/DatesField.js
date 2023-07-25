@@ -65,9 +65,6 @@ const DatesField = ({ requiredOptions=[],
       } else {
         document.getElementById(`${fieldPath}.${datesLength}.date`)?.focus();
       }
-      console.log(document.getElementById(`${fieldPath}.${datesLength}.date`));
-      console.log(`${fieldPath}.${datesLength}.date`);
-      console.log(datesLength);
     }
   }, [datesLength]);
 
