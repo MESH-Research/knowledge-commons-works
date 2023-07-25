@@ -52,6 +52,13 @@
     font-size: 1em;
   }
 
+  h2  {
+    font-weight: normal;
+  }
+
+  &.deposit-creatibutor-modal .ui.divider {
+    margin: 1.5rem 0;
+  }
 }
 
 #deposit-form   {
