@@ -462,7 +462,7 @@ class CustomPIDField extends Component {
     const fieldError = getFieldErrors(form, fieldPath);
     return (
       <>
-        <Form.Field required={required} error={fieldError}>
+        <Form.Field required={false} error={fieldError}>
           <FieldLabel htmlFor={fieldPath} icon={pidIcon} label={fieldLabel} />
         </Form.Field>
 
