@@ -121,7 +121,7 @@ const BookSeriesField = ({
                   type="button"
                   onClick={() => handleAddNew(arrayHelpers, newSeries)}
                   icon
-                  className="align-self-end"
+                  className="align-self-end add-button"
                   labelPosition="left"
                   id={`${fieldPath}.add-button`}
                 >

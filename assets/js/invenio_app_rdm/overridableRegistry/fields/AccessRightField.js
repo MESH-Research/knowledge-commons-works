@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Field } from "formik";
 import { FieldLabel } from "react-invenio-forms";
-import { Card, Divider, Form, Header, Segment } from "semantic-ui-react";
+import { Card, Divider, Form, Grid, Header, Segment } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import {
   MetadataAccess,
@@ -39,47 +39,49 @@ export class AccessRightFieldCmp extends Component {
     const isMetadataOnly = !formik.form.values.files.enabled;
 
     return (
-        <Form.Field required>
-          <Segment className="access-right">
-            <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+        // <Form.Field required>
+        <>
+          <Segment as="fieldset" className="access-right">
+            {/* <Form.Field>
+              <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+            </Form.Field> */}
+            <Grid>
+              <Grid.Row>
+                <Grid.Column width="8">
+                  {showMetadataAccess && (
+                    <MetadataAccess
+                      recordAccess={formik.field.value.record}
+                      communityAccess={communityAccess}
+                    />
+                  )}
+                  <FilesAccess
+                    access={formik.field.value}
+                    accessCommunity={communityAccess}
+                    metadataOnly={isMetadataOnly}
+                  />
+                </Grid.Column>
 
-            {showMetadataAccess && (
-              <>
-                <MetadataAccess
-                  recordAccess={formik.field.value.record}
-                  communityAccess={communityAccess}
-                />
-                <Divider hidden />
-              </>
-            )}
+                <Grid.Column width="8">
+                  <AccessMessage
+                    access={formik.field.value}
+                    accessCommunity={communityAccess}
+                    metadataOnly={isMetadataOnly}
+                  />
+                </Grid.Column>
 
-            <FilesAccess
-              access={formik.field.value}
-              accessCommunity={communityAccess}
-              metadataOnly={isMetadataOnly}
-            />
-
-            {/* <Divider hidden /> */}
-
-            <AccessMessage
-              access={formik.field.value}
-              accessCommunity={communityAccess}
-              metadataOnly={isMetadataOnly}
-            />
-          </Segment>
-          <Segment fluid>
-
-            {/* <Divider hidden /> */}
-            <Card.Header as={Header} size="tiny">
+              </Grid.Row>
+            </Grid>
+            {/* <Card.Header as={Header} size="tiny">
               {i18next.t("Options")}
-            </Card.Header>
+            </Card.Header> */}
             <EmbargoAccess
               access={formik.field.value}
               accessCommunity={communityAccess}
               metadataOnly={isMetadataOnly}
             />
           </Segment>
-        </Form.Field>
+        {/* </Form.Field> */}
+        </>
     );
   }
 }

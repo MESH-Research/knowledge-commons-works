@@ -34,8 +34,8 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
     : "???";
 
   return (
-    <List>
-      <List.Item disabled={!embargoEnabled} data-testid="option-list-embargo">
+    <List className="embargo-access">
+      <List.Item data-testid="option-list-embargo">
         <List.Icon aria-hidden="false">
           <EmbargoCheckboxField
             fieldPath="access.embargo.active"
@@ -45,13 +45,13 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
         </List.Icon>
 
         <List.Content>
-          <List.Header as="label" htmlFor="access.embargo.active">
+          <List.Header as="label" disabled={!embargoEnabled} htmlFor="access.embargo.active" className={!embargoEnabled ? "disabled" : ""}>
             {i18next.t("Apply an embargo")} <Icon name="clock outline" />
           </List.Header>
 
           <List.Description>
             <Trans>
-              Record or files protection must be <b>restricted</b> to apply an embargo.
+              Record or files access must be <b>restricted</b> to apply an embargo.
             </Trans>
           </List.Description>
 

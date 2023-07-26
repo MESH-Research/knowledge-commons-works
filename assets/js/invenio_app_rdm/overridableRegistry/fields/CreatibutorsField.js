@@ -165,6 +165,7 @@ class CreatibutorsFieldForm extends Component {
               trigger={
                 <Button type="button" icon labelPosition="left"
                  id={`${fieldPath}.add-button`}
+                 className="add-button"
                 //  ref={this.adderRef}
                 >
                   <Icon name="add" />

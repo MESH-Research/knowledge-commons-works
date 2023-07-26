@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 import { ProtectionButtons } from "./ProtectionButtons";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import Overridable from "react-overridable";
+import { Form, Icon } from "semantic-ui-react";
 
 export const MetadataAccess = (props) => {
   const { recordAccess, communityAccess } = props;
@@ -18,14 +19,17 @@ export const MetadataAccess = (props) => {
 
   return (
     <Overridable id="ReactInvenioDeposit.MetadataAccess.layout" {...props}>
-      <>
-        <label for="access.record">{i18next.t("Deposit record")}</label>
+      <Form.Field>
+        <label for="access.record" className="invenio-field-label">
+          <Icon name="lock" />
+          {i18next.t("Record access")}
+        </label>
         <ProtectionButtons
           active={publicMetadata && publicCommunity}
           disabled={!publicCommunity}
           fieldPath="access.record"
         />
-      </>
+      </Form.Field>
     </Overridable>
   );
 };

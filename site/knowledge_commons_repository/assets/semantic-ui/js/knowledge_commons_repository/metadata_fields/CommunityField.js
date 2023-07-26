@@ -13,6 +13,7 @@ import { Image } from "react-invenio-forms";
 import { connect } from "react-redux";
 import { Button,
          Icon,
+         Form,
          Grid
         } from "semantic-ui-react";
 // import { changeSelectedCommunity } from "../../state/actions";
@@ -44,15 +45,17 @@ const CommunityFieldComponent = ({community=undefined,
 
     return (
         <>
-            <h5 for="" class="field-label-class invenio-field-label">
+          <Form.Field>
+            <label htmlFor="community-selector" className="field-label-class invenio-field-label">
                 <Icon name="users" />
                 Community submission
-            </h5>
-            <Grid fluid>
-              <Grid.Row>
-            {community ? (
-                <>
-                <Grid.Column width={2}>
+            </label>
+          </Form.Field>
+          <Form.Group>
+            {community && (
+            <Form.Field width={12}>
+                <Grid fluid>
+                <Grid.Column width={3}>
                   <Image
                     size="tiny"
                     className="community-header-logo"
@@ -60,21 +63,14 @@ const CommunityFieldComponent = ({community=undefined,
                     fallbackSrc={imagePlaceholderLink}
                   />
                 </Grid.Column>
-                <Grid.Column width={5}>
+                <Grid.Column width={13}>
                     {community.metadata.title}
                 </Grid.Column>
-                </>
-            ) : (
-              <Grid.Column width={8}>
-                {i18next.t(
-                  "Select a community where you want this deposit to be published."
-                )}
-              </Grid.Column>
+                </Grid>
+            </Form.Field>
             )}
-
-            <Grid.Column className="rel-ml-1" width={community ? 8 : 5}>
+            <Form.Field width={community ? 4 : 6} className="right-btn-column">
               {showCommunitySelectionButton && (
-                <>
                   <CommunitySelectionModal
                     onCommunityChange={(community) => {
                       changeSelectedCommunity(community);
@@ -90,37 +86,54 @@ const CommunityFieldComponent = ({community=undefined,
                     displaySelected
                     trigger={
                       <Button
-                        className="community-field-button"
+                        className="community-field-button add-button"
                         disabled={disableCommunitySelectionButton}
                         onClick={() => setModalOpen(true)}
                         name="setting"
+                        // icon
+                        id="community-selector"
                         type="button"
-                        floated={"right"}
-                        content={
-                          community
+                        floated={!community ? "left" : ""}
+                      >
+                        {/* <Icon name={!community ? "add" : "undo"} /> */}
+                        {community
                             ? i18next.t("Change")
                             : i18next.t("Select a community")
                         }
-                      />
+                      </Button>
                     }
                     focusAddButtonHandler={focusAddButtonHandler}
                   />
-                  {community && (
-                    <Button
-                      basic
-                      className="community-field-button ml-5"
-                      onClick={() => changeSelectedCommunity(null)}
-                      content={i18next.t("Remove")}
-                      icon="close"
-                      disabled={disableCommunitySelectionButton}
-                      floated={"right"}
-                    />
-                  )}
-                </>
               )}
-            </Grid.Column>
-            </Grid.Row>
-            </Grid>
+              {community && (
+                // <Button
+                //   mini
+                //   className="community-field-button"
+                //   onClick={() => changeSelectedCommunity(null)}
+                //   content={i18next.t("Remove")}
+                //   icon="close"
+                //   disabled={disableCommunitySelectionButton}
+                // />
+                <Button
+                  aria-label={i18next.t("Remove item")}
+                  className="close-btn"
+                  icon
+                  onClick={() => changeSelectedCommunity(null)}
+                >
+                  <Icon name="close" />
+                </Button>
+              )}
+            </Form.Field>
+            { !community && (
+              <Form.Field width={11}>
+                <label htmlFor="community-selector" className="helptext">
+                {i18next.t(
+                  "Select a community where you want this deposit to be published."
+                )}
+                </label>
+              </Form.Field>
+            )}
+            </Form.Group>
         </>
     )
 }

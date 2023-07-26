@@ -122,7 +122,7 @@ function FundingFieldForm(props) {
                 id={`${fieldPath}.add-button`}
                 icon
                 labelPosition="left"
-                className="mb-5"
+                className="mb-5 add-button"
               >
                 <Icon name="add" />
                 {i18next.t("Add award from list")}
@@ -141,7 +141,10 @@ function FundingFieldForm(props) {
           <FundingModal
             searchConfig={searchConfig}
             trigger={
-              <Button type="button" key="custom" icon labelPosition="left">
+              <Button type="button" key="custom" icon
+               className="add-button"
+               labelPosition="left"
+              >
                 <Icon name="add" />
                 {i18next.t("Add custom")}
               </Button>

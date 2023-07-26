@@ -140,7 +140,7 @@ export const IdentifiersField = ({
                   type="button"
                   onClick={() => handleAddNew(arrayHelpers, emptyURL)}
                   icon
-                  className="align-self-end"
+                  className="align-self-end add-button"
                   labelPosition="left"
                   id={`${fieldPath}.add-url-button`}
                 >
@@ -151,7 +151,7 @@ export const IdentifiersField = ({
                   type="button"
                   onClick={() => handleAddNew(arrayHelpers, emptyIdentifier)}
                   icon
-                  className="align-self-end"
+                  className="align-self-end add-button"
                   labelPosition="left"
                   id={`${fieldPath}.add-id-button`}
                 >

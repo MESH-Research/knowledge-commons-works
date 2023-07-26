@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { ProtectionButtons } from "./ProtectionButtons";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
-import { Card } from "semantic-ui-react";
+import { Card, Form, Icon } from "semantic-ui-react";
 
 export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
   const publicFiles = access.files === "public";
@@ -24,7 +24,7 @@ export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
   if (metadataOnly) {
     return (
       <Card.Meta data-testid="access-files">
-        <em>{i18next.t("The record has no files.")}</em>
+        {/* <em>{i18next.t("The record has no files.")}</em> */}
       </Card.Meta>
     );
   }
@@ -32,14 +32,17 @@ export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
   return (
     <div data-testid="access-files">
       {filesButtonsDisplayed && (
-        <>
-          <label for="access.files">{i18next.t("Files only")}</label>
+        <Form.Field>
+          <label for="access.files" className="invenio-field-label">
+            <Icon name="lock" />
+            {i18next.t("Files access")}
+          </label>
           <ProtectionButtons
             active={publicFiles}
             disable={!publicCommunity}
             fieldPath="access.files"
           />
-        </>
+        </Form.Field>
       )}
       {/* {fullRecordRestricted && (
         <Card.Description>

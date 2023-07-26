@@ -147,6 +147,36 @@
         background-color: #f9f9f9;
       }
 
+      .submit-actions {
+        >.row:last-child {
+          margin-top: 1em;
+          margin-bottom: 2em;
+          padding-left: 2em;
+          padding-right: 2em;
+
+          .save-submit-buttons {
+            background-color: transparent;
+            border: 0;
+            .column:last-child {
+              padding-top: 0;
+            }
+            .mb-10 {
+              margin-bottom: 0;
+            }
+          }
+
+          .submit-buttons-description {
+            margin-top: 0;
+            margin-bottom: 0;
+            p {
+              display: block;
+              margin-bottom: 0.5em;
+              font-size: 1em;
+            }
+          }
+        }
+      }
+
       fieldset.ui.segment {
         .field:last-child,
         .fields:last-child,
@@ -167,9 +197,23 @@
           font-weight: normal;
         }
 
-        &.save-submit-buttons {
-          background-color: transparent;
-          border: 0;
+        &.access-right {
+          padding: 2em;
+          padding-top: 1.5em;
+          padding-bottom: 1.5em;
+
+          .message  {
+            margin-top: 2em;
+          }
+
+          .embargo-access {
+            label.helptext {
+              margin-bottom: 1em;
+            }
+          }
+          // .disabled {
+          //   color: rgba(0,0,0) !important;
+          // }
         }
 
         &.pid-field {
@@ -208,13 +252,12 @@
         }
 
         &.communities-field {
-          .container {
-            width: auto;
-            margin-bottom: 0;
-            &.page-subheader-outer.compact {
-              padding: 0;
-              background-color: transparent;
-            }
+          .ui.icon.button.close-btn {
+            margin-top: 0;
+            float: none;
+          }
+          .right-btn-column {
+            text-align: right;
           }
         }
 
