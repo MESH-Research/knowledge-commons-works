@@ -12,6 +12,8 @@
 
 // }
 
+@formButtonColor: #4e77a8;
+
 // Header
 
 @labelBottomMargin: .28571429rem;
@@ -41,12 +43,13 @@
 
   .ui.button {
     font-weight: normal;
-    // &.add-btn,
-    // &.add-id-button,
-    // &.add-url-button,
-    // &.add-button {
-    //   background-color: @secondaryColor;
-    // }
+    &.add-btn,
+    &.add-id-button,
+    &.add-url-button,
+    &.add-button {
+      background-color: @formButtonColor;
+      color: #fff;
+    }
   }
   .ui.mini.ui.button {
     font-size: 1em;
