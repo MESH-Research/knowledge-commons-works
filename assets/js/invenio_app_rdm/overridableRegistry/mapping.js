@@ -17,6 +17,7 @@ import { RelatedWorksField } from "./fields/RelatedWorksField";
 import { SubjectsField } from "./fields/SubjectsField";
 import { TitlesField } from "./fields/TitlesField";
 import { VersionField } from "./fields/VersionField";
+import { FileUploader } from "./fields/file_uploader_components/index";
 
 export const overriddenComponents = {
     "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
@@ -33,5 +34,6 @@ export const overriddenComponents = {
     "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
     "InvenioAppRdm.Deposit.VersionField.container": VersionField,
     "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
+    "InvenioAppRdm.Deposit.FileUploader.container": FileUploader,
     // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
 }

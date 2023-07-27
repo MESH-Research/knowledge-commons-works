@@ -428,7 +428,7 @@ const FilesUploadComponent = ({config, noFiles, record, permissions}) => {
             isDraftRecord={!record.is_published}
             quota={config.quota}
             decimalSizeDisplay={config.decimal_size_display}
-            showMetadataOnlyToggle={permissions?.can_manage_files}
+            showMetadataOnlyToggle={false} //{permissions?.can_manage_files}
           />
         </Overridable>
     {/*</Overridable> */}
