@@ -127,7 +127,7 @@ const ResourceTypeSelectorField = ({fieldPath,
           name={buttonType.id}
           onClick={handleItemClick}
           className={`ui button item ${values.metadata.resource_type === buttonType.id ? "active" : ""}`}
-          formnovalidate
+          formNoValidate
           type="button"
         >
           <Icon name={buttonType.icon} />
@@ -140,7 +140,7 @@ const ResourceTypeSelectorField = ({fieldPath,
           name={'otherToggle'}
           onClick={handleOtherToggleClick}
           className={`ui button item ${otherToggleActive === true ? "active" : ""}`}
-          formnovalidate
+          formNoValidate
           type="button"
         >
           <Icon name="asterisk" />

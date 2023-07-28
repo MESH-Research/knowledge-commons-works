@@ -68,17 +68,13 @@ class CreatibutorsFieldForm extends Component {
 
   moveCommonRolesToTop = (roleArray) => {
       let newRoleArray = [...roleArray];
-      console.log('starting...........................');
       let commonRoles = ["translator", "editor", "author"];
       if ( this.props.fieldPath === 'metadata.contributors' ) {
         commonRoles = ['translator', 'projectOrTeamLeader', 'projectOrTeamMember', 'editor', 'collaborator'];
       }
       for ( const role of commonRoles ) {
-        console.log(role);
         const index = newRoleArray.findIndex(({value}) => value === role);
-        console.log(index);
         newRoleArray.unshift(...newRoleArray.splice(index, 1));
-        console.log(newRoleArray);
       }
       newRoleArray.push(...newRoleArray.splice(newRoleArray.findIndex(({value}) => value==="other"), 1));
       return newRoleArray;

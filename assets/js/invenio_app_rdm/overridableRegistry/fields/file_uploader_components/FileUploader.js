@@ -55,9 +55,6 @@ export const FileUploaderComponent = ({
   const filesEnabled = _get(formikDraft, "files.enabled", false);
   const [warningMsg, setWarningMsg] = useState();
 
-  console.log('************************');
-  console.log(files);
-
   const filesList = Object.values(files).map((fileState) => {
     return {
       name: fileState.name,
