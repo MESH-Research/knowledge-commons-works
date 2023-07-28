@@ -33,7 +33,7 @@ const SaveButtonComponent = ({ actionState=undefined, ...ui }) => {
   const handleConfirm = () => { setConfirmedNoFiles(true); setOpen(false) };
   const handleCancel = () => { setConfirmedNoFiles(false); setOpen(false) };
 
-  handleSave = (event) => {
+  const handleSave = (event) => {
     setSubmitContext(DepositFormSubmitActions.SAVE);
     handleSubmit(event);
     scrollTop()
@@ -43,7 +43,7 @@ const SaveButtonComponent = ({ actionState=undefined, ...ui }) => {
     <Button
       name="save"
       disabled={isSubmitting}
-      onClick={(event) => this.handleSave(event)}
+      onClick={handleSave}
       icon="save"
       loading={isSubmitting && actionState === DRAFT_SAVE_STARTED}
       labelPosition="left"
