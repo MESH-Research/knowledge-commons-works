@@ -40,7 +40,6 @@ import {
   TitlesField,
   VersionField,
   CommunityHeader,
-  SaveButton,
 } from "@js/invenio_rdm_records";
 import { FundingField } from "@js/invenio_vocabularies";
 import {
@@ -51,6 +50,7 @@ import {
 } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
+import { SaveButton } from "../components/SaveButton";
 import ResourceTypeSelectorField from "../metadata_fields/ResourceTypeSelectorField";
 import { PIDField } from "../metadata_fields/PIDField";
 import { DatesField } from "../metadata_fields/DatesField";
@@ -240,6 +240,7 @@ const SubjectKeywordsComponent = ({ record, vocabularies, customFieldsUI }) => {
 
 const SubmissionComponent = ({record, permissions}) => {
   const { values, setFieldValue } = useFormikContext();
+  const [ confirmedNoFiles, setConfirmedNoFiles ] = useState(undefined);
 
   const filterEmptyIdentifiers = () => {
     if ( values.metadata.identifiers.length ) {
@@ -249,6 +250,11 @@ const SubmissionComponent = ({record, permissions}) => {
       }, []);
       setFieldValue("metadata.identifiers", filteredIdentifiers);
     }
+  }
+
+  const handleConfirmNoFiles = () => {
+    setConfirmedNoFiles(true);
+    setFieldValue("files.enabled", false);
   }
 
   const setImplicitMetaOnly = () => {
@@ -263,7 +269,7 @@ const SubmissionComponent = ({record, permissions}) => {
   // the "url" scheme to the default empty URL identifier field
   useEffect(() => {
     filterEmptyIdentifiers();
-    setImplicitMetaOnly();
+    // setImplicitMetaOnly();
   }, []
   );
 
@@ -276,6 +282,7 @@ const SubmissionComponent = ({record, permissions}) => {
               mobile={16}
               className="pb-0 left-btn-col"
             >
+              {}
               <SaveButton fluid aria-describedby="submit-buttons-description" />
             </Grid.Column>
 
