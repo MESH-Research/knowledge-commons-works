@@ -328,21 +328,20 @@ const FormPage = ({ children, id, pageNums,
 // Ensure there aren't any missing values in fields config
 const makeExtraFieldsConfig = (fieldsConfig) => {
   let extras = fieldsConfig.extras_by_type;
-  console.log({...extras});
   const pageNums = ['1', '2', '3', '4', '5', '6'];
   Object.entries(extras).forEach(([typename, pages]) => {
-    if ( !pages ) {
-      extras[typename] = {'1': null, '2': null, '3': null,
-    '4': null, '5': null, '6': null};
+    if ( pages===null || pages===undefined ) {
+      extras[typename] = {1: null, 2: null, 3: null,
+    4: null, 5: null, 6: null};
     } else {
       for (let idx=0; idx<pageNums.length; idx++) {
-        if ( !(pageNums[idx] in Object.keys(pages)) ) {
+        if ( !Object.keys(pages).includes(pageNums[idx]) ) {
+          console.log(`${pageNums[idx]} not in list`);
           extras[typename][pageNums[idx]] = null;
         }
       }
     }
   });
-  console.log(extras);
   return( {common_fields: fieldsConfig['common_fields'],
            extras_by_type: extras}
   )
@@ -361,16 +360,14 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
     const [currentTypeExtraFields, setCurrentTypeExtraFields] = useState(
       fieldsConfig.extras_by_type[currentResourceType]
     );
-    console.log(currentTypeExtraFields);
-    console.log("***************");
     const formPages = {
-      '1': 'Title',
-      '2': 'People',
-      '3': 'Subjects',
-      '4': 'Details',
-      '5': 'Files',
+      1: 'Title',
+      2: 'People',
+      3: 'Subjects',
+      4: 'Details',
+      5: 'Files',
       // '6' ,'
-      '7': 'Submit',
+      7: 'Submit',
     }
     const customFieldsUI = config.custom_fields.ui;
 
