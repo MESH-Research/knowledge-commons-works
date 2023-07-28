@@ -20,7 +20,7 @@ export const MetadataAccess = (props) => {
   return (
     <Overridable id="ReactInvenioDeposit.MetadataAccess.layout" {...props}>
       <Form.Field>
-        <label for="access.record" className="invenio-field-label">
+        <label htmlFor="access.record" className="invenio-field-label">
           <Icon name="lock" />
           {i18next.t("Record access")}
         </label>
