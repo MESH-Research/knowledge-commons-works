@@ -360,10 +360,10 @@ const SubmitActionsComponent = ({permissions, record}) => {
         </Grid.Column>
       </Grid.Row>
       <Grid.Row className="submit-buttons-row">
-        <Grid.Column width="6" computer="8" tablet="6">
+        <Grid.Column computer="8" tablet="6">
           <SubmissionComponent record={record} permissions={permissions} />
         </Grid.Column>
-        <Grid.Column width="10" tablet="10" computer="8" id="submit-buttons-description" className="helptext">
+        <Grid.Column tablet="10" computer="8" id="submit-buttons-description" className="helptext">
             <p>You must save the record as a draft first.</p>
 
             <p><b>Draft deposits</b> can be edited{permissions?.can_delete_draft && ", deleted,"} and the files can be added or changed.</p>

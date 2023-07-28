@@ -33,7 +33,7 @@ export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
     <div data-testid="access-files">
       {filesButtonsDisplayed && (
         <Form.Field>
-          <label for="access.files" className="invenio-field-label">
+          <label htmlFor="access.files" className="invenio-field-label">
             <Icon name="lock" />
             {i18next.t("Files access")}
           </label>
