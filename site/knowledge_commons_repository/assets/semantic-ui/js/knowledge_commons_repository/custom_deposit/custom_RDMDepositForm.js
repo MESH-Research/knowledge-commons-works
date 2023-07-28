@@ -239,7 +239,8 @@ const FormPage = ({ children, id, pageNums,
                     currentFormPage, handleFormPageChange
                   }) => {
 
-  const { values, errors, setFieldValue, initialValues } = useFormikContext();
+  const { values, errors, setFieldValue, initialValues,
+          validateField, validateForm } = useFormikContext();
   // console.log('atop formPage...')
   // console.log(values);
   // console.log(errors);
@@ -270,6 +271,12 @@ const FormPage = ({ children, id, pageNums,
   }, [errors]
   );
 
+  const handleButtonClick = (event, { value }) => {
+    console.log(validateField('metadata.title'));
+    console.log(validateForm);
+    handleFormPageChange(event, { value });
+  }
+
   return(
     <DndProvider backend={HTML5Backend} >
     <div className="formPageWrapper" id={id}>
@@ -287,7 +294,7 @@ const FormPage = ({ children, id, pageNums,
             <Button
               type="button"
               floated="left"
-              onClick={handleFormPageChange}
+              onClick={handleButtonClick}
               value={previousPage}
               icon
               labelPosition="left"
@@ -301,7 +308,7 @@ const FormPage = ({ children, id, pageNums,
             <Button primary
               type="button"
               floated="right"
-              onClick={handleFormPageChange}
+              onClick={handleButtonClick}
               value={nextPage}
               icon
               labelPosition="right"
@@ -318,14 +325,44 @@ const FormPage = ({ children, id, pageNums,
   )
 }
 
+// Ensure there aren't any missing values in fields config
+const makeExtraFieldsConfig = (fieldsConfig) => {
+  let extras = fieldsConfig.extras_by_type;
+  console.log({...extras});
+  const pageNums = ['1', '2', '3', '4', '5', '6'];
+  Object.entries(extras).forEach(([typename, pages]) => {
+    if ( !pages ) {
+      extras[typename] = {'1': null, '2': null, '3': null,
+    '4': null, '5': null, '6': null};
+    } else {
+      for (let idx=0; idx<pageNums.length; idx++) {
+        if ( !(pageNums[idx] in Object.keys(pages)) ) {
+          extras[typename][pageNums[idx]] = null;
+        }
+      }
+    }
+  });
+  console.log(extras);
+  return( {common_fields: fieldsConfig['common_fields'],
+           extras_by_type: extras}
+  )
+}
+
 export const RDMDepositForm = ({ config, files, record, permissions, preselectedCommunity}) => {
     config = config || {};
+    const [fieldsConfig, setFieldsConfig] = useState(
+      makeExtraFieldsConfig(config.fields_config || {})
+    );
     const [currentFormPage, setCurrentFormPage] = useState("1");
     const [currentValues, setCurrentValues] = useState({});
     const [currentErrors, setCurrentErrors] = useState({});
     const [pagesWithErrors, setPagesWithErrors] = useState([]);
     const [currentResourceType, setCurrentResourceType] = useState('textDocument-journalArticle');
-    const [currentTypeExtraFields, setCurrentTypeExtraFields] = useState(config.fields_config.extras_by_type[currentResourceType]);
+    const [currentTypeExtraFields, setCurrentTypeExtraFields] = useState(
+      fieldsConfig.extras_by_type[currentResourceType]
+    );
+    console.log(currentTypeExtraFields);
+    console.log("***************");
     const formPages = {
       '1': 'Title',
       '2': 'People',
@@ -539,7 +576,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                     link
                     onClick={handleFormPageChange}
                     value={pageNum}
-                    formnovalidate
+                    formNoValidate
                     className={`ui button upload-form-stepper-step page-${pageNum}
                      ${pagesWithErrors.includes(pageNum) ? "has-error" : ""}`}
                     // description='Choose your shipping options'
@@ -569,6 +606,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                         currentResourceType={currentResourceType}
                       >
                           {!!currentResourceType &&
+                           !!currentTypeExtraFields &&
                            !!currentTypeExtraFields[pageNum] ?
                            currentTypeExtraFields[pageNum]?.map((component_label, index) => {
                             const MyField = fieldComponents[component_label][0]
