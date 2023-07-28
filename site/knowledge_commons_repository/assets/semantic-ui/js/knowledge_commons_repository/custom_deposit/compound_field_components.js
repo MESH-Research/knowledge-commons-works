@@ -242,7 +242,11 @@ const SubmissionComponent = ({record, permissions}) => {
   const { values, setFieldValue } = useFormikContext();
   const [ confirmedNoFiles, setConfirmedNoFiles ] = useState(undefined);
 
-  const filterEmptyIdentifiers = () => {
+  const hasFiles = values.files.hasOwnProperty('entries');
+  const filesEnabled = !!(values.files.enabled);
+  const missingFiles = ( filesEnabled && !hasFiles );
+
+  const filterEmptyIdentifiers = async () => {
     if ( values.metadata.identifiers.length ) {
       let filteredIdentifiers = values.metadata.identifiers.reduce((newList, item) => {
         if (item.identifier!=="" && item.scheme!=="") newList.push(item);
@@ -252,26 +256,20 @@ const SubmissionComponent = ({record, permissions}) => {
     }
   }
 
-  const handleConfirmNoFiles = () => {
+  const handleConfirmNoFiles = async () => {
     setConfirmedNoFiles(true);
-    setFieldValue("files.enabled", false);
+    await setFieldValue("files.enabled", false);
   }
 
-  const setImplicitMetaOnly = () => {
-    if ( values.files.enabled && !values.files.hasOwnProperty('entries')) {
-      setFieldValue("files.enabled", false);
-    } else if ( !values.files.enabled && values.files.hasOwnProperty('entries')) {
-      setFieldValue("files.enabled", true);
-    }
+  const handleConfirmNeedsFiles = () => {
+    setConfirmedNoFiles(false);
   }
 
-  // FIXME: This is a cludge to handle the automatic assignment of
-  // the "url" scheme to the default empty URL identifier field
-  useEffect(() => {
-    filterEmptyIdentifiers();
-    // setImplicitMetaOnly();
-  }, []
-  );
+  const sanitizeDataForSaving = async () => {
+    // FIXME: This is a cludge to handle the automatic assignment of
+    // the "url" scheme to the default empty URL identifier field
+    await filterEmptyIdentifiers();
+  }
 
   return(
     <Overridable id="InvenioAppRdm.Deposit.CardDepositStatusBox.container">
@@ -282,8 +280,16 @@ const SubmissionComponent = ({record, permissions}) => {
               mobile={16}
               className="pb-0 left-btn-col"
             >
-              {}
-              <SaveButton fluid aria-describedby="submit-buttons-description" />
+              <SaveButton
+                fluid
+                aria-describedby="submit-buttons-description"
+                handleConfirmNeedsFiles={handleConfirmNeedsFiles}
+                handleConfirmNoFiles={handleConfirmNoFiles}
+                sanitizeDataForSaving={sanitizeDataForSaving}
+                hasFiles={hasFiles}
+                filesEnabled={filesEnabled}
+                missingFiles={missingFiles}
+              />
             </Grid.Column>
 
             <Grid.Column
