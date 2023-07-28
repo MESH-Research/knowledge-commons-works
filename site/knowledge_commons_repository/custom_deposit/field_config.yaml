@@ -13,6 +13,7 @@ common_fields:
     - ai
     - funding
   "3":
+    - language
     - subjects_keywords
     - content_warning
   "4":
@@ -29,61 +30,79 @@ common_fields:
     - submit_actions
 extras_by_type:
   audiovisual:
-    "1":
-    "2":
-    "3":
-      - language
-    "4":
-    "5":
-    "6":
+  audiovisual-audioRecording:
+  audiovisual-documentary:
+  audiovisual-interviewRecording:
+  audiovisual-musicalRecording:
+  audiovisual-other:
+  audiovisual-performance:
+  audiovisual-podcastEpisode:
+  audiovisual-videoRecording:
+  dataset:
+  image:
+  image-chart:
+  image-diagram:
+  image-figure:
+  image-map:
+  image-visualArt:
+  image-photograph:
+  image-other:
+  instructionalResource:
+  instructionalResource-curriculum:
+  instructionalResource-lessonPlan:
+  instructionalResource-other:
   instructionalResource-syllabus:
-    "1":
-    "2":
-    "3":
-      - language
-    "4":
-    "5":
-    "6":
-      - admin_metadata
-  other:
-    "1":
-    "2":
-    "3":
-      - language
-    "4":
-    "5":
-    "6":
+  presentation:
+  presentation-conferencePaper:
+  presentation-conferencePoster:
+  presentation-presentationText:
+  presentation-slides:
+  presentation-other:
+  software:
+  software-3DModel:
+  software-application:
+  software-computationalModel:
+  software-computationalNotebook:
+  software-service:
+  software-other:
+  textDocument:
+  textDocument-abstract:
+  textDocument-bibliography:
+  textDocument-blogPost:
   textDocument-book:
-    "1":
-    "2":
-    "3":
-      - language
     "4":
       - publication_detail
       - book_volume_pages
-    "5":
-    "6":
   textDocument-bookSection:
-    "1":
-    "2":
-    "3":
-      - language
-    "4":
-    "5":
-    "6":
+  textDocument-conferenceProceeding:
+  textDocument-dataManagementPlan:
+  textDocument-documentation:
+  textDocument-editorial:
+  textDocument-essay:
+  textDocument-interviewTranscript:
   textDocument-journalArticle:
-    "1":
-    "2":
-    "3":
-      - language
-    "4":
-    "5":
-    "6":
+  textDocument-legalComment:
+  textDocument-legalResponse:
+  textDocument-magazineArticle:
+  textDocument-monograph:
+  textDocument-newspaperArticle:
+  textDocument-onlinePublication:
+  textDocument-poeticWork:
+  textDocument-preprint:
+  textDocument-report:
   textDocument-review:
-    "1":
-    "2":
-    "3":
-      - language
-    "4":
-    "5":
-    "6":
+  textDocument-technicalStandard:
+  textDocument-thesis:
+  textDocument-whitePaper:
+  textDocument-workingPaper:
+  textDocument-other:
+  other:
+  other-catalog:
+  other-collection:
+  other-event:
+  other-interactiveResource:
+  other-notes:
+  other-patent:
+  other-peerReview:
+  other-physicalObject:
+  other-workflow:
