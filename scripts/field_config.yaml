@@ -18,7 +18,6 @@ common_fields:
     - content_warning
   "4":
     - alternate_identifiers
-    - series
     - related_works
   "5":
     - file_upload
@@ -73,7 +72,12 @@ extras_by_type:
     "4":
       - publication_detail
       - book_volume_pages
+      - series
   textDocument-bookSection:
+    "4":
+      - book_section_detail
+      - book_section_volume_pages
+      - series
   textDocument-conferenceProceeding:
   textDocument-dataManagementPlan:
   textDocument-documentation:
@@ -81,6 +85,8 @@ extras_by_type:
   textDocument-essay:
   textDocument-interviewTranscript:
   textDocument-journalArticle:
+    "4":
+      - journal_detail
   textDocument-legalComment:
   textDocument-legalResponse:
   textDocument-magazineArticle:
@@ -106,3 +112,13 @@ extras_by_type:
   other-peerReview:
   other-physicalObject:
   other-workflow:
+label_modifications:
+  textDocument-book:
+    title:
+      Book title
+  textDocument-journal:
+    title:
+      Article title
+  textDocument-bookSection:
+    title:
+      Chapter/section title

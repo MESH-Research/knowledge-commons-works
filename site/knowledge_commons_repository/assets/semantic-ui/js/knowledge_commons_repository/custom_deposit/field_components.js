@@ -78,6 +78,7 @@ const CustomFieldInjector = ({ sectionName, fieldName, idString, customFieldsUI,
   chosenFieldConfig.props = {...chosenFieldConfig.props, ...restArgs};
   const templateLoaders = [
     (widget) => import(`@templates/custom_fields/${widget}.js`),
+    (widget) => import(`@templates/custom_fields/${widget}.jsx`),
     (widget) =>
       import(`@js/invenio_rdm_records/src/deposit/customFields`),
     (widget) => import(`react-invenio-forms`),

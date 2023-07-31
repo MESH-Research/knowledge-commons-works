@@ -148,6 +148,19 @@ const BookDetailComponent = ({customFieldsUI}) => {
       <Form.Group>
           <CustomFieldInjector
           sectionName="Book / Report / Chapter"
+          fieldName="imprint:imprint.title"
+          idString="ImprintTitleField"
+          description=""
+          customFieldsUI={customFieldsUI}
+          />
+          <VersionComponent description=""
+          label="Book title"
+          icon=""
+          />
+      </Form.Group>
+      <Form.Group>
+          <CustomFieldInjector
+          sectionName="Book / Report / Chapter"
           fieldName="imprint:imprint.isbn"
           idString="ImprintISBNField"
           description=""
@@ -187,6 +200,44 @@ const BookDetailComponent = ({customFieldsUI}) => {
     </Segment>
 )}
 
+const BookSectionDetailComponent = ({customFieldsUI}) => {
+  return(
+    <Segment as="fieldset">
+      {/* <FieldLabel htmlFor={"imprint:imprint"}
+        icon={"book"}
+        label={"Book details"}
+      />
+      <Divider fitted /> */}
+      <Form.Group widths="equal">
+          <CustomFieldInjector
+          sectionName="Book / Report / Chapter"
+          fieldName="imprint:imprint.title"
+          idString="ImprintTitleField"
+          description=""
+          label="Book title"
+          icon="book"
+          customFieldsUI={customFieldsUI}
+          />
+      </Form.Group>
+      <Form.Group widths="equal">
+          <CustomFieldInjector
+          sectionName="Book / Report / Chapter"
+          fieldName="imprint:imprint.isbn"
+          idString="ImprintISBNField"
+          description=""
+          customFieldsUI={customFieldsUI}
+          />
+          <VersionComponent description=""
+          label="Edition or Version"
+          icon=""
+          />
+      </Form.Group>
+      <Form.Group widths="equal">
+            <PublisherComponent />
+            <PublicationLocationComponent customFieldsUI={customFieldsUI} />
+      </Form.Group>
+    </Segment>
+)}
 const BookVolumePagesComponent = ({customFieldsUI}) => {
     return(
       <Segment as="fieldset">
@@ -206,6 +257,36 @@ const BookVolumePagesComponent = ({customFieldsUI}) => {
     )
 }
 
+const BookSectionVolumePagesComponent = ({customFieldsUI}) => {
+    return(
+      <Segment as="fieldset">
+        <Form.Group widths="equal">
+          <CustomFieldInjector
+          sectionName="Journal"
+          fieldName="journal:journal.pages"
+          idString="JournalPagesField"
+          customFieldsUI={customFieldsUI}
+          description={""}
+          label="Section pages"
+          icon="file outline"
+          />
+          <CustomFieldInjector
+          sectionName="Book / Report / Chapter"
+          fieldName="imprint:imprint.pages"
+          idString="ImprintPagesField"
+          customFieldsUI={customFieldsUI}
+          description={""}
+          label="Total book pages"
+          icon="file outline"
+          />
+        </Form.Group>
+        <Form.Group widths="equal">
+          <VolumeComponent customFieldsUI={customFieldsUI} />
+        </Form.Group>
+      </Segment>
+    )
+}
+
 const CombinedTitlesComponent = ({vocabularies, record}) => {
   return(
     <Segment
@@ -216,6 +297,68 @@ const CombinedTitlesComponent = ({vocabularies, record}) => {
     </Segment>
   )
 }
+
+const JournalDetailComponent = ({customFieldsUI}) => {
+  return(
+    <Segment as="fieldset">
+      {/* <FieldLabel htmlFor={"imprint:imprint"}
+        icon={"book"}
+        label={"Book details"}
+      /> */}
+      <Form.Group widths="equal">
+          <CustomFieldInjector
+          sectionName="Journal"
+          fieldName="journal:journal.title"
+          idString="JournalTitleField"
+          label="Journal title"
+          icon="book"
+          description=""
+          customFieldsUI={customFieldsUI}
+          />
+          <CustomFieldInjector
+          sectionName="Journal"
+          fieldName="journal:journal.issn"
+          idString="JournalISSNField"
+          label="ISSN"
+          icon="barcode"
+          description=""
+          customFieldsUI={customFieldsUI}
+          />
+      </Form.Group>
+      <Form.Group widths="equal">
+          <CustomFieldInjector
+          sectionName="Journal"
+          fieldName="journal:journal.volume"
+          idString="JournalVolumeField"
+          label="Volume"
+          description=""
+          icon="zip"
+          customFieldsUI={customFieldsUI}
+          />
+          <CustomFieldInjector
+          sectionName="Journal"
+          fieldName="journal:journal.issue"
+          idString="JournalIssueField"
+          label="Issue"
+          description=""
+          customFieldsUI={customFieldsUI}
+          />
+          <CustomFieldInjector
+            sectionName="Journal"
+            fieldName="journal:journal.pages"
+            idString="JournalPagesField"
+            customFieldsUI={customFieldsUI}
+            description={""}
+            label="Pages"
+            icon="file outline"
+          />
+      </Form.Group>
+      <Form.Group widths="equal">
+            <PublisherComponent />
+            <PublicationLocationComponent customFieldsUI={customFieldsUI} />
+      </Form.Group>
+    </Segment>
+)}
 
 const TypeTitleComponent = ({vocabularies, record}) => {
   return(
@@ -269,20 +412,21 @@ const SubmissionComponent = ({record, permissions}) => {
     // FIXME: This is a cludge to handle the automatic assignment of
     // the "url" scheme to the default empty URL identifier field
     await filterEmptyIdentifiers();
+    if ( hasFiles && !filesEnabled ) {
+      await setFieldValue("files.enabled", true);
+    }
   }
 
   return(
     <Overridable id="InvenioAppRdm.Deposit.CardDepositStatusBox.container">
-          {/* <DepositStatusBox /> */}
         <Grid relaxed className="save-submit-buttons">
+          <Grid.Row>
             <Grid.Column
-              computer={8}
-              mobile={16}
-              className="pb-0 left-btn-col"
+              computer="8" tablet="6"
             >
               <SaveButton
                 fluid
-                aria-describedby="submit-buttons-description"
+                aria-describedby="save-button-description"
                 handleConfirmNeedsFiles={handleConfirmNeedsFiles}
                 handleConfirmNoFiles={handleConfirmNoFiles}
                 sanitizeDataForSaving={sanitizeDataForSaving}
@@ -291,22 +435,44 @@ const SubmissionComponent = ({record, permissions}) => {
                 missingFiles={missingFiles}
               />
             </Grid.Column>
-
+            <Grid.Column tablet="10" computer="8" id="save-button-description" className="helptext">
+              <p><b>Draft deposits</b> can be edited{permissions?.can_delete_draft && ", deleted,"} and the files can be added or changed.</p>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
             <Grid.Column
               computer={8}
-              mobile={16}
-              className="pb-0 right-btn-col"
+              tablet={6}
             >
-              <PreviewButton fluid aria-describedby="submit-buttons-description" />
+              <PreviewButton fluid aria-describedby="preview-button-description" />
             </Grid.Column>
+            <Grid.Column tablet="10" computer="8" id="preview-button-description" className="helptext">
 
-            <Grid.Column width={16} className="">
-              <PublishButton fluid aria-describedby="submit-buttons-description" />
             </Grid.Column>
-
-            <Grid.Column width={16}>
-              <DeleteComponent permissions={permissions} record={record} />
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column computer={8} tablet={6} className="">
+              <PublishButton fluid aria-describedby="publish-button-description"
+              size="massive" id="deposit-form-publish-button" />
             </Grid.Column>
+            <Grid.Column tablet="10" computer="8" id="publish-button-description" className="helptext">
+                <p><b>Published deposits</b> can still be edited, but you will no longer be able to {permissions?.can_delete_draft && "delete the deposit or "}change the attached files. To add or change files for a published deposit you must create a new version of the record.</p>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column computer={8} tablet={6}>
+              <DeleteComponent permissions={permissions} record={record}
+                aria-describedby="delete-button-description"
+                icon="trash alternate outline"
+              />
+            </Grid.Column>
+            <Grid.Column tablet="10" computer="8" id="delete-button-description" className="helptext">
+              <p>Deposits can only be <b>deleted while they are drafts</b>. Once you
+                 publish your deposit, you can only restrict access and/or
+                 create a new version.
+              </p>
+            </Grid.Column>
+          </Grid.Row>
           </Grid>
     </Overridable>
   )
@@ -342,7 +508,7 @@ const CombinedDatesComponent = ({ vocabularies }) => {
   )
 }
 
-const DeleteComponent = ({ permissions, record }) => {
+const DeleteComponent = ({ permissions, record, icon }) => {
   return(
     <>
     {permissions?.can_delete_draft && (
@@ -350,7 +516,7 @@ const DeleteComponent = ({ permissions, record }) => {
         id="InvenioAppRdm.Deposit.CardDeleteButton.container"
         record={record}
       >
-          <DeleteButton fluid />
+          <DeleteButton fluid icon />
       </Overridable>
     )}
     </>
@@ -366,17 +532,7 @@ const SubmitActionsComponent = ({permissions, record}) => {
         </Grid.Column>
       </Grid.Row>
       <Grid.Row className="submit-buttons-row">
-        <Grid.Column computer="8" tablet="6">
           <SubmissionComponent record={record} permissions={permissions} />
-        </Grid.Column>
-        <Grid.Column tablet="10" computer="8" id="submit-buttons-description" className="helptext">
-            <p>You must save the record as a draft first.</p>
-
-            <p><b>Draft deposits</b> can be edited{permissions?.can_delete_draft && ", deleted,"} and the files can be added or changed.</p>
-
-            <p><b>Published deposits</b> can still be edited, but you will no longer
-            be able to {permissions?.can_delete_draft && "delete the deposit or "}change the attached files. To add or change files for a published deposit you must create a new version of the record.</p>
-        </Grid.Column>
       </Grid.Row>
     </Grid>
   )
@@ -386,9 +542,12 @@ export {AccessRightsComponent,
         AdminMetadataComponent,
         BookDetailComponent,
         BookVolumePagesComponent,
+        BookSectionVolumePagesComponent,
+        BookSectionDetailComponent,
         CombinedDatesComponent,
         CombinedTitlesComponent,
         DeleteComponent,
+        JournalDetailComponent,
         PublicationDetailsComponent,
         SubjectKeywordsComponent,
         SubmissionComponent,

@@ -1,0 +1,142 @@
+{
+  "common_fields": {
+    "1": [
+      "previously_published",
+      "doi",
+      "resource_type",
+      "combined_titles",
+      "combined_dates",
+      "abstract"
+    ],
+    "2": [
+      "communities",
+      "creators",
+      "contributors",
+      "ai",
+      "funding"
+    ],
+    "3": [
+      "language",
+      "subjects_keywords",
+      "content_warning"
+    ],
+    "4": [
+      "alternate_identifiers",
+      "related_works"
+    ],
+    "5": [
+      "file_upload",
+      "metadata_only",
+      "licenses"
+    ],
+    "6": [
+      "admin_metadata"
+    ],
+    "7": [
+      "submit_actions"
+    ]
+  },
+  "extras_by_type": {
+    "audiovisual": null,
+    "audiovisual-audioRecording": null,
+    "audiovisual-documentary": null,
+    "audiovisual-interviewRecording": null,
+    "audiovisual-musicalRecording": null,
+    "audiovisual-other": null,
+    "audiovisual-performance": null,
+    "audiovisual-podcastEpisode": null,
+    "audiovisual-videoRecording": null,
+    "dataset": null,
+    "image": null,
+    "image-chart": null,
+    "image-diagram": null,
+    "image-figure": null,
+    "image-map": null,
+    "image-visualArt": null,
+    "image-photograph": null,
+    "image-other": null,
+    "instructionalResource": null,
+    "instructionalResource-curriculum": null,
+    "instructionalResource-lessonPlan": null,
+    "instructionalResource-other": null,
+    "instructionalResource-syllabus": null,
+    "presentation": null,
+    "presentation-conferencePaper": null,
+    "presentation-conferencePoster": null,
+    "presentation-presentationText": null,
+    "presentation-slides": null,
+    "presentation-other": null,
+    "software": null,
+    "software-3DModel": null,
+    "software-application": null,
+    "software-computationalModel": null,
+    "software-computationalNotebook": null,
+    "software-service": null,
+    "software-other": null,
+    "textDocument": null,
+    "textDocument-abstract": null,
+    "textDocument-bibliography": null,
+    "textDocument-blogPost": null,
+    "textDocument-book": {
+      "4": [
+        "publication_detail",
+        "book_volume_pages",
+        "series"
+      ]
+    },
+    "textDocument-bookSection": {
+      "4": [
+        "book_section_detail",
+        "book_section_volume_pages",
+        "series"
+      ]
+    },
+    "textDocument-conferenceProceeding": null,
+    "textDocument-dataManagementPlan": null,
+    "textDocument-documentation": null,
+    "textDocument-editorial": null,
+    "textDocument-essay": null,
+    "textDocument-interviewTranscript": null,
+    "textDocument-journalArticle": {
+      "4": [
+        "journal_detail"
+      ]
+    },
+    "textDocument-legalComment": null,
+    "textDocument-legalResponse": null,
+    "textDocument-magazineArticle": null,
+    "textDocument-monograph": null,
+    "textDocument-newspaperArticle": null,
+    "textDocument-onlinePublication": null,
+    "textDocument-poeticWork": null,
+    "textDocument-preprint": null,
+    "textDocument-report": null,
+    "textDocument-review": null,
+    "textDocument-technicalStandard": null,
+    "textDocument-thesis": null,
+    "textDocument-whitePaper": null,
+    "textDocument-workingPaper": null,
+    "textDocument-other": null,
+    "other": null,
+    "other-catalog": null,
+    "other-collection": null,
+    "other-event": null,
+    "other-interactiveResource": null,
+    "other-notes": null,
+    "other-patent": null,
+    "other-peerReview": null,
+    "other-physicalObject": null,
+    "other-workflow": null
+  },
+  "label_modifications": {
+    "textDocument-book": {
+      "title": "Book title"
+    },
+    "textDocument-journal": {
+      "title": "Article title"
+    },
+    "textDocument-bookSection": {
+      "title": "Chapter/section title"
+    }
+  }
+}

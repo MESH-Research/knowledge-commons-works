@@ -101,10 +101,13 @@ import { CustomFieldInjector,
 import {AccessRightsComponent,
         AdminMetadataComponent,
         BookDetailComponent,
+        BookSectionDetailComponent,
+        BookSectionVolumePagesComponent,
         BookVolumePagesComponent,
         CombinedDatesComponent,
         CombinedTitlesComponent,
         DeleteComponent,
+        JournalDetailComponent,
         PublicationDetailsComponent,
         SubjectKeywordsComponent,
         SubmissionComponent,
@@ -190,8 +193,15 @@ const fieldComponents = {
       []],
     book_detail: [BookDetailComponent,
       ['custom_fields.imprint:imprint.isbn', 'metadata.version',
-       'metadata.publisher', 'custom_fields.kcr:volume',
-       'custom_fields.imprint:imprint.pages', 'custom_fields.kcr:book_series']],
+       'metadata.publisher', 'custom_fields.imprint:imprint.place',
+       ]],
+    book_section_detail: [BookSectionDetailComponent,
+      ['custom_fields.imprint:imprint.title', 'custom_fields.imprint:imprint.isbn', 'metadata.version',
+       'metadata.publisher', 'custom_fields.imprint:imprint.place',
+       ]],
+    book_section_volume_pages: [BookSectionVolumePagesComponent,
+      ['custom_fields.journal:journal.pages', 'custom_fields.kcr:volume',
+       'custom_fields.imprint:imprint.pages']],
     book_volume_pages: [BookVolumePagesComponent,
       ['custom_fields.kcr:volume', 'custom_fields.imprint:imprint.pages']],
     combined_titles: [CombinedTitlesComponent,
@@ -200,6 +210,8 @@ const fieldComponents = {
       ['metadata.publication_date', 'metadata.dates']],
     delete: [DeleteComponent,
       []],
+    journal_detail: [JournalDetailComponent,
+      ['custom_fields.journal:journal.issn', 'custom_fields.journal:journal.title', 'custom_fields.journal:journal.volume', 'custom_fields.journal:journal.issue', 'custom_fields.journal:journal.pages']],
     publication_detail: [PublicationDetailsComponent,
       ['custom_fields.imprint:imprint.isbn', 'metadata.version',
        'metadata.publisher', 'custom_fields.imprint:imprint.place']],
@@ -326,40 +338,42 @@ const FormPage = ({ children, id, pageNums,
 }
 
 // Ensure there aren't any missing values in fields config
-const makeExtraFieldsConfig = (fieldsConfig) => {
-  let extras = fieldsConfig.extras_by_type;
-  const pageNums = ['1', '2', '3', '4', '5', '6'];
-  Object.entries(extras).forEach(([typename, pages]) => {
-    if ( pages===null || pages===undefined ) {
-      extras[typename] = {1: null, 2: null, 3: null,
-    4: null, 5: null, 6: null};
-    } else {
-      for (let idx=0; idx<pageNums.length; idx++) {
-        if ( !Object.keys(pages).includes(pageNums[idx]) ) {
-          console.log(`${pageNums[idx]} not in list`);
-          extras[typename][pageNums[idx]] = null;
-        }
-      }
-    }
-  });
-  return( {common_fields: fieldsConfig['common_fields'],
-           extras_by_type: extras}
-  )
+const makeExtraFieldsConfig = async () => {
+  let configResponse = await fetch('/static/config/field_config.json')
+      .then((response) => response.json())
+      .then((fieldsConfig) => {
+        console.log(fieldsConfig);
+        let extras = fieldsConfig.extras_by_type;
+        const pageNums = ['1', '2', '3', '4', '5', '6'];
+        Object.entries(extras).forEach(([typename, pages]) => {
+          if ( pages===null || pages===undefined ) {
+            extras[typename] = {1: null, 2: null, 3: null,
+          4: null, 5: null, 6: null};
+          } else {
+            for (let idx=0; idx<pageNums.length; idx++) {
+              if ( !Object.keys(pages).includes(pageNums[idx]) ) {
+                console.log(`${pageNums[idx]} not in list`);
+                extras[typename][pageNums[idx]] = null;
+              }
+            }
+          }
+        });
+        return( {common_fields: fieldsConfig['common_fields'],
+                extras_by_type: extras}
+        )
+      });
+  return configResponse
 }
 
 export const RDMDepositForm = ({ config, files, record, permissions, preselectedCommunity}) => {
-    config = config || {};
-    const [fieldsConfig, setFieldsConfig] = useState(
-      makeExtraFieldsConfig(config.fields_config || {})
-    );
+    const [fieldsConfig, setFieldsConfig] = useState(undefined);
+    const [configLoaded, setConfigLoaded] = useState(false);
     const [currentFormPage, setCurrentFormPage] = useState("1");
     const [currentValues, setCurrentValues] = useState({});
     const [currentErrors, setCurrentErrors] = useState({});
     const [pagesWithErrors, setPagesWithErrors] = useState([]);
     const [currentResourceType, setCurrentResourceType] = useState('textDocument-journalArticle');
-    const [currentTypeExtraFields, setCurrentTypeExtraFields] = useState(
-      fieldsConfig.extras_by_type[currentResourceType]
-    );
+    const [currentTypeExtraFields, setCurrentTypeExtraFields] = useState(undefined);
     const formPages = {
       1: 'Title',
       2: 'People',
@@ -370,6 +384,17 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       7: 'Submit',
     }
     const customFieldsUI = config.custom_fields.ui;
+
+    useEffect(() => {
+      makeExtraFieldsConfig()
+        .then((configResponse) => {
+          console.log(configResponse);
+          setFieldsConfig(configResponse);
+          setCurrentTypeExtraFields(configResponse.extras_by_type[currentResourceType]);
+        })
+        .then(() => setConfigLoaded(true));
+    },
+    []);
 
     const setFormPageInHistory = (value) => {
       if ( value === undefined ) {
@@ -474,7 +499,9 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       setCurrentValues(values);
       localStorage.setItem('depositFormValues', JSON.stringify(values));
       setCurrentResourceType(values.metadata.resource_type);
-      setCurrentTypeExtraFields(config.fields_config.extras_by_type[values.metadata.resource_type]);
+      if ( configLoaded ) {
+        setCurrentTypeExtraFields(fieldsConfig.extras_by_type[values.metadata.resource_type]);
+      }
     }
 
     function flattenKeysDotJoined(val) {
@@ -496,13 +523,13 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       return newArray;
     }
     const handleErrorsChange = (errors) => {
-      if ( errors !== {} ) {
+      if ( errors !== {} && configLoaded ) {
         setCurrentErrors(errors);
         let errorPages = [];
         // for each page...
         for ( let p of Object.keys(formPages) ) {
           // collect form widget slugs
-          let pageFields = config.fields_config.common_fields[p];
+          let pageFields = fieldsConfig.common_fields[p];
           if ( currentTypeExtraFields ) {
             if ( !!currentTypeExtraFields[p] ) {
               pageFields = pageFields.concat(currentTypeExtraFields[p]);
@@ -620,7 +647,8 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                             />)
                           }) : ""
                           }
-                          {config.fields_config.common_fields[pageNum].map((component_label, index) => {
+                          {configLoaded ?
+                          fieldsConfig.common_fields[pageNum].map((component_label, index) => {
                             const MyField = fieldComponents[component_label][0]
                             return (<MyField
                               key={index}
@@ -633,8 +661,8 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                               customFieldsUI={customFieldsUI}
                               currentResourceType={currentResourceType}
                             />)
+                          }) : ""
                           }
-                          )}
                       </FormPage>
                     </div>
                   )
