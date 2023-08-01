@@ -163,7 +163,7 @@ class CreatibutorsFieldForm extends Component {
                 <Button type="button" icon labelPosition="left"
                  id={`${fieldPath}.add-button`}
                  className="add-button"
-                 aria-labeledby={`${fieldPath}-field-description`}
+                 aria-labelledby={`${fieldPath}-field-description`}
                 //  ref={this.adderRef}
                 >
                   <Icon name="add" />
