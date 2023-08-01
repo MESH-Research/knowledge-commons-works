@@ -216,6 +216,21 @@
           font-weight: normal;
         }
 
+        &.subject-keywords-fields {
+          >.fields {
+            margin-bottom: 0.5rem;
+
+            label {
+              font-weight: normal;
+              margin-bottom: 0;
+            }
+          }
+          .helptext {
+            margin-bottom: 1rem;
+            font-weight: 0;
+          }
+        }
+
         &.rights-field {
           .list {
             .item:last-of-type {

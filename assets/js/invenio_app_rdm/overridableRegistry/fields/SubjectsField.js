@@ -8,7 +8,7 @@
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { FieldLabel, GroupField, RemoteSelectField } from "react-invenio-forms";
+import { FieldLabel, GroupField, Icon, Label, RemoteSelectField } from "react-invenio-forms";
 import { Form } from "semantic-ui-react";
 import { Field, getIn } from "formik";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
@@ -47,72 +47,86 @@ export class SubjectsField extends Component {
       placeholder,
       clearable,
       limitToOptions,
+      description
     } = this.props;
     return (
+      <>
       <GroupField className="main-group-field">
-        <Form.Field width={5} className="subjects-field">
+        <Form.Field className="subjects-field-inner"
+          width={16}
+        >
           <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
-          <GroupField>
-            <Form.Field
-              width={8}
+          <GroupField fluid>
+            {/* <Form.Field
+              width={4}
               style={{ marginBottom: "auto", marginTop: "auto" }}
-              className="p-0"
+              className=""
             >
               {i18next.t("Suggest from")}
-            </Form.Field>
+            </Form.Field> */}
             <Form.Dropdown
-              className="p-0"
               defaultValue={limitToOptions[0].value}
               fluid
               onChange={(event, data) => this.setState({ limitTo: data.value })}
               options={limitToOptions}
               selection
-              width={8}
+              width={6}
+              label={i18next.t('From classification system...')}
             />
+            <Field name={fieldPath}
+              width={10}
+            >
+              {({ form: { values } }) => {
+                return (
+                  <RemoteSelectField
+                    clearable={clearable}
+                    fieldPath={fieldPath}
+                    initialSuggestions={getIn(values, fieldPath, [])}
+                    multiple={multiple}
+                    noQueryMessage={i18next.t("Search subjects...")}
+                    placeholder={placeholder}
+                    preSearchChange={this.prepareSuggest}
+                    required={required}
+                    serializeSuggestions={this.serializeSubjects}
+                    serializeAddedValue={(value) => ({
+                      text: value,
+                      value: value,
+                      key: value,
+                      subject: value,
+                    })}
+                    suggestionAPIUrl="/api/subjects"
+                    onValueChange={({ formikProps }, selectedSuggestions) => {
+                      formikProps.form.setFieldValue(
+                        fieldPath,
+                        // save the suggestion objects so we can extract information
+                        // about which value added by the user
+                        selectedSuggestions
+                      );
+                    }}
+                    value={getIn(values, fieldPath, []).map((val) => val.subject)}
+                    label={
+                      <>
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                        <label className="mobile-hidden">&nbsp;</label>
+                      </>
+                    } /** For alignment purposes */
+                    allowAdditions={false}
+                    width={11}
+                    aria-labelledby={`${fieldPath}-helpt-text`}
+                  />
+                );
+              }}
+            </Field>
           </GroupField>
         </Form.Field>
-        <Field name={fieldPath}>
-          {({ form: { values } }) => {
-            return (
-              <RemoteSelectField
-                clearable={clearable}
-                fieldPath={fieldPath}
-                initialSuggestions={getIn(values, fieldPath, [])}
-                multiple={multiple}
-                noQueryMessage={i18next.t("Search or create subjects...")}
-                placeholder={placeholder}
-                preSearchChange={this.prepareSuggest}
-                required={required}
-                serializeSuggestions={this.serializeSubjects}
-                serializeAddedValue={(value) => ({
-                  text: value,
-                  value: value,
-                  key: value,
-                  subject: value,
-                })}
-                suggestionAPIUrl="/api/subjects"
-                onValueChange={({ formikProps }, selectedSuggestions) => {
-                  formikProps.form.setFieldValue(
-                    fieldPath,
-                    // save the suggestion objects so we can extract information
-                    // about which value added by the user
-                    selectedSuggestions
-                  );
-                }}
-                value={getIn(values, fieldPath, []).map((val) => val.subject)}
-                label={
-                  <>
-                    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                    <label className="mobile-hidden">&nbsp;</label>
-                  </>
-                } /** For alignment purposes */
-                allowAdditions
-                width={11}
-              />
-            );
-          }}
-        </Field>
       </GroupField>
+      <label htmlFor={`${fieldPath}`}
+        id={`${fieldPath}-helpt-text`}
+        className="helptext ui label"
+      >
+        {description}
+      </label>
+      </>
     );
   }
 }
@@ -126,6 +140,7 @@ SubjectsField.propTypes = {
   multiple: PropTypes.bool,
   clearable: PropTypes.bool,
   placeholder: PropTypes.string,
+  description: PropTypes.string,
 };
 
 SubjectsField.defaultProps = {
@@ -134,5 +149,6 @@ SubjectsField.defaultProps = {
   labelIcon: "tag",
   multiple: true,
   clearable: true,
-  placeholder: i18next.t("Search for a subject by name"),
+  placeholder: i18next.t("Search for a subject by name. (Press the 'enter' key to select)"),
+  description: undefined,
 };

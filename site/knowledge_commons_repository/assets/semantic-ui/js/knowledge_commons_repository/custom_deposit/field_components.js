@@ -748,6 +748,8 @@ const SubjectsComponent = ({record, vocabularies}) => {
         label="Subjects"
         initialOptions={_get(record, "ui.subjects", null)}
         limitToOptions={myLimitToOptions}
+        placeholder={i18next.t("Search for a subject by name (press 'enter' to select)")}
+        description={i18next.t("These standardized subject headings help people to find your materials!")}
       />
     </Overridable>
   )

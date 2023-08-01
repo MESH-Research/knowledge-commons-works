@@ -374,7 +374,7 @@ const TypeTitleComponent = ({vocabularies, record}) => {
 
 const SubjectKeywordsComponent = ({ record, vocabularies, customFieldsUI }) => {
   return(
-    <Segment as="fieldset">
+    <Segment as="fieldset" className="subject-keywords-fields">
       <SubjectsComponent record={record} vocabularies={vocabularies} />
       <KeywordsComponent customFieldsUI={customFieldsUI} />
     </Segment>
