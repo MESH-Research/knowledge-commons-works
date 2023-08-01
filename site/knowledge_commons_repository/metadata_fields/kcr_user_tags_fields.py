@@ -76,9 +76,9 @@ KCR_USER_TAGS_SECTION_UI = {
             # "template": "knowledge_commons_repository/user_defined_tags.html",
             "props": {
                 "label": _("Tags"),
-                "placeholder": _("Enter your tags here"),
+                "placeholder": _("Type your keywords here (press 'enter' to add each one)"),
                 "icon": "tags",
-                "description": "Tags for this deposit that do not appear in the subject terms.",
+                "description": "Words describing this material that do not appear in the subject terms above.",
             },
         }
     ],
