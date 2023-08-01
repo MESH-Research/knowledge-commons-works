@@ -14,7 +14,7 @@ import { i18next } from "@translations/invenio_rdm_records/i18next";
 
 export class PublisherField extends Component {
   render() {
-    const { fieldPath, label, labelIcon, placeholder, helpText } = this.props;
+    const { fieldPath, label, labelIcon, placeholder, helpText, required } = this.props;
 
     return (
       <TextField
@@ -22,6 +22,7 @@ export class PublisherField extends Component {
         helpText={i18next.t(helpText)}
         label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
         placeholder={placeholder}
+        required={required}
       />
     );
   }
@@ -38,4 +39,5 @@ PublisherField.defaultProps = {
   label: i18next.t("Publisher"),
   labelIcon: "building outline",
   placeholder: i18next.t("Publisher"),
+  required: true,
 };
