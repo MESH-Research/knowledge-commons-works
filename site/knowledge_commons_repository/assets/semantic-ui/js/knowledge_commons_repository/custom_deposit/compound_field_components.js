@@ -451,7 +451,15 @@ const SubmissionComponent = ({record, permissions}) => {
               computer={8}
               tablet={6}
             >
-              <PreviewButton fluid aria-describedby="preview-button-description" />
+              <PreviewButton fluid
+                aria-describedby="preview-button-description"
+                handleConfirmNeedsFiles={handleConfirmNeedsFiles}
+                handleConfirmNoFiles={handleConfirmNoFiles}
+                sanitizeDataForSaving={sanitizeDataForSaving}
+                hasFiles={hasFiles}
+                filesEnabled={filesEnabled}
+                missingFiles={missingFiles}
+              />
             </Grid.Column>
             <Grid.Column tablet="10" computer="8" id="preview-button-description" className="helptext">
 
