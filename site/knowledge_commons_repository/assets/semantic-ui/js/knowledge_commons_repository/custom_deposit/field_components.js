@@ -337,7 +337,7 @@ const ContributorsComponent = ({config, vocabularies}) => {
             editLabel: "Edit contributor",
           }}
           id="InvenioAppRdm.Deposit.ContributorsField.card"
-          description="Contributors play a secondary role in the production of this material (e.g., illustrators, research assistants, and in some cases editors or translators.)"
+          description="Contributors play a secondary role in the production of this material (e.g., illustrators, research assistants, and in some cases editors or translators)."
         />
       </Overridable>
     </Segment>
@@ -366,7 +366,7 @@ const CreatorsComponent = ({config, vocabularies}) => {
           autocompleteNames={config.autocomplete_names}
           required
           // id="InvenioAppRdm.Deposit.CreatorsField.card"
-          description="Creators are the primary producers of this material (e.g., authors, researchers, and in some cases editors or translators."
+          description="Creators are the primary producers of this material (e.g., authors, researchers, and in some cases editors or translators)."
         />
       </Overridable>
     </Segment>
