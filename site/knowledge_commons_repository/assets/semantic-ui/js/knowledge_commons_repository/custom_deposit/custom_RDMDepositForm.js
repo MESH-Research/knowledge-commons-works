@@ -284,8 +284,6 @@ const FormPage = ({ children, id, pageNums,
   );
 
   const handleButtonClick = (event, { value }) => {
-    console.log(validateField('metadata.title'));
-    console.log(validateForm);
     handleFormPageChange(event, { value });
   }
 
@@ -342,7 +340,6 @@ const makeExtraFieldsConfig = async () => {
   let configResponse = await fetch('/static/config/field_config.json')
       .then((response) => response.json())
       .then((fieldsConfig) => {
-        console.log(fieldsConfig);
         let extras = fieldsConfig.extras_by_type;
         const pageNums = ['1', '2', '3', '4', '5', '6'];
         Object.entries(extras).forEach(([typename, pages]) => {
@@ -352,7 +349,6 @@ const makeExtraFieldsConfig = async () => {
           } else {
             for (let idx=0; idx<pageNums.length; idx++) {
               if ( !Object.keys(pages).includes(pageNums[idx]) ) {
-                console.log(`${pageNums[idx]} not in list`);
                 extras[typename][pageNums[idx]] = null;
               }
             }
@@ -388,7 +384,6 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
     useEffect(() => {
       makeExtraFieldsConfig()
         .then((configResponse) => {
-          console.log(configResponse);
           setFieldsConfig(configResponse);
           setCurrentTypeExtraFields(configResponse.extras_by_type[currentResourceType]);
         })
