@@ -151,7 +151,7 @@ KCR_CONTENT_WARNING_FIELD_UI = {
     "props": {
         "label": _("Content warning"),
         "description": "Does this deposit contain any potentially difficult content you would like to flag for viewers?",
-        "icon": "warning sign"
+        "icon": "warning sign",
     },
     "icon": "warning sign"
 }

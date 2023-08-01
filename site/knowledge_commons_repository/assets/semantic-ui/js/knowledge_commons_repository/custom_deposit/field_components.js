@@ -292,6 +292,20 @@ const ContentWarningComponent = ({ customFieldsUI }) => {
         sectionName="Content warning"
         idString="ContentWarning"
         customFieldsUI={customFieldsUI}
+        editorConfig={{
+          removePlugins: [
+            "Image",
+            "ImageCaption",
+            "ImageStyle",
+            "ImageToolbar",
+            "ImageUpload",
+            "MediaEmbed",
+            "Table",
+            "TableToolbar",
+            "TableProperties",
+            "TableCellProperties",
+          ],
+        }}
       />
     </Segment>
   )
@@ -323,6 +337,7 @@ const ContributorsComponent = ({config, vocabularies}) => {
             editLabel: "Edit contributor",
           }}
           id="InvenioAppRdm.Deposit.ContributorsField.card"
+          description="Contributors play a secondary role in the production of this material (e.g., illustrators, research assistants, and in some cases editors or translators.)"
         />
       </Overridable>
     </Segment>
@@ -351,6 +366,7 @@ const CreatorsComponent = ({config, vocabularies}) => {
           autocompleteNames={config.autocomplete_names}
           required
           // id="InvenioAppRdm.Deposit.CreatorsField.card"
+          description="Creators are the primary producers of this material (e.g., authors, researchers, and in some cases editors or translators."
         />
       </Overridable>
     </Segment>
@@ -718,6 +734,8 @@ const SeriesComponent = ({ customFieldsUI }) => {
 }
 
 const SubjectsComponent = ({record, vocabularies}) => {
+  const myLimitToOptions = [...vocabularies.metadata.subjects.limit_to]
+  myLimitToOptions.reverse();
   return(
     <Overridable
       id="InvenioAppRdm.Deposit.SubjectsField.container"
@@ -729,7 +747,7 @@ const SubjectsComponent = ({record, vocabularies}) => {
         fieldPath="metadata.subjects"
         label="Subjects"
         initialOptions={_get(record, "ui.subjects", null)}
-        limitToOptions={vocabularies.metadata.subjects.limit_to}
+        limitToOptions={myLimitToOptions}
       />
     </Overridable>
   )
