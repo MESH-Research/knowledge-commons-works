@@ -14,6 +14,7 @@
 import React, { Component, createContext, createRef, forwardRef, Fragment,
                 useContext,
                 useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useStore } from "react-redux";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
@@ -383,9 +384,11 @@ const SubjectKeywordsComponent = ({ record, vocabularies, customFieldsUI }) => {
 
 const SubmissionComponent = ({record, permissions}) => {
   const { values, setFieldValue } = useFormikContext();
+  const { handleFormPageChange } = useContext(FormValuesContext);
   const [ confirmedNoFiles, setConfirmedNoFiles ] = useState(undefined);
+  const store = useStore();
 
-  const hasFiles = values.files.hasOwnProperty('entries');
+  const hasFiles = Object.keys(store.getState().files.entries).length > 0;
   const filesEnabled = !!(values.files.enabled);
   const missingFiles = ( filesEnabled && !hasFiles );
 
@@ -397,15 +400,19 @@ const SubmissionComponent = ({record, permissions}) => {
       }, []);
       setFieldValue("metadata.identifiers", filteredIdentifiers);
     }
+    return(values.metadata.identifiers);
   }
 
   const handleConfirmNoFiles = async () => {
-    setConfirmedNoFiles(true);
-    await setFieldValue("files.enabled", false);
+    if (!hasFiles) {
+      setConfirmedNoFiles(true);
+      await setFieldValue("files.enabled", false);
+    }
   }
 
   const handleConfirmNeedsFiles = () => {
     setConfirmedNoFiles(false);
+    handleFormPageChange(null, {value: '5'});
   }
 
   const sanitizeDataForSaving = async () => {

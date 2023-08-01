@@ -632,6 +632,7 @@ const PublisherComponent = ({}) => {
         fieldPath="metadata.publisher"
         description=""
         helpText=""
+        required="true"
       />
     </Overridable>
   )

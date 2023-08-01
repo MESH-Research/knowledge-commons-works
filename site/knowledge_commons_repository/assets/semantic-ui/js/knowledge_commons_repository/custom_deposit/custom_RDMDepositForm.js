@@ -248,7 +248,7 @@ function useIsInViewport(ref) {
 }
 
 const FormPage = ({ children, id, pageNums,
-                    currentFormPage, handleFormPageChange
+                    currentFormPage
                   }) => {
 
   const { values, errors, setFieldValue, initialValues,
@@ -257,7 +257,8 @@ const FormPage = ({ children, id, pageNums,
   // console.log(values);
   // console.log(errors);
   const { currentValues, handleValuesChange,
-          currentErrors, handleErrorsChange } = useContext(FormValuesContext);
+          currentErrors, handleErrorsChange,
+          handleFormPageChange } = useContext(FormValuesContext);
   const currentPageIndex = pageNums.indexOf(currentFormPage);
   const nextPageIndex = currentPageIndex + 1;
   const previousPageIndex = currentPageIndex - 1;
@@ -552,7 +553,8 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
     return (
       <FormValuesContext.Provider
         value={{ currentValues, handleValuesChange,
-                 currentErrors, handleErrorsChange }}
+                 currentErrors, handleErrorsChange,
+                 handleFormPageChange }}
       >
       <DepositFormApp
         config={config}
@@ -621,7 +623,6 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                         id={`InvenioAppRdm.Deposit.FormPage${pageNum}`}
                         pageNums={Object.keys(formPages)}
                         currentFormPage={pageNum}
-                        handleFormPageChange={handleFormPageChange}
                         currentResourceType={currentResourceType}
                       >
                           {!!currentResourceType &&

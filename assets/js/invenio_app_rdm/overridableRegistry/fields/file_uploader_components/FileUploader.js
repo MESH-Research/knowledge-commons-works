@@ -51,7 +51,7 @@ export const FileUploaderComponent = ({
   ...uiProps
 }) => {
   // We extract the working copy of the draft stored as `values` in formik
-  const { values: formikDraft } = useFormikContext();
+  const { values: formikDraft, setFieldValue } = useFormikContext();
   const filesEnabled = _get(formikDraft, "files.enabled", false);
   const [warningMsg, setWarningMsg] = useState();
 
@@ -137,7 +137,7 @@ export const FileUploaderComponent = ({
           </div>
         );
       } else {
-        uploadFiles(formikDraft, acceptedFiles);
+        wrappedUploadFiles(formikDraft, acceptedFiles);
       }
     },
     multiple: true,
@@ -153,6 +153,12 @@ export const FileUploaderComponent = ({
 
   const displayImportBtn =
     filesEnabled && isDraftRecord && hasParentRecord && !filesList.length;
+
+  const wrappedUploadFiles = (formikDraft, acceptedFiles) => {
+    formikDraft.files.enabled = true;
+    setFieldValue('files.enabled', true);
+    uploadFiles(formikDraft, acceptedFiles);
+  }
 
   return (
     <Overridable
@@ -241,7 +247,7 @@ export const FileUploaderComponent = ({
             decimalSizeDisplay={decimalSizeDisplay}
             {...uiProps}
           >
-            {filesEnabled && (
+            {( filesEnabled || isDraftRecord ) && (
               <Grid.Row className="pt-0 pb-0">
                 <FileUploaderArea
                   {...uiProps}

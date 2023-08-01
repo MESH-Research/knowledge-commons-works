@@ -42,6 +42,8 @@ export const saveDraftWithUrlUpdate = async (draft, draftsService) => {
 
 export const uploadFiles = (draft, files) => {
   return async (dispatch, _, config) => {
+    console.log('config');
+    console.log(config);
     let response;
     try {
       response = await saveDraftWithUrlUpdate(draft, config.service.drafts);
