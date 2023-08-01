@@ -100,6 +100,7 @@ class CreatibutorsFieldForm extends Component {
       autocompleteNames,
       addButtonLabel,
       id,
+      description,
     } = this.props;
 
     const creatibutorsList = getIn(values, fieldPath, []);
@@ -162,6 +163,7 @@ class CreatibutorsFieldForm extends Component {
                 <Button type="button" icon labelPosition="left"
                  id={`${fieldPath}.add-button`}
                  className="add-button"
+                 aria-labeledby={`${fieldPath}-field-description`}
                 //  ref={this.adderRef}
                 >
                   <Icon name="add" />
@@ -177,6 +179,7 @@ class CreatibutorsFieldForm extends Component {
               </Label>
             )}
           </List>
+          <span id={`${fieldPath}-field-description`} className="helptext">{description}</span>
         </Form.Field>
       // {/* </DndProvider> */}
       // </GlobalDndContext>
