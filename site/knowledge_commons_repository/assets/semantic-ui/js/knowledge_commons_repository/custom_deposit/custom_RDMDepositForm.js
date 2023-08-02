@@ -486,7 +486,9 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
 
     useLayoutEffect(() => {
       const newPageWrapper = document.getElementById(`InvenioAppRdm.Deposit.FormPage${currentFormPage}`);
-      const newFirstInput = newPageWrapper.querySelectorAll('button, input')[0];
+      // FIXME: workaround since file uploader has inaccessible first input
+      const targetIndex = currentFormPage==='5' ? 1 : 0;
+      const newFirstInput = newPageWrapper.querySelectorAll('button, input')[targetIndex];
       newFirstInput.focus();
     }, [currentFormPage]
     );
