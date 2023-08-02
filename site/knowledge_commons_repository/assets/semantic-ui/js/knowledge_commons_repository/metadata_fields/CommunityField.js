@@ -119,6 +119,7 @@ const CommunityFieldComponent = ({community=undefined,
                   className="close-btn"
                   icon
                   onClick={() => changeSelectedCommunity(null)}
+                  disabled={!showCommunitySelectionButton}
                 >
                   <Icon name="close" />
                 </Button>
