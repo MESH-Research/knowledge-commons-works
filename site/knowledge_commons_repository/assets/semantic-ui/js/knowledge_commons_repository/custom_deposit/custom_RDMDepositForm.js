@@ -212,6 +212,10 @@ const fieldComponents = {
       []],
     journal_detail: [JournalDetailComponent,
       ['custom_fields.journal:journal.issn', 'custom_fields.journal:journal.title', 'custom_fields.journal:journal.volume', 'custom_fields.journal:journal.issue', 'custom_fields.journal:journal.pages']],
+    organization_detail: [OrganizationDetailComponent,
+      ['custom_fields.kcr:sponsoring_institution',
+       'custom_fields.imprint:imprint.place']
+    ],
     publication_detail: [PublicationDetailsComponent,
       ['custom_fields.imprint:imprint.isbn', 'metadata.version',
        'metadata.publisher', 'custom_fields.imprint:imprint.place']],
