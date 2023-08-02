@@ -274,6 +274,30 @@ const BookTitleComponent = ({customFieldsUI}) => {
   )
 }
 
+const ChapterLabelComponent = ({customFieldsUI}) => {
+  return(
+    <CustomFieldInjector
+      sectionName="KCR Book information"
+      fieldName="kcr:chapter_label"
+      idString="ChapterLabelField"
+      customFieldsUI={customFieldsUI}
+      description={""}
+    />
+  )
+}
+
+const CommonsDomainComponent = ({customFieldsUI}) => {
+  return(
+    <CustomFieldInjector
+      sectionName="Commons admin info"
+      fieldName="kcr:commons_domain"
+      idString="CommonsDomainField"
+      customFieldsUI={customFieldsUI}
+      description={""}
+    />
+  )
+}
+
 const CommunitiesComponent = () => {
   return(
     <Segment as="fieldset" className="communities-field">
@@ -421,6 +445,18 @@ const DoiComponent = ({config, record}) => {
       </Overridable>
     </Segment>
 )}
+
+const EditionComponent = ({customFieldsUI}) => {
+  return(
+    <CustomFieldInjector
+      sectionName="KCR Book info"
+      fieldName="kcr:edition"
+      idString="EditionField"
+      customFieldsUI={customFieldsUI}
+      description={""}
+    />
+  )
+}
 
 const FilesUploadComponent = ({config, noFiles, record, permissions}) => {
   return(
@@ -734,6 +770,18 @@ const SeriesComponent = ({ customFieldsUI }) => {
 )
 }
 
+const SponsoringInstitutionComponent = ({customFieldsUI}) => {
+  return(
+    <CustomFieldInjector
+    sectionName="KCR Conference information"
+    fieldName="kcr:sponsoring_institution"
+    idString="SponsoringInstitutionField"
+    customFieldsUI={customFieldsUI}
+    description={""}
+  />
+  )
+}
+
 const SubjectsComponent = ({record, vocabularies}) => {
   const myLimitToOptions = [...vocabularies.metadata.subjects.limit_to]
   myLimitToOptions.reverse();
@@ -756,6 +804,29 @@ const SubjectsComponent = ({record, vocabularies}) => {
   )
 }
 
+const SubmitterEmailComponent = ({customFieldsUI}) => {
+  return (
+    <CustomFieldInjector
+    sectionName="Commons admin info"
+    fieldName="kcr:submitter_email"
+    idString="SubmitterEmailField"
+    customFieldsUI={customFieldsUI}
+    description={""}
+  />
+  )
+}
+
+const SubmitterUsernameComponent = ({customFieldsUI}) => {
+  return (
+    <CustomFieldInjector
+    sectionName="Commons admin info"
+    fieldName="kcr:submitter_username"
+    idString="SubmitterUsernameField"
+    customFieldsUI={customFieldsUI}
+    description={""}
+  />
+  )
+}
 const SubtitleComponent = () => {
   return(<></>)
 }
@@ -820,12 +891,15 @@ export { CustomFieldInjector,
          AIComponent,
          AlternateIdentifiersComponent,
          BookTitleComponent,
+         ChapterLabelComponent,
+         CommonsDomainComponent,
          CommunitiesComponent,
          ContentWarningComponent,
          ContributorsComponent,
          CreatorsComponent,
          DateComponent,
          DoiComponent,
+         EditionComponent,
          FilesUploadComponent,
          FundingComponent,
          KeywordsComponent,
@@ -838,7 +912,10 @@ export { CustomFieldInjector,
          ReferencesComponent,
          RelatedWorksComponent,
          ResourceTypeComponent,
+         SponsoringInstitutionComponent,
          SubjectsComponent,
+         SubmitterEmailComponent,
+         SubmitterUsernameComponent,
          SubtitleComponent,
          TitleComponent,
          TotalPagesComponent,

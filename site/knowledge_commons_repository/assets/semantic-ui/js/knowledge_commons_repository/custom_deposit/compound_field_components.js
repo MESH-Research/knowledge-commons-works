@@ -90,7 +90,8 @@ import { CustomFieldInjector,
          TotalPagesComponent,
          SeriesComponent,
          VolumeComponent,
-         VersionComponent
+         VersionComponent,
+         SponsoringInstitutionComponent
           } from "./field_components";
 import { useFormikContext } from "formik";
 import { FormValuesContext } from "./custom_RDMDepositForm";
@@ -372,6 +373,15 @@ const TypeTitleComponent = ({vocabularies, record}) => {
   )
 };
 
+const OrganizationDetailsComponent = () => {
+  return(
+    <Segment as="fieldset" className="organization-details-fields">
+      <SponsoringInstitutionComponent customFieldsUI={customFieldsUI} />
+      <PublicationLocationComponent customFieldsUI={customFieldsUI} />
+    </Segment>
+  )
+}
+
 const SubjectKeywordsComponent = ({ record, vocabularies, customFieldsUI }) => {
   return(
     <Segment as="fieldset" className="subject-keywords-fields">
@@ -572,6 +582,7 @@ export {AccessRightsComponent,
         CombinedTitlesComponent,
         DeleteComponent,
         JournalDetailComponent,
+        OrganizationDetailsComponent,
         PublicationDetailsComponent,
         SubjectKeywordsComponent,
         SubmissionComponent,
