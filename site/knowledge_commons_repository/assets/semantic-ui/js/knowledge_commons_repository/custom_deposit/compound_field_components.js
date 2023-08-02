@@ -29,7 +29,6 @@ import {
   FileUploader,
   FormFeedback,
   IdentifiersField,
-  PreviewButton,
   LanguagesField,
   LicenseField,
   PublicationDateField,
@@ -52,6 +51,8 @@ import {
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 import { SaveButton } from "../components/SaveButton";
+import { PreviewButton } from "../components/PreviewButton";
+import { NoFilesModal } from "../components/NoFilesModal";
 import ResourceTypeSelectorField from "../metadata_fields/ResourceTypeSelectorField";
 import { PIDField } from "../metadata_fields/PIDField";
 import { DatesField } from "../metadata_fields/DatesField";
@@ -427,18 +428,18 @@ const SubmissionComponent = ({record, permissions}) => {
   return(
     <Overridable id="InvenioAppRdm.Deposit.CardDepositStatusBox.container">
         <Grid relaxed className="save-submit-buttons">
+
           <Grid.Row>
             <Grid.Column
               computer="8" tablet="6"
             >
-              <SaveButton
+              <NoFilesModal
                 fluid
+                actionName="saveDraft"
                 aria-describedby="save-button-description"
                 handleConfirmNeedsFiles={handleConfirmNeedsFiles}
                 handleConfirmNoFiles={handleConfirmNoFiles}
                 sanitizeDataForSaving={sanitizeDataForSaving}
-                hasFiles={hasFiles}
-                filesEnabled={filesEnabled}
                 missingFiles={missingFiles}
               />
             </Grid.Column>
@@ -446,18 +447,18 @@ const SubmissionComponent = ({record, permissions}) => {
               <p><b>Draft deposits</b> can be edited{permissions?.can_delete_draft && ", deleted,"} and the files can be added or changed.</p>
             </Grid.Column>
           </Grid.Row>
+
           <Grid.Row>
             <Grid.Column
               computer={8}
               tablet={6}
             >
-              <PreviewButton fluid
+              <NoFilesModal fluid
+                actionName="preview"
                 aria-describedby="preview-button-description"
                 handleConfirmNeedsFiles={handleConfirmNeedsFiles}
                 handleConfirmNoFiles={handleConfirmNoFiles}
                 sanitizeDataForSaving={sanitizeDataForSaving}
-                hasFiles={hasFiles}
-                filesEnabled={filesEnabled}
                 missingFiles={missingFiles}
               />
             </Grid.Column>
@@ -465,6 +466,7 @@ const SubmissionComponent = ({record, permissions}) => {
 
             </Grid.Column>
           </Grid.Row>
+
           <Grid.Row>
             <Grid.Column computer={8} tablet={6} className="">
               <PublishButton fluid aria-describedby="publish-button-description"
