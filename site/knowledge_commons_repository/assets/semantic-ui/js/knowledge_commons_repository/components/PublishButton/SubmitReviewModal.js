@@ -23,7 +23,7 @@ export class SubmitReviewModal extends Component {
   componentDidMount() {
     // A11y: Focus the first input field in the form
     const firstFormFieldWrap = document.getElementById("accept-access-checkbox");
-    const checkboxElem = firstFormFieldWrap.querySelector("input");
+    const checkboxElem = firstFormFieldWrap?.querySelector("input");
     checkboxElem?.focus();
   }
 
@@ -185,7 +185,7 @@ export class SubmitReviewModal extends Component {
                   loading={loading}
                   disabled={loading}
                 >
-                  {i18next.t("Cancel")}
+                  <Icon name='remove' /> {i18next.t("Cancel")}
                 </Button>
                 <Button
                   name="submitReview"
@@ -196,8 +196,9 @@ export class SubmitReviewModal extends Component {
                   disabled={loading}
                   positive={directPublish}
                   primary={!directPublish}
-                  content={submitBtnLbl}
-                />
+                >
+                  <Icon name='checkmark' /> {submitBtnLbl}
+                </Button>
               </Modal.Actions>
             </Modal>
           );

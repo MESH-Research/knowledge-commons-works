@@ -50,9 +50,7 @@ import {
 } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
-import { SaveButton } from "../components/SaveButton";
-import { PreviewButton } from "../components/PreviewButton";
-import { NoFilesModal } from "../components/NoFilesModal";
+import { SubmitButtonModal } from "../components/PublishButton/SubmitButton";
 import ResourceTypeSelectorField from "../metadata_fields/ResourceTypeSelectorField";
 import { PIDField } from "../metadata_fields/PIDField";
 import { DatesField } from "../metadata_fields/DatesField";
@@ -433,7 +431,7 @@ const SubmissionComponent = ({record, permissions}) => {
             <Grid.Column
               computer="8" tablet="6"
             >
-              <NoFilesModal
+              <SubmitButtonModal
                 fluid
                 actionName="saveDraft"
                 aria-describedby="save-button-description"
@@ -453,7 +451,7 @@ const SubmissionComponent = ({record, permissions}) => {
               computer={8}
               tablet={6}
             >
-              <NoFilesModal fluid
+              <SubmitButtonModal fluid
                 actionName="preview"
                 aria-describedby="preview-button-description"
                 handleConfirmNeedsFiles={handleConfirmNeedsFiles}
@@ -469,8 +467,17 @@ const SubmissionComponent = ({record, permissions}) => {
 
           <Grid.Row>
             <Grid.Column computer={8} tablet={6} className="">
-              <PublishButton fluid aria-describedby="publish-button-description"
-              size="massive" id="deposit-form-publish-button" />
+              <SubmitButtonModal fluid
+                actionName="publish"
+                handleConfirmNeedsFiles={handleConfirmNeedsFiles}
+                handleConfirmNoFiles={handleConfirmNoFiles}
+                sanitizeDataForSaving={sanitizeDataForSaving}
+                missingFiles={missingFiles}
+                aria-describedby="publish-button-description"
+                size="massive"
+                id="deposit-form-publish-button"
+                positive
+              />
             </Grid.Column>
             <Grid.Column tablet="10" computer="8" id="publish-button-description" className="helptext">
                 <p><b>Published deposits</b> can still be edited, but you will no longer be able to {permissions?.can_delete_draft && "delete the deposit or "}change the attached files. To add or change files for a published deposit you must create a new version of the record.</p>
@@ -533,7 +540,7 @@ const DeleteComponent = ({ permissions, record, icon }) => {
         id="InvenioAppRdm.Deposit.CardDeleteButton.container"
         record={record}
       >
-          <DeleteButton fluid icon />
+          <DeleteButton fluid icon={icon} />
       </Overridable>
     )}
     </>
