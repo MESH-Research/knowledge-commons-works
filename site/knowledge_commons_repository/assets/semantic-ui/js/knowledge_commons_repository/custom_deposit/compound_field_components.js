@@ -373,7 +373,7 @@ const TypeTitleComponent = ({vocabularies, record}) => {
   )
 };
 
-const OrganizationDetailsComponent = () => {
+const OrganizationDetailsComponent = ({customFieldsUI}) => {
   return(
     <Segment as="fieldset" className="organization-details-fields">
       <SponsoringInstitutionComponent customFieldsUI={customFieldsUI} />

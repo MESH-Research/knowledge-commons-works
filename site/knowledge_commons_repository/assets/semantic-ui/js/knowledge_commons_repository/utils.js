@@ -20,7 +20,7 @@ function moveToArrayStart(startingArray, moveTargets, keyLabel) {
 
 function pushToArrayEnd(startingArray, targetValue, keyLabel) {
   let newArray = [...startingArray];
-  newArray.push(...newArray.splice(newArray.findIndex((item) => item[keyLabel]===target), 1));
+  newArray.push(...newArray.splice(newArray.findIndex((item) => item[keyLabel]===targetValue), 1));
   return newArray;
 }
 
