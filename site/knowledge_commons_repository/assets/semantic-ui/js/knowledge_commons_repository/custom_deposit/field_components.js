@@ -55,6 +55,7 @@ import { CommunityField } from "../metadata_fields/CommunityField";
 import ResourceTypeSelectorField from "../metadata_fields/ResourceTypeSelectorField";
 import { PIDField } from "../metadata_fields/PIDField";
 import { DatesField } from "../metadata_fields/DatesField";
+import { moveToArrayStart } from "../utils";
 // import { HTML5Backend } from "react-dnd-html5-backend";
 // import { DndProvider } from "react-dnd";
 
@@ -783,8 +784,12 @@ const SponsoringInstitutionComponent = ({customFieldsUI}) => {
 }
 
 const SubjectsComponent = ({record, vocabularies}) => {
-  const myLimitToOptions = [...vocabularies.metadata.subjects.limit_to]
+  let myLimitToOptions = [...vocabularies.metadata.subjects.limit_to]
+  console.log(myLimitToOptions);
   myLimitToOptions.reverse();
+  console.log(myLimitToOptions);
+  myLimitToOptions = moveToArrayStart(myLimitToOptions, ["FOS", "FAST-topical", "all"], "value");
+  console.log(myLimitToOptions);
   return(
     <Overridable
       id="InvenioAppRdm.Deposit.SubjectsField.container"
