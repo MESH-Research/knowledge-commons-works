@@ -318,7 +318,7 @@
     "textDocument-interviewTranscript": {
       "metadata.title": "Interview title"
     },
-    "textDocument-journal": {
+    "textDocument-journalArticle": {
       "metadata.title": "Article title"
     },
     "textDocument-legalComment": {
