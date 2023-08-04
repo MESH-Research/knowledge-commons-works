@@ -346,6 +346,7 @@ const makeExtraFieldsConfig = async () => {
   let configResponse = await fetch('/static/config/field_config.json')
       .then((response) => response.json())
       .then((fieldsConfig) => {
+
         let extras = fieldsConfig.extras_by_type;
         const pageNums = ['1', '2', '3', '4', '5', '6'];
         Object.entries(extras).forEach(([typename, pages]) => {
@@ -360,8 +361,9 @@ const makeExtraFieldsConfig = async () => {
             }
           }
         });
-        return( {common_fields: fieldsConfig['common_fields'],
-                extras_by_type: extras}
+        return( {common_fields: fieldsConfig.common_fields,
+                 extras_by_type: extras,
+                 label_modifications: fieldsConfig.label_modifications}
         )
       });
   return configResponse
@@ -646,6 +648,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                               permissions={permissions}
                               // accordionStyle={accordionStyle}
                               customFieldsUI={customFieldsUI}
+                              labelMods={fieldsConfig.label_modifications[currentResourceType]}
                               currentResourceType={currentResourceType}
                             />)
                           }) : ""
@@ -662,6 +665,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
                               permissions={permissions}
                               // accordionStyle={accordionStyle}
                               customFieldsUI={customFieldsUI}
+                              labelMods={fieldsConfig.label_modifications[currentResourceType]}
                               currentResourceType={currentResourceType}
                             />)
                           }) : ""

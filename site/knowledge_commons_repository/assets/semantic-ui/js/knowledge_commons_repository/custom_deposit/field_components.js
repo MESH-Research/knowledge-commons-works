@@ -836,8 +836,11 @@ const SubtitleComponent = () => {
   return(<></>)
 }
 
-const TitleComponent = ({vocabularies, record}) => {
+const TitleComponent = ({vocabularies, record, labelMods}) => {
   const required = true;
+  console.log(labelMods);
+  const moddedLabel = labelMods ? labelMods['metadata.title'] : "Title";
+  console.log(moddedLabel);
   return(
     <Overridable
       id="InvenioAppRdm.Deposit.TitlesField.container"
@@ -849,7 +852,7 @@ const TitleComponent = ({vocabularies, record}) => {
         options={vocabularies.metadata.titles}
         fieldPath="metadata.title"
         recordUI={record.ui}
-        label={"Title"}
+        label={ moddedLabel }
         required={required}
       />
     </Overridable>
