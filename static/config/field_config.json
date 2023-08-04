@@ -174,14 +174,227 @@
     "other-workflow": null
   },
   "label_modifications": {
-    "textDocument-book": {
-      "title": "Book title"
+    "audiovisual": {
+      "metadata.title": null
     },
-    "textDocument-journal": {
-      "title": "Article title"
+    "audiovisual-audioRecording": {
+      "metadata.title": "Recording title"
+    },
+    "audiovisual-documentary": {
+      "metadata.title": "Documentary title"
+    },
+    "audiovisual-interviewRecording": {
+      "metadata.title": "Interview title"
+    },
+    "audiovisual-musicalRecording": {
+      "metadata.title": "Recording title"
+    },
+    "audiovisual-other": {
+      "metadata.title": null
+    },
+    "audiovisual-performance": {
+      "metadata.title": "Performance title"
+    },
+    "audiovisual-podcastEpisode": {
+      "metadata.title": "Episode title"
+    },
+    "audiovisual-videoRecording": {
+      "metadata.title": "Recording title"
+    },
+    "dataset": {
+      "metadata.title": "Dataset title"
+    },
+    "image": {
+      "metadata.title": "Image title"
+    },
+    "image-chart": {
+      "metadata.title": "Chart title"
+    },
+    "image-diagram": {
+      "metadata.title": "Diagram title"
+    },
+    "image-figure": {
+      "metadata.title": "Figure title"
+    },
+    "image-map": {
+      "metadata.title": "Map title"
+    },
+    "image-visualArt": {
+      "metadata.title": "Artwork title"
+    },
+    "image-photograph": {
+      "metadata.title": "Photograph title"
+    },
+    "image-other": {
+      "metadata.title": "Image title"
+    },
+    "instructionalResource": {
+      "metadata.title": "Resource title"
+    },
+    "instructionalResource-curriculum": {
+      "metadata.title": "Curriculum title"
+    },
+    "instructionalResource-lessonPlan": {
+      "metadata.title": "Lesson plan title"
+    },
+    "instructionalResource-other": {
+      "metadata.title": "Resource title"
+    },
+    "instructionalResource-syllabus": {
+      "metadata.title": "Syllabus title"
+    },
+    "presentation": {
+      "metadata.title": "Presentation title"
+    },
+    "presentation-conferencePaper": {
+      "metadata.title": "Paper title"
+    },
+    "presentation-conferencePoster": {
+      "metadata.title": "Poster title"
+    },
+    "presentation-presentationText": {
+      "metadata.title": "Presentation title"
+    },
+    "presentation-slides": {
+      "metadata.title": "Presentation title"
+    },
+    "presentation-other": {
+      "metadata.title": "Presentation title"
+    },
+    "software": {
+      "metadata.title": "Software name"
+    },
+    "software-3DModel": {
+      "metadata.title": "Model title"
+    },
+    "software-application": {
+      "metadata.title": "Application name"
+    },
+    "software-computationalModel": {
+      "metadata.title": "Model title"
+    },
+    "software-computationalNotebook": {
+      "metadata.title": "Notebook name"
+    },
+    "software-service": {
+      "metadata.title": "Service name"
+    },
+    "software-other": {
+      "metadata.title": "Software name"
+    },
+    "textDocument": {
+      "metadata.title": "Document title"
+    },
+    "textDocument-abstract": {
+      "metadata.title": "Abstract title"
+    },
+    "textDocument-bibliography": {
+      "metadata.title": "Bibliography title"
+    },
+    "textDocument-blogPost": {
+      "metadata.title": "Post title"
+    },
+    "textDocument-book": {
+      "metadata.title": "Book title"
     },
     "textDocument-bookSection": {
-      "title": "Chapter/section title"
+      "metadata.title": "Chapter/section title"
+    },
+    "textDocument-conferenceProceeding": {
+      "metadata.title": null
+    },
+    "textDocument-dataManagementPlan": {
+      "metadata.title": "Plan title"
+    },
+    "textDocument-documentation": {
+      "metadata.title": "Documentation title"
+    },
+    "textDocument-editorial": {
+      "metadata.title": "Editorial title"
+    },
+    "textDocument-essay": {
+      "metadata.title": "Essay title"
+    },
+    "textDocument-interviewTranscript": {
+      "metadata.title": "Interview title"
+    },
+    "textDocument-journal": {
+      "metadata.title": "Article title"
+    },
+    "textDocument-legalComment": {
+      "metadata.title": "Comment title"
+    },
+    "textDocument-legalResponse": {
+      "metadata.title": "Response title"
+    },
+    "textDocument-magazineArticle": {
+      "metadata.title": "Article title"
+    },
+    "textDocument-monograph": {
+      "metadata.title": "Monograph title"
+    },
+    "textDocument-newspaperArticle": {
+      "metadata.title": "Article title"
+    },
+    "textDocument-onlinePublication": {
+      "metadata.title": null
+    },
+    "textDocument-poeticWork": {
+      "metadata.title": "Poem title"
+    },
+    "textDocument-preprint": {
+      "metadata.title": "Preprint title"
+    },
+    "textDocument-report":{
+      "metadata.title": "Report title"
+    },
+    "textDocument-review":{
+      "metadata.title": "Review title"
+    },
+    "textDocument-technicalStandard": {
+      "metadata.title": "Standard title"
+    },
+    "textDocument-thesis": {
+      "metadata.title": "Thesis/dissertation title"
+    },
+    "textDocument-whitePaper":{
+      "metadata.title": "White paper title"
+    },
+    "textDocument-workingPaper":{
+      "metadata.title": "Working paper title"
+    },
+    "textDocument-other": {
+      "metadata.title": "Document title"
+    },
+    "other": {
+      "metadata.title": null
+    },
+    "other-catalog": {
+      "metadata.title": "Catalog title"
+    },
+    "other-collection": {
+      "metadata.title": "Collection title"
+    },
+    "other-event": {
+      "metadata.title": "Event title"
+    },
+    "other-interactiveResource": {
+      "metadata.title": "Resource title"
+    },
+    "other-notes": {
+      "metadata.title": null
+    },
+    "other-patent": {
+      "metadata.title": "Patent title"
+    },
+    "other-peerReview": {
+      "metadata.title": "Review title"
+    },
+    "other-physicalObject": {
+      "metadata.title": "Object title"
+    },
+    "other-workflow":{
+      "metadata.title": "Workflow title"
     }
   }
 }
