@@ -288,13 +288,13 @@ const BookSectionVolumePagesComponent = ({customFieldsUI}) => {
     )
 }
 
-const CombinedTitlesComponent = ({vocabularies, record}) => {
+const CombinedTitlesComponent = ({vocabularies, record, labelMods}) => {
   return(
     <Segment
       id={'InvenioAppRdm.Deposit.CombinedTitlesComponent.container'}
       as="fieldset"
     >
-      <TitleComponent vocabularies={vocabularies} record={record} />
+      <TitleComponent vocabularies={vocabularies} record={record} labelMods={labelMods} />
     </Segment>
   )
 }
@@ -361,14 +361,14 @@ const JournalDetailComponent = ({customFieldsUI}) => {
     </Segment>
 )}
 
-const TypeTitleComponent = ({vocabularies, record}) => {
+const TypeTitleComponent = ({vocabularies, record, labelMods}) => {
   return(
     <Segment
       id={'InvenioAppRdm.Deposit.TypeTitleComponent.container'}
       as="fieldset"
     >
-      <TitleComponent vocabularies={vocabularies} record={record} />
-      <ResourceTypeComponent vocabularies={vocabularies} />
+      <TitleComponent vocabularies={vocabularies} record={record} labelMods={labelMods} />
+      <ResourceTypeComponent vocabularies={vocabularies} labelMods={labelMods} />
     </Segment>
   )
 };
