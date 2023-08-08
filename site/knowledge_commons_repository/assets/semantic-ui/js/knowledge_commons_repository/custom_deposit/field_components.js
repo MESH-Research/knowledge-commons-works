@@ -275,14 +275,18 @@ const BookTitleComponent = ({customFieldsUI}) => {
   )
 }
 
-const ChapterLabelComponent = ({customFieldsUI}) => {
+const ChapterLabelComponent = ({customFieldsUI, labelMods}) => {
+  const moddedLabel = (labelMods && labelMods['custom_fields.kcr:chapter_label'] )
+    ? labelMods['custom_fields.kcr:chapter_label'] : "Chapter number/label";
   return(
     <CustomFieldInjector
       sectionName="KCR Book information"
       fieldName="kcr:chapter_label"
       idString="ChapterLabelField"
       customFieldsUI={customFieldsUI}
+      label={moddedLabel}
       description={""}
+      icon="tag"
     />
   )
 }
@@ -578,6 +582,36 @@ const FundingComponent = ({}) => {
   )
 }
 
+const JournalTitleComponent = ({customFieldsUI, labelMods}) => {
+  const moddedLabel = (labelMods && labelMods['custom_fields.journal:journal.title'] )
+    ? labelMods['custom_fields.journal:journal.title'] : "Journal title";
+  return(
+    <CustomFieldInjector
+      sectionName="Journal"
+      fieldName="journal:journal.title"
+      idString="JournalTitleField"
+      label={moddedLabel}
+      icon="book"
+      description=""
+      customFieldsUI={customFieldsUI}
+    />
+  )
+}
+
+const JournalISSNComponent = ({customFieldsUI, labelMods}) => {
+  return(
+    <CustomFieldInjector
+      sectionName="Journal"
+      fieldName="journal:journal.issn"
+      idString="JournalISSNField"
+      label="ISSN"
+      icon="barcode"
+      description=""
+      customFieldsUI={customFieldsUI}
+    />
+  )
+}
+
 const KeywordsComponent = ({ customFieldsUI }) => {
   return(
     <CustomFieldInjector
@@ -653,6 +687,22 @@ const LicensesComponent = () => {
 
 const MetadataOnlyComponent = () => {
   return(<></>)
+}
+
+const PagesComponent = ({ customFieldsUI, labelMods }) => {
+  const moddedLabel = (labelMods && labelMods['custom_fields.journal:journal.pages'])
+    ? labelMods['custom_fields.journal:journal.pages'] : "Section pages";
+  return(
+    <CustomFieldInjector
+      sectionName="Journal"
+      fieldName="journal:journal.pages"
+      idString="JournalPagesField"
+      customFieldsUI={customFieldsUI}
+      description={""}
+      label={moddedLabel}
+      icon="file outline"
+    />
+  )
 }
 
 const PreviouslyPublishedComponent = () => {
@@ -785,11 +835,8 @@ const SponsoringInstitutionComponent = ({customFieldsUI}) => {
 
 const SubjectsComponent = ({record, vocabularies}) => {
   let myLimitToOptions = [...vocabularies.metadata.subjects.limit_to]
-  console.log(myLimitToOptions);
   myLimitToOptions.reverse();
-  console.log(myLimitToOptions);
   myLimitToOptions = moveToArrayStart(myLimitToOptions, ["FOS", "FAST-topical", "all"], "value");
-  console.log(myLimitToOptions);
   return(
     <Overridable
       id="InvenioAppRdm.Deposit.SubjectsField.container"
@@ -838,9 +885,7 @@ const SubtitleComponent = () => {
 
 const TitleComponent = ({vocabularies, record, labelMods}) => {
   const required = true;
-  console.log(labelMods);
-  const moddedLabel = labelMods ? labelMods['metadata.title'] : "Title";
-  console.log(moddedLabel);
+  const moddedLabel = (labelMods && labelMods['metadata.title']) ? labelMods['metadata.title'] : "Title";
   return(
     <Overridable
       id="InvenioAppRdm.Deposit.TitlesField.container"
@@ -859,8 +904,31 @@ const TitleComponent = ({vocabularies, record, labelMods}) => {
 )
 }
 
-const TotalPagesComponent = () => {
-  return(<></>)
+const TotalPagesComponent = ({ customFieldsUI, labelMods }) => {
+  const moddedLabel = (labelMods && labelMods['custom_fields.imprint:imprint.pages'])
+    ? labelMods['custom_fields.imprint:imprint.pages'] : "Total book pages";
+  return(
+    <CustomFieldInjector
+      sectionName="Book / Report / Chapter"
+      fieldName="imprint:imprint.pages"
+      idString="ImprintPagesField"
+      customFieldsUI={customFieldsUI}
+      description={""}
+      label={moddedLabel}
+      icon="file outline"
+    />
+  )
+}
+
+const UniversityComponent = ({ customFieldsUI }) => {
+  return(
+    <CustomFieldInjector
+      sectionName="KCR Book information"
+      fieldName="thesis:university"
+      idString="ThesisUniversity"
+      customFieldsUI={customFieldsUI}
+    />
+  )
 }
 
 const VolumeComponent = ({ customFieldsUI }) => {
@@ -910,10 +978,13 @@ export { CustomFieldInjector,
          EditionComponent,
          FilesUploadComponent,
          FundingComponent,
+         JournalTitleComponent,
+         JournalISSNComponent,
          KeywordsComponent,
          LanguagesComponent,
          LicensesComponent,
          MetadataOnlyComponent,
+         PagesComponent,
          PreviouslyPublishedComponent,
          PublisherComponent,
          PublicationLocationComponent,
@@ -928,6 +999,7 @@ export { CustomFieldInjector,
          TitleComponent,
          TotalPagesComponent,
          SeriesComponent,
+         UniversityComponent,
          VolumeComponent,
          VersionComponent
         };

@@ -69,7 +69,21 @@ KCR_CUSTOM_FIELDS = [
         name="kcr:content_warning",
         field_cls=SanitizedUnicode,
     ),
+    TextCF(
+        name="kcr:institution_department",
+        field_cls=SanitizedUnicode,
+    ),
 ]
+
+KCR_INSTITUTION_DEPARTMENT_FIELD_UI = {
+    "field": "kcr:institution_department",
+    "ui_widget": "Input",
+    "props": {
+        "label": _("Department"),
+        "description": ""
+    },
+    "icon": "building"
+}
 
 KCR_CHAPTER_LABEL_FIELD_UI = {
     "field": "kcr:chapter_label",
@@ -175,3 +189,6 @@ KCR_MEETING_SECTION_EXTRAS_UI = [
     KCR_MEETING_ORGANIZATION_FIELD_UI
 ]
 
+KCR_THESIS_SECTION_EXTRAS_UI = [
+    KCR_INSTITUTION_DEPARTMENT_FIELD_UI
+]
