@@ -36,7 +36,7 @@
       "submit_actions"
     ]
   },
-  "extras_by_type": {
+  "extra_fields": {
     "audiovisual": null,
     "audiovisual-audioRecording": null,
     "audiovisual-documentary": null,
@@ -98,7 +98,11 @@
     "textDocument-conferenceProceeding": null,
     "textDocument-dataManagementPlan": null,
     "textDocument-documentation": null,
-    "textDocument-editorial": null,
+    "textDocument-editorial": {
+      "4": [
+        "journal_detail"
+      ]
+    },
     "textDocument-essay": {
       "4": [
         "book_section_detail",
@@ -126,7 +130,12 @@
         "series"
       ]
     },
-    "textDocument-newspaperArticle": null,
+    "textDocument-newspaperArticle": {
+      "4": [
+        "journal_detail",
+        "edition_section"
+      ]
+    },
     "textDocument-onlinePublication": null,
     "textDocument-poeticWork": null,
     "textDocument-preprint": null,
@@ -144,7 +153,11 @@
       ]
     },
     "textDocument-technicalStandard": null,
-    "textDocument-thesis": null,
+    "textDocument-thesis": {
+      "4": [
+        "thesis_detail"
+      ]
+    },
     "textDocument-whitePaper": {
       "4": [
         "organization_detail",
@@ -310,7 +323,9 @@
       "metadata.title": "Documentation title"
     },
     "textDocument-editorial": {
-      "metadata.title": "Editorial title"
+      "metadata.title": "Editorial title",
+      "custom_fields.journal:journal.title": "Newspaper/periodical name",
+      "custom_fields.journal:journal.pages": "Article pages"
     },
     "textDocument-essay": {
       "metadata.title": "Essay title"
@@ -319,7 +334,8 @@
       "metadata.title": "Interview title"
     },
     "textDocument-journalArticle": {
-      "metadata.title": "Article title"
+      "metadata.title": "Article title",
+      "custom_fields.journal:journal.pages": "Article pages"
     },
     "textDocument-legalComment": {
       "metadata.title": "Comment title"
@@ -328,13 +344,17 @@
       "metadata.title": "Response title"
     },
     "textDocument-magazineArticle": {
-      "metadata.title": "Article title"
+      "metadata.title": "Article title",
+      "custom_fields.journal:journal.title": "Magazine/periodical title",
+      "custom_fields.journal:journal.pages": "Article pages"
     },
     "textDocument-monograph": {
       "metadata.title": "Monograph title"
     },
     "textDocument-newspaperArticle": {
-      "metadata.title": "Article title"
+      "metadata.title": "Article title",
+      "custom_fields.journal:journal.title": "Newspaper/periodical name",
+      "custom_fields.journal:journal.pages": "Article pages"
     },
     "textDocument-onlinePublication": {
       "metadata.title": null
@@ -349,7 +369,9 @@
       "metadata.title": "Report title"
     },
     "textDocument-review":{
-      "metadata.title": "Review title"
+      "metadata.title": "Review title",
+      "custom_fields.journal:journal.title": "Magazine/periodical title",
+      "custom_fields.journal:journal.pages": "Review pages"
     },
     "textDocument-technicalStandard": {
       "metadata.title": "Standard title"
@@ -396,5 +418,23 @@
     "other-workflow":{
       "metadata.title": "Workflow title"
     }
+  },
+  "placeholder_modifications": {
+  },
+  "description_modifications": {
+  },
+  "icon_modifications": {
+  },
+  "default_field_values": {
+  },
+  "priority_field_values": {
+    "audiovisual-audioRecording": {
+      "metadata.creators.role": null
+    }
+  },
+  "extra_required_fields": {
+    "textDocument-journalArticle": [
+      "custom_fields.journal:journal.title"
+    ]
   }
 }
