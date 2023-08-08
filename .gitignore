@@ -17,7 +17,6 @@ __pycache__/
 
 # x.509 private key
 *.key
-*.crt
 
 # Node module files
 node_modules/
