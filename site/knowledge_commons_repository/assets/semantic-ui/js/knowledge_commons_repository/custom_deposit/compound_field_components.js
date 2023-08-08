@@ -73,6 +73,8 @@ import { CustomFieldInjector,
          DoiComponent,
          FilesUploadComponent,
          FundingComponent,
+         JournalTitleComponent,
+         JournalISSNComponent,
          KeywordsComponent,
          LanguagesComponent,
          LicensesComponent,
@@ -91,7 +93,11 @@ import { CustomFieldInjector,
          SeriesComponent,
          VolumeComponent,
          VersionComponent,
-         SponsoringInstitutionComponent
+         SponsoringInstitutionComponent,
+         EditionComponent,
+         ChapterLabelComponent,
+         PagesComponent,
+         UniversityComponent,
           } from "./field_components";
 import { useFormikContext } from "formik";
 import { FormValuesContext } from "./custom_RDMDepositForm";
@@ -125,10 +131,12 @@ const PublicationDetailsComponent = ({customFieldsUI}) => {
               placeholder=""
               customFieldsUI={customFieldsUI}
             />
-            <VersionComponent description=""
+            <EditionComponent customFieldsUI={customFieldsUI}
               label="Edition or Version"
               icon="copy outline"
             />
+            {/* <VersionComponent description="" */}
+            {/* /> */}
         </Form.Group>
         <Form.Group widths="equal">
             <PublisherComponent />
@@ -258,27 +266,22 @@ const BookVolumePagesComponent = ({customFieldsUI}) => {
     )
 }
 
-const BookSectionVolumePagesComponent = ({customFieldsUI}) => {
+const BookSectionVolumePagesComponent = ({customFieldsUI, labelMods}) => {
     return(
       <Segment as="fieldset">
         <Form.Group widths="equal">
-          <CustomFieldInjector
-          sectionName="Journal"
-          fieldName="journal:journal.pages"
-          idString="JournalPagesField"
-          customFieldsUI={customFieldsUI}
-          description={""}
-          label="Section pages"
-          icon="file outline"
+          <PagesComponent
+            customFieldsUI={customFieldsUI}
+            labelMods={labelMods}
           />
-          <CustomFieldInjector
-          sectionName="Book / Report / Chapter"
-          fieldName="imprint:imprint.pages"
-          idString="ImprintPagesField"
-          customFieldsUI={customFieldsUI}
-          description={""}
-          label="Total book pages"
-          icon="file outline"
+          <TotalPagesComponent
+            customFieldsUI={customFieldsUI}
+            description={""}
+            labelMods={labelMods}
+          />
+          <ChapterLabelComponent
+            customFieldsUI={customFieldsUI}
+            labelMods={labelMods}
           />
         </Form.Group>
         <Form.Group widths="equal">
@@ -299,7 +302,22 @@ const CombinedTitlesComponent = ({vocabularies, record, labelMods}) => {
   )
 }
 
-const JournalDetailComponent = ({customFieldsUI}) => {
+const EditionSectionComponent = ({customFieldsUI, labelMods}) => {
+  return(
+    <Segment as="fieldset">
+      <EditionComponent
+        customFieldsUI={customFieldsUI}
+        labelMods={labelMods}
+      />
+      <ChapterLabelComponent
+        customFieldsUI={customFieldsUI}
+        labelMods={labelMods}
+      />
+    </Segment>
+  )
+}
+
+const JournalDetailComponent = ({customFieldsUI, labelMods}) => {
   return(
     <Segment as="fieldset">
       {/* <FieldLabel htmlFor={"imprint:imprint"}
@@ -307,24 +325,13 @@ const JournalDetailComponent = ({customFieldsUI}) => {
         label={"Book details"}
       /> */}
       <Form.Group widths="equal">
-          <CustomFieldInjector
-          sectionName="Journal"
-          fieldName="journal:journal.title"
-          idString="JournalTitleField"
-          label="Journal title"
-          icon="book"
-          description=""
+        <JournalTitleComponent
           customFieldsUI={customFieldsUI}
-          />
-          <CustomFieldInjector
-          sectionName="Journal"
-          fieldName="journal:journal.issn"
-          idString="JournalISSNField"
-          label="ISSN"
-          icon="barcode"
-          description=""
+          labelMods={labelMods}
+        />
+        <JournalISSNComponent
           customFieldsUI={customFieldsUI}
-          />
+        />
       </Form.Group>
       <Form.Group widths="equal">
           <CustomFieldInjector
@@ -360,19 +367,6 @@ const JournalDetailComponent = ({customFieldsUI}) => {
       </Form.Group>
     </Segment>
 )}
-
-const TypeTitleComponent = ({vocabularies, record, labelMods}) => {
-  return(
-    <Segment
-      id={'InvenioAppRdm.Deposit.TypeTitleComponent.container'}
-      as="fieldset"
-    >
-      <TitleComponent vocabularies={vocabularies} record={record} labelMods={labelMods} />
-      <ResourceTypeComponent vocabularies={vocabularies} labelMods={labelMods} />
-    </Segment>
-  )
-};
-
 const OrganizationDetailsComponent = ({customFieldsUI}) => {
   return(
     <Segment as="fieldset" className="organization-details-fields">
@@ -512,6 +506,29 @@ const SubmissionComponent = ({record, permissions}) => {
   )
 }
 
+const ThesisDetailsComponent = ({customFieldsUI, labelMods}) => {
+  return(
+    <Segment as="fieldset">
+      <UniversityComponent
+        customFieldsUI={customFieldsUI}
+        labelMods={labelMods}
+      />
+    </Segment>
+  )
+}
+
+const TypeTitleComponent = ({vocabularies, record, labelMods}) => {
+  return(
+    <Segment
+      id={'InvenioAppRdm.Deposit.TypeTitleComponent.container'}
+      as="fieldset"
+    >
+      <TitleComponent vocabularies={vocabularies} record={record} labelMods={labelMods} />
+      <ResourceTypeComponent vocabularies={vocabularies} labelMods={labelMods} />
+    </Segment>
+  )
+};
+
 const AccessRightsComponent = ({ permissions }) => {
   return(
     <Overridable
@@ -581,11 +598,13 @@ export {AccessRightsComponent,
         CombinedDatesComponent,
         CombinedTitlesComponent,
         DeleteComponent,
+        EditionSectionComponent,
         JournalDetailComponent,
         OrganizationDetailsComponent,
         PublicationDetailsComponent,
         SubjectKeywordsComponent,
         SubmissionComponent,
         SubmitActionsComponent,
+        ThesisDetailsComponent,
         TypeTitleComponent,
 };

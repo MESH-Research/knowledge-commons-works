@@ -107,12 +107,14 @@ import {AccessRightsComponent,
         CombinedDatesComponent,
         CombinedTitlesComponent,
         DeleteComponent,
+        EditionSectionComponent,
         JournalDetailComponent,
         OrganizationDetailsComponent,
         PublicationDetailsComponent,
         SubjectKeywordsComponent,
         SubmissionComponent,
         SubmitActionsComponent,
+        ThesisDetailsComponent,
         TypeTitleComponent,
 } from "./compound_field_components";
 import { useFormikContext } from "formik";
@@ -211,6 +213,8 @@ const fieldComponents = {
       ['metadata.publication_date', 'metadata.dates']],
     delete: [DeleteComponent,
       []],
+    edition_section: [EditionSectionComponent,
+      ['custom_fields.kcr:edition', 'custom_fields.kcr:chapter_label']],
     journal_detail: [JournalDetailComponent,
       ['custom_fields.journal:journal.issn', 'custom_fields.journal:journal.title', 'custom_fields.journal:journal.volume', 'custom_fields.journal:journal.issue', 'custom_fields.journal:journal.pages']],
     organization_detail: [OrganizationDetailsComponent,
@@ -226,6 +230,8 @@ const fieldComponents = {
       []],
     submit_actions: [SubmitActionsComponent,
       ['access']],
+    thesis_detail: [ThesisDetailsComponent,
+      ['custom_fields.thesis:university']],
     type_title: [TypeTitleComponent,
       ['metadata.title', 'metadata.resource_type']],
 }
@@ -347,7 +353,7 @@ const makeExtraFieldsConfig = async () => {
       .then((response) => response.json())
       .then((fieldsConfig) => {
 
-        let extras = fieldsConfig.extras_by_type;
+        let extras = fieldsConfig.extra_fields;
         const pageNums = ['1', '2', '3', '4', '5', '6'];
         Object.entries(extras).forEach(([typename, pages]) => {
           if ( pages===null || pages===undefined ) {
@@ -362,7 +368,7 @@ const makeExtraFieldsConfig = async () => {
           }
         });
         return( {common_fields: fieldsConfig.common_fields,
-                 extras_by_type: extras,
+                 extra_fields: extras,
                  label_modifications: fieldsConfig.label_modifications}
         )
       });
@@ -393,7 +399,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       makeExtraFieldsConfig()
         .then((configResponse) => {
           setFieldsConfig(configResponse);
-          setCurrentTypeExtraFields(configResponse.extras_by_type[currentResourceType]);
+          setCurrentTypeExtraFields(configResponse.extra_fields[currentResourceType]);
         })
         .then(() => setConfigLoaded(true));
     },
@@ -505,7 +511,7 @@ export const RDMDepositForm = ({ config, files, record, permissions, preselected
       localStorage.setItem('depositFormValues', JSON.stringify(values));
       setCurrentResourceType(values.metadata.resource_type);
       if ( configLoaded ) {
-        setCurrentTypeExtraFields(fieldsConfig.extras_by_type[values.metadata.resource_type]);
+        setCurrentTypeExtraFields(fieldsConfig.extra_fields[values.metadata.resource_type]);
       }
     }
 
