@@ -38,7 +38,7 @@ uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
 pip = "*"
-
+invenio-accounts = "==3.0.3"
 invenio-administration = "==1.6.0"
 invenio-banners = "==2.1.0"
 invenio-cli = "==1.0.21"
@@ -53,7 +53,8 @@ invenio-requests = "==2.5.0"
 invenio-theme = "==2.1.2"
 invenio-users-resources = "==2.0.0"
 invenio-vocabularies = "==1.5.0"
-
+xmlsec = "*"
+invenio-saml = "*"
 
 [requires]
 python_version = "3.9"
