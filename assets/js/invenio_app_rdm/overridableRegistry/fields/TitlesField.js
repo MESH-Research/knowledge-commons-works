@@ -17,9 +17,8 @@ const TitlesField = ({ fieldPath,
                               options,
                               label=i18next.t("Title"),
                               required=false,
-                              recordUI=undefined
+                              recordUI=undefined,
                             }) => {
-  console.log(label);
   return (
     <>
       <TextField
