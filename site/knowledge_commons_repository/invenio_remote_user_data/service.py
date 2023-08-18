@@ -22,56 +22,53 @@ class RemoteUserDataService(Service):
         self.communities_service = LocalProxy(lambda: app.extensions[
             "invenio-communities"].service)
 
+        # FIXME: Should we listen to other signals and update more often?
         @identity_changed.connect_via(app)
         def on_identity_changed(_, identity:Identity) -> None:
             """Update user data from remote server."""
             security_datastore = LocalProxy(lambda: app.extensions["security"
                                                                    ].datastore)
             my_user = security_datastore.find_user(id=identity.id)
-            my_idp = 'local'
+            self.updated_data = {}
             if my_user is not None:
                 my_user_identity = UserIdentity.query.filter_by(
                     id_user=my_user.id).one_or_none()
+                # will have a UserIdentity if the user has logged in via an IDP
                 if my_user_identity is not None:
                     my_idp = my_user_identity.method
+                    my_remote_id = my_user_identity.id
                     self.logger.debug(my_idp)
                     self.logger.debug(my_user_identity.__dict__)
 
-            self.updated_data = self.update_data_from_remote(identity, my_user)
+                    self.updated_data = self.update_data_from_remote(identity, my_user, my_idp, my_remote_id)
 
     def update_data_from_remote(self, identity:Identity, user:Optional[User],
-                                **kwargs) -> dict:
+                                idp:str, remote_id:str, **kwargs) -> dict:
         """Main method to update user data from remote server.
         """
         self.logger.debug("Updating user data from remote server.")
         changed_data = {}
         updated_data = {}
-        # remote_data = self.fetch_from_remote_api(identity, user, **kwargs)
-        # if remote_data:
-        #     changed_data = self.compare_remote_with_local(identity, user,
-        #                                                   remote_data, **kwargs)
-        self.logger.debug("communities service:")
-        matching_communities = self.communities_service.search(
-            system_identity,
-            {'q': 'custom_fields.kcr:commons_group_id="mycommunity2"'})
-        self.logger.debug([c['id'] for c in matching_communities])
-        # if changed_data:
-        #     updated_data = self.update_local_user_data(identity, user,
-        #                                                changed_data, **kwargs)
+        remote_data = self.fetch_from_remote_api(identity, user, idp, remote_id, **kwargs)
+        if remote_data:
+            changed_data = self.compare_remote_with_local(user,
+                                                          remote_data, **kwargs)
+        if changed_data:
+            updated_data = self.update_local_user_data(identity, user,
+                                                       changed_data, **kwargs)
 
-        # return updated_data
-
-        return {'groups': {'add': ['admin', 'curator']}}
+        return updated_data
 
     def fetch_from_remote_api(self, identity:Identity, user:User,
+                              idp:str, remote_id:str,
                               tokens=None, **kwargs) -> dict:
         """Fetch user data for the supplied user from the remote API."""
         self.logger.debug(f'fetching user data for identity: {identity}')
         self.logger.debug(identity.id)
         remote_data = {}
 
-        if "groups" in self.config.keys():
-            groups_config = self.config["groups"]
+        if "groups" in self.config[idp].keys():
+            groups_config = self.config[idp]["groups"]
 
             remote_api_token = None
             if tokens and "groups" in tokens.keys():  # allows injection for testing
@@ -79,8 +76,9 @@ class RemoteUserDataService(Service):
             else:
                 remote_api_token = os.environ[groups_config["token_env_variable_label"]]
 
-            api_url = (f'{groups_config["api_url"]}/'
-                       f'{user[groups_config["remote_identifier"]]}')
+            if groups_config["remote_identifier"] != "id":
+                remote_id = getattr(user, groups_config["remote_identifier"])
+            api_url = (f'{groups_config["remote_endpoint"]}/{remote_id}')
 
             callfuncs = {'GET': requests.get,
                          'POST': requests.post}
@@ -89,15 +87,15 @@ class RemoteUserDataService(Service):
             headers = {}
             if remote_api_token:
                 headers={'Authorization': f'Bearer {remote_api_token}'}
-
+            self.logger.debug(f'calling {api_url}')
             response = callfunc(api_url, headers=headers, verify=False)
-            self.logger.debug(pprint(response))
+            self.logger.debug(pprint(response.json()))
 
             # remote_data['groups'] = {'status_code': response.status_code,
             #                          'headers': response.headers,
             #                          'json': response.json(),
             #                          'text': response.text}
-            remote_data['groups'] = [response.json()]
+            remote_data['groups'] = response.json()['groups']
 
         return remote_data
 

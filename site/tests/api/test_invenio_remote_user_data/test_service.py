@@ -1,4 +1,5 @@
 from flask_security import login_user, logout_user
+from invenio_accounts.models import UserIdentity
 from invenio_utilities_tuw.utils import get_identity_for_user
 from knowledge_commons_repository.invenio_remote_user_data.components.groups import GroupsComponent
 from knowledge_commons_repository.invenio_remote_user_data.proxies import current_remote_user_data_service
@@ -7,11 +8,35 @@ def test_on_identity_changed(app, users, requests_mock):
     """Test service initialization and signal triggers."""
     assert "invenio-remote-user-data" in app.extensions
     assert app.extensions["invenio-remote-user-data"].service
-    base_url = app.config['REMOTE_USER_DATA_API_ENDPOINTS']['local']['groups']['remote_endpoint']
-    requests_mock.get(f'{base_url}/{users[0].email}', json= {'name': 'awesome-mock'})
+
+    # mock the remote api endpoint
+    base_url = app.config['REMOTE_USER_DATA_API_ENDPOINTS'
+                          ]['knowledgeCommons']['groups']['remote_endpoint']
+    requests_mock.get(f'{base_url}/testuser',
+                      json={'groups': [{'name': 'awesome-mock'},
+                                       {'name': 'admin'}]
+                            }
+                      )
+
+    # mock SAML login info for the test user and add them to new groups
+    UserIdentity.create(users[0], "knowledgeCommons", "testuser")
+    grouper = GroupsComponent(current_remote_user_data_service)
+    grouper.create_new_group(group_name='cool-group')
+    grouper.create_new_group(group_name='admin')
+    grouper.add_user_to_group(group_name='cool-group', user=users[0])
+    grouper.add_user_to_group(group_name='admin', user=users[0])
+
+    # log user in and check whether group memberships were updated
     login_user(users[0])
+    assert current_remote_user_data_service.updated_data == {'groups': ['admin', 'awesome-mock']}
+
+    # log user out and check whether group memberships were updated
     logout_user()
-    assert current_remote_user_data_service.updated_data == {'groups': {'awesome-mock': {'name': 'awesome-mock'}}}
+    assert current_remote_user_data_service.updated_data == {}
+
+    # log a different user in without mocking SAML login (so like local)
+    login_user(users[1])
+    assert current_remote_user_data_service.updated_data == {}
 
 def test_compare_remote_with_local(app, users):
     """Test comparison of remote and local user data."""
@@ -54,4 +79,6 @@ def test_update_invenio_group_memberships(app, users, db):
 
     assert actual_updated_memberships == expected_updated_memberships
     assert [r for r in users[0].roles] == ['admin', 'awesome-mock']
-    assert [n.value for n in my_identity.provides] == ['admin', 'awesome-mock']
+    my_identity = get_identity_for_user(users[0].email)
+    assert all(n.value for n in my_identity.provides
+                if n in ['admin', 'awesome-mock', 'any_user', 5])

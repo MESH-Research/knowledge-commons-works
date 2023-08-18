@@ -30,7 +30,9 @@ def test_find_or_create_group(app, users, db):
 def test_create_new_group(app, users, db):
     """Test creating a new group role
     """
-    my_group_role = GroupsComponent(current_remote_user_data_service).create_new_group(group_name='my_group', description='A group for me')
+    grouper = GroupsComponent(current_remote_user_data_service)
+    my_group_role = grouper.create_new_group(group_name='my_group',
+                                             description='A group for me')
     assert my_group_role.name == 'my_group'
     assert my_group_role.id == 'my_group'
     assert my_group_role.description == 'A group for me'
@@ -40,16 +42,17 @@ def test_create_new_group(app, users, db):
 def test_add_user_to_group(app, users, db):
     """Test adding a user to a group role
     """
-    user_added = GroupsComponent(
-        current_remote_user_data_service).add_user_to_group('my_group',
-                                                            users[0])
+    grouper = GroupsComponent(current_remote_user_data_service)
+    my_group_role = grouper.create_new_group(group_name='my_group',
+                                             description='A group for me')
+    user_added = grouper.add_user_to_group('my_group', users[0])
     assert user_added == True
 
-    # from werkzeug.local import LocalProxy
-    # security_datastore = LocalProxy(lambda: app.extensions["security"
-    #                                                        ].datastore)
-    # my_user = security_datastore.find_user(email=users[0].email)
-    my_user = get_user_by_identifier(users[0].email)
+    from werkzeug.local import LocalProxy
+    security_datastore = LocalProxy(lambda: app.extensions["security"
+                                                           ].datastore)
+    my_user = security_datastore.find_user(email=users[0].email)
+    # my_user = get_user_by_identifier(users[0].email)
     assert 'my_group' in my_user.roles
 
 def test_get_current_members_of_group(app, users, db):
