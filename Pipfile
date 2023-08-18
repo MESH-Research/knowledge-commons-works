@@ -12,6 +12,7 @@ name = "testpypi"
 check-manifest = ">=0.25"
 halo = "*"
 jsonlines = "*"
+requests-mock = "*"
 
 [packages]
 cchardet = "==2.1.7"
@@ -55,6 +56,7 @@ invenio-users-resources = "==2.0.0"
 invenio-vocabularies = "==1.5.0"
 xmlsec = "*"
 invenio-saml = "*"
+flask-principal = "*"
 
 [requires]
 python_version = "3.9"
