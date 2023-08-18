@@ -21,7 +21,7 @@ def headers():
     }
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def minimal_record():
     """Minimal record data as dict coming from the external world."""
     return {
@@ -58,7 +58,7 @@ def minimal_record():
     }
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def full_record(users):
     """Full record data as dict coming from the external world."""
     return {

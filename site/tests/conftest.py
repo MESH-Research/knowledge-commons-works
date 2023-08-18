@@ -2,12 +2,14 @@ from collections import namedtuple
 from flask_security import login_user, logout_user
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles, Role
-from invenio_access.permissions import superuser_access
+from invenio_access.permissions import superuser_access, system_identity
 from invenio_accounts.testutils import login_user_via_session
 from invenio_administration.permissions import administration_access_action
-from invenio_app.factory import create_ui
+from invenio_app.factory import create_ui, create_app
+from invenio_vocabularies.proxies import current_service as vocabulary_service
+from invenio_vocabularies.records.api import Vocabulary
 from pprint import pprint
-from pytest_invenio.fixtures import base_client, database
+from pytest_invenio.fixtures import base_client, db, UserFixture
 import pytest
 # pytest_invenio provides these fixtures (among others):
 #   pytest_invenio.fixtures.app(base_app, search, database)
@@ -21,39 +23,32 @@ import pytest
 #   pytest_invenio.fixtures.default_handler()
 #   pytest_invenio.fixtures.entry_points(extra_entry_points
 
-# ### tests/conftest.py ###
-# Common application configuration goes here
-@pytest.fixture(scope='module')
-def app_config(app_config):
-    # app_config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///testing.db"
-    app_config['SQLALCHEMY_DATABASE_URI'] = "postgresql+psycopg2://knowledge-commons-repository:knowledge-commons-repository@localhost/knowledge-commons-repository-test"
-    app_config['INVENIO_WTF_CSRF_ENABLED'] = False
-    app_config['INVENIO_WTF_CSRF_METHODS'] = []
-    # FIXME: Can the test config access invenio.cfg file?
-    app_config['THEME_FRONTPAGE_TITLE'] = "Knowledge Commons Repository"
-    print('*******')
-    pprint(app_config)
-    return app_config
+test_config = {
 
-# 'APP_DEFAULT_SECURE_HEADERS': {'content_security_policy': {'default-src': []},
-#                                 'force_https': False},
-#  'APP_THEME': ['semantic-ui'],
-#  'BROKER_URL': 'amqp://guest:guest@localhost:5672//',
-#  'CELERY_CACHE_BACKEND': 'memory',
-#  'CELERY_RESULT_BACKEND': 'cache',
-#  'CELERY_TASK_ALWAYS_EAGER': True,
-#  'CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS': True,
+    'SQLALCHEMY_DATABASE_URI': "postgresql+psycopg2://knowledge-commons-repository:knowledge-commons-repository@localhost/knowledge-commons-repository-test",
+    'SQLALCHEMY_TRACK_MODIFICATIONS': False,
+    'INVENIO_WTF_CSRF_ENABLED': False,
+    'INVENIO_WTF_CSRF_METHODS': [],
+    'THEME_FRONTPAGE_TITLE': "Knowledge Commons Repository",
+    'APP_DEFAULT_SECURE_HEADERS':
+        {'content_security_policy': {'default-src': []},
+                                     'force_https': False},
+    'APP_THEME': ['semantic-ui'],
+    'BROKER_URL': 'amqp://guest:guest@localhost:5672//',
+    'CELERY_CACHE_BACKEND': 'memory',
+    'CELERY_RESULT_BACKEND': 'cache',
+    'CELERY_TASK_ALWAYS_EAGER': True,
+    'CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS': True,
 #  'DEBUG_TB_ENABLED': False,
-#  'INVENIO_INSTANCE_PATH': '/opt/invenio/var/instance',
+    # 'INVENIO_INSTANCE_PATH': '/opt/invenio/var/instance',
 #  'MAIL_SUPPRESS_SEND': True,
 #  'OAUTH2_CACHE_TYPE': 'simple',
 #  'OAUTHLIB_INSECURE_TRANSPORT': True,
-#  'RATELIMIT_ENABLED': False,
-#  'SECRET_KEY': 'test-secret-key',
-#  'SECURITY_PASSWORD_SALT': 'test-secret-key',
-#  'SQLALCHEMY_DATABASE_URI': 'sqlite:///testing.db',
-#  'SQLALCHEMY_TRACK_MODIFICATIONS': False,
-#  'TESTING': True,
+    'RATELIMIT_ENABLED': False,
+    'SECRET_KEY': 'test-secret-key',
+    'SECURITY_PASSWORD_SALT': 'test-secret-key',
+    'TESTING': True,
+}
 #  'THEME_ICONS': {'bootstrap3': {'*': 'fa fa-{} fa-fw',
 #                                 'codepen': 'fa fa-codepen fa-fw',
 #                                 'cogs': 'fa fa-cogs fa-fw',
@@ -68,46 +63,148 @@ def app_config(app_config):
 #                                  'link': 'linkify icon',
 #                                  'shield': 'shield alternate icon',
 #                                  'user': 'user icon'}},
-#  'WTF_CSRF_ENABLED': False}
 
-@pytest.fixture(scope="function")
-def db(database):
-    """Creates a new database session for a test.
+# ### tests/conftest.py ###
+# Common application configuration goes here
+@pytest.fixture(scope='module')
+def app_config(app_config) -> dict:
+    # app_config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///testing.db"
+    for k, v in test_config.items():
+        app_config[k] = v
+    # print('*******')
+    # pprint(app_config)
+    return app_config
 
-    Scope: function
+@pytest.fixture(scope="module")
+def extra_entry_points() -> dict:
+    return {
+        # 'invenio_db.models': [
+        #     'mock_module = mock_module.models',
+        # ]
+    }
 
-    You must use this fixture if your test connects to the database. The
-    fixture will set a save point and rollback all changes performed during
-    the test (this is much faster than recreating the entire database).
-    """
-    import sqlalchemy as sa
+@pytest.fixture(scope="module")
+def resource_type_type(app):
+    """Resource type vocabulary type."""
+    return vocabulary_service.create_type(system_identity, "resourcetypes", "rsrct")
 
-    connection = database.engine.connect()
-    transaction = connection.begin()
 
-    options = dict(bind=connection, binds={})
-    session = database._make_scoped_session(options=options)
+@pytest.fixture(scope="module")
+def resource_type_v(app, resource_type_type):
+    """Resource type vocabulary record."""
+    vocabulary_service.create(
+        system_identity,
+        {
+            "id": "dataset",
+            "icon": "table",
+            "props": {
+                "csl": "dataset",
+                "datacite_general": "Dataset",
+                "datacite_type": "",
+                "openaire_resourceType": "21",
+                "openaire_type": "dataset",
+                "eurepo": "info:eu-repo/semantics/other",
+                "schema.org": "https://schema.org/Dataset",
+                "subtype": "",
+                "type": "dataset",
+            },
+            "title": {"en": "Dataset"},
+            "tags": ["depositable", "linkable"],
+            "type": "resourcetypes",
+        },
+    )
 
-    session.begin_nested()
 
-    # `session` is actually a scoped_session. For the `after_transaction_end`
-    # event, we need a session instance to listen for, hence the `session()`
-    # call.
-    @sa.event.listens_for(session(), "after_transaction_end")
-    def restart_savepoint(sess, trans):
-        if trans.nested and not trans._parent.nested:
-            session.expire_all()
-            session.begin_nested()
+    vocabulary_service.create(
+        system_identity,
+        {  # create base resource type
+            "id": "image",
+            "props": {
+                "csl": "figure",
+                "datacite_general": "Image",
+                "datacite_type": "",
+                "openaire_resourceType": "25",
+                "openaire_type": "dataset",
+                "eurepo": "info:eu-repo/semantic/other",
+                "schema.org": "https://schema.org/ImageObject",
+                "subtype": "",
+                "type": "image",
+            },
+            "icon": "chart bar outline",
+            "title": {"en": "Image"},
+            "tags": ["depositable", "linkable"],
+            "type": "resourcetypes",
+        },
+    )
 
-    old_session = database.session
-    database.session = session
+    vocab = vocabulary_service.create(
+        system_identity,
+        {
+            "id": "image-photo",
+            "props": {
+                "csl": "graphic",
+                "datacite_general": "Image",
+                "datacite_type": "Photo",
+                "openaire_resourceType": "25",
+                "openaire_type": "dataset",
+                "eurepo": "info:eu-repo/semantic/other",
+                "schema.org": "https://schema.org/Photograph",
+                "subtype": "image-photo",
+                "type": "image",
+            },
+            "icon": "chart bar outline",
+            "title": {"en": "Photo"},
+            "tags": ["depositable", "linkable"],
+            "type": "resourcetypes",
+        },
+    )
 
-    yield database
+    Vocabulary.index.refresh()
 
-    session.remove()
-    transaction.rollback()
-    connection.close()
-    database.session = old_session
+    return vocab
+
+
+
+# *** db fixture built into pytest-invenio ***
+# *** but needed to fix call to _make_scoped_session()??? ***
+# @pytest.fixture(scope="function")
+# def db(database):
+#     """Creates a new database session for a test.
+
+#     Scope: function
+
+#     You must use this fixture if your test connects to the database. The
+#     fixture will set a save point and rollback all changes performed during
+#     the test (this is much faster than recreating the entire database).
+#     """
+#     import sqlalchemy as sa
+
+#     connection = database.engine.connect()
+#     transaction = connection.begin()
+
+#     options = dict(bind=connection, binds={})
+#     session = database._make_scoped_session(options=options)
+
+#     session.begin_nested()
+
+#     # `session` is actually a scoped_session. For the `after_transaction_end`
+#     # event, we need a session instance to listen for, hence the `session()`
+#     # call.
+#     @sa.event.listens_for(session(), "after_transaction_end")
+#     def restart_savepoint(sess, trans):
+#         if trans.nested and not trans._parent.nested:
+#             session.expire_all()
+#             session.begin_nested()
+
+#     old_session = database.session
+#     database.session = session
+
+#     yield database
+
+#     session.remove()
+#     transaction.rollback()
+#     connection.close()
+#     database.session = old_session
 # dir(database)
 # ['Model',
 #  'Query',
@@ -191,8 +288,18 @@ def db(database):
 #     return [user1, user2]
 
 @pytest.fixture()
-def users(app, db):
+def users(UserFixture, app, db) -> list:
     """Create example user."""
+    # user1 = UserFixture(
+    #     email="scottia4@msu.edu",
+    #     password="password"
+    # )
+    # user1.create(app, db)
+    # user2 = UserFixture(
+    #     email="scottianw@gmail.com",
+    #     password="password"
+    # )
+    # user2.create(app, db)
     with db.session.begin_nested():
         datastore = app.extensions["security"].datastore
         user1 = datastore.create_user(
@@ -352,7 +459,7 @@ RunningApp = namedtuple(
         "superuser_identity",
         "location",
         "cache",
-        # "resource_type_v",
+        "resource_type_v",
         # "subject_v",
         # "languages_v",
         # "affiliations_v",
@@ -374,7 +481,7 @@ def running_app(
     superuser_identity,
     location,
     cache,
-    # resource_type_v,
+    resource_type_v,
     # subject_v,
     # languages_v,
     # affiliations_v,
@@ -397,7 +504,7 @@ def running_app(
         superuser_identity,
         location,
         cache,
-        # resource_type_v,
+        resource_type_v,
         # subject_v,
         # languages_v,
         # affiliations_v,
