@@ -26,6 +26,9 @@ class RemoteUserDataService(Service):
         @identity_changed.connect_via(app)
         def on_identity_changed(_, identity:Identity) -> None:
             """Update user data from remote server."""
+            print('!!!!!!!!!!')
+            print(current_queues.queues)
+            print(current_queues.queues['user-data-updates'])
             security_datastore = LocalProxy(lambda: app.extensions["security"
                                                                    ].datastore)
             my_user = security_datastore.find_user(id=identity.id)
@@ -89,13 +92,16 @@ class RemoteUserDataService(Service):
                 headers={'Authorization': f'Bearer {remote_api_token}'}
             self.logger.debug(f'calling {api_url}')
             response = callfunc(api_url, headers=headers, verify=False)
-            self.logger.debug(pprint(response.json()))
-
-            # remote_data['groups'] = {'status_code': response.status_code,
-            #                          'headers': response.headers,
-            #                          'json': response.json(),
-            #                          'text': response.text}
-            remote_data['groups'] = response.json()['groups']
+            self.logger.debug(pprint(response))
+            try:
+                # remote_data['groups'] = {'status_code': response.status_code,
+                #                          'headers': response.headers,
+                #                          'json': response.json(),
+                #                          'text': response.text}
+                remote_data['groups'] = response.json()['groups']
+            except requests.exceptions.JSONDecodeError:
+                self.logger.debug(f'JSONDecodeError: User group data API response was not JSON:')
+                self.logger.debug(f'{response.text}')
 
         return remote_data
 
