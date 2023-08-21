@@ -1,3 +1,4 @@
+from kombu import Exchange
 
 REMOTE_USER_DATA_API_ENDPOINTS = {
     "knowledgeCommons": {
@@ -9,3 +10,11 @@ REMOTE_USER_DATA_API_ENDPOINTS = {
         }
     }
 }
+
+REMOTE_USER_DATA_UPDATE_PERIOD = 60 # 1 hour
+
+REMOTE_USER_DATA_MQ_EXCHANGE = Exchange(
+    "user-data-updates",
+    type="direct",
+    delivery_mode="transient",  # in-memory queue
+)

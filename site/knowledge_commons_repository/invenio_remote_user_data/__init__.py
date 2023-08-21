@@ -20,6 +20,43 @@ Note that the group membership updates are one-directional. If a user is added t
 
 Once a user has been assigned the Invenio role, the user's Invenio Identity object will be updated (on the next request) to provide role Needs corresponding with the user's updated roles.
 
+Note that if a remote group is associated with an Invenio community, the service will NOT add the user to the corresponding community. Instead, the community administrators should add the remote group as a group member of the community.
+
+Keeping remote data updated
+---------------------------
+
+The service is always called when a user logs in (triggered by the identity_changed signal emitted by flask-principal). In order to stay up-to-date during long user sessions, the service will also be called periodically during a logged-in session. This is done by a background celery task scheduled when the user logs in. By default the update period is 1 hour, but this can be changed by setting the REMOTE_USER_DATA_UPDATE_PERIOD configuration variable.
+
+Configuration
+-------------
+
+The extension is configured via the following variables:
+
+REMOTE_USER_DATA_API_ENDPOINTS
+
+    A dictionary of remote ID provider names and their associated API information for each kind of user data. The dictionary keys are the names of IDPs. For each ID provider, the value is a dictionary whose keys are the different data categories ("groups", etc.).
+
+    For each kind of user data, the value is again a dictionary with these keys:
+
+    :remote_endpoint: the URL for the API endpoint where that kind of data can
+                      be retrieved, including a placeholder (the string "{placeholder}" for the user's identifier in the API request.:
+                      e.g., "https://example.com/api/user/{placeholder}"
+
+    :remote_identifier: the Invenio user property to be used as an identifier
+                        in the API request (e.g., "id", "email", etc.)
+
+    :remote_method: the method for the request to the remote API
+
+    :token_env_variable_label: the label used for the environment variable
+                               that will hold the security token required by
+                               the request. The token should be stored in the
+                               .env file in the root directory of the Invenio
+                               instance or set in the server system environment.
+
+REMOTE_USER_DATA_UPDATE_PERIOD
+
+    The period (in minutes) between background calls to the remote API to update user data during a logged-in session. Default is 60 minutes.
+
 """
 
 from __future__ import absolute_import, print_function
