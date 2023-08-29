@@ -33,7 +33,8 @@ from core_migrate.config import (
     DATA_DIR,
     GLOBAL_DEBUG,
 )
-from core_migrate.utils import valid_date, valid_isbn, generate_random_string
+from core_migrate.utils import (valid_date, valid_isbn, generate_random_string,
+                               _normalize_string, _clean_string)
 
 book_types = [
     'textDocument-bookChapter',
@@ -71,7 +72,7 @@ ambiguous_types = [
 
 licenses = {'All Rights Reserved': (
                 'arr',
-                'Proprietary. All rights reserved.',
+                'All Rights Reserved',
                 'https://en.wikipedia.org/wiki/All_rights_reserved'
             ),
             'Attribution-NonCommercial-NoDerivatives': (
@@ -118,34 +119,6 @@ licenses = {'All Rights Reserved': (
                 'https://spdx.org/licenses/0BSD.html'
             )
             }
-
-
-def _normalize_string(mystring:str) -> str:
-    mystring = mystring.casefold()
-    mystring = _clean_string(mystring)
-    mystring = mystring.replace('’', "'")
-    mystring = mystring.replace('“', "'")
-    try:
-        if mystring[0] in ['"', "'"]:
-            mystring = mystring[1:]
-        if mystring[-1] in ['"', "'"]:
-            mystring = mystring[:-1]
-    except IndexError:
-        pass
-    return mystring
-
-
-def _clean_string(mystring:str) -> str:
-    """
-    Remove unwanted characters from a string and return it.
-    """
-    if re.search(r"[\'\"]", mystring):
-        mystring = re.sub(r"\\+'", r"'", mystring)
-        mystring = re.sub(r'\\+"', r'"', mystring)
-    else:
-        mystring = re.sub(r'\\+', r'\\', mystring)
-    mystring = mystring.replace('  ', ' ')
-    return mystring
 
 
 def _append_bad_data(rowid:str, content:tuple, bad_data_dict:dict):
@@ -359,10 +332,12 @@ def _add_book_authors(author_string:str, bad_data_dict:dict,
                         'name': _clean_string(fullname),
                         "type": "personal",
                         "given_name": _clean_string(given),
-                        "family_name": _clean_string(family)
+                        "family_name": _clean_string(family) if family else _clean_string(fullname)
                     },
+                    # FIXME: handle unlabelled editors better?
                     'role': {
-                        'id': ('editor' if is_editor else 'author')
+                        'id': ('editor' if is_editor else 'other'),
+                        'title': {'en': ('Editor' if is_editor else 'Other')}
                     }
                 }
             )
@@ -420,16 +395,18 @@ def _add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                 new_person['person_or_org'] = {
                     'type': "personal",  # FIXME: can't hard code
                     # 'name': a['fullname'],
-                    'name': f'{a["family"]}, {a["given"]}',
+                    'name': f'{a["family"]}, {a["given"]}' if a["family"] else a["fullname"],
                     'given_name': a['given'],
-                    'family_name': a['family']
+                    'family_name': a['family'] if a['family'] else a['fullname']
                 }
                 if a['role'] and a['role'] in allowed_roles or not a['role']:
                     # TODO: are null roles a problem?
                     if a['role'] == 'project director':
-                        new_person['role'] = {'id': "projectLeader"}
+                        new_person['role'] = {'id': "projectLeader",
+                                              'title': {'en': 'Project Leader'}}
                     else:
-                        new_person['role'] = {'id': a['role']}
+                        new_person['role'] = {'id': a['role'],
+                                              'title': {'en': a['role'].capitalize()}}
                 else:
                     _append_bad_data(row['id'],
                                     (f'authors:{a["fullname"]}:role', a['role']),
@@ -441,7 +418,8 @@ def _add_author_data(newrec:dict, row:dict, bad_data_dict:dict
                         {'identifier': a['uni'], 'scheme': 'hc_username'}]
                 if a['role'] in allowed_roles:
                     if a['role'] == 'contributor':
-                        new_person['role'] = {'id': 'other'}
+                        new_person['role'] = {'id': "other",
+                                              'title': {'en': 'Other'}}
                         contributors_misplaced.append(new_person)
                     else:
                         creators.append(new_person)
@@ -577,8 +555,6 @@ def serialize_json() -> tuple[list[dict], dict]:
                     'metadata': {
                         'resource_type': {},
                         'title': "",
-                        'additional_titles': [],
-                        'additional_descriptions': [],
                         'creators': [],
                         'publication_date': [],
                         'identifiers': [],
@@ -660,7 +636,7 @@ def serialize_json() -> tuple[list[dict], dict]:
             )
             assert row['id'] == row['pid']
             newrec['metadata']['identifiers'].append(
-                {'identifier': row['record_identifier'], 'scheme': 'hclegacy-record-id'}
+                {'identifier': str(row['record_identifier']), 'scheme': 'hclegacy-record-id'}
             )
             newrec['custom_fields']['kcr:commons_domain'] = row['domain']
 
@@ -693,7 +669,7 @@ def serialize_json() -> tuple[list[dict], dict]:
                 if row['id'] == "hc:36367":
                     pass
                 else:
-                    newrec['metadata']['additional_titles'].append(
+                    newrec['metadata'].setdefault('additional_titles', []).append(
                         {"title": _clean_string(row['title']),
                             "type": {
                                 "id": "other",
@@ -707,23 +683,19 @@ def serialize_json() -> tuple[list[dict], dict]:
             newrec['metadata']['description'] = row['abstract_unchanged'].replace('\r\n', '\n')
             # FIXME: types here are CV, need to expand to accommodate stripped desc
             if row['abstract_unchanged'] != row['abstract']:
-                newrec['metadata']['additional_descriptions'].append(
+                newrec['metadata'].setdefault('additional_descriptions', []
+                                              ).append(
                     {"description": row['abstract'].replace('\r\n', '\n'),
                     "type": {
                         "id": "other",
-                        "title": {"en": "Primary description with HTML stripped"}
+                        "title": {"en": "Other"}
                     }
                     }
                 )
 
             # Notes
             if row['notes']:
-                newrec['custom_fields'].setdefault('kcr:notes', []).append(
-                    {'note_text': row['notes_unchanged'],
-                     'note_text_sanitized': row['notes'],
-                     'note_description': 'general'
-                     }
-                )
+                newrec['custom_fields']['kcr:notes'] = row['notes_unchanged']
 
             # Resource type
             newrec, bad_data = _add_resource_type(newrec,
@@ -738,7 +710,7 @@ def serialize_json() -> tuple[list[dict], dict]:
             if row['deposit_doi']:
                 newrec.setdefault('pids', {})[
                     'doi'] = {"identifier": row['deposit_doi'].replace('doi:', ''),
-                              "provider": "datacite",
+                              "provider": "external",
                               "client": "datacite"}
                 newrec['metadata'].setdefault('identifiers', []).append(
                     {"identifier": row["deposit_doi"].replace('doi:', ''),
@@ -748,16 +720,11 @@ def serialize_json() -> tuple[list[dict], dict]:
                 # FIXME: hc:24459 is getting description as doi value
                 if len(row['doi']) < 40:
                     newrec['metadata'].setdefault('identifiers', []).append(
-                        {"identifier": row['doi'],
+                        {"identifier": row["doi"].replace("https://doi.org/", ""),
                         "scheme": "doi"}
                     )
                 else:
                     _append_bad_data(row['id'], ('doi too long', row['doi']), bad_data_dict)
-            if row['handle']:
-                newrec['metadata'].setdefault('identifiers', []).append(
-                    {"identifier": row['handle'].replace('http://dx.', 'https://'),
-                     "scheme": "url"}
-                )
             if row['url']:
                 my_urls = re.split(r' and |;', row['url'])
                 for url in my_urls:
@@ -770,14 +737,22 @@ def serialize_json() -> tuple[list[dict], dict]:
                     else:
                         # print(row['id'], url)
                         pass
+            if row['handle'] and not any(n for n in
+                                         newrec['metadata']['identifiers']
+                                         if n['scheme']=='url'):
+                newrec['metadata'].setdefault('identifiers', []).append(
+                    {"identifier": row['handle'].replace('http://dx.', 'https://'),
+                     "scheme": "url"}
+                )
 
             # Language info
             # FIXME: Deal with all of these exceptions and the 'else' condition
             if row['language']:
                 if row['language'] == 'Greek':
                     row['language'] = 'Greek, Modern (1453-)'
-                mylang = iso639.Language.from_name(row['language']).part3
-                newrec['metadata']['languages'] = [{"id": mylang}]
+                mylang = iso639.Language.from_name(row['language'])
+                newrec['metadata']['languages'] = [{"id": mylang.part3,
+                                                    "title": {"en": mylang.name}}]
             else:
                 exceptions = [
                     'hc:11565', 'hc:48435', 'hc:48455', 'hc:11007', 'hc:11263', 'hc:11481', 'hc:12907', 'hc:13285', 'hc:13321', 'hc:13347', 'hc:13351', 'hc:13353', 'hc:13377', 'hc:13381', 'hc:13461', 'hc:13469', 'hc:13477', 'hc:13479', 'hc:13503', 'hc:13505', 'hc:13507', 'hc:13539', 'hc:13569', 'hc:13571', 'hc:13577', 'hc:13601', 'hc:13643', 'hc:13651', 'hc:13673', 'hc:13715', 'hc:13785', 'hc:13823', 'hc:13841', 'hc:13847', 'hc:13939', 'hc:13995', 'hc:13997', 'hc:14007', 'hc:14065', 'hc:14089', 'hc:14093', 'hc:14167', 'hc:14169', 'hc:14171', 'hc:14173', 'hc:14175', 'hc:14179', 'hc:14183', 'hc:14187', 'hc:14189', 'hc:14193', 'hc:14195', 'hc:14207', 'hc:14269', 'hc:14271', 'hc:14285', 'hc:14331', 'hc:14333', 'hc:14343', 'hc:14345', 'hc:14393', 'hc:14405', 'hc:14407', 'hc:14421', 'hc:14425', 'hc:14427', 'hc:14433', 'hc:14435', 'hc:14437', 'hc:14439', 'hc:14461', 'hc:14463', 'hc:14465', 'hc:14467', 'hc:14469',
@@ -804,7 +779,8 @@ def serialize_json() -> tuple[list[dict], dict]:
 
                 if (lang1[0]['code'] == 'en' and lang2 and
                         lang2[0]['code'] == 'en'):
-                    newrec['metadata']['languages'] = [{"id": 'eng'}]
+                    newrec['metadata']['languages'] = [{"id": 'eng',
+                                                        "title": {"en": "English"}}]
                 elif lang1[0]['prob'] > 0.99 and row['id'] not in exceptions:
                     newrec['metadata']['languages'] = [{"id": lang1[0]['code']}]
                 elif (lang1[0]['prob'] < 0.9 and lang2 and
@@ -854,7 +830,7 @@ def serialize_json() -> tuple[list[dict], dict]:
             # ORiginal submitter
             if row['submitter']:
                 try:
-                    row['submitter'] = int(row['submitter'])
+                    row['submitter'] = str(row['submitter'])
                     # Doesn't work because not Invenio user id
                     newrec['parent']['access']['owned_by'].append(
                         {'user': row['submitter']}
@@ -885,7 +861,9 @@ def serialize_json() -> tuple[list[dict], dict]:
                 if valid_date(row['date']):
                     newrec['metadata'].setdefault('dates', []).append(
                         { "date": row['date'],
-                            "type": { "id": "issued", "title": { "en": "Issued" } },
+                            "type": { "id": "issued",
+                                      "title": { "en": "Issued",
+                                                 'de': 'Veröffentlicht' } },
                             "description": "Human readable publication date" }
                     )
                 else:
@@ -899,7 +877,9 @@ def serialize_json() -> tuple[list[dict], dict]:
                                 bad_data_dict)
                     newrec['metadata'].setdefault('dates', []).append(
                         { "date": mydate,
-                            "type": { "id": "issued", "title": { "en": "Issued" } },
+                            "type": { "id": "issued",
+                                      "title": { "en": "Issued",
+                                                 'de': 'Veröffentlicht' } },
                             "description": "Human readable publication date" }
                     )
 
@@ -952,8 +932,7 @@ def serialize_json() -> tuple[list[dict], dict]:
                 # print(row['book_author'])
                 book_names, bad_data_dict = _add_book_authors(
                     row['book_author'], bad_data_dict, row['id'])
-                newrec['custom_fields']['imprint:imprint'][
-                    'creators'] = book_names
+                newrec['metadata'].setdefault('contributors', []).extend(book_names)
 
             # volume info
             # FIXME: distinguish volume meaning for ambiguous resource types
@@ -975,8 +954,7 @@ def serialize_json() -> tuple[list[dict], dict]:
 
                 # FIXME: make isbn a list
                 # FIXME: still record invalid isbns?
-                newrec['custom_fields'].setdefault('imprint:imprint', {}
-                                                   )['isbn'] = []
+                isbn_list = []
                 for i in isbn:
                     checked_i = valid_isbn(i)
                     if not checked_i:
@@ -986,8 +964,14 @@ def serialize_json() -> tuple[list[dict], dict]:
                                         ('invalid isbn', row['isbn']),
                                         bad_data_dict)
                     else:
-                        newrec['custom_fields'][
-                            'imprint:imprint']['isbn'].append(checked_i)
+                        isbn_list.append(checked_i)
+                if len(isbn_list) > 0:
+                    newrec['custom_fields'].setdefault('imprint:imprint', {}
+                                                    )['isbn'] = isbn_list[0]
+                    if len(isbn_list) > 1:
+                        for i in isbn_list[1:]:
+                            newrec['metadata'].setdefault('identifiers', []
+                                ).append({'identifier': i, 'scheme': 'isbn'})
 
             # Handle missing publishers?
             if row['publisher']:
@@ -1222,6 +1206,8 @@ def serialize_json() -> tuple[list[dict], dict]:
                                     'Polish studies'
                                     ]
                 bad_subjects = {
+                    '1411635:Criticism, interpretation, etc.:topical': "1411635:Criticism, interpretation, etc.:form",
+                    '863509:Classsical literature:topical': '863509:Classical literature:topical',
                     'Art history': "815264:Art--History:topical",
                     'Medieval literature': "1000151:Literature, Medieval:topical",
                     'Literary theory':
@@ -1352,13 +1338,14 @@ def serialize_json() -> tuple[list[dict], dict]:
                     {
                     "id": license_id,
                     "props": {
-                        "scheme": "spdx",
                         "url": license_url
                     },
                     "title": {"en": license_name},
                     "description": {"en": ""}
                     }
                 )
+                if license_id != 'arr':
+                    newrec['metadata']['rights'][0]['props']['scheme'] = 'spdx'
 
         # pprint([r for r in newrec_list if r['metadata']['resource_type']['id'] == 'publication:journalArticle'])
 
