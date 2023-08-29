@@ -1,0 +1,37 @@
+{%- extends "invenio_theme/page.html" %}
+
+{% block page_body %}
+    <div id="task-results-page" class="ui container">
+        <h1>Asynchronous task results</h1>
+        {% block root_section %}
+            <div id="root-container" class="panel-body">
+                <table>
+                <tr>
+                    <td>id</td>
+                    <td>{{ task_result.id }}</td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>{{ task_result.status }}</td>
+                </tr>
+                <tr>
+                    <td>successful</td>
+                    <td>{{ task_result.successful() }}</td>
+                </tr>
+                <tr>
+                    <td>failed</td>
+                    <td>{{ task_result.failed() }}</td>
+                </tr>
+                <tr>
+                    <td>value</td>
+                    <td>{{ task_result.result if task_result.ready() else None }},</td>
+                </tr>
+                </table>
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ super() }}
+{% endblock %}
