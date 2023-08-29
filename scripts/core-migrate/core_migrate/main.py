@@ -33,6 +33,7 @@ from core_migrate.record_loader import (
     delete_records_from_invenio
 )
 from core_migrate.fedora_fetcher import fetch_fedora_records
+from core_migrate.utils import logger
 
 
 @click.group()
@@ -49,7 +50,7 @@ def serialize_command_wrapper():
 
 
 @cli.command(name="load")
-@click.argument("start", default=0)
+@click.argument("start", default=1)
 @click.argument("stop", default=-1)
 def load_records(start, stop):
     """
@@ -59,6 +60,17 @@ def load_records(start, stop):
     records to the correct domain communities, create new Invenio users
     corresponding to the HC users who uploaded the original deposits,
     and transfer ownership of the Invenio record to the correct users.
+
+    An integer range can be specified to load only a subset of the
+    records. The first integer argument is the first record to load (
+    starting at 1). The second integer argument (optional) is the last
+    record to load. For example, to load only the first 100 records, run:
+
+    core-migrate load 1 100
+
+    Or to load all records after the first 100, run:
+
+    core-migrate load 101
     """
     load_records_into_invenio(start, stop)
 
@@ -67,12 +79,7 @@ def load_records(start, stop):
 @click.argument("records", nargs=-1)
 def delete_records(records):
     """
-    Load all serialized CORE deposits into InvenioRDM as new records.
-
-    Where necessary, create top-level domain communities, assign the
-    records to the correct domain communities, create new Invenio users
-    corresponding to the HC users who uploaded the original deposits,
-    and transfer ownership of the Invenio record to the correct users.
+    Delete one or more records from InvenioRDM by record id.
     """
     delete_records_from_invenio(records)
 
@@ -88,6 +95,8 @@ def delete_records(records):
 def fetch_fedora(query:Optional[str], protocol:str, pid:Optional[str],
                  terms:Optional[str], fields: Optional[str], count:int
                  ) -> list[dict]:
+    """Deprecated: Fetch records from the Fedora repository.
+    """
     fetch_fedora_records(query, protocol, pid, terms, fields, count)
 
 

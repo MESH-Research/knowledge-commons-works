@@ -1,3 +1,4 @@
+from halo import Halo
 import json
 import jsonlines
 from pathlib import Path
@@ -5,6 +6,7 @@ import requests
 import subprocess
 from traceback import print_exc
 from typing import Optional, Union
+import urllib
 import os
 from pprint import pprint
 import re
@@ -15,7 +17,7 @@ from core_migrate.config import (
     FILES_LOCATION,
     SERVER_DOMAIN
 )
-from core_migrate.utils import valid_date, generate_random_string
+from core_migrate.utils import logger, valid_date, compare_metadata
 
 
 def api_request(method:str='GET', endpoint:str='records', server:str='',
@@ -57,7 +59,7 @@ def api_request(method:str='GET', endpoint:str='records', server:str='',
     # files = {'file': ('report.xls', open('report.xls', 'rb'), 'application/vnd.ms-excel', {'Expires': '0'})}
     if debug:
         print(f'request to {api_url}')
-        print(f'headers: {headers}')
+        # print(f'headers: {headers}')
         print(f'params: {params}')
         print(f'payload_args: {payload_args}')
     response = callfunc(api_url, headers=headers, params=params,
@@ -69,26 +71,50 @@ def api_request(method:str='GET', endpoint:str='records', server:str='',
             'json': response.json() if method != 'DELETE' else None,
             'text': response.text}
 
-
 def create_invenio_record(metadata:dict, server:str='',
                           token:str='', secure:bool=False) -> dict:
     """
     Create a new Invenio record from the provided dictionary of metadata
     """
     debug = GLOBAL_DEBUG or True
-    # FIXME: create necessary user account and community?
     if debug: print('~~~~~~~~')
     if debug: pprint(metadata)
 
+    # Check for existing record with same DOI
+    if 'pids' in metadata.keys() and 'doi' in metadata['pids'].keys():
+        my_doi = metadata['pids']["doi"]['identifier']
+        doi_for_query = my_doi.split('/')
+        same_doi = api_request(method='GET', endpoint=f'records?q=pids.doi.identifier%3D%22{doi_for_query[0]}%2F{doi_for_query[1]}%22', params={})
+        if same_doi['status_code'] not in [200, 404]:
+            raise requests.HTTPError(same_doi)
+
+        if same_doi['status_code'] == 200 and \
+                same_doi['json']['hits']['total'] > 0:
+            print('Found existing record with same DOI...')
+            logger.info('    found existing record with same DOI...')
+            existing_metadata = same_doi['json']['hits']['hits'][0]
+            # Check for differences in metadata
+            differences = compare_metadata(existing_metadata, metadata)
+            if differences:
+                # TODO: Create new version as draft
+                raise RuntimeError(f'Existing record with same DOI has different metadata: {differences}')
+            if not differences:
+                logger.info('    continuing with existing (same metadata)...')
+                result =  {'status_code': 201,
+                        'headers': 'existing record with same DOI and same data',
+                        'json': existing_metadata,
+                        'text': existing_metadata}
+                return(result)
+
     # Make draft and publish
+    logger.info('    creating new draft record...')
     result = api_request(method='POST', endpoint='records',
-                         json_dict=metadata)
+                        json_dict=metadata)
     if result['status_code'] != 201:
         raise requests.HTTPError(result)
     publish_link = result['json']["links"]["publish"]
     if debug: print('publish link:', publish_link)
-
-    # FIXME: upload files here and then publish the draft?
+    if debug: pprint(result['json'])
 
     return(result)
 
@@ -447,6 +473,7 @@ def create_full_invenio_record(core_data:dict) -> dict:
     Create an invenio record with file uploads, ownership, communities.
     """
     debug = GLOBAL_DEBUG or True
+    existing_record = None
     result = {}
     file_data = core_data['files']
     submitted_data = {'custom_fields': core_data['custom_fields'],
@@ -469,6 +496,7 @@ def create_full_invenio_record(core_data:dict) -> dict:
     # ]
 
     # Create/find the necessary domain communities
+    logger.info('    finding or creating community...')
     if 'kcr:commons_domain' in core_data['custom_fields'].keys() \
             and core_data['custom_fields']['kcr:commons_domain']:
         community_label = core_data['custom_fields']['kcr:commons_domain'].split('.')
@@ -490,77 +518,103 @@ def create_full_invenio_record(core_data:dict) -> dict:
         result['community'] = community_check
 
     # Create the basic metadata record
+    logger.info('    finding or creating draft metadata record...')
     metadata_record = create_invenio_record(core_data)
     result['metadata_record_created'] = metadata_record
+    if metadata_record['headers'] == 'existing record with same DOI and same data':
+        existing_record = metadata_record['json']
     # if debug: print('#### metadata_record')
     # if debug: pprint(metadata_record)
     draft_id = metadata_record['json']['id']
 
     # Upload the files
-    my_files = {}
-    for k, v in file_data['entries'].items():
-        my_files[v['key']] = metadata_record['json']['custom_fields'
-                                                     ]['hclegacy:file_location']
-    uploaded_files = upload_draft_files(draft_id=draft_id, files_dict=my_files)
-    # if debug: print('@@@@ uploaded_files')
-    # if debug: pprint(uploaded_files)
-    result['uploaded_files'] = uploaded_files
+    logger.info('    uploading files for draft...')
+    if existing_record:
+        same_files = True
+        if len(metadata_record['json']['files']['entries']) == 0:
+            same_files = False
+            logger.info('    no files attached to existing record')
+        for k, v in core_data['files']['entries'].items():
+            existing_files = metadata_record['json']['files']['entries'][k]
+            if v['key'] != existing_files['key'] or \
+                    str(v['size']) != str(existing_files['size']):
+                same_files = False
+        if same_files:
+            logger.info('    skipping uploading files (same already uploaded)...')
+        else:
+            raise RuntimeError(f'Existing record with same DOI has different files.\n{metadata_record["json"]["files"]["entries"]}\n !=\n {core_data["files"]["entries"]}')
+    else:
+        my_files = {}
+        for k, v in file_data['entries'].items():
+            my_files[v['key']] = metadata_record['json']['custom_fields'
+                                                        ]['hclegacy:file_location']
+        uploaded_files = upload_draft_files(draft_id=draft_id, files_dict=my_files)
+        # if debug: print('@@@@ uploaded_files')
+        # if debug: pprint(uploaded_files)
+        result['uploaded_files'] = uploaded_files
 
 
     # Attach the record to the communities
-    review_body = {"receiver":
-                   {"community": f'{community_id}'},"type":"community-submission"}
-    request_to_community = api_request('PUT', endpoint='records',
-        args=f'{draft_id}/draft/review', json_dict=review_body)
-    # if debug: print('&&&& request_to_community')
-    # if debug: pprint(request_to_community)
-    assert request_to_community['status_code'] == 200
-    submit_url = request_to_community['json']['links']['actions']['submit']
-    # if debug: print(submit_url)
-    request_id = request_to_community['json']['id']
-    request_community = request_to_community['json']['receiver']['community']
-    assert request_community == community_id
-    result['request_to_community'] = request_to_community
+    if existing_record and existing_record['is_draft'] != True:
+        if community_id in existing_record['parent']['communities']['ids']:
+            logger.info('    skipping attaching the record to the community (already published)...')
+        else:
+            raise RuntimeError('Existing published record with same DOI has different communities.')
+    else:
+        logger.info('    attaching the record to the community...')
+        review_body = {"receiver":
+                    {"community": f'{community_id}'},"type":"community-submission"}
+        request_to_community = api_request('PUT', endpoint='records',
+            args=f'{draft_id}/draft/review', json_dict=review_body)
+        # if debug: print('&&&& request_to_community')
+        # if debug: pprint(request_to_community)
+        assert request_to_community['status_code'] == 200
+        # submit_url = request_to_community['json']['links']['actions']['submit']
+        # if debug: print(submit_url)
+        request_id = request_to_community['json']['id']
+        request_community = request_to_community['json']['receiver']['community']
+        assert request_community == community_id
+        result['request_to_community'] = request_to_community
 
-    submitted_body = {"payload": {
-                         "content": "Thank you in advance for the review.",
-                         "format": "html"
-                      }
-    }
-    review_submitted = api_request('POST', endpoint='requests',
-        args=f'{request_id}/actions/submit',
-        json_dict=submitted_body)
-    result['review_submitted'] = review_submitted
-    if debug: print('!!!!!!')
-    if debug: pprint(review_submitted)
-    if debug: pprint('%%%%%')
-    if debug: print(submitted_data['metadata'])
-    assert review_submitted['status_code'] == 200
-
-    review_accepted = api_request('POST', endpoint='requests',
-        args=f'{request_id}/actions/accept',
-        json_dict={})
-    if debug: print('!!!!!!')
-    if debug: pprint(review_accepted)
-    if review_accepted['status_code'] != 200:
-        invite = {
-            "members":[
-                {
-                    "id":"3",
-                    "type":"user"
-                }
-            ],
-            "role":"owner",
-            "message":"<p>Hi</p>"
+        submitted_body = {"payload": {
+                            "content": "Thank you in advance for the review.",
+                            "format": "html"
+                        }
         }
-        send_invite = api_request('POST', endpoint='communities',
-                                  args=f'{community_id}/invitations',
-                                  json_dict=invite,
-                                  token="ehdWRDeM9ZSkwxwTZEPDnbZCdWYIaDa4YXxRcFJ61oQLvWy5OK1czlIoVoxd")
-        print(send_invite)
+        review_submitted = api_request('POST', endpoint='requests',
+            args=f'{request_id}/actions/submit',
+            json_dict=submitted_body)
+        result['review_submitted'] = review_submitted
+        if debug: print('!!!!!!')
+        if debug: pprint(review_submitted)
+        if debug: pprint('%%%%%')
+        if debug: print(submitted_data['metadata'])
+        assert review_submitted['status_code'] == 200
 
-    assert review_accepted['status_code'] == 200
-    result['review_accepted'] = review_accepted
+        review_accepted = api_request('POST', endpoint='requests',
+            args=f'{request_id}/actions/accept',
+            json_dict={})
+        if debug: print('!!!!!!')
+        if debug: pprint(review_accepted)
+        if review_accepted['status_code'] != 200:
+            invite = {
+                "members":[
+                    {
+                        "id":"3",
+                        "type":"user"
+                    }
+                ],
+                "role":"owner",
+                "message":"<p>Hi</p>"
+            }
+            send_invite = api_request('POST', endpoint='communities',
+                                    args=f'{community_id}/invitations',
+                                    json_dict=invite,
+                                    token="ehdWRDeM9ZSkwxwTZEPDnbZCdWYIaDa4YXxRcFJ61oQLvWy5OK1czlIoVoxd")
+            print(send_invite)
+
+        assert review_accepted['status_code'] == 200
+        result['review_accepted'] = review_accepted
 
     # Publish the record (BELOW NOT NECESSARY BECAUSE PUBLISHED
     # AT COMMUNITY REVIEW ACCEPTANCE)
@@ -572,45 +626,100 @@ def create_full_invenio_record(core_data:dict) -> dict:
     # assert published['status_code'] == 202
 
     # Create/find the necessary user account
+    logger.info('    creating or finding the user (submitter)...')
+    # TODO: Make sure this will be the same email used for SAML login
     new_owner_email = core_data['custom_fields']['kcr:submitter_email']
     created_user = create_invenio_user(new_owner_email)
-    result['created_user'] = created_user
     new_owner_id = created_user['user_id']
 
-    # Change the ownership of the record
-    current_owner_id = get_invenio_user('scottia4@msu.edu')
-    changed_ownership = change_record_ownership(draft_id, new_owner_id,
-                                                current_owner_id)
-    result.setdefault('changed_ownership', {})['return_code'] = changed_ownership
-    assert changed_ownership == 0
-    if debug: print('++++++++')
-    if debug: pprint(changed_ownership)
+    if existing_record and \
+            existing_record['custom_fields']['kcr:submitter_email'
+                                            ] == new_owner_email \
+            and existing_record['parent']['access']['owned_by'][0]['user'] == new_owner_id:
+        logger.info(f'    skipping re-assigning ownership of the record ')
+        logger.info(f'    (already belongs to {new_owner_email}, '
+                    f'user {new_owner_id})...')
+    else:
+        result['created_user'] = created_user
 
+        # Change the ownership of the record
+        logger.info(f'    re-assigning ownership of the record to the '
+                    f'submitter ({new_owner_email}, '
+                    f'{new_owner_id})...')
+        current_owner_id = get_invenio_user('scottia4@msu.edu')
+        changed_ownership = change_record_ownership(draft_id, new_owner_id,
+                                                    current_owner_id)
+        result.setdefault('changed_ownership', {})['return_code'] = changed_ownership
+        assert changed_ownership == 0
+        if debug: print('++++++++')
+        if debug: pprint(changed_ownership)
+
+    result['existing_record'] = existing_record
     return(result)
 
 
-def load_records_into_invenio(start:int=0, stop:int=-1) -> None:
+def load_records_into_invenio(start:int=1, stop:int=-1) -> None:
     """
     Create new InvenioRDM records (including deposit files) for serialized CORE deposits.
     """
     record_counter = 0
+    failed_records = []
+    successful_records = 0
+    new_records = 0
     args = [start]
     if stop > -1:
-        args.append(stop)
-    'Starting to load records into Invenio...'
+        args.append(stop + 1)
+
+    logger.info('Starting to load records into Invenio...')
+    stop_string = '' if stop == -1 else f' to {stop}'
+    logger.info(f'Loading records from {str(start) + stop_string}...')
+
     with jsonlines.open(Path(__file__).parent / 'data' /
                         'serialized_core_data.jsonl', "r") as json_source:
         import itertools
         top = itertools.islice(json_source, *args)
         for rec in top:
-            print(f'*****starting record {record_counter}')
-            pprint(rec)
-            create_full_invenio_record(rec)
+            current_record = start + record_counter
+            rec_doi = rec["pids"]["doi"]["identifier"]
+            rec_hcid = [r for r in rec['metadata']['identifiers'] if r['scheme'] == 'hclegacy-pid'][0]['identifier']
+            rec_recid = [r for r in rec['metadata']['identifiers'] if r['scheme'] == 'hclegacy-record-id'][0]['identifier']
+            logger.info(f'....starting to load record {current_record}')
+            logger.info(f'    {rec_doi} {rec_hcid} {rec_recid}')
+            spinner = Halo(
+                text=f'    Loading record {current_record}', spinner='dots')
+            spinner.start()
+            try:
+                result = create_full_invenio_record(rec)
+                print(f'    loaded record {current_record}')
+                successful_records += 1
+                if not result['existing_record']:
+                    new_records += 1
+            except Exception as e:
+                print('ERROR:', e)
+                print_exc()
+                logger.error(f'ERROR: {e}')
+                logger.error(f'ERROR: {print_exc()}')
+                failed_records.append((f'index {current_record}',
+                                       rec_doi, rec_hcid, rec_recid))
+            spinner.stop()
+            logger.info(f'....done with record {current_record}')
             record_counter += 1
-            print(f'=====loaded record index {start + record_counter}')
+
     print('Finished!')
-    print(f'Created {str(record_counter)} records in InvenioRDM '
-          '({start} to {start + record_counter})')
+    logger.info('All done loading records into InvenioRDM')
+    message = (f'Processed {str(record_counter)} records in InvenioRDM '
+               f'({start} to {start + record_counter - 1}) \n'
+               f'    {str(successful_records)} successful \n'
+               f'    {str(new_records)} successful \n'
+               f'    {str(successful_records - new_records)} already existed \n'
+               f'    {str(len(failed_records))} failed \n'
+               )
+    print(message)
+    logger.info(message)
+    if failed_records:
+        logger.info('Failed records:')
+        for r in failed_records:
+            logger.info(r)
 
 
 def delete_records_from_invenio(record_ids):

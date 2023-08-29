@@ -13,10 +13,20 @@ Utility functions for core-migrate
 
 from datetime import datetime
 from isbnlib import is_isbn10, is_isbn13, clean
+import logging
 import random
 import re
 import string
 from typing import Union
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s:%(levelname)s : %(message)s')
+file_handler = logging.FileHandler('logs/core_migrate.log')
+file_handler.setFormatter(formatter)
+if (logger.hasHandlers()):
+    logger.handlers.clear()
+logger.addHandler(file_handler)
 
 def generate_random_string(length):
     """
@@ -62,7 +72,8 @@ def valid_date(datestring:str) -> bool:
     try:
         datetime.fromisoformat(datestring.replace('Z', '+00:00'))
     except:
-        print(f'couldn\'t parse {datestring}')
+        # FIXME: parse some of these datestrings
+        # print(f'couldn\'t parse {datestring}')
         try:
             # TODO: This only handles single years, year-months,
             # or year-month-days. Do we need ranges?
@@ -71,3 +82,281 @@ def valid_date(datestring:str) -> bool:
         except:
             return False
     return True
+
+def compare_metadata(A:dict, B:dict) -> dict:
+    """
+    Compare two Invenio records and return a dictionary of differences.
+    """
+    output = {"A": {},
+              "B": {}}
+
+    def obj_list_compare(list_name, key, a, b, comparators):
+        out = {}
+        if list_name not in a.keys():
+            a[list_name] = []
+        existing_items = [i[key] for i in a[list_name]]
+        for i in b[list_name]:
+            if i[key] not in existing_items:
+                out.setdefault("A", []).append({})
+                out.setdefault("B", []).append(i)
+            else:
+                same = True
+                i_2 = [i2 for i2 in a[list_name]
+                        if i2[key] == i[key]][0]
+                for k in comparators:
+                    if i[k] != i_2[k]:
+                        same = False
+                if not same:
+                    out.setdefault("A", []).append(i_2)
+                    out.setdefault("B", []).append(i)
+        return out
+
+    def compare_people(list_a, list_b):
+        existing_people = [c["person_or_org"]["name"] for c in list_a]
+        people_diff = {}
+        for c in list_b:
+            if c['person_or_org']['name'] not in existing_people:
+                people_diff.setdefault("A", []).append({})
+                people_diff.setdefault("B", []).append(c)
+            else:
+                same = True
+                c_2 = [c2 for c2 in list_a
+                        if c2["person_or_org"
+                                ]["name"] == c["person_or_org"]["name"]][0]
+                for k in c["person_or_org"].keys():
+                    if k not in c_2["person_or_org"].keys() or \
+                            c["person_or_org"][k] != c_2["person_or_org"][k]:
+                        same = False
+                if "role" not in c_2.keys() or \
+                        c["role"]["id"] != c_2["role"]["id"]:
+                    same = False
+                if not same:
+                    people_diff.setdefault("A", []).append(c_2)
+                    people_diff.setdefault("B", []).append(c)
+        return people_diff
+
+    if "pids" in B.keys():
+        pids_diff = {"A": {}, "B": {}}
+        if B["pids"]["doi"]["identifier"] != \
+                A["pids"]["doi"]["identifier"]:
+            pids_diff["A"] = {"doi": A["pids"]["doi"]["identifier"]}
+            pids_diff["B"] = {"doi": B["pids"]["doi"]["identifier"]}
+        if pids_diff["A"] or pids_diff["B"]:
+            output["A"]["pids"] = pids_diff["A"]
+            output["B"]["pids"] = pids_diff["B"]
+
+    if "metadata" in B.keys():
+        meta_diff = {"A": {}, "B": {}}
+        meta_a = A["metadata"]
+        meta_b = B["metadata"]
+
+        simple_fields = ["title", "publication_date", "version", "description",
+                         "publisher"]
+        for s in simple_fields:
+            if s in meta_b.keys():
+                if s in meta_b.keys():
+                    if _normalize_punctuation(meta_b[s]) != _normalize_punctuation(meta_a[s]):
+                        meta_diff["A"][s] = meta_a[s]
+                        meta_diff["B"][s] = meta_b[s]
+                else:
+                    meta_diff["A"][s] = meta_a[s]
+                    meta_diff["B"][s] = None
+
+        if meta_b["resource_type"]["id"] != \
+                meta_a["resource_type"]["id"]:
+            meta_diff["A"]["resource_type"] = meta_a["resource_type"]
+            meta_diff["B"]["resource_type"] = meta_b["resource_type"]
+
+        creators_comp = compare_people(meta_a["creators"], meta_b["creators"])
+        if creators_comp:
+            meta_diff["A"]["creators"] = creators_comp["A"]
+            meta_diff["B"]["creators"] = creators_comp["B"]
+
+        if "contributors" in meta_b.keys():
+            if "contributors" not in meta_a.keys():
+                meta_a["contributors"] = []
+            comp = compare_people(meta_a["contributors"],
+                                  meta_b["contributors"])
+            if comp:
+                meta_diff["A"]["contributors"] = comp["A"]
+                meta_diff["B"]["contributors"] = comp["B"]
+
+        if "additional_titles" in meta_b.keys():
+            if "additional_titles" not in meta_a.keys():
+                meta_a["additional_titles"] = []
+            existing_titles = [t["title"] for t in
+                               meta_a["additional_titles"]]
+            for t in meta_b["additional_titles"]:
+                if t['title'] not in existing_titles:
+                    meta_diff["A"].setdefault("additional_titles", []).append({})
+                    meta_diff["B"].setdefault("additional_titles", []).append(t)
+                else:
+                    same = True
+                    t_2 = [t2 for t2 in meta_a["additional_titles"]
+                            if t2["title"] == t["title"]][0]
+                    if t['title'] != t_2['title'] or \
+                            t['type']['id'] != t_2['type']['id']:
+                        same = False
+                    if not same:
+                        meta_diff["A"].setdefault("additional_titles", []).append(t_2)
+                        meta_diff["B"].setdefault("additional_titles", []).append(t)
+
+        if "identifiers" in meta_b.keys():
+            comp = obj_list_compare("identifiers", "identifier", meta_a, meta_b, ["identifier", "scheme"])
+            if comp:
+                meta_diff["A"]["identifiers"] = comp["A"]
+                meta_diff["B"]["identifiers"] = comp["B"]
+
+        if "languages" in meta_b.keys():
+            comp = obj_list_compare("languages", "id", meta_a, meta_b, ["id"])
+            if comp:
+                meta_diff["A"]["languages"] = comp["A"]
+                meta_diff["B"]["languages"] = comp["B"]
+
+        if "additional_descriptions" in meta_b.keys():
+            comp = obj_list_compare("additional_descriptions", "description",
+                                    meta_a, meta_b, ["description"])
+            if comp:
+                meta_diff["A"]["additional_descriptions"] = comp["A"]
+                meta_diff["B"]["additional_descriptions"] = comp["B"]
+
+        if "subjects" in meta_b.keys():
+            comp = obj_list_compare("subjects", "subject",
+                                    meta_a, meta_b, ["id", "subject", "scheme"])
+            if comp:
+                meta_diff["A"]["subjects"] = comp["A"]
+                meta_diff["B"]["subjects"] = comp["B"]
+
+        if meta_diff["A"] or meta_diff["B"]:
+            output["A"]["metadata"] = meta_diff["A"]
+            output["B"]["metadata"] = meta_diff["B"]
+
+    if "custom_fields" in B.keys():
+        custom_a = A["custom_fields"]
+        custom_b = B["custom_fields"]
+        custom_diff = {"A": {}, "B": {}}
+
+        simple_fields = ["hclegacy:collection",
+                         "hclegacy:file_location",
+                         "hclegacy:file_pid",
+                         "hclegacy:previously_published",
+                         "hclegacy:record_change_date",
+                         "hclegacy:record_creation_date",
+                         "hclegacy:submitter_affiliation",
+                         "hclegacy:submitter_id",
+                         "hclegacy:submitter_org_memberships",
+                         "hclegacy:submitter_username",
+                         "kcr:chapter_label",
+                         "kcr:commons_domain",
+                         "kcr:submitter_email",
+                         "kcr:submitter_username",
+                         "kcr:user_defined_tags"]
+
+        for s in simple_fields:
+            if s in custom_b.keys():
+                same = True
+                if s in custom_a.keys():
+                    if custom_b[s] != custom_a[s]:
+                        same = False
+                else:
+                    same = False
+                    custom_a[s] = None
+                if not same:
+                    custom_diff["A"][s] = custom_a[s]
+                    custom_diff["B"][s] = custom_b[s]
+
+        if "hclegacy:groups_for_deposit" in custom_b.keys():
+            comp = obj_list_compare("hclegacy:groups_for_deposit",
+                "group_name",
+                custom_a,
+                custom_b,
+                ["group_name", "group_identifier"]
+            )
+            if comp:
+                custom_diff["A"]["hclegacy:groups_for_deposit"] = comp["A"]
+                custom_diff["B"]["hclegacy:groups_for_deposit"] = comp["B"]
+
+        if 'imprint:imprint' in custom_b.keys():
+            if 'imprint:imprint' not in custom_a.keys():
+                custom_a['imprint:imprint'] = {}
+            same = True
+            for k in ['pages', 'isbn', 'title']:
+                if k in custom_b['imprint:imprint'].keys():
+                    if k in custom_a['imprint:imprint'].keys():
+                        if custom_b['imprint:imprint'][k] != custom_b['imprint:imprint'][k]:
+                            same = False
+                    else:
+                        same = False
+                        custom_a['imprint:imprint'][k] = None
+
+            if 'creators' in B['custom_fields']['imprint:imprint'].keys():
+                ci_comp = compare_people(
+                    custom_a['imprint:imprint']['creators'],
+                    custom_b['imprint:imprint']['creators']
+                    )
+                if ci_comp:
+                    same = False
+
+            if not same:
+                custom_diff["A"]["imprint:imprint"] = custom_a["imprint:imprint"]
+                custom_diff["B"]["imprint:imprint"] = custom_b["imprint:imprint"]
+
+        if 'journal:journal' in custom_b.keys():
+            if 'journal:journal' not in custom_a.keys():
+                custom_a['journal:journal'] = {}
+            same = True
+            for k in ['issn', 'issue', 'pages', 'title']:
+                if k in custom_b['journal:journal'].keys():
+                    if k in custom_a['journal:journal'].keys():
+                        if custom_b['journal:journal'][k] != custom_b['journal:journal'][k]:
+                            same = False
+                    else:
+                        same = False
+                        custom_a['journal:journal'][k] = None
+            if not same:
+                custom_diff["A"]["journal:journal"] = custom_a["journal:journal"]
+                custom_diff["B"]["journal:journal"] = custom_b["journal:journal"]
+
+        if custom_diff["A"] or custom_diff["B"]:
+            output["A"]["metadata"] = custom_diff["A"]
+            output["B"]["metadata"] = custom_diff["B"]
+
+        return output if output["A"] or output["B"] else {}
+
+
+def _normalize_string(mystring:str) -> str:
+    mystring = mystring.casefold()
+    mystring = _clean_string(mystring)
+    mystring = _normalize_punctuation(mystring)
+    try:
+        if mystring[0] in ['"', "'"]:
+            mystring = mystring[1:]
+        if mystring[-1] in ['"', "'"]:
+            mystring = mystring[:-1]
+    except IndexError:
+        pass
+    return mystring
+
+def _normalize_punctuation(mystring:str) -> str:
+    mystring = mystring.replace('’', "'")
+    mystring = mystring.replace('“', "'")
+    mystring = mystring.replace('&amp;', '&')
+    mystring = mystring.replace("\'", "'")
+    mystring = mystring.replace('\"', '"')
+    mystring = mystring.replace('  ', ' ')
+    mystring = mystring.strip()
+    return mystring
+
+def _clean_string(mystring:str) -> str:
+    """
+    Remove unwanted characters from a string and return it.
+    """
+    if re.search(r"[\'\"]", mystring):
+        mystring = re.sub(r"\\+'", r"'", mystring)
+        mystring = re.sub(r'\\+"', r'"', mystring)
+    else:
+        mystring = re.sub(r'\\+', r'\\', mystring)
+    mystring = mystring.replace('  ', ' ')
+    return mystring
+
+
