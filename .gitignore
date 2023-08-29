@@ -71,6 +71,7 @@ test.db
 
 # Logs
 logs/*
+nohup.out
 
 # Invenio-cli per machine file
 .invenio.private
