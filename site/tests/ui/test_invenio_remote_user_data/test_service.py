@@ -1,10 +1,13 @@
+from flask import g
 from flask_security import login_user, logout_user
 from invenio_accounts.models import UserIdentity
+from invenio_accounts.testutils import login_user_via_session
 from invenio_utilities_tuw.utils import get_identity_for_user
 from knowledge_commons_repository.invenio_remote_user_data.components.groups import GroupsComponent
-from knowledge_commons_repository.invenio_remote_user_data.proxies import current_remote_user_data_service
+from knowledge_commons_repository.invenio_remote_user_data.proxies import current_remote_user_data_service as user_service
+import time
 
-def test_on_identity_changed(app, users, requests_mock):
+def test_on_identity_changed(client, app, users, requests_mock):
     """Test service initialization and signal triggers."""
     assert "invenio-remote-user-data" in app.extensions
     assert app.extensions["invenio-remote-user-data"].service
@@ -20,7 +23,7 @@ def test_on_identity_changed(app, users, requests_mock):
 
     # mock SAML login info for the test user and add them to new groups
     UserIdentity.create(users[0], "knowledgeCommons", "testuser")
-    grouper = GroupsComponent(current_remote_user_data_service)
+    grouper = GroupsComponent(user_service)
     grouper.create_new_group(group_name='cool-group')
     grouper.create_new_group(group_name='admin')
     grouper.add_user_to_group(group_name='cool-group', user=users[0])
@@ -28,21 +31,47 @@ def test_on_identity_changed(app, users, requests_mock):
 
     # log user in and check whether group memberships were updated
     login_user(users[0])
-    assert current_remote_user_data_service.updated_data == {'groups': ['admin', 'awesome-mock']}
+    login_user_via_session(client, email=users[0].email)
+    client.get('/')
+    my_identity = g.identity
+    # print(g.identity)
+    assert len([n.value for n in my_identity.provides
+                if n.value in ['admin', 'awesome-mock', 'any_user', 1, 'authenticated_user']]) == 5
+    assert len([n.value for n in my_identity.provides
+                if n.value not in ['admin', 'awesome-mock', 'any_user', 1, 'authenticated_user']]) == 0
 
     # log user out and check whether group memberships were updated
     logout_user()
-    assert current_remote_user_data_service.updated_data == {}
+    time.sleep(10)
+    client.get('/')
+    print(dir(client))
+    my_identity = g.identity
+    # print(my_identity)
+    assert len([n.value for n in my_identity.provides
+                if n.value in ['any_user']]) == 1
+    assert len([n.value for n in my_identity.provides
+                if n.value not in ['any_user']]) == 0
 
     # log a different user in without mocking SAML login (so like local)
     login_user(users[1])
-    assert current_remote_user_data_service.updated_data == {}
+    login_user_via_session(client, email=users[1].email)
+    time.sleep(10)
+    client.get('/')
+    my_identity = g.identity
+    print('$$$$$')
+    print(g.identity)
+    print(users[1])
+    print(get_identity_for_user(users[1].email))
+    assert len([n.value for n in my_identity.provides
+                if n.value in ['any_user', 2, 'authenticated_user']]) == 3
+    assert len([n.value for n in my_identity.provides
+                if n.value not in ['any_user', 2, 'authenticated_user']]) == 0
 
 def test_compare_remote_with_local(app, users):
     """Test comparison of remote and local user data."""
     test_remote_data = {'groups': [{'name': 'awesome-mock'},
                                    {'name': 'admin'}]}
-    grouper = GroupsComponent(current_remote_user_data_service)
+    grouper = GroupsComponent(user_service)
     grouper.create_new_group(group_name='cool-group')
     grouper.create_new_group(group_name='admin')
     grouper.add_user_to_group(group_name='cool-group', user=users[0])
@@ -53,7 +82,7 @@ def test_compare_remote_with_local(app, users):
         'added_groups': ['awesome-mock'],
     }}
 
-    actual_changed_data = current_remote_user_data_service.compare_remote_with_local(user=users[0], remote_data=test_remote_data)
+    actual_changed_data = user_service.compare_remote_with_local(user=users[0], remote_data=test_remote_data)
 
     assert actual_changed_data == expected_changed_data
 
@@ -68,14 +97,14 @@ def test_update_invenio_group_memberships(app, users, db):
     my_identity = get_identity_for_user(users[0].email)
 
     # set up starting roles and memberships
-    grouper = GroupsComponent(current_remote_user_data_service)
+    grouper = GroupsComponent(user_service)
     grouper.create_new_group(group_name='cool-group')
     grouper.create_new_group(group_name='admin')
     grouper.add_user_to_group('cool-group', users[0])
     grouper.add_user_to_group('admin', users[0])
 
-    actual_updated_memberships = current_remote_user_data_service.update_invenio_group_memberships(
-        my_identity, users[0], test_changed_memberships)
+    actual_updated_memberships = user_service.update_invenio_group_memberships(
+        users[0], test_changed_memberships)
 
     assert actual_updated_memberships == expected_updated_memberships
     assert [r for r in users[0].roles] == ['admin', 'awesome-mock']

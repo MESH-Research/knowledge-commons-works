@@ -1,12 +1,18 @@
-"""Celery background tasks."""
+# -*- coding: utf-8 -*-
+#
+# This file is part of the invenio-remote-user-data package.
+# Copyright (C) 2023, MESH Research.
+#
+# invenio-remote-user-data is free software; you can redistribute it
+# and/or modify it under the terms of the MIT License; see
+# LICENSE file for more details.
 
-from .proxies import current_remote_user_data_service
+"""Message queues."""
+
 from flask import current_app
 
 def declare_queues():
     """Update user data."""
-    print('%%%%%%%% declaring queues')
-    print(current_remote_user_data_service.config)
     return [
         {"name": "user-data-updates",
          "exchange": current_app.config["REMOTE_USER_DATA_MQ_EXCHANGE"]}

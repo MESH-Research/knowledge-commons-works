@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 MESH Research
+# This file is part of the invenio-remote-user-data package.
+# Copyright (C) 2023, MESH Research.
 #
-# Invenio-remote-user-data is free software; you can redistribute it
-# and/or modify it under the terms of the MIT License; see LICENSE file for
-# more details.
+# invenio-remote-user-data is free software; you can redistribute it
+# and/or modify it under the terms of the MIT License; see
+# LICENSE file for more details.
 
 from . import config
 from .service import RemoteUserDataService

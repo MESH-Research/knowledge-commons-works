@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of Invenio-Remote-User-Data. Copyright 2023 MESH Research.
+# This file is part of the invenio-remote-user-data package.
+# Copyright (C) 2023, MESH Research.
 #
-# Invenio-Remote-User-Data is free software; you can redistribute it and/or
-# modify it under the terms of the MIT License; see LICENSE file for more
-# details.
+# invenio-remote-user-data is free software; you can redistribute it
+# and/or modify it under the terms of the MIT License; see
+# LICENSE file for more details.
 
 from flask import current_app
 from invenio_accounts.models import Role, User
@@ -51,6 +52,8 @@ class GroupsComponent(ServiceComponent):
         my_group_role = security_datastore.find_or_create_role(name=group_name,
                                                                id=group_name,
                                                                **kwargs)
+        # FIXME: Is this right?
+        security_datastore.commit()
         if my_group_role is not None:
             self.logger.debug(f'Role for group "{group_name}" found or created.')
         else:
@@ -62,6 +65,8 @@ class GroupsComponent(ServiceComponent):
         my_group_role = security_datastore.create_role(name=group_name,
                                                        id=group_name,
                                                        **kwargs)
+        # FIXME: Is this right?
+        security_datastore.commit()
         if my_group_role is not None:
             if self.logger.debug: print(f'Role "{group_name}" created successfully.')
         else:
@@ -71,6 +76,8 @@ class GroupsComponent(ServiceComponent):
     def delete_group(self, group_name:str, **kwargs) -> bool:
         """Delete a group role with the given name."""
         my_group_role = security_datastore.find_role(group_name)
+        # FIXME: Is this right?
+        security_datastore.commit()
         if my_group_role is None:
             raise RuntimeError(f'Role "{group_name}" not found.')
         else:
@@ -85,6 +92,8 @@ class GroupsComponent(ServiceComponent):
         """Add a user to a group."""
         self.logger.debug(f'got group name {group_name}')
         user_added = security_datastore.add_role_to_user(user, group_name)
+        # FIXME: Is this right?
+        security_datastore.commit()
         if user_added is False:
             raise RuntimeError("Cannot add user to group role.")
         else:
@@ -115,6 +124,8 @@ class GroupsComponent(ServiceComponent):
         debug = True or current_app.config.get("DEBUG")
         removed_user = security_datastore.remove_role_from_user(user,
                                                                 group_name)
+        # FIXME: Is this right?
+        security_datastore.commit()
         if removed_user is False:
             raise RuntimeError("Cannot remove group role from user.")
         else:

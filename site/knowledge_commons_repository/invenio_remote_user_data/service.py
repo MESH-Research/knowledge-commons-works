@@ -1,11 +1,24 @@
-from invenio_access.permissions import system_identity
+# -*- coding: utf-8 -*-
+#
+# This file is part of the invenio-remote-user-data package.
+# Copyright (C) 2023, MESH Research.
+#
+# invenio-remote-user-data is free software; you can redistribute it
+# and/or modify it under the terms of the MIT License; see
+# LICENSE file for more details.
+
+import datetime
 from invenio_accounts.models import Role, User, UserIdentity
+from invenio_accounts.utils import jwt_create_token
 from invenio_records_resources.services import Service
-from invenio_utilities_tuw.utils import get_identity_for_user
+from invenio_utilities_tuw.utils import get_identity_for_user, get_user_by_identifier
+from flask import after_this_request, request, session
 from flask_principal import identity_loaded, identity_changed, Identity
+from .tasks import do_user_data_update
 import os
 from pprint import pprint
 import requests
+import time
 from typing import Optional
 from werkzeug.local import LocalProxy
 from .components.groups import GroupsComponent
@@ -21,53 +34,67 @@ class RemoteUserDataService(Service):
         self.updated_data = {}
         self.communities_service = LocalProxy(lambda: app.extensions[
             "invenio-communities"].service)
+        self.update_interval = datetime.timedelta(
+            minutes=app.config['REMOTE_USER_DATA_UPDATE_INTERVAL'])
+        self.user_data_stale = True
+        self.update_in_progress = False
 
         # FIXME: Should we listen to other signals and update more often?
-        @identity_changed.connect_via(app)
-        def on_identity_changed(_, identity:Identity) -> None:
+        @identity_loaded.connect_via(app)
+        def on_identity_loaded(_, identity:Identity) -> None:
             """Update user data from remote server."""
-            print('!!!!!!!!!!')
-            print(current_queues.queues)
-            print(current_queues.queues['user-data-updates'])
-            security_datastore = LocalProxy(lambda: app.extensions["security"
-                                                                   ].datastore)
-            my_user = security_datastore.find_user(id=identity.id)
-            self.updated_data = {}
-            if my_user is not None:
-                my_user_identity = UserIdentity.query.filter_by(
-                    id_user=my_user.id).one_or_none()
-                # will have a UserIdentity if the user has logged in via an IDP
-                if my_user_identity is not None:
-                    my_idp = my_user_identity.method
-                    my_remote_id = my_user_identity.id
-                    self.logger.debug(my_idp)
-                    self.logger.debug(my_user_identity.__dict__)
+            self.user_data_stale = True
+            if 'user-data-updated' in session.keys():
+                last_update_dt = datetime.datetime.fromisoformat(session['user-data-updated'])
+                interval = datetime.datetime.utcnow() - last_update_dt
+                if interval <= self.update_interval:
+                    self.user_data_stale = False
 
-                    self.updated_data = self.update_data_from_remote(identity, my_user, my_idp, my_remote_id)
+            if self.user_data_stale and not self.update_in_progress:
+                self.update_in_progress = True
+                security_datastore = LocalProxy(lambda:
+                    app.extensions["security"].datastore)
+                my_user = security_datastore.find_user(id=identity.id)
+                # self.updated_data is to store result for testing
+                self.updated_data = {}
+                if my_user is not None:
+                    my_user_identity = UserIdentity.query.filter_by(
+                        id_user=my_user.id).one_or_none()
+                    # will have a UserIdentity if the user has logged in via an IDP
+                    if my_user_identity is not None:
+                        timestamp = datetime.datetime.utcnow().isoformat()
+                        session['user-data-updated'] = timestamp
+                        my_idp = my_user_identity.method
+                        my_remote_id = my_user_identity.id
+                        self.logger.debug('%%%%% launching celery task')
+                        celery_result = do_user_data_update.delay(my_user.id,
+                                                                  my_idp,
+                                                                  my_remote_id)
+                        self.logger.debug(f'celery_result_id: {celery_result.id}')
+                        self.update_in_progress = False
 
-    def update_data_from_remote(self, identity:Identity, user:Optional[User],
+    def update_data_from_remote(self, user_id:int,
                                 idp:str, remote_id:str, **kwargs) -> dict:
         """Main method to update user data from remote server.
         """
         self.logger.debug("Updating user data from remote server.")
         changed_data = {}
         updated_data = {}
-        remote_data = self.fetch_from_remote_api(identity, user, idp, remote_id, **kwargs)
+        user = get_user_by_identifier(user_id)
+        remote_data = self.fetch_from_remote_api(user, idp, remote_id, **kwargs)
         if remote_data:
             changed_data = self.compare_remote_with_local(user,
                                                           remote_data, **kwargs)
         if changed_data:
-            updated_data = self.update_local_user_data(identity, user,
+            updated_data = self.update_local_user_data(user,
                                                        changed_data, **kwargs)
 
         return updated_data
 
-    def fetch_from_remote_api(self, identity:Identity, user:User,
+    def fetch_from_remote_api(self, user:User,
                               idp:str, remote_id:str,
                               tokens=None, **kwargs) -> dict:
         """Fetch user data for the supplied user from the remote API."""
-        self.logger.debug(f'fetching user data for identity: {identity}')
-        self.logger.debug(identity.id)
         remote_data = {}
 
         if "groups" in self.config[idp].keys():
@@ -90,9 +117,7 @@ class RemoteUserDataService(Service):
             headers = {}
             if remote_api_token:
                 headers={'Authorization': f'Bearer {remote_api_token}'}
-            self.logger.debug(f'calling {api_url}')
             response = callfunc(api_url, headers=headers, verify=False)
-            self.logger.debug(pprint(response))
             try:
                 # remote_data['groups'] = {'status_code': response.status_code,
                 #                          'headers': response.headers,
@@ -101,7 +126,11 @@ class RemoteUserDataService(Service):
                 remote_data['groups'] = response.json()['groups']
             except requests.exceptions.JSONDecodeError:
                 self.logger.debug(f'JSONDecodeError: User group data API response was not JSON:')
-                self.logger.debug(f'{response.text}')
+                # self.logger.debug(f'{response.text}')
+        # time.sleep(60)
+        remote_data = {'groups': [{'name': 'awesome-mock2'},
+                                  {'name': 'admin'}]
+                       }
 
         return remote_data
 
@@ -124,17 +153,17 @@ class RemoteUserDataService(Service):
                                      if g not in local_groups]}
         return changed_data
 
-    def update_local_user_data(self, identity, user, changed_data, **kwargs):
+    def update_local_user_data(self, user, changed_data, **kwargs):
         """Update Invenio user data for the supplied identity."""
         updated_data = {}
         if "groups" in changed_data.keys():
             updated_data["groups"] = \
-                self.update_invenio_group_memberships(identity, user,
+                self.update_invenio_group_memberships(user,
                                                       changed_data["groups"],
                                                       **kwargs)
         return updated_data
 
-    def update_invenio_group_memberships(self, identity:Identity, user:User,
+    def update_invenio_group_memberships(self, user:User,
                                          changed_memberships:dict,
                                          **kwargs) -> list[str]:
         """Update the user's group role memberships.

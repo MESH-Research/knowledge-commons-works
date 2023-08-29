@@ -1,7 +1,11 @@
-# Copyright (C) 2023 MESH Research
+# -*- coding: utf-8 -*-
 #
-# Invenio-SAML is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# This file is part of the invenio-remote-user-data package.
+# Copyright (C) 2023, MESH Research.
+#
+# invenio-remote-user-data is free software; you can redistribute it
+# and/or modify it under the terms of the MIT License; see
+# LICENSE file for more details.
 
 """Invenio extension for drawing user data from a Remote API.
 
@@ -53,9 +57,13 @@ REMOTE_USER_DATA_API_ENDPOINTS
                                .env file in the root directory of the Invenio
                                instance or set in the server system environment.
 
-REMOTE_USER_DATA_UPDATE_PERIOD
+REMOTE_USER_DATA_UPDATE_INTERVAL
 
     The period (in minutes) between background calls to the remote API to update user data during a logged-in session. Default is 60 minutes.
+
+REMOTE_USER_DATA_MQ_EXCHANGE
+
+    The configuration for the message queue exchange used to trigger the background update calls. Default is a direct exchange with transient delivery mode (in-memory queue).
 
 """
 
