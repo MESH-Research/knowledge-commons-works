@@ -7,13 +7,14 @@
 # and/or modify it under the terms of the MIT License; see
 # LICENSE file for more details.
 
-"""Invenio extension for drawing user data from a Remote API.
+"""Invenio extension for drawing user and groups data from a Remote API.
 
-This extension provides a service and event triggers to draws user data from a remote API associated with a SAML login ID provider. (This is user data that cannot be derived from the SAML response itself at login, but must be pulled separately from an API.)
+This extension provides a service and event triggers to draws user and groups data from a remote API associated with a SAML login ID provider. (This is user data that cannot be derived from the SAML response itself at login, but must be pulled separately from an API.)
 
 The service checks to see whether the current user logged in with a SAML provider. If so, it sends an API request to the appropriate remote API associated with that server and stores or updates the user's data on the remote service in the Invenio database.
 
-By default this service is triggered when a user logs in. The service can also be called directly to update user data during a logged-in session.
+By default this service is triggered when a user logs in. The service can also be called directly to update user data during a logged-in session, and it can
+be triggered by the remote IDP server via a webhook signal.
 
 Group memberships (Invenio roles)
 ---------------------------------
@@ -31,10 +32,32 @@ Keeping remote data updated
 
 The service is always called when a user logs in (triggered by the identity_changed signal emitted by flask-principal). In order to stay up-to-date during long user sessions, the service will also be called periodically during a logged-in session. This is done by a background celery task scheduled when the user logs in. By default the update period is 1 hour, but this can be changed by setting the REMOTE_USER_DATA_UPDATE_PERIOD configuration variable.
 
+Update webhook
+--------------
+
+The service can also be triggered by a webhook signal from the remote ID provider. A webhook signal should be sent to the endpoint https://example.org/api/webhooks/idp_data_update/ and the request must include a security token (provided by the Invenio admins) in the request header. This token is set in the REMOTE_USER_DATA_WEBHOOK_TOKEN configuration variable.
+
+The webhook signal should be a POST request with a JSON body. The body should be a JSON object whose top-level keys are the types of data object that have been updated on the remote IDP. The value of each key is an array of objects representing the updated entities. Each of these objects should include the key "id", whose value is the entity's string identifier on the remote IDP. It should also include the key "event", whose value is the type of event that is being signalled (e.g., "updated", "created", "deleted", etc.).
+
+E.g.,
+
+{'users': [{'id': '1234', 'event': 'updated'},
+           {'id': '5678', 'event': 'created'}],
+ 'groups': [{'id': '1234', 'event': 'deleted'}]
+}
+
+Logging
+-------
+
+The extension will log each POST request to the webhook endpoint, each signal received, and each task initiated to update the data. These logs will be written to a dedicated log file, `logs/remote_data_updates.log`.
+
 Configuration
 -------------
 
-The extension is configured via the following variables:
+Invenio config variables
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The extension is configured via the following Invenio config variables:
 
 REMOTE_USER_DATA_API_ENDPOINTS
 
@@ -64,6 +87,19 @@ REMOTE_USER_DATA_UPDATE_INTERVAL
 REMOTE_USER_DATA_MQ_EXCHANGE
 
     The configuration for the message queue exchange used to trigger the background update calls. Default is a direct exchange with transient delivery mode (in-memory queue).
+
+Environment variables
+~~~~~~~~~~~~~~~~~~~~~
+
+The extension also requires the following environment variables to be set:
+
+REMOTE_USER_DATA_WEBHOOK_TOKEN (SECRET!! DO NOT place in config file!!)
+
+    This token is used to authenticate webhook signals received from a remote ID provider. It should be stored in the .env file in the root directory of the Invenio instance or set in the server system environment.
+
+Other environment variables
+
+    The names of the environment variables for the security tokens for API requests to each remote ID provider should be set in the REMOTE_USER_DATA_API_ENDPOINTS configuration variable. The values of these variables should be set in the .env file in the root directory of the Invenio instance or set in the server system environment.
 
 """
 
