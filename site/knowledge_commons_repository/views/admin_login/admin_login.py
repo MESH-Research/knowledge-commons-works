@@ -16,36 +16,27 @@
 # under the terms of the MIT License. See the LICENSE file in the
 # invenio-app-rdm package for more details.
 
-from celery.result import AsyncResult
+"""Administrative login view for Knowledge Commons Repository.
+
+Normal users authenticate in KCR using SAML and a commons as identity provider.
+This hidden login page is used by administrators to log in using a username and
+password. It is not linked to from any other page in the repository.
+"""
+
 from flask import render_template
 from flask.views import MethodView
 
-"""View for monitoring the result of asynchronous celery tasks.
-"""
-
-class TaskResults(MethodView):
+class AdminLogin(MethodView):
     """
-    Class providing view method for viewing the results of asynchronous celery
-    tasks.
+    Class providing view class for administrative login.
     """
 
     def __init__(self):
-        self.template = "knowledge_commons_repository/task_results.html"
+        self.template = "knowledge_commons_repository/admin_login.html"
 
-    def get (self, task_id):
+    def get (self):
         """
         Render the template for GET requests.
         """
 
-        task_result = AsyncResult(task_id)
-        print('******* task result: ', task_result)
-        print(task_result.status)
-        print(task_result.name)
-        print(task_result.failed)
-        print(task_result.successful)
-        print(task_result.id)
-        print(task_result.info)
-        print(task_result.result)
-        print(task_result.state)
-        print(dir(task_result))
-        return render_template(self.template, task_result=task_result)
+        return render_template(self.template)

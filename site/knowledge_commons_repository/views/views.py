@@ -3,6 +3,7 @@
 from flask import Blueprint
 from .guides.guides import Guides
 from .task_results.task_results import TaskResults
+from .admin_login.admin_login import AdminLogin
 
 #
 # Registration
@@ -25,6 +26,11 @@ def create_blueprint(app):
     blueprint.add_url_rule(
         "/task_results/<task_id>",
         view_func=TaskResults.as_view("task_results"),
+    )
+
+    blueprint.add_url_rule(
+        "/admin_login",
+        view_func=AdminLogin.as_view("admin_login"),
     )
 
     # Register error handlers

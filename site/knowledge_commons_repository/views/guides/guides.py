@@ -8,7 +8,7 @@ class Guides(MethodView):
     """
 
     def __init__(self):
-        self.template = "knowledge_commons_repository/guides.html"
+        self.template = "knowledge_commons_repository/view_templates/guides.html"
 
     def get (self):
         """
