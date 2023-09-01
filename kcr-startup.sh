@@ -24,7 +24,7 @@ echo "    starting docker containers"
 docker-compose up -d
 echo "    started docker containers"
 echo "    starting celery worker"
-pipenv run celery --app invenio_app.celery worker --beat --events --loglevel INFO --detach
+pipenv run celery --app invenio_app.celery worker --beat --events --loglevel INFO --detach -f logs/celery.log
 echo "    started celery worker"
 mydate=$(date +%Y-%m-%d)
 pipenv run uwsgi docker/uwsgi/uwsgi_ui.ini --daemonize=logs/uwsgi-ui-${mydate}.log --log-reopen --pidfile=/tmp/kcr_ui.pid
