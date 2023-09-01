@@ -13,7 +13,7 @@ def create_blueprint(app):
     blueprint = Blueprint(
         "knowledge_commons_repository",
         __name__,
-        template_folder="./templates",
+        template_folder="../templates",
     )
 
     # routes = app.config.get("APP_RDM_ROUTES")
