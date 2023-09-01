@@ -10,6 +10,7 @@
 import datetime
 from invenio_accounts.models import Role, User, UserIdentity
 from invenio_accounts.utils import jwt_create_token
+from invenio_queues.proxies import current_queues
 from invenio_records_resources.services import Service
 from invenio_utilities_tuw.utils import get_identity_for_user, get_user_by_identifier
 from flask import after_this_request, request, session
@@ -22,6 +23,9 @@ import time
 from typing import Optional
 from werkzeug.local import LocalProxy
 from .components.groups import GroupsComponent
+from .signals import remote_data_updated
+from .utils import logger as update_logger
+from .views import IDPUpdateWebhook
 
 class RemoteUserDataService(Service):
     """Service for retrieving user data from a Remote server."""
@@ -39,45 +43,72 @@ class RemoteUserDataService(Service):
         self.user_data_stale = True
         self.update_in_progress = False
 
-        # FIXME: Should we listen to other signals and update more often?
-        @identity_loaded.connect_via(app)
-        def on_identity_loaded(_, identity:Identity) -> None:
-            """Update user data from remote server."""
-            self.user_data_stale = True
-            if 'user-data-updated' in session.keys():
-                last_update_dt = datetime.datetime.fromisoformat(session['user-data-updated'])
+        @remote_data_updated.connect_via(app)
+        def on_webhook_update_signal(_, events:list) -> None:
+            """Update user data from remote server when webhook is triggered.
+            """
+            self.logger.info('%%%%% webhook signal received')
+
+            for event in current_queues.queues['user-data-updates'].consume():
+                if event['entity_type'] == 'users' and event['event'] == 'updated':
+                    try:
+                        # confirm that user exists in Invenio
+                        my_user_identity = UserIdentity.query.filter_by(id=event['id']).one_or_none()
+                        assert my_user_identity is not None
+
+                        timestamp = datetime.datetime.utcnow().isoformat()
+                        session.setdefault('user-data-updated', {})[
+                            my_user_identity.id_user] = timestamp
+                        celery_result = do_user_data_update.delay(
+                            my_user_identity.id_user,
+                            event['idp'],
+                            event['id'])
+                        # self.logger.info(f'celery_result_id: {celery_result.id}')
+                    except AssertionError:
+                        update_logger.error(f'Cannot update: user {event["id"]} does not exist in Invenio.')
+                elif event['entity_type'] == 'groups' and event['event'] == 'updated':
+                    # TODO: implement group updates and group/user creation
+                    pass
+
+        @identity_changed.connect_via(app)
+        def on_identity_changed(_, identity:Identity) -> None:
+            """Update user data from remote server when current user is changed."""
+            # FIXME: Do we need this check now that we're using webhook updates?
+            if self._data_is_stale(identity.id) and not self.update_in_progress:
+                my_user_identity = UserIdentity.query.filter_by(
+                    id_user=identity.id).one_or_none()
+                # will have a UserIdentity if the user has logged in via an IDP
+                if my_user_identity is not None:
+                    my_idp = my_user_identity.method
+                    my_remote_id = my_user_identity.id
+
+                    timestamp = datetime.datetime.utcnow().isoformat()
+                    session.setdefault('user-data-updated', {})[
+                        identity.id] = timestamp
+                    celery_result = do_user_data_update.delay(identity.id,
+                                                              my_idp,
+                                                              my_remote_id)
+                    # self.logger.debug(f'celery_result_id: {celery_result.id}')
+
+    def _data_is_stale(self, user_id) -> bool:
+        """Check whether user data is stale."""
+        user_data_stale = True
+        if user_id and \
+                'user-data-updated' in session.keys() and \
+                type(session['user-data-updated']) != str and \
+                user_id in session['user-data-updated'].keys():
+            if session['user-data-updated'][user_id]:
+                last_update_dt = datetime.datetime.fromisoformat(session['user-data-updated'][user_id])
                 interval = datetime.datetime.utcnow() - last_update_dt
                 if interval <= self.update_interval:
-                    self.user_data_stale = False
-
-            if self.user_data_stale and not self.update_in_progress:
-                self.update_in_progress = True
-                security_datastore = LocalProxy(lambda:
-                    app.extensions["security"].datastore)
-                my_user = security_datastore.find_user(id=identity.id)
-                # self.updated_data is to store result for testing
-                self.updated_data = {}
-                if my_user is not None:
-                    my_user_identity = UserIdentity.query.filter_by(
-                        id_user=my_user.id).one_or_none()
-                    # will have a UserIdentity if the user has logged in via an IDP
-                    if my_user_identity is not None:
-                        timestamp = datetime.datetime.utcnow().isoformat()
-                        session['user-data-updated'] = timestamp
-                        my_idp = my_user_identity.method
-                        my_remote_id = my_user_identity.id
-                        self.logger.debug('%%%%% launching celery task')
-                        celery_result = do_user_data_update.delay(my_user.id,
-                                                                  my_idp,
-                                                                  my_remote_id)
-                        self.logger.debug(f'celery_result_id: {celery_result.id}')
-                        self.update_in_progress = False
+                    user_data_stale = False
+        return user_data_stale
 
     def update_data_from_remote(self, user_id:int,
                                 idp:str, remote_id:str, **kwargs) -> dict:
         """Main method to update user data from remote server.
         """
-        self.logger.debug("Updating user data from remote server.")
+        update_logger.debug(f"Updating data from remote server -- user: {user_id}; idp: {idp}; remote_id: {remote_id}.")
         changed_data = {}
         updated_data = {}
         user = get_user_by_identifier(user_id)
@@ -127,10 +158,11 @@ class RemoteUserDataService(Service):
             except requests.exceptions.JSONDecodeError:
                 self.logger.debug(f'JSONDecodeError: User group data API response was not JSON:')
                 # self.logger.debug(f'{response.text}')
-        # time.sleep(60)
-        remote_data = {'groups': [{'name': 'awesome-mock2'},
+        time.sleep(30)
+        remote_data = {'groups': [{'name': 'awesome-mock5'},
                                   {'name': 'admin'}]
                        }
+        self.logger.debug(f'USER GROUPS: {remote_data["groups"]}')
 
         return remote_data
 
@@ -176,13 +208,13 @@ class RemoteUserDataService(Service):
         """
         grouper = GroupsComponent(self)
         updated_local_groups = [r.name for r in user.roles]
-        self.logger.debug(f'ADDING GROUPS for user: {user}')
         for group_name in changed_memberships["added_groups"]:
+            self.logger.debug(f'ADDING GROUP for user {user}: {group_name}')
             group_role = grouper.find_or_create_group(group_name)
             if group_role and grouper.add_user_to_group(group_role, user) is not None:
                 updated_local_groups.append(group_role.name)
-        self.logger.debug(f'DROPPING GROUPS for user: {user}')
         for group_name in changed_memberships["dropped_groups"]:
+            self.logger.debug(f'DROPPING GROUP for user {user}: {group_name}')
             group_role = grouper.find_group(group_name)
             if group_role and grouper.remove_user_from_group(group_role, user) is not None:
                 updated_local_groups.remove(group_role.name)
@@ -190,9 +222,5 @@ class RemoteUserDataService(Service):
                 if not remaining_members:
                     grouper.delete_group(group_role.name)
         assert updated_local_groups == user.roles
-
-        # my_identity = get_identity_for_user(user.email)
-        # self.logger.debug(f'USER NEEDS now: {my_identity.provides}')
-        # grouper.update_identity_needs(identity, updated_local_groups)
 
         return updated_local_groups

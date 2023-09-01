@@ -33,14 +33,24 @@ An update signal must be sent via a POST request to either endpoint. If the sign
 Signal content
 --------------
 
-Notifications can be sent for multiple updates to multiple entities in a single request. The signal body must be a JSON object whose top-level keys are the types of data object that have been updated on the remote IDP. The value of each key is an array of objects representing the updated entities. Each of these objects should include the key "id", whose value is the entity's string identifier on the remote IDP. It should also include the key "event", whose value is the type of event that is being signalled (e.g., "updated", "created", "deleted", etc.).
+Notifications can be sent for multiple updates to multiple entities in a single request. The signal body must be a JSON object whose top-level keys are
+
+:idp: The name of the remote IDP that is sending the signal. This is a
+      string that must match one of the keys in the
+      REMOTE_USER_DATA_API_ENDPOINTS configuration variable.
+
+:updates: A JSON object whose top-level keys are the types of data object that
+          have been updated on the remote IDP. The value of each key is an array of objects representing the updated entities. Each of these objects should include an "id" property whose value is the entity's string identifier on the remote IDP. It should also include the "event" property, whose value is the type of event that is being signalled (e.g., "updated", "created", "deleted", etc.).
 
 For example:
 
 {
-    users: [{id: "1234", event: "updated"},
-            {id: "5678", event: "created"}],
-    groups: [{id: "1234", event: "deleted"}]
+    "idp": "knowledgeCommons",
+    "updates": {
+        "users": [{"id": "1234", "event": "updated"},
+                  {"id": "5678", "event": "created"}],
+        "groups": [{"id": "1234", "event": "deleted"}]
+    }
 }
 
 Logging
@@ -57,11 +67,15 @@ included in the request header.
 """
 
 # from flask import render_template
-from flask import Blueprint, jsonify, make_response, request
+from flask import Blueprint, jsonify, make_response, request, current_app as app
 from flask.views import MethodView
-from werkzeug.exceptions import Forbidden, MethodNotAllowed, NotFound
+from invenio_queues.proxies import current_queues
+from werkzeug.exceptions import (
+    BadRequest, Forbidden, MethodNotAllowed, NotFound, Unauthorized
+)
 import os
 from .utils import logger
+from .signals import remote_data_updated
 
 """
 
@@ -84,16 +98,57 @@ class IDPUpdateWebhook(MethodView):
         """
         Render the support template
         """
+        entity_types = app.config['REMOTE_USER_DATA_ENTITY_TYPES']
         headers = request.headers
         bearer = headers.get('Authorization')
         token = bearer.split()[1]
-        # if token != self.webhook_token:
-        #     return "Unauthorized", 401
+        if token != self.webhook_token:
+            raise Unauthorized
 
-        if 'users' in request.json.keys():
-            logger.info(f"Received user update signal: {request.json['users']}")
-        if 'groups' in request.json.keys():
-            logger.info(f"Received user update signal: {request.json['users']}")
+        try:
+            idp = request.json['idp']
+            events = []
+            bad_entity_types = []
+            bad_events = []
+
+            for e in request.json['updates'].keys():
+                if e in entity_types.keys():
+                    logger.info(f'{idp} Received {e} update signal: '
+                                f'{request.json["updates"][e]}')
+                    for u in request.json['updates'][e]:
+                        if u['event'] in entity_types[e]['events']:
+                            events.append({'idp': idp,
+                                           'entity_type': e,
+                                           'event': u['event'],
+                                           'id': u['id']})
+                        else:
+                            bad_events.append(u)
+                            logger.error(f'{idp} Received update signal for '
+                                         f'unknown event: {u}')
+                else:
+                    bad_entity_types.append(e)
+                    logger.error(f'{idp} Received update signal for unknown '
+                                 f'entity type: {e}')
+                    logger.error(request.json)
+
+            if len(events) > 0:
+                current_queues.queues["user-data-updates"].publish(events)
+                remote_data_updated.send(app._get_current_object(), events=events)
+                logger.info(f'Published {len(events)} events to queue and emitted remote_data_updated signal')
+                logger.info(events)
+            else:
+                logger.info(f'{idp} No valid events received')
+                logger.info(request.json['updates'])
+                raise BadRequest
+
+            # return error message after handling signals that are
+            # properly formed
+            if len(bad_entity_types) > 0 or len(bad_events) > 0:
+                # FIXME: raise better error, since request isn't completely rejected
+                raise BadRequest
+        except KeyError:  # request is missing 'idp' or 'updates' keys
+            logger.error(f"Received malformed signal: {request.json}")
+            raise BadRequest
 
         return jsonify({"message": "Webhook notification accepted",
                         "status": 202}), 202

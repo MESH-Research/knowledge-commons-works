@@ -9,6 +9,11 @@
 
 from kombu import Exchange
 
+REMOTE_USER_DATA_ENTITY_TYPES = {
+    "users": {'events': ['created', 'updated', 'deleted']},
+    "groups": {'events': ['created', 'updated', 'deleted']}
+}
+
 REMOTE_USER_DATA_API_ENDPOINTS = {
     "knowledgeCommons": {
         "groups": {

@@ -37,13 +37,28 @@ Update webhook
 
 The service can also be triggered by a webhook signal from the remote ID provider. A webhook signal should be sent to the endpoint https://example.org/api/webhooks/idp_data_update/ and the request must include a security token (provided by the Invenio admins) in the request header. This token is set in the REMOTE_USER_DATA_WEBHOOK_TOKEN configuration variable.
 
-The webhook signal should be a POST request with a JSON body. The body should be a JSON object whose top-level keys are the types of data object that have been updated on the remote IDP. The value of each key is an array of objects representing the updated entities. Each of these objects should include the key "id", whose value is the entity's string identifier on the remote IDP. It should also include the key "event", whose value is the type of event that is being signalled (e.g., "updated", "created", "deleted", etc.).
+The webhook signal should be a POST request with a JSON body. The body should be a JSON object whose top-level keys are
+
+:idp: The name of the remote IDP that is sending the signal. This is a
+      string that must match one of the keys in the
+      REMOTE_USER_DATA_API_ENDPOINTS configuration variable.
+
+:updates: A JSON object whose top-level keys are the types of data object that
+          have been updated on the remote IDP. The value of each key is an
+          array of objects representing the updated entities. Each of these
+          objects should include the "id" property, whose value is the entity's
+          string identifier on the remote IDP. It should also include the
+          "event" property, whose value is the type of event that is being
+          signalled (e.g., "updated", "created", "deleted", etc.).
 
 E.g.,
 
-{'users': [{'id': '1234', 'event': 'updated'},
-           {'id': '5678', 'event': 'created'}],
- 'groups': [{'id': '1234', 'event': 'deleted'}]
+{"idp": "knowledgeCommons",
+ "updates": {
+        "users": [{"id": "1234", "event": "updated"},
+                  {"id": "5678", "event": "created"}],
+        "groups": [{"id": "1234", "event": "deleted"}]
+ }
 }
 
 Logging
