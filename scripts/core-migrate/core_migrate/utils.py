@@ -22,7 +22,7 @@ from typing import Union
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s:%(levelname)s : %(message)s')
-file_handler = logging.RotatingFileHandler('logs/core_migrate.log',
+file_handler = logging.handlers.RotatingFileHandler('logs/core_migrate.log',
                                            maxBytes=1000000, backupCount=5)
 file_handler.setFormatter(formatter)
 if (logger.hasHandlers()):
