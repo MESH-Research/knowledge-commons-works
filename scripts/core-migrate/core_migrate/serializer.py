@@ -711,7 +711,9 @@ def serialize_json() -> tuple[list[dict], dict]:
                 newrec.setdefault('pids', {})[
                     'doi'] = {"identifier": row['deposit_doi'].replace('doi:', ''),
                               "provider": "external",
-                              "client": "datacite"}
+                            #   "client": "datacite"}  TODO: check that
+                            #   client is not allowed for external dois
+                              }
                 newrec['metadata'].setdefault('identifiers', []).append(
                     {"identifier": row["deposit_doi"].replace('doi:', ''),
                      "scheme": "datacite-doi"}
