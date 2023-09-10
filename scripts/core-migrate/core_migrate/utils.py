@@ -14,6 +14,7 @@ Utility functions for core-migrate
 from datetime import datetime
 from isbnlib import is_isbn10, is_isbn13, clean
 import logging
+from logging.handlers import RotatingFileHandler
 import random
 import re
 import string
