@@ -96,39 +96,54 @@ def compare_metadata(A:dict, B:dict) -> dict:
         out = {}
         if list_name not in a.keys():
             a[list_name] = []
-        existing_items = [i[key] for i in a[list_name]]
+        existing_items = [_normalize_punctuation(i[key]) for i in a[list_name]]
         for i in b[list_name]:
-            if i[key] not in existing_items:
+            if _normalize_punctuation(i[key]) not in existing_items:
                 out.setdefault("A", []).append({})
                 out.setdefault("B", []).append(i)
             else:
                 same = True
                 i_2 = [i2 for i2 in a[list_name]
-                        if i2[key] == i[key]][0]
+                       if _normalize_punctuation(i2[key]) ==
+                       _normalize_punctuation(i[key])
+                       ][0]
                 for k in comparators:
-                    if i[k] != i_2[k]:
+                    if _normalize_punctuation(i[k]) != _normalize_punctuation(i_2[k]):
                         same = False
                 if not same:
                     out.setdefault("A", []).append(i_2)
                     out.setdefault("B", []).append(i)
+
+        print('&&&&&&')
+        print(a[list_name])
+        print(b[list_name])
         return out
 
     def compare_people(list_a, list_b):
-        existing_people = [c["person_or_org"]["name"] for c in list_a]
+        existing_people = [_normalize_punctuation(c["person_or_org"]["name"]) for c in list_a]
         people_diff = {}
         for c in list_b:
-            if c['person_or_org']['name'] not in existing_people:
+            if _normalize_punctuation(c['person_or_org']['name']) not in existing_people:
                 people_diff.setdefault("A", []).append({})
                 people_diff.setdefault("B", []).append(c)
             else:
                 same = True
                 c_2 = [c2 for c2 in list_a
-                        if c2["person_or_org"
-                                ]["name"] == c["person_or_org"]["name"]][0]
+                        if _normalize_punctuation(c2["person_or_org"
+                                                ]["name"]) ==
+                           _normalize_punctuation(c["person_or_org"]["name"])
+                       ][0]
                 for k in c["person_or_org"].keys():
-                    if k not in c_2["person_or_org"].keys() or \
-                            c["person_or_org"][k] != c_2["person_or_org"][k]:
-                        same = False
+                    if k == "identifiers":
+                        if k not in c_2["person_or_org"].keys() or \
+                                c["person_or_org"][k] != \
+                                c_2["person_or_org"][k]:
+                            same = False
+                    else:
+                        if k not in c_2["person_or_org"].keys() or \
+                                _normalize_punctuation(c["person_or_org"][k]) != \
+                                _normalize_punctuation(c_2["person_or_org"][k]):
+                            same = False
                 if "role" not in c_2.keys() or \
                         c["role"]["id"] != c_2["role"]["id"]:
                     same = False
@@ -186,17 +201,20 @@ def compare_metadata(A:dict, B:dict) -> dict:
         if "additional_titles" in meta_b.keys():
             if "additional_titles" not in meta_a.keys():
                 meta_a["additional_titles"] = []
-            existing_titles = [t["title"] for t in
+            existing_titles = [_normalize_punctuation(t["title"]) for t in
                                meta_a["additional_titles"]]
             for t in meta_b["additional_titles"]:
-                if t['title'] not in existing_titles:
+                if _normalize_punctuation(t['title']) not in existing_titles:
                     meta_diff["A"].setdefault("additional_titles", []).append({})
                     meta_diff["B"].setdefault("additional_titles", []).append(t)
                 else:
                     same = True
                     t_2 = [t2 for t2 in meta_a["additional_titles"]
-                            if t2["title"] == t["title"]][0]
-                    if t['title'] != t_2['title'] or \
+                           if _normalize_punctuation(t2["title"]) ==
+                           _normalize_punctuation(t["title"])
+                           ][0]
+                    if _normalize_punctuation(t['title']) != \
+                            _normalize_punctuation(t_2['title']) or \
                             t['type']['id'] != t_2['type']['id']:
                         same = False
                     if not same:
@@ -339,15 +357,19 @@ def _normalize_string(mystring:str) -> str:
         pass
     return mystring
 
+
 def _normalize_punctuation(mystring:str) -> str:
     mystring = mystring.replace('’', "'")
-    mystring = mystring.replace('“', "'")
+    mystring = mystring.replace('‘', "'")
+    mystring = mystring.replace('“', '"')
+    mystring = mystring.replace('”', '"')
     mystring = mystring.replace('&amp;', '&')
     mystring = mystring.replace("\'", "'")
     mystring = mystring.replace('\"', '"')
     mystring = mystring.replace('  ', ' ')
     mystring = mystring.strip()
     return mystring
+
 
 def _clean_string(mystring:str) -> str:
     """

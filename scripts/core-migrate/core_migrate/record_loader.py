@@ -65,6 +65,7 @@ def api_request(method:str='GET', endpoint:str='records', server:str='',
     response = callfunc(api_url, headers=headers, params=params,
                         **payload_args, verify=False)
     if debug: pprint(response)
+    if debug: pprint(response.text)
 
     return {'status_code': response.status_code,
             'headers': response.headers,
@@ -87,12 +88,18 @@ def create_invenio_record(metadata:dict, server:str='',
         same_doi = api_request(method='GET', endpoint=f'records?q=pids.doi.identifier%3D%22{doi_for_query[0]}%2F{doi_for_query[1]}%22', params={})
         if same_doi['status_code'] not in [200, 404]:
             raise requests.HTTPError(same_doi)
-
+        if same_doi['status_code'] == 200 and \
+                same_doi['json']['hits']['total'] == 0:
+            same_doi = api_request(method='GET', endpoint=f'user/records?q=pids.doi.identifier%3D%22{doi_for_query[0]}%2F{doi_for_query[1]}%22', params={})
+        pprint('^^^^^^^SAME DOI')
+        pprint(same_doi)
         if same_doi['status_code'] == 200 and \
                 same_doi['json']['hits']['total'] > 0:
             print('Found existing record with same DOI...')
             logger.info('    found existing record with same DOI...')
             existing_metadata = same_doi['json']['hits']['hits'][0]
+            pprint('^^^^^^^')
+            pprint(existing_metadata)
             # Check for differences in metadata
             differences = compare_metadata(existing_metadata, metadata)
             if differences:
@@ -173,8 +180,10 @@ def upload_draft_files(draft_id:str, files_dict:dict[str, str]) -> dict:
 
         filename = content_args.split('/')[3]
         # handle @ characters in filenames
-        assert unquote(filename) in files_dict.keys()
-        long_filename = files_dict[unquote(filename)].replace('/srv/www/commons/current/web/app/uploads/humcore/', '')
+        from unicodedata import normalize
+        assert unquote(filename) in [normalize('NFC', f) for f in files_dict.keys()]
+        matching_filename = [f for f in files_dict.keys() if normalize('NFC', f) == unquote(filename)][0]
+        long_filename = files_dict[matching_filename].replace('/srv/www/commons/current/web/app/uploads/humcore/', '')
         with open(Path(FILES_LOCATION) / long_filename, "rb") as binary_file_data:
             if debug: print('^^^^^^^^')
             if debug: print(f'filesize is {len(binary_file_data.read())} bytes')
@@ -256,7 +265,8 @@ def create_invenio_user(user_email:str) -> dict:
     if debug: pprint(existing_user.returncode)
     if existing_user.returncode == 0 and 'success' in stdout_eu:
         user_id = re.search(r'success: user id is (\d+)\'\n', stdout_eu)[1]
-        print('YAAAAAY', user_id)
+        print('Found existing user', user_id)
+        logger.info(f'    found existing user {user_id}...')
         new_user_flag = False
     else:
         make_user = subprocess.Popen(['pipenv', 'run', 'invenio', 'users',
@@ -272,6 +282,7 @@ def create_invenio_user(user_email:str) -> dict:
         assert make_user.returncode in [0, 2]  # will be 2 if user exists
         assert f'\'email\': \'{user_email}\'' in stdout
         print('created new user...')
+        logger.info(f'    created new user {user_email}...')
         # ('User created successfully.\n'
         # "{'email': 'myaddress2@somedomain.edu', 'password': '****', 'active': "
         # 'False}\n')
@@ -287,6 +298,7 @@ def create_invenio_user(user_email:str) -> dict:
         if debug: pprint(stderr2)
         assert activate_user.returncode == 0
         print('activated new user...')
+        logger.info(f'    activated new user {user_email}...')
 
         user_confirmed = subprocess.Popen(['pipenv', 'run', 'invenio', 'shell',
                                         'scripts/core-migrate/core_migrate/core_migrate_users.py',
@@ -303,11 +315,14 @@ def create_invenio_user(user_email:str) -> dict:
         if user_confirmed.returncode == 0 and 'success' in stdout3:
             user_id = re.search(r'success: user id is (\d+)\'\n', stdout3)[1]
             new_user_flag = True
+            logger.info(f'    confirmed new user, id {user_id}...')
         elif user_confirmed.returncode == 2 and \
                 'already associated with an account' in stdout3:
             print('User already exists.')
+            logger.info(f'    user {user_email} already exists...')
         else:
             print('Error: Failed to create new user')
+            logger.info(f'    failed to create user {user_email}...')
             print_exc()
 
     return({'user_id': user_id,
@@ -531,26 +546,34 @@ def create_full_invenio_record(core_data:dict) -> dict:
     logger.info('    uploading files for draft...')
     if existing_record:
         same_files = True
-        if len(metadata_record['json']['files']['entries']) == 0:
+        files_request = api_request('GET', endpoint='records',
+            args=f'{draft_id}/draft/files')
+        if files_request['status_code'] == 404:
+            files_request = api_request('GET', endpoint='records',
+                args=f'{draft_id}/files')
+        existing_files = files_request['json']['entries']
+        if len(existing_files) == 0:
             same_files = False
             logger.info('    no files attached to existing record')
         for k, v in core_data['files']['entries'].items():
-            existing_files = metadata_record['json']['files']['entries'][k]
-            if v['key'] != existing_files['key'] or \
-                    str(v['size']) != str(existing_files['size']):
+            existing_file = [f for f in existing_files if f['key'] == k]
+            if len(existing_file) == 0 or \
+                    str(v['size']) != str(existing_file[0]['size']):
                 same_files = False
         if same_files:
             logger.info('    skipping uploading files (same already uploaded)...')
         else:
             raise RuntimeError(f'Existing record with same DOI has different files.\n{metadata_record["json"]["files"]["entries"]}\n !=\n {core_data["files"]["entries"]}')
+            # FIXME: update existing files
     else:
+        logger.info('    uploading files to new draft...')
         my_files = {}
         for k, v in file_data['entries'].items():
             my_files[v['key']] = metadata_record['json']['custom_fields'
                                                         ]['hclegacy:file_location']
         uploaded_files = upload_draft_files(draft_id=draft_id, files_dict=my_files)
-        # if debug: print('@@@@ uploaded_files')
-        # if debug: pprint(uploaded_files)
+        if debug: print('@@@@ uploaded_files')
+        if debug: pprint(uploaded_files)
         result['uploaded_files'] = uploaded_files
 
 
