@@ -555,7 +555,8 @@ def create_full_invenio_record(core_data:dict) -> dict:
 
 
     # Attach the record to the communities
-    if existing_record and existing_record['is_draft'] != True:
+    if existing_record and (existing_record['is_draft'] != True and
+                            existing_record['status'] != 'draft'):
         if community_id in existing_record['parent']['communities']['ids']:
             logger.info('    skipping attaching the record to the community (already published)...')
         else:
@@ -631,11 +632,17 @@ def create_full_invenio_record(core_data:dict) -> dict:
     new_owner_email = core_data['custom_fields']['kcr:submitter_email']
     created_user = create_invenio_user(new_owner_email)
     new_owner_id = created_user['user_id']
+    # logger.info(f'    new user email is {new_owner_email}...')
+    # logger.info(f'    old user email is {existing_record["custom_fields"]["kcr:submitter_email"]}...')
+    # logger.info(f'    match? {existing_record["custom_fields"]["kcr:submitter_email"] == new_owner_email}...')
+    # logger.info(f'    new user id is {str(new_owner_id)}...')
+    # logger.info(f'    old user id is {str(existing_record["parent"]["access"]["owned_by"][0]["user"])}...')
+    # logger.info(f'    match? {str(existing_record["parent"]["access"]["owned_by"][0]["user"]) == str(new_owner_id)}...')
 
     if existing_record and \
             existing_record['custom_fields']['kcr:submitter_email'
                                             ] == new_owner_email \
-            and existing_record['parent']['access']['owned_by'][0]['user'] == new_owner_id:
+            and str(existing_record['parent']['access']['owned_by'][0]['user']) == str(new_owner_id):
         logger.info(f'    skipping re-assigning ownership of the record ')
         logger.info(f'    (already belongs to {new_owner_email}, '
                     f'user {new_owner_id})...')
