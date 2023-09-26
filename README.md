@@ -40,13 +40,6 @@ bash kcr-shutdown.sh
 
 What follows is a step-by-step walk through this process. Note that these instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
 
-**Note: At the moment you will also need to create the subjects file for the FAST subject vocabulary and move it to the correct folder. The steps for this are:**
-1. From the main knowledge-commons-repository folder, run `pipenv run invenio-subjects-fast download` to download the source files from the FAST project.
-2. Then run `pipenv run invenio-subjects-fast convert` to create a subjects yaml file that InvenioRDM can use.
-3. Move this file to the vocabularies folder: `cp scripts/invenio-subjects-fast/invenio_subjects_fast/vocabularies/subjects_fast.yaml app_data/vocabularies/`
-4. If you have already run `invenio services setup` then manually recreate the vocabulary fixtures by running `pipenv run invenio rdm-records fixtures`. (This command will take quite a few minutes to complete, since the FAST vocabulary is extremely large.)
-**This step will be automated later on.**
-
 ## Install Python and Required Python Tools
 
 ### Ensure some version of python is installed
