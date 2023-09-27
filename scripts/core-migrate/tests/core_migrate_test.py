@@ -23,7 +23,7 @@ from core_migrate.record_loader import (
     create_full_invenio_record,
     upload_draft_files
 )
-from core_migrate.utils import _clean_string
+from core_migrate.utils import _clean_string, _normalize_punctuation
 import datetime
 import json
 import re
@@ -169,7 +169,7 @@ json28491 = {
                        'processing plants, olive oil manufacturing '
                        'factories, potato processing installations, '
                        'soft drink production plants, bakeries and '
-                       'various other food processing facilities.  ',
+                       'various other food processing facilities.',
         'identifiers': [{'identifier': 'hc:28491', 'scheme': 'hclegacy-pid'},
                         {'identifier': '1000360-28455',
                          'scheme': 'hclegacy-record-id'},
@@ -630,7 +630,7 @@ json48799 = {
                             'understanding of the super app form '
                             'as it becomes a dominant global '
                             'framework, and to consider platform '
-                            'capitalism’s transformational shape.',
+                            "capitalism's transformational shape.",
         'contributors': [{'person_or_org': {'family_name': 'Altheman',
                                             'given_name': 'Elena',
                                             'name': 'Altheman, Elena',
@@ -729,9 +729,9 @@ json48799 = {
 }
 
 json33383 = {
-    'access': {'embargo': ({'active': True,
-                            'reason': None,
-                            'until': '2021-11-25'},)},
+    'access': {'embargo': {'active': True,
+                           'reason': None,
+                           'until': '2021-11-25'}},
     'created': '2020-11-25T12:35:10Z',
     'custom_fields': {
         'hclegacy:collection': 'hccollection:1',
@@ -853,7 +853,9 @@ json33383 = {
                         {'identifier': '10.1163/24519197-BJA10007',
                          'scheme': 'doi'},
                         {'identifier': 'https://doi.org/10.17613/xxxj-e936',
-                         'scheme': 'url'}],
+                         'scheme': 'url'},
+                        {'identifier': '2451-9197',
+                         'scheme': 'issn'}],
         'languages': [{'id': 'eng', 'title': {'en': 'English'}}],
         'publication_date': '2020',
         'resource_type': {'id': 'textDocument-journalArticle'},
@@ -1379,7 +1381,7 @@ json11451 = {
                               'experiences, Ophelia retains a childlike '
                               'innocence in these rewritings. For example, New '
                               'Hamlet by Lao She (penname of Shu Qingchun, '
-                              '1899-1966) parodies China’s “Hamlet complex” '
+                              '1899-1966) parodies China’\'“"""mlet comple””"'
                               '(the inability to act at a time of national '
                               'crisis) and the fascination with an Ophelia '
                               'submerged in water. Both Ophelia and Millais’s '
@@ -2389,12 +2391,32 @@ def test_serialize_json(expected_json, serialized_records):
         if 'description' in expected_json['metadata']['rights'][0].keys():
             expected_json['metadata']['rights'][0]['description'] = {'en': ''}
     if 'description' in expected_json['metadata'].keys():
-        expected_json['metadata']['description'] = _clean_string(expected_json['metadata']['description'])
+        for item in [expected_json, actual_json_item]:
+            item['metadata']['description'] = \
+                _normalize_punctuation(_clean_string(item['metadata']['description']))
     if 'additional_descriptions' in expected_json['metadata'].keys():
-        expected_json['metadata']['additional_descriptions'][0]['description'] = _clean_string(expected_json['metadata']['additional_descriptions'][0]['description'])
+        for item in [expected_json, actual_json_item]:
+            item['metadata']['additional_descriptions'][0]['description'] = \
+                _normalize_punctuation(_clean_string(item['metadata']['additional_descriptions'][0]['description']))
     if 'hclegacy:groups_for_deposit' in expected_json['custom_fields'].keys():
-        for g in expected_json['custom_fields']['hclegacy:groups_for_deposit']:
-            g['group_name'] = _clean_string(g['group_name'])
+        for item in [expected_json, actual_json_item]:
+            for g in item['custom_fields']['hclegacy:groups_for_deposit']:
+                g['group_name'] = _normalize_punctuation(_clean_string(g['group_name']))
+    for idx, myname in enumerate(expected_json['metadata']['creators']):
+        for item in [expected_json, actual_json_item]:
+            item['metadata']['creators'][idx]['person_or_org']['name'
+                ] = _normalize_punctuation(_clean_string(myname['person_or_org']['name']))
+            item['metadata']['creators'][idx]['person_or_org']['family_name'
+                ] = _normalize_punctuation(_clean_string(myname['person_or_org']['family_name']))
+    if 'contributors' in expected_json['metadata'].keys():
+        for item in [expected_json, actual_json_item]:
+            for idx, myname in enumerate(item['metadata']['contributors']):
+                item['metadata']['contributors'][idx]['person_or_org']['name'
+                    ] = _normalize_punctuation(
+                        _clean_string(myname['person_or_org']['name']))
+                item['metadata']['contributors'][idx]['person_or_org'
+                    ]['family_name'] = _normalize_punctuation(
+                        _clean_string(myname['person_or_org']['family_name']))
     # for idx, d in enumerate(expected_json['metadata']['dates']):
     #     if 'de' in d['type']['title'].keys():
     #         del expected_json['metadata']['dates'][idx]['type']['title']['de']
@@ -2635,15 +2657,15 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
     if 'rights' in json_payload['metadata'].keys():
         json_payload['metadata']['rights'] = [
             {'id': json_payload['metadata']['rights'][0]['id']}]
-    print('%%%%%%%')
-    print(json_payload)
 
     # prepare expected json for output (some differences from input)
+    # REMEMBER: normalized here to simulate normalized output with
+    # odd input
     expected_json = deepcopy(expected_json)
     if 'description' in expected_json['metadata'].keys():
-        expected_json['metadata']['description'] = _clean_string(expected_json['metadata']['description'])
+        expected_json['metadata']['description'] = _normalize_punctuation(_clean_string(expected_json['metadata']['description']))
     if 'additional_descriptions' in expected_json['metadata'].keys():
-        expected_json['metadata']['additional_descriptions'][0]['description'] = _clean_string(expected_json['metadata']['additional_descriptions'][0]['description'])
+        expected_json['metadata']['additional_descriptions'][0]['description'] = _normalize_punctuation(_clean_string(expected_json['metadata']['additional_descriptions'][0]['description']))
 
     # Create record and sanitize the result to ease comparison
     actual = create_invenio_record(json_payload)
@@ -2659,12 +2681,12 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
             if 'role' in c.keys() and 'de' in c['role']['title'].keys():
                 del actual['json']['metadata']['contributors'][idx]['role']['title']['de']
     if 'description' in actual['json']['metadata'].keys():
-        actual['json']['metadata']['description'] = _clean_string(actual['json']['metadata']['description'])
+        actual['json']['metadata']['description'] = _normalize_punctuation(_clean_string(actual['json']['metadata']['description']))
     if 'additional_descriptions' in actual['json']['metadata'].keys():
         for idx, d in enumerate(actual['json']['metadata']['additional_descriptions']):
             if 'de' in d['type']['title'].keys():
                 del actual['json']['metadata']['additional_descriptions'][idx]['type']['title']['de']
-            actual['json']['metadata']['additional_descriptions'][idx]['description'] = _clean_string(actual['json']['metadata']['additional_descriptions'][idx]['description'])
+            actual['json']['metadata']['additional_descriptions'][idx]['description'] = _normalize_punctuation(_clean_string(actual['json']['metadata']['additional_descriptions'][idx]['description']))
     # Test response content
     simple_fields = [f for f in actual['json'].keys() if f not in [
         'links', 'parent', 'id', 'created', 'updated', 'versions',
