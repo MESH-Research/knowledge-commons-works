@@ -10,7 +10,7 @@ ReactDOM.render(
     // currentMenu={JSON.parse(detailMainDiv.dataset.currentMenu)}
     // currentUser={JSON.parse(detailMainDiv.dataset.currentUser)}
     // currentUserprofile={JSON.parse(detailMainDiv.dataset.currentUserprofile)}
-    custom_fields_ui={JSON.parse(detailMainDiv.dataset.customFieldsUi)}
+    customFieldsUi={JSON.parse(detailMainDiv.dataset.customFieldsUi)}
     externalResources={JSON.parse(detailMainDiv.dataset.externalResources)}
     files={JSON.parse(detailMainDiv.dataset.files)}
     // g={JSON.parse(detailMainDiv.dataset.g)}
@@ -30,6 +30,11 @@ ReactDOM.render(
     // search_app_communities_members_config
     // search_app_communities_records_config
     // search_app_communities_requests_config
+    iconsRor={detailMainDiv.dataset.iconsRor}
+    iconsOrcid={detailMainDiv.dataset.iconsOrcid}
+    iconsGnd={detailMainDiv.dataset.iconsGnd}
+    iconsHcUsername={detailMainDiv.dataset.iconsHcUsername}
+    landingUrls={JSON.parse(detailMainDiv.dataset.landingUrls)}
     />,
     detailMainDiv
 );

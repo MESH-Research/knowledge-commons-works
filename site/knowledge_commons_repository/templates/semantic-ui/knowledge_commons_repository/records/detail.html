@@ -219,6 +219,11 @@
               data-permissions='{{ permissions | tojson }}'
               data-external-resources='{{ external_resources | tojson }}'
               data-files='{{ files | tojson }}'
+              data-icons-ror='{{ url_for("static", filename="images/ror-icon.svg") }}'
+              data-icons-orcid='{{ url_for("static", filename="images/orcid.svg") }}'
+              data-icons-gnd='{{ url_for("static", filename="images/gnd-icon.svg") }}'
+              data-icons-hc-username='{{ url_for("static", filename="images/hc-icon.svg") }}'
+              data-landing-urls='{{ config["LANDING_URLS"] | tojson }}'
             >
             </div>
 
