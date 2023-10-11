@@ -1,5 +1,5 @@
 import React from 'react';
-import i18next from 'i18next';
+import { i18next } from '@translations/invenio_app_rdm/i18next';
 
 const AffiliationsAccordion = ({group, affiliations, iconsRor}) => {
 

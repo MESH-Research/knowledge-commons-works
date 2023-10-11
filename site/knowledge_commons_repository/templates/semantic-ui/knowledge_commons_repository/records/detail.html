@@ -196,20 +196,21 @@
 
             {%- endblock record_header -%}
 
-            {# Title #}
-            {%- block record_title -%}
-              <section id="record-title-section" aria-label="{{ _('Record title and creators') }}">
-                <h1 id="record-title" class="wrap-overflowing-text">{{ metadata.title }}</h1>
-
-                {% if record.ui.creators or record.ui.contributors %}
-                  <section id="creatibutors" aria-label="{{ _('Creators and contributors') }}">
-                    {%- include "invenio_app_rdm/records/details/creatibutors.html" %}
-                  </section>
-                {% endif %}
-              </section>
-            {%- endblock record_title -%}
-
             {# Main Content #}
+            {%- set has_previewable_files_flag = 'false' -%}
+            {%- set preview_file_item = 'undefined' -%}
+            {%- set preview_file_url = 'undefined' -%}
+            {%- if record.files.enabled -%}
+              {%- set files = files|order_entries %}
+              {%- if permissions.can_read_files -%}
+                {%- if files|has_previewable_files -%}
+                  {%- set has_previewable_files_flag = 'true' %}
+                  {%- set preview_file_item = files|select_preview_file(default_preview=record.files.default_preview) -%}
+                  {%- set preview_endpoint = 'invenio_app_rdm_records.record_file_preview' -%}
+                  {%- set preview_file_url = url_for(preview_endpoint, pid_value=record.id, filename="") -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endif -%}
             <div id="detail-main-content"
               data-community='{{ community | tojson }}'
               data-custom-fields-ui='{{ custom_fields_ui | tojson }}'
@@ -224,47 +225,25 @@
               data-icons-gnd='{{ url_for("static", filename="images/gnd-icon.svg") }}'
               data-icons-hc-username='{{ url_for("static", filename="images/hc-icon.svg") }}'
               data-landing-urls='{{ config["LANDING_URLS"] | tojson }}'
+              data-has-previewable-files='{{ has_previewable_files_flag | tojson }}'
+              data-preview-file='{{ preview_file_item | tojson }}'
+              data-total-file-size='{{ ( files|sum(attribute='size')|filesizeformat(binary=config["APP_RDM_DISPLAY_DECIMAL_FILE_SIZES"]) ) if files else 0 }}'
+              data-download-file-url='{{ preview_file_url }}'
             >
             </div>
 
-            {# Main Content Tabs #}
-            {%- block record_content_tabs -%}
-              <div class="rdm-tab-container ml-0-mobile mr-0-mobile">
-              {# Tabs #}
-                <div role="tablist" class="ui top attached tabs menu rdm-tab-menu">
-                  <a
-                    role="tab"
-                    aria-selected="{{ active }}"
-                    aria-controls="additional-titles-tab-panel"
-                    data-tab="additional-titles"
-                    tabindex="0"
-                    class="{{ 'active' if active }} item"
-                    id="additional-titles-tab"
-                  >
-                    {{ _('Additional titles') }}
-                  </a>
-                  {% set active = false %}
-                </div>
+            {# Title #}
+            {%- block record_title -%}
+              <section id="record-title-section" aria-label="{{ _('Record title and creators') }}">
+                <h1 id="record-title" class="wrap-overflowing-text">{{ metadata.title }}</h1>
 
-                {% set active = true %}
-
-                <div
-                    role="tabpanel"
-                    class="ui bottom attached {{ 'active' if active }} tab segment"
-                    data-tab="additional-titles"
-                    aria-labelledby="additional-titles-tab"
-                    id="additional-titles-tab-panel"
-                    hidden="{{ not active }}"
-
-                >
-                  <dl class="details-list">
-                    List goes here
-                  </dl>
-                </div>
-                {% set active = false %}
-
-              </div>
-            {%- endblock record_content_tabs -%}
+                {% if record.ui.creators or record.ui.contributors %}
+                  <section id="creatibutors" aria-label="{{ _('Creators and contributors') }}">
+                    {%- include "invenio_app_rdm/records/details/creatibutors.html" %}
+                  </section>
+                {% endif %}
+              </section>
+            {%- endblock record_title -%}
 
             {# Citation & Description #}
             {%- block record_content -%}

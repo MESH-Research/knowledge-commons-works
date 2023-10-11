@@ -1,5 +1,5 @@
 import React from 'react';
-import i18next from 'i18next';
+import { i18next } from '@translations/invenio_app_rdm/i18next';
 import AffiliationsAccordion from './AffiliationsAccordion';
 
 const CreatibutorIcon = ({creatibutor,
@@ -10,11 +10,17 @@ const CreatibutorIcon = ({creatibutor,
                           landingUrls}
                         ) => {
 
-  let ids = Object.groupBy(creatibutor.person_or_org.identifiers,
-                            ({scheme}) => scheme);
   console.log(creatibutor);
-  console.log(ids);
-  ids = Object.values(ids).reduce((acc, idlist) => [...acc, ...idlist], []);
+  console.log(creatibutor.person_or_org.identifiers);
+  let ids = creatibutor.person_or_org.identifiers;
+  if (creatibutor.person_or_org.identifiers !== undefined) {
+    // ids = creatibutor.person_or_org.identifiers.group(({scheme}) => scheme);
+    ids = ids.reduce((x, y) => {
+        (x[y.scheme] = x[y.scheme] || []).push(y);
+        return x;
+    }, {});
+    ids = Object.values(ids).reduce((acc, idlist) => [...acc, ...idlist], []);
+  }
   const schemeStrings = {'orcid': ['ORCID', iconsOrcid, landingUrls.orcid],
                          'ror': ['ROR', iconsRor, landingUrls.ror],
                          'gnd': ['GND', iconsGnd, landingUrls.gnd],
@@ -23,24 +29,24 @@ const CreatibutorIcon = ({creatibutor,
                                          landingUrls.hc_username]};
   return (
     <>
-      {ids.map(
+      {!!ids ? ids.map(
         ({scheme, identifier}) => (
           <a className="no-text-decoration"
             key={`${scheme}-${identifier}`}
             href={`${schemeStrings[scheme][2]}${identifier}`}
             aria-label={`${creatibutor.person_or_org.name}'s ${schemeStrings[scheme][0]} ${i18next.t('profile')}`}
-            title={`{creatibutor.person_or_org.name}'s ${schemeStrings[scheme][0]} ${i18next.t('profile')}`}
+            title={`${creatibutor.person_or_org.name}'s ${schemeStrings[scheme][0]} ${i18next.t('profile')}`}
           >
             <img className="ml-5 inline-id-icon"
               src={schemeStrings[scheme][1]}
               alt={`${schemeStrings[scheme][0]} icon`}
             />
           </a>
-      )
-      )}
-      {(ids.length < 1) && creatibutor.person_or_org.type == 'organizational' && (
+      )) : ""
+      }
+      {(!!ids && creatibutor.person_or_org.type == 'organizational') ? (
         <i className="group icon"></i>
-      )}
+      ) : ""}
   </>
 )}
 
@@ -54,17 +60,23 @@ const Creatibutor = ({creatibutor, show_affiliations,
   return (
     <dd className="creatibutor-wrap separated">
       <a className="ui creatibutor-link"
-        data-tooltip={(show_affiliations && creatibutor.affiliations) ? creatibutor.affiliations.map(a => a['name']).join('; ') : ""}
-        href={`api/search?q='metadata.creators.person_or_org.name:${creatibutor.person_or_org.name}'`}
+        data-tooltip={(show_affiliations && creatibutor.affiliations) ? creatibutor.affiliations.map(a => a[1]).join('; ') : ""}
+        href={`../search?q='metadata.creators.person_or_org.name:${creatibutor.person_or_org.name}'`}
       >
         <span className="creatibutor-name">
           {creatibutor.person_or_org.name}
         </span>
         {creatibutor.affiliations && (
           <sup className="font-tiny">
-            {creatibutor.affiliations.map(a => a['name']).join(", ")}
+            {creatibutor.affiliations.map(a => a[0]).join(", ")}
           </sup>
         )}
+        {(creatibutor.role && creatibutor.role.title !== 'Other') ? (
+        <span className="creatibutor-role text-muted">
+          {creatibutor.role.title}
+        </span>
+        ) : ("")
+        }
       </a>
       <CreatibutorIcon creatibutor={creatibutor}
         iconsRor={iconsRor}
