@@ -1,6 +1,6 @@
 import React from 'react';
 import { i18next } from '@translations/invenio_app_rdm/i18next';
-import AffiliationsAccordion from './AffiliationsAccordion';
+import { AffiliationsAccordion } from './AffiliationsAccordion';
 
 const CreatibutorIcon = ({creatibutor,
                           iconsRor,
@@ -161,4 +161,4 @@ const Creatibutors = ({creators, contributors,
   );
 };
 
-export default Creatibutors;
+export { Creatibutors };

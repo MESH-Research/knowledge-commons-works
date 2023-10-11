@@ -45,4 +45,4 @@ const AffiliationsAccordion = ({group, affiliations, iconsRor}) => {
   )
 }
 
-export default AffiliationsAccordion;
+export { AffiliationsAccordion };

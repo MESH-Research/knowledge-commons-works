@@ -1,14 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import DetailMainContent from "./DetailMainContent";
+import { DetailContent } from "./sections/DetailContent";
 
 const detailMainDiv = document.getElementById('detail-main-content');
 
 ReactDOM.render(
-    <DetailMainContent
+    <DetailContent
     community={JSON.parse(detailMainDiv.dataset.community)}
     customFieldsUi={JSON.parse(detailMainDiv.dataset.customFieldsUi)}
-    downloadFileUrl={detailMainDiv.dataset.downloadFileUrl}
     externalResources={JSON.parse(detailMainDiv.dataset.externalResources)}
     files={JSON.parse(detailMainDiv.dataset.files)}
     isDraft={JSON.parse(detailMainDiv.dataset.isDraft)}
@@ -19,9 +18,12 @@ ReactDOM.render(
     iconsGnd={detailMainDiv.dataset.iconsGnd}
     iconsHcUsername={detailMainDiv.dataset.iconsHcUsername}
     landingUrls={JSON.parse(detailMainDiv.dataset.landingUrls)}
+    mainSections={JSON.parse(detailMainDiv.dataset.mainSections)}
     permissions={JSON.parse(detailMainDiv.dataset.permissions)}
     previewFile={JSON.parse(detailMainDiv.dataset.previewFile)}
+    previewFileUrl={detailMainDiv.dataset.previewFileUrl}
     record={JSON.parse(detailMainDiv.dataset.record)}
+    sidebarSections={JSON.parse(detailMainDiv.dataset.sidebarSections)}
     totalFileSize={detailMainDiv.dataset.totalFileSize}
     // badge_png
     // badge_svg
