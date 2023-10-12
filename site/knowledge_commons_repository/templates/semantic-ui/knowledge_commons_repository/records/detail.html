@@ -25,6 +25,118 @@
 {%- set show_record_management_menu = can_manage_record and (not is_preview or is_preview_submission_request) %}
 
 {%- block page_body %}
+
+  <div class="ui container">
+    <div class="ui relaxed grid mt-5">
+      {# Main Content #}
+      {%- set has_previewable_files_flag = 'false' -%}
+      {%- set preview_file_item = 'undefined' -%}
+      {%- set preview_file_url = 'undefined' -%}
+      {%- if record.files.enabled -%}
+        {%- set files = files|order_entries %}
+        {%- if permissions.can_read_files -%}
+          {%- if files|has_previewable_files -%}
+            {%- set has_previewable_files_flag = 'true' %}
+            {%- set preview_file_item = files|select_preview_file(default_preview=record.files.default_preview) -%}
+            {%- set preview_endpoint = 'invenio_app_rdm_records.record_file_preview' -%}
+            {%- set preview_file_url = url_for(preview_endpoint, pid_value=record.id, filename="") -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endif -%}
+      <div id="detail-main-content"
+        class="two column row top-padded"
+        data-citation-styles='{{ config["RDM_CITATION_STYLES"] | tojson }}'
+        data-citation-style-default='{{ config["RDM_CITATION_STYLES_DEFAULT"] }}'
+        data-community='{{ community | tojson }}'
+        data-custom-fields-ui='{{ custom_fields_ui | tojson }}'
+        data-doi-badge-url='{{ url_for("invenio_formatter_badges.badge", title="DOI", value=record.pids.doi.identifier, ext="svg", _external=True, _scheme="https") if record.pids.doi.identifier else ""}}'
+        data-external-resources='{{ external_resources | tojson }}'
+        data-files='{{ files | tojson }}'
+        data-has-previewable-files='{{ has_previewable_files_flag | tojson }}'
+        data-icons-ror='{{ url_for("static", filename="images/ror-icon.svg") }}'
+        data-icons-orcid='{{ url_for("static", filename="images/orcid.svg") }}'
+        data-icons-gnd='{{ url_for("static", filename="images/gnd-icon.svg") }}'
+        data-icons-hc-username='{{ url_for("static", filename="images/hc-icon.svg") }}'
+        data-is-preview='{{ is_preview | tojson }}'
+        data-is-draft='{{ is_draft | tojson }}'
+        data-landing-urls='{{ config["LANDING_URLS"] | tojson }}'
+        data-main-sections='{{config["APP_RDM_DETAIL_MAIN_SECTIONS"] | tojson }}'
+        data-permissions='{{ permissions | tojson }}'
+        data-preview-file='{{ preview_file_item | tojson }}'
+        data-preview-file-url='{{ preview_file_url }}'
+        data-record='{{ record | tojson }}'
+        data-sidebar-sections='{{config.get("APP_RDM_DETAIL_SIDE_BAR_SECTIONS", []) | tojson }}'
+        data-total-file-size='{{ ( files|sum(attribute='size')|filesizeformat(binary=config["APP_RDM_DISPLAY_DECIMAL_FILE_SIZES"]) ) if files else 0 }}'
+      >
+      {{record}}
+      </div>
+    </div>
+  </div>
+
+  <div class="ui container">
+    <div class="ui relaxed grid mt-5">
+      <div class="two column row top-padded">
+
+        {# Main content #}
+        <article class="sixteen wide tablet eleven wide computer column main-record-content">
+          {% if record.access.record == 'restricted' %}
+            <section id="record-access-status"
+                     class="ui {{ record.ui.access_status.message_class }} message rel-mt-1"
+                     aria-label="{{ _('Record access information') }}"
+            >
+              <i class="{{ record.ui.access_status.icon }} icon"></i>
+              <strong>{{ record.ui.access_status.title_l10n }}</strong>
+              {{ record.ui.access_status.description_l10n }}
+
+              {% if record.access.embargo.reason %}
+                <p>{{ _("Reason") }}: {{ record.access.embargo.reason }}</p>
+              {% endif %}
+            </section>
+          {% endif %}
+
+          {%- block record_body -%}
+
+            {%- block record_header -%}
+
+              {%- block record_header_button -%}
+
+                {% if is_preview and not is_preview_submission_request and can_manage_record and is_draft %}
+                  <nav class="back-navigation rel-pb-2 pl-0" aria-label="{{ _('Back-navigation') }}">
+                    {%- set back_page = url_for('invenio_app_rdm_records.deposit_edit', pid_value=record.id) -%}
+                    {%- set back_btn_label = _('Back to edit') -%}
+                    <a class="ui button labeled icon small compact" href="{{ back_page }}">
+                      <i class="ui icon angle left"></i> {{ back_btn_label }}</a>
+                  </nav>
+                {% endif %}
+
+              {% endblock record_header_button %}
+
+              {% if show_record_management_menu %}
+                <section id="mobile-record-management" class="ui grid tablet only mobile only">
+                  <div class="sixteen wide column right aligned">
+                    <button id="manage-record-btn"
+                            class="ui small basic icon button m-0"
+                            aria-haspopup="dialog"
+                            aria-expanded="false"
+                    >
+                      <i class="cog icon"></i> {{ _('Manage record') }}
+                    </button>
+                  </div>
+
+                  <div id="recordManagementMobile"
+                       role="dialog"
+                       class="ui flowing popup transition hidden"
+                       data-record='{{ record | tojson }}'
+                       data-permissions='{{ permissions | tojson }}'
+                       data-is-draft="{{ is_draft | tojson }}"
+                  >
+                  </div>
+                </section>
+              {% endif %}
+
+
+            {%- endblock record_header -%}
+
   <section id="banners" class="banners" aria-label="{{ _('Information banner') }}">
 
     <!-- COMMUNITY HEADER: hide it when displaying the submission request -->
@@ -100,139 +212,6 @@
       </div>
     {% endif %}
   </section>
-
-
-  <div class="ui container">
-    <div class="ui relaxed grid mt-5">
-      <div class="two column row top-padded">
-
-        {# Main content #}
-        <article class="sixteen wide tablet eleven wide computer column main-record-content">
-          {% if record.access.record == 'restricted' %}
-            <section id="record-access-status"
-                     class="ui {{ record.ui.access_status.message_class }} message rel-mt-1"
-                     aria-label="{{ _('Record access information') }}"
-            >
-              <i class="{{ record.ui.access_status.icon }} icon"></i>
-              <strong>{{ record.ui.access_status.title_l10n }}</strong>
-              {{ record.ui.access_status.description_l10n }}
-
-              {% if record.access.embargo.reason %}
-                <p>{{ _("Reason") }}: {{ record.access.embargo.reason }}</p>
-              {% endif %}
-            </section>
-          {% endif %}
-
-          {%- block record_body -%}
-
-            {%- block record_header -%}
-
-              {%- block record_header_button -%}
-
-                {% if is_preview and not is_preview_submission_request and can_manage_record and is_draft %}
-                  <nav class="back-navigation rel-pb-2 pl-0" aria-label="{{ _('Back-navigation') }}">
-                    {%- set back_page = url_for('invenio_app_rdm_records.deposit_edit', pid_value=record.id) -%}
-                    {%- set back_btn_label = _('Back to edit') -%}
-                    <a class="ui button labeled icon small compact" href="{{ back_page }}">
-                      <i class="ui icon angle left"></i> {{ back_btn_label }}</a>
-                  </nav>
-                {% endif %}
-
-              {% endblock record_header_button %}
-
-              {% if show_record_management_menu %}
-                <section id="mobile-record-management" class="ui grid tablet only mobile only">
-                  <div class="sixteen wide column right aligned">
-                    <button id="manage-record-btn"
-                            class="ui small basic icon button m-0"
-                            aria-haspopup="dialog"
-                            aria-expanded="false"
-                    >
-                      <i class="cog icon"></i> {{ _('Manage record') }}
-                    </button>
-                  </div>
-
-                  <div id="recordManagementMobile"
-                       role="dialog"
-                       class="ui flowing popup transition hidden"
-                       data-record='{{ record | tojson }}'
-                       data-permissions='{{ permissions | tojson }}'
-                       data-is-draft="{{ is_draft | tojson }}"
-                  >
-                  </div>
-                </section>
-              {% endif %}
-
-              <section id="record-info" aria-label="{{ _('Publication date and version number') }}">
-                <div class="ui grid middle aligned">
-                  <div class="two column row">
-                    <div class="left floated left aligned column">
-                      <span class="ui" title="{{ _('Publication date') }}">
-                        {{ _('Published') }} {{ record.ui.publication_date_l10n_long }}
-                      </span>
-                      <span
-                        class="label text-muted"> | {{ _('Version {version_number}').format(version_number=record.ui.version) }}</span>
-                    </div>
-                    <div class="right floated right aligned column">
-                      {% if record.ui.resource_type %}
-                        <span class="ui label horizontal small neutral mb-5"
-                              title="{{ _('Resource type') }}">{{ record.ui.resource_type.title_l10n }}</span>
-                      {% endif %}
-                      <span class="ui label horizontal small access-status {{ record.ui.access_status.id }} mb-5"
-                            title="{{ _('Access status') }}"
-                            data-tooltip="{{ record.ui.access_status.description_l10n }}"
-                            data-inverted=""
-                      >
-                        {% if record.ui.access_status.icon %}
-                          <i class="icon {{ record.ui.access_status.icon }}"></i>
-                        {% endif %}
-                        {{ record.ui.access_status.title_l10n }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </section>
-              <div class="ui divider hidden"></div>
-
-            {%- endblock record_header -%}
-
-            {# Main Content #}
-            {%- set has_previewable_files_flag = 'false' -%}
-            {%- set preview_file_item = 'undefined' -%}
-            {%- set preview_file_url = 'undefined' -%}
-            {%- if record.files.enabled -%}
-              {%- set files = files|order_entries %}
-              {%- if permissions.can_read_files -%}
-                {%- if files|has_previewable_files -%}
-                  {%- set has_previewable_files_flag = 'true' %}
-                  {%- set preview_file_item = files|select_preview_file(default_preview=record.files.default_preview) -%}
-                  {%- set preview_endpoint = 'invenio_app_rdm_records.record_file_preview' -%}
-                  {%- set preview_file_url = url_for(preview_endpoint, pid_value=record.id, filename="") -%}
-                {%- endif -%}
-              {%- endif -%}
-            {%- endif -%}
-            <div id="detail-main-content"
-              data-community='{{ community | tojson }}'
-              data-custom-fields-ui='{{ custom_fields_ui | tojson }}'
-              data-external-resources='{{ external_resources | tojson }}'
-              data-files='{{ files | tojson }}'
-              data-has-previewable-files='{{ has_previewable_files_flag | tojson }}'
-              data-icons-ror='{{ url_for("static", filename="images/ror-icon.svg") }}'
-              data-icons-orcid='{{ url_for("static", filename="images/orcid.svg") }}'
-              data-icons-gnd='{{ url_for("static", filename="images/gnd-icon.svg") }}'
-              data-icons-hc-username='{{ url_for("static", filename="images/hc-icon.svg") }}'
-              data-is-preview='{{ is_preview | tojson }}'
-              data-is-draft='{{ is_draft | tojson }}'
-              data-landing-urls='{{ config["LANDING_URLS"] | tojson }}'
-              data-main-sections='{{config["APP_RDM_DETAIL_MAIN_SECTIONS"] | tojson }}'
-              data-permissions='{{ permissions | tojson }}'
-              data-preview-file='{{ preview_file_item | tojson }}'
-              data-preview-file-url='{{ preview_file_url }}'
-              data-record='{{ record | tojson }}'
-              data-sidebar-sections='{{config.get("APP_RDM_DETAIL_SIDE_BAR_SECTIONS", []) | tojson }}'
-              data-total-file-size='{{ ( files|sum(attribute='size')|filesizeformat(binary=config["APP_RDM_DISPLAY_DECIMAL_FILE_SIZES"]) ) if files else 0 }}'
-            >
-            </div>
 
             {# Title #}
             {%- block record_title -%}

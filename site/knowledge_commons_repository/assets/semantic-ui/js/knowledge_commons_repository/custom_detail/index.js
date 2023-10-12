@@ -1,13 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { DetailContent } from "./sections/DetailContent";
+import { RecordVersionsList } from "./components/RecordVersionList";
 
 const detailMainDiv = document.getElementById('detail-main-content');
 
 ReactDOM.render(
     <DetailContent
     community={JSON.parse(detailMainDiv.dataset.community)}
+    citationStyles={JSON.parse(detailMainDiv.dataset.citationStyles)}
+    citationStyleDefault={detailMainDiv.dataset.citationStyleDefault}
     customFieldsUi={JSON.parse(detailMainDiv.dataset.customFieldsUi)}
+    doiBadgeUrl={detailMainDiv.dataset.doiBadgeUrl}
     externalResources={JSON.parse(detailMainDiv.dataset.externalResources)}
     files={JSON.parse(detailMainDiv.dataset.files)}
     isDraft={JSON.parse(detailMainDiv.dataset.isDraft)}

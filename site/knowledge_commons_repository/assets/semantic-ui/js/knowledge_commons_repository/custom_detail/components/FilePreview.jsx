@@ -27,7 +27,6 @@ const FilePreview = ({previewFileUrl,
   // }
 
   const previewUrlFlag = isPreview ? "&preview=1" : "";
-  console.log('++++previewFile', previewFile);
   const previewUrl = `${previewFileUrl}/${previewFile.key}?${previewUrlFlag}`;
 
   return (

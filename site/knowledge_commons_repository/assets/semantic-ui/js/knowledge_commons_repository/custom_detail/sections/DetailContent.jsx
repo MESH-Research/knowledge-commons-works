@@ -22,25 +22,28 @@ const RecordTitle = ({title}) => {
     );
 };
 
-const DetailContent = ({community,
-                            customFieldsUi,
-                            externalResources,
-                            files,
-                            hasPreviewableFiles,
-                            iconsRor,
-                            iconsGnd,
-                            iconsHcUsername,
-                            iconsOrcid,
-                            isDraft,
-                            isPreview,
-                            landingUrls,
-                            mainSections,
-                            record,
-                            permissions,
-                            previewFile,
-                            previewFileUrl,
-                            sidebarSections,
-                            totalFileSize
+const DetailContent = ({citationStyles,
+                        citationStyleDefault,
+                        community,
+                        customFieldsUi,
+                        doiBadgeUrl,
+                        externalResources,
+                        files,
+                        hasPreviewableFiles,
+                        iconsRor,
+                        iconsGnd,
+                        iconsHcUsername,
+                        iconsOrcid,
+                        isDraft,
+                        isPreview,
+                        landingUrls,
+                        mainSections,
+                        record,
+                        permissions,
+                        previewFile,
+                        previewFileUrl,
+                        sidebarSections,
+                        totalFileSize
                           }) => {
     const panes = mainSections.map(({title, sections}) => {
       return ({
@@ -51,6 +54,8 @@ const DetailContent = ({community,
         >
           <DetailMainTab
               additional_descriptions={record.ui.additional_descriptions ? record.ui.additional_descriptions : null}
+              citationStyles={citationStyles}
+              citationStyleDefault={citationStyleDefault}
               description={record.metadata.description}
               files={files}
               hasFiles={record.files.enabled}
@@ -70,21 +75,28 @@ const DetailContent = ({community,
 
     return (
       <>
-        <RecordTitle title={record.metadata.title} />
-        <Creatibutors
-          creators={record.ui.creators}
-          contributors={record.ui.contributors}
-          iconsRor={iconsRor}
-          iconsGnd={iconsGnd}
-          iconsHcUsername={iconsHcUsername}
-          iconsOrcid={iconsOrcid}
-          landingUrls={landingUrls}
-        />
+
         <article className="sixteen wide tablet eleven wide computer column main-record-content">
+          <RecordTitle title={record.metadata.title} />
+          <Creatibutors
+            creators={record.ui.creators}
+            contributors={record.ui.contributors}
+            iconsRor={iconsRor}
+            iconsGnd={iconsGnd}
+            iconsHcUsername={iconsHcUsername}
+            iconsOrcid={iconsOrcid}
+            landingUrls={landingUrls}
+          />
           <Tab panes={panes} />
         </article>
         <DetailRightSidebar
+          citationStyles={citationStyles}
+          citationStyleDefault={citationStyleDefault}
           community={community}
+          doiBadgeUrl={doiBadgeUrl}
+          isPreview={isPreview}
+          record={record}
+          sidebarSections={sidebarSections}
         />
       </>
     );

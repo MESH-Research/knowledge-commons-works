@@ -68,7 +68,7 @@ const FileListTable = ({previewFileUrl,
         <tr>
           <th>{i18next.t('Name')}</th>
           <th>{i18next.t('Size')}</th>
-          <th class>
+          <th >
             <a role="button" className="ui compact mini button right floated archive-link" href={record.links.archive}>
               <i className="file archive icon button"></i> {i18next.t("Download all")}
             </a>

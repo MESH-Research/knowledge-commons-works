@@ -43,14 +43,12 @@ const contentComponents = {
 // sidebarSections,
 // totalFileSize
 const DetailMainTab = (props) => {
-  console.log('@@@@@props', props);
   return (
     <>
       {!!props.subSections.length && props.subSections.map((section, idx) => {
 
         const SubSectionComponent = contentComponents[section]['component'];
         const subSectionArgs = contentComponents[section]['passed_args'].reduce((obj, key) => { obj[key] = props[key]; return obj }, {});
-        console.log('****subSectionArgs', subSectionArgs);
         const showIfTrue = !!showIfTrue ? contentComponents[section]['show_if_true'] : () => true;
 
         return showIfTrue(subSectionArgs) ? (
