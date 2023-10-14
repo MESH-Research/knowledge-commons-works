@@ -12,7 +12,7 @@ import { Doi } from "../components/Doi";
  * @returns Array of objects with title and value. The values are React components.
  */
 const getDetailsInfo = (record, doiBadgeUrl, detailOrder) => {
-  const idDoi = record.pids.doi.identifier;
+  const idDoi = record.pids.doi ? record.pids.doi.identifier : null;
   let detailsInfo = [
     {
       tile: i18next.t("DOI"),

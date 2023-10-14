@@ -7,6 +7,7 @@ const detailMainDiv = document.getElementById('detail-main-content');
 
 ReactDOM.render(
     <DetailContent
+    backPage={detailMainDiv.dataset.backPage}
     community={JSON.parse(detailMainDiv.dataset.community)}
     citationStyles={JSON.parse(detailMainDiv.dataset.citationStyles)}
     citationStyleDefault={detailMainDiv.dataset.citationStyleDefault}
@@ -21,6 +22,7 @@ ReactDOM.render(
     iconsOrcid={detailMainDiv.dataset.iconsOrcid}
     iconsGnd={detailMainDiv.dataset.iconsGnd}
     iconsHcUsername={detailMainDiv.dataset.iconsHcUsername}
+    isPreviewSubmissionRequest={JSON.parse(detailMainDiv.dataset.isPreviewSubmissionRequest)}
     landingUrls={JSON.parse(detailMainDiv.dataset.landingUrls)}
     mainSections={JSON.parse(detailMainDiv.dataset.mainSections)}
     permissions={JSON.parse(detailMainDiv.dataset.permissions)}

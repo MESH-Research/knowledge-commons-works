@@ -30,6 +30,7 @@ import { filterPropsToPass } from "../util";
 // The props passed to each component are defined in the "props"
 // property of the section config.
 // Available props are:
+// - backPage: URL of the previous (editing) page when previewing a draft
 // - citationStyles: list of citation styles
 // - citationStyleDefault: default citation style
 // - community: community of the record
@@ -44,6 +45,7 @@ import { filterPropsToPass } from "../util";
 // - iconsOrcid: path to the ORCID icon
 // - isDraft: whether the record is in draft mode
 // - isPreview: whether the record is in preview mode
+// - isPreviewSubmissionRequest: whether the record is in preview mode
 // - landingUrls: list of URLs for landing pages for various third
 //     party services
 // - mainSections: list of main sections to display
@@ -59,9 +61,23 @@ import { filterPropsToPass } from "../util";
 // and are available to all components:
 // - additional_descriptions: additional descriptions for the record
 // - description: description of the record
+// - hasFiles: whether the record has files
+// - title: title of the record
+// - creators: list of creators
+// - contributors: list of contributors
+// - canManage: whether the user can manage the record
+// - showRecordManagementMenu: whether to show the record management menu
 //
 const DetailContent = (rawProps) => {
   const record = rawProps.record;
+  console.log("****DetailContent isDraft", rawProps.isDraft);
+  console.log(
+    "****DetailContent isPreviewSubmissionRequest",
+    rawProps.isPreviewSubmissionRequest
+  );
+  const canManageFlag =
+    rawProps.permissions !== undefined &&
+    (rawProps.permissions.can_edit || rawProps.permissions.can_review);
   const extraProps = {
     additionalDescriptions: record.ui.additional_descriptions
       ? record.ui.additional_descriptions
@@ -71,21 +87,21 @@ const DetailContent = (rawProps) => {
     title: record.metadata.title,
     creators: record.ui.creators,
     contributors: record.ui.contributors,
+    canManage: canManageFlag,
+    showRecordManagementMenu:
+      canManageFlag &&
+      (!rawProps.isPreview || rawProps.isPreviewSubmissionRequest),
   };
   const topLevelProps = { ...rawProps, ...extraProps };
 
   const untabbedSections = topLevelProps.mainSections.filter(
     ({ tab }) => tab === false || tab === undefined
   );
-  console.log("****DetailContent untabbedSections", untabbedSections);
   const tabbedSections = topLevelProps.mainSections.filter(
     ({ tab }) => tab === true
   );
-  console.log("****DetailContent tabbedSections", tabbedSections);
   const panes = tabbedSections.map(
     ({ section, component_name, subsections, props }) => {
-      console.log("****DetailContent section", section);
-      console.log("****DetailContent component_name", component_name);
       // Because can't import DetailMainTab in componentsMap (circular)
       if (component_name === "DetailMainTab") {
         component_name = undefined;
@@ -136,11 +152,14 @@ const DetailContent = (rawProps) => {
         <Tab panes={panes} />
       </article>
       <DetailRightSidebar
+        canManage={topLevelProps.canManage}
         citationStyles={topLevelProps.citationStyles}
         citationStyleDefault={topLevelProps.citationStyleDefault}
         community={topLevelProps.community}
         doiBadgeUrl={topLevelProps.doiBadgeUrl}
+        isDraft={topLevelProps.isDraft}
         isPreview={topLevelProps.isPreview}
+        isPreviewSubmissionRequest={topLevelProps.isPreviewSubmissionRequest}
         record={topLevelProps.record}
         sidebarSectionsRight={topLevelProps.sidebarSectionsRight}
       />

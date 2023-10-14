@@ -45,11 +45,12 @@
       {%- endif -%}
       <div id="detail-main-content"
         class="two column row top-padded"
+        data-back-page='{{ url_for("invenio_app_rdm_records.deposit_edit", pid_value=record.id) }}'
         data-citation-styles='{{ config["RDM_CITATION_STYLES"] | tojson }}'
         data-citation-style-default='{{ config["RDM_CITATION_STYLES_DEFAULT"] }}'
         data-community='{{ community | tojson }}'
         data-custom-fields-ui='{{ custom_fields_ui | tojson }}'
-        data-doi-badge-url='{{ url_for("invenio_formatter_badges.badge", title="DOI", value=record.pids.doi.identifier, ext="svg", _external=True, _scheme="https") if record.pids.doi.identifier else ""}}'
+        data-doi-badge-url='{{ url_for("invenio_formatter_badges.badge", title="DOI", value=record.pids.doi.identifier, ext="svg", _external=True, _scheme="https") if record.pids.doi else ""}}'
         data-external-resources='{{ external_resources | tojson }}'
         data-files='{{ files | tojson }}'
         data-has-previewable-files='{{ has_previewable_files_flag | tojson }}'
@@ -57,6 +58,7 @@
         data-icons-orcid='{{ url_for("static", filename="images/orcid.svg") }}'
         data-icons-gnd='{{ url_for("static", filename="images/gnd-icon.svg") }}'
         data-icons-hc-username='{{ url_for("static", filename="images/hc-icon.svg") }}'
+        data-is-preview-submission-request='{{preview_submission_request or false | tojson}}'
         data-is-preview='{{ is_preview | tojson }}'
         data-is-draft='{{ is_draft | tojson }}'
         data-landing-urls='{{ config["LANDING_URLS"] | tojson }}'
@@ -67,12 +69,14 @@
         data-record='{{ record | tojson }}'
         data-sidebar-sections-left='{{config.get("APP_RDM_DETAIL_SIDEBAR_SECTIONS_LEFT", []) | tojson }}'
         data-sidebar-sections-right='{{config.get("APP_RDM_DETAIL_SIDEBAR_SECTIONS_RIGHT", []) | tojson }}'
-        data-total-file-size='{{ ( files|sum(attribute='size')|filesizeformat(binary=config["APP_RDM_DISPLAY_DECIMAL_FILE_SIZES"]) ) if files else 0 }}'
+        data-total-file-size='{{ ( files|sum(attribute='size')|filesizeformat(binary=config["APP_RDM_DISPLAY_DECIMAL_FILE_SIZES"]) ) if files and files.enabled else 0 }}'
       >
       {{record}}
       </div>
     </div>
   </div>
+  {{ is_draft | pprint}}
+  {{ preview_submission_request or false | pprint }}
 
   <div class="ui container">
     <div class="ui relaxed grid mt-5">

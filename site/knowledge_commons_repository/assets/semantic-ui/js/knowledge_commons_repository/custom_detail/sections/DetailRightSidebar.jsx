@@ -14,6 +14,34 @@ import React from "react";
 import { componentsMap } from "../componentsMap";
 import { filterPropsToPass } from "../util";
 
+const DraftBackButton = ({
+  backPage,
+  isPreview,
+  isDraft,
+  canManage,
+  isPreviewSubmissionRequest,
+}) => {
+  console.log("****DraftBackButton isPreview", isPreview);
+  console.log("****DraftBackButton isDraft", isDraft);
+  console.log("****DraftBackButton canManage", canManage);
+  console.log(
+    "****DraftBackButton isPreviewSubmissionRequest",
+    isPreviewSubmissionRequest
+  );
+  return isPreview && !isPreviewSubmissionRequest && canManage && isDraft ? (
+    <nav
+      class="back-navigation rel-pb-2 pl-0"
+      aria-label={i18next.t("Back-navigation")}
+    >
+      <a class="ui button labeled icon small compact" href={backPage}>
+        <i class="ui icon angle left"></i> {i18next.t("Back to edit")}
+      </a>
+    </nav>
+  ) : (
+    ""
+  );
+};
+
 /** Component for the right sidebar of the detail page.
  *
  * @param {object} props
@@ -44,6 +72,13 @@ const DetailRightSidebar = (topLevelProps) => {
   );
   return (
     <aside className="sixteen wide tablet five wide computer column right-sidebar">
+      <DraftBackButton
+        backPage={topLevelProps.backPage}
+        isPreview={topLevelProps.isPreview}
+        isDraft={topLevelProps.isDraft}
+        canManage={topLevelProps.canManage}
+        isPreviewSubmissionRequest={topLevelProps.isPreviewSubmissionRequest}
+      />
       {activeSidebarSections.map(
         ({ section, component_name, props, subsections, show_heading }) => {
           console.log("****DetailRightSidebar component_name", component_name);
