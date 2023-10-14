@@ -27,7 +27,8 @@ ReactDOM.render(
     previewFile={JSON.parse(detailMainDiv.dataset.previewFile)}
     previewFileUrl={detailMainDiv.dataset.previewFileUrl}
     record={JSON.parse(detailMainDiv.dataset.record)}
-    sidebarSections={JSON.parse(detailMainDiv.dataset.sidebarSections)}
+    sidebarSectionsLeft={JSON.parse(detailMainDiv.dataset.sidebarSectionsLeft)}
+    sidebarSectionsRight={JSON.parse(detailMainDiv.dataset.sidebarSectionsRight)}
     totalFileSize={detailMainDiv.dataset.totalFileSize}
     // badge_png
     // badge_svg

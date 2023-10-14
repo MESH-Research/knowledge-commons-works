@@ -1,19 +1,9 @@
 import React from "react";
 import { Descriptions } from "../components/Descriptions";
 import { FilePreview } from "../components/FilePreview";
-
-const contentComponents = {
-  'descriptions': {"component": Descriptions,
-                   "passed_args": ["description",
-                                   "additional_descriptions", "has_files"],
-                  },
-  'preview': {"component": FilePreview,
-              "passed_args": ["files", "isPreview",
-                              "hasPreviewableFiles", "permissions",
-                              "previewFile", "previewFileUrl", "record", "totalFileSize"],
-              "show_if_true": ({has_files}) => !!has_files
-             },
-}
+import { PublishingDetails } from "../components/PublishingDetails";
+import { componentsMap } from "../componentsMap";
+import { filterPropsToPass } from "../util";
 
 /**
  * Component for the default content section (tab) of the record detail page.
@@ -42,21 +32,26 @@ const contentComponents = {
 // previewFile,
 // sidebarSections,
 // totalFileSize
-const DetailMainTab = (props) => {
+const DetailMainTab = (topLevelProps) => {
   return (
     <>
-      {!!props.subSections.length && props.subSections.map((section, idx) => {
-
-        const SubSectionComponent = contentComponents[section]['component'];
-        const subSectionArgs = contentComponents[section]['passed_args'].reduce((obj, key) => { obj[key] = props[key]; return obj }, {});
-        const showIfTrue = !!showIfTrue ? contentComponents[section]['show_if_true'] : () => true;
-
-        return showIfTrue(subSectionArgs) ? (
-          <SubSectionComponent {...subSectionArgs} key={idx} /> ) : "";
-        }
-      )}
+      {!!topLevelProps.subsections.length &&
+        topLevelProps.subsections.map(
+          ({ section, component_name, subsections, props }, idx) => {
+            console.log("****DetailMainTab component_name", component_name);
+            const SubSectionComponent = componentsMap[component_name];
+            return (
+              <SubSectionComponent
+                {...filterPropsToPass(topLevelProps, props)}
+                section={section}
+                subsections={subsections}
+                key={idx}
+              />
+            );
+          }
+        )}
     </>
-  )
+  );
 };
 
 export { DetailMainTab };

@@ -65,7 +65,8 @@
         data-preview-file='{{ preview_file_item | tojson }}'
         data-preview-file-url='{{ preview_file_url }}'
         data-record='{{ record | tojson }}'
-        data-sidebar-sections='{{config.get("APP_RDM_DETAIL_SIDE_BAR_SECTIONS", []) | tojson }}'
+        data-sidebar-sections-left='{{config.get("APP_RDM_DETAIL_SIDEBAR_SECTIONS_LEFT", []) | tojson }}'
+        data-sidebar-sections-right='{{config.get("APP_RDM_DETAIL_SIDEBAR_SECTIONS_RIGHT", []) | tojson }}'
         data-total-file-size='{{ ( files|sum(attribute='size')|filesizeformat(binary=config["APP_RDM_DISPLAY_DECIMAL_FILE_SIZES"]) ) if files else 0 }}'
       >
       {{record}}

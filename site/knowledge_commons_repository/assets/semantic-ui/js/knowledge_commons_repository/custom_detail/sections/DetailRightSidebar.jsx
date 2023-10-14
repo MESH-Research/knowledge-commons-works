@@ -10,26 +10,9 @@
 // you can redistribute them and/or modify them under the terms of the MIT
 // License; see LICENSE file for more details.
 
-import React from 'react';
-import { CitationSection } from './DetailSidebarCitationSection';
-import { VersionsSection } from './DetailSidebarVersionsSection';
-import { SidebarDetailsSection } from './DetailSidebarDetailsSection';
-
-/** Mapping of sidebar section slugs to components.
- *
- * Each component is passed props from the DetailRightSidebar component
- * as specified in the "passed_args" list.
- */
-const sidebarSectionComponents = {
-  'versions': {"component": VersionsSection,
-               "passed_args": ["isPreview", "record"]},
-  'sidebar_details': {"component": SidebarDetailsSection,
-                      "passed_args": ["record","doiBadgeUrl"]},
-  'citation': {"component": CitationSection,
-               "passed_args": ["record", "citationStyles",
-                               "citationStyleDefault"]
-              },
-}
+import React from "react";
+import { componentsMap } from "../componentsMap";
+import { filterPropsToPass } from "../util";
 
 /** Component for the right sidebar of the detail page.
  *
@@ -45,19 +28,36 @@ const sidebarSectionComponents = {
  * - community: community of the record
  *
  */
-const DetailRightSidebar = (props) => {
-  console.log("****DetailRightSidebar props", props);
-  let activeSidebarSections = props.sidebarSections.filter(({slug}) => {
-    return sidebarSectionComponents[slug] !== undefined;
-  });
+const DetailRightSidebar = (topLevelProps) => {
+  console.log("****DetailRightSidebar props", topLevelProps);
+  let activeSidebarSections = topLevelProps.sidebarSectionsRight.filter(
+    ({ component_name }) => {
+      return (
+        component_name !== undefined &&
+        componentsMap[component_name] !== undefined
+      );
+    }
+  );
+  console.log(
+    "****DetailRightSidebar activeSidebarSections",
+    activeSidebarSections
+  );
   return (
     <aside className="sixteen wide tablet five wide computer column right-sidebar">
-      {activeSidebarSections.map(({slug}, idx) => {
-        const SidebarSectionComponent = sidebarSectionComponents[slug]['component'];
-        const SidebarSectionArgs = sidebarSectionComponents[slug]['passed_args'].reduce((obj, key) => { obj[key] = props[key]; return obj }, {});
-        return (
-          <SidebarSectionComponent {...SidebarSectionArgs} key={idx} />
-        )
+      {activeSidebarSections.map(
+        ({ section, component_name, props, subsections, show_heading }) => {
+          console.log("****DetailRightSidebar component_name", component_name);
+          const SidebarSectionComponent = componentsMap[component_name];
+          const SidebarSectionProps = filterPropsToPass(topLevelProps, props);
+          return (
+            <SidebarSectionComponent
+              {...SidebarSectionProps}
+              section={section}
+              subsections={subsections}
+              key={section}
+              show_heading={show_heading}
+            />
+          );
         }
       )}
     </aside>
