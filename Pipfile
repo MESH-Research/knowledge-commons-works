@@ -47,6 +47,7 @@ invenio-saml = "*"
 knowledge-commons-repository = {editable = true, path = "./site"}
 langdetect = "*"
 pip = "*"
+Pillow ="==9.5.0"
 pytest-invenio = "*"
 python-dotenv = "*"
 python-iso639 = "*"
