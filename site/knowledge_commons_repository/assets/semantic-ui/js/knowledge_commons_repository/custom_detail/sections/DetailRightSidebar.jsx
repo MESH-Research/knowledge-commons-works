@@ -30,16 +30,37 @@ const DraftBackButton = ({
   );
   return isPreview && !isPreviewSubmissionRequest && canManage && isDraft ? (
     <nav
-      class="back-navigation rel-pb-2 pl-0"
+      className="back-navigation rel-pb-2 pl-0"
       aria-label={i18next.t("Back-navigation")}
     >
-      <a class="ui button labeled icon small compact" href={backPage}>
-        <i class="ui icon angle left"></i> {i18next.t("Back to edit")}
+      <a className="ui button labeled icon small compact" href={backPage}>
+        <i className="ui icon angle left"></i> {i18next.t("Back to edit")}
       </a>
     </nav>
   ) : (
     ""
   );
+};
+
+const FlagNewerVersion = ({ isPublished, isLatest, latestHtml }) => {
+  console.log("****FlagNewerVersion isPublished", isPublished);
+  console.log("****FlagNewerVersion isLatest", isLatest);
+  console.log("****FlagNewerVersion latestHtml", latestHtml);
+  if (isPublished && !isLatest) {
+    return (
+      <div className="ui warning flashed top attached manage message">
+        <p>
+          There is a{" "}
+          <a href={latestHtml}>
+            <b>newer version</b>
+          </a>{" "}
+          of the record available.
+        </p>
+      </div>
+    );
+  } else {
+    return null;
+  }
 };
 
 /** Component for the right sidebar of the detail page.
@@ -78,6 +99,11 @@ const DetailRightSidebar = (topLevelProps) => {
         isDraft={topLevelProps.isDraft}
         canManage={topLevelProps.canManage}
         isPreviewSubmissionRequest={topLevelProps.isPreviewSubmissionRequest}
+      />
+      <FlagNewerVersion
+        isLatest={topLevelProps.record.versions.is_latest}
+        isPublished={topLevelProps.record.is_published}
+        latestHtml={topLevelProps.record.links.latest_html}
       />
       {activeSidebarSections.map(
         ({ section, component_name, props, subsections, show_heading }) => {

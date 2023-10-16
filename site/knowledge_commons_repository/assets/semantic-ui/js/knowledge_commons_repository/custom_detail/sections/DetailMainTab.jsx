@@ -1,7 +1,5 @@
 import React from "react";
-import { Descriptions } from "../components/Descriptions";
-import { FilePreview } from "../components/FilePreview";
-import { PublishingDetails } from "../components/PublishingDetails";
+import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { componentsMap } from "../componentsMap";
 import { filterPropsToPass } from "../util";
 
@@ -41,12 +39,18 @@ const DetailMainTab = (topLevelProps) => {
             console.log("****DetailMainTab component_name", component_name);
             const SubSectionComponent = componentsMap[component_name];
             return (
-              <SubSectionComponent
-                {...filterPropsToPass(topLevelProps, props)}
-                section={section}
-                subsections={subsections}
+              <section
+                id="section"
+                className="rel-mt-2"
+                aria-label={i18next.t(section)}
                 key={idx}
-              />
+              >
+                <SubSectionComponent
+                  {...filterPropsToPass(topLevelProps, props)}
+                  section={section}
+                  subsections={subsections}
+                />
+              </section>
             );
           }
         )}
