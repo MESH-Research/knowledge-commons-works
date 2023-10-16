@@ -2,7 +2,9 @@ import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 
 const CommunitiesBanner = ({ community, isPreviewSubmissionRequest }) => {
-  const isCommunityRestricted = community.access.visibility == "restricted";
+  const isCommunityRestricted = community
+    ? community.access.visibility == "restricted"
+    : false;
   return (
     !isPreviewSubmissionRequest &&
     community && (

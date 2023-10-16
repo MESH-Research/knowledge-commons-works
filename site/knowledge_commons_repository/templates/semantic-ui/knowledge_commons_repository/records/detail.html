@@ -32,7 +32,7 @@
       {%- set has_previewable_files_flag = 'false' -%}
       {%- set preview_file_item = 'undefined' -%}
       {%- set preview_file_url = 'undefined' -%}
-      {%- if record.files.enabled -%}
+      {%- if files and record.files.enabled -%}
         {%- set files = files|order_entries %}
         {%- if permissions.can_read_files -%}
           {%- if files|has_previewable_files -%}
@@ -75,8 +75,6 @@
       </div>
     </div>
   </div>
-  {{ is_draft | pprint}}
-  {{ preview_submission_request or false | pprint }}
 
   <div class="ui container">
     <div class="ui relaxed grid mt-5">

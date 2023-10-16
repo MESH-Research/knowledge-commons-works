@@ -27,7 +27,7 @@ const CreatibutorIcon = ({
     gnd: ["GND", iconsGnd, landingUrls.gnd],
     hc_username: [
       "Humanities Commons",
-      iconsHcUsername,
+      iconsHcUsername.replace(".svg", ".jpg"),
       landingUrls.hc_username,
     ],
   };
