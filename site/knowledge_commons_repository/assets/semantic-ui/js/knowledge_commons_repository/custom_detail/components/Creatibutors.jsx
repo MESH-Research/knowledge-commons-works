@@ -27,6 +27,7 @@ const CreatibutorIcon = ({
     gnd: ["GND", iconsGnd, landingUrls.gnd],
     hc_username: [
       "Humanities Commons",
+      // FIXME: temporary until we get a proper icon
       iconsHcUsername.replace(".svg", ".jpg"),
       landingUrls.hc_username,
     ],
