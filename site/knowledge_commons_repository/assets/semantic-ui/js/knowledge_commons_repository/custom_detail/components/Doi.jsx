@@ -1,19 +1,33 @@
-import React from 'react';
-import { i18next } from '@translations/invenio_app_rdm/i18next';
-import { BadgesFormatsList } from '../components/BadgesFormatsList';
+import React from "react";
+import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { BadgesFormatsList } from "../components/BadgesFormatsList";
 
-const Doi = ({idDoi, doiBadgeUrl, doiLink}) => {
+const Doi = ({ idDoi, doiBadgeUrl, doiLink }) => {
+  console.log("****Doi component idDoi", idDoi);
   return (
     <dl>
-      <dt className="ui tiny header">{i18next.t('DOI')}</dt>
+      <dt className="ui tiny header">{i18next.t("DOI")}</dt>
       <dd>
-        <span className="get-badge" data-toggle="tooltip" data-placement="bottom" style={{"cursor": "pointer"}}
-          title={i18next.t('Get the DOI badge!')}>
-          <img id="record-doi-badge" data-target={`[data-modal='${idDoi}']`}
-            src={doiBadgeUrl} alt={idDoi} />
+        <span
+          className="get-badge"
+          data-toggle="tooltip"
+          data-placement="bottom"
+          style={{ cursor: "pointer" }}
+          title={i18next.t("Get the DOI badge!")}
+        >
+          <img
+            id="record-doi-badge"
+            data-target={`[data-modal='${idDoi}']`}
+            src={doiBadgeUrl}
+            alt={idDoi}
+          />
         </span>
 
-        <div id="doi-modal" className="ui modal fade badge-modal" data-modal={idDoi}>
+        <div
+          id="doi-modal"
+          className="ui modal fade badge-modal"
+          data-modal={idDoi}
+        >
           <div className="header">{i18next.t("DOI Badge")}</div>
           <div className="content">
             <h4>

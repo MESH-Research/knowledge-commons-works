@@ -13,16 +13,17 @@ import { Doi } from "../components/Doi";
  */
 const getDetailsInfo = (record, doiBadgeUrl, detailOrder) => {
   const idDoi = record.pids.doi ? record.pids.doi.identifier : null;
-  let detailsInfo = [
+  const detailsInfo = [
     {
-      tile: i18next.t("DOI"),
-      value: !!idDoi ? (
-        <Doi
-          idDoi={record.pids.doi.identifier}
-          doiBadgeUrl={doiBadgeUrl}
-          doiLink={record.links.doi}
-        />
-      ) : null,
+      title: i18next.t("DOI"),
+      value:
+        idDoi !== null ? (
+          <Doi
+            idDoi={idDoi}
+            doiBadgeUrl={doiBadgeUrl}
+            doiLink={record.links.doi}
+          />
+        ) : null,
     },
     {
       title: i18next.t("Resource type"),
@@ -78,10 +79,12 @@ const getDetailsInfo = (record, doiBadgeUrl, detailOrder) => {
       value: record.metadata.sizes ? record.metadata.sizes.join(",") : null,
     },
   ];
-  detailsInfo = detailsInfo.filter(
-    ({ title, value }) => value !== null && detailOrder.includes(title)
+  const filteredDetailsInfo = detailsInfo.filter(
+    ({ title, value }) =>
+      (typeof value === "string" || React.isValidElement(value)) &&
+      detailOrder.includes(title)
   );
-  const sortedDetailsInfo = detailsInfo.toSorted(
+  const sortedDetailsInfo = filteredDetailsInfo.toSorted(
     (a, b) => detailOrder.indexOf(a.title) - detailOrder.indexOf(b.title)
   );
 
@@ -91,6 +94,10 @@ const getDetailsInfo = (record, doiBadgeUrl, detailOrder) => {
     ) : (
       value
     )
+  );
+  console.log(
+    "****getDetailsInfo detailsComponentArray",
+    detailsComponentArray
   );
 
   return detailsComponentArray;

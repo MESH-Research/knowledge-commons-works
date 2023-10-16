@@ -21,13 +21,6 @@ const DraftBackButton = ({
   canManage,
   isPreviewSubmissionRequest,
 }) => {
-  console.log("****DraftBackButton isPreview", isPreview);
-  console.log("****DraftBackButton isDraft", isDraft);
-  console.log("****DraftBackButton canManage", canManage);
-  console.log(
-    "****DraftBackButton isPreviewSubmissionRequest",
-    isPreviewSubmissionRequest
-  );
   return isPreview && !isPreviewSubmissionRequest && canManage && isDraft ? (
     <nav
       className="back-navigation rel-pb-2 pl-0"
@@ -43,9 +36,6 @@ const DraftBackButton = ({
 };
 
 const FlagNewerVersion = ({ isPublished, isLatest, latestHtml }) => {
-  console.log("****FlagNewerVersion isPublished", isPublished);
-  console.log("****FlagNewerVersion isLatest", isLatest);
-  console.log("****FlagNewerVersion latestHtml", latestHtml);
   if (isPublished && !isLatest) {
     return (
       <div className="ui warning flashed top attached manage message">
@@ -78,7 +68,6 @@ const FlagNewerVersion = ({ isPublished, isLatest, latestHtml }) => {
  *
  */
 const DetailRightSidebar = (topLevelProps) => {
-  console.log("****DetailRightSidebar props", topLevelProps);
   let activeSidebarSections = topLevelProps.sidebarSectionsRight.filter(
     ({ component_name }) => {
       return (
@@ -86,10 +75,6 @@ const DetailRightSidebar = (topLevelProps) => {
         componentsMap[component_name] !== undefined
       );
     }
-  );
-  console.log(
-    "****DetailRightSidebar activeSidebarSections",
-    activeSidebarSections
   );
   return (
     <aside className="sixteen wide tablet five wide computer column right-sidebar">
@@ -107,7 +92,6 @@ const DetailRightSidebar = (topLevelProps) => {
       />
       {activeSidebarSections.map(
         ({ section, component_name, props, subsections, show_heading }) => {
-          console.log("****DetailRightSidebar component_name", component_name);
           const SidebarSectionComponent = componentsMap[component_name];
           const SidebarSectionProps = filterPropsToPass(topLevelProps, props);
           return (
