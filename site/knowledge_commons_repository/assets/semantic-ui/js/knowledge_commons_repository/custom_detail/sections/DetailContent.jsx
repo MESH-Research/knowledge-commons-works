@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tab } from "semantic-ui-react";
 import { DetailMainTab } from "./DetailMainTab";
 import { DetailRightSidebar } from "./DetailRightSidebar";
@@ -69,12 +69,11 @@ import { filterPropsToPass } from "../util";
 // - showRecordManagementMenu: whether to show the record management menu
 //
 const DetailContent = (rawProps) => {
+  const [activePreviewFile, setActivePreviewFile] = useState(null);
+  const [activeTab, setActiveTab] = useState(0);
+  console.log("****DetailContent activeTab", activeTab);
+
   const record = rawProps.record;
-  console.log("****DetailContent isDraft", rawProps.isDraft);
-  console.log(
-    "****DetailContent isPreviewSubmissionRequest",
-    rawProps.isPreviewSubmissionRequest
-  );
   const canManageFlag =
     rawProps.permissions !== undefined &&
     (rawProps.permissions.can_edit || rawProps.permissions.can_review);
@@ -91,6 +90,8 @@ const DetailContent = (rawProps) => {
     showRecordManagementMenu:
       canManageFlag &&
       (!rawProps.isPreview || rawProps.isPreviewSubmissionRequest),
+    setActivePreviewFile: setActivePreviewFile,
+    setActiveTab: setActiveTab,
   };
   const topLevelProps = { ...rawProps, ...extraProps };
 
@@ -114,13 +115,15 @@ const DetailContent = (rawProps) => {
         !!props && props.length ? filterPropsToPass(topLevelProps, props) : {};
       passedProps = {
         ...passedProps,
+        activeTab: activeTab,
+        tabbedSections: tabbedSections,
         section: section,
         subsections: subsections,
       };
       return {
         menuItem: section,
         render: () => (
-          <Tab.Pane key={section}>
+          <Tab.Pane key={section} className={`record-details-tab ${section}`}>
             <TabComponent {...passedProps} key={section} />
           </Tab.Pane>
         ),
@@ -143,25 +146,37 @@ const DetailContent = (rawProps) => {
             passedProps = {
               ...passedProps,
               section: section,
+              tabbedSections: tabbedSections,
               subsections: subsections,
             };
             console.log("****DetailContent passedProps", passedProps);
             return <SectionComponent {...passedProps} key={section} />;
           }
         )}
-        <Tab panes={panes} />
+        <Tab
+          panes={panes}
+          activeIndex={activeTab}
+          onTabChange={(e, { activeIndex }) => setActiveTab(activeIndex)}
+        />
       </article>
       <DetailRightSidebar
+        activeTab={activeTab}
         canManage={topLevelProps.canManage}
         citationStyles={topLevelProps.citationStyles}
         citationStyleDefault={topLevelProps.citationStyleDefault}
         community={topLevelProps.community}
         doiBadgeUrl={topLevelProps.doiBadgeUrl}
+        files={topLevelProps.files}
         isDraft={topLevelProps.isDraft}
         isPreview={topLevelProps.isPreview}
         isPreviewSubmissionRequest={topLevelProps.isPreviewSubmissionRequest}
+        previewFileUrl={topLevelProps.previewFileUrl}
         record={topLevelProps.record}
+        setActivePreviewFile={setActivePreviewFile}
+        setActiveTab={setActiveTab}
         sidebarSectionsRight={topLevelProps.sidebarSectionsRight}
+        tabbedSections={tabbedSections}
+        totalFileSize={topLevelProps.totalFileSize}
       />
       <DetailLeftSidebar
         citationStyles={topLevelProps.citationStyles}

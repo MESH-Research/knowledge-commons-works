@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { DetailContent } from "./sections/DetailContent";
-import { RecordVersionsList } from "./components/RecordVersionList";
 
 const detailMainDiv = document.getElementById('detail-main-content');
 

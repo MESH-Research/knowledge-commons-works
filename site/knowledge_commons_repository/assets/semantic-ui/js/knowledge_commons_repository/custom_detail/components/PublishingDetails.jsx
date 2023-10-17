@@ -95,10 +95,6 @@ const getDetailsInfo = (record, doiBadgeUrl, detailOrder) => {
       value
     )
   );
-  console.log(
-    "****getDetailsInfo detailsComponentArray",
-    detailsComponentArray
-  );
 
   return detailsComponentArray;
 };

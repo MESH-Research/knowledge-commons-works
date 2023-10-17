@@ -313,3 +313,21 @@
     }
   }
 }
+
+// detail page
+.record-details-tab.Content {
+    #record-files {             margin-right: -1rem;
+                                margin-left: -1rem;
+    }
+}
+.sidebar-container {
+    #record-details-download {  padding-right: 0;
+                                padding-left: 0;
+                                padding-bottom: 1rem;
+        table                {  margin-bottom: 0;
+            a.filename {            overflow-wrap: anywhere;
+                                    word-break: break-all;
+            }
+        }
+    }
+}

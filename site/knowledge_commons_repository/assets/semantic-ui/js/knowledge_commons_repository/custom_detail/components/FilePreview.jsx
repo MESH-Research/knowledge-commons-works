@@ -29,7 +29,7 @@ const FilePreview = ({
   // }
 
   const previewUrlFlag = isPreview ? "&preview=1" : "";
-  const previewUrl = `${previewFileUrl}/${previewFile.key}?${previewUrlFlag}`;
+  const previewUrl = `${previewFileUrl}${previewFile.key}?${previewUrlFlag}`;
 
   return (
     !!hasFiles && (
