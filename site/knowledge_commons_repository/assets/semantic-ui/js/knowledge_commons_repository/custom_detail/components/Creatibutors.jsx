@@ -1,5 +1,6 @@
 import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { Icon, Image, Label, List } from "semantic-ui-react";
 import { AffiliationsAccordion } from "./AffiliationsAccordion";
 
 const CreatibutorIcon = ({
@@ -10,8 +11,6 @@ const CreatibutorIcon = ({
   iconsHcUsername,
   landingUrls,
 }) => {
-  console.log(creatibutor);
-  console.log(creatibutor.person_or_org.identifiers);
   let ids = creatibutor.person_or_org.identifiers;
   if (creatibutor.person_or_org.identifiers !== undefined) {
     // ids = creatibutor.person_or_org.identifiers.group(({scheme}) => scheme);
@@ -29,34 +28,31 @@ const CreatibutorIcon = ({
       "Humanities Commons",
       // FIXME: temporary until we get a proper icon
       iconsHcUsername.replace(".svg", ".jpg"),
-      landingUrls.hc_username,
+      landingUrls.hcommons_username,
     ],
   };
   return (
     <>
       {!!ids
         ? ids.map(({ scheme, identifier }) => (
-            <a
-              className="no-text-decoration"
+            <Image
+              as={"a"}
+              className="no-text-decoration ml-5"
               key={`${scheme}-${identifier}`}
+              src={schemeStrings[scheme][1]}
               href={`${schemeStrings[scheme][2]}${identifier}`}
               aria-label={`${creatibutor.person_or_org.name}'s ${
                 schemeStrings[scheme][0]
               } ${i18next.t("profile")}`}
+              alt={`${schemeStrings[scheme][0]} icon`}
               title={`${creatibutor.person_or_org.name}'s ${
                 schemeStrings[scheme][0]
               } ${i18next.t("profile")}`}
-            >
-              <img
-                className="ml-5 inline-id-icon"
-                src={schemeStrings[scheme][1]}
-                alt={`${schemeStrings[scheme][0]} icon`}
-              />
-            </a>
+            />
           ))
         : ""}
       {!!ids && creatibutor.person_or_org.type == "organizational" ? (
-        <i className="group icon"></i>
+        <Icon name="group" />
       ) : (
         ""
       )}
@@ -67,39 +63,44 @@ const CreatibutorIcon = ({
 const Creatibutor = ({
   creatibutor,
   show_affiliations,
+  show_roles,
   iconsRor,
   iconsOrcid,
   iconsGnd,
   iconsHcUsername,
+  itemIndex,
+  listLength,
   landingUrls,
 }) => {
+  let extra_props = {};
+  if (show_affiliations && creatibutor.affiliations) {
+    extra_props["data-tooltip"] = creatibutor.affiliations
+      .map((a) => a[1])
+      .join("; ");
+  }
   return (
     <dd className="creatibutor-wrap separated">
-      <a
-        className="ui creatibutor-link"
-        data-tooltip={
-          show_affiliations && creatibutor.affiliations
-            ? creatibutor.affiliations.map((a) => a[1]).join("; ")
-            : ""
-        }
-        href={`../search?q='metadata.creators.person_or_org.name:${creatibutor.person_or_org.name}'`}
-      >
-        <span className="creatibutor-name">
-          {creatibutor.person_or_org.name}
-        </span>
-        {creatibutor.affiliations && (
-          <sup className="font-tiny">
-            {creatibutor.affiliations.map((a) => a[0]).join(", ")}
-          </sup>
-        )}
-        {creatibutor.role && creatibutor.role.title !== "Other" ? (
-          <span className="creatibutor-role text-muted">
-            {creatibutor.role.title}
+      <List.Content as={"span"} className="creatibutor-name">
+        <a
+          className="ui creatibutor-link"
+          href={`../search?q='metadata.creators.person_or_org.name:${creatibutor.person_or_org.name}'`}
+          {...extra_props}
+        >
+          <span>
+            {creatibutor.person_or_org.type === "personal" &&
+            creatibutor.person_or_org.family_name
+              ? `${creatibutor.person_or_org.given_name} ${creatibutor.person_or_org.family_name}`
+              : creatibutor.person_or_org.name}
           </span>
-        ) : (
-          ""
-        )}
-      </a>
+        </a>
+      </List.Content>
+      {!!show_roles &&
+      creatibutor.role &&
+      creatibutor.role.title !== "Other" ? (
+        <Label className="creatibutor-role">{creatibutor.role.title}</Label>
+      ) : (
+        ""
+      )}
       <CreatibutorIcon
         creatibutor={creatibutor}
         iconsRor={iconsRor}
@@ -109,6 +110,47 @@ const Creatibutor = ({
         landingUrls={landingUrls}
       />
     </dd>
+  );
+};
+
+const CreatibutorsShortList = ({
+  creators,
+  contributors,
+  iconsRor,
+  iconsOrcid,
+  iconsGnd,
+  iconsHcUsername,
+  landingUrls,
+}) => {
+  const show_affiliations = false;
+  const show_roles = false;
+  const creatibutors = contributors
+    ? creators?.creators?.concat(contributors?.contributors)
+    : creators?.creators;
+  return (
+    <section
+      id="creatibutors-list-section"
+      className="ui mb-10 mt-10 sixteen wide mobile twelve wide tablet thirteen wide computer column"
+    >
+      <dt className="hidden">{i18next.t("Creators")}</dt>
+      <dl className="creatibutors" aria-label={i18next.t("Contributors list")}>
+        {creatibutors?.length
+          ? creatibutors.map((creator, idx) => (
+              <Creatibutor
+                creatibutor={creator}
+                key={creator.person_or_org.name}
+                show_affiliations={show_affiliations}
+                show_roles={show_roles}
+                iconsRor={iconsRor}
+                iconsOrcid={iconsOrcid}
+                iconsGnd={iconsGnd}
+                iconsHcUsername={iconsHcUsername}
+                landingUrls={landingUrls}
+              />
+            ))
+          : ""}
+      </dl>
+    </section>
   );
 };
 
@@ -124,83 +166,34 @@ const Creatibutors = ({
   subsections,
 }) => {
   const show_affiliations = true;
+  console.log("****Creatibutors", creators, contributors);
+  const creatibutors = contributors
+    ? creators?.creators?.concat(contributors?.contributors)
+    : creators?.creators;
+  console.log("****Creatibutors creatibutors", creatibutors);
   return (
     <div className="ui grid">
-      {creators && creators.creators.length ? (
-        <div className="row ui accordion affiliations">
-          <div className="sixteen wide mobile twelve wide tablet thirteen wide computer column mb-10">
-            <dl
-              className="creatibutors"
-              aria-label={i18next.t("Creators list")}
-            >
-              <dt className="hidden">{i18next.t("Creators")}</dt>
-              {creators.creators.map((creator) => (
-                <Creatibutor
-                  creatibutor={creator}
-                  key={creator.person_or_org.name}
-                  show_affiliations={show_affiliations}
-                  iconsRor={iconsRor}
-                  iconsOrcid={iconsOrcid}
-                  iconsGnd={iconsGnd}
-                  iconsHcUsername={iconsHcUsername}
-                  landingUrls={landingUrls}
-                />
-              ))}
-            </dl>
-          </div>
-
-          {creators.affiliations.length ? (
-            <AffiliationsAccordion
-              group="creators"
-              affiliations={creators.affiliations}
-              iconsRor={iconsRor}
-            />
-          ) : (
-            ""
-          )}
+      <div className="row ui accordion affiliations">
+        <div className="sixteen wide mobile twelve wide tablet thirteen wide computer column mb-10">
+          <dl className="creatibutors" aria-label={i18next.t("Creators list")}>
+            <dt className="hidden">{i18next.t("Creators")}</dt>
+            {creatibutors?.map((creator) => (
+              <Creatibutor
+                creatibutor={creator}
+                key={creator.person_or_org.name}
+                show_affiliations={show_affiliations}
+                iconsRor={iconsRor}
+                iconsOrcid={iconsOrcid}
+                iconsGnd={iconsGnd}
+                iconsHcUsername={iconsHcUsername}
+                landingUrls={landingUrls}
+              />
+            ))}
+          </dl>
         </div>
-      ) : (
-        ""
-      )}
-
-      {contributors && contributors.contributors.length ? (
-        <div className="row ui accordion affiliations">
-          <div className="sixteen wide mobile twelve wide tablet thirteen wide computer column mb-10">
-            <dl
-              className="creatibutors"
-              aria-label={i18next.t("Contributors list")}
-            >
-              <dt className="hidden">{i18next.t("Contributors")}</dt>
-              {contributors.contributors.map((contributor) => (
-                <Creatibutor
-                  creatibutor={contributor}
-                  key={contributor.person_or_org.name}
-                  show_affiliations={show_affiliations}
-                  iconsRor={iconsRor}
-                  iconsOrcid={iconsOrcid}
-                  iconsGnd={iconsGnd}
-                  iconsHcUsername={iconsHcUsername}
-                  landingUrls={landingUrls}
-                />
-              ))}
-            </dl>
-          </div>
-
-          {contributors.affiliations.length ? (
-            <AffiliationsAccordion
-              group="contributors"
-              iconsRor={iconsRor}
-              affiliations={contributors.affiliations}
-            />
-          ) : (
-            ""
-          )}
-        </div>
-      ) : (
-        ""
-      )}
+      </div>
     </div>
   );
 };
 
-export { Creatibutors };
+export { Creatibutors, CreatibutorsShortList };

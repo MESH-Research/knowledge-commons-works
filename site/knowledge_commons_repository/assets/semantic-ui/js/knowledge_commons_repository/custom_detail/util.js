@@ -9,6 +9,23 @@ const filterPropsToPass = (topLevelProps, propList) => {
   return passedProps;
 };
 
+const addPropsFromChildren = (children, props) => {
+  props = props ? props : [];
+  if (children) {
+    props = children.reduce((acc, subsection) => {
+      acc = subsection.props ? [...acc, ...subsection.props] : acc;
+      return acc;
+    }, props);
+    props = props.reduce((acc, prop) => {
+      if (!acc.includes(prop)) {
+        acc.push(prop);
+      }
+      return acc;
+    }, []);
+  }
+  return props;
+}
+
 const formatBytes = (bytes, decimals=2) => {
   if (!+bytes) return "0 Bytes";
   const k = 1024
@@ -18,4 +35,4 @@ const formatBytes = (bytes, decimals=2) => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
-export { filterPropsToPass, formatBytes };
+export { addPropsFromChildren, filterPropsToPass, formatBytes };

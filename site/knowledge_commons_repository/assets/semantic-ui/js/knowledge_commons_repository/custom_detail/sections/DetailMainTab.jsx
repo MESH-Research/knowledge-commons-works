@@ -31,6 +31,7 @@ import { filterPropsToPass } from "../util";
 // sidebarSections,
 // totalFileSize
 const DetailMainTab = (topLevelProps) => {
+  console.log("****DetailMainTab component topLevelProps", topLevelProps);
   return (
     <>
       {!!topLevelProps.subsections.length &&
@@ -39,8 +40,8 @@ const DetailMainTab = (topLevelProps) => {
             const SubSectionComponent = componentsMap[component_name];
             return (
               <section
-                id="section"
-                className="rel-mt-2"
+                id={`${section}-tab-section`}
+                className="rel-mt-0"
                 aria-label={i18next.t(section)}
                 key={idx}
               >

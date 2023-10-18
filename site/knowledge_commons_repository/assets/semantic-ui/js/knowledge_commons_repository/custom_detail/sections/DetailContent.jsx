@@ -4,7 +4,7 @@ import { DetailMainTab } from "./DetailMainTab";
 import { DetailRightSidebar } from "./DetailRightSidebar";
 import { DetailLeftSidebar } from "./DetailLeftSidebar";
 import { componentsMap } from "../componentsMap";
-import { filterPropsToPass } from "../util";
+import { addPropsFromChildren, filterPropsToPass } from "../util";
 
 // React component for the main content of the detail page.
 // This is the main content of the detail page, which includes a central
@@ -73,7 +73,6 @@ const DetailContent = (rawProps) => {
     rawProps.defaultPreviewFile
   );
   const [activeTab, setActiveTab] = useState(0);
-  console.log("****DetailContent activeTab", activeTab);
 
   const untabbedSections = rawProps.mainSections.filter(
     ({ tab }) => tab === false || tab === undefined
@@ -123,6 +122,7 @@ const DetailContent = (rawProps) => {
         component_name !== undefined
           ? componentsMap[component_name]
           : DetailMainTab;
+      props = addPropsFromChildren(subsections, props);
       let passedProps =
         !!props && props.length ? filterPropsToPass(topLevelProps, props) : {};
       passedProps = {
@@ -150,9 +150,8 @@ const DetailContent = (rawProps) => {
       <article className="sixteen wide tablet eleven wide computer column main-record-content">
         {untabbedSections.map(
           ({ section, component_name, subsections, props }) => {
-            console.log("****DetailContent section", section);
-            console.log("****DetailContent component_name", component_name);
             const SectionComponent = componentsMap[component_name];
+            props = addPropsFromChildren(subsections, props);
             let passedProps =
               !!props && props.length
                 ? filterPropsToPass(topLevelProps, props)

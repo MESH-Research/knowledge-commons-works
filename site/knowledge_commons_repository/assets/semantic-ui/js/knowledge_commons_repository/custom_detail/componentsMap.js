@@ -2,7 +2,7 @@ import { RecordTitle } from "./components/RecordTitle";
 import { Citation } from "./components/Citation";
 import { CitationSection } from "./sections/DetailSidebarCitationSection";
 import { CommunitiesBanner } from "./components/CommunitiesBanner";
-import { Creatibutors } from "./components/Creatibutors";
+import { Creatibutors, CreatibutorsShortList } from "./components/Creatibutors";
 import { Descriptions } from "./components/Descriptions";
 import { FileListBox } from "./components/FileList";
 import { FilePreview } from "./components/FilePreview";
@@ -17,6 +17,7 @@ const componentsMap = {
     "CitationSection": CitationSection,
     "CommunitiesBanner": CommunitiesBanner,
     "Creatibutors": Creatibutors,
+    "CreatibutorsShortList": CreatibutorsShortList,
     "Descriptions": Descriptions,
     "FileListBox": FileListBox,
     "FilePreview": FilePreview,
