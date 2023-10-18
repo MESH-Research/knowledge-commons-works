@@ -3,7 +3,6 @@ import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { BadgesFormatsList } from "../components/BadgesFormatsList";
 
 const Doi = ({ idDoi, doiBadgeUrl, doiLink }) => {
-  console.log("****Doi component idDoi", idDoi);
   return (
     <dl>
       <dt className="ui tiny header">{i18next.t("DOI")}</dt>

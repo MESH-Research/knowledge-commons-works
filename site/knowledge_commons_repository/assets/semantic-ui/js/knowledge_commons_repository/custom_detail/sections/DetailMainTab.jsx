@@ -36,7 +36,6 @@ const DetailMainTab = (topLevelProps) => {
       {!!topLevelProps.subsections.length &&
         topLevelProps.subsections.map(
           ({ section, component_name, subsections, props }, idx) => {
-            console.log("****DetailMainTab component_name", component_name);
             const SubSectionComponent = componentsMap[component_name];
             return (
               <section
