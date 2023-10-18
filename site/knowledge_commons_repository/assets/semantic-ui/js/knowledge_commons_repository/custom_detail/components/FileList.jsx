@@ -24,19 +24,29 @@ const EmbargoMessage = ({ record }) => {
 
 const FileListTableRow = ({
   file,
+  fileTabIndex,
   fullWordButtons,
   isPreview,
   previewFileUrl,
+  previewTabIndex,
+  setActivePreviewFile,
+  setActiveTab,
   showChecksum,
   stackedRows,
   withPreview,
 }) => {
+  // FIXME: restrict to previewable file types
   const file_type = file.key.split(".").pop().toLowerCase();
   const previewUrlFlag = isPreview ? "&preview=1" : "";
   const downloadUrl = `${previewFileUrl.replace("/preview/", "/files/")}/${
     file.key
   }?download=1${previewUrlFlag}`;
-  const previewUrl = `${previewFileUrl}/${file.key}?${previewUrlFlag}`;
+
+  const handlePreviewChange = (file) => {
+    setActiveTab(previewTabIndex);
+    setActivePreviewFile(file);
+  };
+
   return (
     <tr>
       <td className={`${!!stackedRows ? "fourteen" : "nine"} wide`}>
@@ -67,15 +77,17 @@ const FileListTableRow = ({
         <span>
           {/* FIXME: restrict to previewable file types */}
           {withPreview && (
-            <a
+            <Button
               role="button"
               className="ui compact mini button preview-link"
-              href={previewUrl}
               target="preview-iframe"
               data-file-key={file.key}
+              size="mini"
+              onClick={() => handlePreviewChange(file)}
+              compact
             >
               <i className="eye icon"></i> {i18next.t("Preview")}
-            </a>
+            </Button>
           )}
           <a
             role="button"
@@ -92,13 +104,16 @@ const FileListTableRow = ({
 };
 
 const FileListTable = ({
+  activePreviewFile,
   fileCountToShow,
   files,
   fileTabIndex,
   fullWordButtons,
   isPreview,
   previewFileUrl,
+  previewTabIndex,
   record,
+  setActivePreviewFile,
   setActiveTab,
   showChecksum,
   showTableHeader,
@@ -106,9 +121,6 @@ const FileListTable = ({
   stackedRows,
   withPreview,
 }) => {
-  console.log("****FileListTable component files", files);
-  console.log("****FileListTable component fileTabIndex", fileTabIndex);
-  console.log("****FileListTable component setActiveTab", setActiveTab);
   const displayFiles =
     fileCountToShow > 0 ? files.slice(0, fileCountToShow) : files;
   return (
@@ -135,12 +147,16 @@ const FileListTable = ({
         <tbody>
           {displayFiles.map((file) => (
             <FileListTableRow
+              activePreviewFile={activePreviewFile}
               key={file.key}
               file={file}
               fileTabIndex={fileTabIndex}
               fullWordButtons={fullWordButtons}
               isPreview={isPreview}
               previewFileUrl={previewFileUrl}
+              previewTabIndex={previewTabIndex}
+              setActivePreviewFile={setActivePreviewFile}
+              setActiveTab={setActiveTab}
               showChecksum={showChecksum}
               stackedRows={stackedRows}
               withPreview={withPreview}
@@ -167,14 +183,17 @@ const FileListTable = ({
 };
 
 const FileListBox = ({
-  previewFileUrl,
+  activePreviewFile,
   fileCountToShow = 0,
   files,
   fileTabIndex,
   fullWordButtons = true,
   isPreview,
+  previewFileUrl,
+  previewTabIndex,
   record,
   setActiveTab,
+  setActivePreviewFile,
   showChecksum = true,
   showTableHeader = true,
   showTotalSize = true,
@@ -195,6 +214,7 @@ const FileListBox = ({
           <EmbargoMessage record={record} />
         ) : (
           <FileListTable
+            activePreviewFile={activePreviewFile}
             previewFileUrl={previewFileUrl}
             files={files}
             fileCountToShow={fileCountToShow}
@@ -202,7 +222,9 @@ const FileListBox = ({
             fullWordButtons={fullWordButtons}
             pid={record.id}
             isPreview={isPreview}
+            previewTabIndex={previewTabIndex}
             record={record}
+            setActivePreviewFile={setActivePreviewFile}
             setActiveTab={setActiveTab}
             showChecksum={showChecksum}
             showTableHeader={showTableHeader}

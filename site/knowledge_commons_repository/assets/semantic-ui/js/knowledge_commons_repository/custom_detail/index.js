@@ -25,7 +25,7 @@ ReactDOM.render(
     landingUrls={JSON.parse(detailMainDiv.dataset.landingUrls)}
     mainSections={JSON.parse(detailMainDiv.dataset.mainSections)}
     permissions={JSON.parse(detailMainDiv.dataset.permissions)}
-    previewFile={JSON.parse(detailMainDiv.dataset.previewFile)}
+    defaultPreviewFile={JSON.parse(detailMainDiv.dataset.defaultPreviewFile)}
     previewFileUrl={detailMainDiv.dataset.previewFileUrl}
     record={JSON.parse(detailMainDiv.dataset.record)}
     sidebarSectionsLeft={JSON.parse(detailMainDiv.dataset.sidebarSectionsLeft)}

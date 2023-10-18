@@ -4,19 +4,15 @@ import { FileListBox } from "../components/FileList";
 
 const SidebarDownloadSection = ({
   files,
+  fileTabIndex,
   isPreview,
   previewFileUrl,
+  previewTabIndex,
   record,
   setActiveTab,
   show_heading,
-  tabbedSections,
   totalFileSize,
 }) => {
-  console.log("****SidebarDownloadSection tabbedSections", tabbedSections);
-  const fileTabIndex = tabbedSections.findIndex(
-    ({ section }) => section === "Files"
-  );
-  console.log("****SidebarDownloadSection fileTabIndex", fileTabIndex);
   return (
     <div className="sidebar-container" aria-label={i18next.t("File download")}>
       {show_heading === true && (
@@ -36,6 +32,7 @@ const SidebarDownloadSection = ({
           withPreview={false}
           isPreview={isPreview}
           previewFileUrl={previewFileUrl}
+          previewTabIndex={previewTabIndex}
           record={record}
           setActiveTab={setActiveTab}
           showChecksum={false}

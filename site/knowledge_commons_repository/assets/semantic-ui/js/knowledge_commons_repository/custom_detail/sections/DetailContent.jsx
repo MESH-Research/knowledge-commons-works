@@ -69,38 +69,50 @@ import { filterPropsToPass } from "../util";
 // - showRecordManagementMenu: whether to show the record management menu
 //
 const DetailContent = (rawProps) => {
-  const [activePreviewFile, setActivePreviewFile] = useState(null);
+  const [activePreviewFile, setActivePreviewFile] = useState(
+    rawProps.defaultPreviewFile
+  );
   const [activeTab, setActiveTab] = useState(0);
   console.log("****DetailContent activeTab", activeTab);
 
+  const untabbedSections = rawProps.mainSections.filter(
+    ({ tab }) => tab === false || tab === undefined
+  );
+  const tabbedSections = rawProps.mainSections.filter(
+    ({ tab }) => tab === true
+  );
   const record = rawProps.record;
   const canManageFlag =
     rawProps.permissions !== undefined &&
     (rawProps.permissions.can_edit || rawProps.permissions.can_review);
+
   const extraProps = {
+    activePreviewFile: activePreviewFile,
     additionalDescriptions: record.ui.additional_descriptions
       ? record.ui.additional_descriptions
       : null,
-    description: record.metadata.description,
-    hasFiles: record.files.enabled,
-    title: record.metadata.title,
     creators: record.ui.creators,
     contributors: record.ui.contributors,
     canManage: canManageFlag,
+    description: record.metadata.description,
+    fileTabIndex: tabbedSections.findIndex(
+      ({ section }) => section === "Files"
+    ),
+    hasFiles: record.files.enabled,
+    previewTabIndex: tabbedSections.findIndex(({ subsections }) =>
+      subsections
+        .map(({ component_name }) => component_name)
+        .includes("FilePreview")
+    ),
     showRecordManagementMenu:
       canManageFlag &&
       (!rawProps.isPreview || rawProps.isPreviewSubmissionRequest),
     setActivePreviewFile: setActivePreviewFile,
     setActiveTab: setActiveTab,
+    title: record.metadata.title,
   };
   const topLevelProps = { ...rawProps, ...extraProps };
 
-  const untabbedSections = topLevelProps.mainSections.filter(
-    ({ tab }) => tab === false || tab === undefined
-  );
-  const tabbedSections = topLevelProps.mainSections.filter(
-    ({ tab }) => tab === true
-  );
   const panes = tabbedSections.map(
     ({ section, component_name, subsections, props }) => {
       // Because can't import DetailMainTab in componentsMap (circular)
@@ -115,9 +127,11 @@ const DetailContent = (rawProps) => {
         !!props && props.length ? filterPropsToPass(topLevelProps, props) : {};
       passedProps = {
         ...passedProps,
+        activePreviewFile: activePreviewFile,
         activeTab: activeTab,
         tabbedSections: tabbedSections,
         section: section,
+        setActivePreviewFile: setActivePreviewFile,
         subsections: subsections,
       };
       return {
@@ -145,6 +159,8 @@ const DetailContent = (rawProps) => {
                 : {};
             passedProps = {
               ...passedProps,
+              activePreviewFile: activePreviewFile,
+              setActivePreviewFile: setActivePreviewFile,
               section: section,
               tabbedSections: tabbedSections,
               subsections: subsections,
@@ -161,6 +177,7 @@ const DetailContent = (rawProps) => {
       </article>
       <DetailRightSidebar
         activeTab={activeTab}
+        activePreviewFile={activePreviewFile}
         canManage={topLevelProps.canManage}
         citationStyles={topLevelProps.citationStyles}
         citationStyleDefault={topLevelProps.citationStyleDefault}

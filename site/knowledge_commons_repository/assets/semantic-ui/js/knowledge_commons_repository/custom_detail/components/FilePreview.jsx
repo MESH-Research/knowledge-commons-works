@@ -1,35 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { FileListBox, EmbargoMessage } from "./FileList";
 
 const FilePreview = ({
+  activePreviewFile,
   previewFileUrl,
   files,
   hasFiles,
   hasPreviewableFiles,
   isPreview,
   permissions,
-  previewFile,
+  defaultPreviewFile,
   record,
+  setActivePreviewFile,
   totalFileSize,
 }) => {
-  // let ordered_entries = files.entries;
-  // if (files.enabled && files.order.length > 0) {
-  //   ordered_entries = files.order.map((file_key) => files.entries[file_key]);
-  // }
-  // let previewable_entries = [];
-  // if ( ordered_entries.length > 0 ) {
-  //   previewable_entries = ordered_entries.filter((file) => {
-  //     const ext = file.key.split('.').pop().toLowerCase();
-  //     // FIXME: get this list from the backend invenio-previewer or
-  //     // invenio-app-rdm has_previewable_files func
-  //     return ['txt', 'pdf', 'epub', 'html', 'doc', 'docx', 'jpg',
-  //             'jpeg', 'png', 'ppt'].includes(ext);
-  //   });
-  // }
-
   const previewUrlFlag = isPreview ? "&preview=1" : "";
-  const previewUrl = `${previewFileUrl}${previewFile.key}?${previewUrlFlag}`;
+  console.log("****FilePreview previewFile", defaultPreviewFile);
+  console.log("****FilePreview activePreviewFile", activePreviewFile);
 
   return (
     !!hasFiles && (
@@ -50,7 +38,7 @@ const FilePreview = ({
                 tabIndex="0"
                 aria-label={i18next.t("File preview")}
               >
-                <span id="preview-file-title">{previewFile.key}</span>
+                <span id="preview-file-title">{activePreviewFile.key}</span>
                 <i className="ui angle right icon"></i>
               </div>
               <div id="collapsablePreview" className="active content pt-0">
@@ -62,7 +50,7 @@ const FilePreview = ({
                     name={record.id}
                     width="100%"
                     height="800"
-                    src={previewUrl}
+                    src={`${previewFileUrl}${activePreviewFile.key}?${previewUrlFlag}`}
                   ></iframe>
                 </div>
               </div>
@@ -75,11 +63,13 @@ const FilePreview = ({
           <>
             <h2 id="files-heading">{i18next.t("Files")}</h2>
             <FileListBox
-              previewFileUrl={previewFileUrl}
+              activePreviewFile={activePreviewFile}
               files={files}
               recordId={record.id}
               isPreview={isPreview}
+              previewFileUrl={previewFileUrl}
               record={record}
+              setActivePreviewFile={setActivePreviewFile}
               totalFileSize={totalFileSize}
             />
           </>
