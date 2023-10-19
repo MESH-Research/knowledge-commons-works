@@ -1,26 +1,30 @@
 import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
-import { Icon, Image, Label, List } from "semantic-ui-react";
+import { Card, Icon, Label, List } from "semantic-ui-react";
 import { AffiliationsAccordion } from "./AffiliationsAccordion";
 
-const CreatibutorIcon = ({
-  creatibutor,
-  iconsRor,
-  iconsOrcid,
-  iconsGnd,
-  iconsHcUsername,
-  landingUrls,
-}) => {
-  let ids = creatibutor.person_or_org.identifiers;
-  if (creatibutor.person_or_org.identifiers !== undefined) {
+const IdentifiersList = (ids) => {
+  if (ids !== undefined) {
     // ids = creatibutor.person_or_org.identifiers.group(({scheme}) => scheme);
     ids = ids.reduce((x, y) => {
       (x[y.scheme] = x[y.scheme] || []).push(y);
       return x;
     }, {});
     ids = Object.values(ids).reduce((acc, idlist) => [...acc, ...idlist], []);
+  } else {
+    ids = [];
   }
-  const schemeStrings = {
+  return ids;
+};
+
+const makeSchemeStrings = (
+  iconsGnd,
+  iconsHcUsername,
+  iconsOrcid,
+  iconsRor,
+  landingUrls
+) => {
+  const mystrings = {
     orcid: ["ORCID", iconsOrcid, landingUrls.orcid],
     ror: ["ROR", iconsRor, landingUrls.ror],
     gnd: ["GND", iconsGnd, landingUrls.gnd],
@@ -31,24 +35,47 @@ const CreatibutorIcon = ({
       landingUrls.hcommons_username,
     ],
   };
+  console.log("****makeSchemeStrings mystrings", mystrings);
+  return mystrings;
+};
+
+const CreatibutorIcon = ({
+  creatibutor,
+  iconsRor,
+  iconsOrcid,
+  iconsGnd,
+  iconsHcUsername,
+  landingUrls,
+}) => {
+  let ids = IdentifiersList(creatibutor.person_or_org.identifiers);
+  const schemeStrings = makeSchemeStrings(
+    iconsGnd,
+    iconsHcUsername,
+    iconsOrcid,
+    iconsRor,
+    landingUrls
+  );
   return (
     <>
       {!!ids
         ? ids.map(({ scheme, identifier }) => (
-            <Image
-              as={"a"}
-              className="no-text-decoration ml-5"
-              key={`${scheme}-${identifier}`}
-              src={schemeStrings[scheme][1]}
+            <a
               href={`${schemeStrings[scheme][2]}${identifier}`}
+              className="no-text-decoration"
+              key={`${scheme}-${identifier}`}
               aria-label={`${creatibutor.person_or_org.name}'s ${
                 schemeStrings[scheme][0]
               } ${i18next.t("profile")}`}
-              alt={`${schemeStrings[scheme][0]} icon`}
-              title={`${creatibutor.person_or_org.name}'s ${
-                schemeStrings[scheme][0]
-              } ${i18next.t("profile")}`}
-            />
+            >
+              <img
+                className="ml-5 inline-id-icon"
+                src={schemeStrings[scheme][1]}
+                alt={`${schemeStrings[scheme][0]} icon`}
+                title={`${creatibutor.person_or_org.name}'s ${
+                  schemeStrings[scheme][0]
+                } ${i18next.t("profile")}`}
+              />
+            </a>
           ))
         : ""}
       {!!ids && creatibutor.person_or_org.type == "organizational" ? (
@@ -63,6 +90,7 @@ const CreatibutorIcon = ({
 const Creatibutor = ({
   creatibutor,
   show_affiliations,
+  show_ids = true,
   show_roles,
   iconsRor,
   iconsOrcid,
@@ -101,14 +129,16 @@ const Creatibutor = ({
       ) : (
         ""
       )}
-      <CreatibutorIcon
-        creatibutor={creatibutor}
-        iconsRor={iconsRor}
-        iconsOrcid={iconsOrcid}
-        iconsGnd={iconsGnd}
-        iconsHcUsername={iconsHcUsername}
-        landingUrls={landingUrls}
-      />
+      {!!show_ids && creatibutor?.person_or_org?.identifiers && (
+        <CreatibutorIcon
+          creatibutor={creatibutor}
+          iconsRor={iconsRor}
+          iconsOrcid={iconsOrcid}
+          iconsGnd={iconsGnd}
+          iconsHcUsername={iconsHcUsername}
+          landingUrls={landingUrls}
+        />
+      )}
     </dd>
   );
 };
@@ -132,7 +162,7 @@ const CreatibutorsShortList = ({
       id="creatibutors-list-section"
       className="ui mb-10 mt-10 sixteen wide mobile twelve wide tablet thirteen wide computer column"
     >
-      <dt className="hidden">{i18next.t("Creators")}</dt>
+      {/* <dt className="hidden">{i18next.t("Creators")}</dt> */}
       <dl className="creatibutors" aria-label={i18next.t("Contributors list")}>
         {creatibutors?.length
           ? creatibutors.map((creator, idx) => (
@@ -166,30 +196,81 @@ const Creatibutors = ({
   subsections,
 }) => {
   const show_affiliations = true;
-  console.log("****Creatibutors", creators, contributors);
   const creatibutors = contributors
     ? creators?.creators?.concat(contributors?.contributors)
     : creators?.creators;
   console.log("****Creatibutors creatibutors", creatibutors);
+  let ids = creatibutors.reduce((acc, creatibutor) => {
+    acc[creatibutor.person_or_org.name] = IdentifiersList(
+      creatibutor.person_or_org.identifiers
+    );
+    return acc;
+  }, {});
+  const schemeStrings = makeSchemeStrings(
+    iconsGnd,
+    iconsHcUsername,
+    iconsOrcid,
+    iconsRor,
+    landingUrls
+  );
   return (
     <div className="ui grid">
       <div className="row ui accordion affiliations">
         <div className="sixteen wide mobile twelve wide tablet thirteen wide computer column mb-10">
-          <dl className="creatibutors" aria-label={i18next.t("Creators list")}>
-            <dt className="hidden">{i18next.t("Creators")}</dt>
-            {creatibutors?.map((creator) => (
-              <Creatibutor
-                creatibutor={creator}
-                key={creator.person_or_org.name}
-                show_affiliations={show_affiliations}
-                iconsRor={iconsRor}
-                iconsOrcid={iconsOrcid}
-                iconsGnd={iconsGnd}
-                iconsHcUsername={iconsHcUsername}
-                landingUrls={landingUrls}
-              />
-            ))}
-          </dl>
+          {creatibutors?.map((creator) => (
+            <Card>
+              <Card.Content>
+                <Card.Header>
+                  <Creatibutor
+                    creatibutor={creator}
+                    key={creator.person_or_org.name}
+                    show_affiliations={show_affiliations}
+                    show_ids={false}
+                    iconsRor={iconsRor}
+                    iconsOrcid={iconsOrcid}
+                    iconsGnd={iconsGnd}
+                    iconsHcUsername={iconsHcUsername}
+                    landingUrls={landingUrls}
+                  />
+                </Card.Header>
+                <Card.Meta>
+                  {!!creator.role && <span>{creator.role.title}</span>}
+                </Card.Meta>
+                <Card.Description>
+                  {!!creator.affiliations && show_affiliations && (
+                    <span>
+                      {creator.affiliations.map((a) => a[1]).join(",")}
+                    </span>
+                  )}
+                </Card.Description>
+              </Card.Content>
+              <Card.Content extra className="mt-0">
+                {ids[creator.person_or_org.name]?.map(
+                  ({ scheme, identifier }) => (
+                    <a
+                      href={`${schemeStrings[scheme][2]}${identifier}`}
+                      className="no-text-decoration"
+                      key={`${scheme}-${identifier}`}
+                      aria-label={`${creator.person_or_org.name}'s ${
+                        schemeStrings[scheme][0]
+                      } ${i18next.t("profile")}`}
+                    >
+                      <img
+                        className="mr-5 inline-id-icon"
+                        src={schemeStrings[scheme][1]}
+                        alt={`${schemeStrings[scheme][0]} icon`}
+                        title={`${creator.person_or_org.name}'s ${
+                          schemeStrings[scheme][0]
+                        } ${i18next.t("profile")}`}
+                      />
+                      {scheme === "hc_username" ? "Humanities Commons" : scheme}{" "}
+                      {i18next.t("profile")}
+                    </a>
+                  )
+                )}
+              </Card.Content>
+            </Card>
+          ))}
         </div>
       </div>
     </div>

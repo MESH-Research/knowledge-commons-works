@@ -14,7 +14,7 @@ const Descriptions = ({ description, additional_descriptions }) => {
               <p>
                 {open ? description : `${description.substring(0, 240)}...`}
               </p>
-              <Button onClick={() => setOpen(!open)}>
+              <Button onClick={() => setOpen(!open)} size="tiny">
                 {open ? "Show less" : "Show more"}
               </Button>
             </>

@@ -8,8 +8,12 @@ const CommunitiesBanner = ({ community, isPreviewSubmissionRequest }) => {
   return (
     !isPreviewSubmissionRequest &&
     community && (
-      <div className="ui fluid container page-subheader-outer with-submenu compact ml-0-mobile mr-0-mobile">
-        <div className="ui container page-subheader">
+      <div
+        id="communities"
+        className="sidebar-container"
+        aria-label={i18next.t("Record communities")}
+      >
+        <div className="ui container page-subheader bottom attached segment rdm-sidebar pr-0 pt-0">
           <div className="page-subheader-element ">
             <img
               className="ui tiny image community-header-logo has-placeholder"

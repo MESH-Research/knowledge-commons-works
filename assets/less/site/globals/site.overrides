@@ -315,12 +315,24 @@
 }
 
 // detail page
+dl.details-list            {
+    dt.ui.tiny.header            {  margin-bottom: 0.25rem;
+                                    margin-top: 1rem;
+    }
+}
 .record-details-tab.Content {
     #record-files {             margin-right: -1rem;
                                 margin-left: -1rem;
     }
 }
 .sidebar-container {
+    .ui.top.attached.header {   border-bottom: 0;
+                                font-size: large;
+                                background-color: #f9f9f9;
+    }
+    .ui.segment.rdm-sidebar:first-child,
+    .ui.segment.rdm-sidebar:last-child {    background-color: #f9f9f9;
+    }
     #record-details-download {  padding-right: 0;
                                 padding-left: 0;
                                 padding-bottom: 1rem;

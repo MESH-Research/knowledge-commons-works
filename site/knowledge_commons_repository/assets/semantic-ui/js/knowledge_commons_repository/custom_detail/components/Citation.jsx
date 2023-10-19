@@ -115,15 +115,23 @@ const Citation = ({
 
   return (
     <Grid className={`record-citation ui ${passedClassNames}`}>
-      <Grid.Row verticalAlign="middle" className="relaxed">
+      <Grid.Row verticalAlign="bottom" className="pt-0 pb-0">
+        <Grid.Column computer={16} className="">
+          <div id="citation-text" className="wrap-overflowing-text">
+            <small>{loading ? placeholderLoader() : citation}</small>
+          </div>
+        </Grid.Column>
+      </Grid.Row>
+
+      <Grid.Row verticalAlign="middle">
         <Grid.Column
-          mobile={8}
-          tablet={8}
-          computer={4}
-          className="p-0"
-          textAlign="right"
+          mobile={12}
+          tablet={12}
+          computer={12}
+          className=""
+          textAlign="left"
         >
-          <label id="citation-style-label" className="mr-10">
+          <label id="citation-style-label" className="mr-16">
             {i18next.t("Style")}
           </label>
           <Dropdown
@@ -138,20 +146,10 @@ const Citation = ({
             )}
           />
         </Grid.Column>
-      </Grid.Row>
-
-      <Grid.Row verticalAlign="bottom">
-        <Grid.Column computer={12} className="p-0">
-          <div id="citation-text" className="wrap-overflowing-text">
-            {loading ? placeholderLoader() : citation}
-          </div>
-        </Grid.Column>
-
-        <Grid.Column computer={4} className="p-0" textAlign="right">
+        <Grid.Column computer={4} className="" textAlign="right">
           <CopyButton text={citation} />
         </Grid.Column>
       </Grid.Row>
-
       {error ? errorMessage(error) : null}
     </Grid>
   );

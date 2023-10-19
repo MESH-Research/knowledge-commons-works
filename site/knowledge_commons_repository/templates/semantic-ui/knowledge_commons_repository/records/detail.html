@@ -71,7 +71,6 @@
         data-sidebar-sections-right='{{config.get("APP_RDM_DETAIL_SIDEBAR_SECTIONS_RIGHT", []) | tojson }}'
         data-total-file-size='{{ ( files|sum(attribute='size')|filesizeformat(binary=config["APP_RDM_DISPLAY_DECIMAL_FILE_SIZES"]) ) if (files and record.files.enabled) else 0 }}'
       >
-      {{record}}
       </div>
     </div>
   </div>
