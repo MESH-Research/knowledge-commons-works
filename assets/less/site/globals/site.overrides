@@ -330,8 +330,20 @@ dl.details-list            {
                                 font-size: large;
                                 background-color: #f9f9f9;
     }
+    .ui.segment.rdm-sidebar > h2.ui.small.header,
+    .ui.segment.rdm-sidebar > .header       {   border-bottom: 0;
+                                                margin-bottom: 0;
+    }
     .ui.segment.rdm-sidebar:first-child,
     .ui.segment.rdm-sidebar:last-child {    background-color: #f9f9f9;
+    }
+    &#subjects                {
+        .subject              {             background-color: #fff;
+        }
+    }
+    &#citation                {
+        #citation-style-label {  margin-right: 0.5rem;
+        }
     }
     #record-details-download {  padding-right: 0;
                                 padding-left: 0;

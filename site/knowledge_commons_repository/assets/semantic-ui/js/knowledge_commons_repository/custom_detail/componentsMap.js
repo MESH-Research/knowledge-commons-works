@@ -4,6 +4,7 @@ import { CitationSection } from "./sections/DetailSidebarCitationSection";
 import { CommunitiesBanner } from "./components/CommunitiesBanner";
 import { Creatibutors, CreatibutorsShortList } from "./components/Creatibutors";
 import { Descriptions } from "./components/Descriptions";
+import { DetailMainSubjectsSection } from "./sections/DetailMainSubjectsSection";
 import { DetailSidebarSubjectsSection } from "./sections/DetailSidebarSubjectsSection";
 import { FileListBox } from "./components/FileList";
 import { FilePreview } from "./components/FilePreview";
@@ -20,6 +21,7 @@ const componentsMap = {
     "Creatibutors": Creatibutors,
     "CreatibutorsShortList": CreatibutorsShortList,
     "Descriptions": Descriptions,
+    "DetailMainSubjectsSection": DetailMainSubjectsSection,
     "DetailSidebarSubjectsSection": DetailSidebarSubjectsSection,
     "FileListBox": FileListBox,
     "FilePreview": FilePreview,

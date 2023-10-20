@@ -1,7 +1,13 @@
 import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { Keywords } from "../components/Keywords";
 
-function SubjectHeadings({ passedClassNames, subjectHeadings }) {
+function SubjectHeadings({
+  passedClassNames,
+  subjectHeadings,
+  keywords,
+  showKeywords,
+}) {
   return (
     <div className={`record-subjects ui ${passedClassNames}`}>
       {subjectHeadings.map(({ id, scheme, subject }) => (
@@ -17,6 +23,17 @@ function SubjectHeadings({ passedClassNames, subjectHeadings }) {
           </li>
         </ul>
       ))}
+      {!!showKeywords && keywords?.length ? (
+        <>
+          <h3 className="ui header tiny mt-10">User-defined Keywords</h3>
+          <Keywords
+            passedClassNames="ui bottom attached segment rdm-sidebar pr-0 pt-0"
+            keywords={keywords}
+          />
+        </>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

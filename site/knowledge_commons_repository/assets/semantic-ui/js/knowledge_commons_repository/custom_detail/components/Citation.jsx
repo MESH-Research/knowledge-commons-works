@@ -15,11 +15,12 @@ import axios from "axios";
 import _debounce from "lodash/debounce";
 import PropTypes from "prop-types";
 import {
-  Header,
-  Placeholder,
-  Grid,
   Dropdown,
+  Header,
+  Grid,
+  Label,
   Message,
+  Placeholder,
 } from "semantic-ui-react";
 import { withCancel } from "react-invenio-forms";
 import { CopyButton } from "@js/invenio_app_rdm/components/CopyButton";
@@ -131,11 +132,12 @@ const Citation = ({
           className=""
           textAlign="left"
         >
-          <label id="citation-style-label" className="mr-16">
+          <label basic id="citation-style-label" className="">
             {i18next.t("Style")}
           </label>
           <Dropdown
             className="citation-dropdown"
+            label="Style"
             aria-labelledby="citation-style-label"
             defaultValue={citationStyleDefault}
             options={citationOptions}
