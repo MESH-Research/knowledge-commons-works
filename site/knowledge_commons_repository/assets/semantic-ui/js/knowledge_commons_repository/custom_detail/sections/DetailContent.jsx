@@ -177,15 +177,18 @@ const DetailContent = (rawProps) => {
       <DetailRightSidebar
         activeTab={activeTab}
         activePreviewFile={activePreviewFile}
+        backPage={topLevelProps.backPage}
         canManage={topLevelProps.canManage}
         citationStyles={topLevelProps.citationStyles}
         citationStyleDefault={topLevelProps.citationStyleDefault}
         community={topLevelProps.community}
         doiBadgeUrl={topLevelProps.doiBadgeUrl}
         files={topLevelProps.files}
+        identifierSchemes={topLevelProps.identifierSchemes}
         isDraft={topLevelProps.isDraft}
         isPreview={topLevelProps.isPreview}
         isPreviewSubmissionRequest={topLevelProps.isPreviewSubmissionRequest}
+        landingUrls={topLevelProps.landingUrls}
         previewFileUrl={topLevelProps.previewFileUrl}
         record={topLevelProps.record}
         setActivePreviewFile={setActivePreviewFile}

@@ -320,9 +320,16 @@ dl.details-list            {
                                     margin-top: 1rem;
     }
 }
+.record-details-tab {
+  &.ui.attached.segment {           border: none;
+                                    padding-left: 0;
+                                    padding-right: 0;
+  }
+}
 .record-details-tab.Content {
-    #record-files {             margin-right: -1rem;
-                                margin-left: -1rem;
+}
+.record-details-tab.Details {
+    .ui.accordion .active.content        {  padding-left: 2rem;
     }
 }
 .sidebar-container {

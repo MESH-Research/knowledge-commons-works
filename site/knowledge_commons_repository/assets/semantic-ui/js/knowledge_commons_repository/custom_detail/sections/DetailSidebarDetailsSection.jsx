@@ -5,6 +5,8 @@ import { getDetailsInfo } from "../components/PublishingDetails";
 const SidebarDetailsSection = ({
   record,
   doiBadgeUrl,
+  identifierSchemes,
+  landingUrls,
   subsections,
   show_heading,
 }) => {
@@ -25,7 +27,13 @@ const SidebarDetailsSection = ({
         className="ui segment bottom attached rdm-sidebar"
       >
         <dl className="details-list mt-0">
-          {getDetailsInfo(record, doiBadgeUrl, detailOrder)}
+          {getDetailsInfo(
+            detailOrder,
+            doiBadgeUrl,
+            identifierSchemes,
+            landingUrls,
+            record
+          )}
         </dl>
 
         {record.ui.resource_type && (

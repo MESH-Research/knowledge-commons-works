@@ -11,6 +11,7 @@
 // License; see LICENSE file for more details.
 
 import React from "react";
+import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { componentsMap } from "../componentsMap";
 import { filterPropsToPass } from "../util";
 
@@ -75,10 +76,6 @@ const DetailRightSidebar = (topLevelProps) => {
         componentsMap[component_name] !== undefined
       );
     }
-  );
-  console.log(
-    "****DetailRightSidebar component setActiveTab",
-    topLevelProps.setActiveTab
   );
   return (
     <aside className="sixteen wide tablet five wide computer column right-sidebar">

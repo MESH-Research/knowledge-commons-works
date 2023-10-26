@@ -35,4 +35,28 @@ const formatBytes = (bytes, decimals=2) => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
-export { addPropsFromChildren, filterPropsToPass, formatBytes };
+// FIXME: duplicating idutils/__init__.py:to_url which calls
+// idutils/__init__.py:normalize_pid but we aren't doing the normalization
+function toPidUrl(pid, scheme, landingUrls) {
+  if (landingUrls.hasOwnProperty(scheme)) {
+    if (scheme === "gnd" && pid.startsWith("gnd:")) {
+      pid = pid.slice("gnd:".length);
+    }
+    if (scheme === "urn" && !pid.toLowerCase().startsWith("urn:nbn:")) {
+      return "";
+    }
+    if (scheme === "ascl") {
+      pid = val.split(":")[1];
+    }
+    if (scheme === "viaf" && pid.startsWith("viaf:")) {
+      pid = pid.slice("viaf:".length);
+    }
+    return `${landingUrls[scheme]}${pid}`;
+  } else if (["purl", "url"].includes(scheme)) {
+    return pid;
+  }
+  return "";
+}
+
+
+export { addPropsFromChildren, filterPropsToPass, formatBytes, toPidUrl };

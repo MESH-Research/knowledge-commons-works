@@ -43,6 +43,11 @@
           {%- endif -%}
         {%- endif -%}
       {%- endif -%}
+      {%- set id_schemes = config.get("RDM_RECORDS_IDENTIFIERS_SCHEMES", {}) -%}
+      {%- set my_schemes = dict() -%}
+      {%- for my_scheme, content in id_schemes.items() -%}
+          {%- set _z = my_schemes.update({my_scheme: content["label"]}) -%}
+      {%- endfor -%}
       <div id="detail-main-content"
         class="two column row top-padded"
         data-back-page='{{ url_for("invenio_app_rdm_records.deposit_edit", pid_value=record.id) }}'
@@ -59,6 +64,7 @@
         data-icons-orcid='{{ url_for("static", filename="images/orcid.svg") }}'
         data-icons-gnd='{{ url_for("static", filename="images/gnd-icon.svg") }}'
         data-icons-hc-username='{{ url_for("static", filename="images/hc-icon.svg") }}'
+        data-identifier-schemes='{{ my_schemes | tojson }}'
         data-is-preview-submission-request='{{preview_submission_request or false | tojson}}'
         data-is-preview='{{ is_preview | tojson }}'
         data-is-draft='{{ is_draft | tojson }}'
