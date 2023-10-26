@@ -28,7 +28,7 @@ const FilePreview = ({
       >
         {permissions.can_read_files && hasPreviewableFiles && (
           <div className="">
-            <div
+            {/* <div
               className={`ui accordion panel mb-10 ${record.ui.access_status.id}`}
               id="preview"
               href="#collapsablePreview"
@@ -40,21 +40,21 @@ const FilePreview = ({
               >
                 <span id="preview-file-title">{activePreviewFile.key}</span>
                 <i className="ui angle right icon"></i>
-              </div>
-              <div id="collapsablePreview" className="active content pt-0">
-                <div>
-                  <iframe
-                    title={i18next.t("Preview")}
-                    className="preview-iframe"
-                    id={record.id}
-                    name={record.id}
-                    width="100%"
-                    height="800"
-                    src={`${previewFileUrl}${activePreviewFile.key}?${previewUrlFlag}`}
-                  ></iframe>
-                </div>
+              </div> */}
+            <div id="collapsablePreview" className="active content pt-0">
+              <div>
+                <iframe
+                  title={i18next.t("Preview")}
+                  className="preview-iframe"
+                  id={record.id}
+                  name={record.id}
+                  width="100%"
+                  height="800"
+                  src={`${previewFileUrl}${activePreviewFile.key}?${previewUrlFlag}`}
+                ></iframe>
               </div>
             </div>
+            {/* </div> */}
           </div>
         )}
 
