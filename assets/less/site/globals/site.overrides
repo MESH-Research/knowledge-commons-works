@@ -315,6 +315,12 @@
 }
 
 // detail page
+html[dir=ltr] #toolbarContainer,
+.findbar,
+.secondaryToolbar {
+                                  background-color: #efefef;
+                                  box-shadow: none;
+}
 dl.details-list            {
     dt.ui.tiny.header            {  margin-bottom: 0.25rem;
                                     margin-top: 1rem;
@@ -343,6 +349,35 @@ dl.details-list            {
     }
     .ui.segment.rdm-sidebar:first-child,
     .ui.segment.rdm-sidebar:last-child {    background-color: #f9f9f9;
+    }
+    &#download                {             margin-bottom: 1rem;
+      .menu .item .text       {             overflow-wrap: anywhere;
+                                            word-break: break-all;
+      }
+      .menu .item .description.filesize {   display: block;
+                                            float: none;
+                                            margin-left: 0;
+      }
+    }
+    &#record-versions         {
+      .segment                {             display: flex;
+                                            align-items: center;
+        &.preview             {             color: @infoTextColor;
+                                            background-color: @infoBackgroundColor;
+                                            border-color: @infoBorderColor;
+        }
+        .version-label       {              flex-grow: 1;
+        }
+      }
+      .dropdown              {              box-shadow: none;
+                                            margin-right: -0.25rem;
+                                            border-left: 1px solid @infoBorderColor;
+                                            border-radius: 0 0.25rem 0.25rem 0;
+      }
+      .menu .item .description.doi {        display: block;
+                                            float: none;
+                                            margin-left: 0;
+      }
     }
     &#subjects                {
         .subject              {             background-color: #fff;

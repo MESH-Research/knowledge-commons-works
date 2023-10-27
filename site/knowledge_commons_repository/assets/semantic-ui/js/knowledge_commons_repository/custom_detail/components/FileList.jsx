@@ -1,7 +1,7 @@
 import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
-import { Button } from "semantic-ui-react";
-import { formatBytes } from "../util";
+import { Button, Dropdown, Icon } from "semantic-ui-react";
+import { formatBytes, getFileTypeIconName } from "../util";
 
 const EmbargoMessage = ({ record }) => {
   return (
@@ -182,6 +182,62 @@ const FileListTable = ({
   );
 };
 
+const FileListDropdown = ({
+  fileCountToShow,
+  files,
+  fileTabIndex,
+  isPreview,
+  previewFileUrl,
+  record,
+  setActiveTab,
+  totalFileSize,
+}) => {
+  const previewUrlFlag = isPreview ? "&preview=1" : "";
+  return record.access.files == "restricted" ? (
+    <EmbargoMessage record={record} />
+  ) : (
+    <Dropdown
+      text="Download"
+      icon="download"
+      button
+      labeled
+      fluid
+      className="icon positive right labeled"
+    >
+      <Dropdown.Menu>
+        {/* <Dropdown.Header>Choose a file</Dropdown.Header> */}
+        {files.map(({ key, size }) => (
+          <Dropdown.Item
+            href={`${previewFileUrl.replace(
+              "/preview/",
+              "/files/"
+            )}/${key}?download=1${previewUrlFlag}`}
+          >
+            <span className="text">{key}</span>
+            <small className="description filesize">
+              <Icon name={getFileTypeIconName(key)} />
+              {formatBytes(size)}
+            </small>
+          </Dropdown.Item>
+        ))}
+        <Dropdown.Divider />
+        <Dropdown.Item
+          href={record.links.archive}
+          icon={"archive"}
+          text={i18next.t(`Download all`)}
+          description={totalFileSize}
+        ></Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item
+          text="File details and previews"
+          icon={"eye"}
+          onClick={() => setActiveTab(fileTabIndex)}
+        ></Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+};
+
 const FileListBox = ({
   activePreviewFile,
   fileCountToShow = 0,
@@ -238,4 +294,10 @@ const FileListBox = ({
   );
 };
 
-export { FileListBox, FileListTable, FileListTableRow, EmbargoMessage };
+export {
+  FileListBox,
+  FileListDropdown,
+  FileListTable,
+  FileListTableRow,
+  EmbargoMessage,
+};

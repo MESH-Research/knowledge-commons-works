@@ -58,5 +58,37 @@ function toPidUrl(pid, scheme, landingUrls) {
   return "";
 }
 
+function getFileTypeIconName(filename) {
+  const extension = filename.split('.').pop().toLowerCase();
+  switch (extension) {
+    case 'pdf':
+      return 'file pdf outline';
+    case 'doc':
+    case 'docx':
+      return 'file word outline';
+    case 'xls':
+    case 'xlsx':
+      return 'file excel outline';
+    case 'ppt':
+    case 'pptx':
+      return 'file powerpoint outline';
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+    case 'gif':
+      return 'file image outline';
+    case 'mp3':
+    case 'wav':
+      return 'file audio outline';
+    case 'mp4':
+    case 'avi':
+    case 'mov':
+      return 'file video outline';
+    case 'txt':
+      return 'file text outline';
+    default:
+      return 'file outline';
+  }
+}
 
-export { addPropsFromChildren, filterPropsToPass, formatBytes, toPidUrl };
+export { addPropsFromChildren, filterPropsToPass, formatBytes, getFileTypeIconName, toPidUrl };

@@ -20,10 +20,10 @@ const CitationSection = ({ record, citationStyles, citationStyleDefault }) => {
     <div
       id="citation"
       className="sidebar-container"
-      aria-label={i18next.t("Record citations")}
+      aria-label={i18next.t("Cite this")}
     >
       <h2 className="ui medium top attached header mt-0">
-        {i18next.t("Citation")}
+        {i18next.t("Cite this")}
       </h2>
       <Citation
         passedClassNames="ui bottom attached segment rdm-sidebar pr-0 pt-0"

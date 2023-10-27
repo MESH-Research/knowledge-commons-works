@@ -182,8 +182,10 @@ const DetailContent = (rawProps) => {
         citationStyles={topLevelProps.citationStyles}
         citationStyleDefault={topLevelProps.citationStyleDefault}
         community={topLevelProps.community}
+        defaultPreviewFile={topLevelProps.defaultPreviewFile}
         doiBadgeUrl={topLevelProps.doiBadgeUrl}
         files={topLevelProps.files}
+        hasFiles={topLevelProps.hasFiles}
         identifierSchemes={topLevelProps.identifierSchemes}
         isDraft={topLevelProps.isDraft}
         isPreview={topLevelProps.isPreview}

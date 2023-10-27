@@ -11,7 +11,7 @@ import { FilePreview } from "./components/FilePreview";
 import { PublishingDetails } from "./components/PublishingDetails";
 import { SidebarDetailsSection } from "./sections/DetailSidebarDetailsSection";
 import { SidebarDownloadSection } from "./sections/DetailSidebarDownloadSection";
-import { VersionsSection } from "./sections/DetailSidebarVersionsSection";
+import { VersionsDropdownSection, VersionsListSection } from "./sections/DetailSidebarVersionsSection";
 
 
 const componentsMap = {
@@ -29,7 +29,8 @@ const componentsMap = {
     "RecordTitle": RecordTitle,
     "SidebarDetailsSection": SidebarDetailsSection,
     "SidebarDownloadSection": SidebarDownloadSection,
-    "VersionsSection": VersionsSection,
+    "VersionsListSection": VersionsListSection,
+    "VersionsDropdownSection": VersionsDropdownSection,
 };
 
 export { componentsMap };
