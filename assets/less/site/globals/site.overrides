@@ -18,8 +18,20 @@
 
 @labelBottomMargin: .28571429rem;
 
-.rdm-logo {
-  width: auto;
+.theme.header {     box-shadow: none;
+  .outer-navbar   { border-color: transparent;
+                    background-color: transparent;
+
+    #invenio-nav.ui.menu { box-shadow: none;
+      .item   {
+        a     {            color: #000;
+        }
+      }
+      .rdm-logo {
+        width: auto;
+      }
+    }
+  }
 }
 
 // Forms

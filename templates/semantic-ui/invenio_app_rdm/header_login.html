@@ -29,10 +29,11 @@
 
         {# Quick-create ("plus") menu #}
         {%- set plus_menu_items = current_menu.submenu('plus').children %}
-        {%- if plus_menu_items %}
+
+        {# {%- if plus_menu_items %}
           <div role="menuitem" class="rdm-plus-menu rdm-plus-menu-responsive ui dropdown floating pr-15 computer only" aria-label="{{ _("Quick create") }}">
-              <i class="fitted plus icon inverted"></i>
-              <i class="fitted dropdown icon inverted"></i>
+              <i class="fitted plus icon"></i>
+              <i class="fitted dropdown icon"></i>
               <div class="menu">
                   {%- for item in plus_menu_items if item.visible %}
                   {%- if item.text != "New community" or (current_user.roles | selectattr("name", "equalto", "administrator") | list) %}
@@ -54,7 +55,16 @@
             {%- endif %}
             {%- endfor %}
           </div>
-        {% endif %}
+        {% endif %} #}
+
+        <div class="item plus">
+          <a role="menuitem" aria-label="{{ _('Quick create') }}" href="{{ plus_menu_items[0].url }}">
+            {# <i class="fitted plus icon"></i> #}
+            <span class="inline">{{ _("Add a work") }}</span>
+            {# <span class="mobile tablet only inline">{{ _("Contribute") }}</span> #}
+          </a>
+        </div>
+
 
         {%- if config.USERPROFILES and (current_user.roles | selectattr("name", "equalto", "administrator") | list) %}
           <div role="menuitem" id="user-profile-dropdown" class="ui floating dropdown computer only">
@@ -66,7 +76,7 @@
                     aria-label="{{ _('My account') }}"
             >
               <span>
-                <i class="user icon"></i>
+                {#  <i class="user icon"></i> #}
                 {{ current_user.email|truncate(31,true) }}
               </span>
               <i class="dropdown icon"></i>
@@ -133,12 +143,13 @@
 
         {%- else %}
 
-          <span>
-          <i class="user icon"></i>
-          {{ current_user.email|truncate(31,true) }}
-          </span>
-          <a role="button" href="{{ url_for_security('logout') }}" class="ui button">
-            <i class="sign-out icon"></i>
+          <div class="item">
+          {# <i class="user icon"></i> #}
+            <a class="inline">{{ current_user.email|truncate(31,true) }}</a>
+          </div>
+          <a role="button" href="{{ url_for_security('logout') }}" class="ui ">
+            {# <i class="sign-out icon"></i> #}
+            | &nbsp;
             {{ _('Log out') }}
           </a>
         {%- endif %}
