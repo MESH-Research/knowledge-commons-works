@@ -61,9 +61,11 @@ KCR_AI_USAGE_FIELDS_UI = {
         "props": {
             "label": _("AI Usage"),
             "ai_used": {
-                "label": _("AI Used"),
+                "label": _("Was AI Used"),
                 "icon": "cogs",
-                "description": _("Did generative AI contribute to the production of this work?")
+                "description": _("Did generative AI contribute to the production of this work?"),
+                "trueLabel": _("Yes"),
+                "falseLabel": _("No")
             },
             "ai_description": {
                 "label": _("Description of use"),
@@ -72,5 +74,6 @@ KCR_AI_USAGE_FIELDS_UI = {
             "icon": "cogs",
             "description": ""
         }
-    }]
+    }],
+    "icon": "cogs",
 }

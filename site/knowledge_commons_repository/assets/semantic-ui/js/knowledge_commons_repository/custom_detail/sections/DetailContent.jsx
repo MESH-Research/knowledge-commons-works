@@ -182,6 +182,7 @@ const DetailContent = (rawProps) => {
         citationStyles={topLevelProps.citationStyles}
         citationStyleDefault={topLevelProps.citationStyleDefault}
         community={topLevelProps.community}
+        customFieldsUi={topLevelProps.customFieldsUi}
         defaultPreviewFile={topLevelProps.defaultPreviewFile}
         doiBadgeUrl={topLevelProps.doiBadgeUrl}
         files={topLevelProps.files}

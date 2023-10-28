@@ -141,7 +141,13 @@ const VersionsContentDropdown = ({
             })}
       </span>
       {recordVersions.total > 1 && (
-        <Dropdown button basic text="other versions" className="right floated">
+        <Dropdown
+          button
+          basic
+          text="other versions"
+          direction="left"
+          className="right floated"
+        >
           <Dropdown.Menu>
             {versionOptions.map((opt) => (
               <Dropdown.Item as="a" key={opt.key} href={opt.href}>

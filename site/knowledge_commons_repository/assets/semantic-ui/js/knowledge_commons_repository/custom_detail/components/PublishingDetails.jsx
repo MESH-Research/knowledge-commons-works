@@ -4,6 +4,73 @@ import { Accordion, Icon } from "semantic-ui-react";
 import { Doi } from "../components/Doi";
 import { toPidUrl } from "../util";
 
+function getCustomFieldComponents({
+  sectionFields,
+  customFields,
+  detailOrder,
+}) {
+  console.log("****getCustomFieldComponents sectionFields", sectionFields);
+  console.log("****getCustomFieldComponents customFields", customFields);
+  console.log("****getCustomFieldComponents detailOrder", detailOrder);
+  if (detailOrder) {
+    sectionFields = detailOrder.map(({ section, subsections }) =>
+      sectionFields.find((fieldCfg) => fieldCfg.field === section)
+    );
+  }
+
+  return sectionFields.map((fieldCfg) => {
+    console.log("****getCustomFieldComponents fieldCfg", fieldCfg);
+    const fieldValue = customFields[fieldCfg.field];
+    if (fieldValue) {
+      if (typeof fieldValue === "object") {
+        let entries = Object.entries(fieldValue);
+        console.log("****getCustomFieldComponents entries", entries);
+        const orderSubsections = detailOrder.find(
+          ({ section }) => section === fieldCfg.field
+        )?.subsections;
+        console.log(
+          "****getCustomFieldComponents orderSubsections",
+          orderSubsections
+        );
+        if (orderSubsections) {
+          entries = orderSubsections.reduce((acc, { section }) => {
+            const match = entries.find(([key, value]) => key === section);
+            return match ? [...acc, match] : acc;
+          }, []);
+        }
+        console.log("****getCustomFieldComponents entries", entries);
+        return (
+          <>
+            {entries.map(([key, value]) => (
+              <DetailItem
+                key={key}
+                title={fieldCfg.props[key].label}
+                value={value}
+                trueLabel={fieldCfg.props[key].trueLabel}
+                falseLabel={fieldCfg.props[key].falseLabel}
+                isVocabulary={fieldCfg.props[key].isVocabulary}
+              />
+            ))}
+          </>
+        );
+      } else {
+        return (
+          <DetailItem
+            key={fieldCfg.field}
+            title={fieldCfg.props.label}
+            value={fieldValue}
+            trueLabel={fieldCfg.props.trueLabel}
+            falseLabel={fieldCfg.props.falseLabel}
+            isVocabulary={fieldCfg.props.isVocabulary}
+          />
+        );
+      }
+    } else {
+      return null;
+    }
+  });
+}
+
 const References = ({ references, identifierSchemes }) => {
   return (
     <>
@@ -20,23 +87,23 @@ const References = ({ references, identifierSchemes }) => {
   );
 };
 
-function AdditionalDates({ dates }) {
+const AdditionalDates = ({ dates }) => {
   return (
     <>
       {dates.map(({ type, date: dateValue, description }, index) => (
-        <>
+        <React.Fragment key={type.title_l10n}>
           <dt className="ui tiny header">{type.title_l10n}</dt>
           <dd>
             <div>{dateValue}</div>
             {description && <div className="text-muted">{description}</div>}
           </dd>
-        </>
+        </React.Fragment>
       ))}
     </>
   );
-}
+};
 
-function FundingItem({ item, index }) {
+const FundingItem = ({ item, index }) => {
   const { award, funder } = item;
 
   if (award) {
@@ -77,7 +144,7 @@ function FundingItem({ item, index }) {
   } else {
     return <h4 className="ui tiny header">{funder.name}</h4>;
   }
-}
+};
 
 function Funding({ funding }) {
   return (
@@ -128,14 +195,14 @@ function RelatedIdentifiers({
   return (
     <>
       {Object.entries(groups).map(([relationType, identifiers]) => (
-        <>
+        <React.Fragment key={relationType}>
           <dt className="ui tiny header">{relationType}</dt>
           <IdentifiersForGroup
             identifiers={identifiers}
             identifierSchemes={identifierSchemes}
             landingUrls={landingUrls}
           />
-        </>
+        </React.Fragment>
       ))}
     </>
   );
@@ -173,7 +240,7 @@ const AlternateIdentifiers = ({
   return Object.keys(groups)
     .filter((scheme) => scheme !== "url")
     .map((scheme) => (
-      <>
+      <React.Fragment key={scheme}>
         <dt className="ui tiny header">{identifierSchemes[scheme]}</dt>
         {groups[scheme].map(({ scheme, identifier }) => (
           <dd key={identifier}>
@@ -188,13 +255,13 @@ const AlternateIdentifiers = ({
             )}
           </dd>
         ))}
-      </>
+      </React.Fragment>
     ));
 };
 
 const TitleDetail = ({ titleType, titleLang, title }) => {
   return (
-    <>
+    <React.Fragment key={title}>
       <dt className="ui tiny header">
         {titleType}
         {titleLang && (
@@ -202,7 +269,7 @@ const TitleDetail = ({ titleType, titleLang, title }) => {
         )}
       </dt>
       <dd>{title}</dd>
-    </>
+    </React.Fragment>
   );
 };
 
@@ -230,13 +297,14 @@ const AdditionalTitles = ({ addTitles }) => {
  *  this function.
  * @returns Array of objects with title and value. The values are React components.
  */
-const getDetailsInfo = (
+const getDetailsComponents = ({
+  customFieldsUi,
   detailOrder,
   doiBadgeUrl,
   identifierSchemes,
   landingUrls,
-  record
-) => {
+  record,
+}) => {
   const idDoi = record.pids.doi ? record.pids.doi.identifier : null;
   const detailsInfo = [
     {
@@ -359,6 +427,7 @@ const getDetailsInfo = (
       ) : null,
     },
   ];
+
   const filteredDetailsInfo = detailsInfo.filter(
     ({ title, value }) =>
       (typeof value === "string" || React.isValidElement(value)) &&
@@ -376,14 +445,31 @@ const getDetailsInfo = (
     )
   );
 
-  return detailsComponentArray;
+  return detailsComponentArray.length > 0 ? detailsComponentArray : null;
 };
 
-const DetailItem = ({ title, value }) => {
+const DetailItem = ({ title, value, trueLabel, falseLabel, isVocabulary }) => {
+  let valueComponent = <dd></dd>;
+  if (typeof value === "string") {
+    valueComponent = <dd dangerouslySetInnerHTML={{ __html: value }} />;
+  } else if (typeof value === "boolean") {
+    valueComponent = <dd>{value ? trueLabel : falseLabel}</dd>;
+  } else if (isVocabulary) {
+    valueComponent = <dd>{value.join(", ")}</dd>;
+  } else if (
+    Array.isArray(value) &&
+    value.length > 0 &&
+    typeof value[0] === "string"
+  ) {
+    valueComponent = <dd>{value.join(", ")}</dd>;
+  } else {
+    valueComponent = <dd>{value}</dd>;
+  }
+
   return (
     <>
       <dt className="ui tiny header">{title}</dt>
-      <dd>{value}</dd>
+      {valueComponent}
     </>
   );
 };
@@ -417,6 +503,7 @@ const ConferenceDetailSection = ({ conference }) => {
 };
 
 const PublishingDetails = ({
+  customFieldsUi,
   doiBadgeUrl,
   identifierSchemes,
   landingUrls,
@@ -426,42 +513,70 @@ const PublishingDetails = ({
 }) => {
   const [activeIndex, setActiveIndex] = React.useState(0);
   console.log("****PublishingDetails record", record);
+  console.log("****PublishingDetails customFieldsUi", customFieldsUi);
+  const customFieldSectionNames = customFieldsUi.map(({ section }) => section);
   const sectionsArray = accordionSections.map(
-    ({ section: sectionTitle, subsections }) => {
-      const detailOrder = subsections.map(({ section }) => section);
-      return {
-        title: sectionTitle,
-        components: getDetailsInfo(
-          detailOrder,
-          doiBadgeUrl,
-          identifierSchemes,
-          landingUrls,
-          record
-        ),
-      };
+    ({ section: sectionTitle, subsections, icon }) => {
+      if (customFieldSectionNames.includes(sectionTitle)) {
+        const detailOrder = subsections;
+        const sectionCustomFields = customFieldsUi.find(
+          ({ section }) => section === sectionTitle
+        );
+        return {
+          key: sectionTitle,
+          title: { content: sectionTitle, icon: sectionCustomFields.icon },
+          content: {
+            content: getCustomFieldComponents({
+              sectionFields: sectionCustomFields.fields,
+              customFields: record.custom_fields,
+              detailOrder: detailOrder,
+            }),
+          },
+        };
+      } else {
+        const detailOrder = subsections?.map(({ section }) => section);
+        return {
+          title: { content: sectionTitle, icon: icon },
+          content: {
+            content: getDetailsComponents({
+              customFieldsUi: customFieldsUi,
+              detailOrder: detailOrder,
+              doiBadgeUrl: doiBadgeUrl,
+              identifierSchemes: identifierSchemes,
+              landingUrls: landingUrls,
+              record: record,
+            }),
+          },
+        };
+      }
     }
   );
+  console.log("****PublishingDetails sectionsArray", sectionsArray);
+
   return (
     <Accordion styled fluid>
-      {sectionsArray.map(({ title, components }, idx) => (
-        <>
-          <Accordion.Title
-            active={activeIndex === idx}
-            index={idx}
-            onClick={() => setActiveIndex(idx)}
-          >
-            <Icon name="dropdown" />
-            {title}
-          </Accordion.Title>
-          <Accordion.Content active={activeIndex === idx}>
-            <dl className="details-list mt-0">
-              {components.map((component) => component)}
-            </dl>
-          </Accordion.Content>
-        </>
-      ))}
+      {sectionsArray.map(
+        ({ title, content }, idx) =>
+          content.content && (
+            <>
+              <Accordion.Title
+                active={activeIndex === idx}
+                index={idx}
+                onClick={() => setActiveIndex(idx)}
+              >
+                <Icon name={!!title.icon ? title.icon : "dropdown"} />
+                {title.content}
+              </Accordion.Title>
+              <Accordion.Content active={activeIndex === idx}>
+                <dl className="details-list mt-0">
+                  {content.content.map((component) => component)}
+                </dl>
+              </Accordion.Content>
+            </>
+          )
+      )}
     </Accordion>
   );
 };
 
-export { PublishingDetails, getDetailsInfo };
+export { PublishingDetails, getDetailsComponents };

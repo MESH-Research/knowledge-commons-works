@@ -1,12 +1,13 @@
 import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
-import { getDetailsInfo } from "../components/PublishingDetails";
+import { getDetailsComponents } from "../components/PublishingDetails";
 
 const SidebarDetailsSection = ({
-  record,
+  customFieldsUi,
   doiBadgeUrl,
   identifierSchemes,
   landingUrls,
+  record,
   subsections,
   show_heading,
 }) => {
@@ -27,13 +28,14 @@ const SidebarDetailsSection = ({
         className="ui segment bottom attached rdm-sidebar"
       >
         <dl className="details-list mt-0">
-          {getDetailsInfo(
+          {getDetailsComponents({
+            customFieldsUi,
             detailOrder,
             doiBadgeUrl,
             identifierSchemes,
             landingUrls,
-            record
-          )}
+            record,
+          })}
         </dl>
 
         {record.ui.resource_type && (
