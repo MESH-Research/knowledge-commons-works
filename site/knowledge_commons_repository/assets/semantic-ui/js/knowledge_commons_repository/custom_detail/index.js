@@ -29,6 +29,7 @@ ReactDOM.render(
     defaultPreviewFile={JSON.parse(detailMainDiv.dataset.defaultPreviewFile)}
     previewFileUrl={detailMainDiv.dataset.previewFileUrl}
     record={JSON.parse(detailMainDiv.dataset.record)}
+    recordExporters={JSON.parse(detailMainDiv.dataset.recordExporters)}
     sidebarSectionsLeft={JSON.parse(detailMainDiv.dataset.sidebarSectionsLeft)}
     sidebarSectionsRight={JSON.parse(detailMainDiv.dataset.sidebarSectionsRight)}
     totalFileSize={detailMainDiv.dataset.totalFileSize}

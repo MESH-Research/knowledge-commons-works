@@ -194,6 +194,7 @@ const DetailContent = (rawProps) => {
         landingUrls={topLevelProps.landingUrls}
         previewFileUrl={topLevelProps.previewFileUrl}
         record={topLevelProps.record}
+        recordExporters={topLevelProps.recordExporters}
         setActivePreviewFile={setActivePreviewFile}
         setActiveTab={setActiveTab}
         sidebarSectionsRight={topLevelProps.sidebarSectionsRight}

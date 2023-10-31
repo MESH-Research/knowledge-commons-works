@@ -2,6 +2,7 @@ import { RecordTitle } from "./components/RecordTitle";
 import { Citation } from "./components/Citation";
 import { CitationSection } from "./sections/DetailSidebarCitationSection";
 import { CommunitiesBanner } from "./components/CommunitiesBanner";
+import { ContentWarning } from "./components/ContentWarning";
 import { Creatibutors, CreatibutorsShortList } from "./components/Creatibutors";
 import { Descriptions } from "./components/Descriptions";
 import { DetailMainSubjectsSection } from "./sections/DetailMainSubjectsSection";
@@ -11,6 +12,8 @@ import { FilePreview } from "./components/FilePreview";
 import { PublishingDetails } from "./components/PublishingDetails";
 import { SidebarDetailsSection } from "./sections/DetailSidebarDetailsSection";
 import { SidebarDownloadSection } from "./sections/DetailSidebarDownloadSection";
+import { SidebarExportSection } from "./sections/DetailSidebarExportSection";
+import { SidebarSharingSection } from "./sections/DetailSidebarSharingSection";
 import { VersionsDropdownSection, VersionsListSection } from "./sections/DetailSidebarVersionsSection";
 
 
@@ -18,6 +21,7 @@ const componentsMap = {
     "Citation": Citation,
     "CitationSection": CitationSection,
     "CommunitiesBanner": CommunitiesBanner,
+    "ContentWarning": ContentWarning,
     "Creatibutors": Creatibutors,
     "CreatibutorsShortList": CreatibutorsShortList,
     "Descriptions": Descriptions,
@@ -29,6 +33,8 @@ const componentsMap = {
     "RecordTitle": RecordTitle,
     "SidebarDetailsSection": SidebarDetailsSection,
     "SidebarDownloadSection": SidebarDownloadSection,
+    "SidebarExportSection": SidebarExportSection,
+    "SidebarSharingSection": SidebarSharingSection,
     "VersionsListSection": VersionsListSection,
     "VersionsDropdownSection": VersionsDropdownSection,
 };
