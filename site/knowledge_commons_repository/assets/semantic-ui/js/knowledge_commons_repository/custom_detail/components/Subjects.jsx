@@ -23,7 +23,7 @@ function SubjectHeadings({
           </li>
         </ul>
       ))}
-      {!!showKeywords && keywords?.length ? (
+      {!!showKeywords && keywords?.length && keywords[0] ? (
         <>
           <h3 className="ui header tiny mt-10">User-defined Keywords</h3>
           <Keywords

@@ -14,9 +14,9 @@ function DetailSidebarSubjectsSection({ record, showKeywords = true }) {
 
   const keywords = subjects
     ?.filter((subject) => !subject.scheme)
-    .map(({ subject }) => subject)
-    .concat(record.custom_fields["kcr:user_defined_tags"])
-    .filter((keyword) => !subjectLabels.includes(keyword.toLowerCase()));
+    ?.map(({ subject }) => subject)
+    ?.concat(record.custom_fields["kcr:user_defined_tags"])
+    ?.filter((keyword) => !subjectLabels.includes(keyword?.toLowerCase()));
   console.log("****DetailSidebarSubjectsSection keywords", keywords);
 
   // const groupedSubjects = subjectHeadings?.reduce((groups, subject) => {
