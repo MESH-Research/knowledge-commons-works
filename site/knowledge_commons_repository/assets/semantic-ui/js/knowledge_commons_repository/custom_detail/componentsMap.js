@@ -1,4 +1,5 @@
 import { RecordTitle } from "./components/RecordTitle";
+import { Analytics } from "./components/Analytics";
 import { Citation } from "./components/Citation";
 import { CitationSection } from "./sections/DetailSidebarCitationSection";
 import { CommunitiesBanner } from "./components/CommunitiesBanner";
@@ -18,6 +19,7 @@ import { VersionsDropdownSection, VersionsListSection } from "./sections/DetailS
 
 
 const componentsMap = {
+    "Analytics": Analytics,
     "Citation": Citation,
     "CitationSection": CitationSection,
     "CommunitiesBanner": CommunitiesBanner,

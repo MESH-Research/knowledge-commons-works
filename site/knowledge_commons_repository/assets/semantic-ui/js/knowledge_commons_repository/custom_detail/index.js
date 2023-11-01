@@ -24,12 +24,14 @@ ReactDOM.render(
     identifierSchemes={JSON.parse(detailMainDiv.dataset.identifierSchemes)}
     isPreviewSubmissionRequest={JSON.parse(detailMainDiv.dataset.isPreviewSubmissionRequest)}
     landingUrls={JSON.parse(detailMainDiv.dataset.landingUrls)}
+    localizedStats={JSON.parse(detailMainDiv.dataset.localizedStats)}
     mainSections={JSON.parse(detailMainDiv.dataset.mainSections)}
     permissions={JSON.parse(detailMainDiv.dataset.permissions)}
     defaultPreviewFile={JSON.parse(detailMainDiv.dataset.defaultPreviewFile)}
     previewFileUrl={detailMainDiv.dataset.previewFileUrl}
     record={JSON.parse(detailMainDiv.dataset.record)}
     recordExporters={JSON.parse(detailMainDiv.dataset.recordExporters)}
+    showDecimalSizes={JSON.parse(detailMainDiv.dataset.showDecimalSizes)}
     sidebarSectionsLeft={JSON.parse(detailMainDiv.dataset.sidebarSectionsLeft)}
     sidebarSectionsRight={JSON.parse(detailMainDiv.dataset.sidebarSectionsRight)}
     totalFileSize={detailMainDiv.dataset.totalFileSize}

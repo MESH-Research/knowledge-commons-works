@@ -133,13 +133,17 @@ const VersionsContentDropdown = ({
         isPreview && "preview"
       }`}
     >
-      <span className={`version-label ${isPreview ? "info" : ""}`}>
+      <h3
+        className={`version-label ${
+          isPreview ? "info" : ""
+        } ui header tiny pb-0`}
+      >
         {isPreview
           ? i18next.t("Preview")
           : i18next.t("Version {{version}}", {
               version: recordDeserialized.version,
             })}
-      </span>
+      </h3>
       {recordVersions.total > 1 && (
         <Dropdown
           button

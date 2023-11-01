@@ -48,6 +48,12 @@
       {%- for my_scheme, content in id_schemes.items() -%}
           {%- set _z = my_schemes.update({my_scheme: content["label"]}) -%}
       {%- endfor -%}
+      {%- set localized_stats = dict() -%}
+      {% for number in ['unique_downloads', 'unique_views', 'data_volume'] %}
+        {% for scope in ['all_versions', 'this_version'] %}
+          {% set _z = localized_stats.update({'{scope}_{number}'.format(scope=scope, number=number): [(record.stats[scope][number]|truncate_number(max_value=1_000_000)), (record.stats[scope][number]|localize_number)]}) %}
+        {% endfor %}
+      {% endfor %}
       <div id="detail-main-content"
         class="two column row top-padded"
         data-back-page='{{ url_for("invenio_app_rdm_records.deposit_edit", pid_value=record.id) }}'
@@ -69,15 +75,16 @@
         data-is-preview='{{ is_preview | tojson }}'
         data-is-draft='{{ is_draft | tojson }}'
         data-landing-urls='{{ config["LANDING_URLS"] | tojson }}'
+        data-localized-stats='{{ localized_stats | tojson }}'
         data-main-sections='{{config["APP_RDM_DETAIL_MAIN_SECTIONS"] | tojson }}'
         data-permissions='{{ permissions | tojson }}'
         data-preview-file-url='{{ preview_file_url }}'
         data-record='{{ record | tojson }}'
         data-record-exporters='{{ config.get("APP_RDM_RECORD_EXPORTERS", {}) | tojson }}'
-        data-record-export-urls
+        data-show-decimal-sizes='{{ config["APP_RDM_DISPLAY_DECIMAL_FILE_SIZES"] | tojson }}'
         data-sidebar-sections-left='{{config.get("APP_RDM_DETAIL_SIDEBAR_SECTIONS_LEFT", []) | tojson }}'
         data-sidebar-sections-right='{{config.get("APP_RDM_DETAIL_SIDEBAR_SECTIONS_RIGHT", []) | tojson }}'
-        data-total-file-size='{{ ( files|sum(attribute='size')|filesizeformat(binary=config["APP_RDM_DISPLAY_DECIMAL_FILE_SIZES"]) ) if (files and record.files.enabled) else 0 }}'
+        data-total-file-size='{{ ( files|sum(attribute="size")|filesizeformat(binary=config["APP_RDM_DISPLAY_DECIMAL_FILE_SIZES"]) ) if (files and record.files.enabled) else 0 }}'
       >
       </div>
     </div>

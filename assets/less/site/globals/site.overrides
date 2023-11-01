@@ -351,11 +351,28 @@ dl.details-list            {
     .ui.accordion .active.content        {  padding-left: 2rem;
     }
 }
+.record-details-tab.Analytics {
+  .ui.tiny.statistics         {     margin: 1rem;
+                                    justify-content: center;
+    .statistic                {     flex-grow: 1;
+      .value                    {     text-transform: none;
+      }
+      .label                    {     font-weight: normal;
+        .units                  {     text-transform: none;
+
+        }
+      }
+    }
+  }
+  i.question.circle.small.icon       {             margin-left: 0.25rem;
+
+  }
+}
 
 .right-sidebar {                  padding-top: 0.5rem;
   .sidebar-container {
       .ui.top.attached.header {   border-bottom: 0;
-                                  font-size: large;
+                                  font-size: 1rem;
                                   background-color: @sidebarBackgroundColor;
       }
       .ui.segment.rdm-sidebar > h2.ui.small.header,
@@ -366,6 +383,8 @@ dl.details-list            {
       .ui.segment.rdm-sidebar:last-child {    background-color: @sidebarBackgroundColor;
       }
       &#download                {             margin-bottom: 1rem;
+        .ui.button.icon.right.labeled {       padding-left: 1rem !important;
+        }
         .menu .item .text       {             overflow-wrap: anywhere;
                                               word-break: break-all;
         }
@@ -414,6 +433,8 @@ dl.details-list            {
       &#record-export {           margin-bottom: 1rem;
           div.ui.basic.button   {
                                   background-color: @sidebarBackgroundColor !important;
+                                  padding-left: 1rem !important;
+                                  font-weight: bold;
           }
         }
       &#social-sharing {

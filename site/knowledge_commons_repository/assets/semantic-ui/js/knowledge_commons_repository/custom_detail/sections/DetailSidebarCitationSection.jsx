@@ -22,7 +22,7 @@ const CitationSection = ({ record, citationStyles, citationStyleDefault }) => {
       className="sidebar-container"
       aria-label={i18next.t("Cite this")}
     >
-      <h2 className="ui medium top attached header mt-0">
+      <h2 className="ui medium top attached header tiny mt-0">
         {i18next.t("Cite this")}
       </h2>
       <Citation
