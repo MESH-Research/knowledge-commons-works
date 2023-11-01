@@ -121,6 +121,7 @@ const FileListTable = ({
   showTableHeader,
   showTotalSize,
   stackedRows,
+  totalFileSize,
   withPreview,
 }) => {
   const displayFiles =
@@ -133,7 +134,16 @@ const FileListTable = ({
             <tr>
               <th>{i18next.t("Name")}</th>
               <th>{i18next.t("Size")}</th>
-              <th>
+              <th></th>
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {!!showTotalSize && (
+            <tr className={`title ${record.ui.access_status.id}`} tabIndex="0">
+              <td>{i18next.t(`All ${files.length} files (as zip archive)`)}</td>
+              <td>{totalFileSize} in total</td>
+              <td>
                 <a
                   role="button"
                   className="ui compact mini button right floated archive-link"
@@ -142,11 +152,9 @@ const FileListTable = ({
                   <i className="file archive icon button"></i>{" "}
                   {i18next.t("Download all")}
                 </a>
-              </th>
+              </td>
             </tr>
-          </thead>
-        )}
-        <tbody>
+          )}
           {displayFiles.map((file) => (
             <FileListTableRow
               activePreviewFile={activePreviewFile}
@@ -261,12 +269,6 @@ const FileListBox = ({
 }) => {
   return (
     <div className={`ui mb-10 ${record.ui.access_status.id}`}>
-      {!!showTotalSize && (
-        <div className={`title ${record.ui.access_status.id}`} tabIndex="0">
-          {i18next.t("Total file size")}
-          <small className="text-muted">{totalFileSize}</small>
-        </div>
-      )}
       <div className="content pt-0">
         {record.access.files == "restricted" ? (
           <EmbargoMessage record={record} />
@@ -288,6 +290,7 @@ const FileListBox = ({
             showTableHeader={showTableHeader}
             showTotalSize={showTotalSize}
             stackedRows={stackedRows}
+            totalFileSize={totalFileSize}
             withPreview={withPreview !== undefined ? withPreview : true}
           />
         )}
