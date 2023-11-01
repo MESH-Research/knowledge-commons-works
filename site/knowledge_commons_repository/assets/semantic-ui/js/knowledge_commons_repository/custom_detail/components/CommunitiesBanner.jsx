@@ -19,8 +19,9 @@ const CommunitiesBanner = ({ community, isPreviewSubmissionRequest }) => {
           <Grid verticalAlign="middle">
             <Grid.Row>
               <Grid.Column width={4}>
-                <Image size="tiny" src={community.links.logo} />
-                <Icon name="group" size="large" />
+                <object data={community.links.logo} type="image/png">
+                  <Icon name="group" size="large" />
+                </object>
               </Grid.Column>
               <Grid.Column width={12}>
                 <h3 className="ui header small">

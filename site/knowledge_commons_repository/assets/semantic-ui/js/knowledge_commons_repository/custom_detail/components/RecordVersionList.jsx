@@ -133,11 +133,7 @@ const VersionsContentDropdown = ({
         isPreview && "preview"
       }`}
     >
-      <h3
-        className={`version-label ${
-          isPreview ? "info" : ""
-        } ui header tiny pb-0`}
-      >
+      <h3 className={`version-label ${isPreview ? "info" : ""} ui header tiny`}>
         {isPreview
           ? i18next.t("Preview")
           : i18next.t("Version {{version}}", {
@@ -242,20 +238,16 @@ const RecordVersionsList = ({ record, isPreview, widgetStyle = "list" }) => {
   }, []);
 
   return loading ? (
-    isPreview ? (
-      <PreviewMessage />
-    ) : (
-      <>
-        <div className="rel-p-1" />
-        <Placeholder className="rel-ml-1 rel-mr-1">
-          <Placeholder.Header>
-            <Placeholder.Line />
-            <Placeholder.Line />
-            <Placeholder.Line />
-          </Placeholder.Header>
-        </Placeholder>
-      </>
-    )
+    <>
+      <div className="rel-p-1" />
+      <Placeholder className="rel-ml-1 rel-mr-1">
+        <Placeholder.Header>
+          <Placeholder.Line />
+          <Placeholder.Line />
+          <Placeholder.Line />
+        </Placeholder.Header>
+      </Placeholder>
+    </>
   ) : widgetStyle === "list" ? (
     <VersionsContentList
       isPreview={isPreview}

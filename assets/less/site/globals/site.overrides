@@ -439,11 +439,14 @@ dl.details-list            {
       &#record-versions         {
         .segment                {             display: flex;
                                               align-items: center;
+
           &.preview             {             color: @infoTextColor;
                                               background-color: @infoBackgroundColor;
                                               border-color: @infoBorderColor;
           }
           .version-label       {              flex-grow: 1;
+                                              padding: @inputVerticalPadding @inputHorizontalPadding;
+                                              padding-left: 0;
           }
         }
         .dropdown              {              box-shadow: none;
