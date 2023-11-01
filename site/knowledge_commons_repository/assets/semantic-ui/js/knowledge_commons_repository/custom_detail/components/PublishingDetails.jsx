@@ -511,7 +511,7 @@ const PublishingDetails = ({
   section,
   subsections: accordionSections,
 }) => {
-  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [activeIndex, setActiveIndex] = React.useState([0]);
   console.log("****PublishingDetails record", record);
   console.log("****PublishingDetails customFieldsUi", customFieldsUi);
   const customFieldSectionNames = customFieldsUi.map(({ section }) => section);
@@ -553,21 +553,28 @@ const PublishingDetails = ({
   );
   console.log("****PublishingDetails sectionsArray", sectionsArray);
 
+  const handleHeaderClick = (index) => {
+    const newIndex = activeIndex.includes(index)
+      ? activeIndex.filter((i) => i !== index)
+      : [...activeIndex, index];
+    setActiveIndex(newIndex);
+  };
+
   return (
-    <Accordion styled fluid>
+    <Accordion fluid exclusive={false} defaultActiveIndex={[0]}>
       {sectionsArray.map(
         ({ title, content }, idx) =>
           content.content && (
             <>
               <Accordion.Title
-                active={activeIndex === idx}
+                active={activeIndex.includes(idx)}
                 index={idx}
-                onClick={() => setActiveIndex(idx)}
+                onClick={() => handleHeaderClick(idx)}
               >
                 <Icon name={!!title.icon ? title.icon : "dropdown"} />
                 {title.content}
               </Accordion.Title>
-              <Accordion.Content active={activeIndex === idx}>
+              <Accordion.Content active={activeIndex.includes(idx)}>
                 <dl className="details-list mt-0">
                   {content.content.map((component) => component)}
                 </dl>

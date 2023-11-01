@@ -1,33 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { Placeholder } from "semantic-ui-react";
 import { FileListBox, EmbargoMessage } from "./FileList";
 
 const FilePreview = ({
   activePreviewFile,
-  previewFileUrl,
+  defaultPreviewFile,
   files,
   hasFiles,
   hasPreviewableFiles,
   isPreview,
   permissions,
-  defaultPreviewFile,
+  previewFileUrl,
   record,
   setActivePreviewFile,
   totalFileSize,
+  useDynamicPreview = true,
 }) => {
+  const [loading, setLoading] = useState(true);
+  console.log("****FilePreview loading", loading);
   const previewUrlFlag = isPreview ? "&preview=1" : "";
-  console.log("****FilePreview previewFile", defaultPreviewFile);
-  console.log("****FilePreview activePreviewFile", activePreviewFile);
+  const fileToShow = useDynamicPreview ? activePreviewFile : defaultPreviewFile;
+
+  const iFrameRef = useRef(null);
+  const iframeCurrent = iFrameRef.current;
+  console.log("****FilePreview iFrameRef", iFrameRef);
+  console.log("****FilePreview iframeCurrent", iframeCurrent);
+  useEffect(() => {
+    console.log("****FilePreview iFrameRef", iFrameRef);
+    console.log("****FilePreview iframeCurrent", iframeCurrent);
+    iFrameRef.current?.addEventListener("load", () => setLoading(false));
+    return () => {
+      iFrameRef.current?.removeEventListener("load", () => setLoading(false));
+    };
+  }, [iFrameRef.current]);
 
   return (
     !!hasFiles && (
-      <section
-        id="record-files"
-        className="rel-mt-2"
-        aria-label={i18next.t("Files")}
-      >
+      <section id="record-file-preview" aria-label={i18next.t("File preview")}>
         {permissions.can_read_files && hasPreviewableFiles && (
-          <div className="">
+          <>
             {/* <div
               className={`ui accordion panel mb-10 ${record.ui.access_status.id}`}
               id="preview"
@@ -41,25 +53,36 @@ const FilePreview = ({
                 <span id="preview-file-title">{activePreviewFile.key}</span>
                 <i className="ui angle right icon"></i>
               </div> */}
-            <div id="collapsablePreview" className="active content pt-0">
-              <div>
-                <iframe
-                  title={i18next.t("Preview")}
-                  className="preview-iframe"
-                  id={record.id}
-                  name={record.id}
-                  width="100%"
-                  height="800"
-                  src={`${previewFileUrl}${activePreviewFile.key}?${previewUrlFlag}`}
-                ></iframe>
-              </div>
-            </div>
-            {/* </div> */}
-          </div>
+            {!!loading && (
+              <>
+                <div className="placeholder-header-bar" />
+                <Placeholder fluid>
+                  {[...Array(8).keys()].map((e) => (
+                    <Placeholder.Paragraph>
+                      {[...Array(8).keys()].map((e) => (
+                        <Placeholder.Line key={e} />
+                      ))}
+                      <Placeholder.Line />
+                    </Placeholder.Paragraph>
+                  ))}
+                </Placeholder>
+              </>
+            )}
+            <iframe
+              title={i18next.t("Preview")}
+              className={`preview-iframe ${loading ? "hidden" : ""}`}
+              id={record.id}
+              ref={iFrameRef}
+              name={record.id}
+              src={`${previewFileUrl}${fileToShow.key}?${previewUrlFlag}`}
+              width="100%"
+              // height="800"
+            ></iframe>
+          </>
         )}
 
         {/* {permissions.can_read_files && !hasPreviewableFiles && ( */}
-        {permissions.can_read_files && hasPreviewableFiles && (
+        {/* {permissions.can_read_files && hasPreviewableFiles && (
           <>
             <h2 id="files-heading">{i18next.t("Files")}</h2>
             <FileListBox
@@ -73,7 +96,7 @@ const FilePreview = ({
               totalFileSize={totalFileSize}
             />
           </>
-        )}
+        )} */}
 
         {!permissions.can_read_files && (
           <div className="pt-0 pb-20">

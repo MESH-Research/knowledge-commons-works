@@ -49,11 +49,13 @@
           {%- set _z = my_schemes.update({my_scheme: content["label"]}) -%}
       {%- endfor -%}
       {%- set localized_stats = dict() -%}
-      {% for number in ['unique_downloads', 'unique_views', 'data_volume'] %}
-        {% for scope in ['all_versions', 'this_version'] %}
-          {% set _z = localized_stats.update({'{scope}_{number}'.format(scope=scope, number=number): [(record.stats[scope][number]|truncate_number(max_value=1_000_000)), (record.stats[scope][number]|localize_number)]}) %}
+      {%- if "stats" in record.keys() %}
+        {% for number in ['unique_downloads', 'unique_views', 'data_volume'] %}
+          {% for scope in ['all_versions', 'this_version'] %}
+            {% set _z = localized_stats.update({'{scope}_{number}'.format(scope=scope, number=number): [(record.stats[scope][number]|truncate_number(max_value=1_000_000)), (record.stats[scope][number]|localize_number)]}) %}
+          {% endfor %}
         {% endfor %}
-      {% endfor %}
+      {% endif %}
       <div id="detail-main-content"
         class="two column row top-padded"
         data-back-page='{{ url_for("invenio_app_rdm_records.deposit_edit", pid_value=record.id) }}'

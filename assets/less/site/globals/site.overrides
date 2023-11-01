@@ -346,9 +346,27 @@ dl.details-list            {
   }
 }
 .record-details-tab.Content {
+  .placeholder-header-bar   {           width: 100%;
+                                        height: 1.5rem;
+                                        background-color: @sidebarBackgroundColor;
+  }
+  .placeholder                       {  border: 2rem solid #fff;
+  }
+  .preview-iframe                      {  height: 800px;
+    &.hidden                           {  display: none;
+    }
+  }
 }
 .record-details-tab.Details {
-    .ui.accordion .active.content        {  padding-left: 2rem;
+    .ui.accordion:not(.styled)           {
+      .title                {       font-weight: bold;
+                                        font-size: @big;
+                                        padding: 1rem 0;
+                                        border-bottom: 1px solid @internalBorderColor;
+      }
+      .active.content        {  padding-left: 2rem;
+                                padding-bottom: 1.5rem;
+      }
     }
 }
 .record-details-tab.Analytics {
@@ -366,6 +384,20 @@ dl.details-list            {
   }
   i.question.circle.small.icon       {             margin-left: 0.25rem;
 
+  }
+}
+.record-details-tab.Files {
+  .placeholder-header-bar   {           width: 100%;
+                                        height: 1.5rem;
+                                        background-color: @sidebarBackgroundColor;
+  }
+  .placeholder                       {  border: 2rem solid #fff;
+                                        height: 380px;
+                                        overflow: hidden;
+  }
+  .preview-iframe                {         height: 400px;
+    &.hidden                           {  display: none;
+    }
   }
 }
 

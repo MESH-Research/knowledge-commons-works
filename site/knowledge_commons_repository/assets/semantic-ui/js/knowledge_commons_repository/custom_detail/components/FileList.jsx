@@ -43,7 +43,9 @@ const FileListTableRow = ({
   }?download=1${previewUrlFlag}`;
 
   const handlePreviewChange = (file) => {
-    setActiveTab(previewTabIndex);
+    // this was originally used when files list was on a different tab
+    // from the preview box
+    // setActiveTab(previewTabIndex);
     setActivePreviewFile(file);
   };
 

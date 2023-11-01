@@ -10,6 +10,7 @@ import { DetailMainSubjectsSection } from "./sections/DetailMainSubjectsSection"
 import { DetailSidebarSubjectsSection } from "./sections/DetailSidebarSubjectsSection";
 import { FileListBox } from "./components/FileList";
 import { FilePreview } from "./components/FilePreview";
+import { FilePreviewWrapper } from "./sections/DetailMainPreviewSection";
 import { PublishingDetails } from "./components/PublishingDetails";
 import { SidebarDetailsSection } from "./sections/DetailSidebarDetailsSection";
 import { SidebarDownloadSection } from "./sections/DetailSidebarDownloadSection";
@@ -31,6 +32,7 @@ const componentsMap = {
     "DetailSidebarSubjectsSection": DetailSidebarSubjectsSection,
     "FileListBox": FileListBox,
     "FilePreview": FilePreview,
+    "FilePreviewWrapper": FilePreviewWrapper,
     "PublishingDetails": PublishingDetails,
     "RecordTitle": RecordTitle,
     "SidebarDetailsSection": SidebarDetailsSection,
