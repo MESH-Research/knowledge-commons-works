@@ -346,13 +346,18 @@ dl.details-list            {
   }
 }
 .record-details-tab.Content {
+  #Descriptions-tab-section {       padding-left: 1.5rem;
+
+  }
   .placeholder-header-bar   {           width: 100%;
                                         height: 1.5rem;
                                         background-color: @sidebarBackgroundColor;
+                                        margin-top: 1rem;
   }
   .placeholder                       {  border: 2rem solid #fff;
   }
   .preview-iframe                      {  height: 800px;
+                                          margin-top: 1rem;
     &.hidden                           {  display: none;
     }
   }
@@ -369,8 +374,14 @@ dl.details-list            {
       }
     }
 }
+.record-details-tab.Contributors {
+  .card {                               box-shadow: none;
+    .creatibutor-link            {      color: @textColor;
+    }
+  }
+}
 .record-details-tab.Analytics {
-  .ui.tiny.statistics         {     margin: 1rem;
+  .ui.statistics         {     margin: 1rem;
                                     justify-content: center;
     .statistic                {     flex-grow: 1;
       .value                    {     text-transform: none;

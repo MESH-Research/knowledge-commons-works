@@ -12,11 +12,32 @@ const Descriptions = ({ description, additional_descriptions }) => {
           {description.length > 240 ? (
             <>
               <p>
-                {open ? description : `${description.substring(0, 240)}...`}
+                {open ? (
+                  description
+                ) : (
+                  <>
+                    {`${description.substring(0, 240)}`}&hellip;&nbsp;&nbsp;
+                    <a
+                      as="a"
+                      onClick={() => setOpen(!open)}
+                      href="#description-heading"
+                      size="tiny"
+                      className="show-more"
+                    >
+                      Show more
+                    </a>
+                  </>
+                )}
               </p>
-              <Button onClick={() => setOpen(!open)} size="tiny">
-                {open ? "Show less" : "Show more"}
-              </Button>
+              {open && (
+                <Button
+                  onClick={() => setOpen(!open)}
+                  size="tiny"
+                  className="show-less"
+                >
+                  Show less
+                </Button>
+              )}
             </>
           ) : (
             <p>{description}</p>

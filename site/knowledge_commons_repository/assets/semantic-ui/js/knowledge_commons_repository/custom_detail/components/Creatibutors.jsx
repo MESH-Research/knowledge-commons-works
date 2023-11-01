@@ -216,9 +216,9 @@ const Creatibutors = ({
   return (
     <div className="ui grid">
       <div className="row ui accordion affiliations">
-        <div className="sixteen wide mobile twelve wide tablet thirteen wide computer column mb-10">
+        <div className="fluid column mb-10">
           {creatibutors?.map((creator) => (
-            <Card>
+            <Card fluid>
               <Card.Content>
                 <Card.Header>
                   <Creatibutor
