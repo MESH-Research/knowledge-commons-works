@@ -29,23 +29,25 @@ function StatsPopup({ number }) {
 function Analytics({ hasFiles, localizedStats, record, showDecimalSizes }) {
   const all_versions = record?.stats?.all_versions;
   const this_version = record?.stats?.this_version;
+  console.log("****Analytics record", record);
+  console.log("****Analytics localizedStats", localizedStats);
   // Each value below is an array: [0] truncated localized value,
   // [1] non-truncated localized value
-  if (record.stats) {
-    const {
-      all_versions_unique_downloads,
-      this_version_unique_downloads,
-      all_versions_unique_views,
-      this_version_unique_views,
-      all_versions_data_volume,
-      this_version_data_volume,
-    } = localizedStats;
-    const formattedDataVolumeAll = formatBytes(all_versions.data_volume);
-    const [formattedDataVolumeNum, formattedDataVolumeUnits] =
-      formattedDataVolumeAll.split(" ");
-  }
-
-  console.log("****Analytics hasFiles", hasFiles);
+  const {
+    all_versions_unique_downloads,
+    this_version_unique_downloads,
+    all_versions_unique_views,
+    this_version_unique_views,
+    all_versions_data_volume,
+    this_version_data_volume,
+  } = !!record.stats
+    ? localizedStats
+    : { undefined, undefined, undefined, undefined, undefined, undefined };
+  const formattedDataVolumeAll = all_versions
+    ? formatBytes(all_versions.data_volume)
+    : undefined;
+  const [formattedDataVolumeNum, formattedDataVolumeUnits] =
+    formattedDataVolumeAll ? formattedDataVolumeAll.split(" ") : ["", ""];
 
   return (
     <div>
@@ -55,7 +57,7 @@ function Analytics({ hasFiles, localizedStats, record, showDecimalSizes }) {
         </Message>
       ) : (
         <>
-          <Statistic.Group size="tiny">
+          <Statistic.Group size="small">
             <Statistic>
               <Statistic.Value>{all_versions_unique_views[1]}</Statistic.Value>
               <Statistic.Label>
