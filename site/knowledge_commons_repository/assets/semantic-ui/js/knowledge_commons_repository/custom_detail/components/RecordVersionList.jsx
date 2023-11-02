@@ -97,15 +97,16 @@ const PreviewMessage = () => {
 };
 
 const VersionsContentDropdown = ({
-  isPreview,
-  recordVersions,
   currentRecordInResults,
-  recordDeserialized,
+  isPreview,
+  loading,
   recid,
+  recordDeserialized,
+  recordVersions,
 }) => {
   const [activeVersion, setActiveVersion] = useState(recid);
 
-  let versionOptions = recordVersions.hits.map((item) => {
+  let versionOptions = recordVersions?.hits?.map((item) => {
     let opt = {
       key: item.id,
       text: i18next.t(`Version ${item.version}`),
@@ -133,78 +134,105 @@ const VersionsContentDropdown = ({
         isPreview && "preview"
       }`}
     >
-      <h3 className={`version-label ${isPreview ? "info" : ""} ui header tiny`}>
-        {isPreview
-          ? i18next.t("Preview")
-          : i18next.t("Version {{version}}", {
-              version: recordDeserialized.version,
-            })}
-      </h3>
-      {recordVersions.total > 1 && (
-        <Dropdown
-          button
-          basic
-          text="other versions"
-          direction="left"
-          className="right floated"
+      <>
+        <h3
+          className={`version-label ${isPreview ? "info" : ""} ui header tiny`}
         >
-          <Dropdown.Menu>
-            {versionOptions.map((opt) => (
-              <Dropdown.Item as="a" key={opt.key} href={opt.href}>
-                <span className="text">{opt.text}</span>
-                <small className="pubdate description">{opt.pubdate}</small>
-                <small className="doi description">{opt.description}</small>
-              </Dropdown.Item>
-            ))}
-            <Dropdown.Divider />
-            <Dropdown.Item
-              href={`/search?q=parent.id:${recordDeserialized.parent_id}&sort=version&f=allversions:true`}
-              text={i18next.t(`View all ${recordVersions.total} versions`)}
-            />
-          </Dropdown.Menu>
-        </Dropdown>
-      )}
+          {isPreview ? (
+            i18next.t("Preview")
+          ) : (
+            <>
+              {i18next.t("Version ")}
+              {loading ? (
+                <Icon loading name="spinner" size="tiny" />
+              ) : (
+                recordDeserialized.version
+              )}
+            </>
+          )}
+        </h3>
+        {recordVersions.total > 1 && (
+          <Dropdown
+            button
+            basic
+            text="other versions"
+            direction="left"
+            className="right floated"
+          >
+            <Dropdown.Menu>
+              {versionOptions.map((opt) => (
+                <Dropdown.Item as="a" key={opt.key} href={opt.href}>
+                  <span className="text">{opt.text}</span>
+                  <small className="pubdate description">{opt.pubdate}</small>
+                  <small className="doi description">{opt.description}</small>
+                </Dropdown.Item>
+              ))}
+              <Dropdown.Divider />
+              <Dropdown.Item
+                href={`/search?q=parent.id:${recordDeserialized.parent_id}&sort=version&f=allversions:true`}
+                text={i18next.t(`View all ${recordVersions.total} versions`)}
+              />
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
+      </>
     </div>
   );
 };
 
 const VersionsContentList = ({
-  isPreview,
-  recordVersions,
   currentRecordInResults,
-  recordDeserialized,
+  isPreview,
+  loading,
   recid,
+  recordDeserialized,
+  recordVersions,
 }) => {
   return (
     <List divided>
-      {isPreview ? <PreviewMessage /> : null}
-      {recordVersions.hits.map((item) => (
-        <RecordVersionItem
-          key={item.id}
-          item={item}
-          activeVersion={item.id === recid}
-        />
-      ))}
-      {!currentRecordInResults && (
-        <>
-          <Divider horizontal>...</Divider>
-          <RecordVersionItem item={recordDeserialized} activeVersion />
-        </>
-      )}
-      {recordVersions.total > 1 && (
-        <Grid className="mt-0">
-          <Grid.Row centered>
-            <a
-              href={`/search?q=parent.id:${recordDeserialized.parent_id}&sort=version&f=allversions:true`}
-              className="font-small"
-            >
-              {i18next.t(`View all {{count}} versions`, {
-                count: recordVersions.total,
-              })}
-            </a>
-          </Grid.Row>
-        </Grid>
-      )}
+      <>
+        {loading ? (
+          <Placeholder fluid>
+            <Placeholder.Header>
+              <Placeholder.Line />
+              <Placeholder.Line />
+              <Placeholder.Line />
+              <Placeholder.Line />
+            </Placeholder.Header>
+          </Placeholder>
+        ) : (
+          <>
+            {isPreview ? <PreviewMessage /> : null}
+            {recordVersions.hits.map((item) => (
+              <RecordVersionItem
+                key={item.id}
+                item={item}
+                activeVersion={item.id === recid}
+              />
+            ))}
+            {!currentRecordInResults && (
+              <>
+                <Divider horizontal>...</Divider>
+                <RecordVersionItem item={recordDeserialized} activeVersion />
+              </>
+            )}
+            {recordVersions.total > 1 && (
+              <Grid className="mt-0">
+                <Grid.Row centered>
+                  <a
+                    href={`/search?q=parent.id:${recordDeserialized.parent_id}&sort=version&f=allversions:true`}
+                    className="font-small"
+                  >
+                    {i18next.t(`View all {{count}} versions`, {
+                      count: recordVersions.total,
+                    })}
+                  </a>
+                </Grid.Row>
+              </Grid>
+            )}
+          </>
+        )}
+      </>
     </List>
   );
 };
@@ -237,20 +265,10 @@ const RecordVersionsList = ({ record, isPreview, widgetStyle = "list" }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return loading ? (
-    <>
-      <div className="rel-p-1" />
-      <Placeholder className="rel-ml-1 rel-mr-1">
-        <Placeholder.Header>
-          <Placeholder.Line />
-          <Placeholder.Line />
-          <Placeholder.Line />
-        </Placeholder.Header>
-      </Placeholder>
-    </>
-  ) : widgetStyle === "list" ? (
+  return widgetStyle === "list" ? (
     <VersionsContentList
       isPreview={isPreview}
+      loading={loading}
       recordDeserialized={recordDeserialized}
       recid={recid}
       recordVersions={recordVersions}
@@ -259,6 +277,7 @@ const RecordVersionsList = ({ record, isPreview, widgetStyle = "list" }) => {
   ) : (
     <VersionsContentDropdown
       isPreview={isPreview}
+      loading={loading}
       recordDeserialized={recordDeserialized}
       recid={recid}
       recordVersions={recordVersions}

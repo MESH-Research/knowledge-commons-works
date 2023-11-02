@@ -462,24 +462,29 @@ dl.details-list            {
       &#record-versions         {
         .segment                {             display: flex;
                                               align-items: center;
+          .ui.header.version-label       {              flex-grow: 1;
+                                              padding: @inputVerticalPadding @inputHorizontalPadding;
+                                              padding-left: 0;
+            .icon.loading.tiny                {    font-size: @tiny;
 
+            }
+          }
+          div.dropdown              {              box-shadow: none;
+                                                margin-right: -0.25rem;
+                                                border-left: 1px solid @borderColor;
+                                                border-radius: 0 @defaultBorderRadius @defaultBorderRadius 0;
+          }
+          .menu .item .description.doi {        display: block;
+                                                float: none;
+                                                margin-left: 0;
+          }
           &.preview             {             color: @infoTextColor;
                                               background-color: @infoBackgroundColor;
                                               border-color: @infoBorderColor;
+            div.dropdown              {
+                                                  border-left: 1px solid @infoBorderColor;
+            }
           }
-          .version-label       {              flex-grow: 1;
-                                              padding: @inputVerticalPadding @inputHorizontalPadding;
-                                              padding-left: 0;
-          }
-        }
-        .dropdown              {              box-shadow: none;
-                                              margin-right: -0.25rem;
-                                              border-left: 1px solid @infoBorderColor;
-                                              border-radius: 0 0.25rem 0.25rem 0;
-        }
-        .menu .item .description.doi {        display: block;
-                                              float: none;
-                                              margin-left: 0;
         }
       }
       &#subjects                {
