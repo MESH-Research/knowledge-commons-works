@@ -15,6 +15,11 @@
 @formButtonColor: #4e77a8;
 @sidebarBackgroundColor: #f9f9f9;
 
+// FIXME: hidden for now
+#skip-to-main {
+  display: none;
+}
+
 // Header
 
 @labelBottomMargin: .28571429rem;
@@ -24,7 +29,7 @@
                     background-color: transparent;
 
     #invenio-nav.ui.menu { box-shadow: none;
-      .item   {
+      .item, .item:hover   {
         a     {            color: #000;
         }
       }
@@ -413,6 +418,12 @@ dl.details-list            {
 }
 
 .right-sidebar {                  padding-top: 0.5rem;
+  .ui.message,
+  .ui.message.manage {             padding: @inputVerticalPadding @inputHorizontalPadding;
+                                    border-radius: @defaultBorderRadius;
+    &.icon .icon:not(.close)                     {  font-size: @huge;
+    }
+  }
   .sidebar-container {
       .ui.top.attached.header {   border-bottom: 0;
                                   font-size: 1rem;
@@ -428,6 +439,9 @@ dl.details-list            {
       &#download                {             margin-bottom: 1rem;
         .ui.button.icon.right.labeled {       padding-left: 1rem !important;
         }
+        .ui.button                    {       text-align: left;
+
+        }
         .menu .item .text       {             overflow-wrap: anywhere;
                                               word-break: break-all;
         }
@@ -435,6 +449,15 @@ dl.details-list            {
                                               float: none;
                                               margin-left: 0;
         }
+      }
+      #record-details-download {  padding-right: 0;
+                                  padding-left: 0;
+                                  // padding-bottom: 1rem;
+          table                {  margin-bottom: 0;
+              a.filename {            overflow-wrap: anywhere;
+                                      word-break: break-all;
+              }
+          }
       }
       &#record-versions         {
         .segment                {             display: flex;
@@ -465,15 +488,6 @@ dl.details-list            {
       }
       &#citation                {
           #citation-style-label {  margin-right: 0.5rem;
-          }
-      }
-      #record-details-download {  padding-right: 0;
-                                  padding-left: 0;
-                                  padding-bottom: 1rem;
-          table                {  margin-bottom: 0;
-              a.filename {            overflow-wrap: anywhere;
-                                      word-break: break-all;
-              }
           }
       }
       &#record-export {           margin-bottom: 1rem;

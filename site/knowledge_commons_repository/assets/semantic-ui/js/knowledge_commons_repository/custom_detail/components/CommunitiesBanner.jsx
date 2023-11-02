@@ -18,11 +18,6 @@ const CommunitiesBanner = ({ community, isPreviewSubmissionRequest }) => {
         <div className="ui container segment rdm-sidebar pr-0">
           <Grid verticalAlign="middle">
             <Grid.Row>
-              <Grid.Column width={4}>
-                <object data={community.links.logo} type="image/png">
-                  <Icon name="group" size="large" />
-                </object>
-              </Grid.Column>
               <Grid.Column width={12}>
                 <h3 className="ui header small">
                   <a href={`/communities/${community.slug}`}>
@@ -42,6 +37,11 @@ const CommunitiesBanner = ({ community, isPreviewSubmissionRequest }) => {
                     {i18next.t("Restricted")}
                   </div>
                 )}
+              </Grid.Column>
+              <Grid.Column width={4}>
+                <object data={community.links.logo} type="image/png">
+                  <Icon name="group" size="large" />
+                </object>
               </Grid.Column>
             </Grid.Row>
           </Grid>

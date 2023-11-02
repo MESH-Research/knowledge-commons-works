@@ -12,6 +12,7 @@
 
 import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { Icon, Message } from "semantic-ui-react";
 import { componentsMap } from "../componentsMap";
 import { filterPropsToPass } from "../util";
 
@@ -39,15 +40,16 @@ const DraftBackButton = ({
 const FlagNewerVersion = ({ isPublished, isLatest, latestHtml }) => {
   if (isPublished && !isLatest) {
     return (
-      <div className="ui warning flashed top attached manage message">
-        <p>
+      <Message warning icon>
+        <Icon name="exclamation circle" size="large" />
+        <Message.Content>
           There is a{" "}
           <a href={latestHtml}>
             <b>newer version</b>
           </a>{" "}
-          of the record available.
-        </p>
-      </div>
+          of this work.
+        </Message.Content>
+      </Message>
     );
   } else {
     return null;

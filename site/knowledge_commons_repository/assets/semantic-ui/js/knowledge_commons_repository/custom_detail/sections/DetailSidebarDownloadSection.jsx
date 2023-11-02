@@ -39,9 +39,10 @@ const SidebarDownloadSection = ({
             href={`${previewFileUrl.replace("/preview/", "/files/")}/${
               defaultPreviewFile.key
             }?download=1${previewUrlFlag}`}
-          >
-            Download <Icon name="download" />
-          </Button>
+            content={i18next.t("Download")}
+            icon="download"
+            labelPosition="right"
+          ></Button>
         ) : (
           <FileListDropdown
             id="record-details-download"

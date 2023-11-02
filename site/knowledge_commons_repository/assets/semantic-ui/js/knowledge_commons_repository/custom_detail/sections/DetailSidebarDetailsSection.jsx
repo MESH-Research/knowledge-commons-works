@@ -1,6 +1,7 @@
 import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { getDetailsComponents } from "../components/PublishingDetails";
+import { Doi } from "../components/Doi";
 
 const SidebarDetailsSection = ({
   customFieldsUi,
@@ -12,6 +13,7 @@ const SidebarDetailsSection = ({
   show_heading,
 }) => {
   const detailOrder = subsections.map(({ section }) => section);
+  const idDoi = record.pids.doi ? record.pids.doi.identifier : null;
 
   return (
     <div
@@ -23,11 +25,18 @@ const SidebarDetailsSection = ({
           {i18next.t("Details")}
         </h2>
       )}
-      <div
-        id="record-details"
-        className="ui segment bottom attached rdm-sidebar"
-      >
+      <div id="record-details" className="ui segment rdm-sidebar">
         <dl className="details-list mt-0">
+          {idDoi && (
+            <dd>
+              <Doi
+                idDoi={idDoi}
+                doiBadgeUrl={doiBadgeUrl}
+                doiLink={record.links.doi}
+              />
+            </dd>
+          )}
+
           {getDetailsComponents({
             customFieldsUi,
             detailOrder,

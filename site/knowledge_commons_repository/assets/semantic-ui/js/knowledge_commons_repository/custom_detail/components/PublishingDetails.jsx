@@ -477,6 +477,7 @@ const DetailItem = ({ title, value, trueLabel, falseLabel, isVocabulary }) => {
 const ConferenceDetailSection = ({ conference }) => {
   return (
     <>
+      <dt className="ui tiny header">{Event}</dt>
       <dd>
         {conference.url ? (
           <a href={conference.url}>
@@ -491,12 +492,15 @@ const ConferenceDetailSection = ({ conference }) => {
         {conference.session_part && `Part ${conference.session_part}`}
       </dd>
       {conference.url && !conference.title && (
-        <dd>
-          <a href={conference.url}>
-            <i className="fa fa-external-link"></i>{" "}
-            {i18next.t("Conference website")}
-          </a>
-        </dd>
+        <>
+          <dt className="ui tiny header">{Event}</dt>
+          <dd>
+            <a href={conference.url}>
+              <i className="fa fa-external-link"></i>{" "}
+              {i18next.t("Conference website")}
+            </a>
+          </dd>
+        </>
       )}
     </>
   );
