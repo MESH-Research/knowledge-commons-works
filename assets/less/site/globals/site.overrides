@@ -530,6 +530,7 @@ dl.details-list {
     &#subjects {
       .subject {
         background-color: #fff;
+        color: @textColor;
       }
     }
     &#citation {

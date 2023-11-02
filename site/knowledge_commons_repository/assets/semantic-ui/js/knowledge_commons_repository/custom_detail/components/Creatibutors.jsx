@@ -219,7 +219,7 @@ const Creatibutors = ({
         <div className="fluid column mb-10">
           {creatibutors?.map((creator) => (
             <Card fluid>
-              <Card.Content>
+              <Card.Content className="pb-5">
                 <Card.Header>
                   <Creatibutor
                     creatibutor={creator}
@@ -236,15 +236,15 @@ const Creatibutors = ({
                 <Card.Meta>
                   {!!creator.role && <span>{creator.role.title}</span>}
                 </Card.Meta>
-                <Card.Description>
+                <Card.Description className="mt-0">
                   {!!creator.affiliations && show_affiliations && (
-                    <span>
+                    <small>
                       {creator.affiliations.map((a) => a[1]).join(",")}
-                    </span>
+                    </small>
                   )}
                 </Card.Description>
               </Card.Content>
-              <Card.Content extra className="mt-0">
+              <Card.Content extra className="mt-0 pt-5">
                 {ids[creator.person_or_org.name]?.map(
                   ({ scheme, identifier }) => (
                     <a
