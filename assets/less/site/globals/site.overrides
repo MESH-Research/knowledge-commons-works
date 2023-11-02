@@ -502,9 +502,6 @@ dl.details-list            {
                                   width: 1em;
                                   fill: @primaryColor;
         }
-        .button .icon   {         height: 1rem;
-                                  width: 1rem;
-        }
       }
     }
 }

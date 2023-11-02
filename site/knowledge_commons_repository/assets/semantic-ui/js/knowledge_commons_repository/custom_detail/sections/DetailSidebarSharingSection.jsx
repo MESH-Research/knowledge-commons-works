@@ -116,7 +116,14 @@ function SharingIconLink({ name, url, iconName }) {
   return name === "Mastodon" ? (
     <PopupButton
       trigger={
-        <Button target="_blank" rel="noopener noreferrer" icon compact basic>
+        <Button
+          target="_blank"
+          rel="noopener noreferrer"
+          icon
+          compact
+          basic
+          size="big"
+        >
           <i className="icon mastodon">
             <svg alt="Mastodon" viewBox="0 0 24 24">
               <use xlinkHref="/static/images/mastodon.svg#mastodon" />
@@ -134,6 +141,7 @@ function SharingIconLink({ name, url, iconName }) {
       icon
       compact
       basic
+      size="big"
     >
       <Icon name={iconName} />
     </Button>
@@ -186,7 +194,7 @@ function SidebarSharingSection({ record }) {
 
   return (
     <div className="sidebar-container" id="social-sharing">
-      <div className="ui segment rdm-sidebar">
+      <div className="ui rdm-sidebar">
         {/* <h2 className="ui medium top attached header mt-0">Share</h2> */}
         {socialMediaLinks.map(({ name, url }) => (
           <SharingIconLink
