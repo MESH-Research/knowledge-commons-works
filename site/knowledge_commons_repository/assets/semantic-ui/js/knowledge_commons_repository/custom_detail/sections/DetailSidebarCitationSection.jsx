@@ -13,24 +13,41 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { Button, Modal } from "semantic-ui-react";
 import { Citation } from "../components/Citation";
 
 const CitationSection = ({ record, citationStyles, citationStyleDefault }) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <div
       id="citation"
       className="sidebar-container"
       aria-label={i18next.t("Cite this")}
     >
-      <h2 className="ui medium top attached header tiny mt-0">
-        {i18next.t("Cite this")}
-      </h2>
-      <Citation
-        passedClassNames="ui bottom attached segment rdm-sidebar pr-0 pt-0"
-        record={record}
-        citationStyles={citationStyles}
-        citationStyleDefault={citationStyleDefault}
-      />
+      <Modal
+        trigger={
+          <Button
+            fluid
+            content={i18next.t("Cite this")}
+            icon="quote right"
+            labelPosition="right"
+          ></Button>
+        }
+        open={open}
+        onOpen={() => setOpen(true)}
+        onClose={() => setOpen(false)}
+      >
+        <Modal.Header>Generate a citation for this work</Modal.Header>
+        <Modal.Content>
+          <Citation
+            passedClassNames="ui"
+            record={record}
+            citationStyles={citationStyles}
+            citationStyleDefault={citationStyleDefault}
+          />
+        </Modal.Content>
+      </Modal>
     </div>
   );
 };

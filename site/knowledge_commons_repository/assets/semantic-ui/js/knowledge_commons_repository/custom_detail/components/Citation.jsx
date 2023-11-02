@@ -115,11 +115,11 @@ const Citation = ({
   });
 
   return (
-    <Grid className={`record-citation ui ${passedClassNames}`}>
+    <Grid className={`record-citation ${passedClassNames}`}>
       <Grid.Row verticalAlign="bottom" className="pt-0 pb-0">
         <Grid.Column computer={16} className="">
           <div id="citation-text" className="wrap-overflowing-text">
-            <small>{loading ? placeholderLoader() : citation}</small>
+            {loading ? placeholderLoader() : citation}
           </div>
         </Grid.Column>
       </Grid.Row>
