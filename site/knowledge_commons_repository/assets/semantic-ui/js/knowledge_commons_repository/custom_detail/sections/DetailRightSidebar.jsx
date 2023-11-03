@@ -15,6 +15,11 @@ import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { Icon, Message } from "semantic-ui-react";
 import { componentsMap } from "../componentsMap";
 import { filterPropsToPass } from "../util";
+import {
+  RecordManagementMenuPopup,
+  RecordManagementPopup,
+} from "../components/RecordManagementMenu";
+import { ShareModal } from "../components/ShareModal";
 
 const DraftBackButton = ({
   backPage,
@@ -71,6 +76,9 @@ const FlagNewerVersion = ({ isPublished, isLatest, latestHtml }) => {
  *
  */
 const DetailRightSidebar = (topLevelProps) => {
+  const [shareModalOpen, setShareModalOpen] = React.useState(false);
+  const handleShareModalClose = () => setShareModalOpen(false);
+  const handleShareModalOpen = () => setShareModalOpen(true);
   let activeSidebarSections = topLevelProps.sidebarSectionsRight.filter(
     ({ component_name }) => {
       return (
@@ -94,6 +102,26 @@ const DetailRightSidebar = (topLevelProps) => {
         isPublished={topLevelProps.record.is_published}
         latestHtml={topLevelProps.record.links.latest_html}
       />
+      {topLevelProps.showRecordManagementMenu && (
+        <div className="sidebar-container" id="record-management">
+          <RecordManagementPopup
+            record={topLevelProps.record}
+            permissions={topLevelProps.permissions}
+            isDraft={topLevelProps.isDraft}
+            isPreviewSubmissionRequest={
+              topLevelProps.isPreviewSubmissionRequest
+            }
+            currentUserId={topLevelProps.currentUserId}
+            handleShareModalOpen={handleShareModalOpen}
+          />
+          {/* here to avoid the modal being closed on popup close */}
+          <ShareModal
+            recid={topLevelProps.record.id}
+            open={shareModalOpen}
+            handleClose={handleShareModalClose}
+          />
+        </div>
+      )}
       {activeSidebarSections.map(
         ({ section, component_name, props, subsections, show_heading }) => {
           const SidebarSectionComponent = componentsMap[component_name];

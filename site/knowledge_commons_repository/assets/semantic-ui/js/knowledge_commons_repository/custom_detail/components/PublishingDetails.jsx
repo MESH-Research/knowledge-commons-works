@@ -475,25 +475,29 @@ const DetailItem = ({ title, value, trueLabel, falseLabel, isVocabulary }) => {
 };
 
 const ConferenceDetailSection = ({ conference }) => {
+  let titlePiece = conference.url ? (
+    <a href={conference.url}>
+      <i className="fa fa-external-link"></i> {conference.title}
+    </a>
+  ) : (
+    `"${conference.title}"`
+  );
+  let conferencePieces = [
+    titlePiece,
+    conference.place,
+    conference.dates,
+    conference.session,
+    conference.session_part,
+  ];
+  conferencePieces = conferencePieces.filter((piece) => piece);
+
   return (
     <>
-      <dt className="ui tiny header">{Event}</dt>
-      <dd>
-        {conference.url ? (
-          <a href={conference.url}>
-            <i className="fa fa-external-link"></i> {conference.title}
-          </a>
-        ) : (
-          conference.title
-        )}
-        {conference.place && `${conference.place}`}
-        {conference.dates && `${conference.dates}`}
-        {conference.session && `Session ${conference.session}`}
-        {conference.session_part && `Part ${conference.session_part}`}
-      </dd>
+      <dt className="ui tiny header">Event</dt>
+      <dd>{conferencePieces.join(", ")}</dd>
       {conference.url && !conference.title && (
         <>
-          <dt className="ui tiny header">{Event}</dt>
+          <dt className="ui tiny header">Event</dt>
           <dd>
             <a href={conference.url}>
               <i className="fa fa-external-link"></i>{" "}

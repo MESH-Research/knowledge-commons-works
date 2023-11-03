@@ -177,38 +177,12 @@ const DetailContent = (rawProps) => {
       <DetailRightSidebar
         activeTab={activeTab}
         activePreviewFile={activePreviewFile}
-        backPage={topLevelProps.backPage}
-        canManage={topLevelProps.canManage}
-        citationStyles={topLevelProps.citationStyles}
-        citationStyleDefault={topLevelProps.citationStyleDefault}
-        community={topLevelProps.community}
-        customFieldsUi={topLevelProps.customFieldsUi}
-        defaultPreviewFile={topLevelProps.defaultPreviewFile}
-        doiBadgeUrl={topLevelProps.doiBadgeUrl}
-        files={topLevelProps.files}
-        hasFiles={topLevelProps.hasFiles}
-        identifierSchemes={topLevelProps.identifierSchemes}
-        isDraft={topLevelProps.isDraft}
-        isPreview={topLevelProps.isPreview}
-        isPreviewSubmissionRequest={topLevelProps.isPreviewSubmissionRequest}
-        landingUrls={topLevelProps.landingUrls}
-        previewFileUrl={topLevelProps.previewFileUrl}
-        record={topLevelProps.record}
-        recordExporters={topLevelProps.recordExporters}
-        setActivePreviewFile={setActivePreviewFile}
-        setActiveTab={setActiveTab}
-        sidebarSectionsRight={topLevelProps.sidebarSectionsRight}
-        tabbedSections={tabbedSections}
-        totalFileSize={topLevelProps.totalFileSize}
+        {...topLevelProps}
       />
       <DetailLeftSidebar
-        citationStyles={topLevelProps.citationStyles}
-        citationStyleDefault={topLevelProps.citationStyleDefault}
-        community={topLevelProps.community}
-        doiBadgeUrl={topLevelProps.doiBadgeUrl}
-        isPreview={topLevelProps.isPreview}
-        record={topLevelProps.record}
-        sidebarSectionsRight={topLevelProps.sidebarSectionsRight}
+        activeTab={activeTab}
+        activePreviewFile={activePreviewFile}
+        {...topLevelProps}
       />
     </>
   );

@@ -26,6 +26,7 @@ const CitationSection = ({ record, citationStyles, citationStyleDefault }) => {
       aria-label={i18next.t("Cite this")}
     >
       <Modal
+        closeIcon
         trigger={
           <Button
             fluid

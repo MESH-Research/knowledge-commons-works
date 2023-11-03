@@ -464,6 +464,13 @@ dl.details-list {
     .ui.segment.rdm-sidebar:last-child {
       background-color: @sidebarBackgroundColor;
     }
+    &#record-management {
+      margin-bottom: 1rem;
+      .ui.fluid.icon.button {
+        text-align: left;
+        padding-left: 1rem !important;
+      }
+    }
     &#download {
       margin-bottom: 1rem;
       .ui.button.icon.right.labeled {
@@ -527,6 +534,19 @@ dl.details-list {
         }
       }
     }
+    &#communities {
+      .segment {
+        background-color: @purpleBackground;
+        color: @purple;
+        border-color: @lightPurple;
+        .ui.header {
+          margin-top: 0;
+          a {
+            color: @purple;
+          }
+        }
+      }
+    }
     &#subjects {
       .subject {
         background-color: #fff;
@@ -553,13 +573,17 @@ dl.details-list {
         background-color: @sidebarBackgroundColor !important;
         padding-left: 1rem !important;
         font-weight: bold;
+        color: @textColor !important;
       }
     }
     &#social-sharing {
-      .button svg {
-        height: 1em;
-        width: 1em;
-        fill: @primaryColor;
+      .button {
+        margin-bottom: 0.25rem;
+        svg {
+          height: 1em;
+          width: 1em;
+          fill: @primaryColor;
+        }
       }
     }
   }

@@ -10,6 +10,7 @@ ReactDOM.render(
     community={JSON.parse(detailMainDiv.dataset.community)}
     citationStyles={JSON.parse(detailMainDiv.dataset.citationStyles)}
     citationStyleDefault={detailMainDiv.dataset.citationStyleDefault}
+    currentUserId={detailMainDiv.dataset.currentUserId}
     customFieldsUi={JSON.parse(detailMainDiv.dataset.customFieldsUi)}
     doiBadgeUrl={detailMainDiv.dataset.doiBadgeUrl}
     externalResources={JSON.parse(detailMainDiv.dataset.externalResources)}
@@ -32,6 +33,7 @@ ReactDOM.render(
     record={JSON.parse(detailMainDiv.dataset.record)}
     recordExporters={JSON.parse(detailMainDiv.dataset.recordExporters)}
     showDecimalSizes={JSON.parse(detailMainDiv.dataset.showDecimalSizes)}
+    showRecordManagementMenu={JSON.parse(detailMainDiv.dataset.showRecordManagementMenu)}
     sidebarSectionsLeft={JSON.parse(detailMainDiv.dataset.sidebarSectionsLeft)}
     sidebarSectionsRight={JSON.parse(detailMainDiv.dataset.sidebarSectionsRight)}
     totalFileSize={detailMainDiv.dataset.totalFileSize}
