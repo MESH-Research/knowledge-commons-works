@@ -375,6 +375,8 @@ dl.details-list {
     &.hidden {
       display: none;
     }
+    border-top: 1px solid @internalBorderColor;
+    border-bottom: 1px solid @internalBorderColor;
   }
 }
 .record-details-tab.Details {
@@ -433,6 +435,8 @@ dl.details-list {
   }
   .preview-iframe {
     height: 400px;
+    border-top: 1px solid @internalBorderColor;
+    border-bottom: 1px solid @internalBorderColor;
     &.hidden {
       display: none;
     }
@@ -604,4 +608,10 @@ dl.details-list {
       margin-right: 0.5rem;
     }
   }
+}
+
+// previewer
+
+#toolbarSidebar {
+  background-color: @sidebarBackgroundColor;
 }

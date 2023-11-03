@@ -18,17 +18,12 @@ const FilePreview = ({
   useDynamicPreview = true,
 }) => {
   const [loading, setLoading] = useState(true);
-  console.log("****FilePreview loading", loading);
   const previewUrlFlag = isPreview ? "&preview=1" : "";
   const fileToShow = useDynamicPreview ? activePreviewFile : defaultPreviewFile;
 
   const iFrameRef = useRef(null);
   const iframeCurrent = iFrameRef.current;
-  console.log("****FilePreview iFrameRef", iFrameRef);
-  console.log("****FilePreview iframeCurrent", iframeCurrent);
   useEffect(() => {
-    console.log("****FilePreview iFrameRef", iFrameRef);
-    console.log("****FilePreview iframeCurrent", iframeCurrent);
     iFrameRef.current?.addEventListener("load", () => setLoading(false));
     return () => {
       iFrameRef.current?.removeEventListener("load", () => setLoading(false));
@@ -40,19 +35,6 @@ const FilePreview = ({
       <section id="record-file-preview" aria-label={i18next.t("File preview")}>
         {permissions.can_read_files && hasPreviewableFiles && (
           <>
-            {/* <div
-              className={`ui accordion panel mb-10 ${record.ui.access_status.id}`}
-              id="preview"
-              href="#collapsablePreview"
-            >
-              <div
-                className={`active title trigger panel-heading ${record.ui.access_status.id} truncated`}
-                tabIndex="0"
-                aria-label={i18next.t("File preview")}
-              >
-                <span id="preview-file-title">{activePreviewFile.key}</span>
-                <i className="ui angle right icon"></i>
-              </div> */}
             {!!loading && (
               <>
                 <div className="placeholder-header-bar" />
@@ -80,23 +62,6 @@ const FilePreview = ({
             ></iframe>
           </>
         )}
-
-        {/* {permissions.can_read_files && !hasPreviewableFiles && ( */}
-        {/* {permissions.can_read_files && hasPreviewableFiles && (
-          <>
-            <h2 id="files-heading">{i18next.t("Files")}</h2>
-            <FileListBox
-              activePreviewFile={activePreviewFile}
-              files={files}
-              recordId={record.id}
-              isPreview={isPreview}
-              previewFileUrl={previewFileUrl}
-              record={record}
-              setActivePreviewFile={setActivePreviewFile}
-              totalFileSize={totalFileSize}
-            />
-          </>
-        )} */}
 
         {!permissions.can_read_files && (
           <div className="pt-0 pb-20">

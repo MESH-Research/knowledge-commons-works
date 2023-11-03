@@ -102,9 +102,11 @@ const VersionsContentDropdown = ({
   loading,
   recid,
   recordDeserialized,
+  recordPublicationDate,
   recordVersions,
 }) => {
   const [activeVersion, setActiveVersion] = useState(recid);
+  console.log("****VersionsContentDropdown recordVersions", recordVersions);
 
   let versionOptions = recordVersions?.hits?.map((item) => {
     let opt = {
@@ -119,12 +121,15 @@ const VersionsContentDropdown = ({
     }
     return opt;
   });
+  if (!versionOptions) {
+    versionOptions = [];
+  }
   if (isPreview && !currentRecordInResults) {
     versionOptions.push({
-      key: item.id,
+      key: recid,
       text: i18next.t(`Preview version`),
-      href: `/records/${item.id}`,
-      pubdate: item.publication_date,
+      href: `/records/${recid}`,
+      pubdate: recordPublicationDate,
     });
   }
 
@@ -280,6 +285,7 @@ const RecordVersionsList = ({ record, isPreview, widgetStyle = "list" }) => {
       loading={loading}
       recordDeserialized={recordDeserialized}
       recid={recid}
+      recordPublicationDate={recordDeserialized.publication_date}
       recordVersions={recordVersions}
       currentRecordInResults={currentRecordInResults}
     />
