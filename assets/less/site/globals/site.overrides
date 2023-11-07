@@ -33,10 +33,29 @@
 
     #invenio-nav.ui.menu {
       box-shadow: none;
-      .item,
-      .item:hover {
+      .item:not(.logo) {
         a {
+          position: relative;
           color: #000;
+          &::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: 1rem;
+            left: 0;
+            background-color: @primaryColor;
+            transform-origin: bottom right;
+            transition: transform 0.1s ease-out;
+          }
+        }
+        a:not(.ui.button):hover {
+          color: #000;
+          &::after {
+            transform: scaleX(1);
+            transform-origin: center;
+          }
         }
       }
       .rdm-logo {
