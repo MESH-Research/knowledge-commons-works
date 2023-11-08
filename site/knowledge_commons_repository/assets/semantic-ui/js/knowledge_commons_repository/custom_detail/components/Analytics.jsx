@@ -26,7 +26,13 @@ function StatsPopup({ number }) {
   );
 }
 
-function Analytics({ hasFiles, localizedStats, record, showDecimalSizes }) {
+function Analytics({
+  hasFiles,
+  localizedStats,
+  record,
+  showDecimalSizes,
+  show,
+}) {
   const all_versions = record?.stats?.all_versions;
   const this_version = record?.stats?.this_version;
   console.log("****Analytics record", record);
@@ -50,7 +56,7 @@ function Analytics({ hasFiles, localizedStats, record, showDecimalSizes }) {
     formattedDataVolumeAll ? formattedDataVolumeAll.split(" ") : ["", ""];
 
   return (
-    <div>
+    <div className={show}>
       {!record.stats ? (
         <Message>
           No statistics have been generated yet for this work. Check back later.

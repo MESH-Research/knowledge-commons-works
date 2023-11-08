@@ -6,6 +6,54 @@ import { DetailLeftSidebar } from "./DetailLeftSidebar";
 import { componentsMap } from "../componentsMap";
 import { addPropsFromChildren, filterPropsToPass } from "../util";
 
+const DetailMainTabs = (topLevelProps) => {
+  const panes = topLevelProps.tabbedSections.map(
+    ({ section, component_name, subsections, props, show }) => {
+      // Because can't import DetailMainTab in componentsMap (circular)
+      const TabComponent =
+        component_name !== "DetailMainTab"
+          ? componentsMap[component_name]
+          : DetailMainTab;
+      props = addPropsFromChildren(subsections, props);
+      console.log("****DetailMainTabs props", props);
+      console.log("****DetailMainTabs topLevelProps", topLevelProps);
+      let passedProps =
+        !!props && props.length ? filterPropsToPass(topLevelProps, props) : {};
+      passedProps = {
+        ...passedProps,
+        section: section,
+        subsections: subsections,
+      };
+      return {
+        menuItem: (
+          <Menu.Item key={section} className={show}>
+            {section}
+          </Menu.Item>
+        ),
+        render: () => (
+          <Tab.Pane
+            key={section}
+            className={`record-details-tab ${section} ${show}`}
+          >
+            <TabComponent {...passedProps} key={section} />
+          </Tab.Pane>
+        ),
+      };
+    }
+  );
+  console.log("****DetailMainTabs panes", panes);
+
+  return (
+    <Tab
+      panes={panes}
+      activeIndex={topLevelProps.activeTab}
+      onTabChange={(e, { activeIndex }) =>
+        topLevelProps.setActiveTab(activeIndex)
+      }
+    />
+  );
+};
+
 // React component for the main content of the detail page.
 // This is the main content of the detail page, which includes a central
 // column with the main record information, and optional left and right
@@ -74,12 +122,9 @@ const DetailContent = (rawProps) => {
   );
   const [activeTab, setActiveTab] = useState(0);
 
-  const untabbedSections = rawProps.mainSections.filter(
-    ({ tab }) => tab === false || tab === undefined
-  );
   const tabbedSections = rawProps.mainSections.filter(
-    ({ tab }) => tab === true
-  );
+    ({ component_name }) => component_name === "DetailMainTabs"
+  )[0].subsections;
   const record = rawProps.record;
   const canManageFlag =
     rawProps.permissions !== undefined &&
@@ -112,62 +157,35 @@ const DetailContent = (rawProps) => {
   };
   const topLevelProps = { ...rawProps, ...extraProps };
 
-  const panes = tabbedSections.map(
-    ({ section, component_name, subsections, props, show }) => {
-      // Because can't import DetailMainTab in componentsMap (circular)
-      if (component_name === "DetailMainTab") {
-        component_name = undefined;
-      }
-      const TabComponent =
-        component_name !== undefined
-          ? componentsMap[component_name]
-          : DetailMainTab;
-      props = addPropsFromChildren(subsections, props);
-      let passedProps =
-        !!props && props.length ? filterPropsToPass(topLevelProps, props) : {};
-      passedProps = {
-        ...passedProps,
-        activePreviewFile: activePreviewFile,
-        activeTab: activeTab,
-        tabbedSections: tabbedSections,
-        section: section,
-        setActivePreviewFile: setActivePreviewFile,
-        subsections: subsections,
-      };
-      return {
-        menuItem: (
-          <Menu.Item key={section} className={show}>
-            {section}
-          </Menu.Item>
-        ),
-        render: () => (
-          <Tab.Pane
-            key={section}
-            className={`record-details-tab ${section} ${show}`}
-          >
-            <TabComponent {...passedProps} key={section} />
-          </Tab.Pane>
-        ),
-      };
-    }
-  );
-
   return (
     <>
       <article className="sixteen wide tablet eleven wide computer column main-record-content">
-        {untabbedSections.map(
-          ({ section, component_name, subsections, props }) => {
-            const SectionComponent = componentsMap[component_name];
-            props = addPropsFromChildren(subsections, props);
-            let passedProps =
-              !!props && props.length
-                ? filterPropsToPass(topLevelProps, props)
-                : {};
+        {rawProps.mainSections.map(
+          ({ section, component_name, subsections, props, show }) => {
+            const SectionComponent =
+              component_name === "DetailMainTabs"
+                ? DetailMainTabs
+                : componentsMap[component_name];
+            let passedProps;
+            if (component_name === "DetailMainTabs") {
+              passedProps = topLevelProps;
+            } else {
+              props = addPropsFromChildren(subsections, props);
+              passedProps =
+                !!props && props.length
+                  ? filterPropsToPass(topLevelProps, props)
+                  : {};
+            }
+            console.log("****DetailContent component_name", component_name);
+            console.log("****DetailContent passedProps", passedProps);
             passedProps = {
               ...passedProps,
               activePreviewFile: activePreviewFile,
+              activeTab: activeTab,
               setActivePreviewFile: setActivePreviewFile,
+              setActiveTab: setActiveTab,
               section: section,
+              show: show,
               tabbedSections: tabbedSections,
               subsections: subsections,
             };
@@ -175,11 +193,6 @@ const DetailContent = (rawProps) => {
             return <SectionComponent {...passedProps} key={section} />;
           }
         )}
-        <Tab
-          panes={panes}
-          activeIndex={activeTab}
-          onTabChange={(e, { activeIndex }) => setActiveTab(activeIndex)}
-        />
       </article>
       <DetailRightSidebar
         activeTab={activeTab}
@@ -195,4 +208,4 @@ const DetailContent = (rawProps) => {
   );
 };
 
-export { DetailContent, filterPropsToPass };
+export { DetailContent, DetailMainTabs, filterPropsToPass };
