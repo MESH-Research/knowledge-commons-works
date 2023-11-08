@@ -59,9 +59,12 @@
 
         <div class="item plus">
           <a role="menuitem" aria-label="{{ _('Quick create') }}" href="{{ plus_menu_items[0].url }}">
-            {# <i class="fitted plus icon"></i> #}
-            <span class="inline">{{ _("Add a work") }}</span>
-            {# <span class="mobile tablet only inline">{{ _("Contribute") }}</span> #}
+            <i class="icons computer only">
+              <i class="fitted plus icon mobile-hidden"></i>
+              <i class="big circle outline icon mobile-hidden"></i>
+            </i>
+            <span class="large screen widescreen only inline">{{ _("Add a work") }}</span>
+            <span class="mobile tablet only inline">{{ _("Add a work") }}</span>
           </a>
         </div>
 
@@ -148,9 +151,12 @@
             <a class="inline">{{ current_user.email|truncate(31,true) }}</a>
           </div>
           <a role="button" href="{{ url_for_security('logout') }}" class="ui ">
-            {# <i class="sign-out icon"></i> #}
-            | &nbsp;
-            {{ _('Log out') }}
+            <i class="icons computer only">
+              <i class="sign-out icon fitted mobile-hidden"></i>
+              <i class="big circle outline icon mobile-hidden"></i>
+            </i>
+            <span class="mobile tablet only inline">{{ _('Log out') }}</span>
+            <span class="widescreen only inline">{{ _('Log out') }}</span>
           </a>
         {%- endif %}
     {%- endif %}

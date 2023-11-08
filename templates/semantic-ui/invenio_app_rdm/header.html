@@ -92,7 +92,15 @@
                   </div>
                 {%- else %}
                   <div class="{{' item active' if item.active and loop.depth == 0 else ' item' }}">
-                    <a role="menuitem" href="{{ item.url }}">{{ item.text|safe }}</a>
+                    <a role="menuitem" href="{{ item.url }}">
+                        {%- if item.name == "communities" %}
+                          <i class="fitted users icon mobile-hidden"></i>
+                          <span class="mobile tablet only inline">{{ item.text|safe }}</span>
+                          <span class="widescreen only inline">{{ item.text|safe }}</span>
+                        {%- else -%}
+                            {{ item.text|safe }}
+                        {%- endif -%}
+                    </a>
                   </div>
                 {%- endif %}
 
@@ -109,7 +117,19 @@
               {% for item in current_menu.submenu('actions').children|sort(attribute='order') if item.visible recursive %}
                 {%- if config.ACCOUNTS and current_user.is_authenticated %}
                 <div class="item {{ item.text|safe }}">
-                  <a role="menuitem" href="{{ item.url }}">{{ item.text|safe }}</a>
+                  <a role="menuitem" href="{{ item.url }}">
+                    {%- if item.name == "deposit" %}
+
+                      <i class="icons computer only">
+                        <i class="fitted user icon mobile-hidden"></i>
+                        <i class="big circle outline icon mobile-hidden"></i>
+                      </i>
+                      <span class="mobile tablet only inline">{{ item.text|safe }}</span>
+                      <span class="widescreen only inline">{{ item.text|safe }}</span>
+                    {%- else -%}
+                        {{ item.text|safe }}
+                    {%- endif -%}
+                  </a>
                 </div>
                 {%- endif %}
               {% endfor %}
@@ -119,9 +139,12 @@
                   {% for item in current_menu.submenu('notifications').children|sort(attribute='order') if item.visible recursive %}
                     <div class="item inbox">
                       <a role="menuitem" href="{{ item.url }}" aria-label="{{ _('Requests') }}">
-                        {# <i class="fitted inbox icon"></i> #}
-                        <span class="inline">{{ _("My inbox") }}</span>
-                        {# <span class="mobile tablet only inline">{{ _("Inbox") }}</span> #}
+                        <i class="icons computer only">
+                          <i class="fitted inbox icon mobile-hidden"></i>
+                          <i class="big circle outline icon mobile-hidden"></i>
+                        </i>
+                        <span class="mobile tablet only inline">{{ _("My inbox") }}</span>
+                        <span class="large screen widescreen only inline">{{ _("My inbox") }}</span>
                       </a>
                     </div>
                   {% endfor %}
