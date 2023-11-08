@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Tab } from "semantic-ui-react";
+import { Menu, Tab } from "semantic-ui-react";
 import { DetailMainTab } from "./DetailMainTab";
 import { DetailRightSidebar } from "./DetailRightSidebar";
 import { DetailLeftSidebar } from "./DetailLeftSidebar";
@@ -113,7 +113,7 @@ const DetailContent = (rawProps) => {
   const topLevelProps = { ...rawProps, ...extraProps };
 
   const panes = tabbedSections.map(
-    ({ section, component_name, subsections, props }) => {
+    ({ section, component_name, subsections, props, show }) => {
       // Because can't import DetailMainTab in componentsMap (circular)
       if (component_name === "DetailMainTab") {
         component_name = undefined;
@@ -135,9 +135,16 @@ const DetailContent = (rawProps) => {
         subsections: subsections,
       };
       return {
-        menuItem: section,
+        menuItem: (
+          <Menu.Item key={section} className={show}>
+            {section}
+          </Menu.Item>
+        ),
         render: () => (
-          <Tab.Pane key={section} className={`record-details-tab ${section}`}>
+          <Tab.Pane
+            key={section}
+            className={`record-details-tab ${section} ${show}`}
+          >
             <TabComponent {...passedProps} key={section} />
           </Tab.Pane>
         ),
