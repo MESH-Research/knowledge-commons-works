@@ -2,25 +2,7 @@ import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { Button, Dropdown, Icon } from "semantic-ui-react";
 import { formatBytes, getFileTypeIconName } from "../util";
-
-const EmbargoMessage = ({ record }) => {
-  return (
-    <div
-      className={`ui ${record.ui.access_status.message_class} message file-box-message`}
-    >
-      <i className={`ui ${record.ui.access_status.icon} icon`}></i>
-      <b>{record.ui.access_status.title_l10n}</b>
-      <p>{record.ui.access_status.description_l10n}</p>
-      {!!record.access.embargo.reason ? (
-        <p>
-          {i18next.t("Reason")}: {record.access.embargo.reason}
-        </p>
-      ) : (
-        ""
-      )}
-    </div>
-  );
-};
+import { EmbargoMessage } from "./EmbargoMessage";
 
 const FileListTableRow = ({
   file,
@@ -197,54 +179,74 @@ const FileListDropdown = ({
   files,
   fileTabIndex,
   isPreview,
+  permissions,
   previewFileUrl,
   record,
   setActiveTab,
   totalFileSize,
 }) => {
   const previewUrlFlag = isPreview ? "&preview=1" : "";
-  return record.access.files == "restricted" ? (
-    <EmbargoMessage record={record} />
-  ) : (
-    <Dropdown
-      text="Download"
-      icon="download"
-      button
-      labeled
-      fluid
-      className="icon positive right labeled"
-    >
-      <Dropdown.Menu>
-        {/* <Dropdown.Header>Choose a file</Dropdown.Header> */}
-        {files.map(({ key, size }) => (
-          <Dropdown.Item
-            href={`${previewFileUrl.replace(
-              "/preview/",
-              "/files/"
-            )}/${key}?download=1${previewUrlFlag}`}
+  return (
+    <>
+      {record.access.files === "restricted" && (
+        <EmbargoMessage record={record} />
+      )}
+      {!!permissions.can_read_files &&
+        (files?.length < 2 ? (
+          <Button
+            id="record-details-download"
+            positive
+            fluid
+            as="a"
+            href={`${previewFileUrl.replace("/preview/", "/files/")}/${
+              defaultPreviewFile.key
+            }?download=1${previewUrlFlag}`}
+            content={i18next.t("Download")}
+            icon="download"
+            labelPosition="right"
+          ></Button>
+        ) : (
+          <Dropdown
+            text="Download"
+            icon="download"
+            button
+            labeled
+            fluid
+            className="icon positive right labeled"
           >
-            <span className="text">{key}</span>
-            <small className="description filesize">
-              <Icon name={getFileTypeIconName(key)} />
-              {formatBytes(size)}
-            </small>
-          </Dropdown.Item>
+            <Dropdown.Menu>
+              {/* <Dropdown.Header>Choose a file</Dropdown.Header> */}
+              {files.map(({ key, size }) => (
+                <Dropdown.Item
+                  href={`${previewFileUrl.replace(
+                    "/preview/",
+                    "/files/"
+                  )}/${key}?download=1${previewUrlFlag}`}
+                >
+                  <span className="text">{key}</span>
+                  <small className="description filesize">
+                    <Icon name={getFileTypeIconName(key)} />
+                    {formatBytes(size)}
+                  </small>
+                </Dropdown.Item>
+              ))}
+              <Dropdown.Divider />
+              <Dropdown.Item
+                href={record.links.archive}
+                icon={"archive"}
+                text={i18next.t(`Download all`)}
+                description={totalFileSize}
+              ></Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Item
+                text="File details and previews"
+                icon={"eye"}
+                onClick={() => setActiveTab(fileTabIndex)}
+              ></Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         ))}
-        <Dropdown.Divider />
-        <Dropdown.Item
-          href={record.links.archive}
-          icon={"archive"}
-          text={i18next.t(`Download all`)}
-          description={totalFileSize}
-        ></Dropdown.Item>
-        <Dropdown.Divider />
-        <Dropdown.Item
-          text="File details and previews"
-          icon={"eye"}
-          onClick={() => setActiveTab(fileTabIndex)}
-        ></Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
+    </>
   );
 };
 
@@ -255,12 +257,14 @@ const FileListBox = ({
   fileTabIndex,
   fullWordButtons = true,
   isPreview,
+  permissions,
   previewFileUrl,
   previewTabIndex,
   record,
   setActiveTab,
   setActivePreviewFile,
   showChecksum = true,
+  showEmbargoMessage = false,
   showTableHeader = true,
   showTotalSize = true,
   stackedRows = false,
@@ -270,9 +274,11 @@ const FileListBox = ({
   return (
     <div className={`ui mb-10 ${record.ui.access_status.id}`}>
       <div className="content pt-0">
-        {record.access.files == "restricted" ? (
+        {/* Note: "restricted" is the value also for metadata-only records */}
+        {record.access.files === "restricted" && showEmbargoMessage && (
           <EmbargoMessage record={record} />
-        ) : (
+        )}
+        {!!permissions.can_read_files && (
           <FileListTable
             activePreviewFile={activePreviewFile}
             previewFileUrl={previewFileUrl}
@@ -282,6 +288,7 @@ const FileListBox = ({
             fullWordButtons={fullWordButtons}
             pid={record.id}
             isPreview={isPreview}
+            permissions={permissions}
             previewTabIndex={previewTabIndex}
             record={record}
             setActivePreviewFile={setActivePreviewFile}

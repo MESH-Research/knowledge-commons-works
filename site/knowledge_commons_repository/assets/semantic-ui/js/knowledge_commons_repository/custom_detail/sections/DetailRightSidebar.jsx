@@ -33,7 +33,7 @@ const DraftBackButton = ({
       className="back-navigation rel-pb-2 pl-0"
       aria-label={i18next.t("Back-navigation")}
     >
-      <a className="ui button labeled icon small compact" href={backPage}>
+      <a className="ui button labeled icon basic orange" href={backPage}>
         <i className="ui icon angle left"></i> {i18next.t("Back to edit")}
       </a>
     </nav>

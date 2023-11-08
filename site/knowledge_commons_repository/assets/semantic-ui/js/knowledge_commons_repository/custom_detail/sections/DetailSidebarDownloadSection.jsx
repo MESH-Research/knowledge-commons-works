@@ -9,6 +9,7 @@ const SidebarDownloadSection = ({
   fileTabIndex,
   hasFiles,
   isPreview,
+  permissions,
   previewFileUrl,
   previewTabIndex,
   record,
@@ -30,40 +31,26 @@ const SidebarDownloadSection = ({
             {i18next.t("Download")}
           </h2>
         )}
-        {files?.length < 2 ? (
-          <Button
-            id="record-details-download"
-            positive
-            fluid
-            as="a"
-            href={`${previewFileUrl.replace("/preview/", "/files/")}/${
-              defaultPreviewFile.key
-            }?download=1${previewUrlFlag}`}
-            content={i18next.t("Download")}
-            icon="download"
-            labelPosition="right"
-          ></Button>
-        ) : (
-          <FileListDropdown
-            id="record-details-download"
-            files={files}
-            fileCountToShow={3}
-            fileTabIndex={fileTabIndex}
-            fullWordButtons={false}
-            withPreview={false}
-            isPreview={isPreview}
-            previewFileUrl={previewFileUrl}
-            previewTabIndex={previewTabIndex}
-            record={record}
-            setActiveTab={setActiveTab}
-            showChecksum={false}
-            showHeading={show_heading}
-            showTableHeader={false}
-            showTotalSize={false}
-            stackedRows={true}
-            totalFileSize={totalFileSize}
-          />
-        )}
+        <FileListDropdown
+          id="record-details-download"
+          files={files}
+          fileCountToShow={3}
+          fileTabIndex={fileTabIndex}
+          fullWordButtons={false}
+          withPreview={false}
+          isPreview={isPreview}
+          permissions={permissions}
+          previewFileUrl={previewFileUrl}
+          previewTabIndex={previewTabIndex}
+          record={record}
+          setActiveTab={setActiveTab}
+          showChecksum={false}
+          showHeading={show_heading}
+          showTableHeader={false}
+          showTotalSize={false}
+          stackedRows={true}
+          totalFileSize={totalFileSize}
+        />
       </div>
     )
   );

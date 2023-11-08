@@ -2,14 +2,21 @@ import React, { useState } from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { Button } from "semantic-ui-react";
 
-const Descriptions = ({ description, additional_descriptions }) => {
+const Descriptions = ({
+  description,
+  additional_descriptions,
+  hasFiles,
+  permissions,
+}) => {
   const [open, setOpen] = useState(false);
   return (
     <>
       {description && (
         <>
           <h2 id="description-heading">{i18next.t("Description")}</h2>
-          {description.length > 240 ? (
+          {description.length > 240 &&
+          hasFiles &&
+          permissions?.can_read_files ? (
             <>
               <p>
                 {open ? (
@@ -29,15 +36,6 @@ const Descriptions = ({ description, additional_descriptions }) => {
                   </>
                 )}
               </p>
-              {open && (
-                <Button
-                  onClick={() => setOpen(!open)}
-                  size="tiny"
-                  className="show-less"
-                >
-                  Show less
-                </Button>
-              )}
             </>
           ) : (
             <p>{description}</p>
@@ -62,6 +60,15 @@ const Descriptions = ({ description, additional_descriptions }) => {
                 <p>{add_description.description}</p>
               </section>
             ))}
+          {open && (
+            <Button
+              onClick={() => setOpen(!open)}
+              size="tiny"
+              className="show-less"
+            >
+              Show less
+            </Button>
+          )}
         </>
       )}
     </>

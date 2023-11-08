@@ -107,6 +107,15 @@ const VersionsContentDropdown = ({
 }) => {
   const [activeVersion, setActiveVersion] = useState(recid);
   console.log("****VersionsContentDropdown recordVersions", recordVersions);
+  console.log(
+    "****VersionsContentDropdown currentRecordInResults",
+    currentRecordInResults
+  );
+  console.log(
+    "****VersionsContentDropdown recordDeserialized",
+    recordDeserialized
+  );
+  console.log("****VersionsContentDropdown isPreview", isPreview);
 
   let versionOptions = recordVersions?.hits?.map((item) => {
     let opt = {
@@ -141,10 +150,15 @@ const VersionsContentDropdown = ({
     >
       <>
         <h3
-          className={`version-label ${isPreview ? "info" : ""} ui header tiny`}
+          className={`version-label ${
+            isPreview ? "preview" : ""
+          } ui header tiny`}
         >
           {isPreview ? (
-            i18next.t("Preview")
+            <>
+              {i18next.t("Preview")}
+              <Icon name="eye" />
+            </>
           ) : (
             <>
               {i18next.t("Version ")}

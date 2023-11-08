@@ -379,6 +379,14 @@ dl.details-list {
   #Descriptions-tab-section {
     padding-left: 1.5rem;
   }
+
+  .ui.message.file-box-message {
+    margin-top: 1rem !important;
+    border: 1px solid @negativeBorderColor;
+    border-bottom-right-radius: @defaultBorderRadius !important;
+    border-bottom-left-radius: @defaultBorderRadius !important;
+  }
+
   .placeholder-header-bar {
     width: 100%;
     height: 1.5rem;
@@ -472,6 +480,12 @@ dl.details-list {
       font-size: @huge;
     }
   }
+  .ui.message.file-box-message {
+    margin-bottom: 1rem !important;
+    border: 1px solid @negativeBorderColor;
+    border-bottom-right-radius: @defaultBorderRadius !important;
+    border-bottom-left-radius: @defaultBorderRadius !important;
+  }
   .sidebar-container {
     .ui.top.attached.header {
       border-bottom: 0;
@@ -530,10 +544,26 @@ dl.details-list {
         align-items: center;
         .ui.header.version-label {
           flex-grow: 1;
-          padding: @inputVerticalPadding @inputHorizontalPadding;
+          line-height: 1em;
+          min-height: 1em;
+          padding: @inputPadding;
           padding-left: 0;
+          position: relative;
+          border: 1px solid transparent;
           .icon.loading.tiny {
             font-size: @tiny;
+          }
+          &.preview {
+            color: @infoTextColor;
+            > .icon {
+              display: inline-block;
+              font-size: 1em;
+              margin: 0em;
+              margin-right: 0.28em;
+              position: absolute;
+              right: 0em;
+              text-align: center;
+            }
           }
         }
         div.dropdown {
