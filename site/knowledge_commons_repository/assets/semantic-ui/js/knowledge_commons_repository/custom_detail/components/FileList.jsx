@@ -175,6 +175,7 @@ const FileListTable = ({
 };
 
 const FileListDropdown = ({
+  defaultPreviewFile,
   fileCountToShow,
   files,
   fileTabIndex,
@@ -188,6 +189,7 @@ const FileListDropdown = ({
   const previewUrlFlag = isPreview ? "&preview=1" : "";
   return (
     <>
+      {/* access is "restricted" also if record is metadata-only */}
       {record.access.files === "restricted" && (
         <EmbargoMessage record={record} />
       )}

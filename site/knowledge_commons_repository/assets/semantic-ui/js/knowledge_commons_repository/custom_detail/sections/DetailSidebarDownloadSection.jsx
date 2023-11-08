@@ -33,6 +33,7 @@ const SidebarDownloadSection = ({
         )}
         <FileListDropdown
           id="record-details-download"
+          defaultPreviewFile={defaultPreviewFile}
           files={files}
           fileCountToShow={3}
           fileTabIndex={fileTabIndex}
