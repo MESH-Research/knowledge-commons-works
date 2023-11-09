@@ -73,6 +73,10 @@ test.db
 logs/*
 nohup.out
 
+# auto-symlinked during build process
+site/knowledge_commons_repository/assets/semantic-ui/less/site/globals/site.variables
+site/knowledge_commons_repository/assets/semantic-ui/less/site/globals/site.overrides
+
 # Invenio-cli per machine file
 .invenio.private
 
