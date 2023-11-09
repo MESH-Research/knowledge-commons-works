@@ -46,6 +46,7 @@ const DetailMainTabs = (topLevelProps) => {
   return (
     <Tab
       panes={panes}
+      menu={{ secondary: true, pointing: true }}
       activeIndex={topLevelProps.activeTab}
       onTabChange={(e, { activeIndex }) =>
         topLevelProps.setActiveTab(activeIndex)
