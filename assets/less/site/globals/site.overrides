@@ -423,13 +423,17 @@
         border: 2rem solid #fff;
       }
       .preview-iframe {
-        height: 800px;
+        aspect-ratio: 9/11;
+        min-height: 100vh;
         margin-top: 1rem;
         &.hidden {
           display: none;
         }
         border-top: 1px solid @internalBorderColor;
         border-bottom: 1px solid @internalBorderColor;
+        @media screen and (max-width: @largestMobileScreen) {
+          min-height: 50vh;
+        }
       }
     }
     .record-details-tab.Details {
@@ -487,7 +491,8 @@
         overflow: hidden;
       }
       .preview-iframe {
-        height: 400px;
+        aspect-ratio: 3/1.5;
+        min-height: 45vh;
         border-top: 1px solid @internalBorderColor;
         border-bottom: 1px solid @internalBorderColor;
         &.hidden {
