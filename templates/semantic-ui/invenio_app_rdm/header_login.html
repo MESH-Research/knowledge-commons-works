@@ -12,7 +12,7 @@
     {%- if not current_user.is_authenticated %}
         <form>
             <a href="{{ url_for_security('login', next=request.path) }}"
-               class="ui button">
+               class="ui basic button">
                 <i class="sign-in icon"></i>
                 {{ _('Log in') }}</a>
 

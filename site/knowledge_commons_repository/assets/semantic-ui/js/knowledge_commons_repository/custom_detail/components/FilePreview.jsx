@@ -20,6 +20,7 @@ const FilePreview = ({
   const [loading, setLoading] = useState(true);
   const previewUrlFlag = isPreview ? "&preview=1" : "";
   const fileToShow = useDynamicPreview ? activePreviewFile : defaultPreviewFile;
+  const fileExtension = fileToShow?.key?.split(".").pop();
 
   const iFrameRef = useRef(null);
   const iframeCurrent = iFrameRef.current;
@@ -59,7 +60,9 @@ const FilePreview = ({
               )}
               <iframe
                 title={i18next.t("Preview")}
-                className={`preview-iframe ${loading ? "hidden" : ""}`}
+                className={`preview-iframe ${
+                  loading ? "hidden" : ""
+                } ${fileExtension}`}
                 id={record.id}
                 ref={iFrameRef}
                 name={record.id}

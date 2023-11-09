@@ -73,6 +73,9 @@
             transform-origin: center;
           }
         }
+        a.ui.button.basic {
+          box-shadow: none;
+        }
       }
       .rdm-logo {
         width: auto;
