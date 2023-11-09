@@ -46,7 +46,7 @@ function toPidUrl(pid, scheme, landingUrls) {
       return "";
     }
     if (scheme === "ascl") {
-      pid = val.split(":")[1];
+      pid = pid.split(":")[1];
     }
     if (scheme === "viaf" && pid.startsWith("viaf:")) {
       pid = pid.slice("viaf:".length);
