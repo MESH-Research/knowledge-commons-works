@@ -1,10 +1,88 @@
 import React, { useState } from "react";
-import { Menu, Tab } from "semantic-ui-react";
+import { Icon, Dropdown, Menu, Sticky, Tab } from "semantic-ui-react";
 import { DetailMainTab } from "./DetailMainTab";
 import { DetailRightSidebar } from "./DetailRightSidebar";
 import { DetailLeftSidebar } from "./DetailLeftSidebar";
 import { componentsMap } from "../componentsMap";
 import { addPropsFromChildren, filterPropsToPass } from "../util";
+import { FlagNewerVersion } from "../components/FlagNewerVersion";
+import { DraftBackButton } from "../components/DraftBackButton";
+import { CommunitiesBanner } from "../components/CommunitiesBanner";
+import { FileListItemDropdown } from "../components/FileList";
+
+const MobileActionMenu = ({
+  handleMobileMenuClick,
+  defaultPreviewFile,
+  files,
+  fileCountToShow,
+  fileTabIndex,
+  isPreview,
+  permissions,
+  previewFileUrl,
+  record,
+  setActiveTab,
+  totalFileSize,
+}) => {
+  return (
+    <Menu
+      className="mobile tablet only sixteen wide sticky bottom"
+      compact
+      icon="labeled"
+      size="mini"
+      inverted
+    >
+      <Menu.Item
+        name="manage"
+        // active={activeItem === "gamepad"}
+        onClick={handleMobileMenuClick}
+      >
+        <Icon name="cog" />
+        Manage
+      </Menu.Item>
+      <Menu.Item
+        name="export"
+        // active={activeItem === "gamepad"}
+        onClick={handleMobileMenuClick}
+      >
+        <Icon name="share" />
+        Export
+      </Menu.Item>
+
+      <Menu.Item
+        name="cite"
+        // active={activeItem === "video camera"}
+        onClick={handleMobileMenuClick}
+      >
+        <Icon name="quote right" />
+        Cite
+      </Menu.Item>
+
+      <Menu.Item
+        name="share"
+        // active={activeItem === "video camera"}
+        onClick={handleMobileMenuClick}
+      >
+        <Icon name="paper plane" />
+        Share
+      </Menu.Item>
+
+      <FileListItemDropdown
+        asItem={true}
+        id="record-details-download"
+        defaultPreviewFile={defaultPreviewFile}
+        files={files}
+        fileCountToShow={3}
+        fileTabIndex={fileTabIndex}
+        isPreview={isPreview}
+        permissions={permissions}
+        previewFileUrl={previewFileUrl}
+        record={record}
+        setActiveTab={setActiveTab}
+        totalFileSize={totalFileSize}
+      />
+    </Menu>
+  );
+};
 
 const DetailMainTabs = (topLevelProps) => {
   const panes = topLevelProps.tabbedSections.map(
@@ -45,6 +123,7 @@ const DetailMainTabs = (topLevelProps) => {
 
   return (
     <Tab
+      id="detail-main-tabs"
       panes={panes}
       menu={{ secondary: true, pointing: true }}
       activeIndex={topLevelProps.activeTab}
@@ -158,9 +237,32 @@ const DetailContent = (rawProps) => {
   };
   const topLevelProps = { ...rawProps, ...extraProps };
 
+  const handleMobileMenuClick = (e, { name }) => {};
+
+  const stickyContextRef = React.createRef();
+
   return (
-    <>
+    <div class="two column row top-padded" ref={stickyContextRef}>
       <article className="sixteen wide tablet eleven wide computer column main-record-content">
+        <DraftBackButton
+          backPage={topLevelProps.backPage}
+          isPreview={topLevelProps.isPreview}
+          isDraft={topLevelProps.isDraft}
+          canManage={topLevelProps.canManage}
+          isPreviewSubmissionRequest={topLevelProps.isPreviewSubmissionRequest}
+          show={"mobile tablet only"}
+        />
+        <FlagNewerVersion
+          isLatest={topLevelProps.record.versions.is_latest}
+          isPublished={topLevelProps.record.is_published}
+          latestHtml={topLevelProps.record.links.latest_html}
+          show={"mobile tablet only"}
+        />
+        <CommunitiesBanner
+          community={topLevelProps.community}
+          isPreviewSubmissionRequest={topLevelProps.isPreviewSubmissionRequest}
+          show={"mobile tablet only"}
+        />
         {rawProps.mainSections.map(
           ({ section, component_name, subsections, props, show }) => {
             const SectionComponent =
@@ -204,8 +306,21 @@ const DetailContent = (rawProps) => {
         activeTab={activeTab}
         activePreviewFile={activePreviewFile}
         {...topLevelProps}
+      />{" "}
+      <MobileActionMenu
+        handleMobileMenuClick={handleMobileMenuClick}
+        defaultPreviewFile={topLevelProps.defaultPreviewFile}
+        files={topLevelProps.files}
+        fileCountToShow={topLevelProps.fileCountToShow}
+        fileTabIndex={topLevelProps.fileTabIndex}
+        isPreview={topLevelProps.isPreview}
+        permissions={topLevelProps.permissions}
+        previewFileUrl={topLevelProps.previewFileUrl}
+        record={topLevelProps.record}
+        setActiveTab={topLevelProps.setActiveTab}
+        totalFileSize={topLevelProps.totalFileSize}
       />
-    </>
+    </div>
   );
 };
 

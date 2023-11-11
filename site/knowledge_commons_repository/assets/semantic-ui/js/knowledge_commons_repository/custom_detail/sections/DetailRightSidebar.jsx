@@ -20,46 +20,8 @@ import {
   RecordManagementPopup,
 } from "../components/RecordManagementMenu";
 import { ShareModal } from "../components/ShareModal";
-
-const DraftBackButton = ({
-  backPage,
-  isPreview,
-  isDraft,
-  canManage,
-  isPreviewSubmissionRequest,
-}) => {
-  return isPreview && !isPreviewSubmissionRequest && canManage && isDraft ? (
-    <nav
-      className="back-navigation rel-pb-2 pl-0"
-      aria-label={i18next.t("Back-navigation")}
-    >
-      <a className="ui button labeled icon basic orange" href={backPage}>
-        <i className="ui icon angle left"></i> {i18next.t("Back to edit")}
-      </a>
-    </nav>
-  ) : (
-    ""
-  );
-};
-
-const FlagNewerVersion = ({ isPublished, isLatest, latestHtml }) => {
-  if (isPublished && !isLatest) {
-    return (
-      <Message warning icon>
-        <Icon name="exclamation circle" size="large" />
-        <Message.Content>
-          There is a{" "}
-          <a href={latestHtml}>
-            <b>newer version</b>
-          </a>{" "}
-          of this work.
-        </Message.Content>
-      </Message>
-    );
-  } else {
-    return null;
-  }
-};
+import { DraftBackButton } from "../components/DraftBackButton";
+import { FlagNewerVersion } from "../components/FlagNewerVersion";
 
 /** Component for the right sidebar of the detail page.
  *
@@ -96,14 +58,19 @@ const DetailRightSidebar = (topLevelProps) => {
         isDraft={topLevelProps.isDraft}
         canManage={topLevelProps.canManage}
         isPreviewSubmissionRequest={topLevelProps.isPreviewSubmissionRequest}
+        show={"computer large monitor widescreen only"}
       />
       <FlagNewerVersion
         isLatest={topLevelProps.record.versions.is_latest}
         isPublished={topLevelProps.record.is_published}
         latestHtml={topLevelProps.record.links.latest_html}
+        show={"computer large monitor widescreen only"}
       />
       {topLevelProps.showRecordManagementMenu && (
-        <div className="sidebar-container" id="record-management">
+        <div
+          className={`sidebar-container computer large monitor widescreen only`}
+          id="record-management"
+        >
           <RecordManagementPopup
             record={topLevelProps.record}
             permissions={topLevelProps.permissions}
@@ -123,7 +90,14 @@ const DetailRightSidebar = (topLevelProps) => {
         </div>
       )}
       {activeSidebarSections.map(
-        ({ section, component_name, props, subsections, show_heading }) => {
+        ({
+          section,
+          component_name,
+          props,
+          subsections,
+          show_heading,
+          show,
+        }) => {
           const SidebarSectionComponent = componentsMap[component_name];
           console.log(
             "***DetailRightSidebar SidebarSectionComponent",
@@ -139,6 +113,7 @@ const DetailRightSidebar = (topLevelProps) => {
               subsections={subsections}
               key={section}
               show_heading={show_heading}
+              show={show}
             />
           );
         }

@@ -48,6 +48,9 @@
     background-color: transparent;
 
     #invenio-nav.ui.menu {
+      @media screen and (max-width: @largestMobileScreen) {
+        height: 3rem;
+      }
       box-shadow: none;
       .item:not(.logo) {
         a {
@@ -79,6 +82,9 @@
       }
       .rdm-logo {
         width: auto;
+        @media screen and (max-width: @largestMobileScreen) {
+          max-height: 3rem;
+        }
       }
     }
   }
@@ -376,7 +382,44 @@
 
 // detail page
 #detail-main-content {
+  .ui.message {
+    @media screen and (max-width: @largestMobileScreen) {
+      padding: 1rem;
+    }
+  }
+
+  #communities {
+    .segment {
+      background-color: @purpleBackground;
+      color: @purple;
+      border-color: @lightPurple;
+      .ui.header {
+        margin-top: 0;
+        a {
+          color: @purple;
+        }
+      }
+    }
+  }
   .main-record-content {
+    @media only screen and (max-width: @largestMobileScreen) {
+      h2 {
+        font-size: @large;
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    #communities {
+      .segment {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        @media screen and (max-width: @largestMobileScreen) {
+          padding-top: 0.5rem;
+          padding-bottom: 0.5rem;
+        }
+      }
+    }
+
     #record-title-section {
       @media only screen and (max-width: @largestMobileScreen) {
         h1 {
@@ -385,121 +428,172 @@
       }
     }
 
-    html[dir="ltr"] #toolbarContainer,
-    .findbar,
-    .secondaryToolbar {
-      background-color: #efefef;
-      box-shadow: none;
-    }
-    dl.details-list {
-      dt.ui.tiny.header {
-        margin-bottom: 0.25rem;
-        margin-top: 1rem;
-      }
-    }
-    .record-details-tab {
-      &.ui.attached.segment {
-        border: none;
-        padding-left: 0;
-        padding-right: 0;
-      }
-    }
-    .record-details-tab.Content {
-      #Descriptions-tab-section {
-        padding-left: 1.5rem;
-      }
-
-      .ui.message.file-box-message {
-        margin-top: 1rem !important;
-        border: 1px solid @negativeBorderColor;
-        border-bottom-right-radius: @defaultBorderRadius !important;
-        border-bottom-left-radius: @defaultBorderRadius !important;
-      }
-
-      .placeholder-header-bar {
-        width: 100%;
-        height: 1.5rem;
-        background-color: @sidebarBackgroundColor;
-        margin-top: 1rem;
-      }
-      .placeholder {
-        border: 2rem solid #fff;
-      }
-      .preview-iframe {
-        aspect-ratio: 9/11;
-        min-height: 100vh;
-        margin-top: 1rem;
-        &.hidden {
-          display: none;
-        }
-        border-top: 1px solid @internalBorderColor;
-        border-bottom: 1px solid @internalBorderColor;
-        @media screen and (max-width: @largestMobileScreen) {
-          min-height: 50vh;
-        }
-      }
-    }
-    .record-details-tab.Details {
-      .ui.accordion:not(.styled) {
-        .title {
-          font-weight: bold;
-          font-size: @big;
-          padding: 1rem 0;
-          border-bottom: 1px solid @internalBorderColor;
-        }
-        .active.content {
-          padding-left: 2rem;
-          padding-bottom: 1.5rem;
-        }
-      }
-    }
-    .record-details-tab.Contributors {
-      .card {
+    #detail-main-tabs {
+      html[dir="ltr"] #toolbarContainer,
+      .findbar,
+      .secondaryToolbar {
+        background-color: #efefef;
         box-shadow: none;
-        .creatibutor-link {
-          color: @textColor;
+      }
+      dl.details-list {
+        dt.ui.tiny.header {
+          margin-bottom: 0.25rem;
+          margin-top: 1rem;
         }
       }
-    }
-    .record-details-tab.Analytics {
-      .ui.statistics {
-        margin: 1rem;
-        justify-content: center;
-        .statistic {
-          flex-grow: 1;
-          .value {
-            text-transform: none;
+      .record-details-tab {
+        &.ui.attached.segment {
+          border: none;
+          padding-left: 0;
+          padding-right: 0;
+        }
+        @media screen and (max-width: @largestMobileScreen) {
+          &.segment {
+            padding-top: 0;
           }
-          .label {
-            font-weight: normal;
-            .units {
-              text-transform: none;
+        }
+
+        &.Content {
+          #Descriptions-tab-section {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+          }
+
+          .ui.message.file-box-message {
+            margin-top: 1rem !important;
+            border: 1px solid @negativeBorderColor;
+            border-bottom-right-radius: @defaultBorderRadius !important;
+            border-bottom-left-radius: @defaultBorderRadius !important;
+          }
+
+          .placeholder-header-bar {
+            width: 100%;
+            height: 1.5rem;
+            background-color: @sidebarBackgroundColor;
+            margin-top: 1rem;
+          }
+          .placeholder {
+            border: 2rem solid #fff;
+          }
+          .preview-iframe {
+            aspect-ratio: 9/11;
+            min-height: 100vh;
+            margin-top: 1rem;
+            &.hidden {
+              display: none;
+            }
+            border-top: 1px solid @internalBorderColor;
+            border-bottom: 1px solid @internalBorderColor;
+            @media screen and (max-width: @largestMobileScreen) {
+              min-height: 50vh;
             }
           }
         }
-      }
-      i.question.circle.small.icon {
-        margin-left: 0.25rem;
-      }
-    }
-    .record-details-tab.Files {
-      .placeholder-header-bar {
-        width: 100%;
-        height: 1.5rem;
-        background-color: @sidebarBackgroundColor;
-      }
-      .placeholder {
-        border: 2rem solid #fff;
-        height: 380px;
-        overflow: hidden;
-      }
-      .preview-iframe {
-        aspect-ratio: 3/1.5;
-        min-height: 45vh;
-        border-top: 1px solid @internalBorderColor;
-        border-bottom: 1px solid @internalBorderColor;
-        &.hidden {
-          display: none;
+
+        &.Details {
+          .ui.accordion:not(.styled) {
+            padding-bottom: 0;
+            margin-top: 0.5rem;
+            .title {
+              font-weight: bold;
+              font-size: @big;
+              padding: 1rem 0;
+              border-bottom: 1px solid @internalBorderColor;
+              i.icon.dropdown {
+                float: right;
+              }
+              @media screen and (max-width: @largestMobileScreen) {
+                font-size: @large;
+                &:first-child {
+                  padding-top: 0;
+                }
+              }
+            }
+            .active.content {
+              padding-left: 1rem;
+              padding-bottom: 1.5rem;
+              background-color: #f9f9f9;
+              @media screen and (max-width: @largestMobileScreen) {
+                padding-bottom: 0.5rem;
+              }
+
+              &.Analytics {
+                padding: 0;
+
+                .ui.statistics {
+                  display: none;
+                }
+
+                table {
+                  margin-top: 0;
+                  border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
+                }
+              }
+              .card {
+                box-shadow: none;
+                background-color: transparent;
+                .creatibutor-link {
+                  color: @textColor;
+                }
+                .content {
+                  padding: 0;
+                }
+              }
+            }
+          }
+        }
+
+        &.Contributors {
+          .card {
+            box-shadow: none;
+            .creatibutor-link {
+              color: @textColor;
+            }
+          }
+        }
+
+        &.Analytics {
+          .ui.statistics {
+            margin: 1rem;
+            justify-content: center;
+            .statistic {
+              flex-grow: 1;
+              .value {
+                text-transform: none;
+              }
+              .label {
+                font-weight: normal;
+                .units {
+                  text-transform: none;
+                }
+              }
+            }
+          }
+          i.question.circle.small.icon {
+            margin-left: 0.25rem;
+          }
+        }
+
+        &.Files {
+          .placeholder-header-bar {
+            width: 100%;
+            height: 1.5rem;
+            background-color: @sidebarBackgroundColor;
+          }
+          .placeholder {
+            border: 2rem solid #fff;
+            height: 380px;
+            overflow: hidden;
+          }
+          .preview-iframe {
+            aspect-ratio: 3/1.5;
+            min-height: 45vh;
+            border-top: 1px solid @internalBorderColor;
+            border-bottom: 1px solid @internalBorderColor;
+            &.hidden {
+              display: none;
+            }
+          }
         }
       }
     }
@@ -622,19 +716,6 @@
           }
         }
       }
-      &#communities {
-        .segment {
-          background-color: @purpleBackground;
-          color: @purple;
-          border-color: @lightPurple;
-          .ui.header {
-            margin-top: 0;
-            a {
-              color: @purple;
-            }
-          }
-        }
-      }
       &#subjects {
         .subject {
           background-color: #fff;
@@ -690,6 +771,35 @@
 
       #citation-style-label {
         margin-right: 0.5rem;
+      }
+    }
+  }
+
+  // mobile menu
+
+  .ui.menu.sticky.bottom {
+    // FIXME: dropdown submenu breaks this: position: sticky;
+    position: fixed;
+    bottom: 1rem;
+    width: 100%;
+    justify-content: center;
+    background-color: transparent;
+    .item {
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(2px);
+      &.active {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      &:first-child {
+        border-radius: @defaultBorderRadius 0 0 @defaultBorderRadius;
+      }
+      &:last-child {
+        border-radius: 0 @defaultBorderRadius @defaultBorderRadius 0;
+      }
+      &.ui.dropdown {
+        .menu {
+          left: -200%;
+        }
       }
     }
   }

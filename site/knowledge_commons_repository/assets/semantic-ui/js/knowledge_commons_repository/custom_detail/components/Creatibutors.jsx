@@ -196,9 +196,12 @@ const Creatibutors = ({
   subsections,
 }) => {
   const show_affiliations = true;
-  const creatibutors = contributors
-    ? creators?.creators?.concat(contributors?.contributors)
-    : creators?.creators;
+  console.log("****Creatibutors creators", creators.creators);
+  console.log("****Creatibutors contributors", contributors);
+  const creatibutors =
+    contributors !== undefined
+      ? creators?.creators?.concat(contributors?.contributors)
+      : creators?.creators;
   console.log("****Creatibutors creatibutors", creatibutors);
   let ids = creatibutors.reduce((acc, creatibutor) => {
     acc[creatibutor.person_or_org.name] = IdentifiersList(
@@ -214,65 +217,57 @@ const Creatibutors = ({
     landingUrls
   );
   return (
-    <div className="ui grid">
-      <div className="row ui accordion affiliations">
-        <div className="fluid column mb-10">
-          {creatibutors?.map((creator) => (
-            <Card fluid>
-              <Card.Content className="pb-5">
-                <Card.Header>
-                  <Creatibutor
-                    creatibutor={creator}
-                    key={creator.person_or_org.name}
-                    show_affiliations={show_affiliations}
-                    show_ids={false}
-                    iconsRor={iconsRor}
-                    iconsOrcid={iconsOrcid}
-                    iconsGnd={iconsGnd}
-                    iconsHcUsername={iconsHcUsername}
-                    landingUrls={landingUrls}
-                  />
-                </Card.Header>
-                <Card.Meta>
-                  {!!creator.role && <span>{creator.role.title}</span>}
-                </Card.Meta>
-                <Card.Description className="mt-0">
-                  {!!creator.affiliations && show_affiliations && (
-                    <small>
-                      {creator.affiliations.map((a) => a[1]).join(",")}
-                    </small>
-                  )}
-                </Card.Description>
-              </Card.Content>
-              <Card.Content extra className="mt-0 pt-5">
-                {ids[creator.person_or_org.name]?.map(
-                  ({ scheme, identifier }) => (
-                    <a
-                      href={`${schemeStrings[scheme][2]}${identifier}`}
-                      className="no-text-decoration"
-                      key={`${scheme}-${identifier}`}
-                      aria-label={`${creator.person_or_org.name}'s ${
-                        schemeStrings[scheme][0]
-                      } ${i18next.t("profile")}`}
-                    >
-                      <img
-                        className="mr-5 inline-id-icon"
-                        src={schemeStrings[scheme][1]}
-                        alt={`${schemeStrings[scheme][0]} icon`}
-                        title={`${creator.person_or_org.name}'s ${
-                          schemeStrings[scheme][0]
-                        } ${i18next.t("profile")}`}
-                      />
-                      {scheme === "hc_username" ? "Humanities Commons" : scheme}{" "}
-                      {i18next.t("profile")}
-                    </a>
-                  )
-                )}
-              </Card.Content>
-            </Card>
-          ))}
-        </div>
-      </div>
+    <div className="">
+      {creatibutors?.map((creator) => (
+        <Card fluid>
+          <Card.Content className="pb-5">
+            <Card.Header>
+              <Creatibutor
+                creatibutor={creator}
+                key={creator.person_or_org.name}
+                show_affiliations={show_affiliations}
+                show_ids={false}
+                iconsRor={iconsRor}
+                iconsOrcid={iconsOrcid}
+                iconsGnd={iconsGnd}
+                iconsHcUsername={iconsHcUsername}
+                landingUrls={landingUrls}
+              />
+            </Card.Header>
+            <Card.Meta>
+              {!!creator.role && <span>{creator.role.title}</span>}
+            </Card.Meta>
+            <Card.Description className="mt-0">
+              {!!creator.affiliations && show_affiliations && (
+                <small>{creator.affiliations.map((a) => a[1]).join(",")}</small>
+              )}
+            </Card.Description>
+          </Card.Content>
+          <Card.Content extra className="mt-0 pt-5">
+            {ids[creator.person_or_org.name]?.map(({ scheme, identifier }) => (
+              <a
+                href={`${schemeStrings[scheme][2]}${identifier}`}
+                className="no-text-decoration"
+                key={`${scheme}-${identifier}`}
+                aria-label={`${creator.person_or_org.name}'s ${
+                  schemeStrings[scheme][0]
+                } ${i18next.t("profile")}`}
+              >
+                <img
+                  className="mr-5 inline-id-icon"
+                  src={schemeStrings[scheme][1]}
+                  alt={`${schemeStrings[scheme][0]} icon`}
+                  title={`${creator.person_or_org.name}'s ${
+                    schemeStrings[scheme][0]
+                  } ${i18next.t("profile")}`}
+                />
+                {scheme === "hc_username" ? "Humanities Commons" : scheme}{" "}
+                {i18next.t("profile")}
+              </a>
+            ))}
+          </Card.Content>
+        </Card>
+      ))}
     </div>
   );
 };

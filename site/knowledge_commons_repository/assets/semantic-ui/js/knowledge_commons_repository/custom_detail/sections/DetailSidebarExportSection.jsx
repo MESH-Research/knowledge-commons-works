@@ -11,7 +11,7 @@ function ExportFormat({ name, exportUrl }) {
   );
 }
 
-function SidebarExportSection({ isPreview, recordExporters, record }) {
+function SidebarExportSection({ isPreview, recordExporters, record, show }) {
   const formats = [];
   for (const [fmt, val] of Object.entries(recordExporters)) {
     const name = val.name || fmt;
@@ -22,7 +22,7 @@ function SidebarExportSection({ isPreview, recordExporters, record }) {
   }
 
   return (
-    <div className="sidebar-container" id="record-export">
+    <div className={`sidebar-container ${show}`} id="record-export">
       {/* <h2 className="ui medium top attached header mt-0">Export</h2>
       <div
         id="export-record"

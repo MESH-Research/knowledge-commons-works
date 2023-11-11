@@ -1,6 +1,6 @@
 import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
-import { Button, Dropdown, Icon } from "semantic-ui-react";
+import { Button, Dropdown, Icon, Menu } from "semantic-ui-react";
 import { formatBytes, getFileTypeIconName } from "../util";
 import { EmbargoMessage } from "./EmbargoMessage";
 
@@ -174,6 +174,127 @@ const FileListTable = ({
   );
 };
 
+const FileListDropdownMenu = ({
+  asButton = true,
+  asLabeled = true,
+  asFluid = true,
+  asItem = false,
+  classNames = "icon positive right labeled",
+  files,
+  fileTabIndex,
+  icon = "download",
+  previewFileUrl,
+  previewUrlFlag,
+  record,
+  setActiveTab,
+  text = "Download",
+  totalFileSize,
+}) => {
+  return (
+    <Dropdown
+      text={text}
+      button={asButton}
+      icon={icon}
+      labeled={asLabeled}
+      fluid={asFluid}
+      className={classNames}
+      item={asItem}
+    >
+      <Dropdown.Menu>
+        {/* <Dropdown.Header>Choose a file</Dropdown.Header> */}
+        {files.map(({ key, size }) => (
+          <Dropdown.Item
+            href={`${previewFileUrl.replace(
+              "/preview/",
+              "/files/"
+            )}/${key}?download=1${previewUrlFlag}`}
+          >
+            <span className="text">{key}</span>
+            <small className="description filesize">
+              <Icon name={getFileTypeIconName(key)} />
+              {formatBytes(size)}
+            </small>
+          </Dropdown.Item>
+        ))}
+        <Dropdown.Divider />
+        <Dropdown.Item
+          href={record.links.archive}
+          icon={"archive"}
+          text={i18next.t(`Download all`)}
+          description={totalFileSize}
+        ></Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item
+          text="File details and previews"
+          icon={"eye"}
+          onClick={() => setActiveTab(fileTabIndex)}
+        ></Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+};
+
+const FileListItemDropdown = ({
+  defaultPreviewFile,
+  fileCountToShow,
+  files,
+  fileTabIndex,
+  isPreview,
+  permissions,
+  previewFileUrl,
+  record,
+  setActiveTab,
+  showEmbargoMessage,
+  totalFileSize,
+}) => {
+  const previewUrlFlag = isPreview ? "&preview=1" : "";
+  return (
+    <>
+      {/* access is "restricted" also if record is metadata-only */}
+      {!!permissions.can_read_files &&
+        (files?.length < 2 ? (
+          <Menu.Item
+            id="record-details-download"
+            as="a"
+            href={`${previewFileUrl.replace("/preview/", "/files/")}/${
+              defaultPreviewFile.key
+            }?download=1${previewUrlFlag}`}
+            name="download"
+            // active={activeItem === "video play"}
+            onClick={handleMobileMenuClick}
+          >
+            <Icon name="download" />
+            Download
+          </Menu.Item>
+        ) : (
+          <FileListDropdownMenu
+            {...{
+              icon: false,
+              files,
+              fileTabIndex,
+              record,
+              previewFileUrl,
+              previewUrlFlag,
+              setActiveTab,
+              text: (
+                <>
+                  <Icon name="download" />
+                  Download
+                </>
+              ),
+              totalFileSize,
+              asButton: false,
+              asLabeled: false,
+              asFluid: false,
+              asItem: true,
+              classNames: "",
+            }}
+          />
+        ))}
+    </>
+  );
+};
+
 const FileListDropdown = ({
   defaultPreviewFile,
   fileCountToShow,
@@ -184,13 +305,14 @@ const FileListDropdown = ({
   previewFileUrl,
   record,
   setActiveTab,
+  showEmbargoMessage,
   totalFileSize,
 }) => {
   const previewUrlFlag = isPreview ? "&preview=1" : "";
   return (
     <>
       {/* access is "restricted" also if record is metadata-only */}
-      {record.access.files === "restricted" && (
+      {record.access.files === "restricted" && showEmbargoMessage === true && (
         <EmbargoMessage record={record} />
       )}
       {!!permissions.can_read_files &&
@@ -208,45 +330,17 @@ const FileListDropdown = ({
             labelPosition="right"
           ></Button>
         ) : (
-          <Dropdown
-            text="Download"
-            icon="download"
-            button
-            labeled
-            fluid
-            className="icon positive right labeled"
-          >
-            <Dropdown.Menu>
-              {/* <Dropdown.Header>Choose a file</Dropdown.Header> */}
-              {files.map(({ key, size }) => (
-                <Dropdown.Item
-                  href={`${previewFileUrl.replace(
-                    "/preview/",
-                    "/files/"
-                  )}/${key}?download=1${previewUrlFlag}`}
-                >
-                  <span className="text">{key}</span>
-                  <small className="description filesize">
-                    <Icon name={getFileTypeIconName(key)} />
-                    {formatBytes(size)}
-                  </small>
-                </Dropdown.Item>
-              ))}
-              <Dropdown.Divider />
-              <Dropdown.Item
-                href={record.links.archive}
-                icon={"archive"}
-                text={i18next.t(`Download all`)}
-                description={totalFileSize}
-              ></Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item
-                text="File details and previews"
-                icon={"eye"}
-                onClick={() => setActiveTab(fileTabIndex)}
-              ></Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+          <FileListDropdownMenu
+            {...{
+              files,
+              fileTabIndex,
+              previewFileUrl,
+              previewUrlFlag,
+              record,
+              setActiveTab,
+              totalFileSize,
+            }}
+          />
         ))}
     </>
   );
@@ -311,6 +405,7 @@ const FileListBox = ({
 export {
   FileListBox,
   FileListDropdown,
+  FileListItemDropdown,
   FileListTable,
   FileListTableRow,
   EmbargoMessage,

@@ -3,7 +3,7 @@ import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { Keywords } from "../components/Keywords";
 import { SubjectHeadings } from "../components/Subjects";
 
-function DetailSidebarSubjectsSection({ record, showKeywords = true }) {
+function DetailSidebarSubjectsSection({ record, showKeywords = true, show }) {
   const subjects = record.metadata.subjects;
   console.log("****DetailSidebarSubjectsSection record", subjects);
 
@@ -32,7 +32,7 @@ function DetailSidebarSubjectsSection({ record, showKeywords = true }) {
       {subjectHeadings?.length ? (
         <div
           id="subjects"
-          className="sidebar-container"
+          className={`sidebar-container ${show}`}
           aria-label={i18next.t("Record subject headings")}
         >
           <h2 className="ui medium top attached header mt-0">

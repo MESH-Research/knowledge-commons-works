@@ -14,6 +14,7 @@ const SidebarDownloadSection = ({
   previewTabIndex,
   record,
   setActiveTab,
+  show,
   show_heading,
   totalFileSize,
 }) => {
@@ -23,7 +24,7 @@ const SidebarDownloadSection = ({
     hasFiles && (
       <div
         id="download"
-        className="sidebar-container"
+        className={`sidebar-container ${show}`}
         aria-label={i18next.t("File download")}
       >
         {show_heading === true && (

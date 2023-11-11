@@ -2,7 +2,7 @@ import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { Icon, Image, Grid } from "semantic-ui-react";
 
-const CommunitiesBanner = ({ community, isPreviewSubmissionRequest }) => {
+const CommunitiesBanner = ({ community, isPreviewSubmissionRequest, show }) => {
   console.log("****CommunitiesBanner community", community);
   const isCommunityRestricted = community
     ? community.access.visibility == "restricted"
@@ -12,7 +12,7 @@ const CommunitiesBanner = ({ community, isPreviewSubmissionRequest }) => {
     community && (
       <div
         id="communities"
-        className="sidebar-container"
+        className={`sidebar-container ${show}`}
         aria-label={i18next.t("Record communities")}
       >
         <div className="ui container segment rdm-sidebar pr-0">

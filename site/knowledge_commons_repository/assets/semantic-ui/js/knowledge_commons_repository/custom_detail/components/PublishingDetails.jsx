@@ -1,8 +1,10 @@
 import React from "react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { Accordion, Icon } from "semantic-ui-react";
+import { Creatibutors } from "./Creatibutors";
 import { Doi } from "../components/Doi";
 import { toPidUrl } from "../util";
+import { Analytics } from "./Analytics";
 
 function getCustomFieldComponents({
   sectionFields,
@@ -301,12 +303,45 @@ const getDetailsComponents = ({
   customFieldsUi,
   detailOrder,
   doiBadgeUrl,
+  hasFiles,
+  iconsHcUsername,
+  iconsGnd,
+  iconsOrcid,
+  iconsRor,
   identifierSchemes,
   landingUrls,
+  localizedStats,
   record,
+  showDecimalSizes,
 }) => {
   const idDoi = record.pids.doi ? record.pids.doi.identifier : null;
+  console.log("****getDetailsComponents record", record);
   const detailsInfo = [
+    {
+      title: i18next.t("Analytics"),
+      value: (
+        <Analytics
+          record={record}
+          hasFiles={hasFiles}
+          localizedStats={localizedStats}
+          showDecimalSizes={showDecimalSizes}
+        />
+      ),
+    },
+    {
+      title: i18next.t("Contributors"),
+      value: (
+        <Creatibutors
+          creators={record.ui.creators}
+          contributors={record.ui.contributors}
+          iconsRor={iconsRor}
+          iconsOrcid={iconsOrcid}
+          iconsHcUsername={iconsHcUsername}
+          iconsGnd={iconsGnd}
+          landingUrls={landingUrls}
+        />
+      ),
+    },
     {
       title: i18next.t("DOI"),
       value:
@@ -513,10 +548,18 @@ const ConferenceDetailSection = ({ conference }) => {
 const PublishingDetails = ({
   customFieldsUi,
   doiBadgeUrl,
+  hasFiles,
+  iconsHcUsername,
+  iconsGnd,
+  iconsOrcid,
+  iconsRor,
   identifierSchemes,
   landingUrls,
+  localizedStats,
   record,
   section,
+  show: showWhole,
+  showDecimalSizes,
   subsections: accordionSections,
 }) => {
   const [activeIndex, setActiveIndex] = React.useState([0]);
@@ -524,7 +567,7 @@ const PublishingDetails = ({
   console.log("****PublishingDetails customFieldsUi", customFieldsUi);
   const customFieldSectionNames = customFieldsUi.map(({ section }) => section);
   const sectionsArray = accordionSections.map(
-    ({ section: sectionTitle, subsections, icon }) => {
+    ({ section: sectionTitle, subsections, icon, show }) => {
       if (customFieldSectionNames.includes(sectionTitle)) {
         const detailOrder = subsections;
         const sectionCustomFields = customFieldsUi.find(
@@ -550,11 +593,19 @@ const PublishingDetails = ({
               customFieldsUi: customFieldsUi,
               detailOrder: detailOrder,
               doiBadgeUrl: doiBadgeUrl,
+              hasFiles: hasFiles,
+              iconsHcUsername: iconsHcUsername,
+              iconsGnd: iconsGnd,
+              iconsOrcid: iconsOrcid,
+              iconsRor: iconsRor,
               identifierSchemes: identifierSchemes,
               landingUrls: landingUrls,
+              localizedStats: localizedStats,
               record: record,
+              showDecimalSizes: showDecimalSizes,
             }),
           },
+          show: show,
         };
       }
     }
@@ -571,18 +622,22 @@ const PublishingDetails = ({
   return (
     <Accordion fluid exclusive={false} defaultActiveIndex={[0]}>
       {sectionsArray.map(
-        ({ title, content }, idx) =>
+        ({ title, content, show }, idx) =>
           content.content && (
             <>
               <Accordion.Title
                 active={activeIndex.includes(idx)}
                 index={idx}
                 onClick={() => handleHeaderClick(idx)}
+                className={`${title.content} ${show}`}
               >
                 <Icon name={!!title.icon ? title.icon : "dropdown"} />
                 {title.content}
               </Accordion.Title>
-              <Accordion.Content active={activeIndex.includes(idx)}>
+              <Accordion.Content
+                active={activeIndex.includes(idx)}
+                className={`${title.content} ${show}`}
+              >
                 <dl className="details-list mt-0">
                   {content.content.map((component) => component)}
                 </dl>

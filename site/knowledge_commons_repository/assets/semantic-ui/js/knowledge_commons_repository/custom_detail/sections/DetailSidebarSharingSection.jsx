@@ -148,7 +148,7 @@ function SharingIconLink({ name, url, iconName }) {
   );
 }
 
-function SidebarSharingSection({ record }) {
+function SidebarSharingSection({ record, show }) {
   const pageLink = encodeURIComponent(record.links.self_html);
 
   const socialMediaLinks = [
@@ -193,7 +193,7 @@ function SidebarSharingSection({ record }) {
   ];
 
   return (
-    <div className="sidebar-container" id="social-sharing">
+    <div className={`sidebar-container ${show}`} id="social-sharing">
       <div className="ui rdm-sidebar">
         {/* <h2 className="ui medium top attached header mt-0">Share</h2> */}
         {socialMediaLinks.map(({ name, url }) => (

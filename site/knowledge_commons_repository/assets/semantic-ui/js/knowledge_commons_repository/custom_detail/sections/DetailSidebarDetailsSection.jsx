@@ -10,6 +10,7 @@ const SidebarDetailsSection = ({
   landingUrls,
   record,
   subsections,
+  show,
   show_heading,
 }) => {
   const detailOrder = subsections.map(({ section }) => section);
@@ -17,7 +18,7 @@ const SidebarDetailsSection = ({
 
   return (
     <div
-      className="sidebar-container"
+      className={`sidebar-container ${show}`}
       aria-label={i18next.t("Publication details")}
     >
       {show_heading === true && (
