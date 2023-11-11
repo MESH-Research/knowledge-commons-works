@@ -1,17 +1,18 @@
 import React from "react";
 import { Dropdown } from "semantic-ui-react";
 
-function ExportFormat({ name, exportUrl }) {
-  return (
-    <div>
-      <a href={exportUrl} className="ui button">
-        {name}
-      </a>
-    </div>
-  );
-}
-
-function SidebarExportSection({ isPreview, recordExporters, record, show }) {
+const ExportDropdown = ({
+  asButton = true,
+  asFluid = true,
+  asItem = false,
+  icon = "dropdown",
+  id = "export-dropdown",
+  text = "Export as...",
+  classNames = "",
+  record,
+  recordExporters,
+  isPreview,
+}) => {
   const formats = [];
   for (const [fmt, val] of Object.entries(recordExporters)) {
     const name = val.name || fmt;
@@ -22,27 +23,42 @@ function SidebarExportSection({ isPreview, recordExporters, record, show }) {
   }
 
   return (
+    <Dropdown
+      basic
+      button={asButton}
+      fluid={asFluid}
+      id={id}
+      item={asItem}
+      text={text}
+      icon={icon}
+      className={classNames}
+    >
+      <Dropdown.Menu>
+        {formats.map((format, index) => (
+          <Dropdown.Item
+            as="a"
+            key={index}
+            text={format.name}
+            href={format.exportUrl}
+          />
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+};
+
+function SidebarExportSection({ isPreview, recordExporters, record, show }) {
+  return (
     <div className={`sidebar-container ${show}`} id="record-export">
       {/* <h2 className="ui medium top attached header mt-0">Export</h2>
       <div
         id="export-record"
         className="ui segment bottom attached exports rdm-sidebar"
       > */}
-      <Dropdown basic button fluid text="Export as..." className="">
-        <Dropdown.Menu>
-          {formats.map((format, index) => (
-            <Dropdown.Item
-              as="a"
-              key={index}
-              text={format.name}
-              href={format.exportUrl}
-            />
-          ))}
-        </Dropdown.Menu>
-      </Dropdown>
+      <ExportDropdown {...{ record, isPreview, recordExporters }} />
       {/* </div> */}
     </div>
   );
 }
 
-export { SidebarExportSection };
+export { ExportDropdown, SidebarExportSection };

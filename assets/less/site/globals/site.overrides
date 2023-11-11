@@ -796,6 +796,11 @@
       &:last-child {
         border-radius: 0 @defaultBorderRadius @defaultBorderRadius 0;
       }
+      &#record-details-export.ui.dropdown {
+        .menu {
+          left: 0;
+        }
+      }
       &.ui.dropdown {
         .menu {
           left: -200%;

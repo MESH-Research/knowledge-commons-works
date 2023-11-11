@@ -1,17 +1,21 @@
 import React, { useState } from "react";
-import { Icon, Dropdown, Menu, Sticky, Tab } from "semantic-ui-react";
+import { Icon, Dropdown, Menu, Popup, Tab } from "semantic-ui-react";
 import { DetailMainTab } from "./DetailMainTab";
 import { DetailRightSidebar } from "./DetailRightSidebar";
 import { DetailLeftSidebar } from "./DetailLeftSidebar";
+import { ExportDropdown } from "./DetailSidebarExportSection";
+import { SidebarSharingSection } from "./DetailSidebarSharingSection";
 import { componentsMap } from "../componentsMap";
 import { addPropsFromChildren, filterPropsToPass } from "../util";
 import { FlagNewerVersion } from "../components/FlagNewerVersion";
 import { DraftBackButton } from "../components/DraftBackButton";
 import { CommunitiesBanner } from "../components/CommunitiesBanner";
 import { FileListItemDropdown } from "../components/FileList";
+import { CitationModal } from "./DetailSidebarCitationSection";
 
 const MobileActionMenu = ({
-  handleMobileMenuClick,
+  citationStyles,
+  citationStyleDefault,
   defaultPreviewFile,
   files,
   fileCountToShow,
@@ -20,9 +24,14 @@ const MobileActionMenu = ({
   permissions,
   previewFileUrl,
   record,
+  recordExporters,
   setActiveTab,
   totalFileSize,
 }) => {
+  const [activeItem, setActiveItem] = useState(null);
+  const handleMobileMenuClick = (e, { name }) => {
+    activeItem === name ? setActiveItem(null) : setActiveItem(name);
+  };
   return (
     <Menu
       className="mobile tablet only sixteen wide sticky bottom"
@@ -33,38 +42,72 @@ const MobileActionMenu = ({
     >
       <Menu.Item
         name="manage"
-        // active={activeItem === "gamepad"}
+        active={activeItem === "manage"}
         onClick={handleMobileMenuClick}
       >
         <Icon name="cog" />
         Manage
       </Menu.Item>
-      <Menu.Item
+
+      <ExportDropdown
+        id="record-details-export"
+        {...{
+          asItem: true,
+          asButton: false,
+          asFluid: false,
+          icon: null,
+          record,
+          text: (
+            <>
+              <Icon name="paper plane" />
+              Export
+            </>
+          ),
+          isPreview,
+          recordExporters,
+        }}
+      />
+      {/* <Menu.Item
         name="export"
-        // active={activeItem === "gamepad"}
+        active={activeItem === "export"}
         onClick={handleMobileMenuClick}
       >
         <Icon name="share" />
         Export
-      </Menu.Item>
+      </Menu.Item> */}
 
-      <Menu.Item
-        name="cite"
-        // active={activeItem === "video camera"}
-        onClick={handleMobileMenuClick}
-      >
-        <Icon name="quote right" />
-        Cite
-      </Menu.Item>
+      <CitationModal
+        record={record}
+        trigger={
+          <Menu.Item
+            name="cite"
+            active={activeItem === "cite"}
+            onClick={handleMobileMenuClick}
+          >
+            <Icon name="quote right" />
+            Cite
+          </Menu.Item>
+        }
+        citationStyles={citationStyles}
+        citationStyleDefault={citationStyleDefault}
+        onCloseHandler={() => setActiveItem(null)}
+      />
 
-      <Menu.Item
-        name="share"
-        // active={activeItem === "video camera"}
-        onClick={handleMobileMenuClick}
-      >
-        <Icon name="paper plane" />
-        Share
-      </Menu.Item>
+      <Popup
+        content={<SidebarSharingSection record={record} />}
+        trigger={
+          <Menu.Item
+            name="share"
+            active={activeItem === "share"}
+            onClick={handleMobileMenuClick}
+          >
+            <Icon name="paper plane" />
+            Share
+          </Menu.Item>
+        }
+        onClose={() => setActiveItem(null)}
+        on="click"
+      />
 
       <FileListItemDropdown
         asItem={true}
@@ -237,12 +280,8 @@ const DetailContent = (rawProps) => {
   };
   const topLevelProps = { ...rawProps, ...extraProps };
 
-  const handleMobileMenuClick = (e, { name }) => {};
-
-  const stickyContextRef = React.createRef();
-
   return (
-    <div class="two column row top-padded" ref={stickyContextRef}>
+    <div class="two column row top-padded">
       <article className="sixteen wide tablet eleven wide computer column main-record-content">
         <DraftBackButton
           backPage={topLevelProps.backPage}
@@ -308,7 +347,8 @@ const DetailContent = (rawProps) => {
         {...topLevelProps}
       />{" "}
       <MobileActionMenu
-        handleMobileMenuClick={handleMobileMenuClick}
+        citationStyleDefault={topLevelProps.citationStyleDefault}
+        citationStyles={topLevelProps.citationStyles}
         defaultPreviewFile={topLevelProps.defaultPreviewFile}
         files={topLevelProps.files}
         fileCountToShow={topLevelProps.fileCountToShow}
@@ -317,6 +357,7 @@ const DetailContent = (rawProps) => {
         permissions={topLevelProps.permissions}
         previewFileUrl={topLevelProps.previewFileUrl}
         record={topLevelProps.record}
+        recordExporters={topLevelProps.recordExporters}
         setActiveTab={topLevelProps.setActiveTab}
         totalFileSize={topLevelProps.totalFileSize}
       />

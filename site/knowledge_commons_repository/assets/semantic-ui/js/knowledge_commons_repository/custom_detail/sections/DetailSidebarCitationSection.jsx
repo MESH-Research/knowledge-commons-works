@@ -16,22 +16,58 @@ import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { Button, Modal } from "semantic-ui-react";
 import { Citation } from "../components/Citation";
 
+const CitationModal = ({
+  record,
+  citationStyles,
+  citationStyleDefault,
+  onCloseHandler,
+  trigger,
+}) => {
+  const [open, setOpen] = useState(false);
+
+  const handleOnClose = () => {
+    setOpen(false);
+    console.log("****CitationModal onClose", onCloseHandler);
+    onCloseHandler && onCloseHandler();
+  };
+
+  return (
+    <Modal
+      closeIcon
+      trigger={trigger}
+      open={open}
+      onOpen={() => setOpen(true)}
+      onClose={handleOnClose}
+    >
+      <Modal.Header>Generate a citation for this work</Modal.Header>
+      <Modal.Content>
+        <Citation
+          passedClassNames={`ui`}
+          record={record}
+          citationStyles={citationStyles}
+          citationStyleDefault={citationStyleDefault}
+        />
+      </Modal.Content>
+    </Modal>
+  );
+};
+
 const CitationSection = ({
   record,
   citationStyles,
   citationStyleDefault,
   show,
 }) => {
-  const [open, setOpen] = useState(false);
-
   return (
     <div
       id="citation"
       className={`sidebar-container ${show}`}
       aria-label={i18next.t("Cite this")}
     >
-      <Modal
-        closeIcon
+      <CitationModal
+        record={record}
+        citationStyles={citationStyles}
+        citationStyleDefault={citationStyleDefault}
         trigger={
           <Button
             fluid
@@ -40,20 +76,7 @@ const CitationSection = ({
             labelPosition="right"
           ></Button>
         }
-        open={open}
-        onOpen={() => setOpen(true)}
-        onClose={() => setOpen(false)}
-      >
-        <Modal.Header>Generate a citation for this work</Modal.Header>
-        <Modal.Content>
-          <Citation
-            passedClassNames={`ui`}
-            record={record}
-            citationStyles={citationStyles}
-            citationStyleDefault={citationStyleDefault}
-          />
-        </Modal.Content>
-      </Modal>
+      />
     </div>
   );
 };
@@ -64,4 +87,4 @@ CitationSection.propTypes = {
   citationStyleDefault: PropTypes.string.isRequired,
 };
 
-export { CitationSection };
+export { CitationSection, CitationModal };
