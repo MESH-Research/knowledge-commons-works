@@ -7,10 +7,11 @@ const DraftBackButton = ({
   isDraft,
   canManage,
   isPreviewSubmissionRequest,
+  show,
 }) => {
   return isPreview && !isPreviewSubmissionRequest && canManage && isDraft ? (
     <nav
-      className="back-navigation rel-pb-2 pl-0"
+      className={`back-navigation rel-pb-2 pl-0 ${show}`}
       aria-label={i18next.t("Back-navigation")}
     >
       <a className="ui button labeled icon basic orange" href={backPage}>
