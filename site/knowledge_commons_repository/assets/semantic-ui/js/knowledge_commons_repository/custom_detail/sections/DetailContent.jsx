@@ -61,7 +61,7 @@ const MobileActionMenu = ({
           record,
           text: (
             <>
-              <Icon name="paper plane" />
+              <Icon name="share" />
               Export
             </>
           ),
