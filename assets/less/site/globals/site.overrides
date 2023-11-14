@@ -646,8 +646,48 @@
           }
           table tbody {
             tr {
+              td {
+                .download-button-wrapper {
+                  float: right;
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: space-around;
+                }
+              }
+              @media screen and (max-width: @largestMobileScreen) {
+                td.with-checksum {
+                  padding-bottom: 0;
+                }
+                .checksum {
+                  display: block;
+                  .icon {
+                    margin-left: 0.25rem;
+                  }
+                }
+                .ui.button {
+                  height: 3rem;
+                  width: auto;
+                  margin-left: 0.25rem;
+                  .icon {
+                    margin: 0rem !important;
+                  }
+                }
+                a.ui.button {
+                  .icon {
+                    padding-top: 0.6rem;
+                  }
+                }
+              }
               td:nth-child(3) {
                 padding-right: 0;
+                @media screen and (max-width: @largestMobileScreen) {
+                  span {
+                    display: flex;
+                    flex-direction: column;
+                    width: fit-content;
+                  }
+                }
+
                 .ui.button {
                   width: 7rem;
                   &:first-child {

@@ -33,17 +33,55 @@ const FileListTableRow = ({
 
   return (
     <tr>
-      <td className={`${!!stackedRows ? "fourteen" : "nine"} wide`}>
+      <td
+        className={`${!!stackedRows ? "fourteen" : "nine"} wide ${
+          !!showChecksum && "with-checksum"
+        }`}
+      >
+        <span className="mobile only download-button-wrapper">
+          {/* FIXME: restrict to previewable file types */}
+          {withPreview && (
+            <Button
+              role="button"
+              className="ui compact mini button preview-link"
+              target="preview-iframe"
+              data-file-key={file.key}
+              size="mini"
+              onClick={() => handlePreviewChange(file)}
+              compact
+            >
+              <i className="eye icon"></i>
+              <span className="tablet computer only">
+                {" "}
+                {i18next.t("Preview")}
+              </span>
+            </Button>
+          )}
+          <Button
+            role="button"
+            className="ui compact mini button"
+            href={downloadUrl}
+          >
+            <i className="download icon"></i>
+            <span className="tablet computer only">
+              {!!fullWordButtons && i18next.t("Download")}
+            </span>
+          </Button>
+        </span>
         <div>
           <a href={downloadUrl} className="filename">
             {file.key}
           </a>
         </div>
-        {!!stackedRows && (
-          <small className="ui text-muted">{formatBytes(file.size)}</small>
-        )}
+        <small
+          className={`ui text-muted ${
+            !stackedRows ? "mobile only" : ""
+          } filesize`}
+        >
+          {formatBytes(file.size)}
+        </small>{" "}
         {!!showChecksum && (
-          <small className="ui text-muted font-tiny">
+          <small className="ui text-muted font-tiny checksum">
             {file.checksum}
             <div
               className="ui icon inline-block"
@@ -56,10 +94,12 @@ const FileListTableRow = ({
           </small>
         )}
       </td>
-      {!stackedRows && (
-        <td className="single line">{formatBytes(file.size)}</td>
-      )}
-      <td className="right aligned collapsing">
+      <td
+        className={`single line ${!stackedRows ? "tablet computer only" : ""}`}
+      >
+        {formatBytes(file.size)}
+      </td>
+      <td className="right aligned collapsing tablet computer only">
         <span>
           {/* FIXME: restrict to previewable file types */}
           {withPreview && (
@@ -72,7 +112,11 @@ const FileListTableRow = ({
               onClick={() => handlePreviewChange(file)}
               compact
             >
-              <i className="eye icon"></i> {i18next.t("Preview")}
+              <i className="eye icon"></i>
+              <span className="tablet computer only">
+                {" "}
+                {i18next.t("Preview")}
+              </span>
             </Button>
           )}
           <a
@@ -81,7 +125,9 @@ const FileListTableRow = ({
             href={downloadUrl}
           >
             <i className="download icon"></i>
-            {!!fullWordButtons && i18next.t("Download")}
+            <span className="tablet computer only">
+              {!!fullWordButtons && i18next.t("Download")}
+            </span>
           </a>
         </span>
       </td>
@@ -112,13 +158,13 @@ const FileListTable = ({
     fileCountToShow > 0 ? files.slice(0, fileCountToShow) : files;
   return (
     <>
-      <table className="ui striped table files fluid">
+      <table className="ui striped table files fluid unstackable">
         {!!showTableHeader && (
           <thead>
             <tr>
               <th>{i18next.t("Name")}</th>
-              <th>{i18next.t("Size")}</th>
-              <th></th>
+              <th className="computer tablet only">{i18next.t("Size")}</th>
+              <th className="computer tablet only"></th>
             </tr>
           </thead>
         )}
@@ -128,16 +174,32 @@ const FileListTable = ({
               className={`title ${record.ui.access_status.id} total-files`}
               tabIndex="0"
             >
-              <td>{i18next.t(`All ${files.length} files (as zip archive)`)}</td>
-              <td>{totalFileSize} in total</td>
               <td>
+                {i18next.t(`All ${files.length} files (as zip archive)`)}
+                <a
+                  role="button"
+                  className="ui compact mini button right floated archive-link mobile only"
+                  href={record.links.archive}
+                >
+                  <i className="file archive icon button"></i>
+                  <span className="tablet computer only">
+                    {" "}
+                    {i18next.t("Download all")}
+                  </span>
+                </a>
+              </td>
+              <td className="tablet computer only">{totalFileSize} in total</td>
+              <td className="tablet computer only">
                 <a
                   role="button"
                   className="ui compact mini button right floated archive-link"
                   href={record.links.archive}
                 >
-                  <i className="file archive icon button"></i>{" "}
-                  {i18next.t("Download all")}
+                  <i className="file archive icon button"></i>
+                  <span className="tablet computer only">
+                    {" "}
+                    {i18next.t("Download all")}
+                  </span>
                 </a>
               </td>
             </tr>
