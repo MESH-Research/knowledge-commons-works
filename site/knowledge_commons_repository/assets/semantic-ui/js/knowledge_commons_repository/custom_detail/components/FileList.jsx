@@ -56,8 +56,10 @@ const FileListTableRow = ({
           </small>
         )}
       </td>
-      {!stackedRows && <td>{formatBytes(file.size)}</td>}
-      <td className="right aligned">
+      {!stackedRows && (
+        <td className="single line">{formatBytes(file.size)}</td>
+      )}
+      <td className="right aligned collapsing">
         <span>
           {/* FIXME: restrict to previewable file types */}
           {withPreview && (
@@ -121,8 +123,11 @@ const FileListTable = ({
           </thead>
         )}
         <tbody>
-          {!!showTotalSize && (
-            <tr className={`title ${record.ui.access_status.id}`} tabIndex="0">
+          {!!showTotalSize && files.length > 1 && (
+            <tr
+              className={`title ${record.ui.access_status.id} total-files`}
+              tabIndex="0"
+            >
               <td>{i18next.t(`All ${files.length} files (as zip archive)`)}</td>
               <td>{totalFileSize} in total</td>
               <td>
@@ -183,6 +188,7 @@ const FileListDropdownMenu = ({
   files,
   fileTabIndex,
   icon = "download",
+  id,
   previewFileUrl,
   previewUrlFlag,
   record,
@@ -192,6 +198,7 @@ const FileListDropdownMenu = ({
 }) => {
   return (
     <Dropdown
+      id={id}
       text={text}
       button={asButton}
       icon={icon}
@@ -240,6 +247,7 @@ const FileListItemDropdown = ({
   files,
   fileTabIndex,
   handleMobileMenuClick,
+  id,
   isPreview,
   permissions,
   previewFileUrl,
@@ -255,7 +263,7 @@ const FileListItemDropdown = ({
       {!!permissions.can_read_files &&
         (files?.length < 2 ? (
           <Menu.Item
-            id="record-details-download"
+            id={id}
             as="a"
             href={`${previewFileUrl.replace("/preview/", "/files/")}/${
               defaultPreviewFile.key
@@ -273,6 +281,7 @@ const FileListItemDropdown = ({
               icon: false,
               files,
               fileTabIndex,
+              id,
               record,
               previewFileUrl,
               previewUrlFlag,
@@ -288,7 +297,7 @@ const FileListItemDropdown = ({
               asLabeled: false,
               asFluid: false,
               asItem: true,
-              classNames: "",
+              classNames: "pointing",
             }}
           />
         ))}

@@ -646,13 +646,16 @@
           }
           table tbody {
             tr {
-              td:nth-child(3) .ui.button {
-                width: 7rem;
-                &:first-child {
-                  margin-bottom: 0.25rem;
+              td:nth-child(3) {
+                padding-right: 0;
+                .ui.button {
+                  width: 7rem;
+                  &:first-child {
+                    margin-bottom: 0.25rem;
+                  }
                 }
               }
-              &:first-child {
+              &.total-files {
                 td .ui.button:first-child {
                   width: auto;
                   margin-bottom: 0;
@@ -841,24 +844,42 @@
     // FIXME: dropdown submenu breaks this: position: sticky;
     position: fixed;
     bottom: 0;
+    left: 0;
     width: 100%;
     justify-content: center;
     background-color: transparent;
     .item {
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(2px);
+      border-top: 2px solid @white;
       &.active {
-        background-color: rgba(0, 0, 0, 0.8);
+        background-color: rgba(0, 0, 0, 1);
       }
       &:first-child {
         border-radius: @defaultBorderRadius 0 0 0;
+        border-left: 2px solid @white;
       }
       &:last-child {
         border-radius: 0 @defaultBorderRadius 0 0;
+        border-right: 2px solid @white;
       }
       &#record-details-export.ui.dropdown {
         .menu {
           left: -75%;
+        }
+      }
+      &#record-details-download.ui.dropdown {
+        .menu {
+          left: -250%;
+          .description.filesize {
+            display: block;
+            float: none;
+            margin-left: 0;
+            margin-top: 0.5rem;
+          }
+          &::after {
+            left: 81%;
+          }
         }
       }
       &.ui.dropdown {
