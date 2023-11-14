@@ -18,6 +18,7 @@ const SidebarDetailsSection = ({
 
   return (
     <div
+      id="publication-details"
       className={`sidebar-container ${show}`}
       aria-label={i18next.t("Publication details")}
     >
@@ -27,17 +28,30 @@ const SidebarDetailsSection = ({
         </h2>
       )}
       <div id="record-details" className="ui segment rdm-sidebar">
-        <dl className="details-list mt-0">
-          {idDoi && (
-            <dd>
-              <Doi
-                idDoi={idDoi}
-                doiBadgeUrl={doiBadgeUrl}
-                doiLink={record.links.doi}
-              />
-            </dd>
+        <div className="badges-row">
+          {record.ui.resource_type && (
+            <span
+              className="ui label horizontal small neutral mb-5"
+              title={i18next.t("Resource type")}
+            >
+              {record.ui.resource_type.title_l10n}
+            </span>
           )}
 
+          <span
+            className={`ui label horizontal small access-status ${record.ui.access_status.id} mb-5`}
+            title={i18next.t("Access status")}
+            data-tooltip={record.ui.access_status.description_l10n}
+            data-inverted=""
+          >
+            {record.ui.access_status.icon && (
+              <i className={`icon ${record.ui.access_status.icon}`}></i>
+            )}
+            {record.ui.access_status.title_l10n}
+          </span>
+        </div>
+
+        <dl className="details-list mt-0">
           {getDetailsComponents({
             customFieldsUi,
             detailOrder,
@@ -47,27 +61,6 @@ const SidebarDetailsSection = ({
             record,
           })}
         </dl>
-
-        {record.ui.resource_type && (
-          <span
-            className="ui label horizontal small neutral mb-5"
-            title={i18next.t("Resource type")}
-          >
-            {record.ui.resource_type.title_l10n}
-          </span>
-        )}
-
-        <span
-          className={`ui label horizontal small access-status ${record.ui.access_status.id} mb-5`}
-          title={i18next.t("Access status")}
-          data-tooltip={record.ui.access_status.description_l10n}
-          data-inverted=""
-        >
-          {record.ui.access_status.icon && (
-            <i className={`icon ${record.ui.access_status.icon}`}></i>
-          )}
-          {record.ui.access_status.title_l10n}
-        </span>
       </div>
     </div>
   );

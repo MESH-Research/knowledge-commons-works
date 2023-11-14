@@ -382,6 +382,12 @@
 
 // detail page
 #detail-main-content {
+  > div {
+    @media screen and (max-width: @largestMobileScreen) {
+      padding-top: 0;
+    }
+  }
+
   .ui.message {
     @media screen and (max-width: @largestMobileScreen) {
       padding: 1rem;
@@ -399,9 +405,16 @@
           color: @purple;
         }
       }
+      .row .column:last-child {
+        text-align: right;
+        padding-right: 2rem;
+      }
     }
   }
   .main-record-content {
+    h2 {
+      font-size: @large;
+    }
     @media only screen and (max-width: @largestMobileScreen) {
       h2 {
         font-size: @large;
@@ -421,20 +434,35 @@
     }
 
     #record-title-section {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
       @media only screen and (max-width: @largestMobileScreen) {
         h1 {
           font-size: @big;
+          padding-top: 1rem;
         }
       }
     }
 
+    #creatibutors-list-section {
+      line-height: @large;
+    }
+
     #detail-main-tabs {
+      > .ui.menu {
+        margin-bottom: 1.5rem;
+        a.item:first-child {
+          padding-left: 0;
+        }
+      }
+
       html[dir="ltr"] #toolbarContainer,
       .findbar,
       .secondaryToolbar {
         background-color: #efefef;
         box-shadow: none;
       }
+
       dl.details-list {
         dt.ui.tiny.header {
           margin-bottom: 0.25rem;
@@ -446,6 +474,7 @@
           border: none;
           padding-left: 0;
           padding-right: 0;
+          padding-top: 0;
         }
         @media screen and (max-width: @largestMobileScreen) {
           &.segment {
@@ -455,8 +484,9 @@
 
         &.Content {
           #Descriptions-tab-section {
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
+            padding-top: 0.5rem;
+            // padding-left: 0.5rem;
+            // padding-right: 0.5rem;
           }
 
           .ui.message.file-box-message {
@@ -491,12 +521,13 @@
         }
 
         &.Details {
+          padding-top: 0;
           .ui.accordion:not(.styled) {
             padding-bottom: 0;
             margin-top: 0.5rem;
             .title {
               font-weight: bold;
-              font-size: @big;
+              font-size: @large;
               padding: 1rem 0;
               border-bottom: 1px solid @internalBorderColor;
               i.icon.dropdown {
@@ -504,18 +535,16 @@
               }
               @media screen and (max-width: @largestMobileScreen) {
                 font-size: @large;
-                &:first-child {
-                  padding-top: 0;
-                }
+              }
+              &:first-child {
+                padding-top: 0;
               }
             }
             .active.content {
               padding-left: 1rem;
+              padding-right: 1rem;
               padding-bottom: 1.5rem;
               background-color: #f9f9f9;
-              @media screen and (max-width: @largestMobileScreen) {
-                padding-bottom: 0.5rem;
-              }
 
               &.Analytics {
                 padding: 0;
@@ -549,12 +578,19 @@
             .creatibutor-link {
               color: @textColor;
             }
+            .content {
+              padding-left: 0;
+            }
+            &:first-child {
+              padding-top: 0;
+            }
           }
         }
 
         &.Analytics {
           .ui.statistics {
             margin: 1rem;
+            margin-top: 1.5rem;
             justify-content: center;
             .statistic {
               flex-grow: 1;
@@ -571,6 +607,20 @@
           }
           i.question.circle.small.icon {
             margin-left: 0.25rem;
+          }
+        }
+
+        &.Subjects {
+          .subject {
+            background-color: #fff;
+            color: @textColor;
+          }
+          h2.tiny.header {
+            margin-bottom: 1rem;
+          }
+          h3.tiny.header.mt-10 {
+            margin-top: 1.5rem !important;
+            font-size: @medium;
           }
         }
 
@@ -592,6 +642,22 @@
             border-bottom: 1px solid @internalBorderColor;
             &.hidden {
               display: none;
+            }
+          }
+          table tbody {
+            tr {
+              td:nth-child(3) .ui.button {
+                width: 7rem;
+                &:first-child {
+                  margin-bottom: 0.25rem;
+                }
+              }
+              &:first-child {
+                td .ui.button:first-child {
+                  width: auto;
+                  margin-bottom: 0;
+                }
+              }
             }
           }
         }
@@ -736,6 +802,17 @@
           margin-right: 0.5rem;
         }
       }
+      &#publication-details {
+        .ui.tiny.header {
+          margin-bottom: 0;
+          margin-top: 1rem;
+        }
+        .get-badge {
+          img {
+            margin-top: 0.5rem;
+          }
+        }
+      }
       &#record-export {
         margin-bottom: 1rem;
         div.ui.basic.button {
@@ -758,29 +835,12 @@
     }
   }
 
-  .page.modals {
-    .ui.grid.record-citation {
-      border: none;
-      margin-top: 0;
-      margin-bottom: 0;
-
-      #citation-text {
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
-      }
-
-      #citation-style-label {
-        margin-right: 0.5rem;
-      }
-    }
-  }
-
   // mobile menu
 
   .ui.menu.sticky.bottom {
     // FIXME: dropdown submenu breaks this: position: sticky;
     position: fixed;
-    bottom: 1rem;
+    bottom: 0;
     width: 100%;
     justify-content: center;
     background-color: transparent;
@@ -791,19 +851,21 @@
         background-color: rgba(0, 0, 0, 0.8);
       }
       &:first-child {
-        border-radius: @defaultBorderRadius 0 0 @defaultBorderRadius;
+        border-radius: @defaultBorderRadius 0 0 0;
       }
       &:last-child {
-        border-radius: 0 @defaultBorderRadius @defaultBorderRadius 0;
+        border-radius: 0 @defaultBorderRadius 0 0;
       }
       &#record-details-export.ui.dropdown {
         .menu {
-          left: 0;
+          left: -75%;
         }
       }
       &.ui.dropdown {
         .menu {
           left: -200%;
+          backdrop-filter: none;
+          font-size: @medium;
         }
       }
     }
@@ -813,5 +875,22 @@
 
   #toolbarSidebar {
     background-color: @sidebarBackgroundColor;
+  }
+}
+
+.page.modals {
+  .ui.grid.record-citation {
+    border: none;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    #citation-text {
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
+    }
+
+    #citation-style-label {
+      margin-right: 0.5rem;
+    }
   }
 }

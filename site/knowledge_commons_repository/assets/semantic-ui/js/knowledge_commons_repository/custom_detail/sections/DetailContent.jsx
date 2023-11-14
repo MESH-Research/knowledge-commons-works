@@ -14,6 +14,7 @@ import { FileListItemDropdown } from "../components/FileList";
 import { CitationModal } from "./DetailSidebarCitationSection";
 
 const MobileActionMenu = ({
+  canManage,
   citationStyles,
   citationStyleDefault,
   defaultPreviewFile,
@@ -40,15 +41,16 @@ const MobileActionMenu = ({
       size="mini"
       inverted
     >
-      <Menu.Item
-        name="manage"
-        active={activeItem === "manage"}
-        onClick={handleMobileMenuClick}
-      >
-        <Icon name="cog" />
-        Manage
-      </Menu.Item>
-
+      {canManage && (
+        <Menu.Item
+          name="manage"
+          active={activeItem === "manage"}
+          onClick={handleMobileMenuClick}
+        >
+          <Icon name="cog" />
+          Manage
+        </Menu.Item>
+      )}
       <ExportDropdown
         id="record-details-export"
         {...{
@@ -65,6 +67,7 @@ const MobileActionMenu = ({
           ),
           isPreview,
           recordExporters,
+          classNames: "pointing",
         }}
       />
       {/* <Menu.Item
@@ -129,7 +132,7 @@ const MobileActionMenu = ({
 
 const DetailMainTabs = (topLevelProps) => {
   const panes = topLevelProps.tabbedSections.map(
-    ({ section, component_name, subsections, props, show }) => {
+    ({ section, component_name, subsections, props, show }, idx) => {
       // Because can't import DetailMainTab in componentsMap (circular)
       const TabComponent =
         component_name !== "DetailMainTab"
@@ -147,7 +150,7 @@ const DetailMainTabs = (topLevelProps) => {
       };
       return {
         menuItem: (
-          <Menu.Item key={section} className={show}>
+          <Menu.Item key={section} className={show} tabindex={idx}>
             {section}
           </Menu.Item>
         ),
@@ -347,6 +350,7 @@ const DetailContent = (rawProps) => {
         {...topLevelProps}
       />{" "}
       <MobileActionMenu
+        canManage={topLevelProps.canManage}
         citationStyleDefault={topLevelProps.citationStyleDefault}
         citationStyles={topLevelProps.citationStyles}
         defaultPreviewFile={topLevelProps.defaultPreviewFile}

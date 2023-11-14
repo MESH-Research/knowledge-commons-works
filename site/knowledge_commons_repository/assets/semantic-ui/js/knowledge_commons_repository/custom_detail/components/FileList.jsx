@@ -239,6 +239,7 @@ const FileListItemDropdown = ({
   fileCountToShow,
   files,
   fileTabIndex,
+  handleMobileMenuClick,
   isPreview,
   permissions,
   previewFileUrl,

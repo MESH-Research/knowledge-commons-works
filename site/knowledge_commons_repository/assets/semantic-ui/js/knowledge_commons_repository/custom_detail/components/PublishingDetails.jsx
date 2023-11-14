@@ -23,7 +23,8 @@ function getCustomFieldComponents({
   return sectionFields.map((fieldCfg) => {
     console.log("****getCustomFieldComponents fieldCfg", fieldCfg);
     const fieldValue = customFields[fieldCfg.field];
-    if (fieldValue) {
+    if (!!fieldValue) {
+      console.log("****getCustomFieldComponents fieldValue", fieldValue);
       if (typeof fieldValue === "object") {
         let entries = Object.entries(fieldValue);
         console.log("****getCustomFieldComponents entries", entries);
@@ -96,8 +97,10 @@ const AdditionalDates = ({ dates }) => {
         <React.Fragment key={type.title_l10n}>
           <dt className="ui tiny header">{type.title_l10n}</dt>
           <dd>
-            <div>{dateValue}</div>
-            {description && <div className="text-muted">{description}</div>}
+            {dateValue}
+            {description && (
+              <span className="text-muted"> ({description})</span>
+            )}
           </dd>
         </React.Fragment>
       ))}
@@ -112,9 +115,9 @@ const FundingItem = ({ item, index }) => {
     const { title_l10n, number, identifiers } = award;
 
     return (
-      <div>
+      <dl class="details-list mt-0">
         {title_l10n && (
-          <h4 className="ui tiny header">
+          <dt className="ui tiny header">
             <span className="mr-5">{title_l10n}</span>
             {number && (
               <span
@@ -138,10 +141,10 @@ const FundingItem = ({ item, index }) => {
                     <i className="external alternate icon"></i>
                   </a>
                 ))}
-          </h4>
+          </dt>
         )}
-        {funder && <p className="text-muted">{funder.name}</p>}
-      </div>
+        {funder && <dd className="text-muted">{funder.name}</dd>}
+      </dl>
     );
   } else {
     return <h4 className="ui tiny header">{funder.name}</h4>;
@@ -209,6 +212,19 @@ function RelatedIdentifiers({
     </>
   );
 }
+
+const DOITextLink = ({ doi, doiLink }) => {
+  return (
+    <>
+      <dt className="ui tiny header">DOI</dt>
+      <dd key={doi}>
+        <a href={doiLink} target="_blank" title={_("Opens in new tab")}>
+          {doi}
+        </a>
+      </dd>
+    </>
+  );
+};
 
 const URLs = ({ identifiers }) => {
   return (
@@ -343,7 +359,7 @@ const getDetailsComponents = ({
       ),
     },
     {
-      title: i18next.t("DOI"),
+      title: i18next.t("DOI badge"),
       value:
         idDoi !== null ? (
           <Doi
@@ -351,6 +367,13 @@ const getDetailsComponents = ({
             doiBadgeUrl={doiBadgeUrl}
             doiLink={record.links.doi}
           />
+        ) : null,
+    },
+    {
+      title: i18next.t("DOI"),
+      value:
+        idDoi !== null ? (
+          <DOITextLink doiLink={record.links.doi} doi={idDoi} />
         ) : null,
     },
     {
@@ -560,33 +583,38 @@ const PublishingDetails = ({
   section,
   show: showWhole,
   showDecimalSizes,
+  showAccordionIcons = false,
   subsections: accordionSections,
 }) => {
   const [activeIndex, setActiveIndex] = React.useState([0]);
   console.log("****PublishingDetails record", record);
   console.log("****PublishingDetails customFieldsUi", customFieldsUi);
   const customFieldSectionNames = customFieldsUi.map(({ section }) => section);
-  const sectionsArray = accordionSections.map(
-    ({ section: sectionTitle, subsections, icon, show }) => {
+  const sectionsArray = accordionSections.reduce(
+    (acc, { section: sectionTitle, subsections, icon, show }) => {
       if (customFieldSectionNames.includes(sectionTitle)) {
         const detailOrder = subsections;
         const sectionCustomFields = customFieldsUi.find(
           ({ section }) => section === sectionTitle
         );
-        return {
-          key: sectionTitle,
-          title: { content: sectionTitle, icon: sectionCustomFields.icon },
-          content: {
-            content: getCustomFieldComponents({
-              sectionFields: sectionCustomFields.fields,
-              customFields: record.custom_fields,
-              detailOrder: detailOrder,
-            }),
-          },
-        };
+        const fieldContent = getCustomFieldComponents({
+          sectionFields: sectionCustomFields.fields,
+          customFields: record.custom_fields,
+          detailOrder: detailOrder,
+        });
+        console.log("****PublishingDetails fieldContent", fieldContent);
+        if (fieldContent[0]) {
+          acc.push({
+            key: sectionTitle,
+            title: { content: sectionTitle, icon: sectionCustomFields.icon },
+            content: {
+              content: fieldContent,
+            },
+          });
+        }
       } else {
         const detailOrder = subsections?.map(({ section }) => section);
-        return {
+        acc.push({
           title: { content: sectionTitle, icon: icon },
           content: {
             content: getDetailsComponents({
@@ -606,9 +634,11 @@ const PublishingDetails = ({
             }),
           },
           show: show,
-        };
+        });
       }
-    }
+      return acc;
+    },
+    []
   );
   console.log("****PublishingDetails sectionsArray", sectionsArray);
 
@@ -631,7 +661,13 @@ const PublishingDetails = ({
                 onClick={() => handleHeaderClick(idx)}
                 className={`${title.content} ${show}`}
               >
-                <Icon name={!!title.icon ? title.icon : "dropdown"} />
+                <Icon
+                  name={
+                    !!title.icon && !!showAccordionIcons
+                      ? title.icon
+                      : "dropdown"
+                  }
+                />
                 {title.content}
               </Accordion.Title>
               <Accordion.Content

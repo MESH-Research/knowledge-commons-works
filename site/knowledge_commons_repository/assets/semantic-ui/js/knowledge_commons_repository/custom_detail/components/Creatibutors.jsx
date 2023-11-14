@@ -261,8 +261,10 @@ const Creatibutors = ({
                     schemeStrings[scheme][0]
                   } ${i18next.t("profile")}`}
                 />
-                {scheme === "hc_username" ? "Humanities Commons" : scheme}{" "}
-                {i18next.t("profile")}
+                <small>
+                  {scheme === "hc_username" ? "Humanities Commons" : scheme}{" "}
+                  {i18next.t("profile")}
+                </small>
               </a>
             ))}
           </Card.Content>
