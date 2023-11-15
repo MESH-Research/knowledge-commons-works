@@ -7,7 +7,7 @@ const ExportDropdown = ({
   asItem = false,
   icon = "dropdown",
   id = "export-dropdown",
-  text = "Export as...",
+  text = "Export metadata as...",
   classNames = "",
   record,
   recordExporters,
