@@ -19,6 +19,14 @@ import { TitlesField } from "./fields/TitlesField";
 import { VersionField } from "./fields/VersionField";
 import { FileUploader } from "./fields/file_uploader_components/index";
 
+const MobileActionMenu = () => {
+    return(
+        <div className="col-12">
+          <h1>HERE IT IS</h1>
+          </div>
+    )
+}
+
 export const overriddenComponents = {
     "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
     "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
@@ -35,5 +43,6 @@ export const overriddenComponents = {
     "InvenioAppRdm.Deposit.VersionField.container": VersionField,
     "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
     "InvenioAppRdm.Deposit.FileUploader.container": FileUploader,
+    "InvenioModularDetailPage.MobileActionMenu.container": MobileActionMenu,
     // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
 }

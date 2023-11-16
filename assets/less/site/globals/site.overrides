@@ -33,6 +33,7 @@
 }
 
 // FIXME: hidden for now
+
 #skip-to-main {
   display: none;
 }
@@ -940,6 +941,46 @@
 }
 
 .page.modals {
+  .share-modal {
+    .ui.grid {
+      margin-left: 0;
+      margin-right: 0;
+      .ui.input {
+        input {
+          width: 100%;
+        }
+        padding: 0;
+      }
+      .share-content-buttons {
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: 0.5rem;
+        .ui.button {
+          line-height: normal;
+          font-size: 1em;
+        }
+        @media screen and (max-width: @largestMobileScreen) {
+          display: flex;
+          .ui.button {
+            flex-grow: 1;
+            &:last-of-type {
+              margin-right: 0;
+            }
+          }
+        }
+      }
+    }
+    .share-description {
+      margin-left: 0;
+      margin-right: 0;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      box-shadow: none;
+      background-color: transparent;
+    }
+  }
   .ui.grid.record-citation {
     border: none;
     margin-top: 0;
