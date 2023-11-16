@@ -876,6 +876,13 @@
           }
         }
       }
+      #licenses {
+        padding: 0;
+        .license.clickable {
+          padding-top: 0;
+          padding-bottom: 0.5rem;
+        }
+      }
     }
   }
 
