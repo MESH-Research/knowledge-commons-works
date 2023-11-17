@@ -728,7 +728,8 @@
     .sidebar-container {
       .ui.top.attached.header {
         border-bottom: 0;
-        font-size: 1rem;
+        padding-bottom: 0.5rem;
+        font-size: @medium;
         background-color: @sidebarBackgroundColor;
       }
       .ui.segment.rdm-sidebar > h2.ui.small.header,
@@ -879,7 +880,7 @@
       #licenses {
         padding: 0;
         .license.clickable {
-          padding-top: 0;
+          padding-top: 0.5rem;
           padding-bottom: 0.5rem;
         }
       }
