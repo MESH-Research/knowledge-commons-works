@@ -718,6 +718,9 @@
       &.icon .icon:not(.close) {
         font-size: @huge;
       }
+      > .icon.close {
+        top: 0.5rem;
+      }
     }
     .ui.message.file-box-message {
       margin-bottom: 1rem !important;
