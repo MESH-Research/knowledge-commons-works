@@ -1,0 +1,4 @@
+
+const componentsConfig = {};
+
+export {componentsConfig};
