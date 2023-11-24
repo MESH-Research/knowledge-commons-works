@@ -5,20 +5,18 @@ import { VolumeComponent } from "./VolumeComponent";
 
 const BookVolumePagesComponent = ({ customFieldsUI }) => {
   return (
-    <Segment as="fieldset">
-      <Form.Group widths="equal">
-        <VolumeComponent customFieldsUI={customFieldsUI} />
-        <CustomFieldInjector
-          sectionName="Book / Report / Chapter"
-          fieldName="imprint:imprint.pages"
-          idString="ImprintPagesField"
-          customFieldsUI={customFieldsUI}
-          description={""}
-          label="Total pages"
-          icon="file outline"
-        />
-      </Form.Group>
-    </Segment>
+    <Form.Group>
+      <VolumeComponent customFieldsUI={customFieldsUI} />
+      <CustomFieldInjector
+        sectionName="Book / Report / Chapter"
+        fieldName="imprint:imprint.pages"
+        idString="ImprintPagesField"
+        customFieldsUI={customFieldsUI}
+        description={""}
+        label="Total pages"
+        icon="file outline"
+      />
+    </Form.Group>
   );
 };
 

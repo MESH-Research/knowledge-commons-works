@@ -12,6 +12,7 @@ import { EditionSectionComponent } from './components/EditionSectionComponent';
 import { KeywordsComponent } from './components/KeywordsComponent';
 import { OrganizationDetailsComponent } from './components/OrganizationDetailsComponent';
 import { PreviouslyPublishedComponent } from './components/PreviouslyPublishedComponent';
+import { PublicationDetailsComponent } from './components/PublicationDetailsComponent';
 import { SeriesComponent } from './components/SeriesComponent';
 import { SponsoringInstitutionComponent } from './components/SponsoringInstitutionComponent';
 import { SubjectsKeywordsComponent } from './components/SubjectsKeywordsComponent';
@@ -87,6 +88,15 @@ const componentsMap = {
     ],
   ],
   PreviouslyPublishedComponent: [PreviouslyPublishedComponent, []],
+  PublicationDetailsComponent: [
+    PublicationDetailsComponent,
+    [
+      "custom_fields.imprint:imprint.isbn",
+      "custom_fields.krc:edition",
+      "metadata.publisher",
+      "custom_fields.imprint:imprint.place",
+    ],
+  ],
   SeriesComponent: [SeriesComponent, ["custom_fields.kcr:book_series"]],
   SponsoringInstitutionComponent: [SponsoringInstitutionComponent, ["custom_fields.kcr:sponsoring_institution"]],
   SubjectsKeywordsComponent: [

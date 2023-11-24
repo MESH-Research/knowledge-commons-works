@@ -8,7 +8,7 @@ import { ChapterLabelComponent } from "./ChapterLabelComponent";
 
 const BookSectionVolumePagesComponent = ({ customFieldsUI, labelMods }) => {
   return (
-    <Segment as="fieldset">
+    <>
       <Form.Group widths="equal">
         <SectionPagesComponent
           customFieldsUI={customFieldsUI}
@@ -27,7 +27,7 @@ const BookSectionVolumePagesComponent = ({ customFieldsUI, labelMods }) => {
       <Form.Group widths="equal">
         <VolumeComponent customFieldsUI={customFieldsUI} />
       </Form.Group>
-    </Segment>
+    </>
   );
 };
 

@@ -6,14 +6,12 @@ const AIComponent = ({ customFieldsUI }) => {
   // const sectionConfig = customFieldsUI.find(item => item.section === "AI Usage");
   // const fieldConfig = sectionConfig.find(item => item.field === "ai_used");
   return (
-    <Segment as="fieldset">
-      <CustomFieldInjector
-        sectionName="AI Usage"
-        fieldName="kcr:ai_usage"
-        idString="AIUsageField"
-        customFieldsUI={customFieldsUI}
-      />
-    </Segment>
+    <CustomFieldInjector
+      sectionName="AI Usage"
+      fieldName="kcr:ai_usage"
+      idString="AIUsageField"
+      customFieldsUI={customFieldsUI}
+    />
   );
 };
 

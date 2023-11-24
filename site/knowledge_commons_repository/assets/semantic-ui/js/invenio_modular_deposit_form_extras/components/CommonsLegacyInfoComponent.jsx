@@ -4,13 +4,11 @@ import { CustomFieldSectionInjector } from "@js/invenio_modular_deposit_form/fie
 
 const CommonsLegacyInfoComponent = ({ customFieldsUI }) => {
   return (
-    <Segment as="fieldset">
-      <CustomFieldSectionInjector
-        sectionName="Commons legacy info"
-        idString="HCLegacyFields"
-        customFieldsUI={customFieldsUI}
-      />
-    </Segment>
+    <CustomFieldSectionInjector
+      sectionName="Commons legacy info"
+      idString="HCLegacyFields"
+      customFieldsUI={customFieldsUI}
+    />
   );
 };
 

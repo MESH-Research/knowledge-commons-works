@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Segment } from "semantic-ui-react";
-import { CustomFieldInjector } from "@js/invenio_form/components";
+import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
 import {
   BookTitleComponent,
   PublisherComponent,
@@ -11,12 +11,7 @@ import { SeriesComponent } from "./SeriesComponent";
 
 const BookDetailComponent = ({ customFieldsUI }) => {
   return (
-    <Segment as="fieldset">
-      {/* <FieldLabel htmlFor={"imprint:imprint"}
-        icon={"book"}
-        label={"Book details"}
-      />
-      <Divider fitted /> */}
+    <>
       <Form.Group>
         <BookTitleComponent customFieldsUI={customFieldsUI} />
       </Form.Group>
@@ -48,7 +43,7 @@ const BookDetailComponent = ({ customFieldsUI }) => {
       <Form.Group>
         <SeriesComponent customFieldsUI={customFieldsUI} />
       </Form.Group>
-    </Segment>
+    </>
   );
 };
 

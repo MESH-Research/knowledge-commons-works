@@ -4,13 +4,11 @@ import { CustomFieldSectionInjector } from "@js/invenio_modular_deposit_form/fie
 
 const AdminMetadataComponent = ({ customFieldsUI }) => {
   return (
-    <Segment as="fieldset">
-      <CustomFieldSectionInjector
-        sectionName="Commons admin info"
-        idString="AdminMetadataFields"
-        customFieldsUI={customFieldsUI}
-      />
-    </Segment>
+    <CustomFieldSectionInjector
+      sectionName="Commons admin info"
+      idString="AdminMetadataFields"
+      customFieldsUI={customFieldsUI}
+    />
   );
 };
 

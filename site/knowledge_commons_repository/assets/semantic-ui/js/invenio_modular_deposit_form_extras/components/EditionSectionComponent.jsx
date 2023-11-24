@@ -5,13 +5,13 @@ import { ChapterLabelComponent } from "./ChapterLabelComponent";
 
 const EditionSectionComponent = ({ customFieldsUI, labelMods }) => {
   return (
-    <Segment as="fieldset">
+    <>
       <EditionComponent customFieldsUI={customFieldsUI} labelMods={labelMods} />
       <ChapterLabelComponent
         customFieldsUI={customFieldsUI}
         labelMods={labelMods}
       />
-    </Segment>
+    </>
   );
 };
 
