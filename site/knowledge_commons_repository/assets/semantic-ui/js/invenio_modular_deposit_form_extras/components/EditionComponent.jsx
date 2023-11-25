@@ -4,7 +4,7 @@ import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_comp
 const EditionComponent = ({ customFieldsUI }) => {
   return (
     <CustomFieldInjector
-      sectionName="KCR Book info"
+      sectionName="KCR Book information"
       fieldName="kcr:edition"
       idString="EditionField"
       customFieldsUI={customFieldsUI}

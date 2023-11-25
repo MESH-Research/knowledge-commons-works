@@ -116,8 +116,15 @@
     &.add-id-button,
     &.add-url-button,
     &.add-button {
-      background-color: @formButtonColor;
-      color: #666;
+      background-color: transparent;
+      box-shadow: none;
+      color: @secondaryColor;
+      &.labeled.icon {
+        padding-left: 2.5rem !important;
+      }
+      .add.icon {
+        background-color: transparent;
+      }
     }
   }
   .ui.mini.ui.button {
