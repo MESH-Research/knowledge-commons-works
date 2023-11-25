@@ -332,9 +332,12 @@
           // }
         }
 
-        &.pid-field {
+        &.invenio-fieldset.doi {
           .inline.fields {
             margin-bottom: @labelBottomMargin;
+            label {
+              font-weight: normal;
+            }
           }
           label.helptext {
             margin-top: -0.5em;
