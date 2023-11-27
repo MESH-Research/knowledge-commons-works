@@ -60,6 +60,9 @@ timefhuman = "*"
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
+aiohttp = "*"
+invenio-modular-detail-page = {editable = true, path = "./../invenio-modular-detail-page/invenio-modular-detail-page"}
+invenio-modular-deposit-form = {path = "./../invenio-modular-deposit-form"}
 
 [requires]
 python_version = "3.9"

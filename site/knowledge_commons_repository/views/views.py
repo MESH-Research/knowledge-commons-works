@@ -1,9 +1,9 @@
 """Additional views."""
 
 from flask import Blueprint
-from .guides.guides import Guides
 from .task_results.task_results import TaskResults
 from .admin_login.admin_login import AdminLogin
+
 
 #
 # Registration
@@ -17,11 +17,6 @@ def create_blueprint(app):
     )
 
     # routes = app.config.get("APP_RDM_ROUTES")
-
-    blueprint.add_url_rule(
-        "/guides",
-        view_func=Guides.as_view("support_form"),
-    )
 
     blueprint.add_url_rule(
         "/task_results/<task_id>",

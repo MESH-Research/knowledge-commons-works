@@ -1,0 +1,121 @@
+{#
+Copyright (C) 2020 CERN.
+Copyright (C) 2020 Northwestern University.
+Copyright (C) 2021 New York University.
+Copyright (C) 2023 Front Matter.
+
+Invenio App RDM is free software; you can redistribute it and/or modify
+it under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- from "invenio_formatter/macros/meta.html" import meta_twittercard, meta_opengraph, meta_highwire -%}
+
+{%- set meta_title = record.metadata.title|striptags -%}
+
+{%- set meta_description = record.metadata.description|striptags -%}
+{%- set meta_authors = record.metadata.creators|map(attribute='person_or_org.name') -%}
+{%- set meta_contributors = record.metadata.contributors| rejectattr('role.id', 'equalto', 'editor') | map(attribute='person_or_org.name') -%}
+
+{%- set meta_editors = record.metadata.contributors | selectattr('role.id', 'equalto', 'editor') | map(attribute='person_or_org.name') | list %}
+
+{%- set meta_publisher = record.metadata.publisher %}
+{%- set meta_publication_date = record.metadata.publication_date | from_isodate %}
+{%- set meta_doi = record.pids.get("doi", {}).get("identifier")%}
+{%- set meta_keywords = record.metadata.subjects | map(attribute="subject") | join(':') %}
+{%- set meta_url = record.links.self_html %}
+{%- set files = record.files %}
+{%- set meta_pdf_url = preview_file_item.links.content if preview_file_item.mimetype=="application/pdf" else None %}
+
+<meta name="description" content="{{meta_description}}" />
+<meta name="citation_abstract" content="{{meta_description}}" />
+<meta name="citation_title" content="{{meta_title}}" />
+{%- for a in meta_authors %}
+<meta name="citation_author" content="{{a}}" />
+{%- endfor %}
+{%- for e in meta_editors %}
+<meta name="citation_editor" content="{{e}}" />
+{%- endfor %}
+
+{%- for c in meta_contributors %}
+<meta name="citation_contributor" content="{{c}}" />
+{%- endfor %}
+{%- if meta_publisher %}
+<meta name="citation_publisher" content="{{meta_publisher}}" />
+{%- endif %}
+{%- if publication_date %}
+<meta
+  name="citation_publication_date"
+  content="{{meta_publication_date|to_arrow|format_arrow('YYYY/MM/DD')}}"
+/>
+{%- endif %} {%- if meta_doi %}
+<meta name="citation_doi" content="{{meta_doi}}" />
+{# {%- endif %} {%- for k in meta_keywords %} #}
+<meta name="citation_keywords" content="{{meta_keywords}}" />
+{# {%- endfor %} {%- if meta_url %} #}
+<meta name="citation_abstract_html_url" content="{{meta_url}}" />
+{%- endif %} {%- if meta_pdf_url %}
+<meta name="citation_pdf_url" content="{{meta_pdf_url}}" />
+{%- endif %}
+
+{%- if "journal:journal" in record.custom_fields.keys() and record.custom_fields["journal:journal"].title %}
+<meta name="citation_journal_title " content="{{record.custom_fields['journal:journal'].title}}" />
+{%- endif %}
+
+{%- if "journal:journal" in record.custom_fields.keys() and record.custom_fields["journal:journal"].issn %}
+<meta name="citation_issn" content="{{record.custom_fields['journal:journal']['issn']}}" />
+{%- endif %}
+
+{%- if "imprint:imprint" in record.custom_fields.keys() and record.custom_fields["imprint:imprint"].isbn %}
+<meta name="citation_isbn" content="{{record.custom_fields['imprint:imprint'].isbn}}" />
+{%- endif %}
+
+{%- if "imprint:imprint" in record.custom_fields.keys() and record.custom_fields["imprint:imprint"].title %}
+<meta name="citation_inbook_title" content="{{record.custom_fields['imprint:imprint'].title}}" />
+{%- endif %}
+
+{%- if "journal:journal" in record.custom_fields.keys() and record.custom_fields["journal:journal"].volume %}
+<meta name="citation_volume" content="{{record.custom_fields['journal:journal']['volume']}}" />
+{%- endif%}
+
+{%- if "journal:journal" in record.custom_fields.keys() and record.custom_fields["journal:journal"].issue %}
+<meta name="citation_issue" content="{{record.custom_fields['journal:journal'].issue}}" />
+{%- endif%}
+
+{%- if "journal:journal" in record.custom_fields.keys() and record.custom_fields['journal:journal'].pages %}
+<meta name="citation_firstpage" content="{{record.custom_fields['journal:journal'].pages}}" />
+{%- endif %}
+
+{%- if "meeting:meeting" in record.custom_fields.keys() and record.custom_fields['meeting:meeting'].title %}
+<meta name="citation_conference_title" content="{{record.custom_fields['meeting:meeting'].title}}" />
+{%- endif %}
+
+{%- if "thesis:university" in record.custom_fields.keys() and record.custom_fields["thesis:university"] %}
+<meta name="citation_dissertation_institution" content="{{record.custom_fields['thesis:university']}}" />
+{%- endif %}
+
+{%- if "kcr:sponsoring_institution" in record.custom_fields.keys() and record.custom_fields["kcr:sponsoring_institution"] %}
+<meta name="citation_technical_report_institution" content="{{record.custom_fields['kcr:sponsoring_institution']}}" />
+{%- endif %}
+
+{%- if "kcr:book_series" in record.custom_fields.keys() and record.custom_fields["kcr:book_series"].title %}
+<meta name="citation_series_title" content="{{record.custom_fields['kcr:book_series'].title}}" />
+{%- endif %}
+
+{# <meta name="citation_lastpage" content="{{record.custom_fields['journal:journal'].pages}}" /> #}
+
+{{- meta_opengraph(meta_title, meta_description, url=meta_url) }}
+
+{{- meta_twittercard(meta_title, meta_description) }}
+{%- for file_name, file in files.entries.items() or {} -%}
+{%- set file_url =
+url_for("invenio_app_rdm_records.record_file_download", pid_value=record.id,
+filename=file_name, _external=True) %}
+{%- if file.ext == "pdf" %}
+
+<meta name="citation_pdf_url" content="{{ file_url }}" />
+{%- endif %}
+
+<link rel="alternate" type="{{ file.mimetype }}" href="{{ file_url }}" />
+{%- endfor %}
+
+<link rel="canonical" href="{{ meta_url }}" />
