@@ -57,7 +57,12 @@ from invenio_records_resources.services.custom_fields.number import IntegerCF
 from invenio_records_resources.services.custom_fields.date import ISODateStringCF
 from invenio_vocabularies.services.custom_fields import VocabularyCF
 from marshmallow import fields, validate
-from marshmallow_utils.fields import SanitizedUnicode, SanitizedHTML, StrippedHTML, EDTFDateString
+from marshmallow_utils.fields import (
+    SanitizedUnicode,
+    SanitizedHTML,
+    StrippedHTML,
+    EDTFDateString,
+)
 
 HCLEGACY_NAMESPACE = {
     "hclegacy": "",
@@ -71,12 +76,8 @@ HCLEGACY_CUSTOM_FIELDS = [
     #     multiple=False, # if the field accepts a list of values (True) or single value (False)
     #     field_cls=SanitizedUnicode,
     # ),
-    TextCF(
-        name="hclegacy:collection"
-    ),
-    IntegerCF(
-        name="hclegacy:committee_deposit"
-    ),
+    TextCF(name="hclegacy:collection"),
+    IntegerCF(name="hclegacy:committee_deposit"),
     TextCF(
         name="hclegacy:file_location",
         field_cls=SanitizedUnicode,
@@ -93,9 +94,7 @@ HCLEGACY_CUSTOM_FIELDS = [
         name="hclegacy:publication_type",
         field_cls=SanitizedUnicode,
     ),
-    TextCF(
-        name="hclegacy:record_change_date"
-    ),
+    TextCF(name="hclegacy:record_change_date"),
     TextCF(  # FIXME: This should be date formatted, but EDTFDateString doesn't accept time
         name="hclegacy:record_creation_date"
         # field_cls=EDTFDateString,
@@ -111,7 +110,7 @@ HCLEGACY_CUSTOM_FIELDS = [
     TextCF(
         name="hclegacy:submitter_org_memberships",
         field_cls=SanitizedUnicode,
-        multiple=True
+        multiple=True,
     ),
     TextCF(
         name="hclegacy:submitter_affiliation",
@@ -120,5 +119,124 @@ HCLEGACY_CUSTOM_FIELDS = [
     TextCF(
         name="hclegacy:submitter_id",
         field_cls=SanitizedUnicode,
-    )
+    ),
 ]
+
+
+HCLEGACY_COLLECTION_UI = {
+    "field": "hclegacy:collection",
+    "ui_widget": "Input",
+    "props": {"label": "Collection", "helperText": "Enter the collection"},
+}
+
+HCLEGACY_COMMITTEE_DEPOSIT_UI = {
+    "field": "hclegacy:committee_deposit",
+    "ui_widget": "IntegerField",
+    "props": {
+        "label": "Committee Deposit",
+        "helperText": "Enter the committee deposit",
+    },
+}
+
+HCLEGACY_FILE_LOCATION_UI = {
+    "field": "hclegacy:file_location",
+    "ui_widget": "Input",
+    "props": {"label": "File Location", "helperText": "Enter the file location"},
+}
+
+HCLEGACY_FILE_PID_UI = {
+    "field": "hclegacy:file_pid",
+    "ui_widget": "Input",
+    "props": {"label": "File PID", "helperText": "Enter the file PID"},
+}
+
+HCLEGACY_PREVIOUSLY_PUBLISHED_UI = {
+    "field": "hclegacy:previously_published",
+    "ui_widget": "Input",
+    "props": {
+        "label": "Previously Published",
+        "helperText": "Enter if previously published",
+    },
+}
+
+HCLEGACY_PUBLICATION_TYPE_UI = {
+    "field": "hclegacy:publication_type",
+    "ui_widget": "Input",
+    "props": {"label": "Publication Type", "helperText": "Enter the publication type"},
+}
+
+HCLEGACY_RECORD_CHANGE_DATE_UI = {
+    "field": "hclegacy:record_change_date",
+    "ui_widget": "Input",
+    "props": {
+        "label": "Record Change Date",
+        "helperText": "Enter the record change date",
+    },
+}
+
+HCLEGACY_RECORD_CREATION_DATE_UI = {
+    "field": "hclegacy:record_creation_date",
+    "ui_widget": "Input",
+    "props": {
+        "label": "Record Creation Date",
+        "helperText": "Enter the record creation date",
+    },
+}
+
+HCLEGACY_RECORD_IDENTIFIER_UI = {
+    "field": "hclegacy:record_identifier",
+    "ui_widget": "Input",
+    "props": {
+        "label": "Record Identifier",
+        "helperText": "Enter the record identifier",
+    },
+}
+
+HCLEGACY_SOCIETY_UI = {
+    "field": "hclegacy:society",
+    "ui_widget": "Input",
+    "props": {"label": "Society", "helperText": "Enter the society"},
+}
+
+HCLEGACY_SUBMITTER_ORG_MEMBERSHIPS_UI = {
+    "field": "hclegacy:submitter_org_memberships",
+    "ui_widget": "Input",
+    "props": {
+        "label": "Submitter Org Memberships",
+        "helperText": "Enter the submitter org memberships",
+    },
+}
+
+HCLEGACY_SUBMITTER_AFFILIATION_UI = {
+    "field": "hclegacy:submitter_affiliation",
+    "ui_widget": "TextField",
+    "props": {
+        "label": "Submitter Affiliation",
+        "helperText": "Enter the submitter affiliation",
+    },
+}
+
+HCLEGACY_SUBMITTER_ID_UI = {
+    "field": "hclegacy:submitter_id",
+    "ui_widget": "TextField",
+    "props": {"label": "Submitter ID", "helperText": "Enter the submitter ID"},
+}
+
+HCLEGACY_INFO_SECTION_UI = {
+    "section": _("Commons legacy info"),
+    "fields": [
+        HCLEGACY_COLLECTION_UI,
+        HCLEGACY_COMMITTEE_DEPOSIT_UI,
+        HCLEGACY_FILE_LOCATION_UI,
+        HCLEGACY_FILE_PID_UI,
+        HCLEGACY_PREVIOUSLY_PUBLISHED_UI,
+        HCLEGACY_PUBLICATION_TYPE_UI,
+        HCLEGACY_RECORD_CHANGE_DATE_UI,
+        HCLEGACY_RECORD_CREATION_DATE_UI,
+        HCLEGACY_RECORD_IDENTIFIER_UI,
+        HCLEGACY_SOCIETY_UI,
+        HCLEGACY_SUBMITTER_ORG_MEMBERSHIPS_UI,
+        HCLEGACY_SUBMITTER_AFFILIATION_UI,
+        HCLEGACY_SUBMITTER_ID_UI,
+    ],
+}
