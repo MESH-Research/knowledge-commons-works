@@ -1,6 +1,6 @@
 import click
 import numpy as np
-from APIResponse import APIResponse
+from APIclient import APIclient
 
 # get stats for:
     # all deposits (total number, an average across all deposits, num views of every deposit)
@@ -16,7 +16,7 @@ def cli():
 @cli.command(name='total_deposits')
 @click.argument('over_time', default='all')
 def request_total_deposits(over_time):
-    client = APIResponse(token)
+    client = APIclient(token)
     no_deposits = client.total_deposits(over_time)
     if over_time.lower() == 'all':
         click.echo(f"Total number of deposits: {no_deposits}!")
@@ -29,7 +29,7 @@ def request_total_deposits(over_time):
 @cli.command(name='num_views')
 @click.argument('id', default='all')
 def request_num_views(id):
-    client = APIResponse(token)
+    client = APIclient(token)
     no_views = client.total_views(id)
     if id.lower() == 'all':
         for key in no_views:
@@ -41,7 +41,7 @@ def request_num_views(id):
 @cli.command(name='num_downloads')
 @click.argument('id', default='all')
 def request_num_downloads(id):
-    client = APIResponse(token)
+    client = APIclient(token)
     no_downloads = client.total_downloads(id)
     if id.lower() == 'all':
         for key in no_downloads:
@@ -53,7 +53,7 @@ def request_num_downloads(id):
 @cli.command(name='avg_views')
 # argument for over time options
 def request_avg_views(id):
-    client = APIResponse(token)
+    client = APIclient(token)
     avg = client.avg_views()
     click.echo(f"Average number of views per deposit: {avg}!")
 
@@ -61,7 +61,7 @@ def request_avg_views(id):
 @cli.command(name='avg_downloads')
 # argument for over time options
 def request_avg_downloads(id):
-    client = APIResponse(token)
+    client = APIclient(token)
     avg = client.avg_downloads()
     click.echo(f"Average number of downloads per deposit: {avg}!")
 
@@ -69,7 +69,7 @@ def request_avg_downloads(id):
 @cli.command(name='top_downloads')
 @click.argument('num', default=3)
 def request_top_downloads(num):
-    client = APIResponse(token)
+    client = APIclient(token)
     sorted_downloads = client.top_downloads()
     click.echo(f"Top {num} deposits by number of downloads:")
     index = -1
