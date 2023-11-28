@@ -228,11 +228,6 @@
 
       .submit-actions {
         > .row:last-child {
-          margin-top: 1em;
-          margin-bottom: 2em;
-          padding-left: 2em;
-          padding-right: 2em;
-
           .save-submit-buttons {
             background-color: transparent;
             border: 0;
@@ -278,6 +273,10 @@
           margin-bottom: 0;
         }
 
+        .ui.container {
+          width: 100%;
+        }
+
         .field > label {
           margin-bottom: 0.5em;
         }
@@ -313,20 +312,16 @@
           }
         }
 
-        &.access-right {
-          padding: 2em;
-          padding-top: 1.5em;
-          padding-bottom: 1.5em;
-
+        &.access {
           .message {
             margin-top: 2em;
           }
 
-          .embargo-access {
-            label.helptext {
-              margin-bottom: 1em;
-            }
-          }
+          // .embargo-access {
+          //   label.helptext {
+          //     margin-bottom: 1em;
+          //   }
+          // }
           // .disabled {
           //   color: rgba(0,0,0) !important;
           // }

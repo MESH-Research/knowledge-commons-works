@@ -39,12 +39,7 @@ export class AccessRightFieldCmp extends Component {
     const isMetadataOnly = !formik.form.values.files.enabled;
 
     return (
-        // <Form.Field required>
         <>
-          <Segment as="fieldset" className="access-right">
-            {/* <Form.Field>
-              <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
-            </Form.Field> */}
             <Grid>
               <Grid.Row>
                 <Grid.Column width="8">
@@ -55,6 +50,11 @@ export class AccessRightFieldCmp extends Component {
                     />
                   )}
                   <FilesAccess
+                    access={formik.field.value}
+                    accessCommunity={communityAccess}
+                    metadataOnly={isMetadataOnly}
+                  />
+                  <EmbargoAccess
                     access={formik.field.value}
                     accessCommunity={communityAccess}
                     metadataOnly={isMetadataOnly}
@@ -71,16 +71,6 @@ export class AccessRightFieldCmp extends Component {
 
               </Grid.Row>
             </Grid>
-            {/* <Card.Header as={Header} size="tiny">
-              {i18next.t("Options")}
-            </Card.Header> */}
-            <EmbargoAccess
-              access={formik.field.value}
-              accessCommunity={communityAccess}
-              metadataOnly={isMetadataOnly}
-            />
-          </Segment>
-        {/* </Form.Field> */}
         </>
     );
   }
