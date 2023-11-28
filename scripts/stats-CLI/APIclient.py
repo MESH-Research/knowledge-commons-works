@@ -5,7 +5,7 @@ from datetime import date
 
 # create class for managing stats queried from Invenio API response
 
-class APIResponse():
+class APIclient():
     # constructor: an APIResponse object keeps track of headers for the API request, the JSON response from
     # the records endpoint, and a dictionary mapping id->deposit info
     def __init__(self, bearer_token):
