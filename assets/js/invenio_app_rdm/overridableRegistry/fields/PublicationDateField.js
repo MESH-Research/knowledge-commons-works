@@ -8,7 +8,8 @@
 
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useFormikContext } from "formik";
+import { Field, useFormikContext } from "formik";
+import { object } from "yup";
 
 import { FieldLabel } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
@@ -49,30 +50,6 @@ const DateDropdown = ({
   );
 };
 
-/**
- * Compare two date strings
- *
- * @param {string} a
- * @param {string} b
- * @returns {number} 1 if a > b, -1 if a < b, 0 if a == b
- */
-const compareDateStrings = (a, b) => {
-  // stringAArray = a.split("-").join("");
-  console.log("comparing", a, b);
-  const aDate = new Date(a);
-  console.log(aDate);
-  const bDate = new Date(b);
-  console.log(bDate);
-  if (aDate > bDate) {
-    return 1;
-  } else if (aDate < bDate) {
-    return -1;
-  } else {
-    return 0;
-  }
-};
-
-//
 const PublicationDateField = ({
   fieldPath,
   helpText,
@@ -80,7 +57,7 @@ const PublicationDateField = ({
   labelIcon = "calendar",
   required = true,
 }) => {
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values, errors, touched } = useFormikContext();
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentDay = String(currentDate.getDate()).padStart(2, "0");
@@ -128,11 +105,6 @@ const PublicationDateField = ({
       .filter((v) => !!v)
       .join("-");
     if (!!endYearValue) {
-      if (compareDateStrings(newDateValue, endYearValue) === 1) {
-        setErrorMessage("End date must be after start date");
-      } else {
-        setErrorMessage(null);
-      }
       newDateValue +=
         "/" +
         [endYearValue, endMonthValue, endDayValue].filter((v) => !!v).join("-");
@@ -254,33 +226,39 @@ const PublicationDateField = ({
   ];
   return (
     <>
-      <Form.Field id="metadata.publication_date">
-        <FieldLabel
-          htmlFor={fieldPath}
-          icon={labelIcon}
-          label={label}
-          id={`${fieldPath}.label`}
-        />
-        <Form.Group>
-          {startDropdowns.map((dropdown, idx) => (
-            <DateDropdown
-              key={idx}
-              {...dropdown}
-              position={"Start"}
-              useRange={useRange}
-              fieldPath={fieldPath}
-              handleDropdownChange={handleDropdownChange}
-              error={!!errorMessage}
+      <Field name={fieldPath} id={fieldPath}>
+        {({
+          field, // { name, value, onChange, onBlur }
+          form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
+          meta,
+        }) => (
+          <Form.Field>
+            <FieldLabel
+              htmlFor={fieldPath}
+              icon={labelIcon}
+              label={label}
+              id={`${fieldPath}.label`}
             />
-          ))}
-          <Checkbox
-            label="add end date"
-            id="metadata.publication_date.controls.useRange"
-            onChange={(e, data) => setUseRange(data.checked)}
-            checked={useRange}
-          />
-        </Form.Group>
-        {/* // <TextField
+            <Form.Group>
+              {startDropdowns.map((dropdown, idx) => (
+                <DateDropdown
+                  key={idx}
+                  {...dropdown}
+                  position={"Start"}
+                  useRange={useRange}
+                  fieldPath={fieldPath}
+                  handleDropdownChange={handleDropdownChange}
+                  error={!!meta.error}
+                />
+              ))}
+              <Checkbox
+                label="add end date"
+                id="metadata.publication_date.controls.useRange"
+                onChange={(e, data) => setUseRange(data.checked)}
+                checked={useRange}
+              />
+            </Form.Group>
+            {/* // <TextField
       //   fieldPath={fieldPath}
       //   id={fieldPath}
       //   helpText={""}
@@ -289,28 +267,30 @@ const PublicationDateField = ({
       //   aria-describedby={`${fieldPath}.help-text`}
       //   required={required}
       // /> */}
-        {!!useRange && (
-          <Form.Group>
-            {endDropdowns.map((dropdown, idx) => (
-              <DateDropdown
-                key={idx}
-                {...dropdown}
-                position={"End"}
-                useRange={useRange}
-                fieldPath={fieldPath}
-                handleDropdownChange={handleDropdownChange}
-                error={!!errorMessage}
-              />
-            ))}
-          </Form.Group>
+            {!!useRange && (
+              <Form.Group>
+                {endDropdowns.map((dropdown, idx) => (
+                  <DateDropdown
+                    key={idx}
+                    {...dropdown}
+                    position={"End"}
+                    useRange={useRange}
+                    fieldPath={fieldPath}
+                    handleDropdownChange={handleDropdownChange}
+                    error={!!meta.error}
+                  />
+                ))}
+              </Form.Group>
+            )}
+            {meta.error && (
+              <Message negative icon>
+                <Icon name="warning sign" />
+                {meta.error}
+              </Message>
+            )}
+          </Form.Field>
         )}
-      </Form.Field>
-      {!!errorMessage && (
-        <Message negative icon>
-          <Icon name="warning sign" />
-          {errorMessage}
-        </Message>
-      )}
+      </Field>
     </>
   );
 };
