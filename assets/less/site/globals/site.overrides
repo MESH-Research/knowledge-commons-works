@@ -110,6 +110,10 @@
     font-weight: normal !important;
   }
 
+  .ui.label.prompt {
+    font-size: 1rem;
+  }
+
   .ui.button {
     font-weight: normal;
     &.add-btn,
@@ -168,14 +172,14 @@
         }
       }
       .prompt.label {
-        background-color: @errorTextColor !important;
-        border-color: @errorTextColor !important;
+        background-color: @errorColor !important;
+        border-color: @errorColor !important;
         color: #fff !important;
       }
     }
 
     .upload-form-stepper-step.has-error {
-      color: @errorTextColor;
+      color: @errorColor; // was @errorTextColor
       background-color: @negativeBackgroundColor;
       border: 1px solid #e0b4b4;
       &:after {
@@ -335,6 +339,11 @@
         &.invenio-fieldset.resource_type {
           > .field {
             margin-bottom: 0;
+            &.error {
+              .item {
+                color: @errorColor;
+              }
+            }
           }
           .ui.menu.compact {
             border: 0;
@@ -353,6 +362,10 @@
         }
 
         &.invenio-fieldset.combined_dates {
+          .ui.label.prompt {
+            margin-top: 0;
+            margin-bottom: 1rem;
+          }
           label.helptext {
             margin-top: 1.5em;
           }

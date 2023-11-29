@@ -13,7 +13,14 @@ import { object } from "yup";
 
 import { FieldLabel } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
-import { Checkbox, Dropdown, Form, Icon, Message } from "semantic-ui-react";
+import {
+  Checkbox,
+  Dropdown,
+  Form,
+  Label,
+  Icon,
+  Message,
+} from "semantic-ui-react";
 
 //   original helpText:
 //     "In case your upload was already published elsewhere, please use the date of the first publication. Format: YYYY-MM-DD, YYYY-MM, or YYYY. For intervals use DATE/DATE, e.g. 1939/1945."
@@ -52,11 +59,12 @@ const DateDropdown = ({
 
 const PublicationDateField = ({
   fieldPath,
-  helpText,
   label = i18next.t("Publication date"),
   labelIcon = "calendar",
   required = true,
 }) => {
+  const helpText =
+    "If this work is already published elsewhere, please use the date of the first publication.";
   const { setFieldValue, values, errors, touched } = useFormikContext();
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -261,15 +269,6 @@ const PublicationDateField = ({
                 checked={useRange}
               />
             </Form.Group>
-            {/* // <TextField
-      //   fieldPath={fieldPath}
-      //   id={fieldPath}
-      //   helpText={""}
-      //   label={}
-      //   placeholder={placeholder}
-      //   aria-describedby={`${fieldPath}.help-text`}
-      //   required={required}
-      // /> */}
             {!!useRange && (
               <Form.Group>
                 {endDropdowns.map((dropdown, idx) => (
@@ -286,16 +285,15 @@ const PublicationDateField = ({
                 ))}
               </Form.Group>
             )}
-            {helpText && (
-              <span id={`${fieldPath}.helptext`} className="helptext">
-                {helpText}
-              </span>
-            )}
             {meta.error && (
-              <Message negative icon>
-                <Icon name="warning sign" />
+              <Label className="prompt error" pointing>
                 {meta.error}
-              </Message>
+              </Label>
+            )}
+            {helpText && (
+              <div id={`${fieldPath}.helptext`} className="helptext">
+                {helpText}
+              </div>
             )}
           </Form.Field>
         )}

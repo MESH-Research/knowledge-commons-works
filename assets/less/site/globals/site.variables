@@ -29,3 +29,9 @@
 @computerBreakpoint: 992px;
 @largeMonitorBreakpoint: 1200px;
 @widescreenMonitorBreakpoint: 1920px;
+
+/*-------------------
+      Colors
+--------------------*/
+@errorTextColor: @negativeColor; // = @red
+@negativeTextColor: @red;
