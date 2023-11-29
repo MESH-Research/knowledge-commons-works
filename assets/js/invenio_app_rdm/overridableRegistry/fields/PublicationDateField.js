@@ -144,18 +144,20 @@ const PublicationDateField = ({
     { key: "November", value: "11", text: "November", days: 30 },
     { key: "December", value: "12", text: "December", days: 31 },
   ];
-  const days = Array.from({ length: 31 }, (_, i) =>
-    (i + 1).toString().padStart(2, "0")
-  );
+  const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
   let dayOptions = days.map((day) => {
-    return { key: day, value: day, text: day };
+    return {
+      key: day.padStart(2, "0"),
+      value: day.padStart(2, "0"),
+      text: day,
+    };
   });
   dayOptions.unshift({ key: "None", value: null, text: "None" });
   const selectedMonth = monthOptions.find(
     (month) => month.value === monthValue
   );
   const daysInSelectedMonth = selectedMonth ? selectedMonth.days : 31;
-  const slicedDayOptions = dayOptions.slice(0, daysInSelectedMonth);
+  const slicedDayOptions = dayOptions.slice(0, daysInSelectedMonth + 1);
 
   const handleDropdownChange = (e, { name, value }) => {
     const setters = {
@@ -232,7 +234,7 @@ const PublicationDateField = ({
           form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
           meta,
         }) => (
-          <Form.Field>
+          <Form.Field required={!!required} error={!!meta.error}>
             <FieldLabel
               htmlFor={fieldPath}
               icon={labelIcon}
@@ -249,6 +251,7 @@ const PublicationDateField = ({
                   fieldPath={fieldPath}
                   handleDropdownChange={handleDropdownChange}
                   error={!!meta.error}
+                  aria-describedby={`${fieldPath}.help-text`}
                 />
               ))}
               <Checkbox
@@ -278,9 +281,15 @@ const PublicationDateField = ({
                     fieldPath={fieldPath}
                     handleDropdownChange={handleDropdownChange}
                     error={!!meta.error}
+                    aria-describedby={`${fieldPath}.help-text`}
                   />
                 ))}
               </Form.Group>
+            )}
+            {helpText && (
+              <span id={`${fieldPath}.helptext`} className="helptext">
+                {helpText}
+              </span>
             )}
             {meta.error && (
               <Message negative icon>

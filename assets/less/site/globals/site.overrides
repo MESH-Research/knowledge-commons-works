@@ -159,17 +159,6 @@
       text-decoration-style: dotted;
     }
 
-    .required.field > .checkbox:after,
-    .required.field > label:after,
-    .required.fields.grouped > label:after,
-    .required.fields:not(.grouped) > .field > .checkbox:after,
-    .required.fields:not(.grouped) > .field > label:after {
-      color: @primaryColor;
-      content: "(required)";
-      margin: 0 0 0 0.5em;
-      font-weight: normal;
-    }
-
     .field.error {
       input[type="text"] {
         &::before {
