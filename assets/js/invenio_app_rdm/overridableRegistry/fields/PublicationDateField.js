@@ -65,7 +65,8 @@ const PublicationDateField = ({
 }) => {
   const helpText =
     "If this work is already published elsewhere, please use the date of the first publication.";
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values, touched, setFieldTouched } =
+    useFormikContext();
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentDay = String(currentDate.getDate()).padStart(2, "0");
@@ -113,6 +114,7 @@ const PublicationDateField = ({
     }
     setDateValue(newDateValue);
     setFieldValue(fieldPath, newDateValue);
+    setFieldTouched(fieldPath, true);
   }, [
     yearValue,
     monthValue,
