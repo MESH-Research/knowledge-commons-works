@@ -65,7 +65,7 @@ const PublicationDateField = ({
 }) => {
   const helpText =
     "If this work is already published elsewhere, please use the date of the first publication.";
-  const { setFieldValue, values, errors, touched } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext();
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentDay = String(currentDate.getDate()).padStart(2, "0");
@@ -80,12 +80,6 @@ const PublicationDateField = ({
     [yearValue, monthValue, dayValue].join("-")
   );
   const [useRange, setUseRange] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  console.log(dateValue);
-  console.log(values.metadata.publication_date);
-  console.log(errorMessage);
-  console.log(!!errorMessage);
 
   useEffect(() => {
     const publicationDate = values.metadata.publication_date;

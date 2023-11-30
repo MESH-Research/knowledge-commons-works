@@ -7,7 +7,6 @@ import {
 
 addMethod(yupString, "dateInSequence", function () {
   return this.test("test-name", function (value) {
-    console.log("dateInSequence", value);
     const { path, createError } = this;
     let outOfSequence = false;
 
