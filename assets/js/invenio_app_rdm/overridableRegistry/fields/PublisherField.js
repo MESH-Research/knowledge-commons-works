@@ -8,25 +8,35 @@
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { Field } from "formik";
+import { Form, Label } from "semantic-ui-react";
 
-import { FieldLabel, TextField } from "react-invenio-forms";
+import { FieldLabel } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 
-export class PublisherField extends Component {
-  render() {
-    const { fieldPath, label, labelIcon, placeholder, helpText, required } = this.props;
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
-    return (
-      <TextField
-        fieldPath={fieldPath}
-        helpText={i18next.t(helpText)}
-        label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
-        placeholder={placeholder}
-        required={required}
-      />
-    );
-  }
-}
+const PublisherField = ({
+  fieldPath,
+  disabled,
+  label,
+  labelIcon,
+  placeholder,
+  helpText,
+  required,
+}) => {
+  return (
+    <TextField
+      fieldPath={fieldPath}
+      label={label}
+      labelIcon={labelIcon}
+      placeholder={placeholder}
+      helpText={helpText}
+      required={required}
+      fluid={true}
+    />
+  );
+};
 
 PublisherField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
@@ -41,3 +51,5 @@ PublisherField.defaultProps = {
   placeholder: i18next.t("Publisher"),
   required: true,
 };
+
+export { PublisherField };

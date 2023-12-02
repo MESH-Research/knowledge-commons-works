@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { useFormikContext } from "formik";
-// import { Form, Icon, Radio, } from "semantic-ui-react";
-import { BooleanCheckbox, TextArea } from "react-invenio-forms";
+import { Form } from "semantic-ui-react";
+import { BooleanCheckbox, FieldLabel, TextArea } from "react-invenio-forms";
 // import { ResourceTypeContext } from "@js/invenio_modular_deposit_form/RDMDepositForm";
 import { FormValuesContext } from "@js/invenio_modular_deposit_form";
 
@@ -35,7 +35,8 @@ const AIUsageField = ({
   }, [values]);
 
   return (
-    <>
+    <Form.Field id={fieldPath} name={fieldPath}>
+      <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
       <BooleanCheckbox
         fieldPath={`${fieldPath}.ai_used`}
         // label="Did generative AI contribute to the production of this work?"
@@ -45,7 +46,6 @@ const AIUsageField = ({
         // icon={ai_used.icon}
         required={false}
         description=""
-        icon={ai_used.icon}
         value={false}
       />
       {!!values.custom_fields
@@ -59,7 +59,7 @@ const AIUsageField = ({
             />
           )
         : ""}
-    </>
+    </Form.Field>
   );
 };
 

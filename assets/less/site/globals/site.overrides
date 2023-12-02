@@ -270,7 +270,8 @@
           width: 100%;
         }
 
-        > .field > .invenio-field-label:first-of-type {
+        > .field > .invenio-field-label:first-of-type,
+        > .field > label > .invenio-field-label:first-of-type {
           font-size: @big;
           margin-bottom: 0.25rem;
         }

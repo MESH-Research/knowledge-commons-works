@@ -9,11 +9,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { FieldLabel, TextField } from "react-invenio-forms";
 import { AdditionalTitlesField } from "./AdditionalTitlesField";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { Form } from "semantic-ui-react";
 import { Field } from "formik";
+
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
 const TitlesField = ({
   fieldPath = "metadata.title",
@@ -25,31 +26,15 @@ const TitlesField = ({
 }) => {
   return (
     <>
-      <Field id={"metadata.title"} name={"metadata.title"}>
-        {({
-          field, // { name, value, onChange, onBlur }
-          form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
-          meta,
-        }) => (
-          <Form.Field
-            required={!!required}
-            error={!!meta.error && !!meta.touched}
-            // (!!meta.touched && !!meta.errors) ||
-            // (!meta.touched && meta.initialError)
-            className="invenio-text-input-field title-field"
-          >
-            <FieldLabel htmlFor={fieldPath} icon="book" label={label} />
-            <Form.Input
-              error={meta.error && meta.touched ? meta.error : undefined}
-              disabled={disabled}
-              fluid
-              id={fieldPath}
-              name={fieldPath}
-              {...field}
-            />
-          </Form.Field>
-        )}
-      </Field>
+      <TextField
+        fieldPath={fieldPath}
+        label={label}
+        required={required}
+        classnames="title-field"
+        showLabel={true}
+        labelIcon="book"
+        disabled={disabled}
+      />
       <AdditionalTitlesField
         options={options}
         recordUI={recordUI}

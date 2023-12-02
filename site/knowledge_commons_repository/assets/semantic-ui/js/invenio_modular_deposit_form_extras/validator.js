@@ -1,5 +1,7 @@
 import {
   addMethod,
+  array as yupArray,
+  boolean as yupBoolean,
   object as yupObject,
   string as yupString,
   date as yupDate,
@@ -29,13 +31,45 @@ addMethod(yupString, "dateInSequence", function () {
 
 const validationSchema = yupObject().shape({
   access: yupObject().shape({}),
+  custom_fields: yupObject().shape({
+    "kcr:ai_usage": yupObject().shape({
+      ai_used: yupBoolean(),
+      ai_description: yupString().when("ai_used", {
+        is: true,
+        then: yupString().required(
+          "Please describe the role AI played in this work"
+        ),
+      }),
+    }),
+  }),
   metadata: yupObject()
     .shape({
-      title: yupString().required("A title is required"),
-      resource_type: yupString().required("A resource type is required"),
+      creators: yupArray().required("At least one contributor must be listed"),
+      identifiers: yupArray().of(
+        yupObject().shape({
+          scheme: yupString().required("An identifier scheme is required"),
+          identifier: yupString()
+            .when("scheme", {
+              is: "url",
+              then: yupString().url("Must be a valid URL"),
+            })
+            .matches(/(?!\s).+/, {
+              disallowEmptyString: true,
+              message: "Identifier cannot be blank",
+            })
+            .required("An identifier is required"),
+        })
+      ),
+      publisher: yupString()
+        .matches(/(?!\s).+/, "Publisher cannot be blank")
+        .required("A publisher is required"),
       publication_date: yupString()
         .dateInSequence()
         .required("A publication date is required"),
+      title: yupString()
+        .matches(/(?!\s).+/, "Title cannot be blank")
+        .required("A title is required"),
+      resource_type: yupString().required("A resource type is required"),
     })
     .required("Some metadata is required"),
 });
