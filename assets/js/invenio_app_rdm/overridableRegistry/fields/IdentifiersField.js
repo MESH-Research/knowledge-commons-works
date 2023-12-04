@@ -7,17 +7,13 @@
 
 import PropTypes from "prop-types";
 import React, { Component, useState, useEffect } from "react";
-import {
-  ArrayField,
-  FieldLabel,
-  GroupField,
-  SelectField,
-} from "react-invenio-forms";
+import { ArrayField, FieldLabel, GroupField } from "react-invenio-forms";
 import { Button, Form, Grid, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 // import { emptyIdentifier } from "./initialValues";
 import { FieldArray, Field, useFormikContext } from "formik";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
+import { SelectField } from "@js/invenio_modular_deposit_form/replacement_components/SelectField";
 
 const emptyIdentifier = {
   scheme: "",
