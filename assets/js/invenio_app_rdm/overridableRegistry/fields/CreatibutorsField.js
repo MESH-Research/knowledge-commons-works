@@ -32,7 +32,11 @@ export function sortOptions(options) {
 }
 
 const creatibutorNameDisplay = (value) => {
-  const creatibutorType = _get(value, "person_or_org.type", CREATIBUTOR_TYPE.PERSON);
+  const creatibutorType = _get(
+    value,
+    "person_or_org.type",
+    CREATIBUTOR_TYPE.PERSON
+  );
   const isPerson = creatibutorType === CREATIBUTOR_TYPE.PERSON;
 
   const familyName = _get(value, "person_or_org.family_name", "");
@@ -53,8 +57,8 @@ const creatibutorNameDisplay = (value) => {
 class CreatibutorsFieldForm extends Component {
   // constructor(props) {
   //     super(props);
-      // this.focusAddButtonHandler = this.focusAddButtonHandler.bind(this);
-      // this.handleOnContributorChange = this.handleOnContributorChange.bind(this);
+  // this.focusAddButtonHandler = this.focusAddButtonHandler.bind(this);
+  // this.handleOnContributorChange = this.handleOnContributorChange.bind(this);
   // }
 
   handleOnContributorChange = (selectedCreatibutor) => {
@@ -64,26 +68,37 @@ class CreatibutorsFieldForm extends Component {
 
   focusAddButtonHandler = () => {
     document.getElementById(`${this.props.fieldPath}.add-button`).focus();
-  }
+  };
 
   moveCommonRolesToTop = (roleArray) => {
-      let newRoleArray = [...roleArray];
-      let commonRoles = ["translator", "editor", "author"];
-      if ( this.props.fieldPath === 'metadata.contributors' ) {
-        commonRoles = ['translator', 'projectOrTeamLeader', 'projectOrTeamMember', 'editor', 'collaborator'];
-      }
-      for ( const role of commonRoles ) {
-        const index = newRoleArray.findIndex(({value}) => value === role);
-        newRoleArray.unshift(...newRoleArray.splice(index, 1));
-      }
-      newRoleArray.push(...newRoleArray.splice(newRoleArray.findIndex(({value}) => value==="other"), 1));
-      return newRoleArray;
-  }
+    let newRoleArray = [...roleArray];
+    let commonRoles = ["translator", "editor", "author"];
+    if (this.props.fieldPath === "metadata.contributors") {
+      commonRoles = [
+        "translator",
+        "projectOrTeamLeader",
+        "projectOrTeamMember",
+        "editor",
+        "collaborator",
+      ];
+    }
+    for (const role of commonRoles) {
+      const index = newRoleArray.findIndex(({ value }) => value === role);
+      newRoleArray.unshift(...newRoleArray.splice(index, 1));
+    }
+    newRoleArray.push(
+      ...newRoleArray.splice(
+        newRoleArray.findIndex(({ value }) => value === "other"),
+        1
+      )
+    );
+    return newRoleArray;
+  };
 
   orderOptions = (optionList) => {
     let newOptionList = sortOptions(optionList);
     return this.moveCommonRolesToTop(newOptionList);
-  }
+  };
 
   render() {
     const {
@@ -113,76 +128,77 @@ class CreatibutorsFieldForm extends Component {
     const orderedRoleOptions = this.orderOptions(roleOptions);
 
     return (
-      // <DndProvider backend={HTML5Backend} options={{ rootElement: rootElement}}>
-      // <GlobalDndContext key={Math.random()}>
-        <Form.Field
-          required={schema === "creators"}
-          className={creatibutorsError ? "error" : ""}
-        >
-          <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
-          <List>
-            {creatibutorsList.map((value, index) => {
-              const key = `${fieldPath}.${index}`;
-              const identifiersError =
-                creatibutorsError &&
-                creatibutorsError[index]?.person_or_org?.identifiers;
-              const displayName = creatibutorNameDisplay(value);
+      <Form.Field
+        required={schema === "creators"}
+        className={creatibutorsError ? "error" : ""}
+      >
+        <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+        <List>
+          {creatibutorsList.map((value, index) => {
+            const key = `${fieldPath}.${index}`;
+            const identifiersError =
+              creatibutorsError &&
+              creatibutorsError[index]?.person_or_org?.identifiers;
+            const displayName = creatibutorNameDisplay(value);
 
-              return (
-                <CreatibutorsFieldItem
-                  key={key}
-                  identifiersError={identifiersError}
-                  {...{
-                    displayName,
-                    index,
-                    roleOptions: orderedRoleOptions,
-                    schema,
-                    compKey: key,
-                    initialCreatibutor: value,
-                    removeCreatibutor: formikArrayRemove,
-                    replaceCreatibutor: formikArrayReplace,
-                    moveCreatibutor: formikArrayMove,
-                    addLabel: modal.addLabel,
-                    editLabel: modal.editLabel,
-                    autocompleteNames: autocompleteNames,
-                  }}
-                  focusAddButtonHandler={this.focusAddButtonHandler}
-                  parentFieldPath={fieldPath}
-                />
-              );
-            })}
-            <CreatibutorsModal
-              onCreatibutorChange={this.handleOnContributorChange}
-              action="add"
-              addLabel={modal.addLabel}
-              editLabel={modal.editLabel}
-              roleOptions={orderedRoleOptions}
-              schema={schema}
-              autocompleteNames={autocompleteNames}
-              trigger={
-                <Button type="button" icon labelPosition="left"
-                 id={`${fieldPath}.add-button`}
-                 className="add-button"
-                 aria-labelledby={`${fieldPath}-field-description`}
+            return (
+              <CreatibutorsFieldItem
+                key={key}
+                identifiersError={identifiersError}
+                {...{
+                  displayName,
+                  index,
+                  roleOptions: orderedRoleOptions,
+                  schema,
+                  compKey: key,
+                  initialCreatibutor: value,
+                  removeCreatibutor: formikArrayRemove,
+                  replaceCreatibutor: formikArrayReplace,
+                  moveCreatibutor: formikArrayMove,
+                  addLabel: modal.addLabel,
+                  editLabel: modal.editLabel,
+                  autocompleteNames: autocompleteNames,
+                }}
+                focusAddButtonHandler={this.focusAddButtonHandler}
+                parentFieldPath={fieldPath}
+              />
+            );
+          })}
+          <CreatibutorsModal
+            onCreatibutorChange={this.handleOnContributorChange}
+            action="add"
+            addLabel={modal.addLabel}
+            editLabel={modal.editLabel}
+            roleOptions={orderedRoleOptions}
+            schema={schema}
+            autocompleteNames={autocompleteNames}
+            trigger={
+              <Button
+                type="button"
+                icon
+                labelPosition="left"
+                id={`${fieldPath}.add-button`}
+                className="add-button"
+                aria-labelledby={`${fieldPath}-field-description`}
                 //  ref={this.adderRef}
-                >
-                  <Icon name="add" />
-                  {addButtonLabel}
-                </Button>
-              }
-              focusAddButtonHandler={this.focusAddButtonHandler}
-              parentFieldPath={fieldPath}
-            />
-            {creatibutorsError && typeof creatibutorsError == "string" && (
-              <Label pointing="left" prompt>
-                {creatibutorsError}
-              </Label>
-            )}
-          </List>
-          <span id={`${fieldPath}-field-description`} className="helptext">{description}</span>
-        </Form.Field>
-      // {/* </DndProvider> */}
-      // </GlobalDndContext>
+              >
+                <Icon name="add" />
+                {addButtonLabel}
+              </Button>
+            }
+            focusAddButtonHandler={this.focusAddButtonHandler}
+            parentFieldPath={fieldPath}
+          />
+          {creatibutorsError && typeof creatibutorsError == "string" && (
+            <Label pointing="left" prompt>
+              {creatibutorsError}
+            </Label>
+          )}
+        </List>
+        <span id={`${fieldPath}-field-description`} className="helptext">
+          {description}
+        </span>
+      </Form.Field>
     );
   }
 }
