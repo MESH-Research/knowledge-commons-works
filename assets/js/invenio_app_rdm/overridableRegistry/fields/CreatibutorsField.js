@@ -72,16 +72,14 @@ class CreatibutorsFieldForm extends Component {
 
   moveCommonRolesToTop = (roleArray) => {
     let newRoleArray = [...roleArray];
-    let commonRoles = ["translator", "editor", "author"];
-    if (this.props.fieldPath === "metadata.contributors") {
-      commonRoles = [
-        "translator",
-        "projectOrTeamLeader",
-        "projectOrTeamMember",
-        "editor",
-        "collaborator",
-      ];
-    }
+    let commonRoles = [
+      "projectOrTeamLeader",
+      "projectOrTeamMember",
+      "collaborator",
+      "translator",
+      "editor",
+      "author",
+    ];
     for (const role of commonRoles) {
       const index = newRoleArray.findIndex(({ value }) => value === role);
       newRoleArray.unshift(...newRoleArray.splice(index, 1));
@@ -95,9 +93,19 @@ class CreatibutorsFieldForm extends Component {
     return newRoleArray;
   };
 
+  // FIXME: Merge creator and contributor roles vocabs to avoid merging here
+  // FIXME: Memoize this function
   orderOptions = (optionList) => {
-    let newOptionList = sortOptions(optionList);
-    return this.moveCommonRolesToTop(newOptionList);
+    const contribsOptionList = this.props.config.vocabularies.contributors.role;
+    let newOptionList = optionList.concat(
+      contribsOptionList.filter(
+        (item) =>
+          !optionList.some(
+            (item2) => item2.text.toLowerCase() === item.text.toLowerCase()
+          )
+      )
+    );
+    return this.moveCommonRolesToTop(sortOptions(newOptionList));
   };
 
   render() {
