@@ -1,11 +1,7 @@
 import click
 import numpy as np
+import json
 from APIclient import APIclient
-
-# get stats for:
-    # all deposits (total number, an average across all deposits, num views of every deposit)
-    # a certain deposit
-    # deposits over time
 
 token = 'lVOh2bLTRWTOs8rwnF49KzJbhSnEmBsuNqXY7C0RMj9p2dzfiaHFPaYIoJgX'
 
@@ -15,31 +11,80 @@ def cli():
 
 @cli.command(name='total_deposits')
 @click.argument('over_time', default='all')
-def request_total_deposits(over_time):
+@click.option('--json-output/--no-json', default=False, required=False)
+def request_total_deposits(over_time, json_output):
     client = APIclient(token)
     no_deposits = client.total_deposits(over_time)
-    if over_time.lower() == 'all':
-        click.echo(f"Total number of deposits: {no_deposits}!")
+    if json_output:
+        if over_time.lower() == 'all':
+            click.echo(json.dumps({"Total number of deposits": no_deposits}))
+        else:
+            json_str = json.dumps({"Total deposits " + over_time: no_deposits})
+            click.echo(json_str)
     else:
-        click.echo(f"Total number of deposits {over_time}:")
-        for key in no_deposits:
-            click.echo(f"{key}: {no_deposits[key]}")
+        if over_time.lower() == 'all':
+            click.echo(f"Total number of deposits: {no_deposits}!")
+        else:
+            click.echo(f"Total number of deposits {over_time}:")
+            for key in no_deposits:
+                click.echo(f"{key}: {no_deposits[key]}")
 
 
 @cli.command(name='num_views')
 @click.argument('id', default='all')
-def request_num_views(id):
+@click.argument('version', default='current', required=False)
+@click.argument('start_date', default=None, required=False)
+@click.argument('end_date', default=None, required=False)
+@click.option('--unique/--not-unique', default=False, required=False)
+@click.option('--json-output/--no-json', default=False, required=False)
+def request_num_views(id, version, start_date, end_date, unique, json_output):
     client = APIclient(token)
-    no_views = client.total_views(id)
+    no_views = client.total_views(id, version, start_date, end_date, unique)
     if id.lower() == 'all':
-        for key in no_views:
-            click.echo(f"Total number of views of deposit {key}: {no_views[key]}")
+        if json_output:
+            click.echo(json.dumps({"Total number of " + ("unique" if unique else "") + " views by deposit " 
+                                + ("(current versions)" if version.lower() == "current" else "(all versions)"): no_views}))
+        else:
+            click.echo("Total number of " + ("unique " if unique else "") + "views of " 
+                       + ("current version" if version.lower() == "current" else "all versions") + " of each deposit:")
+            for key in no_views:
+                click.echo(f"Deposit {key}: {no_views[key]}")
     else:
-        click.echo(f"Total number of views of deposit {id}: {no_views}!")
+        if json_output:
+            if start_date is None and end_date is None:
+                click.echo(json.dumps({"Total number of " + ("unique " if unique else "") + "views of deposit " 
+                                + id + ("(current version)" if version.lower() == "current" else "(all versions)"): no_views}))
+            else:
+                click.echo(json.dumps({"Total number of " + ("unique " if unique else "") + "views of deposit " 
+                                + id + ("(current version)" if version.lower() == "current" else "(all versions)") 
+                                + " from " + start_date + " to " + end_date: no_views}))
+        else:
+            if start_date is None and end_date is None:
+                click.echo("Total number of " + ("unique " if unique else "") + f"views of deposit {id} " + 
+                       ("(current version): " if version.lower() == "current" else "(all versions): ") + f"{no_views}!")
+            else:
+                click.echo("Total number of " + ("unique " if unique else "") + f"views of deposit {id} " + 
+                       ("(current version)" if version.lower() == "current" else "(all versions)") + " from " 
+                       + start_date + " to " + end_date + f": {no_views}!")
 
+
+"""
+@cli.command(name='num_views_date_range')
+@click.argument('id', default='all')
+@click.argument('start_date', default=None)
+@click.argument('end_date', default=None)
+@click.option('--unique/--not-unique', default=False)
+@click.option('--json-output/--no-json', default=False)
+def request_num_views_date_range(id, start_date, end_date, unique, json_output):
+    client = APIclient(token)
+    no_views = client.total_views_date_range(id, version, unique)
+"""
 
 @cli.command(name='num_downloads')
 @click.argument('id', default='all')
+@click.argument('version', default='current')
+@click.option('--unique/--not-unique', default=False)
+@click.option('--json-output/--no-json', default=False)
 def request_num_downloads(id):
     client = APIclient(token)
     no_downloads = client.total_downloads(id)
@@ -52,9 +97,11 @@ def request_num_downloads(id):
 
 @cli.command(name='avg_views')
 # argument for over time options
-def request_avg_views(id):
+@click.argument('version', default='current')
+@click.option('--unique/--not-unique', default=False)
+def request_avg_views(version, unique):
     client = APIclient(token)
-    avg = client.avg_views()
+    avg = client.avg_views(version, unique)
     click.echo(f"Average number of views per deposit: {avg}!")
 
 
@@ -78,35 +125,6 @@ def request_top_downloads(num):
         click.echo(f"Deposit {key}: {sorted_downloads[key]} downloads")
         index += 1
 
-
-"""
-@click.option('--request', prompt='What statistic would you like to generate?', required=True,
-              help='You can request the following statistics: total_deposits, num_views')
-@click.option('--id', prompt='Enter the id of a certain deposit or enter "all":', default='all', 
-              help='Provide the id of a certain deposit.')
-def request_stat(request, id):
-
-    client = APIResponse(token)
-
-    # handle user requesting total no. of deposits
-    if request.lower() == 'total_deposits':
-        no_deposits = client.total_deposits()
-        click.echo(f"Total number of deposits: {no_deposits}!")
-
-    # handle user requesting number of views of a deposit
-    elif request.lower() == 'num_views':
-        # no_views is a dictionary if id='all', and a string containing one ID otherwise
-        no_views = client.total_views(id)
-        if id == 'all':
-            for id in no_views:
-                click.echo(f"Total number of views of deposit {id}: {no_views[id]}!")
-        else:
-            click.echo(f"Total number of views of deposit {id}: {no_views}!")
-
-    # handle user providing invalid request
-    else:
-        click.echo("Invalid request.")
-"""
 
 if __name__ == '__main__':
     cli()
