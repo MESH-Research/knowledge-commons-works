@@ -378,6 +378,33 @@
           }
         }
 
+        &.creators {
+          .field {
+            .fields:last-child {
+              margin-bottom: 1rem;
+            }
+            .ui.list {
+              margin-top: 1rem;
+              .item {
+                .drag-anchor {
+                  line-height: 2.35rem;
+                }
+                .creatibutor {
+                  line-height: 2.35rem;
+                }
+              }
+            }
+            .ui.form {
+              padding: 1rem 1rem 1rem 1.5rem;
+              background-color: @sidebarBackgroundColor;
+            }
+            .creatibutors-item-form-buttons {
+              padding: 0 1rem 1rem 1.5rem;
+              background-color: @sidebarBackgroundColor;
+            }
+          }
+        }
+
         &.communities-field {
           .ui.icon.button.close-btn {
             margin-top: 0;

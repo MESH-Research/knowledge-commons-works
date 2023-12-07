@@ -11,7 +11,7 @@ import _get from "lodash/get";
 import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { Button, Label, List, Ref } from "semantic-ui-react";
-import { CreatibutorsModal } from "./CreatibutorsModal";
+import { CreatibutorsModal, CreatibutorsItemForm } from "./CreatibutorsModal";
 import PropTypes from "prop-types";
 
 export const CreatibutorsFieldItem = ({
@@ -29,8 +29,12 @@ export const CreatibutorsFieldItem = ({
   schema,
   autocompleteNames,
   focusAddButtonHandler,
-  parentFieldPath
+  modalOpen,
+  // handleModalClose,
+  handleModalOpen,
+  parentFieldPath,
 }) => {
+  const [showEditForm, setShowEditForm] = React.useState(false);
   const dropRef = React.useRef(null);
   // eslint-disable-next-line no-unused-vars
   const [_, drag, preview] = useDrag({
@@ -60,6 +64,10 @@ export const CreatibutorsFieldItem = ({
     }),
   });
 
+  const handleModalClose = () => {
+    setShowEditForm(false);
+  };
+
   const renderRole = (role, roleOptions) => {
     if (role) {
       const friendlyRole =
@@ -78,10 +86,12 @@ export const CreatibutorsFieldItem = ({
     <Ref innerRef={dropRef} key={compKey}>
       <List.Item
         key={compKey}
-        className={hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"}
+        className={
+          hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"
+        }
       >
         <List.Content floated="right">
-          <CreatibutorsModal
+          {/* <CreatibutorsItemForm
             addLabel={addLabel}
             editLabel={editLabel}
             onCreatibutorChange={(selectedCreatibutor) => {
@@ -91,7 +101,7 @@ export const CreatibutorsFieldItem = ({
             roleOptions={roleOptions}
             schema={schema}
             autocompleteNames={autocompleteNames}
-            action="edit"
+            modalAction="edit"
             trigger={
               <Button size="mini" primary type="button">
                 {i18next.t("Edit")}
@@ -99,8 +109,21 @@ export const CreatibutorsFieldItem = ({
             }
             focusAddButtonHandler={focusAddButtonHandler}
             parentFieldPath={parentFieldPath}
-          />
-          <Button size="mini" type="button" onClick={() => removeCreatibutor(index)}>
+          /> */}
+
+          <Button
+            size="mini"
+            primary
+            type="button"
+            onClick={() => setShowEditForm(!showEditForm)}
+          >
+            {i18next.t(showEditForm ? "Cancel" : "Edit")}
+          </Button>
+          <Button
+            size="mini"
+            type="button"
+            onClick={() => removeCreatibutor(index)}
+          >
             {i18next.t("Remove")}
           </Button>
         </List.Content>
@@ -108,51 +131,78 @@ export const CreatibutorsFieldItem = ({
           <List.Icon name="bars" className="drag-anchor" />
         </Ref>
         <Ref innerRef={preview}>
-          <List.Content>
-            <List.Description>
-              <span className="creatibutor">
-                {_get(initialCreatibutor, "person_or_org.identifiers", []).some(
-                  (identifier) => identifier.scheme === "orcid"
-                ) && (
-                  <img
-                    alt="ORCID logo"
-                    className="inline-id-icon mr-5"
-                    src="/static/images/orcid.svg"
-                    width="16"
-                    height="16"
-                  />
-                )}
-                {_get(initialCreatibutor, "person_or_org.identifiers", []).some(
-                  (identifier) => identifier.scheme === "ror"
-                ) && (
-                  <img
-                    alt="ROR logo"
-                    className="inline-id-icon mr-5"
-                    src="/static/images/ror-icon.svg"
-                    width="16"
-                    height="16"
-                  />
-                )}
-                {_get(initialCreatibutor, "person_or_org.identifiers", []).some(
-                  (identifier) => identifier.scheme === "gnd"
-                ) && (
-                  <img
-                    alt="GND logo"
-                    className="inline-id-icon mr-5"
-                    src="/static/images/gnd-icon.svg"
-                    width="16"
-                    height="16"
-                  />
-                )}
-                {displayName} {renderRole(initialCreatibutor?.role, roleOptions)}
-              </span>
-            </List.Description>
-            {firstError && (
-              <Label pointing="left" prompt>
-                {firstError.scheme ? firstError.scheme : "Invalid identifiers"}
-              </Label>
+          <>
+            <List.Content>
+              <List.Description>
+                <span className="creatibutor">
+                  {_get(
+                    initialCreatibutor,
+                    "person_or_org.identifiers",
+                    []
+                  ).some((identifier) => identifier.scheme === "orcid") && (
+                    <img
+                      alt="ORCID logo"
+                      className="inline-id-icon mr-5"
+                      src="/static/images/orcid.svg"
+                      width="16"
+                      height="16"
+                    />
+                  )}
+                  {_get(
+                    initialCreatibutor,
+                    "person_or_org.identifiers",
+                    []
+                  ).some((identifier) => identifier.scheme === "ror") && (
+                    <img
+                      alt="ROR logo"
+                      className="inline-id-icon mr-5"
+                      src="/static/images/ror-icon.svg"
+                      width="16"
+                      height="16"
+                    />
+                  )}
+                  {_get(
+                    initialCreatibutor,
+                    "person_or_org.identifiers",
+                    []
+                  ).some((identifier) => identifier.scheme === "gnd") && (
+                    <img
+                      alt="GND logo"
+                      className="inline-id-icon mr-5"
+                      src="/static/images/gnd-icon.svg"
+                      width="16"
+                      height="16"
+                    />
+                  )}
+                  {displayName}{" "}
+                  {renderRole(initialCreatibutor?.role, roleOptions)}
+                </span>
+              </List.Description>
+              {firstError && (
+                <Label pointing="left" prompt>
+                  {firstError.scheme
+                    ? firstError.scheme
+                    : "Invalid identifiers"}
+                </Label>
+              )}
+            </List.Content>
+            {showEditForm && (
+              <CreatibutorsItemForm
+                addLabel={addLabel}
+                autocompleteNames={autocompleteNames}
+                editLabel={editLabel}
+                handleModalClose={handleModalClose}
+                initialCreatibutor={initialCreatibutor}
+                modalAction="edit"
+                onCreatibutorChange={(selectedCreatibutor) => {
+                  replaceCreatibutor(index, selectedCreatibutor);
+                }}
+                parentFieldPath={parentFieldPath}
+                roleOptions={roleOptions}
+                schema={schema}
+              />
             )}
-          </List.Content>
+          </>
         </Ref>
       </List.Item>
     </Ref>
