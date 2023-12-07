@@ -611,7 +611,7 @@ const CreatibutorsItemForm = ({
         changeContent();
         break;
       case "saveAndClose":
-        // handleModalClose();
+        handleModalClose();
         break;
       default:
         break;

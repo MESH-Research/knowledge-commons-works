@@ -196,6 +196,7 @@ const CreatibutorsFieldForm = ({
         id={`${fieldPath}.add-button`}
         className="add-button"
         aria-labelledby={`${fieldPath}-field-description`}
+        onClick={() => setModalOpen(true)}
         //  ref={this.adderRef}
       >
         <Icon name="add" />
@@ -208,24 +209,27 @@ const CreatibutorsFieldForm = ({
         id={`${fieldPath}.add-button`}
         className="add-button"
         aria-labelledby={`${fieldPath}-field-description`}
+        onClick={() => setModalOpen(true)}
       >
         <Icon name="add" />
         {"Add myself"}
       </Button>
-      <CreatibutorsItemForm
-        onCreatibutorChange={handleOnContributorChange}
-        addLabel={modal.addLabel}
-        editLabel={modal.editLabel}
-        roleOptions={orderedRoleOptions}
-        schema={schema}
-        autocompleteNames={autocompleteNames}
-        focusAddButtonHandler={focusAddButtonHandler}
-        parentFieldPath={fieldPath}
-        modalOpen={modalOpen}
-        handleModalClose={handleModalClose}
-        handleModalOpen={handleModalOpen}
-        modalAction="add"
-      />
+      {modalOpen && (
+        <CreatibutorsItemForm
+          onCreatibutorChange={handleOnContributorChange}
+          addLabel={modal.addLabel}
+          editLabel={modal.editLabel}
+          roleOptions={orderedRoleOptions}
+          schema={schema}
+          autocompleteNames={autocompleteNames}
+          focusAddButtonHandler={focusAddButtonHandler}
+          parentFieldPath={fieldPath}
+          modalOpen={modalOpen}
+          handleModalClose={handleModalClose}
+          handleModalOpen={handleModalOpen}
+          modalAction="add"
+        />
+      )}
       {/* <CreatibutorsNonModalForm
         onCreatibutorChange={handleOnContributorChange}
         addLabel={modal.addLabel}
