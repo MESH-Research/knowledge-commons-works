@@ -68,7 +68,7 @@ const PublicationDateField = ({
   const { setFieldValue, values, touched, setFieldTouched } =
     useFormikContext();
   const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
+  const currentYear = String(currentDate.getFullYear());
   const currentDay = String(currentDate.getDate()).padStart(2, "0");
   const currentMonth = String(currentDate.getMonth() + 1).padStart(2, "0"); // Months are 0-based in JavaScript
   const [yearValue, setYearValue] = useState(currentYear);
@@ -84,24 +84,26 @@ const PublicationDateField = ({
 
   useEffect(() => {
     const publicationDate = values.metadata.publication_date;
-    const setDates = (year, month, day) => {
-      setYearValue(year);
-      setMonthValue(month);
-      setDayValue(day);
-    };
-    if (publicationDate.includes("/")) {
-      const [start, end] = publicationDate.split("/");
-      const [startYear, startMonth, startDay] = start.split("-");
-      const [endYear, endMonth, endDay] = end.split("-");
-      setDates(startYear, startMonth, startDay);
-      setEndDayValue(endDay);
-      setEndMonthValue(endMonth);
-      setEndYearValue(endYear);
-    } else {
-      const [year, month, day] = publicationDate.split("-");
-      setDates(year, month, day);
+    if (publicationDate) {
+      const setDates = (year, month, day) => {
+        setYearValue(year ? year : null);
+        setMonthValue(month ? month : null);
+        setDayValue(day ? day : null);
+      };
+      if (publicationDate.includes("/")) {
+        const [start, end] = publicationDate.split("/");
+        const [startYear, startMonth, startDay] = start.split("-");
+        const [endYear, endMonth, endDay] = end.split("-");
+        setDates(startYear, startMonth, startDay);
+        setEndDayValue(endDay);
+        setEndMonthValue(endMonth);
+        setEndYearValue(endYear);
+      } else {
+        const [year, month, day] = publicationDate.split("-");
+        setDates(year, month, day);
+      }
     }
-  }, [values.metadata.publication_date]);
+  }, []);
 
   useEffect(() => {
     let newDateValue = [yearValue, monthValue, dayValue]
