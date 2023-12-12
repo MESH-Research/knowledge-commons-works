@@ -53,10 +53,10 @@ def request_num_views(id, version, start_date, end_date, unique, json_output):
         if json_output:
             if start_date is None and end_date is None:
                 click.echo(json.dumps({"Total number of " + ("unique " if unique else "") + "views of deposit " 
-                                + id + ("(current version)" if version.lower() == "current" else "(all versions)"): no_views}))
+                                + id + (" (current version)" if version.lower() == "current" else " (all versions)"): no_views}))
             else:
                 click.echo(json.dumps({"Total number of " + ("unique " if unique else "") + "views of deposit " 
-                                + id + ("(current version)" if version.lower() == "current" else "(all versions)") 
+                                + id + (" (current version)" if version.lower() == "current" else " (all versions)") 
                                 + " from " + start_date + " to " + end_date: no_views}))
         else:
             if start_date is None and end_date is None:
@@ -82,35 +82,72 @@ def request_num_views_date_range(id, start_date, end_date, unique, json_output):
 
 @cli.command(name='num_downloads')
 @click.argument('id', default='all')
-@click.argument('version', default='current')
-@click.option('--unique/--not-unique', default=False)
-@click.option('--json-output/--no-json', default=False)
-def request_num_downloads(id):
+@click.argument('version', default='current', required=False)
+@click.argument('start_date', default=None, required=False)
+@click.argument('end_date', default=None, required=False)
+@click.option('--unique/--not-unique', default=False, required=False)
+@click.option('--json-output/--no-json', default=False, required=False)
+def request_num_downloads(id, version, start_date, end_date, unique, json_output):
     client = APIclient(token)
-    no_downloads = client.total_downloads(id)
+    no_downloads = client.total_downloads(id, version, start_date, end_date, unique)
     if id.lower() == 'all':
-        for key in no_downloads:
-            click.echo(f"Total number of views of deposit {key}: {no_downloads[key]}")
+        if json_output:
+            click.echo(json.dumps({"Total number of " + ("unique" if unique else "") + " downloads by deposit " 
+                                + ("(current versions)" if version.lower() == "current" else "(all versions)"): no_downloads}))
+        else:
+            click.echo("Total number of " + ("unique " if unique else "") + "downloads of " 
+                       + ("current version" if version.lower() == "current" else "all versions") + " of each deposit:")
+            for key in no_downloads:
+                click.echo(f"Deposit {key}: {no_downloads[key]}")
     else:
-        click.echo(f"Total number of views of deposit {id}: {no_downloads}!")
+        if json_output:
+            if start_date is None and end_date is None:
+                click.echo(json.dumps({"Total number of " + ("unique " if unique else "") + "downloads of deposit " 
+                                + id + (" (current version)" if version.lower() == "current" else " (all versions)"): no_downloads}))
+            else:
+                click.echo(json.dumps({"Total number of " + ("unique " if unique else "") + "downloads of deposit " 
+                                + id + (" (current version)" if version.lower() == "current" else " (all versions)") 
+                                + " from " + start_date + " to " + end_date: no_downloads}))
+        else:
+            if start_date is None and end_date is None:
+                click.echo("Total number of " + ("unique " if unique else "") + f"downloads of deposit {id} " + 
+                       ("(current version): " if version.lower() == "current" else "(all versions): ") + f"{no_downloads}!")
+            else:
+                click.echo("Total number of " + ("unique " if unique else "") + f"downloads of deposit {id} " + 
+                       ("(current version)" if version.lower() == "current" else "(all versions)") + " from " 
+                       + start_date + " to " + end_date + f": {no_downloads}!")
 
 
 @cli.command(name='avg_views')
 # argument for over time options
 @click.argument('version', default='current')
 @click.option('--unique/--not-unique', default=False)
-def request_avg_views(version, unique):
+@click.option('--json-output/--no-json', default=False, required=False)
+def request_avg_views(version, unique, json_output):
     client = APIclient(token)
     avg = client.avg_views(version, unique)
-    click.echo(f"Average number of views per deposit: {avg}!")
+    if json_output:
+        click.echo(json.dumps({"Average number of " + ("unique " if unique else "") + "views per deposit, taken from " 
+                               + ("current " if version == "current" else "all ") + "versions": avg}))
+    else:
+        click.echo("Average number of " + ("unique " if unique else "") + "views per deposit, taken from "
+                   + ("current " if version == "current" else "all ") + f"versions: {avg}!")
 
 
 @cli.command(name='avg_downloads')
 # argument for over time options
-def request_avg_downloads(id):
+@click.argument('version', default='current')
+@click.option('--unique/--not-unique', default=False)
+@click.option('--json-output/--no-json', default=False, required=False)
+def request_avg_downloads(version, unique, json_output):
     client = APIclient(token)
-    avg = client.avg_downloads()
-    click.echo(f"Average number of downloads per deposit: {avg}!")
+    avg = client.avg_downloads(version, unique)
+    if json_output:
+        click.echo(json.dumps({"Average number of " + ("unique " if unique else "") + "downloads per deposit, taken from " 
+                               + ("current " if version == "current" else "all ") + "versions": avg}))
+    else:
+        click.echo("Average number of " + ("unique " if unique else "") + "downloads per deposit, taken from "
+                   + ("current " if version == "current" else "all ") + f"versions: {avg}!")
 
 
 @cli.command(name='top_downloads')

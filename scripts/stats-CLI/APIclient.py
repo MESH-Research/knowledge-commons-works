@@ -157,29 +157,46 @@ class APIclient():
     
     
     # function that returns the total num of downloads of a deposit
-    def total_downloads(self, id):
-        if self.records == None:
-            self.get_records()
-
+    def total_downloads(self, id, version, start_date, end_date, unique):
         if id == 'all':
+            self.get_records()
             downloads_dict = {}
             for key in self.deposits:
-                downloads_dict[key] = self.deposits[key]['stats']['this_version']['downloads']
+                if version.lower() == "current" and unique:
+                    downloads_dict[key] = self.deposits[key]['stats']['this_version']['unique_downloads']
+                elif version.lower() == "current" and not unique:
+                    downloads_dict[key] = self.deposits[key]['stats']['this_version']['downloads']
+                elif version.lower() == "all" and unique:
+                    downloads_dict[key] = self.deposits[key]['stats']['all_versions']['unique_downloads']
+                else:
+                    downloads_dict[key] = self.deposits[key]['stats']['all_versions']['downloads']
             return downloads_dict
         else:
-            deposit = self.deposits[id]
-            return deposit['stats']['this_version']['downloads']
+            self.get_stats('downloads', id, version, start_date, end_date)
+            if unique:
+                return self.stats["views"]["unique_downloads"]
+            return self.stats["views"]["downloads"]
         
 
     # function that returns the average num of downloads across all deposits (can handle over time)
-    def avg_downloads(self):
+    def avg_downloads(self, version, unique):
         if self.records == None:
             self.get_records()
 
         total_downloads = 0
         for key in self.deposits:
-            no_downloads = self.deposits[key]['stats']['this_version']['downloads']
-            total_downloads += no_downloads
+            if version.lower() == "current" and unique == True:
+                no_downloads = self.deposits[key]['stats']['this_version']['unique_downloads']
+                total_downloads += no_downloads
+            elif version.lower() == "current" and unique == False:
+                no_views = self.deposits[key]['stats']['this_version']['downloads']
+                total_downloads += no_downloads
+            elif version.lower() == "all" & unique == True:
+                no_views = self.deposits[key]['stats']['all_versions']['unique_downloads']
+                total_downloads += no_downloads
+            else:
+                no_views = self.deposits[key]['stats']['all_versions']['downloads']
+                total_downloads += no_downloads
         
         total_deposits = self.records['hits']['total']
         return total_downloads / total_deposits
