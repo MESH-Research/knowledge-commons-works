@@ -563,18 +563,13 @@ const CreatibutorsItemForm = ({
   autocompleteNames = "search",
   editLabel,
   handleModalClose,
-  handleModalOpen,
   initialCreatibutor = {},
   modalAction,
-  modalOpen,
   onCreatibutorChange,
   parentFieldPath,
   roleOptions = [],
   schema,
-  trigger,
 }) => {
-  console.log("CreatibutorsModal initialCreatibutor", initialCreatibutor);
-  console.log("CreatibutorsModal modalAction", modalAction);
   const [saveAndContinueLabel, setSaveAndContinueLabel] = useState(
     i18next.t("Save and add another")
   );
@@ -630,12 +625,6 @@ const CreatibutorsItemForm = ({
       as="div"
     >
       {({ values, resetForm, handleSubmit }) => {
-        console.log("CreatibutorsModal render", initialCreatibutor);
-        console.log(
-          "CreatibutorsModal render",
-          deserializeCreatibutor(initialCreatibutor)
-        );
-        console.log("CreatibutorsModal render", values);
         return (
           <>
             {action === ModalActions.ADD ? (
@@ -742,8 +731,6 @@ const CreatibutorsModal = ({
       validateOnBlur={false}
     >
       {({ values, resetForm, handleSubmit }) => {
-        console.log("CreatibutorsModal render", initialCreatibutor);
-        console.log("CreatibutorsModal render", values);
         return (
           <Modal
             centered={false}

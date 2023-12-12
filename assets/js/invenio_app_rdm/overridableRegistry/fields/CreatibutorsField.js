@@ -132,7 +132,6 @@ const CreatibutorsFieldForm = ({
     roleOptions,
     config.vocabularies.contributors.role
   );
-  console.log("CreatibutorsFieldForm modalOpen", modalOpen);
 
   const handleModalOpen = () => {
     setModalOpen(true);
@@ -145,17 +144,9 @@ const CreatibutorsFieldForm = ({
   };
 
   const handleOnContributorChange = (selectedCreatibutor, action) => {
-    console.log(
-      "CreatibutorsFieldForm handleOnContributorChange",
-      selectedCreatibutor
-    );
     setAddingSelf(false);
     formikArrayPush(selectedCreatibutor);
     setModalOpen(action === "saveAndContinue" ? true : false);
-    console.log(
-      "CreatibutorsFieldForm handleOnContributorChange modalOpen",
-      modalOpen
-    );
   };
 
   const focusAddButtonHandler = () => {
@@ -200,9 +191,6 @@ const CreatibutorsFieldForm = ({
           }))
         : [],
   };
-  console.log("CreatibutorsFieldForm adding self", addingSelf);
-  console.log("CreatibutorsFieldForm self current", currentUserprofile);
-  console.log("CreatibutorsFieldForm selfCreatibutor", selfCreatibutor);
 
   return (
     <Form.Field
