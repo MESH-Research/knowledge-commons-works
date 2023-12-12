@@ -94,28 +94,33 @@ const creatibutorNameDisplay = (value) => {
 };
 
 const CreatibutorsFieldForm = ({
-  push: formikArrayPush,
-  form: { values, errors, initialErrors, initialValues },
-  remove: formikArrayRemove,
-  replace: formikArrayReplace,
-  move: formikArrayMove,
-  name: fieldPath,
   addButtonLabel = i18next.t("Add creator"),
+  addingSelf,
+  setAddingSelf,
   autocompleteNames = "search",
   config,
-  id,
+  currentUserprofile,
   description,
+  id,
+  form: { values, errors, initialErrors, initialValues },
   label = i18next.t("Creators"),
   labelIcon = "user",
   modal = {
     addLabel: i18next.t("Add creator"),
     editLabel: i18next.t("Edit creator"),
   },
+  modalOpen,
+  move: formikArrayMove,
+  name: fieldPath,
+  push: formikArrayPush,
+  remove: formikArrayRemove,
+  replace: formikArrayReplace,
   roleOptions,
   schema,
+  setModalOpen,
+  showEditForms,
+  setShowEditForms,
 }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-
   const creatibutorsList = getIn(values, fieldPath, []);
   const formikInitialValues = getIn(initialValues, fieldPath, []);
 
@@ -127,24 +132,77 @@ const CreatibutorsFieldForm = ({
     roleOptions,
     config.vocabularies.contributors.role
   );
+  console.log("CreatibutorsFieldForm modalOpen", modalOpen);
 
   const handleModalOpen = () => {
     setModalOpen(true);
   };
 
   const handleModalClose = () => {
-    focusAddButtonHandler();
     setModalOpen(false);
+    setAddingSelf(false);
+    focusAddButtonHandler();
   };
 
-  const handleOnContributorChange = (selectedCreatibutor) => {
+  const handleOnContributorChange = (selectedCreatibutor, action) => {
+    console.log(
+      "CreatibutorsFieldForm handleOnContributorChange",
+      selectedCreatibutor
+    );
+    setAddingSelf(false);
     formikArrayPush(selectedCreatibutor);
-    setModalOpen(true);
+    setModalOpen(action === "saveAndContinue" ? true : false);
+    console.log(
+      "CreatibutorsFieldForm handleOnContributorChange modalOpen",
+      modalOpen
+    );
   };
 
   const focusAddButtonHandler = () => {
-    document.getElementById(`${fieldPath}.add-button`).focus();
+    setTimeout(() => {
+      document.getElementById(`${fieldPath}.add-button`).focus();
+    }, 100);
   };
+
+  const creatibutorUp = (currentIndex) => {
+    if (currentIndex > 0) {
+      formikArrayMove(currentIndex, currentIndex - 1);
+    }
+  };
+
+  const creatibutorDown = (currentIndex) => {
+    if (currentIndex < creatibutorsList.length - 1) {
+      formikArrayMove(currentIndex, currentIndex + 1);
+    }
+  };
+
+  const myAffiliations =
+    typeof currentUserprofile.affiliations === "string"
+      ? [currentUserprofile.affiliations]
+      : currentUserprofile?.affiliations;
+  const selfCreatibutor = {
+    person_or_org: {
+      family_name: addingSelf
+        ? currentUserprofile?.family_name || currentUserprofile?.full_name || ""
+        : "",
+      given_name: addingSelf ? currentUserprofile?.given_name || "" : "",
+      name: addingSelf ? currentUserprofile?.full_name || "" : "",
+      type: "personal",
+    },
+    role: "author",
+    affiliations:
+      addingSelf && myAffiliations.length > 0
+        ? myAffiliations.map((affiliation) => ({
+            text: affiliation,
+            key: affiliation,
+            value: affiliation,
+            name: affiliation,
+          }))
+        : [],
+  };
+  console.log("CreatibutorsFieldForm adding self", addingSelf);
+  console.log("CreatibutorsFieldForm self current", currentUserprofile);
+  console.log("CreatibutorsFieldForm selfCreatibutor", selfCreatibutor);
 
   return (
     <Form.Field
@@ -160,11 +218,13 @@ const CreatibutorsFieldForm = ({
             creatibutorsError &&
             creatibutorsError[index]?.person_or_org?.identifiers;
           const displayName = creatibutorNameDisplay(value);
-          console.log("CreatibutorsFieldForm initialCreatibutor", value);
 
           return (
             <CreatibutorsFieldItem
               key={key}
+              creatibutorsLength={creatibutorsList.length}
+              creatibutorDown={creatibutorDown}
+              creatibutorUp={creatibutorUp}
               identifiersError={identifiersError}
               {...{
                 displayName,
@@ -185,35 +245,47 @@ const CreatibutorsFieldForm = ({
               handleModalClose={handleModalClose}
               handleModalOpen={handleModalOpen}
               parentFieldPath={fieldPath}
+              setModalOpen={setModalOpen}
+              showEditForms={showEditForms}
+              setShowEditForms={setShowEditForms}
             />
           );
         })}
       </List>
-      <Button
-        type="button"
-        icon
-        labelPosition="left"
-        id={`${fieldPath}.add-button`}
-        className="add-button"
-        aria-labelledby={`${fieldPath}-field-description`}
-        onClick={() => setModalOpen(true)}
-        //  ref={this.adderRef}
-      >
-        <Icon name="add" />
-        {addButtonLabel}
-      </Button>
-      <Button
-        type="button"
-        icon
-        labelPosition="left"
-        id={`${fieldPath}.add-button`}
-        className="add-button"
-        aria-labelledby={`${fieldPath}-field-description`}
-        onClick={() => setModalOpen(true)}
-      >
-        <Icon name="add" />
-        {"Add myself"}
-      </Button>
+      {!modalOpen && (
+        <>
+          <Button
+            type="button"
+            icon
+            labelPosition="left"
+            id={`${fieldPath}.add-button`}
+            className="add-button"
+            aria-labelledby={`${fieldPath}-field-description`}
+            onClick={() => setModalOpen(true)}
+            //  ref={this.adderRef}
+          >
+            <Icon name="add" />
+            {addButtonLabel}
+          </Button>
+          <Button
+            type="button"
+            icon
+            labelPosition="left"
+            id={`${fieldPath}.add-button`}
+            className="add-button"
+            aria-labelledby={`${fieldPath}-field-description`}
+            onClick={() => {
+              setAddingSelf(true);
+              setTimeout(() => {
+                setModalOpen(true);
+              }, 100);
+            }}
+          >
+            <Icon name="add" />
+            {"Add myself"}
+          </Button>
+        </>
+      )}
       {modalOpen && (
         <CreatibutorsItemForm
           onCreatibutorChange={handleOnContributorChange}
@@ -227,6 +299,7 @@ const CreatibutorsFieldForm = ({
           modalOpen={modalOpen}
           handleModalClose={handleModalClose}
           handleModalOpen={handleModalOpen}
+          initialCreatibutor={selfCreatibutor}
           modalAction="add"
         />
       )}
@@ -273,6 +346,7 @@ const CreatibutorsFieldForm = ({
 const CreatibutorsField = ({
   addButtonLabel = i18next.t("Add creator"),
   autocompleteNames = "search",
+  currentUserprofile,
   fieldPath,
   label = undefined,
   labelIcon = undefined,
@@ -284,6 +358,11 @@ const CreatibutorsField = ({
   schema = "creators",
   ...otherProps
 }) => {
+  // FIXME: This state has to be managed here because the whole fieldarray is reredered and loses state on any state change; seems related to react-dnd
+  const [modalOpen, setModalOpen] = useState(false);
+  const [addingSelf, setAddingSelf] = useState(false);
+  const [showEditForms, setShowEditForms] = useState([]);
+
   return (
     <FieldArray
       name={fieldPath}
@@ -292,14 +371,21 @@ const CreatibutorsField = ({
           {...formikProps}
           {...otherProps}
           {...{
-            fieldPath,
+            addButtonLabel,
+            addingSelf,
             autocompleteNames,
+            currentUserprofile,
+            fieldPath,
             label,
             labelIcon,
+            modalOpen,
             roleOptions,
             modal,
             schema,
-            addButtonLabel,
+            setAddingSelf,
+            setModalOpen,
+            showEditForms,
+            setShowEditForms,
           }}
         />
       )}
@@ -328,17 +414,17 @@ CreatibutorsFieldForm.propTypes = {
 };
 
 CreatibutorsField.propTypes = {
-  fieldPath: PropTypes.string.isRequired,
   addButtonLabel: PropTypes.string,
+  autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
+  fieldPath: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  labelIcon: PropTypes.string,
   modal: PropTypes.shape({
     addLabel: PropTypes.string.isRequired,
     editLabel: PropTypes.string.isRequired,
   }),
-  schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
-  autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
-  label: PropTypes.string,
-  labelIcon: PropTypes.string,
   roleOptions: PropTypes.array,
+  schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
 };
 
 CreatibutorsField.defaultProps = {};

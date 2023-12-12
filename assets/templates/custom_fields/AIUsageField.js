@@ -46,7 +46,7 @@ const AIUsageField = ({
         // icon={ai_used.icon}
         required={false}
         description=""
-        value={false}
+        value={""}
       />
       {!!values.custom_fields
         ? values.custom_fields["kcr:ai_usage"]?.ai_used === true && (

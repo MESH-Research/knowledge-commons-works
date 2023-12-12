@@ -8,14 +8,17 @@
 
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import _get from "lodash/get";
-import React from "react";
+import React, { useState, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { Button, Label, List, Ref } from "semantic-ui-react";
+import { Button, Icon, Label, List, Ref } from "semantic-ui-react";
 import { CreatibutorsModal, CreatibutorsItemForm } from "./CreatibutorsModal";
 import PropTypes from "prop-types";
 
-export const CreatibutorsFieldItem = ({
+const CreatibutorsFieldItem = ({
   compKey,
+  creatibutorDown,
+  creatibutorUp,
+  creatibutorsLength,
   identifiersError,
   index,
   replaceCreatibutor,
@@ -28,14 +31,13 @@ export const CreatibutorsFieldItem = ({
   roleOptions,
   schema,
   autocompleteNames,
-  focusAddButtonHandler,
-  modalOpen,
-  // handleModalClose,
-  handleModalOpen,
   parentFieldPath,
+  showEditForms,
+  setShowEditForms,
 }) => {
-  const [showEditForm, setShowEditForm] = React.useState(false);
-  const dropRef = React.useRef(null);
+  const dropRef = useRef(null);
+  console.log("showEditForms", showEditForms);
+  console.log("showEditForms compKey", compKey);
   // eslint-disable-next-line no-unused-vars
   const [_, drag, preview] = useDrag({
     item: { index, type: "creatibutor" },
@@ -64,8 +66,12 @@ export const CreatibutorsFieldItem = ({
     }),
   });
 
-  const handleModalClose = () => {
-    setShowEditForm(false);
+  const handleFormClose = () => {
+    setShowEditForms(showEditForms.filter((elem) => elem !== compKey));
+  };
+
+  const handleFormOpen = () => {
+    setShowEditForms([...showEditForms, compKey]);
   };
 
   const renderRole = (role, roleOptions) => {
@@ -73,7 +79,7 @@ export const CreatibutorsFieldItem = ({
       const friendlyRole =
         roleOptions.find(({ value }) => value === role)?.text ?? role;
 
-      return <Label size="tiny">{friendlyRole}</Label>;
+      return <Label>{friendlyRole}</Label>;
     }
   };
   const firstError =
@@ -91,41 +97,44 @@ export const CreatibutorsFieldItem = ({
         }
       >
         <List.Content floated="right">
-          {/* <CreatibutorsItemForm
-            addLabel={addLabel}
-            editLabel={editLabel}
-            onCreatibutorChange={(selectedCreatibutor) => {
-              replaceCreatibutor(index, selectedCreatibutor);
-            }}
-            initialCreatibutor={initialCreatibutor}
-            roleOptions={roleOptions}
-            schema={schema}
-            autocompleteNames={autocompleteNames}
-            modalAction="edit"
-            trigger={
-              <Button size="mini" primary type="button">
-                {i18next.t("Edit")}
-              </Button>
-            }
-            focusAddButtonHandler={focusAddButtonHandler}
-            parentFieldPath={parentFieldPath}
-          /> */}
-
           <Button
             size="mini"
             primary
             type="button"
-            onClick={() => setShowEditForm(!showEditForm)}
+            onClick={
+              showEditForms.includes(compKey) ? handleFormClose : handleFormOpen
+            }
+            role="button"
           >
-            {i18next.t(showEditForm ? "Cancel" : "Edit")}
+            {i18next.t(showEditForms.includes(compKey) ? "Cancel" : "Edit")}
           </Button>
           <Button
             size="mini"
             type="button"
             onClick={() => removeCreatibutor(index)}
-          >
-            {i18next.t("Remove")}
-          </Button>
+            icon="close"
+            role="button"
+            aria-label={i18next.t("Remove contributor")}
+            negative
+          />
+          <Button
+            size="mini"
+            type="button"
+            disabled={index === 0}
+            onClick={() => creatibutorUp(index)}
+            icon="arrow up"
+            role="button"
+            aria-label={i18next.t("Move contributor up")}
+          />
+          <Button
+            size="mini"
+            type="button"
+            disabled={index >= creatibutorsLength - 1}
+            onClick={() => creatibutorDown(index)}
+            icon="arrow down"
+            role="button"
+            aria-label={i18next.t("Move contributor down")}
+          />
         </List.Content>
         <Ref innerRef={drag}>
           <List.Icon name="bars" className="drag-anchor" />
@@ -186,12 +195,12 @@ export const CreatibutorsFieldItem = ({
                 </Label>
               )}
             </List.Content>
-            {showEditForm && (
+            {showEditForms.includes(compKey) && (
               <CreatibutorsItemForm
                 addLabel={addLabel}
                 autocompleteNames={autocompleteNames}
                 editLabel={editLabel}
-                handleModalClose={handleModalClose}
+                handleModalClose={handleFormClose}
                 initialCreatibutor={initialCreatibutor}
                 modalAction="edit"
                 onCreatibutorChange={(selectedCreatibutor) => {
@@ -225,10 +234,4 @@ CreatibutorsFieldItem.propTypes = {
   autocompleteNames: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 };
 
-CreatibutorsFieldItem.defaultProps = {
-  identifiersError: undefined,
-  addLabel: undefined,
-  editLabel: undefined,
-  displayName: undefined,
-  autocompleteNames: undefined,
-};
+export { CreatibutorsFieldItem };

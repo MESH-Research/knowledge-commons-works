@@ -505,7 +505,7 @@ const CreatibutorsFormBody = ({
 };
 
 const CreatibutorsFormActionButtons = ({
-  modalAction,
+  action,
   autocompleteNames,
   resetForm,
   saveAndContinueLabel,
@@ -526,7 +526,7 @@ const CreatibutorsFormActionButtons = ({
         content={i18next.t("Cancel")}
         floated="left"
       />
-      {modalAction === ModalActions.ADD && (
+      {action === ModalActions.ADD && (
         <Button
           name="submit"
           onClick={() => {
@@ -599,15 +599,16 @@ const CreatibutorsItemForm = ({
   };
 
   const onSubmit = (values, formikBag) => {
-    onCreatibutorChange(serializeCreatibutor(values, initialCreatibutor));
+    onCreatibutorChange(
+      serializeCreatibutor(values, initialCreatibutor),
+      action
+    );
     formikBag.setSubmitting(false);
     formikBag.resetForm();
     switch (action) {
       case "saveAndContinue":
         // Needed to close and open the modal to reset the internal
         // state of the cmp inside the modal
-        // handleModalClose();
-        // handleModalOpen();
         changeContent();
         break;
       case "saveAndClose":
@@ -626,6 +627,7 @@ const CreatibutorsItemForm = ({
       validationSchema={CreatorSchema}
       validateOnChange={false}
       validateOnBlur={false}
+      as="div"
     >
       {({ values, resetForm, handleSubmit }) => {
         console.log("CreatibutorsModal render", initialCreatibutor);
@@ -687,8 +689,6 @@ const CreatibutorsModal = ({
   schema,
   trigger,
 }) => {
-  console.log("CreatibutorsModal initialCreatibutor", initialCreatibutor);
-  console.log("CreatibutorsModal modalAction", modalAction);
   const [saveAndContinueLabel, setSaveAndContinueLabel] = useState(
     i18next.t("Save and add another")
   );
@@ -743,10 +743,6 @@ const CreatibutorsModal = ({
     >
       {({ values, resetForm, handleSubmit }) => {
         console.log("CreatibutorsModal render", initialCreatibutor);
-        console.log(
-          "CreatibutorsModal render",
-          deserializeCreatibutor(initialCreatibutor)
-        );
         console.log("CreatibutorsModal render", values);
         return (
           <Modal
