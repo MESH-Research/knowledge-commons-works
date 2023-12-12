@@ -44,7 +44,48 @@ const validationSchema = yupObject().shape({
   }),
   metadata: yupObject()
     .shape({
-      creators: yupArray().required("At least one contributor must be listed"),
+      creators: yupArray()
+        .of(
+          yupObject().shape({
+            affiliations: yupArray().of(
+              yupObject().shape({
+                name: yupString()
+                  .matches(/(?!\s).+/, "Affiliation cannot be blank")
+                  .required("An affiliation is required"),
+              })
+            ),
+            person_or_org: yupObject().shape({
+              type: yupString().required("A type is required"),
+              family_name: yupString()
+                .matches(/(?!\s).+/, "Family name cannot be blank")
+                .required("A family name is required"),
+              given_name: yupString().matches(/(?!\s).+/, {
+                disallowEmptyString: true,
+                message: "Given name cannot be spaces only",
+              }),
+              identifiers: yupArray().of(
+                yupObject().shape({
+                  scheme: yupString().required(
+                    "An identifier scheme is required"
+                  ),
+                  identifier: yupString()
+                    .when("scheme", {
+                      is: "url",
+                      then: yupString().url("Must be a valid URL"),
+                    })
+                    .matches(/(?!\s).+/, {
+                      disallowEmptyString: true,
+                      message: "Identifier cannot be blank",
+                    })
+                    .required("An identifier is required"),
+                })
+              ),
+            }),
+            role: yupString().required("A role is required"),
+          })
+        )
+        .min(1, "At least one contributor must be listed")
+        .required("At least one contributor must be listed"),
       identifiers: yupArray().of(
         yupObject().shape({
           scheme: yupString().required("An identifier scheme is required"),

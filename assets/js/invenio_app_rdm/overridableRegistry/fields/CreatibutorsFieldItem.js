@@ -19,7 +19,7 @@ const CreatibutorsFieldItem = ({
   creatibutorDown,
   creatibutorUp,
   creatibutorsLength,
-  identifiersError,
+  itemError,
   index,
   replaceCreatibutor,
   removeCreatibutor,
@@ -36,8 +36,6 @@ const CreatibutorsFieldItem = ({
   setShowEditForms,
 }) => {
   const dropRef = useRef(null);
-  console.log("showEditForms", showEditForms);
-  console.log("showEditForms compKey", compKey);
   // eslint-disable-next-line no-unused-vars
   const [_, drag, preview] = useDrag({
     item: { index, type: "creatibutor" },
@@ -82,9 +80,11 @@ const CreatibutorsFieldItem = ({
       return <Label>{friendlyRole}</Label>;
     }
   };
-  const firstError =
-    identifiersError &&
-    identifiersError.find((elem) => ![undefined, null].includes(elem));
+  let firstError = itemError;
+  if (itemError && typeof itemError === "array") {
+    firstError = itemError.find((elem) => ![undefined, null].includes(elem));
+  }
+  console.log("firstError", firstError);
 
   // Initialize the ref explicitely
   drop(dropRef);
@@ -195,6 +195,11 @@ const CreatibutorsFieldItem = ({
                 </Label>
               )}
             </List.Content>
+            {firstError && (
+              <Label pointing="above" prompt>
+                {firstError}
+              </Label>
+            )}
             {showEditForms.includes(compKey) && (
               <CreatibutorsItemForm
                 addLabel={addLabel}

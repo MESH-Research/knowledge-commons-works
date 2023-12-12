@@ -418,8 +418,8 @@ const CreatibutorsFormBody = ({
               <div>
                 <Form.Group widths="equal">
                   <TextField
-                    label={i18next.t("Surname")}
-                    placeholder={i18next.t("Surname")}
+                    label={i18next.t("Surname(s)")}
+                    placeholder={i18next.t("Surname(s)")}
                     fieldPath={familyNameFieldPath}
                     required={isCreator}
                     input={{
@@ -428,8 +428,8 @@ const CreatibutorsFormBody = ({
                     }}
                   />
                   <TextField
-                    label={i18next.t("Personal names")}
-                    placeholder={i18next.t("Personal names")}
+                    label={i18next.t("First name(s)")}
+                    placeholder={i18next.t("First name(s)")}
                     fieldPath={givenNameFieldPath}
                   />
                 </Form.Group>

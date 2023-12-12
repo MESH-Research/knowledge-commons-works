@@ -15,14 +15,12 @@ import { FieldLabel } from "react-invenio-forms";
 // import { HTML5Backend } from "react-dnd-html5-backend";
 // import { DndProvider } from "react-dnd";
 
-import { CreatibutorsModal, CreatibutorsItemForm } from "./CreatibutorsModal";
+import { CreatibutorsItemForm } from "./CreatibutorsModal";
 import { CreatibutorsFieldItem } from "./CreatibutorsFieldItem";
 import { CREATIBUTOR_TYPE } from "./types";
 // import { GlobalDndContext } from "./GlobalDndContext";
 // import { sortOptions } from "../../utils";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
-
-let renderCount = 0;
 
 /**
  * Sort a list of string values (options).
@@ -102,7 +100,7 @@ const CreatibutorsFieldForm = ({
   currentUserprofile,
   description,
   id,
-  form: { values, errors, initialErrors, initialValues },
+  form: { values, errors, initialErrors, initialValues, touched },
   label = i18next.t("Creators"),
   labelIcon = "user",
   modal = {
@@ -126,8 +124,10 @@ const CreatibutorsFieldForm = ({
 
   const error = getIn(errors, fieldPath, null);
   const initialError = getIn(initialErrors, fieldPath, null);
+  const creatibutorsTouched = getIn(touched, fieldPath, null);
   const creatibutorsError =
-    error || (creatibutorsList === formikInitialValues && initialError);
+    (error && creatibutorsTouched) ||
+    (creatibutorsList === formikInitialValues && initialError);
   const orderedRoleOptions = orderOptions(
     roleOptions,
     config.vocabularies.contributors.role
@@ -200,12 +200,10 @@ const CreatibutorsFieldForm = ({
       <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
       <List>
         {creatibutorsList.map((value, index) => {
-          // const key = `${fieldPath}.${index}`;
-          const key = `${fieldPath}.${value.person_or_org.name}`;
-          const identifiersError =
-            creatibutorsError &&
-            creatibutorsError[index]?.person_or_org?.identifiers;
+          const key = `${fieldPath}.${index}`;
+          // const key = `${fieldPath}.${value.person_or_org.name}`;
           const displayName = creatibutorNameDisplay(value);
+          console.log("key is", key);
 
           return (
             <CreatibutorsFieldItem
@@ -213,7 +211,7 @@ const CreatibutorsFieldForm = ({
               creatibutorsLength={creatibutorsList.length}
               creatibutorDown={creatibutorDown}
               creatibutorUp={creatibutorUp}
-              identifiersError={identifiersError}
+              itemError={creatibutorsError ? error[index] : null}
               {...{
                 displayName,
                 index,
@@ -241,7 +239,7 @@ const CreatibutorsFieldForm = ({
         })}
       </List>
       {!modalOpen && (
-        <>
+        <div>
           <Button
             type="button"
             icon
@@ -272,9 +270,11 @@ const CreatibutorsFieldForm = ({
             <Icon name="add" />
             {"Add myself"}
           </Button>
-        </>
+        </div>
       )}
-      {modalOpen && (
+
+      {(modalOpen ||
+        (creatibutorsError && typeof creatibutorsError == "string")) && (
         <CreatibutorsItemForm
           onCreatibutorChange={handleOnContributorChange}
           addLabel={modal.addLabel}
@@ -291,37 +291,9 @@ const CreatibutorsFieldForm = ({
           modalAction="add"
         />
       )}
-      {/* <CreatibutorsNonModalForm
-        onCreatibutorChange={handleOnContributorChange}
-        addLabel={modal.addLabel}
-        editLabel={modal.editLabel}
-        roleOptions={orderedRoleOptions}
-        schema={schema}
-        autocompleteNames={autocompleteNames}
-        trigger={
-          <Button
-            type="button"
-            icon
-            labelPosition="left"
-            id={`${fieldPath}.add-button`}
-            className="add-button"
-            aria-labelledby={`${fieldPath}-field-description`}
-            //  ref={this.adderRef}
-          >
-            <Icon name="add" />
-            {addButtonLabel}
-          </Button>
-        }
-        focusAddButtonHandler={focusAddButtonHandler}
-        parentFieldPath={fieldPath}
-        modalOpen={modalOpen}
-        handleModalClose={handleModalClose}
-        handleModalOpen={handleModalOpen}
-        modalAction="add"
-      /> */}
-      {creatibutorsError && typeof creatibutorsError == "string" && (
-        <Label pointing="left" prompt>
-          {creatibutorsError}
+      {creatibutorsError && typeof error === "string" && (
+        <Label pointing="above" prompt>
+          {error}
         </Label>
       )}
       <span id={`${fieldPath}-field-description`} className="helptext">
