@@ -33,7 +33,8 @@ const onPersonSearchChange = (
   { formikProps },
   selectedSuggestions,
   identifiersRef,
-  affiliationsRef
+  affiliationsRef,
+  parentFieldPath = "creators"
 ) => {
   if (selectedSuggestions[0].key === "manual-entry") {
     // Empty the autocomplete's selected values
