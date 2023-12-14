@@ -22,6 +22,7 @@ halo = "*"
 invenio-accounts = "==3.0.3"
 invenio-administration = "==1.6.0"
 invenio-app-rdm = {version = "==12.0.0b2.dev9", extras = ["opensearch2", "postgresql"]}
+invenio-assets = "==3.0.0"
 invenio-banners = "==2.1.0"
 invenio-cli = "==1.0.21"
 invenio-communities = "==7.0.0"
@@ -32,7 +33,6 @@ invenio-i18n = "==2.0.0"
 invenio-notifications = "==0.2.0"
 invenio-oauthclient = "==3.1.2"
 invenio-rdm-records = {editable = true, path = "./../invenio-rdm-records"}
-invenio-records-resources = "==4.3.0"
 invenio-requests = "==2.5.0"
 invenio-s3 = "*"
 invenio-subjects-fast = "*"
@@ -40,7 +40,6 @@ invenio-subjects-mesh = "*"
 invenio-theme = "==2.1.2"
 invenio-users-resources = "==2.0.0"
 invenio-utilities-tuw = "*"
-invenio-vocabularies = "==1.5.0"
 isbnlib = "*"
 xmlsec = "*"
 invenio-saml = "*"
@@ -62,7 +61,9 @@ uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
 aiohttp = "*"
 invenio-modular-detail-page = {editable = true, path = "./../invenio-modular-detail-page/invenio-modular-detail-page"}
-invenio-modular-deposit-form = {path = "./../invenio-modular-deposit-form"}
+invenio-modular-deposit-form = {editable = true, path = "./../invenio-modular-deposit-form"}
+invenio-vocabularies = {editable = true, path = "./../invenio-vocabularies"}
+invenio-records-resources = {editable = true, path = "./../invenio-records-resources"}
 
 [requires]
 python_version = "3.9"
