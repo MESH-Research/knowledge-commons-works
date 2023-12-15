@@ -9,20 +9,23 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { FieldLabel, RichInputField } from "react-invenio-forms";
+import { FieldLabel, RichInputField, TextArea } from "react-invenio-forms";
 import { AdditionalDescriptionsField } from "./AdditionalDescriptionsField";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 
 class DescriptionsField extends Component {
   render() {
-    const { fieldPath, label, labelIcon, options, editorConfig, recordUI } = this.props;
+    const { fieldPath, label, labelIcon, options, editorConfig, recordUI } =
+      this.props;
     return (
       <>
-        <RichInputField
+        <TextArea
           className="description-field rel-mb-1"
           fieldPath={fieldPath}
           editorConfig={editorConfig}
-          label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
+          label={
+            <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+          }
           optimized
         />
         <AdditionalDescriptionsField

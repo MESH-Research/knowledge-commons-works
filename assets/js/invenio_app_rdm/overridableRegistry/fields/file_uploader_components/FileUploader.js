@@ -35,9 +35,12 @@ export const UploadState = {
 //       the `useFormikContext` hook.
 export const FileUploaderComponent = ({
   config,
+  fieldPath = "files",
   files,
   isDraftRecord,
   hasParentRecord,
+  label = "Upload files",
+  labelIcon = "upload",
   quota,
   permissions,
   record,
@@ -73,7 +76,10 @@ export const FileUploaderComponent = ({
     };
   });
 
-  const filesSize = filesList.reduce((totalSize, file) => (totalSize += file.size), 0);
+  const filesSize = filesList.reduce(
+    (totalSize, file) => (totalSize += file.size),
+    0
+  );
 
   const dropzoneParams = {
     preventDropOnDocument: true,
@@ -84,7 +90,8 @@ export const FileUploaderComponent = ({
         (totalSize, file) => (totalSize += file.size),
         0
       );
-      const maxFileStorageReached = filesSize + acceptedFilesSize > quota.maxStorage;
+      const maxFileStorageReached =
+        filesSize + acceptedFilesSize > quota.maxStorage;
 
       const filesNames = _map(filesList, "name");
       const duplicateFiles = acceptedFiles.filter((acceptedFile) =>
@@ -156,9 +163,9 @@ export const FileUploaderComponent = ({
 
   const wrappedUploadFiles = (formikDraft, acceptedFiles) => {
     formikDraft.files.enabled = true;
-    setFieldValue('files.enabled', true);
+    setFieldValue("files.enabled", true);
     uploadFiles(formikDraft, acceptedFiles);
-  }
+  };
 
   return (
     <Overridable
@@ -168,6 +175,8 @@ export const FileUploaderComponent = ({
       isDraftRecord={isDraftRecord}
       hasParentRecord={hasParentRecord}
       quota={quota}
+      label={label}
+      labelIcon={labelIcon}
       permissions={permissions}
       record={record}
       uploadFiles={uploadFiles}
@@ -187,6 +196,13 @@ export const FileUploaderComponent = ({
       {...uiProps}
     >
       <>
+        <label
+          htmlFor={fieldPath}
+          className="field-label-class invenio-field-label"
+        >
+          {labelIcon && <i className={`${labelIcon} icon`} />}
+          {label}
+        </label>
         <Grid>
           <Grid.Row className="pt-10 pb-5">
             {isDraftRecord && (
@@ -229,7 +245,9 @@ export const FileUploaderComponent = ({
                     </div>
                     <p style={{ marginTop: "5px", display: "inline-block" }}>
                       <Icon name="info circle" />
-                      {i18next.t("You can import files from the previous version.")}
+                      {i18next.t(
+                        "You can import files from the previous version."
+                      )}
                     </p>
                   </Message>
                 </Grid.Column>
@@ -247,7 +265,7 @@ export const FileUploaderComponent = ({
             decimalSizeDisplay={decimalSizeDisplay}
             {...uiProps}
           >
-            {( filesEnabled || isDraftRecord ) && (
+            {(filesEnabled || isDraftRecord) && (
               <Grid.Row className="pt-0 pb-0">
                 <FileUploaderArea
                   {...uiProps}

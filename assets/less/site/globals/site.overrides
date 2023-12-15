@@ -270,10 +270,17 @@
           width: 100%;
         }
 
+        > .invenio-field-label:first-of-type,
         > .field > .invenio-field-label:first-of-type,
-        > .field > label > .invenio-field-label:first-of-type {
+        > .field > .field > .invenio-field-label:first-of-type,
+        > .field > label > .invenio-field-label:first-of-type,
+        > .fields
+          > .field.subjects-field-inner
+          > .invenio-field-label:first-of-type {
           font-size: @big;
           margin-bottom: 0.25rem;
+          font-weight: bold;
+          display: block;
         }
         .field > label {
           margin-bottom: 0.5em;
@@ -287,13 +294,13 @@
           font-weight: normal;
         }
 
-        &.subject-keywords-fields {
+        &.subjects_keywords {
           > .fields {
-            margin-bottom: 0.5rem;
-
-            label {
-              font-weight: normal;
-              margin-bottom: 0;
+            margin-bottom: 3rem;
+            .subjects-field-inner .fields {
+              label {
+                margin-top: -1.5rem;
+              }
             }
           }
           .helptext {

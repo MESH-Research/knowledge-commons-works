@@ -147,7 +147,7 @@ KCR_SPONSORING_INSTITUTION_FIELD_UI = {
 
 KCR_CONTENT_WARNING_FIELD_UI = {
     "field": "kcr:content_warning",
-    "ui_widget": "RichInput",
+    "ui_widget": "TextArea",
     "props": {
         "label": _("Content warning"),
         "description": "Does this deposit contain any potentially difficult content you would like to flag for viewers?",
