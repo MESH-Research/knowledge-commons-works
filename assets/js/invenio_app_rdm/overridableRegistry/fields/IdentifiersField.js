@@ -71,11 +71,54 @@ export const IdentifiersField = ({
     setIdentifiersLength(identifiersLength - 1);
   };
 
+  const filterEmptyIdentifiers = (e) => {
+    console.log("filtering empty identifiers");
+    // Get the parent element
+    const parentElement = e.target.closest(".fields");
+    console.log("filtering from", parentElement);
+
+    // Get all sibling elements
+    const siblingElements = Array.from(parentElement.querySelectorAll("*"));
+    console.log("filtering sibs", siblingElements);
+
+    // Check if any sibling elements have focus
+    // wait for the focus to reach the sibling element
+    setTimeout(() => {
+      const siblingHasFocus = siblingElements.some(
+        (element) =>
+          element.firstElementChild === document.activeElement ||
+          (document.activeElement.id &&
+            element.id.includes(document.activeElement.id))
+      );
+      console.log("filtering: active", document.activeElement);
+      console.log("filtering: active", document.activeElement.id);
+      console.log("filtering: sibling has focus", siblingHasFocus);
+      if (values.metadata.identifiers.length && !siblingHasFocus) {
+        let filteredIdentifiers = values.metadata.identifiers.reduce(
+          (newList, item) => {
+            if (item.identifier !== "" && item.scheme !== "")
+              newList.push(item);
+            return newList;
+          },
+          []
+        );
+        setIdentifiersLength(filteredIdentifiers.length - 1);
+        setFieldValue("metadata.identifiers", filteredIdentifiers);
+      }
+    }, 10);
+  };
+
   return (
     <FieldArray
       name={fieldPath}
+      id={fieldPath}
       className="invenio-array-field"
       showEmptyValue={showEmptyValue}
+      onBlur={(e) => {
+        e.preventDefault();
+        console.log("blur");
+        filterEmptyIdentifiers(e);
+      }}
       render={(arrayHelpers) => (
         <>
           <Form.Field required={required}>
@@ -88,7 +131,15 @@ export const IdentifiersField = ({
             const hasText = !!identifier || identifier !== "";
             const hasScheme = !!scheme || scheme !== "";
             return (
-              <Form.Group key={index} className="identifier-item-row">
+              <Form.Group
+                id={`${fieldPath}.${index}`}
+                key={index}
+                className="identifier-item-row"
+                onBlur={(e) => {
+                  filterEmptyIdentifiers(e);
+                  console.log("blur");
+                }}
+              >
                 {/* <GroupField key={index} inline> */}
                 <TextField
                   fieldPath={`${fieldPathPrefix}.identifier`}
@@ -102,6 +153,11 @@ export const IdentifiersField = ({
                   id={`${fieldPathPrefix}.identifier`}
                   width={!!isUrl ? 14 : 9}
                   fluid={false}
+                  onBlur={(e) => {
+                    console.log("blur");
+                    // e.preventDefault();
+                    filterEmptyIdentifiers(e);
+                  }}
                 />
                 {schemeOptions && !isUrl && (
                   <SelectField

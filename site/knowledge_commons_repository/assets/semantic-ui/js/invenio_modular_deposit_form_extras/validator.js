@@ -66,39 +66,47 @@ const validationSchema = yupObject().shape({
               identifiers: yupArray().of(
                 yupObject().shape({
                   scheme: yupString().required(
-                    "An identifier scheme is required"
+                    "A scheme is required for each identifier"
                   ),
                   identifier: yupString()
                     .when("scheme", {
                       is: "url",
-                      then: yupString().url("Must be a valid URL"),
+                      then: yupString()
+                        .url("Must be a valid URL (e.g. https://example.com)")
+                        .required("You must provide a URL or remove this row"),
                     })
                     .matches(/(?!\s).+/, {
                       disallowEmptyString: true,
                       message: "Identifier cannot be blank",
                     })
-                    .required("An identifier is required"),
+                    .required("A value is required for each identifier"),
                 })
               ),
             }),
-            role: yupString().required("A role is required"),
+            role: yupString().required(
+              "A role is required for each contributor"
+            ),
           })
         )
         .min(1, "At least one contributor must be listed")
         .required("At least one contributor must be listed"),
       identifiers: yupArray().of(
         yupObject().shape({
-          scheme: yupString().required("An identifier scheme is required"),
+          scheme: yupString().required(
+            "An scheme is required for each identifier"
+          ),
           identifier: yupString()
             .when("scheme", {
               is: "url",
-              then: yupString().url("Must be a valid URL"),
+              then: yupString()
+                .url("Must be a valid URL (e.g. https://example.com)")
+                .required("You must provide a URL or remove this item"),
             })
             .matches(/(?!\s).+/, {
               disallowEmptyString: true,
               message: "Identifier cannot be blank",
             })
-            .required("An identifier is required"),
+            .required("You must provide an identifier or remove this row"),
         })
       ),
       publisher: yupString()

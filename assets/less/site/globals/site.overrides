@@ -178,21 +178,57 @@
       }
     }
 
-    .upload-form-stepper-step.has-error {
-      color: @errorColor; // was @errorTextColor
-      background-color: @negativeBackgroundColor;
-      border: 1px solid #e0b4b4;
-      &:after {
-        background-color: @negativeBackgroundColor;
-        border-color: #e0b4b4;
-      }
-      &:before {
-        content: "\f06a";
-        margin-right: 0.5em;
-        font-family: Icons;
+    .upload-form-pager {
+      margin-bottom: 2rem;
+      .upload-form-stepper-step {
+        line-height: 1.15rem;
+        padding-top: @small;
+        padding-bottom: @small;
+        &.active {
+          background-color: @primaryColor;
+          color: #fff;
+          .title {
+            color: #fff;
+          }
+          &::after {
+            color: #fff;
+            background-color: @primaryColor;
+          }
+        }
+        &.has-error {
+          color: @errorColor; // was @errorTextColor
+          background-color: @negativeBackgroundColor;
+          border: 1px solid #e0b4b4;
+          .title {
+            color: @errorColor;
+          }
+          &.active {
+            color: @errorColor;
+            background-color: @errorColor;
+            border: 1px solid #e0b4b4;
+            .title {
+              color: @errorBackgroundColor;
+            }
+            &::after {
+              color: @negativeBackgroundColor;
+              background-color: @errorColor;
+              border-color: #e0b4b4;
+            }
+          }
+          &:after {
+            background-color: @negativeBackgroundColor;
+            border-color: #e0b4b4;
+          }
+          &:before {
+            content: "\f06a";
+            font-family: Icons;
+            font-size: @huge;
+            position: absolute;
+            bottom: -1.5rem;
+          }
+        }
       }
     }
-
     .formPageWrapper {
       .sticky-footer-fixed {
         position: fixed;
