@@ -268,12 +268,14 @@ const PublicationDateField = ({
                   aria-describedby={`${fieldPath}.help-text`}
                 />
               ))}
-              <Checkbox
-                label={`${!useRange ? "add" : "include"} end date`}
-                id="metadata.publication_date.controls.useRange"
-                onChange={(e, data) => setUseRange(data.checked)}
-                checked={useRange}
-              />
+              <div>
+                <Checkbox
+                  label={`${!useRange ? "add" : "include"} end date`}
+                  id="metadata.publication_date.controls.useRange"
+                  onChange={(e, data) => setUseRange(data.checked)}
+                  checked={useRange}
+                />
+              </div>
             </Form.Group>
             {!!useRange && (
               <Form.Group>

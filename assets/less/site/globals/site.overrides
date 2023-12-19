@@ -120,6 +120,21 @@
     font-size: 1rem;
   }
 
+  .ui.radio.checkbox,
+  .ui.checkbox {
+    padding: 0.5rem 1rem;
+    border: 2px solid transparent;
+    &:focus-within {
+      border: 2px solid @secondaryColor;
+      border-radius: @defaultBorderRadius;
+      input:checked ~ label {
+        &:before {
+          border: 1px solid @secondaryColor;
+        }
+      }
+    }
+  }
+
   .ui.button {
     font-weight: normal;
     &.add-btn,
@@ -408,6 +423,10 @@
             .item {
               min-width: 0;
               flex-direction: column;
+              &:last-child,
+              &:first-child {
+                border-radius: @defaultBorderRadius;
+              }
               &.active {
                 border-radius: @defaultBorderRadius;
                 border-color: @primaryColor;
@@ -426,7 +445,7 @@
             margin-top: 1.5em;
           }
           .checkbox {
-            padding-top: 3.3rem;
+            margin-top: 2rem;
           }
         }
 
