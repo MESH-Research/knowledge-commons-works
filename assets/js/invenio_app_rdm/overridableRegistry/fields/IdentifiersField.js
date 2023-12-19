@@ -72,14 +72,11 @@ export const IdentifiersField = ({
   };
 
   const filterEmptyIdentifiers = (e) => {
-    console.log("filtering empty identifiers");
     // Get the parent element
     const parentElement = e.target.closest(".fields");
-    console.log("filtering from", parentElement);
 
     // Get all sibling elements
     const siblingElements = Array.from(parentElement.querySelectorAll("*"));
-    console.log("filtering sibs", siblingElements);
 
     // Check if any sibling elements have focus
     // wait for the focus to reach the sibling element
@@ -90,9 +87,6 @@ export const IdentifiersField = ({
           (document.activeElement.id &&
             element.id.includes(document.activeElement.id))
       );
-      console.log("filtering: active", document.activeElement);
-      console.log("filtering: active", document.activeElement.id);
-      console.log("filtering: sibling has focus", siblingHasFocus);
       if (values.metadata.identifiers.length && !siblingHasFocus) {
         let filteredIdentifiers = values.metadata.identifiers.reduce(
           (newList, item) => {
@@ -114,11 +108,6 @@ export const IdentifiersField = ({
       id={fieldPath}
       className="invenio-array-field"
       showEmptyValue={showEmptyValue}
-      onBlur={(e) => {
-        e.preventDefault();
-        console.log("blur");
-        filterEmptyIdentifiers(e);
-      }}
       render={(arrayHelpers) => (
         <>
           <Form.Field required={required}>
@@ -137,7 +126,6 @@ export const IdentifiersField = ({
                 className="identifier-item-row"
                 onBlur={(e) => {
                   filterEmptyIdentifiers(e);
-                  console.log("blur");
                 }}
               >
                 {/* <GroupField key={index} inline> */}
@@ -155,7 +143,6 @@ export const IdentifiersField = ({
                   fluid={false}
                   onBlur={(e) => {
                     console.log("blur");
-                    // e.preventDefault();
                     filterEmptyIdentifiers(e);
                   }}
                 />
