@@ -1,6 +1,6 @@
 // @primaryColor: rgb(0, 102, 80); // #006650
 @primaryColor: #009374;
-// @secondaryColor: #c2eae1;
+@secondaryColor: #186db6; // #c2eae1;;
 @footerLightColor: rgb(0, 102, 80);
 @footerDarkColor: #009374;
 

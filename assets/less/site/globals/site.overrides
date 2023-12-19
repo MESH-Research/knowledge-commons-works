@@ -1,5 +1,7 @@
 @import (css)
   url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import (css)
+  url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=Noto+Serif:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=Open+Sans:ital,wght@0,400;0,800;1,400;1,700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+3&display=swap");
 
 // @font-face {
 //     font-family: 'cblockbold';
@@ -108,6 +110,10 @@
     content: "(required)" !important;
     margin: 0 0 0 0.5em !important;
     font-weight: normal !important;
+  }
+
+  .helptext {
+    color: @primaryColor;
   }
 
   .ui.label.prompt {
@@ -317,6 +323,9 @@
           margin-bottom: 0.25rem;
           font-weight: bold;
           display: block;
+          .icon {
+            margin-right: 0.5rem;
+          }
         }
         .field > label {
           margin-bottom: 0.5em;
