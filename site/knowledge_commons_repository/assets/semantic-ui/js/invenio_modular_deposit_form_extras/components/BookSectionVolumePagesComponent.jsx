@@ -4,6 +4,7 @@ import {
   SectionPagesComponent,
   TotalPagesComponent,
 } from "@js/invenio_modular_deposit_form/field_components/field_components";
+import { VolumeComponent } from "./VolumeComponent";
 import { ChapterLabelComponent } from "./ChapterLabelComponent";
 
 const BookSectionVolumePagesComponent = ({ customFieldsUI, labelMods }) => {

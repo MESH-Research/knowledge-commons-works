@@ -23,6 +23,7 @@ const TitlesField = ({
   required = false,
   recordUI = undefined,
   disabled = false,
+  ...extraProps
 }) => {
   return (
     <>
@@ -34,6 +35,7 @@ const TitlesField = ({
         showLabel={true}
         labelIcon="book"
         disabled={disabled}
+        {...extraProps}
       />
       <AdditionalTitlesField
         options={options}

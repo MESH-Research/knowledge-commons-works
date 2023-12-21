@@ -1,4 +1,3 @@
-
 // This file is part of Invenio-RDM-Records
 // Copyright (C) 2020-2023 CERN.
 // Copyright (C) 2020-2022 Northwestern University.
@@ -7,11 +6,8 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import React, { Component } from "react";
-
-import { FieldLabel, Input } from "react-invenio-forms";
-import { Divider, Grid } from "semantic-ui-react";
-
 import PropTypes from "prop-types";
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
 export class ImprintPlaceField extends Component {
   render() {
@@ -21,21 +17,21 @@ export class ImprintPlaceField extends Component {
       label,
       icon,
       placeholder,
-      description
+      description,
+      ...extraProps
     } = this.props;
     return (
-        <>
-            <Input
-                fieldPath={fieldPath}
-                label={label}
-                icon={"map marker alternate"}
-                placholder={placeholder}
-                type={"text"}
-            />
-            {description && (
-                <label className="helptext mb-0">{description}</label>
-            )}
-        </>
+      <>
+        <TextField
+          fieldPath={fieldPath}
+          label={label}
+          icon={"map marker alternate"}
+          placholder={placeholder}
+          type={"text"}
+          {...extraProps}
+        />
+        {description && <label className="helptext mb-0">{description}</label>}
+      </>
     );
   }
 }

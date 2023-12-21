@@ -1,7 +1,7 @@
 import React from "react";
 import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
 
-const SponsoringInstitutionComponent = ({ customFieldsUI }) => {
+const SponsoringInstitutionComponent = ({ customFieldsUI, ...extraProps }) => {
   return (
     <CustomFieldInjector
       sectionName="KCR Conference information"
@@ -9,6 +9,7 @@ const SponsoringInstitutionComponent = ({ customFieldsUI }) => {
       idString="SponsoringInstitutionField"
       customFieldsUI={customFieldsUI}
       description={""}
+      {...extraProps}
     />
   );
 };

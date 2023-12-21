@@ -8,12 +8,7 @@
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Field } from "formik";
-import { Form, Label } from "semantic-ui-react";
-
-import { FieldLabel } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
-
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
 const PublisherField = ({
@@ -24,6 +19,7 @@ const PublisherField = ({
   placeholder,
   helpText,
   required,
+  ...extraProps
 }) => {
   return (
     <TextField
@@ -34,6 +30,7 @@ const PublisherField = ({
       helpText={helpText}
       required={required}
       fluid={true}
+      {...extraProps}
     />
   );
 };

@@ -1,4 +1,3 @@
-
 // This file is part of Invenio-RDM-Records
 // Copyright (C) 2020-2023 CERN.
 // Copyright (C) 2020-2022 Northwestern University.
@@ -9,11 +8,15 @@
 import React, { Component } from "react";
 
 import { FieldLabel, Input } from "react-invenio-forms";
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 import { Divider, Grid } from "semantic-ui-react";
 
 import PropTypes from "prop-types";
 
-export class ImprintTitleField extends Component {
+class ImprintTitleField extends Component {
+  componentDidMount() {
+    console.log("ImprintTitleField", this.props);
+  }
   render() {
     const {
       fieldPath, // injected by the custom field loader via the `field` config property
@@ -22,17 +25,18 @@ export class ImprintTitleField extends Component {
       description,
       placeholder,
       icon,
+      classnames,
     } = this.props;
+
     return (
       <>
-            <Input
-              fieldPath={`${fieldPath}`}
-              label={label}
-              placeholder={placeholder}
-            />
-            {description && (
-              <label className="helptext mb-0">{description}</label>
-            )}
+        <TextField
+          fieldPath={`${fieldPath}`}
+          label={label}
+          placeholder={placeholder}
+          classnames={classnames}
+        />
+        {description && <label className="helptext mb-0">{description}</label>}
       </>
     );
   }
@@ -49,3 +53,5 @@ ImprintTitleField.defaultProps = {
   icon: undefined,
   label: undefined,
 };
+
+export default ImprintTitleField;

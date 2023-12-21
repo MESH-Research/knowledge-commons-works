@@ -118,7 +118,9 @@ const validationSchema = yupObject().shape({
       title: yupString()
         .matches(/(?!\s).+/, "Title cannot be blank")
         .required("A title is required"),
-      resource_type: yupString().required("A resource type is required"),
+      resource_type: yupString()
+        .nullable()
+        .required("A resource type is required"),
     })
     .required("Some metadata is required"),
 });

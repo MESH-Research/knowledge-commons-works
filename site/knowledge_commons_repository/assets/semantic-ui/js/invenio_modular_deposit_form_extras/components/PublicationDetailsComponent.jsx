@@ -7,6 +7,7 @@ import {
 } from "@js/invenio_modular_deposit_form/field_components/field_components";
 import { EditionComponent } from "./EditionComponent";
 
+// FIXME: Deprecated
 const PublicationDetailsComponent = ({ customFieldsUI }) => {
   return (
     <>

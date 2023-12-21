@@ -67,14 +67,14 @@ KCR_CUSTOM_FIELDS = [
 
 KCR_INSTITUTION_DEPARTMENT_FIELD_UI = {
     "field": "kcr:institution_department",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {"label": _("Department"), "description": ""},
     "icon": "building",
 }
 
 KCR_CHAPTER_LABEL_FIELD_UI = {
     "field": "kcr:chapter_label",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": _("Chapter"),
         "description": "The number or title of the chapter " "being deposited",
@@ -84,7 +84,7 @@ KCR_CHAPTER_LABEL_FIELD_UI = {
 
 KCR_EDITION_FIELD_UI = {
     "field": "kcr:edition",
-    "ui_widget": "Input",
+    "ui_widget": "EditionField",
     "props": {
         "label": _("Edition"),
         "description": "The edition of the item " "being deposited",
@@ -94,7 +94,7 @@ KCR_EDITION_FIELD_UI = {
 
 KCR_COMMONS_DOMAIN_FIELD_UI = {
     "field": "kcr:commons_domain",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": _("Commons domain"),
         "description": "The Knowledge Commons domain from which "
@@ -105,7 +105,7 @@ KCR_COMMONS_DOMAIN_FIELD_UI = {
 
 KCR_SUBMITTER_EMAIL_FIELD_UI = {
     "field": "kcr:submitter_email",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": "Submitter email",
         "placeholder": "my@email.com",
@@ -116,7 +116,7 @@ KCR_SUBMITTER_EMAIL_FIELD_UI = {
 
 KCR_SUBMITTER_USERNAME_FIELD_UI = {
     "field": "kcr:submitter_username",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": "Submitter user name",
         "placeholder": "",
@@ -127,7 +127,7 @@ KCR_SUBMITTER_USERNAME_FIELD_UI = {
 
 KCR_MEETING_ORGANIZATION_FIELD_UI = {
     "field": "kcr:meeting_organization",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": _("Meeting organization"),
         "description": "The organization sponsoring the meeting or " "conference",
@@ -137,7 +137,7 @@ KCR_MEETING_ORGANIZATION_FIELD_UI = {
 
 KCR_SPONSORING_INSTITUTION_FIELD_UI = {
     "field": "kcr:sponsoring_institution",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": _("Sponsoring institution"),
         "description": "The institution sponsoring the deposited document",

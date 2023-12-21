@@ -11,34 +11,27 @@ from invenio_records_resources.services.custom_fields import (
     BaseCF,
     BaseListCF,
     TextCF,
-    IntegerCF
+    IntegerCF,
 )
 from marshmallow import fields, validate
-from marshmallow_utils.fields import (
-    SanitizedUnicode,
-    SanitizedHTML,
-    StrippedHTML
-)
+from marshmallow_utils.fields import SanitizedUnicode, SanitizedHTML, StrippedHTML
 from .kcr_metadata_fields import KCR_NAMESPACE
 
 
 class BookSeriesCF(BaseListCF):
-#     """Nested custom field."""
-
     def __init__(self, name, **kwargs):
-            """Constructor."""
-            super().__init__(
+        """Constructor."""
+        super().__init__(
             name,
             field_cls=fields.Nested,
             field_args=dict(
-                nested= dict(
-                    series_title=SanitizedUnicode(),
-                    series_volume=SanitizedUnicode()
+                nested=dict(
+                    series_title=SanitizedUnicode(), series_volume=SanitizedUnicode()
                 )
             ),
             multiple=True,
             **kwargs
-            )
+        )
 
     @property
     def mapping(self):
@@ -48,7 +41,7 @@ class BookSeriesCF(BaseListCF):
             "properties": {
                 "series_title": {"type": "text"},
                 "series_volume": {"type": "text"},
-            }
+            },
         }
 
 

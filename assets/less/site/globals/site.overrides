@@ -120,6 +120,15 @@
     font-size: 1rem;
   }
 
+  input,
+  button,
+  select {
+    scroll-margin-bottom: 100px;
+  }
+  textarea {
+    scroll-margin-bottom: 300px;
+  }
+
   .ui.radio.checkbox,
   .ui.checkbox {
     padding: 0.5rem 1rem;
@@ -335,7 +344,7 @@
           > .field.subjects-field-inner
           > .invenio-field-label:first-of-type {
           font-size: @big;
-          margin-bottom: 0.25rem;
+          margin-bottom: 1rem;
           font-weight: bold;
           display: block;
           .icon {
@@ -343,7 +352,7 @@
           }
         }
         .field > label {
-          margin-bottom: 0.5em;
+          margin-bottom: 0.25em;
         }
 
         .helptext {
