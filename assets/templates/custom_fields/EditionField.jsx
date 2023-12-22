@@ -14,13 +14,14 @@ import { TextField } from "@js/invenio_modular_deposit_form/replacement_componen
 const EditionField = ({
   fieldPath,
   disabled,
-  label,
-  labelIcon,
+  label = i18next.t("Edition or version"),
+  labelIcon = "code branch",
   placeholder,
   helpText,
   required = false,
   ...extraProps
 }) => {
+  console.log("EditionField labelIcon", labelIcon);
   return (
     <TextField
       fieldPath={fieldPath}

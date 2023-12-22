@@ -3,6 +3,7 @@ import { Segment, Form } from "semantic-ui-react";
 import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
 import { VolumeComponent } from "./VolumeComponent";
 
+// FIXME: deprecated
 const BookVolumePagesComponent = ({ customFieldsUI }) => {
   return (
     <Form.Group>

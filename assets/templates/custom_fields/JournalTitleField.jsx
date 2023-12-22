@@ -7,7 +7,7 @@
 
 import React, { Component } from "react";
 
-import { FieldLabel, Input } from "react-invenio-forms";
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
 import PropTypes from "prop-types";
 
@@ -20,18 +20,18 @@ export class JournalTitleField extends Component {
       label,
       placeholder,
       description,
+      ...extraProps
     } = this.props;
     return (
       <>
-        <Input
-            fieldPath={`${fieldPath}`}
-            label={label}
-            placeholder={placeholder}
-            icon={icon}
+        <TextField
+          fieldPath={`${fieldPath}`}
+          label={label}
+          placeholder={placeholder}
+          icon={icon}
+          {...extraProps}
         />
-        {description && (
-            <label className="helptext mb-0">{description}</label>
-        )}
+        {description && <label className="helptext mb-0">{description}</label>}
       </>
     );
   }
