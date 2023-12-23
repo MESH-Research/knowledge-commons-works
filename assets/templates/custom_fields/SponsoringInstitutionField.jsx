@@ -6,19 +6,19 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
-const PublisherField = ({
+const SponsoringInstitutionField = ({
   fieldPath,
   disabled,
-  label,
-  labelIcon,
+  label = i18next.t("Sponsoring institution"),
+  labelIcon = "group",
   placeholder,
   helpText,
-  required,
+  required = false,
   ...extraProps
 }) => {
   return (
@@ -26,7 +26,6 @@ const PublisherField = ({
       fieldPath={fieldPath}
       label={label}
       labelIcon={labelIcon}
-      inputIcon={true}
       placeholder={placeholder}
       helpText={helpText}
       required={required}
@@ -36,18 +35,11 @@ const PublisherField = ({
   );
 };
 
-PublisherField.propTypes = {
+SponsoringInstitutionField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
   labelIcon: PropTypes.string,
   placeholder: PropTypes.string,
 };
 
-PublisherField.defaultProps = {
-  label: i18next.t("Publisher"),
-  labelIcon: "building outline",
-  placeholder: i18next.t("Publisher"),
-  required: true,
-};
-
-export { PublisherField };
+export { SponsoringInstitutionField };

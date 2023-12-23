@@ -9,32 +9,29 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
-export class ImprintPlaceField extends Component {
-  render() {
-    const {
-      fieldPath, // injected by the custom field loader via the `field` config property
-      place,
-      label,
-      icon,
-      placeholder,
-      description,
-      ...extraProps
-    } = this.props;
-    return (
-      <>
-        <TextField
-          fieldPath={fieldPath}
-          label={label}
-          icon={"map marker alternate"}
-          placholder={placeholder}
-          type={"text"}
-          {...extraProps}
-        />
-        {description && <label className="helptext mb-0">{description}</label>}
-      </>
-    );
-  }
-}
+const ImprintPlaceField = ({
+  fieldPath, // injected by the custom field loader via the `field` config property
+  place,
+  label,
+  labelIcon = "map marker alternate",
+  placeholder,
+  description,
+  ...extraProps
+}) => {
+  return (
+    <>
+      <TextField
+        fieldPath={fieldPath}
+        label={label}
+        labelIcon={labelIcon}
+        placeholder={placeholder}
+        type={"text"}
+        {...extraProps}
+      />
+      {description && <label className="helptext mb-0">{description}</label>}
+    </>
+  );
+};
 
 ImprintPlaceField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
@@ -45,9 +42,4 @@ ImprintPlaceField.propTypes = {
   description: PropTypes.string,
 };
 
-ImprintPlaceField.defaultProps = {
-  icon: "map marker alternate",
-  label: undefined,
-  placeholder: undefined,
-  description: undefined,
-};
+export { ImprintPlaceField };

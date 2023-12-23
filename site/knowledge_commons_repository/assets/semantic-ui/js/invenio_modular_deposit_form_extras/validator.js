@@ -111,16 +111,25 @@ const validationSchema = yupObject().shape({
       ),
       publisher: yupString()
         .matches(/(?!\s).+/, "Publisher cannot be blank")
-        .required("A publisher is required"),
+        .required("A publisher is required. Enter 'none' if not applicable"),
       publication_date: yupString()
         .dateInSequence()
         .required("A publication date is required"),
       title: yupString()
         .matches(/(?!\s).+/, "Title cannot be blank")
         .required("A title is required"),
-      resource_type: yupString()
-        .nullable()
-        .required("A resource type is required"),
+      resource_type: yupString().required("A resource type is required"),
+      additional_descriptions: yupArray().of(
+        yupObject().shape({
+          description: yupString()
+            .matches(/(?!\s).+/, "Description cannot be blank")
+            .required("Provide a description or remove this item"),
+          type: yupString().required(
+            "A type is required for each additional description"
+          ),
+          lang: yupString(),
+        })
+      ),
     })
     .required("Some metadata is required"),
 });

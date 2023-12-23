@@ -6,49 +6,39 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import React, { Component } from "react";
-
+import PropTypes from "prop-types";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
-import PropTypes from "prop-types";
-
-export class JournalTitleField extends Component {
-  render() {
-    const {
-      fieldPath, // injected by the custom field loader via the `field` config property
-      title,
-      icon,
-      label,
-      placeholder,
-      description,
-      ...extraProps
-    } = this.props;
-    return (
-      <>
-        <TextField
-          fieldPath={`${fieldPath}`}
-          label={label}
-          placeholder={placeholder}
-          icon={icon}
-          {...extraProps}
-        />
-        {description && <label className="helptext mb-0">{description}</label>}
-      </>
-    );
-  }
-}
+const JournalTitleField = ({
+  fieldPath, // injected by the custom field loader via the `field` config property
+  title,
+  labelIcon,
+  label,
+  placeholder,
+  description,
+  ...extraProps
+}) => {
+  return (
+    <>
+      <TextField
+        fieldPath={`${fieldPath}`}
+        label={label}
+        placeholder={placeholder}
+        labelIcon={labelIcon}
+        {...extraProps}
+      />
+      {description && <label className="helptext mb-0">{description}</label>}
+    </>
+  );
+};
 
 JournalTitleField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  title: PropTypes.object.isRequired,
+  title: PropTypes.object,
   icon: PropTypes.string,
   label: PropTypes.string,
   placeholder: PropTypes.string,
   description: PropTypes.string,
 };
 
-JournalTitleField.defaultProps = {
-  icon: undefined,
-  label: undefined,
-  placeholder: undefined,
-  description: undefined,
-};
+export { JournalTitleField };

@@ -9,6 +9,7 @@
 // @navbarBackgroundImage: linear-gradient(12deg, rgb(0, 102, 80) 0%, desaturate(lighten(rgb(0, 102, 80), 5%), 5%) 90%);
 
 @fontName: "Atkinson Hyperlegible";
+@headingFontName: "Fira Sans";
 
 /*-------------------
       Base Sizes

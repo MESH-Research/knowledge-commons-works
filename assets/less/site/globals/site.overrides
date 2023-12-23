@@ -1,7 +1,7 @@
 @import (css)
   url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 @import (css)
-  url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=Noto+Serif:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=Open+Sans:ital,wght@0,400;0,800;1,400;1,700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+3&display=swap");
+  url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=Fira+Sans:ital,wght@0,400;0,700;0,800;1,400;1,700&family=Noto+Sans:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 // @font-face {
 //     font-family: 'cblockbold';
@@ -185,7 +185,8 @@
       // }
     }
     h2 {
-      font-weight: normal;
+      font-weight: bold;
+      font-family: @headingFontName;
     }
 
     a {
@@ -193,18 +194,25 @@
       text-decoration-style: dotted;
     }
 
-    .field.error {
-      input[type="text"] {
-        &::before {
-          content: "\f071";
-          margin-right: 0.5em;
-          font-family: Icons;
+    // .fields {
+    //   margin-bottom: 0.5rem;
+    // }
+
+    .field {
+      // margin-bottom: 0.5rem;
+      &.error {
+        input[type="text"] {
+          &::before {
+            content: "\f071";
+            margin-right: 0.5em;
+            font-family: Icons;
+          }
         }
-      }
-      .prompt.label {
-        background-color: @errorColor !important;
-        border-color: @errorColor !important;
-        color: #fff !important;
+        .prompt.label {
+          background-color: @errorColor !important;
+          border-color: @errorColor !important;
+          color: #fff !important;
+        }
       }
     }
 
@@ -214,6 +222,13 @@
         line-height: 1.15rem;
         padding-top: @small;
         padding-bottom: @small;
+        background-color: @sidebarBackgroundColor;
+        .title {
+          font-weight: normal;
+        }
+        &:after {
+          background-color: @sidebarBackgroundColor;
+        }
         &.active {
           background-color: @primaryColor;
           color: #fff;
@@ -344,15 +359,20 @@
           > .field.subjects-field-inner
           > .invenio-field-label:first-of-type {
           font-size: @big;
-          margin-bottom: 1rem;
-          font-weight: bold;
+          margin-bottom: 0.5rem;
+          font-weight: normal;
           display: block;
           .icon {
+            display: inline-block;
             margin-right: 0.5rem;
           }
+          font-family: @headingFontName;
         }
         .field > label {
           margin-bottom: 0.25em;
+          .icon {
+            display: none;
+          }
         }
 
         .helptext {
@@ -455,6 +475,15 @@
           }
           .checkbox {
             margin-top: 2rem;
+          }
+        }
+
+        &.invenio-fieldset.abstract {
+          .additional-description-wrapper {
+            border: 1px solid @borderColor;
+            border-radius: @defaultBorderRadius;
+            padding: 1rem 1rem;
+            margin-bottom: 1rem;
           }
         }
 

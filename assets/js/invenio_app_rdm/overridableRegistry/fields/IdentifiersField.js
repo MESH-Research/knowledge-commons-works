@@ -28,13 +28,13 @@ const emptyURL = {
 /** Identifiers array component */
 export const IdentifiersField = ({
   fieldPath,
-  label,
-  labelIcon,
-  required,
-  schemeOptions,
-  showEmptyValue = true,
   description,
   placeholder,
+  label = i18next.t("Identifiers"),
+  labelIcon = "barcode",
+  required = false,
+  schemeOptions = undefined,
+  showEmptyValue = true,
 }) => {
   const { values, setFieldValue } = useFormikContext();
   const [identifiersLength, setIdentifiersLength] = useState(0);
@@ -221,12 +221,4 @@ IdentifiersField.propTypes = {
     })
   ),
   showEmptyValue: PropTypes.bool,
-};
-
-IdentifiersField.defaultProps = {
-  label: i18next.t("Identifiers"),
-  labelIcon: "barcode",
-  required: false,
-  schemeOptions: undefined,
-  showEmptyValue: false,
 };

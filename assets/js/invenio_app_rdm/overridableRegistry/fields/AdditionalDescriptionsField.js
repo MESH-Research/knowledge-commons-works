@@ -7,21 +7,17 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { useState, useEffect, useLayoutEffect, Fragment } from "react";
+import React, { useState, useLayoutEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, Icon } from "semantic-ui-react";
 
-import {
-  ArrayField,
-  SelectField,
-  RichInputField,
-  TextArea,
-} from "react-invenio-forms";
+import { SelectField } from "react-invenio-forms";
 // import { emptyAdditionalDescription } from "./initialValues";
 import { LanguagesField } from "@js/invenio_rdm_records";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 // import { sortOptions } from "../../../utils";
 import { FieldArray, useFormikContext } from "formik";
+import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/TextArea";
 
 const emptyAdditionalDescription = {
   lang: "",
@@ -48,6 +44,7 @@ const AdditionalDescriptionsField = ({
   const [descriptionsLength, setDescriptionsLength] = useState(-1);
   const [haveChangedNumber, setHaveChangedNumber] = useState(false);
   const fieldPathSanitized = fieldPath.replace(/\./g, "-");
+  const textFieldRef = React.createRef();
 
   useLayoutEffect(() => {
     if (!!haveChangedNumber) {
@@ -55,11 +52,10 @@ const AdditionalDescriptionsField = ({
         document.getElementById(`${fieldPath}.add-button`)?.focus();
       } else {
         window.setTimeout(() => {
-          document
-            .querySelectorAll(
-              ".metadata-additional_descriptions-0-description .ck-editor__editable"
-            )[0]
-            .focus();
+          const nodes = document.querySelectorAll(
+            ".additional-description-item-row textarea"
+          );
+          nodes[nodes.length - 1].focus();
         }, 100);
       }
     }
@@ -90,19 +86,17 @@ const AdditionalDescriptionsField = ({
             const fieldPathPrefixSanitized = `${fieldPathSanitized}-${index}`;
 
             return (
-              <Fragment key={index}>
-                <Form.Group className="additional-description-item-row">
+              <div key={index} className="additional-description-wrapper">
+                <Form.Group className="additional-description-item-row sixteen wide">
                   <TextArea
-                    mobile={16}
-                    tablet={14}
-                    computer={10}
                     fieldPath={`${fieldPathPrefix}.description`}
                     id={`${fieldPathPrefix}.description`}
                     label={i18next.t("Additional description")}
                     editorConfig={editorConfig}
                     optimized
                     required
-                    className={`fourteen wide tablet sixteen wide mobile twelve wide computer ${fieldPathPrefixSanitized}-description`}
+                    classnames={`fourteen wide tablet sixteen wide mobile twelve wide computer ${fieldPathPrefixSanitized}-description`}
+                    ref={textFieldRef}
                   />
                   <Form.Field className="mobile hidden two wide">
                     <Button
@@ -116,9 +110,8 @@ const AdditionalDescriptionsField = ({
                     </Button>
                   </Form.Field>
                 </Form.Group>
-                <Form.Group>
+                <Form.Group className="sixteen wide equal widths">
                   <SelectField
-                    className="seven wide"
                     fieldPath={`${fieldPathPrefix}.type`}
                     id={`${fieldPathPrefix}.type`}
                     label={i18next.t("Type of description")}
@@ -128,7 +121,6 @@ const AdditionalDescriptionsField = ({
                     search={true}
                   />
                   <LanguagesField
-                    className="seven wide"
                     serializeSuggestions={(suggestions) =>
                       suggestions.map((item) => ({
                         text: item.title_l10n,
@@ -152,6 +144,12 @@ const AdditionalDescriptionsField = ({
                     selectOnBlur={false}
                   />
                   <Form.Field
+                    tablet={2}
+                    computer={2}
+                    mobile={0}
+                    className="tablet computer only two wide"
+                  />
+                  <Form.Field
                     tablet={0}
                     computer={0}
                     mobile={2}
@@ -168,7 +166,7 @@ const AdditionalDescriptionsField = ({
                     </Button>
                   </Form.Field>
                 </Form.Group>
-              </Fragment>
+              </div>
             );
           })}
           <Button

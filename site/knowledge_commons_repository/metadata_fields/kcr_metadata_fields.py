@@ -8,7 +8,7 @@ kcr:meeting_organization    The convening organization for a meeting or
                             conference.
 kcr:sponsoring_institution      The institution responsible for the current
                                 item. Used primarily for resource types like
-                                thesis, whitePaper, and report.
+                                whitePaper, and report.
 kcr:submitter_email     The email address of the user who submitted the
                         deposit. This is important for aligning the Invenio
                         user with the HC user account.
@@ -41,6 +41,15 @@ KCR_CUSTOM_FIELDS = [
     TextCF(
         name="kcr:meeting_organization",
         field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="kcr:project_title",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="kcr:publication_url",
+        field_cls=SanitizedUnicode,
+        field_args={"validate": validate.URL()},
     ),
     TextCF(
         name="kcr:sponsoring_institution",
@@ -114,6 +123,29 @@ KCR_SUBMITTER_EMAIL_FIELD_UI = {
     },
 }
 
+
+KCR_PROJECT_TITLE_FIELD_UI = {
+    "field": "kcr:project_title",
+    "ui_widget": "TextField",
+    "props": {
+        "label": "Project title",
+        "placeholder": "",
+        "icon": "briefcase",
+        "description": "Title for the larger project of which this work is a part.",
+    },
+}
+
+KCR_PUBLICATION_URL_FIELD_UI = {
+    "field": "kcr:publication_url",
+    "ui_widget": "TextField",
+    "props": {
+        "label": "Publication URL",
+        "placeholder": "https://example.com",
+        "icon": "linkify",
+        "description": "Home URL for the publication as a whole",
+    },
+}
+
 KCR_SUBMITTER_USERNAME_FIELD_UI = {
     "field": "kcr:submitter_username",
     "ui_widget": "TextField",
@@ -137,10 +169,11 @@ KCR_MEETING_ORGANIZATION_FIELD_UI = {
 
 KCR_SPONSORING_INSTITUTION_FIELD_UI = {
     "field": "kcr:sponsoring_institution",
-    "ui_widget": "TextField",
+    "ui_widget": "SponsoringInstitutionField",
     "props": {
         "label": _("Sponsoring institution"),
         "description": "The institution sponsoring the deposited document",
+        "placeholder": "",
     },
     "icon": "group",
 }
@@ -174,3 +207,11 @@ KCR_IMPRINT_SECTION_EXTRAS_UI = [
 KCR_MEETING_SECTION_EXTRAS_UI = [KCR_MEETING_ORGANIZATION_FIELD_UI]
 
 KCR_THESIS_SECTION_EXTRAS_UI = [KCR_INSTITUTION_DEPARTMENT_FIELD_UI]
+
+KCR_JOURNAL_SECTION_EXTRAS_UI = [KCR_PUBLICATION_URL_FIELD_UI]
+
+KCR_PROJECT_SECTION_UI = {
+    "section": _("Project"),
+    "hidden": False,
+    "fields": [KCR_PROJECT_TITLE_FIELD_UI],
+}
