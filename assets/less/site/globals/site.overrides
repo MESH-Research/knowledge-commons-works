@@ -201,6 +201,9 @@
     .field {
       // margin-bottom: 0.5rem;
       &.error {
+        label {
+          color: @errorColor;
+        }
         input[type="text"] {
           &::before {
             content: "\f071";
@@ -522,7 +525,7 @@
               background-color: @sidebarBackgroundColor;
             }
             .creatibutors-item-form-buttons {
-              padding: 0 1rem 1rem 1.75rem;
+              padding: 0.25rem 1rem 1rem 1.75rem;
               background-color: @sidebarBackgroundColor;
             }
             &.error h2.ui.header {
@@ -581,13 +584,75 @@
           }
         }
 
-        &.communities-field {
-          .ui.icon.button.close-btn {
-            margin-top: 0;
-            float: none;
+        &.ai {
+          .fields .field .invenio-field-label {
+            font-weight: normal;
           }
-          .right-btn-column {
-            text-align: right;
+        }
+
+        &.related_works {
+          .additional-identifiers-item-row {
+            margin-bottom: 1rem;
+            border: 1px solid @borderColor;
+            border-radius: @defaultBorderRadius;
+            padding: 1rem 1rem;
+          }
+        }
+
+        &.file_upload {
+          .file-upload-area {
+            border: 1px solid @borderColor;
+            border-radius: @defaultBorderRadius;
+            margin-bottom: 1rem;
+            margin-top: 0;
+          }
+        }
+
+        &.licenses {
+          .item {
+            border: 1px solid @borderColor;
+            border-radius: @defaultBorderRadius;
+            padding: 1rem 1rem;
+            margin-bottom: 1rem;
+            .content {
+              div.description {
+                display: block !important;
+                padding-top: 0.5rem;
+              }
+              .license-read-more {
+                margin-top: 0.5rem;
+                display: block;
+              }
+            }
+          }
+          .add-btn {
+            margin-top: 0;
+          }
+        }
+
+        &.communities {
+          .fields {
+            border: 1px solid @borderColor;
+            border-radius: @defaultBorderRadius;
+            padding: 1rem 1rem;
+            .ui-small-header {
+              margin-top: 0.5rem;
+            }
+            .communities-helptext-wrapper {
+              display: flex;
+              align-items: center;
+              .helptext {
+                color: @primaryColor;
+                margin-top: 0;
+              }
+            }
+            .ui.icon.button.close-btn {
+              margin-top: 0;
+              float: none;
+            }
+            .right-btn-column {
+              text-align: right;
+            }
           }
         }
 

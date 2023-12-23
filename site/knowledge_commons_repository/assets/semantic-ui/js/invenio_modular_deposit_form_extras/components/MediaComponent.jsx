@@ -11,7 +11,7 @@ const MediaComponent = ({ customFieldsUI, ...extraProps }) => {
       customFieldsUI={customFieldsUI}
       icon={"paint brush"}
       placeholder={
-        "e.g., oil on canvas. Press Enter to add another medium/material."
+        "e.g., oil on canvas (press 'enter' to add each medium/material)"
       }
       helpText={""}
       description={""}

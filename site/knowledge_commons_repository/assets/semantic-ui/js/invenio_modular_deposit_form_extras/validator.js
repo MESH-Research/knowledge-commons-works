@@ -117,6 +117,7 @@ const validationSchema = yupObject().shape({
         .required("A publication date is required"),
       title: yupString()
         .matches(/(?!\s).+/, "Title cannot be blank")
+        .min(3, "Title must be at least 3 characters")
         .required("A title is required"),
       resource_type: yupString().required("A resource type is required"),
       additional_descriptions: yupArray().of(

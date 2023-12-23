@@ -25,7 +25,6 @@ const TitlesField = ({
   disabled = false,
   ...extraProps
 }) => {
-  console.log("TitlesField extraProps", extraProps);
   return (
     <>
       <TextField
