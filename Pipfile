@@ -28,11 +28,9 @@ invenio-cli = "==1.0.21"
 invenio-communities = "==7.0.0"
 invenio-drafts-resources = "==1.4.2"
 invenio-formatter = "==1.2.0"
-invenio-groups = {editable = true, path = "./../invenio-groups"}
 invenio-i18n = "==2.0.0"
 invenio-notifications = "==0.2.0"
 invenio-oauthclient = "==3.1.2"
-invenio-rdm-records = {editable = true, path = "./../invenio-rdm-records"}
 invenio-requests = "==2.5.0"
 invenio-s3 = "*"
 invenio-subjects-fast = "*"
@@ -43,7 +41,6 @@ invenio-utilities-tuw = "*"
 isbnlib = "*"
 xmlsec = "*"
 invenio-saml = "*"
-knowledge-commons-repository = {editable = true, path = "./site"}
 langdetect = "*"
 pip = "*"
 Pillow ="==9.5.0"
@@ -60,10 +57,13 @@ uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
 aiohttp = "*"
+invenio-groups = {editable = true, path = "./../invenio-groups"}
 invenio-modular-detail-page = {editable = true, path = "./../invenio-modular-detail-page/invenio-modular-detail-page"}
 invenio-modular-deposit-form = {editable = true, path = "./../invenio-modular-deposit-form"}
-invenio-vocabularies = {editable = true, path = "./../invenio-vocabularies"}
 invenio-records-resources = {editable = true, path = "./../invenio-records-resources"}
+invenio-rdm-records = {editable = true, path = "./../invenio-rdm-records"}
+invenio-vocabularies = {editable = true, path = "./../invenio-vocabularies"}
+knowledge-commons-repository = {editable = true, path = "./site"}
 
 [requires]
 python_version = "3.9"
