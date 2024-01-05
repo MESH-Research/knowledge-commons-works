@@ -1,5 +1,4 @@
 import React from "react";
-import { Segment } from "semantic-ui-react";
 import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
 
 const AIComponent = ({ customFieldsUI, ...extraProps }) => {

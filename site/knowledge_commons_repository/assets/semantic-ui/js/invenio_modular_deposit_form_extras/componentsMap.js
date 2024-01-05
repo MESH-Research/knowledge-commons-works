@@ -3,6 +3,9 @@ import { AIComponent } from "./components/AIComponent";
 import { ChapterLabelComponent } from "./components/ChapterLabelComponent";
 import { CommonsLegacyInfoComponent } from "./components/CommonsLegacyInfoComponent";
 import { ContentWarningComponent } from "./components/ContentWarningComponent";
+import { CourseTitleComponent } from "./components/CourseTitleComponent";
+import { DegreeComponent } from "./components/DegreeComponent";
+import { DisciplineComponent } from "./components/DisciplineComponent";
 import { EditionComponent } from "./components/EditionComponent";
 import { EditionSectionComponent } from "./components/EditionSectionComponent";
 import { InstitutionDepartmentComponent } from "./components/InstitutionDepartmentComponent";
@@ -50,6 +53,12 @@ const componentsMap = {
     ContentWarningComponent,
     ["custom_fields.kcr:content_warning"],
   ],
+  CourseTitleComponent: [
+    CourseTitleComponent,
+    ["custom_fields.kcr:course_title"],
+  ],
+  DegreeComponent: [DegreeComponent, ["custom_fields.kcr:degree"]],
+  DisciplineComponent: [DisciplineComponent, ["custom_fields.kcr:discipline"]],
   EditionComponent: [EditionComponent, ["custom_fields.kcr:edition"]],
   EditionSectionComponent: [
     EditionSectionComponent,

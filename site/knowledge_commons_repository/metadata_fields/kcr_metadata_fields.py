@@ -35,6 +35,22 @@ KCR_CUSTOM_FIELDS = [
         field_cls=SanitizedUnicode,
     ),
     TextCF(
+        name="kcr:content_warning",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="kcr:course_title",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="kcr:degree",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="kcr:discipline",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
         name="kcr:edition",
         field_cls=SanitizedUnicode,
     ),
@@ -65,10 +81,6 @@ KCR_CUSTOM_FIELDS = [
         field_cls=SanitizedUnicode,
     ),
     TextCF(
-        name="kcr:content_warning",
-        field_cls=SanitizedUnicode,
-    ),
-    TextCF(
         name="kcr:institution_department",
         field_cls=SanitizedUnicode,
     ),
@@ -91,6 +103,26 @@ KCR_CHAPTER_LABEL_FIELD_UI = {
     "icon": "book",
 }
 
+KCR_DEGREE_FIELD_UI = {
+    "field": "kcr:degree",
+    "ui_widget": "TextField",
+    "props": {
+        "label": _("Degree"),
+        "description": "",
+    },
+    "icon": "certificate",
+}
+
+KCR_DISCIPLINE_FIELD_UI = {
+    "field": "kcr:discipline",
+    "ui_widget": "TextField",
+    "props": {
+        "label": _("Discipline"),
+        "description": "",
+    },
+    "icon": "",
+}
+
 KCR_EDITION_FIELD_UI = {
     "field": "kcr:edition",
     "ui_widget": "EditionField",
@@ -106,10 +138,19 @@ KCR_COMMONS_DOMAIN_FIELD_UI = {
     "ui_widget": "TextField",
     "props": {
         "label": _("Commons domain"),
-        "description": "The Knowledge Commons domain from which "
-        "the deposit is uploaded",
+        "description": "The Knowledge Commons domain from which the deposit is uploaded",
     },
     "icon": "world",
+}
+
+KCR_COURSE_TITLE_UI = {
+    "field": "kcr:course_title",
+    "ui_widget": "TextField",
+    "props": {
+        "label": _("Course title"),
+        "description": "The course title for the material being deposited",
+    },
+    "icon": "graduation",
 }
 
 KCR_SUBMITTER_EMAIL_FIELD_UI = {
@@ -206,7 +247,11 @@ KCR_IMPRINT_SECTION_EXTRAS_UI = [
 
 KCR_MEETING_SECTION_EXTRAS_UI = [KCR_MEETING_ORGANIZATION_FIELD_UI]
 
-KCR_THESIS_SECTION_EXTRAS_UI = [KCR_INSTITUTION_DEPARTMENT_FIELD_UI]
+KCR_THESIS_SECTION_EXTRAS_UI = [
+    KCR_INSTITUTION_DEPARTMENT_FIELD_UI,
+    KCR_DEGREE_FIELD_UI,
+    KCR_DISCIPLINE_FIELD_UI,
+]
 
 KCR_JOURNAL_SECTION_EXTRAS_UI = [KCR_PUBLICATION_URL_FIELD_UI]
 
@@ -214,4 +259,10 @@ KCR_PROJECT_SECTION_UI = {
     "section": _("Project"),
     "hidden": False,
     "fields": [KCR_PROJECT_TITLE_FIELD_UI],
+}
+
+KCR_COURSE_SECTION_UI = {
+    "section": _("Course"),
+    "hidden": False,
+    "fields": [KCR_COURSE_TITLE_UI],
 }
