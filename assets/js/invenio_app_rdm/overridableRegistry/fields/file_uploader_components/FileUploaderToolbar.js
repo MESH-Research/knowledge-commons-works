@@ -9,7 +9,15 @@
 
 import { useFormikContext } from "formik";
 import React from "react";
-import { Header, Checkbox, Grid, Icon, Label, List, Popup } from "semantic-ui-react";
+import {
+  Header,
+  Checkbox,
+  Grid,
+  Icon,
+  Label,
+  List,
+  Popup,
+} from "semantic-ui-react";
 import { humanReadableBytes } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import PropTypes from "prop-types";
@@ -46,20 +54,20 @@ export const FileUploaderToolbar = (props) => {
     >
       <>
         {showMetadataOnlyToggle && (
-        <Grid.Column
-          verticalAlign="middle"
-          floated="left"
-          mobile={16}
-          tablet={6}
-          computer={6}
-        >
-          <Overridable
-            id="ReactInvenioDeposit.FileUploaderToolbar.MetadataOnlyToggle.container"
-            filesList={filesList}
-            filesEnabled={filesEnabled}
-            showMetadataOnlyToggle={showMetadataOnlyToggle}
-            handleOnChangeMetadataOnly={handleOnChangeMetadataOnly}
+          <Grid.Column
+            verticalAlign="middle"
+            floated="left"
+            mobile={16}
+            tablet={6}
+            computer={6}
           >
+            <Overridable
+              id="ReactInvenioDeposit.FileUploaderToolbar.MetadataOnlyToggle.container"
+              filesList={filesList}
+              filesEnabled={filesEnabled}
+              showMetadataOnlyToggle={showMetadataOnlyToggle}
+              handleOnChangeMetadataOnly={handleOnChangeMetadataOnly}
+            >
               <List horizontal>
                 <List.Item>
                   <Checkbox
@@ -72,15 +80,18 @@ export const FileUploaderToolbar = (props) => {
                 <List.Item>
                   <Popup
                     trigger={
-                      <Icon name="question circle outline" className="neutral" />
+                      <Icon
+                        name="question circle outline"
+                        className="neutral"
+                      />
                     }
                     content={i18next.t("Disable files for this record")}
                     position="top center"
                   />
                 </List.Item>
               </List>
-          </Overridable>
-        </Grid.Column>
+            </Overridable>
+          </Grid.Column>
         )}
         <Overridable
           id="ReactInvenioDeposit.FileUploaderToolbar.FileList.container"
@@ -91,21 +102,28 @@ export const FileUploaderToolbar = (props) => {
           decimalSizeDisplay={decimalSizeDisplay}
         >
           {filesEnabled && (
-            <Grid.Column mobile={16} tablet={16} computer={16} className="storage-col">
+            <Grid.Column
+              mobile={16}
+              tablet={16}
+              computer={16}
+              className="storage-col"
+            >
               {/* <Header size="tiny" className="mr-10">
                 {i18next.t("Storage available")}
               </Header> */}
-              <List horizontal floated="right">
+              <List horizontal>
                 <List.Item>
                   <Label
-                    {...(filesList.length === quota.maxFiles ? { color: "orange" } : {color: "blue"})}
+                    {...(filesList.length === quota.maxFiles
+                      ? { color: "orange" }
+                      : { color: "blue" })}
                     image
                   >
                     <Icon name="zip" />
-                      {i18next.t(`{{remaining}} out of {{maxfiles}}`, {
-                        remaining: quota.maxFiles - filesList.length,
-                        maxfiles: quota.maxFiles,
-                      })}
+                    {i18next.t(`{{remaining}} out of {{maxfiles}}`, {
+                      remaining: quota.maxFiles - filesList.length,
+                      maxfiles: quota.maxFiles,
+                    })}
                     <Label.Detail>{i18next.t(`max files left`)}</Label.Detail>
                   </Label>
                 </List.Item>
@@ -118,12 +136,13 @@ export const FileUploaderToolbar = (props) => {
                       : { color: "teal" })}
                   >
                     <Icon name="pie chart" />
-                    {humanReadableBytes((quota.maxStorage - filesSize), decimalSizeDisplay)}{" "}
+                    {humanReadableBytes(
+                      quota.maxStorage - filesSize,
+                      decimalSizeDisplay
+                    )}{" "}
                     {i18next.t("of")}{" "}
                     {humanReadableBytes(quota.maxStorage, decimalSizeDisplay)}
-                    <Label.Detail>
-                      {" total storage left"}
-                    </Label.Detail>
+                    <Label.Detail>{" total storage left"}</Label.Detail>
                   </Label>
                 </List.Item>
               </List>

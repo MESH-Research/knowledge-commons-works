@@ -603,8 +603,20 @@
           .file-upload-area {
             border: 1px solid @borderColor;
             border-radius: @defaultBorderRadius;
-            margin-bottom: 1rem;
-            margin-top: 0;
+            // margin-bottom: 1rem;
+            // margin-top: 0;
+          }
+          .file-upload-note {
+            .ui.message {
+              display: flex;
+              align-items: center;
+              .info.icon {
+                font-size: @huge;
+              }
+              p {
+                margin: 0;
+              }
+            }
           }
         }
 

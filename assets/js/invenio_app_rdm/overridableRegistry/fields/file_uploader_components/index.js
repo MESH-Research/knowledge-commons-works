@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { deleteFile, importParentFiles, uploadFiles } from "./files";
 import { FileUploaderComponent } from "./FileUploader";
 
+// FIXME: Can we use this same redux context elsewhere?
 const mapStateToProps = (state) => {
   const { links, entries } = state.files;
   return {
@@ -19,7 +20,8 @@ const mapStateToProps = (state) => {
     permissions: state.deposit.permissions,
     isFileImportInProgress: state.files.isFileImportInProgress,
     hasParentRecord: Boolean(
-      state.deposit.record?.versions?.index && state.deposit.record?.versions?.index > 1
+      state.deposit.record?.versions?.index &&
+        state.deposit.record?.versions?.index > 1
     ),
   };
 };
