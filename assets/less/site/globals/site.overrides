@@ -1,7 +1,7 @@
 @import (css)
   url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-@import (css)
-  url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=Fira+Sans:ital,wght@0,400;0,700;0,800;1,400;1,700&family=Noto+Sans:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+// @import (css)
+//   url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=Fira+Sans:ital,wght@0,400;0,700;0,800;1,400;1,700&family=Noto+Sans:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 // @font-face {
 //     font-family: 'cblockbold';
@@ -364,7 +364,7 @@
           > .invenio-field-label:first-of-type {
           font-size: @big;
           margin-bottom: 0.5rem;
-          font-weight: normal;
+          // font-weight: normal;
           display: block;
           .icon {
             display: inline-block;
