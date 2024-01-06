@@ -112,8 +112,9 @@
     font-weight: normal !important;
   }
 
-  .helptext {
-    color: @primaryColor;
+  .helptext,
+  .field label.helptext {
+    color: @primaryColor !important;
   }
 
   .ui.label.prompt {
