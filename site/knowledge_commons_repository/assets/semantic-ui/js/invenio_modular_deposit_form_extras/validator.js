@@ -109,9 +109,9 @@ const validationSchema = yupObject().shape({
             .required("You must provide an identifier or remove this row"),
         })
       ),
-      publisher: yupString()
-        .matches(/(?!\s).+/, "Publisher cannot be blank")
-        .required("A publisher is required. Enter 'none' if not applicable"),
+      publisher: yupString(),
+      // .matches(/(?!\s).+/, "Publisher cannot be blank")
+      // .required("A publisher is required. Enter 'none' if not applicable"),
       publication_date: yupString()
         .dateInSequence()
         .required("A publication date is required"),

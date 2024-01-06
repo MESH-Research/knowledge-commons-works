@@ -14,11 +14,11 @@ import { TextField } from "@js/invenio_modular_deposit_form/replacement_componen
 const PublisherField = ({
   fieldPath,
   disabled,
-  label,
-  labelIcon,
-  placeholder,
+  label = i18next.t("Publisher"),
+  labelIcon = "building outline",
+  placeholder = i18next.t("Publisher"),
   helpText,
-  required,
+  required = false,
   ...extraProps
 }) => {
   return (
@@ -43,11 +43,6 @@ PublisherField.propTypes = {
   placeholder: PropTypes.string,
 };
 
-PublisherField.defaultProps = {
-  label: i18next.t("Publisher"),
-  labelIcon: "building outline",
-  placeholder: i18next.t("Publisher"),
-  required: true,
-};
+PublisherField.defaultProps = {};
 
 export { PublisherField };
