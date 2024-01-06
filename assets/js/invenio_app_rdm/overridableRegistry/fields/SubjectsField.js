@@ -129,7 +129,7 @@ export class SubjectsField extends Component {
                 options={limitToOptions}
                 selection
                 width={6}
-                label={i18next.t("From classification system...")}
+                label={i18next.t("From subject category...")}
               />
             </GroupField>
           </Form.Field>

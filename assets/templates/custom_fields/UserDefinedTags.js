@@ -23,7 +23,8 @@ export class UserDefinedTags extends Component {
             fieldPath={`${fieldPath}`}
             label={tag.label}
             placeholder={tag.placeholder}
-            description={description}
+            description=""
+            helpText=""
             icon={icon}
             noQueryMessage={i18next.t("Type a keyword...")}
           ></MultiInput>
