@@ -10,7 +10,11 @@ const SubjectsKeywordsComponent = ({
 }) => {
   return (
     <>
-      <SubjectsComponent record={record} vocabularies={vocabularies} />
+      <SubjectsComponent
+        record={record}
+        vocabularies={vocabularies}
+        description=""
+      />
       <KeywordsComponent customFieldsUI={customFieldsUI} />
     </>
   );

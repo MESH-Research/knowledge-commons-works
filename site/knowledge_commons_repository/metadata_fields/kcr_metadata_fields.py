@@ -8,7 +8,7 @@ kcr:meeting_organization    The convening organization for a meeting or
                             conference.
 kcr:sponsoring_institution      The institution responsible for the current
                                 item. Used primarily for resource types like
-                                thesis, whitePaper, and report.
+                                whitePaper, and report.
 kcr:submitter_email     The email address of the user who submitted the
                         deposit. This is important for aligning the Invenio
                         user with the HC user account.
@@ -35,12 +35,37 @@ KCR_CUSTOM_FIELDS = [
         field_cls=SanitizedUnicode,
     ),
     TextCF(
+        name="kcr:content_warning",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="kcr:course_title",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="kcr:degree",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="kcr:discipline",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
         name="kcr:edition",
         field_cls=SanitizedUnicode,
     ),
     TextCF(
         name="kcr:meeting_organization",
         field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="kcr:project_title",
+        field_cls=SanitizedUnicode,
+    ),
+    TextCF(
+        name="kcr:publication_url",
+        field_cls=SanitizedUnicode,
+        field_args={"validate": validate.URL()},
     ),
     TextCF(
         name="kcr:sponsoring_institution",
@@ -56,10 +81,6 @@ KCR_CUSTOM_FIELDS = [
         field_cls=SanitizedUnicode,
     ),
     TextCF(
-        name="kcr:content_warning",
-        field_cls=SanitizedUnicode,
-    ),
-    TextCF(
         name="kcr:institution_department",
         field_cls=SanitizedUnicode,
     ),
@@ -67,14 +88,14 @@ KCR_CUSTOM_FIELDS = [
 
 KCR_INSTITUTION_DEPARTMENT_FIELD_UI = {
     "field": "kcr:institution_department",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {"label": _("Department"), "description": ""},
     "icon": "building",
 }
 
 KCR_CHAPTER_LABEL_FIELD_UI = {
     "field": "kcr:chapter_label",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": _("Chapter"),
         "description": "The number or title of the chapter " "being deposited",
@@ -82,9 +103,29 @@ KCR_CHAPTER_LABEL_FIELD_UI = {
     "icon": "book",
 }
 
+KCR_DEGREE_FIELD_UI = {
+    "field": "kcr:degree",
+    "ui_widget": "TextField",
+    "props": {
+        "label": _("Degree"),
+        "description": "",
+    },
+    "icon": "certificate",
+}
+
+KCR_DISCIPLINE_FIELD_UI = {
+    "field": "kcr:discipline",
+    "ui_widget": "TextField",
+    "props": {
+        "label": _("Discipline"),
+        "description": "",
+    },
+    "icon": "",
+}
+
 KCR_EDITION_FIELD_UI = {
     "field": "kcr:edition",
-    "ui_widget": "Input",
+    "ui_widget": "EditionField",
     "props": {
         "label": _("Edition"),
         "description": "The edition of the item " "being deposited",
@@ -94,18 +135,27 @@ KCR_EDITION_FIELD_UI = {
 
 KCR_COMMONS_DOMAIN_FIELD_UI = {
     "field": "kcr:commons_domain",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": _("Commons domain"),
-        "description": "The Knowledge Commons domain from which "
-        "the deposit is uploaded",
+        "description": "The Knowledge Commons domain from which the deposit is uploaded",
     },
     "icon": "world",
 }
 
+KCR_COURSE_TITLE_UI = {
+    "field": "kcr:course_title",
+    "ui_widget": "TextField",
+    "props": {
+        "label": _("Course title"),
+        "description": "The course title for the material being deposited",
+    },
+    "icon": "graduation",
+}
+
 KCR_SUBMITTER_EMAIL_FIELD_UI = {
     "field": "kcr:submitter_email",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": "Submitter email",
         "placeholder": "my@email.com",
@@ -114,9 +164,32 @@ KCR_SUBMITTER_EMAIL_FIELD_UI = {
     },
 }
 
+
+KCR_PROJECT_TITLE_FIELD_UI = {
+    "field": "kcr:project_title",
+    "ui_widget": "TextField",
+    "props": {
+        "label": "Project title",
+        "placeholder": "",
+        "icon": "briefcase",
+        "description": "Title for the larger project of which this work is a part.",
+    },
+}
+
+KCR_PUBLICATION_URL_FIELD_UI = {
+    "field": "kcr:publication_url",
+    "ui_widget": "TextField",
+    "props": {
+        "label": "Publication URL",
+        "placeholder": "https://example.com",
+        "icon": "linkify",
+        "description": "Home URL for the publication as a whole",
+    },
+}
+
 KCR_SUBMITTER_USERNAME_FIELD_UI = {
     "field": "kcr:submitter_username",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": "Submitter user name",
         "placeholder": "",
@@ -127,7 +200,7 @@ KCR_SUBMITTER_USERNAME_FIELD_UI = {
 
 KCR_MEETING_ORGANIZATION_FIELD_UI = {
     "field": "kcr:meeting_organization",
-    "ui_widget": "Input",
+    "ui_widget": "TextField",
     "props": {
         "label": _("Meeting organization"),
         "description": "The organization sponsoring the meeting or " "conference",
@@ -137,17 +210,18 @@ KCR_MEETING_ORGANIZATION_FIELD_UI = {
 
 KCR_SPONSORING_INSTITUTION_FIELD_UI = {
     "field": "kcr:sponsoring_institution",
-    "ui_widget": "Input",
+    "ui_widget": "SponsoringInstitutionField",
     "props": {
         "label": _("Sponsoring institution"),
         "description": "The institution sponsoring the deposited document",
+        "placeholder": "",
     },
     "icon": "group",
 }
 
 KCR_CONTENT_WARNING_FIELD_UI = {
     "field": "kcr:content_warning",
-    "ui_widget": "RichInput",
+    "ui_widget": "TextArea",
     "props": {
         "label": _("Content warning"),
         "description": "Does this deposit contain any potentially difficult content you would like to flag for viewers?",
@@ -173,4 +247,22 @@ KCR_IMPRINT_SECTION_EXTRAS_UI = [
 
 KCR_MEETING_SECTION_EXTRAS_UI = [KCR_MEETING_ORGANIZATION_FIELD_UI]
 
-KCR_THESIS_SECTION_EXTRAS_UI = [KCR_INSTITUTION_DEPARTMENT_FIELD_UI]
+KCR_THESIS_SECTION_EXTRAS_UI = [
+    KCR_INSTITUTION_DEPARTMENT_FIELD_UI,
+    KCR_DEGREE_FIELD_UI,
+    KCR_DISCIPLINE_FIELD_UI,
+]
+
+KCR_JOURNAL_SECTION_EXTRAS_UI = [KCR_PUBLICATION_URL_FIELD_UI]
+
+KCR_PROJECT_SECTION_UI = {
+    "section": _("Project"),
+    "hidden": False,
+    "fields": [KCR_PROJECT_TITLE_FIELD_UI],
+}
+
+KCR_COURSE_SECTION_UI = {
+    "section": _("Course"),
+    "hidden": False,
+    "fields": [KCR_COURSE_TITLE_UI],
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
 
-const EditionComponent = ({ customFieldsUI }) => {
+const EditionComponent = ({ customFieldsUI, ...extraProps }) => {
   return (
     <CustomFieldInjector
       sectionName="KCR Book information"
@@ -9,6 +9,10 @@ const EditionComponent = ({ customFieldsUI }) => {
       idString="EditionField"
       customFieldsUI={customFieldsUI}
       description={""}
+      label={"Edition or Version"}
+      icon={"code branch"}
+      placeholder={"e.g., 2nd revised"}
+      {...extraProps}
     />
   );
 };

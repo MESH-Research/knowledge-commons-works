@@ -30,16 +30,18 @@ const FileTableHeader = ({ isDraftRecord }) => (
   <Table.Header>
     <Table.Row>
       <Table.HeaderCell>
-        {i18next.t("Preview")}{" "}
+        {i18next.t("Set as preview")}{" "}
         <Popup
-          content="Set the default preview"
+          content="Choose the file to be previewed by default on the record detail page."
           trigger={<Icon fitted name="help circle" size="small" />}
         />
       </Table.HeaderCell>
       <Table.HeaderCell>{i18next.t("Filename")}</Table.HeaderCell>
       <Table.HeaderCell>{i18next.t("Size")}</Table.HeaderCell>
       {isDraftRecord && (
-        <Table.HeaderCell textAlign="center">{i18next.t("Progress")}</Table.HeaderCell>
+        <Table.HeaderCell textAlign="center">
+          {i18next.t("Progress")}
+        </Table.HeaderCell>
       )}
       {isDraftRecord && <Table.HeaderCell />}
     </Table.Row>
@@ -170,7 +172,11 @@ const FileTableRow = ({
               disabled={isCancelling}
               onClick={() => handleCancelUpload(file)}
             >
-              {isCancelling ? <Icon loading name="spinner" /> : i18next.t("Cancel")}
+              {isCancelling ? (
+                <Icon loading name="spinner" />
+              ) : (
+                i18next.t("Cancel")
+              )}
             </Button>
           )}
         </Table.Cell>
@@ -207,7 +213,9 @@ const FileUploadBox = ({
     <Segment
       basic
       padded="very"
-      className={filesList.length ? "file-upload-area" : "file-upload-area no-files"}
+      className={
+        filesList.length ? "file-upload-area" : "file-upload-area no-files"
+      }
     >
       <Grid columns={3} textAlign="center">
         <Grid.Row verticalAlign="middle">
@@ -215,7 +223,12 @@ const FileUploadBox = ({
             <Header size="small">{dragText}</Header>
           </Grid.Column>
 
-          <Grid.Column className="mt-10 mb-10" mobile={16} tablet={2} computer={2}>
+          <Grid.Column
+            className="mt-10 mb-10"
+            mobile={16}
+            tablet={2}
+            computer={2}
+          >
             - {i18next.t("or")} -
           </Grid.Column>
 
@@ -300,8 +313,9 @@ FilesListTable.defaultProps = {
 
 export class FileUploaderArea extends Component {
   render() {
-    const { filesEnabled, dropzoneParams, filesList, isDraftRecord } = this.props;
-    return ( filesEnabled || isDraftRecord ) ? (
+    const { filesEnabled, dropzoneParams, filesList, isDraftRecord } =
+      this.props;
+    return filesEnabled || isDraftRecord ? (
       <Dropzone {...dropzoneParams}>
         {({ getRootProps, getInputProps, open: openFileDialog }) => (
           <Grid.Column width={16}>

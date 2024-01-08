@@ -1,14 +1,5 @@
-// @primaryColor: rgb(0, 102, 80); // #006650
-@primaryColor: #009374;
-// @secondaryColor: #c2eae1;
-@footerLightColor: rgb(0, 102, 80);
-@footerDarkColor: #009374;
-
-@navbarBackgroundColor: #5eae9b;
-@navbarBackgroundImage: #5eae9b;
-// @navbarBackgroundImage: linear-gradient(12deg, rgb(0, 102, 80) 0%, desaturate(lighten(rgb(0, 102, 80), 5%), 5%) 90%);
-
 @fontName: "Atkinson Hyperlegible";
+@headingFontName: "Tahoma", "Atkinson Hyperlegible"; // "Fira Sans";
 
 /*-------------------
       Base Sizes
@@ -29,3 +20,29 @@
 @computerBreakpoint: 992px;
 @largeMonitorBreakpoint: 1200px;
 @widescreenMonitorBreakpoint: 1920px;
+
+/*-------------------
+      Colors
+--------------------*/
+
+/* Theme colors */
+// @primaryColor: rgb(0, 102, 80); // #006650
+@primaryColor: #009374;
+@secondaryColor: #186db6; // #c2eae1;;
+@footerLightColor: rgb(0, 102, 80);
+@footerDarkColor: #009374;
+
+@navbarBackgroundColor: #5eae9b;
+@navbarBackgroundImage: #5eae9b;
+// @navbarBackgroundImage: linear-gradient(12deg, rgb(0, 102, 80) 0%, desaturate(lighten(rgb(0, 102, 80), 5%), 5%) 90%);
+
+/* Semantic state colors */
+@errorTextColor: #e47719; // @negativeColor; // = @red
+@negativeTextColor: @red;
+@errorColor: #e47719; // @negativeColor; // = @red
+@formErrorColor: @errorColor;
+@formErrorBorder: @negativeBorderColor;
+@formErrorBackground: lighten(@errorColor, 50%);
+@inputErrorFocusBackground: @formErrorBackground;
+@inputErrorFocusColor: @errorColor;
+@inputErrorFocusBorder: @formErrorBorder;

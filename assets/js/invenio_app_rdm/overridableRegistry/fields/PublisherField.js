@@ -8,25 +8,33 @@
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
-import { FieldLabel, TextField } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
-export class PublisherField extends Component {
-  render() {
-    const { fieldPath, label, labelIcon, placeholder, helpText, required } = this.props;
-
-    return (
-      <TextField
-        fieldPath={fieldPath}
-        helpText={i18next.t(helpText)}
-        label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
-        placeholder={placeholder}
-        required={required}
-      />
-    );
-  }
-}
+const PublisherField = ({
+  fieldPath,
+  disabled,
+  label = i18next.t("Publisher"),
+  labelIcon = "building outline",
+  placeholder = i18next.t("Publisher"),
+  helpText,
+  required = false,
+  ...extraProps
+}) => {
+  return (
+    <TextField
+      fieldPath={fieldPath}
+      label={label}
+      labelIcon={labelIcon}
+      inputIcon={true}
+      placeholder={placeholder}
+      helpText={helpText}
+      required={required}
+      fluid={true}
+      {...extraProps}
+    />
+  );
+};
 
 PublisherField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
@@ -35,9 +43,6 @@ PublisherField.propTypes = {
   placeholder: PropTypes.string,
 };
 
-PublisherField.defaultProps = {
-  label: i18next.t("Publisher"),
-  labelIcon: "building outline",
-  placeholder: i18next.t("Publisher"),
-  required: true,
-};
+PublisherField.defaultProps = {};
+
+export { PublisherField };

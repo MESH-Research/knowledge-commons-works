@@ -27,7 +27,7 @@ export class AccessRightFieldCmp extends Component {
     const {
       fieldPath,
       formik, // this is our access to the shared current draft
-      label,
+      label = i18next.t("Access Permissions"),
       labelIcon,
       showMetadataAccess,
       community,
@@ -35,53 +35,50 @@ export class AccessRightFieldCmp extends Component {
 
     const isGhostCommunity = community?.is_ghost === true;
     const communityAccess =
-      (community && !isGhostCommunity && community.access.visibility) || "public";
+      (community && !isGhostCommunity && community.access.visibility) ||
+      "public";
     const isMetadataOnly = !formik.form.values.files.enabled;
 
     return (
-        // <Form.Field required>
-        <>
-          <Segment as="fieldset" className="access-right">
-            {/* <Form.Field>
-              <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
-            </Form.Field> */}
-            <Grid>
-              <Grid.Row>
-                <Grid.Column width="8">
-                  {showMetadataAccess && (
-                    <MetadataAccess
-                      recordAccess={formik.field.value.record}
-                      communityAccess={communityAccess}
-                    />
-                  )}
-                  <FilesAccess
-                    access={formik.field.value}
-                    accessCommunity={communityAccess}
-                    metadataOnly={isMetadataOnly}
-                  />
-                </Grid.Column>
+      <>
+        <label
+          htmlFor={fieldPath}
+          className="field-label-class invenio-field-label"
+        >
+          {labelIcon && <i className={`${labelIcon} icon`} />}
+          {label}
+        </label>
+        <Grid>
+          <Grid.Row>
+            <Grid.Column width="8">
+              {showMetadataAccess && (
+                <MetadataAccess
+                  recordAccess={formik.field.value.record}
+                  communityAccess={communityAccess}
+                />
+              )}
+              <FilesAccess
+                access={formik.field.value}
+                accessCommunity={communityAccess}
+                metadataOnly={isMetadataOnly}
+              />
+              <EmbargoAccess
+                access={formik.field.value}
+                accessCommunity={communityAccess}
+                metadataOnly={isMetadataOnly}
+              />
+            </Grid.Column>
 
-                <Grid.Column width="8">
-                  <AccessMessage
-                    access={formik.field.value}
-                    accessCommunity={communityAccess}
-                    metadataOnly={isMetadataOnly}
-                  />
-                </Grid.Column>
-
-              </Grid.Row>
-            </Grid>
-            {/* <Card.Header as={Header} size="tiny">
-              {i18next.t("Options")}
-            </Card.Header> */}
-            <EmbargoAccess
-              access={formik.field.value}
-              accessCommunity={communityAccess}
-              metadataOnly={isMetadataOnly}
-            />
-          </Segment>
-        {/* </Form.Field> */}
-        </>
+            <Grid.Column width="8">
+              <AccessMessage
+                access={formik.field.value}
+                accessCommunity={communityAccess}
+                metadataOnly={isMetadataOnly}
+              />
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </>
     );
   }
 }
@@ -115,7 +112,9 @@ export class AccessRightField extends Component {
 
     return (
       <Field name={fieldPath}>
-        {(formik) => <AccessRightFieldComponent formik={formik} {...this.props} />}
+        {(formik) => (
+          <AccessRightFieldComponent formik={formik} {...this.props} />
+        )}
       </Field>
     );
   }

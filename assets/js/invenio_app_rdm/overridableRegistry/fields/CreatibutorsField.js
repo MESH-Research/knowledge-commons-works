@@ -6,7 +6,7 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { Component, createRef } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { getIn, FieldArray } from "formik";
 import { Button, Form, Label, List, Icon } from "semantic-ui-react";
@@ -15,7 +15,7 @@ import { FieldLabel } from "react-invenio-forms";
 // import { HTML5Backend } from "react-dnd-html5-backend";
 // import { DndProvider } from "react-dnd";
 
-import { CreatibutorsModal } from "./CreatibutorsModal";
+import { CreatibutorsItemForm } from "./CreatibutorsModal";
 import { CreatibutorsFieldItem } from "./CreatibutorsFieldItem";
 import { CREATIBUTOR_TYPE } from "./types";
 // import { GlobalDndContext } from "./GlobalDndContext";
@@ -27,12 +27,53 @@ import { i18next } from "@translations/invenio_rdm_records/i18next";
  * @param {list} options
  * @returns
  */
-export function sortOptions(options) {
+function sortOptions(options) {
   return options.sort((o1, o2) => o1.text.localeCompare(o2.text));
 }
 
+const moveCommonRolesToTop = (roleArray) => {
+  let newRoleArray = [...roleArray];
+  let commonRoles = [
+    "projectOrTeamLeader",
+    "projectOrTeamMember",
+    "collaborator",
+    "translator",
+    "editor",
+    "author",
+  ];
+  for (const role of commonRoles) {
+    const index = newRoleArray.findIndex(({ value }) => value === role);
+    newRoleArray.unshift(...newRoleArray.splice(index, 1));
+  }
+  newRoleArray.push(
+    ...newRoleArray.splice(
+      newRoleArray.findIndex(({ value }) => value === "other"),
+      1
+    )
+  );
+  return newRoleArray;
+};
+
+// FIXME: Merge creator and contributor roles vocabs to avoid merging here
+// FIXME: Memoize this function
+const orderOptions = (optionList, contribsOptionList) => {
+  let newOptionList = optionList.concat(
+    contribsOptionList.filter(
+      (item) =>
+        !optionList.some(
+          (item2) => item2.text.toLowerCase() === item.text.toLowerCase()
+        )
+    )
+  );
+  return moveCommonRolesToTop(sortOptions(newOptionList));
+};
+
 const creatibutorNameDisplay = (value) => {
-  const creatibutorType = _get(value, "person_or_org.type", CREATIBUTOR_TYPE.PERSON);
+  const creatibutorType = _get(
+    value,
+    "person_or_org.type",
+    CREATIBUTOR_TYPE.PERSON
+  );
   const isPerson = creatibutorType === CREATIBUTOR_TYPE.PERSON;
 
   const familyName = _get(value, "person_or_org.family_name", "");
@@ -50,157 +91,267 @@ const creatibutorNameDisplay = (value) => {
   return `${name}${affiliation}`;
 };
 
-class CreatibutorsFieldForm extends Component {
-  // constructor(props) {
-  //     super(props);
-      // this.focusAddButtonHandler = this.focusAddButtonHandler.bind(this);
-      // this.handleOnContributorChange = this.handleOnContributorChange.bind(this);
-  // }
+const CreatibutorsFieldForm = ({
+  addButtonLabel = i18next.t("Add creator"),
+  addingSelf,
+  setAddingSelf,
+  autocompleteNames = "search",
+  config,
+  currentUserprofile,
+  description,
+  id,
+  form: { values, errors, initialErrors, initialValues, touched },
+  label = i18next.t("Creators"),
+  labelIcon = "user",
+  modal = {
+    addLabel: i18next.t("Add creator"),
+    editLabel: i18next.t("Edit creator"),
+  },
+  modalOpen,
+  move: formikArrayMove,
+  name: fieldPath,
+  push: formikArrayPush,
+  remove: formikArrayRemove,
+  replace: formikArrayReplace,
+  roleOptions,
+  schema,
+  setModalOpen,
+  showEditForms,
+  setShowEditForms,
+}) => {
+  const creatibutorsList = getIn(values, fieldPath, []);
+  const formikInitialValues = getIn(initialValues, fieldPath, []);
 
-  handleOnContributorChange = (selectedCreatibutor) => {
-    const { push: formikArrayPush } = this.props;
-    formikArrayPush(selectedCreatibutor);
+  const error = getIn(errors, fieldPath, null);
+  const initialError = getIn(initialErrors, fieldPath, null);
+  const creatibutorsTouched = getIn(touched, fieldPath, null);
+  const creatibutorsError =
+    (error && creatibutorsTouched) ||
+    (creatibutorsList === formikInitialValues && initialError);
+  const orderedRoleOptions = orderOptions(
+    roleOptions,
+    config.vocabularies.contributors.role
+  );
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
   };
 
-  focusAddButtonHandler = () => {
-    document.getElementById(`${this.props.fieldPath}.add-button`).focus();
-  }
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setAddingSelf(false);
+    focusAddButtonHandler();
+  };
 
-  moveCommonRolesToTop = (roleArray) => {
-      let newRoleArray = [...roleArray];
-      let commonRoles = ["translator", "editor", "author"];
-      if ( this.props.fieldPath === 'metadata.contributors' ) {
-        commonRoles = ['translator', 'projectOrTeamLeader', 'projectOrTeamMember', 'editor', 'collaborator'];
-      }
-      for ( const role of commonRoles ) {
-        const index = newRoleArray.findIndex(({value}) => value === role);
-        newRoleArray.unshift(...newRoleArray.splice(index, 1));
-      }
-      newRoleArray.push(...newRoleArray.splice(newRoleArray.findIndex(({value}) => value==="other"), 1));
-      return newRoleArray;
-  }
+  const handleOnContributorChange = (selectedCreatibutor, action) => {
+    setAddingSelf(false);
+    formikArrayPush(selectedCreatibutor);
+    setModalOpen(action === "saveAndContinue" ? true : false);
+  };
 
-  orderOptions = (optionList) => {
-    let newOptionList = sortOptions(optionList);
-    return this.moveCommonRolesToTop(newOptionList);
-  }
+  const focusAddButtonHandler = () => {
+    setTimeout(() => {
+      document.getElementById(`${fieldPath}.add-button`).focus();
+    }, 100);
+  };
 
-  render() {
-    const {
-      form: { values, errors, initialErrors, initialValues },
-      remove: formikArrayRemove,
-      replace: formikArrayReplace,
-      move: formikArrayMove,
-      name: fieldPath,
-      label,
-      labelIcon,
-      roleOptions,
-      schema,
-      modal,
-      autocompleteNames,
-      addButtonLabel,
-      id,
-      description,
-    } = this.props;
+  const creatibutorUp = (currentIndex) => {
+    if (currentIndex > 0) {
+      formikArrayMove(currentIndex, currentIndex - 1);
+    }
+  };
 
-    const creatibutorsList = getIn(values, fieldPath, []);
-    const formikInitialValues = getIn(initialValues, fieldPath, []);
+  const creatibutorDown = (currentIndex) => {
+    if (currentIndex < creatibutorsList.length - 1) {
+      formikArrayMove(currentIndex, currentIndex + 1);
+    }
+  };
 
-    const error = getIn(errors, fieldPath, null);
-    const initialError = getIn(initialErrors, fieldPath, null);
-    const creatibutorsError =
-      error || (creatibutorsList === formikInitialValues && initialError);
-    const orderedRoleOptions = this.orderOptions(roleOptions);
+  const myAffiliations =
+    typeof currentUserprofile.affiliations === "string"
+      ? [currentUserprofile.affiliations]
+      : currentUserprofile?.affiliations;
+  const selfCreatibutor = {
+    person_or_org: {
+      family_name: addingSelf
+        ? currentUserprofile?.family_name || currentUserprofile?.full_name || ""
+        : "",
+      given_name: addingSelf ? currentUserprofile?.given_name || "" : "",
+      name: addingSelf ? currentUserprofile?.full_name || "" : "",
+      type: "personal",
+    },
+    role: "author",
+    affiliations:
+      addingSelf && myAffiliations.length > 0
+        ? myAffiliations.map((affiliation) => ({
+            text: affiliation,
+            key: affiliation,
+            value: affiliation,
+            name: affiliation,
+          }))
+        : [],
+  };
 
-    return (
-      // <DndProvider backend={HTML5Backend} options={{ rootElement: rootElement}}>
-      // <GlobalDndContext key={Math.random()}>
-        <Form.Field
-          required={schema === "creators"}
-          className={creatibutorsError ? "error" : ""}
-        >
-          <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
-          <List>
-            {creatibutorsList.map((value, index) => {
-              const key = `${fieldPath}.${index}`;
-              const identifiersError =
-                creatibutorsError &&
-                creatibutorsError[index]?.person_or_org?.identifiers;
-              const displayName = creatibutorNameDisplay(value);
+  return (
+    <Form.Field
+      required={schema === "creators"}
+      className={creatibutorsError ? "error" : ""}
+    >
+      <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+      <List>
+        {creatibutorsList.map((value, index) => {
+          const key = `${fieldPath}.${index}`;
+          // const key = `${fieldPath}.${value.person_or_org.name}`;
+          const displayName = creatibutorNameDisplay(value);
+          console.log("key is", key);
 
-              return (
-                <CreatibutorsFieldItem
-                  key={key}
-                  identifiersError={identifiersError}
-                  {...{
-                    displayName,
-                    index,
-                    roleOptions: orderedRoleOptions,
-                    schema,
-                    compKey: key,
-                    initialCreatibutor: value,
-                    removeCreatibutor: formikArrayRemove,
-                    replaceCreatibutor: formikArrayReplace,
-                    moveCreatibutor: formikArrayMove,
-                    addLabel: modal.addLabel,
-                    editLabel: modal.editLabel,
-                    autocompleteNames: autocompleteNames,
-                  }}
-                  focusAddButtonHandler={this.focusAddButtonHandler}
-                  parentFieldPath={fieldPath}
-                />
-              );
-            })}
-            <CreatibutorsModal
-              onCreatibutorChange={this.handleOnContributorChange}
-              action="add"
-              addLabel={modal.addLabel}
-              editLabel={modal.editLabel}
-              roleOptions={orderedRoleOptions}
-              schema={schema}
-              autocompleteNames={autocompleteNames}
-              trigger={
-                <Button type="button" icon labelPosition="left"
-                 id={`${fieldPath}.add-button`}
-                 className="add-button"
-                 aria-labelledby={`${fieldPath}-field-description`}
-                //  ref={this.adderRef}
-                >
-                  <Icon name="add" />
-                  {addButtonLabel}
-                </Button>
-              }
-              focusAddButtonHandler={this.focusAddButtonHandler}
+          return (
+            <CreatibutorsFieldItem
+              key={key}
+              creatibutorsLength={creatibutorsList.length}
+              creatibutorDown={creatibutorDown}
+              creatibutorUp={creatibutorUp}
+              itemError={creatibutorsError ? error[index] : null}
+              {...{
+                displayName,
+                index,
+                roleOptions: orderedRoleOptions,
+                schema,
+                compKey: key,
+                initialCreatibutor: value,
+                removeCreatibutor: formikArrayRemove,
+                replaceCreatibutor: formikArrayReplace,
+                moveCreatibutor: formikArrayMove,
+                addLabel: modal.addLabel,
+                editLabel: modal.editLabel,
+                autocompleteNames: autocompleteNames,
+              }}
+              focusAddButtonHandler={focusAddButtonHandler}
+              modalOpen={modalOpen}
+              handleModalClose={handleModalClose}
+              handleModalOpen={handleModalOpen}
               parentFieldPath={fieldPath}
+              setModalOpen={setModalOpen}
+              showEditForms={showEditForms}
+              setShowEditForms={setShowEditForms}
             />
-            {creatibutorsError && typeof creatibutorsError == "string" && (
-              <Label pointing="left" prompt>
-                {creatibutorsError}
-              </Label>
-            )}
-          </List>
-          <span id={`${fieldPath}-field-description`} className="helptext">{description}</span>
-        </Form.Field>
-      // {/* </DndProvider> */}
-      // </GlobalDndContext>
-    );
-  }
-}
+          );
+        })}
+      </List>
+      {!modalOpen && (
+        <div>
+          <Button
+            type="button"
+            icon
+            labelPosition="left"
+            id={`${fieldPath}.add-button`}
+            className="add-button"
+            aria-labelledby={`${fieldPath}-field-description`}
+            onClick={() => setModalOpen(true)}
+            //  ref={this.adderRef}
+          >
+            <Icon name="add" />
+            {addButtonLabel}
+          </Button>
+          <Button
+            type="button"
+            icon
+            labelPosition="left"
+            id={`${fieldPath}.add-button`}
+            className="add-button"
+            aria-labelledby={`${fieldPath}-field-description`}
+            onClick={() => {
+              setAddingSelf(true);
+              setTimeout(() => {
+                setModalOpen(true);
+              }, 100);
+            }}
+          >
+            <Icon name="add" />
+            {"Add myself"}
+          </Button>
+        </div>
+      )}
 
-export class CreatibutorsField extends Component {
-  render() {
-    const { fieldPath } = this.props;
+      {(modalOpen ||
+        (creatibutorsError && typeof creatibutorsError == "string")) && (
+        <CreatibutorsItemForm
+          onCreatibutorChange={handleOnContributorChange}
+          addLabel={modal.addLabel}
+          editLabel={modal.editLabel}
+          roleOptions={orderedRoleOptions}
+          schema={schema}
+          autocompleteNames={autocompleteNames}
+          focusAddButtonHandler={focusAddButtonHandler}
+          parentFieldPath={fieldPath}
+          modalOpen={modalOpen}
+          handleModalClose={handleModalClose}
+          handleModalOpen={handleModalOpen}
+          initialCreatibutor={selfCreatibutor}
+          modalAction="add"
+        />
+      )}
+      {creatibutorsError && typeof error === "string" && (
+        <Label pointing="above" prompt>
+          {error}
+        </Label>
+      )}
+      <span id={`${fieldPath}-field-description`} className="helptext">
+        {description}
+      </span>
+    </Form.Field>
+  );
+};
 
-    return (
-      <FieldArray
-        name={fieldPath}
-        component={(formikProps) => (
-          <CreatibutorsFieldForm {...formikProps} {...this.props} />
-        )}
-      />
-    );
-  }
-}
+const CreatibutorsField = ({
+  addButtonLabel = i18next.t("Add creator"),
+  autocompleteNames = "search",
+  currentUserprofile,
+  fieldPath,
+  label = undefined,
+  labelIcon = undefined,
+  modal = {
+    addLabel: i18next.t("Add creator"),
+    editLabel: i18next.t("Edit creator"),
+  },
+  roleOptions = undefined,
+  schema = "creators",
+  ...otherProps
+}) => {
+  // FIXME: This state has to be managed here because the whole fieldarray is reredered and loses state on any state change; seems related to react-dnd
+  const [modalOpen, setModalOpen] = useState(false);
+  const [addingSelf, setAddingSelf] = useState(false);
+  const [showEditForms, setShowEditForms] = useState([]);
+
+  return (
+    <FieldArray
+      name={fieldPath}
+      component={(formikProps) => (
+        <CreatibutorsFieldForm
+          {...formikProps}
+          {...otherProps}
+          {...{
+            addButtonLabel,
+            addingSelf,
+            autocompleteNames,
+            currentUserprofile,
+            fieldPath,
+            label,
+            labelIcon,
+            modalOpen,
+            roleOptions,
+            modal,
+            schema,
+            setAddingSelf,
+            setModalOpen,
+            showEditForms,
+            setShowEditForms,
+          }}
+        />
+      )}
+    />
+  );
+};
 
 CreatibutorsFieldForm.propTypes = {
   fieldPath: PropTypes.string.isRequired,
@@ -222,39 +373,20 @@ CreatibutorsFieldForm.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
-CreatibutorsFieldForm.defaultProps = {
-  autocompleteNames: "search",
-  label: i18next.t("Creators"),
-  labelIcon: "user",
-  modal: {
-    addLabel: i18next.t("Add creator"),
-    editLabel: i18next.t("Edit creator"),
-  },
-  addButtonLabel: i18next.t("Add creator"),
-};
-
 CreatibutorsField.propTypes = {
-  fieldPath: PropTypes.string.isRequired,
   addButtonLabel: PropTypes.string,
+  autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
+  fieldPath: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  labelIcon: PropTypes.string,
   modal: PropTypes.shape({
     addLabel: PropTypes.string.isRequired,
     editLabel: PropTypes.string.isRequired,
   }),
-  schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
-  autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
-  label: PropTypes.string,
-  labelIcon: PropTypes.string,
   roleOptions: PropTypes.array,
+  schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
 };
 
-CreatibutorsField.defaultProps = {
-  autocompleteNames: "search",
-  label: undefined,
-  labelIcon: undefined,
-  roleOptions: undefined,
-  modal: {
-    addLabel: i18next.t("Add creator"),
-    editLabel: i18next.t("Edit creator"),
-  },
-  addButtonLabel: i18next.t("Add creator"),
-};
+CreatibutorsField.defaultProps = {};
+
+export { CreatibutorsField, CreatibutorsFieldForm, sortOptions };

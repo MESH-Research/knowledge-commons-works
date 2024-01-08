@@ -22,15 +22,15 @@ export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
   const filesButtonsDisplayed = !metadataOnly && publicCommunity && publicMetadata;
 
   if (metadataOnly) {
-    return (
-      <Card.Meta data-testid="access-files">
-        {/* <em>{i18next.t("The record has no files.")}</em> */}
-      </Card.Meta>
+    return (null
+      // <Card.Meta data-testid="access-files">
+      // <em>{i18next.t("The record has no files.")}</em>
+      // </Card.Meta>
     );
   }
 
   return (
-    <div data-testid="access-files">
+    <>
       {filesButtonsDisplayed && (
         <Form.Field>
           <label htmlFor="access.files" className="invenio-field-label">
@@ -54,7 +54,7 @@ export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
           <em>{i18next.t("The files of this record are restricted.")}</em>
         </Card.Description>
       )} */}
-    </div>
+    </>
   );
 };
 

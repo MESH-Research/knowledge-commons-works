@@ -1,8 +1,7 @@
 import React from "react";
-import { Segment } from "semantic-ui-react";
 import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
 
-const ContentWarningComponent = ({ customFieldsUI }) => {
+const ContentWarningComponent = ({ customFieldsUI, ...extraProps }) => {
   return (
     <CustomFieldInjector
       fieldName="kcr:content_warning"
@@ -23,6 +22,7 @@ const ContentWarningComponent = ({ customFieldsUI }) => {
           "TableCellProperties",
         ],
       }}
+      {...extraProps}
     />
   );
 };

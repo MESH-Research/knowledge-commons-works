@@ -1,16 +1,17 @@
 import React from "react";
 import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
 
-const VolumeComponent = ({ customFieldsUI, ...extraProps }) => {
+const DegreeComponent = ({ customFieldsUI, ...extraProps }) => {
   return (
     <CustomFieldInjector
-      sectionName="KCR Book information"
-      fieldName="kcr:volumes"
-      idString="KcrVolumes"
+      sectionName="KCR thesis information"
+      fieldName="kcr:degree"
+      idString="DegreeField"
       customFieldsUI={customFieldsUI}
+      description={""}
       {...extraProps}
     />
   );
 };
 
-export { VolumeComponent };
+export { DegreeComponent };

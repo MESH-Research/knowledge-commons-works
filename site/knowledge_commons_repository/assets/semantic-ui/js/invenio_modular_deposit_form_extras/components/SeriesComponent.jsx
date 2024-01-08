@@ -2,7 +2,7 @@ import React from "react";
 import { Segment } from "semantic-ui-react";
 import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
 
-const SeriesComponent = ({ customFieldsUI }) => {
+const SeriesComponent = ({ customFieldsUI, ...extraProps }) => {
   return (
     <CustomFieldInjector
       sectionName="Series"
@@ -10,6 +10,7 @@ const SeriesComponent = ({ customFieldsUI }) => {
       idString="KcrBookSeries"
       icon="list"
       customFieldsUI={customFieldsUI}
+      {...extraProps}
     />
   );
 };

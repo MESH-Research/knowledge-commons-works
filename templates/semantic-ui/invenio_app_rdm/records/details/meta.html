@@ -106,16 +106,19 @@ it under the terms of the MIT License; see LICENSE file for more details.
 {{- meta_opengraph(meta_title, meta_description, url=meta_url) }}
 
 {{- meta_twittercard(meta_title, meta_description) }}
-{%- for file_name, file in files.entries.items() or {} -%}
-{%- set file_url =
-url_for("invenio_app_rdm_records.record_file_download", pid_value=record.id,
-filename=file_name, _external=True) %}
-{%- if file.ext == "pdf" %}
 
-<meta name="citation_pdf_url" content="{{ file_url }}" />
-{%- endif %}
+{%- if files and 'entries' in files.keys() %}
+  {%- for file_name, file in files.entries.items() or {} -%}
+    {%- set file_url =
+    url_for("invenio_app_rdm_records.record_file_download", pid_value=record.id,
+    filename=file_name, _external=True) %}
 
-<link rel="alternate" type="{{ file.mimetype }}" href="{{ file_url }}" />
-{%- endfor %}
+    {%- if file.ext == "pdf" %}
+      <meta name="citation_pdf_url" content="{{ file_url }}" />
+    {%- endif %}
+
+    <link rel="alternate" type="{{ file.mimetype }}" href="{{ file_url }}" />
+  {%- endfor %}
+{%- endif%}
 
 <link rel="canonical" href="{{ meta_url }}" />

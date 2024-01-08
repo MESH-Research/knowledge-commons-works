@@ -57,7 +57,9 @@ export const LicenseFieldItem = ({
     <Ref innerRef={dropRef} key={license.key}>
       <List.Item
         key={license.key}
-        className={hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"}
+        className={
+          hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"
+        }
       >
         <List.Content floated="right">
           <LicenseModal
@@ -70,7 +72,7 @@ export const LicenseFieldItem = ({
             action="edit"
             trigger={
               <Button size="mini" primary type="button">
-                {i18next.t("Edit")}
+                {i18next.t("Change")}
               </Button>
             }
             serializeLicenses={serializeLicenses}
@@ -78,12 +80,13 @@ export const LicenseFieldItem = ({
           <Button
             size="mini"
             type="button"
+            icon="close"
             onClick={() => {
               removeLicense(license.index);
             }}
-          >
-            {i18next.t("Remove")}
-          </Button>
+            aria-label={i18next.t("Remove")}
+            negative
+          />
         </List.Content>
         <Ref innerRef={drag}>
           <List.Icon name="bars" className="drag-anchor" />
@@ -98,9 +101,13 @@ export const LicenseFieldItem = ({
             )}
             {license.link && (
               <span>
-                <a href={license.link} target="_blank" rel="noopener noreferrer">
-                  {license.description && <span>&nbsp;</span>}
-                  {i18next.t("Read more")}
+                <a
+                  href={license.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="license-read-more"
+                >
+                  {license.description && i18next.t("Read more")}
                 </a>
               </span>
             )}

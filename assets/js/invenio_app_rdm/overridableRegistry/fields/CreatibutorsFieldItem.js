@@ -8,15 +8,18 @@
 
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import _get from "lodash/get";
-import React from "react";
+import React, { useState, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { Button, Label, List, Ref } from "semantic-ui-react";
-import { CreatibutorsModal } from "./CreatibutorsModal";
+import { Button, Icon, Label, List, Ref } from "semantic-ui-react";
+import { CreatibutorsModal, CreatibutorsItemForm } from "./CreatibutorsModal";
 import PropTypes from "prop-types";
 
-export const CreatibutorsFieldItem = ({
+const CreatibutorsFieldItem = ({
   compKey,
-  identifiersError,
+  creatibutorDown,
+  creatibutorUp,
+  creatibutorsLength,
+  itemError,
   index,
   replaceCreatibutor,
   removeCreatibutor,
@@ -28,10 +31,11 @@ export const CreatibutorsFieldItem = ({
   roleOptions,
   schema,
   autocompleteNames,
-  focusAddButtonHandler,
-  parentFieldPath
+  parentFieldPath,
+  showEditForms,
+  setShowEditForms,
 }) => {
-  const dropRef = React.useRef(null);
+  const dropRef = useRef(null);
   // eslint-disable-next-line no-unused-vars
   const [_, drag, preview] = useDrag({
     item: { index, type: "creatibutor" },
@@ -60,17 +64,27 @@ export const CreatibutorsFieldItem = ({
     }),
   });
 
+  const handleFormClose = () => {
+    setShowEditForms(showEditForms.filter((elem) => elem !== compKey));
+  };
+
+  const handleFormOpen = () => {
+    setShowEditForms([...showEditForms, compKey]);
+  };
+
   const renderRole = (role, roleOptions) => {
     if (role) {
       const friendlyRole =
         roleOptions.find(({ value }) => value === role)?.text ?? role;
 
-      return <Label size="tiny">{friendlyRole}</Label>;
+      return <Label>{friendlyRole}</Label>;
     }
   };
-  const firstError =
-    identifiersError &&
-    identifiersError.find((elem) => ![undefined, null].includes(elem));
+  let firstError = itemError;
+  if (itemError && typeof itemError === "array") {
+    firstError = itemError.find((elem) => ![undefined, null].includes(elem));
+  }
+  console.log("firstError", firstError);
 
   // Initialize the ref explicitely
   drop(dropRef);
@@ -78,81 +92,131 @@ export const CreatibutorsFieldItem = ({
     <Ref innerRef={dropRef} key={compKey}>
       <List.Item
         key={compKey}
-        className={hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"}
+        className={
+          hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"
+        }
       >
         <List.Content floated="right">
-          <CreatibutorsModal
-            addLabel={addLabel}
-            editLabel={editLabel}
-            onCreatibutorChange={(selectedCreatibutor) => {
-              replaceCreatibutor(index, selectedCreatibutor);
-            }}
-            initialCreatibutor={initialCreatibutor}
-            roleOptions={roleOptions}
-            schema={schema}
-            autocompleteNames={autocompleteNames}
-            action="edit"
-            trigger={
-              <Button size="mini" primary type="button">
-                {i18next.t("Edit")}
-              </Button>
+          <Button
+            size="mini"
+            primary
+            type="button"
+            onClick={
+              showEditForms.includes(compKey) ? handleFormClose : handleFormOpen
             }
-            focusAddButtonHandler={focusAddButtonHandler}
-            parentFieldPath={parentFieldPath}
-          />
-          <Button size="mini" type="button" onClick={() => removeCreatibutor(index)}>
-            {i18next.t("Remove")}
+            role="button"
+          >
+            {i18next.t(showEditForms.includes(compKey) ? "Cancel" : "Edit")}
           </Button>
+          <Button
+            size="mini"
+            type="button"
+            onClick={() => removeCreatibutor(index)}
+            icon="close"
+            role="button"
+            aria-label={i18next.t("Remove contributor")}
+            negative
+          />
+          <Button
+            size="mini"
+            type="button"
+            disabled={index === 0}
+            onClick={() => creatibutorUp(index)}
+            icon="arrow up"
+            role="button"
+            aria-label={i18next.t("Move contributor up")}
+          />
+          <Button
+            size="mini"
+            type="button"
+            disabled={index >= creatibutorsLength - 1}
+            onClick={() => creatibutorDown(index)}
+            icon="arrow down"
+            role="button"
+            aria-label={i18next.t("Move contributor down")}
+          />
         </List.Content>
         <Ref innerRef={drag}>
           <List.Icon name="bars" className="drag-anchor" />
         </Ref>
         <Ref innerRef={preview}>
-          <List.Content>
-            <List.Description>
-              <span className="creatibutor">
-                {_get(initialCreatibutor, "person_or_org.identifiers", []).some(
-                  (identifier) => identifier.scheme === "orcid"
-                ) && (
-                  <img
-                    alt="ORCID logo"
-                    className="inline-id-icon mr-5"
-                    src="/static/images/orcid.svg"
-                    width="16"
-                    height="16"
-                  />
-                )}
-                {_get(initialCreatibutor, "person_or_org.identifiers", []).some(
-                  (identifier) => identifier.scheme === "ror"
-                ) && (
-                  <img
-                    alt="ROR logo"
-                    className="inline-id-icon mr-5"
-                    src="/static/images/ror-icon.svg"
-                    width="16"
-                    height="16"
-                  />
-                )}
-                {_get(initialCreatibutor, "person_or_org.identifiers", []).some(
-                  (identifier) => identifier.scheme === "gnd"
-                ) && (
-                  <img
-                    alt="GND logo"
-                    className="inline-id-icon mr-5"
-                    src="/static/images/gnd-icon.svg"
-                    width="16"
-                    height="16"
-                  />
-                )}
-                {displayName} {renderRole(initialCreatibutor?.role, roleOptions)}
-              </span>
-            </List.Description>
+          <>
+            <List.Content>
+              <List.Description>
+                <span className="creatibutor">
+                  {_get(
+                    initialCreatibutor,
+                    "person_or_org.identifiers",
+                    []
+                  ).some((identifier) => identifier.scheme === "orcid") && (
+                    <img
+                      alt="ORCID logo"
+                      className="inline-id-icon mr-5"
+                      src="/static/images/orcid.svg"
+                      width="16"
+                      height="16"
+                    />
+                  )}
+                  {_get(
+                    initialCreatibutor,
+                    "person_or_org.identifiers",
+                    []
+                  ).some((identifier) => identifier.scheme === "ror") && (
+                    <img
+                      alt="ROR logo"
+                      className="inline-id-icon mr-5"
+                      src="/static/images/ror-icon.svg"
+                      width="16"
+                      height="16"
+                    />
+                  )}
+                  {_get(
+                    initialCreatibutor,
+                    "person_or_org.identifiers",
+                    []
+                  ).some((identifier) => identifier.scheme === "gnd") && (
+                    <img
+                      alt="GND logo"
+                      className="inline-id-icon mr-5"
+                      src="/static/images/gnd-icon.svg"
+                      width="16"
+                      height="16"
+                    />
+                  )}
+                  {displayName}{" "}
+                  {renderRole(initialCreatibutor?.role, roleOptions)}
+                </span>
+              </List.Description>
+              {firstError && (
+                <Label pointing="left" prompt>
+                  {firstError.scheme
+                    ? firstError.scheme
+                    : "Invalid identifiers"}
+                </Label>
+              )}
+            </List.Content>
             {firstError && (
-              <Label pointing="left" prompt>
-                {firstError.scheme ? firstError.scheme : "Invalid identifiers"}
+              <Label pointing="above" prompt>
+                {firstError}
               </Label>
             )}
-          </List.Content>
+            {showEditForms.includes(compKey) && (
+              <CreatibutorsItemForm
+                addLabel={addLabel}
+                autocompleteNames={autocompleteNames}
+                editLabel={editLabel}
+                handleModalClose={handleFormClose}
+                initialCreatibutor={initialCreatibutor}
+                modalAction="edit"
+                onCreatibutorChange={(selectedCreatibutor) => {
+                  replaceCreatibutor(index, selectedCreatibutor);
+                }}
+                parentFieldPath={parentFieldPath}
+                roleOptions={roleOptions}
+                schema={schema}
+              />
+            )}
+          </>
         </Ref>
       </List.Item>
     </Ref>
@@ -175,10 +239,4 @@ CreatibutorsFieldItem.propTypes = {
   autocompleteNames: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 };
 
-CreatibutorsFieldItem.defaultProps = {
-  identifiersError: undefined,
-  addLabel: undefined,
-  editLabel: undefined,
-  displayName: undefined,
-  autocompleteNames: undefined,
-};
+export { CreatibutorsFieldItem };

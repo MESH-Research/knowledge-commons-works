@@ -1,20 +1,18 @@
 import React from "react";
+import { i18next } from "@translations/invenio_app_rdm/i18next";
 import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
 
-const ChapterLabelComponent = ({ customFieldsUI, labelMods }) => {
-  const moddedLabel =
-    labelMods && labelMods["custom_fields.kcr:chapter_label"]
-      ? labelMods["custom_fields.kcr:chapter_label"]
-      : "Chapter number/label";
+const ChapterLabelComponent = ({ customFieldsUI, ...extraProps }) => {
   return (
     <CustomFieldInjector
       sectionName="KCR Book information"
       fieldName="kcr:chapter_label"
       idString="ChapterLabelField"
       customFieldsUI={customFieldsUI}
-      label={moddedLabel}
+      label={i18next.t("Chapter number/label")}
       description={""}
       icon="tag"
+      {...extraProps}
     />
   );
 };

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
-import { useFormikContext } from "formik";
-// import { Form, Icon, Radio, } from "semantic-ui-react";
-import { BooleanCheckbox, TextArea } from "react-invenio-forms";
-// import { ResourceTypeContext } from "@js/invenio_modular_deposit_form/RDMDepositForm";
+import { getIn, useFormikContext } from "formik";
+import { Form } from "semantic-ui-react";
+import { BooleanCheckbox, FieldLabel } from "react-invenio-forms";
 import { FormValuesContext } from "@js/invenio_modular_deposit_form";
+import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/TextArea";
 
 const AIUsageField = ({
   fieldPath,
@@ -23,19 +23,20 @@ const AIUsageField = ({
     handleErrorsChange,
   } = useContext(FormValuesContext);
 
-  useEffect(() => {
-    setFieldValue(fieldPath, { ai_used: false, ai_description: "" });
-    handleValuesChange(values);
-  }, []);
+  // useEffect(() => {
+  //   // setFieldValue(fieldPath, { ai_used: false, ai_description: "" });
+  // }, []);
 
-  useEffect(() => {
-    // console.log('changed');
-    handleValuesChange(values);
-    // console.log(values.custom_fields);
-  }, [values]);
+  // useEffect(() => {
+  //   // console.log('changed');
+  //   handleValuesChange(values);
+  //   // console.log(values.custom_fields);
+  // }, [values]);
+  console.log("AI field", getIn(values, `${fieldPath}`, undefined));
 
   return (
-    <>
+    <Form.Field id={fieldPath} name={fieldPath}>
+      <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
       <BooleanCheckbox
         fieldPath={`${fieldPath}.ai_used`}
         // label="Did generative AI contribute to the production of this work?"
@@ -45,8 +46,9 @@ const AIUsageField = ({
         // icon={ai_used.icon}
         required={false}
         description=""
-        icon={ai_used.icon}
-        value={false}
+        // value={values.custom_fields?.["kcr:ai_usage"]?.ai_used}
+        value={getIn(values, `${fieldPath}.ai_used`, false)}
+        initialValue={getIn(values, `${fieldPath}.ai_used`, false)}
       />
       {!!values.custom_fields
         ? values.custom_fields["kcr:ai_usage"]?.ai_used === true && (
@@ -55,11 +57,10 @@ const AIUsageField = ({
               // label={ai_description.label}
               description={ai_description.description}
               required={false}
-              defaultNewValue={""}
             />
           )
         : ""}
-    </>
+    </Form.Field>
   );
 };
 

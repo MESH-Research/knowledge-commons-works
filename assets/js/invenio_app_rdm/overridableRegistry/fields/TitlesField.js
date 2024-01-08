@@ -6,28 +6,36 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
-import { FieldLabel, TextField } from "react-invenio-forms";
 import { AdditionalTitlesField } from "./AdditionalTitlesField";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { Form } from "semantic-ui-react";
+import { Field } from "formik";
 
-const TitlesField = ({ fieldPath,
-                              options,
-                              label=i18next.t("Title"),
-                              required=false,
-                              recordUI=undefined,
-                            }) => {
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
+
+const TitlesField = ({
+  fieldPath = "metadata.title",
+  options,
+  label = i18next.t("Title"),
+  required = false,
+  recordUI = undefined,
+  disabled = false,
+  ...extraProps
+}) => {
   return (
     <>
       <TextField
-        key={label}
         fieldPath={fieldPath}
-        label={<FieldLabel htmlFor={fieldPath} icon="book" label={label} />}
+        label={label}
         required={required}
-        className="title-field"
-        optimized
+        classnames="title-field"
+        showLabel={true}
+        labelIcon="book"
+        disabled={disabled}
+        {...extraProps}
       />
       <AdditionalTitlesField
         options={options}
@@ -36,7 +44,7 @@ const TitlesField = ({ fieldPath,
       />
     </>
   );
-}
+};
 
 TitlesField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
