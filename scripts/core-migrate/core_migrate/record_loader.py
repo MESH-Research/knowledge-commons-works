@@ -76,12 +76,36 @@ def api_request(
     if debug:
         pprint(response.text)
 
-    return {
+    try:
+        json_response = response.json() if method != "DELETE" else None
+    except json.decoder.JSONDecodeError:
+        logger.error("url for API request:")
+        logger.error(api_url)
+        logger.error("response status code:")
+        logger.error(response.status_code)
+        if params:
+            logger.error("url parameters:")
+            logger.error(params)
+        if payload_args:
+            logger.error("payload arguments sent:")
+            logger.error(payload_args)
+        logger.error(response.text)
+        raise requests.HTTPError(
+            f"Failed to decode JSON response from API request to {api_url}"
+        )
+
+    result_dict = {
         "status_code": response.status_code,
         "headers": response.headers,
-        "json": response.json() if method != "DELETE" else None,
+        "json": json_response,
         "text": response.text,
     }
+
+    if json_response and "errors" in json_response.keys():
+        logger.error(json_response["errors"])
+        result_dict["errors"] = json_response["errors"]
+
+    return result_dict
 
 
 def create_invenio_record(
@@ -144,7 +168,12 @@ def create_invenio_record(
                         "no_updates flag is set, so not updating existing record"
                     )
                 # TODO: Create new version as draft
-                update_payload = update_nested_dict(existing_metadata, differences["B"])
+                update_payload = existing_metadata
+                # update_payload = update_nested_dict(existing_metadata, differences["B"])
+                for key, val in differences["B"].items():
+                    if key in ["access", "custom_fields", "files", "metadata", "pids"]:
+                        for k2 in val.keys():
+                            update_payload.setdefault(key, {})[k2] = metadata[key][k2]
                 logger.info("    updating existing record with new metadata...")
                 # logger.info(f"    {update_payload}")
                 new_comparison = compare_metadata(existing_metadata, update_payload)
@@ -158,8 +187,8 @@ def create_invenio_record(
                 else:
                     update_payload = {
                         k: v
-                        for k, v in existing_metadata.items()
-                        if k in ["access", "custom_fields", "files", "metadata"]
+                        for k, v in update_payload.items()
+                        if k in ["access", "custom_fields", "files", "metadata", "pids"]
                     }
                     logger.info("    metadata updated to match migration source...")
                     if existing_metadata["status"] != "published":
@@ -174,6 +203,7 @@ def create_invenio_record(
                             logger.info(
                                 "    continuing with existing draft record (new metadata)..."
                             )
+                            # logger.info(result["json"])
                             result[
                                 "headers"
                             ] = "existing draft record with same DOI and updated metadata"
@@ -698,10 +728,6 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
         "metadata": core_data["metadata"],
         "pids": core_data["pids"],
     }
-    # FIXME: only for testing!!!
-    # random_doi = submitted_data['pids']['doi']['identifier'].split('-')[0]
-    # random_doi = f'{random_doi}-{generate_random_string(5)}'
-    # submitted_data['pids']['doi']['identifier'] = random_doi
 
     submitted_data["access"] = {"records": "public", "files": "public"}
     submitted_data["files"] = {"enabled": True}
@@ -809,20 +835,22 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
         result["uploaded_files"] = uploaded_files
 
     # Attach the record to the communities
-    if existing_record and (existing_record["status"] != "draft"):
-        # Can't attach to a community if the record is already published
+    if (
+        existing_record
+        and (existing_record["status"] not in ["draft", "draft_with_review"])
+        and (
+            existing_record["parent"]["communities"]
+            and community_id in existing_record["parent"]["communities"]["ids"]
+        )
+    ):
+        # Can't attach to a community if the record is already published to it
         # even if we have a new version as a draft
-        if community_id in existing_record["parent"]["communities"]["ids"]:
-            logger.info(
-                "    skipping attaching the record to the community (already published)..."
-            )
-        else:
-            raise RuntimeError(
-                "Existing published record with same DOI has different communities."
-            )
+        logger.info(
+            "    skipping attaching the record to the community (already published to it)..."
+        )
         # Publish draft if necessary (otherwise published at community
         # review acceptance)
-        if existing_record["is_draft"] == True:
+        if existing_record["is_draft"] is True:
             logger.info("    publishing new draft record version...")
             publish = api_request(
                 "POST", endpoint="records", args=f"{draft_id}/draft/actions/publish"
@@ -836,59 +864,68 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
         )
         if existing_review["status_code"] == 200:
             logger.info(
-                "    submitting existing review request for the record to the community..."
+                "    cancelling existing review request for the record to the community..."
             )
             request_id = existing_review["json"]["id"]
-        else:
-            logger.info("    attaching the record to the community...")
-            review_body = {
-                "receiver": {"community": f"{community_id}"},
-                "type": "community-submission",
-            }
-            request_to_community = api_request(
-                "PUT",
-                endpoint="records",
-                args=f"{draft_id}/draft/review",
-                json_dict=review_body,
-            )
-            # if debug: print('&&&& request_to_community')
-            # if debug: pprint(request_to_community)
-            assert request_to_community["status_code"] == 200
-            # submit_url = request_to_community['json']['links']['actions']['submit']
-            # if debug: print(submit_url)
-            request_id = request_to_community["json"]["id"]
-            request_community = request_to_community["json"]["receiver"]["community"]
-            assert request_community == community_id
-            result["request_to_community"] = request_to_community
 
-            submitted_body = {
-                "payload": {
-                    "content": "Thank you in advance for the review.",
-                    "format": "html",
-                }
-            }
-            review_submitted = api_request(
+            cancel_existing_request = api_request(
                 "POST",
                 endpoint="requests",
-                args=f"{request_id}/actions/submit",
-                json_dict=submitted_body,
+                args=f"{request_id}/actions/cancel",
             )
-            result["review_submitted"] = review_submitted
-            if debug:
-                print("!!!!!!")
-            if debug:
-                pprint(review_submitted)
-            if debug:
-                pprint("%%%%%")
-            if debug:
-                print(submitted_data["metadata"])
-            assert review_submitted["status_code"] == 200
+            assert cancel_existing_request["status_code"] == 200
+
+        logger.info("    attaching the record to the community...")
+        review_body = {
+            "receiver": {"community": f"{community_id}"},
+            "type": "community-submission",
+        }
+        request_to_community = api_request(
+            "PUT",
+            endpoint="records",
+            args=f"{draft_id}/draft/review",
+            json_dict=review_body,
+        )
+        # if debug: print('&&&& request_to_community')
+        # if debug: pprint(request_to_community)
+        assert request_to_community["status_code"] == 200
+        # submit_url = request_to_community['json']['links']['actions']['submit']
+        # if debug: print(submit_url)
+        request_id = request_to_community["json"]["id"]
+        request_community = request_to_community["json"]["receiver"]["community"]
+        assert request_community == community_id
+        result["request_to_community"] = request_to_community
+
+        submitted_body = {
+            "payload": {
+                "content": "Thank you in advance for the review.",
+                "format": "html",
+            }
+        }
+        review_submitted = api_request(
+            "POST",
+            endpoint="requests",
+            args=f"{request_id}/actions/submit",
+            json_dict=submitted_body,
+        )
+        result["review_submitted"] = review_submitted
+        if debug:
+            print("!!!!!!")
+        if debug:
+            pprint(review_submitted)
+        if debug:
+            pprint("%%%%%")
+        if debug:
+            print(submitted_data["metadata"])
+        assert review_submitted["status_code"] == 200
 
         review_accepted = api_request(
             "POST",
             endpoint="requests",
             args=f"{request_id}/actions/accept",
-            json_dict={},
+            json_dict={
+                "payload": {"content": "Migrated record accepted.", "format": "html"}
+            },
         )
         if debug:
             print("!!!!!!")

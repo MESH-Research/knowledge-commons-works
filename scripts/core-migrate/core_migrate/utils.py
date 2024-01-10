@@ -174,9 +174,9 @@ def compare_metadata(A: dict, B: dict) -> dict:
 
     if "pids" in B.keys():
         pids_diff = {"A": {}, "B": {}}
-        if B["pids"]["doi"]["identifier"] != A["pids"]["doi"]["identifier"]:
-            pids_diff["A"] = {"doi": A["pids"]["doi"]["identifier"]}
-            pids_diff["B"] = {"doi": B["pids"]["doi"]["identifier"]}
+        if B["pids"]["doi"] != A["pids"]["doi"]:
+            pids_diff["A"] = {"doi": A["pids"]["doi"]}
+            pids_diff["B"] = {"doi": B["pids"]["doi"]}
         if pids_diff["A"] or pids_diff["B"]:
             output["A"]["pids"] = pids_diff["A"]
             output["B"]["pids"] = pids_diff["B"]
@@ -281,8 +281,8 @@ def compare_metadata(A: dict, B: dict) -> dict:
                 "subjects", "subject", meta_a, meta_b, ["id", "subject", "scheme"]
             )
             if comp:
-                meta_diff["A"]["subjects"] = comp["A"]
-                meta_diff["B"]["subjects"] = comp["B"]
+                meta_diff["A"]["subjects"] = meta_a["subjects"]
+                meta_diff["B"]["subjects"] = meta_b["subjects"]
 
         if meta_diff["A"] or meta_diff["B"]:
             output["A"]["metadata"] = meta_diff["A"]
