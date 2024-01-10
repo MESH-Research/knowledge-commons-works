@@ -102,6 +102,7 @@ def api_request(
     }
 
     if json_response and "errors" in json_response.keys():
+        logger.error("API request to {api_url} reported errors:")
         logger.error(json_response["errors"])
         result_dict["errors"] = json_response["errors"]
 
@@ -121,6 +122,7 @@ def create_invenio_record(
     debug = GLOBAL_DEBUG or True
     if debug:
         print("~~~~~~~~")
+        print("metadata for new record:")
     if debug:
         pprint(metadata)
 
@@ -133,14 +135,16 @@ def create_invenio_record(
             endpoint=f"records?q=pids.doi.identifier%3D%22{doi_for_query[0]}%2F{doi_for_query[1]}%22",
             params={},
         )
-        if same_doi["status_code"] not in [200, 404]:
-            raise requests.HTTPError(same_doi)
         if same_doi["status_code"] == 200 and same_doi["json"]["hits"]["total"] == 0:
             same_doi = api_request(
                 method="GET",
                 endpoint=f"user/records?q=pids.doi.identifier%3D%22{doi_for_query[0]}%2F{doi_for_query[1]}%22",
                 params={},
             )
+        if same_doi["status_code"] not in [200]:
+            logger.error("    error checking for existing record with same DOI:")
+            logger.error(same_doi)
+            raise requests.HTTPError(same_doi)
         if same_doi["status_code"] == 200 and same_doi["json"]["hits"]["total"] > 0:
             print("Found existing record with same DOI...")
             logger.info(
@@ -149,7 +153,7 @@ def create_invenio_record(
             # delete extra records with the same doi
             if len(same_doi["json"]["hits"]["hits"]) > 1:
                 logger.info(
-                    f"Found more than one existing record with same DOI: {[j['id'] for j in same_doi['json']['hits']['hits']]}"
+                    f"    found more than one existing record with same DOI: {[j['id'] for j in same_doi['json']['hits']['hits']]}"
                 )
                 logger.info("   deleting extra records...")
                 for i in [h["id"] for h in same_doi["json"]["hits"]["hits"][1:]]:
@@ -167,9 +171,7 @@ def create_invenio_record(
                     raise RuntimeError(
                         "no_updates flag is set, so not updating existing record"
                     )
-                # TODO: Create new version as draft
                 update_payload = existing_metadata
-                # update_payload = update_nested_dict(existing_metadata, differences["B"])
                 for key, val in differences["B"].items():
                     if key in ["access", "custom_fields", "files", "metadata", "pids"]:
                         for k2 in val.keys():
