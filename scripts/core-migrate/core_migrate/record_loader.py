@@ -2,6 +2,7 @@ from halo import Halo
 import json
 import jsonlines
 from pathlib import Path
+from py import log
 import requests
 import subprocess
 from traceback import print_exc
@@ -300,6 +301,8 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
         json_dict=filenames_list,
     )
     if initialization["status_code"] != 201:
+        logger.error(f"    failed to initialize file upload for {draft_id}...")
+        logger.error(initialization)
         raise requests.HTTPError(initialization.text)
     output["initialization"] = initialization
     output["file_transactions"] = {}
@@ -353,18 +356,30 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
                 pprint(content_upload)
             if content_upload["status_code"] != 200:
                 pprint(content_upload)
+                logger.error(f"    failed to upload file content for {filename}...")
+                logger.error(content_upload)
                 raise requests.HTTPError(content_upload)
             output["file_transactions"][f["key"]]["content_upload"] = content_upload
 
-            assert content_upload["json"]["key"] == unquote(filename)
-            assert content_upload["json"]["status"] == "pending"
-            assert content_upload["json"]["links"]["commit"] == f["links"]["commit"]
+            try:
+                assert content_upload["json"]["key"] == unquote(filename)
+                assert content_upload["json"]["status"] == "pending"
+                assert content_upload["json"]["links"]["commit"] == f["links"]["commit"]
+
+            except AssertionError as e:
+                logger.error(
+                    f"    failed to properly upload file content for {filename}..."
+                )
+                logger.error(content_upload)
+                raise e
 
         # commit uploaded data
         upload_commit = api_request(method="POST", endpoint="records", args=commit_args)
         if upload_commit["status_code"] != 200:
             print("&&&&&&&")
             pprint(upload_commit)
+            logger.error(f"    failed to commit file upload for {filename}...")
+            logger.error(upload_commit)
             raise requests.HTTPError(upload_commit.text)
 
         if debug:
@@ -372,14 +387,19 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
         if debug:
             pprint(upload_commit)
         output["file_transactions"][f["key"]]["upload_commit"] = upload_commit
-        assert upload_commit["json"]["key"] == unquote(filename)
-        assert valid_date(upload_commit["json"]["created"])
-        assert valid_date(upload_commit["json"]["updated"])
-        assert upload_commit["json"]["status"] == "completed"
-        assert upload_commit["json"]["metadata"] == None
-        assert upload_commit["json"]["links"]["content"] == f["links"]["content"]
-        assert upload_commit["json"]["links"]["self"] == f["links"]["self"]
-        assert upload_commit["json"]["links"]["commit"] == f["links"]["commit"]
+        try:
+            assert upload_commit["json"]["key"] == unquote(filename)
+            assert valid_date(upload_commit["json"]["created"])
+            assert valid_date(upload_commit["json"]["updated"])
+            assert upload_commit["json"]["status"] == "completed"
+            assert upload_commit["json"]["metadata"] == None
+            assert upload_commit["json"]["links"]["content"] == f["links"]["content"]
+            assert upload_commit["json"]["links"]["self"] == f["links"]["self"]
+            assert upload_commit["json"]["links"]["commit"] == f["links"]["commit"]
+        except AssertionError as e:
+            logger.error(f"    failed to properly commit file upload for {filename}...")
+            logger.error(upload_commit)
+            raise e
 
     # confirm uploads for deposit
     confirmation = api_request(
@@ -390,6 +410,8 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
     if debug:
         pprint(confirmation)
     if confirmation["status_code"] != 200:
+        logger.error(f"    failed to confirm file upload for {filename}...")
+        logger.error(confirmation)
         raise requests.HTTPError(confirmation.text)
     output["confirmation"] = confirmation
     if debug:
@@ -890,9 +912,10 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
         )
         # if debug: print('&&&& request_to_community')
         # if debug: pprint(request_to_community)
-        assert request_to_community["status_code"] == 200
-        # submit_url = request_to_community['json']['links']['actions']['submit']
-        # if debug: print(submit_url)
+        if request_to_community["status_code"] != 200:
+            logger.error("    failed to send the review request to the community...")
+            logger.error(request_to_community)
+            raise requests.HTTPError(request_to_community)
         request_id = request_to_community["json"]["id"]
         request_community = request_to_community["json"]["receiver"]["community"]
         assert request_community == community_id
@@ -911,15 +934,10 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
             json_dict=submitted_body,
         )
         result["review_submitted"] = review_submitted
-        if debug:
-            print("!!!!!!")
-        if debug:
-            pprint(review_submitted)
-        if debug:
-            pprint("%%%%%")
-        if debug:
-            print(submitted_data["metadata"])
-        assert review_submitted["status_code"] == 200
+        if review_submitted["status_code"] != 200:
+            logger.error("    failed to submit the record for review...")
+            logger.error(review_submitted)
+            raise requests.HTTPError(review_submitted)
 
         review_accepted = api_request(
             "POST",
@@ -929,11 +947,10 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
                 "payload": {"content": "Migrated record accepted.", "format": "html"}
             },
         )
-        if debug:
-            print("!!!!!!")
-        if debug:
-            pprint(review_accepted)
         if review_accepted["status_code"] != 200:
+            logger.error("    failed to accept the record community review...")
+            logger.error(review_accepted)
+            logger.info("    attempting to add admin user to community reviewers...")
             invite = {
                 "members": [{"id": "3", "type": "user"}],
                 "role": "owner",
@@ -1021,8 +1038,10 @@ def load_records_into_invenio(
     unchanged_existing = 0
     new_records = 0
     args = [start]
-    if stop > -1:
+    if stop > -1 and stop >= start:
         args.append(stop + 1)
+    else:
+        args.append(start + 1)
 
     logger.info("Starting to load records into Invenio...")
     if no_updates:
@@ -1081,9 +1100,10 @@ def load_records_into_invenio(
 
     print("Finished!")
     logger.info("All done loading records into InvenioRDM")
+    target_string = f" to {start + record_counter - 1}" if record_counter > 1 else ""
     message = (
         f"Processed {str(record_counter)} records in InvenioRDM "
-        f"({start} to {start + record_counter - 1}) \n"
+        f"({start}{target_string}) \n"
         f"    {str(successful_records)} successful \n"
         f"    {str(new_records)} new records created \n"
         f"    {str(successful_records - new_records)} already existed \n"
@@ -1098,6 +1118,21 @@ def load_records_into_invenio(
         logger.info("Failed records:")
         for r in failed_records:
             logger.info(r)
+
+        existing_failed_records = set()
+        try:
+            with open("logs/failed_records.txt", "r") as f:
+                for line in f:
+                    existing_failed_records.add(line.strip())
+        except FileNotFoundError:
+            pass
+
+        with open("logs/failed_records.txt", "a") as f:
+            for i, r in enumerate(failed_records):
+                record_str = list(r).join(",")
+                if record_str not in existing_failed_records:
+                    logger.info(r)
+                    f.write(record_str + "\n")
 
 
 def delete_records_from_invenio(record_ids):
