@@ -13,6 +13,7 @@ check-manifest = ">=0.25"
 halo = "*"
 jsonlines = "*"
 requests-mock = "*"
+selenium = "*"
 
 [packages]
 cchardet = "==2.1.7"
