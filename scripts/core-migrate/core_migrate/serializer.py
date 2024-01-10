@@ -1937,13 +1937,14 @@ def add_rights_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
         newrec["metadata"].setdefault("rights", []).append(
             {
                 "id": license_id,
-                "props": {"url": license_url},
-                "title": {"en": license_name},
-                "description": {"en": ""},
+                # can't pass both id and title/description
+                # "props": {"url": license_url},
+                # "title": {"en": license_name},
+                # "description": {"en": ""},
             }
         )
-        if license_id != "arr":
-            newrec["metadata"]["rights"][0]["props"]["scheme"] = "spdx"
+        # if license_id != "arr":
+        #     newrec["metadata"]["rights"][0]["props"]["scheme"] = "spdx"
 
     return newrec, bad_data_dict
 
