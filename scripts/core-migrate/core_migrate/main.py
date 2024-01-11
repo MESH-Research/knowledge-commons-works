@@ -55,19 +55,28 @@ def serialize_command_wrapper():
     "--no-updates",
     is_flag=True,
     default=False,
-    help="If True, do not update existing records where a record with the same DOI already exists.",
+    help=(
+        "If True, do not update existing records where a record with the same"
+        " DOI already exists."
+    ),
 )
 @click.option(
     "--retry-failed",
     is_flag=True,
     default=False,
-    help="If True, try to load in all previously failed records that have not already been repaired successfully.",
+    help=(
+        "If True, try to load in all previously failed records that have not"
+        " already been repaired successfully."
+    ),
 )
 @click.option(
     "--use-sourceids",
     is_flag=True,
     default=False,
-    help="If True, the positional arguments are interpreted as ids in the source system instead of positional indices.",
+    help=(
+        "If True, the positional arguments are interpreted as ids in the"
+        " source system instead of positional indices."
+    ),
 )
 def load_records(
     records: list, no_updates: bool, retry_failed: bool, use_sourceids: bool
@@ -77,7 +86,8 @@ def load_records(
 
 
     If RECORDS is not specified, all records will be loaded. Otherwise,
-    RECORDS should be a list of positional arguments specifying which records to load.
+    RECORDS should be a list of positional arguments specifying which records
+    to load.
 
     Examples:
 
@@ -85,15 +95,20 @@ def load_records(
 
             core-migrate load 1 2 3 5
 
-        A range can be specified in the RECORDS by linking two integers with a hyphen. For example, to load only the first 100 records, run:
+        A range can be specified in the RECORDS by linking two integers with a
+        hyphen. For example, to load only the first 100 records, run:
 
             core-migrate load 1-100
 
-        If the range ends in a hyphen with no second integer, the program will load all records from the start index to the end of the input file. For example, to load all records from 100 to the end of the file, run:
+        If the range ends in a hyphen with no second integer, the program will
+        load all records from the start index to the end of the input file. For
+        example, to load all records from 100 to the end of the file, run:
 
             core-migrate load 100-
 
-        Records may be loaded by id in the source system instead of by index. For example, to load records with ids hc:4723, hc:8271, and hc:2246, run:
+        Records may be loaded by id in the source system instead of by index.
+        For example, to load records with ids hc:4723, hc:8271, and hc:2246,
+        run:
 
             core-migrate load --use-sourceids hc:4723 hc:8271 hc:2246
 
@@ -104,6 +119,7 @@ def load_records(
         The program must also be run inside the pipenv virtual environment for the knowledge_commons_repository instance. All of the commands must be preceded by `pipenv run` or the pipenv environment must first be activated with `pipenv shell`.
 
         The operations involved require authenitcation as an admin user in the knowledge_commons_repository instance. This program will look for the admin user's api token in the MIGRATION_API_TOKEN environment variable.
+        Where it's necessary to invite this user to a community, the program will look for the community's id in the P_TOKEN environment variable.
 
         Where necessary this program will create top-level domain communities, assign the records to the correct domain communities, create
         new Invenio users corresponding to the users who uploaded the
@@ -112,7 +128,11 @@ def load_records(
 
         If a record with the same DOI already exists in Invenio, the program will try to update the existing record with any new metadata and/or files, creating a new draft of published records if necessary. Unpublished existing drafts will be submitted to the appropriate community and published. Alternately, if the --no-updates flag is set, the program will skip any records that match DOIs for records that already exist in Invenio.
 
-        Since the operations involved are time-consuming, the program should be run as a background process (adding & to the end of the command). A running log of the program's progress will be written to the file core_migrate.log in the base core_migrate/logs directory. A record of all records that have been touched (a load attempt has been made) is recorded in the file core_migrate_touched_records.json in the base core_migrate/logs directory. A record of all records that have failed to load is recorded in the file core_migrate_failed_records.json in the core_migrate/logs directory. If failed records are later successfully repaired, they will be removed from the failed records file.
+        Since the operations involved are time-consuming, the program should be run as a background process (adding & to the end of the command). A running log of the program's progress will be written to the file core_migrate.log in the base core_migrate/logs directory. A record of all records that have been touched (a load attempt has been made) is recorded in the file core_migrate_touched_records.json in the base
+        core_migrate/logs directory. A record of all records that have failed
+        to load is recorded in the file core_migrate_failed_records.json in the
+        core_migrate/logs directory. If failed records are later successfully
+        repaired, they will be removed from the failed records file.
 
     Args:
 
@@ -123,9 +143,16 @@ def load_records(
 
             If positional arguments are provided, they should be either integers
             specifying the line numbers of the records to load, or source ids
-            specifying the ids of the records to load in the source system. These will be interpreted as line numbers in the jsonl file of records for import (beginning at 1) unless the --use-sourceids flag is set.
+            specifying the ids of the records to load in the source system.
+            These will be interpreted as line numbers in the jsonl file of
+            records for import (beginning at 1) unless the --use-sourceids flag
+            is set.
 
-            If a range is specified in the RECORDS by linking two integers with a hyphen, the program will load all records between the two indices, inclusive. If the range ends in a hyphen with no second integer, the program will load all records from the start index to the end of the input file.
+            If a range is specified in the RECORDS by linking two integers with
+            a hyphen, the program will load all records between the two
+            indices, inclusive. If the range ends in a hyphen with no second
+            integer, the program will load all records from the start index to
+            the end of the input file.
 
         no_updates (bool, optional): If True, do not update existing records
             where a record with the same DOI already exists. Defaults to False.
@@ -151,10 +178,13 @@ def load_records(
         if use_sourceids:
             print("Error: Cannot use source ids with ranges.")
             logger.error(
-                "Ranges can only be specified using record indices, not source ids."
+                "Ranges can only be specified using record indices, not source"
+                " ids."
             )
             return
-        named_params["start_index"], named_params["stop_index"] = records[0].split("-")
+        named_params["start_index"], named_params["stop_index"] = records[
+            0
+        ].split("-")
         named_params["start_index"] = int(named_params["start_index"])
         if named_params["stop_index"] == "":
             named_params["stop_index"] = -1
@@ -179,21 +209,31 @@ def delete_records(records):
 
 
 @cli.command(name="fedora")
-@click.option("--count", default=20, help="Maximum number of records to return")
-@click.option("--query", default=None, help="A query string to limit the records")
 @click.option(
-    "--protocol", default="fedora-xml", help="The api protocol to use for the request"
+    "--count", default=20, help="Maximum number of records to return"
 )
 @click.option(
-    "--pid", default=None, help="A pid or regular expression to select records by pid"
+    "--query", default=None, help="A query string to limit the records"
 )
 @click.option(
-    "--terms", default=None, help="One or more subject terms to filter the records"
+    "--protocol",
+    default="fedora-xml",
+    help="The api protocol to use for the request",
+)
+@click.option(
+    "--pid",
+    default=None,
+    help="A pid or regular expression to select records by pid",
+)
+@click.option(
+    "--terms",
+    default=None,
+    help="One or more subject terms to filter the records",
 )
 @click.option(
     "--fields",
     default=None,
-    help="A comma separated string list of " "fields to return for each record",
+    help="A comma separated string list of fields to return for each record",
 )
 def fetch_fedora(
     query: Optional[str],
