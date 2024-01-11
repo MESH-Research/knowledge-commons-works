@@ -115,3 +115,10 @@ Thumbs.db
 # *.gz
 subjects_fast.yaml
 serialized_core_data.jsonl
+scripts/core-migrate/core_migrate/logs/core_migrate_touched_records.jsonl
+scripts/core-migrate/core_migrate/logs/core_migrate.log
+scripts/core-migrate/core_migrate/logs/core_migrate.log.1
+scripts/core-migrate/core_migrate/logs/core_migrate.log.2
+scripts/core-migrate/core_migrate/logs/core_migrate.log.3
+scripts/core-migrate/core_migrate/logs/core_migrate.log.4
+scripts/core-migrate/core_migrate/logs/core_migrate.log.5

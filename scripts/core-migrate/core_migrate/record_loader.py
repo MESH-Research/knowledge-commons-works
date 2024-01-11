@@ -1,11 +1,12 @@
 from halo import Halo
+import itertools
 import json
 import jsonlines
 from pathlib import Path
 from py import log
 import requests
 import subprocess
-from traceback import print_exc
+from traceback import format_exception, print_exc
 from typing import Optional, Union
 import urllib
 import os
@@ -35,7 +36,7 @@ def api_request(
     if not server:
         server = SERVER_DOMAIN
     if not token:
-        token = os.environ["API_TOKEN"]
+        token = os.environ["MIGRATION_API_TOKEN"]
 
     payload_args = {}
 
@@ -392,7 +393,7 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
             assert valid_date(upload_commit["json"]["created"])
             assert valid_date(upload_commit["json"]["updated"])
             assert upload_commit["json"]["status"] == "completed"
-            assert upload_commit["json"]["metadata"] == None
+            assert upload_commit["json"]["metadata"] is None
             assert upload_commit["json"]["links"]["content"] == f["links"]["content"]
             assert upload_commit["json"]["links"]["self"] == f["links"]["self"]
             assert upload_commit["json"]["links"]["commit"] == f["links"]["commit"]
@@ -1025,40 +1026,105 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
 
 
 def load_records_into_invenio(
-    start: int = 1, stop: int = -1, no_updates: bool = False
+    start_index: int = 1,
+    stop_index: int = -1,
+    nonconsecutive: list = [],
+    no_updates: bool = False,
+    use_sourceids: bool = False,
+    sourceid_scheme: str = "hclegacy-record-id",
+    retry_failed: bool = False,
 ) -> None:
     """
     Create new InvenioRDM records (including deposit files) for serialized CORE deposits.
     """
     record_counter = 0
     failed_records = []
+    touched_records = []
     successful_records = 0
     updated_drafts = 0
     updated_published = 0
     unchanged_existing = 0
     new_records = 0
-    args = [start]
-    if stop > -1 and stop >= start:
-        args.append(stop + 1)
+    repaired_failed = []
+    range_args = [start_index]
+    if stop_index > -1 and stop_index >= start_index:
+        range_args.append(stop_index + 1)
     else:
-        args.append(start + 1)
+        range_args.append(start_index + 1)
+
+    # Load list of previously touched records
+    previously_touched_records = []
+    touched_log_path = (
+        Path(__file__).parent / "logs" / "core_migrate_touched_records.jsonl"
+    )
+    try:
+        with jsonlines.open(
+            touched_log_path,
+            "r",
+        ) as reader:
+            previously_touched_records = [obj for obj in reader]
+    except FileNotFoundError:
+        logger.info("**no existing touched records log file found...**")
+
+    # Load list of failed records from prior runs
+    existing_failed_records = []
+    failed_log_path = (
+        Path(__file__).parent / "logs" / "core_migrate_failed_records.jsonl"
+    )
+    try:
+        with jsonlines.open(
+            failed_log_path,
+            "r",
+        ) as reader:
+            existing_failed_records = [obj for obj in reader]
+    except FileNotFoundError:
+        logger.info("**no existing failed records log file found...**")
+    existing_failed_hcids = [r["commons_id"] for r in existing_failed_records]
 
     logger.info("Starting to load records into Invenio...")
     if no_updates:
         logger.info(
             "    **no-updates flag is set, so skipping updating existing records...**"
         )
-    stop_string = "" if stop == -1 else f" to {stop}"
-    logger.info(f"Loading records from {str(start) + stop_string}...")
+    if not nonconsecutive:
+        stop_string = "" if stop_index == -1 else f" to {stop_index}"
+        logger.info(f"Loading records from {str(start_index) + stop_string}...")
+    else:
+        logger.info(
+            f"Loading records {' '.join([str(s) for s in nonconsecutive])} "
+            f"(by {'source record id' if use_sourceids else 'index in import file'})..."
+        )
 
     with jsonlines.open(
         Path(__file__).parent / "data" / "serialized_core_data.jsonl", "r"
     ) as json_source:
-        import itertools
+        if nonconsecutive:
+            record_set = []
+            if use_sourceids:
+                for j in json_source:
+                    if [
+                        i["identifier"]
+                        for i in j["metadata"]["identifiers"]
+                        if i["identifier"] in nonconsecutive
+                        and i["scheme"] == sourceid_scheme
+                    ]:
+                        record_set.append(j)
+            else:
+                line_num = 1
+                for j in json_source:
+                    if line_num in nonconsecutive:
+                        j["jsonl_index"] = line_num
+                        record_set.append(j)
+                    line_num += 1
+        else:
+            record_set = itertools.islice(json_source, *range_args)
 
-        top = itertools.islice(json_source, *args)
-        for rec in top:
-            current_record = start + record_counter
+        for rec in record_set:
+            if "jsonl_index" in rec.keys():
+                current_record = rec["jsonl_index"]
+                logger.info(f"current_record is jsonl_index {current_record}")
+            else:
+                current_record = start_index + record_counter
             rec_doi = rec["pids"]["doi"]["identifier"]
             rec_hcid = [
                 r
@@ -1086,53 +1152,99 @@ def load_records_into_invenio(
                     updated_published += 1
                 if result.get("updated_draft"):
                     updated_drafts += 1
+                touched_records.append(
+                    {
+                        "index": current_record,
+                        "invenio_id": rec_doi,
+                        "commons_id": rec_hcid,
+                        "core_record_id": rec_recid,
+                    }
+                )
+                if rec_hcid in existing_failed_hcids:
+                    existing_failed_records = [
+                        d
+                        for d in existing_failed_records
+                        if d["commons_id"] != rec_hcid
+                    ]
             except Exception as e:
                 print("ERROR:", e)
                 print_exc()
                 logger.error(f"ERROR: {e}")
-                logger.error(f"ERROR: {print_exc()}")
+                logger.error(f"ERROR: {format_exception(None, e, e.__traceback__)}")
                 failed_records.append(
-                    (f"index {current_record}", rec_doi, rec_hcid, rec_recid)
+                    {
+                        "index": current_record,
+                        "invenio_id": rec_doi,
+                        "commons_id": rec_hcid,
+                        "core_record_id": rec_recid,
+                    }
                 )
+
             spinner.stop()
             logger.info(f"....done with record {current_record}")
             record_counter += 1
 
     print("Finished!")
     logger.info("All done loading records into InvenioRDM")
-    target_string = f" to {start + record_counter - 1}" if record_counter > 1 else ""
+    set_string = ""
+    if nonconsecutive:
+        set_string = f"{' '.join([str(n) for n in nonconsecutive])}"
+    else:
+        target_string = (
+            f" to {start_index + record_counter - 1}" if record_counter > 1 else ""
+        )
+        set_string = f"{start_index}{target_string}"
     message = (
         f"Processed {str(record_counter)} records in InvenioRDM "
-        f"({start}{target_string}) \n"
+        f"({set_string}) \n"
         f"    {str(successful_records)} successful \n"
         f"    {str(new_records)} new records created \n"
         f"    {str(successful_records - new_records)} already existed \n"
         f"        {str(updated_published)} updated published records \n"
         f"        {str(updated_drafts)} updated existing draft records \n"
         f"        {str(unchanged_existing)} unchanged existing records \n)"
+        f"        {str(len(repaired_failed))} previously failed records repaired \n)"
         f"    {str(len(failed_records))} failed \n"
     )
     print(message)
     logger.info(message)
-    if failed_records:
-        logger.info("Failed records:")
-        for r in failed_records:
+
+    # Report
+    if repaired_failed:
+        print("Previously failed records repaired:")
+        logger.info("Previously failed records repaired:")
+        for r in repaired_failed:
+            print(r)
             logger.info(r)
 
-        existing_failed_records = set()
-        try:
-            with open("logs/failed_records.txt", "r") as f:
-                for line in f:
-                    existing_failed_records.add(line.strip())
-        except FileNotFoundError:
-            pass
+    # Report and log failed records
+    if failed_records:
+        print("Failed records:")
+        logger.info("Failed records:")
+        for r in failed_records:
+            print(r)
+            logger.info(r)
 
-        with open("logs/failed_records.txt", "a") as f:
-            for i, r in enumerate(failed_records):
-                record_str = list(r).join(",")
-                if record_str not in existing_failed_records:
-                    logger.info(r)
-                    f.write(record_str + "\n")
+        with jsonlines.open(failed_log_path, "w") as failed_writer:
+            for e in existing_failed_records:
+                if e not in failed_records:
+                    failed_records.append(e)
+            ordered_failed_records = sorted(failed_records, key=lambda r: r["index"])
+            for o in ordered_failed_records:
+                failed_writer.write(o)
+        print("Failed records written to logs/core_migrate_failed_records.jsonl")
+        logger.info("Failed records written to logs/core_migrate_failed_records.jsonl")
+
+    # Update log of touched records
+    with jsonlines.open(touched_log_path, "a") as f:
+        for t in previously_touched_records:
+            if t not in touched_records:
+                touched_records.append(t)
+        ordered_touched_records = sorted(touched_records, key=lambda r: r["index"])
+        for u in ordered_touched_records:
+            f.write(u)
+    print("Touched records written to logs/core_migrate_touched_records.jsonl")
+    logger.info("Touched records written to logs/core_migrate_touched_records.jsonl")
 
 
 def delete_records_from_invenio(record_ids):
