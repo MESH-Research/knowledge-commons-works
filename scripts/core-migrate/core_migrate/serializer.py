@@ -8,7 +8,8 @@
 # details.
 
 """
-Functions to re-serialize legacy CORE deposits exported as json files to a json schema consumable by InvenioRDM.
+Functions to re-serialize legacy CORE deposits exported as json files to a
+json schema consumable by InvenioRDM.
 
 The main function `serialize_json` writes the output to a jsonl file, with
 one json object per line, separated by newlines.
@@ -16,6 +17,7 @@ one json object per line, separated by newlines.
 
 from copy import deepcopy
 from datetime import datetime
+from pprint import pprint
 from timefhuman import timefhuman
 from isbnlib import get_isbnlike
 import iso639
@@ -25,7 +27,6 @@ from langdetect import detect_langs
 from pathlib import Path
 from stdnum import issn
 from titlecase import titlecase
-from pprint import pprint
 import re
 import validators
 
@@ -36,7 +37,6 @@ from core_migrate.config import (
 from core_migrate.utils import (
     valid_date,
     valid_isbn,
-    generate_random_string,
     _normalize_string,
     _clean_string,
 )
@@ -84,13 +84,18 @@ licenses = {
     ),
     "Attribution-NonCommercial-NoDerivatives": (
         "cc-by-nc-nd-4.0",
-        "Creative Commons Attribution Non Commercial No Derivatives "
-        "4.0 International",
+        (
+            "Creative Commons Attribution Non Commercial No Derivatives "
+            "4.0 International"
+        ),
         "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode",
     ),
     "Attribution-NonCommercial-ShareAlike": (
         "cc-by-nc-sa-4.0",
-        "Creative Commons Attribution Non Commercial Share " "Alike 4.0 International",
+        (
+            "Creative Commons Attribution Non Commercial Share "
+            "Alike 4.0 International"
+        ),
         "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode",
     ),
     "Attribution": (
@@ -100,7 +105,7 @@ licenses = {
     ),
     "Attribution-NonCommercial": (
         "cc-by-nc-4.0",
-        "Creative Commons Attribution Non Commercial " "4.0 International",
+        "Creative Commons Attribution Non Commercial 4.0 International",
         "https://creativecommons.org/licenses/by-nc/4.0/legalcode",
     ),
     "Attribution-NoDerivatives": (
@@ -134,19 +139,27 @@ def _append_bad_data(rowid: str, content: tuple, bad_data_dict: dict) -> dict:
     return bad_data_dict
 
 
-def _add_resource_type(rec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def _add_resource_type(
+    rec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add resource type information to the new record.
 
-    This function adds the resource type information to the new record. It uses the following fields from the CORE record:
+    This function adds the resource type information to the new record. It
+    uses the following fields from the CORE record:
         - `publication-type`
         - `genre`
         - `filetype`
 
-    The function uses the following dictionaries to map the CORE data to the InvenioRDM resource type schema:
-        - `kcr_resource_types`: a dictionary mapping CORE `genre` values to InvenioRDM resource type ids
-        - `types_of_resource`: a dictionary mapping CORE `filetype` values to InvenioRDM resource type ids
-        - `genres`: a dictionary mapping CORE `genre` values to InvenioRDM resource type ids
-        - `publication_types`: a dictionary mapping CORE `publication-type` values to InvenioRDM resource type ids
+    The function uses the following dictionaries to map the CORE data to
+    the InvenioRDM resource type schema:
+        - `kcr_resource_types`: a dictionary mapping CORE `genre` values
+        to InvenioRDM resource type ids
+        - `types_of_resource`: a dictionary mapping CORE `filetype` values
+        to InvenioRDM resource type ids
+        - `genres`: a dictionary mapping CORE `genre` values to InvenioRDM
+        resource type ids
+        - `publication_types`: a dictionary mapping CORE `publication-type`
+        values to InvenioRDM resource type ids
 
     Args:
         rec (dict): The new record being prepared for serialization
@@ -163,91 +176,96 @@ def _add_resource_type(rec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
     genre = row["genre"]
     filetype = row["filetype"]
 
-    kcr_resource_types = {
-        "audiovisual": [
-            "documentary",
-            "interviewRecording",
-            "videoRecording",
-            "audioRecording",
-            "musicalRecording",
-            "other",
-            "performance",
-            "podcastEpisode",
-        ],
-        "dataset": [""],
-        "image": [
-            "chart",
-            "diagram",
-            "figure",
-            "map",
-            "visualArt",
-            "photograph",
-            "other",
-        ],
-        "instructionalResource": ["curriculum", "lessonPlan", "syllabus", "other"],
-        "presentation": [
-            "slides",
-            "conferencePaper",
-            "conferencePoster",
-            "presentationText",
-            "other",
-        ],
-        "software": [
-            "3DModel",
-            "computationalModel",
-            "computationalNotebook",
-            "service",
-            "application",
-        ],
-        "textDocument": [
-            "abstract",
-            "bibliography",
-            "blogPost",
-            "book",
-            "bookSection",
-            "conferenceProceeding",
-            "dataManagementPlan",
-            "documentation",
-            "editorial",
-            "essay",
-            "interviewTranscript",
-            "journalArticle",
-            "legalResponse",
-            "legalComment",
-            "magazineArticle",
-            "monograph",
-            "newspaperArticle",
-            "onlinePublication",
-            "other",
-            "poeticWork",
-            "preprint",
-            "report",
-            "workingPaper",
-            "review",
-            "technicalStandard",
-            "thesis",
-            "whitePaper",
-        ],
-        "other": [
-            "catalog",
-            "collection",
-            "event",
-            "interactiveResource",
-            "notes",
-            "peerReview",
-            "physicalObject",
-            "workflow",
-            "text",
-        ],
-    }
-    types_of_resource = {
-        "Audio": "audiovisual-audioRecording",
-        "Image": "image-other",
-        "Mixed material": "other",
-        "Software": "software-application",
-        "Text": "textDocument-other",
-        "Video": "audiovisual-videoRecording",
-    }
+    # kcr_resource_types = {
+    #     "audiovisual": [
+    #         "documentary",
+    #         "interviewRecording",
+    #         "videoRecording",
+    #         "audioRecording",
+    #         "musicalRecording",
+    #         "other",
+    #         "performance",
+    #         "podcastEpisode",
+    #     ],
+    #     "dataset": [""],
+    #     "image": [
+    #         "chart",
+    #         "diagram",
+    #         "figure",
+    #         "map",
+    #         "visualArt",
+    #         "photograph",
+    #         "other",
+    #     ],
+    #     "instructionalResource": [
+    #         "curriculum",
+    #         "lessonPlan",
+    #         "syllabus",
+    #         "other",
+    #     ],
+    #     "presentation": [
+    #         "slides",
+    #         "conferencePaper",
+    #         "conferencePoster",
+    #         "presentationText",
+    #         "other",
+    #     ],
+    #     "software": [
+    #         "3DModel",
+    #         "computationalModel",
+    #         "computationalNotebook",
+    #         "service",
+    #         "application",
+    #     ],
+    #     "textDocument": [
+    #         "abstract",
+    #         "bibliography",
+    #         "blogPost",
+    #         "book",
+    #         "bookSection",
+    #         "conferenceProceeding",
+    #         "dataManagementPlan",
+    #         "documentation",
+    #         "editorial",
+    #         "essay",
+    #         "interviewTranscript",
+    #         "journalArticle",
+    #         "legalResponse",
+    #         "legalComment",
+    #         "magazineArticle",
+    #         "monograph",
+    #         "newspaperArticle",
+    #         "onlinePublication",
+    #         "other",
+    #         "poeticWork",
+    #         "preprint",
+    #         "report",
+    #         "workingPaper",
+    #         "review",
+    #         "technicalStandard",
+    #         "thesis",
+    #         "whitePaper",
+    #     ],
+    #     "other": [
+    #         "catalog",
+    #         "collection",
+    #         "event",
+    #         "interactiveResource",
+    #         "notes",
+    #         "peerReview",
+    #         "physicalObject",
+    #         "workflow",
+    #         "text",
+    #     ],
+    # }
+    # types_of_resource = {
+    #     "Audio": "audiovisual-audioRecording",
+    #     "Image": "image-other",
+    #     "Mixed material": "other",
+    #     "Software": "software-application",
+    #     "Text": "textDocument-other",
+    #     "Video": "audiovisual-videoRecording",
+    # }
 
     genres = {
         "Abstract": "textDocument-abstract",
@@ -271,7 +289,9 @@ def _add_resource_type(rec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
         "Documentary": "audiovisual-documentary",
         "Editorial": "textDocument-editorial",
         "Essay": "other-essay",
-        "Fictional work": "textDocument-bookSection",  # FIXME: indicate ficiontal???
+        "Fictional work": (
+            "textDocument-bookSection"
+        ),  # FIXME: indicate ficiontal???
         "Finding aid": "other",
         "Image": "image-other",
         "Interview": "textDocument-interviewTranscript",
@@ -321,9 +341,17 @@ def _add_resource_type(rec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
         rec["metadata"]["resource_type"] = {"id": genres[genre]}
         if (pubtype == "Interview") and (
             filetype
-            in ["audio/mpeg", "audio/ogg", "audio/wav", "video/mp4", "video/quicktime"]
+            in [
+                "audio/mpeg",
+                "audio/ogg",
+                "audio/wav",
+                "video/mp4",
+                "video/quicktime",
+            ]
         ):
-            rec["metadata"]["resource_type"] = {"id": "audiovisual-interviewRecording"}
+            rec["metadata"]["resource_type"] = {
+                "id": "audiovisual-interviewRecording"
+            }
         if (
             pubtype in publication_types.keys()
             and genres[genre] != publication_types[pubtype]
@@ -334,7 +362,9 @@ def _add_resource_type(rec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
         bad_data.append(("genre", genre))
         rec["custom_fields"]["hclegacy:publication_type"] = pubtype
         if pubtype in publication_types.keys():
-            rec["metadata"]["resource_type"] = {"id": publication_types[pubtype]}
+            rec["metadata"]["resource_type"] = {
+                "id": publication_types[pubtype]
+            }
         else:
             bad_data.append(("publication-type", pubtype))
 
@@ -373,7 +403,9 @@ def _add_book_authors(
                 focus = invert_flipped_name(level1parts)
                 # print('b focus', focus)
             if len(level1parts) > 2:
-                focus = focus + find_comma_delineated_names(", ".join(level1parts[2:]))
+                focus = focus + find_comma_delineated_names(
+                    ", ".join(level1parts[2:])
+                )
         else:
             focus = focus.strip().split(" ")
             # print('space split', focus)
@@ -388,7 +420,8 @@ def _add_book_authors(
 
     is_editor = False
     if re.search(
-        r".*\(?([Hh]e?r(au)?sg(egeben)?|[Ee]d(it(or|ed( by)?)?)?s?)\.?.*", author_string
+        r".*\(?([Hh]e?r(au)?sg(egeben)?|[Ee]d(it(or|ed( by)?)?)?s?)\.?.*",
+        author_string,
     ):
         # print(row['book_author'])
         author_string = re.sub(
@@ -397,7 +430,8 @@ def _add_book_authors(
             author_string,
         )
         author_string = re.sub(
-            r"^([Hh]e?r(au)?sg(egeben|eber(in)?)?|[Ee]d(it)?(ed|or)?s?( [Bb]y)?)[\.,]? ",
+            r"^([Hh]e?r(au)?sg(egeben|eber(in)?)?|[Ee]d(it)?(ed|or)?s?("
+            r" [Bb]y)?)[\.,]? ",
             "",
             author_string,
         )
@@ -434,25 +468,28 @@ def _add_book_authors(
                         "name": _clean_string(fullname),
                         "type": "personal",
                         "given_name": _clean_string(given),
-                        "family_name": _clean_string(family)
-                        if family
-                        else _clean_string(fullname),
+                        "family_name": (
+                            _clean_string(family)
+                            if family
+                            else _clean_string(fullname)
+                        ),
                     },
                     # FIXME: handle unlabelled editors better?
                     "role": {
-                        "id": ("editor" if is_editor else "other"),
-                        "title": {"en": ("Editor" if is_editor else "Other")},
+                        "id": "editor" if is_editor else "other",
+                        "title": {"en": "Editor" if is_editor else "Other"},
                     },
                 }
             )
-    except TypeError as e:
+    except TypeError:
         _append_bad_data(row_id, ("book_author", author_string), bad_data_dict)
     # FIXME: handle simple spaced names with no delimiters
     # FIXME: last name repeated like "Kate Holland"?
     # FIXME: "Coarelli, F. Patterson, H."
     # FIXME: "Hamilton, Portnoy, Wacks"
     # FIXME: ['M. Antoni J. Üçerler', 'SJ']
-    # FIXME: Edited by Koenraad Verboven, Ghent University and Christian Laes, University of Antwerp, University of Tampere
+    # FIXME: Edited by Koenraad Verboven, Ghent University and Christian
+    # Laes, University of Antwerp, University of Tampere
     # FIXME: two last names???
     # FIXME: handle et. al.; et ali
     # FIXME: Joshua Davies and Sarah Salih, ed. by Karl Fugelso
@@ -469,7 +506,9 @@ def _add_book_authors(
     return author_list, bad_data_dict
 
 
-def _add_author_data(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def _add_author_data(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """
     Add information about authors to the supplied record from supplied row.
 
@@ -478,7 +517,7 @@ def _add_author_data(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
 
     creators = []
     contributors_misplaced = []
-    creators_misplaced = []
+    # creators_misplaced = []
     # FIXME: "HC Admin" showing up with "submitter" role?
     allowed_roles = [
         "author",
@@ -504,11 +543,15 @@ def _add_author_data(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
                 new_person["person_or_org"] = {
                     "type": "personal",  # FIXME: can't hard code
                     # 'name': a['fullname'],
-                    "name": f'{a["family"]}, {a["given"]}'
-                    if a["family"]
-                    else a["fullname"],
+                    "name": (
+                        f'{a["family"]}, {a["given"]}'
+                        if a["family"]
+                        else a["fullname"]
+                    ),
                     "given_name": a["given"],
-                    "family_name": a["family"] if a["family"] else a["fullname"],
+                    "family_name": (
+                        a["family"] if a["family"] else a["fullname"]
+                    ),
                 }
                 if a["role"] and a["role"] in allowed_roles or not a["role"]:
                     # TODO: are null roles a problem?
@@ -538,7 +581,10 @@ def _add_author_data(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
                     ]
                 if a["role"] in allowed_roles:
                     if a["role"] == "contributor":
-                        new_person["role"] = {"id": "other", "title": {"en": "Other"}}
+                        new_person["role"] = {
+                            "id": "other",
+                            "title": {"en": "Other"},
+                        }
                         contributors_misplaced.append(new_person)
                     else:
                         creators.append(new_person)
@@ -549,7 +595,8 @@ def _add_author_data(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
                         contributors_misplaced
                     )
                     # append_bad_data(row['id'], ('authors', row['authors'],
-                    #                             'contributor moved from Authors'),
+                    #                             'contributor moved
+                    # from Authors'),
                     #                 bad_data_dict)
             elif len(contributors_misplaced) > 0:
                 newrec["metadata"].setdefault("creators", []).extend(
@@ -558,7 +605,7 @@ def _add_author_data(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
                 # append_bad_data(row['id'], ('authors', row['authors'],
                 #                             'contributor as only author'),
                 #                 bad_data_dict)
-        except (SyntaxError, ValueError) as e:
+        except (SyntaxError, ValueError):
             print(row["authors"])
             _append_bad_data(
                 row["id"],
@@ -566,7 +613,9 @@ def _add_author_data(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
                 bad_data_dict,
             )
     else:
-        _append_bad_data(row["id"], ("authors:no value", row["authors"]), bad_data_dict)
+        _append_bad_data(
+            row["id"], ("authors:no value", row["authors"]), bad_data_dict
+        )
 
     # TODO: Compare these fields?
     # if row['author_info']:
@@ -586,7 +635,7 @@ def _add_author_data(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
 
 def _get_subject_from_jsonl(subject: str) -> str:
     """
-    Retrieve the full subject string corresponding to the subject label provided
+    Retrieve the full subject string corresponding to the provided label
     """
     # FIXME: Finish finding id numbers
     existing_subjects = {
@@ -662,7 +711,9 @@ def add_chapter_label(
 ) -> tuple[dict, dict]:
     """Add chapter title information to the new record.
 
-    This handles a chapter title or other label when that information is not the same as the title of the work. It is recorded using the custom field `kcr:chapter_label`.
+    This handles a chapter title or other label when that information is not
+    the same as the title of the work. It is recorded using the custom field
+    `kcr:chapter_label`.
 
     Args:
         newrec (_type_): The new record being prepared for serialization
@@ -678,7 +729,7 @@ def add_chapter_label(
         mytitle = _normalize_string(row["title"])
 
         # FIXME: Is book_journal_title ever appropriate for chapter label?
-        mybooktitle = _normalize_string(row["book_journal_title"])
+        # mybooktitle = _normalize_string(row["book_journal_title"])
         if mychap == mytitle:
             pass
         # FIXME: This needs work
@@ -690,9 +741,9 @@ def add_chapter_label(
             )
         else:
             rn = r"^M{0,3}(CM|CD|D?C{0,3})?(XC|XL|L?X{0,3})?(IX|IV|V?I{0,3})?$"
-            if re.search(r"^([Cc]hapter )?\d+[\.,;]?\d*$", row["chapter"]) or re.search(
-                rn, row["chapter"]
-            ):
+            if re.search(
+                r"^([Cc]hapter )?\d+[\.,;]?\d*$", row["chapter"]
+            ) or re.search(rn, row["chapter"]):
                 newrec["custom_fields"]["kcr:chapter_label"] = _clean_string(
                     row["chapter"]
                 )
@@ -710,7 +761,9 @@ def add_chapter_label(
             # FIXME: label being truncated with \\\\\\\\\ in hc:27769
             elif re.search(r"^[Cc]hapter", row["chapter"]):
                 shortchap = re.sub(r"^[Cc]hapter\s*", "", row["chapter"])
-                newrec["custom_fields"]["kcr:chapter_label"] = _clean_string(shortchap)
+                newrec["custom_fields"]["kcr:chapter_label"] = _clean_string(
+                    shortchap
+                )
             elif row["chapter"] == "N/A":
                 pass
             else:
@@ -725,18 +778,31 @@ def add_legacy_commons_info(
 ) -> tuple[dict, dict]:
     """Add legacy commons information to the new record.
 
-    Adds the following information about the legacy commons CORE record to the new record:
-        - the commons pid (row `id`) as an `identifier` with scheme `hclegacy-pid`
-        - the commons record id (row 'record_identifier'; like "1000361-385") as an `identifier` with scheme `hclegacy-record-id`
-        - the commons domain (row `domain`; like "arlisna.hcommons.org") as a custom field `kcr:commons_domain`
-        - the original submitter's email address (row `submitter_email`) as a custom field `kcr:submitter_email`
-        - the original submitter's Commons username (row `submitter_login`) as a custom field `kcr:submitter_username`
-        - the original submitter's Commons user id (row `submitter`) as a custom field `hclegacy:submitter_id`
-        - the committee id for a committee deposit (row `committee_id`) as a custom field `hclegacy:committee_deposit` if the `committee_deposit` flag is "yes"
-        - the legacy commons collection id (row `member_of`) as a custom field `hclegacy:collection`
-        - the original submitter's HC society memberships (row `society_id`) as a custom field `hclegacy:submitter_org_memberships`
-        - the original submitter's organization (row `organization`) as a custom field `hclegacy:submitter_affiliation`
-        - the `published` flag (row `published`) as a custom field `hclegacy:previously_published`
+    Adds the following information about the legacy commons CORE record to the
+    new record:
+        - the commons pid (row `id`) as an `identifier` with scheme
+        `hclegacy-pid`
+        - the commons record id (row 'record_identifier'; like "1000361-385")
+        as an `identifier` with scheme `hclegacy-record-id`
+        - the commons domain (row `domain`; like "arlisna.hcommons.org") as a
+        custom field `kcr:commons_domain`
+        - the original submitter's email address (row `submitter_email`) as a
+        custom field `kcr:submitter_email`
+        - the original submitter's Commons username (row `submitter_login`) as
+        a custom field `kcr:submitter_username`
+        - the original submitter's Commons user id (row `submitter`) as a
+        custom field `hclegacy:submitter_id`
+        - the committee id for a committee deposit (row `committee_id`) as a
+        custom field `hclegacy:committee_deposit` if the `committee_deposit`
+        flag is "yes"
+        - the legacy commons collection id (row `member_of`) as a custom field
+        `hclegacy:collection`
+        - the original submitter's HC society memberships (row `society_id`) as
+        a custom field `hclegacy:submitter_org_memberships`
+        - the original submitter's organization (row `organization`) as a
+        custom field `hclegacy:submitter_affiliation`
+        - the `published` flag (row `published`) as a custom field
+        `hclegacy:previously_published`
 
     Args:
         newrec (_type_): The new record being prepared for serialization
@@ -753,7 +819,10 @@ def add_legacy_commons_info(
     )
     assert row["id"] == row["pid"]
     newrec["metadata"]["identifiers"].append(
-        {"identifier": str(row["record_identifier"]), "scheme": "hclegacy-record-id"}
+        {
+            "identifier": str(row["record_identifier"]),
+            "scheme": "hclegacy-record-id",
+        }
     )
     newrec["custom_fields"]["kcr:commons_domain"] = row["domain"]
 
@@ -764,11 +833,15 @@ def add_legacy_commons_info(
         try:
             row["submitter"] = str(row["submitter"])
             # Doesn't work because not Invenio user id
-            newrec["parent"]["access"]["owned_by"].append({"user": row["submitter"]})
+            newrec["parent"]["access"]["owned_by"].append(
+                {"user": row["submitter"]}
+            )
             newrec["custom_fields"]["hclegacy:submitter_id"] = row["submitter"]
         except ValueError:
             row["submitter"] = None
-            _append_bad_data(row["id"], ("submitter", row["submitter"]), bad_data_dict)
+            _append_bad_data(
+                row["id"], ("submitter", row["submitter"]), bad_data_dict
+            )
 
     # Committee deposit
     if row["committee_deposit"] == "yes":
@@ -788,7 +861,7 @@ def add_legacy_commons_info(
     if row["society_id"]:
         row["society_id"] = (
             row["society_id"]
-            if type(row["society_id"]) == list
+            if type(row["society_id"]) is list
             else [row["society_id"]]
         )
         newrec["custom_fields"]["hclegacy:submitter_org_memberships"] = row[
@@ -797,18 +870,25 @@ def add_legacy_commons_info(
 
     # Was CORE deposit previously published?
     if row["published"]:
-        newrec["custom_fields"]["hclegacy:previously_published"] = row["published"]
+        newrec["custom_fields"]["hclegacy:previously_published"] = row[
+            "published"
+        ]
 
     if row["organization"]:
-        newrec["custom_fields"]["hclegacy:submitter_affiliation"] = row["organization"]
+        newrec["custom_fields"]["hclegacy:submitter_affiliation"] = row[
+            "organization"
+        ]
 
     return newrec, bad_data_dict
 
 
-def add_embargo_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_embargo_info(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add access information to the new record.
 
-    Adds any embargo dates based on the `embargoed` flag ("yes"/"no") and the `embargo_end_date` date string.
+    Adds any embargo dates based on the `embargoed` flag ("yes"/"no") and
+    the `embargo_end_date` date string.
 
     Args:
         newrec (_type_): The new record being prepared for serialization
@@ -833,10 +913,17 @@ def add_embargo_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
     return newrec, bad_data_dict
 
 
-def add_titles(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_titles(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add title information to the new record.
 
-    The CORE record included two title fields: 'title_unchanged' with the raw title string entered by the user, and 'title' with the title string stripped of HTML tags. This function adds the unstripped 'title_unchanged' to the new record as its 'title'. If the two title fields are different, the stripped 'title' is added as an additional title (in 'additional_titles') with type 'Primary title with HTML stripped'.
+    The CORE record included two title fields: 'title_unchanged' with the raw
+    title string entered by the user, and 'title' with the title string
+    stripped of HTML tags. This function adds the unstripped 'title_unchanged'
+    to the new record as its 'title'. If the two title fields are different,
+    the stripped 'title' is added as an additional title (in
+    'additional_titles') with type 'Primary title with HTML stripped'.
 
     args:
         newrec (_type_): The new record being prepared for serialization
@@ -848,14 +935,17 @@ def add_titles(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict
         dict: The new record dict with title info added
     """
     # Titles
-    # FIXME: Filter out titles with punctuation from full biblio ref in #   field?
+    # FIXME: Filter out titles with punctuation from full biblio ref in
+    #    field?
     # FIXME: Remove things like surrounding quotation marks
     mytitle = row["title_unchanged"]
     newrec["metadata"]["title"] = _clean_string(mytitle)
     if row["id"] == "hc:36367":
-        newrec["metadata"][
-            "title"
-        ] = 'Do "Creatures of the State" Have Constitutional Rights? Standing for Municipalities to Assert Procedural Due Process Claims against the State'
+        newrec["metadata"]["title"] = (
+            'Do "Creatures of the State" Have Constitutional Rights? Standing'
+            " for Municipalities to Assert Procedural Due Process Claims"
+            " against the State"
+        )
     # FIXME: types here are CV, need to expand to accommodate stripped desc
     if row["title_unchanged"] != row["title"]:
         if row["id"] == "hc:36367":
@@ -873,10 +963,17 @@ def add_titles(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict
     return newrec, bad_data_dict
 
 
-def add_descriptions(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_descriptions(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add description information to the new record.
 
-    The CORE record included two description fields: 'abstract_unchanged' with the raw description string entered by the user, and 'abstract' with the description string stripped of HTML tags. This function adds the unstripped 'abstract_unchanged' to the new record as its 'description'. If the two description fields are different, the stripped 'abstract' is added as an additional description (in 'additional_descriptions') with type 'Other'.
+    The CORE record included two description fields: 'abstract_unchanged' with
+    the raw description string entered by the user, and 'abstract' with the
+    description string stripped of HTML tags. This function adds the unstripped
+    'abstract_unchanged' to the new record as its 'description'. If the two
+    description fields are different, the stripped 'abstract' is added as an
+    additional description (in 'additional_descriptions') with type 'Other'.
 
     args:
         newrec (_type_): The new record being prepared for serialization
@@ -891,7 +988,9 @@ def add_descriptions(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
     # Descriptions/Abstracts
     # FIXME: handle double-escaped slashes?
     # FIXME: handle windows newlines?
-    newrec["metadata"]["description"] = row["abstract_unchanged"].replace("\r\n", "\n")
+    newrec["metadata"]["description"] = row["abstract_unchanged"].replace(
+        "\r\n", "\n"
+    )
     # FIXME: types here are CV, need to expand to accommodate stripped desc
     if row["abstract_unchanged"] != row["abstract"]:
         newrec["metadata"].setdefault("additional_descriptions", []).append(
@@ -903,10 +1002,14 @@ def add_descriptions(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
     return newrec, bad_data_dict
 
 
-def add_notes(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_notes(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add notes information to the new record.
 
-    Uses the "notes_unchanged" field of the CORE record as the value for the custom field "kcr:notes" in the new record. If the "notes_unchanged" field is empty, no custom field is added.
+    Uses the "notes_unchanged" field of the CORE record as the value for the
+    custom field "kcr:notes" in the new record. If the "notes_unchanged" field
+    is empty, no custom field is added.
 
     Args:
         newrec (_type_): The new record being prepared for serialization
@@ -923,7 +1026,9 @@ def add_notes(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]
     return newrec, bad_data_dict
 
 
-def add_identifiers(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_identifiers(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add identifier information to the new record.
 
     Adds the following identifiers to the new record:
@@ -965,7 +1070,9 @@ def add_identifiers(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
                 }
             )
         else:
-            _append_bad_data(row["id"], ("doi too long", row["doi"]), bad_data_dict)
+            _append_bad_data(
+                row["id"], ("doi too long", row["doi"]), bad_data_dict
+            )
     if row["url"]:
         my_urls = re.split(r" and |;", row["url"])
         for url in my_urls:
@@ -973,7 +1080,9 @@ def add_identifiers(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
             if validators.url(url) or validators.url(f"https://{url}"):
                 newrec["metadata"].setdefault("identifiers", []).append(
                     {
-                        "identifier": row["url"].replace("http://dx.", "https://"),
+                        "identifier": row["url"].replace(
+                            "http://dx.", "https://"
+                        ),
                         "scheme": "url",
                     }
                 )
@@ -997,7 +1106,9 @@ def add_language_info(
 ) -> tuple[dict, dict]:
     """Add language information to the new record.
 
-    Adds the language of the CORE record to the new record as a language identifier. If the CORE record does not have a language, the language is detected from the title and abstract fields using the langdetect library.
+    Adds the language of the CORE record to the new record as a language
+    identifier. If the CORE record does not have a language, the language is
+    detected from the title and abstract fields using the langdetect library.
 
     Args:
         newrec (_type_): The new record being prepared for serialization
@@ -1128,7 +1239,10 @@ def add_language_info(
         lang1, lang2 = [], []
         if row["title"]:
             t = titlecase(row["title"])
-            lang1 = [{"code": lang.lang, "prob": lang.prob} for lang in detect_langs(t)]
+            lang1 = [
+                {"code": lang.lang, "prob": lang.prob}
+                for lang in detect_langs(t)
+            ]
         if row["abstract"]:
             try:
                 lang2 = [
@@ -1163,10 +1277,13 @@ def add_language_info(
     return newrec, bad_data_dict
 
 
-def add_edition_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_edition_info(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add edition information to the new record.
 
-    Adds the edition of the CORE record to the new record as a custom field `kcr:edition`.
+    Adds the edition of the CORE record to the new record as a custom field
+    `kcr:edition`.
 
     Args:
         newrec (_type_): The new record being prepared for serialization
@@ -1186,7 +1303,9 @@ def add_edition_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
     return newrec, bad_data_dict
 
 
-def add_date_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_date_info(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add date information to the new record.
 
     Adds the following date information to the new record:
@@ -1227,7 +1346,9 @@ def add_date_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, d
             try:
                 mydate = timefhuman(row["date"]).isoformat().split("T")[0]
             except (ValueError, TypeError, IndexError):
-                _append_bad_data(row["id"], ("bad date", row["date"]), bad_data_dict)
+                _append_bad_data(
+                    row["id"], ("bad date", row["date"]), bad_data_dict
+                )
             newrec["metadata"].setdefault("dates", []).append(
                 {
                     "date": mydate,
@@ -1259,11 +1380,15 @@ def add_date_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, d
     return newrec, bad_data_dict
 
 
-def add_groups_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_groups_info(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add information about Commons groups to the new record.
 
     Adds the following group information to the new record:
-        - for each group, combines the Commons group id (in the `group_ids` list) and group name (in the `group` list) as an item in the custom field `hclegacy:groups_for_deposit`
+        - for each group, combines the Commons group id (in the `group_ids`
+        list) and group name (in the `group` list) as an item in the custom
+        field `hclegacy:groups_for_deposit`
 
     Args:
         newrec (_type_): The new record being prepared for serialization
@@ -1298,7 +1423,7 @@ def add_groups_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
             ("group or group_ids", row["group"], row["group_ids"]),
             bad_data_dict,
         )
-    except json.decoder.JSONDecodeError as e:
+    except json.decoder.JSONDecodeError:
         # print(e)
         # print(row['group'], row['group_ids'])
         row["hclegacy:groups_for_deposit"] = None
@@ -1311,7 +1436,9 @@ def add_groups_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
     return newrec, bad_data_dict
 
 
-def add_book_authors(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_book_authors(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add book author information to the new record.
 
     Args:
@@ -1334,10 +1461,13 @@ def add_book_authors(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
     return newrec, bad_data_dict
 
 
-def add_volume_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_volume_info(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add volume information to the new record.
 
-    Adds the volume of the CORE record to the new record as a custom field `kcr:volumes`.
+    Adds the volume of the CORE record to the new record as a custom field
+    `kcr:volumes`.
 
     Args:
         newrec (_type_): The new record being prepared for serialization
@@ -1352,18 +1482,19 @@ def add_volume_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
     # FIXME: distinguish volume meaning for ambiguous resource types
     if row["volume"]:
         if newrec["metadata"]["resource_type"]["id"] in article_types:
-            newrec["custom_fields"].setdefault("journal:journal", {})["volume"] = row[
+            newrec["custom_fields"].setdefault("journal:journal", {})[
                 "volume"
-            ]
+            ] = row["volume"]
         elif newrec["metadata"]["resource_type"]["id"] in book_types:
-            newrec["custom_fields"].setdefault("kcr:volumes", {})["volume"] = row[
-                "volume"
-            ]
+            newrec["custom_fields"].setdefault("kcr:volumes", {})["volume"] = (
+                row["volume"]
+            )
         else:
-            # print(row['id'], newrec['metadata']['resource_type']['id'], row['volume'])
-            newrec["custom_fields"].setdefault("kcr:volumes", {})["volume"] = row[
-                "volume"
-            ]
+            # print(row['id'], newrec['metadata']['resource_type']['id'],
+            # row['volume'])
+            newrec["custom_fields"].setdefault("kcr:volumes", {})["volume"] = (
+                row["volume"]
+            )
     return newrec, bad_data_dict
 
 
@@ -1372,9 +1503,14 @@ def add_publication_details(
 ) -> tuple[dict, dict]:
     """Add publication information to the new record.
 
-    Adds the ISBN of the CORE record to the new record as a custom field `imprint:imprint:isbn`. If the work has more than one isbn, additional numbers are added as identifiers with scheme `isbn`. If the ISBN is invalid, it is added to the `bad_data_dict` with the key `invalid isbn`.
+    Adds the ISBN of the CORE record to the new record as a custom field
+    `imprint:imprint:isbn`. If the work has more than one isbn, additional
+    numbers are added as identifiers with scheme `isbn`. If the ISBN is
+    invalid, it is added to the `bad_data_dict` with the key `invalid isbn`.
 
-    Also adds the publisher of the CORE record to the new record as a metadata field `publisher`. If the publisher is missing, the publisher is set to "unknown".
+    Also adds the publisher of the CORE record to the new record as a metadata
+    field `publisher`. If the publisher is missing, the publisher is set to
+    "unknown".
 
     Args:
         newrec (_type_): The new record being prepared for serialization
@@ -1396,7 +1532,8 @@ def add_publication_details(
             checked_i = valid_isbn(i)
             if not checked_i:
                 # print(isbn)
-                # print('invalid isbn', ':', checked_i, ':', clean(i), ':', row['isbn'])
+                # print('invalid isbn', ':', checked_i, ':', clean(i), ':',
+                # row['isbn'])
                 _append_bad_data(
                     row["id"], ("invalid isbn", row["isbn"]), bad_data_dict
                 )
@@ -1426,7 +1563,14 @@ def add_book_journal_title(
 ) -> tuple[dict, dict]:
     """Add book/journal title information to the new record.
 
-    If the record resource type is a book, adds the CORE record's `book_journal_title` as a custom field `imprint:imprint:title`. If the record resource type is an article, adds the CORE record's `book_journal_title` as a custom field `journal:journal:title`. If the record resource type is neither a book nor an article, adds the CORE record's `book_journal_title` as a custom field `imprint:imprint:title` and adds the record resource type to the `bad_data_dict` with the key `resource_type for book_journal_title`.
+    If the record resource type is a book, adds the CORE record's
+    `book_journal_title` as a custom field `imprint:imprint:title`. If the
+    record resource type is an article, adds the CORE record's
+    `book_journal_title` as a custom field `journal:journal:title`. If the
+    record resource type is neither a book nor an article, adds the CORE
+    record's `book_journal_title` as a custom field `imprint:imprint:title` and
+    adds the record resource type to the `bad_data_dict` with the key
+    `resource_type for book_journal_title`.
 
     Args:
         newrec (_type_): The new record being prepared for serialization
@@ -1454,7 +1598,15 @@ def add_book_journal_title(
                 ),
                 bad_data_dict,
             )
-        # FIXME: check right field for legalComment, bibliography, lecture, conferencePaper, legalResponse, other:other, other:essay, translation, videoRecording, blogPost, interviewTranscript, poeticWork, fictionalWork, image:visualArt, image:map, instructionalResource:syllabus, onlinePublication, presentation:other, instructionalResource:other, musicalRecording, catalog, dataset, audiovisual:documentary, lecture
+        # FIXME: check right field for legalComment, bibliography, lecture,
+        # conferencePaper, legalResponse, other:other, other:essay,
+        # translation, videoRecording, blogPost, interviewTranscript,
+        # poeticWork,
+        # fictionalWork, image:visualArt, image:map,
+        # instructionalResource:syllabus, onlinePublication,
+        # presentation:other,
+        # instructionalResource:other, musicalRecording, catalog, dataset,
+        # audiovisual:documentary, lecture
         if myfield not in newrec["custom_fields"].keys():
             newrec["custom_fields"][myfield] = {}
         # FIXME: in hc:24459 title replaced by just \\\\
@@ -1465,17 +1617,22 @@ def add_book_journal_title(
     return newrec, bad_data_dict
 
 
-def add_pages(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_pages(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add page information to the new record.
 
     Adds the following page information to the new record:
-        - if the record resource type is an article, adds the CORE record's `start_page` and `end_page` as a custom field `journal:journal:pages`
-        - if the record resource type is a chapter, adds the CORE record's `start_page` and `end_page` as a custom field `imprint:imprint:pages`
+        - if the record resource type is an article, adds the CORE record's
+        `start_page` and `end_page` as a custom field `journal:journal:pages`
+        - if the record resource type is a chapter, adds the CORE record's
+        `start_page` and `end_page` as a custom field `imprint:imprint:pages`
 
     Args:
         newrec (_type_): The new record being prepared for serialization
         row (_type_): The CORE record being processed
-        bad_data_dict (_type_): A dictionary of error messages recording problems with the data in the CORE record
+        bad_data_dict (_type_): A dictionary of error messages recording
+        problems with the data in the CORE record
 
     Returns:
         dict: The new record dict with page info added
@@ -1488,9 +1645,13 @@ def add_pages(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]
         if row["end_page"]:
             pages = f'{pages}-{row["end_page"]}'
         if newrec["metadata"]["resource_type"]["id"] in article_types:
-            newrec["custom_fields"].setdefault("journal:journal", {})["pages"] = pages
+            newrec["custom_fields"].setdefault("journal:journal", {})[
+                "pages"
+            ] = pages
         else:
-            newrec["custom_fields"].setdefault("imprint:imprint", {})["pages"] = pages
+            newrec["custom_fields"].setdefault("imprint:imprint", {})[
+                "pages"
+            ] = pages
         if newrec["metadata"]["resource_type"]["id"] not in [
             *book_types,
             *article_types,
@@ -1507,25 +1668,34 @@ def add_pages(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]
     return newrec, bad_data_dict
 
 
-def add_journal_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_journal_info(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add journal information to the new record.
 
     Adds the following journal information to the new record:
-        - If the record has an `issue` value, adds the CORE record's `issue` as a custom field `journal:journal:issue`
-        - If the record has an `issn` value, adds the CORE record's `issn` as a custom field `journal:journal:issn`. Validates the ISSN and tries to repair malformed ISSNs. If the `issn` is invalid, it is added to the `bad_data_dict` with the key `invalid issn`. If the `issn` validates as
-        an ISBN, adds it instead as a custom field `imprint:imprint:isbn` and adds the `issn` to the `bad_data_dict` with the key `isbn in issn field`.
+        - If the record has an `issue` value, adds the CORE record's `issue` as
+        a custom field `journal:journal:issue`
+        - If the record has an `issn` value, adds the CORE record's `issn` as a
+        custom field `journal:journal:issn`. Validates the ISSN and tries to
+        repair malformed ISSNs. If the `issn` is invalid, it is added to the
+        `bad_data_dict` with the key `invalid issn`. If the `issn` validates as
+        an ISBN, adds it instead as a custom field `imprint:imprint:isbn` and
+        adds the `issn` to the `bad_data_dict` with the key `isbn in issn
+        field`.
 
     Args:
         newrec (_type_): The new record being prepared for serialization
         row (_type_): The CORE record being processed
-        bad_data_dict (_type_): A dictionary of error messages recording problems with the data in the CORE record
+        bad_data_dict (_type_): A dictionary of error messages
+        recording problems with the data in the CORE record
 
     Returns:
         dict: The new record dict with journal info added
     """
 
     def sanitize_issn_string(mystring):
-        assert type(mystring) == str
+        assert type(mystring) is str
         mystring = mystring.replace("\u2013", "-")
         mystring = mystring.replace("\u2014", "-")
         mystring = re.sub(r"\s?-\s?", "-", mystring)
@@ -1537,7 +1707,9 @@ def add_journal_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
         issue = re.sub(r"([Ii]ssue|[nN][Oo]?\.?)\s?", "", row["issue"])
         issue = re.sub(r"\((.*)\)", r"\1", issue)
         issue = re.sub(r"[\.,]$", "", issue)
-        newrec["custom_fields"].setdefault("journal:journal", {})["issue"] = issue
+        newrec["custom_fields"].setdefault("journal:journal", {})[
+            "issue"
+        ] = issue
 
     # FIXME: make issn a list
     if row["issn"]:
@@ -1550,12 +1722,17 @@ def add_journal_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
 
         if valid_isbn(myissn):
             # print('isbn', row['issn'])
-            newrec["custom_fields"].setdefault("imprint:imprint", {})["isbn"] = myissn
+            newrec["custom_fields"].setdefault("imprint:imprint", {})[
+                "isbn"
+            ] = myissn
             _append_bad_data(
-                row["id"], ("issn", "isbn in issn field", myissn), bad_data_dict
+                row["id"],
+                ("issn", "isbn in issn field", myissn),
+                bad_data_dict,
             )
         else:
-            # myissn = row['issn'].replace(b'\xe2\x80\x94'.decode('utf-8'), '-')
+            # myissn = row['issn'].replace(b'\xe2\x80\x94'.decode('utf-8'),
+            # '-')
             # myissn = myissn.replace('\x97', '-')
             myissn = sanitize_issn_string(myissn)
             myissnx = re.findall(r"\d{4}[-\s\.]?\d{3}[\dxX]", myissn)
@@ -1566,16 +1743,18 @@ def add_journal_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
                 myissnx = myissnx[0]
             if len(myissnx) < 1:
                 _append_bad_data(
-                    row["id"], ("issn", "malformed", row["issn"]), bad_data_dict
+                    row["id"],
+                    ("issn", "malformed", row["issn"]),
+                    bad_data_dict,
                 )
             else:
-                assert type(myissn) == str
+                assert type(myissn) is str
                 myissnx = re.sub(r"ISSN:? ?", "", myissnx)
                 try:
                     if issn.validate(myissnx):
-                        newrec["custom_fields"].setdefault("journal:journal", {})[
-                            "issn"
-                        ] = myissnx
+                        newrec["custom_fields"].setdefault(
+                            "journal:journal", {}
+                        )["issn"] = myissnx
                 except Exception:
                     # print('exception', i, row['issn'])
                     _append_bad_data(
@@ -1591,14 +1770,16 @@ def add_journal_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
                         {"identifier": i, "scheme": "isbn"}
                     )
                     _append_bad_data(
-                        row["id"], ("issn", "isbn in issn field", i), bad_data_dict
+                        row["id"],
+                        ("issn", "isbn in issn field", i),
+                        bad_data_dict,
                     )
                 else:
                     i = sanitize_issn_string(i)
                     if issn.validate(i):
-                        newrec["metadata"].setdefault("identifiers", []).append(
-                            {"identifier": i, "scheme": "issn"}
-                        )
+                        newrec["metadata"].setdefault(
+                            "identifiers", []
+                        ).append({"identifier": i, "scheme": "issn"})
                     else:
                         _append_bad_data(
                             row["id"], ("issn", "malformed", i), bad_data_dict
@@ -1607,13 +1788,16 @@ def add_journal_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
     return newrec, bad_data_dict
 
 
-def add_institution(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_institution(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add institution information to the new record.
 
     Args:
         newrec (_type_): The new record being prepared for serialization
         row (_type_): The CORE record being processed
-        bad_data_dict (_type_): A dictionary of error messages recording problems with the data in the CORE record
+        bad_data_dict (_type_): A dictionary of error messages recording
+        problems with the data in the CORE record
 
     Returns:
         dict: The new record dict with institution info added
@@ -1642,20 +1826,33 @@ def add_institution(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
     return newrec, bad_data_dict
 
 
-def add_meeting_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_meeting_info(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add meeting information to the new record.
 
     Adds the following meeting information to the new record:
 
-        - If the record has a `conference_date` or `meeting_date` value, adds the CORE record's `conference_date` or `meeting_date` as a `dates` subfield of the custom field `meeting:meeting`
-        - If the record has a `conference_location` or `meeting_location` value, adds the CORE record's `conference_location` or `meeting_location` as a `place` subfield of the custom field `meeting:meeting`
-        - If the record has a `conference_organization` or `meeting_organization` value, adds the CORE record's `conference_organization` or `meeting_organization` as a custom field `kcr:meeting_organization`
-        - If the record has a `conference_title` or `meeting_title` value, adds the CORE record's `conference_title` or `meeting_title` as a `title` subfield of the custom field `meeting:meeting`
+        - If the record has a `conference_date` or `meeting_date` value, adds
+        the CORE record's `conference_date` or `meeting_date` as a `dates`
+        subfield of the custom field `meeting:meeting`
+        - If the record has a `conference_location` or `meeting_location`
+        value, adds the CORE record's `conference_location` or
+        `meeting_location` as a `place` subfield of the custom field
+        `meeting:meeting`
+        - If the record has a `conference_organization` or
+        `meeting_organization` value, adds the CORE record's
+        `conference_organization` or `meeting_organization` as a custom field
+        `kcr:meeting_organization`
+        - If the record has a `conference_title` or `meeting_title` value, adds
+        the CORE record's `conference_title` or `meeting_title` as a `title`
+        subfield of the custom field `meeting:meeting`
 
     Args:
         newrec (_type_): The new record being prepared for serialization
         row (_type_): The CORE record being processed
-        bad_data_dict (_type_): A dictionary of error messages recording problems with the data in the CORE record
+        bad_data_dict (_type_): A dictionary of error messages recording
+        problems with the data in the CORE record
 
     Returns:
         dict: The new record dict with meeting info added
@@ -1668,18 +1865,20 @@ def add_meeting_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict
             row["conference_date"] or row["meeting_date"]
         )
     if row["conference_location"] or row["meeting_location"]:
-        newrec["custom_fields"].setdefault("meeting:meeting", {})[
-            "place"
-        ] = _clean_string(row["conference_location"] or row["meeting_location"])
+        newrec["custom_fields"].setdefault("meeting:meeting", {})["place"] = (
+            _clean_string(
+                row["conference_location"] or row["meeting_location"]
+            )
+        )
     if row["conference_organization"] or row["meeting_organization"]:
         newrec["custom_fields"]["kcr:meeting_organization"] = _clean_string(
             row["conference_organization"] or row["meeting_organization"]
         )
     # FIXME: meeting_title being truncated with \\\\ in hc:46017, hc:19211
     if row["conference_title"] or row["meeting_title"]:
-        newrec["custom_fields"].setdefault("meeting:meeting", {})[
-            "title"
-        ] = _clean_string(row["conference_title"] or row["meeting_title"])
+        newrec["custom_fields"].setdefault("meeting:meeting", {})["title"] = (
+            _clean_string(row["conference_title"] or row["meeting_title"])
+        )
 
     return newrec, bad_data_dict
 
@@ -1690,8 +1889,11 @@ def add_subjects_keywords(
     """Add subject and keyword information to the new record.
 
     Adds the following subject and keyword information to the new record:
-        - If the record has a `keyword` value, adds each item from the CORE record's `keyword` to a custom field `kcr:user_defined_tags`
-        - If the record has a `subject` value, for each item in the `subject` list adds a dictionary with the following information to the `subjects` list of the new record's metadata:
+        - If the record has a `keyword` value, adds each item from the CORE
+        record's `keyword` to a custom field `kcr:user_defined_tags`
+        - If the record has a `subject` value, for each item in the `subject`
+        list adds a dictionary with the following information to the `subjects`
+        list of the new record's metadata:
             - `id`: the FAST id for the subject (a url string)
             - `subject`: the subject heading (a string)
             - `scheme`: the FAST facet label for the subject (a string)
@@ -1701,7 +1903,8 @@ def add_subjects_keywords(
     Args:
         newrec (_type_): The new record being prepared for serialization
         row (_type_): The CORE record being processed
-        bad_data_dict (_type_): A dictionary of error messages recording problems with the data in the CORE record
+        bad_data_dict (_type_): A dictionary of error messages recording
+        problems with the data in the CORE record
 
     Returns:
         dict: The new record dict with subject and keyword info added
@@ -1800,45 +2003,69 @@ def add_subjects_keywords(
             "Polish studies",
         ]
         bad_subjects = {
-            "1411635:Criticism, interpretation, etc.:topical": "1411635:Criticism, interpretation, etc.:form",
-            "863509:Classsical literature:topical": "863509:Classical literature:topical",
+            "1411635:Criticism, interpretation, etc.:topical": (
+                "1411635:Criticism, interpretation, etc.:form"
+            ),
+            "863509:Classsical literature:topical": (
+                "863509:Classical literature:topical"
+            ),
             "Art history": "815264:Art--History:topical",
             "Medieval literature": "1000151:Literature, Medieval:topical",
             "Literary theory": "1353577:Literature--Theory:topical",
             "Cultural studies": "885059:Culture:topical",
-            "Political philosophy": "1060799:Philosophy--Political aspects:topical",
+            "Political philosophy": (
+                "1060799:Philosophy--Political aspects:topical"
+            ),
             "History of religions": "1093783:Religion--History:topical",
             "Religious studies": "1093763:Religion:topical",
             "Translation": "1154795:Translating and interpreting:topical",
-            "Australasian/Pacific literature": "821406:Australasian literature:topical",
+            "Australasian/Pacific literature": (
+                "821406:Australasian literature:topical"
+            ),
             "Comics": "1921613:Comics (Graphic works):form",
             "Graphic novels": "1726630:Graphic novels:form",
             "Cultural history": "885069:Culture--History:topical",
             "Epigraphy": "973837:Inscriptions:topical",
             "Latin American studies": "1245945:Latin America:geographic",
-            "Sociology of agriculture": "801646:Agriculture--Social aspects:topical",
+            "Sociology of agriculture": (
+                "801646:Agriculture--Social aspects:topical"
+            ),
             "Ancient law": "993683:Law--Antiquities:topical",
             "Digital communication": "893634:Digital communications:topical",
             "Internet sociology": "1766793:Internet--Social aspects:topical",
-            "Library and information science": "997916:Library science:topical",
-            "Social anthropology": "810233:Anthropology--Social aspects:topical",
+            "Library and information science": (
+                "997916:Library science:topical"
+            ),
+            "Social anthropology": (
+                "810233:Anthropology--Social aspects:topical"
+            ),
             "History of the arts": "817758:Arts--History:topical",
             "Music history": "1030330:Music--History:topical",
-            "Interdisciplinary studies": "976131:Interdisciplinary research:topical",
-            "Illuminated manuscripts": "967235:Illumination of books and manuscripts:topical",
+            "Interdisciplinary studies": (
+                "976131:Interdisciplinary research:topical"
+            ),
+            "Illuminated manuscripts": (
+                "967235:Illumination of books and manuscripts:topical"
+            ),
             "India": "1210276:India:geographic",
             "Apostle Paul": "288253:St. Paul:personal",
             "Academic librarianship": "794993:Academic librarians:topical",
             "Sociology of aging": "800348:Aging--Social aspects:topical",
             "Sociology of culture": "885083:Culture--Social aspects:topical",
             "Holocaust studies": "958866:Jewish Holocaust (1939-1945):topical",
-            "Literature and psychology": "1081551:Psychology and literature:topical",
+            "Literature and psychology": (
+                "1081551:Psychology and literature:topical"
+            ),
             "Gender studies": "939598:Gender identity--Research:topical",
             "Historical musicology": "1030896:Musicology--History:topical",
             "Shakespeare": "314312:Shakespeare, William, 1849-1931:personal",
-            "Sociology of finance": "842573:Business enterprises--Finance--Social aspects:topical",
+            "Sociology of finance": (
+                "842573:Business enterprises--Finance--Social aspects:topical"
+            ),
             "Central Europe": "1244544:Central Europe:geographic",
-            "Contemporary history": "1865054:History of contemporary events:topical",
+            "Contemporary history": (
+                "1865054:History of contemporary events:topical"
+            ),
             "Labor history": "989812:Labor--History:topical",
             "Epicurus": "44478:Epicurus:personal",
             "Stanley Cavell": "28565:Cavell, Stanley, 1926-2018:personal",
@@ -1853,10 +2080,14 @@ def add_subjects_keywords(
             "Harlem Renaissance": "951467:Harlem Renaissance:topical",
             "Music performance": "1030398:Music--Performance:topical",
             "Latin America": "1245945:Latin America:topical",
-            "Portuguese culture": "1072404:Portuguese--Ethnic identity:topical",
+            "Portuguese culture": (
+                "1072404:Portuguese--Ethnic identity:topical"
+            ),
             "Venezuela": "1204166:Venezuela:geographic",
             "Aesthetic theory": "798702:Aesthetics:topical",
-            "21st-century American literature": "807113:American literature:topical",
+            "21st-century American literature": (
+                "807113:American literature:topical"
+            ),
             "Poetics and poetry": "1067682:Poetics:topical",
         }
         covered_subjects = []
@@ -1864,9 +2095,9 @@ def add_subjects_keywords(
             row["subject"] = row["subject"].values()
         for s in row["subject"]:
             if s in missing_subjects:
-                newrec["custom_fields"].setdefault("kcr:user_defined_tags", []).append(
-                    s
-                )
+                newrec["custom_fields"].setdefault(
+                    "kcr:user_defined_tags", []
+                ).append(s)
             else:
                 if s in bad_subjects.keys():
                     s = bad_subjects[s]
@@ -1911,29 +2142,42 @@ def add_subjects_keywords(
     return newrec, bad_data_dict
 
 
-def add_rights_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_rights_info(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add rights information to the new record.
 
     Adds the following rights information to the new record:
-        - If the record has a `type_of_license` value, adds the CORE record's `type_of_license` as a `rights` subfield of the new record's metadata. The `rights` subfield is a list of dictionaries with the following information:
+        - If the record has a `type_of_license` value, adds the CORE record's
+        `type_of_license` as a `rights` subfield of the new record's metadata.
+        The `rights` subfield is a list of dictionaries with the following
+        information:
             - `id`: the id for the license (a string)
             - `props`: a dictionary with the following information:
                 - `url`: the url for the license (a string)
-                - `scheme`: the license scheme (a string) with a value of 'spdx' (left out for 'arr' licenses)
-            - `title`: the title of the license (a dictionary with a single key/value pair, where the key is the language code and the value is the license title in that language)
-            - `description`: the description of the license (a dictionary with a single key/value pair, where the key is the language code and the value is the license description in that language)
+                - `scheme`: the license scheme (a string) with a value of
+                'spdx' (left out for 'arr' licenses)
+            - `title`: the title of the license (a dictionary with a single
+            key/value pair, where the key is the language code and the value
+            is the license title in that language)
+            - `description`: the description of the license (a dictionary with
+            a single key/value pair, where the key is the language code and the
+            value is the license description in that language)
 
     Args:
         newrec (_type_): The new record being prepared for serialization
         row (_type_): The CORE record being processed
-        bad_data_dict (_type_): A dictionary of error messages recording problems with the data in the CORE record
+        bad_data_dict (_type_): A dictionary of error messages recording
+        problems with the data in the CORE record
 
     Returns:
         dict: The new record dict with rights info added
     """
 
     if row["type_of_license"]:
-        license_id, license_name, license_url = licenses[row["type_of_license"]]
+        license_id, license_name, license_url = licenses[
+            row["type_of_license"]
+        ]
         newrec["metadata"].setdefault("rights", []).append(
             {
                 "id": license_id,
@@ -1949,13 +2193,16 @@ def add_rights_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict,
     return newrec, bad_data_dict
 
 
-def add_file_info(newrec: dict, row: dict, bad_data_dict: dict) -> tuple[dict, dict]:
+def add_file_info(
+    newrec: dict, row: dict, bad_data_dict: dict
+) -> tuple[dict, dict]:
     """Add file information to the new record.
 
     Args:
         newrec (_type_): The new record being prepared for serialization
         row (_type_): The CORE record being processed
-        bad_data_dict (_type_): A dictionary of error messages recording problems with the data in the CORE record
+        bad_data_dict (_type_): A dictionary of error messages recording
+        problems with the data in the CORE record
 
     Returns:
         dict: The new record dict with file info added
@@ -2009,37 +2256,65 @@ def serialize_json() -> tuple[list[dict], dict]:
             newrec = deepcopy(baserec)
 
             # commons info
-            newrec, bad_data_dict = add_legacy_commons_info(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = add_legacy_commons_info(
+                newrec, row, bad_data_dict
+            )
             newrec, bad_data_dict = add_groups_info(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = add_embargo_info(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = add_embargo_info(
+                newrec, row, bad_data_dict
+            )
 
             # basic metadata
             newrec, bad_data_dict = add_titles(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = add_descriptions(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = add_descriptions(
+                newrec, row, bad_data_dict
+            )
             newrec, bad_data_dict = add_notes(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = _add_resource_type(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = _add_resource_type(
+                newrec, row, bad_data_dict
+            )
             newrec, bad_data_dict = add_identifiers(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = add_language_info(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = add_edition_info(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = _add_author_data(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = add_language_info(
+                newrec, row, bad_data_dict
+            )
+            newrec, bad_data_dict = add_edition_info(
+                newrec, row, bad_data_dict
+            )
+            newrec, bad_data_dict = _add_author_data(
+                newrec, row, bad_data_dict
+            )
             newrec, bad_data_dict = add_date_info(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = add_subjects_keywords(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = add_subjects_keywords(
+                newrec, row, bad_data_dict
+            )
             newrec, bad_data_dict = add_rights_info(newrec, row, bad_data_dict)
 
             # Info for chapters and articles
-            newrec, bad_data_dict = add_chapter_label(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = add_book_authors(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = add_chapter_label(
+                newrec, row, bad_data_dict
+            )
+            newrec, bad_data_dict = add_book_authors(
+                newrec, row, bad_data_dict
+            )
             newrec, bad_data_dict = add_volume_info(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = add_publication_details(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = add_book_journal_title(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = add_publication_details(
+                newrec, row, bad_data_dict
+            )
+            newrec, bad_data_dict = add_book_journal_title(
+                newrec, row, bad_data_dict
+            )
             newrec, bad_data_dict = add_pages(newrec, row, bad_data_dict)
-            newrec, bad_data_dict = add_journal_info(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = add_journal_info(
+                newrec, row, bad_data_dict
+            )
 
             # Info for dissertations and reports
             newrec, bad_data_dict = add_institution(newrec, row, bad_data_dict)
 
             # conference/meeting info
-            newrec, bad_data_dict = add_meeting_info(newrec, row, bad_data_dict)
+            newrec, bad_data_dict = add_meeting_info(
+                newrec, row, bad_data_dict
+            )
 
             # Uploaded file details
             newrec, bad_data_dict = add_file_info(newrec, row, bad_data_dict)
@@ -2047,14 +2322,18 @@ def serialize_json() -> tuple[list[dict], dict]:
             newrec_list.append(newrec)
             line_count += 1
 
-        # pprint([r for r in newrec_list if r['metadata']['resource_type']['id'] == 'publication:journalArticle'])
+        # pprint([r for r in newrec_list if r['metadata']['resource_type']
+        # ['id'] == 'publication:journalArticle'])
 
-        # pprint([r for r in newrec_list if r['metadata']['identifiers'][0]['identifier'] == 'hc:45177'])
+        # pprint([r for r in newrec_list if r['metadata']['identifiers'][0]
+        # ['identifier'] == 'hc:45177'])
         # pprint([r for r in top_object if r['id'] == 'hc:45177'])
 
-        # auth_errors = {k:v for k, v in bad_data_dict.items() for i in v if i[0][:8] == 'authors' and len(i) == 2}
+        # auth_errors = {k:v for k, v in bad_data_dict.items() for i in v
+        # if i[0][:8] == 'authors' and len(i) == 2}
         # pprint(auth_errors)
-        # pprint(bad_data_dict)
+        if debug:
+            pprint(bad_data_dict)
         # print(len(auth_errors))
     print(f"Processed {line_count} lines.")
     print(f"Found {len(bad_data_dict)} records with bad data.")

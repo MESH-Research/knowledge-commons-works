@@ -15,7 +15,8 @@ from datetime import datetime
 import unicodedata
 from isbnlib import is_isbn10, is_isbn13, clean
 import logging
-from logging.handlers import RotatingFileHandler
+
+# from logging.handlers import RotatingFileHandler
 import random
 import re
 import string
@@ -27,7 +28,9 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s:%(levelname)s : %(message)s")
 file_handler = logging.handlers.RotatingFileHandler(
-    Path(__file__).parent / "logs" / "core_migrate.log", maxBytes=1000000, backupCount=5
+    Path(__file__).parent / "logs" / "core_migrate.log",
+    maxBytes=1000000,
+    backupCount=5,
 )
 file_handler.setFormatter(formatter)
 if logger.hasHandlers():
@@ -39,7 +42,9 @@ def generate_random_string(length):
     """
     Generate a random string of lowercase letters and integer numbers.
     """
-    res = "".join(random.choices(string.ascii_lowercase + string.digits, k=length))
+    res = "".join(
+        random.choices(string.ascii_lowercase + string.digits, k=length)
+    )
     return res
 
 
@@ -48,7 +53,7 @@ def flatten_list(list_of_lists, flat_list=[]):
         return flat_list
     else:
         for item in list_of_lists:
-            if type(item) == list:
+            if type(item) is list:
                 flatten_list(item, flat_list)
             else:
                 flat_list.append(item)
@@ -78,15 +83,18 @@ def valid_date(datestring: str) -> bool:
     """
     try:
         datetime.fromisoformat(datestring.replace("Z", "+00:00"))
-    except:
+    except Exception:
         # FIXME: parse some of these datestrings
         # print(f'couldn\'t parse {datestring}')
         try:
             # TODO: This only handles single years, year-months,
             # or year-month-days. Do we need ranges?
-            dtregex = r"^(?P<year>[0-9]{4})(-(?P<month>1[0-2]|0[1-9])(-(?P<day>3[0-1]|0[1-9]|[1-2][0-9]))?)?$"
+            dtregex = (
+                r"^(?P<year>[0-9]{4})(-(?P<month>1[0-2]|0[1-9])"
+                r"(-(?P<day>3[0-1]|0[1-9]|[1-2][0-9]))?)?$"
+            )
             assert re.search(dtregex, datestring)
-        except:
+        except Exception:
             return False
     return True
 
@@ -117,10 +125,13 @@ def compare_metadata(A: dict, B: dict) -> dict:
                 i_2 = [
                     i2
                     for i2 in a[list_name]
-                    if _normalize_punctuation(i2[key]) == _normalize_punctuation(i[key])
+                    if _normalize_punctuation(i2[key])
+                    == _normalize_punctuation(i[key])
                 ][0]
                 for k in comparators:
-                    if _normalize_punctuation(i[k]) != _normalize_punctuation(i_2[k]):
+                    if _normalize_punctuation(i[k]) != _normalize_punctuation(
+                        i_2[k]
+                    ):
                         same = False
                 if not same:
                     out.setdefault("A", []).append(i_2)
@@ -167,7 +178,10 @@ def compare_metadata(A: dict, B: dict) -> dict:
                             c_2["person_or_org"][k]
                         ):
                             same = False
-                if "role" not in c_2.keys() or c["role"]["id"] != c_2["role"]["id"]:
+                if (
+                    "role" not in c_2.keys()
+                    or c["role"]["id"] != c_2["role"]["id"]
+                ):
                     same = False
                 if not same:
                     people_diff.setdefault("A", []).append(c_2)
@@ -198,9 +212,9 @@ def compare_metadata(A: dict, B: dict) -> dict:
         for s in simple_fields:
             if s in meta_b.keys():
                 if s in meta_b.keys():
-                    if _normalize_punctuation(meta_b[s]) != _normalize_punctuation(
-                        meta_a[s]
-                    ):
+                    if _normalize_punctuation(
+                        meta_b[s]
+                    ) != _normalize_punctuation(meta_a[s]):
                         meta_diff["A"][s] = meta_a[s]
                         meta_diff["B"][s] = meta_b[s]
                 else:
@@ -219,7 +233,9 @@ def compare_metadata(A: dict, B: dict) -> dict:
         if "contributors" in meta_b.keys():
             if "contributors" not in meta_a.keys():
                 meta_a["contributors"] = []
-            comp = compare_people(meta_a["contributors"], meta_b["contributors"])
+            comp = compare_people(
+                meta_a["contributors"], meta_b["contributors"]
+            )
             if comp:
                 meta_diff["A"]["contributors"] = comp["A"]
                 meta_diff["B"]["contributors"] = comp["B"]
@@ -228,12 +244,17 @@ def compare_metadata(A: dict, B: dict) -> dict:
             if "additional_titles" not in meta_a.keys():
                 meta_a["additional_titles"] = []
             existing_titles = [
-                _normalize_punctuation(t["title"]) for t in meta_a["additional_titles"]
+                _normalize_punctuation(t["title"])
+                for t in meta_a["additional_titles"]
             ]
             for t in meta_b["additional_titles"]:
                 if _normalize_punctuation(t["title"]) not in existing_titles:
-                    meta_diff["A"].setdefault("additional_titles", []).append({})
-                    meta_diff["B"].setdefault("additional_titles", []).append(t)
+                    meta_diff["A"].setdefault("additional_titles", []).append(
+                        {}
+                    )
+                    meta_diff["B"].setdefault("additional_titles", []).append(
+                        t
+                    )
                 else:
                     same = True
                     t_2 = [
@@ -249,12 +270,20 @@ def compare_metadata(A: dict, B: dict) -> dict:
                     ):
                         same = False
                     if not same:
-                        meta_diff["A"].setdefault("additional_titles", []).append(t_2)
-                        meta_diff["B"].setdefault("additional_titles", []).append(t)
+                        meta_diff["A"].setdefault(
+                            "additional_titles", []
+                        ).append(t_2)
+                        meta_diff["B"].setdefault(
+                            "additional_titles", []
+                        ).append(t)
 
         if "identifiers" in meta_b.keys():
             comp = obj_list_compare(
-                "identifiers", "identifier", meta_a, meta_b, ["identifier", "scheme"]
+                "identifiers",
+                "identifier",
+                meta_a,
+                meta_b,
+                ["identifier", "scheme"],
             )
             if comp:
                 meta_diff["A"]["identifiers"] = comp["A"]
@@ -280,7 +309,11 @@ def compare_metadata(A: dict, B: dict) -> dict:
 
         if "subjects" in meta_b.keys():
             comp = obj_list_compare(
-                "subjects", "subject", meta_a, meta_b, ["id", "subject", "scheme"]
+                "subjects",
+                "subject",
+                meta_a,
+                meta_b,
+                ["id", "subject", "scheme"],
             )
             if comp:
                 meta_diff["A"]["subjects"] = meta_a["subjects"]
@@ -331,7 +364,10 @@ def compare_metadata(A: dict, B: dict) -> dict:
                 same = True
                 if s in custom_a.keys():
                     if type(custom_a[s]) is str:
-                        if unicodedata.normalize("NFC", custom_b[s]) != custom_a[s]:
+                        if (
+                            unicodedata.normalize("NFC", custom_b[s])
+                            != custom_a[s]
+                        ):
                             same = False
                     elif type(custom_a[s]) is list:
                         if custom_b[s] != custom_a[s]:
@@ -362,7 +398,9 @@ def compare_metadata(A: dict, B: dict) -> dict:
             for k in ["pages", "isbn", "title"]:
                 if k in custom_b["imprint:imprint"].keys():
                     if k in custom_a["imprint:imprint"].keys():
-                        if custom_a["imprint:imprint"][k] != unicodedata.normalize(
+                        if custom_a["imprint:imprint"][
+                            k
+                        ] != unicodedata.normalize(
                             "NFC", custom_b["imprint:imprint"][k]
                         ):
                             same = False
@@ -379,8 +417,12 @@ def compare_metadata(A: dict, B: dict) -> dict:
                     same = False
 
             if not same:
-                custom_diff["A"]["imprint:imprint"] = custom_a["imprint:imprint"]
-                custom_diff["B"]["imprint:imprint"] = custom_b["imprint:imprint"]
+                custom_diff["A"]["imprint:imprint"] = custom_a[
+                    "imprint:imprint"
+                ]
+                custom_diff["B"]["imprint:imprint"] = custom_b[
+                    "imprint:imprint"
+                ]
 
         if "journal:journal" in custom_b.keys():
             if "journal:journal" not in custom_a.keys():
@@ -389,7 +431,9 @@ def compare_metadata(A: dict, B: dict) -> dict:
             for k in ["issn", "issue", "pages", "title"]:
                 if k in custom_b["journal:journal"].keys():
                     if k in custom_a["journal:journal"].keys():
-                        if custom_a["journal:journal"][k] != unicodedata.normalize(
+                        if custom_a["journal:journal"][
+                            k
+                        ] != unicodedata.normalize(
                             "NFC", custom_b["journal:journal"][k]
                         ):
                             same = False
@@ -397,8 +441,12 @@ def compare_metadata(A: dict, B: dict) -> dict:
                         same = False
                         custom_a["journal:journal"][k] = None
             if not same:
-                custom_diff["A"]["journal:journal"] = custom_a["journal:journal"]
-                custom_diff["B"]["journal:journal"] = custom_b["journal:journal"]
+                custom_diff["A"]["journal:journal"] = custom_a[
+                    "journal:journal"
+                ]
+                custom_diff["B"]["journal:journal"] = custom_b[
+                    "journal:journal"
+                ]
 
         if custom_diff["A"] or custom_diff["B"]:
             output["A"]["custom_fields"] = custom_diff["A"]

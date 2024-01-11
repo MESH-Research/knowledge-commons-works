@@ -3,12 +3,10 @@ import itertools
 import json
 import jsonlines
 from pathlib import Path
-from py import log
 import requests
 import subprocess
 from traceback import format_exception, print_exc
 from typing import Optional, Union
-import urllib
 import os
 from pprint import pprint
 import re
@@ -16,7 +14,7 @@ import unicodedata
 from urllib.parse import unquote
 
 from core_migrate.config import GLOBAL_DEBUG, FILES_LOCATION, SERVER_DOMAIN
-from core_migrate.utils import logger, update_nested_dict, valid_date, compare_metadata
+from core_migrate.utils import logger, valid_date, compare_metadata
 
 
 def api_request(
@@ -64,7 +62,8 @@ def api_request(
         # headers['content-length'] = str(len(file_data.read()))
         payload_args["data"] = file_data
 
-    # files = {'file': ('report.xls', open('report.xls', 'rb'), 'application/vnd.ms-excel', {'Expires': '0'})}
+    # files = {'file': ('report.xls', open('report.xls', 'rb'),
+    # 'application/vnd.ms-excel', {'Expires': '0'})}
     if debug:
         print(f"request to {api_url}")
         # print(f'headers: {headers}')
@@ -134,31 +133,49 @@ def create_invenio_record(
         doi_for_query = my_doi.split("/")
         same_doi = api_request(
             method="GET",
-            endpoint=f"records?q=pids.doi.identifier%3D%22{doi_for_query[0]}%2F{doi_for_query[1]}%22",
+            endpoint=(
+                f"records?q=pids.doi.identifier%3D%22{doi_for_query[0]}"
+                f"%2F{doi_for_query[1]}%22"
+            ),
             params={},
         )
-        if same_doi["status_code"] == 200 and same_doi["json"]["hits"]["total"] == 0:
+        if (
+            same_doi["status_code"] == 200
+            and same_doi["json"]["hits"]["total"] == 0
+        ):
             same_doi = api_request(
                 method="GET",
-                endpoint=f"user/records?q=pids.doi.identifier%3D%22{doi_for_query[0]}%2F{doi_for_query[1]}%22",
+                endpoint=(
+                    "user/records?q=pids.doi.identifier%3D%22"
+                    f"{doi_for_query[0]}%2F{doi_for_query[1]}%22"
+                ),
                 params={},
             )
         if same_doi["status_code"] not in [200]:
-            logger.error("    error checking for existing record with same DOI:")
+            logger.error(
+                "    error checking for existing record with same DOI:"
+            )
             logger.error(same_doi)
             raise requests.HTTPError(same_doi)
-        if same_doi["status_code"] == 200 and same_doi["json"]["hits"]["total"] > 0:
+        if (
+            same_doi["status_code"] == 200
+            and same_doi["json"]["hits"]["total"] > 0
+        ):
             print("Found existing record with same DOI...")
             logger.info(
-                f'    found {len(same_doi["json"]["hits"]["hits"])} existing records with same DOI...'
+                f'    found {len(same_doi["json"]["hits"]["hits"])} existing'
+                " records with same DOI..."
             )
             # delete extra records with the same doi
             if len(same_doi["json"]["hits"]["hits"]) > 1:
                 logger.info(
-                    f"    found more than one existing record with same DOI: {[j['id'] for j in same_doi['json']['hits']['hits']]}"
+                    "    found more than one existing record with same DOI:"
+                    f" {[j['id'] for j in same_doi['json']['hits']['hits']]}"
                 )
                 logger.info("   deleting extra records...")
-                for i in [h["id"] for h in same_doi["json"]["hits"]["hits"][1:]]:
+                for i in [
+                    h["id"] for h in same_doi["json"]["hits"]["hits"][1:]
+                ]:
                     delete_result = delete_invenio_draft_record(i)
                     if delete_result["status_code"] != 204:
                         raise requests.HTTPError(delete_result)
@@ -167,34 +184,60 @@ def create_invenio_record(
             differences = compare_metadata(existing_metadata, metadata)
             if differences:
                 logger.info(
-                    f"    existing record with same DOI has different metadata: existing record: {differences['A']}; new record: {differences['B']}"
+                    "    existing record with same DOI has different"
+                    f" metadata: existing record: {differences['A']}; new"
+                    f" record: {differences['B']}"
                 )
                 if no_updates:
                     raise RuntimeError(
-                        "no_updates flag is set, so not updating existing record"
+                        "no_updates flag is set, so not updating existing"
+                        " record"
                     )
                 update_payload = existing_metadata
                 for key, val in differences["B"].items():
-                    if key in ["access", "custom_fields", "files", "metadata", "pids"]:
+                    if key in [
+                        "access",
+                        "custom_fields",
+                        "files",
+                        "metadata",
+                        "pids",
+                    ]:
                         for k2 in val.keys():
-                            update_payload.setdefault(key, {})[k2] = metadata[key][k2]
-                logger.info("    updating existing record with new metadata...")
+                            update_payload.setdefault(key, {})[k2] = metadata[
+                                key
+                            ][k2]
+                logger.info(
+                    "    updating existing record with new metadata..."
+                )
                 # logger.info(f"    {update_payload}")
-                new_comparison = compare_metadata(existing_metadata, update_payload)
+                new_comparison = compare_metadata(
+                    existing_metadata, update_payload
+                )
                 if new_comparison:
                     logger.info(
-                        "    metadata still does not match migration source after update attempt..."
+                        "    metadata still does not match migration source"
+                        " after update attempt..."
                     )
                     raise RuntimeError(
-                        f"existing record: {new_comparison['A']}; new record: {new_comparison['B']}"
+                        f"existing record: {new_comparison['A']}; new record:"
+                        f" {new_comparison['B']}"
                     )
                 else:
                     update_payload = {
                         k: v
                         for k, v in update_payload.items()
-                        if k in ["access", "custom_fields", "files", "metadata", "pids"]
+                        if k
+                        in [
+                            "access",
+                            "custom_fields",
+                            "files",
+                            "metadata",
+                            "pids",
+                        ]
                     }
-                    logger.info("    metadata updated to match migration source...")
+                    logger.info(
+                        "    metadata updated to match migration source..."
+                    )
                     if existing_metadata["status"] != "published":
                         try:
                             result = api_request(
@@ -205,17 +248,21 @@ def create_invenio_record(
                             )
                             assert result["status_code"] == 200
                             logger.info(
-                                "    continuing with existing draft record (new metadata)..."
+                                "    continuing with existing draft record"
+                                " (new metadata)..."
                             )
                             # logger.info(result["json"])
-                            result[
-                                "headers"
-                            ] = "existing draft record with same DOI and updated metadata"
+                            result["headers"] = (
+                                "existing draft record with same DOI and"
+                                " updated metadata"
+                            )
                             return result
                         except AssertionError:
                             raise requests.HTTPError(result)
                     else:
-                        logger.info("    creating new draft of published record...")
+                        logger.info(
+                            "    creating new draft of published record..."
+                        )
                         create_draft_result = api_request(
                             method="POST",
                             endpoint="records",
@@ -223,26 +270,37 @@ def create_invenio_record(
                         )
                         if create_draft_result["status_code"] == 201:
                             logger.info(
-                                "    updating new draft of published record with new metadata..."
+                                "    updating new draft of published record"
+                                " with new metadata..."
                             )
                             try:
                                 result = api_request(
                                     method="PUT",
                                     endpoint="records",
-                                    args=f'{create_draft_result["json"]["id"]}/draft',
+                                    args=(
+                                        f'{create_draft_result["json"]["id"]}'
+                                        "/draft"
+                                    ),
                                     json_dict=update_payload,
                                 )
                                 assert result["status_code"] == 200
-                                result[
-                                    "headers"
-                                ] = "new draft of existing record with same DOI and updated metadata"
+                                result["headers"] = (
+                                    "new draft of existing record with same"
+                                    " DOI and updated metadata"
+                                )
                                 return result
                             except AssertionError:
                                 raise requests.HTTPError(result)
 
             if not differences:
+                record_type = (
+                    "draft"
+                    if existing_metadata["status"] != "published"
+                    else "published record"
+                )
                 logger.info(
-                    f'    continuing with existing {"draft" if existing_metadata["status"] != "published" else "published record"} (same metadata)...'
+                    f"    continuing with existing {record_type} "
+                    "(same metadata)..."
                 )
                 result = {
                     "status_code": 201,
@@ -272,6 +330,7 @@ def fetch_draft_files(files_dict: dict[str, str]) -> dict:
     """
     url = "https://www.facebook.com/favicon.ico"
     r = requests.get(url, allow_redirects=True)
+    return r
 
 
 def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
@@ -312,7 +371,6 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
     if debug:
         pprint(initialization["json"]["entries"])
     for f in initialization["json"]["entries"]:
-        # {'updated': '2023-06-15T21:00:14.644204+00:00', 'status': 'pending', 'links': {'self': 'https://localhost/api/records/5bge2-p9906/draft/files/p', 'content': 'https://localhost/api/records/5bge2-p9906/draft/files/p/content', 'commit': 'https://localhost/api/records/5bge2-p9906/draft/files/p/commit'}, 'created': '2023-06-15T21:00:14.642209+00:00', 'key': 'p', 'metadata': None}
         output["file_transactions"][f["key"]] = {}
         server_string = SERVER_DOMAIN
         if SERVER_DOMAIN == "10.98.11.40":
@@ -339,7 +397,9 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
         long_filename = files_dict[matching_filename].replace(
             "/srv/www/commons/current/web/app/uploads/humcore/", ""
         )
-        with open(Path(FILES_LOCATION) / long_filename, "rb") as binary_file_data:
+        with open(
+            Path(FILES_LOCATION) / long_filename, "rb"
+        ) as binary_file_data:
             if debug:
                 print("^^^^^^^^")
             if debug:
@@ -357,25 +417,35 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
                 pprint(content_upload)
             if content_upload["status_code"] != 200:
                 pprint(content_upload)
-                logger.error(f"    failed to upload file content for {filename}...")
+                logger.error(
+                    f"    failed to upload file content for {filename}..."
+                )
                 logger.error(content_upload)
                 raise requests.HTTPError(content_upload)
-            output["file_transactions"][f["key"]]["content_upload"] = content_upload
+            output["file_transactions"][f["key"]][
+                "content_upload"
+            ] = content_upload
 
             try:
                 assert content_upload["json"]["key"] == unquote(filename)
                 assert content_upload["json"]["status"] == "pending"
-                assert content_upload["json"]["links"]["commit"] == f["links"]["commit"]
+                assert (
+                    content_upload["json"]["links"]["commit"]
+                    == f["links"]["commit"]
+                )
 
             except AssertionError as e:
                 logger.error(
-                    f"    failed to properly upload file content for {filename}..."
+                    "    failed to properly upload file content for"
+                    f" {filename}..."
                 )
                 logger.error(content_upload)
                 raise e
 
         # commit uploaded data
-        upload_commit = api_request(method="POST", endpoint="records", args=commit_args)
+        upload_commit = api_request(
+            method="POST", endpoint="records", args=commit_args
+        )
         if upload_commit["status_code"] != 200:
             print("&&&&&&&")
             pprint(upload_commit)
@@ -394,11 +464,19 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
             assert valid_date(upload_commit["json"]["updated"])
             assert upload_commit["json"]["status"] == "completed"
             assert upload_commit["json"]["metadata"] is None
-            assert upload_commit["json"]["links"]["content"] == f["links"]["content"]
+            assert (
+                upload_commit["json"]["links"]["content"]
+                == f["links"]["content"]
+            )
             assert upload_commit["json"]["links"]["self"] == f["links"]["self"]
-            assert upload_commit["json"]["links"]["commit"] == f["links"]["commit"]
+            assert (
+                upload_commit["json"]["links"]["commit"]
+                == f["links"]["commit"]
+            )
         except AssertionError as e:
-            logger.error(f"    failed to properly commit file upload for {filename}...")
+            logger.error(
+                f"    failed to properly commit file upload for {filename}..."
+            )
             logger.error(upload_commit)
             raise e
 
@@ -446,7 +524,9 @@ def delete_invenio_draft_record(record_id: str) -> dict:
         )
         if cancellation["status_code"] != 200:
             raise requests.HTTPError(cancellation)
-    result = api_request(method="DELETE", endpoint="records", args=f"{record_id}/draft")
+    result = api_request(
+        method="DELETE", endpoint="records", args=f"{record_id}/draft"
+    )
     assert result["status_code"] == 204
     return result
 
@@ -512,9 +592,6 @@ def create_invenio_user(user_email: str) -> dict:
         assert f"'email': '{user_email}'" in stdout
         print("created new user...")
         logger.info(f"    created new user {user_email}...")
-        # ('User created successfully.\n'
-        # "{'email': 'myaddress2@somedomain.edu', 'password': '****', 'active': "
-        # 'False}\n')
         activate_user = subprocess.Popen(
             ["pipenv", "run", "invenio", "users", "activate", user_email],
             stdout=subprocess.PIPE,
@@ -609,10 +686,6 @@ def change_record_ownership(
     stdout, stderr = changed_ownership.communicate()
     if debug:
         print("&&&& change_record_ownership")
-    # if debug: pprint(''.join(chr(s) for s in stdout))
-    # if debug: pprint(''.join(chr(s) for s in stderr))
-    # if debug: pprint(stdout.encode('latin1').decode('unicode_escape').encode('latin1').decode('utf8'))
-    # if debug: pprint(chr(stderr))
     if debug:
         print(stdout)
     if debug:
@@ -629,7 +702,10 @@ def create_invenio_community(community_label: str) -> dict:
             "slug": "hcommons",
             "metadata": {
                 "title": "Humanities Commons",
-                "description": "A community representing the main humanities commons domain.",
+                "description": (
+                    "A community representing the main humanities commons"
+                    " domain."
+                ),
                 "website": "https://hcommons.org",
                 "organizations": [{"name": "Humanities Commons"}],
             },
@@ -638,7 +714,9 @@ def create_invenio_community(community_label: str) -> dict:
             "slug": "msu",
             "metadata": {
                 "title": "MSU Commons",
-                "description": "A community representing the MSU Commons domain",
+                "description": (
+                    "A community representing the MSU Commons domain"
+                ),
                 "website": "https://commons.msu.edu",
                 "organizations": [{"name": "MSU Commons"}],
             },
@@ -647,7 +725,9 @@ def create_invenio_community(community_label: str) -> dict:
             "slug": "ajs",
             "metadata": {
                 "title": "AJS Commons",
-                "description": "AJS is no longer a member of Humanities Commons",
+                "description": (
+                    "AJS is no longer a member of Humanities Commons"
+                ),
                 "website": "https://ajs.hcommons.org",
                 "organizations": [{"name": "AJS Commons"}],
             },
@@ -656,7 +736,9 @@ def create_invenio_community(community_label: str) -> dict:
             "slug": "arlisna",
             "metadata": {
                 "title": "ARLIS/NA Commons",
-                "description": "A community representing the ARLIS/NA Commons domain",
+                "description": (
+                    "A community representing the ARLIS/NA Commons domain"
+                ),
                 "website": "https://arlisna.hcommons.org",
                 "organizations": [{"name": "ARLISNA Commons"}],
             },
@@ -665,7 +747,9 @@ def create_invenio_community(community_label: str) -> dict:
             "slug": "aseees",
             "metadata": {
                 "title": "ASEEES Commons",
-                "description": "A community representing the ASEEES Commons domain",
+                "description": (
+                    "A community representing the ASEEES Commons domain"
+                ),
                 "website": "https://aseees.hcommons.org",
                 "organizations": [{"name": "ASEEES Commons"}],
             },
@@ -683,7 +767,9 @@ def create_invenio_community(community_label: str) -> dict:
             "slug": "caa",
             "metadata": {
                 "title": "CAA Commons",
-                "description": "CAA is no longer a member of Humanities Commons",
+                "description": (
+                    "CAA is no longer a member of Humanities Commons"
+                ),
                 "website": "https://caa.hcommons.org",
                 "organizations": [{"name": "CAA Commons"}],
             },
@@ -692,7 +778,9 @@ def create_invenio_community(community_label: str) -> dict:
             "slug": "mla",
             "metadata": {
                 "title": "MLA Commons",
-                "description": "A community representing the MLA Commons domain",
+                "description": (
+                    "A community representing the MLA Commons domain"
+                ),
                 "website": "https://mla.hcommons.org",
                 "organizations": [{"name": "MLA Commons"}],
             },
@@ -701,7 +789,9 @@ def create_invenio_community(community_label: str) -> dict:
             "slug": "sah",
             "metadata": {
                 "title": "SAH Commons",
-                "description": "A community representing the SAH Commons domain",
+                "description": (
+                    "A community representing the SAH Commons domain"
+                ),
                 "website": "https://sah.hcommons.org",
                 "organizations": [{"name": "SAH Commons"}],
             },
@@ -716,7 +806,9 @@ def create_invenio_community(community_label: str) -> dict:
             "slug": "up",
             "metadata": {
                 "title": "UP Commons",
-                "description": "A community representing the UP Commons domain",
+                "description": (
+                    "A community representing the UP Commons domain"
+                ),
                 "website": "https://up.hcommons.org",
                 "organizations": [{"name": "UP Commons"}],
             },
@@ -733,7 +825,9 @@ def create_invenio_community(community_label: str) -> dict:
     # admin_user_id = os.environ['ADMIN_USER_ID']
     # my_community_data['access']['owned_by'] = [{"user": admin_user_id}]
     # FIXME: a better way to get the current user?
-    result = api_request("POST", endpoint="communities", json_dict=my_community_data)
+    result = api_request(
+        "POST", endpoint="communities", json_dict=my_community_data
+    )
     print(result)
     if result["status_code"] != 201:
         raise requests.HTTPError(result)
@@ -770,7 +864,9 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
         "kcr:commons_domain" in core_data["custom_fields"].keys()
         and core_data["custom_fields"]["kcr:commons_domain"]
     ):
-        community_label = core_data["custom_fields"]["kcr:commons_domain"].split(".")
+        community_label = core_data["custom_fields"][
+            "kcr:commons_domain"
+        ].split(".")
         if community_label[1] == "msu":
             community_label = community_label[1]
         else:
@@ -839,10 +935,14 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
             ):
                 same_files = False
         if same_files:
-            logger.info("    skipping uploading files (same already uploaded)...")
+            logger.info(
+                "    skipping uploading files (same already uploaded)..."
+            )
         else:
             raise RuntimeError(
-                f'Existing record with same DOI has different files.\n{metadata_record["json"]["files"]["entries"]}\n !=\n {core_data["files"]["entries"]}'
+                "Existing record with same DOI has different"
+                f" files.\n{metadata_record['json']['files']['entries']}\n"
+                f" !=\n {core_data['files']['entries']}"
             )
             # FIXME: update existing files
     else:
@@ -852,7 +952,9 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
             my_files[v["key"]] = metadata_record["json"]["custom_fields"][
                 "hclegacy:file_location"
             ]
-        uploaded_files = upload_draft_files(draft_id=draft_id, files_dict=my_files)
+        uploaded_files = upload_draft_files(
+            draft_id=draft_id, files_dict=my_files
+        )
         if debug:
             print("@@@@ uploaded_files")
         if debug:
@@ -871,14 +973,17 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
         # Can't attach to a community if the record is already published to it
         # even if we have a new version as a draft
         logger.info(
-            "    skipping attaching the record to the community (already published to it)..."
+            "    skipping attaching the record to the community (already"
+            " published to it)..."
         )
         # Publish draft if necessary (otherwise published at community
         # review acceptance)
         if existing_record["is_draft"] is True:
             logger.info("    publishing new draft record version...")
             publish = api_request(
-                "POST", endpoint="records", args=f"{draft_id}/draft/actions/publish"
+                "POST",
+                endpoint="records",
+                args=f"{draft_id}/draft/actions/publish",
             )
             assert publish["status_code"] == 202
 
@@ -889,7 +994,8 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
         )
         if existing_review["status_code"] == 200:
             logger.info(
-                "    cancelling existing review request for the record to the community..."
+                "    cancelling existing review request for the record to the"
+                " community..."
             )
             request_id = existing_review["json"]["id"]
 
@@ -914,11 +1020,15 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
         # if debug: print('&&&& request_to_community')
         # if debug: pprint(request_to_community)
         if request_to_community["status_code"] != 200:
-            logger.error("    failed to send the review request to the community...")
+            logger.error(
+                "    failed to send the review request to the community..."
+            )
             logger.error(request_to_community)
             raise requests.HTTPError(request_to_community)
         request_id = request_to_community["json"]["id"]
-        request_community = request_to_community["json"]["receiver"]["community"]
+        request_community = request_to_community["json"]["receiver"][
+            "community"
+        ]
         assert request_community == community_id
         result["request_to_community"] = request_to_community
 
@@ -945,13 +1055,18 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
             endpoint="requests",
             args=f"{request_id}/actions/accept",
             json_dict={
-                "payload": {"content": "Migrated record accepted.", "format": "html"}
+                "payload": {
+                    "content": "Migrated record accepted.",
+                    "format": "html",
+                }
             },
         )
         if review_accepted["status_code"] != 200:
             logger.error("    failed to accept the record community review...")
             logger.error(review_accepted)
-            logger.info("    attempting to add admin user to community reviewers...")
+            logger.info(
+                "    attempting to add admin user to community reviewers..."
+            )
             invite = {
                 "members": [{"id": "3", "type": "user"}],
                 "role": "owner",
@@ -962,7 +1077,9 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
                 endpoint="communities",
                 args=f"{community_id}/invitations",
                 json_dict=invite,
-                token="ehdWRDeM9ZSkwxwTZEPDnbZCdWYIaDa4YXxRcFJ61oQLvWy5OK1czlIoVoxd",
+                token=os.environ["P_TOKEN"],
+                # token="ehdWRDeM9ZSkwxwTZEPDnbZCdWYIaDa4YXxRcFJ61oQLvWy5OK1czl"
+                # "IoVoxd",
             )
             print(send_invite)
 
@@ -984,29 +1101,25 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
     new_owner_email = core_data["custom_fields"]["kcr:submitter_email"]
     created_user = create_invenio_user(new_owner_email)
     new_owner_id = created_user["user_id"]
-    # logger.info(f'    new user email is {new_owner_email}...')
-    # logger.info(f'    old user email is {existing_record["custom_fields"]["kcr:submitter_email"]}...')
-    # logger.info(f'    match? {existing_record["custom_fields"]["kcr:submitter_email"] == new_owner_email}...')
-    # logger.info(f'    new user id is {str(new_owner_id)}...')
-    # logger.info(f'    old user id is {str(existing_record["parent"]["access"]["owned_by"][0]["user"])}...')
-    # logger.info(f'    match? {str(existing_record["parent"]["access"]["owned_by"][0]["user"]) == str(new_owner_id)}...')
 
     if (
         existing_record
-        and existing_record["custom_fields"]["kcr:submitter_email"] == new_owner_email
+        and existing_record["custom_fields"]["kcr:submitter_email"]
+        == new_owner_email
         and str(existing_record["parent"]["access"]["owned_by"][0]["user"])
         == str(new_owner_id)
     ):
-        logger.info(f"    skipping re-assigning ownership of the record ")
+        logger.info("    skipping re-assigning ownership of the record ")
         logger.info(
-            f"    (already belongs to {new_owner_email}, " f"user {new_owner_id})..."
+            f"    (already belongs to {new_owner_email}, "
+            f"user {new_owner_id})..."
         )
     else:
         result["created_user"] = created_user
 
         # Change the ownership of the record
         logger.info(
-            f"    re-assigning ownership of the record to the "
+            "    re-assigning ownership of the record to the "
             f"submitter ({new_owner_email}, "
             f"{new_owner_id})..."
         )
@@ -1014,7 +1127,9 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
         changed_ownership = change_record_ownership(
             draft_id, new_owner_id, current_owner_id
         )
-        result.setdefault("changed_ownership", {})["return_code"] = changed_ownership
+        result.setdefault("changed_ownership", {})[
+            "return_code"
+        ] = changed_ownership
         assert changed_ownership == 0
         if debug:
             print("++++++++")
@@ -1035,7 +1150,7 @@ def load_records_into_invenio(
     retry_failed: bool = False,
 ) -> None:
     """
-    Create new InvenioRDM records (including deposit files) for serialized CORE deposits.
+    Create new InvenioRDM records and upload files for serialized deposits.
     """
     record_counter = 0
     failed_records = []
@@ -1084,21 +1199,47 @@ def load_records_into_invenio(
     logger.info("Starting to load records into Invenio...")
     if no_updates:
         logger.info(
-            "    **no-updates flag is set, so skipping updating existing records...**"
+            "    **no-updates flag is set, so skipping updating existing"
+            " records...**"
         )
     if not nonconsecutive:
         stop_string = "" if stop_index == -1 else f" to {stop_index}"
-        logger.info(f"Loading records from {str(start_index) + stop_string}...")
+        logger.info(
+            f"Loading records from {str(start_index) + stop_string}..."
+        )
     else:
+        id_type = (
+            "source record id" if use_sourceids else "index in import file"
+        )
         logger.info(
             f"Loading records {' '.join([str(s) for s in nonconsecutive])} "
-            f"(by {'source record id' if use_sourceids else 'index in import file'})..."
+            f"(by {id_type})..."
         )
 
     with jsonlines.open(
         Path(__file__).parent / "data" / "serialized_core_data.jsonl", "r"
     ) as json_source:
-        if nonconsecutive:
+        # decide how to determine the record set
+        if retry_failed:
+            if no_updates:
+                print("Cannot retry failed records with no-updates flag set.")
+                logger.error(
+                    "Cannot retry failed records with no-updates flag set."
+                )
+                return
+            if not existing_failed_records:
+                print("No previously failed records to retry.")
+                logger.info("No previously failed records to retry.")
+                return
+            line_num = 1
+            failed_indices = [r["index"] for r in existing_failed_records]
+            record_set = []
+            for j in json_source:
+                if line_num in failed_indices:
+                    j["jsonl_index"] = line_num
+                    record_set.append(j)
+                line_num += 1
+        elif nonconsecutive:
             record_set = []
             if use_sourceids:
                 for j in json_source:
@@ -1138,7 +1279,9 @@ def load_records_into_invenio(
             ][0]["identifier"]
             logger.info(f"....starting to load record {current_record}")
             logger.info(f"    {rec_doi} {rec_hcid} {rec_recid}")
-            spinner = Halo(text=f"    Loading record {current_record}", spinner="dots")
+            spinner = Halo(
+                text=f"    Loading record {current_record}", spinner="dots"
+            )
             spinner.start()
             try:
                 result = create_full_invenio_record(rec, no_updates)
@@ -1170,7 +1313,9 @@ def load_records_into_invenio(
                 print("ERROR:", e)
                 print_exc()
                 logger.error(f"ERROR: {e}")
-                logger.error(f"ERROR: {format_exception(None, e, e.__traceback__)}")
+                logger.error(
+                    f"ERROR: {format_exception(None, e, e.__traceback__)}"
+                )
                 failed_records.append(
                     {
                         "index": current_record,
@@ -1191,20 +1336,21 @@ def load_records_into_invenio(
         set_string = f"{' '.join([str(n) for n in nonconsecutive])}"
     else:
         target_string = (
-            f" to {start_index + record_counter - 1}" if record_counter > 1 else ""
+            f" to {start_index + record_counter - 1}"
+            if record_counter > 1
+            else ""
         )
         set_string = f"{start_index}{target_string}"
     message = (
-        f"Processed {str(record_counter)} records in InvenioRDM "
-        f"({set_string}) \n"
-        f"    {str(successful_records)} successful \n"
-        f"    {str(new_records)} new records created \n"
-        f"    {str(successful_records - new_records)} already existed \n"
-        f"        {str(updated_published)} updated published records \n"
-        f"        {str(updated_drafts)} updated existing draft records \n"
-        f"        {str(unchanged_existing)} unchanged existing records \n)"
-        f"        {str(len(repaired_failed))} previously failed records repaired \n)"
-        f"    {str(len(failed_records))} failed \n"
+        f"Processed {str(record_counter)} records in InvenioRDM ({set_string})"
+        f" \n    {str(successful_records)} successful \n   "
+        f" {str(new_records)} new records created \n   "
+        f" {str(successful_records - new_records)} already existed \n       "
+        f" {str(updated_published)} updated published records \n       "
+        f" {str(updated_drafts)} updated existing draft records \n       "
+        f" {str(unchanged_existing)} unchanged existing records \n)       "
+        f" {str(len(repaired_failed))} previously failed records repaired \n) "
+        f"   {str(len(failed_records))} failed \n"
     )
     print(message)
     logger.info(message)
@@ -1229,22 +1375,32 @@ def load_records_into_invenio(
             for e in existing_failed_records:
                 if e not in failed_records:
                     failed_records.append(e)
-            ordered_failed_records = sorted(failed_records, key=lambda r: r["index"])
+            ordered_failed_records = sorted(
+                failed_records, key=lambda r: r["index"]
+            )
             for o in ordered_failed_records:
                 failed_writer.write(o)
-        print("Failed records written to logs/core_migrate_failed_records.jsonl")
-        logger.info("Failed records written to logs/core_migrate_failed_records.jsonl")
+        print(
+            "Failed records written to logs/core_migrate_failed_records.jsonl"
+        )
+        logger.info(
+            "Failed records written to logs/core_migrate_failed_records.jsonl"
+        )
 
     # Update log of touched records
     with jsonlines.open(touched_log_path, "a") as f:
         for t in previously_touched_records:
             if t not in touched_records:
                 touched_records.append(t)
-        ordered_touched_records = sorted(touched_records, key=lambda r: r["index"])
+        ordered_touched_records = sorted(
+            touched_records, key=lambda r: r["index"]
+        )
         for u in ordered_touched_records:
             f.write(u)
     print("Touched records written to logs/core_migrate_touched_records.jsonl")
-    logger.info("Touched records written to logs/core_migrate_touched_records.jsonl")
+    logger.info(
+        "Touched records written to logs/core_migrate_touched_records.jsonl"
+    )
 
 
 def delete_records_from_invenio(record_ids):
