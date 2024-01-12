@@ -92,6 +92,9 @@ data/.minio.sys
 celerybeat-schedule
 celerybeat-schedule.*
 
+# translations compiled files
+translations/*/LC_MESSAGES/*.mo
+
 # OS-specific things to ignore:
 # .............................................................................
 
