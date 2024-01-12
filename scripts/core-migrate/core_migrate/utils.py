@@ -15,19 +15,18 @@ from datetime import datetime
 import unicodedata
 from isbnlib import is_isbn10, is_isbn13, clean
 import logging
-
-# from logging.handlers import RotatingFileHandler
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 import random
 import re
 import string
 from typing import Union
 
-from trio import Path
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s:%(levelname)s : %(message)s")
-file_handler = logging.handlers.RotatingFileHandler(
+file_handler = RotatingFileHandler(
     Path(__file__).parent / "logs" / "core_migrate.log",
     maxBytes=1000000,
     backupCount=5,
