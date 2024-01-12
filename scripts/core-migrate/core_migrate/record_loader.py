@@ -15,7 +15,13 @@ import re
 import unicodedata
 from urllib.parse import unquote
 
-from core_migrate.config import GLOBAL_DEBUG, FILES_LOCATION, SERVER_DOMAIN
+from core_migrate.config import (
+    GLOBAL_DEBUG,
+    FILES_LOCATION,
+    SERVER_DOMAIN,
+    SERVER_PROTOCOL,
+    API_TOKEN,
+)
 from core_migrate.utils import logger, valid_date, compare_metadata
 
 
@@ -23,6 +29,7 @@ def api_request(
     method: str = "GET",
     endpoint: str = "records",
     server: str = "",
+    protocol: str = "",
     args: str = "",
     token: str = "",
     params: dict[str, str] = {},
@@ -36,11 +43,13 @@ def api_request(
     if not server:
         server = SERVER_DOMAIN
     if not token:
-        token = os.environ["MIGRATION_API_TOKEN"]
+        token = API_TOKEN
+    if not protocol:
+        protocol = SERVER_PROTOCOL
 
     payload_args = {}
 
-    api_url = f"http://{server}/api/{endpoint}"
+    api_url = f"{protocol}://{server}/api/{endpoint}"
     if args:
         api_url = f"{api_url}/{args}"
     if debug:
@@ -392,7 +401,7 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
 
         filename = content_args.split("/")[-2]
         # handle @ characters in filenames
-        print(f'filename: {filename}')
+        print(f"filename: {filename}")
         print(files_dict.keys())
         assert unquote(filename) in [
             unicodedata.normalize("NFC", f) for f in files_dict.keys()
@@ -947,37 +956,38 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
                 same_files = False
                 wrong_file = True
             # handle uploads with same name but different size
-            elif str(v["size"]) != str(
-                existing_file[0]["size"]
-            ):
+            elif str(v["size"]) != str(existing_file[0]["size"]):
                 same_files = False
                 wrong_file = True
             # delete interrupted or different prior uploads
             if wrong_file:
                 files_delete = api_request(
-                    "DELETE", endpoint="records", args=f"{draft_id}/draft/files/{existing_file[0]['key']}"
+                    "DELETE",
+                    endpoint="records",
+                    args=f"{draft_id}/draft/files/{existing_file[0]['key']}",
                 )
                 if files_delete["status_code"] == 204:
-                    logger.info("    existing record had wrong or partial upload, now deleted")
+                    logger.info(
+                        "    existing record had wrong or partial upload, now"
+                        " deleted"
+                    )
                 else:
                     logger.error(files_delete)
                     logger.error(
                         "Existing record with same DOI has different"
                         f" files.\n{metadata_record['json']['files']['entries']}\n"
-                        f" !=\n {core_data['files']['entries']}"
-                        "Could not delete"
+                        f" !=\n {core_data['files']['entries']}Could not"
+                        " delete"
                     )
                     raise RuntimeError(
                         "Existing record with same DOI has different"
                         f" files.\n{metadata_record['json']['files']['entries']}\n"
-                        f" !=\n {core_data['files']['entries']}"
-                        "Could not delete"
+                        f" !=\n {core_data['files']['entries']}Could not"
+                        " delete"
                     )
 
     if same_files:
-        logger.info(
-            "    skipping uploading files (same already uploaded)..."
-        )
+        logger.info("    skipping uploading files (same already uploaded)...")
     else:
         logger.info("    uploading files to draft...")
         my_files = {}
