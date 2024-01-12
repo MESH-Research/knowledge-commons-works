@@ -122,3 +122,4 @@ scripts/core-migrate/core_migrate/logs/core_migrate.log.2
 scripts/core-migrate/core_migrate/logs/core_migrate.log.3
 scripts/core-migrate/core_migrate/logs/core_migrate.log.4
 scripts/core-migrate/core_migrate/logs/core_migrate.log.5
+scripts/core-migrate/core_migrate/logs/core_migrate_failed_records.jsonl

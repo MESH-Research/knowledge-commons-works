@@ -174,7 +174,7 @@ def load_records(
         "retry_failed": retry_failed,
         "use_sourceids": use_sourceids,
     }
-    if "-" in records[0]:
+    if len(records) > 0 and "-" in records[0]:
         if use_sourceids:
             print("Error: Cannot use source ids with ranges.")
             logger.error(
