@@ -1324,41 +1324,78 @@ def add_date_info(
         dict: The new record dict with date info added
     """
 
+    def fill_missing_zeros(date: str) -> str:
+        """Fill in missing zeros in a date string.
+
+        Args:
+            date (str): A date string with missing zeros
+
+        Returns:
+            str: The date string with missing zeros filled in
+        """
+        date_parts = date.split("-")
+        for i, part in enumerate(date_parts):
+            if len(part) < 2:
+                date_parts[i] = "0" + part
+        return "-".join(date_parts)
+
+    def reorder_date_parts(date: str) -> str:
+        """Reorder the parts of a date string.
+
+        Args:
+            date (str): A date string with parts in the order YYYY-DD-MM or
+                        DD-MM-YYYY or MM-DD-YYYY
+
+        Returns:
+            str: The date string with parts in the order YYYY-MM-DD
+        """
+        date_parts = date.split("-")
+        year = [d for d in date_parts if len(d) == 4][0]
+        others = [d for d in date_parts if len(d) != 4]
+        month_candidates = [d for d in date_parts if int(d) <= 12]
+        if len(month_candidates) == 1:
+            month = month_candidates[0]
+            day = [d for d in others if d != month][0]
+        else:
+            month, day = others
+        return "-".join([year, month, day])
+
+    def make_date_issued(datestring: str) -> dict:
+        """Return a dict with the date issued information."""
+        return {
+            "date": datestring,
+            "type": {
+                "id": "issued",
+                "title": {"en": "Issued", "de": "Veröffentlicht"},
+            },
+            "description": "Human readable publication date",
+        }
+
     # Date info
     # FIXME: does "issued" work here?
     newrec["metadata"]["publication_date"] = row["date_issued"].split("T")[0]
     if row["date_issued"] != row["date"] and row["date"] != "":
         row["date"] = row["date"].split("T")[0]
-        if valid_date(row["date"]):
-            newrec["metadata"].setdefault("dates", []).append(
-                {
-                    "date": row["date"],
-                    "type": {
-                        "id": "issued",
-                        "title": {"en": "Issued", "de": "Veröffentlicht"},
-                    },
-                    "description": "Human readable publication date",
-                }
-            )
-        else:
-            # FIXME: Handle these random dates better
-            mydate = row["date_issued"].split("T")[0]
-            try:
-                mydate = timefhuman(row["date"]).isoformat().split("T")[0]
-            except (ValueError, TypeError, IndexError):
-                _append_bad_data(
-                    row["id"], ("bad date", row["date"]), bad_data_dict
-                )
-            newrec["metadata"].setdefault("dates", []).append(
-                {
-                    "date": mydate,
-                    "type": {
-                        "id": "issued",
-                        "title": {"en": "Issued", "de": "Veröffentlicht"},
-                    },
-                    "description": "Human readable publication date",
-                }
-            )
+        date_to_insert = row["date"]
+        if not valid_date(row["date"]):
+            # try to repair dates missing zeros
+            filled_date = reorder_date_parts(fill_missing_zeros(row["date"]))
+            if valid_date(filled_date):
+                date_to_insert = filled_date
+            else:
+                # FIXME: Handle these random dates better
+                # fall back on parsing human readable date
+                try:
+                    date_to_insert = (
+                        timefhuman(row["date"]).isoformat().split("T")[0]
+                    )
+                except (ValueError, TypeError, IndexError):
+                    _append_bad_data(
+                        row["id"], ("bad date", row["date"]), bad_data_dict
+                    )
+        newrec["metadata"].setdefault("dates", []).append(
+            make_date_issued(date_to_insert)
+        )
 
     if row["record_change_date"]:
         assert valid_date(row["record_change_date"])
