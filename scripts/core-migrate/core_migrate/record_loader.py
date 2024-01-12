@@ -40,7 +40,7 @@ def api_request(
 
     payload_args = {}
 
-    api_url = f"https://{server}/api/{endpoint}"
+    api_url = f"http://{server}/api/{endpoint}"
     if args:
         api_url = f"{api_url}/{args}"
     if debug:
@@ -379,7 +379,7 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
     for f in initialization["json"]["entries"]:
         output["file_transactions"][f["key"]] = {}
         server_string = SERVER_DOMAIN
-        if SERVER_DOMAIN == "10.98.11.40":
+        if SERVER_DOMAIN == "10.95.11.198":
             server_string = "invenio-dev.hcommons-staging.org"
         content_args = f["links"]["content"].replace(
             f"https://{server_string}/api/records/", ""
@@ -390,8 +390,10 @@ def upload_draft_files(draft_id: str, files_dict: dict[str, str]) -> dict:
         )
         assert re.findall(draft_id, commit_args)
 
-        filename = content_args.split("/")[3]
+        filename = content_args.split("/")[-2]
         # handle @ characters in filenames
+        print(f'filename: {filename}')
+        print(files_dict.keys())
         assert unquote(filename) in [
             unicodedata.normalize("NFC", f) for f in files_dict.keys()
         ]
@@ -916,6 +918,7 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
 
     # Upload the files
     logger.info("    uploading files for draft...")
+    same_files = False
     if existing_record:
         same_files = True
         files_request = api_request(
@@ -930,29 +933,53 @@ def create_full_invenio_record(core_data: dict, no_updates: bool) -> dict:
             same_files = False
             logger.info("    no files attached to existing record")
         for k, v in core_data["files"]["entries"].items():
+            wrong_file = False
             existing_file = [
                 f
                 for f in existing_files
                 if unicodedata.normalize("NFC", f["key"])
                 == unicodedata.normalize("NFC", k)
             ]
-            if len(existing_file) == 0 or str(v["size"]) != str(
+            if len(existing_file) == 0:
+                same_files = False
+            # handle prior interrupted uploads
+            elif existing_file[0]["status"] == "pending":
+                same_files = False
+                wrong_file = True
+            # handle uploads with same name but different size
+            elif str(v["size"]) != str(
                 existing_file[0]["size"]
             ):
                 same_files = False
-        if same_files:
-            logger.info(
-                "    skipping uploading files (same already uploaded)..."
-            )
-        else:
-            raise RuntimeError(
-                "Existing record with same DOI has different"
-                f" files.\n{metadata_record['json']['files']['entries']}\n"
-                f" !=\n {core_data['files']['entries']}"
-            )
-            # FIXME: update existing files
+                wrong_file = True
+            # delete interrupted or different prior uploads
+            if wrong_file:
+                files_delete = api_request(
+                    "DELETE", endpoint="records", args=f"{draft_id}/draft/files/{existing_file[0]['key']}"
+                )
+                if files_delete["status_code"] == 204:
+                    logger.info("    existing record had wrong or partial upload, now deleted")
+                else:
+                    logger.error(files_delete)
+                    logger.error(
+                        "Existing record with same DOI has different"
+                        f" files.\n{metadata_record['json']['files']['entries']}\n"
+                        f" !=\n {core_data['files']['entries']}"
+                        "Could not delete"
+                    )
+                    raise RuntimeError(
+                        "Existing record with same DOI has different"
+                        f" files.\n{metadata_record['json']['files']['entries']}\n"
+                        f" !=\n {core_data['files']['entries']}"
+                        "Could not delete"
+                    )
+
+    if same_files:
+        logger.info(
+            "    skipping uploading files (same already uploaded)..."
+        )
     else:
-        logger.info("    uploading files to new draft...")
+        logger.info("    uploading files to draft...")
         my_files = {}
         for k, v in file_data["entries"].items():
             my_files[v["key"]] = metadata_record["json"]["custom_fields"][
