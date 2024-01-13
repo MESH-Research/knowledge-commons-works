@@ -11,7 +11,7 @@ from click.testing import CliRunner
 from copy import deepcopy
 from core_migrate.main import cli
 from core_migrate.utils import valid_date, generate_random_string
-from core_migrate.serializer import serialize_json
+from core_migrate.serializer import add_date_info, serialize_json
 from core_migrate.record_loader import (
     api_request,
     create_invenio_record,
@@ -37,14 +37,19 @@ json28491 = {
     "created": "2020-01-30T16:46:54Z",
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads"
-        "/humcore/2020/01/o_1dvrj3578"
-        "b4822agim1fh81efg7.pdf.tratamiento-de-los-re"
-        "siduos-de-la-industria-del-pro"
-        "cesado-de-alimentos.pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads"
+            "/humcore/2020/01/o_1dvrj3578"
+            "b4822agim1fh81efg7.pdf.tratamiento-de-los-re"
+            "siduos-de-la-industria-del-pro"
+            "cesado-de-alimentos.pdf"
+        ),
         "hclegacy:file_pid": "hc:28492",
         "hclegacy:groups_for_deposit": [
-            {"group_identifier": "1000807", "group_name": "Environmental Humanities"},
+            {
+                "group_identifier": "1000807",
+                "group_name": "Environmental Humanities",
+            },
             {
                 "group_identifier": "1003089",
                 "group_name": "Foreign Language Teaching and the Environment",
@@ -65,21 +70,25 @@ json28491 = {
         "kcr:submitter_email": "lenox.institute@gmail.com",
         "hclegacy:submitter_org_memberships": ["hc"],
         "kcr:submitter_username": "lenoxinstitute100",
-        "kcr:notes": "An  English version of the same book is published by "
-        "CRC Press in 2006:       Wang, Lawrence K, Hung, "
-        "Yung-Tse, Lo, Howard H, and Yapijakis, "
-        "Constantine (2006).   Waste Treatment in the Food "
-        "Processing Industry.   CRC Press, Boca Raton, "
-        "Florida, USA.   333 pages.  ISBN  0-8493-7236-4.",
+        "kcr:notes": (
+            "An  English version of the same book is published by "
+            "CRC Press in 2006:       Wang, Lawrence K, Hung, "
+            "Yung-Tse, Lo, Howard H, and Yapijakis, "
+            "Constantine (2006).   Waste Treatment in the Food "
+            "Processing Industry.   CRC Press, Boca Raton, "
+            "Florida, USA.   333 pages.  ISBN  0-8493-7236-4."
+        ),
         "kcr:user_defined_tags": [
             "Steam",
             "STEM",
-            "Science and technology studies " "(STS)",
+            "Science and technology studies (STS)",
         ],
     },
     "files": {
-        "default_preview": "tratamiento-de-los-residuos-de-la-"
-        "industria-del-procesado-de-alimentos.pdf",
+        "default_preview": (
+            "tratamiento-de-los-residuos-de-la-"
+            "industria-del-procesado-de-alimentos.pdf"
+        ),
         "enabled": True,
         "entries": {
             "tratamiento-de-los-residuos-de-la-industria-del-procesado-de-alimentos.pdf": {
@@ -92,31 +101,33 @@ json28491 = {
     "metadata": {
         "additional_descriptions": [
             {
-                "description": "Wang, Lawrence K, Hung, Yung-Tse, Lo, Howard H, "
-                "Yapijakis, Constantine  and  Ribas, Alberto "
-                "lbarz (2008).  TRATAMIENTO de los RESIDUOS de la "
-                "INDUSTRIA del PROCESADO de ALIMENTOS  "
-                "(Spanish).  Waste Treatment in the Food Processing "
-                "Industry.   Editorial ACRIBIA, S. A.,, Apartado "
-                "466, 50080, Zaragoza, Espana. 398 pages. ISBN  "
-                "978-84-200-1103-5  ---------------ABSTRACT:  This book "
-                "emphasizes in-depth presentation of "
-                "environmental pollution sources, waste "
-                "characteristics, control technologies, "
-                "management strategies, facility "
-                "innovations, process alternatives, "
-                "costs, case histories, effluent "
-                "standards, and future trends for the food "
-                "industry, and in-depth presentation of methodologies, "
-                "technologies, alternatives, regional effects, "
-                "and global effects of important pollution control "
-                "practice that may be applied to the industry.  "
-                "Important waste treatment topics covered in this "
-                "book include: dairies, seafood processing plants, "
-                "olive oil manufacturing factories, potato "
-                "processing installations, soft drink "
-                "production plants, bakeries and various other food "
-                "processing facilities.",
+                "description": (
+                    "Wang, Lawrence K, Hung, Yung-Tse, Lo, Howard H, "
+                    "Yapijakis, Constantine  and  Ribas, Alberto "
+                    "lbarz (2008).  TRATAMIENTO de los RESIDUOS de la "
+                    "INDUSTRIA del PROCESADO de ALIMENTOS  "
+                    "(Spanish).  Waste Treatment in the Food Processing "
+                    "Industry.   Editorial ACRIBIA, S. A.,, Apartado "
+                    "466, 50080, Zaragoza, Espana. 398 pages. ISBN  "
+                    "978-84-200-1103-5  ---------------ABSTRACT:  This book "
+                    "emphasizes in-depth presentation of "
+                    "environmental pollution sources, waste "
+                    "characteristics, control technologies, "
+                    "management strategies, facility "
+                    "innovations, process alternatives, "
+                    "costs, case histories, effluent "
+                    "standards, and future trends for the food "
+                    "industry, and in-depth presentation of methodologies, "
+                    "technologies, alternatives, regional effects, "
+                    "and global effects of important pollution control "
+                    "practice that may be applied to the industry.  "
+                    "Important waste treatment topics covered in this "
+                    "book include: dairies, seafood processing plants, "
+                    "olive oil manufacturing factories, potato "
+                    "processing installations, soft drink "
+                    "production plants, bakeries and various other food "
+                    "processing facilities."
+                ),
                 "type": {"id": "other", "title": {"en": "Other"}},
             }
         ],
@@ -153,7 +164,10 @@ json28491 = {
                     "family_name": "Wang",
                     "given_name": "Lawrence K",
                     "identifiers": [
-                        {"identifier": "lenoxinstitute100", "scheme": "hc_username"}
+                        {
+                            "identifier": "lenoxinstitute100",
+                            "scheme": "hc_username",
+                        }
                     ],
                     "name": "Wang, Lawrence K",
                     "type": "personal",
@@ -170,59 +184,69 @@ json28491 = {
                 "role": {"id": "editor", "title": {"en": "Editor"}},
             },
         ],
-        "description": "Wang, Lawrence K, Hung, Yung-Tse, Lo, Howard H, "
-        "Yapijakis, Constantine  and  Ribas, Alberto "
-        "lbarz (2008).  TRATAMIENTO de los RESIDUOS de "
-        "la INDUSTRIA del PROCESADO de ALIMENTOS  "
-        "(Spanish).  Waste Treatment in the Food "
-        "Processing Industry.   Editorial ACRIBIA, S. "
-        "A.,, Apartado 466, 50080, Zaragoza, Espana. 398 "
-        "pages. ISBN  978-84-200-1103-5  "
-        "---------------ABSTRACT:  This book emphasizes "
-        "in-depth presentation of environmental "
-        "pollution sources, waste characteristics, "
-        "control technologies, management strategies, "
-        "facility innovations, process alternatives, "
-        "costs, case histories, effluent standards, and "
-        "future trends for the food industry, and "
-        "in-depth presentation of methodologies, "
-        "technologies, alternatives, regional effects, "
-        "and global effects of important pollution "
-        "control practice that may be applied to the "
-        "industry.  Important waste treatment topics "
-        "covered in this book include: dairies, seafood "
-        "processing plants, olive oil manufacturing "
-        "factories, potato processing installations, "
-        "soft drink production plants, bakeries and "
-        "various other food processing facilities.",
+        "description": (
+            "Wang, Lawrence K, Hung, Yung-Tse, Lo, Howard H, "
+            "Yapijakis, Constantine  and  Ribas, Alberto "
+            "lbarz (2008).  TRATAMIENTO de los RESIDUOS de "
+            "la INDUSTRIA del PROCESADO de ALIMENTOS  "
+            "(Spanish).  Waste Treatment in the Food "
+            "Processing Industry.   Editorial ACRIBIA, S. "
+            "A.,, Apartado 466, 50080, Zaragoza, Espana. 398 "
+            "pages. ISBN  978-84-200-1103-5  "
+            "---------------ABSTRACT:  This book emphasizes "
+            "in-depth presentation of environmental "
+            "pollution sources, waste characteristics, "
+            "control technologies, management strategies, "
+            "facility innovations, process alternatives, "
+            "costs, case histories, effluent standards, and "
+            "future trends for the food industry, and "
+            "in-depth presentation of methodologies, "
+            "technologies, alternatives, regional effects, "
+            "and global effects of important pollution "
+            "control practice that may be applied to the "
+            "industry.  Important waste treatment topics "
+            "covered in this book include: dairies, seafood "
+            "processing plants, olive oil manufacturing "
+            "factories, potato processing installations, "
+            "soft drink production plants, bakeries and "
+            "various other food processing facilities."
+        ),
         "identifiers": [
             {"identifier": "hc:28491", "scheme": "hclegacy-pid"},
             {"identifier": "1000360-28455", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/g0rz-0930", "scheme": "datacite-doi"},
-            {"identifier": "https://doi.org/10.17613/g0rz-0930", "scheme": "url"},
+            {
+                "identifier": "https://doi.org/10.17613/g0rz-0930",
+                "scheme": "url",
+            },
         ],
         "languages": [{"id": "spa", "title": {"en": "Spanish"}}],
         "publication_date": "2008",
         "resource_type": {"id": "textDocument-book"},
-        "publisher": "Editorial ACRIBIA, S. A., Apartado 466, 50080, "
-        "Zaragoza, Espana.",
+        "publisher": (
+            "Editorial ACRIBIA, S. A., Apartado 466, 50080, Zaragoza, Espana."
+        ),
         "rights": [
             {
                 "description": {
-                    "en": "Proprietary material. No permissions are "
-                    "granted for any kind of copyring or "
-                    "re-use. All rights reserved"
+                    "en": (
+                        "Proprietary material. No permissions are "
+                        "granted for any kind of copyring or "
+                        "re-use. All rights reserved"
+                    )
                 },
                 "id": "arr",
                 "icon": "copyright",
-                "props": {"url": "https://en.wikipedia.org/wiki/All_rights_reserved"},
-                "title": {"en": "All Rights " "Reserved"},
+                "props": {
+                    "url": "https://en.wikipedia.org/wiki/All_rights_reserved"
+                },
+                "title": {"en": "All Rights Reserved"},
             }
         ],
         "subjects": [
             {
                 "id": "http://id.worldcat.org/fast/1108387",
-                "subject": "Science--Study and " "teaching",
+                "subject": "Science--Study and teaching",
                 "scheme": "FAST-topical",
             },
             {
@@ -231,8 +255,10 @@ json28491 = {
                 "scheme": "FAST-topical",
             },
         ],
-        "title": "TRATAMIENTO de los RESIDUOS de la INDUSTRIA del "
-        "PROCESADO de ALIMENTOS",
+        "title": (
+            "TRATAMIENTO de los RESIDUOS de la INDUSTRIA del "
+            "PROCESADO de ALIMENTOS"
+        ),
     },
     "updated": "2020-01-30T16:46:54Z",
     "parent": {"access": {"owned_by": [{"user": "1020225"}]}},
@@ -254,15 +280,21 @@ json583 = {
         "hclegacy:groups_for_deposit": [
             {
                 "group_identifier": "69",
-                "group_name": "HEP Part-Time and Contingent " "Faculty Issues",
+                "group_name": "HEP Part-Time and Contingent Faculty Issues",
             },
-            {"group_identifier": "47", "group_name": "HEP Teaching as a Profession"},
+            {
+                "group_identifier": "47",
+                "group_name": "HEP Teaching as a Profession",
+            },
             {"group_identifier": "51", "group_name": "TC Digital Humanities"},
             {
                 "group_identifier": "66",
-                "group_name": "TM Bibliography and Scholarly " "Editing",
+                "group_name": "TM Bibliography and Scholarly Editing",
             },
-            {"group_identifier": "71", "group_name": "TM Libraries and Research"},
+            {
+                "group_identifier": "71",
+                "group_name": "TM Libraries and Research",
+            },
         ],
         "hclegacy:publication_type": "proceedings-article",
         "hclegacy:previously_published": "published",
@@ -272,10 +304,12 @@ json583 = {
         "hclegacy:submitter_id": "3365",
         "hclegacy:submitter_org_memberships": ["hc", "mla"],
         "imprint:imprint": {
-            "title": "The New Open Access "
-            "Environment: Innovation in "
-            "Research, Editing and "
-            "Publishing"
+            "title": (
+                "The New Open Access "
+                "Environment: Innovation in "
+                "Research, Editing and "
+                "Publishing"
+            )
         },
         "kcr:commons_domain": "mla.hcommons.org",
         "kcr:meeting_organization": "Modern Languages Association",
@@ -294,7 +328,9 @@ json583 = {
         "meeting:meeting": {
             "dates": "10 January 2016",
             "place": "Marriott Hotel, Austin, Texas",
-            "title": "131st Annual Convention of " "the Modern Languages Association",
+            "title": (
+                "131st Annual Convention of the Modern Languages Association"
+            ),
         },
     },
     "files": {
@@ -311,19 +347,21 @@ json583 = {
     "metadata": {
         "additional_descriptions": [
             {
-                "description": "This panel was designed to address the "
-                "convention's featured issues of the academic "
-                "profession, publishing &amp; editing, open "
-                "access, and new technologies. Using a roundtable "
-                "format, the panel discussed how open access "
-                "publications are transforming the kind of research "
-                "that is possible and necessitating new editorial "
-                "practices. The session hosted an informed "
-                "discussion with the audience about the current "
-                "changes in scholarly publishing and the "
-                "opportunities, as well as challenges, that "
-                "open access brings to literary scholarship in the "
-                "21st century.",
+                "description": (
+                    "This panel was designed to address the "
+                    "convention's featured issues of the academic "
+                    "profession, publishing &amp; editing, open "
+                    "access, and new technologies. Using a roundtable "
+                    "format, the panel discussed how open access "
+                    "publications are transforming the kind of research "
+                    "that is possible and necessitating new editorial "
+                    "practices. The session hosted an informed "
+                    "discussion with the audience about the current "
+                    "changes in scholarly publishing and the "
+                    "opportunities, as well as challenges, that "
+                    "open access brings to literary scholarship in the "
+                    "21st century."
+                ),
                 "type": {"id": "other", "title": {"en": "Other"}},
             }
         ],
@@ -333,7 +371,10 @@ json583 = {
                     "family_name": "Eaglestone",
                     "given_name": "Robert",
                     "identifiers": [
-                        {"identifier": "roberteaglestone", "scheme": "hc_username"}
+                        {
+                            "identifier": "roberteaglestone",
+                            "scheme": "hc_username",
+                        }
                     ],
                     "name": "Eaglestone, Robert",
                     "type": "personal",
@@ -345,7 +386,9 @@ json583 = {
                 "person_or_org": {
                     "family_name": "Edwards",
                     "given_name": "Caroline",
-                    "identifiers": [{"identifier": "cai247", "scheme": "hc_username"}],
+                    "identifiers": [
+                        {"identifier": "cai247", "scheme": "hc_username"}
+                    ],
                     "name": "Edwards, Caroline",
                     "type": "personal",
                 },
@@ -376,26 +419,30 @@ json583 = {
                 "person_or_org": {
                     "family_name": "Zellinger",
                     "given_name": "Elissa",
-                    "identifiers": [{"identifier": "ezell", "scheme": "hc_username"}],
+                    "identifiers": [
+                        {"identifier": "ezell", "scheme": "hc_username"}
+                    ],
                     "name": "Zellinger, Elissa",
                     "type": "personal",
                 },
                 "role": {"id": "author", "title": {"en": "Author"}},
             },
         ],
-        "description": "This panel was designed to address the "
-        "convention's featured issues of the academic "
-        "profession, publishing &amp; editing, open "
-        "access, and new technologies. Using a "
-        "roundtable format, the panel discussed how open "
-        "access publications are transforming the kind "
-        "of research that is possible and necessitating "
-        "new editorial practices. The session hosted an "
-        "informed discussion with the audience about the "
-        "current changes in scholarly publishing and the "
-        "opportunities, as well as challenges, that open "
-        "access brings to literary scholarship in the "
-        "21st century.",
+        "description": (
+            "This panel was designed to address the "
+            "convention's featured issues of the academic "
+            "profession, publishing &amp; editing, open "
+            "access, and new technologies. Using a "
+            "roundtable format, the panel discussed how open "
+            "access publications are transforming the kind "
+            "of research that is possible and necessitating "
+            "new editorial practices. The session hosted an "
+            "informed discussion with the audience about the "
+            "current changes in scholarly publishing and the "
+            "opportunities, as well as challenges, that open "
+            "access brings to literary scholarship in the "
+            "21st century."
+        ),
         "identifiers": [
             {"identifier": "mla:583", "scheme": "hclegacy-pid"},
             {"identifier": "10664", "scheme": "hclegacy-record-id"},
@@ -408,14 +455,18 @@ json583 = {
         "rights": [
             {
                 "description": {
-                    "en": "Proprietary material. No permissions are "
-                    "granted for any kind of copyring or "
-                    "re-use. All rights reserved"
+                    "en": (
+                        "Proprietary material. No permissions are "
+                        "granted for any kind of copyring or "
+                        "re-use. All rights reserved"
+                    )
                 },
                 "id": "arr",
                 "icon": "copyright",
-                "props": {"url": "https://en.wikipedia.org/wiki/All_rights_reserved"},
-                "title": {"en": "All Rights " "Reserved"},
+                "props": {
+                    "url": "https://en.wikipedia.org/wiki/All_rights_reserved"
+                },
+                "title": {"en": "All Rights Reserved"},
             }
         ],
         "subjects": [
@@ -436,8 +487,10 @@ json583 = {
             },
         ],
         "publisher": "Open Library of Humanities",
-        "title": "The New Open Access Environment: Innovation in "
-        "Research, Editing and Publishing",
+        "title": (
+            "The New Open Access Environment: Innovation in "
+            "Research, Editing and Publishing"
+        ),
     },
     "parent": {"access": {"owned_by": [{"user": "3365"}]}},
     "pids": {
@@ -454,13 +507,18 @@ json38367 = {
     "created": "2021-04-26T05:57:56Z",
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/"
-        "humcore/2021/04/o_1f46c249h11hjav61sv"
-        "d1l318047.pdf.system-dynamics-growt"
-        "h-distribution-and-financialization.pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads/"
+            "humcore/2021/04/o_1f46c249h11hjav61sv"
+            "d1l318047.pdf.system-dynamics-growt"
+            "h-distribution-and-financialization.pdf"
+        ),
         "hclegacy:file_pid": "hc:38368",
         "hclegacy:groups_for_deposit": [
-            {"group_identifier": "1002960", "group_name": "Literature and Economics"}
+            {
+                "group_identifier": "1002960",
+                "group_name": "Literature and Economics",
+            }
         ],
         "hclegacy:previously_published": "published",
         "hclegacy:publication_type": "online-publication",
@@ -473,8 +531,9 @@ json38367 = {
             "title": "https://tesiunam.dgb.unam.mx/F/KVS7IYBX26S3PMEDX1SXFF6XRKP48FV5JRD21J7UNV85V8U82E-42627?func=full-set-set&set_number=198105&set_entry=000001&format=999"
         },
         "kcr:commons_domain": "hcommons.org",
-        "kcr:sponsoring_institution": "Universidad Nacional Autónoma de México"
-        " (UNAM)",
+        "kcr:sponsoring_institution": (
+            "Universidad Nacional Autónoma de México (UNAM)"
+        ),
         "kcr:submitter_email": "eduardoalo1234@gmail.com",
         "kcr:submitter_username": "gabogabito123",
         "kcr:user_defined_tags": [
@@ -485,14 +544,16 @@ json38367 = {
         ],
     },
     "files": {
-        "default_preview": "system-dynamics-growth-distribution"
-        "-and-financialization.pdf",
+        "default_preview": (
+            "system-dynamics-growth-distribution-and-financialization.pdf"
+        ),
         "enabled": True,
         "entries": {
-            "system-dynamics-growth-distribution-and-financiali"
-            "zation.pdf": {
-                "key": "system-dynamics-growth-distribution-and-financ"
-                "ialization.pdf",
+            "system-dynamics-growth-distribution-and-financialization.pdf": {
+                "key": (
+                    "system-dynamics-growth-distribution-and-financ"
+                    "ialization.pdf"
+                ),
                 "mimetype": "application/pdf",
                 "size": "2185244",
             }
@@ -501,66 +562,68 @@ json38367 = {
     "metadata": {
         "additional_descriptions": [
             {
-                "description": "These models are a representation of "
-                "the macroeconomic evolution of the "
-                "US economy from 1970 to 2010. The main variables "
-                "addressed are economic growth, income "
-                "distribution and private debt. The "
-                "theoretical basis of the model "
-                "relies on what Bhaduri labeled as "
-                'the "Marx-Keynes-Kalecki" '
-                "tradition that has four distinctive "
-                "assumptions: 1) The price of this "
-                "one-commidty model is determined by a "
-                "mark-up over the production costs. "
-                "2) Aggregate demand determines "
-                "(AD) the level of production (Y). 3) "
-                "Investment (I) is the key variable "
-                "within aggregate demand. 4) The "
-                "level of aggregate supply (Yt) is "
-                "equal to aggregate demand (ADt). "
-                "There are other features of the "
-                "model that are also worth to "
-                "pinpoint. The baseline model has "
-                "three sectors: workers, "
-                "industrial capital and private "
-                "banking. The first two sectors are "
-                "clearly differentiated by "
-                "the marginal propensities of "
-                "their members to consume and their "
-                "access to credit. Workers have a "
-                "marginal propensity to "
-                "consume that goes from 0.5 to 1.3. "
-                "The propensity of consumption of "
-                "this sector varies with respect to "
-                'two macro-level "shaping '
-                'structures" that determine this '
-                "sector's microeconomic "
-                "behavior. Workers' propensity to "
-                "consume varies non-linearly "
-                "regarding inflation, and it "
-                "exhibits a positive and "
-                "linear relationship with "
-                "respect to the industrial "
-                "capital's share on total income. On "
-                "the other hand, capitalists can "
-                "save or become indebted depending "
-                "on the saving-investment gap. Any investment "
-                "decision over savings is always financed by the "
-                "acquisition of private debt "
-                "provided by private banks, and "
-                "the excess of savings is used to "
-                "pay the debt contracted by the "
-                "capitalists. Whilst the "
-                "activity of private banking is "
-                "limited only to the granting of "
-                "credit, the accumulation of "
-                "private debt represents its "
-                "source of profits. A subsidiary "
-                "assumption that is maintained "
-                "throughout this model is that it "
-                "is a closed economy without "
-                "government.",
+                "description": (
+                    "These models are a representation of "
+                    "the macroeconomic evolution of the "
+                    "US economy from 1970 to 2010. The main variables "
+                    "addressed are economic growth, income "
+                    "distribution and private debt. The "
+                    "theoretical basis of the model "
+                    "relies on what Bhaduri labeled as "
+                    'the "Marx-Keynes-Kalecki" '
+                    "tradition that has four distinctive "
+                    "assumptions: 1) The price of this "
+                    "one-commidty model is determined by a "
+                    "mark-up over the production costs. "
+                    "2) Aggregate demand determines "
+                    "(AD) the level of production (Y). 3) "
+                    "Investment (I) is the key variable "
+                    "within aggregate demand. 4) The "
+                    "level of aggregate supply (Yt) is "
+                    "equal to aggregate demand (ADt). "
+                    "There are other features of the "
+                    "model that are also worth to "
+                    "pinpoint. The baseline model has "
+                    "three sectors: workers, "
+                    "industrial capital and private "
+                    "banking. The first two sectors are "
+                    "clearly differentiated by "
+                    "the marginal propensities of "
+                    "their members to consume and their "
+                    "access to credit. Workers have a "
+                    "marginal propensity to "
+                    "consume that goes from 0.5 to 1.3. "
+                    "The propensity of consumption of "
+                    "this sector varies with respect to "
+                    'two macro-level "shaping '
+                    'structures" that determine this '
+                    "sector's microeconomic "
+                    "behavior. Workers' propensity to "
+                    "consume varies non-linearly "
+                    "regarding inflation, and it "
+                    "exhibits a positive and "
+                    "linear relationship with "
+                    "respect to the industrial "
+                    "capital's share on total income. On "
+                    "the other hand, capitalists can "
+                    "save or become indebted depending "
+                    "on the saving-investment gap. Any investment "
+                    "decision over savings is always financed by the "
+                    "acquisition of private debt "
+                    "provided by private banks, and "
+                    "the excess of savings is used to "
+                    "pay the debt contracted by the "
+                    "capitalists. Whilst the "
+                    "activity of private banking is "
+                    "limited only to the granting of "
+                    "credit, the accumulation of "
+                    "private debt represents its "
+                    "source of profits. A subsidiary "
+                    "assumption that is maintained "
+                    "throughout this model is that it "
+                    "is a closed economy without "
+                    "government."
+                ),
                 "type": {"id": "other", "title": {"en": "Other"}},
             }
         ],
@@ -571,7 +634,10 @@ json38367 = {
                     "family_name": "Martínez Hernández",
                     "given_name": "Alberto-Gabino",
                     "identifiers": [
-                        {"identifier": "gabogabito123", "scheme": "hc_username"}
+                        {
+                            "identifier": "gabogabito123",
+                            "scheme": "hc_username",
+                        }
                     ],
                     "name": "Martínez Hernández, Alberto-Gabino",
                     "type": "personal",
@@ -579,60 +645,64 @@ json38367 = {
                 "role": {"id": "author", "title": {"en": "Author"}},
             }
         ],
-        "description": "These models are a representation of the "
-        "macroeconomic evolution of the US economy from "
-        "1970 to 2010. The main variables addressed are "
-        "economic growth, income distribution and "
-        "private debt. The theoretical basis of the "
-        "model relies on what Bhaduri labeled as the "
-        '"Marx-Keynes-Kalecki" tradition that has four '
-        "distinctive assumptions: \n"
-        "\n"
-        "1) The price of this one-commidty model is "
-        "determined by a mark-up over the production "
-        "costs. \n"
-        "2) Aggregate demand determines (AD) the level "
-        "of production (Y).\n"
-        "3) Investment (I) is the key variable within "
-        "aggregate demand. \n"
-        "4) The level of aggregate supply (Yt) is equal "
-        "to aggregate demand (ADt). \n"
-        "\n"
-        "There are other features of the model that are "
-        "also worth to pinpoint. The baseline model has "
-        "three sectors: workers, industrial capital and "
-        "private banking. The first two sectors are "
-        "clearly differentiated by the marginal "
-        "propensities of their members to consume and "
-        "their access to credit. Workers have a marginal "
-        "propensity to consume that goes from 0.5 to "
-        "1.3. The propensity of consumption of this "
-        "sector varies with respect to two macro-level "
-        '"shaping structures" that determine this '
-        "sector's microeconomic behavior. Workers' "
-        "propensity to consume varies non-linearly "
-        "regarding inflation, and it exhibits a positive "
-        "and linear relationship with respect to the "
-        "industrial capital's share on total income. On "
-        "the other hand, capitalists can save or become "
-        "indebted depending on the saving-investment "
-        "gap. Any investment decision over savings is "
-        "always financed by the acquisition of private "
-        "debt provided by private banks, and the excess "
-        "of savings is used to pay the debt contracted "
-        "by the capitalists. Whilst the activity of "
-        "private banking is limited only to the granting "
-        "of credit, the accumulation of private debt "
-        "represents its source of profits. A subsidiary "
-        "assumption that is maintained throughout this "
-        "model is that it is a closed economy without "
-        "government.",
+        "description": (
+            "These models are a representation of the "
+            "macroeconomic evolution of the US economy from "
+            "1970 to 2010. The main variables addressed are "
+            "economic growth, income distribution and "
+            "private debt. The theoretical basis of the "
+            "model relies on what Bhaduri labeled as the "
+            '"Marx-Keynes-Kalecki" tradition that has four '
+            "distinctive assumptions: \n"
+            "\n"
+            "1) The price of this one-commidty model is "
+            "determined by a mark-up over the production "
+            "costs. \n"
+            "2) Aggregate demand determines (AD) the level "
+            "of production (Y).\n"
+            "3) Investment (I) is the key variable within "
+            "aggregate demand. \n"
+            "4) The level of aggregate supply (Yt) is equal "
+            "to aggregate demand (ADt). \n"
+            "\n"
+            "There are other features of the model that are "
+            "also worth to pinpoint. The baseline model has "
+            "three sectors: workers, industrial capital and "
+            "private banking. The first two sectors are "
+            "clearly differentiated by the marginal "
+            "propensities of their members to consume and "
+            "their access to credit. Workers have a marginal "
+            "propensity to consume that goes from 0.5 to "
+            "1.3. The propensity of consumption of this "
+            "sector varies with respect to two macro-level "
+            '"shaping structures" that determine this '
+            "sector's microeconomic behavior. Workers' "
+            "propensity to consume varies non-linearly "
+            "regarding inflation, and it exhibits a positive "
+            "and linear relationship with respect to the "
+            "industrial capital's share on total income. On "
+            "the other hand, capitalists can save or become "
+            "indebted depending on the saving-investment "
+            "gap. Any investment decision over savings is "
+            "always financed by the acquisition of private "
+            "debt provided by private banks, and the excess "
+            "of savings is used to pay the debt contracted "
+            "by the capitalists. Whilst the activity of "
+            "private banking is limited only to the granting "
+            "of credit, the accumulation of private debt "
+            "represents its source of profits. A subsidiary "
+            "assumption that is maintained throughout this "
+            "model is that it is a closed economy without "
+            "government."
+        ),
         "identifiers": [
             {"identifier": "hc:38367", "scheme": "hclegacy-pid"},
             {"identifier": "1000360-44555", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/5ehz-cb19", "scheme": "datacite-doi"},
             {
-                "identifier": "http://132.248.9.195/ptd2018/mayo/0774053/Index.html",
+                "identifier": (
+                    "http://132.248.9.195/ptd2018/mayo/0774053/Index.html"
+                ),
                 "scheme": "url",
             },
         ],
@@ -642,14 +712,18 @@ json38367 = {
         "rights": [
             {
                 "description": {
-                    "en": "Proprietary material. No permissions are "
-                    "granted for any kind of copyring or "
-                    "re-use. All rights reserved"
+                    "en": (
+                        "Proprietary material. No permissions are "
+                        "granted for any kind of copyring or "
+                        "re-use. All rights reserved"
+                    )
                 },
                 "id": "arr",
                 "icon": "copyright",
-                "props": {"url": "https://en.wikipedia.org/wiki/All_rights_reserved"},
-                "title": {"en": "All Rights " "Reserved"},
+                "props": {
+                    "url": "https://en.wikipedia.org/wiki/All_rights_reserved"
+                },
+                "title": {"en": "All Rights Reserved"},
             }
         ],
         "subjects": [
@@ -670,9 +744,11 @@ json38367 = {
             },
         ],
         "publisher": "Universidad Nacional Autónoma de Mexico (UNAM)",
-        "title": "The macroeconomic evolution of the USA, 1970 - 2010. "
-        "A heterodox mathematical modelling approach with "
-        "System Dynamics.",
+        "title": (
+            "The macroeconomic evolution of the USA, 1970 - 2010. "
+            "A heterodox mathematical modelling approach with "
+            "System Dynamics."
+        ),
     },
     "parent": {"access": {"owned_by": [{"user": "1028135"}]}},
     "pids": {
@@ -689,9 +765,11 @@ json48799 = {
     "created": "2022-09-29T14:34:36Z",
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/"
-        "humcore/2022/09/o_1ge4qi6ga1aqnfqk12h"
-        "h1sei18377.pdf.super-apps_final.pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads/"
+            "humcore/2022/09/o_1ge4qi6ga1aqnfqk12h"
+            "h1sei18377.pdf.super-apps_final.pdf"
+        ),
         "hclegacy:file_pid": "hc:48800",
         "hclegacy:previously_published": "published",
         "hclegacy:publication_type": "online-publication",
@@ -719,15 +797,17 @@ json48799 = {
         },
     },
     "metadata": {
-        "description": "This whitepaper report gives an overview of a "
-        'variety of "superapps," apps designed to bring '
-        "together a vast number of services within a "
-        "single interface. The purpose of this "
-        "report is to provide a general "
-        "understanding of the super app form "
-        "as it becomes a dominant global "
-        "framework, and to consider platform "
-        "capitalism's transformational shape.",
+        "description": (
+            "This whitepaper report gives an overview of a "
+            'variety of "superapps," apps designed to bring '
+            "together a vast number of services within a "
+            "single interface. The purpose of this "
+            "report is to provide a general "
+            "understanding of the super app form "
+            "as it becomes a dominant global "
+            "framework, and to consider platform "
+            "capitalism's transformational shape."
+        ),
         "contributors": [
             {
                 "person_or_org": {
@@ -841,7 +921,7 @@ json48799 = {
             {"identifier": "1000360-61936", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/y30x-r594", "scheme": "datacite-doi"},
             {
-                "identifier": "https://www.theplatformlab.com/" "super-apps",
+                "identifier": "https://www.theplatformlab.com/super-apps",
                 "scheme": "url",
             },
         ],
@@ -852,18 +932,24 @@ json48799 = {
         "rights": [
             {
                 "description": {
-                    "en": "The Creative Commons Attribution license "
-                    "allows re-distribution and re-use of a "
-                    "licensed work on the condition that the "
-                    "creator is appropriately credited."
+                    "en": (
+                        "The Creative Commons Attribution license "
+                        "allows re-distribution and re-use of a "
+                        "licensed work on the condition that the "
+                        "creator is appropriately credited."
+                    )
                 },
                 "id": "cc-by-4.0",
                 "icon": "cc-by-icon",
                 "props": {
                     "scheme": "spdx",
-                    "url": "https://creativecommons.org/licenses/by/4.0/legalcode",
+                    "url": (
+                        "https://creativecommons.org/licenses/by/4.0/legalcode"
+                    ),
                 },
-                "title": {"en": "Creative Commons Attribution 4.0 " "International"},
+                "title": {
+                    "en": "Creative Commons Attribution 4.0 International"
+                },
             }
         ],
         "title": "Super Apps: A Platform Lab Report",
@@ -880,28 +966,38 @@ json48799 = {
 }
 
 json33383 = {
-    "access": {"embargo": {"active": True, "reason": None, "until": "2021-11-25"}},
+    "access": {
+        "embargo": {"active": True, "reason": None, "until": "2021-11-25"}
+    },
     "created": "2020-11-25T12:35:10Z",
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/"
-        "humcore/2020/11/o_1envm12vp11cmvs61ic"
-        "r7g3oqk7.pdf.24519197_005_03-04_s004_text."
-        "pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads/"
+            "humcore/2020/11/o_1envm12vp11cmvs61ic"
+            "r7g3oqk7.pdf.24519197_005_03-04_s004_text."
+            "pdf"
+        ),
         "hclegacy:file_pid": "hc:33384",
         "hclegacy:groups_for_deposit": [
-            {"group_identifier": "1004129", "group_name": "Arabic script manuscripts"},
-            {"group_identifier": "1001234", "group_name": "Islamicate Studies"},
+            {
+                "group_identifier": "1004129",
+                "group_name": "Arabic script manuscripts",
+            },
+            {
+                "group_identifier": "1001234",
+                "group_name": "Islamicate Studies",
+            },
             {"group_identifier": "1000753", "group_name": "Medieval Studies"},
             {
                 "group_identifier": "1000830",
-                "group_name": "Science Studies and the History of " "Science",
+                "group_name": "Science Studies and the History of Science",
             },
         ],
         "hclegacy:previously_published": "published",
         "hclegacy:record_change_date": "2023-01-23T14:20:48Z",
         "hclegacy:record_creation_date": "2020-11-25T12:35:10Z",
-        "hclegacy:submitter_affiliation": "University of Southern " "California",
+        "hclegacy:submitter_affiliation": "University of Southern California",
         "hclegacy:submitter_id": "1008812",
         "hclegacy:submitter_org_memberships": ["hc"],
         "journal:journal": {
@@ -916,7 +1012,7 @@ json33383 = {
         "kcr:submitter_username": "amroberts",
         "kcr:user_defined_tags": [
             "History of science",
-            "History and philosophy of " "mathematics",
+            "History and philosophy of mathematics",
         ],
     },
     "files": {
@@ -960,7 +1056,9 @@ json33383 = {
         # ],
         "creators": [
             {
-                "affiliations": [{"name": "University of Southern California"}],
+                "affiliations": [
+                    {"name": "University of Southern California"}
+                ],
                 "person_or_org": {
                     "family_name": "Roberts",
                     "given_name": "Alexandre",
@@ -983,35 +1081,40 @@ json33383 = {
                 },
             }
         ],
-        "description": "This article examines an Arabic mathematical "
-        "manuscript at Columbia University’s Rare Book "
-        "and Manuscript Library (or. 45), focusing on a "
-        "previously unpublished set of texts: the "
-        "treatise on the mathematical method known as "
-        "Double False Position, as supplemented by Jābir "
-        "ibn Ibrāhīm al-Ṣābī (tenth century?), and the "
-        "commentaries by Aḥmad ibn al-Sarī (d. "
-        "548/1153–4) and Saʿd al-Dīn Asʿad ibn Saʿīd "
-        "al-Hamadhānī (12th/13th century?), the latter "
-        "previously unnoticed. The article sketches the "
-        "contents of the manuscript, then offers an "
-        "editio princeps, translation, and analysis of "
-        "the treatise. It then considers how the Swiss "
-        "historian of mathematics Heinrich Suter "
-        "(1848–1922) read Jābir’s treatise (as contained "
-        "in a different manuscript) before concluding "
-        "with my own proposal for how to go about "
-        "reading this mathematical text: as a witness of "
-        "multiple stages of a complex textual tradition "
-        "of teaching, extending, and rethinking "
-        "mathematics—that is, we should read it "
-        "philologically.",
+        "description": (
+            "This article examines an Arabic mathematical "
+            "manuscript at Columbia University’s Rare Book "
+            "and Manuscript Library (or. 45), focusing on a "
+            "previously unpublished set of texts: the "
+            "treatise on the mathematical method known as "
+            "Double False Position, as supplemented by Jābir "
+            "ibn Ibrāhīm al-Ṣābī (tenth century?), and the "
+            "commentaries by Aḥmad ibn al-Sarī (d. "
+            "548/1153–4) and Saʿd al-Dīn Asʿad ibn Saʿīd "
+            "al-Hamadhānī (12th/13th century?), the latter "
+            "previously unnoticed. The article sketches the "
+            "contents of the manuscript, then offers an "
+            "editio princeps, translation, and analysis of "
+            "the treatise. It then considers how the Swiss "
+            "historian of mathematics Heinrich Suter "
+            "(1848–1922) read Jābir’s treatise (as contained "
+            "in a different manuscript) before concluding "
+            "with my own proposal for how to go about "
+            "reading this mathematical text: as a witness of "
+            "multiple stages of a complex textual tradition "
+            "of teaching, extending, and rethinking "
+            "mathematics—that is, we should read it "
+            "philologically."
+        ),
         "identifiers": [
             {"identifier": "hc:33383", "scheme": "hclegacy-pid"},
             {"identifier": "1000360-40298", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/xxxj-e936", "scheme": "datacite-doi"},
             {"identifier": "10.1163/24519197-BJA10007", "scheme": "doi"},
-            {"identifier": "https://doi.org/10.17613/xxxj-e936", "scheme": "url"},
+            {
+                "identifier": "https://doi.org/10.17613/xxxj-e936",
+                "scheme": "url",
+            },
             {"identifier": "2451-9197", "scheme": "issn"},
         ],
         "languages": [{"id": "eng", "title": {"en": "English"}}],
@@ -1020,14 +1123,18 @@ json33383 = {
         "rights": [
             {
                 "description": {
-                    "en": "Proprietary material. No permissions are "
-                    "granted for any kind of copyring or "
-                    "re-use. All rights reserved"
+                    "en": (
+                        "Proprietary material. No permissions are "
+                        "granted for any kind of copyring or "
+                        "re-use. All rights reserved"
+                    )
                 },
                 "id": "arr",
                 "icon": "copyright",
-                "props": {"url": "https://en.wikipedia.org/wiki/All_rights_reserved"},
-                "title": {"en": "All Rights " "Reserved"},
+                "props": {
+                    "url": "https://en.wikipedia.org/wiki/All_rights_reserved"
+                },
+                "title": {"en": "All Rights Reserved"},
             }
         ],
         "subjects": [
@@ -1053,9 +1160,11 @@ json33383 = {
             },
         ],
         "publisher": "Brill",
-        "title": "Mathematical Philology in the Treatise on Double "
-        "False Position in an Arabic Manuscript at Columbia "
-        "University",
+        "title": (
+            "Mathematical Philology in the Treatise on Double "
+            "False Position in an Arabic Manuscript at Columbia "
+            "University"
+        ),
     },
     "parent": {"access": {"owned_by": [{"user": "1008812"}]}},
     "pids": {
@@ -1079,14 +1188,19 @@ json16079 = {
     },
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/"
-        "humcore/2017/10/o_1btcal4jbimf52817p91"
-        "1ojlp57.pdf.dhbenelux-digitization"
-        "-and-exogenesis.pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads/"
+            "humcore/2017/10/o_1btcal4jbimf52817p91"
+            "1ojlp57.pdf.dhbenelux-digitization"
+            "-and-exogenesis.pdf"
+        ),
         "hclegacy:file_pid": "hc:16080",
         "hclegacy:groups_for_deposit": [
-            {"group_identifier": "1000551", "group_name": "Digital " "Humanists"},
-            {"group_identifier": "1000697", "group_name": "Textual " "Scholarship"},
+            {"group_identifier": "1000551", "group_name": "Digital Humanists"},
+            {
+                "group_identifier": "1000697",
+                "group_name": "Textual Scholarship",
+            },
         ],
         "hclegacy:previously_published": "published",
         "hclegacy:submitter_org_memberships": ["hc"],
@@ -1095,10 +1209,12 @@ json16079 = {
         "hclegacy:submitter_id": "1010997",
         "imprint:imprint": {
             "pages": "28-29",
-            "title": "DHBenelux 2. Book of "
-            "Abstracts for the Second "
-            "Digital Humanities Benelux "
-            "Conference",
+            "title": (
+                "DHBenelux 2. Book of "
+                "Abstracts for the Second "
+                "Digital Humanities Benelux "
+                "Conference"
+            ),
         },
         "kcr:commons_domain": "hcommons.org",
         "kcr:meeting_organization": "University of Antwerp",
@@ -1190,23 +1306,25 @@ json16079 = {
                 "role": {"id": "author", "title": {"en": "Author"}},
             },
         ],
-        "description": "Within the field of genetic criticism, Raymonde "
-        "Debray Genette coined the terms ‘en- dogenesis’ "
-        "and ‘exogenesis’ to denote respectively the "
-        "writing of drafts and the interaction with "
-        "external source texts during the writing "
-        "process. The proposed panel focuses on the ways "
-        "in which exogenesis and its relationship with "
-        "endogenesis can be given shape in a digital "
-        "infrastructure. The case studies are the works, "
-        "reading notes and personal libraries of James "
-        "Joyce and Samuel Beckett.",
+        "description": (
+            "Within the field of genetic criticism, Raymonde "
+            "Debray Genette coined the terms ‘en- dogenesis’ "
+            "and ‘exogenesis’ to denote respectively the "
+            "writing of drafts and the interaction with "
+            "external source texts during the writing "
+            "process. The proposed panel focuses on the ways "
+            "in which exogenesis and its relationship with "
+            "endogenesis can be given shape in a digital "
+            "infrastructure. The case studies are the works, "
+            "reading notes and personal libraries of James "
+            "Joyce and Samuel Beckett."
+        ),
         "identifiers": [
             {"identifier": "hc:16079", "scheme": "hclegacy-pid"},
             {"identifier": "1000360-8725", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/M6M225", "scheme": "datacite-doi"},
             {"identifier": "10.5281/zenodo.1009526", "scheme": "doi"},
-            {"identifier": "https://doi.org/10.17613" "/M6M225", "scheme": "url"},
+            {"identifier": "https://doi.org/10.17613/M6M225", "scheme": "url"},
         ],
         "languages": [{"id": "eng", "title": {"en": "English"}}],
         "publisher": "unknown",
@@ -1214,18 +1332,24 @@ json16079 = {
         "rights": [
             {
                 "description": {
-                    "en": "The Creative Commons Attribution license "
-                    "allows re-distribution and re-use of a "
-                    "licensed work on the condition that the "
-                    "creator is appropriately credited."
+                    "en": (
+                        "The Creative Commons Attribution license "
+                        "allows re-distribution and re-use of a "
+                        "licensed work on the condition that the "
+                        "creator is appropriately credited."
+                    )
                 },
                 "id": "cc-by-4.0",
                 "icon": "cc-by-icon",
                 "props": {
                     "scheme": "spdx",
-                    "url": "https://creativecommons.org/licenses/by/4.0/legalcode",
+                    "url": (
+                        "https://creativecommons.org/licenses/by/4.0/legalcode"
+                    ),
                 },
-                "title": {"en": "Creative Commons Attribution 4.0 " "International"},
+                "title": {
+                    "en": "Creative Commons Attribution 4.0 International"
+                },
             }
         ],
         "subjects": [
@@ -1278,10 +1402,12 @@ json34031 = {
     },
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/"
-        "humcore/2021/01/o_1erptio851p4e9e41ep"
-        "f1p4o15eq7.pdf.gnosticism-theorized-"
-        "major-trends-and-approaches-dillon.pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads/"
+            "humcore/2021/01/o_1erptio851p4e9e41ep"
+            "f1p4o15eq7.pdf.gnosticism-theorized-"
+            "major-trends-and-approaches-dillon.pdf"
+        ),
         "hclegacy:file_pid": "hc:34032",
         "hclegacy:previously_published": "published",
         "hclegacy:record_change_date": "2021-01-11T23:48:41Z",
@@ -1300,11 +1426,16 @@ json34031 = {
         "kcr:user_defined_tags": ["Western esotericism", "Early Christianity"],
     },
     "files": {
-        "default_preview": "gnosticism-theorized-major-trends-and-approaches-dillon.pdf",
+        "default_preview": (
+            "gnosticism-theorized-major-trends-and-approaches-dillon.pdf"
+        ),
         "enabled": True,
         "entries": {
             "gnosticism-theorized-major-trends-and-approaches-dillon.pdf": {
-                "key": "gnosticism-theorized-major-trends-and-approaches-" "dillon.pdf",
+                "key": (
+                    "gnosticism-theorized-major-trends-and-approaches-"
+                    "dillon.pdf"
+                ),
                 "mimetype": "application/pdf",
                 "size": "322864",
             }
@@ -1329,7 +1460,10 @@ json34031 = {
                     "family_name": "Dillon",
                     "given_name": "M.",
                     "identifiers": [
-                        {"identifier": "matthewjdillon", "scheme": "hc_username"}
+                        {
+                            "identifier": "matthewjdillon",
+                            "scheme": "hc_username",
+                        }
                     ],
                     "name": "Dillon, M.",
                     "type": "personal",
@@ -1348,28 +1482,37 @@ json34031 = {
                 "role": {"id": "other", "title": {"en": "Other"}},
             }
         ],
-        "description": "Overview of the major trends and approaches to "
-        "the study of 'Gnosticism' after the discovery "
-        "of the Nag Hammadi Codices.",
+        "description": (
+            "Overview of the major trends and approaches to "
+            "the study of 'Gnosticism' after the discovery "
+            "of the Nag Hammadi Codices."
+        ),
         "identifiers": [
             {"identifier": "hc:34031", "scheme": "hclegacy-pid"},
             {"identifier": "1000360-41326", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/0qxh-ed23", "scheme": "datacite-doi"},
-            {"identifier": "https://doi.org/10.17613/0qxh-ed23", "scheme": "url"},
+            {
+                "identifier": "https://doi.org/10.17613/0qxh-ed23",
+                "scheme": "url",
+            },
         ],
         "languages": [{"id": "eng", "title": {"en": "English"}}],
         "resource_type": {"id": "textDocument-bookSection"},
         "rights": [
             {
                 "description": {
-                    "en": "Proprietary material. No permissions are "
-                    "granted for any kind of copyring or "
-                    "re-use. All rights reserved"
+                    "en": (
+                        "Proprietary material. No permissions are "
+                        "granted for any kind of copyring or "
+                        "re-use. All rights reserved"
+                    )
                 },
                 "id": "arr",
                 "icon": "copyright",
-                "props": {"url": "https://en.wikipedia.org/wiki/All_rights_reserved"},
-                "title": {"en": "All Rights " "Reserved"},
+                "props": {
+                    "url": "https://en.wikipedia.org/wiki/All_rights_reserved"
+                },
+                "title": {"en": "All Rights Reserved"},
             }
         ],
         "subjects": [
@@ -1390,12 +1533,14 @@ json34031 = {
             },
             {
                 "id": "http://id.worldcat.org/fast/1710945",
-                "subject": "Church history--Primitive and early " "church",
+                "subject": "Church history--Primitive and early church",
                 "scheme": "FAST-topical",
             },
         ],
-        "title": "Gnosticism Theorized: Major Trends and Approaches to "
-        "the Study of Gnosticism",
+        "title": (
+            "Gnosticism Theorized: Major Trends and Approaches to "
+            "the Study of Gnosticism"
+        ),
     },
     "parent": {"access": {"owned_by": [{"user": "1025015"}]}},
     "updated": "2021-01-11T23:48:41Z",
@@ -1413,17 +1558,24 @@ json11451 = {
     },
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/"
-        "humcore/o_1bam4ggaprbg1t5b1jb9ck83hh7.pdf."
-        "female_agency_ophelia.pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads/"
+            "humcore/o_1bam4ggaprbg1t5b1jb9ck83hh7.pdf."
+            "female_agency_ophelia.pdf"
+        ),
         "hclegacy:file_pid": "hc:11452",
         "hclegacy:groups_for_deposit": [
             {
                 "group_identifier": "174",
-                "group_name": "East Asian Languages and Literatures " "after 1900",
+                "group_name": (
+                    "East Asian Languages and Literatures after 1900"
+                ),
             },
             {"group_identifier": "246", "group_name": "Global Shakespeares"},
-            {"group_identifier": "97", "group_name": "GS Drama and Performance"},
+            {
+                "group_identifier": "97",
+                "group_name": "GS Drama and Performance",
+            },
             {"group_identifier": "25", "group_name": "LLC Shakespeare"},
             {"group_identifier": "91", "group_name": "TC Translation Studies"},
         ],
@@ -1464,126 +1616,128 @@ json11451 = {
     "metadata": {
         "additional_descriptions": [
             {
-                "description": "There are three "
-                "main East Asian "
-                "approaches to "
-                "interpreting "
-                "Ophelia. The first "
-                "is informed by the "
-                "fascination with "
-                "and reaction "
-                "against the "
-                "Victorian "
-                "pictorialization "
-                "of Ophelia, "
-                "especially John "
-                "Everett Millais’s "
-                "famous Ophelia "
-                "(1851), that "
-                "emphasized, as "
-                "Kimberly Rhodes "
-                "describes, her "
-                "“pathos, "
-                "innocence, and "
-                "beauty rather than "
-                "the unseemly "
-                "detail of her "
-                "death.” Despite "
-                "having lived "
-                "through negative "
-                "experiences, "
-                "Ophelia retains a "
-                "childlike "
-                "innocence in these "
-                "rewritings. For "
-                "example, New "
-                "Hamlet by Lao She "
-                "(penname of Shu "
-                "Qingchun, "
-                "1899-1966) "
-                "parodies China’s "
-                "“Hamlet complex” "
-                "(the inability to "
-                "act at a time of "
-                "national crisis) "
-                "and the "
-                "fascination with "
-                "an Ophelia "
-                "submerged in "
-                "water. Both "
-                "Ophelia and "
-                "Millais’s painting "
-                "are featured in "
-                "two of Japanese "
-                "writer Natsume "
-                "Sōseki’s early "
-                "twentieth-century "
-                "novels. A second "
-                "approach "
-                "emphasizes the "
-                "local context. "
-                "Adapters used "
-                "local values to "
-                "engage with and "
-                "even critique the "
-                "Victorian "
-                "narrative "
-                "tradition of "
-                "moralization. Late "
-                "nineteenth-century "
-                "translator Lin Shu "
-                "(1852-1924), for "
-                "example, tones "
-                "down the "
-                "sentimentalization "
-                "of Ophelia in his "
-                "classical Chinese "
-                "rewriting of "
-                "Charles and Mary "
-                "Lamb’s Tales from "
-                "Shakespeare, "
-                "showcasing the "
-                "conflict between "
-                "Victorian and "
-                "Confucian moral "
-                "codes. The third "
-                "approach focuses "
-                "upon an "
-                "objectified and "
-                "sexualized "
-                "Ophelia. As other "
-                "chapters in this "
-                "volume "
-                "demonstrate, this "
-                "is not exclusively "
-                "an Asian "
-                "phenomenon. "
-                "However, the "
-                "eroticism "
-                "associated with "
-                "the Ophelia figure "
-                "in a number of "
-                "Asian stage and "
-                "screen versions of "
-                "Hamlet, such as "
-                "Sherwood Hu’s film "
-                "Prince of the "
-                "Himalayas (2006), "
-                "aligns Ophelia "
-                "with East Asian "
-                "ideals of "
-                "femininity, but "
-                "also brings out "
-                "the sexuality that "
-                "is latent or "
-                "suppressed in "
-                "Victorian "
-                "interpretations. "
-                "They do so by "
-                "aligning Ophelia "
-                "with East Asian "
-                "ideals of "
-                "femininity.",
+                "description": (
+                    "There are three "
+                    "main East Asian "
+                    "approaches to "
+                    "interpreting "
+                    "Ophelia. The first "
+                    "is informed by the "
+                    "fascination with "
+                    "and reaction "
+                    "against the "
+                    "Victorian "
+                    "pictorialization "
+                    "of Ophelia, "
+                    "especially John "
+                    "Everett Millais’s "
+                    "famous Ophelia "
+                    "(1851), that "
+                    "emphasized, as "
+                    "Kimberly Rhodes "
+                    "describes, her "
+                    "“pathos, "
+                    "innocence, and "
+                    "beauty rather than "
+                    "the unseemly "
+                    "detail of her "
+                    "death.” Despite "
+                    "having lived "
+                    "through negative "
+                    "experiences, "
+                    "Ophelia retains a "
+                    "childlike "
+                    "innocence in these "
+                    "rewritings. For "
+                    "example, New "
+                    "Hamlet by Lao She "
+                    "(penname of Shu "
+                    "Qingchun, "
+                    "1899-1966) "
+                    "parodies China’s "
+                    "“Hamlet complex” "
+                    "(the inability to "
+                    "act at a time of "
+                    "national crisis) "
+                    "and the "
+                    "fascination with "
+                    "an Ophelia "
+                    "submerged in "
+                    "water. Both "
+                    "Ophelia and "
+                    "Millais’s painting "
+                    "are featured in "
+                    "two of Japanese "
+                    "writer Natsume "
+                    "Sōseki’s early "
+                    "twentieth-century "
+                    "novels. A second "
+                    "approach "
+                    "emphasizes the "
+                    "local context. "
+                    "Adapters used "
+                    "local values to "
+                    "engage with and "
+                    "even critique the "
+                    "Victorian "
+                    "narrative "
+                    "tradition of "
+                    "moralization. Late "
+                    "nineteenth-century "
+                    "translator Lin Shu "
+                    "(1852-1924), for "
+                    "example, tones "
+                    "down the "
+                    "sentimentalization "
+                    "of Ophelia in his "
+                    "classical Chinese "
+                    "rewriting of "
+                    "Charles and Mary "
+                    "Lamb’s Tales from "
+                    "Shakespeare, "
+                    "showcasing the "
+                    "conflict between "
+                    "Victorian and "
+                    "Confucian moral "
+                    "codes. The third "
+                    "approach focuses "
+                    "upon an "
+                    "objectified and "
+                    "sexualized "
+                    "Ophelia. As other "
+                    "chapters in this "
+                    "volume "
+                    "demonstrate, this "
+                    "is not exclusively "
+                    "an Asian "
+                    "phenomenon. "
+                    "However, the "
+                    "eroticism "
+                    "associated with "
+                    "the Ophelia figure "
+                    "in a number of "
+                    "Asian stage and "
+                    "screen versions of "
+                    "Hamlet, such as "
+                    "Sherwood Hu’s film "
+                    "Prince of the "
+                    "Himalayas (2006), "
+                    "aligns Ophelia "
+                    "with East Asian "
+                    "ideals of "
+                    "femininity, but "
+                    "also brings out "
+                    "the sexuality that "
+                    "is latent or "
+                    "suppressed in "
+                    "Victorian "
+                    "interpretations. "
+                    "They do so by "
+                    "aligning Ophelia "
+                    "with East Asian "
+                    "ideals of "
+                    "femininity."
+                ),
                 "type": {"id": "other", "title": {"en": "Other"}},
             }
         ],
@@ -1593,7 +1747,9 @@ json11451 = {
                 "person_or_org": {
                     "family_name": "Alice Joubin",
                     "given_name": "Alexa",
-                    "identifiers": [{"identifier": "joubin", "scheme": "hc_username"}],
+                    "identifiers": [
+                        {"identifier": "joubin", "scheme": "hc_username"}
+                    ],
                     "name": "Alice Joubin, Alexa",
                     "type": "personal",
                 },
@@ -1621,53 +1777,55 @@ json11451 = {
             },
         ],
         "publication_date": "2012",
-        "description": "There are three main East Asian approaches to "
-        "interpreting Ophelia. The first is informed by "
-        "the fascination with and reaction against the "
-        "Victorian pictorialization of Ophelia, "
-        "especially John Everett Millais’s famous "
-        "Ophelia (1851), that emphasized, as Kimberly "
-        "Rhodes describes, her “pathos, innocence, and "
-        "beauty rather than the unseemly detail of her "
-        "death.”  Despite having lived through negative "
-        "experiences, Ophelia retains a childlike "
-        "innocence in these rewritings. For example, New "
-        "Hamlet by Lao She (penname of Shu Qingchun, "
-        '1899-1966) parodies China’\'“"""mlet comple””"'
-        "(the inability to act at a time of national "
-        "crisis) and the fascination with an Ophelia "
-        "submerged in water. Both Ophelia and Millais’s "
-        "painting are featured in two of Japanese writer "
-        "Natsume Sōseki’s early twentieth-century "
-        "novels. A second approach emphasizes the local "
-        "context. Adapters used local values to engage "
-        "with and even critique the Victorian narrative "
-        "tradition of moralization. Late "
-        "nineteenth-century translator Lin Shu "
-        "(1852-1924), for example, tones down the "
-        "sentimentalization of Ophelia in his classical "
-        "Chinese rewriting of Charles and Mary Lamb’s "
-        "Tales from Shakespeare, showcasing the conflict "
-        "between Victorian and Confucian moral codes. "
-        "The third approach focuses upon an objectified "
-        "and sexualized Ophelia. As other chapters in "
-        "this volume demonstrate, this is not "
-        "exclusively an Asian phenomenon. However, the "
-        "eroticism associated with the Ophelia figure in "
-        "a number of Asian stage and screen versions of "
-        "Hamlet, such as Sherwood Hu’s film Prince of "
-        "the Himalayas (2006), aligns Ophelia with East "
-        "Asian ideals of femininity, but also brings out "
-        "the sexuality that is latent or suppressed in "
-        "Victorian interpretations. They do so by "
-        "aligning Ophelia with East Asian ideals of "
-        "femininity.",
+        "description": (
+            "There are three main East Asian approaches to "
+            "interpreting Ophelia. The first is informed by "
+            "the fascination with and reaction against the "
+            "Victorian pictorialization of Ophelia, "
+            "especially John Everett Millais’s famous "
+            "Ophelia (1851), that emphasized, as Kimberly "
+            "Rhodes describes, her “pathos, innocence, and "
+            "beauty rather than the unseemly detail of her "
+            "death.”  Despite having lived through negative "
+            "experiences, Ophelia retains a childlike "
+            "innocence in these rewritings. For example, New "
+            "Hamlet by Lao She (penname of Shu Qingchun, "
+            '1899-1966) parodies China’\'“"""mlet comple””"'
+            "(the inability to act at a time of national "
+            "crisis) and the fascination with an Ophelia "
+            "submerged in water. Both Ophelia and Millais’s "
+            "painting are featured in two of Japanese writer "
+            "Natsume Sōseki’s early twentieth-century "
+            "novels. A second approach emphasizes the local "
+            "context. Adapters used local values to engage "
+            "with and even critique the Victorian narrative "
+            "tradition of moralization. Late "
+            "nineteenth-century translator Lin Shu "
+            "(1852-1924), for example, tones down the "
+            "sentimentalization of Ophelia in his classical "
+            "Chinese rewriting of Charles and Mary Lamb’s "
+            "Tales from Shakespeare, showcasing the conflict "
+            "between Victorian and Confucian moral codes. "
+            "The third approach focuses upon an objectified "
+            "and sexualized Ophelia. As other chapters in "
+            "this volume demonstrate, this is not "
+            "exclusively an Asian phenomenon. However, the "
+            "eroticism associated with the Ophelia figure in "
+            "a number of Asian stage and screen versions of "
+            "Hamlet, such as Sherwood Hu’s film Prince of "
+            "the Himalayas (2006), aligns Ophelia with East "
+            "Asian ideals of femininity, but also brings out "
+            "the sexuality that is latent or suppressed in "
+            "Victorian interpretations. They do so by "
+            "aligning Ophelia with East Asian ideals of "
+            "femininity."
+        ),
         "identifiers": [
             {"identifier": "hc:11451", "scheme": "hclegacy-pid"},
             {"identifier": "1-1013793", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/M6733G", "scheme": "datacite-doi"},
             {"identifier": "10.1057/9781137016461", "scheme": "doi"},
-            {"identifier": "https://doi.org/10.17613/" "M6733G", "scheme": "url"},
+            {"identifier": "https://doi.org/10.17613/M6733G", "scheme": "url"},
         ],
         "languages": [{"id": "eng", "title": {"en": "English"}}],
         "resource_type": {"id": "textDocument-bookSection"},
@@ -1681,8 +1839,10 @@ json11451 = {
                     "url": "https://creativecommons.org/licenses/by-nc/4.0/legalcode",
                 },
                 "title": {
-                    "en": "Creative Commons Attribution Non "
-                    "Commercial 4.0 International"
+                    "en": (
+                        "Creative Commons Attribution Non "
+                        "Commercial 4.0 International"
+                    )
                 },
             }
         ],
@@ -1704,13 +1864,15 @@ json11451 = {
             },
             {
                 "id": "http://id.worldcat.org/fast/29048",
-                "subject": "Shakespeare, William, " "1564-1616",
+                "subject": "Shakespeare, William, 1564-1616",
                 "scheme": "FAST-personal",
             },
         ],
         "publisher": "Palgrave",
-        "title": "The Paradox of Female Agency: Ophelia and East Asian "
-        "Sensibilities",
+        "title": (
+            "The Paradox of Female Agency: Ophelia and East Asian "
+            "Sensibilities"
+        ),
     },
     "parent": {"access": {"owned_by": [{"user": "49"}]}},
     "updated": "2017-09-16T16:41:52Z",
@@ -1727,17 +1889,25 @@ json22647 = {
     },
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/"
-        "humcore/2019/02/o_1d2l8l61vl7ouij402qpl35p7."
-        "pdf.sh-unfixing-epic-2018.pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads/"
+            "humcore/2019/02/o_1d2l8l61vl7ouij402qpl35p7."
+            "pdf.sh-unfixing-epic-2018.pdf"
+        ),
         "hclegacy:file_pid": "hc:22648",
         "hclegacy:groups_for_deposit": [
             {
                 "group_identifier": "1000636",
-                "group_name": "Ancient " "Greece " "& " "Rome",
+                "group_name": "Ancient Greece & Rome",
             },
-            {"group_identifier": "1000816", "group_name": "Classical " "Tradition"},
-            {"group_identifier": "1000630", "group_name": "Poetics " "and " "Poetry"},
+            {
+                "group_identifier": "1000816",
+                "group_name": "Classical Tradition",
+            },
+            {
+                "group_identifier": "1000630",
+                "group_name": "Poetics and Poetry",
+            },
         ],
         "hclegacy:previously_published": "published",
         "hclegacy:record_change_date": "2019-02-01T19:30:52Z",
@@ -1748,12 +1918,15 @@ json22647 = {
         "imprint:imprint": {
             "isbn": "9780198804215",
             "pages": "262-274",
-            "title": "Epic Performances from the Middle Ages into the "
-            "Twenty-First Century",
+            "title": (
+                "Epic Performances from the Middle Ages into the "
+                "Twenty-First Century"
+            ),
         },
         "kcr:commons_domain": "hcommons.org",
-        "kcr:chapter_label": "18 - Unfixing Epic: Homeric Orality "
-        "and Contemporary Performance",
+        "kcr:chapter_label": (
+            "18 - Unfixing Epic: Homeric Orality and Contemporary Performance"
+        ),
         "kcr:submitter_email": "stephe_harrop@hotmail.co.uk",
         "kcr:submitter_username": "stepheharrop",
         "kcr:user_defined_tags": [
@@ -1887,56 +2060,65 @@ json22647 = {
             },
         ],
         "publication_date": "2018",
-        "description": "This chapter examines the impact of a putative "
-        "oral Homer upon the work of recent "
-        "performance-makers. The influence of "
-        "oral-poetic theories is (as yet) an "
-        "under-explored area of study, neglected by "
-        "scholars whose literary expertise leads them to "
-        "focus on dramatic texts and production "
-        "histories, with each revisionary text or "
-        "production regarded as a single, stable, and "
-        "repeatable entity. The field of classical "
-        "reception studies at present lacks the "
-        "conceptual and theoretical means to engage "
-        "effectively with works which deliberately "
-        "exploit elements of ‘in-performance’ "
-        "composition, and which positively value the "
-        "qualities of fluidity and flexibility evoked by "
-        "oral-poetic interpretations of ancient epic. "
-        "However, the present work contends that a "
-        "notional oral Homer informs a diverse array of "
-        "contemporary theatre texts and performance "
-        "practices, and that a full appreciation of the "
-        "different ways in which oral-poetic theory can "
-        "influence the creation of these depends upon an "
-        "ability to identify and interpret the interplay "
-        "between ‘fixed’ and ‘unfixed’ elements both "
-        "within particular performances, and within "
-        "different iterations of the same production or "
-        "event. Kate Tempest’s performance-poem Brand "
-        "New Ancients is analysed as a striking recent "
-        "example of creative interplay between such "
-        "‘fixed’ and ‘unfixed’ elements.",
+        "description": (
+            "This chapter examines the impact of a putative "
+            "oral Homer upon the work of recent "
+            "performance-makers. The influence of "
+            "oral-poetic theories is (as yet) an "
+            "under-explored area of study, neglected by "
+            "scholars whose literary expertise leads them to "
+            "focus on dramatic texts and production "
+            "histories, with each revisionary text or "
+            "production regarded as a single, stable, and "
+            "repeatable entity. The field of classical "
+            "reception studies at present lacks the "
+            "conceptual and theoretical means to engage "
+            "effectively with works which deliberately "
+            "exploit elements of ‘in-performance’ "
+            "composition, and which positively value the "
+            "qualities of fluidity and flexibility evoked by "
+            "oral-poetic interpretations of ancient epic. "
+            "However, the present work contends that a "
+            "notional oral Homer informs a diverse array of "
+            "contemporary theatre texts and performance "
+            "practices, and that a full appreciation of the "
+            "different ways in which oral-poetic theory can "
+            "influence the creation of these depends upon an "
+            "ability to identify and interpret the interplay "
+            "between ‘fixed’ and ‘unfixed’ elements both "
+            "within particular performances, and within "
+            "different iterations of the same production or "
+            "event. Kate Tempest’s performance-poem Brand "
+            "New Ancients is analysed as a striking recent "
+            "example of creative interplay between such "
+            "‘fixed’ and ‘unfixed’ elements."
+        ),
         "identifiers": [
             {"identifier": "hc:22647", "scheme": "hclegacy-pid"},
             {"identifier": "1000360-19934", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/1d2d-2y15", "scheme": "datacite-doi"},
-            {"identifier": "https://doi.org/10.17613/1d2d-2y15", "scheme": "url"},
+            {
+                "identifier": "https://doi.org/10.17613/1d2d-2y15",
+                "scheme": "url",
+            },
         ],
         "languages": [{"id": "eng", "title": {"en": "English"}}],
         "resource_type": {"id": "textDocument-bookSection"},
         "rights": [
             {
                 "description": {
-                    "en": "Proprietary material. No permissions are "
-                    "granted for any kind of copyring or "
-                    "re-use. All rights reserved"
+                    "en": (
+                        "Proprietary material. No permissions are "
+                        "granted for any kind of copyring or "
+                        "re-use. All rights reserved"
+                    )
                 },
                 "id": "arr",
                 "icon": "copyright",
-                "props": {"url": "https://en.wikipedia.org/wiki/All_rights_reserved"},
-                "title": {"en": "All Rights " "Reserved"},
+                "props": {
+                    "url": "https://en.wikipedia.org/wiki/All_rights_reserved"
+                },
+                "title": {"en": "All Rights Reserved"},
             }
         ],
         "subjects": [
@@ -1947,7 +2129,7 @@ json22647 = {
             },
             {
                 "id": "http://id.worldcat.org/fast/1411635",
-                "subject": "Criticism, interpretation, " "etc.",
+                "subject": "Criticism, interpretation, etc.",
                 "scheme": "FAST-form",
             },
             {
@@ -1972,7 +2154,7 @@ json22647 = {
             },
         ],
         "publisher": "Oxford University Press",
-        "title": "Unfixing Epic: Homeric Orality and Contemporary " "Performance",
+        "title": "Unfixing Epic: Homeric Orality and Contemporary Performance",
     },
     "parent": {"access": {"owned_by": [{"user": "1012453"}]}},
     "updated": "2019-02-01T19:30:52Z",
@@ -1989,24 +2171,28 @@ json42615 = {
     },
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads"
-        "/humcore/2021/11/o_1fk563qmpqgs1on0ue"
-        "g6mfcf7.pdf.palazzo-vernacular_pa"
-        "tterns_in_portugal_and_brazil-2021.pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads"
+            "/humcore/2021/11/o_1fk563qmpqgs1on0ue"
+            "g6mfcf7.pdf.palazzo-vernacular_pa"
+            "tterns_in_portugal_and_brazil-2021.pdf"
+        ),
         "hclegacy:file_pid": "hc:42616",
         "hclegacy:previously_published": "published",
         "hclegacy:record_change_date": "2021-11-10T15:06:20Z",
         "hclegacy:record_creation_date": "2021-11-10T15:06:20Z",
-        "hclegacy:submitter_affiliation": "University of Brasilia "
-        "School of Architecture "
-        "and Urbanism",
+        "hclegacy:submitter_affiliation": (
+            "University of Brasilia School of Architecture and Urbanism"
+        ),
         "hclegacy:submitter_id": "1011841",
         "hclegacy:submitter_org_memberships": ["hc", "sah"],
         "journal:journal": {
             "issn": "2660-583X",
             "issue": "2",
             "pages": "359-370",
-            "title": "Journal of Traditional Building, Architecture and " "Urbanism",
+            "title": (
+                "Journal of Traditional Building, Architecture and Urbanism"
+            ),
         },
         "kcr:commons_domain": "sah.hcommons.org",
         "kcr:submitter_email": "pedro.palazzo@gmail.com",
@@ -2017,21 +2203,24 @@ json42615 = {
             "building types",
             "Urbanism/urban planning",
             "Portuguese empire",
-            "Luso-Brazilian " "studies",
-            "Architectural " "history",
+            "Luso-Brazilian studies",
+            "Architectural history",
             "Urban history",
             "18th century",
             "19th century",
         ],
     },
     "files": {
-        "default_preview": "palazzo-vernacular_patterns_in_"
-        "portugal_and_brazil-2021.pdf",
+        "default_preview": (
+            "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf"
+        ),
         "enabled": True,
         "entries": {
-            "palazzo-vernacular_patterns_in_portugal_and_brazil-2021."
-            "pdf": {
-                "key": "palazzo-vernacular_patterns_in_portugal_and_b" "razil-2021.pdf",
+            "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf": {
+                "key": (
+                    "palazzo-vernacular_patterns_in_portugal_and_b"
+                    "razil-2021.pdf"
+                ),
                 "mimetype": "application/pdf",
                 "size": "498676",
             }
@@ -2042,15 +2231,23 @@ json42615 = {
             {
                 "affiliations": [
                     {
-                        "name": "University of Brasilia School "
-                        "of Architecture and Urbanism"
+                        "name": (
+                            "University of Brasilia School "
+                            "of Architecture and Urbanism"
+                        )
                     }
                 ],
                 "person_or_org": {
-                    "family_name": "P. Palazzo",  # FIXME: why is initial with family name?
+                    "family_name": (
+                        "P. Palazzo"
+                    ),  # FIXME: why is initial with family name?
                     "given_name": "Pedro",
-                    "identifiers": [{"identifier": "palazzo", "scheme": "hc_username"}],
-                    "name": "P. Palazzo, Pedro",  # Why is name switched to family, given?
+                    "identifiers": [
+                        {"identifier": "palazzo", "scheme": "hc_username"}
+                    ],
+                    "name": (
+                        "P. Palazzo, Pedro"
+                    ),  # Why is name switched to family, given?
                     "type": "personal",
                 },
                 "role": {"id": "author", "title": {"en": "Author"}},
@@ -2067,31 +2264,36 @@ json42615 = {
             }
         ],
         "publication_date": "2021",
-        "description": "Traditional towns in Portugal and Brazil have "
-        "evolved a finely tuned coordination between, on "
-        "the one hand, modular dimensions for street "
-        "widths and lot sizes, and on the other, a "
-        "typology of room shapes and layouts within "
-        "houses. Despite being well documented in urban "
-        "history, this coordination was in the last "
-        "century often interpreted as contingent, a "
-        "result of the limited material means of "
-        "pre-industrial societies. But the continued "
-        "application and gradual adaptation of these "
-        "urban and architectural patterns through "
-        "periods of industrialization and economic "
-        "development suggests that they respond both to "
-        "enduring housing requirements and to piecemeal "
-        "urban growth. This article surveys the "
-        "persistence of urban and architectural patterns "
-        "up to the early 20th century, showing their "
-        "resilience in addressing modern housing and "
-        "urbanization requirements.",
+        "description": (
+            "Traditional towns in Portugal and Brazil have "
+            "evolved a finely tuned coordination between, on "
+            "the one hand, modular dimensions for street "
+            "widths and lot sizes, and on the other, a "
+            "typology of room shapes and layouts within "
+            "houses. Despite being well documented in urban "
+            "history, this coordination was in the last "
+            "century often interpreted as contingent, a "
+            "result of the limited material means of "
+            "pre-industrial societies. But the continued "
+            "application and gradual adaptation of these "
+            "urban and architectural patterns through "
+            "periods of industrialization and economic "
+            "development suggests that they respond both to "
+            "enduring housing requirements and to piecemeal "
+            "urban growth. This article surveys the "
+            "persistence of urban and architectural patterns "
+            "up to the early 20th century, showing their "
+            "resilience in addressing modern housing and "
+            "urbanization requirements."
+        ),
         "identifiers": [
             {"identifier": "hc:42615", "scheme": "hclegacy-pid"},
             {"identifier": "1001712-776", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/6v9q-8878", "scheme": "datacite-doi"},
-            {"identifier": "https://doi.org/10.17613/6v9q-8878", "scheme": "url"},
+            {
+                "identifier": "https://doi.org/10.17613/6v9q-8878",
+                "scheme": "url",
+            },
         ],
         "languages": [{"id": "eng", "title": {"en": "English"}}],
         "resource_type": {"id": "textDocument-journalArticle"},
@@ -2105,9 +2307,11 @@ json42615 = {
                     "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode",
                 },
                 "title": {
-                    "en": "Creative Commons Attribution Non "
-                    "Commercial No Derivatives 4.0 "
-                    "International"
+                    "en": (
+                        "Creative Commons Attribution Non "
+                        "Commercial No Derivatives 4.0 "
+                        "International"
+                    )
                 },
             }
         ],
@@ -2119,7 +2323,7 @@ json42615 = {
             },
             {
                 "id": "http://id.worldcat.org/fast/861853",
-                "subject": "Cities and towns--Study and " "teaching",
+                "subject": "Cities and towns--Study and teaching",
                 "scheme": "FAST-topical",
             },
             {
@@ -2154,8 +2358,10 @@ json42615 = {
             },
         ],
         "publisher": "Toledo: INTBAU Spain",
-        "title": "Vernacular Patterns in Portugal and Brazil: Evolution "
-        "and Adaptations",
+        "title": (
+            "Vernacular Patterns in Portugal and Brazil: Evolution "
+            "and Adaptations"
+        ),
     },
     "parent": {"access": {"owned_by": [{"user": "1011841"}]}},
     "updated": "2021-11-10T15:06:20Z",
@@ -2172,9 +2378,11 @@ json22625 = {
     },
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/"
-        "humcore/2019/01/o_1d2bs18df1fnlt45186"
-        "1gk91rer7.pdf.55710426.pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads/"
+            "humcore/2019/01/o_1d2bs18df1fnlt45186"
+            "1gk91rer7.pdf.55710426.pdf"
+        ),
         "hclegacy:file_pid": "hc:22626",
         "kcr:submitter_email": "wojciech.tworek.09@ucl.ac.uk",
         "kcr:submitter_username": "wtworek",
@@ -2261,7 +2469,9 @@ json22625 = {
                 "person_or_org": {
                     "family_name": "Tworek",
                     "given_name": "Wojciech",
-                    "identifiers": [{"identifier": "wtworek", "scheme": "hc_username"}],
+                    "identifiers": [
+                        {"identifier": "wtworek", "scheme": "hc_username"}
+                    ],
                     "name": "Tworek, Wojciech",
                     "type": "personal",
                 },
@@ -2289,60 +2499,69 @@ json22625 = {
             },
         ],
         "publication_date": "2016",
-        "description": "The issue of gender has been a topic of "
-        "discussion in the research of Hasidism since S. "
-        "A. Horodecky’s book (1923), in which he claimed "
-        "that Hasidism brought about full equality of "
-        "Jewish men and women in the field of "
-        "spirituality. Although his claims have been by "
-        "and large rejected, most\n"
-        "scholars agree that the twentieth century Chabad "
-        "movement has indeed created space for women in "
-        "the hasidic model of spirituality. This article "
-        "sets out to explore whether the particular "
-        "interest of contemporary Chabad in the role of "
-        "women is a new phenomenon or has existed from "
-        "the movement’s inception. Rather than looking at "
-        "the issue from a social-historical perspective, "
-        "the article examines the gender discourse "
-        "conveyed in the homilies of the founder of "
-        "Chabad, Rabbi Shneur Zalman of Liadi "
-        "(1745–1812). It explores the role of the "
-        "feminine aspect of divinity in the process of "
-        "creation, and its envisioned elevation in the "
-        "future-to-come, in an attempt to establish the "
-        "relation between the gender category of “female” "
-        "and flesh-and-blood women in the teachings of "
-        "Shneur Zalman of Liadi. This, in turn, leads to "
-        "determine whether the concept of the "
-        "transfigurations of genders in the "
-        "future-to-come, a Chabad tradition that "
-        "originates in the teachings of Shneur Zalman of "
-        "Liadi and serves as the ideological ground for "
-        "the empowerment of Chabad women in the writings "
-        "of the late Lubavitcher Rebbe in the twentieth "
-        "century, could have any relevance to the daily "
-        "life of wives and daughters of Shneur Zalman’s "
-        "followers.",
+        "description": (
+            "The issue of gender has been a topic of "
+            "discussion in the research of Hasidism since S. "
+            "A. Horodecky’s book (1923), in which he claimed "
+            "that Hasidism brought about full equality of "
+            "Jewish men and women in the field of "
+            "spirituality. Although his claims have been by "
+            "and large rejected, most\n"
+            "scholars agree that the twentieth century Chabad "
+            "movement has indeed created space for women in "
+            "the hasidic model of spirituality. This article "
+            "sets out to explore whether the particular "
+            "interest of contemporary Chabad in the role of "
+            "women is a new phenomenon or has existed from "
+            "the movement’s inception. Rather than looking at "
+            "the issue from a social-historical perspective, "
+            "the article examines the gender discourse "
+            "conveyed in the homilies of the founder of "
+            "Chabad, Rabbi Shneur Zalman of Liadi "
+            "(1745–1812). It explores the role of the "
+            "feminine aspect of divinity in the process of "
+            "creation, and its envisioned elevation in the "
+            "future-to-come, in an attempt to establish the "
+            "relation between the gender category of “female” "
+            "and flesh-and-blood women in the teachings of "
+            "Shneur Zalman of Liadi. This, in turn, leads to "
+            "determine whether the concept of the "
+            "transfigurations of genders in the "
+            "future-to-come, a Chabad tradition that "
+            "originates in the teachings of Shneur Zalman of "
+            "Liadi and serves as the ideological ground for "
+            "the empowerment of Chabad women in the writings "
+            "of the late Lubavitcher Rebbe in the twentieth "
+            "century, could have any relevance to the daily "
+            "life of wives and daughters of Shneur Zalman’s "
+            "followers."
+        ),
         "identifiers": [
             {"identifier": "hc:22625", "scheme": "hclegacy-pid"},
             {"identifier": "1000361-383", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/hrhn-3k43", "scheme": "datacite-doi"},
-            {"identifier": "https://doi.org/10.17613/" "hrhn-3k43", "scheme": "url"},
+            {
+                "identifier": "https://doi.org/10.17613/hrhn-3k43",
+                "scheme": "url",
+            },
         ],
         "languages": [{"id": "heb", "title": {"en": "Hebrew"}}],
         "resource_type": {"id": "textDocument-bookSection"},
         "rights": [
             {
                 "description": {
-                    "en": "Proprietary material. No permissions are "
-                    "granted for any kind of copyring or "
-                    "re-use. All rights reserved"
+                    "en": (
+                        "Proprietary material. No permissions are "
+                        "granted for any kind of copyring or "
+                        "re-use. All rights reserved"
+                    )
                 },
                 "id": "arr",
                 "icon": "copyright",
-                "props": {"url": "https://en.wikipedia.org/wiki/All_rights_reserved"},
-                "title": {"en": "All Rights " "Reserved"},
+                "props": {
+                    "url": "https://en.wikipedia.org/wiki/All_rights_reserved"
+                },
+                "title": {"en": "All Rights Reserved"},
             }
         ],
         "subjects": [
@@ -2380,10 +2599,12 @@ json45177 = {
     },
     "custom_fields": {
         "hclegacy:collection": "hccollection:1",
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/"
-        "humcore/2022/03/o_1fvg3cpqe1hv61shk1"
-        "sqs1uqplep7.pdf.cep_notes_revised_2022-03-30"
-        ".pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/uploads/"
+            "humcore/2022/03/o_1fvg3cpqe1hv61shk1"
+            "sqs1uqplep7.pdf.cep_notes_revised_2022-03-30"
+            ".pdf"
+        ),
         "hclegacy:file_pid": "hc:45178",
         "hclegacy:record_change_date": "2022-03-31T13:55:13Z",
         "hclegacy:record_creation_date": "2022-03-31T13:53:16Z",
@@ -2397,7 +2618,7 @@ json45177 = {
         "kcr:user_defined_tags": [
             "Cataloging",
             "Cataloging standards",
-            "Cataloging Exhibition " "Publications: Best " "Practices",
+            "Cataloging Exhibition Publications: Best Practices",
             "Notes",
             "Exhibition publications",
             "Art librarianship",
@@ -2409,7 +2630,7 @@ json45177 = {
         "hclegacy:groups_for_deposit": [
             {
                 "group_identifier": "1003999",
-                "group_name": "ARLIS/NA " "Cataloging Advisory " "Committee",
+                "group_name": "ARLIS/NA Cataloging Advisory Committee",
             }
         ],
     },
@@ -2544,7 +2765,9 @@ json45177 = {
                 "person_or_org": {
                     "family_name": "Provo",
                     "given_name": "Alexandra",
-                    "identifiers": [{"identifier": "aprovo", "scheme": "hc_username"}],
+                    "identifiers": [
+                        {"identifier": "aprovo", "scheme": "hc_username"}
+                    ],
                     "name": "Provo, Alexandra",
                     "type": "personal",
                 },
@@ -2590,29 +2813,34 @@ json45177 = {
             }
         ],
         "publication_date": "2022",
-        "description": "The ARLIS/NA Cataloging Advisory Committee has "
-        "drafted these best practices to provide "
-        "practical guidance to catalogers working with "
-        "art exhibition publications. The guidelines are "
-        "confined to cataloging issues and situations "
-        "characteristic of this type of material; they "
-        "are intended to be used with and are compatible "
-        "with other cataloging documentation including "
-        "Resource Description and Access (RDA) and LC-PCC "
-        "Policy Statements and Metadata Guidance "
-        "Documents. Examples have been given using the "
-        "MARC21 format for consistency and familiarity, "
-        "but MARC21 is not a prescribed or preferred "
-        "schema. The order of notes in this document "
-        "generally follows the WEMI framework but can be "
-        "adjusted for local practice or when it has been "
-        "decided that a particular note is of primary "
-        "importance.",
+        "description": (
+            "The ARLIS/NA Cataloging Advisory Committee has "
+            "drafted these best practices to provide "
+            "practical guidance to catalogers working with "
+            "art exhibition publications. The guidelines are "
+            "confined to cataloging issues and situations "
+            "characteristic of this type of material; they "
+            "are intended to be used with and are compatible "
+            "with other cataloging documentation including "
+            "Resource Description and Access (RDA) and LC-PCC "
+            "Policy Statements and Metadata Guidance "
+            "Documents. Examples have been given using the "
+            "MARC21 format for consistency and familiarity, "
+            "but MARC21 is not a prescribed or preferred "
+            "schema. The order of notes in this document "
+            "generally follows the WEMI framework but can be "
+            "adjusted for local practice or when it has been "
+            "decided that a particular note is of primary "
+            "importance."
+        ),
         "identifiers": [
             {"identifier": "hc:45177", "scheme": "hclegacy-pid"},
             {"identifier": "1001634-246", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/zhmh-c741", "scheme": "datacite-doi"},
-            {"identifier": "https://doi.org/10.17613/" "zhmh-c741", "scheme": "url"},
+            {
+                "identifier": "https://doi.org/10.17613/zhmh-c741",
+                "scheme": "url",
+            },
         ],
         "languages": [{"id": "eng", "title": {"en": "English"}}],
         "resource_type": {"id": "textDocument-bookSection"},
@@ -2626,9 +2854,11 @@ json45177 = {
                     "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode",
                 },
                 "title": {
-                    "en": "Creative Commons Attribution Non "
-                    "Commercial No Derivatives 4.0 "
-                    "International"
+                    "en": (
+                        "Creative Commons Attribution Non "
+                        "Commercial No Derivatives 4.0 "
+                        "International"
+                    )
                 },
             }
         ],
@@ -2649,10 +2879,12 @@ json44881 = {
     },
     "created": "2022-03-08T21:57:49Z",
     "custom_fields": {
-        "hclegacy:file_location": "/srv/www/commons/current/web/app/"
-        "uploads/humcore/2022/03/"
-        "o_1ftlo8pia8cm1ptgmrh1l1s10607.pdf"
-        ".clarkestarr-transcript.pdf",
+        "hclegacy:file_location": (
+            "/srv/www/commons/current/web/app/"
+            "uploads/humcore/2022/03/"
+            "o_1ftlo8pia8cm1ptgmrh1l1s10607.pdf"
+            ".clarkestarr-transcript.pdf"
+        ),
         "hclegacy:file_pid": "hc:44882",
         "hclegacy:previously_published": "not-published",
         "hclegacy:record_change_date": "2022-03-08T21:57:49Z",
@@ -2663,7 +2895,7 @@ json44881 = {
         "kcr:submitter_username": "mlhale7",
         "kcr:user_defined_tags": [
             "Society history",
-            "Art Libraries Society of North " "America",
+            "Art Libraries Society of North America",
             "Anniversary",
             "Gay librarians",
             "Vietnam War",
@@ -2748,27 +2980,32 @@ json44881 = {
             }
         ],
         "publication_date": "2017",
-        "description": "Emily Walz interviews Distinguished Service "
-        "Award winners Sherman Clarke (2005) and Daniel "
-        "Starr (2014) on June 6, 2017, at the New York "
-        "Public Library. Both librarians are career "
-        "catalogers who joined ARLIS in its earliest "
-        "years; Clarke is best known as the founder of "
-        "Art NACO. Clarke and Starr both share their "
-        "experiences during the Vietnam War, when each "
-        "was classified as a conscientious objector. The "
-        "interview covers the challenges of the Society, "
-        "including working with management companies and "
-        "volunteer participation. The interviewees also "
-        "discuss the culture of ARLIS/NA, in particular "
-        "its inclusion of gay and lesbian members. Clarke "
-        "and Starr are long-standing roommates at annual "
-        "conferences.",
+        "description": (
+            "Emily Walz interviews Distinguished Service "
+            "Award winners Sherman Clarke (2005) and Daniel "
+            "Starr (2014) on June 6, 2017, at the New York "
+            "Public Library. Both librarians are career "
+            "catalogers who joined ARLIS in its earliest "
+            "years; Clarke is best known as the founder of "
+            "Art NACO. Clarke and Starr both share their "
+            "experiences during the Vietnam War, when each "
+            "was classified as a conscientious objector. The "
+            "interview covers the challenges of the Society, "
+            "including working with management companies and "
+            "volunteer participation. The interviewees also "
+            "discuss the culture of ARLIS/NA, in particular "
+            "its inclusion of gay and lesbian members. Clarke "
+            "and Starr are long-standing roommates at annual "
+            "conferences."
+        ),
         "identifiers": [
             {"identifier": "hc:44881", "scheme": "hclegacy-pid"},
             {"identifier": "1001634-235", "scheme": "hclegacy-record-id"},
             {"identifier": "10.17613/82yy-vj44", "scheme": "datacite-doi"},
-            {"identifier": "https://doi.org/10.17613/82yy-vj44", "scheme": "url"},
+            {
+                "identifier": "https://doi.org/10.17613/82yy-vj44",
+                "scheme": "url",
+            },
         ],
         "languages": [{"id": "eng", "title": {"en": "English"}}],
         "resource_type": {"id": "textDocument-interviewTranscript"},
@@ -2783,9 +3020,11 @@ json44881 = {
                     "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode",
                 },
                 "title": {
-                    "en": "Creative Commons Attribution Non "
-                    "Commercial No Derivatives 4.0 "
-                    "International"
+                    "en": (
+                        "Creative Commons Attribution Non "
+                        "Commercial No Derivatives 4.0 "
+                        "International"
+                    )
                 },
             }
         ],
@@ -2806,8 +3045,10 @@ json44881 = {
                 "scheme": "FAST-topical",
             },
         ],
-        "title": "ARLIS/NA Oral History for Distinguished Service Award "
-        "Winners, Sherman Clarke and Daniel Starr",
+        "title": (
+            "ARLIS/NA Oral History for Distinguished Service Award "
+            "Winners, Sherman Clarke and Daniel Starr"
+        ),
     },
     "parent": {"access": {"owned_by": [{"user": "1018587"}]}},
     "updated": "2022-03-08T21:57:49Z",
@@ -2820,6 +3061,198 @@ def serialized_records():
     return {
         "actual_serialized_json": actual_serialized_json,
         "actual_bad_data": actual_bad_data,
+    }
+
+
+@pytest.mark.parametrize(
+    "expected,row,bad_data_dict",
+    [
+        (
+            {
+                "publication_date": "2023",
+                "issued": "2023-01-01",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2023",
+                "date": "2023-01-01",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2015",
+                "issued": "2015-02",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2015",
+                "date": "02.2015",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2010",
+                "issued": "2010-11-01",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2010",
+                "date": "Nov. 1, 2010",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2023",
+                "issued": "2023-04-22",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2023",
+                "date": "22ND APRIL,2023",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2021",
+                "issued": "2021/2022",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2021",
+                "date": "2021-2022",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2019",
+                "issued": "2019-02",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2019",
+                "date": "02/2019",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2023",
+                "issued": "2023-02-04",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2023",
+                "date": "4 de febrero 2023",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2015",
+                "issued": "2015-03",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2015",
+                "date": "March, 2015.",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2021",
+                "issued": "2021-10",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2021",
+                "date": "October, 2021.",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2002",
+                "issued": "2002/2015",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2002",
+                "date": "2002/2015",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2022",
+                "issued": "1991-04-22",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2022",
+                "date": "04/91/22",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2022",
+                "issued": "2017-06-30",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2022",
+                "date": "2017 06 30",
+            },
+            {},
+        ),
+        (
+            {
+                "publication_date": "2022",
+                "issued": "2022/2023",
+                "description": "Publication date",
+            },
+            {
+                "date_issued": "2022",
+                "date": "2022/23",
+            },
+            {},
+        ),
+    ],
+)
+def test_add_date_info(expected, row, bad_data_dict):
+    actual_dict, actual_bad_data = add_date_info(
+        {"metadata": {}},
+        {
+            **row,
+            "id": "1001634-235",
+            "record_change_date": "",
+            "record_creation_date": "",
+        },
+        bad_data_dict,
+    )
+    assert actual_dict == {
+        "metadata": {
+            "publication_date": expected["publication_date"],
+            "dates": [
+                {
+                    "date": expected["issued"],
+                    "type": {
+                        "id": "issued",
+                        "title": {
+                            "en": "Issued",
+                            "de": "Veröffentlicht",
+                        },
+                    },
+                    "description": expected["description"],
+                }
+            ],
+        }
     }
 
 
@@ -2883,22 +3316,28 @@ def test_serialize_json(expected_json, serialized_records):
             )
     if "additional_descriptions" in expected_json["metadata"].keys():
         for item in [expected_json, actual_json_item]:
-            item["metadata"]["additional_descriptions"][0][
-                "description"
-            ] = _normalize_punctuation(
-                _clean_string(
-                    item["metadata"]["additional_descriptions"][0]["description"]
+            item["metadata"]["additional_descriptions"][0]["description"] = (
+                _normalize_punctuation(
+                    _clean_string(
+                        item["metadata"]["additional_descriptions"][0][
+                            "description"
+                        ]
+                    )
                 )
             )
     if "hclegacy:groups_for_deposit" in expected_json["custom_fields"].keys():
         for item in [expected_json, actual_json_item]:
             for g in item["custom_fields"]["hclegacy:groups_for_deposit"]:
-                g["group_name"] = _normalize_punctuation(_clean_string(g["group_name"]))
+                g["group_name"] = _normalize_punctuation(
+                    _clean_string(g["group_name"])
+                )
     for idx, myname in enumerate(expected_json["metadata"]["creators"]):
         for item in [expected_json, actual_json_item]:
-            item["metadata"]["creators"][idx]["person_or_org"][
-                "name"
-            ] = _normalize_punctuation(_clean_string(myname["person_or_org"]["name"]))
+            item["metadata"]["creators"][idx]["person_or_org"]["name"] = (
+                _normalize_punctuation(
+                    _clean_string(myname["person_or_org"]["name"])
+                )
+            )
             item["metadata"]["creators"][idx]["person_or_org"][
                 "family_name"
             ] = _normalize_punctuation(
@@ -3019,20 +3458,29 @@ request_header_keys = [
         )
     ],
 )
-def test_api_request(method, server, endpoint, args, json_dict, expected_response):
+def test_api_request(
+    method, server, endpoint, args, json_dict, expected_response
+):
     """ """
     other_args = {}
     if json_dict:
         other_args["json_dict"] = json_dict
     actual = api_request(
-        method=method, endpoint=endpoint, server=server, args=args, **other_args
+        method=method,
+        endpoint=endpoint,
+        server=server,
+        args=args,
+        **other_args,
     )
     assert actual["status_code"] == 200
     assert all(
-        k in top_level_record_keys for k in list(json.loads(actual["text"]).keys())
+        k in top_level_record_keys
+        for k in list(json.loads(actual["text"]).keys())
     )
     assert all(k in top_level_record_keys for k in list(actual["json"].keys()))
-    assert all(k in request_header_keys for k in list(actual["headers"].keys()))
+    assert all(
+        k in request_header_keys for k in list(actual["headers"].keys())
+    )
 
 
 @pytest.mark.parametrize(
@@ -3052,7 +3500,10 @@ def test_api_request(method, server, endpoint, args, json_dict, expected_respons
                                 "given_name": "Troy",
                                 "type": "personal",
                             },
-                            "role": {"id": "author", "title": {"en": "Author"}},
+                            "role": {
+                                "id": "author",
+                                "title": {"en": "Author"},
+                            },
                         },
                         {
                             "person_or_org": {
@@ -3067,8 +3518,13 @@ def test_api_request(method, server, endpoint, args, json_dict, expected_respons
                                 "name": "Collins, Thomas",
                                 "type": "personal",
                             },
-                            "affiliations": [{"id": "01ggx4157", "name": "Entity One"}],
-                            "role": {"id": "author", "title": {"en": "Author"}},
+                            "affiliations": [
+                                {"id": "01ggx4157", "name": "Entity One"}
+                            ],
+                            "role": {
+                                "id": "author",
+                                "title": {"en": "Author"},
+                            },
                         },
                         {
                             "person_or_org": {
@@ -3106,7 +3562,10 @@ def test_api_request(method, server, endpoint, args, json_dict, expected_respons
                                 "family_name": "Brown",
                                 "type": "personal",
                             },
-                            "role": {"id": "author", "title": {"en": "Author"}},
+                            "role": {
+                                "id": "author",
+                                "title": {"en": "Author"},
+                            },
                         },
                         {
                             "person_or_org": {
@@ -3121,12 +3580,17 @@ def test_api_request(method, server, endpoint, args, json_dict, expected_respons
                                 "name": "Collins, Thomas",
                                 "type": "personal",
                             },
-                            "role": {"id": "author", "title": {"en": "Author"}},
+                            "role": {
+                                "id": "author",
+                                "title": {"en": "Author"},
+                            },
                             "affiliations": [
                                 {
                                     "id": "01ggx4157",
-                                    "name": "European Organization for Nuclear "
-                                    "Research",
+                                    "name": (
+                                        "European Organization for Nuclear "
+                                        "Research"
+                                    ),
                                 }
                             ],
                         },
@@ -3152,7 +3616,11 @@ def test_api_request(method, server, endpoint, args, json_dict, expected_respons
                     "entries": {},
                     "total_bytes": 0,
                 },
-                "versions": {"is_latest_draft": True, "index": 1, "is_latest": False},
+                "versions": {
+                    "is_latest_draft": True,
+                    "index": 1,
+                    "is_latest": False,
+                },
                 "access": {
                     "files": "public",
                     "embargo": {"active": False, "reason": None},
@@ -3176,7 +3644,9 @@ def test_api_request(method, server, endpoint, args, json_dict, expected_respons
         (json28491, 201, json28491),
     ],
 )
-def test_create_invenio_record(json_payload, expected_status_code, expected_json):
+def test_create_invenio_record(
+    json_payload, expected_status_code, expected_json
+):
     """ """
     # Send everything from test JSON fixtures except
     #  - created
@@ -3192,7 +3662,11 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
         "Content-Type": "application/json",
         "Content-Length": "182",
         "Connection": "keep-alive",
-        "Set-Cookie": "csrftoken=eyJhbGciOiJIUzUxMiIsImlhdCI6MTY4NTQ3MzY1MSwiZXhwIjoxNjg1NTYwMDUxfQ.IkZIODNHR0h2bThxZHdmRVMwaE9JRzgzaE9OaHJhaDFzIg.Te5wJA-7cO-jc29ydK-b2NvEkF17jZNclMIhpGfBou77Ib-I50Qiy4XCBxgttNGGBhkcbeYBRWOm_-2K7YsEBg; Expires=Tue, 06 Jun 2023 19:07:31 GMT; Max-Age=604800; Secure; Path=/; SameSite=Lax",
+        "Set-Cookie": (
+            "csrftoken=eyJhbGciOiJIUzUxMiIsImlhdCI6MTY4NTQ3MzY1MSwiZXhwIjoxNjg1NTYwMDUxfQ.IkZIODNHR0h2bThxZHdmRVMwaE9JRzgzaE9OaHJhaDFzIg.Te5wJA-7cO-jc29ydK-b2NvEkF17jZNclMIhpGfBou77Ib-I50Qiy4XCBxgttNGGBhkcbeYBRWOm_-2K7YsEBg;"
+            " Expires=Tue, 06 Jun 2023 19:07:31 GMT; Max-Age=604800; Secure;"
+            " Path=/; SameSite=Lax"
+        ),
         "X-RateLimit-Limit": "500",
         "X-RateLimit-Remaining": "499",
         "X-RateLimit-Reset": "1685473712",
@@ -3201,7 +3675,9 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
         "X-Frame-Options": "sameorigin",
         "X-XSS-Protection": "1; mode=block",
         "X-Content-Type-Options": "nosniff",
-        "Content-Security-Policy": "default-src 'self' data: 'unsafe-inline' blob:",
+        "Content-Security-Policy": (
+            "default-src 'self' data: 'unsafe-inline' blob:"
+        ),
         "Strict-Transport-Security": "max-age=31556926; includeSubDomains",
         "Referrer-Policy": "strict-origin-when-cross-origin",
     }
@@ -3238,7 +3714,9 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
             "description"
         ] = _normalize_punctuation(
             _clean_string(
-                expected_json["metadata"]["additional_descriptions"][0]["description"]
+                expected_json["metadata"]["additional_descriptions"][0][
+                    "description"
+                ]
             )
         )
 
@@ -3251,23 +3729,27 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
     }
     for idx, c in enumerate(actual["json"]["metadata"]["creators"]):
         if "role" in c.keys() and "de" in c["role"]["title"].keys():
-            del actual["json"]["metadata"]["creators"][idx]["role"]["title"]["de"]
+            del actual["json"]["metadata"]["creators"][idx]["role"]["title"][
+                "de"
+            ]
     if "contributors" in actual["json"]["metadata"].keys():
         for idx, c in enumerate(actual["json"]["metadata"]["contributors"]):
             if "role" in c.keys() and "de" in c["role"]["title"].keys():
-                del actual["json"]["metadata"]["contributors"][idx]["role"]["title"][
-                    "de"
-                ]
+                del actual["json"]["metadata"]["contributors"][idx]["role"][
+                    "title"
+                ]["de"]
     if "description" in actual["json"]["metadata"].keys():
         actual["json"]["metadata"]["description"] = _normalize_punctuation(
             _clean_string(actual["json"]["metadata"]["description"])
         )
     if "additional_descriptions" in actual["json"]["metadata"].keys():
-        for idx, d in enumerate(actual["json"]["metadata"]["additional_descriptions"]):
+        for idx, d in enumerate(
+            actual["json"]["metadata"]["additional_descriptions"]
+        ):
             if "de" in d["type"]["title"].keys():
-                del actual["json"]["metadata"]["additional_descriptions"][idx]["type"][
-                    "title"
-                ]["de"]
+                del actual["json"]["metadata"]["additional_descriptions"][idx][
+                    "type"
+                ]["title"]["de"]
             actual["json"]["metadata"]["additional_descriptions"][idx][
                 "description"
             ] = _normalize_punctuation(
@@ -3323,27 +3805,45 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
     links = {
         "self": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/draft",
         "self_html": f"https://{TESTING_SERVER_DOMAIN}/uploads/###",
-        "self_iiif_manifest": f"https://{TESTING_SERVER_DOMAIN}/api/iiif/draft:###/manifest",
+        "self_iiif_manifest": (
+            f"https://{TESTING_SERVER_DOMAIN}/api/iiif/draft:###/manifest"
+        ),
         "self_iiif_sequence": f"https://{TESTING_SERVER_DOMAIN}/api/iiif/draft:###/sequence/default",
-        "files": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/files",
+        "files": (
+            f"https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/files"
+        ),
         "archive": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/files-archive",
         "record": f"https://{TESTING_SERVER_DOMAIN}/api/records/###",
         "record_html": f"https://{TESTING_SERVER_DOMAIN}/records/###",
         "publish": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/actions/publish",
-        "review": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/review",
-        "versions": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/versions",
-        "access_links": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/access/links",
-        "reserve_doi": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/pids/doi",
-        "communities": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/communities",
+        "review": (
+            f"https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/review"
+        ),
+        "versions": (
+            f"https://{TESTING_SERVER_DOMAIN}/api/records/###/versions"
+        ),
+        "access_links": (
+            f"https://{TESTING_SERVER_DOMAIN}/api/records/###/access/links"
+        ),
+        "reserve_doi": (
+            f"https://{TESTING_SERVER_DOMAIN}/api/records/###/draft/pids/doi"
+        ),
+        "communities": (
+            f"https://{TESTING_SERVER_DOMAIN}/api/records/###/communities"
+        ),
         "communities-suggestions": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/communities-suggestions",
-        "requests": f"https://{TESTING_SERVER_DOMAIN}/api/records/###/requests",
+        "requests": (
+            f"https://{TESTING_SERVER_DOMAIN}/api/records/###/requests"
+        ),
     }
     actual_doi = ""
     if "doi" in actual["json"]["links"].keys():
         actual_doi = actual["json"]["pids"]["doi"]["identifier"]
         links["doi"] = "https://handle.stage.datacite.org/$$$"
     for label, link in actual["json"]["links"].items():
-        assert link == links[label].replace("###", actual_id).replace("$$$", actual_doi)
+        assert link == links[label].replace("###", actual_id).replace(
+            "$$$", actual_doi
+        )
 
     assert actual["json"]["files"] == {
         "enabled": True,
@@ -3364,7 +3864,9 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
     pprint(actual)
 
     # Confirm the record is retrievable
-    confirm_created = api_request("GET", endpoint="records", args=f"{actual_id}/draft")
+    confirm_created = api_request(
+        "GET", endpoint="records", args=f"{actual_id}/draft"
+    )
     pprint(actual_id)
     pprint(confirm_created)
     print("Confirming record was created...")
@@ -3375,7 +3877,9 @@ def test_create_invenio_record(json_payload, expected_status_code, expected_json
     assert deleted["status_code"] == 204
 
     # # Confirm it no longer exists
-    confirm_deleted = api_request("GET", endpoint="records", args=f"{actual_id}")
+    confirm_deleted = api_request(
+        "GET", endpoint="records", args=f"{actual_id}"
+    )
     assert confirm_deleted["status_code"] == 404
 
 
@@ -3394,14 +3898,17 @@ def test_upload_draft_files():
     actual_draft_id = actual_draft["json"]["id"]
 
     files_in = {
-        "palazzo-vernacular_pa"
-        "tterns_in_portugal_and_brazil-2021.pdf": "/srv/www/commons/current/web/app/uploads"
-        "/humcore/2021/11/o_1fk563qmpqgs1on0ue"
-        "g6mfcf7.pdf.palazzo-vernacular_pa"
-        "tterns_in_portugal_and_brazil-2021.pdf"
+        "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf": (
+            "/srv/www/commons/current/web/app/uploads"
+            "/humcore/2021/11/o_1fk563qmpqgs1on0ue"
+            "g6mfcf7.pdf.palazzo-vernacular_pa"
+            "tterns_in_portugal_and_brazil-2021.pdf"
+        )
     }
 
-    actual_upload = upload_draft_files(draft_id=actual_draft_id, files_dict=files_in)
+    actual_upload = upload_draft_files(
+        draft_id=actual_draft_id, files_dict=files_in
+    )
     pprint(actual_upload)
     for k, v in actual_upload["file_transactions"].items():
         assert k in files_in.keys()
@@ -3420,7 +3927,9 @@ def test_create_invenio_community():
     assert actual_community["json"]["metadata"]["slug"] == slug
 
     # Clean up created record from live db
-    deleted = api_request("DELETE", endpoint="communities", args=actual_community_id)
+    deleted = api_request(
+        "DELETE", endpoint="communities", args=actual_community_id
+    )
     assert deleted["status_code"] == 204
 
     # Confirm it no longer exists
@@ -3443,24 +3952,40 @@ def test_create_full_invenio_record(json_in):
         == f'https://{json_in["custom_fields"]["kcr:commons_domain"]}'
     )
     assert actual_full_record["community"]["status_code"] == 200
-    assert actual_full_record["community"]["json"]["access"]["record_policy"] == "open"
-    assert actual_full_record["community"]["json"]["access"]["review_policy"] == "open"
+    assert (
+        actual_full_record["community"]["json"]["access"]["record_policy"]
+        == "open"
+    )
+    assert (
+        actual_full_record["community"]["json"]["access"]["review_policy"]
+        == "open"
+    )
 
     assert (
-        actual_full_record["metadata_record_created"]["json"]["access"]["files"]
+        actual_full_record["metadata_record_created"]["json"]["access"][
+            "files"
+        ]
         == "public"
     )
     assert (
-        actual_full_record["metadata_record_created"]["json"]["access"]["record"]
+        actual_full_record["metadata_record_created"]["json"]["access"][
+            "record"
+        ]
         == "public"
     )
     assert (
-        actual_full_record["metadata_record_created"]["json"]["access"]["status"]
+        actual_full_record["metadata_record_created"]["json"]["access"][
+            "status"
+        ]
         == "metadata-only"
     )
-    assert actual_full_record["metadata_record_created"]["json"]["is_draft"] == True
     assert (
-        actual_full_record["metadata_record_created"]["json"]["is_published"] == False
+        actual_full_record["metadata_record_created"]["json"]["is_draft"]
+        == True
+    )
+    assert (
+        actual_full_record["metadata_record_created"]["json"]["is_published"]
+        == False
     )
 
     afu = actual_full_record["uploaded_files"]
@@ -3480,18 +4005,33 @@ def test_create_full_invenio_record(json_in):
     assert int(actual_full_record["created_user"]["user_id"]) > 2 < 10000
 
     assert actual_full_record["request_to_community"]["status_code"] == 200
-    assert valid_date(actual_full_record["request_to_community"]["json"]["created"])
-    assert actual_full_record["request_to_community"]["json"]["created_by"] == {
-        "user": "3"
-    }
-    assert actual_full_record["request_to_community"]["json"]["is_closed"] == False
-    assert actual_full_record["request_to_community"]["json"]["is_expired"] == False
-    assert actual_full_record["request_to_community"]["json"]["is_open"] == False
+    assert valid_date(
+        actual_full_record["request_to_community"]["json"]["created"]
+    )
+    assert actual_full_record["request_to_community"]["json"][
+        "created_by"
+    ] == {"user": "3"}
     assert (
-        actual_full_record["request_to_community"]["json"]["receiver"]["community"]
+        actual_full_record["request_to_community"]["json"]["is_closed"]
+        == False
+    )
+    assert (
+        actual_full_record["request_to_community"]["json"]["is_expired"]
+        == False
+    )
+    assert (
+        actual_full_record["request_to_community"]["json"]["is_open"] == False
+    )
+    assert (
+        actual_full_record["request_to_community"]["json"]["receiver"][
+            "community"
+        ]
         == actual_full_record["community"]["json"]["id"]
     )
-    assert actual_full_record["request_to_community"]["json"]["status"] == "created"
+    assert (
+        actual_full_record["request_to_community"]["json"]["status"]
+        == "created"
+    )
     assert (
         actual_full_record["request_to_community"]["json"]["type"]
         == "community-submission"
@@ -3500,25 +4040,35 @@ def test_create_full_invenio_record(json_in):
         "record": actual_full_record["metadata_record_created"]["json"]["id"]
     }
 
-    assert valid_date(actual_full_record["review_submitted"]["json"]["created"])
-    assert actual_full_record["review_submitted"]["json"]["created_by"]["user"] == "3"
+    assert valid_date(
+        actual_full_record["review_submitted"]["json"]["created"]
+    )
+    assert (
+        actual_full_record["review_submitted"]["json"]["created_by"]["user"]
+        == "3"
+    )
     assert actual_full_record["review_submitted"]["json"]["is_closed"] == False
     assert actual_full_record["review_submitted"]["json"]["is_open"] == True
     assert (
         actual_full_record["review_submitted"]["json"]["receiver"]["community"]
         == actual_full_record["community"]["json"]["id"]
     )
-    assert actual_full_record["review_submitted"]["json"]["status"] == "submitted"
+    assert (
+        actual_full_record["review_submitted"]["json"]["status"] == "submitted"
+    )
     assert (
         actual_full_record["review_submitted"]["json"]["topic"]["record"]
         == actual_full_record["metadata_record_created"]["json"]["id"]
     )
     assert (
         actual_full_record["review_submitted"]["json"]["title"]
-        == actual_full_record["metadata_record_created"]["json"]["metadata"]["title"]
+        == actual_full_record["metadata_record_created"]["json"]["metadata"][
+            "title"
+        ]
     )
     assert (
-        actual_full_record["review_submitted"]["json"]["type"] == "community-submission"
+        actual_full_record["review_submitted"]["json"]["type"]
+        == "community-submission"
     )
     assert actual_full_record["review_submitted"]["status_code"] == 200
 
@@ -3528,17 +4078,22 @@ def test_create_full_invenio_record(json_in):
         actual_full_record["review_accepted"]["json"]["receiver"]["community"]
         == actual_full_record["community"]["json"]["id"]
     )
-    assert actual_full_record["review_accepted"]["json"]["status"] == "accepted"
+    assert (
+        actual_full_record["review_accepted"]["json"]["status"] == "accepted"
+    )
     assert (
         actual_full_record["review_accepted"]["json"]["topic"]["record"]
         == actual_full_record["metadata_record_created"]["json"]["id"]
     )
     assert (
         actual_full_record["review_accepted"]["json"]["title"]
-        == actual_full_record["metadata_record_created"]["json"]["metadata"]["title"]
+        == actual_full_record["metadata_record_created"]["json"]["metadata"][
+            "title"
+        ]
     )
     assert (
-        actual_full_record["review_accepted"]["json"]["type"] == "community-submission"
+        actual_full_record["review_accepted"]["json"]["type"]
+        == "community-submission"
     )
     assert actual_full_record["review_accepted"]["status_code"] == 200
 

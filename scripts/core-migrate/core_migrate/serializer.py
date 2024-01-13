@@ -15,6 +15,7 @@ The main function `serialize_json` writes the output to a jsonl file, with
 one json object per line, separated by newlines.
 """
 
+from calendar import c
 from copy import deepcopy
 from datetime import datetime
 from pprint import pprint
@@ -128,6 +129,77 @@ licenses = {
         "BSD Zero Clause License",
         "https://spdx.org/licenses/0BSD.html",
     ),
+}
+
+genres = {
+    "Abstract": "textDocument-abstract",
+    "Article": "textDocument-journalArticle",
+    "Bibliography": "textDocument-bibliography",
+    "Blog Post": "textDocument-blogPost",
+    "Book": "textDocument-book",
+    "Book chapter": "textDocument-bookSection",
+    "Book review": "textDocument-review",
+    "Book section": "textDocument-bookSection",
+    "Catalog": "other-catalog",
+    "Chart": "image-chart",
+    "Code or software": "software-application",
+    "Conference paper": "presentation-conferencePaper",
+    "Conference poster": "presentation-conferencePoster",
+    "Conference proceeding": "textDocument-conferenceProceeding",
+    "Course material or learning objects": "instructionalResource-other",
+    "Course Material or learning objects": "instructionalResource- other",
+    "Data set": "dataset",
+    "Dissertation": "textDocument-thesis",
+    "Documentary": "audiovisual-documentary",
+    "Editorial": "textDocument-editorial",
+    "Essay": "other-essay",
+    "Fictional work": (
+        "textDocument-bookSection"
+    ),  # FIXME: indicate ficiontal???
+    "Finding aid": "other",
+    "Image": "image-other",
+    "Interview": "textDocument-interviewTranscript",
+    "Lecture": "presentation-presentationText",
+    "Legal Comment": "textDocument-legalComment",
+    "Legal response": "textDocument-legalResponse",
+    "Magazine section": "textDocument-magazineArticle",
+    "Map": "image-map",
+    "Monograph": "textDocument-monograph",
+    "Music": "audiovisual-musicalRecording",
+    "Newspaper article": "textDocument-newspaperArticle",
+    "Online textDocument": "textDocument-onlinePublication",
+    "Online textDocument": "textDocument-onlinePublication",
+    "Other": "other",
+    "Performance": "audiovisual-performance",
+    "Photograph": "image-other",
+    "Podcast": "audiovisual-podcastEpisode",
+    "Poetry": "textDocument-poeticWork",
+    "Presentation": "presentation-other",
+    "Report": "textDocument-report",
+    "Review": "textDocument-review",
+    "Sound recording-musical": "audiovisual-musicalRecording",
+    "Sound recording-non musical": "audiovisual-audioRecording",
+    "Syllabus": "instructionalResource-syllabus",
+    "Technical report": "textDocument-report",
+    "Thesis": "textDocument-thesis",
+    "Translation": "textDocument-other",
+    "Video": "audiovisual-videoRecording",
+    "Video essay": "audiovisual-videoRecording",
+    "Visual art": "image-visualArt",
+    "White paper": "textDocument-whitePaper",
+}
+
+publication_types = {
+    "book-chapter": "textDocument-bookSection",
+    "book-review": "textDocument-review",
+    "book-section": "textDocument-bookSection",
+    "journal-article": "textDocument-journalArticle",
+    "magazine-section": "textDocument-magazineArticle",
+    "monograph": "textDocument-monograph",
+    "newspaper-article": "textDocument-newspaperArticle",
+    "online-publication": "textDocument-onlinePublication",
+    "podcast": "audiovisual-podcastEpisode",
+    "proceedings-article": "textDocument-conferenceProceeding",
 }
 
 
@@ -267,76 +339,6 @@ def _add_resource_type(
     #     "Video": "audiovisual-videoRecording",
     # }
 
-    genres = {
-        "Abstract": "textDocument-abstract",
-        "Article": "textDocument-journalArticle",
-        "Bibliography": "textDocument-bibliography",
-        "Blog Post": "textDocument-blogPost",
-        "Book": "textDocument-book",
-        "Book chapter": "textDocument-bookSection",
-        "Book review": "textDocument-review",
-        "Book section": "textDocument-bookSection",
-        "Catalog": "other-catalog",
-        "Chart": "image-chart",
-        "Code or software": "software-application",
-        "Conference paper": "presentation-conferencePaper",
-        "Conference poster": "presentation-conferencePoster",
-        "Conference proceeding": "textDocument-conferenceProceeding",
-        "Course material or learning objects": "instructionalResource-other",
-        "Course Material or learning objects": "instructionalResource- other",
-        "Data set": "dataset",
-        "Dissertation": "textDocument-thesis",
-        "Documentary": "audiovisual-documentary",
-        "Editorial": "textDocument-editorial",
-        "Essay": "other-essay",
-        "Fictional work": (
-            "textDocument-bookSection"
-        ),  # FIXME: indicate ficiontal???
-        "Finding aid": "other",
-        "Image": "image-other",
-        "Interview": "textDocument-interviewTranscript",
-        "Lecture": "presentation-presentationText",
-        "Legal Comment": "textDocument-legalComment",
-        "Legal response": "textDocument-legalResponse",
-        "Magazine section": "textDocument-magazineArticle",
-        "Map": "image-map",
-        "Monograph": "textDocument-monograph",
-        "Music": "audiovisual-musicalRecording",
-        "Newspaper article": "textDocument-newspaperArticle",
-        "Online textDocument": "textDocument-onlinePublication",
-        "Online textDocument": "textDocument-onlinePublication",
-        "Other": "other",
-        "Performance": "audiovisual-performance",
-        "Photograph": "image-other",
-        "Podcast": "audiovisual-podcastEpisode",
-        "Poetry": "textDocument-poeticWork",
-        "Presentation": "presentation-other",
-        "Report": "textDocument-report",
-        "Review": "textDocument-review",
-        "Sound recording-musical": "audiovisual-musicalRecording",
-        "Sound recording-non musical": "audiovisual-audioRecording",
-        "Syllabus": "instructionalResource-syllabus",
-        "Technical report": "textDocument-report",
-        "Thesis": "textDocument-thesis",
-        "Translation": "textDocument-other",
-        "Video": "audiovisual-videoRecording",
-        "Video essay": "audiovisual-videoRecording",
-        "Visual art": "image-visualArt",
-        "White paper": "textDocument-whitePaper",
-    }
-
-    publication_types = {
-        "book-chapter": "textDocument-bookSection",
-        "book-review": "textDocument-review",
-        "book-section": "textDocument-bookSection",
-        "journal-article": "textDocument-journalArticle",
-        "magazine-section": "textDocument-magazineArticle",
-        "monograph": "textDocument-monograph",
-        "newspaper-article": "textDocument-newspaperArticle",
-        "online-publication": "textDocument-onlinePublication",
-        "podcast": "audiovisual-podcastEpisode",
-        "proceedings-article": "textDocument-conferenceProceeding",
-    }
     if genre in genres.keys():
         rec["metadata"]["resource_type"] = {"id": genres[genre]}
         if (pubtype == "Interview") and (
@@ -1062,7 +1064,7 @@ def add_identifiers(
         )
     if row["doi"]:
         # FIXME: hc:24459 is getting description as doi value
-        if len(row["doi"]) < 40:
+        if len(row["doi"]) < 100:
             newrec["metadata"].setdefault("identifiers", []).append(
                 {
                     "identifier": row["doi"].replace("https://doi.org/", ""),
@@ -1324,6 +1326,122 @@ def add_date_info(
         dict: The new record dict with date info added
     """
 
+    def convert_date_words(date: str) -> str:
+        """Convert a date string with words to a date string with numbers.
+
+        Args:
+            date (str): A date string with words
+
+        Returns:
+            str: The date string with words converted to numbers
+        """
+        date_parts = re.split(r"[, \.]", date)
+        date_parts = [p for p in date_parts if p not in ["del", "de", " ", ""]]
+        print(date_parts)
+        month = ""
+        day = ""
+        year = ""
+        months = {
+            "january": "01",
+            "enero": "01",
+            "janvier": "01",
+            "february": "02",
+            "février": "02",
+            "febrero": "02",
+            "februar": "02",
+            "march": "03",
+            "marzo": "03",
+            "marc": "03",
+            "april": "04",
+            "avril": "04",
+            "abril": "04",
+            "aprisl": "04",
+            "апреля": "04",
+            "may": "05",
+            "mayo": "05",
+            "mai": "05",
+            "mei": "05",
+            "june": "06",
+            "junio": "06",
+            "juin": "06",
+            "july": "07",
+            "julio": "07",
+            "juillet": "07",
+            "julho": "07",
+            "august": "08",
+            "agosto": "08",
+            "août": "08",
+            "september": "09",
+            "septiembre": "09",
+            "septembre": "09",
+            "septmber": "09",
+            "septemebr": "09",
+            "settembre": "09",
+            "october": "10",
+            "octobre": "10",
+            "octubre": "10",
+            "november": "11",
+            "novembre": "11",
+            "noviembre": "11",
+            "december": "12",
+            "décembre": "12",
+            "diciembre": "12",
+            "dezembro": "12",
+        }
+        month_abbrevs = {
+            "jan": "01",
+            "janv": "01",
+            "ja": "01",
+            "feb": "02",
+            "febr": "02",
+            "fe": "02",
+            "fev": "02",
+            "mar": "03",
+            "apr": "04",
+            "ap": "04",
+            "may": "05",
+            "jun": "06",
+            "jul": "07",
+            "aug": "08",
+            "au": "08",
+            "sep": "09",
+            "sept": "09",
+            "se": "09",
+            "oct": "10",
+            "octo": "10",
+            "oc": "10",
+            "nov": "11",
+            "no": "11",
+            "dec": "12",
+            "de": "12",
+        }
+        for d in date_parts:
+            d_cand = d.lower().strip().replace(",", "").replace(".", "")
+            if d_cand in months.keys():
+                month = months[d_cand]
+                date_parts = [p for p in date_parts if p != d]
+            elif d_cand in month_abbrevs.keys():
+                month = month_abbrevs[d_cand]
+                date_parts = [p for p in date_parts if p != d]
+        for d in date_parts:
+            if len(d) == 4 and d.isdigit() and int(d) > 0 < 3000:
+                year = d
+                date_parts = [p for p in date_parts if p != d]
+        for d in date_parts:
+            suffixes = r"(th|st|nd|rd)"
+            day_cand = re.sub(suffixes, "", d.lower())
+            if day_cand.isdigit() and len(day_cand) <= 2:
+                day = day_cand
+                date_parts = [p for p in date_parts if p != d]
+        if year and month and not day and len(date_parts) == 1:
+            day = date_parts[0]
+        if year and month and day:
+            return reorder_date_parts("-".join([year, month, day]))
+        elif year and month:
+            return "-".join([year, month])
+        else:
+            return date
+
     def fill_missing_zeros(date: str) -> str:
         """Fill in missing zeros in a date string.
 
@@ -1333,10 +1451,15 @@ def add_date_info(
         Returns:
             str: The date string with missing zeros filled in
         """
-        date_parts = date.split("-")
+        date_parts = list(filter(None, re.split(r"[\.\-:\/,]+", date)))
         for i, part in enumerate(date_parts):
             if len(part) < 2:
                 date_parts[i] = "0" + part
+            if part.isdigit() and len(part) == 2 and int(part) > 31:
+                if int(part) <= 27:
+                    date_parts[i] = "20" + part
+                else:
+                    date_parts[i] = "19" + part
         return "-".join(date_parts)
 
     def reorder_date_parts(date: str) -> str:
@@ -1349,52 +1472,150 @@ def add_date_info(
         Returns:
             str: The date string with parts in the order YYYY-MM-DD
         """
-        date_parts = date.split("-")
-        year = [d for d in date_parts if len(d) == 4][0]
-        others = [d for d in date_parts if len(d) != 4]
-        month_candidates = [d for d in date_parts if int(d) <= 12]
-        if len(month_candidates) == 1:
-            month = month_candidates[0]
-            day = [d for d in others if d != month][0]
-        else:
-            month, day = others
-        return "-".join([year, month, day])
+        date = fill_missing_zeros(date)
+        date_parts = list(filter(None, re.split(r"[\.\-:\/ ]+", date)))
+        print(date_parts)
+        try:
+            assert len(date_parts) >= 2 <= 3
+            assert [int(p) for p in date_parts]
+            year = [d for d in date_parts if len(d) == 4][0]
+            others = [d for d in date_parts if len(d) != 4]
+            if len(others) == 2:
+                month_candidates = [d for d in date_parts if int(d) <= 12]
+                if len(month_candidates) == 1:
+                    month = month_candidates[0]
+                    day = [d for d in others if d != month][0]
+                else:
+                    month, day = others
+                return "-".join([year, month, day])
+            else:
+                return "-".join([year, others[0]])
+        except (AssertionError, IndexError, ValueError):
+            return date
 
-    def make_date_issued(datestring: str) -> dict:
-        """Return a dict with the date issued information."""
-        return {
-            "date": datestring,
-            "type": {
-                "id": "issued",
-                "title": {"en": "Issued", "de": "Veröffentlicht"},
-            },
-            "description": "Human readable publication date",
-        }
+    def parse_human_readable(date: str) -> str:
+        """Parse a human readable date string.
+
+        Args:
+            date (str): A human readable date string
+
+        Returns:
+            str: The date string parsed into ISO format
+        """
+        try:
+            return timefhuman(row["date"]).isoformat().split("T")[0]
+        except (ValueError, TypeError, IndexError):
+            return date
+
+    def is_seasonal_date(date: str) -> bool:
+        """Return True if the date is a human readable seasonal date."""
+        seasons = [
+            "spring",
+            "summer",
+            "fall",
+            "winter",
+            "autumn",
+            "spr",
+            "sum",
+            "fal",
+            "win",
+            "aut",
+            "intersession",
+        ]
+        date_parts = date.split(" ")
+        valid = False
+        if len(date_parts) == 2:
+            years = [d for d in date_parts if len(d) in [2, 4] and d.isdigit()]
+            if len(years) == 1:
+                season_part = [d for d in date_parts if d != years[0]][0]
+                season_parts = re.findall(r"\w+", season_part)
+                if all(s for s in season_parts if s.lower() in seasons):
+                    valid = True
+        return valid
+
+    def repair_date(date: str) -> tuple[bool, str]:
+        invalid = True
+        newdate = date
+        for date_func in [
+            reorder_date_parts,
+            convert_date_words,
+            parse_human_readable,
+        ]:
+            newdate = date_func(row["date"])
+            print(date_func)
+            print(newdate)
+            if valid_date(newdate):
+                print(valid_date(newdate))
+                invalid = False
+                break
+
+        if invalid and is_seasonal_date(date):
+            invalid = False
+
+        return invalid, newdate
+
+    def repair_range(date: str) -> tuple[bool, str]:
+        print("repairing range")
+        invalid = True
+        range_parts = re.split(r"[\-–\/]", date)
+        print(range_parts)
+        if (
+            len(range_parts) == 2
+            and len(range_parts[0]) == 4
+            and range_parts[0][:2] in ["19", "20"]
+            and len(range_parts[1]) == 2
+        ):
+            if range_parts[1].isdigit() and int(range_parts[1]) <= 30:
+                range_parts[1] = "20" + range_parts[1]
+            elif range_parts[1].isdigit() and int(range_parts[1]) > 30:
+                range_parts[1] = "19" + range_parts[1]
+        for i, part in enumerate(range_parts):
+            if not valid_date(part):
+                invalid, range_parts[i] = repair_date(part)
+            else:
+                invalid = False
+        print(range_parts)
+        if not invalid:
+            date = "/".join(range_parts)
+        print(date)
+        return invalid, date
 
     # Date info
     # FIXME: does "issued" work here?
+    pprint(newrec["metadata"])
+    pprint(row)
     newrec["metadata"]["publication_date"] = row["date_issued"].split("T")[0]
-    if row["date_issued"] != row["date"] and row["date"] != "":
+    if row["date_issued"] != row["date"] and row["date"] not in ["", " "]:
         row["date"] = row["date"].split("T")[0]
+        date_description = "Publication date"
         date_to_insert = row["date"]
-        if not valid_date(row["date"]):
-            # try to repair dates missing zeros
-            filled_date = reorder_date_parts(fill_missing_zeros(row["date"]))
-            if valid_date(filled_date):
-                date_to_insert = filled_date
-            else:
-                # FIXME: Handle these random dates better
-                # fall back on parsing human readable date
-                try:
-                    date_to_insert = (
-                        timefhuman(row["date"]).isoformat().split("T")[0]
-                    )
-                except (ValueError, TypeError, IndexError):
-                    _append_bad_data(
-                        row["id"], ("bad date", row["date"]), bad_data_dict
-                    )
+        if not valid_date(date_to_insert):
+            print("invalid")
+            invalid, date_to_insert = repair_date(date_to_insert)
+            print(date_to_insert)
+            if invalid:
+                invalid, date_to_insert = repair_range(date_to_insert)
+            if invalid and date_to_insert.lower() in [
+                "undated",
+                "forthcoming",
+            ]:
+                invalid = False
+            if invalid:
+                _append_bad_data(
+                    row["id"],
+                    ("bad date", row["date"], date_to_insert),
+                    bad_data_dict,
+                )
+                date_description = "Human readable publication date"
         newrec["metadata"].setdefault("dates", []).append(
-            make_date_issued(date_to_insert)
+            {
+                "date": date_to_insert,
+                "type": {
+                    "id": "issued",
+                    "title": {"en": "Issued", "de": "Veröffentlicht"},
+                },
+                "description": date_description,
+            }
         )
 
     if row["record_change_date"]:
@@ -1625,6 +1846,11 @@ def add_book_journal_title(
         if newrec["metadata"]["resource_type"]["id"] not in [
             *book_types,
             *article_types,
+        ] and publication_types[
+            newrec["custom_fields"]["hclegacy:publication_type"]
+        ] not in [
+            *book_types,
+            *article_types,
         ]:
             # print('****', newrec['metadata']['resource_type']['id'])
             _append_bad_data(
@@ -1690,6 +1916,12 @@ def add_pages(
                 "pages"
             ] = pages
         if newrec["metadata"]["resource_type"]["id"] not in [
+            *book_types,
+            *article_types,
+            *ambiguous_types,
+        ] and publication_types[
+            newrec["custom_fields"]["hclegacy:publication_type"]
+        ] not in [
             *book_types,
             *article_types,
             *ambiguous_types,
@@ -1847,9 +2079,9 @@ def add_institution(
             row["institution"]
         )
         if newrec["metadata"]["resource_type"]["id"] not in [
-            "publication:dissertation",
-            "publication:report",
-            "publication:whitePaper",
+            "textDocument-thesis",
+            "textDocument-report",
+            "textDocument-whitePaper",
         ]:
             _append_bad_data(
                 row["id"],
@@ -2139,7 +2371,7 @@ def add_subjects_keywords(
                 if s in bad_subjects.keys():
                     s = bad_subjects[s]
                 # normalize inconsistent facet labels
-                pieces = s.split(":")
+                pieces = list(filter(None, s.split(":")))
                 if len(pieces) < 3:
                     try:
                         s = _get_subject_from_jsonl(s)
