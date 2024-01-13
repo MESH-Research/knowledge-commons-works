@@ -34,8 +34,9 @@ export const IdentifiersField = ({
   labelIcon = "barcode",
   required = false,
   schemeOptions = undefined,
-  showEmptyValue = true,
+  showEmptyValue = false,
 }) => {
+  console.log("IdentifiersField", showEmptyValue);
   const { values, setFieldValue } = useFormikContext();
   const [identifiersLength, setIdentifiersLength] = useState(0);
   const [haveChangedNumber, setHaveChangedNumber] = useState(false);
@@ -53,11 +54,11 @@ export const IdentifiersField = ({
     }
   }, [identifiersLength]);
 
-  useEffect(() => {
-    if (values.metadata.identifiers.length < 1) {
-      setFieldValue(fieldPath, [emptyURL]);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (values.metadata.identifiers.length < 1) {
+  //     setFieldValue(fieldPath, [emptyURL]);
+  //   }
+  // }, []);
 
   const handleAddNew = (arrayHelpers, newItem) => {
     setHaveChangedNumber(true);
