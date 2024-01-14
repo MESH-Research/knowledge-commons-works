@@ -1214,19 +1214,20 @@ def load_records_into_invenio(
         range_args.append(start_index)
 
     def log_failed_record(
-        index, invenio_id, commons_id, core_record_id
+        index=-1, invenio_id=None, commons_id=None, core_record_id=None
     ) -> None:
         """
         Log a failed record to the failed records log file.
         """
-        failed_records.append(
-            {
-                "index": index,
-                "invenio_id": invenio_id,
-                "commons_id": commons_id,
-                "core_record_id": core_record_id,
-            }
-        )
+        if index > -1:
+            failed_records.append(
+                {
+                    "index": index,
+                    "invenio_id": invenio_id,
+                    "commons_id": commons_id,
+                    "core_record_id": core_record_id,
+                }
+            )
         with jsonlines.open(
             Path(__file__).parent
             / "logs"
@@ -1421,6 +1422,7 @@ def load_records_into_invenio(
                             "core_record_id": rec_recid,
                         }
                     )
+                    log_failed_record()
             except Exception as e:
                 print("ERROR:", e)
                 print_exc()
