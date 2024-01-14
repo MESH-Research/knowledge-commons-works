@@ -54,7 +54,7 @@ book_types = [
     "presentation-conferencePaper",
     "textDocument-conferenceProceeding",
     "presentation-conferencePaper",
-    "other-essay",
+    "textDocument-essay",
 ]
 
 article_types = [
@@ -152,7 +152,7 @@ genres = {
     "Dissertation": "textDocument-thesis",
     "Documentary": "audiovisual-documentary",
     "Editorial": "textDocument-editorial",
-    "Essay": "other-essay",
+    "Essay": "textDocument-essay",
     "Fictional work": (
         "textDocument-bookSection"
     ),  # FIXME: indicate ficiontal???
