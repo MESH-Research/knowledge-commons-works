@@ -33,13 +33,11 @@ const VersionField = ({
   label = i18next.t("Version"),
   labelIcon = "code branch",
   placeholder = "",
-  helpText = myHelpText,
   ...extraProps
 }) => {
   return (
     <TextField
       fieldPath={fieldPath}
-      helpText={myHelpText}
       label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
       placeholder={placeholder}
       {...extraProps}

@@ -9,7 +9,7 @@ const PublicationURLComponent = ({ customFieldsUI, ...extraProps }) => {
       idString="PublicationURLField"
       customFieldsUI={customFieldsUI}
       description={""}
-      icon={"world"}
+      icon={"linkify"}
       {...extraProps}
     />
   );

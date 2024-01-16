@@ -50,6 +50,7 @@ KCR_MEETING_CUSTOM_FIELDS_UI = {
                 "label": _("Dates"),
                 "placeholder": _("e.g. 21-22 November 2022."),
                 "description": "",
+                "icon": "calendar",
             },
         },
         {
@@ -60,6 +61,7 @@ KCR_MEETING_CUSTOM_FIELDS_UI = {
                 "label": _("Location"),
                 "placeholder": "",
                 "description": "",
+                "icon": "map marker alternate",
             },
         },
         {
@@ -69,7 +71,8 @@ KCR_MEETING_CUSTOM_FIELDS_UI = {
             "props": {
                 "label": _("Event URL"),
                 "placeholder": "",
-                "description": _("International Standard Serial Number"),
+                "description": "",
+                "icon": "linkify",
             },
         },
         {
