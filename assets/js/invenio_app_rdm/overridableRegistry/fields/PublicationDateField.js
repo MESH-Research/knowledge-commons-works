@@ -40,7 +40,9 @@ const DateDropdown = ({
     <Form.Field>
       <FieldLabel
         htmlFor={`${fieldPath}.inputs.${name}`}
-        label={`${useRange ? i18next.t(position) + " " : ""}${i18next.t(unit)}`}
+        label={`${useRange ? i18next.t(position) + " " : ""}${i18next.t(
+          unit
+        )}`}
         id={`${fieldPath}.${name}.label`}
       />
       <Dropdown
@@ -59,7 +61,7 @@ const DateDropdown = ({
 
 const PublicationDateField = ({
   fieldPath,
-  label = i18next.t("Publication date"),
+  label = i18next.t("Publication Date"),
   labelIcon = "calendar",
   required = true,
 }) => {
@@ -112,7 +114,9 @@ const PublicationDateField = ({
     if (!!endYearValue) {
       newDateValue +=
         "/" +
-        [endYearValue, endMonthValue, endDayValue].filter((v) => !!v).join("-");
+        [endYearValue, endMonthValue, endDayValue]
+          .filter((v) => !!v)
+          .join("-");
     }
     setDateValue(newDateValue);
     setFieldValue(fieldPath, newDateValue);
@@ -206,7 +210,12 @@ const PublicationDateField = ({
   };
 
   const startDropdowns = [
-    { name: "startYear", unit: "Year", value: yearValue, options: yearOptions },
+    {
+      name: "startYear",
+      unit: "Year",
+      value: yearValue,
+      options: yearOptions,
+    },
     {
       name: "startMonth",
       unit: "Month",
