@@ -559,8 +559,8 @@ def _add_author_data(
                     # TODO: are null roles a problem?
                     if a["role"] == "project director":
                         new_person["role"] = {
-                            "id": "projectLeader",
-                            "title": {"en": "Project Leader"},
+                            "id": "projectOrTeamLeader",
+                            "title": {"en": "Project or team leader"},
                         }
                     else:
                         new_person["role"] = {

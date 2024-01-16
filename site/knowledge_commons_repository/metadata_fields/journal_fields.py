@@ -28,7 +28,7 @@ KCR_JOURNAL_CUSTOM_FIELDS_UI = {
                 # "description": _(
                 #     "Title of the journal on which the article was published"
                 # ),
-                },
+            },
         },
         {
             "field": "journal:journal.volume",
@@ -50,7 +50,8 @@ KCR_JOURNAL_CUSTOM_FIELDS_UI = {
                 "description": "",
             },
         },
-        {   "field": "journal:journal.pages",
+        {
+            "field": "journal:journal.pages",
             "ui_widget": "JournalPagesField",
             "template": "journal.html",
             "props": {
@@ -59,7 +60,8 @@ KCR_JOURNAL_CUSTOM_FIELDS_UI = {
                 "description": "",
             },
         },
-        {   "field": "journal:journal.issn",
+        {
+            "field": "journal:journal.issn",
             "ui_widget": "JournalISSNField",
             "template": "journal.html",
             "props": {

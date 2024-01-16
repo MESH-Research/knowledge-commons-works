@@ -36,7 +36,6 @@ export const IdentifiersField = ({
   schemeOptions = undefined,
   showEmptyValue = false,
 }) => {
-  console.log("IdentifiersField", showEmptyValue);
   const { values, setFieldValue } = useFormikContext();
   const [identifiersLength, setIdentifiersLength] = useState(0);
   const [haveChangedNumber, setHaveChangedNumber] = useState(false);
@@ -143,7 +142,6 @@ export const IdentifiersField = ({
                   width={!!isUrl ? 14 : 9}
                   fluid={false}
                   onBlur={(e) => {
-                    console.log("blur");
                     filterEmptyIdentifiers(e);
                   }}
                 />

@@ -1369,7 +1369,11 @@ def load_records_into_invenio(
                 current_record = rec["jsonl_index"]
             else:
                 current_record = start_index + record_counter
-            rec_doi = rec["pids"]["doi"]["identifier"]
+            rec_doi = (
+                rec["pids"]["doi"]["identifier"]
+                if "pids" in rec.keys()
+                else ""
+            )
             rec_hcid = [
                 r
                 for r in rec["metadata"]["identifiers"]

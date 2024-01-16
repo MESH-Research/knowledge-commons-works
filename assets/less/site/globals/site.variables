@@ -1,5 +1,5 @@
 @fontName: "Atkinson Hyperlegible";
-@headingFontName: "Tahoma", "Atkinson Hyperlegible"; // "Fira Sans";
+@headingFontName: "Atkinson Hyperlegible"; // "Fira Sans"; "Tahoma",
 
 /*-------------------
       Base Sizes
