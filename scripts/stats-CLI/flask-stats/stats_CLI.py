@@ -2,8 +2,9 @@ import click
 import numpy as np
 import json
 from APIclient import APIclient
+import os
 
-token = '3jXFlpoy9UQ2vo5OokTItOEVGdXPObEnmEtNG2eO2249wKiQCkFxYwHypk2W'
+token = os.environ['CLI_TOKEN']
 
 @click.group()
 def cli():
