@@ -11,12 +11,15 @@
 """
 
 import logging
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s:%(levelname)s : %(message)s")
 file_handler = logging.handlers.RotatingFileHandler(
-    "logs/remote_search_provisioner.log", maxBytes=1000000, backupCount=5
+    Path(__file__).parent / "logs" / "remote_search_provisioner.log",
+    maxBytes=1000000,
+    backupCount=5,
 )
 file_handler.setFormatter(formatter)
 if logger.hasHandlers():
