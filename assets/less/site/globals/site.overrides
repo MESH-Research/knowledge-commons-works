@@ -71,6 +71,9 @@
             transform-origin: bottom right;
             transition: transform 0.1s ease-out;
           }
+          .widescreen.only.inline {
+            margin-left: 1rem;
+          }
         }
         a:not(.ui.button):hover {
           color: #000;
