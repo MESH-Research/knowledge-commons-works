@@ -12,7 +12,7 @@ from marshmallow_utils.fields import SanitizedUnicode
 
 
 KCR_MEDIA_FIELD = [
-    TextCF(name="kcr:user_defined_tags", field_cls=SanitizedUnicode, multiple=True),
+    TextCF(name="kcr:media", field_cls=SanitizedUnicode, multiple=True),
 ]
 
 
@@ -26,10 +26,14 @@ KCR_MEDIA_SECTION_UI = {
             "props": {
                 "label": _("Media and materials"),
                 "placeholder": _(
-                    "Enter each of the materials used here (press 'enter' to add each one)"
+                    "Enter each of the materials used here (press 'enter' to"
+                    " add each one)"
                 ),
                 "icon": "tags",
-                "description": "The media and materials used in the production of the work.",
+                "description": (
+                    "The media and materials used in the production of the"
+                    " work."
+                ),
             },
         }
     ],

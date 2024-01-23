@@ -18,16 +18,47 @@ from invenio_access.models import ActionRoles, Role
 from invenio_access.permissions import superuser_access, system_identity
 from invenio_administration.permissions import administration_access_action
 from invenio_app.factory import create_api
+
+# FIXME: These imports will change when we upgrade invenio-rdm-records
+from invenio_drafts_resources.services.records.components import (
+    DraftFilesComponent,
+    PIDComponent,
+    RelationsComponent,
+)
 from invenio_rdm_records.proxies import current_rdm_records_service
+
+# FIXME: These imports will change when we upgrade invenio-rdm-records
+from invenio_rdm_records.services.components import (
+    AccessComponent,
+    CustomFieldsComponent,
+    MetadataComponent,
+    PIDsComponent,
+    ReviewComponent,
+)
 from invenio_rdm_records.services.pids import providers
+from invenio_rdm_records.services.stats import (
+    permissions_policy_lookup_factory,
+)
+from invenio_stats.queries import TermsQuery
 from invenio_vocabularies.proxies import current_service as vocabulary_service
 from invenio_vocabularies.records.api import Vocabulary
 from .fake_datacite_client import FakeDataCiteClient
-from knowledge_commons_repository.invenio_remote_search_provisioner.ext import (
-    InvenioRemoteSearchProvisioner,
+from knowledge_commons_repository.invenio_remote_search_provisioner import (
+    components,
+    ext,
 )
 
 pytest_plugins = ("celery.contrib.pytest",)
+
+AllowAllPermission = type(
+    "Allow",
+    (),
+    {"can": lambda self: True, "allows": lambda *args: True},
+)()
+
+
+def AllowAllPermissionFactory(obj_id, action):
+    return AllowAllPermission
 
 
 def _(x):
@@ -51,7 +82,7 @@ test_config = {
         "knowledge-commons-repository@localhost/"
         "knowledge-commons-repository-test"
     ),
-    "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+    "SQLALCHEMY_TRACK_MODIFICATIONS": True,
     "SQLALCHEMY_POOL_SIZE": None,
     "SQLALCHEMY_POOL_TIMEOUT": None,
     "FILES_REST_DEFAULT_STORAGE_CLASS": "L",
@@ -102,6 +133,107 @@ test_config["RDM_PERSISTENT_IDENTIFIER_PROVIDERS"] = [
         label=_("OAI ID"),
     ),
 ]
+
+
+test_config["STATS_QUERIES"] = {
+    "record-view": {
+        "cls": TermsQuery,
+        "permission_factory": AllowAllPermissionFactory,
+        "params": {
+            "index": "stats-record-view",
+            "doc_type": "record-view-day-aggregation",
+            "copy_fields": {
+                "recid": "recid",
+                "parent_recid": "parent_recid",
+            },
+            "query_modifiers": [],
+            "required_filters": {
+                "recid": "recid",
+            },
+            "metric_fields": {
+                "views": ("sum", "count", {}),
+                "unique_views": ("sum", "unique_count", {}),
+            },
+        },
+    },
+    "record-view-all-versions": {
+        "cls": TermsQuery,
+        "permission_factory": AllowAllPermissionFactory,
+        "params": {
+            "index": "stats-record-view",
+            "doc_type": "record-view-day-aggregation",
+            "copy_fields": {
+                "parent_recid": "parent_recid",
+            },
+            "query_modifiers": [],
+            "required_filters": {
+                "parent_recid": "parent_recid",
+            },
+            "metric_fields": {
+                "views": ("sum", "count", {}),
+                "unique_views": ("sum", "unique_count", {}),
+            },
+        },
+    },
+    "record-download": {
+        "cls": TermsQuery,
+        "permission_factory": AllowAllPermissionFactory,
+        "params": {
+            "index": "stats-file-download",
+            "doc_type": "file-download-day-aggregation",
+            "copy_fields": {
+                "recid": "recid",
+                "parent_recid": "parent_recid",
+            },
+            "query_modifiers": [],
+            "required_filters": {
+                "recid": "recid",
+            },
+            "metric_fields": {
+                "downloads": ("sum", "count", {}),
+                "unique_downloads": ("sum", "unique_count", {}),
+                "data_volume": ("sum", "volume", {}),
+            },
+        },
+    },
+    "record-download-all-versions": {
+        "cls": TermsQuery,
+        "permission_factory": AllowAllPermissionFactory,
+        "params": {
+            "index": "stats-file-download",
+            "doc_type": "file-download-day-aggregation",
+            "copy_fields": {
+                "parent_recid": "parent_recid",
+            },
+            "query_modifiers": [],
+            "required_filters": {
+                "parent_recid": "parent_recid",
+            },
+            "metric_fields": {
+                "downloads": ("sum", "count", {}),
+                "unique_downloads": ("sum", "unique_count", {}),
+                "data_volume": ("sum", "volume", {}),
+            },
+        },
+    },
+}
+
+test_config["STATS_PERMISSION_FACTORY"] = permissions_policy_lookup_factory
+
+test_config["RDM_RECORDS_SERVICE_COMPONENTS"] = [
+    components.RemoteProvisionerComponent,
+    MetadataComponent,
+    CustomFieldsComponent,
+    AccessComponent,
+    DraftFilesComponent,
+    # for the internal `pid` field
+    PIDComponent,
+    # for the `pids` field (external PIDs)
+    PIDsComponent,
+    RelationsComponent,
+    ReviewComponent,
+]
+
 
 # Vocabularies
 
@@ -206,7 +338,7 @@ def create_app():
 @pytest.fixture(scope="module")
 def testapp(app):
     """Application database and ES."""
-    InvenioRemoteSearchProvisioner(app)
+    ext.InvenioRemoteSearchProvisioner(app)
     yield app
 
 

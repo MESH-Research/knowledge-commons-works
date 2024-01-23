@@ -17,3 +17,302 @@
 2024-01-19 17:30:49,682:INFO : initializing hooks***********
 2024-01-19 17:30:49,683:INFO : initialized hooks***********
 2024-01-19 17:30:49,684:INFO : initializing service***********
+2024-01-20 14:19:59,957:INFO : initializing hooks***********
+2024-01-20 14:19:59,957:INFO : initialized hooks***********
+2024-01-20 14:19:59,957:INFO : initializing service***********
+2024-01-20 14:20:27,727:INFO : initializing hooks***********
+2024-01-20 14:20:27,727:INFO : initialized hooks***********
+2024-01-20 14:20:27,728:INFO : initializing service***********
+2024-01-20 14:20:58,661:INFO : initializing hooks***********
+2024-01-20 14:20:58,661:INFO : initialized hooks***********
+2024-01-20 14:20:58,661:INFO : initializing service***********
+2024-01-20 14:23:26,160:INFO : initializing hooks***********
+2024-01-20 14:23:26,160:INFO : initialized hooks***********
+2024-01-20 14:23:26,160:INFO : initializing service***********
+2024-01-20 14:23:57,765:INFO : initializing hooks***********
+2024-01-20 14:23:57,765:INFO : initialized hooks***********
+2024-01-20 14:23:57,765:INFO : initializing service***********
+2024-01-20 14:24:00,768:INFO : initializing hooks***********
+2024-01-20 14:24:00,768:INFO : initialized hooks***********
+2024-01-20 14:24:00,768:INFO : initializing service***********
+2024-01-20 14:24:08,766:INFO : initializing hooks***********
+2024-01-20 14:24:08,767:INFO : initialized hooks***********
+2024-01-20 14:24:08,767:INFO : initializing service***********
+2024-01-20 14:25:23,178:INFO : initializing hooks***********
+2024-01-20 14:25:23,178:INFO : initialized hooks***********
+2024-01-20 14:25:23,178:INFO : initializing service***********
+2024-01-20 14:33:27,885:INFO : initializing hooks***********
+2024-01-20 14:33:27,890:INFO : initialized hooks***********
+2024-01-20 14:33:27,892:INFO : initializing service***********
+2024-01-20 14:34:20,509:INFO : initializing hooks***********
+2024-01-20 14:34:20,510:INFO : initialized hooks***********
+2024-01-20 14:34:20,510:INFO : initializing service***********
+2024-01-20 14:38:48,836:INFO : initializing hooks***********
+2024-01-20 14:38:48,836:INFO : initialized hooks***********
+2024-01-20 14:38:48,836:INFO : initializing service***********
+2024-01-20 14:55:32,569:INFO : initializing hooks***********
+2024-01-20 14:55:32,570:INFO : initialized hooks***********
+2024-01-20 14:55:32,570:INFO : initializing service***********
+2024-01-20 15:01:30,733:INFO : initializing hooks***********
+2024-01-20 15:01:30,734:INFO : initialized hooks***********
+2024-01-20 15:01:30,734:INFO : initializing service***********
+2024-01-20 15:53:15,920:INFO : initializing hooks***********
+2024-01-20 15:53:15,921:INFO : initialized hooks***********
+2024-01-20 15:53:15,921:INFO : initializing service***********
+2024-01-20 16:00:00,068:INFO : initializing hooks***********
+2024-01-20 16:00:00,069:INFO : initialized hooks***********
+2024-01-20 16:00:00,069:INFO : initializing service***********
+2024-01-22 09:12:45,712:INFO : initializing hooks***********
+2024-01-22 09:12:45,713:INFO : initialized hooks***********
+2024-01-22 09:12:45,713:INFO : initializing service***********
+2024-01-22 09:19:52,904:INFO : initializing hooks now***********
+2024-01-22 09:19:53,530:INFO : initializing hooks now***********
+2024-01-22 09:22:57,367:INFO : initializing hooks now***********
+2024-01-22 09:22:57,649:INFO : initializing hooks now***********
+2024-01-22 09:31:18,089:INFO : initializing hooks now***********
+2024-01-22 09:31:18,090:INFO : initialized hooks***********
+2024-01-22 09:31:18,091:INFO : initializing service***********
+2024-01-22 09:38:45,487:INFO : initializing hooks now***********
+2024-01-22 09:38:45,488:INFO : initialized hooks***********
+2024-01-22 09:38:45,488:INFO : initializing service***********
+2024-01-22 09:38:48,379:INFO : initializing hooks now***********
+2024-01-22 09:38:48,380:INFO : initialized hooks***********
+2024-01-22 09:38:48,380:INFO : initializing service***********
+2024-01-22 09:41:08,276:INFO : initializing hooks now***********
+2024-01-22 09:41:08,277:INFO : initialized hooks***********
+2024-01-22 09:41:08,278:INFO : initializing service***********
+2024-01-22 09:46:08,491:INFO : initializing hooks now***********
+2024-01-22 09:46:08,492:INFO : initialized hooks***********
+2024-01-22 09:46:08,492:INFO : initializing service***********
+2024-01-22 09:46:25,136:INFO : initializing hooks now***********
+2024-01-22 09:46:25,136:INFO : initialized hooks***********
+2024-01-22 09:46:25,136:INFO : initializing service***********
+2024-01-22 09:46:27,828:INFO : initializing hooks now***********
+2024-01-22 09:46:27,828:INFO : initialized hooks***********
+2024-01-22 09:46:27,828:INFO : initializing service***********
+2024-01-22 09:51:43,407:INFO : initializing hooks now***********
+2024-01-22 09:51:43,409:INFO : initialized hooks***********
+2024-01-22 09:51:43,411:INFO : initializing service***********
+2024-01-22 09:58:01,909:INFO : initializing hooks now***********
+2024-01-22 09:58:01,910:INFO : initialized hooks***********
+2024-01-22 09:58:01,911:INFO : initializing service***********
+2024-01-22 09:58:26,833:INFO : initializing hooks now***********
+2024-01-22 09:58:26,833:INFO : initialized hooks***********
+2024-01-22 09:58:26,833:INFO : initializing service***********
+2024-01-22 09:58:29,732:INFO : initializing hooks now***********
+2024-01-22 09:58:29,733:INFO : initialized hooks***********
+2024-01-22 09:58:29,733:INFO : initializing service***********
+2024-01-22 09:59:25,585:INFO : initializing hooks now***********
+2024-01-22 09:59:25,585:INFO : initialized hooks***********
+2024-01-22 09:59:25,585:INFO : initializing service***********
+2024-01-22 09:59:27,832:INFO : initializing hooks now***********
+2024-01-22 09:59:27,832:INFO : initialized hooks***********
+2024-01-22 09:59:27,833:INFO : initializing service***********
+2024-01-22 11:12:37,081:INFO : initializing hooks now***********
+2024-01-22 11:12:37,081:INFO : Record inserted***********
+2024-01-22 11:12:37,082:INFO : User data update signal emitted 
+
+2024-01-22 11:12:37,082:INFO : {}
+2024-01-22 11:12:37,082:INFO : initialized hooks***********
+2024-01-22 11:12:37,082:INFO : initializing service***********
+2024-01-22 11:12:39,431:INFO : initializing hooks now***********
+2024-01-22 11:12:39,431:INFO : Record inserted***********
+2024-01-22 11:12:39,431:INFO : User data update signal emitted 
+
+2024-01-22 11:12:39,431:INFO : {}
+2024-01-22 11:12:39,432:INFO : initialized hooks***********
+2024-01-22 11:12:39,432:INFO : initializing service***********
+2024-01-22 11:13:45,969:INFO : initializing hooks now***********
+2024-01-22 11:13:45,973:INFO : Record inserted***********
+2024-01-22 11:13:45,974:INFO : User data update signal emitted 
+
+2024-01-22 11:13:45,975:INFO : {}
+2024-01-22 11:13:45,976:INFO : initialized hooks***********
+2024-01-22 11:13:45,977:INFO : initializing service***********
+2024-01-22 11:27:42,207:INFO : initializing hooks now***********
+2024-01-22 11:27:42,208:INFO : initialized hooks***********
+2024-01-22 11:27:42,208:INFO : initializing service***********
+2024-01-22 11:27:44,837:INFO : initializing hooks now***********
+2024-01-22 11:27:44,837:INFO : initialized hooks***********
+2024-01-22 11:27:44,837:INFO : initializing service***********
+2024-01-22 11:41:13,038:INFO : initializing hooks now***********
+2024-01-22 11:41:13,039:INFO : initialized hooks***********
+2024-01-22 11:41:13,040:INFO : initializing service***********
+2024-01-22 11:55:13,742:INFO : initializing hooks now***********
+2024-01-22 11:55:13,744:INFO : initialized hooks***********
+2024-01-22 11:55:13,745:INFO : initializing service***********
+2024-01-22 12:59:24,132:INFO : initializing hooks now***********
+2024-01-22 12:59:24,135:INFO : initialized hooks***********
+2024-01-22 12:59:24,136:INFO : initializing service***********
+2024-01-22 13:00:17,569:INFO : initializing hooks now***********
+2024-01-22 13:00:17,570:INFO : initialized hooks***********
+2024-01-22 13:00:17,570:INFO : initializing service***********
+2024-01-22 13:01:21,974:INFO : initializing hooks now***********
+2024-01-22 13:01:21,976:INFO : initialized hooks***********
+2024-01-22 13:01:21,976:INFO : initializing service***********
+2024-01-22 13:02:37,898:INFO : initializing hooks now***********
+2024-01-22 13:02:37,899:INFO : initialized hooks***********
+2024-01-22 13:02:37,900:INFO : initializing service***********
+2024-01-22 13:03:19,215:INFO : initializing hooks now***********
+2024-01-22 13:03:19,216:INFO : initialized hooks***********
+2024-01-22 13:03:19,217:INFO : initializing service***********
+2024-01-22 13:14:06,696:INFO : initializing hooks now***********
+2024-01-22 13:14:07,319:INFO : initializing hooks now***********
+2024-01-22 13:14:55,281:INFO : initializing hooks now***********
+2024-01-22 13:14:55,759:INFO : initializing hooks now***********
+2024-01-22 13:48:47,106:INFO : initializing hooks now***********
+2024-01-22 13:48:47,468:INFO : initializing hooks now***********
+2024-01-22 14:01:28,886:INFO : initializing service***********
+2024-01-22 14:01:32,161:INFO : initializing service***********
+2024-01-22 14:02:45,807:INFO : initializing service***********
+2024-01-22 14:05:20,699:INFO : initializing service***********
+2024-01-22 14:05:23,917:INFO : initializing service***********
+2024-01-22 14:11:21,582:INFO : initializing service***********
+2024-01-22 14:11:27,225:INFO : initializing service***********
+2024-01-22 14:11:31,712:INFO : initializing service***********
+2024-01-22 14:13:20,817:INFO : initializing service***********
+2024-01-22 14:13:27,883:INFO : initializing service***********
+2024-01-22 14:13:30,651:INFO : initializing service***********
+2024-01-22 14:14:06,458:INFO : update_draft*****
+2024-01-22 14:14:58,857:INFO : update_draft*****
+2024-01-22 14:15:24,338:INFO : initializing service***********
+2024-01-22 14:15:40,147:INFO : update_draft*****
+2024-01-22 14:16:03,763:INFO : initializing service***********
+2024-01-22 14:16:06,685:INFO : initializing service***********
+2024-01-22 14:24:52,624:INFO : initializing service***********
+2024-01-22 14:24:54,858:INFO : initializing service***********
+2024-01-22 14:24:55,158:INFO : create******
+2024-01-22 14:24:55,235:INFO : update_draft*****
+2024-01-22 14:24:55,295:INFO : publish*****
+2024-01-22 15:09:28,672:INFO : initializing service***********
+2024-01-22 15:09:31,208:INFO : initializing service***********
+2024-01-22 15:09:31,456:INFO : Created record
+2024-01-22 15:10:23,170:INFO : initializing service***********
+2024-01-22 15:10:40,194:INFO : initializing service***********
+2024-01-22 15:10:43,341:INFO : initializing service***********
+2024-01-22 15:10:43,581:INFO : Created record
+2024-01-22 15:20:04,601:INFO : initializing service***********
+2024-01-22 15:20:07,395:INFO : initializing service***********
+2024-01-22 15:20:07,627:INFO : Created record
+2024-01-22 15:20:07,627:INFO : {}
+2024-01-22 15:20:08,622:INFO : Notification sent successfully
+2024-01-22 15:20:08,622:INFO : ------
+2024-01-22 15:20:08,877:INFO : Updated draft
+2024-01-22 15:22:54,558:INFO : initializing service***********
+2024-01-22 15:22:56,817:INFO : initializing service***********
+2024-01-22 15:22:57,031:INFO : Created record
+2024-01-22 15:22:57,031:INFO : {}
+2024-01-22 15:22:57,962:INFO : Notification sent successfully
+2024-01-22 15:22:57,964:INFO : ------
+2024-01-22 15:22:58,186:INFO : Updated draft
+2024-01-22 15:24:36,255:INFO : initializing service***********
+2024-01-22 15:24:38,507:INFO : initializing service***********
+2024-01-22 15:24:38,735:INFO : Created record
+2024-01-22 15:24:38,735:INFO : {}
+2024-01-22 15:24:39,735:INFO : Notification sent successfully
+2024-01-22 15:24:39,735:INFO : ------
+2024-01-22 15:24:39,917:INFO : Updated draft
+2024-01-22 15:27:59,001:INFO : initializing service***********
+2024-01-22 15:28:01,212:INFO : initializing service***********
+2024-01-22 15:28:01,441:INFO : Created record
+2024-01-22 15:28:01,441:INFO : {}
+2024-01-22 15:28:06,793:INFO : Notification sent successfully
+2024-01-22 15:28:06,794:INFO : ------
+2024-01-22 15:28:07,104:INFO : Updated draft
+2024-01-22 15:39:31,277:INFO : initializing service***********
+2024-01-22 15:39:33,567:INFO : initializing service***********
+2024-01-22 15:39:33,852:INFO : Created record
+2024-01-22 15:40:01,214:INFO : initializing service***********
+2024-01-22 15:40:03,492:INFO : initializing service***********
+2024-01-22 15:40:03,768:INFO : Created record
+2024-01-22 15:40:47,210:INFO : initializing service***********
+2024-01-22 15:40:49,524:INFO : initializing service***********
+2024-01-22 15:40:49,754:INFO : Created record
+2024-01-22 15:41:26,095:INFO : initializing service***********
+2024-01-22 15:41:28,029:INFO : initializing service***********
+2024-01-22 15:41:28,256:INFO : Created record
+2024-01-22 15:42:17,608:INFO : initializing service***********
+2024-01-22 15:42:19,958:INFO : initializing service***********
+2024-01-22 15:42:20,275:INFO : Created record
+2024-01-22 15:42:20,276:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/yfdwg-m2974', 'other_urls': ['https://works.hcommons.org/records/yfdwg-m2974/files'], 'title': 'A Romans story', 'description': '', 'publication_date': '2020-06-01', 'updated_date': '2024-01-22 20:42:20+00:00'}
+2024-01-22 15:42:21,475:INFO : Notification sent successfully
+2024-01-22 15:42:21,475:INFO : ------
+2024-01-22 15:42:21,754:INFO : Updated draft
+2024-01-22 15:42:21,754:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/yfdwg-m2974', 'other_urls': [], 'title': 'A Romans Story 2', 'description': '', 'publication_date': '2020-06-01', 'updated_date': '2024-01-22 20:42:21+00:00'}
+2024-01-22 15:42:22,861:INFO : Notification sent successfully
+2024-01-22 15:42:22,861:INFO : ------
+2024-01-22 15:42:23,026:INFO : Published draft
+2024-01-22 15:42:23,026:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/yfdwg-m2974', 'other_urls': ['https://works.hcommons.org/records/yfdwg-m2974/files'], 'title': 'A Romans Story 2', 'description': '', 'publication_date': '2020-06-01', 'updated_date': '2024-01-22 20:42:23+00:00'}
+2024-01-22 15:42:23,944:INFO : Notification sent successfully
+2024-01-22 15:42:23,944:INFO : ------
+2024-01-22 15:51:44,131:INFO : initializing service***********
+2024-01-22 15:51:57,150:INFO : Updated draft
+2024-01-22 15:51:57,151:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/35hpe-jgv93', 'other_urls': [], 'title': 'A photo 33', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 20:51:57+00:00'}
+2024-01-22 15:51:58,084:INFO : Notification sent successfully
+2024-01-22 15:51:58,084:INFO : ------
+2024-01-22 15:56:41,650:INFO : initializing service***********
+2024-01-22 15:56:54,154:INFO : Updated draft
+2024-01-22 15:56:54,155:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/35hpe-jgv93', 'other_urls': [], 'title': 'A photo 33', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 20:56:54+00:00'}
+2024-01-22 15:56:55,129:INFO : <Response [200]>
+2024-01-22 16:00:16,130:INFO : initializing service***********
+2024-01-22 16:00:20,689:INFO : initializing service***********
+2024-01-22 16:00:20,962:INFO : Created record
+2024-01-22 16:00:20,963:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/kyfvt-88967', 'other_urls': ['https://works.hcommons.org/records/kyfvt-88967/files'], 'title': 'A Romans story', 'description': '', 'publication_date': '2020-06-01', 'updated_date': '2024-01-22 21:00:20+00:00'}
+2024-01-22 16:00:21,722:INFO : <Response [302]>
+2024-01-22 16:00:21,926:INFO : Updated draft
+2024-01-22 16:00:21,926:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/kyfvt-88967', 'other_urls': [], 'title': 'A Romans Story 2', 'description': '', 'publication_date': '2020-06-01', 'updated_date': '2024-01-22 21:00:21+00:00'}
+2024-01-22 16:00:23,164:INFO : <Response [302]>
+2024-01-22 16:00:23,329:INFO : Published draft
+2024-01-22 16:00:23,329:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/kyfvt-88967', 'other_urls': ['https://works.hcommons.org/records/kyfvt-88967/files'], 'title': 'A Romans Story 2', 'description': '', 'publication_date': '2020-06-01', 'updated_date': '2024-01-22 21:00:23+00:00'}
+2024-01-22 16:00:23,921:INFO : <Response [302]>
+2024-01-22 16:48:54,920:INFO : Updated draft
+2024-01-22 16:48:54,925:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/35hpe-jgv93', 'other_urls': [], 'title': 'A photo 33', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 21:48:54+00:00'}
+2024-01-22 16:48:55,832:INFO : <Response [200]>
+2024-01-22 17:37:43,122:INFO : Updated draft
+2024-01-22 17:37:43,125:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/35hpe-jgv93', 'other_urls': [], 'title': 'A photo 34', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 22:37:43+00:00'}
+2024-01-22 17:37:44,030:INFO : <Response [200]>
+2024-01-22 17:37:49,972:INFO : Updated draft
+2024-01-22 17:37:49,973:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/35hpe-jgv93', 'other_urls': [], 'title': 'A photo 34', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 22:37:49+00:00'}
+2024-01-22 17:37:50,814:INFO : <Response [200]>
+2024-01-22 17:38:04,561:INFO : Updated draft
+2024-01-22 17:38:04,564:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/35hpe-jgv93', 'other_urls': [], 'title': 'A photo 34', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 22:38:04+00:00'}
+2024-01-22 17:38:05,502:INFO : <Response [200]>
+2024-01-22 17:38:05,685:INFO : Published draft
+2024-01-22 17:38:05,686:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/35hpe-jgv93', 'other_urls': [], 'title': 'A photo 34', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 22:38:05+00:00'}
+2024-01-22 17:38:06,527:INFO : <Response [200]>
+2024-01-22 17:38:41,074:INFO : Created record
+2024-01-22 17:38:41,076:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/bpmhv-3cr76', 'other_urls': ['https://works.hcommons.org/records/bpmhv-3cr76/files'], 'title': 'A photo', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 22:38:41+00:00'}
+2024-01-22 17:38:42,101:INFO : <Response [200]>
+2024-01-22 17:38:49,069:INFO : Updated draft
+2024-01-22 17:38:49,071:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/bpmhv-3cr76', 'other_urls': ['https://works.hcommons.org/records/bpmhv-3cr76/files'], 'title': 'A photo', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 22:38:49+00:00'}
+2024-01-22 17:38:50,047:INFO : <Response [200]>
+2024-01-22 17:39:07,155:INFO : Updated draft
+2024-01-22 17:39:07,157:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/bpmhv-3cr76', 'other_urls': ['https://works.hcommons.org/records/bpmhv-3cr76/files'], 'title': 'A photo', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 22:39:07+00:00'}
+2024-01-22 17:39:08,140:INFO : <Response [200]>
+2024-01-22 17:39:08,352:INFO : Published draft
+2024-01-22 17:39:08,353:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/bpmhv-3cr76', 'other_urls': ['https://works.hcommons.org/records/bpmhv-3cr76/files'], 'title': 'A photo', 'description': '', 'publication_date': '2024-01-18', 'updated_date': '2024-01-22 22:39:08+00:00'}
+2024-01-22 17:39:09,412:INFO : <Response [200]>
+2024-01-22 17:39:42,464:INFO : Created new version of published record
+2024-01-22 17:39:42,465:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/bpmhv-3cr76', 'other_urls': []}
+2024-01-22 17:39:43,437:INFO : <Response [200]>
+2024-01-22 17:40:15,447:INFO : Updated draft
+2024-01-22 17:40:15,449:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/m39zj-mnp69', 'other_urls': ['https://works.hcommons.org/records/m39zj-mnp69/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-22 22:40:15+00:00'}
+2024-01-22 17:40:16,300:INFO : <Response [200]>
+2024-01-22 17:40:16,513:INFO : Published draft
+2024-01-22 17:40:16,514:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/m39zj-mnp69', 'other_urls': ['https://works.hcommons.org/records/m39zj-mnp69/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-22 22:40:16+00:00'}
+2024-01-22 17:40:17,372:INFO : <Response [200]>
+2024-01-22 19:00:05,883:INFO : Edited published record
+2024-01-22 19:00:05,887:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/m39zj-mnp69', 'other_urls': []}
+2024-01-22 19:00:06,990:INFO : <Response [200]>
+2024-01-22 19:00:39,871:INFO : Created new version of published record
+2024-01-22 19:00:39,876:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/m39zj-mnp69', 'other_urls': []}
+2024-01-22 19:00:42,125:INFO : <Response [200]>
+2024-01-22 19:01:15,676:INFO : Updated draft
+2024-01-22 19:01:15,678:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/w6tas-vzm67', 'other_urls': ['https://works.hcommons.org/records/w6tas-vzm67/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-23 00:01:15+00:00'}
+2024-01-22 19:01:16,460:INFO : <Response [200]>
+2024-01-22 19:01:21,787:INFO : Updated draft
+2024-01-22 19:01:21,789:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/w6tas-vzm67', 'other_urls': ['https://works.hcommons.org/records/w6tas-vzm67/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-23 00:01:21+00:00'}
+2024-01-22 19:01:22,723:INFO : <Response [200]>
+2024-01-22 19:01:22,945:INFO : Published draft
+2024-01-22 19:01:22,946:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/w6tas-vzm67', 'other_urls': ['https://works.hcommons.org/records/w6tas-vzm67/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-23 00:01:22+00:00'}
+2024-01-22 19:01:23,932:INFO : <Response [200]>

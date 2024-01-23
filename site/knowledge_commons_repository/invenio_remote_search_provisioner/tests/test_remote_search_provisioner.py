@@ -47,6 +47,7 @@ def test_record_signals(
     actual_draft["updated"] = expected_draft["updated"]
     actual_draft["expires_at"] = expected_draft["expires_at"]
     assert actual_draft == expected_draft
+    db.session.commit()
 
     minimal_edited = minimal_record.copy()
     minimal_edited["metadata"]["title"] = "A Romans Story 2"
@@ -66,6 +67,7 @@ def test_record_signals(
     actual_edited["updated"] = expected_edited["updated"]
     actual_edited["expires_at"] = expected_draft["expires_at"]
     assert actual_edited == expected_edited
+    db.session.commit()
 
     record = service.publish(superuser_identity, edited_draft.id)
     actual_published = record.data
