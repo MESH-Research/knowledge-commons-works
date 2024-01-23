@@ -316,3 +316,19 @@
 2024-01-22 19:01:22,945:INFO : Published draft
 2024-01-22 19:01:22,946:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/w6tas-vzm67', 'other_urls': ['https://works.hcommons.org/records/w6tas-vzm67/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-23 00:01:22+00:00'}
 2024-01-22 19:01:23,932:INFO : <Response [200]>
+2024-01-22 19:15:58,241:INFO : Edited published record
+2024-01-22 19:15:58,244:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/w6tas-vzm67', 'other_urls': []}
+2024-01-22 19:15:59,306:INFO : <Response [200]>
+2024-01-22 19:16:21,920:INFO : Updated draft
+2024-01-22 19:16:21,923:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/w6tas-vzm67', 'other_urls': ['https://works.hcommons.org/records/w6tas-vzm67/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-23 00:16:21+00:00'}
+2024-01-22 19:16:22,812:INFO : <Response [200]>
+2024-01-22 19:16:24,987:INFO : Updated draft
+2024-01-22 19:16:24,988:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/w6tas-vzm67', 'other_urls': ['https://works.hcommons.org/records/w6tas-vzm67/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-23 00:16:24+00:00'}
+2024-01-22 19:16:26,171:INFO : <Response [200]>
+2024-01-22 19:17:26,884:INFO : Updated draft
+2024-01-22 19:17:26,886:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/w6tas-vzm67', 'other_urls': ['https://works.hcommons.org/records/w6tas-vzm67/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-23 00:17:26+00:00'}
+2024-01-22 19:17:27,816:INFO : <Response [200]>
+2024-01-22 19:17:29,193:INFO : Updated draft
+2024-01-22 19:17:29,194:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/w6tas-vzm67', 'other_urls': ['https://works.hcommons.org/records/w6tas-vzm67/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-23 00:17:29+00:00'}
+2024-01-22 19:17:30,021:INFO : <Response [200]>
+2024-01-22 19:30:26,606:INFO : initializing service***********
