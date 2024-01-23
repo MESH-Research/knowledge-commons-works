@@ -18,6 +18,16 @@
 @formButtonColor: @sidebarBackgroundColor;
 @sidebarBackgroundColor: #f9f9f9;
 
+// General typography
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: @fontName;
+}
+
 // Responsive classes
 
 :not(.ui.grid).only {
@@ -846,8 +856,13 @@
             .title {
               font-weight: bold;
               font-size: @large;
-              padding: 1rem 0;
+              padding: 1rem 0 1rem 1rem;
+              border: 1px solid transparent;
               border-bottom: 1px solid @internalBorderColor;
+              display: block;
+              background-color: transparent;
+              text-align: left;
+              width: 100%;
               i.icon.dropdown {
                 float: right;
               }
@@ -1076,9 +1091,13 @@
         .ui.button {
           text-align: left;
         }
-        .menu .item .text {
-          overflow-wrap: anywhere;
-          word-break: break-all;
+        .menu .item {
+          width: 100%;
+          background-color: transparent;
+          .text {
+            overflow-wrap: anywhere;
+            word-break: break-all;
+          }
         }
         .menu .item .description.filesize {
           display: block;
@@ -1126,16 +1145,20 @@
               }
             }
           }
-          div.dropdown {
+          .dropdown {
             box-shadow: none;
             margin-right: -0.25rem;
             border-left: 1px solid @borderColor;
             border-radius: 0 @defaultBorderRadius @defaultBorderRadius 0;
           }
-          .menu .item .description.doi {
-            display: block;
-            float: none;
-            margin-left: 0;
+          .menu .item {
+            background-color: transparent;
+            width: 100%;
+            .description.doi {
+              display: block;
+              float: none;
+              margin-left: 0;
+            }
           }
           &.preview {
             color: @infoTextColor;
@@ -1180,11 +1203,15 @@
       }
       &#record-export {
         margin-bottom: 1rem;
-        div.ui.basic.button {
+        .ui.basic.button {
           background-color: @sidebarBackgroundColor !important;
           padding-left: 1rem !important;
           font-weight: bold;
           color: @textColor !important;
+        }
+        .menu button {
+          width: 100%;
+          background-color: transparent;
         }
       }
       &#social-sharing {
@@ -1309,18 +1336,22 @@
       background-color: transparent;
     }
   }
-  .ui.grid.record-citation {
-    border: none;
-    margin-top: 0;
-    margin-bottom: 0;
+  .citation-modal {
+    padding-bottom: 1rem;
 
-    #citation-text {
-      padding-top: 1.5rem;
-      padding-bottom: 1.5rem;
-    }
+    .ui.grid.record-citation {
+      border: none;
+      margin-top: 0;
+      margin-bottom: 0;
 
-    #citation-style-label {
-      margin-right: 0.5rem;
+      #citation-text {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+      }
+
+      #citation-style-label {
+        margin-right: 0.5rem;
+      }
     }
   }
 }
