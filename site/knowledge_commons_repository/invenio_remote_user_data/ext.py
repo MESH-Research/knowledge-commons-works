@@ -9,7 +9,6 @@
 
 from . import config
 from .service import RemoteUserDataService
-# from .config import RemoteUserDataServiceConfig
 
 
 class InvenioRemoteUserData(object):

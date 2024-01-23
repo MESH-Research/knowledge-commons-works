@@ -332,3 +332,122 @@
 2024-01-22 19:17:29,194:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/w6tas-vzm67', 'other_urls': ['https://works.hcommons.org/records/w6tas-vzm67/files'], 'title': 'A photo 2', 'description': '', 'publication_date': '2024-01-22', 'updated_date': '2024-01-23 00:17:29+00:00'}
 2024-01-22 19:17:30,021:INFO : <Response [200]>
 2024-01-22 19:30:26,606:INFO : initializing service***********
+2024-01-23 11:11:28,404:INFO : initializing service***********
+2024-01-23 11:11:31,834:INFO : initializing service***********
+2024-01-23 11:11:32,293:INFO : Created record
+2024-01-23 11:11:32,293:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/wwmye-ctr88', 'other_urls': ['https://works.hcommons.org/records/wwmye-ctr88/files'], 'title': 'A Romans story', 'description': '', 'publication_date': '2020-06-01', 'updated_date': '2024-01-23 16:11:32+00:00'}
+2024-01-23 11:11:32,778:INFO : <Response [302]>
+2024-01-23 11:11:33,081:INFO : Updated draft
+2024-01-23 11:11:33,081:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/wwmye-ctr88', 'other_urls': [], 'title': 'A Romans Story 2', 'description': '', 'publication_date': '2020-06-01', 'updated_date': '2024-01-23 16:11:33+00:00'}
+2024-01-23 11:11:33,482:INFO : <Response [302]>
+2024-01-23 11:11:33,619:INFO : Published draft
+2024-01-23 11:11:33,619:INFO : {'type': 'work', 'network': 'works', 'primary_url': 'https://works.hcommons.org/records/wwmye-ctr88', 'other_urls': ['https://works.hcommons.org/records/wwmye-ctr88/files'], 'title': 'A Romans Story 2', 'description': '', 'publication_date': '2020-06-01', 'updated_date': '2024-01-23 16:11:33+00:00'}
+2024-01-23 11:11:34,113:INFO : <Response [302]>
+2024-01-23 17:03:59,864:INFO : Sending update_draft event notice
+2024-01-23 17:03:59,865:INFO : method: PUT
+2024-01-23 17:03:59,866:INFO : payload:
+2024-01-23 17:03:59,866:INFO : <function <lambda> at 0x1150909d0>
+2024-01-23 17:04:00,455:INFO : <Response [302]>
+2024-01-23 17:04:00,457:ERROR : Error sending notification (status code 302)
+2024-01-23 17:04:00,457:ERROR : 
+2024-01-23 17:31:19,805:INFO : Sending update_draft event notice
+2024-01-23 17:31:19,807:INFO : method: PUT
+2024-01-23 17:31:19,807:INFO : payload:
+2024-01-23 17:31:19,808:INFO : <function <lambda> at 0x127b9f940>
+2024-01-23 17:31:20,254:INFO : <Response [302]>
+2024-01-23 17:31:20,256:ERROR : Error sending notification (status code 302)
+2024-01-23 17:31:20,257:ERROR : 
+2024-01-23 17:38:25,181:INFO : Sending update_draft event notice
+2024-01-23 17:38:25,183:INFO : method: PUT
+2024-01-23 17:38:25,183:INFO : payload:
+2024-01-23 17:38:25,184:INFO : <function <lambda> at 0x127b9f940>
+2024-01-23 17:38:25,761:INFO : <Response [302]>
+2024-01-23 17:38:25,763:ERROR : Error sending notification (status code 302)
+2024-01-23 17:38:25,764:ERROR : 
+2024-01-23 17:40:20,411:INFO : Sending update_draft event notice
+2024-01-23 17:40:20,413:INFO : method: PUT
+2024-01-23 17:40:20,414:INFO : payload:
+2024-01-23 17:40:20,415:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-23 22:40:20+00:00'}
+2024-01-23 17:40:21,018:INFO : <Response [302]>
+2024-01-23 17:40:21,019:ERROR : Error sending notification (status code 302)
+2024-01-23 17:40:21,019:ERROR : 
+2024-01-23 17:51:33,855:INFO : Sending update_draft event notice
+2024-01-23 17:51:33,861:INFO : method: PUT
+2024-01-23 17:51:33,861:INFO : payload:
+2024-01-23 17:51:33,862:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-23 22:51:33+00:00'}
+2024-01-23 17:51:34,392:INFO : <Response [302]>
+2024-01-23 17:51:34,394:ERROR : Error sending notification (status code 302)
+2024-01-23 17:51:34,395:ERROR : 
+2024-01-23 17:51:34,651:INFO : Sending publish event notice
+2024-01-23 17:52:23,380:INFO : Sending update_draft event notice
+2024-01-23 17:52:23,387:INFO : method: PUT
+2024-01-23 17:52:23,388:INFO : payload:
+2024-01-23 17:52:23,388:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-23 22:52:23+00:00'}
+2024-01-23 17:52:23,992:INFO : <Response [302]>
+2024-01-23 17:52:23,994:ERROR : Error sending notification (status code 302)
+2024-01-23 17:52:23,996:ERROR : 
+2024-01-23 17:52:24,317:INFO : Sending publish event notice
+2024-01-23 17:53:55,475:INFO : Sending update_draft event notice
+2024-01-23 17:53:55,476:INFO : method: PUT
+2024-01-23 17:53:55,476:INFO : payload:
+2024-01-23 17:53:55,476:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-23 22:53:55+00:00'}
+2024-01-23 17:53:56,108:INFO : <Response [302]>
+2024-01-23 17:53:56,112:ERROR : Error sending notification (status code 302)
+2024-01-23 17:53:56,114:ERROR : 
+2024-01-23 17:53:56,412:INFO : Sending publish event notice
+2024-01-23 17:56:27,242:INFO : Sending update_draft event notice
+2024-01-23 17:56:27,243:INFO : method: PUT
+2024-01-23 17:56:27,243:INFO : payload:
+2024-01-23 17:56:27,244:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-23 22:56:27+00:00'}
+2024-01-23 17:56:27,759:INFO : <Response [302]>
+2024-01-23 17:56:27,763:ERROR : Error sending notification (status code 302)
+2024-01-23 17:56:27,765:ERROR : 
+2024-01-23 17:56:28,157:INFO : Sending publish event notice
+2024-01-23 17:56:28,158:INFO : method: POST
+2024-01-23 17:56:28,158:INFO : payload:
+2024-01-23 17:56:28,159:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-23 22:56:28+00:00'}
+2024-01-23 17:56:28,500:INFO : <Response [302]>
+2024-01-23 17:56:28,502:ERROR : Error sending notification (status code 302)
+2024-01-23 17:56:28,503:ERROR : 

@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s:%(levelname)s : %(message)s")
 file_handler = logging.handlers.RotatingFileHandler(
-    Path(__file__).parent / "logs" / "remote_search_provisioner.log",
+    Path(__file__).parent / "logs" / "remote_api_provisioner.log",
     maxBytes=1000000,
     backupCount=5,
 )

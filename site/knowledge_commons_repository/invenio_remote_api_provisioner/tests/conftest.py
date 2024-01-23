@@ -13,28 +13,15 @@ fixtures are available.
 """
 
 import pytest
+import arrow
 from io import BytesIO
 from invenio_access.models import ActionRoles, Role
 from invenio_access.permissions import superuser_access, system_identity
 from invenio_administration.permissions import administration_access_action
 from invenio_app.factory import create_api
 
-# FIXME: These imports will change when we upgrade invenio-rdm-records
-from invenio_drafts_resources.services.records.components import (
-    DraftFilesComponent,
-    PIDComponent,
-    RelationsComponent,
-)
 from invenio_rdm_records.proxies import current_rdm_records_service
 
-# FIXME: These imports will change when we upgrade invenio-rdm-records
-from invenio_rdm_records.services.components import (
-    AccessComponent,
-    CustomFieldsComponent,
-    MetadataComponent,
-    PIDsComponent,
-    ReviewComponent,
-)
 from invenio_rdm_records.services.pids import providers
 from invenio_rdm_records.services.stats import (
     permissions_policy_lookup_factory,
@@ -43,10 +30,10 @@ from invenio_stats.queries import TermsQuery
 from invenio_vocabularies.proxies import current_service as vocabulary_service
 from invenio_vocabularies.records.api import Vocabulary
 from .fake_datacite_client import FakeDataCiteClient
-from knowledge_commons_repository.invenio_remote_search_provisioner import (
-    components,
-    ext,
+from knowledge_commons_repository.invenio_remote_api_provisioner.ext import (  # noqa: E501
+    InvenioRemoteAPIProvisioner,
 )
+import os
 
 pytest_plugins = ("celery.contrib.pytest",)
 
@@ -220,19 +207,76 @@ test_config["STATS_QUERIES"] = {
 
 test_config["STATS_PERMISSION_FACTORY"] = permissions_policy_lookup_factory
 
-test_config["RDM_RECORDS_SERVICE_COMPONENTS"] = [
-    components.RemoteProvisionerComponent,
-    MetadataComponent,
-    CustomFieldsComponent,
-    AccessComponent,
-    DraftFilesComponent,
-    # for the internal `pid` field
-    PIDComponent,
-    # for the `pids` field (external PIDs)
-    PIDsComponent,
-    RelationsComponent,
-    ReviewComponent,
-]
+
+def format_commons_search_payload(data, record, errors):
+    """Format payload for external service."""
+    payload = {
+        "type": "work",
+        "network": "works",
+        "primary_url": f"{os.environ['SITE_UI_URL']}/records/{record['id']}",
+        "other_urls": [],
+    }
+    if data.get("metadata", {}):
+        meta = {
+            "title": data["metadata"].get("title", ""),
+            "description": data["metadata"].get("description", ""),
+            "publication_date": data["metadata"].get("publication_date", ""),
+            "updated_date": (
+                data.get("updated", "")
+                or data.get("created", "")
+                or arrow.utcnow().format()
+            ),
+        }
+        payload.update(meta)
+        if data["metadata"].get("pids", {}).get("doi", {}):
+            f"https://doi.org/{record['pids']['doi']['identifier']}",
+        for u in [
+            i
+            for i in data["metadata"].get("identifiers", [])
+            if i.scheme == "url" and i not in payload["other_urls"]
+        ]:
+            payload["other_urls"].append(u.identifier)
+        if record["files"]["enabled"]:
+            payload["other_urls"].append(
+                f"{os.environ['SITE_UI_URL']}/records/{record['id']}/files",
+            )
+
+    # Owner name (string)
+    # Owner username (string)
+    # Other names ([string])
+    # Other usernames ([string])
+    # Full Content (string)
+    return payload
+
+
+REMOTE_API_PROVISIONER_EVENTS = {
+    "https://hcommons.org/api/v1/search_update": {
+        "create": {
+            "method": "POST",
+            "payload": lambda data, record, errors: (
+                format_commons_search_payload(data, record, errors)
+            ),
+        },
+        "update_draft": {
+            "method": "PUT",
+            "payload": lambda data, record, errors: (
+                format_commons_search_payload(data, record, errors)
+            ),
+        },
+        "publish": {
+            "method": "POST",
+            "payload": lambda data, record, errors: (
+                format_commons_search_payload(data, record, errors)
+            ),
+        },
+        "delete_record": {
+            "method": "POST",
+            "payload": lambda data, record, errors: (
+                format_commons_search_payload(data, record, errors)
+            ),
+        },
+    },
+}
 
 
 # Vocabularies
@@ -338,7 +382,7 @@ def create_app():
 @pytest.fixture(scope="module")
 def testapp(app):
     """Application database and ES."""
-    ext.InvenioRemoteSearchProvisioner(app)
+    InvenioRemoteAPIProvisioner(app)
     yield app
 
 

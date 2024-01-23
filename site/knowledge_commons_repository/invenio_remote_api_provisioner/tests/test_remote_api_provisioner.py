@@ -12,14 +12,14 @@ def replace_value_in_dict(input_dict, pairs):
     return input_dict
 
 
-def test_remote_search_provisioner(appctx):
+def test_remote_api_provisioner(appctx):
     # from invenio_search import current_search, current_search_client
 
     # deleted = list(current_search.delete(ignore=[404]))
     assert True
 
 
-def test_record_signals(
+def test_component(
     testapp,
     minimal_record,
     superuser_identity,
@@ -31,7 +31,7 @@ def test_record_signals(
     minimal_record_publish_result,
     db,
 ):
-    """Test simple record creation of a record."""
+    """Test simple record operations."""
 
     service = current_rdm_records.records_service
     draft = service.create(superuser_identity, minimal_record)
