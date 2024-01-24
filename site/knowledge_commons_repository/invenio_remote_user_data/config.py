@@ -10,8 +10,8 @@
 from kombu import Exchange
 
 REMOTE_USER_DATA_ENTITY_TYPES = {
-    "users": {'events': ['created', 'updated', 'deleted']},
-    "groups": {'events': ['created', 'updated', 'deleted']}
+    "users": {"events": ["created", "updated", "deleted"]},
+    "groups": {"events": ["created", "updated", "deleted"]},
 }
 
 REMOTE_USER_DATA_API_ENDPOINTS = {
@@ -25,7 +25,7 @@ REMOTE_USER_DATA_API_ENDPOINTS = {
     }
 }
 
-REMOTE_USER_DATA_UPDATE_INTERVAL = 1 # 1 hour
+REMOTE_USER_DATA_UPDATE_INTERVAL = 1  # 1 hour
 
 REMOTE_USER_DATA_MQ_EXCHANGE = Exchange(
     "user-data-updates",

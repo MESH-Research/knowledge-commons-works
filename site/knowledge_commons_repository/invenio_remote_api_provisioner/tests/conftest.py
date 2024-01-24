@@ -30,10 +30,12 @@ from invenio_stats.queries import TermsQuery
 from invenio_vocabularies.proxies import current_service as vocabulary_service
 from invenio_vocabularies.records.api import Vocabulary
 from .fake_datacite_client import FakeDataCiteClient
-from knowledge_commons_repository.invenio_remote_api_provisioner.ext import (  # noqa: E501
-    InvenioRemoteAPIProvisioner,
-)
+
+# from knowledge_commons_repository.invenio_remote_api_provisioner.ext import (  # noqa: E501
+#     InvenioRemoteAPIProvisioner,
+# )
 import os
+from pprint import pformat
 
 pytest_plugins = ("celery.contrib.pytest",)
 
@@ -207,39 +209,46 @@ test_config["STATS_QUERIES"] = {
 
 test_config["STATS_PERMISSION_FACTORY"] = permissions_policy_lookup_factory
 
+SITE_UI_URL = os.environ.get("INVENIO_SITE_UI_URL", "http://localhost:5000")
 
-def format_commons_search_payload(data, record, errors):
+
+def format_commons_search_payload(data, record, **kwargs):
     """Format payload for external service."""
-    payload = {
-        "type": "work",
-        "network": "works",
-        "primary_url": f"{os.environ['SITE_UI_URL']}/records/{record['id']}",
-        "other_urls": [],
-    }
-    if data.get("metadata", {}):
-        meta = {
-            "title": data["metadata"].get("title", ""),
-            "description": data["metadata"].get("description", ""),
-            "publication_date": data["metadata"].get("publication_date", ""),
-            "updated_date": (
-                data.get("updated", "")
-                or data.get("created", "")
-                or arrow.utcnow().format()
-            ),
+    try:
+        payload = {
+            "type": "work",
+            "network": "works",
+            "primary_url": f"{SITE_UI_URL}/records/{record['id']}",
+            "other_urls": [],
         }
-        payload.update(meta)
-        if data["metadata"].get("pids", {}).get("doi", {}):
-            f"https://doi.org/{record['pids']['doi']['identifier']}",
-        for u in [
-            i
-            for i in data["metadata"].get("identifiers", [])
-            if i.scheme == "url" and i not in payload["other_urls"]
-        ]:
-            payload["other_urls"].append(u.identifier)
-        if record["files"]["enabled"]:
-            payload["other_urls"].append(
-                f"{os.environ['SITE_UI_URL']}/records/{record['id']}/files",
-            )
+        if data.get("metadata", {}):
+            meta = {
+                "title": data["metadata"].get("title", ""),
+                "description": data["metadata"].get("description", ""),
+                "publication_date": data["metadata"].get(
+                    "publication_date", ""
+                ),
+                "updated_date": (
+                    data.get("updated", "")
+                    or data.get("created", "")
+                    or arrow.utcnow().format()
+                ),
+            }
+            payload.update(meta)
+            if data["metadata"].get("pids", {}).get("doi", {}):
+                f"https://doi.org/{record['pids']['doi']['identifier']}",
+            for u in [
+                i
+                for i in data["metadata"].get("identifiers", [])
+                if i["scheme"] == "url" and i not in payload["other_urls"]
+            ]:
+                payload["other_urls"].append(u["identifier"])
+            if record["files"]["enabled"]:
+                payload["other_urls"].append(
+                    f"{SITE_UI_URL}/records/{record['id']}/files",
+                )
+    except Exception as e:
+        return {"internal_error": pformat(e)}
 
     # Owner name (string)
     # Owner username (string)
@@ -249,30 +258,30 @@ def format_commons_search_payload(data, record, errors):
     return payload
 
 
-REMOTE_API_PROVISIONER_EVENTS = {
+test_config["REMOTE_API_PROVISIONER_EVENTS"] = {
     "https://hcommons.org/api/v1/search_update": {
         "create": {
             "method": "POST",
-            "payload": lambda data, record, errors: (
-                format_commons_search_payload(data, record, errors)
+            "payload": lambda data, record, *args, **kwargs: (
+                format_commons_search_payload(data, record, *args, **kwargs)
             ),
         },
         "update_draft": {
             "method": "PUT",
-            "payload": lambda data, record, errors: (
-                format_commons_search_payload(data, record, errors)
+            "payload": lambda data, record, *args, **kwargs: (
+                format_commons_search_payload(data, record, *args, **kwargs)
             ),
         },
         "publish": {
             "method": "POST",
-            "payload": lambda data, record, errors: (
-                format_commons_search_payload(data, record, errors)
+            "payload": lambda data, record, *args, **kwargs: (
+                format_commons_search_payload(data, record, *args, **kwargs)
             ),
         },
         "delete_record": {
             "method": "POST",
-            "payload": lambda data, record, errors: (
-                format_commons_search_payload(data, record, errors)
+            "payload": lambda data, record, *args, **kwargs: (
+                format_commons_search_payload(data, record, *args, **kwargs)
             ),
         },
     },
@@ -382,7 +391,7 @@ def create_app():
 @pytest.fixture(scope="module")
 def testapp(app):
     """Application database and ES."""
-    InvenioRemoteAPIProvisioner(app)
+    # InvenioRemoteAPIProvisioner(app)
     yield app
 
 

@@ -10,11 +10,15 @@
 
 """RDM service component to trigger external provisioning messages."""
 
+from invenio_access.permissions import system_identity
 from invenio_drafts_resources.services.records.components import (
     ServiceComponent,
 )
+from invenio_rdm_records.proxies import (
+    current_rdm_records_service as records_service,
+)
 from pprint import pformat
-import requests
+from .tasks import send_remote_api_update
 from .utils import logger as update_logger
 
 
@@ -31,16 +35,13 @@ def RemoteAPIProvisionerFactory(config):
 
         endpoints = config["REMOTE_API_PROVISIONER_EVENTS"]
 
-        def _send_update(
-            self,
-            data,
-            record,
-            identity,
-            endpoint,
-            method,
-            payload,
-            **kwargs,
+        def _get_payload_object(
+            self, data, record, identity, payload, **kwargs
         ):
+            print(pformat(data))
+            print(pformat(record))
+            print(pformat(identity))
+            print(pformat(kwargs))
             if callable(payload):
                 payload_object = payload(data, record, **kwargs)
             elif isinstance(payload, dict):
@@ -50,9 +51,6 @@ def RemoteAPIProvisionerFactory(config):
                     "Event payload must be a dict or a callable that returns a"
                     " dict."
                 )
-            update_logger.info(f"method: {method}")
-            update_logger.info("payload:")
-            update_logger.info(pformat(payload_object))
 
             if "internal_error" in payload_object.keys():
                 update_logger.error(
@@ -60,115 +58,124 @@ def RemoteAPIProvisionerFactory(config):
                 )
                 update_logger.error(payload_object["internal_error"])
             else:
-                response = requests.request(
-                    method,
-                    url=endpoint,
-                    json=payload_object,
-                    allow_redirects=False,
-                )
-                update_logger.info(response)
-                print(pformat(data))
-                print(pformat(record))
-                print(pformat(identity))
-                print(pformat(kwargs))
-                if response.status_code != 200:
-                    update_logger.error(
-                        "Error sending notification (status code"
-                        f" {response.status_code})"
-                    )
-                    update_logger.error(response.text)
-                else:
-                    update_logger.info("Notification sent successfully")
-                    update_logger.info("------")
+                return payload_object
 
         def create(self, identity, data=None, record=None, **kwargs):
             """Send notice that draft record has been created."""
             for endpoint, events in self.endpoints.items():
                 if "create" in events.keys():
-                    update_logger.info("Sending create event notice")
-                    self._send_update(
-                        record,
+                    update_logger.info("Sending create notice to event queue")
+
+                    payload_object = self._get_payload_object(
                         data,
+                        record,
                         identity,
+                        events["update_draft"]["payload"],
+                        **kwargs,
+                    )
+                    send_remote_api_update.delay(
                         endpoint=endpoint,
                         method=events["create"]["method"],
-                        payload=events["create"]["payload"],
-                        **kwargs,
+                        payload=payload_object,
                     )
 
         def update_draft(self, identity, data=None, record=None, **kwargs):
             """Send notice that draft record has been updated."""
             for endpoint, events in self.endpoints.items():
                 if "update_draft" in events.keys():
-                    update_logger.info("Sending update_draft event notice")
-                    self._send_update(
-                        record,
+                    update_logger.info(
+                        "Sending update_draft notice to event queue"
+                    )
+                    payload_object = self._get_payload_object(
                         data,
+                        record,
                         identity,
+                        events["update_draft"]["payload"],
+                        **kwargs,
+                    )
+                    send_remote_api_update.delay(
                         endpoint=endpoint,
                         method=events["update_draft"]["method"],
-                        payload=events["update_draft"]["payload"],
-                        **kwargs,
+                        payload=payload_object,
                     )
 
-        def publish(self, identity, draft=None, record=None, **kwargs):
+        def publish(self, identity, data=None, record=None, **kwargs):
             """Send notice that draft record has been published."""
+            rec = records_service.read_draft(system_identity, id_=record["id"])
+            print("getting draft****")
+            print(pformat(rec.data))
             for endpoint, events in self.endpoints.items():
                 if "publish" in events.keys():
-                    update_logger.info("Sending publish event notice")
-                    self._send_update(
+                    update_logger.info("Sending publish notice to event queue")
+                    payload_object = self._get_payload_object(
+                        data,
                         record,
-                        draft,
                         identity,
-                        endpoint=endpoint,
-                        method=events["publish"]["method"],
-                        payload=events["publish"]["payload"],
+                        events["update_draft"]["payload"],
                         **kwargs,
                     )
+                    send_remote_api_update.delay(
+                        endpoint=endpoint,
+                        method=events["update_draft"]["method"],
+                        payload=payload_object,
+                    )
 
-        def edit(self, identity, draft=None, record=None, **kwargs):
+        def edit(self, identity, data=None, record=None, **kwargs):
             """Send notice that published record has been edited."""
             for endpoint, events in self.endpoints.items():
                 if "edit" in events.keys():
-                    update_logger.info("Sending edit event notice")
-                    self._send_update(
+                    update_logger.info("Sending edit notice to event queue")
+                    payload_object = self._get_payload_object(
+                        data,
                         record,
-                        draft,
                         identity,
-                        endpoint=endpoint,
-                        method=events["edit"]["method"],
-                        payload=events["edit"]["payload"],
+                        events["update_draft"]["payload"],
                         **kwargs,
                     )
+                    send_remote_api_update.delay(
+                        endpoint=endpoint,
+                        method=events["update_draft"]["method"],
+                        payload=payload_object,
+                    )
 
-        def new_version(self, identity, draft=None, record=None, **kwargs):
+        def new_version(self, identity, data=None, record=None, **kwargs):
             """Update draft metadata."""
             for endpoint, events in self.endpoints.items():
                 if "new_version" in events.keys():
-                    update_logger.info("Sending new_version event notice")
-                    self._send_update(
+                    update_logger.info(
+                        "Sending new_version notice to event queue"
+                    )
+                    payload_object = self._get_payload_object(
+                        data,
                         record,
-                        draft,
                         identity,
-                        endpoint=endpoint,
-                        method=events["new_version"]["method"],
-                        payload=events["new_version"]["payload"],
+                        events["update_draft"]["payload"],
                         **kwargs,
                     )
+                    send_remote_api_update.delay(
+                        endpoint=endpoint,
+                        method=events["update_draft"]["method"],
+                        payload=payload_object,
+                    )
 
-        def delete_record(self, identity, draft=None, record=None, **kwargs):
+        def delete_record(self, identity, data=None, record=None, **kwargs):
             """Send notice that record has been deleted."""
             for endpoint, events in self.endpoints.items():
                 if "delete_record" in events.keys():
-                    update_logger.info("Sending delete_record event notice")
-                    self._send_update(
+                    update_logger.info(
+                        "Sending delete_record notice to event queue"
+                    )
+                    payload_object = self._get_payload_object(
+                        data,
                         record,
-                        draft,
                         identity,
-                        endpoint=endpoint,
-                        method=events["delete_record"]["method"],
-                        payload=events["delete_record"]["payload"],
+                        events["update_draft"]["payload"],
                         **kwargs,
+                    )
+                    send_remote_api_update.delay(
+                        endpoint=endpoint,
+                        method=events["update_draft"]["method"],
+                        payload=payload_object,
                     )
 
     return RemoteAPIProvisionerComponent

@@ -8,19 +8,19 @@
 # LICENSE file for more details.
 
 # FIXME: These imports will change when we upgrade invenio-rdm-records
-from invenio_drafts_resources.services.records.components import (
-    DraftFilesComponent,
-    PIDComponent,
-    RelationsComponent,
-)
+# from invenio_drafts_resources.services.records.components import (
+#     DraftFilesComponent,
+#     PIDComponent,
+#     RelationsComponent,
+# )
 
 # FIXME: These imports will change when we upgrade invenio-rdm-records
 from invenio_rdm_records.services.components import (
-    AccessComponent,
-    CustomFieldsComponent,
-    MetadataComponent,
-    PIDsComponent,
-    ReviewComponent,
+    # AccessComponent,
+    # CustomFieldsComponent,
+    # MetadataComponent,
+    # PIDsComponent,
+    # ReviewComponent,
     DefaultRecordsComponents,
 )
 from .components import (

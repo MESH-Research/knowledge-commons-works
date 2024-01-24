@@ -451,3 +451,389 @@
 2024-01-23 17:56:28,500:INFO : <Response [302]>
 2024-01-23 17:56:28,502:ERROR : Error sending notification (status code 302)
 2024-01-23 17:56:28,503:ERROR : 
+2024-01-24 10:32:55,667:INFO : Sending create event notice
+2024-01-24 10:33:49,053:INFO : Sending create event notice
+2024-01-24 10:38:08,598:INFO : Sending update_draft event notice
+2024-01-24 10:38:08,600:INFO : method: PUT
+2024-01-24 10:38:08,601:INFO : payload:
+2024-01-24 10:38:08,601:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 15:38:08+00:00'}
+2024-01-24 10:38:09,024:INFO : <Response [302]>
+2024-01-24 10:38:09,033:ERROR : Error sending notification (status code 302)
+2024-01-24 10:38:09,035:ERROR : 
+2024-01-24 10:41:59,209:INFO : Sending create event notice
+2024-01-24 10:43:03,008:INFO : Sending create event notice
+2024-01-24 10:43:36,187:INFO : Sending create event notice
+2024-01-24 10:43:36,187:INFO : method: POST
+2024-01-24 10:43:36,187:INFO : payload:
+2024-01-24 10:43:36,187:INFO : {'internal_error': "KeyError('id')"}
+2024-01-24 10:43:36,187:ERROR : Error generating the payload for the notification:
+2024-01-24 10:43:36,187:ERROR : KeyError('id')
+2024-01-24 10:43:36,264:INFO : Sending update_draft event notice
+2024-01-24 10:43:36,264:INFO : method: PUT
+2024-01-24 10:43:36,264:INFO : payload:
+2024-01-24 10:43:36,264:INFO : {'internal_error': "KeyError('id')"}
+2024-01-24 10:43:36,264:ERROR : Error generating the payload for the notification:
+2024-01-24 10:43:36,264:ERROR : KeyError('id')
+2024-01-24 10:43:36,364:INFO : Sending publish event notice
+2024-01-24 10:43:36,365:INFO : method: POST
+2024-01-24 10:43:36,365:INFO : payload:
+2024-01-24 10:43:36,365:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/1avjz-szf81',
+ 'publication_date': '2020-06-01',
+ 'title': 'A Romans Story 2',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 15:43:36+00:00'}
+2024-01-24 10:43:36,742:INFO : <Response [302]>
+2024-01-24 10:43:36,744:ERROR : Error sending notification (status code 302)
+2024-01-24 10:43:36,744:ERROR : 
+2024-01-24 10:46:18,403:INFO : Sending create event notice
+2024-01-24 10:46:18,405:INFO : method: POST
+2024-01-24 10:46:18,405:INFO : payload:
+2024-01-24 10:46:18,405:INFO : {'internal_error': "KeyError('id')"}
+2024-01-24 10:46:18,405:ERROR : Error generating the payload for the notification:
+2024-01-24 10:46:18,405:ERROR : KeyError('id')
+2024-01-24 10:46:18,405:INFO : Sending create event notice
+2024-01-24 10:46:18,405:INFO : method: POST
+2024-01-24 10:46:18,405:INFO : payload:
+2024-01-24 10:46:18,405:INFO : {'internal_error': "KeyError('id')"}
+2024-01-24 10:46:18,405:ERROR : Error generating the payload for the notification:
+2024-01-24 10:46:18,405:ERROR : KeyError('id')
+2024-01-24 10:46:18,468:INFO : Sending update_draft event notice
+2024-01-24 10:46:18,468:INFO : method: PUT
+2024-01-24 10:46:18,468:INFO : payload:
+2024-01-24 10:46:18,468:INFO : {'internal_error': "KeyError('id')"}
+2024-01-24 10:46:18,469:ERROR : Error generating the payload for the notification:
+2024-01-24 10:46:18,469:ERROR : KeyError('id')
+2024-01-24 10:46:18,469:INFO : Sending update_draft event notice
+2024-01-24 10:46:18,469:INFO : method: PUT
+2024-01-24 10:46:18,469:INFO : payload:
+2024-01-24 10:46:18,469:INFO : {'internal_error': "KeyError('id')"}
+2024-01-24 10:46:18,469:ERROR : Error generating the payload for the notification:
+2024-01-24 10:46:18,469:ERROR : KeyError('id')
+2024-01-24 10:46:18,550:INFO : Sending publish event notice
+2024-01-24 10:46:18,550:INFO : method: POST
+2024-01-24 10:46:18,550:INFO : payload:
+2024-01-24 10:46:18,550:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/aqxyy-3zn51',
+ 'publication_date': '2020-06-01',
+ 'title': 'A Romans Story 2',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 15:46:18+00:00'}
+2024-01-24 10:46:18,943:INFO : <Response [302]>
+2024-01-24 10:46:18,943:ERROR : Error sending notification (status code 302)
+2024-01-24 10:46:18,943:ERROR : 
+2024-01-24 10:46:18,943:INFO : Sending publish event notice
+2024-01-24 10:46:18,943:INFO : method: POST
+2024-01-24 10:46:18,943:INFO : payload:
+2024-01-24 10:46:18,944:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/aqxyy-3zn51',
+ 'publication_date': '2020-06-01',
+ 'title': 'A Romans Story 2',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 15:46:18+00:00'}
+2024-01-24 10:46:19,353:INFO : <Response [302]>
+2024-01-24 10:46:19,354:ERROR : Error sending notification (status code 302)
+2024-01-24 10:46:19,354:ERROR : 
+2024-01-24 10:47:43,840:INFO : Sending create event notice
+2024-01-24 10:47:43,841:INFO : method: POST
+2024-01-24 10:47:43,841:INFO : payload:
+2024-01-24 10:47:43,841:INFO : {'internal_error': "KeyError('id')"}
+2024-01-24 10:47:43,841:ERROR : Error generating the payload for the notification:
+2024-01-24 10:47:43,841:ERROR : KeyError('id')
+2024-01-24 10:47:43,935:INFO : Sending update_draft event notice
+2024-01-24 10:47:43,935:INFO : method: PUT
+2024-01-24 10:47:43,935:INFO : payload:
+2024-01-24 10:47:43,936:INFO : {'internal_error': "KeyError('id')"}
+2024-01-24 10:47:43,936:ERROR : Error generating the payload for the notification:
+2024-01-24 10:47:43,936:ERROR : KeyError('id')
+2024-01-24 10:47:44,003:INFO : Sending publish event notice
+2024-01-24 10:47:44,003:INFO : method: POST
+2024-01-24 10:47:44,003:INFO : payload:
+2024-01-24 10:47:44,003:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/t4aa6-kp230',
+ 'publication_date': '2020-06-01',
+ 'title': 'A Romans Story 2',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 15:47:44+00:00'}
+2024-01-24 10:47:44,493:INFO : <Response [302]>
+2024-01-24 10:47:44,495:ERROR : Error sending notification (status code 302)
+2024-01-24 10:47:44,495:ERROR : 
+2024-01-24 12:29:32,795:INFO : Sending update_draft notice to event queue
+2024-01-24 13:24:50,521:INFO : Sending update_draft notice to event queue
+2024-01-24 13:25:48,076:INFO : Sending update_draft notice to event queue
+2024-01-24 13:27:34,174:INFO : Sending update_draft notice to event queue
+2024-01-24 13:28:36,475:INFO : Sending update_draft notice to event queue
+2024-01-24 13:30:13,689:INFO : Sending update_draft notice to event queue
+2024-01-24 13:47:20,603:INFO : Sending update_draft notice to event queue
+2024-01-24 13:48:05,114:INFO : Sending update_draft notice to event queue
+2024-01-24 13:50:49,921:INFO : Sending update_draft notice to event queue
+2024-01-24 14:00:17,264:INFO : Sending update_draft notice to event queue
+2024-01-24 14:00:17,355:INFO : method: PUT
+2024-01-24 14:00:17,355:INFO : payload:
+2024-01-24 14:00:17,356:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 19:00:17+00:00'}
+2024-01-24 14:00:17,874:INFO : <Response [302]>
+2024-01-24 14:00:17,877:ERROR : Error sending notification (status code 302)
+2024-01-24 14:00:17,879:ERROR : 
+2024-01-24 14:04:57,458:INFO : Sending update_draft notice to event queue
+2024-01-24 14:04:57,540:INFO : method: PUT
+2024-01-24 14:04:57,541:INFO : payload:
+2024-01-24 14:04:57,542:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 19:04:57+00:00'}
+2024-01-24 14:04:58,009:INFO : <Response [302]>
+2024-01-24 14:04:58,012:ERROR : Error sending notification (status code 302)
+2024-01-24 14:04:58,014:ERROR : 
+2024-01-24 14:19:08,582:INFO : Sending update_draft notice to event queue
+2024-01-24 14:19:08,629:INFO : method: PUT
+2024-01-24 14:19:08,630:INFO : payload:
+2024-01-24 14:19:08,631:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 19:19:08+00:00'}
+2024-01-24 14:19:09,079:INFO : <Response [302]>
+2024-01-24 14:19:09,081:ERROR : Error sending notification (status code 302)
+2024-01-24 14:19:09,082:ERROR : 
+2024-01-24 14:20:47,487:INFO : Sending update_draft notice to event queue
+2024-01-24 14:20:47,575:INFO : method: PUT
+2024-01-24 14:20:47,576:INFO : payload:
+2024-01-24 14:20:47,577:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 19:20:47+00:00'}
+2024-01-24 14:20:47,999:INFO : <Response [302]>
+2024-01-24 14:20:48,001:ERROR : Error sending notification (status code 302)
+2024-01-24 14:20:48,003:ERROR : 
+2024-01-24 14:35:16,247:INFO : Sending update_draft notice to event queue
+2024-01-24 14:35:16,344:INFO : method: PUT
+2024-01-24 14:35:16,345:INFO : payload:
+2024-01-24 14:35:16,346:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 19:35:16+00:00'}
+2024-01-24 14:35:16,816:INFO : <Response [302]>
+2024-01-24 14:35:16,818:ERROR : Error sending notification (status code 302)
+2024-01-24 14:35:16,818:ERROR : 
+2024-01-24 14:58:08,785:INFO : Sending update_draft notice to event queue
+2024-01-24 14:58:08,927:INFO : method: PUT
+2024-01-24 14:58:08,928:INFO : payload:
+2024-01-24 14:58:08,930:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 19:58:08+00:00'}
+2024-01-24 14:58:09,413:INFO : <Response [302]>
+2024-01-24 14:58:09,415:ERROR : Error sending notification (status code 302)
+2024-01-24 14:58:09,417:ERROR : 
+2024-01-24 14:59:05,362:INFO : Sending update_draft notice to event queue
+2024-01-24 14:59:05,427:INFO : method: PUT
+2024-01-24 14:59:05,428:INFO : payload:
+2024-01-24 14:59:05,428:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 19:59:05+00:00'}
+2024-01-24 14:59:05,921:INFO : Sending update_draft notice to event queue
+2024-01-24 14:59:05,944:INFO : method: PUT
+2024-01-24 14:59:05,945:INFO : payload:
+2024-01-24 14:59:05,947:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w6tas-vzm67/files'],
+ 'primary_url': 'https://localhost/records/w6tas-vzm67',
+ 'publication_date': '2024-01-23',
+ 'title': 'A photo 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 19:59:05+00:00'}
+2024-01-24 14:59:05,956:INFO : <Response [302]>
+2024-01-24 14:59:05,957:ERROR : Error sending notification (status code 302)
+2024-01-24 14:59:05,958:ERROR : 
+2024-01-24 14:59:06,340:INFO : <Response [302]>
+2024-01-24 14:59:06,342:ERROR : Error sending notification (status code 302)
+2024-01-24 14:59:06,344:ERROR : 
+2024-01-24 16:22:02,608:INFO : Sending create notice to event queue
+2024-01-24 16:22:13,828:INFO : Sending create notice to event queue
+2024-01-24 16:37:35,986:INFO : Sending create notice to event queue
+2024-01-24 16:39:50,316:INFO : Sending create notice to event queue
+2024-01-24 16:39:50,390:INFO : method: POST
+2024-01-24 16:39:50,391:INFO : payload:
+2024-01-24 16:39:50,392:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/5cnrj-4h953/files'],
+ 'primary_url': 'https://localhost/records/5cnrj-4h953',
+ 'publication_date': '2024-01-18',
+ 'title': 'A photo of a board',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 21:39:50+00:00'}
+2024-01-24 16:39:50,937:INFO : <Response [302]>
+2024-01-24 16:39:50,939:ERROR : Error sending notification (status code 302)
+2024-01-24 16:39:50,940:ERROR : 
+2024-01-24 16:49:15,540:INFO : Sending create notice to event queue
+2024-01-24 16:49:15,550:INFO : method: POST
+2024-01-24 16:49:15,551:INFO : payload:
+2024-01-24 16:49:15,552:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/fnvq4-jm529/files'],
+ 'primary_url': 'https://localhost/records/fnvq4-jm529',
+ 'publication_date': '2024-01-18',
+ 'title': 'A photo of a board',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 21:49:15+00:00'}
+2024-01-24 16:49:16,103:INFO : <Response [302]>
+2024-01-24 16:49:16,106:ERROR : Error sending notification (status code 302)
+2024-01-24 16:49:16,108:ERROR : 
+2024-01-24 16:49:32,039:INFO : Sending update_draft notice to event queue
+2024-01-24 16:49:32,049:INFO : method: PUT
+2024-01-24 16:49:32,050:INFO : payload:
+2024-01-24 16:49:32,051:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/fnvq4-jm529',
+ 'publication_date': '2024-01-18',
+ 'title': 'A photo of a board',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 21:49:32+00:00'}
+2024-01-24 16:49:32,438:INFO : <Response [302]>
+2024-01-24 16:49:32,441:ERROR : Error sending notification (status code 302)
+2024-01-24 16:49:32,443:ERROR : 
+2024-01-24 17:20:36,789:INFO : Sending create notice to event queue
+2024-01-24 17:20:36,807:INFO : method: POST
+2024-01-24 17:20:36,809:INFO : payload:
+2024-01-24 17:20:36,810:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/440k0-mwr88/files'],
+ 'primary_url': 'https://localhost/records/440k0-mwr88',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 22:20:36+00:00'}
+2024-01-24 17:20:37,229:INFO : <Response [302]>
+2024-01-24 17:20:37,232:ERROR : Error sending notification (status code 302)
+2024-01-24 17:20:37,233:ERROR : 
+2024-01-24 17:28:28,915:INFO : Sending update_draft notice to event queue
+2024-01-24 17:28:28,991:INFO : method: PUT
+2024-01-24 17:28:28,992:INFO : payload:
+2024-01-24 17:28:28,993:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/440k0-mwr88',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 22:28:28+00:00'}
+2024-01-24 17:28:29,513:INFO : <Response [302]>
+2024-01-24 17:28:29,514:ERROR : Error sending notification (status code 302)
+2024-01-24 17:28:29,515:ERROR : 
+2024-01-24 17:29:28,633:INFO : Sending update_draft notice to event queue
+2024-01-24 17:29:28,691:INFO : method: PUT
+2024-01-24 17:29:28,692:INFO : payload:
+2024-01-24 17:29:28,693:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/440k0-mwr88',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 22:29:28+00:00'}
+2024-01-24 17:29:29,247:INFO : <Response [302]>
+2024-01-24 17:29:29,249:ERROR : Error sending notification (status code 302)
+2024-01-24 17:29:29,251:ERROR : 
+2024-01-24 17:30:38,357:INFO : Sending update_draft notice to event queue
+2024-01-24 17:30:38,432:INFO : method: PUT
+2024-01-24 17:30:38,433:INFO : payload:
+2024-01-24 17:30:38,433:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/440k0-mwr88',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 22:30:38+00:00'}
+2024-01-24 17:30:38,904:INFO : <Response [302]>
+2024-01-24 17:30:38,906:ERROR : Error sending notification (status code 302)
+2024-01-24 17:30:38,908:ERROR : 
+2024-01-24 17:44:53,228:INFO : Sending create notice to event queue
+2024-01-24 17:45:01,092:INFO : method: POST
+2024-01-24 17:45:01,097:INFO : payload:
+2024-01-24 17:45:01,099:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/w4m73-b0y74/files'],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 22:44:53+00:00'}
+2024-01-24 17:45:01,533:INFO : <Response [302]>
+2024-01-24 17:45:01,535:ERROR : Error sending notification (status code 302)
+2024-01-24 17:45:01,536:ERROR : 
+2024-01-24 17:48:25,983:INFO : Sending update_draft notice to event queue
+2024-01-24 17:48:26,028:INFO : method: PUT
+2024-01-24 17:48:26,028:INFO : payload:
+2024-01-24 17:48:26,029:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 22:48:25+00:00'}
+2024-01-24 17:48:26,489:INFO : <Response [302]>
+2024-01-24 17:48:26,491:ERROR : Error sending notification (status code 302)
+2024-01-24 17:48:26,492:ERROR : 
+2024-01-24 17:49:03,425:INFO : Sending update_draft notice to event queue
+2024-01-24 17:49:09,722:INFO : method: PUT
+2024-01-24 17:49:09,723:INFO : payload:
+2024-01-24 17:49:09,724:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 22:49:03+00:00'}
+2024-01-24 17:49:10,144:INFO : <Response [302]>
+2024-01-24 17:49:10,146:ERROR : Error sending notification (status code 302)
+2024-01-24 17:49:10,148:ERROR : 
