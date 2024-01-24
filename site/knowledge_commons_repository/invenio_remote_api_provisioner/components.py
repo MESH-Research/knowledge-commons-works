@@ -53,26 +53,33 @@ def RemoteAPIProvisionerFactory(config):
             update_logger.info(f"method: {method}")
             update_logger.info("payload:")
             update_logger.info(pformat(payload_object))
-            response = requests.request(
-                method,
-                url=endpoint,
-                json=payload_object,
-                allow_redirects=False,
-            )
-            update_logger.info(response)
-            print(pformat(data))
-            print(pformat(record))
-            print(pformat(identity))
-            print(pformat(kwargs))
-            if response.status_code != 200:
+
+            if "internal_error" in payload_object.keys():
                 update_logger.error(
-                    "Error sending notification (status code"
-                    f" {response.status_code})"
+                    "Error generating the payload for the notification:"
                 )
-                update_logger.error(response.text)
+                update_logger.error(payload_object["internal_error"])
             else:
-                update_logger.info("Notification sent successfully")
-                update_logger.info("------")
+                response = requests.request(
+                    method,
+                    url=endpoint,
+                    json=payload_object,
+                    allow_redirects=False,
+                )
+                update_logger.info(response)
+                print(pformat(data))
+                print(pformat(record))
+                print(pformat(identity))
+                print(pformat(kwargs))
+                if response.status_code != 200:
+                    update_logger.error(
+                        "Error sending notification (status code"
+                        f" {response.status_code})"
+                    )
+                    update_logger.error(response.text)
+                else:
+                    update_logger.info("Notification sent successfully")
+                    update_logger.info("------")
 
         def create(self, identity, data=None, record=None, **kwargs):
             """Send notice that draft record has been created."""
