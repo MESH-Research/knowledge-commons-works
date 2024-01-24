@@ -80,10 +80,18 @@ const CreatibutorsFieldItem = ({
       return <Label>{friendlyRole}</Label>;
     }
   };
-  let firstError = itemError;
-  if (itemError && typeof itemError === "array") {
-    firstError = itemError.find((elem) => ![undefined, null].includes(elem));
+
+  function returnBottomError(error) {
+    if (error && typeof error === "object") {
+      return returnBottomError(error[Object.keys(error)[0]]);
+    } else if (error && typeof error === "array") {
+      firstError = returnBottomError(
+        itemError.find((elem) => ![undefined, null].includes(elem))
+      );
+    }
+    return error;
   }
+  let firstError = returnBottomError(itemError);
   console.log("firstError", firstError);
 
   // Initialize the ref explicitely
@@ -102,7 +110,9 @@ const CreatibutorsFieldItem = ({
             primary
             type="button"
             onClick={
-              showEditForms.includes(compKey) ? handleFormClose : handleFormOpen
+              showEditForms.includes(compKey)
+                ? handleFormClose
+                : handleFormOpen
             }
             role="button"
           >

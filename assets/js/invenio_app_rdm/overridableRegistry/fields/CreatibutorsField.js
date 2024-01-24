@@ -168,13 +168,16 @@ const CreatibutorsFieldForm = ({
   };
 
   const myAffiliations =
-    typeof currentUserprofile.affiliations === "string"
+    typeof currentUserprofile.affiliations === "string" &&
+    currentUserprofile.affiliations !== ""
       ? [currentUserprofile.affiliations]
       : currentUserprofile?.affiliations;
   const selfCreatibutor = {
     person_or_org: {
       family_name: addingSelf
-        ? currentUserprofile?.family_name || currentUserprofile?.full_name || ""
+        ? currentUserprofile?.family_name ||
+          currentUserprofile?.full_name ||
+          ""
         : "",
       given_name: addingSelf ? currentUserprofile?.given_name || "" : "",
       name: addingSelf ? currentUserprofile?.full_name || "" : "",
