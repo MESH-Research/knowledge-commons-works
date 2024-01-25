@@ -10,7 +10,9 @@
 
 """RDM service component to trigger external provisioning messages."""
 
+import re
 from invenio_access.permissions import system_identity
+from invenio_accounts import current_accounts
 from invenio_drafts_resources.services.records.components import (
     ServiceComponent,
 )
@@ -36,14 +38,51 @@ def RemoteAPIProvisionerFactory(config):
         endpoints = config["REMOTE_API_PROVISIONER_EVENTS"]
 
         def _get_payload_object(
-            self, data, record, identity, payload, **kwargs
+            self, rec, data, record, identity, payload, **kwargs
         ):
+            """Get the payload object for the notification.
+
+            Parameters:
+                rec (dict): The record as it is in the database.
+                data (dict): The data returned from the service method.
+                record (dict): The record returned from the service method.
+                identity (dict): The identity of the user performing
+                                 the service operation.
+                payload (dict or callable): The payload object or a callable
+                                            that returns the payload object.
+                **kwargs: Any additional keyword arguments passed through
+                          from the parent service method. This includes
+                          ``errors`` where there are operation problems.
+            """
+            print(pformat(rec))
             print(pformat(data))
             print(pformat(record))
             print(pformat(identity))
             print(pformat(kwargs))
+            user = current_accounts.datastore.get_user_by_id(identity.id)
+            owner = {
+                "id": identity.id,
+                "email": user.email,
+                "username": user.username,
+                "affiliations": user.user_profile.get("affiliations", []),
+                "full_name": user.user_profile.get("full_name", ""),
+                "name_parts": user.user_profile.get("name_parts", ""),
+            }
+            if (
+                user.external_identifiers
+                and len(user.external_identifiers) > 0
+            ):
+                owner.update(
+                    {
+                        "authentication_source": user.external_identifiers[
+                            0
+                        ].method,
+                        "id_from_idp": user.external_identifiers[0].id,
+                    }
+                )
             if callable(payload):
-                payload_object = payload(data, record, **kwargs)
+                # FIXME: strip html
+                payload_object = payload(rec, data, record, owner, **kwargs)
             elif isinstance(payload, dict):
                 payload_object = payload
             else:
@@ -70,7 +109,7 @@ def RemoteAPIProvisionerFactory(config):
                         data,
                         record,
                         identity,
-                        events["update_draft"]["payload"],
+                        events["create"]["payload"],
                         **kwargs,
                     )
                     send_remote_api_update.delay(
@@ -81,12 +120,14 @@ def RemoteAPIProvisionerFactory(config):
 
         def update_draft(self, identity, data=None, record=None, **kwargs):
             """Send notice that draft record has been updated."""
+            rec = records_service.read_draft(system_identity, id_=record["id"])
             for endpoint, events in self.endpoints.items():
                 if "update_draft" in events.keys():
                     update_logger.info(
                         "Sending update_draft notice to event queue"
                     )
                     payload_object = self._get_payload_object(
+                        rec.data,
                         data,
                         record,
                         identity,
@@ -99,33 +140,35 @@ def RemoteAPIProvisionerFactory(config):
                         payload=payload_object,
                     )
 
+        # FIXME: Why is `files` enabled after publishing?
         def publish(self, identity, data=None, record=None, **kwargs):
             """Send notice that draft record has been published."""
             rec = records_service.read_draft(system_identity, id_=record["id"])
-            print("getting draft****")
-            print(pformat(rec.data))
             for endpoint, events in self.endpoints.items():
                 if "publish" in events.keys():
                     update_logger.info("Sending publish notice to event queue")
                     payload_object = self._get_payload_object(
-                        data,
+                        rec.data,
+                        kwargs["draft"],  # no data in publish
                         record,
                         identity,
-                        events["update_draft"]["payload"],
+                        events["publish"]["payload"],
                         **kwargs,
                     )
                     send_remote_api_update.delay(
                         endpoint=endpoint,
-                        method=events["update_draft"]["method"],
+                        method=events["publish"]["method"],
                         payload=payload_object,
                     )
 
         def edit(self, identity, data=None, record=None, **kwargs):
             """Send notice that published record has been edited."""
+            rec = records_service.read_draft(system_identity, id_=record["id"])
             for endpoint, events in self.endpoints.items():
                 if "edit" in events.keys():
                     update_logger.info("Sending edit notice to event queue")
                     payload_object = self._get_payload_object(
+                        rec.data,
                         data,
                         record,
                         identity,
@@ -134,47 +177,51 @@ def RemoteAPIProvisionerFactory(config):
                     )
                     send_remote_api_update.delay(
                         endpoint=endpoint,
-                        method=events["update_draft"]["method"],
+                        method=events["edit"]["method"],
                         payload=payload_object,
                     )
 
         def new_version(self, identity, data=None, record=None, **kwargs):
             """Update draft metadata."""
+            rec = records_service.read(system_identity, id_=record["id"])
             for endpoint, events in self.endpoints.items():
                 if "new_version" in events.keys():
                     update_logger.info(
                         "Sending new_version notice to event queue"
                     )
                     payload_object = self._get_payload_object(
+                        rec.data,
                         data,
                         record,
                         identity,
-                        events["update_draft"]["payload"],
+                        events["new_version"]["payload"],
                         **kwargs,
                     )
                     send_remote_api_update.delay(
                         endpoint=endpoint,
-                        method=events["update_draft"]["method"],
+                        method=events["new_version"]["method"],
                         payload=payload_object,
                     )
 
         def delete_record(self, identity, data=None, record=None, **kwargs):
             """Send notice that record has been deleted."""
+            rec = records_service.read(system_identity, id_=record["id"])
             for endpoint, events in self.endpoints.items():
                 if "delete_record" in events.keys():
                     update_logger.info(
                         "Sending delete_record notice to event queue"
                     )
                     payload_object = self._get_payload_object(
+                        rec.data,
                         data,
                         record,
                         identity,
-                        events["update_draft"]["payload"],
+                        events["delete_record"]["payload"],
                         **kwargs,
                     )
                     send_remote_api_update.delay(
                         endpoint=endpoint,
-                        method=events["update_draft"]["method"],
+                        method=events["delete_record"]["method"],
                         payload=payload_object,
                     )
 

@@ -837,3 +837,500 @@
 2024-01-24 17:49:10,144:INFO : <Response [302]>
 2024-01-24 17:49:10,146:ERROR : Error sending notification (status code 302)
 2024-01-24 17:49:10,148:ERROR : 
+2024-01-24 17:51:46,027:INFO : Sending update_draft notice to event queue
+2024-01-24 17:51:46,123:INFO : method: PUT
+2024-01-24 17:51:46,124:INFO : payload:
+2024-01-24 17:51:46,125:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 22:51:46+00:00'}
+2024-01-24 17:51:46,585:INFO : <Response [302]>
+2024-01-24 17:51:46,588:ERROR : Error sending notification (status code 302)
+2024-01-24 17:51:46,590:ERROR : 
+2024-01-24 17:52:25,177:INFO : Sending update_draft notice to event queue
+2024-01-24 17:52:25,236:INFO : method: PUT
+2024-01-24 17:52:25,237:INFO : payload:
+2024-01-24 17:52:25,238:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 22:52:25+00:00'}
+2024-01-24 17:52:25,592:INFO : <Response [302]>
+2024-01-24 17:52:25,595:ERROR : Error sending notification (status code 302)
+2024-01-24 17:52:25,596:ERROR : 
+2024-01-24 17:53:03,912:INFO : Sending update_draft notice to event queue
+2024-01-24 17:53:03,982:INFO : method: PUT
+2024-01-24 17:53:03,983:INFO : payload:
+2024-01-24 17:53:03,983:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 22:53:03+00:00'}
+2024-01-24 17:53:04,400:INFO : <Response [302]>
+2024-01-24 17:53:04,403:ERROR : Error sending notification (status code 302)
+2024-01-24 17:53:04,404:ERROR : 
+2024-01-24 18:13:50,930:INFO : Sending update_draft notice to event queue
+2024-01-24 18:17:09,349:INFO : Sending update_draft notice to event queue
+2024-01-24 18:17:13,458:INFO : method: PUT
+2024-01-24 18:17:13,462:INFO : payload:
+2024-01-24 18:17:13,465:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 23:17:09+00:00'}
+2024-01-24 18:17:13,966:INFO : <Response [302]>
+2024-01-24 18:17:13,969:ERROR : Error sending notification (status code 302)
+2024-01-24 18:17:13,971:ERROR : 
+2024-01-24 18:23:02,779:INFO : Sending update_draft notice to event queue
+2024-01-24 18:23:11,261:INFO : method: PUT
+2024-01-24 18:23:11,274:INFO : payload:
+2024-01-24 18:23:11,276:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-24 23:23:02+00:00'}
+2024-01-24 18:23:11,723:INFO : <Response [302]>
+2024-01-24 18:23:11,725:ERROR : Error sending notification (status code 302)
+2024-01-24 18:23:11,727:ERROR : 
+2024-01-24 18:30:20,326:INFO : Sending update_draft notice to event queue
+2024-01-25 11:56:17,908:INFO : Sending update_draft notice to event queue
+2024-01-25 12:07:22,374:INFO : Sending update_draft notice to event queue
+2024-01-25 12:07:22,506:INFO : method: PUT
+2024-01-25 12:07:22,507:INFO : payload:
+2024-01-25 12:07:22,508:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-25 17:07:22+00:00'}
+2024-01-25 12:07:23,056:INFO : <Response [302]>
+2024-01-25 12:07:23,058:ERROR : Error sending notification (status code 302)
+2024-01-25 12:07:23,059:ERROR : 
+2024-01-25 12:07:49,864:INFO : Sending update_draft notice to event queue
+2024-01-25 12:07:49,963:INFO : method: PUT
+2024-01-25 12:07:49,964:INFO : payload:
+2024-01-25 12:07:49,967:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-25 17:07:49+00:00'}
+2024-01-25 12:07:50,378:INFO : <Response [302]>
+2024-01-25 12:07:50,380:ERROR : Error sending notification (status code 302)
+2024-01-25 12:07:50,381:ERROR : 
+2024-01-25 14:34:13,889:INFO : Sending update_draft notice to event queue
+2024-01-25 14:34:14,040:INFO : method: PUT
+2024-01-25 14:34:14,043:INFO : payload:
+2024-01-25 14:34:14,044:INFO : {'description': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-25 19:34:13+00:00'}
+2024-01-25 14:34:14,651:INFO : <Response [302]>
+2024-01-25 14:34:14,653:ERROR : Error sending notification (status code 302)
+2024-01-25 14:34:14,656:ERROR : 
+2024-01-25 14:43:07,021:INFO : Sending update_draft notice to event queue
+2024-01-25 14:43:07,164:INFO : method: PUT
+2024-01-25 14:43:07,165:INFO : payload:
+2024-01-25 14:43:07,166:INFO : {'description': '',
+ 'full_Content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated_date': '2024-01-25 19:43:07+00:00'}
+2024-01-25 14:43:07,646:INFO : <Response [302]>
+2024-01-25 14:43:07,648:ERROR : Error sending notification (status code 302)
+2024-01-25 14:43:07,650:ERROR : 
+2024-01-25 15:26:59,303:INFO : Sending update_draft notice to event queue
+2024-01-25 15:26:59,602:INFO : method: PUT
+2024-01-25 15:26:59,604:INFO : payload:
+2024-01-25 15:26:59,608:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_Content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated': '2024-01-25T19:43:07.177808+00:00',
+ 'updated_date': '2024-01-25 20:26:59+00:00'}
+2024-01-25 15:27:00,178:INFO : <Response [302]>
+2024-01-25 15:27:00,181:ERROR : Error sending notification (status code 302)
+2024-01-25 15:27:00,183:ERROR : 
+2024-01-25 15:30:08,064:INFO : Sending update_draft notice to event queue
+2024-01-25 15:30:08,190:INFO : method: PUT
+2024-01-25 15:30:08,192:INFO : payload:
+2024-01-25 15:30:08,193:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_Content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated': '2024-01-25T20:26:59.639280+00:00',
+ 'updated_date': '2024-01-25 20:30:08+00:00'}
+2024-01-25 15:30:08,650:INFO : <Response [302]>
+2024-01-25 15:30:08,652:ERROR : Error sending notification (status code 302)
+2024-01-25 15:30:08,654:ERROR : 
+2024-01-25 15:31:02,899:INFO : Sending update_draft notice to event queue
+2024-01-25 15:31:03,050:INFO : method: PUT
+2024-01-25 15:31:03,055:INFO : payload:
+2024-01-25 15:31:03,059:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_Content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated': '2024-01-25T20:30:08.198645+00:00',
+ 'updated_date': '2024-01-25 20:31:03+00:00'}
+2024-01-25 15:31:03,679:INFO : <Response [302]>
+2024-01-25 15:31:03,681:ERROR : Error sending notification (status code 302)
+2024-01-25 15:31:03,683:ERROR : 
+2024-01-25 15:31:04,350:INFO : Sending publish notice to event queue
+2024-01-25 15:46:26,000:INFO : Sending update_draft notice to event queue
+2024-01-25 15:46:26,122:INFO : method: PUT
+2024-01-25 15:46:26,123:INFO : payload:
+2024-01-25 15:46:26,124:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated': '2024-01-25T20:31:03.082178+00:00',
+ 'updated_date': '2024-01-25 20:46:26+00:00'}
+2024-01-25 15:46:26,384:INFO : Sending publish notice to event queue
+2024-01-25 15:46:26,639:INFO : <Response [302]>
+2024-01-25 15:46:26,641:ERROR : Error sending notification (status code 302)
+2024-01-25 15:46:26,643:ERROR : 
+2024-01-25 15:48:55,453:INFO : Sending update_draft notice to event queue
+2024-01-25 15:48:57,903:INFO : Sending publish notice to event queue
+2024-01-25 15:48:59,596:INFO : method: PUT
+2024-01-25 15:48:59,597:INFO : payload:
+2024-01-25 15:48:59,604:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated': '2024-01-25T20:46:26.136075+00:00',
+ 'updated_date': '2024-01-25 20:48:55+00:00'}
+2024-01-25 15:49:00,111:INFO : <Response [302]>
+2024-01-25 15:49:00,115:ERROR : Error sending notification (status code 302)
+2024-01-25 15:49:00,117:ERROR : 
+2024-01-25 15:51:55,680:INFO : Sending update_draft notice to event queue
+2024-01-25 15:51:55,806:INFO : method: PUT
+2024-01-25 15:51:55,807:INFO : payload:
+2024-01-25 15:51:55,807:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated': '2024-01-25T20:48:57.607373+00:00',
+ 'updated_date': '2024-01-25 20:51:55+00:00'}
+2024-01-25 15:51:56,072:INFO : Sending publish notice to event queue
+2024-01-25 15:51:56,310:INFO : <Response [302]>
+2024-01-25 15:51:56,311:ERROR : Error sending notification (status code 302)
+2024-01-25 15:51:56,312:ERROR : 
+2024-01-25 15:52:38,276:INFO : Sending update_draft notice to event queue
+2024-01-25 15:52:44,626:INFO : method: PUT
+2024-01-25 15:52:44,628:INFO : payload:
+2024-01-25 15:52:44,628:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated': '2024-01-25T20:51:55.816460+00:00',
+ 'updated_date': '2024-01-25 20:52:38+00:00'}
+2024-01-25 15:52:44,710:INFO : Sending publish notice to event queue
+2024-01-25 15:52:45,137:INFO : <Response [302]>
+2024-01-25 15:52:45,140:ERROR : Error sending notification (status code 302)
+2024-01-25 15:52:45,142:ERROR : 
+2024-01-25 15:55:59,216:INFO : Sending update_draft notice to event queue
+2024-01-25 15:55:59,379:INFO : method: PUT
+2024-01-25 15:55:59,380:INFO : payload:
+2024-01-25 15:55:59,381:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated': '2024-01-25T20:52:44.411293+00:00',
+ 'updated_date': '2024-01-25 20:55:59+00:00'}
+2024-01-25 15:55:59,606:INFO : Sending publish notice to event queue
+2024-01-25 15:55:59,824:INFO : <Response [302]>
+2024-01-25 15:55:59,825:ERROR : Error sending notification (status code 302)
+2024-01-25 15:55:59,826:ERROR : 
+2024-01-25 15:57:46,447:INFO : Sending update_draft notice to event queue
+2024-01-25 15:57:46,519:INFO : method: PUT
+2024-01-25 15:57:46,520:INFO : payload:
+2024-01-25 15:57:46,520:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again',
+ 'type': 'work',
+ 'updated': '2024-01-25T20:55:59.404266+00:00',
+ 'updated_date': '2024-01-25 20:57:46+00:00'}
+2024-01-25 15:57:46,780:INFO : Sending publish notice to event queue
+2024-01-25 15:57:46,792:ERROR : Error generating the payload for the notification:
+2024-01-25 15:57:46,793:ERROR : AttributeError("'NoneType' object has no attribute 'get'")
+2024-01-25 15:57:46,808:INFO : method: PUT
+2024-01-25 15:57:46,809:INFO : payload:
+2024-01-25 15:57:46,810:INFO : None
+2024-01-25 15:57:47,143:INFO : <Response [302]>
+2024-01-25 15:57:47,144:ERROR : Error sending notification (status code 302)
+2024-01-25 15:57:47,145:ERROR : 
+2024-01-25 15:57:47,315:INFO : <Response [302]>
+2024-01-25 15:57:47,316:ERROR : Error sending notification (status code 302)
+2024-01-25 15:57:47,316:ERROR : 
+2024-01-25 16:18:57,697:INFO : Sending update_draft notice to event queue
+2024-01-25 16:18:57,837:INFO : method: PUT
+2024-01-25 16:18:57,837:INFO : payload:
+2024-01-25 16:18:57,838:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again 2',
+ 'type': 'work',
+ 'updated': '2024-01-25T21:18:41.145190+00:00',
+ 'updated_date': '2024-01-25 21:18:57+00:00'}
+2024-01-25 16:18:58,353:INFO : <Response [302]>
+2024-01-25 16:18:58,356:ERROR : Error sending notification (status code 302)
+2024-01-25 16:18:58,359:ERROR : 
+2024-01-25 16:22:56,040:INFO : Sending update_draft notice to event queue
+2024-01-25 16:22:56,095:INFO : method: PUT
+2024-01-25 16:22:56,096:INFO : payload:
+2024-01-25 16:22:56,097:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again 2',
+ 'type': 'work',
+ 'updated': '2024-01-25T21:18:57.849772+00:00',
+ 'updated_date': '2024-01-25 21:22:56+00:00'}
+2024-01-25 16:22:56,624:INFO : <Response [302]>
+2024-01-25 16:22:56,626:ERROR : Error sending notification (status code 302)
+2024-01-25 16:22:56,629:ERROR : 
+2024-01-25 16:23:15,667:INFO : Sending update_draft notice to event queue
+2024-01-25 16:23:15,739:INFO : method: PUT
+2024-01-25 16:23:15,740:INFO : payload:
+2024-01-25 16:23:15,740:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again 2',
+ 'type': 'work',
+ 'updated': '2024-01-25T21:22:56.110218+00:00',
+ 'updated_date': '2024-01-25 21:23:15+00:00'}
+2024-01-25 16:23:15,890:INFO : Sending publish notice to event queue
+2024-01-25 16:23:15,909:INFO : method: POST
+2024-01-25 16:23:15,910:INFO : payload:
+2024-01-25 16:23:15,911:INFO : {'created': '2024-01-24T22:44:53.132197+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/w4m73-b0y74',
+ 'publication_date': '2024-01-24',
+ 'record_id': 'w4m73-b0y74',
+ 'title': 'Mine again 2',
+ 'type': 'work',
+ 'updated': '2024-01-25T21:23:15.873029+00:00',
+ 'updated_date': '2024-01-25 21:23:15+00:00'}
+2024-01-25 16:23:16,195:INFO : <Response [302]>
+2024-01-25 16:23:16,197:ERROR : Error sending notification (status code 302)
+2024-01-25 16:23:16,197:ERROR : 
+2024-01-25 16:23:16,351:INFO : <Response [302]>
+2024-01-25 16:23:16,352:ERROR : Error sending notification (status code 302)
+2024-01-25 16:23:16,354:ERROR : 
+2024-01-25 16:26:46,663:INFO : Sending update_draft notice to event queue
+2024-01-25 16:26:46,794:INFO : method: PUT
+2024-01-25 16:26:46,798:INFO : payload:
+2024-01-25 16:26:46,800:INFO : {'created': '2024-01-25T21:25:27.618884+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/ceska-hxk69',
+ 'publication_date': '2024-01-25',
+ 'record_id': 'ceska-hxk69',
+ 'title': 'Mine again 2',
+ 'type': 'work',
+ 'updated': '2024-01-25T21:25:27.655093+00:00',
+ 'updated_date': '2024-01-25 21:26:46+00:00'}
+2024-01-25 16:26:47,356:INFO : <Response [302]>
+2024-01-25 16:26:47,357:ERROR : Error sending notification (status code 302)
+2024-01-25 16:26:47,358:ERROR : 
+2024-01-25 16:27:40,212:INFO : Sending update_draft notice to event queue
+2024-01-25 16:27:40,248:INFO : method: PUT
+2024-01-25 16:27:40,248:INFO : payload:
+2024-01-25 16:27:40,250:INFO : {'created': '2024-01-25T21:25:27.618884+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/ceska-hxk69',
+ 'publication_date': '2024-01-25',
+ 'record_id': 'ceska-hxk69',
+ 'title': 'Mine again 2',
+ 'type': 'work',
+ 'updated': '2024-01-25T21:26:46.822180+00:00',
+ 'updated_date': '2024-01-25 21:27:40+00:00'}
+2024-01-25 16:27:40,405:INFO : Sending publish notice to event queue
+2024-01-25 16:27:40,435:INFO : method: POST
+2024-01-25 16:27:40,436:INFO : payload:
+2024-01-25 16:27:40,437:INFO : {'created': '2024-01-25T21:25:27.618884+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/ceska-hxk69/files'],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/ceska-hxk69',
+ 'publication_date': '2024-01-25',
+ 'record_id': 'ceska-hxk69',
+ 'title': 'Mine again 2',
+ 'type': 'work',
+ 'updated': '2024-01-25T21:27:40.388014+00:00',
+ 'updated_date': '2024-01-25 21:27:40+00:00'}
+2024-01-25 16:27:40,781:INFO : <Response [302]>
+2024-01-25 16:27:40,782:ERROR : Error sending notification (status code 302)
+2024-01-25 16:27:40,783:ERROR : 
+2024-01-25 16:27:40,835:INFO : <Response [302]>
+2024-01-25 16:27:40,837:ERROR : Error sending notification (status code 302)
+2024-01-25 16:27:40,837:ERROR : 
+2024-01-25 17:07:10,990:INFO : Sending publish notice to event queue
+2024-01-25 17:07:11,000:ERROR : Error generating the payload for the notification:
+2024-01-25 17:07:11,000:ERROR : KeyError('id_from_idp')
+2024-01-25 17:07:11,006:INFO : method: POST
+2024-01-25 17:07:11,006:INFO : payload:
+2024-01-25 17:07:11,006:INFO : None
+2024-01-25 17:07:11,496:INFO : <Response [302]>
+2024-01-25 17:07:11,497:ERROR : Error sending notification (status code 302)
+2024-01-25 17:07:11,497:ERROR : 
+2024-01-25 17:28:40,878:INFO : Sending publish notice to event queue
+2024-01-25 17:28:40,893:INFO : method: POST
+2024-01-25 17:28:40,893:INFO : payload:
+2024-01-25 17:28:40,893:INFO : {'created_date': '2024-01-25T22:28:40.633349+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/vn1dv-da857/files'],
+ 'owner_name': '',
+ 'owner_username': 'myuser',
+ 'primary_url': 'https://localhost/records/vn1dv-da857',
+ 'publication_date': '2020-06-01',
+ 'record_id': 'vn1dv-da857',
+ 'revision_id': 7,
+ 'title': 'A Romans Story 2',
+ 'type': 'work',
+ 'updated_date': '2024-01-25T22:28:40.863959+00:00',
+ 'version': 1}
+2024-01-25 17:28:41,435:INFO : <Response [302]>
+2024-01-25 17:28:41,436:ERROR : Error sending notification (status code 302)
+2024-01-25 17:28:41,436:ERROR : 

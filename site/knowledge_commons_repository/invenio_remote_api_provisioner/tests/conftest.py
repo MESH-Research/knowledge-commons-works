@@ -13,13 +13,12 @@ fixtures are available.
 """
 
 import pytest
-import arrow
 from io import BytesIO
 from invenio_access.models import ActionRoles, Role
 from invenio_access.permissions import superuser_access, system_identity
 from invenio_administration.permissions import administration_access_action
 from invenio_app.factory import create_api
-
+from invenio_oauthclient.models import UserIdentity
 from invenio_rdm_records.proxies import current_rdm_records_service
 
 from invenio_rdm_records.services.pids import providers
@@ -53,6 +52,27 @@ def AllowAllPermissionFactory(obj_id, action):
 def _(x):
     """Identity function for string extraction."""
     return x
+
+
+@pytest.fixture(scope="module")
+def extra_entry_points():
+    return {
+        "invenio_base.api_apps": [
+            "invenio_remote_api_provisioner ="
+            " knowledge_commons_repository.invenio_remote_api_provisioner."
+            "ext:InvenioRemoteAPIProvisioner"
+        ],
+        "invenio_base.apps": [
+            "invenio_remote_api_provisioner ="
+            " knowledge_commons_repository.invenio_remote_api_provisioner."
+            "ext:InvenioRemoteAPIProvisioner"
+        ],
+        "invenio_celery.tasks": [
+            "invenio_remote_api_provisioner ="
+            " knowledge_commons_repository.invenio_remote_api_provisioner."
+            "tasks"
+        ],
+    }
 
 
 @pytest.fixture(scope="module")
@@ -212,14 +232,22 @@ test_config["STATS_PERMISSION_FACTORY"] = permissions_policy_lookup_factory
 SITE_UI_URL = os.environ.get("INVENIO_SITE_UI_URL", "http://localhost:5000")
 
 
-def format_commons_search_payload(data, record, **kwargs):
+def format_commons_search_payload(rec, data, record, owner, **kwargs):
     """Format payload for external service."""
     try:
         payload = {
+            "record_id": record["id"],
             "type": "work",
             "network": "works",
             "primary_url": f"{SITE_UI_URL}/records/{record['id']}",
             "other_urls": [],
+            "owner_name": owner["full_name"],
+            "owner_username": owner["id_from_idp"],
+            "full_content": "",
+            "created_date": rec["created"],
+            "updated_date": rec["updated"],
+            "revision_id": rec["revision_id"],
+            "version": rec["versions"]["index"],
         }
         if data.get("metadata", {}):
             meta = {
@@ -227,11 +255,6 @@ def format_commons_search_payload(data, record, **kwargs):
                 "description": data["metadata"].get("description", ""),
                 "publication_date": data["metadata"].get(
                     "publication_date", ""
-                ),
-                "updated_date": (
-                    data.get("updated", "")
-                    or data.get("created", "")
-                    or arrow.utcnow().format()
                 ),
             }
             payload.update(meta)
@@ -250,38 +273,39 @@ def format_commons_search_payload(data, record, **kwargs):
     except Exception as e:
         return {"internal_error": pformat(e)}
 
-    # Owner name (string)
-    # Owner username (string)
-    # Other names ([string])
-    # Other usernames ([string])
-    # Full Content (string)
     return payload
 
 
 test_config["REMOTE_API_PROVISIONER_EVENTS"] = {
     "https://hcommons.org/api/v1/search_update": {
-        "create": {
-            "method": "POST",
-            "payload": lambda data, record, *args, **kwargs: (
-                format_commons_search_payload(data, record, *args, **kwargs)
-            ),
-        },
-        "update_draft": {
-            "method": "PUT",
-            "payload": lambda data, record, *args, **kwargs: (
-                format_commons_search_payload(data, record, *args, **kwargs)
-            ),
-        },
+        # "create": {
+        #     "method": "POST",
+        #     "payload": lambda rec, data, record, owner, **kwargs: (
+        #         format_commons_search_payload(rec, data, record, **kwargs)
+        #     ),
+        # },
+        # "update_draft": {
+        #     "method": "PUT",
+        #     "payload": lambda rec, data, record, owner, **kwargs: (
+        #         format_commons_search_payload(
+        #             rec, data, record, owner, **kwargs
+        #         )
+        #     ),
+        # },
         "publish": {
             "method": "POST",
-            "payload": lambda data, record, *args, **kwargs: (
-                format_commons_search_payload(data, record, *args, **kwargs)
+            "payload": lambda rec, data, record, owner, **kwargs: (
+                format_commons_search_payload(
+                    rec, data, record, owner, **kwargs
+                )
             ),
         },
         "delete_record": {
-            "method": "POST",
-            "payload": lambda data, record, *args, **kwargs: (
-                format_commons_search_payload(data, record, *args, **kwargs)
+            "method": "DELETE",
+            "payload": lambda rec, data, record, owner, **kwargs: (
+                format_commons_search_payload(
+                    rec, data, record, owner, **kwargs
+                )
             ),
         },
     },
@@ -384,7 +408,7 @@ def app_config(app_config) -> dict:
 
 
 @pytest.fixture(scope="module")
-def create_app():
+def create_app(entry_points):
     return create_api
 
 
@@ -683,6 +707,8 @@ def admin(UserFixture, app, db, admin_role_need):
     _, role = datastore._prepare_role_modify_args(
         u.user, "administration-access"
     )
+
+    UserIdentity.create(u.user, "knowledgeCommons", "myuser")
 
     datastore.add_role_to_user(u.user, role)
     db.session.commit()
