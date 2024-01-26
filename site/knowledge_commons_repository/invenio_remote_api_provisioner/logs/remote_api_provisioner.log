@@ -1334,3 +1334,223 @@
 2024-01-25 17:28:41,435:INFO : <Response [302]>
 2024-01-25 17:28:41,436:ERROR : Error sending notification (status code 302)
 2024-01-25 17:28:41,436:ERROR : 
+2024-01-26 11:12:35,590:INFO : Sending update_draft notice to event queue
+2024-01-26 11:12:35,636:INFO : method: PUT
+2024-01-26 11:12:35,638:INFO : payload:
+2024-01-26 11:12:35,640:INFO : {'created': '2024-01-26T16:12:17.001592+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/ceska-hxk69',
+ 'publication_date': '2024-01-25',
+ 'record_id': 'ceska-hxk69',
+ 'title': 'Mine again 3',
+ 'type': 'work',
+ 'updated': '2024-01-26T16:12:17.054919+00:00',
+ 'updated_date': '2024-01-26 16:12:35+00:00'}
+2024-01-26 11:12:36,137:INFO : <Response [302]>
+2024-01-26 11:12:36,140:ERROR : Error sending notification (status code 302)
+2024-01-26 11:12:36,142:ERROR : 
+2024-01-26 11:13:36,811:INFO : Sending publish notice to event queue
+2024-01-26 11:13:36,867:INFO : method: POST
+2024-01-26 11:13:36,867:INFO : payload:
+2024-01-26 11:13:36,868:INFO : {'created_date': '2024-01-26T16:12:17.001592+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/ceska-hxk69',
+ 'publication_date': '2024-01-25',
+ 'record_id': 'ceska-hxk69',
+ 'revision_id': 11,
+ 'title': 'Mine again 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-26T16:13:36.792713+00:00',
+ 'version': 3}
+2024-01-26 11:13:37,356:INFO : <Response [302]>
+2024-01-26 11:13:37,358:ERROR : Error sending notification (status code 302)
+2024-01-26 11:13:37,359:ERROR : 
+2024-01-26 11:49:18,529:INFO : Sending publish notice to event queue
+2024-01-26 11:49:18,557:INFO : method: POST
+2024-01-26 11:49:18,558:INFO : payload:
+2024-01-26 11:49:18,559:INFO : {'created_date': '2024-01-26T16:12:17.001592+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': 'Ian Scott',
+ 'owner_username': 'iscott',
+ 'primary_url': 'https://localhost/records/ceska-hxk69',
+ 'publication_date': '2024-01-25',
+ 'record_id': 'ceska-hxk69',
+ 'revision_id': 19,
+ 'title': 'Mine again 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-26T16:49:18.511570+00:00',
+ 'version': 2}
+2024-01-26 11:49:19,197:INFO : <Response [302]>
+2024-01-26 11:49:19,198:ERROR : Error sending notification (status code 302)
+2024-01-26 11:49:19,200:ERROR : 
+2024-01-26 13:17:03,400:INFO : Sending publish notice to event queue
+2024-01-26 13:17:03,413:ERROR : Error generating the payload for the notification:
+2024-01-26 13:17:03,413:ERROR : KeyError('id_from_idp')
+2024-01-26 13:17:03,499:INFO : method: POST
+2024-01-26 13:17:03,500:INFO : payload:
+2024-01-26 13:17:03,501:INFO : None
+2024-01-26 13:17:04,596:INFO : <Response [302]>
+2024-01-26 13:17:04,598:ERROR : Error sending notification (status code 302)
+2024-01-26 13:17:04,599:ERROR : 
+2024-01-26 13:25:02,380:INFO : Sending publish notice to event queue
+2024-01-26 13:25:02,507:INFO : method: POST
+2024-01-26 13:25:02,509:INFO : payload:
+2024-01-26 13:25:02,511:INFO : {'created_date': '2024-01-26T18:16:24.751852+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': '',
+ 'owner_username': None,
+ 'primary_url': 'https://localhost/records/sqfz1-pwa98',
+ 'publication_date': '2024-01-26',
+ 'record_id': 'sqfz1-pwa98',
+ 'revision_id': 17,
+ 'title': 'My title 2',
+ 'type': 'work',
+ 'updated_date': '2024-01-26T18:25:02.350144+00:00',
+ 'version': 1}
+2024-01-26 13:25:03,166:INFO : <Response [302]>
+2024-01-26 13:25:03,168:ERROR : Error sending notification (status code 302)
+2024-01-26 13:25:03,170:ERROR : 
+2024-01-26 13:30:54,725:INFO : Sending publish notice to event queue
+2024-01-26 13:30:54,788:INFO : method: POST
+2024-01-26 13:30:54,789:INFO : payload:
+2024-01-26 13:30:54,790:INFO : {'created_date': '2024-01-26T18:23:11.427821+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/905ag-myr58/files'],
+ 'owner_name': '',
+ 'owner_username': None,
+ 'primary_url': 'https://localhost/records/905ag-myr58',
+ 'publication_date': '2024-01-26',
+ 'record_id': '905ag-myr58',
+ 'revision_id': 9,
+ 'title': 'My title 2',
+ 'type': 'work',
+ 'updated_date': '2024-01-26T18:30:54.710343+00:00',
+ 'version': 2}
+2024-01-26 13:30:55,458:INFO : <Response [302]>
+2024-01-26 13:30:55,458:ERROR : Error sending notification (status code 302)
+2024-01-26 13:30:55,459:ERROR : 
+2024-01-26 13:53:03,134:INFO : Sending publish notice to event queue
+2024-01-26 13:53:03,249:INFO : method: POST
+2024-01-26 13:53:03,252:INFO : payload:
+2024-01-26 13:53:03,255:INFO : {'created_date': '2024-01-26T18:38:39.693602+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/qm1c7-hz493/files'],
+ 'owner_name': '',
+ 'owner_username': None,
+ 'primary_url': 'https://localhost/records/qm1c7-hz493',
+ 'publication_date': '2024-01-26',
+ 'record_id': 'qm1c7-hz493',
+ 'revision_id': 7,
+ 'title': 'My title 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-26T18:53:03.115948+00:00',
+ 'version': 3}
+2024-01-26 13:53:04,137:INFO : <Response [302]>
+2024-01-26 13:53:04,140:ERROR : Error sending notification (status code 302)
+2024-01-26 13:53:04,141:ERROR : 
+2024-01-26 13:55:52,992:INFO : Sending publish notice to event queue
+2024-01-26 13:55:53,019:INFO : method: POST
+2024-01-26 13:55:53,019:INFO : payload:
+2024-01-26 13:55:53,020:INFO : {'created_date': '2024-01-26T18:55:31.310675+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': ['https://localhost/records/4ej2s-n0162/files'],
+ 'owner_name': '',
+ 'owner_username': None,
+ 'primary_url': 'https://localhost/records/4ej2s-n0162',
+ 'publication_date': '2024-01-27',
+ 'record_id': '4ej2s-n0162',
+ 'revision_id': 7,
+ 'title': 'My title 3',
+ 'type': 'work',
+ 'updated_date': '2024-01-26T18:55:52.971512+00:00',
+ 'version': 4}
+2024-01-26 13:55:53,490:INFO : <Response [302]>
+2024-01-26 13:55:53,491:ERROR : Error sending notification (status code 302)
+2024-01-26 13:55:53,491:ERROR : 
+2024-01-26 13:56:53,892:INFO : Sending publish notice to event queue
+2024-01-26 13:56:53,913:INFO : method: POST
+2024-01-26 13:56:53,914:INFO : payload:
+2024-01-26 13:56:53,915:INFO : {'created_date': '2024-01-26T18:55:31.310675+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': '',
+ 'owner_username': None,
+ 'primary_url': 'https://localhost/records/4ej2s-n0162',
+ 'publication_date': '2024-01-26',
+ 'record_id': '4ej2s-n0162',
+ 'revision_id': 17,
+ 'title': 'My title 4 edited',
+ 'type': 'work',
+ 'updated_date': '2024-01-26T18:56:53.878607+00:00',
+ 'version': 4}
+2024-01-26 13:56:54,397:INFO : <Response [302]>
+2024-01-26 13:56:54,398:ERROR : Error sending notification (status code 302)
+2024-01-26 13:56:54,399:ERROR : 
+2024-01-26 14:07:19,366:INFO : Sending publish notice to event queue
+2024-01-26 14:07:19,493:INFO : method: POST
+2024-01-26 14:07:19,494:INFO : payload:
+2024-01-26 14:07:19,496:INFO : {'created_date': '2024-01-26T18:55:31.310675+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': '',
+ 'owner_username': None,
+ 'parent_record_id': 'rfwfh-73c24',
+ 'primary_url': 'https://localhost/records/4ej2s-n0162',
+ 'publication_date': '2024-01-26',
+ 'record_id': '4ej2s-n0162',
+ 'revision_id': 25,
+ 'title': 'My title 4 edited',
+ 'type': 'work',
+ 'updated_date': '2024-01-26T19:07:19.347038+00:00',
+ 'version': 4}
+2024-01-26 14:07:20,028:INFO : <Response [302]>
+2024-01-26 14:07:20,029:ERROR : Error sending notification (status code 302)
+2024-01-26 14:07:20,030:ERROR : 
+2024-01-26 14:10:42,037:INFO : Sending publish notice to event queue
+2024-01-26 14:10:42,109:INFO : method: POST
+2024-01-26 14:10:42,109:INFO : payload:
+2024-01-26 14:10:42,110:INFO : {'created_date': '2024-01-26T18:55:31.310675+00:00',
+ 'description': '',
+ 'full_content': '',
+ 'network': 'works',
+ 'other_urls': [],
+ 'owner_name': '',
+ 'owner_username': None,
+ 'parent_record_id': 'rfwfh-73c24',
+ 'primary_url': 'https://localhost/records/4ej2s-n0162',
+ 'publication_date': '2024-01-26',
+ 'record_id': '4ej2s-n0162',
+ 'revision_id': 31,
+ 'title': 'My title 4 edited',
+ 'type': 'work',
+ 'updated_date': '2024-01-26T19:10:42.011350+00:00',
+ 'version': 4}
+2024-01-26 14:10:42,793:INFO : <Response [302]>
+2024-01-26 14:10:42,794:ERROR : Error sending notification (status code 302)
+2024-01-26 14:10:42,795:ERROR : 

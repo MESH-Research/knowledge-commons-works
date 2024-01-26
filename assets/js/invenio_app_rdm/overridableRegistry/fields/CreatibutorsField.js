@@ -185,7 +185,7 @@ const CreatibutorsFieldForm = ({
     },
     role: "author",
     affiliations:
-      addingSelf && myAffiliations.length > 0
+      addingSelf && myAffiliations?.length > 0
         ? myAffiliations.map((affiliation) => ({
             text: affiliation,
             key: affiliation,
