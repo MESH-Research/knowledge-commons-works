@@ -1,4 +1,6 @@
 from invenio_rdm_records.proxies import current_rdm_records
+import pytest
+import requests
 
 
 def replace_value_in_dict(input_dict, pairs):
@@ -30,9 +32,11 @@ def test_component(
     minimal_record_update_result,
     minimal_record_publish_result,
     db,
+    requests_mock,
 ):
     """Test simple record operations."""
 
+    requests_mock.post("https://hcommons.org/api/v1/search_update", text="OK")
     service = current_rdm_records.records_service
     draft = service.create(superuser_identity, minimal_record)
     expected_draft = replace_value_in_dict(
