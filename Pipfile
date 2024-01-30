@@ -65,6 +65,7 @@ invenio-rdm-records = {editable = true, path = "./../invenio-rdm-records"}
 invenio-vocabularies = {editable = true, path = "./../invenio-vocabularies"}
 knowledge-commons-repository = {editable = true, path = "./site"}
 invenio-remote-user-data = {editable = true, path = "./../invenio-remote-user-data"}
+invenio-record-importer = {editable = true, path = "./../invenio-record-importer"}
 
 [requires]
 python_version = "3.9"

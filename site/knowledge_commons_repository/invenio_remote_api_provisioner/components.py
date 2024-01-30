@@ -54,11 +54,11 @@ def RemoteAPIProvisionerFactory(config):
                           from the parent service method. This includes
                           ``errors`` where there are operation problems.
             """
-            print(pformat(rec))
-            print(pformat(data))
-            print(pformat(record))
-            print(pformat(identity))
-            print(pformat(kwargs))
+            # print(pformat(rec))
+            # print(pformat(data))
+            # print(pformat(record))
+            # print(pformat(identity))
+            # print(pformat(kwargs))
             user = current_accounts.datastore.get_user_by_id(identity.id)
             owner = {
                 "id": identity.id,

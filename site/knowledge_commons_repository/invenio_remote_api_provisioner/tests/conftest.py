@@ -19,7 +19,6 @@ from invenio_access.permissions import superuser_access, system_identity
 from invenio_administration.permissions import administration_access_action
 from invenio_app.factory import create_api
 from invenio_oauthclient.models import UserIdentity
-import requests_mock
 from invenio_rdm_records.proxies import current_rdm_records_service
 
 from invenio_rdm_records.services.pids import providers

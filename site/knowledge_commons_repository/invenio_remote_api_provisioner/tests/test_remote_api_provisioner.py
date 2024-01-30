@@ -1,6 +1,6 @@
 from invenio_rdm_records.proxies import current_rdm_records
-import pytest
-import requests
+import pytest  # noqa
+import requests  # noqa
 
 
 def replace_value_in_dict(input_dict, pairs):
