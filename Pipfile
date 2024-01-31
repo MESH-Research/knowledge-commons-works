@@ -13,6 +13,7 @@ check-manifest = ">=0.25"
 halo = "*"
 jsonlines = "*"
 requests-mock = "*"
+selenium = "*"
 
 [packages]
 cchardet = "==2.1.7"
@@ -56,13 +57,14 @@ uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
 aiohttp = "*"
-invenio-groups = {editable = true, path = "./../invenio-groups"}
 invenio-modular-detail-page = {editable = true, path = "./../invenio-modular-detail-page/invenio-modular-detail-page"}
 invenio-modular-deposit-form = {editable = true, path = "./../invenio-modular-deposit-form"}
+invenio-groups = {editable = true, path = "./../invenio-groups"}
 invenio-records-resources = {editable = true, path = "./../invenio-records-resources"}
 invenio-rdm-records = {editable = true, path = "./../invenio-rdm-records"}
 invenio-vocabularies = {editable = true, path = "./../invenio-vocabularies"}
 knowledge-commons-repository = {editable = true, path = "./site"}
+invenio-remote-user-data = {editable = true, path = "./../invenio-remote-user-data"}
 
 [requires]
 python_version = "3.9"
