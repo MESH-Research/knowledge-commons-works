@@ -123,3 +123,4 @@ scripts/core-migrate/core_migrate/logs/core_migrate.log
 scripts/core-migrate/core_migrate/logs/core_migrate.log.*
 scripts/core-migrate/core_migrate/logs/core_migrate_failed_records.jsonl
 site/knowledge_commons_repository/invenio_remote_api_provisioner/logs/remote_api_provisioner.log
+site/knowledge_commons_repository/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*
