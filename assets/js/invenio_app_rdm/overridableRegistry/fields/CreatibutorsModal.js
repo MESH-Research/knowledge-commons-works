@@ -217,10 +217,7 @@ const deserializeCreatibutor = (initialCreatibutor) => {
       family_name: "",
       given_name: "",
       ...initialCreatibutor.person_or_org,
-      identifiers: _map(
-        _get(initialCreatibutor, identifiersFieldPath, []),
-        "identifier"
-      ),
+      identifiers: _get(initialCreatibutor, identifiersFieldPath, []),
     },
     affiliations: _get(initialCreatibutor, "affiliations", []),
     role: _get(initialCreatibutor, "role", ""),
@@ -243,15 +240,19 @@ const serializeCreatibutor = (submittedCreatibutor, initialCreatibutor) => {
   // The modal is saving only identifiers values, thus
   // identifiers with existing scheme are trimmed
   // Here we merge back the known scheme for the submitted identifiers
-  const initialIdentifiers = _get(initialCreatibutor, identifiersFieldPath, []);
-  const submittedIdentifiers = _get(
-    submittedCreatibutor,
-    identifiersFieldPath,
-    []
-  );
-  const identifiers = submittedIdentifiers.map((identifier) => {
-    return findField(initialIdentifiers, "identifier", identifier);
-  });
+  // const initialIdentifiers = _get(
+  //   initialCreatibutor,
+  //   identifiersFieldPath,
+  //   []
+  // );
+  // const submittedIdentifiers = _get(
+  //   submittedCreatibutor,
+  //   identifiersFieldPath,
+  //   []
+  // );
+  // const identifiers = submittedIdentifiers.map((identifier) => {
+  //   return findField(initialIdentifiers, "identifier", identifier);
+  // });
 
   const submittedAffiliations = _get(
     submittedCreatibutor,
@@ -261,10 +262,10 @@ const serializeCreatibutor = (submittedCreatibutor, initialCreatibutor) => {
 
   return {
     ...submittedCreatibutor,
-    person_or_org: {
-      ...submittedCreatibutor.person_or_org,
-      identifiers,
-    },
+    // person_or_org: {
+    //   ...submittedCreatibutor.person_or_org,
+    // identifiers,
+    // },
     affiliations: submittedAffiliations,
   };
 };
@@ -285,6 +286,25 @@ const getCreatorSchema = (isCreator = true) => {
           );
         }
       }),
+      identifiers: Yup.array().of(
+        Yup.object().shape({
+          scheme: Yup.string().required(
+            "A scheme is required for each identifier"
+          ),
+          identifier: Yup.string()
+            .when("scheme", {
+              is: "url",
+              then: Yup.string()
+                .url("Must be a valid URL (e.g. https://example.com)")
+                .required("You must provide a URL or remove this row"),
+            })
+            .matches(/(?!\s).+/, {
+              disallowEmptyString: true,
+              message: "Identifier cannot be blank",
+            })
+            .required("A value is required for each identifier"),
+        })
+      ),
     }),
     role: Yup.string().when("_", (_, schema) => {
       if (!isCreator) {
@@ -434,27 +454,20 @@ const CreatibutorsFormBody = ({
                     fieldPath={givenNameFieldPath}
                   />
                 </Form.Group>
-                <Form.Group widths="equal">
-                  <CreatibutorsIdentifiers
-                    initialOptions={_map(
-                      _get(values, identifiersFieldPath, []),
-                      (identifier) => ({
-                        text: identifier,
-                        value: identifier,
-                        key: identifier,
-                      })
-                    )}
-                    fieldPath={identifiersFieldPath}
-                    ref={identifiersRef}
-                    label={"Personal identifiers (ORCID, ISNI, or GND)"}
-                  />
-                </Form.Group>
+                <CreatibutorsIdentifiers
+                  // initialOptions={values}
+                  fieldPath={identifiersFieldPath}
+                  ref={identifiersRef}
+                  label={"Personal identifiers (ORCID, ISNI, or GND)"}
+                  idTypes={["orcid", "isni", "gnd"]}
+                />
               </div>
             </>
           )}
         </div>
       ) : (
         <>
+          <Divider />
           <TextField
             label={i18next.t("Organization name")}
             placeholder={i18next.t("Organization name")}
@@ -465,17 +478,10 @@ const CreatibutorsFormBody = ({
             input={{ ref: inputRef }}
           />
           <CreatibutorsIdentifiers
-            initialOptions={_map(
-              _get(values, identifiersFieldPath, []),
-              (identifier) => ({
-                text: identifier,
-                value: identifier,
-                key: identifier,
-              })
-            )}
+            initialOptions={_get(values, identifiersFieldPath, [])}
             fieldPath={identifiersFieldPath}
-            placeholder={i18next.t("e.g. ROR, ISNI or GND.")}
             label={"Organization identifiers (ROR, ISNI, or GND)"}
+            idTypes={["ror", "isni", "gnd"]}
           />
         </>
       )}

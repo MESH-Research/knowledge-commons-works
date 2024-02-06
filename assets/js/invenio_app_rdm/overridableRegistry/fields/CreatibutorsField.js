@@ -8,7 +8,7 @@
 
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { getIn, FieldArray } from "formik";
+import { getIn, FieldArray, useFormikContext } from "formik";
 import { Button, Form, Label, List, Icon } from "semantic-ui-react";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
@@ -115,6 +115,7 @@ const CreatibutorsFieldForm = ({
   replace: formikArrayReplace,
   roleOptions,
   schema,
+  setCreatibutorsTouched,
   setModalOpen,
   showEditForms,
   setShowEditForms,
@@ -135,15 +136,18 @@ const CreatibutorsFieldForm = ({
 
   const handleModalOpen = () => {
     setModalOpen(true);
+    setCreatibutorsTouched(true);
   };
 
   const handleModalClose = () => {
+    setCreatibutorsTouched(true);
     setModalOpen(false);
     setAddingSelf(false);
     focusAddButtonHandler();
   };
 
   const handleOnContributorChange = (selectedCreatibutor, action) => {
+    console.log("handleOnContributorChange");
     setAddingSelf(false);
     formikArrayPush(selectedCreatibutor);
     setModalOpen(action === "saveAndContinue" ? true : false);
@@ -321,10 +325,29 @@ const CreatibutorsField = ({
   schema = "creators",
   ...otherProps
 }) => {
+  console.log(
+    "CreatibutorsField called",
+    fieldPath,
+    label,
+    labelIcon,
+    modal,
+    roleOptions,
+    schema,
+    otherProps
+  );
   // FIXME: This state has to be managed here because the whole fieldarray is reredered and loses state on any state change; seems related to react-dnd
   const [modalOpen, setModalOpen] = useState(false);
   const [addingSelf, setAddingSelf] = useState(false);
   const [showEditForms, setShowEditForms] = useState([]);
+  const [creatibutorsTouched, setCreatibutorsTouched] = useState(false);
+  const { setFieldTouched } = useFormikContext();
+
+  useEffect(() => {
+    console.log("useEffect creatibutorsTouched", creatibutorsTouched);
+    // if (creatibutorsTouched) {
+    //   setFieldTouched("metadata.creators", true);
+    // }
+  }, [creatibutorsTouched]);
 
   return (
     <FieldArray
@@ -346,6 +369,7 @@ const CreatibutorsField = ({
             modal,
             schema,
             setAddingSelf,
+            setCreatibutorsTouched,
             setModalOpen,
             showEditForms,
             setShowEditForms,

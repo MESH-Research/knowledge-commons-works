@@ -7,6 +7,99 @@ import {
   date as yupDate,
 } from "yup";
 
+import { rorValidator } from "./validatorsForIds";
+
+addMethod(yupString, "ror", function () {
+  return this.test("test-name", rorValidator);
+});
+
+addMethod(yupString, "gnd", function () {
+  return this.test("test-name", function (val) {
+    // Test if argument is a GND ID.
+    const gndResolverUrl = "http://d-nb.info/gnd/";
+
+    const gndRegexp = new RegExp(
+      "(gnd:|GND:)?(" +
+        "(1|10)\\d{7}[0-9X]|" +
+        "[47]\\d{6}-\\d|" +
+        "[1-9]\\d{0,7}-[0-9X]|" +
+        "3\\d{7}[0-9X]" +
+        ")"
+    );
+    // See https://www.wikidata.org/wiki/Property:P227.
+
+    if (val.startsWith(gndResolverUrl)) {
+      val = val.slice(gndResolverUrl.length);
+    }
+
+    return gndRegexp.test(val);
+  });
+});
+
+const isIsni = (val) => {
+  // Test if argument is an International Standard Name Identifier.
+  const convertXTo10 = (x) => {
+    // Convert char to int with X being converted to 10.
+    return x !== "X" ? parseInt(x, 10) : 10;
+  };
+
+  val = val.replace(/-/g, "").replace(/ /g, "").toUpperCase();
+  if (val.length !== 16) {
+    return false;
+  }
+  try {
+    let r = 0;
+    for (let x of val.slice(0, -1)) {
+      r = (r + parseInt(x, 10)) * 2;
+    }
+    const ck = (12 - (r % 11)) % 11;
+    return ck === convertXTo10(val.slice(-1));
+  } catch (error) {
+    return false;
+  }
+};
+
+const orcidUrls = ["http://orcid.org/", "https://orcid.org/"];
+const orcidIsniRanges = [
+  (15_000_000, 35_000_000),
+  (900_000_000_000, 900_100_000_000),
+];
+// Valid ORCiD ISNI block ranges.
+
+// See
+//     https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
+
+addMethod(yupString, "orcid", function () {
+  return this.test("test-name", function (val) {
+    // Test if argument is an ORCID ID.
+    // See http://support.orcid.org/knowledgebase/
+    // articles/116780-structure-of-the-orcid-identifier
+
+    for (let orcidUrl of orcidUrls) {
+      if (val.startsWith(orcidUrl)) {
+        val = val.slice(orcidUrl.length);
+        break;
+      }
+    }
+
+    val = val.replace(/-/g, "").replace(/ /g, "");
+    if (isIsni(val)) {
+      val = parseInt(val.slice(0, -1), 10); // Remove check digit and convert to int.
+      return orcidIsniRanges.some(
+        ([start, end]) => start <= val && val <= end
+      );
+    }
+    return false;
+  });
+});
+
+addMethod(yupString, "isni", function () {
+  return this.test("test-name", function (val) {
+    // Test if argument is an International Standard Name Identifier.
+    return isIsni(val);
+  });
+});
+
 addMethod(yupString, "dateInSequence", function () {
   return this.test("test-name", function (value) {
     const { path, createError } = this;
@@ -74,6 +167,42 @@ const validationSchema = yupObject().shape({
                       then: yupString()
                         .url("Must be a valid URL (e.g. https://example.com)")
                         .required("You must provide a URL or remove this row"),
+                    })
+                    .when("scheme", {
+                      is: "orcid",
+                      then: yupString()
+                        .orcid(
+                          "Must be a valid ORCID id (e.g., 0000-0001-2345-6789)"
+                        )
+                        .required(
+                          "You must provide an ORCID id or remove this row"
+                        ),
+                    })
+                    .when("scheme", {
+                      is: "isni",
+                      then: yupString()
+                        .isni(
+                          "Must be a valid ISNI id (e.g., 0000-0001-2345-6789)"
+                        )
+                        .required(
+                          "You must provide an ISNI id or remove this row"
+                        ),
+                    })
+                    .when("scheme", {
+                      is: "gnd",
+                      then: yupString()
+                        .gnd("Must be a valid GND id (e.g., gnd:118627813)")
+                        .required(
+                          "You must provide a GND id or remove this row"
+                        ),
+                    })
+                    .when("scheme", {
+                      is: "ror",
+                      then: yupString()
+                        .ror("Must be a valid ROR id (e.g., 03rjyp183)")
+                        .required(
+                          "You must provide a GND id or remove this row"
+                        ),
                     })
                     .matches(/(?!\s).+/, {
                       disallowEmptyString: true,

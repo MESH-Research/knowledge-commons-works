@@ -552,6 +552,37 @@ textarea {
             .ui.form {
               padding: 1rem 1rem 1rem 1.75rem;
               background-color: @sidebarBackgroundColor;
+              label {
+                font-weight: bold;
+                margin-bottom: 0.25rem;
+                display: block;
+                font-size: @small;
+              }
+              .creatibutors-identifiers-item-row {
+                &:last-of-type {
+                  margin-bottom: 0;
+                }
+                .field:first-child {
+                  label {
+                    display: none;
+                  }
+                  .field {
+                    width: 100%;
+                  }
+                }
+                .pointing.above.prompt {
+                  margin-top: 1rem;
+                  margin-left: 0;
+                  &::before {
+                    top: 0;
+                    left: 50%;
+                  }
+                }
+              }
+              .creatibutors-identifiers-add-button {
+                margin-top: 0;
+                margin-bottom: 0.5rem;
+              }
             }
             .creatibutors-item-form-buttons {
               padding: 0.25rem 1rem 1rem 1.75rem;
