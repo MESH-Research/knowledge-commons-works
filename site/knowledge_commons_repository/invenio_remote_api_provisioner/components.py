@@ -71,12 +71,14 @@ def RemoteAPIProvisionerFactory(config):
                 user.external_identifiers
                 and len(user.external_identifiers) > 0
             ):
-                owner.update({
-                    "authentication_source": user.external_identifiers[
-                        0
-                    ].method,
-                    "id_from_idp": user.external_identifiers[0].id,
-                })
+                owner.update(
+                    {
+                        "authentication_source": user.external_identifiers[
+                            0
+                        ].method,
+                        "id_from_idp": user.external_identifiers[0].id,
+                    }
+                )
             if callable(payload):
                 # FIXME: strip html
                 payload_object = payload(rec, data, record, owner, **kwargs)
