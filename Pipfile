@@ -26,7 +26,6 @@ invenio-app-rdm = {version = "==12.0.0b2.dev9", extras = ["opensearch2", "postgr
 invenio-assets = "==3.0.0"
 invenio-banners = "==2.1.0"
 invenio-cli = "==1.0.21"
-invenio-communities = "==7.0.0"
 invenio-drafts-resources = "==1.4.2"
 invenio-formatter = "==1.2.0"
 invenio-i18n = "==2.0.0"
@@ -66,6 +65,7 @@ invenio-vocabularies = {editable = true, path = "./../invenio-vocabularies"}
 knowledge-commons-repository = {editable = true, path = "./site"}
 invenio-remote-user-data = {editable = true, path = "./../invenio-remote-user-data"}
 invenio-record-importer = {editable = true, path = "./../invenio-record-importer"}
+invenio-communities = {file = "../invenio-communities"}
 
 [requires]
 python_version = "3.9"
