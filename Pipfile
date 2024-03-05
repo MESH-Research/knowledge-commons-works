@@ -19,7 +19,7 @@ selenium = "*"
 cchardet = "==2.1.7"
 flask-principal = "*"
 halo = "*"
-invenio-app-rdm = {version = "~=12.0.0b2.dev72", extras = ["opensearch2"]}
+invenio-app-rdm = {version = "~=12.0.0b3.dev3", extras = ["opensearch2"]}
 invenio-cli = "==1.0.21"
 invenio-s3 = "*"
 invenio-utilities-tuw = "*"
@@ -46,6 +46,10 @@ invenio-modular-deposit-form = {editable = true, path = "./../invenio-modular-de
 knowledge-commons-repository = {editable = true, path = "./site"}
 invenio-remote-user-data = {editable = true, path = "./../invenio-remote-user-data"}
 invenio-record-importer = {editable = true, path = "./../invenio-record-importer"}
+invenio-rdm-records = {file = "../invenio-rdm-records", editable = true}
+invenio-records-resources = {file = "../invenio-records-resources", editable = true}
+invenio-communities = {file = "../invenio-communities", editable = true}
+invenio-groups = {file = "../invenio-groups", editable = true}
 
 [requires]
 python_version = "3.9"
