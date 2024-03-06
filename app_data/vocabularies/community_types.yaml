@@ -1,0 +1,24 @@
+- id: "commons"
+  title:
+    en: "Commons"
+    de: "Commons"
+- id: "organization"
+  title:
+    en: "Organization"
+    de: "Organisation"
+- id: "event"
+  title:
+    en: "Event"
+    de: "Event"
+- id: "journal"
+  title:
+    en: "Journal"
+    de: "Zeitschrift"
+- id: "project"
+  title:
+    en: "Project"
+    de: "Projekt"
+- id: "topic"
+  title:
+    en: "Topic"
+    de: "Thema"
