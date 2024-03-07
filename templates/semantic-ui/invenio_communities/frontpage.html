@@ -1,0 +1,128 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2016-2020 CERN.
+  Copyright (C) 2023 Northwestern University.
+
+  Modified by Mesh Research as part of Knowledge Commons Works
+  Copyright (C) 2024 Mesh Research
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/base.html" %}
+
+{%- set title = _("Collections") -%}
+
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack['invenio-communities-frontpage-custom.js'] }}
+{%- endblock %}
+
+{%- block page_body %}
+<div class="ui container fluid page-subheader-outer ml-0-mobile mr-0-mobile">
+  <div class="ui container centered grid page-subheader rel-pt-1">
+    <div class="centered one column row">
+      <h1 class="ui header">
+        {{_('Works Collections')}}
+      </h1>
+    </div>
+    <div class="two column stackable row">
+      <div class="eight wide tablet five wide computer column mt-auto mb-auto">
+        <form action="{{ url_for('invenio_communities.communities_search') }}" class="ui form">
+          <div class="ui fluid action input">
+            <input
+              type="text"
+              name="q"
+              class="form-control"
+              placeholder="{{ _('Search collections') }}"
+              aria-label="{{ _('Search collections') }}"
+            >
+            <button
+              type="submit"
+              class="ui icon search button"
+              aria-label="{{ _('Search') }}"
+            >
+              <i class="search icon" aria-hidden="true"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+      {% if permissions.can_create %}
+        <div class="three wide mobile five wide tablet three wide computer stretched column">
+          <a href="{{ config.COMMUNITIES_ROUTES['new'] }}" class="ui icon left labeled positive button" role="button">
+            <i class="icon plus"></i>
+            {{_('Start a new collection')}}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+    <div class="ui divider hidden"></div>
+  </div>
+</div>
+<div class="ui container communities-frontpage rel-mt-3 rel-mb-2">
+
+  {% if current_user.is_authenticated %}
+    <div class="flex">
+      <h2 class="ui header mb-0 align-self-center">{{_('My collections')}}</h2>
+      <a class="align-self-center rel-ml-1 " href="{{url_for('invenio_app_rdm_users.communities')}}">
+        {{ _('See all')}}
+      </a>
+    </div>
+    <div class="ui divider hidden"></div>
+    <div id="user-communities" class="rel-mb-2"></div>
+  {% endif %}
+
+  <div class="ui divider"></div>
+  <div class="flex">
+    <h2 class="ui header mb-0 align-self-center">{{ _('New collections') }}</h2>
+    <a class="align-self-center rel-ml-1" href="{{url_for('invenio_communities.communities_search')}}">
+        {{ _('See all')}}
+      </a>
+  </div>
+  <div class="ui divider hidden"></div>
+  <div id="new-communities"></div>
+
+  <div class="ui divider"></div>
+  <div class="flex">
+    <h2 class="ui header mb-0 align-self-center">{{ _('Journals') }}</h2>
+    <a class="align-self-center rel-ml-1" href="{{url_for('invenio_communities.communities_search')}}?q=metadata.type.id:journal">
+        {{ _('See all')}}
+      </a>
+  </div>
+  <div class="ui divider hidden"></div>
+  <div id="journal-communities"></div>
+
+  <div class="ui divider"></div>
+  <div class="flex">
+    <h2 class="ui header mb-0 align-self-center">{{ _('Organization collections') }}</h2>
+    <a class="align-self-center rel-ml-1" href="{{url_for('invenio_communities.communities_search')}}?q=metadata.type.id:organization">
+        {{ _('See all')}}
+      </a>
+  </div>
+  <div class="ui divider hidden"></div>
+  <div id="organization-communities"></div>
+
+  <div class="ui divider"></div>
+  <div class="flex">
+    <h2 class="ui header mb-0 align-self-center">{{ _('Topic collections') }}</h2>
+    <a class="align-self-center rel-ml-1" href="{{url_for('invenio_communities.communities_search')}}?q=metadata.type.id:topic">
+        {{ _('See all')}}
+      </a>
+  </div>
+  <div class="ui divider hidden"></div>
+  <div id="topic-communities"></div>
+
+  <div class="ui divider"></div>
+  <div class="flex">
+    <h2 class="ui header mb-0 align-self-center">{{ _('Event collections') }}</h2>
+    <a class="align-self-center rel-ml-1" href="{{url_for('invenio_communities.communities_search')}}?q=metadata.type.id:event">
+        {{ _('See all')}}
+      </a>
+  </div>
+  <div class="ui divider hidden"></div>
+  <div id="event-communities"></div>
+
+</div>
+{%- endblock page_body %}

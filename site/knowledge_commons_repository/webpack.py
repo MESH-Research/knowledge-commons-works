@@ -9,12 +9,20 @@ theme = WebpackThemeBundle(
     themes={
         "semantic-ui": dict(
             entry={
-                "custom_pdf_viewer_js": "./js/invenio_custom_pdf_viewer/pdfjs.js",
-                "custom_pdf_viewer_css": "./scss/invenio_custom_pdf_viewer/pdfjs.scss",
+                "custom_pdf_viewer_js": "./js/invenio_custom_pdf_viewer"
+                "/pdfjs.js",
+                "custom_pdf_viewer_css": "./scss/invenio_custom_pdf_viewer"
+                "/pdfjs.scss",
+                "invenio-communities-new-custom": "./js/collections/community/new.js",
+                "invenio-communities-frontpage-custom": "./js/collections/"
+                "community/frontpage.js",
+                "invenio-communities-search-custom": "./js/collections/"
+                "community/search.js",
             },
             dependencies={},
             aliases={
-                "@js/invenio_modular_deposit_form_extras": "js/invenio_modular_deposit_form_extras",
+                "@js/invenio_modular_deposit_form_extras": "js/"
+                "invenio_modular_deposit_form_extras",
             },
         ),
     },

@@ -1,0 +1,75 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2023 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/details/base.html" %}
+{% from "invenio_communities/details/macros/custom_fields.html" import list_vocabulary_values, list_string_values, show_custom_field %}
+{% set active_community_header_menu_item= 'about' %}
+
+{%- block page_body %}
+  {{ super() }}
+  <div class="ui text container rel-m-2 rel-pt-1">
+    {{ community.metadata.page | safe }}
+    {% if community.ui.funding|length %}
+      <h3 class="ui header">{{ _("Awards") }}</h3>
+      <dl class="ui list">
+
+        {% for funding in community.ui.funding %}
+          <div class="item rel-mb-1">
+            {% if funding.award %}
+              <dd class="header">
+                {{ funding.award.title_l10n }}
+                <label class="ui basic small label">
+                  {{funding.award.number}}
+                </label>
+
+                {% if funding.award.identifiers|length and funding.award.identifiers[0].scheme == "url" %}
+                  <a
+                    class="ui transparent icon button"
+                    href="{{ funding.award.identifiers[0].identifier }}"
+                    aria-label="{{ _('Visit external website') }}"
+                    title="{{ _('Opens in new tab') }}"
+                  >
+                    <i class="external primary icon" aria-hidden="true"></i>
+                  </a>
+                {% endif %}
+              </dd>
+            {% endif %}
+
+            {% if funding.funder %}
+              <dt class="text-muted">
+                {{ funding.funder.name }}
+              </dt>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+      </dl>
+    {% endif %}
+
+
+    {% set custom_fields = community.ui.custom_fields %}
+
+    {% for section_cfg in custom_fields_ui if custom_fields %}
+      {% set section_fields = section_cfg.fields %}
+
+      <h2>{{ section_cfg.section }}</h2>
+
+      {% for field_cfg in section_fields %}
+        {% set field_value = custom_fields.get(field_cfg.field) %}
+
+        {% if field_value and field_cfg.template %}
+          {% include field_cfg.template %}
+        {% elif field_value and not field_cfg.template %}
+          <dt class="ui tiny header">{{ field_cfg.props.label }}</dt>
+          {{ show_custom_field(field_value, field_cfg) }}
+        {% endif %}
+      {% endfor %}
+    {%- endfor %}
+  </div>
+{%- endblock page_body -%}

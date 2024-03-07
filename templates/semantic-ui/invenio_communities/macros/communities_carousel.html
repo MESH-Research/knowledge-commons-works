@@ -1,0 +1,79 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2016-2020 CERN.
+
+  Modified by Mesh Research as part of Knowledge Commons Works
+  Copyright (C) 2024 Mesh Research
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% macro communities_carousel(
+    title=_("Featured collections"),
+    fetch_url="/api/collections/featured",
+    interval_delay="10000",
+    animation_speed="300",
+    items_per_page=1,
+    default_logo="/static/images/square-placeholder.png",
+    showUploadBtn=True
+  )
+%}
+  <div
+    id="communities-carousel"
+    data-title="{{ title }}"
+    data-fetch-url="{{ fetch_url }}"
+    data-interval-delay="{{ interval_delay }}"
+    data-animation-speed="{{ animation_speed }}"
+    data-default-logo="{{ default_logo }}"
+    data-items-per-page="{{ items_per_page }}"
+    data-show-upload-btn="{{ showUploadBtn | tojson }}"
+  >
+    <div class="ui fluid container rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
+      <div class="ui container">
+        <h2 class="ui header rel-mb-1">{{ title }}</h2>
+      </div>
+      <div class="ui grid container">
+        <div class="two wide column"></div>
+
+        <div class="twelve wide column">
+          <div class="ui items">
+            <div class="item">
+              <div class="image">
+                <div class="ui placeholder">
+                  <div class="square image"></div>
+                </div>
+              </div>
+
+              <div class="content">
+                <div class="header mt-5 rel-mb-2">
+                  <div class="ui placeholder">
+                    <div class="header">
+                      <div class="line"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="description">
+                  <div class="ui placeholder">
+                    <div class="paragraph">
+                      <div class="line"></div>
+                      <div class="line"></div>
+                      <div class="line"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two wide column"></div>
+      </div>
+    </div>
+  </div>
+
+  {{ webpack['invenio-communities-carousel.js'] }}
+{% endmacro %}
+

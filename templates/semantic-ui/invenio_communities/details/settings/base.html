@@ -1,0 +1,54 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2016-2020 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+{% extends "invenio_communities/details/base.html" %}
+
+{%- set title = community.metadata.title + _(" settings") -%}
+
+{%- block page_body %}
+  {{ super() }}
+  <div class="ui container grid communities-settings rel-m-2">
+
+    {%- block settings_menu %}
+      {%- set menu_items = {
+        'profile': (_('Profile'), url_for('invenio_communities.communities_settings', pid_value=community.slug)),
+        'privileges': (_('Privileges'), url_for('invenio_communities.communities_settings_privileges', pid_value=community.slug)),
+        'curation_policy': (_('Review policy'), url_for('invenio_communities.communities_settings_curation_policy', pid_value=community.slug)),
+        'pages': (_('Pages'), url_for('invenio_communities.communities_settings_pages', pid_value=community.slug)),
+      } %}
+      <div class="sixteen wide mobile sixteen wide tablet three wide computer column">
+        <div role="tablist" class="ui vertical horizontal mobile tablet menu theme-primary-menu">
+          {% for menu_key, (menu_item, menu_link) in menu_items.items() %}
+            {% if not (menu_key == 'privileges' and not permissions.can_manage_access) %}
+              <a
+                role="tab"
+                id="{{ menu_key }}"
+                aria-selected="{{ active_settings_menu_item and menu_key == active_settings_menu_item }}"
+                href="{{ menu_link }}"
+                class="{{ 'brand item active' if active_settings_menu_item and menu_key == active_settings_menu_item }} {{ 'disabled' if not menu_link }} item"
+                >{{ menu_item }}</a
+              >
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {%- endblock settings_menu %}
+
+    <div
+      role="tabpanel"
+      id="{{ active_settings_menu_item }}-panel"
+      aria-expanded="true"
+      hidden="false"
+      aria-labelledby="{{ active_settings_menu_item }}"
+      class="sixteen wide mobile sixteen wide tablet thirteen wide computer column"
+    >
+      {%- block settings_body %}
+      {%- endblock settings_body %}
+    </div>
+  </div>
+{%- endblock page_body %}

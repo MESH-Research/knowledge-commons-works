@@ -1,0 +1,29 @@
+{# -*- coding: utf-8 -*-
+
+    This file is part of Invenio.
+    Copyright (C) 2022 CERN.
+
+    Invenio is free software; you can redistribute it and/or modify it
+    under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% macro featured_communities(
+  widescreen_column_width=2,
+  computer_column_width=4,
+  tablet_column_width=8,
+  mobile_column_width=16,
+  column_number=4
+)
+%}
+  <div
+    id="communities-featured"
+    data-mobile-column-width="{{ mobile_column_width }}"
+    data-computer-column-width="{{ computer_column_width }}"
+    data-tablet-column-width="{{ tablet_column_width }}"
+    data-widescreen-column-width="{{ widescreen_column_width }}"
+    data-column-number="{{ column_number }}"
+    >
+  </div>
+
+  {{ webpack['invenio-communities-featured.js'] }}
+{% endmacro %}

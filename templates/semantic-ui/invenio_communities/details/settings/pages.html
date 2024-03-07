@@ -1,0 +1,27 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2023 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/details/settings/base.html" %}
+
+{%- block javascript %}
+{{ super() }}
+{{ webpack['invenio-communities-settings-pages.js'] }}
+{%- endblock javascript %}
+
+{% set active_settings_menu_item = 'pages' %}
+{% set active_community_header_menu_item = 'settings' %}
+
+{%- block settings_body %}
+  <div
+    id="community-settings-pages"
+    data-community='{{ community | tojson }}'
+    data-form-config='{{ form_config | tojson }}'
+  >
+  </div>
+{%- endblock settings_body %}

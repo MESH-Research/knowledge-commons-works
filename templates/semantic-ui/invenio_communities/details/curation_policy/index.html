@@ -1,0 +1,19 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2023 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/details/base.html" %}
+{% set active_community_header_menu_item= 'curation_policy' %}
+
+
+{%- block page_body %}
+  {{ super() }}
+  <div class="ui text container rich-input-content rel-m-2 rel-pt-1">
+    {{ community.metadata.curation_policy | safe }}
+  </div>
+{%- endblock page_body -%}

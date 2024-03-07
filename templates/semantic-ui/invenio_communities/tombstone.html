@@ -1,0 +1,58 @@
+{#
+  Copyright (C) 2023 CERN.
+  Copyright (C) 2023 TU Wien.
+
+  Invenio App RDM is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+{% extends config.THEME_ERROR_TEMPLATE %}
+
+{%- set title = _("Tombstone") + " | " + config.THEME_SITENAME -%}
+{%- if record.ui.tombstone.removal_reason %}
+  {%- set removal_reason = record.ui.tombstone.removal_reason.title_l10n %}
+{%- endif %}
+
+  {%- block message %}
+  <div class="container centered rel-pt-2">
+    <h1 class="ui header inline-block">
+      <i class="icon lightning" aria-hidden="true"></i>
+      <div class="content pl-0 rel-pr-1">
+        {{ _('Gone') }}
+      </div>
+    </h1>
+
+    <p>
+      {%- trans sitename=config.THEME_SITENAME %}
+        The collection you are trying to access was removed from {{ sitename }}. The
+        metadata of the collection is kept for archival purposes.
+      {%- endtrans %}
+    </p>
+    {%- if record.ui.tombstone.removal_reason  %}
+    <div class="ui message compact text-align-left">
+      <div class="content">
+        <p>
+          <strong>{{ _("Reason for removal:") }}</strong> {{ removal_reason }}
+        </p>
+        <p>
+          <strong>{{ _("Removed by:") }}</strong>
+          {% if is_user %}
+            User
+          {% else %}
+            Admin
+          {% endif %}
+        </p>
+        {%- if record.ui.tombstone.note %}
+        <p>
+          <strong>{{ _("Removal note:") }}</strong> {{ record.ui.tombstone.note }}
+        </p>
+        {%- endif %}
+        <p>
+          <strong>{{ _("Date of removal:") }}</strong> {{ record.ui.tombstone.removal_date_l10n_long }}
+        </p>
+      </div>
+
+    </div>
+    {%- endif %}
+  </div>
+  {% endblock message %}
+

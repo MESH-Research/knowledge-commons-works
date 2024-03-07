@@ -1,0 +1,37 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2022 CERN.
+
+  Modified by Mesh Research as part of Knowledge Commons Works
+  Copyright (C) 2024 Mesh Research
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/details/base.html" %}
+
+{%- set title = community.metadata.title + _(" members") -%}
+
+{%- block page_body %}
+{{ super() }}
+<div class="ui container grid communities-members rel-m-2">
+  {%- block settings_menu %}
+    {%- set menu_items = {
+      'members': (_('Members'), url_for('invenio_communities.members', pid_value=community.slug), permissions.can_read),
+      'invitations': (_('Invitations'), url_for('invenio_communities.invitations', pid_value=community.slug), permissions.can_search_invites),
+    } %}
+    <div class="three wide computer sixteen wide tablet sixteen wide mobile column">
+      <div class="ui vertical computer horizontal tablet horizontal mobile menu theme-primary-menu">
+        {% for menu_key, (menu_item, menu_link, permission_to_show) in menu_items.items() if permission_to_show %}
+          <a href="{{ menu_link }}" class="{{ 'brand item active' if active_members_menu_item and menu_key == active_members_menu_item }} {{ 'disabled' if not menu_link }} item">{{ menu_item }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  {%- endblock settings_menu %}
+  {%- block settings_body %}
+
+  {%- endblock settings_body %}
+</div>
+{%- endblock page_body %}

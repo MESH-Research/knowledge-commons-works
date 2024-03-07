@@ -1,0 +1,31 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2016-2020 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/details/settings/base.html" %}
+
+{%- block javascript %}
+{{ super() }}
+{{ webpack['invenio-communities-profile.js'] }}
+{%- endblock javascript %}
+
+{% set active_settings_menu_item = 'profile' %}
+{% set active_community_header_menu_item = 'settings' %}
+
+{%- block settings_body %}
+  <div
+    id="app"
+    data-community='{{ community_ui | tojson }}'
+    data-has-logo='{{ has_logo | tojson }}'
+    data-types='{{ types | tojson }}'
+    data-logo-max-size='{{ logo_quota | tojson }}'
+    data-custom-fields='{{ custom_fields | tojson }}'
+    data-permissions='{{ permissions | tojson }}'
+  >
+  </div>
+{%- endblock settings_body %}
