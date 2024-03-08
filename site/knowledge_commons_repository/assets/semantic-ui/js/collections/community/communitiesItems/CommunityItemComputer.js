@@ -1,7 +1,10 @@
 // This file is part of InvenioRDM
 // Copyright (C) 2022 CERN.
 //
-// Invenio App RDM is free software; you can redistribute it and/or modify it
+// Customized by Mesh Research for Knowledge Commons Works
+// Copyright (C) 2024 Mesh Research.
+//
+// InvenioRDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import { i18next } from "@translations/invenio_app_rdm/i18next";
@@ -15,6 +18,15 @@ import PropTypes from "prop-types";
 export const CommunityItemComputer = ({ result }) => {
   const communityType = result.ui?.type?.title_l10n;
   const canUpdate = result.ui?.permissions?.can_update;
+
+  const self_link = result.links.self_html.replace(
+    "communities",
+    "collections"
+  );
+  const settings_link = result.links.settings_html.replace(
+    "communities",
+    "collections"
+  );
 
   return (
     <Grid className="computer tablet only item community-item">
@@ -38,7 +50,7 @@ export const CommunityItemComputer = ({ result }) => {
                 <RestrictedLabel access={result.access.visibility} />
               </div>
             )}
-            <a className="ui medium header mb-0" href={result.links.self_html}>
+            <a className="ui medium header mb-0" href={self_link}>
               {result.metadata.title}
             </a>
             {result.metadata.description && (
@@ -82,8 +94,12 @@ export const CommunityItemComputer = ({ result }) => {
                           {org.id && (
                             <a
                               href={`https://ror.org/${org.id}`}
-                              aria-label={`${org.name}'s ROR ${i18next.t("profile")}`}
-                              title={`${org.name}'s ROR ${i18next.t("profile")}`}
+                              aria-label={`${org.name}'s ROR ${i18next.t(
+                                "profile"
+                              )}`}
+                              title={`${org.name}'s ROR ${i18next.t(
+                                "profile"
+                              )}`}
                               target="_blank"
                               rel="noreferrer"
                             >
@@ -111,7 +127,7 @@ export const CommunityItemComputer = ({ result }) => {
             <Button
               compact
               size="small"
-              href={result.links.settings_html}
+              href={settings_link}
               className="mt-0 mr-0"
               labelPosition="left"
               icon="edit"
