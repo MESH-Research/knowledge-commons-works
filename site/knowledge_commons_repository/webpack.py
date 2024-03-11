@@ -13,13 +13,24 @@ theme = WebpackThemeBundle(
                 "/pdfjs.js",
                 "custom_pdf_viewer_css": "./scss/invenio_custom_pdf_viewer"
                 "/pdfjs.scss",
-                "invenio-communities-new-custom": "./js/collections/community/new.js",
+                "invenio-communities-new-custom": "./js/collections/community"
+                "/new.js",
                 "invenio-communities-frontpage-custom": "./js/collections/"
                 "community/frontpage.js",
                 "invenio-communities-search-custom": "./js/collections/"
                 "community/search.js",
+                "invenio-communities-featured-custom": "./js/collections/"
+                "community/featuredCommunities/index.js",
+                "invenio-communities-carousel-custom": "./js/collections/"
+                "community/communitiesCarousel/index.js",
+                "invenio-app-rdm-community-records-search-custom": "./js"
+                "/collections/communityRecordsSearch/index.js",
+                "invenio-communities-header": "./js/collections/community"
+                "/header.js",
             },
-            dependencies={},
+            dependencies={
+                "geopattern": "^1.2.3",
+            },
             aliases={
                 "@js/invenio_modular_deposit_form_extras": "js/"
                 "invenio_modular_deposit_form_extras",

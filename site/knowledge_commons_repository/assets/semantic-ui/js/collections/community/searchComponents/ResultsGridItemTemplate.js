@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 export const ResultsGridItemTemplate = ({ result }) => {
   return (
-    <Card fluid href={`/communities/${result.slug}`}>
+    <Card fluid href={`/collections/${result.slug}`}>
       <Card.Content>
         <Card.Header>{result.metadata.title}</Card.Header>
         <Card.Description>

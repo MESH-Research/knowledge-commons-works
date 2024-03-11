@@ -12,6 +12,7 @@ import _truncate from "lodash/truncate";
 import { Image, InvenioPopup } from "react-invenio-forms";
 import { Icon, Label, Item } from "semantic-ui-react";
 import { CommunityTypeLabel, RestrictedLabel } from "../labels";
+import GeoPattern from "geopattern";
 
 export const CommunityCompactItemComputer = ({
   result,
@@ -24,6 +25,9 @@ export const CommunityCompactItemComputer = ({
 }) => {
   const { metadata, ui, links, access, id } = result;
   const communityType = ui?.type?.title_l10n;
+
+  const pattern = GeoPattern.generate(result.slug);
+
   return (
     <Item
       key={id}
@@ -36,6 +40,7 @@ export const CommunityCompactItemComputer = ({
           src={links.logo}
           alt=""
           className="community-image rel-mr-2"
+          fallbackSrc={pattern.toDataUri()}
         />
         <div>
           <div className="flex align-items-center rel-mb-1">

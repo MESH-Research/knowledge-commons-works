@@ -12,6 +12,7 @@ import React from "react";
 import { Image, InvenioPopup } from "react-invenio-forms";
 import { Icon, Label } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import GeoPattern from "geopattern";
 
 export const CommunityCompactItemMobile = ({
   result,
@@ -24,6 +25,9 @@ export const CommunityCompactItemMobile = ({
 }) => {
   const communityType = result.ui?.type?.title_l10n;
   const { metadata, ui, links, access, id } = result;
+
+  const pattern = GeoPattern.generate(result.slug);
+
   return (
     <div key={id} className={`community-item mobile only ${itemClassName}`}>
       <div className="display-grid auto-column-grid no-wrap">
@@ -34,6 +38,7 @@ export const CommunityCompactItemMobile = ({
             src={links.logo}
             alt=""
             className="community-image rel-mr-1"
+            fallbackSrc={pattern.toDataUri()}
           />
 
           <div className="flex align-items-center rel-mb-1">

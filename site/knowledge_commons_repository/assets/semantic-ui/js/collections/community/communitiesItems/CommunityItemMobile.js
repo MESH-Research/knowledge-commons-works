@@ -11,10 +11,15 @@ import React from "react";
 import { Image } from "react-invenio-forms";
 import { Button, Grid, Icon } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import GeoPattern from "geopattern";
 
 export const CommunityItemMobile = ({ result, index }) => {
   const communityType = result.ui?.type?.title_l10n;
   const canUpdate = result.ui.permissions.can_update;
+
+
+  const pattern = GeoPattern.generate(result.slug);
+
   return (
     <Grid className="mobile only item community-item">
       {result.access.visibility === "restricted" && (
@@ -38,6 +43,7 @@ export const CommunityItemMobile = ({ result, index }) => {
               size="mini"
               className="community-image rel-mr-1"
               alt=""
+              fallbackSrc={pattern.toDataUri()}
             />
             <div>
               <a

@@ -14,6 +14,7 @@ import React from "react";
 import { Image } from "react-invenio-forms";
 import { Button, Grid, Icon } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import GeoPattern from "geopattern";
 
 export const CommunityItemComputer = ({ result }) => {
   const communityType = result.ui?.type?.title_l10n;
@@ -27,6 +28,8 @@ export const CommunityItemComputer = ({ result }) => {
     "communities",
     "collections"
   );
+
+  const pattern = GeoPattern.generate(result.slug);
 
   return (
     <Grid className="computer tablet only item community-item">
@@ -43,6 +46,7 @@ export const CommunityItemComputer = ({ result }) => {
             size="tiny"
             className="community-image rel-mr-2"
             alt=""
+            fallbackSrc={pattern.toDataUri()}
           />
           <div>
             {result.access.visibility === "restricted" && (

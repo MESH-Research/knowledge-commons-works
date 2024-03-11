@@ -72,8 +72,6 @@
             {%- block navbar_nav %}
               {%- for item in current_menu.submenu('main').children|sort(attribute='order') if item.visible recursive %}
 
-                {%- if item.name != "communities" or (current_user.roles | selectattr("name", "equalto", "administrator") | list) %}
-
                 {%- if item.children %}
                   <div class="item">
                     <div class="dropdown {{ ' active' if item.active else '' }}">
@@ -95,14 +93,13 @@
                     <a role="menuitem" href="{{ item.url }}">
                         {%- if item.name == "communities" %}
                           <i class="fitted users icon mobile-hidden"></i>
-                          <span class="mobile tablet only inline">{{ item.text|safe }}</span>
-                          <span class="widescreen only inline">{{ item.text|safe }}</span>
+                          <span class="mobile tablet only inline">Collections</span>
+                          <span class="widescreen only inline">Collections</span>
                         {%- else -%}
                             {{ item.text|safe }}
                         {%- endif -%}
                     </a>
                   </div>
-                {%- endif %}
 
                 {%- endif %}
 

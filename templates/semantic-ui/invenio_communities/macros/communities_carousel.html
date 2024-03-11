@@ -12,7 +12,7 @@
 
 {% macro communities_carousel(
     title=_("Featured collections"),
-    fetch_url="/api/collections/featured",
+    fetch_url="/api/communities/featured",
     interval_delay="10000",
     animation_speed="300",
     items_per_page=1,
@@ -74,6 +74,6 @@
     </div>
   </div>
 
-  {{ webpack['invenio-communities-carousel.js'] }}
+  {{ webpack['invenio-communities-carousel-custom.js'] }}
 {% endmacro %}
 

@@ -12,100 +12,24 @@
 
 {%- from "invenio_theme/macros/truncate.html" import truncate_text %}
 {%- from "invenio_communities/details/macros/access-status-label.html" import access_status_label -%}
+{{ webpack['invenio-communities-header.js'] }}
 
 <div
   class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile">
   <div class="ui container relaxed grid page-subheader mr-0-mobile ml-0-mobile">
     <div class="row pb-0">
       <div
-        class="sixteen wide mobile sixteen wide tablet thirteen wide computer column">
-        <div
-          class="community-header flex align-items-center column-mobile align-items-start-mobile">
-          <div class="flex align-items-center">
-            <div class="ui rounded image community-image mt-5 rel-mr-2">
-              <img
-                src="{{ community.links.logo | resolve_community_logo(community.id) }}"
-                alt=""
-                class="rel-mb-1"
-              />
-            </div>
-
-            <div class="mobile only">
-              <h1 class="ui medium header mb-5">
-                {{ community.metadata.title }}
-              </h1>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex align-items-center mb-5 tablet computer only">
-              <h1 class="ui medium header mb-0">{{ community.metadata.title }}</h1>
-
-              {% if community.access.visibility == 'restricted' %}
-                <div class="rel-ml-1">
-                  {{ access_status_label() }}
-                </div>
-              {% endif %}
-            </div>
-
-            <div>
-              {% if community.access.visibility == 'restricted' %}
-                <div class="mobile only rel-mb-1">
-                  {{ access_status_label() }}
-                </div>
-              {% endif %}
-
-              {% if community.metadata.website %}
-                <div class="inline-computer mt-5 rel-mr-1">
-                  <i class="linkify icon" aria-hidden="true"></i>
-                  <a href="{{ community.metadata.website }}">
-                    {{ community.metadata.website }}
-                  </a>
-                </div>
-              {% endif %}
-
-              {% if community.metadata.type is defined %}
-                <div class="inline-computer mt-5 rel-mr-1">
-                  <i class="tag icon" aria-hidden="true"></i>
-                  <span class="label label-keyword">
-                    {{ community.ui.type.title_l10n }}
-                  </span>
-                </div>
-              {% endif %}
-
-              {% if community.metadata.organizations %}
-                {% for org in community.metadata.organizations %}
-                  {% set ror_id = org.id %}
-                  {% set name = org.name %}
-
-                  <div class="inline-computer mt-5">
-                    {% if loop.index == 1 %}
-                      <i class="building outline icon" aria-hidden="true"></i>
-                    {% endif %}
-
-                    {{ name }}
-
-                    {% if ror_id %}
-                      <a
-                        href="https://ror.org/{{ ror_id }}"
-                        aria-label="{{ name }}'s ROR {{ _('profile') }}"
-                        title="{{ name }}'s ROR {{ _('profile') }}"
-                        target="_blank"
-                      >
-                        <img
-                          class="inline-id-icon"
-                          src="{{ url_for('static', filename='images/ror-icon.svg') }}"
-                          alt=""
-                        />
-                      </a>
-                    {% endif %}
-                    {{ ", " if not loop.last }}
-                  </div>
-                {% endfor %}
-              {% endif %}
-            </div>
-          </div>
-        </div>
+        id="community-detail-header"
+        class="sixteen wide mobile sixteen wide tablet thirteen wide computer column community-detail-header"
+        data-community-logo-url="{{ community.links.logo | resolve_community_logo(community.id) }}"
+        data-community-title="{{ community.metadata.get('title', '')  }}"
+        data-community-type="{{ community.ui['type']['title_l10n'] if community.ui.type else '' }}"
+        data-organizations='{{ community.metadata.get("organizations", []) | tojson }}'
+        data-ror-icon-url="{{ url_for('static', filename='images/ror-icon.svg') }}"
+        data-slug="{{ community.slug }}"
+        data-visibility="{{ community.access.get('visibility', '') }}"
+        data-website="{{ community.website if community.website else '' }}"
+        >
       </div>
       <div
         class="sixteen wide mobile sixteen wide tablet three wide computer right aligned middle aligned column">

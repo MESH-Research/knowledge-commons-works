@@ -13,10 +13,14 @@ import React, { Component } from "react";
 import { Image } from "react-invenio-forms";
 import Overridable from "react-overridable";
 import { Button, Grid, Header, Item } from "semantic-ui-react";
+import GeoPattern from "geopattern";
 
 class CarouselItem extends Component {
   render() {
     const { community, defaultLogo, className, showUploadBtn } = this.props;
+    const self_link = community.links.self_html.replace("communities", "collections");
+
+    const pattern = GeoPattern.generate(community.slug);
 
     return (
       <Overridable
@@ -29,18 +33,18 @@ class CarouselItem extends Component {
           className={`carousel flex align-items-center ${className}`}
           key={community.id}
         >
-          <Image size="small" src={community.links.logo} fallbackSrc={defaultLogo} />
+          <Image size="small" src={community.links.logo} fallbackSrc={pattern.toDataUri()} />
           <Item.Content>
             <Item.Header as={Grid} stackable className="rel-pb-1">
               <Grid.Column computer="10" tablet="16" className="pl-0 pb-0">
-                <Header as="a" size="medium" href={community.links.self_html}>
+                <Header as="a" size="medium" href={self_link}>
                   {community.metadata.title}
                 </Header>
               </Grid.Column>
               <Grid.Column computer="6" tablet="16" className="buttons pl-0 pb-0">
                 <Button
                   size="mini"
-                  href={community.links.self_html}
+                  href={self_link}
                   content={i18next.t("Browse")}
                 />
                 {showUploadBtn && (
@@ -50,7 +54,7 @@ class CarouselItem extends Component {
                     labelPosition="left"
                     positive
                     href={`/uploads/new?community=${community.slug}`}
-                    content={i18next.t("New upload")}
+                    content={i18next.t("Contribute a work")}
                   />
                 )}
               </Grid.Column>

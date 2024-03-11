@@ -35,25 +35,25 @@ const sections = [
   {
     container: topicCommunitiesContainer,
     fetchDataUrl: "/api/communities?q=metadata.type.id:topic&sort=newest&page=1&size=5",
-    emptyMessage: "There are no new collections.",
+    emptyMessage: "There are no topic collections.",
     defaultLogo: "/static/images/square-placeholder.png",
   },
   {
     container: orgCommunitiesContainer,
     fetchDataUrl: "/api/communities?q=metadata.type.id:organization&sort=newest&page=1&size=5",
-    emptyMessage: "There are no new collections.",
+    emptyMessage: "There are no organization collections.",
     defaultLogo: "/static/images/square-placeholder.png",
   },
   {
     container: journalCommunitiesContainer,
     fetchDataUrl: "/api/communities?q=metadata.type.id:journal&sort=newest&page=1&size=5",
-    emptyMessage: "There are no new collections.",
+    emptyMessage: "There are no journal collections.",
     defaultLogo: "/static/images/square-placeholder.png",
   },
   {
     container: eventCommunitiesContainer,
     fetchDataUrl: "/api/communities?q=metadata.type.id:event&sort=newest&page=1&size=5",
-    emptyMessage: "There are no new collections.",
+    emptyMessage: "There are no event collections.",
     defaultLogo: "/static/images/square-placeholder.png",
   }
 ];
