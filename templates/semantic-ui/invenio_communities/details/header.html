@@ -14,13 +14,16 @@
 {%- from "invenio_communities/details/macros/access-status-label.html" import access_status_label -%}
 {{ webpack['invenio-communities-header.js'] }}
 
+{# {{ permissions | pprint }} #}
 <div
   class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile">
-  <div class="ui container relaxed grid page-subheader mr-0-mobile ml-0-mobile">
-    <div class="row pb-0">
       <div
         id="community-detail-header"
-        class="sixteen wide mobile sixteen wide tablet thirteen wide computer column community-detail-header"
+        class="ui container relaxed grid page-subheader mr-0-mobile ml-0-mobile"
+        data-can-read="{{ permissions.can_read }}"
+        data-can-moderate="{{ permissions.can_moderate }}"
+        data-can-search-requests="{{ permissions.can_search_requests }}"
+        data-can-update="{{ permissions.can_update }}"
         data-community-logo-url="{{ community.links.logo | resolve_community_logo(community.id) }}"
         data-community-title="{{ community.metadata.get('title', '')  }}"
         data-community-type="{{ community.ui['type']['title_l10n'] if community.ui.type else '' }}"
@@ -29,43 +32,10 @@
         data-slug="{{ community.slug }}"
         data-visibility="{{ community.access.get('visibility', '') }}"
         data-website="{{ community.website if community.website else '' }}"
+        data-has-curation-policy-content="{{ community.metadata.get('curation_policy', '') }}"
+        data-has-about-content="{{ community.metadata.get('page', '') }}"
+        data-active-menu-item="{{ active_community_header_menu_item }}"
         >
       </div>
-      <div
-        class="sixteen wide mobile sixteen wide tablet three wide computer right aligned middle aligned column">
-        {%- if not community_use_jinja_header %}
-          <a href="/uploads/new?community={{ community.slug }}"
-             class="ui positive button labeled icon rel-mt-1 theme-secondary">
-            <i class="upload icon" aria-hidden="true"></i>
-            {{ _("Contribute a work") }}
-          </a>
-        {% endif %}
-        {% if permissions.can_moderate %}
-          <a
-            href="{{ url_for('administration.communities', q='slug:'+community.slug) }}"
-            class="ui button labeled icon rel-mt-1">
-            <i class="cog icon" aria-hidden="true"></i>
-            {{ _("Manage collection") }}
-          </a>
-        {% endif %}
-
-      </div>
-
-    </div>
-    <div class="ui divider mobile only"></div>
-    <div
-      class="ui container secondary pointing stackable menu page-subheader pl-0 pr-0 theme-primary">
-      {% if community_menu_active %}
-        {% for item in current_menu.submenu('communities').children if (item.permissions == True or permissions[item.permissions]) and item.visible %}
-          <a
-            class="item {{ 'active' if active_community_header_menu_item == item.name }} {{ 'disabled' if not item.url }}"
-            href="{{ item.url }}"
-          >
-            <i aria-hidden="true" class="{{ item.icon }} icon"></i>
-            {{ item.text if item.text!="Records" else _("Works")}}
-          </a>
-        {% endfor %}
-      {% endif %}
-    </div>
   </div>
 </div>
