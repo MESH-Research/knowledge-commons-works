@@ -496,7 +496,6 @@ class CommunityProfileForm extends Component {
                     <AccordionField
                       includesPaths={["metadata.funding"]}
                       label={i18next.t("Funding information")}
-                      active
                     >
                       <div className="rel-ml-1 rel-mr-1">
                         <FundingField
@@ -611,6 +610,7 @@ class CommunityProfileForm extends Component {
                   tablet={5}
                   computer={4}
                   floated="right"
+                  className="logo-upload-column"
                 >
                   <Overridable
                     id="InvenioCommunities.CommunityProfileForm.LogoUploader.ProfilePicture"

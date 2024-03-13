@@ -82,8 +82,8 @@ const LogoUploader = ({ community, defaultLogo, hasLogo, onError, logoMaxSize })
         <>
           <span {...getRootProps()}>
             <input {...getInputProps()} />
-            <Header as="h2" size="small" className="mt-0">
-              {i18next.t("Profile picture")}
+            <Header as="h2" size="small" className="">
+              {i18next.t("Collection profile image")}
             </Header>
             <Image
               /* Change in key will cause a remounting. */

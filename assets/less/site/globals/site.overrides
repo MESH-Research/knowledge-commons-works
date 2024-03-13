@@ -1388,10 +1388,115 @@ textarea {
 }
 
 // Communities/Collections Interface
+
+#community-detail-header {
+  .ui.secondary.menu.page-subheader {
+    @media all and (max-width: @largeMonitorBreakpoint) {
+      margin-left: 0 !important;
+      width: 100%;
+    }
+  }
+}
+
+.communities-detail-about-section {
+  margin-top: 2rem;
+  border: 1px solid @borderColor;
+  padding: 1rem;
+
+  .ui.header {
+    margin-bottom: 0.25rem;
+  }
+}
+
 .communities-settings,
 .communities-members {
   .ui.vertical.menu {
     width: auto;
+    border: 1px solid transparent;
+    box-shadow: none;
+
+    .item {
+      &.active {
+        background-color: transparent;
+        border-left: 2px solid @primaryColor;
+        color: @textColor !important;
+        &:first-child,
+        &:last-child {
+          border-radius: 0;
+        }
+      }
+      &:before {
+        background-color: transparent;
+      }
+    }
+  }
+
+  .accordion.ui.inverted.invenio-accordion-field {
+    .title {
+      background-color: transparent;
+      font-size: @big;
+      font-weight: bold;
+      color: @textColor;
+      padding-left: 0.75rem;
+    }
+
+  }
+}
+
+.form.communities-profile {
+  &> .ui.grid > .row:first-child {
+    padding-top: 0;
+  }
+  .accordion.ui.inverted.invenio-accordion-field {
+    &:nth-child(2) {
+    .content.active {
+        .ui.container {
+          margin-left: 0rem !important;
+          margin-right: 0rem !important;
+        }
+    }
+  }
+
+    &:nth-child(3) {
+    .content.active {
+        .ui.container {
+          margin-left: 1rem !important;
+          margin-right: 1rem !important;
+          .disabled.field {
+            opacity: 1;
+            label {
+              opacity: 1;
+            }
+            .disabled.input {
+              opacity: 0.5;
+            }
+          }
+        }
+      }
+    }
+
+  }
+
+  .logo-upload-column {
+    h2 {
+      font-weight: bold;
+    }
+  }
+}
+
+#community-members-search-root {
+  .ui.grid {
+    .ui.table {
+      tbody {
+        tr {
+          td:first-child {
+            .header b {
+              word-break: break-all;
+            }
+          }
+        }
+      }
+    }
   }
 }
 

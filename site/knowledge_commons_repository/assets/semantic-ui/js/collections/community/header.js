@@ -120,7 +120,7 @@ const CommunityDetailsHeader = ({
   console.log("menu_items", menu_items);
 
   return (
-    <>
+    <div class="ui container relaxed grid page-subheader mr-0-mobile ml-0-mobile">
       <div className="row pb-0">
         <div className="sixteen wide mobile sixteen wide tablet thirteen wide computer column">
           <div className="community-header flex align-items-center column-mobile align-items-start-mobile">
@@ -213,7 +213,7 @@ const CommunityDetailsHeader = ({
             </div>
           </div>
         </div>
-        <div className="sixteen wide mobile sixteen wide tablet three wide computer right aligned middle aligned column">
+        <div className="sixteen wide mobile sixteen wide tablet three wide computer right aligned column">
           <a
             href={`/uploads/new?community=${slug}`}
             className="ui positive button labeled icon rel-mt-1 theme-secondary"
@@ -251,7 +251,7 @@ const CommunityDetailsHeader = ({
           </a>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

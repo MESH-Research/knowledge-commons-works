@@ -17,11 +17,12 @@
     {%- block settings_menu %}
       {%- set menu_items = {
         'profile': (_('Profile'), url_for('invenio_communities.communities_settings', pid_value=community.slug)),
-        'privileges': (_('Privileges'), url_for('invenio_communities.communities_settings_privileges', pid_value=community.slug)),
+        'privileges': (_('Visibility'), url_for('invenio_communities.communities_settings_privileges', pid_value=community.slug)),
         'curation_policy': (_('Review policy'), url_for('invenio_communities.communities_settings_curation_policy', pid_value=community.slug)),
-        'pages': (_('Pages'), url_for('invenio_communities.communities_settings_pages', pid_value=community.slug)),
+        'pages': (_('About and Curation'), url_for('invenio_communities.communities_settings_pages', pid_value=community.slug)),
       } %}
       <div class="sixteen wide mobile sixteen wide tablet three wide computer column">
+        <h2>Configuration</h2>
         <div role="tablist" class="ui vertical horizontal mobile tablet menu theme-primary-menu">
           {% for menu_key, (menu_item, menu_link) in menu_items.items() %}
             {% if not (menu_key == 'privileges' and not permissions.can_manage_access) %}
