@@ -1500,6 +1500,13 @@ textarea {
   }
 }
 
+.communities-frontpage-header.ui.container.page-subheader-outer {
+  background-color: transparent;
+  margin-bottom: 0;
+  &:not(.compact):not(.with-submenu) {
+    box-shadow: none;
+  }
+}
 .communities-frontpage {
   .ui.community-frontpage-cards.cards {
     .ui.fluid.card {

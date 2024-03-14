@@ -29,6 +29,8 @@ theme = WebpackThemeBundle(
                 "/header.js",
                 "invenio-communities-profile-custom": "./js/collections/"
                 "settings/profile/index.js",
+                "invenio-app-rdm-user-communities-custom": "./js/"
+                "invenio_app_rdm_custom/user_dashboard/communities.js",
             },
             dependencies={
                 "geopattern": "^1.2.3",

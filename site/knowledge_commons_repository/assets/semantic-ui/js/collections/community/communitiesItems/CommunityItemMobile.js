@@ -17,6 +17,15 @@ export const CommunityItemMobile = ({ result, index }) => {
   const communityType = result.ui?.type?.title_l10n;
   const canUpdate = result.ui.permissions.can_update;
 
+  const self_link = result.links.self_html.replace(
+    "communities",
+    "collections"
+  );
+  const settings_link = result.links.settings_html.replace(
+    "communities",
+    "collections"
+  );
+
 
   const pattern = GeoPattern.generate(result.slug);
 
@@ -48,7 +57,7 @@ export const CommunityItemMobile = ({ result, index }) => {
             <div>
               <a
                 className="truncate-lines-2 ui medium header m-0"
-                href={result.links.self_html}
+                href={self_link}
               >
                 {result.metadata.title}
               </a>
@@ -66,7 +75,7 @@ export const CommunityItemMobile = ({ result, index }) => {
             <Button
               compact
               size="tiny"
-              href={result.links.settings_html}
+              href={settings_link}
               className="mt-0 mr-0"
               labelPosition="left"
               icon="edit"
