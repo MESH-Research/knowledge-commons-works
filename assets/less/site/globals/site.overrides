@@ -1506,12 +1506,23 @@ textarea {
   &:not(.compact):not(.with-submenu) {
     box-shadow: none;
   }
+  .ui.divider.hidden {
+    margin: 0;
+  }
+  .two.column.stackable.row {
+    padding: 0;
+  }
 }
 .communities-frontpage {
   .ui.community-frontpage-cards.cards {
     .ui.fluid.card {
       .centered.image {
         height: 12rem;
+      }
+      .content {
+        .header {
+          font-size: @large;
+        }
       }
     }
   }
