@@ -1,4 +1,4 @@
-# Assumes an accompanying file for environment variables: ./.env
+# Assumes an accompanying file for environment variables: ./.private.env
 # This should contain values for:
 # PGADMIN_DEFAULT_EMAIL
 # PGADMIN_DEFAULT_PASSWORD
@@ -10,21 +10,10 @@ services:
       context: ./
       args:
         - ENVIRONMENT=DEV
-    image: knowledge-commons-repository:latest
+    image: knowledge-commons-repository
     restart: "unless-stopped"
     environment:
       - INVENIO_SECRET_KEY=${INVENIO_SECRET_KEY}
-      - "INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://cache:6379/1"
-      - "INVENIO_BROKER_URL=amqp://guest:guest@mq:5672/"
-      - "INVENIO_CACHE_REDIS_URL=redis://cache:6379/0"
-      - "INVENIO_CACHE_TYPE=redis"
-      - "INVENIO_CELERY_BROKER_URL=amqp://guest:guest@mq:5672/"
-      - "INVENIO_CELERY_RESULT_BACKEND=redis://cache:6379/2"
-      - "INVENIO_SEARCH_HOSTS=['search:9200']"
-      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://knowledge-commons-repository:knowledge-commons-repository@db/knowledge-commons-repository"
-      - "INVENIO_WSGI_PROXIES=2"
-      - "INVENIO_RATELIMIT_STORAGE_URI=redis://cache:6379/3"
-      - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
     env_file:
       - ./.env
   frontend:
@@ -61,8 +50,6 @@ services:
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
-    env_file:
-      - ./.env
     volumes:
       - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
   mq:

@@ -40,18 +40,20 @@ RUN pipenv install --deploy --system
 RUN mkdir ${INVENIO_INSTANCE_PATH}/assets
 RUN cp -r /usr/local/lib/python3.9/site-packages/invenio_app_rdm/theme/assets/semantic-ui/* ${INVENIO_INSTANCE_PATH}/assets/
 
+# copy local instance files to instance directory /opt/invenio/var/instance
 COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
 COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
 COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
 COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
 COPY ./translations/ ${INVENIO_INSTANCE_PATH}/translations/
-# This is copying whole app directory into /opt/invenio/src in container
-# since WORKDIR is set to that folder in base image
+# Copying whole app directory into /opt/invenio/src
+# (WORKDIR is set to that folder in base image)
 COPY ./ .
 
+# Collect and build static files and css/js assets
 RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
     cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
     invenio collect --verbose  && \
     invenio webpack buildall
 
-ENTRYPOINT [ "bash", "-c"]
+ENTRYPOINT ["bash", "-c"]

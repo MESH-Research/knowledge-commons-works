@@ -10,6 +10,7 @@
 #
 # Following services are included:
 # - Frontend: Nginx (exposed ports: 80 and 443)
+# - Cache: Redis (exposed port: 6379)
 # - UI application: UWSGI (not exposed)
 # - API application: UWSGI (not exposed)
 # - Cache: Redis (exposed port: 6379)
@@ -54,15 +55,19 @@ services:
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
       # - ./static:/opt/invenio/var/instance/static
       - static_data:/opt/invenio/var/instance/static
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
     depends_on:
       - web-ui
       - web-api
     ports:
       - "80:80"
       - "443:443"
+
   # UI Application
-  # This container holds Python, pip, the virtualenv, and the invenio code
+  # This container holds Python, pip, the virtualenv, and the invenio code,
   # Node.js, NPM and some standard libraries Invenio usually needs
+  # command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini --daemonize=logs/uwsgi-ui.log --log-reopen --pidfile=/tmp/kcr_ui.pid"]
   web-ui:
     extends:
       file: docker-services.yml
@@ -73,21 +78,19 @@ services:
       - "5000"
     volumes:
       # TODO: in production copy these files rather than mounting?
-      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg:ro
-      - ./docker/uwsgi/uwsgi_ui.ini:/opt/invenio/var/instance/uwsgi_ui.ini:ro
-      - ./templates:/opt/invenio/var/instance/templates:ro
-      - ./app_data:/opt/invenio/var/instance/app_data:ro
-      - ./translations:/opt/invenio/var/instance/translations:ro
-      - ./assets:/opt/invenio/src/assets
-      - ./static:/opt/invenio/src/static
-      # - ./assets:/opt/invenio/var/instance/assets
-      # - ./static:/opt/invenio/var/instance/static
-      # - .:/opt/invenio/src
+      # - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      # - ./docker/uwsgi/uwsgi_ui.ini:/opt/invenio/var/instance/uwsgi_ui.ini:ro  # TODO: ???
+      # - ${INVENIO_INSTANCE_PATH}/app_data:/opt/invenio/var/instance/app_data:ro
+      # - ${INVENIO_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets:ro
+      # - ${INVENIO_INSTANCE_PATH}/templates:/opt/invenio/var/instance/templates:ro
+      # - ./translations:/opt/invenio/var/instance/translations:ro
+      # - .:/opt/invenio/src:ro
       - static_data:/opt/invenio/var/instance/static
-      - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
+      - uploaded_data:/opt/invenio/var/instance/data
 
   # API Rest Application
+  # command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini --daemonize=logs/uwsgi-api-${mydate}.log --log-reopen --pidfile=/tmp/kcr_api.pid"]
   web-api:
     extends:
       file: docker-services.yml
@@ -98,28 +101,25 @@ services:
       - "5001"
     volumes:
       # TODO: in production copy these files rather than mounting?
-      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg:ro
-      - ./docker/uwsgi/uwsgi_rest.ini:/opt/invenio/var/instance/uwsgi_rest.ini:ro
-      - ./templates:/opt/invenio/var/instance/templates:ro
-      - ./app_data:/opt/invenio/var/instance/app_data:ro
-      - ./translations:/opt/invenio/var/instance/translations:ro
-      - ./assets:/opt/invenio/src/assets
-      - ./static:/opt/invenio/src/static
-      # - ./assets:/opt/invenio/var/instance/assets
-      # - ./static:/opt/invenio/var/instance/static
-      # - .:/opt/invenio/src
-      - uploaded_data:/opt/invenio/var/instance/data
+      # - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      # - ./docker/uwsgi/uwsgi_rest.ini:/opt/invenio/var/instance/uwsgi_rest.ini:ro
+      # - ${INVENIO_INSTANCE_PATH}/app_data:/opt/invenio/var/instance/app_data:ro
+      # - ${INVENIO_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets:ro
+      # - ${INVENIO_INSTANCE_PATH}/static:/opt/invenio/var/instance/static:ro
+      # - ${INVENIO_INSTANCE_PATH}/templates:/opt/invenio/var/instance/templates:ro
+      # - ./translations:/opt/invenio/var/instance/translations:ro
+      # - .:/opt/invenio/src:ro
       - archived_data:/opt/invenio/var/instance/archive
+      - uploaded_data:/opt/invenio/var/instance/data
   # Worker
   worker:
     extends:
       file: docker-services.yml
       service: app
-    command: ["celery -A invenio_app.celery worker --beat --loglevel=INFO"]
+    command: ["celery -A invenio_app.celery worker --beat --loglevel INFO"]
     image: knowledge-commons-repository:latest
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
-      # - ./static:/opt/invenio/var/instance/static
     depends_on:
       search:
         condition: service_started
@@ -130,6 +130,6 @@ services:
       mq:
         condition: service_started
 volumes:
+  archived_data:
   static_data:
   uploaded_data:
-  archived_data:
