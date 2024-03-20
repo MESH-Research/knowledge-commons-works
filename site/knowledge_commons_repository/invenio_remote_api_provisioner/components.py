@@ -34,7 +34,7 @@ def RemoteAPIProvisionerFactory(config):
         the execution of the corresponding methods in the parent service.
         """
 
-        endpoints = config["REMOTE_API_PROVISIONER_EVENTS"]
+        endpoints = config.get("REMOTE_API_PROVISIONER_EVENTS", {})
 
         def _get_payload_object(
             self, rec, data, record, identity, payload, **kwargs
