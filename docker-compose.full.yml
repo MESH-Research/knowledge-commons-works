@@ -51,12 +51,10 @@ services:
       file: docker-services.yml
       service: frontend
     volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx_containerized/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx_containerized/conf.d:/etc/nginx/conf.d
       # - ./static:/opt/invenio/var/instance/static
       - static_data:/opt/invenio/var/instance/static
-    # extra_hosts:
-    #   - "host.docker.internal:host-gateway"
     depends_on:
       - web-ui
       - web-api

@@ -8,13 +8,13 @@ fi
 if [ -f ./.invenio.private ]; then
   ip=$(sed '3!d' .invenio.private | sed -e "s/^instance_path = //")
   last_line=$(tail -1 ./.env)
-  if [[ $last_line == "INVENIO_INSTANCE_PATH"* ]]; then
+  if [[ $last_line == "INVENIO_LOCAL_INSTANCE_PATH"* ]]; then
     echo "deleting old instance path"
     sed -i "" '$d' .env
   fi
   echo "adding instance path to .env file as ${ip}"
   [ "$(tail -c1 ./.env)" = "" ] || echo >> ./.env
-  echo "INVENIO_INSTANCE_PATH=${ip}" >> ./.env
+  echo "INVENIO_LOCAL_INSTANCE_PATH=${ip}" >> ./.env
 fi
 if [ ! -d "logs" ]; then
   mkdir logs
