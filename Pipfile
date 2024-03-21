@@ -50,6 +50,7 @@ invenio-rdm-records = {file = "../invenio-rdm-records", editable = true}
 invenio-records-resources = {file = "../invenio-records-resources", editable = true}
 invenio-communities = {file = "../invenio-communities", editable = true}
 invenio-groups = {file = "../invenio-groups", editable = true}
+invenio-subjects-fast = "*"
 
 [requires]
 python_version = "3.9"
