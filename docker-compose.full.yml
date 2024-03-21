@@ -72,6 +72,9 @@ services:
       service: app
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
     image: knowledge-commons-repository:latest
+    environment:
+      - INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
+      - INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://cache:6379/4
     ports:
       - "5000"
     volumes:
@@ -97,6 +100,9 @@ services:
     image: knowledge-commons-repository:latest
     ports:
       - "5001"
+    environment:
+      - INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
+      - INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://cache:6379/4
     volumes:
       # TODO: in production copy these files rather than mounting?
       # - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
