@@ -48,6 +48,8 @@ services:
       file: docker-services.yml
       service: frontend
     volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
       - ${INVENIO_LOCAL_INSTANCE_PATH}/static:/opt/invenio/var/instance/static
     extra_hosts:
       - "host.docker.internal:host-gateway"
