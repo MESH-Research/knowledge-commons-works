@@ -6,11 +6,11 @@
 version: '2.2'
 services:
   app:
-    build:
-      context: ./
-      args:
-        - ENVIRONMENT=DEV
-    image: knowledge-commons-repository:latest
+    # build:
+    #   context: ./
+    #   args:
+    #     - ENVIRONMENT=DEV
+    image: monotasker/knowledge-commons-repository:latest
     restart: "unless-stopped"
     environment:
       - INVENIO_SECRET_KEY=${INVENIO_SECRET_KEY}
@@ -29,7 +29,7 @@ services:
       - ./.env
   frontend:
     build: ./docker/nginx/
-    image: knowledge-commons-repository-frontend
+    image: monotasker/knowledge-commons-repository-frontend
     restart: "unless-stopped"
     ports:
       - "80"
