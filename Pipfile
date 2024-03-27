@@ -43,7 +43,6 @@ uwsgi-tools = ">=1.1.1"
 aiohttp = "*"
 invenio-modular-detail-page = {editable = true, path = "./../invenio-modular-detail-page/invenio-modular-detail-page"}
 invenio-modular-deposit-form = {editable = true, path = "./../invenio-modular-deposit-form"}
-knowledge-commons-repository = {editable = true, path = "./site"}
 invenio-remote-user-data = {editable = true, path = "./../invenio-remote-user-data"}
 invenio-record-importer = {editable = true, path = "./../invenio-record-importer"}
 invenio-rdm-records = {file = "../invenio-rdm-records", editable = true}
@@ -51,6 +50,7 @@ invenio-records-resources = {file = "../invenio-records-resources", editable = t
 invenio-communities = {file = "../invenio-communities", editable = true}
 invenio-groups = {file = "../invenio-groups", editable = true}
 invenio-subjects-fast = "*"
+knowledge-commons-repository = {file = "site", editable = true}
 
 [requires]
 python_version = "3.9"
