@@ -7,8 +7,7 @@
 # and/or modify it under the terms of the MIT License; see
 # LICENSE file for more details.
 
-"""Celery task to send record event notices to remote API.
-"""
+"""Celery task to send record event notices to remote API."""
 
 # from celery import current_app as current_celery_app
 from celery import shared_task
@@ -16,7 +15,6 @@ from celery.utils.log import get_task_logger
 from flask import current_app as app
 from pprint import pformat
 import requests
-from .utils import logger as update_logger
 
 task_logger = get_task_logger(__name__)
 
@@ -26,38 +24,42 @@ task_logger = get_task_logger(__name__)
     ignore_result=False, retry_backoff=True, retry_kwargs={"max_retries": 5}
 )
 def send_remote_api_update(
-    endpoint,
-    method,
-    payload,
+    service_type=None,
+    service_method=None,
+    request_url=None,
+    http_method=None,
+    payload=None,
+    record_id=None,
+    draft_id=None,
+    **kwargs,
 ):
     """Send a record event update to a remote API."""
 
+    print("send_remote_api_update ************")
     with app.app_context():
-        update_logger.debug("doing task&&&&&&&")
-        task_logger.debug("doing task&&&&&&&")
-        task_logger.info(dir(task_logger))
-        task_logger.info(task_logger.handlers)
-
-        update_logger.info(f"method: {method}")
-        update_logger.info("payload:")
-        update_logger.info(pformat(payload))
+        app.logger.info(f"service_method: {service_method}")
+        app.logger.info(f"request_url: {request_url}")
+        app.logger.info(f"http_method: {http_method}")
+        app.logger.info("payload:")
+        app.logger.info(pformat(payload))
 
         response = requests.request(
-            method,
-            url=endpoint,
+            http_method,
+            url=request_url,
             json=payload,
             allow_redirects=False,
+            timeout=10,
         )
-        update_logger.info(response)
+        app.logger.info(response)
         if response.status_code != 200:
-            update_logger.error(
+            app.logger.error(
                 "Error sending notification (status code"
                 f" {response.status_code})"
             )
-            update_logger.error(response.text)
+            app.logger.error(response.text)
             raise requests.exceptions.HTTPError(response.text)
         else:
-            update_logger.info("Notification sent successfully")
-            update_logger.info("------")
+            app.logger.info("Notification sent successfully")
+            app.logger.info("------")
 
-        return True
+        return response

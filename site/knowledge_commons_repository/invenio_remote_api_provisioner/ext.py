@@ -7,20 +7,10 @@
 # and/or modify it under the terms of the MIT License; see
 # LICENSE file for more details.
 
-# FIXME: These imports will change when we upgrade invenio-rdm-records
-# from invenio_drafts_resources.services.records.components import (
-#     DraftFilesComponent,
-#     PIDComponent,
-#     RelationsComponent,
-# )
-
-# FIXME: These imports will change when we upgrade invenio-rdm-records
+from invenio_communities.communities.services.components import (
+    DefaultCommunityComponents,
+)
 from invenio_rdm_records.services.components import (
-    # AccessComponent,
-    # CustomFieldsComponent,
-    # MetadataComponent,
-    # PIDsComponent,
-    # ReviewComponent,
     DefaultRecordsComponents,
 )
 from .components import (
@@ -28,8 +18,6 @@ from .components import (
 )
 
 from . import config
-
-# from .service import RemoteAPIProvisionerService
 
 
 class InvenioRemoteAPIProvisioner(object):
@@ -52,7 +40,6 @@ class InvenioRemoteAPIProvisioner(object):
                 the extension
         """
         self.init_config(app)
-        # self.init_services(app)
         app.extensions["invenio-remote-api-provisioner"] = self
 
     def init_config(self, app) -> None:
@@ -66,30 +53,22 @@ class InvenioRemoteAPIProvisioner(object):
             if k.startswith("REMOTE_API_PROVISIONER_"):
                 app.config.setdefault(k, getattr(config, k))
 
-        old_components = app.config.get("RDM_RECORDS_SERVICE_COMPONENTS", [])
-        if not old_components:
-            old_components = [
-                *DefaultRecordsComponents
-                # MetadataComponent,
-                # CustomFieldsComponent,
-                # AccessComponent,
-                # DraftFilesComponent,
-                # # for the internal `pid` field
-                # PIDComponent,
-                # # for the `pids` field (external PIDs)
-                # PIDsComponent,
-                # RelationsComponent,
-                # ReviewComponent,
-            ]
+        old_record_components = app.config.get(
+            "RDM_RECORDS_SERVICE_COMPONENTS", []
+        )
+        if not old_record_components:
+            old_record_components = [*DefaultRecordsComponents]
         app.config["RDM_RECORDS_SERVICE_COMPONENTS"] = [
-            *old_components,
-            RemoteAPIProvisionerFactory(app.config),
+            *old_record_components,
+            RemoteAPIProvisionerFactory(app.config, "rdm_record"),
         ]
 
-    # def init_services(self, app):
-    #     """Initialize services for the extension.
-
-    #     Args:
-    #         app (_type_): _description_
-    #     """
-    #     self.service = RemoteAPIProvisionerService(app, config=app.config)
+        old_community_components = app.config.get(
+            "COMMUNITY_SERVICE_COMPONENTS", []
+        )
+        if not old_community_components:
+            old_community_components = [*DefaultCommunityComponents]
+        app.config["COMMUNITY_SERVICE_COMPONENTS"] = [
+            *old_community_components,
+            RemoteAPIProvisionerFactory(app.config, "community"),
+        ]

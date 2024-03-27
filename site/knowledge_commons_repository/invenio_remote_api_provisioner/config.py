@@ -16,3 +16,5 @@ REMOTE_API_PROVISIONER_MQ_EXCHANGE = Exchange(
     type="direct",
     delivery_mode="transient",  # in-memory queue
 )
+
+REMOTE_API_PROVISIONER_EVENTS = {}
