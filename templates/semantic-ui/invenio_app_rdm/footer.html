@@ -1,0 +1,51 @@
+{#
+
+  Part of InvenioRDM
+  Copyright (C) 2019-2020 CERN.
+  Copyright (C) 2019-2020 Northwestern University.
+  Copyright (C) 2021 Graz University of Technology.
+
+  Customized for Knowledge Commons Works by Mesh Research
+  Copyright (C) 2024 Mesh Research
+
+  Invenio App RDM and Knowledge Commons Works are free software; you
+  can redistribute and/or modify them under the terms of the MIT
+  License; see LICENSE file for more details.
+#}
+{% set kc_url = config.KC_WORDPRESS_URL %}
+
+{%- block footer_top %}
+
+  <div class="footer-top">
+    <div class="ui container app-rdm-footer">
+      {%- block footer_top_left %}
+        <div class="ui grid app-rdm-footer">
+            {% for title, links, widths in config.KC_FOOTER_LINKS %}
+            <div class="rdm-footer {{ widths[1] }} wide tablet {{ widths[2] }} wide computer {{ widths[0] }} wide mobile column">
+                {% if title[:6] != "_blank" %}
+                    <h2 class="ui small header">{{ title }}</h2>
+                {% endif %}
+                {% for link_set in links %}
+                  {% if link_set | length == 2 %}
+                    {% trans link_url=link_set[1], link_text=link_set[0] %}
+                    <p><a href="{{ link_url }}">{{ link_text }}</a></p>
+                    {% endtrans %}
+                  {% else %}
+                    <a href="{{ link_set[1] }}" target="_blank">
+                      <img src="{{ url_for('static', filename='images/' + link_set[2]) }}" class="ui centered image" height="64px" width="auto" alt="{{ link_set[0] }}"/>
+                    </a>
+                  {% endif %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+            </div>
+      {%- endblock footer_top_left %}
+      {# <div class="six wide column right aligned">
+        {%- block footer_top_right %}
+        {%- endblock footer_top_right %}
+      </div> #}
+      </div>
+    </div>
+
+  </div>
+{%- endblock footer_top %}

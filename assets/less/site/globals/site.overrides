@@ -43,6 +43,11 @@ textarea {
     }
   }
 }
+.mobile.hidden {
+  @media all and (max-width: @largestMobileScreen) {
+    display: none !important;
+  }
+}
 
 // FIXME: hidden for now
 
@@ -96,10 +101,30 @@ textarea {
           box-shadow: none;
         }
       }
-      .rdm-logo {
-        width: auto;
-        @media screen and (max-width: @largestMobileScreen) {
-          max-height: 3rem;
+      .item.logo {
+        .logo-link {
+          display: flex;
+          align-items: center;
+          .rdm-logo {
+            width: auto;
+            @media screen and (max-width: @largestMobileScreen) {
+              max-height: 3rem;
+            }
+          }
+          .title-wrapper {
+            h1 {
+              margin-top: 0;
+              margin-left: 1rem;
+              text-transform: uppercase;
+              letter-spacing: 0.5rem;
+            }
+            .subtitle {
+              font-size: 0.75rem;
+              font-weight: bold;
+              text-transform: uppercase;
+              letter-spacing: 0.25rem;
+            }
+          }
         }
       }
     }
@@ -1439,26 +1464,25 @@ textarea {
       color: @textColor;
       padding-left: 0.75rem;
     }
-
   }
 }
 
 .form.communities-profile {
-  &> .ui.grid > .row:first-child {
+  & > .ui.grid > .row:first-child {
     padding-top: 0;
   }
   .accordion.ui.inverted.invenio-accordion-field {
     &:nth-child(2) {
-    .content.active {
+      .content.active {
         .ui.container {
           margin-left: 0rem !important;
           margin-right: 0rem !important;
         }
+      }
     }
-  }
 
     &:nth-child(3) {
-    .content.active {
+      .content.active {
         .ui.container {
           margin-left: 1rem !important;
           margin-right: 1rem !important;
@@ -1474,7 +1498,6 @@ textarea {
         }
       }
     }
-
   }
 
   .logo-upload-column {

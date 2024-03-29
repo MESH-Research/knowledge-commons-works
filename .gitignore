@@ -21,6 +21,16 @@ __pycache__/
 # Node module files
 node_modules/
 
+# untracked assets files (e.g. compiled assets)
+static/admin/
+static/bootstrap/
+static/css/
+static/dist/
+static/js/
+static/templates/
+static/vendor/
+static/xsl/
+
 # Distribution / packaging
 .Python
 env/

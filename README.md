@@ -17,26 +17,83 @@ From there installation involves these steps and commands:
 1. `git clone git@github.com:MESH-Research/knowledge-commons-repository.git`
 2. `cd knowledge-commons-repository`
 3. create and configure the .env file in this folder
-4. `pip install invenio-cli`
-5. `invenio-cli install`
+4. `pip install invenio-cli` (optional?)
+5. `invenio-cli install` (optional?)
+6. start docker if it's not already running
 6. `docker-compose up -d`
-7. `invenio-cli services setup`
+7. `invenio-cli containers start --setup` (`invenio-cli services setup` for local dev install)
+    - or `docker exec -it knowledge-commons-repository-web-ui-1 bash` and then the following commands
+        - `invenio db init create`
+        - `invenio files location create --default default-location ${INVENIO_INSTANCE_PATH}/data`
+        - `invenio roles create admin`
+        - `invenio access allow superuser-access role admin`
+        - `invenio index init`
+        - `invenio rdm-records custom-fields create`
+        - `invenio communities custom-fields create`
+        - `invenio rdm-records fixtures`
+        - `invenio rdm fixtures`
+        - `pybabel compile --directory={project_path / translation_folder}`
+        - `invenio queues declare`
 8. `bash kcr-startup.sh`
 
-You can then create an admin user. From the command line, run
+You can then create an admin user. From the command line inside the `web-ui` container, run
 ```console
 pipenv run invenio users create <email> --password <password>
 pipenv run invenio users activate <email>
 pipenv run invenio access allow administration-access user <email>
 ```
 
-The application instance and its services can be started and stopped using single  commands:
-```console
-bash kcr-startup.sh
+The application instance and its services can be started and stopped by starting and stopping the docker-compose project:
+
+```shell
+docker-compose --file docker-compose.dev.yml up -d
 ```
-```console
-bash kcr-shutdown.sh
+```shell
+docker-compose --file docker-compose.dev.yml stop
 ```
+
+[!WARNING]
+Do not use the `docker-compose down` command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indexes. YOU DO NOT WANT TO DO THIS!
+
+### Updating the instance with changes
+
+#### Changes to html template files
+
+Changes to html template files will be visible immediately in the running Knowledge Commons Repository instance. You simply need to refresh the page.
+
+#### Changes to invenio.cfg
+
+Changes to the invenio.cfg file will only take effect after the instance uwsgi processes are restarted. This can be done by running the following command inside the `web-ui` container:
+```shell
+uwsgi --reload /tmp/kcr_ui.pid
+```
+
+#### Changes to theme (CSS) and javascript files
+
+#### Changes to static files
+
+Changes to static files like images will require running the collect command to copy them to the central static folder. This can be done by running the following command inside the `web-ui` container:
+```shell
+invenio collect -v
+```
+You will then need to restart the uwsgi processes as described above.
+
+#### Changes to python code in the `site` folder
+
+#### Changes to external python modules (including Invenio modules)
+
+Changes to other python modules (including Invenio modules) will require rebuilding the main knowledge-commons-works container. Additions to the python requirements should be added to the `Pipfile` in the knowledge-commons-works folder and committed to the Github repository. You should then request that the knowledge-commons-works container be rebuilt.
+
+In the meantime, required python packages can be installed directly in the `web-ui` container. First, enter the container:
+```shell
+docker exec -it knowledge-commons-repository-web-ui-1 bash
+```
+Then install the required package using pipenv:
+```shell
+pipenv install <package-name>
+```
+
+### Digging deeper
 
 What follows is a step-by-step walk through this process. Note that these instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
 

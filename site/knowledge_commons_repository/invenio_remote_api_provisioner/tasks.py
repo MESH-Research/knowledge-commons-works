@@ -35,8 +35,8 @@ def send_remote_api_update(
 ):
     """Send a record event update to a remote API."""
 
-    print("send_remote_api_update ************")
     with app.app_context():
+        app.logger.info("Sending remote api update ************")
         app.logger.info(f"service_method: {service_method}")
         app.logger.info(f"request_url: {request_url}")
         app.logger.info(f"http_method: {http_method}")
@@ -50,16 +50,16 @@ def send_remote_api_update(
             allow_redirects=False,
             timeout=10,
         )
-        app.logger.info(response)
         if response.status_code != 200:
             app.logger.error(
                 "Error sending notification (status code"
                 f" {response.status_code})"
             )
             app.logger.error(response.text)
-            raise requests.exceptions.HTTPError(response.text)
         else:
             app.logger.info("Notification sent successfully")
-            app.logger.info("------")
+            app.logger.info("response:")
+            app.logger.info(response.json())
+            app.logger.info("-----------------------")
 
         return response

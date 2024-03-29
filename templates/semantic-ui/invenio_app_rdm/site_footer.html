@@ -1,0 +1,46 @@
+<div class="footer-bottom sub-footer">
+  <div class="ui container">
+    <div class="ui grid">
+        {%- block footer_bottom_left %}
+
+          <div class="ten wide column left middle aligned mobile hidden">
+            {% trans invenio_rdm="http://inveniosoftware.org/products/rdm" %}
+              Powered by
+              <a href="{{ invenio_rdm }}">InvenioRDM</a>
+            {% endtrans %}
+          </div>
+
+          <div class="ten wide column left middle aligned mobile only">
+            {% set support_url = 'https://sustaining.' + config.get("KC_WORDPRESS_DOMAIN") +  '/financial/ways-to-give/' %}
+            {% trans support = support_url %}
+              <a href="{{ support }}">Support the Commons</a>
+            {% endtrans %}
+          </div>
+
+        {%- endblock footer_bottom_left %}
+
+        {%- block footer_bottom_right %}
+
+          <div class="six wide column right middle aligned mobile only">
+            {% trans invenio_rdm="http://inveniosoftware.org/products/rdm" %}
+              Powered by
+              <a href="{{ invenio_rdm }}">InvenioRDM</a>
+            {% endtrans %}
+          </div>
+
+          <div class="six wide column left middle aligned mobile hidden">
+            {% set support_url = 'https://sustaining.' + config.get("KC_WORDPRESS_DOMAIN") +  '/financial/ways-to-give/' %}
+            {% trans support = support_url %}
+              <a href="{{ support }}">Support the Commons</a>
+            {% endtrans %}
+          </div>
+
+          {%- if config.I18N_LANGUAGES %}
+            {% from "invenio_i18n/macros/language_selector.html" import language_selector_dropdown %}
+            {{ language_selector_dropdown() }}
+          {%- endif %}
+
+        {%- endblock footer_bottom_right %}
+    </div>
+  </div>
+</div>
