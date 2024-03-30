@@ -36,10 +36,6 @@ RUN git clone https://github.com/MESH-Research/invenio-remote-user-data.git /opt
 # Install python requirements with pipenv in container
 RUN pipenv install --deploy --system
 
-# FIXME: Why is this manual copying necessary???
-RUN mkdir ${INVENIO_INSTANCE_PATH}/assets
-RUN cp -r /usr/local/lib/python3.9/site-packages/invenio_app_rdm/theme/assets/semantic-ui/* ${INVENIO_INSTANCE_PATH}/assets/
-
 # copy local instance files to instance directory /opt/invenio/var/instance
 COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
 COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
@@ -50,10 +46,21 @@ COPY ./translations/ ${INVENIO_INSTANCE_PATH}/translations/
 # (WORKDIR is set to that folder in base image)
 COPY ./ .
 
-# Collect and build static files and css/js assets
+# Copy local static files and css/js assets
 RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
-    cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
-    invenio collect --verbose  && \
+    cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/
+# Symlink for dev build
+# FIXME: This symlink will only work for containerized development
+RUN ln -s ${INVENIO_INSTANCE_PATH}/assets/less/knowledge-commons-repository ./site/knowledge_commons_repository/assets/semantic-ui/less/knowledge_commons_repository
+RUN ln -s ${INVENIO_INSTANCE_PATH}/assets/less/invenio_app_rdm /usr/local/lib/python3.9/site-packages/invenio_app_rdm/theme/assets/semantic-ui/less/invenio_app_rdm
+RUN ln -s ${INVENIO_INSTANCE_PATH}/assets/less/invenio_theme /usr/local/lib/python3.9/site-packages/invenio_app_rdm/theme/assets/semantic-ui/less/invenio_theme
+RUN ln -s ${INVENIO_INSTANCE_PATH}/assets/less/theme.config ./assets/less/theme.config
+RUN ln -s ${INVENIO_INSTANCE_PATH}/assets/less/site/globals/* ./assets/less/site/globals/
+RUN ln -s ${INVENIO_INSTANCE_PATH}/assets/js/invenio_app_rdm /usr/local/lib/python3.9/site-packages/invenio_app_rdm/theme/assets/semantic-ui/js/invenio_app_rdm
+
+
+# Build assets
+RUN invenio collect --verbose  && \
     invenio webpack buildall
 
 ENTRYPOINT ["bash", "-c"]

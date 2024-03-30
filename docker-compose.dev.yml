@@ -95,8 +95,9 @@ services:
       - ./app_data:/opt/invenio/var/instance/app_data
       # - ${INVENIO_LOCAL_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets
       - ./static:/opt/invenio/var/instance/static
-      - ./templates:/opt/invenio/var/instance/templates
-      - ./translations:/opt/invenio/var/instance/translations
+      # FIXME: are the following two bind mounts needed?
+      # - ./templates:/opt/invenio/var/instance/templates
+      # - ./translations:/opt/invenio/var/instance/translations
       - .:/opt/invenio/src
       # - static_data:/opt/invenio/var/instance/static
       - archived_data:/opt/invenio/var/instance/archive
@@ -134,8 +135,9 @@ services:
       - ./app_data:/opt/invenio/var/instance/app_data
       # - ${INVENIO_LOCAL_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets
       - ./static:/opt/invenio/var/instance/static
-      - ./templates:/opt/invenio/var/instance/templates
-      - ./translations:/opt/invenio/var/instance/translations
+      # FIXME: are the following two bind mounts needed?
+      # - ./templates:/opt/invenio/var/instance/templates
+      # - ./translations:/opt/invenio/var/instance/translations
       - .:/opt/invenio/src
       # - static_data:/opt/invenio/var/instance/static
       - archived_data:/opt/invenio/var/instance/archive
