@@ -84,6 +84,7 @@ services:
     image: monotasker/knowledge-commons-repository:latest
     environment:
       - FLASK_ENV=development
+      - FLASK_DEBUG=1
       - INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
       - INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://cache:6379/4
     ports:
@@ -96,8 +97,8 @@ services:
       # - ${INVENIO_LOCAL_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets
       - ./static:/opt/invenio/var/instance/static
       # FIXME: are the following two bind mounts needed?
-      # - ./templates:/opt/invenio/var/instance/templates
-      # - ./translations:/opt/invenio/var/instance/translations
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
       - .:/opt/invenio/src
       # - static_data:/opt/invenio/var/instance/static
       - archived_data:/opt/invenio/var/instance/archive
@@ -127,6 +128,7 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       - FLASK_ENV=development
+      - FLASK_DEBUG=1
       - INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
       - INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://cache:6379/4
     volumes:
@@ -135,9 +137,8 @@ services:
       - ./app_data:/opt/invenio/var/instance/app_data
       # - ${INVENIO_LOCAL_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets
       - ./static:/opt/invenio/var/instance/static
-      # FIXME: are the following two bind mounts needed?
-      # - ./templates:/opt/invenio/var/instance/templates
-      # - ./translations:/opt/invenio/var/instance/translations
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
       - .:/opt/invenio/src
       # - static_data:/opt/invenio/var/instance/static
       - archived_data:/opt/invenio/var/instance/archive

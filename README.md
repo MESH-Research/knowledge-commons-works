@@ -28,8 +28,8 @@ From there installation involves these steps and commands:
         - `invenio roles create admin`
         - `invenio access allow superuser-access role admin`
         - `invenio index init`
-        - `invenio rdm-records custom-fields create`
-        - `invenio communities custom-fields create`
+        - `invenio rdm-records custom-fields init`
+        - `invenio communities custom-fields init`
         - `invenio rdm-records fixtures`
         - `invenio rdm fixtures`
         - `pybabel compile --directory={project_path / translation_folder}`
