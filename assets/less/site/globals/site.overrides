@@ -61,13 +61,24 @@ textarea {
 
 .theme.header {
   box-shadow: none;
+  .beta-banner {
+    background-color: @infoBackgroundColor;
+    color: @infoTextColor;
+    padding: 0.5rem 0;
+    text-align: center;
+    font-size: 16px;
+    box-shadow: inset 0 -3px 3px rgba(9,9,9,0.1);
+    a {
+      text-decoration: underline;
+    }
+  }
   .outer-navbar {
     border-color: transparent;
     background-color: transparent;
 
     #invenio-nav.ui.menu {
       @media screen and (max-width: @largestMobileScreen) {
-        height: 3rem;
+        height: 3.5rem;
       }
       box-shadow: none;
       .item:not(.logo) {
@@ -102,27 +113,41 @@ textarea {
         }
       }
       .item.logo {
+        width: auto;
         .logo-link {
           display: flex;
           align-items: center;
           .rdm-logo {
             width: auto;
+            max-height: 4rem;
+            margin-top: 0.4rem;
             @media screen and (max-width: @largestMobileScreen) {
               max-height: 3rem;
             }
           }
           .title-wrapper {
+            margin-left: 1rem;
             h1 {
-              margin-top: 0;
-              margin-left: 1rem;
-              text-transform: uppercase;
-              letter-spacing: 0.5rem;
+              margin-top: 0.3rem;
+              margin-bottom: 0;
+              letter-spacing: 0.05rem;
+              font-size: 3rem;
+              @media screen and (max-width: @largestMobileScreen) {
+                margin-top: 0.5rem;
+                font-size: 2rem;
+              }
             }
             .subtitle {
-              font-size: 0.75rem;
+              font-size: 1rem;
               font-weight: bold;
               text-transform: uppercase;
-              letter-spacing: 0.25rem;
+              display: block;
+              margin-top: -0.1rem;
+              letter-spacing: 0.1rem;
+              font-weight: normal;
+              @media screen and (max-width: @largestMobileScreen) {
+                font-size: 0.85rem;
+              }
             }
           }
         }
