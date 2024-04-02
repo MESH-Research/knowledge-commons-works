@@ -1,30 +1,51 @@
 # Knowledge Commons Repository
 
-The Knowledge Commons Repository is a collaborative tool for storing and sharing academic research. It is part of the Knowledge Commons and is built using InvenioRDM.
+Knowledge Commons Works is a collaborative tool for storing and sharing academic research. It is part of Knowledge Commons and is built on an instance of the InvenioRDM repository system.
 
 ## Copyright
 
-Copyright 2023 MESH Research. Released under the MIT license. (See the included LICENSE.txt file.)
+Copyright 2023-24 Mesh Research. Released under the MIT license. (See the included LICENSE.txt file.)
 
 ## Installation for Development
 
-These instructions allow you to run the Knowledge Commons Repository for local development. The app source files are copied onto your system, and the Invenio python modules and required Node.js packages are installed locally. The other services used by the application are run from docker containers.
 
-First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+), Python (3.9.16 with pipenv), and Node.js (16.19.1 with npm and nvm) installed on your system.
+### Quickstart
 
-From there installation involves these steps and commands:
+These instructions allow you to run Knowledge Commons Works for local development. The app source files are copied onto your system, but the Flask application and other services (database, search, etc.) are run in Docker containers. The application is served to your browser by an nginx web server running in a separate container.
 
-1. `git clone git@github.com:MESH-Research/knowledge-commons-repository.git`
-2. `cd knowledge-commons-repository`
-3. create and configure the .env file in this folder
-4. `pip install invenio-cli` (optional?)
-5. `invenio-cli install` (optional?)
-6. start docker if it's not already running
-6. `docker-compose up -d`
-7. `invenio-cli containers start --setup` (`invenio-cli services setup` for local dev install)
-    - or `docker exec -it knowledge-commons-repository-web-ui-1 bash` and then the following commands
+First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+) and Python (3.9.16 with pipenv).
+
+From there installation involves these steps and commands. These are further explained below, but here is a quick reference:
+
+1. Clone the git repositories
+    1. From your command line, navigate to the parent folder where you want the cloned repository code to live
+    2. Clone the kcworks repository with `git clone git@github.com:MESH-Research/kcworks.git`
+    3. From the same parent directory, clone the following additional repositories:
+        - `git@github.com:MESH-Research/invenio-record-importer.git`
+        - `git@github.com:MESH-Research/invenio-communities:/opt/invenio/invenio-communities.git`
+        - `git@github.com:MESH-Research/invenio-groups:/opt/invenio/invenio-groups.git`
+        - `git@github.com:MESH-Research/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form.git`
+        - `git@github.com:MESH-Research/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page.git`
+        - `git@github.com:MESH-Research/invenio-rdm-records:/opt/invenio/invenio-rdm-records.git`
+        - `git@github.com:MESH-Research/invenio-records-resources:/opt/invenio/invenio-records-resources.git`
+        - `git@github.com:MESH-Research/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner.git`
+        - `git@github.com:MESH-Research/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data.git`
+2. Create your configuration files
+    - `cd knowledge-commons-repository`
+    - Create and configure the `.env` file in this folder
+    - Create the `.invenio.private` file with the following contents:
+        ```shell
+        [cli]
+        services_setup = True
+        instance_path = /opt/invenio/var/instance
+        ```
+3. Start the docker-compose project
+    - `docker-compose --file docker-compose.dev.yml up -d`
+4. Initialize the database and other services
+    - enter the `web-ui` container by running `docker exec -it knowledge-commons-repository-web-ui-1 bash`
+    - run the following commands in sequence:
         - `invenio db init create`
-        - `invenio files location create --default default-location ${INVENIO_INSTANCE_PATH}/data`
+        - `invenio files location create --default default-location /opt/invenio/var/instance/data`
         - `invenio roles create admin`
         - `invenio access allow superuser-access role admin`
         - `invenio index init`
@@ -34,14 +55,38 @@ From there installation involves these steps and commands:
         - `invenio rdm fixtures`
         - `pybabel compile --directory={project_path / translation_folder}`
         - `invenio queues declare`
-8. `bash kcr-startup.sh`
+        - `invenio roles create administrator`
+    - *note*: Some of these commands may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
+5. Build the assets
+    - enter the `web-ui` container by running `docker exec -it knowledge-commons-repository-web-ui-1 bash`
+    - run the following commands in sequence:
+        - `invenio collect --verbose`
+        - `invenio webpack clean create`
+        - `invenio webpack install`
+        - `invenio shell ./dockerfile_helper.py`
+        - `invenio webpack build`
+        - `uwsgi --reload /tmp/uwsgi_ui.pid`
+6. Create your own admin user
+    - enter the `web-ui` container by running `docker exec -it knowledge-commons-repository-web-ui-1 bash`
+    - run the commands:
+        - `invenio users create <email> --password <password>`
+        - `invenio users activate <email>`
+        - `invenio access allow administration-access user <email>`
+7. View the application
+    - The Knowledge Commons Repository app is now running at `https://localhost`
+    - The REST API is running at `https://localhost/api`
+    - pgAdmin is running at `https://localhost/pgadmin`
+    - OpenSearch Dashboards is running at `https://localhost:5601`
 
-You can then create an admin user. From the command line inside the `web-ui` container, run
-```console
-pipenv run invenio users create <email> --password <password>
-pipenv run invenio users activate <email>
-pipenv run invenio access allow administration-access user <email>
-```
+Further optional steps to allow fully local development if desired:
+
+    1. Install the invenio-cli tool (`pip install invenio-cli`)
+    2. Run `invenio-cli install` locally
+    3. With docker running, run `docker-compose up -d`
+    4. `invenio-cli services setup --force`
+    5.  `bash kcr-startup.sh`
+
+### Controlling the Flask application
 
 The application instance and its services can be started and stopped by starting and stopping the docker-compose project:
 
@@ -55,47 +100,136 @@ docker-compose --file docker-compose.dev.yml stop
 [!WARNING]
 Do not use the `docker-compose down` command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indexes. YOU DO NOT WANT TO DO THIS!
 
-### Updating the instance with changes
+If you need to restart the main Flask application (e.g., after making configuration changes) you can do so by running the following command inside the `web-ui` container:
 
-#### Changes to html template files
-
-Changes to html template files will be visible immediately in the running Knowledge Commons Repository instance. You simply need to refresh the page.
-
-#### Changes to invenio.cfg
-
-Changes to the invenio.cfg file will only take effect after the instance uwsgi processes are restarted. This can be done by running the following command inside the `web-ui` container:
 ```shell
-uwsgi --reload /tmp/kcr_ui.pid
+uwsgi --reload /tmp/uwsgi_ui.pid
 ```
 
-#### Changes to theme (CSS) and javascript files
+Similarly, the REST API can be restarted by running the following command inside the `web-ui` container:
 
-#### Changes to static files
+```shell
+uwsgi --reload /tmp/uwsgi_api.pid
+```
+But these commands should not be necessary in normal operation.
+
+## Updating the instance with changes
+
+### Changes to html template files
+
+Changes to html template files will be visible immediately in the running Knowledge Commons Repository instance. You simply need to refresh the page in your browser.
+
+### Changes to invenio.cfg
+
+Changes to the invenio.cfg file will only take effect after the instance uwsgi processes are restarted. This can be done by running the following command inside the `web-ui` container:
+
+```shell
+uwsgi --reload /tmp/uwsgi_ui.pid
+```
+
+### Changes to theme (CSS) and javascript files
+
+#### The basic build process (slow)
+
+Invenio employs a build process for css and javascript files. Changes to these files will not be visible in the running Knowledge Commons Repository instance until the build process is run. This can be done by running the following command inside the `web-ui` container:
+
+```shell
+invenio webpack build
+```
+
+#### Rebuilding changed files on the fly (fast but limited)
+
+The problem is that this build process takes a long time to run, especially in the containers. For most tasks, you can instead run the following command to watch for changes to the files and automatically rebuild them:
+
+```shell
+invenio webpack run start
+```
+
+The file watching will continue until you stop it with CTRL-C. It will continue to occupy the terminal window where you started it. This means that you can see it respond and begin integrating changed files when it finds them. You can also see there any error or warning output from the build process--very helpful for debugging.
+
+### Adding new files or requirements
+
+The watch command will only pick up changes to files that already existed during the last Webpack build. If you add a new javascript or css (less) file, you need to again run the regular build command to include it in the build process.
+
+### Adding new node.js packages to be included
+
+Normally, the node.js packages to be included in a project are listed in that project's package.json file. In the case of InvenioRDM, the package.json file is created dynamically by InvenioRDM each time the build process runs. So you cannot directly modify the package.json file in your instance folder. Instead, you must add the package to the package.json file in the InvenioRDM module that requires it. Unless you are creating a new stand-alone extension, this will mean adding the package to the `webpack.py` file in the `kcworks/sites/kcworks` folder.
+
+There you will find a `WebpackThemeBundle` object that defines your bundle of js and style files along with their dependencies. If I wanted to add the `geopattern` package to the project, I would add it to the `dependencies` dictionary in the `WebpackThemeBundle` object like this:
+
+```python
+
+theme = WebpackThemeBundle(
+    __name__,
+    "assets",
+    default="semantic-ui",
+    themes={
+        "semantic-ui": dict(
+            entry={
+                "custom_pdf_viewer_js": "./js/invenio_custom_pdf_viewer"
+                "/pdfjs.js",
+            },
+            dependencies={
+                "geopattern": "^1.2.3",
+            },
+            aliases={
+                /* ... */
+            },
+        ),
+    },
+)
+```
+
+If you add a new node.js package to the project, you will then need to run the following commands inside the `web-ui` container to install it:
+
+```shell
+invenio webpack install
+invenio webpack build
+```
+
+### Changes to static files
 
 Changes to static files like images will require running the collect command to copy them to the central static folder. This can be done by running the following command inside the `web-ui` container:
+
 ```shell
 invenio collect -v
 ```
+
 You will then need to restart the uwsgi processes as described above.
 
-#### Changes to python code in the `site` folder
 
-#### Changes to external python modules (including Invenio modules)
+### Changes to python code in the `site` folder
+
+Changes to python code in the `site` folder should (like changes to template files) take effect immediately in the running Knowledge Commons Works instance. You simply need to refresh the page in your browser.
+
+#### Adding new entry points
+
+Sometimes you will need to add new entry points to inform the Flask application about additional code you have provided. This is done via the `setup.py` file in the `site` folder. Once you have added the entry point declaration, you will need to re-install the `kcworks` package in the `web-ui` container. This can be done by running the following command inside the `web-ui` container:
+
+```shell
+cd /opt/invenio/src/site
+pip install -e .
+uwsgi --reload /tmp/uwsgi_ui.pid
+```
+
+If you have added js, css, or static files along with the entry point code, you will also need to run the collect and webpack build commands as described above.
+
+### Changes to external python modules (including Invenio modules)
 
 Changes to other python modules (including Invenio modules) will require rebuilding the main knowledge-commons-works container. Additions to the python requirements should be added to the `Pipfile` in the knowledge-commons-works folder and committed to the Github repository. You should then request that the knowledge-commons-works container be rebuilt.
 
-In the meantime, required python packages can be installed directly in the `web-ui` container. First, enter the container:
-```shell
-docker exec -it knowledge-commons-repository-web-ui-1 bash
-```
-Then install the required package using pipenv:
+In the meantime, required python packages can be installed directly in the `web-ui` container. Enter the container and then install the required package using pipenv:
+
 ```shell
 pipenv install <package-name>
 ```
 
 ### Digging deeper
 
-What follows is a step-by-step walk through this process. Note that these instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
+What follows is a step-by-step walk through this process.
+
+[!Note]
+These instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
 
 ## Install Python and Required Python Tools
 
