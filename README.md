@@ -97,8 +97,8 @@ docker-compose --file docker-compose.dev.yml up -d
 docker-compose --file docker-compose.dev.yml stop
 ```
 
-[!WARNING]
-Do not use the `docker-compose down` command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indexes. YOU DO NOT WANT TO DO THIS!
+> [!Caution]
+> Do not use the `docker-compose down` command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indexes. YOU DO NOT WANT TO DO THIS!
 
 If you need to restart the main Flask application (e.g., after making configuration changes) you can do so by running the following command inside the `web-ui` container:
 
@@ -228,8 +228,8 @@ pipenv install <package-name>
 
 What follows is a step-by-step walk through this process.
 
-[!Note]
-These instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
+> [!Note]
+> These instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
 
 ## Install Python and Required Python Tools
 
