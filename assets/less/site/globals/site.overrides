@@ -55,6 +55,12 @@ textarea {
   display: none;
 }
 
+// Cover page (login, register, etc.)
+
+html.cover-page {
+  background-color: @white;
+}
+
 // Header
 
 @labelBottomMargin: 0.28571429rem;
@@ -64,10 +70,12 @@ textarea {
   .beta-banner {
     background-color: @infoBackgroundColor;
     color: @infoTextColor;
-    padding: 0.5rem 0;
+    padding: 0.5rem 1rem;
     text-align: center;
     font-size: 16px;
-    box-shadow: inset 0 -3px 3px rgba(9,9,9,0.1);
+    box-shadow: inset 0 -3px 3px rgba(9, 9, 9, 0.1);
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     a {
       text-decoration: underline;
     }
@@ -132,9 +140,12 @@ textarea {
               margin-bottom: 0;
               letter-spacing: 0.05rem;
               font-size: 3rem;
+              line-height: 3rem;
+              color: @primaryColor;
               @media screen and (max-width: @largestMobileScreen) {
                 margin-top: 0.5rem;
                 font-size: 2rem;
+                line-height: 2rem;
               }
             }
             .subtitle {
@@ -142,7 +153,8 @@ textarea {
               font-weight: bold;
               text-transform: uppercase;
               display: block;
-              margin-top: -0.1rem;
+              margin-top: 0;
+              line-height: 1rem;
               letter-spacing: 0.1rem;
               font-weight: normal;
               @media screen and (max-width: @largestMobileScreen) {
@@ -154,6 +166,12 @@ textarea {
       }
     }
   }
+}
+
+// Subheaders
+
+.ui.container.page-subheader-outer {
+  background-color: transparent !important;
 }
 
 // Forms
@@ -1156,6 +1174,7 @@ textarea {
       .ui.segment.rdm-sidebar:first-child,
       .ui.segment.rdm-sidebar:last-child {
         background-color: @sidebarBackgroundColor;
+        margin-bottom: 1rem;
       }
       &#record-management {
         margin-bottom: 1rem;
@@ -1570,6 +1589,38 @@ textarea {
       .content {
         .header {
           font-size: @large;
+        }
+      }
+    }
+  }
+}
+
+// Footer
+
+#rdm-footer-element {
+  .footer-top {
+    padding-bottom: 3rem;
+    .rdm-footer.column {
+      .image-link-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .supporter-image-link {
+          img {
+            height: 4rem;
+            margin-left: 1rem;
+          }
+          &:nth-child(2) {
+            img {
+              height: 5.5rem;
+            }
+          }
+          &:first-child {
+            img {
+              height: 2.5rem;
+              margin-left: 0;
+            }
+          }
         }
       }
     }

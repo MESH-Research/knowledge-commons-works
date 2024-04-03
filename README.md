@@ -183,6 +183,7 @@ theme = WebpackThemeBundle(
 If you add a new node.js package to the project, you will then need to run the following commands inside the `web-ui` container to install it:
 
 ```shell
+invenio webpack clean create
 invenio webpack install
 invenio webpack build
 ```

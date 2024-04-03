@@ -3,17 +3,10 @@
     <div class="ui grid">
         {%- block footer_bottom_left %}
 
-          <div class="ten wide column left middle aligned mobile hidden">
+          <div class="eight wide column left middle aligned">
             {% trans invenio_rdm="http://inveniosoftware.org/products/rdm" %}
               Powered by
               <a href="{{ invenio_rdm }}">InvenioRDM</a>
-            {% endtrans %}
-          </div>
-
-          <div class="ten wide column left middle aligned mobile only">
-            {% set support_url = 'https://sustaining.' + config.get("KC_WORDPRESS_DOMAIN") +  '/financial/ways-to-give/' %}
-            {% trans support = support_url %}
-              <a href="{{ support }}">Support the Commons</a>
             {% endtrans %}
           </div>
 
@@ -21,14 +14,7 @@
 
         {%- block footer_bottom_right %}
 
-          <div class="six wide column right middle aligned mobile only">
-            {% trans invenio_rdm="http://inveniosoftware.org/products/rdm" %}
-              Powered by
-              <a href="{{ invenio_rdm }}">InvenioRDM</a>
-            {% endtrans %}
-          </div>
-
-          <div class="six wide column left middle aligned mobile hidden">
+          <div class="eight wide column middle right aligned">
             {% set support_url = 'https://sustaining.' + config.get("KC_WORDPRESS_DOMAIN") +  '/financial/ways-to-give/' %}
             {% trans support = support_url %}
               <a href="{{ support }}">Support the Commons</a>
