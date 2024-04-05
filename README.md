@@ -42,7 +42,7 @@ From there installation involves these steps and commands. These are further exp
 3. Start the docker-compose project
     - `docker-compose --file docker-compose.dev.yml up -d`
 4. Initialize the database and other services
-    - enter the `web-ui` container by running `docker exec -it kcworks-web-ui-1 bash`
+    - enter the `web-ui` container by running `docker exec -it knowledge-commons-works-web-ui-1 bash`
     - run the following commands in sequence:
         - `invenio db init create`
         - `invenio files location create --default default-location /opt/invenio/var/instance/data`
@@ -58,7 +58,7 @@ From there installation involves these steps and commands. These are further exp
         - `invenio roles create administrator`
     - *note*: Some of these commands may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
 5. Build the assets
-    - enter the `web-ui` container by running `docker exec -it kcworks-web-ui-1 bash`
+    - enter the `web-ui` container by running `docker exec -it knowledge-commons-works-web-ui-1 bash`
     - run the following commands in sequence:
         - `invenio collect --verbose`
         - `invenio webpack clean create`
@@ -67,7 +67,7 @@ From there installation involves these steps and commands. These are further exp
         - `invenio webpack build`
         - `uwsgi --reload /tmp/uwsgi_ui.pid`
 6. Create your own admin user
-    - enter the `web-ui` container by running `docker exec -it kcworks-web-ui-1 bash`
+    - enter the `web-ui` container by running `docker exec -it knowledge-commons-works-web-ui-1 bash`
     - run the commands:
         - `invenio users create <email> --password <password>`
         - `invenio users activate <email>`
@@ -225,7 +225,7 @@ If you have added js, css, or static files along with the entry point code, you 
 
 ### Changes to external python modules (including Invenio modules)
 
-Changes to other python modules (including Invenio modules) will require rebuilding the main kcworks container. Additions to the python requirements should be added to the `Pipfile` in the knowledge-commons-works folder and committed to the Github repository. You should then request that the kcworks container be rebuilt.
+Changes to other python modules (including Invenio modules) will require rebuilding the main knowledge-commons-works container. Additions to the python requirements should be added to the `Pipfile` in the knowledge-commons-works folder and committed to the Github repository. You should then request that the kcworks container be rebuilt.
 
 In the meantime, required python packages can be installed directly in the `web-ui` container. Enter the container and then install the required package using pipenv:
 
@@ -357,16 +357,33 @@ PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
 POSTGRES_USER=kcworks
 POSTGRES_PASSWORD=kcworks
 POSTGRES_DB=kcworks
+INVENIO_SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks"
 INVENIO_DATACITE_USERNAME=MSU.CORE
 INVENIO_DATACITE_PASSWORD=myinveniodatacitepassword
-INVENIO_INSTANCE_PATH=/full/path/to/my/instance/directory
+INVENIO_INSTANCE_PATH=/opt
+API_TOKEN=myapitoken
+MIGRATION_API_TOKEN=myapitoken
+MIGRATION_SERVER_DOMAIN='host.docker.internal'
+MIGRATION_SERVER_PROTOCOL='https'
+MIGRATION_SERVER_DATA_DIR='/opt/invenio/var/import_data'
+MIGRATION_SERVER_LOCAL_DATA_DIR='/path/to/local/import_data'
+TESTING_SERVER_DOMAIN=localhost
+FLASK_DEBUG=1
+INVENIO_LOGGING_CONSOLE_LEVEL=NOTSET
+COMMONS_API_TOKEN=mytoken
+COMMONS_SEARCH_API_TOKEN=mytoken
+PYTHON_LOCAL_SITE_PACKAGES_PATH=/path/to/local/virtual/environment/lib/python3.9/site-packages
+LOCAL_GIT_PACKAGES_PATH=/opt/invenio/src
+PYTHON_LOCAL_GIT_PACKAGES_PATH=/path/to/local/git/packages
+INVENIO_LOCAL_INSTANCE_PATH=/path/to/local/virtual/environment/var/instance
+
+
+For most local development environments your INVENIO_SITE_UI_URL and INVENIO_SITE_API_URL will be "https://localhost" and "https://localhost/api" respectively. The INVENIO_INSTANCE_PATH should be set to the full path of the instance directory where InvenioRDM will store its compiled files. This is normally a folder inside your virtual environment folder. For example, on MacOS this might be ~/.local/share/virtualenvs/{virtual env name}/var/instance/
 
 Random values for the INVENIO_SECRET_KEY can be generated in a terminal by running
 ```console
 python -c 'import secrets; print(secrets.token_hex())'
 ```
-
-Another variable, INVENIO_INSTANCE_PATH, will be added automatically by the kcr-startup.sh script later on.
 
 ## Install the Invenio Python Modules
 
