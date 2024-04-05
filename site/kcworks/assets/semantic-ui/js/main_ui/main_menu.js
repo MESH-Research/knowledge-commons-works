@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
 const PlusMenu = ({ plusMenuItems }) => {
@@ -33,19 +34,14 @@ const PlusMenu = ({ plusMenuItems }) => {
     //     </div>
     //   {% endif %} #}
 
-    <div class="item plus">
+    <div className="item plus">
       <a
         role="menuitem"
         aria-label={i18next.t("Quick create")}
         href={plusMenuItems[0].url}
       >
-        <i class="fitted plus icon computer only mobile-hidden"></i>
-        <span class="large screen widescreen only inline">
-          {i18next.t("Add a work")}
-        </span>
-        <span class="mobile tablet only inline">
-          {i18next.t("Add a work")}
-        </span>
+        <i className="fitted upload icon"></i>
+        <span className="inline">{i18next.t("Add a work")}</span>
       </a>
     </div>
   );
@@ -69,11 +65,11 @@ const UserMenu = ({
       <div
         role="menuitem"
         id="user-profile-dropdown"
-        class="ui floating dropdown computer only"
+        className="ui floating dropdown computer only"
       >
         <button
           id="user-profile-dropdown-btn"
-          class="ui right labeled right floated icon button text"
+          className="ui right labeled right floated icon button text"
           aria-controls="user-profile-menu"
           aria-expanded="false"
           aria-haspopup="menu"
@@ -83,19 +79,19 @@ const UserMenu = ({
             {/* {#  <i class="user icon"></i> #} */}
             {readableEmail}
           </span>
-          <i class="dropdown icon"></i>
+          <i className="dropdown icon"></i>
         </button>
 
         <div
           id="user-profile-menu"
-          class="ui menu"
+          className="ui menu"
           role="menu"
           aria-labelledby="user-profile-dropdown-btn"
         >
           {settingsItems.map((item, index) => (
             <a
               role="menuitem"
-              class="item"
+              className="item"
               href={item.url}
               tabindex="-1"
               key={index}
@@ -104,12 +100,12 @@ const UserMenu = ({
             </a>
           ))}
 
-          <div class="ui divider"></div>
+          <div className="ui divider"></div>
 
           {adminItems.map((item, index) => (
             <a
               role="menuitem"
-              class="item"
+              className="item"
               href={item.url}
               tabindex="-1"
               key={index}
@@ -118,35 +114,40 @@ const UserMenu = ({
             </a>
           ))}
 
-          {adminItems.length > 0 && <div class="ui divider"></div>}
+          {adminItems.length > 0 && <div className="ui divider"></div>}
 
-          <a role="menuitem" class="item" href={logoutURL} tabindex="-1">
-            <i class="sign-out icon"></i>
-            {i18next.t("Log out")}
+          <a role="menuitem" className="item" href={logoutURL} tabindex="-1">
+            <i className="fitted sign-out icon"></i>
+            <span className="mobile tablet only inline">
+              {i18next.t("Log out")}
+            </span>
+            <span className="widescreen only inline">
+              {i18next.t("Log out")}
+            </span>
           </a>
         </div>
       </div>
 
-      <div class="sub-menu mobile tablet only">
-        <h2 class="ui small header">{i18next.t("My account")}</h2>
+      <div className="sub-menu mobile tablet only">
+        <h2 className="ui small header">{i18next.t("My account")}</h2>
 
         {settingsItems.map((item, index) => (
-          <a role="menuitem" class="item" href={item.url} key={index}>
+          <a role="menuitem" className="item" href={item.url} key={index}>
             {item.text}
           </a>
         ))}
 
-        <div class="ui divider"></div>
+        <div className="ui divider"></div>
 
         {adminItems.map((item, index) => (
-          <a role="menuitem" class="item" href={item.url} key={index}>
+          <a role="menuitem" className="item" href={item.url} key={index}>
             {item.text}
           </a>
         ))}
-        {adminItems.length > 0 && <div class="ui divider"></div>}
+        {adminItems.length > 0 && <div className="ui divider"></div>}
 
-        <a role="menuitem" class="item" href={logoutURL}>
-          <i class="sign-out icon"></i>
+        <a role="menuitem" className="item" href={logoutURL}>
+          <i className="fitted sign-out icon"></i>
           {i18next.t("Log out")}
         </a>
       </div>
@@ -176,7 +177,7 @@ const LoginMenu = ({
     (!userAuthenticated ? (
       <form>
         <a href={loginURL} className="ui basic button">
-          <i className="sign-in icon"></i>
+          <i className="fitted sign-in icon"></i>
           {i18next.t("Log in")}
         </a>
         {/* // {% if security.registerable %}
@@ -195,18 +196,80 @@ const LoginMenu = ({
       />
     ) : (
       <>
-        <div class="item">
+        <div className="item">
           {/* {# <i class="user icon"></i> #} */}
-          <a class="inline" href={currentUserProfile}>
+          <span className="inline" href={currentUserProfile}>
             {readableEmail}
-          </a>
+          </span>
         </div>
-        <a role="button" href={logoutURL} class="ui ">
-          <i class="sign-out icon computer only fitted mobile-hidden"></i>
-          <span class="inline">{i18next.t("Log out")}</span>
-        </a>
       </>
     ))
+  );
+};
+
+const MenuItem = ({ text, icon, url }) => {
+  return (
+    <a role="button" href={url} className="ui ">
+      <i className={`${icon} icon fitted`}></i>
+      <span className="inline">{i18next.t(text)}</span>
+    </a>
+  );
+};
+
+const CollapsingMenuItem = ({ text, icon, url }) => {
+  return (
+    <>
+      <Popup
+        content={i18next.t(text)}
+        trigger={
+          <a role="button" href={url} className="ui computer only">
+            <i className={`${icon} icon fitted`}></i>
+          </a>
+        }
+      />
+
+      <a role="button" href={url} className="ui widescreen only">
+        <i className={`${icon} icon fitted`}></i>
+        <span className="inline">{i18next.t(text)}</span>
+      </a>
+
+      <a role="button" href={url} className="ui mobile tablet only">
+        <i className={`${icon} icon fitted`}></i>
+        <span className="inline">{i18next.t(text)}</span>
+      </a>
+
+    </>
+  );
+};
+
+const SubMenu = ({ item }) => {
+  return (
+    <div className={`dropdown ${item.active ? " active" : ""}`}>
+      <a
+        role="menuitem"
+        className="dropdown-toggle"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        href={item.url}
+      >
+        {/* // FIXME: safe filter??? */}
+        {item.text}
+        <b className="caret"></b>
+      </a>
+      <ul className="dropdown-menu">
+        {item.children
+          .sort((a, b) => a.order - b.order)
+          .map((childItem, indexInner) => (
+            <li
+              className={`${childItem.active ? "active" : ""}`}
+              key={indexInner}
+            >
+              <MenuItem {...childItem} />
+            </li>
+          ))}
+      </ul>
+    </div>
   );
 };
 
@@ -239,6 +302,7 @@ const MainMenu = ({
   adminMenuItems,
   currentUserEmail,
   currentUserProfile,
+  kcWordpressDomain,
   loginURL,
   logoutURL,
   mainMenuItems,
@@ -302,104 +366,42 @@ const MainMenu = ({
                 {%- include "invenio_app_rdm/searchbar.html" %}
             )} */}
 
+        {/* "Main" menu, including collections */}
         {mainItems.map((item, index) =>
           !!item.children ? (
             <div className="item" key={index}>
-              <div className={`dropdown ${item.active ? " active" : ""}`}>
-                <a
-                  role="menuitem"
-                  className="dropdown-toggle"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                  href={item.url}
-                >
-                  {/* // FIXME: safe filter??? */}
-                  {item.text}
-                  <b className="caret"></b>
-                </a>
-                <ul className="dropdown-menu">
-                  {item.children
-                    .sort((a, b) => a.order - b.order)
-                    .map((childItem, indexInner) => (
-                      <li
-                        className={`${childItem.active ? "active" : ""}`}
-                        key={indexInner}
-                      >
-                        <a role="menuitem" href={childItem.url}>
-                          <i className="fitted users icon mobile-hidden"></i>
-                          <span className="inline">{childItem.text}</span>
-                        </a>
-                      </li>
-                    ))}
-                </ul>
-              </div>
+              <SubMenu item={item} />
             </div>
           ) : (
             <div
               className={`${item.active ? "item active" : " item"}`}
               key={index}
             >
-              <a role="menuitem" href={item.url}>
-                <i className="fitted users icon mobile-hidden"></i>
-                {/* {# <span className="mobile tablet only inline">Collections</span>
-                          <span className="widescreen only inline">Collections</span> #} */}
-                <span className="inline">{`${
-                  item.name === "communities" ? "Collections" : item.text
-                }`}</span>
-              </a>
+              <MenuItem
+                url={item.url}
+                text={`${
+                  item.text === "Communities" ? "Collections" : item.text
+                }`}
+                icon={item.text === "Communities" ? "copy" : item.icon}
+                key={index}
+              />
             </div>
           )
         )}
 
-        <PlusMenu plusMenuItems={plusMenuItems} />
-
-        <div
-          className={`item`}
-        >
-          <a role="menuitem" href="/records">
-            <i className="fitted search icon mobile-hidden"></i>
-            <span className="inline">{i18next.t("Search")}</span>
-          </a>
+        <div className={`item`}>
+          <MenuItem text="Search" url={"/records?search="} icon="search" />
         </div>
 
-        <div className="right menu item">
-          {actionsItems.map((item, index) =>
-            accountsEnabled && userAuthenticated ? (
-              <div className={`item ${item.text}`} key={index}>
-                <a role="menuitem" href={item.url}>
-                  {item.name === "deposit" ? (
-                    <>
-                      <i className="fitted user icon computer only mobile-hidden"></i>
-                      <span className="inline">{item.text}</span>
-                    </>
-                  ) : (
-                    item.text
-                  )}
-                </a>
-              </div>
-            ) : null
-          )}
+        {/* "Plus" menu including adding a record */}
+        <PlusMenu plusMenuItems={plusMenuItems} />
 
-          {!!accountsEnabled && !!userAuthenticated
-            ? notificationsItems.map((item, index) => (
-                <div className="item inbox" key={index}>
-                  <a
-                    role="menuitem"
-                    href={item.url}
-                    aria-label={i18next.t("Requests")}
-                  >
-                    <i className="fitted inbox icon computer only mobile-hidden"></i>
-                    <span className="mobile tablet only inline">
-                      {i18next.t("My inbox")}
-                    </span>
-                    <span className="large screen widescreen only inline">
-                      {i18next.t("My inbox")}
-                    </span>
-                  </a>
-                </div>
-              ))
-            : null}
+        <div className={`item`}>
+          <CollapsingMenuItem text="Help and support" url={`https://support.${kcWordpressDomain}`} icon="question circle" />
+        </div>
+
+        {/* Right-aligned menu items */}
+        <div className="right menu item">
 
           <LoginMenu
             accountsEnabled={accountsEnabled}
@@ -413,6 +415,23 @@ const MainMenu = ({
             settingsMenuItems={settingsMenuItems}
             userAdministrator={userAdministrator}
           />
+
+
+          {!!accountsEnabled && !!userAuthenticated && actionsItems.map((item, index) => (
+              <div className={`item ${item.text}`} key={index}>
+                <CollapsingMenuItem text={item.text} url={item.url} icon={item.text === "My dashboard" ? "user" : item.icon} />
+              </div>
+            )
+            )}
+
+          {!!accountsEnabled && !!userAuthenticated && notificationsItems.map((item, index) => (
+                  <div className="item inbox" key={index}>
+                    <CollapsingMenuItem text={item.text==="requests" ? "My inbox" : item.text} url={item.url} icon={item.text==="requests" ? "inbox" : item.icon} />
+                  </div>
+                ))}
+
+          {!!accountsEnabled && !!userAuthenticated && (<CollapsingMenuItem text="Log out" url={logoutURL} icon="sign-out" />)}
+
         </div>
       </div>
     </nav>
@@ -440,8 +459,6 @@ MainMenu.propTypes = {
 
 // Get the HTML element
 const element = document.getElementById("main-nav-menu");
-console.log("element: ", element);
-console.log("element.dataset: ", element.dataset);
 
 // Get the data property from the element
 const accountsEnabled =
@@ -449,6 +466,7 @@ const accountsEnabled =
 const actionsMenuItems = JSON.parse(element.dataset.actionsMenuItems);
 const adminMenuItems = JSON.parse(element.dataset.adminMenuItems);
 const currentUserEmail = element.dataset.currentUserEmail;
+const kcWordpressDomain = element.dataset.kcWordpressDomain;
 const loginURL = element.dataset.loginUrl;
 const logoutURL = element.dataset.logoutUrl;
 const mainMenuItems = JSON.parse(element.dataset.mainMenuItems);
@@ -475,6 +493,7 @@ ReactDOM.render(
     actionsMenuItems={actionsMenuItems}
     adminMenuItems={adminMenuItems}
     currentUserEmail={currentUserEmail}
+    kcWordpressDomain={kcWordpressDomain}
     loginURL={loginURL}
     logoutURL={logoutURL}
     mainMenuItems={mainMenuItems}

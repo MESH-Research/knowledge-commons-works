@@ -103,11 +103,15 @@ class CommunitiesCarousel extends Component {
     const { title } = this.props;
     return (
       <Container fluid className="rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
-        <Container>
+        <Grid container>
+          <Grid.Column width="2" />
+          <Grid.Column width="12">
           <Header as="h2" className="rel-mb-1">
             {title}
           </Header>
-        </Container>
+          </Grid.Column>
+          <Grid.Column width="2" />
+        </Grid>
         <Grid container>
           <Grid.Column width="2" />
           <Grid.Column width="12">
@@ -193,9 +197,13 @@ class CommunitiesCarousel extends Component {
               fluid
               className="carousel rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile"
             >
-              <Container className="rel-mb-1">
+              <Grid container className="rel-mb-0">
+                <Grid.Column width="2" />
+                <Grid.Column width="12">
                 <Header as="h2">{title}</Header>
-              </Container>
+                </Grid.Column>
+                <Grid.Column width="2" />
+              </Grid>
 
               <Grid container onFocus={this.stopCarousel} onBlur={this.startCarousel}>
                 <Grid.Column

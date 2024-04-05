@@ -11,7 +11,7 @@ from .admin_login.admin_login import AdminLogin
 def create_blueprint(app):
     """Register blueprint routes on app."""
     blueprint = Blueprint(
-        "knowledge_commons_repository",
+        "kcworks",
         __name__,
         template_folder="../templates",
     )

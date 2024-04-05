@@ -12,15 +12,16 @@ from invenio_i18n import lazy_gettext as _
 from invenio_records_resources.services.custom_fields import (
     BaseCF,
     TextCF,
-    IntegerCF
+    IntegerCF,
 )
 from marshmallow import fields, validate
 from marshmallow_utils.fields import (
     SanitizedUnicode,
     SanitizedHTML,
-    StrippedHTML
+    StrippedHTML,
 )
 from .kcr_metadata_fields import KCR_NAMESPACE
+
 
 class VolumesCF(BaseCF):
     """Nested custom field."""
@@ -29,10 +30,7 @@ class VolumesCF(BaseCF):
     def field(self):
         """Volumes fields definitions."""
         return fields.Nested(
-            {
-                "total_volumes": SanitizedUnicode(),
-                "volume": SanitizedUnicode()
-            }
+            {"total_volumes": SanitizedUnicode(), "volume": SanitizedUnicode()}
         )
 
     @property
@@ -42,34 +40,34 @@ class VolumesCF(BaseCF):
             "type": "object",
             "properties": {
                 "total_volumes": {"type": "text"},
-                "volume": {"type": "text"}
+                "volume": {"type": "text"},
             },
         }
 
-KCR_VOLUMES_FIELDS = [
-    VolumesCF(name="kcr:volumes")
-]
+
+KCR_VOLUMES_FIELDS = [VolumesCF(name="kcr:volumes")]
 
 
-KCR_VOLUMES_FIELDS_UI = [{
-    "field": "kcr:volumes",
-    "ui_widget": "Volumes",
-    "template": "knowledge_commons_repository/volumes.html",
-    "props": {
-        "label": _("Volumes"),
-        "total_volumes": {
-            "label": _("Total volumes"),
-            "placeholder": "",
-            # "description": _("Total number of volumes in the work"),
-            "icon": "th"
+KCR_VOLUMES_FIELDS_UI = [
+    {
+        "field": "kcr:volumes",
+        "ui_widget": "Volumes",
+        "template": "kcworks/volumes.html",
+        "props": {
+            "label": _("Volumes"),
+            "total_volumes": {
+                "label": _("Total volumes"),
+                "placeholder": "",
+                # "description": _("Total number of volumes in the work"),
+                "icon": "th",
+            },
+            "volume": {
+                "label": _("Volume"),
+                "placeholder": "",
+                # "description": _("The number or label of the volume containing this deposit")
+                "icon": "book",
+            },
         },
-        "volume": {
-            "label": _("Volume"),
-            "placeholder": "",
-            # "description": _("The number or label of the volume containing this deposit")
-            "icon": "book"
-        }
-    },
-    "icon": "book"
-}]
-
+        "icon": "book",
+    }
+]

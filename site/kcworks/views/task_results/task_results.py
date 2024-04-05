@@ -23,6 +23,7 @@ from flask.views import MethodView
 """View for monitoring the result of asynchronous celery tasks.
 """
 
+
 class TaskResults(MethodView):
     """
     Class providing view method for viewing the results of asynchronous celery
@@ -30,9 +31,9 @@ class TaskResults(MethodView):
     """
 
     def __init__(self):
-        self.template = "knowledge_commons_repository/view_templates/task_results.html"
+        self.template = "kcworks/view_templates/task_results.html"
 
-    def get (self, task_id):
+    def get(self, task_id):
         """
         Render the template for GET requests.
         """

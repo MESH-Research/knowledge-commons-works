@@ -1,4 +1,4 @@
-# Knowledge Commons Repository
+# Knowledge Commons Works
 
 Knowledge Commons Works is a collaborative tool for storing and sharing academic research. It is part of Knowledge Commons and is built on an instance of the InvenioRDM repository system.
 
@@ -19,7 +19,7 @@ From there installation involves these steps and commands. These are further exp
 
 1. Clone the git repositories
     1. From your command line, navigate to the parent folder where you want the cloned repository code to live
-    2. Clone the kcworks repository with `git clone git@github.com:MESH-Research/kcworks.git`
+    2. Clone the knowledge-commons-works repository with `git clone git@github.com:MESH-Research/knowledge-commons-works.git`
     3. From the same parent directory, clone the following additional repositories:
         - `git@github.com:MESH-Research/invenio-record-importer.git`
         - `git@github.com:MESH-Research/invenio-communities:/opt/invenio/invenio-communities.git`
@@ -31,7 +31,7 @@ From there installation involves these steps and commands. These are further exp
         - `git@github.com:MESH-Research/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner.git`
         - `git@github.com:MESH-Research/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data.git`
 2. Create your configuration files
-    - `cd knowledge-commons-repository`
+    - `cd knowledge-commons-works`
     - Create and configure the `.env` file in this folder
     - Create the `.invenio.private` file with the following contents:
         ```shell
@@ -42,7 +42,7 @@ From there installation involves these steps and commands. These are further exp
 3. Start the docker-compose project
     - `docker-compose --file docker-compose.dev.yml up -d`
 4. Initialize the database and other services
-    - enter the `web-ui` container by running `docker exec -it knowledge-commons-repository-web-ui-1 bash`
+    - enter the `web-ui` container by running `docker exec -it kcworks-web-ui-1 bash`
     - run the following commands in sequence:
         - `invenio db init create`
         - `invenio files location create --default default-location /opt/invenio/var/instance/data`
@@ -58,7 +58,7 @@ From there installation involves these steps and commands. These are further exp
         - `invenio roles create administrator`
     - *note*: Some of these commands may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
 5. Build the assets
-    - enter the `web-ui` container by running `docker exec -it knowledge-commons-repository-web-ui-1 bash`
+    - enter the `web-ui` container by running `docker exec -it kcworks-web-ui-1 bash`
     - run the following commands in sequence:
         - `invenio collect --verbose`
         - `invenio webpack clean create`
@@ -67,13 +67,13 @@ From there installation involves these steps and commands. These are further exp
         - `invenio webpack build`
         - `uwsgi --reload /tmp/uwsgi_ui.pid`
 6. Create your own admin user
-    - enter the `web-ui` container by running `docker exec -it knowledge-commons-repository-web-ui-1 bash`
+    - enter the `web-ui` container by running `docker exec -it kcworks-web-ui-1 bash`
     - run the commands:
         - `invenio users create <email> --password <password>`
         - `invenio users activate <email>`
         - `invenio access allow administration-access user <email>`
 7. View the application
-    - The Knowledge Commons Repository app is now running at `https://localhost`
+    - The Knowledge Commons Works app is now running at `https://localhost`
     - The REST API is running at `https://localhost/api`
     - pgAdmin is running at `https://localhost/pgadmin`
     - OpenSearch Dashboards is running at `https://localhost:5601`
@@ -117,7 +117,15 @@ But these commands should not be necessary in normal operation.
 
 ### Changes to html template files
 
-Changes to html template files will be visible immediately in the running Knowledge Commons Repository instance. You simply need to refresh the page in your browser.
+Changes to html template files will be visible immediately in the running Knowledge Commons Works instance. You simply need to refresh the page in your browser.
+
+If you add a new template file (including overriding an existing template file), you will need to collect the new file into the central templates folder and restart the uwsgi processes. This can be done by running the following command inside the `web-ui` container:
+
+```shell
+invenio collect -v
+uwsgi --reload /tmp/uwsgi_ui.pid
+```
+Then refresh your browser.
 
 ### Changes to invenio.cfg
 
@@ -131,7 +139,7 @@ uwsgi --reload /tmp/uwsgi_ui.pid
 
 #### The basic build process (slow)
 
-Invenio employs a build process for css and javascript files. Changes to these files will not be visible in the running Knowledge Commons Repository instance until the build process is run. This can be done by running the following command inside the `web-ui` container:
+Invenio employs a build process for css and javascript files. Changes to these files will not be visible in the running Knowledge Commons Works instance until the build process is run. This can be done by running the following command inside the `web-ui` container:
 
 ```shell
 invenio webpack build
@@ -153,7 +161,7 @@ The watch command will only pick up changes to files that already existed during
 
 ### Adding new node.js packages to be included
 
-Normally, the node.js packages to be included in a project are listed in that project's package.json file. In the case of InvenioRDM, the package.json file is created dynamically by InvenioRDM each time the build process runs. So you cannot directly modify the package.json file in your instance folder. Instead, you must add the package to the package.json file in the InvenioRDM module that requires it. Unless you are creating a new stand-alone extension, this will mean adding the package to the `webpack.py` file in the `kcworks/sites/kcworks` folder.
+Normally, the node.js packages to be included in a project are listed in that project's package.json file. In the case of InvenioRDM, the package.json file is created dynamically by InvenioRDM each time the build process runs. So you cannot directly modify the package.json file in your instance folder. Instead, you must add the package to the package.json file in the InvenioRDM module that requires it. Unless you are creating a new stand-alone extension, this will mean adding the package to the `webpack.py` file in the `knowledge-commons-works/sites/kcworks` folder.
 
 There you will find a `WebpackThemeBundle` object that defines your bundle of js and style files along with their dependencies. If I wanted to add the `geopattern` package to the project, I would add it to the `dependencies` dictionary in the `WebpackThemeBundle` object like this:
 
@@ -217,7 +225,7 @@ If you have added js, css, or static files along with the entry point code, you 
 
 ### Changes to external python modules (including Invenio modules)
 
-Changes to other python modules (including Invenio modules) will require rebuilding the main knowledge-commons-works container. Additions to the python requirements should be added to the `Pipfile` in the knowledge-commons-works folder and committed to the Github repository. You should then request that the knowledge-commons-works container be rebuilt.
+Changes to other python modules (including Invenio modules) will require rebuilding the main kcworks container. Additions to the python requirements should be added to the `Pipfile` in the knowledge-commons-works folder and committed to the Github repository. You should then request that the kcworks container be rebuilt.
 
 In the meantime, required python packages can be installed directly in the `web-ui` container. Enter the container and then install the required package using pipenv:
 
@@ -255,7 +263,7 @@ Note: It is important to use cpython. Invenio does not support other python inte
 Just because this python version is installed does not guarantee it will be used. Next, navigate to the directory where you cloned the source code, and set the correct python version to be used locally:
 
 ```console
-cd ~/path/to/directory/knowledge-commons-repository
+cd ~/path/to/directory/knowledge-commons-works
 pyenv local 3.9.16
 ```
 
@@ -324,18 +332,18 @@ Once nvm is installed, install the required Node.js version and set it as the ac
 nvm install v16.19.1
 nvm use 16.19.1
 ```
-You may have other Node versions installed as well, so before a session working with Knowledge Commons Repository it's a good idea to make sure you're using the correct version. On MacOS and Linux you can check
+You may have other Node versions installed as well, so before a session working with Knowledge Commons Works it's a good idea to make sure you're using the correct version. On MacOS and Linux you can check
 from the command line with
 ```console
 which node
 ```
-## Clone the knowledge-commons-repository Code
+## Clone the knowledge-commons-works Code
 
-Using GIT, clone this repository. You should then have a folder called `knowledge-commons-repository` (unless you chose to name it something else) on your local computer.
+Using GIT, clone this repository. You should then have a folder called `knowledge-commons-works` (unless you chose to name it something else) on your local computer.
 
 ## Add and Configure an .env File
 
-Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own .env.private file and place it at the root level of the knowledge-commons-repository folder. Any configuration variables to be picked up by Invenio should have the prefix "INVENIO_" added to the beginning of the variable name. Environment variables for other services (e.g., for pgadmin) should not.
+Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own .env.private file and place it at the root level of the knowledge-commons-works folder. Any configuration variables to be picked up by Invenio should have the prefix "INVENIO_" added to the beginning of the variable name. Environment variables for other services (e.g., for pgadmin) should not.
 
 This file should contain at least the following variables, substituting appropriate values after each = sign:
 
@@ -346,9 +354,9 @@ INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
 INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
 PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
 PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
-POSTGRES_USER=knowledge-commons-repository
-POSTGRES_PASSWORD=knowledge-commons-repository
-POSTGRES_DB=knowledge-commons-repository
+POSTGRES_USER=kcworks
+POSTGRES_PASSWORD=kcworks
+POSTGRES_DB=kcworks
 INVENIO_DATACITE_USERNAME=MSU.CORE
 INVENIO_DATACITE_PASSWORD=myinveniodatacitepassword
 INVENIO_INSTANCE_PATH=/full/path/to/my/instance/directory
@@ -362,9 +370,9 @@ Another variable, INVENIO_INSTANCE_PATH, will be added automatically by the kcr-
 
 ## Install the Invenio Python Modules
 
-Navigate to the root knowledge-commons-repository folder. Then run the installation script:
+Navigate to the root knowledge-commons-works folder. Then run the installation script:
 ```console
-cd ~/path/to/directory/knowledge-commons-repository
+cd ~/path/to/directory/knowledge-commons-works
 invenio-cli install
 ```
 Note: This installation step will take several minutes.
@@ -377,14 +385,14 @@ This stage
     - normally the instance folder is inside the folder for your new virtual environment. On MacOS this will often be ~/.local/share/virtualenvs/{virtual env name}/var/instance/
 - installs the Invenio python packages (with pipenv)
     - these packages are again installed under your virtual environment folder. On MacOS this is often ~/.local/share/virtualenvs/{virtual env name}/lib/python3.9/site-packages/. You will find several modules installed here with names that start with "invenio_".
-- installs the knowledge-commons-repository Python package (with pipenv)
-    - alongside the Invenio packages you will also find a knowledge-commons-repository package containing any custom extensions to InvenioRDM defined in your `knowledge-commons-repository/sites/` folder
+- installs the `kcworks` Python package (with pipenv)
+    - alongside the Invenio packages you will also find a `kcworks` package containing any custom extensions to InvenioRDM defined in your `knowledge-commons-works/sites/` folder
 - installs required python dependencies (with pipenv)
 - symlinks invenio.cfg, templates/, app_data/ to your instance folder
 - finds and collects static files into {instance_folder}/static/
-    - static files (like images) are scattered throughout the various Invenio python modules and your local knowledge-commons-repository folder. They must be copied to a central location accessible to the web server.
+    - static files (like images) are scattered throughout the various Invenio python modules and your local knowledge-commons-works folder. They must be copied to a central location accessible to the web server.
 - finds js and less/scss/css files and builds them in {instance_folder}/assets
-    - again, this gathers and combines js and style files from all of the Invenio python modules and your local knowledge-commons-repository instance. It also gathers a master list of node.js package requirements from these modules.
+    - again, this gathers and combines js and style files from all of the Invenio python modules and your local kcworks instance. It also gathers a master list of node.js package requirements from these modules.
     - this build process uses Webpack and is configured in {instance_folder}/assets/webpack.config.js
     - js requirements are installed by npm as node.js modules in the {instance_folder}/assets/node_modules folder
     - note, though, that you *cannot* directly modify the package.json, webpack.config.js files in your instance folder. This is because these files are created dynamically by InvenioRDM each time the build process runs.
@@ -393,7 +401,7 @@ This stage
 
 ### Build and start the containers
 
-Make sure you are in the root knowledge-commons-repository folder and then run
+Make sure you are in the root knowledge-commons-works folder and then run
 ```console
 docker-compose up -d
 ```
@@ -404,7 +412,7 @@ This step will
 
 ### Create and initialize the database, search indexes, and task queue
 
-Again, from the root knowledge-commons-repository folder, run this command:
+Again, from the root knowledge-commons-works folder, run this command:
 ```console
 invenio-cli services setup
 ```
@@ -420,15 +428,15 @@ Note: If for some reason you need to run this step again, you will need to add t
 
 ## Start the uwsgi applications and celery worker
 
-Finally, you need to start the actual applications. Knowledge Commons Repository is actually run as two separate applications: one providing an html user interface, and one providing a REST api and serving JSON responses. Each application is served to the nginx web server by its own uwsgi process. The nginx server begins automatically when the `frontend` docker container starts, but the uwsgi applications run on your local machine and need to be started directly.
+Finally, you need to start the actual applications. Knowledge Commons Works is actually run as two separate applications: one providing an html user interface, and one providing a REST api and serving JSON responses. Each application is served to the nginx web server by its own uwsgi process. The nginx server begins automatically when the `frontend` docker container starts, but the uwsgi applications run on your local machine and need to be started directly.
 
 These applications are also supported by a Celery worker process. This is a task queue that (with the help of the RabbitMQ docker container) frees up the python applications from being blocked by long-running tasks like indexing. The celery worker also runs on your local machine and must be started directly.
 
-If you want to quickly start all of these processes in the background (as daemons), you can run the kcr-startup.sh script in the root knowledge-commons-repository directory:
+If you want to quickly start all of these processes in the background (as daemons), you can run the kcr-startup.sh script in the root knowledge-commons-works directory:
 ```console
 bash kcr-startup.sh
 ```
-The processes will output request and error logging to files in the `logs` folder of your knowledge-commons-repository folder.
+The processes will output request and error logging to files in the `logs` folder of your knowledge-commons-works folder.
 
 To stop these processes, simply run
 ```console
@@ -463,14 +471,14 @@ pipenv run invenio access allow administration-access user <email>
 ## Use the application!
 
 You should now be able to access the following:
-- The Knowledge Commons Repository app (https://localhost)
-- The Knowledge Commons Repository REST api (https://localhost/api)
+- The Knowledge Commons Works app (https://localhost)
+- The Knowledge Commons Works REST api (https://localhost/api)
 - pgAdmin for database management (https://localhost/pgadmin)
 - Opensearch Dashboards for managing search (https://localhost:5601)
 
 ### Controlling the Application Services
 
-Once Knowledge Commons Repository is installed, you can manage its services from the command line. **Note: Unless otherwise specified, the commands below must be run from the root knowledge-commons-repository folder.**
+Once Knowledge Commons Works is installed, you can manage its services from the command line. **Note: Unless otherwise specified, the commands below must be run from the root knowledge-commons-works folder.**
 
 ### Startup and shutdown scripts
 
@@ -480,7 +488,7 @@ The bash script kcr-startup.sh will start
     - the two uwsgi processes
 It will also ensure that you have a .env file and copy your set your INVENIO_INSTANCE_PATH variable in that file to your local instance folder, matching the instance_path variable in your .invenio.private file.
 
-Simply navigate to the root knowledge-commons-repository folder and run
+Simply navigate to the root knowledge-commons-works folder and run
 ```console
 bash ./kcr-startup.sh
 ```
@@ -506,7 +514,7 @@ Note that stopping the containers this way will not destroy the data and configu
 
 ### View logging output for uwsgi processes
 
-Activity and error logging for the two uwsgi processes are written to date-stamped files in the knowledge-commons-repository/logs/ folder. To watch the live logging output from one of these processes, open a new terminal in your knowledge-commons-repository folder and run
+Activity and error logging for the two uwsgi processes are written to date-stamped files in the knowledge-commons-works/logs/ folder. To watch the live logging output from one of these processes, open a new terminal in your knowledge-commons-works folder and run
 ```console
 tail -f logs/uwsgi-ui-{date}.log
 ```
@@ -524,19 +532,19 @@ docker logs <image-name> -f
 ```
 
 The names of the various images are:
-- nginx: knowledge-commons-repository-frontend-1
-- RabbitMQ: knowledge-commons-repository-mq-1
-- PostgreSQL: knowledge-commons-repository-db-1
-- OpenSearch: knowledge-commons-repository-search-1
-- Redis: knowledge-commons-repository-cache-1
-- OpenSearch Dashboards: knowledge-commons-repository-opensearch-dashboards-1
-- pgAdmin: knowledge-commons-repository-pgadmin-1
+- nginx: kcworks-frontend-1
+- RabbitMQ: kcworks-mq-1
+- PostgreSQL: kcworks-db-1
+- OpenSearch: kcworks-search-1
+- Redis: kcworks-cache-1
+- OpenSearch Dashboards: kcworks-opensearch-dashboards-1
+- pgAdmin: kcworks-pgadmin-1
 
 ### Controlling containerized nginx server
 
 The frontend container is configured so that the configuration files in docker/nginx/ are bind mounted. This means that changes to those config files can be seen in the running container and enabled without rebuilding the container. To reload the nginx configuration, first **enter the frontend container**:
 ```console
-docker exec -it knowledge-commons-repository-frontend-1 bash
+docker exec -it kcworks-frontend-1 bash
 ```
 Then tell gninx to reload the config files:
 ```console
@@ -551,7 +559,7 @@ Alternately, you can rebuild and restart the frontend container by running
 docker-compose up -d --build frontend
 ```
 
-## Developing the Knowledge Commons Repository
+## Developing Knowledge Commons Works
 
 ### Branching and committing
 
@@ -559,13 +567,13 @@ In general, all members of the development team should commit their work to the 
 
 ### Making changes to template files
 
-Changes made to jinja template files will be visible immediately in the running Knowledge Commons Repository instance.
+Changes made to jinja template files will be visible immediately in the running Knowledge Commons Works instance.
 
 ### Making changes to theme (CSS) and javascript files
 
 #### Building js and css assets
 
-Unlike python and config files, the less and javascript files you customize must go through a build process before they will be visible in the running Knowledge Commons Repository instance. The Invenio platform provides a convenient cli script for collecting all of these assets (both standard and your customized files) and running webpack to build them.
+Unlike python and config files, the less and javascript files you customize must go through a build process before they will be visible in the running Knowledge Commons Works instance. The Invenio platform provides a convenient cli script for collecting all of these assets (both standard and your customized files) and running webpack to build them.
 ```console
 invenio-cli assets build
 ```
@@ -603,7 +611,7 @@ or
 ```console
 pipenv run invenio webpack run start
 ```
-<!-- or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the npm watch service using a separate node.js container:
+<!-- or, without using invenio's cli, navigate to your local kcworks folder and run the npm watch service using a separate node.js container:
 ```console
 docker run --rm -it -u 1000:1000 -v $PWD/assets:/opt/invenio/var/instance/assets -v $PWD/static:/opt/invenio/var/instance/static/ -w /opt/invenio/var/instance/assets node:19 sh -c "NODE_OPTIONS=--openssl-legacy-provider npm run start"
 ``` -->
@@ -615,7 +623,7 @@ The `watch` command will only pick up changes to files that already existed duri
 ```console
 invenio-cli assets build
 ```
-<!-- or, without using invenio's cli, navigate to your local knowledge-commons-repository folder and run the build operation using a separate node.js container:
+<!-- or, without using invenio's cli, navigate to your local kcworks folder and run the build operation using a separate node.js container:
 ```console
 docker run --rm -it -u 1000:1000 -v $PWD/assets:/opt/invenio/var/instance/assets -v $PWD/static:/opt/invenio/var/instance/static/ -w /opt/invenio/var/instance/assets node:19 sh -c "npm ci &&  NODE_OPTIONS=--openssl-legacy-provider npm run build"
 ``` -->
@@ -630,13 +638,13 @@ invenio collect -v
 
 ### Running automated tests
 
-Automated tests (unit tests and integration tests) are run every time a commit is pushed to the knowledge-commons-repository Github repo. You can (and should) also run the test suite locally.
+Automated tests (unit tests and integration tests) are run every time a commit is pushed to the knowledge-commons-works Github repo. You can (and should) also run the test suite locally.
 
 There are currently two distinct sets of tests that have to be run separately: python tests run using invenio's fixtures, and javascript tests run separately using jest.
 
 ### Python tests
 
-The python test suite includes (a) unit tests for back end code, (b) tests of ui views and api requests run with a client fixture, (c) user interaction tests run with selenium webdriver. To run the unit tests and view/request tests, navigate to the root knowledge-commons-repository folder and run
+The python test suite includes (a) unit tests for back end code, (b) tests of ui views and api requests run with a client fixture, (c) user interaction tests run with selenium webdriver. To run the unit tests and view/request tests, navigate to the root knowledge-commons-works folder and run
 ```console
 pipenv run pytest
 ```
@@ -648,17 +656,17 @@ Running the selenium tests also requires that you have the Selenium Client and C
 
 ### Javascript tests
 
-Pytest does not directly test custom javascript files or React components. In order to test these, navigate to the root knowledge-commons-repository folder and run
+Pytest does not directly test custom javascript files or React components. In order to test these, navigate to the root knowledge-commons-works folder and run
 ```console
 npm run test
 ```
-These tests are run using the jest test runner, configured in the packages.json file in the root knowledge-commons-repository folder.
+These tests are run using the jest test runner, configured in the packages.json file in the root knowledge-commons-works folder.
 
-Note that these tests run using a local npm configuration in the knowledge-commons-repository folder. Any packages that are normally available to InvenioRDM must be added to the local package.json configuration and will be installed in the local node_modules folder. Since this folder is not included in GIT version control, before you run the javascript tests you must ensure the required packages are installed locally by running
+Note that these tests run using a local npm configuration in the knowledge-commons-works folder. Any packages that are normally available to InvenioRDM must be added to the local package.json configuration and will be installed in the local node_modules folder. Since this folder is not included in GIT version control, before you run the javascript tests you must ensure the required packages are installed locally by running
 ```console
 npm install
 ```
 
 ## InvenioRDM Documentation
 
-The Knowledge Commons Repository is built as an instance of InvenioRDM. The InvenioRDM Documentation, including customization and development information, can be found at https://inveniordm.docs.cern.ch/.
+The Knowledge Commons Works is built as an instance of InvenioRDM. The InvenioRDM Documentation, including customization and development information, can be found at https://inveniordm.docs.cern.ch/.

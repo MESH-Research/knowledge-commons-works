@@ -84,8 +84,8 @@ logs/*
 nohup.out
 
 # auto-symlinked during build process
-site/knowledge_commons_repository/assets/semantic-ui/less/site/globals/site.variables
-site/knowledge_commons_repository/assets/semantic-ui/less/site/globals/site.overrides
+site/kcworks/assets/semantic-ui/less/site/globals/site.variables
+site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 
 # Invenio-cli per machine file
 .invenio.private
@@ -132,5 +132,5 @@ scripts/core-migrate/core_migrate/logs/core_migrate_touched_records.jsonl
 scripts/core-migrate/core_migrate/logs/core_migrate.log
 scripts/core-migrate/core_migrate/logs/core_migrate.log.*
 scripts/core-migrate/core_migrate/logs/core_migrate_failed_records.jsonl
-site/knowledge_commons_repository/invenio_remote_api_provisioner/logs/remote_api_provisioner.log
-site/knowledge_commons_repository/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*
+site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log
+site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*

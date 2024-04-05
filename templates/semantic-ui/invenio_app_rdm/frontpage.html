@@ -30,8 +30,17 @@
   {%- block grid_section %}
     <div class="ui stackable grid container rel-mt-2">
 
+      {% block left_column %}
+        <div class="two wide computer sixteen wide tablet column">
+
+          {% block left_column_content %}
+          {% endblock left_column_content %}
+
+        </div>
+      {% endblock left_column %}
+
       {% block main_column %}
-        <div class="eleven wide computer sixteen wide tablet column">
+        <div class="twelve wide computer sixteen wide tablet column">
 
           {% block main_column_content %}
             {{ records_list() }}
@@ -41,7 +50,7 @@
       {% endblock main_column %}
 
       {% block side_column %}
-        <aside class="five wide computer sixteen wide tablet column">
+        <aside class="three wide computer sixteen wide tablet column">
 
           {% block side_column_content %}{% endblock side_column_content %}
 

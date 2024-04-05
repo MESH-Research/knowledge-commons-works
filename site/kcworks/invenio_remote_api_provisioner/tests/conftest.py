@@ -30,7 +30,7 @@ from invenio_vocabularies.proxies import current_service as vocabulary_service
 from invenio_vocabularies.records.api import Vocabulary
 from .fake_datacite_client import FakeDataCiteClient
 
-# from knowledge_commons_repository.invenio_remote_api_provisioner.ext import (  # noqa: E501
+# from kcworks.invenio_remote_api_provisioner.ext import (  # noqa: E501
 #     InvenioRemoteAPIProvisioner,
 # )
 import os
@@ -59,17 +59,17 @@ def extra_entry_points():
     return {
         "invenio_base.api_apps": [
             "invenio_remote_api_provisioner ="
-            " knowledge_commons_repository.invenio_remote_api_provisioner."
+            " kcworks.invenio_remote_api_provisioner."
             "ext:InvenioRemoteAPIProvisioner"
         ],
         "invenio_base.apps": [
             "invenio_remote_api_provisioner ="
-            " knowledge_commons_repository.invenio_remote_api_provisioner."
+            " kcworks.invenio_remote_api_provisioner."
             "ext:InvenioRemoteAPIProvisioner"
         ],
         "invenio_celery.tasks": [
             "invenio_remote_api_provisioner ="
-            " knowledge_commons_repository.invenio_remote_api_provisioner."
+            " kcworks.invenio_remote_api_provisioner."
             "tasks"
         ],
     }
@@ -86,10 +86,7 @@ def celery_config():
 
 test_config = {
     "SQLALCHEMY_DATABASE_URI": (
-        "postgresql+psycopg2://"
-        "knowledge-commons-repository:"
-        "knowledge-commons-repository@localhost/"
-        "knowledge-commons-repository-test"
+        "postgresql+psycopg2://" "kcworks:kcworks@localhost/kcworks-test"
     ),
     "SQLALCHEMY_TRACK_MODIFICATIONS": True,
     "SQLALCHEMY_POOL_SIZE": None,

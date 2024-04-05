@@ -81,7 +81,7 @@ services:
       file: docker-services.yml
       service: app
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
-    image: monotasker/knowledge-commons-repository:latest
+    image: monotasker/kcworks:latest
     environment:
       - INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
       - INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://cache:6379/4
@@ -103,7 +103,7 @@ services:
       file: docker-services.yml
       service: app
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
-    image: monotasker/knowledge-commons-repository:latest
+    image: monotasker/kcworks:latest
     ports:
       - "5001"
     extra_hosts:
@@ -122,7 +122,7 @@ services:
       file: docker-services.yml
       service: app
     command: ["celery -A invenio_app.celery worker --beat --loglevel INFO"]
-    image: monotasker/knowledge-commons-repository:latest
+    image: monotasker/kcworks:latest
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
     depends_on:

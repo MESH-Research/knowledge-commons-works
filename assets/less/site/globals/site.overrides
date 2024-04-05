@@ -42,6 +42,15 @@ textarea {
       display: none !important;
     }
   }
+
+  &.computer:not(.large.monitor):not(.tablet):not(.mobile) {
+    @media all and (max-width: @computerBreakpoint) {
+      display: none !important;
+    }
+    @media all and (min-width: @widescreenMonitorBreakpoint) {
+      display: none !important;
+    }
+  }
 }
 .mobile.hidden {
   @media all and (max-width: @largestMobileScreen) {
@@ -89,7 +98,20 @@ html.cover-page {
         height: 3.5rem;
       }
       box-shadow: none;
+
+      &.active {
+        #invenio-menu.ui.menu {
+          @media all and (max-width: @largestTabletScreen) {
+            z-index: 1000;
+          }
+        }
+      }
+
       .item:not(.logo) {
+        &>span {
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+        }
         a {
           position: relative;
           color: #000;
@@ -105,8 +127,8 @@ html.cover-page {
             transform-origin: bottom right;
             transition: transform 0.1s ease-out;
           }
-          .widescreen.only.inline {
-            margin-left: 1rem;
+          .inline {
+            margin-left: 0.5rem;
           }
         }
         a:not(.ui.button):hover {
@@ -118,6 +140,11 @@ html.cover-page {
         }
         a.ui.button.basic {
           box-shadow: none;
+        }
+        &.right.menu {
+          a, a:hover, .item >span {
+            color: @primaryColor;
+          }
         }
       }
       .item.logo {
@@ -172,6 +199,80 @@ html.cover-page {
 
 .ui.container.page-subheader-outer {
   background-color: transparent !important;
+}
+
+// Front page hero area search bar
+
+#frontpage-hero-section {
+  background-color: #fff;
+  background-image: linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 1) 12%,
+      rgba(255, 255, 255, 0.8) 47%,
+      rgba(255, 255, 255, 0.8) 93%,
+      rgba(255, 255, 255, 1) 98%
+    ),
+    url("https://localhost/static/images/pexels-andy-barbour-6684443.jpg");
+  background-position: center;
+  background-position-y: 55%;
+  background-size: cover;
+  h2 {
+    letter-spacing: 0.05rem;
+  }
+  > .ui.container.grid {
+    margin-top: 0;
+    .titles {
+      margin-top: 2rem;
+      h1 {
+        font-size: 8rem;
+        line-height: 8rem;
+        font-weight: bold;
+        color: @primaryColor;
+        opacity: 0.8;
+        letter-spacing: 0.05rem;
+        margin-bottom: 0;
+        margin-top: 1rem;
+        @media screen and (max-width: @largestMobileScreen) {
+          font-size: 2rem;
+        }
+      }
+      a {
+        text-decoration: none;
+        h2 {
+          position: relative;
+          z-index: 100;
+          text-transform: uppercase;
+          font-weight: normal;
+          letter-spacing: 0.1rem;
+          margin-top: -0.5rem;
+          font-size: 2rem;
+        }
+      }
+    }
+  }
+
+  #frontpage-info-bar {
+    a {
+      color: @textColor;
+      text-decoration: none;
+      opacity: 0.7;
+      .huge.icon {
+        font-size: 3rem;
+      }
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+// Carousel
+
+#communities-carousel {
+  .ui.container.grid {
+    max-width: 100% !important;
+  }
 }
 
 // Forms

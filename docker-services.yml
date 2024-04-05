@@ -10,7 +10,7 @@ services:
       context: ./
       args:
         - ENVIRONMENT=DEV
-    image: monotasker/knowledge-commons-repository:latest
+    image: monotasker/kcworks:latest
     restart: "unless-stopped"
     environment:
       - INVENIO_SECRET_KEY=${INVENIO_SECRET_KEY}
@@ -29,7 +29,7 @@ services:
       - ./.env
   frontend:
     build: ./docker/nginx/
-    image: monotasker/knowledge-commons-repository-frontend
+    image: monotasker/kcworks-frontend
     restart: "unless-stopped"
     ports:
       - "80"

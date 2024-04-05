@@ -10,29 +10,36 @@
 {%- extends config.THEME_HEADER_TEMPLATE %}
 
 {#- Remove search field from top bar on frontpage #}
-{%- block navbar_search %}{% endblock %}
+{%- block navbar_search %}
+{% endblock navbar_search %}
 
 {%- block navbar %}
 {{ super() }}
 
-{%- block frontpage_search %}
-<div id="frontpage-search-bar" class="ui container fluid frontpage-header">
-  <div class="ui container grid rel-mt-2">
-    <div class="row">
-      <div class="sixteen wide column center aligned">
+<div id="frontpage-hero-section" class="ui container fluid frontpage-header">
+  <div class="ui container grid">
+    <div class="row titles">
+      <div class="sixteen wide column center aligned rel-mt-2 rel-mb-2">
         {%- block frontpage_title %}
-        <h1 class="ui center aligned header inverted">
-          {{ _(config.THEME_FRONTPAGE_TITLE) }}
+        <h1 class="ui center aligned header ">
+          Works
         </h1>
-        <h2 class="ui center aligned header inverted">
+        {# <span>Part of the </span> #}
+        <a href="https://{{ config.KC_WORDPRESS_DOMAIN}}"><h2 class="ui center aligned header ">Knowledge Commons</h2></a>
+        {# <span> network</span> #}
+        {# <h1 class="ui center aligned header ">
+          {{ _(config.THEME_FRONTPAGE_TITLE) }}
+        </h1> #}
+        {# <h2 class="ui center aligned header ">
           {{ _(config.THEME_FRONTPAGE_SUBTITLE) }}
-        </h2>
+        </h2> #}
       </div>
     </div>
       {%- endblock frontpage_title %}
+      {%- block frontpage_search %}
       {%- block frontpage_form %}
-      <div class="row">
-          <div class="sixteen wide mobile four wide computer column"></div>
+      <div id="frontpage-search-bar" class="row">
+          <div class="sixteen wide mobile two wide computer column"></div>
           <div class="sixteen wide mobile eight wide computer column center aligned">
             <form action="{{ url_for('invenio_search_ui.search') }}" class="ui form" role="search">
               <div class="ui fluid big action input">
@@ -43,11 +50,54 @@
               </div>
             </form>
           </div>
+          <div class="sixteen wide mobile four wide computer column">
+            <a href="{{ url_for('invenio_app_rdm_records.deposit_create') }}" class="ui icon positive left labeled big button">
+              <i class="upload icon"></i>
+              {{ _("Add a work") }}
+            </a>
+          </div>
         </div>
         <div class="ui divider hidden"></div>
         {%- endblock frontpage_form %}
+        {%- endblock frontpage_search %}
+  </div>
+
+  <div id="frontpage-info-bar" class="ui container grid rel-mt-2 rel-mb-2">
+    <div class="row">
+      <div class="four wide column center aligned">
+        <a href="#">
+        <h2 class="ui center aligned header ">
+          {{ _("Discover") }}
+        </h2>
+        <i class="fitted search huge icon"></i>
+        </a>
+      </div>
+      <div  class="four wide column center aligned">
+        <a href="#">
+        <h2 class="ui center aligned header">
+          {{ _("Publish") }}
+        </h2>
+        <i class="fitted bullhorn huge icon"></i>
+        </a>
+      </div>
+      <div class="four wide column center aligned">
+        <a href="#">
+        <h2 class="ui center aligned header">
+          {{ _("Collect") }}
+        </h2>
+        <i class="fitted copy outline huge icon"></i>
+        </a>
+      </div>
+      <div class="four wide column center aligned">
+        <a href="#">
+        <h2 class="ui center aligned header">
+          {{ _("Collaborate") }}
+        </h2>
+        <i class="fitted group huge icon"></i>
+        </a>
+      </div>
+    </div>
   </div>
 </div>
-{%- endblock frontpage_search %}
 
 {% endblock %}

@@ -6,7 +6,7 @@ docker-compose stop
 echo "   stopping celery worker"
 ps auxww | grep 'celery worker' | grep -v " grep " | awk '{print $2}' | xargs kill -9
 echo "   stopping ui application"
-pipenv run uwsgi --stop /tmp/kcr_ui.pid
+pipenv run uwsgi --stop /tmp/kcw_ui.pid
 echo "   stopping api application"
-pipenv run uwsgi --stop /tmp/kcr_api.pid
+pipenv run uwsgi --stop /tmp/kcw_api.pid
 echo "Finished!"

@@ -45,7 +45,7 @@ class CarouselItem extends Component {
                 <Button
                   size="mini"
                   href={self_link}
-                  content={i18next.t("Browse")}
+                  content={i18next.t("Browse the collection")}
                 />
                 {showUploadBtn && (
                   <Button

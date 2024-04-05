@@ -14,14 +14,14 @@ Functions to convert and migrate legacy CORE deposits to InvenioRDM
 Relies on the following environment variables:
 
 MIGRATION_SERVER_DOMAIN     The domain (without https://) at which your
-                            running knowledge_commons_repository
+                            running kcworks
                             instance can receive requests.
 MIGRATION_SERVER_DATA_DIR   The full path to the local directory where
                             the source json files (exported from legacy
                             CORE) can be found.
 
 Normally these variables can be set in the .env file in your base
-knowledge_commons_repository directory.
+kcworks directory.
 """
 
 import click
@@ -114,11 +114,11 @@ def load_records(
 
     Notes:
 
-        This program must be run from the base knowledge_commons_repository directory. It will look for the exported records in the directory specified by the MIGRATION_SERVER_DATA_DIR environment variable. It will send requests to the knowledge_commons_repository instance specified by the MIGRATION_SERVER_DOMAIN environment variable.
+        This program must be run from the base kcworks directory. It will look for the exported records in the directory specified by the MIGRATION_SERVER_DATA_DIR environment variable. It will send requests to the kcworks instance specified by the MIGRATION_SERVER_DOMAIN environment variable.
 
-        The program must also be run inside the pipenv virtual environment for the knowledge_commons_repository instance. All of the commands must be preceded by `pipenv run` or the pipenv environment must first be activated with `pipenv shell`.
+        The program must also be run inside the pipenv virtual environment for the kcworks instance. All of the commands must be preceded by `pipenv run` or the pipenv environment must first be activated with `pipenv shell`.
 
-        The operations involved require authenitcation as an admin user in the knowledge_commons_repository instance. This program will look for the admin user's api token in the MIGRATION_API_TOKEN environment variable.
+        The operations involved require authenitcation as an admin user in the kcworks instance. This program will look for the admin user's api token in the MIGRATION_API_TOKEN environment variable.
         Where it's necessary to invite this user to a community, the program will look for the community's id in the P_TOKEN environment variable.
 
         Where necessary this program will create top-level domain communities, assign the records to the correct domain communities, create

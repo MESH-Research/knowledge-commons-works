@@ -24,27 +24,35 @@ password. It is not linked to from any other page in the repository.
 """
 
 from flask import (
-    render_template, current_app, request, redirect, session, after_this_request
+    render_template,
+    current_app,
+    request,
+    redirect,
+    session,
+    after_this_request,
 )
 from flask.views import MethodView
 from flask_security.utils import get_post_login_redirect, login_user
 from werkzeug.local import LocalProxy
 
-_security = LocalProxy(lambda: current_app.extensions['security'])
+_security = LocalProxy(lambda: current_app.extensions["security"])
 
 _datastore = LocalProxy(lambda: _security.datastore)
 
+
 def _ctx(endpoint):
     return _security._run_ctx_processor(endpoint)
+
+
 class AdminLogin(MethodView):
     """
     Class providing view class for administrative login.
     """
 
     def __init__(self):
-        self.template = "knowledge_commons_repository/view_templates/admin_login.html"
+        self.template = "kcworks/view_templates/admin_login.html"
 
-    def get (self):
+    def get(self):
         """
         Render the template for GET requests.
         """
@@ -58,6 +66,6 @@ class AdminLogin(MethodView):
 
             return redirect(get_post_login_redirect(form.next.data))
 
-        return _security.render_template(self.template,
-                                         login_user_form=form,
-                                         **_ctx('login'))
+        return _security.render_template(
+            self.template, login_user_form=form, **_ctx("login")
+        )

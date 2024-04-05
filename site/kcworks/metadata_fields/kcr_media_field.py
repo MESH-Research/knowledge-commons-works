@@ -22,7 +22,7 @@ KCR_MEDIA_SECTION_UI = {
         {
             "field": "kcr:media",
             "ui_widget": "MultiInput",
-            # "template": "knowledge_commons_repository/user_defined_tags.html",
+            # "template": "kcworks/user_defined_tags.html",
             "props": {
                 "label": _("Media and materials"),
                 "placeholder": _(
