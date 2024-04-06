@@ -64,7 +64,7 @@
         data-theme-logo-url="{{ url_for('static', filename=config.THEME_LOGO) }}"
         data-theme-sitename="{{ config.THEME_SITENAME }}"
         data-user-authenticated="{{ current_user.is_authenticated }}"
-        data-user-administrator='{{ current_user.roles | selectattr("name", "equalto", "administrator") | list }}'
+        data-user-roles='{{ current_user.roles | map(attribute="name") | list | tojson }}'
       >
       </div>
       {%- endblock navbar %}

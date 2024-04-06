@@ -108,7 +108,7 @@ html.cover-page {
       }
 
       .item:not(.logo) {
-        &>span {
+        & > span {
           padding-left: 1.5rem;
           padding-right: 1.5rem;
         }
@@ -142,8 +142,20 @@ html.cover-page {
           box-shadow: none;
         }
         &.right.menu {
-          a, a:hover, .item >span {
+          a,
+          a:hover,
+          .item > span {
             color: @primaryColor;
+          }
+        }
+        #user-profile-dropdown {
+          margin-right: 0.75rem;
+        }
+        #user-profile-menu {
+          a {
+            &::after {
+              background-color: transparent;
+            }
           }
         }
       }
@@ -241,7 +253,7 @@ html.cover-page {
         text-decoration: none;
         h2 {
           position: relative;
-          z-index: 100;
+          z-index: 99;
           text-transform: uppercase;
           font-weight: normal;
           letter-spacing: 0.1rem;
