@@ -31,10 +31,9 @@ From there installation involves these steps and commands. These are further exp
         ```
 3. Start the docker-compose project
     - `docker-compose --file docker-compose.dev.yml up -d`
-4. Initialize the database and other services
+4. Initialize the database and other services, and build asset files
     - enter the `web-ui` container by running `docker exec -it knowledge-commons-works-web-ui-1 bash`
-    - run the script to set up the instance services and build static assets:
-        - `bash ./scripts/setup-services.sh`
+    - run the script to set up the instance services and build static assets `bash ./scripts/setup-services.sh`
         - *note*: Some of the commands in this script may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
 5. Create your own admin user
     - enter the `web-ui` container by running `docker exec -it knowledge-commons-works-web-ui-1 bash`
