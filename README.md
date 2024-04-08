@@ -17,19 +17,9 @@ First you will need to have the correct versions of Docker (20.10.10+ with Docke
 
 From there installation involves these steps and commands. These are further explained below, but here is a quick reference:
 
-1. Clone the git repositories
+1. Clone the git repository
     1. From your command line, navigate to the parent folder where you want the cloned repository code to live
     2. Clone the knowledge-commons-works repository with `git clone git@github.com:MESH-Research/knowledge-commons-works.git`
-    3. From the same parent directory, clone the following additional repositories:
-        - `git@github.com:MESH-Research/invenio-record-importer.git`
-        - `git@github.com:MESH-Research/invenio-communities:/opt/invenio/invenio-communities.git`
-        - `git@github.com:MESH-Research/invenio-groups:/opt/invenio/invenio-groups.git`
-        - `git@github.com:MESH-Research/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form.git`
-        - `git@github.com:MESH-Research/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page.git`
-        - `git@github.com:MESH-Research/invenio-rdm-records:/opt/invenio/invenio-rdm-records.git`
-        - `git@github.com:MESH-Research/invenio-records-resources:/opt/invenio/invenio-records-resources.git`
-        - `git@github.com:MESH-Research/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner.git`
-        - `git@github.com:MESH-Research/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data.git`
 2. Create your configuration files
     - `cd knowledge-commons-works`
     - Create and configure the `.env` file in this folder
@@ -43,48 +33,47 @@ From there installation involves these steps and commands. These are further exp
     - `docker-compose --file docker-compose.dev.yml up -d`
 4. Initialize the database and other services
     - enter the `web-ui` container by running `docker exec -it knowledge-commons-works-web-ui-1 bash`
-    - run the following commands in sequence:
-        - `invenio db init create`
-        - `invenio files location create --default default-location /opt/invenio/var/instance/data`
-        - `invenio roles create admin`
-        - `invenio access allow superuser-access role admin`
-        - `invenio index init`
-        - `invenio rdm-records custom-fields init`
-        - `invenio communities custom-fields init`
-        - `invenio rdm-records fixtures`
-        - `invenio rdm fixtures`
-        - `pybabel compile --directory={project_path / translation_folder}`
-        - `invenio queues declare`
-        - `invenio roles create administrator`
-    - *note*: Some of these commands may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
-5. Build the assets
-    - enter the `web-ui` container by running `docker exec -it knowledge-commons-works-web-ui-1 bash`
-    - run the following commands in sequence:
-        - `invenio collect --verbose`
-        - `invenio webpack clean create`
-        - `invenio webpack install`
-        - `invenio shell ./dockerfile_helper.py`
-        - `invenio webpack build`
-        - `uwsgi --reload /tmp/uwsgi_ui.pid`
-6. Create your own admin user
+    - run the script to set up the instance services and build static assets:
+        - `bash ./scripts/setup-services.sh`
+        - *note*: Some of the commands in this script may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
+5. Create your own admin user
     - enter the `web-ui` container by running `docker exec -it knowledge-commons-works-web-ui-1 bash`
     - run the commands:
         - `invenio users create <email> --password <password>`
         - `invenio users activate <email>`
         - `invenio access allow administration-access user <email>`
-7. View the application
+6. View the application
     - The Knowledge Commons Works app is now running at `https://localhost`
     - The REST API is running at `https://localhost/api`
     - pgAdmin is running at `https://localhost/pgadmin`
     - OpenSearch Dashboards is running at `https://localhost:5601`
 
-Further optional steps to allow fully local development if desired:
+Further optional steps to allow local debugging or development of the python packages in the Invenio framework and the custom packages created for Knowledge Commons Works:
+
+1. In the same parent directory that holds your cloned `knowledge-commons-works` folder, clone the following additional repositories:
+    - `git@github.com:MESH-Research/invenio-record-importer.git`
+    - `git@github.com:MESH-Research/invenio-communities:/opt/invenio/invenio-communities.git`
+    - `git@github.com:MESH-Research/invenio-groups:/opt/invenio/invenio-groups.git`
+    - `git@github.com:MESH-Research/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form.git`
+    - `git@github.com:MESH-Research/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page.git`
+    - `git@github.com:MESH-Research/invenio-rdm-records:/opt/invenio/invenio-rdm-records.git`
+    - `git@github.com:MESH-Research/invenio-records-resources:/opt/invenio/invenio-records-resources.git`
+    - `git@github.com:MESH-Research/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner.git`
+    - `git@github.com:MESH-Research/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data.git`
+The folders holding the cloned code from these repositories should then be direct siblings of your `knowledge-commons-works` folder.
+2. Install the invenio-cli tool locally (`pip install invenio-cli`)
+3. Install the python packages required by Knowldge Commons Works locally by running `pipenv install` in the `knowledge-commons-works` folder.
+    - NOTE: This assumes that you have already cloned the git repositories as described in step 1. If you have not, you will need to do so before running `pipenv install`.
+4. When you start up the docker compose project, add an additional project file to the command:
+    - `docker-compose --file docker-compose.dev.yml --file docker-compose.dev.local.yml up -d`
+This will mount a variety of local package folders as bind mounts in your running containers. This will allow you to make changes to the python code in the cloned repositories and see those changes reflected in the running Knowledge Commons Works instance.
+<!-- Further optional steps to allow fully local development if desired:
 
     1. Install the invenio-cli tool (`pip install invenio-cli`)
     2. Run `invenio-cli install` locally
     3. With docker running, run `docker-compose up -d`
     4. `invenio-cli services setup --force`
-    5.  `bash kcr-startup.sh`
+    5.  `bash kcr-startup.sh` -->
 
 ### Controlling the Flask application
 
@@ -100,7 +89,7 @@ docker-compose --file docker-compose.dev.yml stop
 > [!Caution]
 > Do not use the `docker-compose down` command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indexes. YOU DO NOT WANT TO DO THIS!
 
-If you need to restart the main Flask application (e.g., after making configuration changes) you can do so by running the following command inside the `web-ui` container:
+If you need to restart the main Flask application (e.g., after making configuration changes) you can do so either by stopping and restarting the docker-compose project or by running the following command inside the `web-ui` container:
 
 ```shell
 uwsgi --reload /tmp/uwsgi_ui.pid
@@ -142,7 +131,7 @@ uwsgi --reload /tmp/uwsgi_ui.pid
 Invenio employs a build process for css and javascript files. Changes to these files will not be visible in the running Knowledge Commons Works instance until the build process is run. This can be done by running the following command inside the `web-ui` container:
 
 ```shell
-invenio webpack build
+bash ./scripts/build-assets.sh
 ```
 
 #### Rebuilding changed files on the fly (fast but limited)
@@ -157,7 +146,7 @@ The file watching will continue until you stop it with CTRL-C. It will continue 
 
 ### Adding new files or requirements
 
-The watch command will only pick up changes to files that already existed during the last Webpack build. If you add a new javascript or css (less) file, you need to again run the regular build command to include it in the build process.
+The watch command will only pick up changes to files that already existed during the last Webpack build. If you add a new javascript or css (less) file, you need to again run the regular build script to include it in the build process.
 
 ### Adding new node.js packages to be included
 
@@ -188,12 +177,10 @@ theme = WebpackThemeBundle(
 )
 ```
 
-If you add a new node.js package to the project, you will then need to run the following commands inside the `web-ui` container to install it:
+If you add a new node.js package to the project, you will then need to run the build script inside the `web-ui` container to install it:
 
 ```shell
-invenio webpack clean create
-invenio webpack install
-invenio webpack build
+bash ./scripts/build-assets.sh
 ```
 
 ### Changes to static files

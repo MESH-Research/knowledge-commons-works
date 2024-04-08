@@ -56,7 +56,7 @@ RUN cp ./assets/less/theme.config ${INVENIO_INSTANCE_PATH}/assets/less/theme.con
 RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/custom_fields
 RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/search
 RUN invenio webpack install
-RUN invenio shell ./dockerfile_helper.py
+RUN invenio shell ./scripts/symlink_assets.py
 RUN invenio webpack build
 
 ENTRYPOINT ["bash", "-c"]
