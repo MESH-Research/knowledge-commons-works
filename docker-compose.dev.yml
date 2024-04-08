@@ -101,16 +101,17 @@ services:
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${MIGRATION_SERVER_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer:/opt/invenio/invenio-record-importer
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/invenio-communities
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-groups:/opt/invenio/invenio-groups
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/invenio-rdm-records
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/invenio-records-resources
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
+      # - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer:/opt/invenio/invenio-record-importer
+      # - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/invenio-communities
+      # - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-groups:/opt/invenio/invenio-groups
+      # - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form
+      # - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page
+      # - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/invenio-rdm-records
+      # - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/invenio-records-resources
+      # - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
+      # - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
+      # - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
+      # - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
 
   # API Rest Application
   # command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini --daemonize=logs/uwsgi-api-${mydate}.log --log-reopen --pidfile=/tmp/kcr_api.pid"]
@@ -143,7 +144,7 @@ services:
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${MIGRATION_SERVER_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
+      # - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
   # Worker
   worker:
     extends:

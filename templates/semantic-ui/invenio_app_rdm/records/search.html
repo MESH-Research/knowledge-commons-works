@@ -1,0 +1,32 @@
+{#
+  Copyright (C) 2020 CERN.
+  Copyright (C) 2020 Northwestern University.
+
+  Invenio App RDM is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+{%- set title = _("Search results") %}
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block javascript %}
+    {{ super() }}
+    {{ webpack['invenio-app-rdm-search.js'] }}
+{%- endblock %}
+
+{%- block page_body %}
+
+<div class="ui container fluid page-subheader-outer compact ml-0-mobile mr-0-mobile">
+  <div class="ui container community-search page-subheader flex align-items-center justify-space-between">
+    <h1 class="ui large header m-0">Works Search</h1>
+  </div>
+</div>
+
+<div class="ui container">
+
+  {%- block navbar_search %}
+    {%- include "invenio_app_rdm/searchbar.html" %}
+  {%- endblock navbar_search %}
+
+  <div data-invenio-search-config='{{ search_app_rdm_config(app_id="InvenioAppRdm.Search") | tojson }}'></div>
+</div>
+{%- endblock page_body %}

@@ -4,6 +4,72 @@ import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
+const MenuItem = ({ text, icon, url }) => {
+  return (
+    <a role="button" href={url} className="ui ">
+      <i className={`${icon} icon fitted`}></i>
+      <span className="inline">{i18next.t(text)}</span>
+    </a>
+  );
+};
+
+const CollapsingMenuItem = ({ text, icon, url }) => {
+  return (
+    <>
+      <Popup
+        content={i18next.t(text)}
+        trigger={
+          <a role="button" href={url} className="ui computer only">
+            <i className={`${icon} icon fitted`}></i>
+          </a>
+        }
+      />
+
+      <a role="button" href={url} className="ui widescreen only">
+        <i className={`${icon} icon fitted`}></i>
+        <span className="inline">{i18next.t(text)}</span>
+      </a>
+
+      <a role="button" href={url} className="ui mobile tablet only">
+        <i className={`${icon} icon fitted`}></i>
+        <span className="inline">{i18next.t(text)}</span>
+      </a>
+
+    </>
+  );
+};
+
+const SubMenu = ({ item }) => {
+  return (
+    <div className={`dropdown ${item.active ? " active" : ""}`}>
+      <a
+        role="menuitem"
+        className="dropdown-toggle"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        href={item.url}
+      >
+        {/* // FIXME: safe filter??? */}
+        {item.text}
+        <b className="caret"></b>
+      </a>
+      <ul className="dropdown-menu">
+        {item.children
+          .sort((a, b) => a.order - b.order)
+          .map((childItem, indexInner) => (
+            <li
+              className={`${childItem.active ? "active" : ""}`}
+              key={indexInner}
+            >
+              <MenuItem {...childItem} />
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
+};
+
 const PlusMenu = ({ plusMenuItems }) => {
   return (
     //   {# {%- if plus_menu_items %}
@@ -172,6 +238,9 @@ const LoginMenu = ({
       ? currentUserEmail.slice(31) + "..."
       : currentUserEmail;
 
+  console.log("LoginMenu ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+  console.log(userAdministrator, userAuthenticated, accountsEnabled, profilesEnabled, adminMenuItems, settingsMenuItems, loginURL, logoutURL, currentUserProfile, readableEmail);
+
   return (
     !!accountsEnabled &&
     (!userAuthenticated ? (
@@ -204,72 +273,6 @@ const LoginMenu = ({
         </div>
       </>
     ))
-  );
-};
-
-const MenuItem = ({ text, icon, url }) => {
-  return (
-    <a role="button" href={url} className="ui ">
-      <i className={`${icon} icon fitted`}></i>
-      <span className="inline">{i18next.t(text)}</span>
-    </a>
-  );
-};
-
-const CollapsingMenuItem = ({ text, icon, url }) => {
-  return (
-    <>
-      <Popup
-        content={i18next.t(text)}
-        trigger={
-          <a role="button" href={url} className="ui computer only">
-            <i className={`${icon} icon fitted`}></i>
-          </a>
-        }
-      />
-
-      <a role="button" href={url} className="ui widescreen only">
-        <i className={`${icon} icon fitted`}></i>
-        <span className="inline">{i18next.t(text)}</span>
-      </a>
-
-      <a role="button" href={url} className="ui mobile tablet only">
-        <i className={`${icon} icon fitted`}></i>
-        <span className="inline">{i18next.t(text)}</span>
-      </a>
-
-    </>
-  );
-};
-
-const SubMenu = ({ item }) => {
-  return (
-    <div className={`dropdown ${item.active ? " active" : ""}`}>
-      <a
-        role="menuitem"
-        className="dropdown-toggle"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-        href={item.url}
-      >
-        {/* // FIXME: safe filter??? */}
-        {item.text}
-        <b className="caret"></b>
-      </a>
-      <ul className="dropdown-menu">
-        {item.children
-          .sort((a, b) => a.order - b.order)
-          .map((childItem, indexInner) => (
-            <li
-              className={`${childItem.active ? "active" : ""}`}
-              key={indexInner}
-            >
-              <MenuItem {...childItem} />
-            </li>
-          ))}
-      </ul>
-    </div>
   );
 };
 
@@ -390,7 +393,7 @@ const MainMenu = ({
         )}
 
         <div className={`item`}>
-          <MenuItem text="Search" url={"/records?search="} icon="search" />
+          <MenuItem text="Search" url={"/search"} icon="search" />
         </div>
 
         {/* "Plus" menu including adding a record */}
@@ -484,7 +487,7 @@ const themeSearchbarEnabled =
 const userAuthenticated =
   element.dataset.userAuthenticated === "True" ? true : false;
 const userAdministrator =
-  element.dataset.userAdministrator === "True" ? true : false;
+  JSON.parse(element.dataset.userRoles).includes("administrator") ? true : false;
 
 // Provide the data property as a prop to the MainMenu component
 ReactDOM.render(
