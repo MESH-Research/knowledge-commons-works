@@ -59,7 +59,7 @@
         data-notifications-menu-items='{{ notifications_menu_items | tojson }}'
         data-plus-menu-items='{{ plus_menu_items | tojson }}'
         data-profiles-enabled="{{ config.PROFILES != '' }}"
-        data-searchbar-enabled="{{ config.THEME_SEARCHBAR_ENABLED }}"
+        data-searchbar-enabled="{{ config.get(THEME_SEARCHBAR) }}"
         data-settings-menu-items='{{ settings_menu_items | tojson }}'
         data-theme-logo-url="{{ url_for('static', filename=config.THEME_LOGO) }}"
         data-theme-sitename="{{ config.THEME_SITENAME }}"
