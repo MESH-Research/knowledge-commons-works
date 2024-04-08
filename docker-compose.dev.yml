@@ -83,6 +83,7 @@ services:
       - FLASK_DEBUG=1
       - INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
       - INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://cache:6379/4
+      - "INVENIO_SEARCH_HOSTS=['search:9200']"
     ports:
       - "5000"
     extra_hosts:
@@ -129,6 +130,7 @@ services:
       - FLASK_DEBUG=1
       - INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
       - INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://cache:6379/4
+      - "INVENIO_SEARCH_HOSTS=['search:9200']"
     volumes:
       # TODO: in production copy these files rather than mounting?
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg

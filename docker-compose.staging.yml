@@ -146,7 +146,7 @@ services:
       # - static_data:/opt/invenio/var/instance/static
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
-      - /${MIGRATION_SERVER_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
+      - /${MIGRATION_LOCAL_DATA_DIR}:${MIGRATION_CONTAINER_DATA_DIR}
       # - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
   # Worker
   worker:
@@ -160,18 +160,18 @@ services:
     depends_on:
       search:
         condition: service_started
-      cache:
-        condition: service_started
-      db:
-        condition: service_started
+      # cache:
+      #   condition: service_started
+      # db:
+      #   condition: service_started
       mq:
         condition: service_started
 volumes:
   archived_data:
   static_data:
   uploaded_data:
-  database_data:
-  cache_data:
+  # database_data:
+  # cache_data:
   mq_data:
   search_data:
   pgadmin_data:
