@@ -37,7 +37,7 @@ textarea {
     }
   }
 
-  &.widescreen:not(.large.monitor) {
+  &.widescreen:not(.large.monitor):not(.computer) {
     @media all and (max-width: @widescreenMonitorBreakpoint) {
       display: none !important;
     }
@@ -106,7 +106,6 @@ html.cover-page {
           }
         }
       }
-
       .item:not(.logo) {
         & > span {
           padding-left: 1.5rem;
@@ -146,6 +145,12 @@ html.cover-page {
           a:hover,
           .item > span {
             color: @primaryColor;
+          }
+          > form > a.ui.button.basic {
+            color: @primaryColor !important;
+            i {
+              margin-right: 0.5rem !important;
+            }
           }
         }
         #user-profile-dropdown {
@@ -284,6 +289,28 @@ html.cover-page {
 #communities-carousel {
   .ui.container.grid {
     max-width: 100% !important;
+  }
+}
+
+// Search results
+
+.ui.container.fluid.page-subheader-outer.compact.ml-0-mobile.mr-0-mobile {
+  margin-bottom: 0;
+}
+#header-search-bar {
+    .search.right-angle-search-content {
+      width: 100% !important;
+    }
+}
+.search-bar {
+  // margin-top: 1rem !important;
+  > .two.column.row {
+    .column:nth-child(2) {
+      padding:0 1rem;
+    }
+  }
+  .result-options.rel-mt-2 {
+    margin-top: 1rem !important;
   }
 }
 
