@@ -81,8 +81,6 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
-      - INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
-      - INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://cache:6379/4
     ports:
       - "5000"
     extra_hosts:
@@ -100,19 +98,8 @@ services:
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${MIGRATION_SERVER_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer:/opt/invenio/invenio-record-importer
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/invenio-communities
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-groups:/opt/invenio/invenio-groups
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/invenio-rdm-records
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/invenio-records-resources
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
 
   # API Rest Application
-  # command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini --daemonize=logs/uwsgi-api-${mydate}.log --log-reopen --pidfile=/tmp/kcr_api.pid"]
   web-api:
     extends:
       file: docker-services.yml
@@ -126,13 +113,10 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
-      - INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
-      - INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://cache:6379/4
     volumes:
       # TODO: in production copy these files rather than mounting?
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
-      # - ${INVENIO_LOCAL_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets
       - ./static:/opt/invenio/var/instance/static
       - ./templates:/opt/invenio/var/instance/templates
       - ./translations:/opt/invenio/var/instance/translations
@@ -141,7 +125,6 @@ services:
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${MIGRATION_SERVER_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
   # Worker
   worker:
     extends:
@@ -149,6 +132,11 @@ services:
       service: app
     command: ["celery -A invenio_app.celery worker --beat --loglevel INFO"]
     image: monotasker/kcworks:latest
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
     depends_on:
