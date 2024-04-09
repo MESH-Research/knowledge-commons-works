@@ -16,6 +16,6 @@ invenio collect -v
 echo -e "${yellow}Building assets...${clear}"
 invenio webpack clean create
 invenio webpack install
-invenio shell ./scripts/symlink_assets.py
+invenio shell ./symlink_assets.py
 invenio webpack build
 echo -e "${green}All done building assets...${clear}"
