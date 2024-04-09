@@ -18,7 +18,9 @@
 
 {%- block page_body %}
 {{ super() }}
-<div data-invenio-search-config='{{
+
+<div id="communities-details-search" data-invenio-search-config='{{
   search_app_communities_records_config(app_id="InvenioCommunities.DetailsSearch",
   endpoint=endpoint) | tojson }}'></div>
+
 {%- endblock page_body %}

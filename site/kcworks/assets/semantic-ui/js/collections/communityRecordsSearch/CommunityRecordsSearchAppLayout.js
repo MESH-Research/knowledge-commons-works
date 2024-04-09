@@ -4,15 +4,20 @@ import {
   SearchBar,
 } from "@js/invenio_search_ui/components";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
-import React from "react";
-import { Count, Sort } from "react-searchkit";
+import React, { useContext } from "react";
+import { Count, Sort, buildUID } from "react-searchkit";
 import { Button, Container, Grid } from "semantic-ui-react";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Trans } from "react-i18next";
+import { SearchConfigurationContext } from "@js/invenio_search_ui/components/context";
 
 export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
   const [sidebarVisible, setSidebarVisible] = React.useState(false);
+
+  const context = useContext(SearchConfigurationContext);
+  console.log("CommunitiesSearchLayout", config, appName, context);
+  console.log("CommunityRecordsSearchAppLayout", config, appName);
 
   return (
     <Container className="rel-pt-2">
@@ -29,7 +34,7 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
         <Grid.Column mobile={14} tablet={14} computer={12} floated="right">
           <Grid>
             <Grid.Column width={16}>
-              <SearchBar placeholder={i18next.t("Search records in community...")} />
+              <SearchBar buildUID={buildUID} placeholder={i18next.t("Search records in collection...")} />
             </Grid.Column>
 
             <Grid.Column width={4} textAlign="left">
