@@ -45,16 +45,18 @@ class CarouselItem extends Component {
                 <Button
                   size="mini"
                   href={self_link}
-                  content={i18next.t("Browse the collection")}
+                  content={i18next.t("Browse")}
+                  className="browse-btn"
                 />
                 {showUploadBtn && (
                   <Button
                     size="mini"
-                    icon="upload"
-                    labelPosition="left"
+                    // icon="upload"
+                    // labelPosition="left"
                     positive
                     href={`/uploads/new?community=${community.slug}`}
-                    content={i18next.t("Contribute a work")}
+                    content={i18next.t("Contribute")}
+                    className="contribute-btn"
                   />
                 )}
               </Grid.Column>

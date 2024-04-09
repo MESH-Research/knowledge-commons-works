@@ -103,7 +103,7 @@ class CommunitiesCarousel extends Component {
     const { title } = this.props;
     return (
       <Container fluid className="rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
-        <Grid container>
+        <Grid container className="carousel-header-container">
           <Grid.Column width="2" />
           <Grid.Column width="12">
           <Header as="h2" className="rel-mb-1">
@@ -112,7 +112,7 @@ class CommunitiesCarousel extends Component {
           </Grid.Column>
           <Grid.Column width="2" />
         </Grid>
-        <Grid container>
+        <Grid container className="carousel-items-container">
           <Grid.Column width="2" />
           <Grid.Column width="12">
             <Item.Group>
