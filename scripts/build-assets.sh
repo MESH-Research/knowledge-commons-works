@@ -17,5 +17,13 @@ echo -e "${yellow}Building assets...${clear}"
 invenio webpack clean create
 invenio webpack install
 invenio shell ./symlink_assets.py
-invenio webpack build
+invenio webpack build & pid=$!
+# spinner during build
+i=1
+sp="\|/-"
+while ps -p $pid > /dev/null
+do
+    printf "\b%c" "${sp:i++%4:1}"
+    sleep 0.1
+done
 echo -e "${green}All done building assets...${clear}"
