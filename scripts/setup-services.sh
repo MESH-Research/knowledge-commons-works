@@ -11,16 +11,15 @@ cyan='\033[0;36m'
 clear='\033[0m'
 
 echo -e "${yellow}Setting up services for Knowledge Commons Works instance...${clear}"
-read -p "${yellow}Do you want to use s3 for storage? (y/n)${clear}" s3 -n 1 -r
 echo -e "${yellow}Creating the database...${clear}"
 invenio db init create
-if (( s3 == 'y' )); then
-    echo -e "${yellow}Setting up s3 for storage...${clear}"
-    invenio files location s3-default s3://hcommons-dev-invenio --default
-else
-    echo -e "${yellow}Setting up local storage...${clear}"
-    invenio files location create --default default-location /opt/invenio/var/instance/data
-fi
+echo -e "${yellow}Do you want to use s3 or local file storage?${clear}"
+select yn in "s3" "local"; do
+    case $yn in
+        s3 ) echo -e "${yellow}Setting up s3 for storage...${clear}"; invenio files location s3-default s3://hcommons-dev-invenio --default; break;;
+        local ) echo -e "${yellow}Setting up local storage...${clear}"; invenio files location create --default default-location /opt/invenio/var/instance/data; break;;
+    esac
+done
 echo -e "${yellow}Setting up admin user and role...${clear}"
 invenio roles create admin
 invenio access allow superuser-access role admin
@@ -29,9 +28,17 @@ invenio index init
 echo -e "${yellow}Setting up custom metadata fields...${clear}"
 invenio rdm-records custom-fields init
 invenio communities custom-fields init
-echo -e "${yellow}Setting up fixtures (this may take a long time!!)...${clear}"
+echo -e "${yellow}Setting up fixtures in two stages (this may take a long time!!)...${clear}"
 invenio rdm fixtures
-invenio rdm-records fixtures
+invenio rdm-records fixtures & pid=$!
+# spinner during fixture setup
+i=1
+sp="\|/-"
+while ps -p $pid > /dev/null
+do
+    printf "\b%c" "${sp:i++%4:1}"
+    sleep 0.1
+done
 echo -e "${yellow}Compiling translations...${clear}"
 pybabel compile -d /opt/invenio/src/translations
 echo -e "${yellow}Setting up task queues...${clear}"
