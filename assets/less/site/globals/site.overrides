@@ -64,6 +64,17 @@ textarea {
   display: none;
 }
 
+// Flashed messages and banners
+.ui.flashed.message {
+  .ui.grid.centered {
+    text-align: right;
+    .ui.icon.button.close-btn
+    {
+      margin-top: 0;
+    }
+  }
+}
+
 // Cover page (login, register, etc.)
 
 html.cover-page {
@@ -250,9 +261,6 @@ html.cover-page {
         letter-spacing: 0.05rem;
         margin-bottom: 0;
         margin-top: 1rem;
-        @media screen and (max-width: @largestMobileScreen) {
-          font-size: 2rem;
-        }
       }
       a {
         text-decoration: none;
@@ -269,11 +277,25 @@ html.cover-page {
     }
   }
 
+  #frontpage-search-bar {
+    @media screen and (max-width: 991px) {
+      text-align: center;
+      .column:last-child {
+        margin-top: 1rem;
+      }
+    }
+  }
+
   #frontpage-info-bar {
     a {
       color: @textColor;
       text-decoration: none;
       opacity: 0.7;
+      @media all and (max-width: @largestTabletScreen) {
+        h2 {
+          font-size: 1.5rem;
+        }
+      }
       .huge.icon {
         font-size: 3rem;
       }
@@ -289,6 +311,28 @@ html.cover-page {
 #communities-carousel {
   .ui.container.grid {
     max-width: 100% !important;
+    .column {
+      padding-bottom: 0;
+    }
+    .item {
+      .content {
+        .browse-btn {
+          background-color: @white !important;
+          border: 1px solid #ddd;
+        }
+      }
+    }
+    &:nth-child(2) {
+      margin-top: 0;
+    }
+  }
+  i.icon.angle.left.carousel-arrow,
+  i.icon.angle.right.carousel-arrow {
+    color: @primaryColor;
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 
@@ -1745,23 +1789,33 @@ html.cover-page {
         display: flex;
         flex-direction: row;
         align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
         .supporter-image-link {
           img {
             height: 4rem;
-            margin-left: 1rem;
+            margin-left: 1.5rem;
+            margin-top: 1rem;
           }
           &:nth-child(2) {
             img {
-              height: 5.5rem;
+              min-width: 12rem;
             }
           }
           &:first-child {
             img {
               height: 2.5rem;
+              min-width: 8rem;
               margin-left: 0;
             }
           }
         }
+        @media all and (max-width: 1200px) {
+          justify-content: center;
+        }
+      }
+      &.sponsors-column {
+        padding: 0;
       }
     }
   }
