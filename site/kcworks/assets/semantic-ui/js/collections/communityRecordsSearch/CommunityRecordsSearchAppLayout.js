@@ -31,7 +31,7 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
           />
         </Grid.Column>
 
-        <Grid.Column mobile={14} tablet={14} computer={12} floated="right">
+        <Grid.Column mobile={14} tablet={14} computer={12} floated="left">
           <Grid>
             <Grid.Column width={16}>
               <SearchBar buildUID={buildUID} placeholder={i18next.t("Search records in collection...")} />
@@ -61,6 +61,13 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
         </Grid.Column>
 
         <Grid.Row>
+          <Grid.Column mobile={16} tablet={16} computer={12}>
+            <SearchAppResultsPane
+              layoutOptions={config.layoutOptions}
+              appName={appName}
+            />
+          </Grid.Column>
+
           <GridResponsiveSidebarColumn
             width={4}
             open={sidebarVisible}
@@ -68,12 +75,6 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
             // eslint-disable-next-line react/no-children-prop
             children={<SearchAppFacets aggs={config.aggs} appName={appName} />}
           />
-          <Grid.Column mobile={16} tablet={16} computer={12}>
-            <SearchAppResultsPane
-              layoutOptions={config.layoutOptions}
-              appName={appName}
-            />
-          </Grid.Column>
         </Grid.Row>
       </Grid>
     </Container>
