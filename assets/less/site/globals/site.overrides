@@ -43,7 +43,7 @@ textarea {
     }
   }
 
-  &.computer:not(.large.monitor):not(.tablet):not(.mobile) {
+  &.computer:not(.large.monitor):not(.large.screen):not(.tablet):not(.mobile) {
     @media all and (max-width: @computerBreakpoint) {
       display: none !important;
     }

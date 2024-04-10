@@ -74,6 +74,9 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
             onHideClick={() => setSidebarVisible(false)}
             // eslint-disable-next-line react/no-children-prop
             children={<SearchAppFacets aggs={config.aggs} appName={appName} />}
+            computer={4}
+            largeScreen={4}
+            widescreen={4}
           />
         </Grid.Row>
       </Grid>
