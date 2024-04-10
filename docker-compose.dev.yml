@@ -97,7 +97,7 @@ services:
       # - static_data:/opt/invenio/var/instance/static
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
-      - /${MIGRATION_SERVER_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
+      - /${MIGRATION_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
 
   # API Rest Application
   web-api:
@@ -124,7 +124,7 @@ services:
       # - static_data:/opt/invenio/var/instance/static
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
-      - /${MIGRATION_SERVER_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
+      - /${MIGRATION_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
   # Worker
   worker:
     extends:
