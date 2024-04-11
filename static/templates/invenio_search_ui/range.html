@@ -1,0 +1,16 @@
+<!--
+  This file is part of Invenio.
+  Copyright (C) 2018 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+-->
+<div class="panel panel-default" ng-show="vm.invenioSearchResults.aggregations.years.buckets.length > 0">
+  <div class="panel-heading">
+      <h3 class="panel-title">year</h3>
+  </div>
+  <div class="panel-body">
+      <div ng-style="{width: '80%', margin: '0 auto'}" id="year_hist"></div>
+      <div ng-style="{width: '80%', margin: '0 auto'}" id="year_select"></div>
+  </div>
+</div>

@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkinvenio_assets=self.webpackChunkinvenio_assets||[]).push([[332],{86148:(e,n,s)=>{var i=s(73),o=s.n(i);o()(".ui.button.embed-btn").click((function(){o()("#embedModal").modal("show")})),o()("#close-btn").click((function(){o()("#embedModal").modal("hide")}))}},e=>{e.O(0,[73],(()=>{return n=86148,e(e.s=n);var n}));e.O()}]);
+//# sourceMappingURL=bottom_js.3da54ef7ef97e14a1f09.js.map

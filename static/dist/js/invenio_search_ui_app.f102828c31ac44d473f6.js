@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkinvenio_assets=self.webpackChunkinvenio_assets||[]).push([[5205],{56368:(s,e,n)=>{var a=n(88802);(0,n(71790).U)(a.A)}},s=>{s.O(0,[402,1057,7655,5373,6267,9777,5941,7501,4218,8010,8102,742,6528,3532,1751,226,5580],(()=>{return e=56368,s(s.s=e);var e}));s.O()}]);
+//# sourceMappingURL=invenio_search_ui_app.f102828c31ac44d473f6.js.map

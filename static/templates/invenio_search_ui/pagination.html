@@ -1,0 +1,32 @@
+<!--
+  This file is part of Invenio.
+  Copyright (C) 2016-2018 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+-->
+<ul class="pagination pagination-sm" ng-if="vm.invenioSearchResults.hits.total">
+  <li ng-show="showGoToFirstLast" ng-class="paginationHelper.getFirstClass()">
+    <a href="#" ng-click="paginationHelper.changePage(1)" aria-label="First">
+      <span aria-hidden="true"><<<span>
+    </a>
+  </li>
+  <li ng-class="paginationHelper.getPrevClass()">
+    <a href="#" ng-click="paginationHelper.changePage(paginationHelper.previous())" aria-label="Previous">
+      <span aria-hidden="true"><</span>
+    </a>
+  </li>
+  <li ng-class="paginationHelper.getPageClass(page.value)" ng-repeat="page in paginatePages">
+    <a href="#" ng-click="paginationHelper.changePage(page.value)" alt="{{ page.title }}">{{ page.value }}</a>
+  </li>
+  <li ng-class="paginationHelper.getNextClass()">
+    <a href="#" ng-click="paginationHelper.changePage(paginationHelper.next())" aria-label="Next">
+      <span aria-hidden="true">></span>
+    </a>
+  </li>
+  <li ng-show="showGoToFirstLast" ng-class="paginationHelper.getLastClass()">
+    <a href="#" ng-click="paginationHelper.changePage(paginationHelper.total())" aria-label="Last">
+      <span aria-hidden="true">>></span>
+    </a>
+  </li>
+</ul>
