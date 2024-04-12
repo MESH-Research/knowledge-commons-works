@@ -1,0 +1,137 @@
+# Local development stack for Knowledge Commons Works
+#
+# Usage::
+#
+#   $ docker-compose up --file docker-compose.dev.yml -d
+#
+# Following services are included:
+# - Frontend: Nginx (exposed ports: 80 and 443)
+# - Cache: Redis (exposed port: 6379)
+# - UI application: UWSGI (not exposed)
+# - API application: UWSGI (not exposed)
+# - Cache: Redis (exposed port: 6379)
+# - DB: (PostgresSQL) (exposed port: 5432 or 3306)
+# - Message queue: RabbitMQ (exposed ports: 5672, 15672)
+# - Search platform: (OpenSearch) (exposed ports: 9200, 9300)
+# - OpenSearch Dashboard (view OS indexes) (exposed ports: 5601)
+#
+version: '2.2'
+services:
+  # cache:
+  #   extends:
+  #     file: docker-services.yml
+  #     service: cache
+  #   volumes:
+  #     - cache_data:/data
+  mq:
+    extends:
+      file: docker-services.yml
+      service: mq
+    volumes:
+      - mq_data:/var/lib/rabbitmq
+  search:
+    extends:
+      file: docker-services.yml
+      service: search
+    volumes:
+      - search_data:/usr/share/opensearch/data
+  # opensearch-dashboards:
+  #   extends:
+  #     file: docker-services.yml
+  #     service: opensearch-dashboards
+  pgadmin:
+    extends:
+      file: docker-services.yml
+      service: pgadmin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+  frontend:
+    extends:
+      file: docker-services.yml
+      service: frontend
+    volumes:
+      - ./docker/nginx_staging/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx_staging/conf.d:/etc/nginx/conf.d
+      - ./static:/opt/invenio/var/instance/static
+      # - static_data:/opt/invenio/var/instance/static
+    depends_on:
+      - web-ui
+      - web-api
+    ports:
+      - "80:80"
+      - "443:443"
+
+  # UI Application
+  # This container holds Python, pip, the virtualenv, and the invenio code,
+  # Node.js, NPM and some standard libraries Invenio usually needs
+  # command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini --daemonize=logs/uwsgi-ui.log --log-reopen --pidfile=/tmp/kcr_ui.pid"]
+  web-ui:
+    extends:
+      file: docker-services.yml
+      service: app
+    command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
+    image: monotasker/kcworks:latest
+    ports:
+      - "5000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app_data:/opt/invenio/var/instance/app_data
+      - ./static:/opt/invenio/var/instance/static
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
+      - .:/opt/invenio/src
+      # - static_data:/opt/invenio/var/instance/static
+      - archived_data:/opt/invenio/var/instance/archive
+      # - uploaded_data:/opt/invenio/var/instance/data
+      - /${MIGRATION_LOCAL_DATA_DIR}:${MIGRATION_CONTAINER_DATA_DIR}
+
+  # API Rest Application
+  web-api:
+    extends:
+      file: docker-services.yml
+      service: app
+    command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
+    image: monotasker/kcworks:latest
+    ports:
+      - "5001"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app_data:/opt/invenio/var/instance/app_data
+      - ./static:/opt/invenio/var/instance/static
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
+      - .:/opt/invenio/src
+      # - static_data:/opt/invenio/var/instance/static
+      - archived_data:/opt/invenio/var/instance/archive
+      - uploaded_data:/opt/invenio/var/instance/data
+      - /${MIGRATION_LOCAL_DATA_DIR}:${MIGRATION_CONTAINER_DATA_DIR}
+  # Worker
+  worker:
+    extends:
+      file: docker-services.yml
+      service: app
+    command: ["celery -A invenio_app.celery worker --beat --loglevel INFO"]
+    image: monotasker/kcworks:latest
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - uploaded_data:/opt/invenio/var/instance/data
+    depends_on:
+      search:
+        condition: service_started
+      # cache:
+      #   condition: service_started
+      mq:
+        condition: service_started
+volumes:
+  archived_data:
+  static_data:
+  uploaded_data:
+  # cache_data:
+  mq_data:
+  search_data:
+  pgadmin_data:

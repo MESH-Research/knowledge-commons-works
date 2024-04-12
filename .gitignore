@@ -21,6 +21,16 @@ __pycache__/
 # Node module files
 node_modules/
 
+# untracked assets files (e.g. compiled assets)
+static/admin/
+static/bootstrap/
+static/css/
+static/dist/
+static/js/
+static/templates/
+static/vendor/
+static/xsl/
+
 # Distribution / packaging
 .Python
 env/
@@ -74,8 +84,8 @@ logs/*
 nohup.out
 
 # auto-symlinked during build process
-site/knowledge_commons_repository/assets/semantic-ui/less/site/globals/site.variables
-site/knowledge_commons_repository/assets/semantic-ui/less/site/globals/site.overrides
+site/kcworks/assets/semantic-ui/less/site/globals/site.variables
+site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 
 # Invenio-cli per machine file
 .invenio.private
@@ -91,6 +101,9 @@ data/.minio.sys
 # Celery
 celerybeat-schedule
 celerybeat-schedule.*
+
+# translations compiled files
+translations/*/LC_MESSAGES/*.mo
 
 # OS-specific things to ignore:
 # .............................................................................
@@ -115,3 +128,9 @@ Thumbs.db
 # *.gz
 subjects_fast.yaml
 serialized_core_data.jsonl
+scripts/core-migrate/core_migrate/logs/core_migrate_touched_records.jsonl
+scripts/core-migrate/core_migrate/logs/core_migrate.log
+scripts/core-migrate/core_migrate/logs/core_migrate.log.*
+scripts/core-migrate/core_migrate/logs/core_migrate_failed_records.jsonl
+site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log
+site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*

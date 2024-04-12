@@ -11,6 +11,7 @@ from invenio_vocabularies.records.api import Vocabulary
 from pprint import pprint
 from pytest_invenio.fixtures import base_client, db, UserFixture
 import pytest
+
 # pytest_invenio provides these fixtures (among others):
 #   pytest_invenio.fixtures.app(base_app, search, database)
 #   pytest_invenio.fixtures.app_config(db_uri, broker_uri, celery_config_ext)
@@ -24,30 +25,30 @@ import pytest
 #   pytest_invenio.fixtures.entry_points(extra_entry_points
 
 test_config = {
-
-    'SQLALCHEMY_DATABASE_URI': "postgresql+psycopg2://knowledge-commons-repository:knowledge-commons-repository@localhost/knowledge-commons-repository-test",
-    'SQLALCHEMY_TRACK_MODIFICATIONS': False,
-    'INVENIO_WTF_CSRF_ENABLED': False,
-    'INVENIO_WTF_CSRF_METHODS': [],
-    'THEME_FRONTPAGE_TITLE': "Knowledge Commons Repository",
-    'APP_DEFAULT_SECURE_HEADERS':
-        {'content_security_policy': {'default-src': []},
-                                     'force_https': False},
-    'APP_THEME': ['semantic-ui'],
-    'BROKER_URL': 'amqp://guest:guest@localhost:5672//',
-    'CELERY_CACHE_BACKEND': 'memory',
-    'CELERY_RESULT_BACKEND': 'cache',
-    'CELERY_TASK_ALWAYS_EAGER': True,
-    'CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS': True,
-#  'DEBUG_TB_ENABLED': False,
+    "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks-test",
+    "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+    "INVENIO_WTF_CSRF_ENABLED": False,
+    "INVENIO_WTF_CSRF_METHODS": [],
+    "THEME_FRONTPAGE_TITLE": "Knowledge Commons Repository",
+    "APP_DEFAULT_SECURE_HEADERS": {
+        "content_security_policy": {"default-src": []},
+        "force_https": False,
+    },
+    "APP_THEME": ["semantic-ui"],
+    "BROKER_URL": "amqp://guest:guest@localhost:5672//",
+    "CELERY_CACHE_BACKEND": "memory",
+    "CELERY_RESULT_BACKEND": "cache",
+    "CELERY_TASK_ALWAYS_EAGER": True,
+    "CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS": True,
+    #  'DEBUG_TB_ENABLED': False,
     # 'INVENIO_INSTANCE_PATH': '/opt/invenio/var/instance',
-#  'MAIL_SUPPRESS_SEND': True,
-#  'OAUTH2_CACHE_TYPE': 'simple',
-#  'OAUTHLIB_INSECURE_TRANSPORT': True,
-    'RATELIMIT_ENABLED': False,
-    'SECRET_KEY': 'test-secret-key',
-    'SECURITY_PASSWORD_SALT': 'test-secret-key',
-    'TESTING': True,
+    #  'MAIL_SUPPRESS_SEND': True,
+    #  'OAUTH2_CACHE_TYPE': 'simple',
+    #  'OAUTHLIB_INSECURE_TRANSPORT': True,
+    "RATELIMIT_ENABLED": False,
+    "SECRET_KEY": "test-secret-key",
+    "SECURITY_PASSWORD_SALT": "test-secret-key",
+    "TESTING": True,
 }
 #  'THEME_ICONS': {'bootstrap3': {'*': 'fa fa-{} fa-fw',
 #                                 'codepen': 'fa fa-codepen fa-fw',
@@ -64,9 +65,10 @@ test_config = {
 #                                  'shield': 'shield alternate icon',
 #                                  'user': 'user icon'}},
 
+
 # ### tests/conftest.py ###
 # Common application configuration goes here
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def app_config(app_config) -> dict:
     # app_config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///testing.db"
     for k, v in test_config.items():
@@ -74,6 +76,7 @@ def app_config(app_config) -> dict:
     # print('*******')
     # pprint(app_config)
     return app_config
+
 
 @pytest.fixture(scope="module")
 def extra_entry_points() -> dict:
@@ -83,10 +86,13 @@ def extra_entry_points() -> dict:
         # ]
     }
 
+
 @pytest.fixture(scope="module")
 def resource_type_type(app):
     """Resource type vocabulary type."""
-    return vocabulary_service.create_type(system_identity, "resourcetypes", "rsrct")
+    return vocabulary_service.create_type(
+        system_identity, "resourcetypes", "rsrct"
+    )
 
 
 @pytest.fixture(scope="module")
@@ -113,7 +119,6 @@ def resource_type_v(app, resource_type_type):
             "type": "resourcetypes",
         },
     )
-
 
     vocabulary_service.create(
         system_identity,
@@ -162,7 +167,6 @@ def resource_type_v(app, resource_type_type):
     Vocabulary.index.refresh()
 
     return vocab
-
 
 
 # *** db fixture built into pytest-invenio ***
@@ -287,6 +291,7 @@ def resource_type_v(app, resource_type_type):
 #     user2.create(app, db)
 #     return [user1, user2]
 
+
 @pytest.fixture()
 def users(UserFixture, app, db) -> list:
     """Create example user."""
@@ -315,6 +320,7 @@ def users(UserFixture, app, db) -> list:
 
     db.session.commit()
     return [user1, user2]
+
 
 # dir(user)
 # ['__class__',
@@ -373,6 +379,7 @@ def users(UserFixture, app, db) -> list:
 #  'user',
 #  'username']
 
+
 @pytest.fixture()
 def admin_role_need(db):
     """Store 1 role with 'superuser-access' ActionNeed.
@@ -385,7 +392,9 @@ def admin_role_need(db):
     role = Role(name="administration-access")
     db.session.add(role)
 
-    action_role = ActionRoles.create(action=administration_access_action, role=role)
+    action_role = ActionRoles.create(
+        action=administration_access_action, role=role
+    )
     db.session.add(action_role)
 
     db.session.commit()
@@ -403,7 +412,9 @@ def admin(UserFixture, app, db, admin_role_need):
     u.create(app, db)
 
     datastore = app.extensions["security"].datastore
-    _, role = datastore._prepare_role_modify_args(u.user, "administration-access")
+    _, role = datastore._prepare_role_modify_args(
+        u.user, "administration-access"
+    )
 
     datastore.add_role_to_user(u.user, role)
     db.session.commit()
@@ -436,7 +447,6 @@ def superuser_identity(admin, superuser_role_need):
     identity = admin.identity
     identity.provides.add(superuser_role_need)
     return identity
-
 
 
 @pytest.fixture()

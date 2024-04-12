@@ -8,9 +8,36 @@
     under the terms of the MIT License; see LICENSE file for more details.
 #}
 
+{% set main_menu_items = [] %}
+{% set actions_menu_items = [] %}
+{% set notifications_menu_items = [] %}
+{% set plus_menu_items = [] %}
+{% set settings_menu_items = [] %}
+{% set admin_menu_items = [] %}
+
+{% for item in current_menu.submenu("main").children %}
+    {% set _ = main_menu_items.append(dict(text=item.text, url=item.url, visible=item.visible, order=item.order)) %}
+{% endfor %}
+{% for item in current_menu.submenu("actions").children %}
+    {% set _ = actions_menu_items.append(dict(text=item.text, url=item.url, visible=item.visible, order=item.order)) %}
+{% endfor %}
+{% for item in current_menu.submenu("notifications").children %}
+    {% set _ = notifications_menu_items.append(dict(text=item.text, url=item.url, visible=item.visible, order=item.order)) %}
+{% endfor %}
+{% for item in current_menu.submenu('plus').children %}
+    {% set _ = plus_menu_items.append(dict(text=item.text, url=item.url, visible=item.visible, order=item.order)) %}
+{% endfor %}
+{% for item in current_menu.submenu('settings').children %}
+    {% set _ = settings_menu_items.append(dict(text=item.text, url=item.url, visible=item.visible, order=item.order)) %}
+{% endfor %}
+{%- for item in current_menu.submenu('profile-admin').children %}
+    {% set _ = admin_menu_items.append(dict(text=item.text, url=item.url, visible=item.visible, order=item.order)) %}
+{% endfor %}
+
 <div>
   <header class="theme header">
     {%- block site_banner %}
+      <div class="ui container fluid beta-banner">Public Beta version - Please help us make this the open, academy-owned platform you want! <a href="#">Tell us what you think!</a></div>
     {%- endblock site_banner %}
     <div class="outer-navbar">
       {%- block banner %}
@@ -18,142 +45,28 @@
         {{ banner() }}
       {%- endblock banner %}
       {%- block navbar %}
-      <div class="ui container invenio-header-container">
-        <nav id="invenio-nav" class="ui menu borderless stackable p-0">
-          <div class="item logo p-0">
-            {%- block navbar_header %}
-                {%- block brand %}
-                  {%- if config.THEME_LOGO %}
-                    <a class="logo-link" href="/">
-                      <img class="ui image rdm-logo"
-                            src="{{ url_for('static', filename=config.THEME_LOGO) }}"
-                            alt="{{ _(config.THEME_SITENAME) }}"/>
-                    </a>
-                  {%- else %}
-                    <a class="logo" href="/">{{ _(config.THEME_SITENAME) }}</a>
-                  {%- endif %}
-                {%- endblock brand %}
-              {%- endblock navbar_header %}
-          </div>
-
-          <div id="rdm-burger-toggle">
-            <button
-              id="rdm-burger-menu-icon"
-              class="ui button transparent"
-              aria-label="{{ _('Menu') }}"
-              aria-haspopup="menu"
-              aria-expanded="false"
-              aria-controls="invenio-menu"
-            >
-              <span class="navicon"></span>
-            </button>
-          </div>
-
-          <div
-            role="menu"
-            id="invenio-menu"
-            aria-labelledby="rdm-burger-menu-icon"
-            class="ui fluid menu borderless mobile-hidden"
-          >
-            <button
-              id="rdm-close-burger-menu-icon"
-              class="ui button transparent"
-              aria-label="{{ _('Close menu') }}"
-            >
-              <span class="navicon"></span>
-            </button>
-
-            {%- if config.THEME_SEARCHBAR %}
-              {%- block navbar_search %}
-                {%- include "invenio_app_rdm/searchbar.html" %}
-              {%- endblock navbar_search %}
-            {%- endif %}
-
-            {%- block navbar_nav %}
-              {%- for item in current_menu.submenu('main').children|sort(attribute='order') if item.visible recursive %}
-
-                {%- if item.name != "communities" or (current_user.roles | selectattr("name", "equalto", "administrator") | list) %}
-
-                {%- if item.children %}
-                  <div class="item">
-                    <div class="dropdown {{ ' active' if item.active else '' }}">
-                      <a role="menuitem"
-                         class="dropdown-toggle"
-                         data-toggle="dropdown"
-                         aria-haspopup="true"
-                         aria-expanded="false"
-                         href="{{ item.url }}"
-                      >
-                        {{ item.text|safe }}
-                        <b class="caret"></b>
-                      </a>
-                      <ul class="dropdown-menu">{{ loop(item.children|sort(attribute='order')) }}</ul>
-                    </div>
-                  </div>
-                {%- else %}
-                  <div class="{{' item active' if item.active and loop.depth == 0 else ' item' }}">
-                    <a role="menuitem" href="{{ item.url }}">
-                        {%- if item.name == "communities" %}
-                          <i class="fitted users icon mobile-hidden"></i>
-                          <span class="mobile tablet only inline">{{ item.text|safe }}</span>
-                          <span class="widescreen only inline">{{ item.text|safe }}</span>
-                        {%- else -%}
-                            {{ item.text|safe }}
-                        {%- endif -%}
-                    </a>
-                  </div>
-                {%- endif %}
-
-                {%- endif %}
-
-              {%- endfor %}
-
-            {%- endblock navbar_nav %}
-
-            {%- block navbar_right %}
-
-              <div class="right menu item">
-
-              {% for item in current_menu.submenu('actions').children|sort(attribute='order') if item.visible recursive %}
-                {%- if config.ACCOUNTS and current_user.is_authenticated %}
-                <div class="item {{ item.text|safe }}">
-                  <a role="menuitem" href="{{ item.url }}">
-                    {%- if item.name == "deposit" %}
-
-                      <i class="icons computer only">
-                        <i class="fitted user icon mobile-hidden"></i>
-                        <i class="big circle outline icon mobile-hidden"></i>
-                      </i>
-                      <span class="mobile tablet only inline">{{ item.text|safe }}</span>
-                      <span class="widescreen only inline">{{ item.text|safe }}</span>
-                    {%- else -%}
-                        {{ item.text|safe }}
-                    {%- endif -%}
-                  </a>
-                </div>
-                {%- endif %}
-              {% endfor %}
-
-
-                {%- if config.ACCOUNTS and current_user.is_authenticated %}
-                  {% for item in current_menu.submenu('notifications').children|sort(attribute='order') if item.visible recursive %}
-                    <div class="item inbox">
-                      <a role="menuitem" href="{{ item.url }}" aria-label="{{ _('Requests') }}">
-                        <i class="icons computer only">
-                          <i class="fitted inbox icon mobile-hidden"></i>
-                          <i class="big circle outline icon mobile-hidden"></i>
-                        </i>
-                        <span class="mobile tablet only inline">{{ _("My inbox") }}</span>
-                        <span class="large screen widescreen only inline">{{ _("My inbox") }}</span>
-                      </a>
-                    </div>
-                  {% endfor %}
-                {% endif %}
-                {%- include config.THEME_HEADER_LOGIN_TEMPLATE %}
-              </div>
-            {%- endblock navbar_right %}
-          </div>
-        </nav>
+      <div id="main-nav-menu"
+        class="ui container invenio-header-container"
+        data-accounts-enabled="{{ config.ACCOUNTS != '' }}"
+        data-admin-menu-items='{{ admin_menu_items | tojson }}'
+        data-current-user-email="{{ current_user.email }}"
+        data-current-user-profile="{{ current_user.external_identifiers }}"
+        data-kcwordpress-domain="{{ config.KCWORDPRESS_DOMAIN }}"
+        data-login-url="{{ url_for_security('login', next=request.path) }}"
+        data-logout-url="{{ url_for_security('logout') }}"
+        data-main-menu-items='{{ main_menu_items | tojson }}'
+        data-actions-menu-items='{{ actions_menu_items | tojson }}'
+        data-notifications-menu-items='{{ notifications_menu_items | tojson }}'
+        data-plus-menu-items='{{ plus_menu_items | tojson }}'
+        data-profiles-enabled="{{ config.PROFILES != '' }}"
+        data-searchbar-enabled="{{ config.get(THEME_SEARCHBAR) }}"
+        data-settings-menu-items='{{ settings_menu_items | tojson }}'
+        data-theme-logo-url="{{ url_for('static', filename=config.THEME_LOGO) }}"
+        data-theme-sitename="{{ config.THEME_SITENAME }}"
+        data-user-authenticated="{{ current_user.is_authenticated }}"
+        data-user-roles='{{ current_user.roles | map(attribute="name") | list | tojson }}'
+      >
+      </div>
       {%- endblock navbar %}
     </div>
 
@@ -166,3 +79,5 @@
   {%- block breadcrumbs %}
   {%- endblock breadcrumbs %}
 </div>
+
+{{ webpack['main_ui_main_menu.js'] }}

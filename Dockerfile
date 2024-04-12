@@ -1,6 +1,7 @@
-# Dockerfile that builds a fully functional image of your app.
+# Dockerfile that builds a fully functional image of Knowledge Commons Works
 #
-# This image installs all Python dependencies for your application. It's based
+# This image installs all Python dependencies for Knowledge Commons Works.
+# It's based
 # on Almalinux (https://github.com/inveniosoftware/docker-invenio)
 # and includes Pip, Pipenv, Node.js, NPM and some few standard libraries
 # Invenio usually needs.
@@ -14,22 +15,48 @@ FROM registry.cern.ch/inveniosoftware/almalinux:1
 # ENV PYTHONDONTWRITEBYTECODE 1
 # ENV PYTHONFAULTHANDLER 1
 
+# Install prerequisites for building xmlsec Python package
+RUN dnf install libxml2-devel xmlsec1-devel xmlsec1-openssl-devel libtool-ltdl-devel -y
+# Copy over directory for kcr instance Python package
 COPY site ./site
+
 COPY Pipfile Pipfile.lock ./
-# TODO: add PIPENV_VENV_IN_PROJECT=1 to command below to put virtual
-# environment in ./.venv/ rather than installing in container's system py?
-RUN pipenv install --deploy --system
+# Copy in forked packages to be installed from local
+# COPY ./invenio-communities/ /opt/invenio/src/invenio-communities/
+RUN git clone https://github.com/MESH-Research/invenio-communities.git /opt/invenio/invenio-communities
+# COPY ./invenio-rdm-records/ /opt/invenio/src/invenio-rdm-records/
+RUN git clone https://github.com/MESH-Research/invenio-rdm-records.git /opt/invenio/invenio-rdm-records
+RUN git clone https://github.com/MESH-Research/invenio-groups.git /opt/invenio/invenio-groups/
+RUN git clone https://github.com/MESH-Research/invenio-modular-deposit-form.git /opt/invenio/invenio-modular-deposit-form/
+RUN git clone https://github.com/MESH-Research/invenio-modular-detail-page.git /opt/invenio/invenio-modular-detail-page/
+RUN git clone https://github.com/MESH-Research/invenio-record-importer.git /opt/invenio/invenio-record-importer/
+RUN git clone https://github.com/MESH-Research/invenio-records-resources.git /opt/invenio/invenio-records-resources/
+RUN git clone https://github.com/MESH-Research/invenio-remote-api-provisioner.git /opt/invenio/invenio-remote-api-provisioner/
+RUN git clone https://github.com/MESH-Research/invenio-remote-user-data.git /opt/invenio/invenio-remote-user-data/
+# Install python requirements with pipenv in container
 
-# COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
-# COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
-# COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
-# COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
-# COPY ./translations/ ${INVENIO_INSTANCE_PATH}/translations/
-# COPY ./ .
+# NOTE: turned off --deploy for dev
+RUN pipenv install --system
+RUN pip install invenio-cli
 
-# RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
-#     cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
-#     invenio collect --verbose  && \
-#     invenio webpack buildall
+# Copying whole app directory into /opt/invenio/src
+# (WORKDIR is set to that folder in base image)
+COPY ./ .
 
-ENTRYPOINT [ "bash", "-c"]
+RUN cp -r ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini
+RUN cp -r ./docker/uwsgi/uwsgi_ui.ini ${INVENIO_INSTANCE_PATH}/uwsgi_ui.ini
+RUN cp ./invenio.cfg ${INVENIO_INSTANCE_PATH}/invenio.cfg
+RUN cp -r ./templates ${INVENIO_INSTANCE_PATH}/templates
+RUN cp -r ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data
+
+RUN invenio collect --verbose
+RUN invenio webpack clean create
+RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less
+RUN cp ./assets/less/theme.config ${INVENIO_INSTANCE_PATH}/assets/less/theme.config
+RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/custom_fields
+RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/search
+RUN invenio webpack install
+RUN invenio shell ./scripts/symlink_assets.py
+RUN invenio webpack build
+
+ENTRYPOINT ["bash", "-c"]

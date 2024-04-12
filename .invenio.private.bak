@@ -1,0 +1,4 @@
+[cli]
+services_setup = True
+instance_path = /Users/ianscott/.local/share/virtualenvs/knowledge-commons-repository-WoFj9yE6/var/instance
+

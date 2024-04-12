@@ -3,14 +3,14 @@ flavour = RDM
 logfile = /logs/invenio-cli.log
 
 [cookiecutter]
-project_name = Knowledge Commons Repository
-project_shortname = knowledge-commons-repository
-package_name = knowledge_commons_repository
+project_name = Knowledge Commons Works
+project_shortname = kcworks
+package_name = kcworks
 # TODO: Change for production deployment
 # project_site = invenio-dev.hcommons-staging.org
 project_site = localhost
-github_repo = MESH-Research/knowledge-commons-repository
-description = Knowledge Commons Repository InvenioRDM Instance
+github_repo = MESH-Research/knowledge-commons-works
+description = Knowledge Commons Works InvenioRDM Instance
 author_name = MESH Research
 # TODO: Change for production
 author_email = scottia4@msu.edu

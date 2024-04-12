@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Network Visualization</title>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.141.0/build/three.module.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'https://unpkg.com/three@0.141.0/examples/jsm/controls/OrbitControls.js';
+    // Create a scene
+    const scene = new THREE.Scene();
+
+    // Create a camera
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
+
+    // Create a renderer
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Add OrbitControls to enable mouse drag rotation
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    // Example JSON object representing eight nodes
+    const jsonData = [
+      { x: -2, y: 2, z: 0, color: 0xff0000 }, // Node 1
+      { x: 0, y: 2, z: 0, color: 0x00ff00 },  // Node 2
+      { x: 2, y: 2, z: 0, color: 0x0000ff },  // Node 3
+      { x: -2, y: 0, z: 0, color: 0xffff00 }, // Node 4
+      { x: 0, y: 0, z: 0, color: 0xff00ff },  // Node 5
+      { x: 2, y: 0, z: 0, color: 0x00ffff },  // Node 6
+      { x: -2, y: -2, z: 0, color: 0x808080 },// Node 7
+      { x: 0, y: -2, z: 0, color: 0x800080 }  // Node 8
+    ];
+
+    // Create nodes based on JSON data
+    const nodes = jsonData.map(nodeData => {
+      const geometry = new THREE.BoxGeometry();
+      const material = new THREE.MeshBasicMaterial({ color: nodeData.color });
+      const node = new THREE.Mesh(geometry, material);
+      node.position.set(nodeData.x, nodeData.y, nodeData.z);
+      scene.add(node);
+      return node;
+    });
+
+    // Animation loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+
+      // Update controls
+      controls.update();
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+  </script>
+</body>
+</html>

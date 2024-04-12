@@ -1,4 +1,4 @@
-# Assumes an accompanying file for environment variables: ./.private.env
+# Assumes an accompanying file for environment variables: ./.env
 # This should contain values for:
 # PGADMIN_DEFAULT_EMAIL
 # PGADMIN_DEFAULT_PASSWORD
@@ -10,15 +10,29 @@ services:
       context: ./
       args:
         - ENVIRONMENT=DEV
-    image: knowledge-commons-repository
+    image: monotasker/kcworks:latest
     restart: "unless-stopped"
     environment:
+      - INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH}
       - INVENIO_SECRET_KEY=${INVENIO_SECRET_KEY}
+      - "INVENIO_CACHE_REDIS_URL=redis://${REDIS_DOMAIN}/0"
+      - "INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://${REDIS_DOMAIN}/1"
+      - "INVENIO_RATELIMIT_STORAGE_URI=redis://${REDIS_DOMAIN}/3"
+      - "INVENIO_RATELIMIT_STORAGE_URL=redis://${REDIS_DOMAIN}/3"
+      - "INVENIO_CELERY_RESULT_BACKEND=redis://${REDIS_DOMAIN}/2"
+      - "INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://${REDIS_DOMAIN}/4"
+      - "INVENIO_BROKER_URL=amqp://guest:guest@mq:5672/"
+      - "INVENIO_CACHE_TYPE=redis"
+      - "INVENIO_CELERY_BROKER_URL=amqp://guest:guest@mq:5672/"
+      - "INVENIO_SEARCH_HOSTS=['${INVENIO_SEARCH_DOMAIN}']"
+      # - "INVENIO_SEARCH_HOSTS=['search:9200']"
+      - "INVENIO_SQLALCHEMY_DATABASE_URI=${INVENIO_SQLALCHEMY_DATABASE_URI}"
+      - "INVENIO_WSGI_PROXIES=2"
     env_file:
       - ./.env
   frontend:
     build: ./docker/nginx/
-    image: knowledge-commons-repository-frontend
+    image: monotasker/kcworks-frontend
     restart: "unless-stopped"
     ports:
       - "80"
@@ -50,6 +64,8 @@ services:
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    env_file:
+      - ./.env
     volumes:
       - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
   mq:
@@ -89,5 +105,5 @@ services:
     environment:
       # settings only for development. DO NOT use in production!
       # TODO: change in production
-      - 'OPENSEARCH_HOSTS=["http://search:9200"]'
+      - 'OPENSEARCH_HOSTS=["http://${INVENIO_SEARCH_DOMAIN}"]'
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"

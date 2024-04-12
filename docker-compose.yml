@@ -22,18 +22,26 @@ services:
     extends:
       file: docker-services.yml
       service: cache
+    volumes:
+      - cache_data:/data
   db:
     extends:
       file: docker-services.yml
       service: db
+    volumes:
+      - database_data:/var/lib/postgresql/data
   mq:
     extends:
       file: docker-services.yml
       service: mq
+    volumes:
+      - mq_data:/var/lib/rabbitmq
   search:
     extends:
       file: docker-services.yml
       service: search
+    volumes:
+      - search_data:/usr/share/opensearch/data
   opensearch-dashboards:
     extends:
       file: docker-services.yml
@@ -42,79 +50,28 @@ services:
     extends:
       file: docker-services.yml
       service: pgadmin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
   # Frontend
   frontend:
     extends:
       file: docker-services.yml
       service: frontend
     volumes:
-      - ${INVENIO_INSTANCE_PATH}/static:/opt/invenio/var/instance/static
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - /${INVENIO_LOCAL_INSTANCE_PATH}/static:/opt/invenio/var/instance/static
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
       - "80:80"
       - "443:443"
-
-  # UI Application
-  # This container holds Python, pip, the virtualenv, and the invenio code
-  # Node.js, NPM and some standard libraries Invenio usually needs
-  # web-ui:
-  #   extends:
-  #     file: docker-services.yml
-  #     service: app
-  #   command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
-  #   image: knowledge-commons-repository:latest
-  #   ports:
-  #     - "5000"
-  #   volumes:
-  #     # TODO: in production copy these files rather than mounting?
-  #     - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
-  #     - ./docker/uwsgi/uwsgi_ui.ini:/opt/invenio/var/instance/uwsgi_ui.ini:ro
-  #     - ${INVENIO_INSTANCE_PATH}/app_data:/opt/invenio/var/instance/app_data:ro
-  #     - ${INVENIO_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets:ro
-  #     - ${INVENIO_INSTANCE_PATH}/static:/opt/invenio/var/instance/static:ro
-  #     - ${INVENIO_INSTANCE_PATH}/templates:/opt/invenio/var/instance/templates:ro
-  #     - ./translations:/opt/invenio/var/instance/translations:ro
-  #     - .:/opt/invenio/src:ro
-  #     - archived_data:/opt/invenio/var/instance/archive
-
-  # API Rest Application
-#   web-api:
-#     extends:
-#       file: docker-services.yml
-#       service: app
-#     command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
-#     image: knowledge-commons-repository:latest
-#     ports:
-#       - "5001"
-#     volumes:
-#       # TODO: in production copy these files rather than mounting?
-#       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
-#       - ./docker/uwsgi/uwsgi_rest.ini:/opt/invenio/var/instance/uwsgi_rest.ini:ro
-#       - ${INVENIO_INSTANCE_PATH}/app_data:/opt/invenio/var/instance/app_data:ro
-#       - ${INVENIO_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets:ro
-#       - ${INVENIO_INSTANCE_PATH}/static:/opt/invenio/var/instance/static:ro
-#       - ${INVENIO_INSTANCE_PATH}/templates:/opt/invenio/var/instance/templates:ro
-#       - ./translations:/opt/invenio/var/instance/translations:ro
-#       - .:/opt/invenio/src:ro
-#       - archived_data:/opt/invenio/var/instance/archive
-#   # Worker
-#   worker:
-#     extends:
-#       file: docker-services.yml
-#       service: app
-#     command: ["celery -A invenio_app.celery worker --beat --loglevel=INFO"]
-#     image: knowledge-commons-repository:latest
-#     volumes:
-#       - ${INVENIO_INSTANCE_PATH}/data:/opt/invenio/var/instance/data
-#     depends_on:
-#       search:
-#         condition: service_started
-#       cache:
-#         condition: service_started
-#       db:
-#         condition: service_started
-#       mq:
-#         condition: service_started
-# volumes:
-#   archived_data:
+volumes:
+  # archived_data:
+  # static_data:
+  # uploaded_data:
+  database_data:
+  cache_data:
+  mq_data:
+  search_data:
+  pgadmin_data:

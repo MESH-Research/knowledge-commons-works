@@ -1,6 +1,9 @@
 creatorsroles:
   pid-type: crr
   data-file: vocabularies/roles_creator.yaml
+communitytypes:
+  pid-type: comtyp
+  data-file: vocabularies/community_types.yaml
 contributorsroles:
   pid-type: cor
   data-file: vocabularies/roles_contributor.yaml

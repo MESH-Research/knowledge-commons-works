@@ -1,8 +1,3 @@
-- id: analyst
-  props:
-    datacite: Other
-  title:
-    en: Analyst
 - id: actor
   props:
     datacite: Other
@@ -18,16 +13,16 @@
     datacite: Other
   title:
     en: Annotator
+- id: analyst
+  props:
+    datacite: Other
+  title:
+    en: Analyst
 - id: arranger
   props:
     datacite: Other
   title:
     en: Arranger
-- id: attributedName
-  props:
-    datacite: Other
-  title:
-    en: Attributed name
 - id: artisan
   props:
     datacite: Other
@@ -38,21 +33,31 @@
     datacite: Other
   title:
     en: Artist
+- id: attributedName
+  props:
+    datacite: Other
+  title:
+    en: Attributed name
+- id: author
+  props:
+    datacite: Author
+  title:
+    en: Author
 - id: authorOfIntroduction
   props:
     datacite: Other
   title:
-    en: Author of introduction
+    en: Author of Introduction
 - id: authorOfForeword
   props:
     datacite: Other
   title:
-    en: Author of foreword
+    en: Author of Foreword
 - id: authorOfAfterword
   props:
     datacite: Other
   title:
-    en: Author of afterword
+    en: Author of Afterword
 - id: committeeChair
   props:
     datacite: Other
@@ -127,22 +132,16 @@
   title:
     en: Data manager
     de: DatenmanagerIn
-- id: designer
-  props:
-    datacite: Other
-  title:
-    en: Designer
-- id: distributor
-  props:
-    datacite: Distributor
-  title:
-    en: Distributor
-    de: VerteilerIn
 - id: dedicatee
   props:
     datacite: Other
   title:
     en: Dedicatee
+- id: designer
+  props:
+    datacite: Other
+  title:
+    en: Designer
 - id: director
   props:
     datacite: Other
@@ -153,6 +152,7 @@
     datacite: Distributor
   title:
     en: Distributor
+    de: VerteilerIn
 - id: donor
   props:
     datacite: Other
@@ -168,6 +168,7 @@
     datacite: Editor
   title:
     en: Editor
+    de: EditorIn
 - id: examiner
   props:
     datacite: Other
@@ -255,18 +256,18 @@
   title:
     en: Producer
     de: ProduzentIn
-- id: projectManager
-  props:
-    datacite: ProjectManager
-  title:
-    en: Project manager
-    de: ProjektmanagerIn
 - id: projectOrTeamLeader
   props:
     datacite: ProjectLeader
   title:
     en: Project or team leader
     de: ProjektleiterIn
+- id: projectOrTeamManager
+  props:
+    datacite: ProjectManager
+  title:
+    en: Project or team manager
+    de: ProjektmanagerIn
 - id: projectOrTeamMember
   props:
     datacite: ProjectMember
@@ -312,7 +313,7 @@
   title:
     en: Researcher
     de: WissenschaftlerIn
-- id: researchGroup
+- id: researchgroup
   props:
     datacite: ResearchGroup
   title:
@@ -329,22 +330,16 @@
   title:
     en: Rights holder
     de: RechteinhaberIn
-- id: screenplay
+- id: screenplayAuthor
   props:
     datacite: Other
   title:
-    en: Screenplay writer
+    en: Screenplay author
 - id: speaker
   props:
     datacite: Other
   title:
     en: Speaker
-- id: sponsor
-  props:
-    datacite: Sponsor
-  title:
-    en: Sponsor
-    de: Sponsor
 - id: supervisor
   props:
     datacite: Supervisor
@@ -358,7 +353,7 @@
     en: Transcriber
 - id: translator
   props:
-    datacite: Other
+    datacite: Translator
   title:
     en: Translator
 - id: witness

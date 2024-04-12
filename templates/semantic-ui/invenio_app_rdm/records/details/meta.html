@@ -19,7 +19,8 @@ it under the terms of the MIT License; see LICENSE file for more details.
 {%- set meta_editors = record.metadata.contributors | selectattr('role.id', 'equalto', 'editor') | map(attribute='person_or_org.name') | list %}
 
 {%- set meta_publisher = record.metadata.publisher %}
-{%- set meta_publication_date = record.metadata.publication_date | from_isodate %}
+{%- set meta_publication_date = record.metadata.publication_date %}
+{# FIXME: {%- date was: set meta_publication_date = record.metadata.publication_date | from_isodate %} but from_isodate can't handle slash demarcated ranges #}
 {%- set meta_doi = record.pids.get("doi", {}).get("identifier")%}
 {%- set meta_keywords = record.metadata.subjects | map(attribute="subject") | join(':') %}
 {%- set meta_url = record.links.self_html %}
@@ -42,11 +43,12 @@ it under the terms of the MIT License; see LICENSE file for more details.
 {%- if meta_publisher %}
 <meta name="citation_publisher" content="{{meta_publisher}}" />
 {%- endif %}
-{%- if publication_date %}
+{%- if meta_publication_date %}
 <meta
   name="citation_publication_date"
-  content="{{meta_publication_date|to_arrow|format_arrow('YYYY/MM/DD')}}"
+  content="{{meta_publication_date}}"
 />
+{# FIXME: date was content="{{meta_publication_date|to_arrow|format_arrow('YYYY/MM/DD')}}" but arrow can't handle slash demarcated ranges #}
 {%- endif %} {%- if meta_doi %}
 <meta name="citation_doi" content="{{meta_doi}}" />
 {# {%- endif %} {%- for k in meta_keywords %} #}
