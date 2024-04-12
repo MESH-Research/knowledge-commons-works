@@ -16,7 +16,7 @@
 // }
 
 @formButtonColor: @sidebarBackgroundColor;
-@sidebarBackgroundColor: #f9f9f9;
+@sidebarBackgroundColor: @ivory;  // #f9f9f9;
 
 // General typography
 
@@ -484,9 +484,18 @@ html.cover-page {
         }
       }
     }
-    h2 {
-      font-weight: bold;
-      font-family: @headingFontName;
+    .deposit-form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      h2 {
+        font-weight: bold;
+        font-family: @headingFontName;
+        margin-bottom: 0;
+      }
+      h3 {
+        color: @secondaryColor;
+      }
     }
 
     a {
@@ -995,8 +1004,12 @@ html.cover-page {
             border: 1px solid @borderColor;
             border-radius: @defaultBorderRadius;
             padding: 1rem 1rem;
-            .ui-small-header {
-              margin-top: 0.5rem;
+            align-items: center;
+            > .field:first-child > .grid {
+              align-items: center;
+              .ui-small-header {
+                margin-top: 0;
+              }
             }
             .communities-helptext-wrapper {
               display: flex;
@@ -1833,6 +1846,7 @@ html.cover-page {
 
 #rdm-footer-element {
   .footer-top {
+    background-color: @ivy;
     padding-bottom: 3rem;
     .rdm-footer.column {
       .image-link-wrapper {
@@ -1867,6 +1881,12 @@ html.cover-page {
       &.sponsors-column {
         padding: 0;
       }
+    }
+  }
+  .footer-bottom {
+    color: @ivy;
+    a {
+      color: @ivy;
     }
   }
 }
