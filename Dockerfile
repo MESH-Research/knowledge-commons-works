@@ -16,7 +16,8 @@ FROM registry.cern.ch/inveniosoftware/almalinux:1
 # ENV PYTHONFAULTHANDLER 1
 
 # Install prerequisites for building xmlsec Python package
-RUN dnf install libxml2-devel xmlsec1-devel xmlsec1-openssl-devel libtool-ltdl-devel -y
+# also adds ps command for debugging
+RUN dnf install libxml2-devel xmlsec1-devel xmlsec1-openssl-devel libtool-ltdl-devel procps -y
 # Copy over directory for kcr instance Python package
 COPY site ./site
 
