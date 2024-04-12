@@ -27,10 +27,17 @@
 
 /* Theme colors */
 // @primaryColor: rgb(0, 102, 80); // #006650
-@primaryColor: #009374;
-@secondaryColor: #186db6; // #c2eae1;;
-@footerLightColor: rgb(0, 102, 80);
-@footerDarkColor: #009374;
+@ivy: #1C4036;
+@verdigris: #669999;
+@gold: #D9B01C;
+@mint: #c9e3db;
+@seafoam: #f0faf5;
+@ivory: #f5f5eb;
+
+@primaryColor: @verdigris;
+@secondaryColor: @gold; // #c2eae1;;
+@footerLightColor: lighten(@ivy, 10%);
+@footerDarkColor: lighten(@gold, 30%);
 
 @navbarBackgroundColor: #5eae9b;
 @navbarBackgroundImage: #5eae9b;

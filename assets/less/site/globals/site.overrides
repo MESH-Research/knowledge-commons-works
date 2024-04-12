@@ -543,35 +543,36 @@ html.cover-page {
         }
       }
     }
-    .formPageWrapper {
-      .sticky-footer-fixed,
-      .sticky-footer-static {
-        background-color: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(2px);
-        border-top: 2px solid @white;
-        padding: 0.5rem;
-        display: flex;
-        justify-content: space-between;
-        min-height: 3.5rem;
-        .ui.button {
-          margin: 0;
-          &.primary {
-            position: absolute;
-            right: 0.5rem;
-          }
+
+    .sticky-footer-fixed,
+    .sticky-footer-static {
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(2px);
+      border-top: 2px solid @white;
+      padding: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      min-height: 3.5rem;
+      .ui.button {
+        margin: 0;
+        &.primary {
+          position: absolute;
+          right: 0.5rem;
         }
       }
-      .sticky-footer-fixed {
-        position: fixed;
-        bottom: 0;
-        max-width: 900px !important;
-        border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
-      }
-      .sticky-footer-static {
-        position: relative;
-        border-radius: @defaultBorderRadius;
-      }
+    }
+    .sticky-footer-fixed {
+      position: fixed;
+      bottom: 0;
+      max-width: 900px !important;
+      border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
+    }
+    .sticky-footer-static {
+      position: relative;
+      border-radius: @defaultBorderRadius;
+    }
 
+    .formPageWrapper {
       .inline.fields {
         .field.invenio-select-field > .selection.dropdown {
           width: 100%;
