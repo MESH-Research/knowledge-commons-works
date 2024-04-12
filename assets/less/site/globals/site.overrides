@@ -64,6 +64,20 @@ textarea {
   display: none;
 }
 
+// basic page structure
+
+#main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  .invenio-page-body {
+    padding-bottom: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 // Flashed messages and banners
 .ui.flashed.message {
   .ui.grid.centered {
@@ -441,14 +455,34 @@ html.cover-page {
 }
 
 #deposit-form {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
   .ui.form {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     #rdm-deposit-form {
       max-width: 900px !important;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
       // margin-top: 0 !important;
       // >.ui.grid.mt-25 {
       //   margin-top: 0 !important;
       //   padding-top: 25px;
       // }
+      > .ui.grid {
+        flex-grow: 1;
+        > .column {
+          padding-bottom: 0;
+          display: flex;
+          flex-direction: column;
+          > .visible.transition {
+            flex-grow: 1;
+          }
+        }
+      }
     }
     h2 {
       font-weight: bold;
@@ -553,6 +587,7 @@ html.cover-page {
       display: flex;
       justify-content: space-between;
       min-height: 3.5rem;
+      border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
       .ui.button {
         margin: 0;
         &.primary {
@@ -565,11 +600,11 @@ html.cover-page {
       position: fixed;
       bottom: 0;
       max-width: 900px !important;
-      border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
     }
     .sticky-footer-static {
       position: relative;
-      border-radius: @defaultBorderRadius;
+      padding-bottom: 1rem;
+      min-height: 4.5rem;
     }
 
     .formPageWrapper {
