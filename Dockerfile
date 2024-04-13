@@ -43,6 +43,7 @@ RUN pip install invenio-cli
 # Copying whole app directory into /opt/invenio/src
 # (WORKDIR is set to that folder in base image)
 COPY ./ .
+ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
 
 RUN cp -r ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini
 RUN cp -r ./docker/uwsgi/uwsgi_ui.ini ${INVENIO_INSTANCE_PATH}/uwsgi_ui.ini
