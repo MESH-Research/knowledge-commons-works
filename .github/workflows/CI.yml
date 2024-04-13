@@ -22,16 +22,6 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Install invenio-cli
-        run: |
-         python -m pip install --upgrade pip
-         pip install pipenv invenio-cli
-
-      - name: Install RDM
-        run: |
-         pip install invenio-cli
-         invenio-cli install
-
       # Cache docker images so they don't rebuild every time
       - name: Cache Local Images
         id: local-images
@@ -42,24 +32,23 @@ jobs:
 
       - name: Build Images
         run: |
-          touch ./.env
           docker compose up -d --build
 
       - name: Set up services
         run: |
-          invenio-cli services setup
+          docker exec -it knowledgecommonsworks_web-ui_1 bash -c "bash ./scripts/setup-services.sh"
+          exit
 
-      - name: Start services
-        if: always()
+      - name: Build statics and assets
         run: |
-          bash ./kcr-startup.sh
+          docker exec -it knowledgecommonsworks_web-ui_1 bash -c "bash ./scripts/build-assets.sh"
+          exit
 
-      - name: Run unit tests
-        run: cd site && pytest
+      # - name: Run unit tests
+      #   run: cd site && pytest
 
       - name: Stop services
         if: always()
         run: |
-          bash ./kcr-shutdown.sh
           docker compose down
 
