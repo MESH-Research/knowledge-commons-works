@@ -40,10 +40,20 @@ RUN git clone https://github.com/MESH-Research/invenio-remote-user-data.git /opt
 RUN pipenv install --system
 RUN pip install invenio-cli
 
+RUN echo "[cli]" >> .invenio.private
+RUN echo "services_setup=False" >> .invenio.private
+RUN echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
+
+
 # Copying whole app directory into /opt/invenio/src
 # (WORKDIR is set to that folder in base image)
 COPY ./ .
 ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
+ENV INVENIO_SITE_UI_URL=https://localhost
+ENV INVENIO_SITE_API_URL=https://localhost
+ENV MIGRATION_SERVER_DOMAIN=localhost
+ENV MIGRATION_SERVER_PROTOCOL=http
+ENV MIGRATION_API_TOKEN=changeme
 
 RUN cp -r ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini
 RUN cp -r ./docker/uwsgi/uwsgi_ui.ini ${INVENIO_INSTANCE_PATH}/uwsgi_ui.ini
