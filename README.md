@@ -226,6 +226,51 @@ What follows is a step-by-step walk through this process.
 > [!Note]
 > These instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
 
+## Updating an Instance with Upstream Changes
+
+If changes have been made to the upstream Knowledge Commons Works repository and the kcworks container, you will need to update your local instance to reflect those changes. This process involves pulling the changes from the upstream repository, pulling the latest version of the kcworks docker image, restarting the docker-compose project with recreated containers, and rebuilding the asset files.
+
+1. First, to pull the changes from the upstream git repository, execute the following commands from the root knowledge-commons-works folder:
+
+```shell
+git pull origin main
+```
+
+2. Then, to pull the latest version of the kcworks docker image, execute the following command:
+
+```shell
+docker pull monotasker/kcworks:latest
+```
+
+3. Next, to restart the docker-compose project with recreated containers, execute the following commands:
+
+```shell
+docker-compose --file <your-docker-compose-file-name> stop
+docker-compose --file <your-docker-compose-file-name> up -d --build --force-recreate
+```
+
+If you are running a development instance, you will use the `docker-compose.dev.yml` file. If you are running a staging or production instance, you will use the `docker-compose.staging.yml` or `docker-compose.production.yml` files respectively.
+
+4. Clean up leftover containers and images:
+
+```shell
+docker system prune -a
+```
+
+> [!Caution]
+> Make sure that you run this `prune` command *while the containers are running.* If you run it while the containers are stopped, you will delete the containers and images that you need to run the application, as well as volumes with stored data.
+
+5. Finally, to rebuild the asset files, execute the following command:
+
+```shell
+docker exec -it knowledge-commons-works-web-ui-1 bash
+bash ./scripts/build-assets.sh
+```
+
+Then refresh your browser to see the changes.
+
+
+
 ## Install Python and Required Python Tools
 
 ### Ensure some version of python is installed
