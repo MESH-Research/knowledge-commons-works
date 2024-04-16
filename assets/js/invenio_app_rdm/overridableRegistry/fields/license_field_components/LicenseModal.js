@@ -107,6 +107,7 @@ export class LicenseModal extends Component {
             onClose={this.closeModal}
             closeIcon
             closeOnDimmerClick={false}
+            className="license-modal"
           >
             <Modal.Header as="h6" className="pt-10 pb-10">
               <Grid>

@@ -16,7 +16,7 @@
 // }
 
 @formButtonColor: @sidebarBackgroundColor;
-@sidebarBackgroundColor: @ivory;  // #f9f9f9;
+@sidebarBackgroundColor: @ivory; // #f9f9f9;
 
 // General typography
 
@@ -82,8 +82,7 @@ textarea {
 .ui.flashed.message {
   .ui.grid.centered {
     text-align: right;
-    .ui.icon.button.close-btn
-    {
+    .ui.icon.button.close-btn {
       margin-top: 0;
     }
   }
@@ -356,15 +355,15 @@ html.cover-page {
   margin-bottom: 0;
 }
 #header-search-bar {
-    .search.right-angle-search-content {
-      width: 100% !important;
-    }
+  .search.right-angle-search-content {
+    width: 100% !important;
+  }
 }
 .search-bar {
   // margin-top: 1rem !important;
   > .two.column.row {
     .column:nth-child(2) {
-      padding:0 1rem;
+      padding: 0 1rem;
     }
   }
   .result-options.rel-mt-2 {
@@ -1629,6 +1628,37 @@ html.cover-page {
 }
 
 .page.modals {
+  .license-modal.ui.modal {
+    .ui.items {
+      .item.license-item {
+        .ui.radio.checkbox {
+          padding: 0 1rem 0 0;
+          min-width: 1rem;
+          input.hidden + label {
+            position: absolute;
+            top: 1px;
+            width: 1rem;
+          }
+        }
+        .license-item-content {
+          .header {
+            .license-read-more {
+              padding: 0;
+              font-size: @small;
+              font-weight: normal;
+            }
+          }
+        }
+        .license-item-description {
+          margin-top: 0;
+        }
+        .license-read-more {
+          margin-left: 0.5rem;
+          text-decoration: dotted underline;
+        }
+      }
+    }
+  }
   .share-modal {
     .ui.grid {
       margin-left: 0;

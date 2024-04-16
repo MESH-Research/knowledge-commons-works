@@ -10,15 +10,18 @@ import { Item, Header, Radio } from "semantic-ui-react";
 import { withState } from "react-searchkit";
 import _get from "lodash/get";
 import { FastField } from "formik";
+import { i18next } from "@translations/invenio_rdm_records/i18next";
 
 export const LicenseResults = withState(
   ({ currentResultsState: results, serializeLicenses }) => {
+    console.log("LicenseResults", results.data.hits);
     const serializeLicenseResult = serializeLicenses
       ? serializeLicenses
       : (result) => ({
           title: result.title_l10n,
           description: result.description_l10n,
           id: result.id,
+          link: result.props.url,
         });
     return (
       <FastField name="selectedLicense">
@@ -27,6 +30,7 @@ export const LicenseResults = withState(
             {results.data.hits.map((result) => {
               const title = result["title_l10n"];
               const description = result["description_l10n"];
+              const link = result["props"]["url"];
               return (
                 <Item
                   key={title}
@@ -45,10 +49,30 @@ export const LicenseResults = withState(
                   <Item.Content className="license-item-content">
                     <Header size="small" className="mt-0">
                       {title}
+                      {link && !description && (
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="license-read-more"
+                        >
+                          {i18next.t("(description)")}
+                        </a>
+                      )}
                     </Header>
                     {description && (
                       <Item.Description className="license-item-description">
                         {description}
+                        {link && (
+                          <a
+                            href={link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="license-read-more"
+                          >
+                            {i18next.t("Read more")}
+                          </a>
+                        )}
                       </Item.Description>
                     )}
                   </Item.Content>
