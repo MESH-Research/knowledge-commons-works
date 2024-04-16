@@ -6,10 +6,10 @@
 version: '2.2'
 services:
   app:
-    build:
-      context: ./
-      args:
-        - ENVIRONMENT=DEV
+    # build:
+    #   context: ./
+    #   args:
+    #     - ENVIRONMENT=DEV
     image: monotasker/kcworks:latest
     restart: "unless-stopped"
     environment:
