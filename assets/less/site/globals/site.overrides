@@ -588,34 +588,53 @@ html.cover-page {
 
     .sticky-footer-fixed,
     .sticky-footer-static {
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(2px);
       border-top: 2px solid @white;
-      padding: 0.5rem;
+      padding: 0;
       display: flex;
       justify-content: space-between;
       min-height: 3.5rem;
       border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
+      .grid.deposit-form-footer {
+        width: 100%;
+        margin: 0;
+        .column {
+          padding: 0.5rem;
+          &:last-child {
+            text-align: right;
+          }
+        }
+        .footer-message {
+          font-size: @small;
+          color: @ivory;
+          text-align: center;
+          padding-left: 0;
+          padding-right: 0;
+        }
+      }
+
       .ui.button {
         margin: 0;
-        &.primary {
-          position: absolute;
-          right: 0.5rem;
-        }
+        // &.primary {
+        // }
       }
     }
     .sticky-footer-fixed {
       position: fixed;
       bottom: 0;
       max-width: 900px !important;
+      background-color: rgba(0, 0, 0, 0.8);
     }
     .sticky-footer-static {
       position: relative;
       padding-bottom: 1rem;
       min-height: 4.5rem;
+      border-bottom: 1px solid grey;
     }
 
     .formPageWrapper {
+      padding-bottom: 2rem;
       .inline.fields {
         .field.invenio-select-field > .selection.dropdown {
           width: 100%;
@@ -705,23 +724,31 @@ html.cover-page {
 
         .helptext {
           font-size: 1em;
+          margin-bottom: 0.5rem;
+          margin-top: 0;
         }
         .add-btn {
           margin: -0.5em 0.5em 0 0;
           font-weight: normal;
         }
 
+        &.content_warning {
+          .fields .invenio-field-label {
+            font-weight: normal;
+          }
+        }
+
         &.subjects_keywords {
           > .fields {
             margin-bottom: 3rem;
-            .subjects-field-inner .fields {
-              label {
-                margin-top: -1.5rem;
-              }
-            }
+            // .subjects-field-inner .fields {
+            //   label {
+            //     margin-top: -1.5rem;
+            //   }
+            // }
           }
           .helptext {
-            margin-bottom: 1rem;
+            margin-bottom: 0;
             font-weight: 0;
           }
         }

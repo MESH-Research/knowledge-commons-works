@@ -6,7 +6,7 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { getIn, FieldArray, useFormikContext } from "formik";
 import { Button, Form, Label, List, Icon } from "semantic-ui-react";
@@ -18,6 +18,7 @@ import { FieldLabel } from "react-invenio-forms";
 import { CreatibutorsItemForm } from "./CreatibutorsModal";
 import { CreatibutorsFieldItem } from "./CreatibutorsFieldItem";
 import { CREATIBUTOR_TYPE } from "./types";
+import { FormUIStateContext } from "@js/invenio_modular_deposit_form/InnerDepositForm";
 // import { GlobalDndContext } from "./GlobalDndContext";
 // import { sortOptions } from "../../utils";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
@@ -313,7 +314,6 @@ const CreatibutorsFieldForm = ({
 const CreatibutorsField = ({
   addButtonLabel = i18next.t("Add creator"),
   autocompleteNames = "search",
-  currentUserprofile,
   fieldPath,
   label = undefined,
   labelIcon = undefined,
@@ -341,6 +341,7 @@ const CreatibutorsField = ({
   const [showEditForms, setShowEditForms] = useState([]);
   const [creatibutorsTouched, setCreatibutorsTouched] = useState(false);
   const { setFieldTouched } = useFormikContext();
+  const { currentUserprofile } = useContext(FormUIStateContext);
 
   useEffect(() => {
     console.log("useEffect creatibutorsTouched", creatibutorsTouched);

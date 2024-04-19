@@ -70,8 +70,8 @@ KCR_USER_TAGS_SECTION_UI = {
     "fields": [
         {
             "field": "kcr:user_defined_tags",
-            "ui_widget": "MultiInput",
-            # "template": "kcworks/user_defined_tags.html",
+            "ui_widget": "UserDefinedTags",
+            "template": "kcworks/user_defined_tags.html",
             "props": {
                 "label": _("Tags"),
                 "placeholder": _(

@@ -13,8 +13,8 @@ import {
   GroupField,
   Icon,
   Label,
-  RemoteSelectField,
 } from "react-invenio-forms";
+import { RemoteSelectField } from "react-invenio-forms";
 import { Form } from "semantic-ui-react";
 import { Field, getIn, useFormik } from "formik";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
@@ -23,15 +23,19 @@ const SubjectsField = ({
   clearable = true,
   description = undefined,
   fieldPath,
+  helpText = undefined,
   hideSchemeLabels = true,
-  label = i18next.t("Keywords and subjects"),
+  label = i18next.t("Subjects"),
   labelIcon = "tag",
   multiple = true,
   placeholder = i18next.t(
-    "Search for a subject by name. (Press the 'enter' key to select)"
+    "Search for a subject by full word. (Press the 'enter' key to select)"
     ),
   required = false,
   limitToOptions,
+  noQueryMessage = " ",
+  // noResultsMessage = " ",
+  ...otherProps
 }) => {
   const [limitTo, setLimitTo] = useState("all");
 
@@ -53,7 +57,6 @@ const SubjectsField = ({
   };
 
   const facets = {
-    "FAST-topical": "topics",
     "FAST-corporate": "groups",
     "FAST-geographic": "places",
     "FAST-event": "events",
@@ -68,31 +71,44 @@ const SubjectsField = ({
     "FAST-topical": "topics",
     "All": "all",
   }
+  console.log("limitToOptions", limitToOptions);
 
-  let facetOptions = limitToOptions.map((option) => {
+  let facetOptions = limitToOptions.reduce((options, option, it) => {
     if ( Object.keys(facets).includes(option.value) ) {
-      return {
+      options.push({
         key: option.value,
         value: option.text,
         text: facets[option.value],
-      }
-    } else {
-      return option
+      });
     }
-  }).sort((a, b) => a.text < b.text ? -1 : a.text > b. text ? 1 : 0);
+    return options;
+  }, []).sort((a, b) => a.text < b.text ? -1 : a.text > b. text ? 1 : 0);
 
-  for (const key of Object.keys(topFacets)) {
-    let item = facetOptions.splice(facetOptions.findIndex((item) => item.key === key), 1)[0];
-    facetOptions.unshift(item)
+  for (let [key, item] of Object.entries(topFacets)) {
+    // FIXME: This is ugly and I'm tired
+    // let item = facetOptions.splice(facetOptions.findIndex((item) => item.key === key), 1)[0];
+    facetOptions.unshift(
+      {
+        key: key,
+        value: key === "All" ? item : key,
+        text: item,
+      }
+    )
   }
-  console.log("limitToOptions", limitToOptions);
-  console.log("facetOptions", facetOptions);
 
   return (
     <>
       <GroupField className="main-group-field">
         <Form.Field className="subjects-field-inner" width={16}>
           <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+          {!!description && (
+          <div
+            id={`${fieldPath}-helpt-text`}
+            className="helptext label top"
+          >
+            {description}
+          </div>
+          )}
           <GroupField fluid>
             {/* <Form.Field
             width={4}
@@ -102,14 +118,35 @@ const SubjectsField = ({
             {i18next.t("Suggest from")}
           </Form.Field> */}
             <Field name={fieldPath} width={10}>
-              {({ form: { values } }) => {
+              {({ field, form: { values } }) => {
+                console.log("SubjectsField", field, values);
                 return (
                   <RemoteSelectField
+                    {...otherProps}
+                    allowAdditions={false}
+                    aria-describedby={`${fieldPath}-helpt-text`}
                     clearable={clearable}
+                    description={undefined}  /** Description is rendered separately */
                     fieldPath={fieldPath}
+                    helpText={undefined} /** Help text is rendered separately */
                     initialSuggestions={getIn(values, fieldPath, [])}
+                    label={
+                      <>
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                        <label className="mobile-hidden">Subject headings</label>
+                      </>
+                    } /** For alignment purposes */
                     multiple={multiple}
-                    noQueryMessage={" "}
+                    noQueryMessage={noQueryMessage}
+                    // noResultsMessage={noResultsMessage}
+                    onValueChange={({ formikProps }, selectedSuggestions) => {
+                      formikProps.form.setFieldValue(
+                        fieldPath,
+                        // save the suggestion objects so we can extract information
+                        // about which value added by the user
+                        selectedSuggestions
+                      );
+                    }}
                     placeholder={placeholder}
                     preSearchChange={prepareSuggest}
                     suggestionAPIQueryParams={{ type: "best_fields" }}
@@ -122,37 +159,14 @@ const SubjectsField = ({
                       subject: value,
                     })}
                     suggestionAPIUrl="/api/subjects"
-                    onValueChange={({ formikProps }, selectedSuggestions) => {
-                      formikProps.form.setFieldValue(
-                        fieldPath,
-                        // save the suggestion objects so we can extract information
-                        // about which value added by the user
-                        selectedSuggestions
-                      );
-                    }}
                     value={getIn(values, fieldPath, []).map(
                       (val) => val.subject
                     )}
-                    label={
-                      <>
-                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                        <label className="mobile-hidden">&nbsp;</label>
-                      </>
-                    } /** For alignment purposes */
-                    allowAdditions={false}
                     width={11}
-                    aria-describedby={`${fieldPath}-helpt-text`}
-                    helptext={description}
                     scrolling
                   />
                 );
               }}
-              {/* <div
-                id={`${fieldPath}-helpt-text`}
-                className="helptext ui label"
-              >
-                {description}
-              </div> */}
             </Field>
             <Form.Dropdown
               defaultValue={facetOptions[0].value}
@@ -167,6 +181,14 @@ const SubjectsField = ({
               label={i18next.t("From subject category...")}
             />
           </GroupField>
+          {!!helpText && (
+          <div
+            id={`${fieldPath}-helpt-text`}
+            className="helptext label"
+          >
+            {helpText}
+          </div>
+          )}
         </Form.Field>
       </GroupField>
     </>
