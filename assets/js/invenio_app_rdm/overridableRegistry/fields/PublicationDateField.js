@@ -60,13 +60,14 @@ const DateDropdown = ({
 };
 
 const PublicationDateField = ({
+  description = "If this work is already published elsewhere, please use the date of the first publication.",
   fieldPath,
+  helpText = undefined,
   label = i18next.t("Publication Date"),
   labelIcon = "calendar",
   required = true,
+  ...extraProps
 }) => {
-  const helpText =
-    "If this work is already published elsewhere, please use the date of the first publication.";
   const { setFieldValue, values, touched, setFieldTouched } =
     useFormikContext();
   const currentDate = new Date();
@@ -146,21 +147,21 @@ const PublicationDateField = ({
       return { key: year, value: year, text: year };
     })
     .reverse();
-  yearOptions.unshift({ key: "None", value: null, text: "None" });
+  yearOptions.unshift({ key: "None", value: null, text: i18next.t("None") });
   const monthOptions = [
-    { key: "None", value: null, text: "None", days: 31 },
-    { key: "January", value: "01", text: "January", days: 31 },
-    { key: "February", value: "02", text: "February", days: 29 },
-    { key: "March", value: "03", text: "March", days: 31 },
-    { key: "April", value: "04", text: "April", days: 30 },
-    { key: "May", value: "05", text: "May", days: 31 },
-    { key: "June", value: "06", text: "June", days: 30 },
-    { key: "July", value: "07", text: "July", days: 31 },
-    { key: "August", value: "08", text: "August", days: 31 },
-    { key: "September", value: "09", text: "September", days: 30 },
-    { key: "October", value: "10", text: "October", days: 31 },
-    { key: "November", value: "11", text: "November", days: 30 },
-    { key: "December", value: "12", text: "December", days: 31 },
+    { key: "None", value: null, text: i18next.t("None"), days: 31 },
+    { key: "January", value: "01", text: i18next.t("January"), days: 31 },
+    { key: "February", value: "02", text: i18next.t("February"), days: 29 },
+    { key: "March", value: "03", text: i18next.t("March"), days: 31 },
+    { key: "April", value: "04", text: i18next.t("April"), days: 30 },
+    { key: "May", value: "05", text: i18next.t("May"), days: 31 },
+    { key: "June", value: "06", text: i18next.t("June"), days: 30 },
+    { key: "July", value: "07", text: i18next.t("July"), days: 31 },
+    { key: "August", value: "08", text: i18next.t("August"), days: 31 },
+    { key: "September", value: "09", text: i18next.t("September"), days: 30 },
+    { key: "October", value: "10", text: i18next.t("October"), days: 31 },
+    { key: "November", value: "11", text: i18next.t("November"), days: 30 },
+    { key: "December", value: "12", text: i18next.t("December"), days: 31 },
   ];
   const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
   let dayOptions = days.map((day) => {
@@ -170,7 +171,7 @@ const PublicationDateField = ({
       text: day,
     };
   });
-  dayOptions.unshift({ key: "None", value: null, text: "None" });
+  dayOptions.unshift({ key: "None", value: null, text: i18next.t("None") });
   const selectedMonth = monthOptions.find(
     (month) => month.value === monthValue
   );
@@ -264,6 +265,11 @@ const PublicationDateField = ({
               label={label}
               id={`${fieldPath}.label`}
             />
+            {description && (
+              <div id={`${fieldPath}.helptext`} className="helptext">
+                {i18next.t(description)}
+              </div>
+            )}
             <Form.Group>
               {startDropdowns.map((dropdown, idx) => (
                 <DateDropdown
@@ -274,12 +280,12 @@ const PublicationDateField = ({
                   fieldPath={fieldPath}
                   handleDropdownChange={handleDropdownChange}
                   error={!!meta.error}
-                  aria-describedby={`${fieldPath}.help-text`}
+                  aria-describedby={`${fieldPath}.helptext`}
                 />
               ))}
               <div>
                 <Checkbox
-                  label={`${!useRange ? "add" : "include"} end date`}
+                  label={i18next.t(`${!useRange ? "add" : "include"} end date`)}
                   id="metadata.publication_date.controls.useRange"
                   onChange={(e, data) => setUseRange(data.checked)}
                   checked={useRange}
@@ -297,7 +303,7 @@ const PublicationDateField = ({
                     fieldPath={fieldPath}
                     handleDropdownChange={handleDropdownChange}
                     error={!!meta.error}
-                    aria-describedby={`${fieldPath}.help-text`}
+                    aria-describedby={`${fieldPath}.helptext`}
                   />
                 ))}
               </Form.Group>
@@ -309,7 +315,7 @@ const PublicationDateField = ({
             )}
             {helpText && (
               <div id={`${fieldPath}.helptext`} className="helptext">
-                {helpText}
+                {i18next.t(helpText)}
               </div>
             )}
           </Form.Field>
@@ -320,6 +326,7 @@ const PublicationDateField = ({
 };
 
 PublicationDateField.propTypes = {
+  description: PropTypes.string,
   fieldPath: PropTypes.string.isRequired,
   helpText: PropTypes.string,
   label: PropTypes.string,

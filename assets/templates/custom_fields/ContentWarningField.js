@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { getIn, useFormikContext } from "formik";
-import { Checkbox, Form, FormField } from "semantic-ui-react";
+import { Checkbox, Form } from "semantic-ui-react";
 import { FieldLabel } from "react-invenio-forms";
 import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/TextArea";
 
@@ -10,6 +10,7 @@ const ContentWarningField = ({
   label,
   icon,
   description = undefined,
+  helpText = undefined,
   ...restProps
 }) => {
   const { values, setFieldValue } = useFormikContext();
@@ -46,17 +47,15 @@ const ContentWarningField = ({
         />
       </Form.Group>
       {!!haveWarning && (
-        <>
-            <div id="content-warning-textbox-description" className="helptext">{description}</div>
-            <TextArea
-              fieldPath={fieldPath}
-              // label={ai_description.label}
-              description={""}
-              required={false}
-              placeholder="Enter content warning here."
-              aria-describedby="content-warning-textbox-description"
-            />
-        </>
+          <TextArea
+            fieldPath={fieldPath}
+            // label={ai_description.label}
+            description={description}
+            helpText={helpText}
+            required={false}
+            placeholder="Enter content warning here."
+            aria-describedby="content-warning-textbox-description"
+          />
         )
       }
     </Form.Field>

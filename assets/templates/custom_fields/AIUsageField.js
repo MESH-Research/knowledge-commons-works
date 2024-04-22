@@ -11,6 +11,7 @@ const AIUsageField = ({
   label,
   icon,
   description,
+  helpText,
   ai_used,
   ai_description,
   ...restProps
@@ -45,20 +46,14 @@ const AIUsageField = ({
       />
       {!!values.custom_fields
         ? values.custom_fields["kcr:ai_usage"]?.ai_used === true && (
-          <>
-            <div id="ai-usage-textbox-description" className="helptext">
-              {ai_description.description || i18next.t(
-                "Please provide a brief description of how generative AI contributed to the production of this work."
-              )}
-            </div>
             <TextArea
               fieldPath={`${fieldPath}.ai_description`}
               // label={ai_description.label}
-              description={""}
+              description={description}
+              helpText={helpText}
               required={false}
               aria-describedby="ai-usage-textbox-description"
             />
-          </>
           )
         : ""}
     </Form.Field>

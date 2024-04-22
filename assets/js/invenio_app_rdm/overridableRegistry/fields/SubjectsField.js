@@ -29,7 +29,7 @@ const SubjectsField = ({
   labelIcon = "tag",
   multiple = true,
   placeholder = i18next.t(
-    "Search for a subject by full word. (Press the 'enter' key to select)"
+    "Search using full words"
     ),
   required = false,
   limitToOptions,
@@ -133,7 +133,7 @@ const SubjectsField = ({
                     label={
                       <>
                         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                        <label className="mobile-hidden">Subject headings</label>
+                        <label className="mobile-hidden">&nbsp;</label>
                       </>
                     } /** For alignment purposes */
                     multiple={multiple}
