@@ -177,16 +177,25 @@ const CreatibutorsFieldForm = ({
     currentUserprofile.affiliations !== ""
       ? [currentUserprofile.affiliations]
       : currentUserprofile?.affiliations;
-  const selfCreatibutor = {
+
+  let selfCreatibutor = {
     person_or_org: {
       family_name: addingSelf
-        ? currentUserprofile?.family_name ||
+        ? currentUserprofile?.name_parts?.last ||
           currentUserprofile?.full_name ||
           ""
         : "",
-      given_name: addingSelf ? currentUserprofile?.given_name || "" : "",
+      given_name: addingSelf ? currentUserprofile?.name_parts?.first || "" : "",
       name: addingSelf ? currentUserprofile?.full_name || "" : "",
       type: "personal",
+      identifiers:
+        addingSelf && currentUserprofile?.identifiers.length > 0
+        ? currentUserprofile.identifiers.map(id => (
+          {
+              scheme: id.scheme,
+              identifier: id.identifier
+          }
+        )) : [],
     },
     role: "author",
     affiliations:
@@ -199,6 +208,7 @@ const CreatibutorsFieldForm = ({
           }))
         : [],
   };
+  console.log("selfCreatibutor", selfCreatibutor);
 
   return (
     <Form.Field
