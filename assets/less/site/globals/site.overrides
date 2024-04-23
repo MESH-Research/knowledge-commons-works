@@ -1483,7 +1483,7 @@ html.cover-page {
         }
         .menu .item {
           width: 100%;
-          background-color: transparent;
+          // background-color: transparent;
           .text {
             overflow-wrap: anywhere;
             word-break: break-all;
