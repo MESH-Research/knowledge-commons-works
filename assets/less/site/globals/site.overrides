@@ -1421,7 +1421,13 @@ html.cover-page {
         top: 0.5rem;
       }
     }
-    .ai-usage-alert.ui.message.warning {
+    .content-warning.ui.message,
+    .ai-usage-alert.ui.message {
+      .header + p:first-child,
+      .header + p:last-child {
+        margin-top: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
       .buttons.row {
         display:flex;
         justify-content: flex-end;
@@ -1536,7 +1542,7 @@ html.cover-page {
             border-radius: 0 @defaultBorderRadius @defaultBorderRadius 0;
           }
           .menu .item {
-            background-color: transparent;
+            // background-color: transparent;
             width: 100%;
             .description.doi {
               display: block;
