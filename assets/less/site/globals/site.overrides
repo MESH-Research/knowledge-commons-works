@@ -1684,6 +1684,9 @@ html.cover-page {
   #toolbarSidebar {
     background-color: @sidebarBackgroundColor;
   }
+  iframe.preview-iframe.csv {
+    overflow: auto;
+  }
 }
 
 .page.modals {
