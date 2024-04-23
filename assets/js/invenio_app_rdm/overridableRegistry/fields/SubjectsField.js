@@ -14,7 +14,8 @@ import {
   Icon,
   Label,
 } from "react-invenio-forms";
-import { RemoteSelectField } from "react-invenio-forms";
+// import { RemoteSelectField } from "react-invenio-forms";
+import { RemoteSelectField } from "@js/invenio_modular_deposit_form/replacement_components/RemoteSelectField";
 import { Form } from "semantic-ui-react";
 import { Field, getIn, useFormik } from "formik";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
