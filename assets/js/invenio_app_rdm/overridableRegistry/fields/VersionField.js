@@ -31,14 +31,14 @@ const myHelpText = (
 const VersionField = ({
   fieldPath,
   label = i18next.t("Version"),
-  labelIcon = "code branch",
+  icon = "code branch",
   placeholder = "",
   ...extraProps
 }) => {
   return (
     <TextField
       fieldPath={fieldPath}
-      label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
+      label={<FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
       placeholder={placeholder}
       {...extraProps}
     />
@@ -48,7 +48,7 @@ const VersionField = ({
 VersionField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   placeholder: PropTypes.string,
 };
 
