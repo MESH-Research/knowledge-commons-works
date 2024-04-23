@@ -103,7 +103,7 @@ const CreatibutorsFieldForm = ({
   id,
   form: { values, errors, initialErrors, initialValues, touched },
   label = i18next.t("Creators"),
-  labelIcon = "user",
+  icon = "user",
   modal = {
     addLabel: i18next.t("Add creator"),
     editLabel: i18next.t("Edit creator"),
@@ -215,7 +215,7 @@ const CreatibutorsFieldForm = ({
       required={schema === "creators"}
       className={creatibutorsError ? "error" : ""}
     >
-      <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+      <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
       <List>
         {creatibutorsList.map((value, index) => {
           const key = `${fieldPath}.${index}`;
@@ -326,7 +326,7 @@ const CreatibutorsField = ({
   autocompleteNames = "search",
   fieldPath,
   label = undefined,
-  labelIcon = undefined,
+  icon = undefined,
   modal = {
     addLabel: i18next.t("Add creator"),
     editLabel: i18next.t("Edit creator"),
@@ -339,7 +339,7 @@ const CreatibutorsField = ({
     "CreatibutorsField called",
     fieldPath,
     label,
-    labelIcon,
+    icon,
     modal,
     roleOptions,
     schema,
@@ -374,7 +374,7 @@ const CreatibutorsField = ({
             currentUserprofile,
             fieldPath,
             label,
-            labelIcon,
+            icon,
             modalOpen,
             roleOptions,
             modal,
@@ -401,7 +401,7 @@ CreatibutorsFieldForm.propTypes = {
   schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
   autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   roleOptions: PropTypes.array.isRequired,
   form: PropTypes.object.isRequired,
   remove: PropTypes.func.isRequired,
@@ -416,7 +416,7 @@ CreatibutorsField.propTypes = {
   autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   modal: PropTypes.shape({
     addLabel: PropTypes.string.isRequired,
     editLabel: PropTypes.string.isRequired,

@@ -33,7 +33,7 @@ const TitlesField = ({
         required={required}
         classnames="title-field"
         showLabel={true}
-        labelIcon="book"
+        icon="book"
         disabled={disabled}
         {...extraProps}
       />

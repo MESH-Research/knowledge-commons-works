@@ -7,7 +7,7 @@ const UserDefinedTags = ({
       fieldPath, // injected by the custom field loader via the `field` config property
       helpText,
       icon,
-      label,
+      label = undefined,
       noQueryMessage,
       placeholder,
       tag,
@@ -21,7 +21,7 @@ const UserDefinedTags = ({
         placeholder={placeholder}
         description={description}
         helpText={helpText}
-        icon={" "}
+        icon={icon}
         noQueryMessage={i18next.t("Type a keyword...")}
         {...otherProps}
       ></MultiInput>

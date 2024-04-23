@@ -26,7 +26,7 @@ const SubjectsField = ({
   helpText = undefined,
   hideSchemeLabels = true,
   label = i18next.t("Subjects"),
-  labelIcon = "tag",
+  icon = "tag",
   multiple = true,
   placeholder = i18next.t(
     "Search using full words"
@@ -100,7 +100,7 @@ const SubjectsField = ({
     <>
       <GroupField className="main-group-field">
         <Form.Field className="subjects-field-inner" width={16}>
-          <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+          <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
           {!!description && (
           <div
             id={`${fieldPath}-helpt-text`}
@@ -199,7 +199,7 @@ SubjectsField.propTypes = {
   limitToOptions: PropTypes.array.isRequired,
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   required: PropTypes.bool,
   multiple: PropTypes.bool,
   clearable: PropTypes.bool,

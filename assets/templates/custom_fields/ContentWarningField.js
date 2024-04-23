@@ -14,17 +14,7 @@ const ContentWarningField = ({
   ...restProps
 }) => {
   const { values, setFieldValue } = useFormikContext();
-  const [haveWarning, setHaveWarning] = useState(!getIn(values, fieldPath, false));
-
-  // useEffect(() => {
-  //   // setFieldValue(fieldPath, { ai_used: false, ai_description: "" });
-  // }, []);
-
-  // useEffect(() => {
-  //   // console.log('changed');
-  //   handleValuesChange(values);
-  //   // console.log(values.custom_fields);
-  // }, [values]);
+  const [haveWarning, setHaveWarning] = useState(!!getIn(values, fieldPath, false));
 
   return (
     <Form.Field id={fieldPath} name={fieldPath}>

@@ -15,18 +15,17 @@ const EditionField = ({
   fieldPath,
   disabled,
   label = i18next.t("Edition or version"),
-  labelIcon = "code branch",
+  icon = "code branch",
   placeholder,
   helpText,
   required = false,
   ...extraProps
 }) => {
-  console.log("EditionField labelIcon", labelIcon);
   return (
     <TextField
       fieldPath={fieldPath}
       label={label}
-      labelIcon={labelIcon}
+      icon={icon}
       placeholder={placeholder}
       helpText={helpText}
       required={required}
@@ -39,7 +38,7 @@ const EditionField = ({
 EditionField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   placeholder: PropTypes.string,
 };
 

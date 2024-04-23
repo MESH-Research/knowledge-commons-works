@@ -21,7 +21,7 @@ const ImprintISBNField = ({
     <TextField
       fieldPath={fieldPath}
       label={label}
-      labelIcon={icon}
+      icon={icon}
       {...extraProps}
     />
     // {/* {description && (

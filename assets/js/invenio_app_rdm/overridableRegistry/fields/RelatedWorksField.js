@@ -33,7 +33,7 @@ export const emptyRelatedWork = {
 const RelatedWorksField = ({
   fieldPath,
   label = i18next.t("Related works"),
-  labelIcon = "sitemap",
+  icon = "sitemap",
   required = false,
   options,
   showEmptyValue = false,
@@ -70,11 +70,11 @@ const RelatedWorksField = ({
     <FieldArray
       addButtonLabel={i18next.t("Add related work")}
       name={fieldPath}
-      label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
+      label={<FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
       required={required}
       render={(arrayHelpers) => (
         <>
-          <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+          <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
           {values.metadata.related_identifiers.map(
             ({ relation_type, identifier, scheme, resource_type }, index) => {
               const fieldPathPrefix = `${fieldPath}.${index}`;
@@ -126,7 +126,7 @@ const RelatedWorksField = ({
                     <ResourceTypeField
                       clearable
                       fieldPath={`${fieldPathPrefix}.resource_type`}
-                      labelIcon="" // Otherwise breaks alignment
+                      icon="" // Otherwise breaks alignment
                       options={options.resource_type}
                       labelclassname="small field-label-class"
                       width={8}
@@ -161,7 +161,7 @@ const RelatedWorksField = ({
 RelatedWorksField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   required: PropTypes.bool,
   options: PropTypes.object.isRequired,
   showEmptyValue: PropTypes.bool,

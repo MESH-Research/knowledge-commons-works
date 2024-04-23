@@ -64,7 +64,7 @@ const PublicationDateField = ({
   fieldPath,
   helpText = undefined,
   label = i18next.t("Publication Date"),
-  labelIcon = "calendar",
+  icon = "calendar",
   required = true,
   ...extraProps
 }) => {
@@ -261,7 +261,7 @@ const PublicationDateField = ({
           <Form.Field required={!!required} error={!!meta.error}>
             <FieldLabel
               htmlFor={fieldPath}
-              icon={labelIcon}
+              icon={icon}
               label={label}
               id={`${fieldPath}.label`}
             />
@@ -330,7 +330,7 @@ PublicationDateField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   helpText: PropTypes.string,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   placeholder: PropTypes.string,
   required: PropTypes.bool,
 };

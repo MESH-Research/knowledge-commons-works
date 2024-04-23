@@ -31,7 +31,7 @@ export const IdentifiersField = ({
   description,
   placeholder,
   label = i18next.t("Identifiers"),
-  labelIcon = "barcode",
+  icon = "barcode",
   required = false,
   schemeOptions = undefined,
   showEmptyValue = false,
@@ -111,7 +111,7 @@ export const IdentifiersField = ({
       render={(arrayHelpers) => (
         <>
           <Form.Field required={required}>
-            <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+            <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
           </Form.Field>
 
           {values.metadata.identifiers.map(({ scheme, identifier }, index) => {
@@ -133,7 +133,7 @@ export const IdentifiersField = ({
                   fieldPath={`${fieldPathPrefix}.identifier`}
                   label={
                     <label>
-                      <Icon name={!isUrl ? labelIcon : "linkify"} />
+                      <Icon name={!isUrl ? icon : "linkify"} />
                       {i18next.t(!isUrl ? "Identifier" : "URL")}
                     </label>
                   }
@@ -211,7 +211,7 @@ export const IdentifiersField = ({
 IdentifiersField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   required: PropTypes.bool,
   schemeOptions: PropTypes.arrayOf(
     PropTypes.shape({
