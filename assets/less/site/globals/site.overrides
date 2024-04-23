@@ -1203,7 +1203,7 @@ html.cover-page {
           .preview-iframe {
             aspect-ratio: 9/11;
             min-height: 100vh;
-            margin-top: 1rem;
+            margin-top: 0;
             &.hidden {
               display: none;
             }
