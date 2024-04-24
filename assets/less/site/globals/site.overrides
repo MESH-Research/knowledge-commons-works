@@ -101,8 +101,8 @@ html.cover-page {
 .theme.header {
   box-shadow: none;
   .beta-banner {
-    background-color: @infoBackgroundColor;
-    color: @infoTextColor;
+    background-color: @seafoam;
+    color: @verdigris;
     padding: 0.5rem 1rem;
     text-align: center;
     font-size: 16px;
@@ -250,11 +250,11 @@ html.cover-page {
       0deg,
       rgba(255, 255, 255, 1) 0%,
       rgba(255, 255, 255, 1) 12%,
-      rgba(255, 255, 255, 0.8) 47%,
-      rgba(255, 255, 255, 0.8) 93%,
+      rgba(255, 255, 255, 0.9) 47%,
+      rgba(255, 255, 255, 0.9) 93%,
       rgba(255, 255, 255, 1) 98%
     ),
-    url("https://localhost/static/images/pexels-andy-barbour-6684443.jpg");
+    url("https://localhost/static/images/pattern/KCommons_assets_pattern large.png");
   background-position: center;
   background-position-y: 55%;
   background-size: cover;
@@ -269,8 +269,8 @@ html.cover-page {
         font-size: 8rem;
         line-height: 8rem;
         font-weight: bold;
-        color: @primaryColor;
-        opacity: 0.8;
+        color: @ivy;
+        opacity: 1;
         letter-spacing: 0.05rem;
         margin-bottom: 0;
         margin-top: 1rem;
@@ -301,7 +301,7 @@ html.cover-page {
 
   #frontpage-info-bar {
     a {
-      color: @textColor;
+      color: @verdigris;
       text-decoration: none;
       opacity: 0.7;
       @media all and (max-width: @largestTabletScreen) {
