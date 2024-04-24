@@ -8,8 +8,23 @@
 /* This is the single variable that controls them all */
 @emSize: 16px;
 
+/*-------------------
+      Fonts
+--------------------*/
+
 /* The size of page text  */
 @fontSize: 16px;
+@fontSizeBase: @fontSize; // 14px;
+@font-size-small: 12px;
+@font-size-tiny: 10px;
+@font-size-massive: 36px;
+
+/*-------------------
+     Em Sizes
+--------------------*/
+
+@75px : unit( (75 / @emSize), rem);
+@relative75px : unit( (75 / @emSize), em);
 
 /*-------------------
       Breakpoints
@@ -22,11 +37,9 @@
 @widescreenMonitorBreakpoint: 1920px;
 
 /*-------------------
-      Colors
+    Brand Colors
 --------------------*/
 
-/* Theme colors */
-// @primaryColor: rgb(0, 102, 80); // #006650
 @ivy: #1C4036;
 @verdigris: #669999;
 @gold: #D9B01C;
@@ -34,22 +47,123 @@
 @seafoam: #f0faf5;
 @ivory: #f5f5eb;
 
+@darkGray: #333;
+@green: green;
+@peacock: #4899DB;
+@white: #fff;
+@salmon: #e47719;
+
+/*-------------------
+      Colors
+--------------------*/
+
 @primaryColor: @verdigris;
-@secondaryColor: @gold; // #c2eae1;;
-@footerLightColor: lighten(@ivy, 10%);
-@footerDarkColor: lighten(@gold, 30%);
+@secondaryColor: @gold;
 
-@navbarBackgroundColor: #5eae9b;
-@navbarBackgroundImage: #5eae9b;
-// @navbarBackgroundImage: linear-gradient(12deg, rgb(0, 102, 80) 0%, desaturate(lighten(rgb(0, 102, 80), 5%), 5%) 90%);
+@primaryDarkenColor: darken(@primaryColor, 10%);
 
-/* Semantic state colors */
-@errorTextColor: #e47719; // @negativeColor; // = @red
+// backwards compatibility
+@brandColor: @primaryColor;
+@brand-primary:@primaryColor;
+@defaultBrandColor: @ivy; // #434C5E;
+
+/* ----------------------------
+      Semantic state colors
+------------------------------- */
+@errorTextColor: @salmon; // @negativeColor; // = @red
 @negativeTextColor: @red;
-@errorColor: #e47719; // @negativeColor; // = @red
+@errorColor: @errorTextColor; // @negativeColor; // = @red
 @formErrorColor: @errorColor;
 @formErrorBorder: @negativeBorderColor;
 @formErrorBackground: lighten(@errorColor, 50%);
 @inputErrorFocusBackground: @formErrorBackground;
 @inputErrorFocusColor: @errorColor;
 @inputErrorFocusBorder: @formErrorBorder;
+
+/*-------------------
+      Site Colors
+--------------------*/
+
+@signupColor: @green;
+@accessRightOpen: @green;
+@accessRightRestricted: @red;
+@accessRightEmbargoed: @yellow;
+@accessRightMetadataOnly: @teal;
+
+@restricted-components-background-color: #feeaea;
+@restricted-components-border-color: #e0b4b4;
+@embargoed-components-background-color: #fbf8ee;
+@embargoed-components-border-color: #c9ba9b;
+
+@featuredListBackgroundColor: @peacock;
+
+@navbarBackgroundImage: @white;
+@navbarBackgroundColor: @white;
+
+@footerLightColor: lighten(@ivy, 10%);
+@footerDarkColor: lighten(@gold, 30%);
+@subFooterColor: @footerDarkColor;
+@footerTextLightColor: #ffffff;
+@footerTextDarkColor: #ffffff;
+
+@focusedFormBorderColor: #2185d0;
+@focusedFormMutedBorderColor: #2185d0;
+
+@highlightHeaderColor: #ededed;
+@highlightBackgroundColor: @highlightHeaderColor;
+@highlightBackgroundColorHover:  darken(saturate(@highlightHeaderColor, 20), 15, relative);
+@highlightLandingPageBackgroundColor: rgba(173, 206, 224, 0.52);
+@selectedColor: #ededed;
+
+@versionActiveColor: @seafoam; //#d9edf7;
+
+@mutedAccordionHeaderColor: #f5f5f5;
+
+/*-------------------
+      Links
+--------------------*/
+
+@linkColor: #005b9e;
+@linkUnderline: none;
+@linkHoverColor: darken(saturate(@linkColor, 20), 15, relative);
+@linkHoverUnderline: underline;
+
+/*-------------------
+      negative spacing
+--------------------*/
+@coverPageDefaultMargin: 0;
+
+/* ----------------------------
+      borders
+------------------------------- */
+
+@dashedBorder: 2px dashed @borderColor;
+@defaultBorder: 1px solid @solidBorderColor;
+
+/*------------------
+  checkboxes
+------------------*/
+
+@checkboxSize: @relative17px;
+
+/*------------------
+  tables
+------------------*/
+
+@cellVerticalPadding: @relativeMini;
+@cellHorizontalPadding: @relativeMini;
+
+
+/*------------------
+  Images
+------------------*/
+
+@userDashboardAvatarSize: 40px;
+@communityItemLogoWidth: 115px;
+
+
+/*------------------
+  Separators
+------------------*/
+@listSeparator: ";";
+@listCommaSeparator: ",";
