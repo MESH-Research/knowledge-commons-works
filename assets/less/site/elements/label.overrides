@@ -1,1 +1,7 @@
 /* Label theme overrides */
+
+.ui.neutral.label {
+    background-color: lighten(@gold, 35%);
+    border-color: lighten(@gold, 20%);
+    color: darken(@gold, 10%);
+}

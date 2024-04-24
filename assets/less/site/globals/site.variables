@@ -48,10 +48,12 @@
 @ivory: #f5f5eb;
 
 @darkGray: #333;
-@green: green;
+@green: #7a9750;
 @peacock: #4899DB;
 @white: #fff;
 @salmon: #e47719;
+@yellow: @gold;
+@royalBlue: #005b9e;
 
 /*-------------------
       Colors
@@ -103,8 +105,8 @@
 @footerLightColor: lighten(@ivy, 10%);
 @footerDarkColor: lighten(@gold, 30%);
 @subFooterColor: @footerDarkColor;
-@footerTextLightColor: #ffffff;
-@footerTextDarkColor: #ffffff;
+@footerTextLightColor: @white;
+@footerTextDarkColor: @white;
 
 @focusedFormBorderColor: #2185d0;
 @focusedFormMutedBorderColor: #2185d0;
@@ -123,9 +125,9 @@
       Links
 --------------------*/
 
-@linkColor: #005b9e;
+@linkColor: @primaryColor;
 @linkUnderline: none;
-@linkHoverColor: darken(saturate(@linkColor, 20), 15, relative);
+@linkHoverColor: darken(@linkColor, 15, relative);
 @linkHoverUnderline: underline;
 
 /*-------------------

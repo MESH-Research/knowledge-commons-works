@@ -1,0 +1,124 @@
+.outer-navbar {
+  border-color: transparent;
+  background-color: transparent;
+
+  #invenio-nav.ui.menu {
+    @media screen and (max-width: @largestMobileScreen) {
+      height: 3.5rem;
+    }
+    box-shadow: none;
+
+    &.active {
+      #invenio-menu.ui.menu {
+        @media all and (max-width: @largestTabletScreen) {
+          z-index: 1000;
+        }
+      }
+    }
+    #invenio-menu.ui.menu {
+      .item:not(.logo) {
+        & > span {
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+        }
+        a:not(.ui.button),
+        a {
+          position: relative;
+          color: @primaryColor;
+          &::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: 1rem;
+            left: 0;
+            background-color: @primaryColor;
+            transform-origin: bottom right;
+            transition: transform 0.1s ease-out;
+          }
+          .inline {
+            margin-left: 0.5rem;
+          }
+        }
+        a:not(.ui.button):hover {
+          color: darken(@primaryColor, 10%);
+          &::after {
+            transform: scaleX(1);
+            transform-origin: center;
+          }
+        }
+        a.ui.button.basic {
+          box-shadow: none;
+        }
+        &.right.menu {
+          a,
+          a:hover,
+          .item > span {
+            color: @ivy;
+          }
+          > form > a.ui.button.basic {
+            color: @ivy !important;
+            i {
+              margin-right: 0.5rem !important;
+            }
+          }
+        }
+        #user-profile-dropdown {
+          margin-right: 0.75rem;
+        }
+        #user-profile-menu {
+          a {
+            &::after {
+              background-color: transparent;
+            }
+          }
+        }
+      }
+    }
+  }
+  .item.logo {
+    width: auto;
+    .logo-link {
+      display: flex;
+      align-items: center;
+      .rdm-logo {
+        width: auto;
+        max-height: 4rem;
+        margin-top: 0.4rem;
+        @media screen and (max-width: @largestMobileScreen) {
+          max-height: 3rem;
+        }
+      }
+      .title-wrapper {
+        margin-left: 1rem;
+        h1 {
+          margin-top: 0.3rem;
+          margin-bottom: 0;
+          letter-spacing: 0.05rem;
+          font-size: 3rem;
+          line-height: 3rem;
+          color: @primaryColor;
+          @media screen and (max-width: @largestMobileScreen) {
+            margin-top: 0.5rem;
+            font-size: 2rem;
+            line-height: 2rem;
+          }
+        }
+        .subtitle {
+          font-size: 1rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          display: block;
+          margin-top: 0;
+          line-height: 1rem;
+          letter-spacing: 0.1rem;
+          font-weight: normal;
+          @media screen and (max-width: @largestMobileScreen) {
+            font-size: 0.85rem;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,8 @@
 
-.ui.large.header {
-    color: @secondaryColor;
+h1.ui.header {
+    color: @ivy;
+}
+
+h2.ui.header {
+    color: @primaryColor;
 }
