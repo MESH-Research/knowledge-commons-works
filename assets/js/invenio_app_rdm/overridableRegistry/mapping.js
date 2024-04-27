@@ -41,6 +41,7 @@ export const overriddenComponents = {
   "InvenioAppRdm.Deposit.PublicationDateField.container": PublicationDateField,
   "InvenioAppRdm.Deposit.PublisherField.container": PublisherField,
   "InvenioAppRdm.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
+  "InvenioAppRDM.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Search.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioCommunities.DetailsSearch.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
