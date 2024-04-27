@@ -15,9 +15,6 @@
 
 // }
 
-@formButtonColor: @sidebarBackgroundColor;
-@sidebarBackgroundColor: @ivory; // #f9f9f9;
-
 // General typography
 
 button,
@@ -101,8 +98,8 @@ html.cover-page {
 .theme.header {
   box-shadow: none;
   .beta-banner {
-    background-color: @seafoam;
-    color: @verdigris;
+    background-color: @ivory60;
+    color: @darkGold;
     padding: 0.5rem 1rem;
     text-align: center;
     font-size: 16px;
@@ -125,21 +122,25 @@ html.cover-page {
 
 #frontpage-hero-section {
   background-color: #fff;
+  // rgba(245, 245, 235, 1) 0%,
+  // rgba(245, 245, 235, 1) 12%,
   background-image: linear-gradient(
       0deg,
       rgba(255, 255, 255, 1) 0%,
-      rgba(255, 255, 255, 1) 12%,
+      rgba(255, 255, 255, 1) 20%,
+      rgba(255, 255, 255, 0.9) 28%,
       rgba(255, 255, 255, 0.9) 47%,
       rgba(255, 255, 255, 0.9) 93%,
       rgba(255, 255, 255, 1) 98%
     ),
-    url("https://localhost/static/images/pattern/KCommons_assets_pattern large.png");
-  background-position: center;
-  background-position-y: 55%;
-  background-size: cover;
-  h2 {
-    letter-spacing: 0.05rem;
-  }
+    url("https://localhost/static/images/pattern/KCommons_assets_pattern small_400.png");
+  background-position: 45% 20%;
+  // background-size: 50%;
+  // background-position-y: 55%;
+  // background-size: cover;
+  // h2 {
+  //   letter-spacing: 0.05rem;
+  // }
   > .ui.container.grid {
     margin-top: 0;
     .titles {
@@ -153,17 +154,8 @@ html.cover-page {
         letter-spacing: 0.05rem;
         margin-bottom: 0;
         margin-top: 1rem;
-      }
-      a {
-        text-decoration: none;
-        h2 {
-          position: relative;
-          z-index: 99;
-          text-transform: uppercase;
-          font-weight: normal;
-          letter-spacing: 0.1rem;
-          margin-top: -0.5rem;
-          font-size: 2rem;
+        img.hero-logo {
+          width: 24rem;
         }
       }
     }
@@ -179,59 +171,114 @@ html.cover-page {
   }
 
   #frontpage-info-bar {
-    a {
-      display: block;
+    margin-bottom: 0;
+    border-bottom: 2rem solid @white;
+    .column {
       cursor: pointer;
-      background-color: @white;
-      color: @verdigris;
-      text-decoration: none;
-      opacity: 1;
-      @media all and (max-width: @largestTabletScreen) {
+      background-color: transparent;
+      a {
+        display: block;
+        cursor: pointer;
+        color: @ivy;
+        text-decoration: none;
+        .huge.icon {
+          font-size: 3rem;
+        }
         h2 {
-          color: @primaryColor;
-          font-size: 1.5rem;
+          color: @ivy;
+          &:hover {
+            color: lighten(@ivy, 10%);
+          }
+        }
+        @media all and (max-width: @largestTabletScreen) {
+          h2 {
+            font-size: 1.5rem;
+          }
         }
       }
-      .huge.icon {
-        font-size: 3rem;
-      }
       &:hover {
-        color: darken(@verdigris, 10%);
+        a,
+        h2 {
+          color: lighten(@ivy, 10%);
+        }
+      }
+      &:nth-child(3) {
+        a,
+        h2 {
+          color: @verdigris;
+        }
+        &:hover {
+          a,
+          h2 {
+            color: darken(@verdigris, 10%);
+          }
+        }
+      }
+      &:nth-child(2) {
+        a,
+        h2 {
+          color: @gold;
+        }
+        &:hover {
+          a,
+          h2 {
+            color: darken(@gold, 10%);
+          }
+        }
+      }
+    }
+  }
+}
+// Carousel
+
+#communities-carousel {
+  .ui.container.carousel {
+    background-image: url("https://localhost/static/images/textured_bgs/KCommons_assets_Ivory_600.png");
+    background-color: @white;
+    .ui.container.grid {
+      max-width: 100% !important;
+      h2.ui.header {
+        margin-top: 1rem;
+      }
+      .column {
+        padding-bottom: 0;
+      }
+      .item {
+        .content {
+          .buttons-wrapper {
+            display: flex;
+            flex-direction: column;
+            .browse-btn {
+              background-color: @white !important;
+              border: 1px solid #ddd;
+              margin-bottom: 0.5rem;
+            }
+          }
+        }
+      }
+      &:nth-child(2) {
+        margin-top: 0;
+      }
+    }
+    i.icon.angle.left.carousel-arrow,
+    i.icon.angle.right.carousel-arrow {
+      color: @primaryColor;
+      opacity: 0.5;
+      &:hover {
         opacity: 1;
       }
     }
   }
 }
 
-// Carousel
+// Front page recent works
 
-#communities-carousel {
-  .ui.container.grid {
-    max-width: 100% !important;
-    .column {
-      padding-bottom: 0;
-    }
-    .item {
-      .content {
-        .browse-btn {
-          background-color: @white !important;
-          border: 1px solid #ddd;
-        }
-      }
-    }
-    &:nth-child(2) {
-      margin-top: 0;
-    }
-  }
-  i.icon.angle.left.carousel-arrow,
-  i.icon.angle.right.carousel-arrow {
-    color: @primaryColor;
-    opacity: 0.5;
-    &:hover {
-      opacity: 1;
-    }
+.recent-works {
+  h2.ui.header {
+    color: @ivy;
   }
 }
+
 
 // Search results
 
@@ -472,14 +519,14 @@ html.cover-page {
 
     .sticky-footer-fixed,
     .sticky-footer-static {
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: @ivy;
       backdrop-filter: blur(2px);
       border-top: 2px solid @white;
       padding: 0;
       display: flex;
       justify-content: space-between;
       min-height: 3.5rem;
-      border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
+      border-radius: @defaultBorderRadius;
       .grid.deposit-form-footer {
         width: 100%;
         margin: 0;
@@ -487,6 +534,12 @@ html.cover-page {
           padding: 0.5rem;
           &:last-child {
             text-align: right;
+          }
+          &:first-child,
+          &:last-child {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
           }
         }
         .footer-message {
@@ -508,13 +561,10 @@ html.cover-page {
       position: fixed;
       bottom: 0;
       max-width: 900px !important;
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(28, 64, 54, 0.8);
     }
     .sticky-footer-static {
       position: relative;
-      padding-bottom: 1rem;
-      min-height: 4.5rem;
-      border-bottom: 1px solid grey;
     }
 
     .formPageWrapper {
@@ -752,12 +802,13 @@ html.cover-page {
             h2.ui.header {
               background: @sidebarBackgroundColor;
               font-size: @large;
+              font-weight: bold;
               padding: 1rem 1rem 0.5rem 1.75rem;
               margin-bottom: 0;
               margin-top: 0;
             }
             .ui.form {
-              margin-top: 0.5rem;
+              padding-top: 0.5rem;
               padding: 1rem 1rem 1rem 1.75rem;
               width: 100%;
               background-color: @sidebarBackgroundColor;
@@ -1313,7 +1364,7 @@ html.cover-page {
         margin-bottom: 0.75rem;
       }
       .buttons.row {
-        display:flex;
+        display: flex;
         justify-content: flex-end;
         margin-top: -0.5rem;
       }
@@ -1323,7 +1374,7 @@ html.cover-page {
         &:hover,
         &:focus {
           background-color: transparent !important;
-          box-shadow: 0px 0em 0px 1px rgba(87, 58, 8, .2) inset !important;
+          box-shadow: 0px 0em 0px 1px rgba(87, 58, 8, 0.2) inset !important;
         }
       }
     }
@@ -1828,9 +1879,17 @@ html.cover-page {
 
 #rdm-footer-element {
   .footer-top {
-    background-color: @ivy;
+    background-color: @footerDarkColor;
     padding-bottom: 3rem;
     .rdm-footer.column {
+      a {
+        color: @footerTextLightColor;
+      }
+      &:nth-child(2) {
+        a {
+          color: @footerTextDarkColor;
+        }
+      }
       .image-link-wrapper {
         display: flex;
         flex-direction: row;
@@ -1866,9 +1925,10 @@ html.cover-page {
     }
   }
   .footer-bottom {
-    color: @ivy;
+    background-color: @subFooterColor;
+    color: @footerTextDarkColor;
     a {
-      color: @ivy;
+      color: @footerTextDarkColor;
     }
   }
 }

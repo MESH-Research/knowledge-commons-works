@@ -21,11 +21,12 @@
     <div class="row titles">
       <div class="sixteen wide column center aligned rel-mt-2 rel-mb-2">
         {%- block frontpage_title %}
-        <h1 class="ui center aligned header ">
-          Works
+        <h1 class="ui center aligned header hero-logo">
+          <img src="{{ url_for('static', filename=config.THEME_HERO_LOGO) }}" alt="Knowledge Commons Works logo" class="ui image">
         </h1>
         {# <span>Part of the </span> #}
-        <a href="https://{{ config.KC_WORDPRESS_DOMAIN}}"><h2 class="ui center aligned header ">Knowledge Commons</h2></a>
+        {# <a href="https://{{ config.KC_WORDPRESS_DOMAIN}}"> #}
+        {# <h2 class="ui center aligned header ">Knowledge Commons</h2></a> #}
         {# <span> network</span> #}
         {# <h1 class="ui center aligned header ">
           {{ _(config.THEME_FRONTPAGE_TITLE) }}
@@ -62,7 +63,7 @@
         {%- endblock frontpage_search %}
   </div>
 
-  <div id="frontpage-info-bar" class="ui container grid rel-mt-2 rel-mb-2">
+  <div id="frontpage-info-bar" class="ui container grid rel-mt-2">
     <div class="row">
       <div class="eight wide mobile four wide tablet four wide computer column center aligned">
         <a href="#">

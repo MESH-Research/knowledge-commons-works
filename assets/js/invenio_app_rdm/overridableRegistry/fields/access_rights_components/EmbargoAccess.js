@@ -35,7 +35,7 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
     ? DateTime.fromISO(embargoUntil).toLocaleString(DateTime.DATE_FULL)
     : "???";
 
-  const publicColor = !embargoActive ? "positive" : "";
+  const publicColor = !embargoActive ? "primary" : "";
   const restrictedColor = embargoActive ? "negative" : "";
 
   const handlePublicButtonClick = () => {

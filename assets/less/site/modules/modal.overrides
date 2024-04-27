@@ -1,1 +1,12 @@
 /* Modal theme overrides */
+
+.ui.modal {
+  .header {
+    color: @primaryColor;
+  }
+  .actions {
+    background-color: @white;
+    border-top: 0;
+    padding-top: 0;
+  }
+}

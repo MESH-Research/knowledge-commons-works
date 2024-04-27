@@ -13,11 +13,13 @@ import { LicenseField } from "./fields/LicenseField";
 import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 import { PublicationDateField } from "./fields/PublicationDateField";
 import { PublisherField } from "./fields/PublisherField";
+import RecordsResultsListItem from "./search/RecordsResultsListItem";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
 import { SubjectsField } from "./fields/SubjectsField";
 import { TitlesField } from "./fields/TitlesField";
 import { VersionField } from "./fields/VersionField";
 import { FileUploader } from "./fields/file_uploader_components/index";
+
 
 const MobileActionMenu = () => {
   return (
@@ -38,6 +40,9 @@ export const overriddenComponents = {
   "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
   "InvenioAppRdm.Deposit.PublicationDateField.container": PublicationDateField,
   "InvenioAppRdm.Deposit.PublisherField.container": PublisherField,
+  "InvenioAppRdm.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
+  "InvenioAppRdm.Search.RecordsResultsListItem.layout": RecordsResultsListItem,
+  "InvenioCommunities.DetailsSearch.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
   "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
   "InvenioAppRdm.Deposit.VersionField.container": VersionField,

@@ -41,7 +41,7 @@ class ProtectionButtonsComponent extends Component {
   render() {
     const { active, disabled } = this.props;
 
-    const publicColor = active ? "positive" : "";
+    const publicColor = active ? "primary" : "";
     const restrictedColor = !active ? "negative" : "";
 
     return (

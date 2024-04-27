@@ -1,0 +1,6 @@
+
+#rdm-deposit-form {
+    .ui.grid {
+        margin-top: 0;
+    }
+}

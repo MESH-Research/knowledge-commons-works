@@ -1,4 +1,55 @@
 
-.ui.search.button {
-    background-color: @gold;
+.ui.buttons > .ui.button:not(.basic):not(.inverted),
+.ui.buttons:not(.basic):not(.inverted) > .ui.button,
+.ui.button {
+    background-color: @sidebarBackgroundColor;
+    color: @darkGold;
+    box-shadow: 0px 0px 0px 1px @gold20 inset,
+        0px 0em 0px 0px @goldRgba10 inset;
+    &:hover, &:active, &:focus {
+        background-color: @ivory;
+        color: darken(@darkGold, 10%);
+        box-shadow: 0px 0px 0px 1px @goldRgba50 inset, 0px 0em 0px 0px @goldRgba50 inset;
+        cursor: pointer;
+    }
+    &.search {
+        background-color: @secondaryColor;
+        &:hover, &:active, &:focus {
+            background-color: darken(@secondaryColor, 10%);
+            border-color: darken(@secondaryColor, 10%);
+            box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 10%) inset, 0px 0em 0px 0px rgba(28, 64, 54, 0.15) inset;
+        }
+    }
+    &.transparent {
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+    &.labeled.icon > .icon {
+        background-color: @verdigrisRgba10;
+    }
+}
+
+// .ui.buttons .button:not(.basic):not(.inverted) {
+//     &:first-child {
+//         border-top-left-radius: 0.28571429rem;
+//         border-bottom-left-radius: 0.28571429rem;
+//     }
+// }
+
+.ui.buttons .button.primary:not(.basic):not(.inverted),
+.ui.primary.button {
+    background-color: @primaryColor;
+    color: @white;
+    box-shadow: 0px 0px 0px 1px @primaryColor inset,
+        0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    &:hover, &:active, &:focus {
+        background-color: darken(@primaryColor, 10%);
+        color: @white;
+        box-shadow: 0px 0px 0px 1px darken(@primaryColor, 10%) inset,
+            0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    }
+    &.labeled.icon > .icon {
+        background-color: @greenRgba10;
+    }
 }

@@ -2,7 +2,17 @@
 h1.ui.header {
     color: @ivy;
 }
+.deposit-form-header {
+    h1.ui.header {
+        margin-bottom: 0;
+    }
+}
 
 h2.ui.header {
     color: @primaryColor;
+    &.preselected-community-header {
+        color: @secondaryColor;
+        margin-top: 0;
+    }
 }
+

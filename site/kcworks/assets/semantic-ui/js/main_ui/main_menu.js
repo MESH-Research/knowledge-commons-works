@@ -285,12 +285,12 @@ const Brand = ({ themeLogoURL, themeSitename }) => {
         src={`${themeLogoURL}`}
         alt={i18next.t(siteNameOverride ? siteNameOverride : themeSitename)}
       />
-      <span className="title-wrapper">
+      {/* <span className="title-wrapper">
         <h1 className="ui header">
           {siteNameOverride !== "" ? "Works" : themeSitename}
         </h1>
         <span className="ui header subtitle">Knowledge Commons</span>
-      </span>
+      </span> */}
     </a>
   ) : (
     <a className="logo" href="/">

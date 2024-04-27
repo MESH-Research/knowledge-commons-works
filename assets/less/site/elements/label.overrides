@@ -5,3 +5,30 @@
     border-color: lighten(@gold, 20%);
     color: darken(@gold, 10%);
 }
+.ui.label.basic,
+.ui.label {
+    background-color: @ivory;
+    border: 1px solid @ivy20;
+    color: @ivy60;
+
+    &.transparent {
+        background-color: transparent;
+        border-color: transparent;
+    }
+}
+.ui.label.primary.basic {
+    background-color: @white;
+    border-color: @primaryColor;
+    color: @primaryColor;
+}
+.ui.label.secondary.basic {
+    background-color: @white;
+    border-color: @gold40;
+    color: @secondaryColor;
+}
+.ui.label.positive.basic,
+.ui.label.access-status.open.basic {
+    background-color: @white;
+    border-color: @positiveColor;
+    color: @positiveColor;
+}

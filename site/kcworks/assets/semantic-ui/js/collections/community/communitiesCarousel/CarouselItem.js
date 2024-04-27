@@ -18,7 +18,10 @@ import GeoPattern from "geopattern";
 class CarouselItem extends Component {
   render() {
     const { community, defaultLogo, className, showUploadBtn } = this.props;
-    const self_link = community.links.self_html.replace("communities", "collections");
+    const self_link = community.links.self_html.replace(
+      "communities",
+      "collections"
+    );
 
     const pattern = GeoPattern.generate(community.slug);
 
@@ -33,37 +36,49 @@ class CarouselItem extends Component {
           className={`carousel flex align-items-center ${className}`}
           key={community.id}
         >
-          <Image size="small" src={community.links.logo} fallbackSrc={pattern.toDataUri()} />
-          <Item.Content>
-            <Item.Header as={Grid} stackable className="rel-pb-1">
-              <Grid.Column computer="10" tablet="16" className="pl-0 pb-0">
+          <Image
+            size="small"
+            src={community.links.logo}
+            fallbackSrc={pattern.toDataUri()}
+          />
+          <Item.Content as={Grid}>
+            <Grid.Column computer="12" tablet="16" className="pl-0 pb-0">
+              <Item.Header stackable className="rel-pb-1">
                 <Header as="a" size="medium" href={self_link}>
                   {community.metadata.title}
                 </Header>
-              </Grid.Column>
-              <Grid.Column computer="6" tablet="16" className="buttons pl-0 pb-0">
+              </Item.Header>
+              <Item.Description
+                content={_truncate(community.metadata.description, {
+                  length: 300,
+                })}
+              />
+            </Grid.Column>
+
+            <Grid.Column
+              computer="4"
+              tablet="16"
+              className="buttons pl-0 pb-0"
+            >
+              <div className="buttons-wrapper">
+              <Button
+                size="mini"
+                href={self_link}
+                content={i18next.t("Browse")}
+                className="browse-btn"
+              />
+              {showUploadBtn && (
                 <Button
                   size="mini"
-                  href={self_link}
-                  content={i18next.t("Browse")}
-                  className="browse-btn"
+                  // icon="upload"
+                  // labelPosition="left"
+                  primary
+                  href={`/uploads/new?community=${community.slug}`}
+                  content={i18next.t("Contribute")}
+                  className="contribute-btn"
                 />
-                {showUploadBtn && (
-                  <Button
-                    size="mini"
-                    // icon="upload"
-                    // labelPosition="left"
-                    positive
-                    href={`/uploads/new?community=${community.slug}`}
-                    content={i18next.t("Contribute")}
-                    className="contribute-btn"
-                  />
-                )}
-              </Grid.Column>
-            </Item.Header>
-            <Item.Description
-              content={_truncate(community.metadata.description, { length: 300 })}
-            />
+              )}</div>
+            </Grid.Column>
           </Item.Content>
         </Item>
       </Overridable>
@@ -83,4 +98,7 @@ CarouselItem.defaultProps = {
   showUploadBtn: true,
 };
 
-export default Overridable.component("InvenioCommunities.CarouselItem", CarouselItem);
+export default Overridable.component(
+  "InvenioCommunities.CarouselItem",
+  CarouselItem
+);

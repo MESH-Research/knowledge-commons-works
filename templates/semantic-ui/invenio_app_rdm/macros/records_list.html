@@ -14,6 +14,7 @@
     id="records-list"
     data-fetch-url="{{ fetch_url }}"
     data-title="{{ title }}"
+    class="{{ title.lower()|replace(' ', '-') }}"
   >
 
     <h2 class="ui header">{{ title }}</h2>
