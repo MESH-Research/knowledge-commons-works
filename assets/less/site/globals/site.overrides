@@ -997,14 +997,6 @@ html.cover-page {
 #communities-details-search {
   aside.computer.only {
     padding-left: 1rem;
-    > div.ui.card,
-    > div.facet-container {
-      background-color: @sidebarBackgroundColor;
-      padding: 1rem;
-      .ui.card {
-        background-color: transparent;
-      }
-    }
   }
 }
 

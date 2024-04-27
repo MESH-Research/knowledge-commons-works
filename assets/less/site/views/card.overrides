@@ -1,8 +1,47 @@
 /* Card theme overrides */
 
 .ui.card.borderless.facet {
-    background-color: @sidebarBackgroundColor;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: @defaultBorderRadius;
+  background-color: @sidebarBackgroundColor;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: @defaultBorderRadius;
+
+  > .content {
+    margin-bottom: 0;
+    .header {
+      color: @ivy50;
+      margin-left: 0.5rem;
+    }
+    .ui.list {
+      margin-left: -0.5rem;
+    }
+    .ui.checkbox {
+        padding-top: 1rem;
+        &.content {
+            padding-left: 0.5rem;
+        }
+        label {
+            font-size: @small;
+        }
+    }
+  }
+  .item {
+    padding: 0;
+    .accordion.ui {
+      .facet-wrapper.parent {
+        padding: 0;
+        .facet-wrapper {
+          .button {
+            margin-right: 2px;
+          }
+        }
+      }
+      .content.active {
+        padding-bottom: 1rem;
+      }
+    }
+    .facet-wrapper.content:not(.parent) {
+    padding-top: 0;
+    }
+  }
 }

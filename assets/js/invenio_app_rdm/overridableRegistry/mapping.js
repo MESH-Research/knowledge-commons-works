@@ -4,6 +4,8 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import { parametrize } from "react-overridable";
+
 import { AccessRightField } from "./fields/AccessRightField";
 import { CreatibutorsField } from "./fields/CreatibutorsField";
 import { DescriptionsField } from "./fields/DescriptionsField";
@@ -15,6 +17,7 @@ import { PublicationDateField } from "./fields/PublicationDateField";
 import { PublisherField } from "./fields/PublisherField";
 import RecordsResultsListItem from "./search/RecordsResultsListItem";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
+import { SearchAppLayout } from "./search/SearchAppLayout";
 import { SubjectsField } from "./fields/SubjectsField";
 import { TitlesField } from "./fields/TitlesField";
 import { VersionField } from "./fields/VersionField";
@@ -28,6 +31,10 @@ const MobileActionMenu = () => {
     </div>
   );
 };
+
+const SearchAppLayoutWithConfig = parametrize(SearchAppLayout, {
+  appName: "InvenioAppRdm.Search",
+});
 
 export const overriddenComponents = {
   "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
@@ -43,6 +50,7 @@ export const overriddenComponents = {
   "InvenioAppRdm.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRDM.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Search.RecordsResultsListItem.layout": RecordsResultsListItem,
+  "InvenioAppRdm.Search.SearchApp.layout": SearchAppLayoutWithConfig,
   "InvenioCommunities.DetailsSearch.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
   "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
