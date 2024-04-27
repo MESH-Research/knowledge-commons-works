@@ -1,6 +1,9 @@
 /* Item theme overrides */
 
 .ui.items > .search-result.item {
+  .creatibutor-name {
+    color: @darkGold;
+  }
   .extra.item-footer {
     display: flex;
     align-items: flex-end;

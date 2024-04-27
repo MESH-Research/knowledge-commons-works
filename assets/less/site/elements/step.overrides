@@ -1,0 +1,60 @@
+
+.ui.steps {
+    margin-bottom: 2rem;
+    .step {
+      line-height: 1.15rem;
+      padding-top: @small;
+      padding-bottom: @small;
+      background-color: @sidebarBackgroundColor;
+      .title {
+        font-size: @small;
+        color: @ivy60;
+      }
+      &:after {
+        background-color: @sidebarBackgroundColor;
+      }
+      &.active {
+        background-color: @primaryColor;
+        color: #fff;
+        .title {
+          color: #fff;
+        }
+        &::after {
+          color: #fff;
+          background-color: @primaryColor;
+        }
+      }
+      &.has-error {
+        color: @errorColor; // was @errorTextColor
+        background-color: @negativeBackgroundColor;
+        border: 1px solid #e0b4b4;
+        .title {
+          color: @errorColor;
+        }
+        &.active {
+          color: @errorColor;
+          background-color: @errorColor;
+          border: 1px solid #e0b4b4;
+          .title {
+            color: @errorBackgroundColor;
+          }
+          &::after {
+            color: @negativeBackgroundColor;
+            background-color: @errorColor;
+            border-color: #e0b4b4;
+          }
+        }
+        &:after {
+          background-color: @negativeBackgroundColor;
+          border-color: #e0b4b4;
+        }
+        &:before {
+          content: "\f06a";
+          font-family: Icons;
+          font-size: @huge;
+          position: absolute;
+          bottom: -1.5rem;
+        }
+      }
+    }
+  }

@@ -1,8 +1,16 @@
-
 .ui.message {
-    &.warning {
-        .header {
-            color: @warningTextColor;
-        }
+  &.warning {
+    .header {
+      color: @warningTextColor;
     }
+  }
+
+  &.flashed {
+    .ui.grid.centered {
+      text-align: right;
+      .ui.icon.button.close-btn {
+        margin-top: 0;
+      }
+    }
+  }
 }
