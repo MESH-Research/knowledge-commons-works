@@ -13,6 +13,29 @@
     {{ webpack['invenio-app-rdm-search.js'] }}
 {%- endblock %}
 
+{% if community %}
+{% set options = [
+    {
+        "key": "communities",
+        "text": _("In this community"),
+        "value": url_for("invenio_app_rdm_communities.communities_detail", pid_value=community.slug),
+    },
+    {
+        "key": "records",
+        "text": _("All") + " " + config.THEME_SITENAME,
+        "value": url_for("invenio_search_ui.search"),
+    }]
+  %}
+{% else %}
+{% set options = [
+          {
+            "key": "records",
+            "text": _("All") + " " + config.THEME_SITENAME,
+            "value": url_for("invenio_search_ui.search")
+          }]
+  %}
+{% endif %}
+
 {%- block page_body %}
 
 <div class="ui container fluid page-subheader-outer compact ml-0-mobile mr-0-mobile">
@@ -23,10 +46,31 @@
 
 <div class="ui container">
 
-  {%- block navbar_search %}
-    {%- include "invenio_app_rdm/searchbar.html" %}
-  {%- endblock navbar_search %}
+  <div class="ui grid search-app">
+    <div class="ui two column row">
+      <div class="column eleven wide computer eleven wide large screen sixteen wide mobile sixteen wide tablet eleven wide widescreen column">
+        <div id="header-search-bar" data-options='{{ options | tojson }}'>
+          <div class="ui fluid search">
+            <div class="ui icon input">
+              <input
+                autocomplete="off"
+                aria-label="{{ _('Search works') }}"
+                placeholder="{{ _('Search works') }}..."
+                type="text"
+                tabindex="0"
+                class="prompt"
+                value=""
+              >
+              <i aria-hidden="true" class="search icon"></i>
+            </div>
+          </div>
+      </div>
+      <div class="column computer only four wide computer three wide large screen three wide widescreen column">
+      </div>
+    </div>
+  </div>
 
-  <div data-invenio-search-config='{{ search_app_rdm_config(app_id="InvenioAppRdm.Search") | tojson }}'></div>
+  <div class="search-app-target" data-invenio-search-config='{{ search_app_rdm_config(app_id="InvenioAppRdm.Search") | tojson }}'></div>
+
 </div>
 {%- endblock page_body %}

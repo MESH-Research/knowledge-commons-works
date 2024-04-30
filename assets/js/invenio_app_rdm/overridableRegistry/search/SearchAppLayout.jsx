@@ -30,8 +30,9 @@ const ResultOptionsWithState = withState(ResultOptions);
 
 const SearchAppLayout = ({ config, appName }) => {
 
-  console.log("SearchAppLayout", config, appName);
-  console.log("SearchAppLayout", config.aggs);
+  // console.log("SearchAppLayout", config, appName);
+  // console.log("SearchAppLayout", config.aggs);
+  // console.log("UUID:", buildUID("SearchApp.sort"));
 
   const [sidebarVisible, setSidebarVisible] = React.useState(false);
   const facetsAvailable = !_isEmpty(config.aggs);
@@ -42,18 +43,18 @@ const SearchAppLayout = ({ config, appName }) => {
   const resultsPaneLayoutFacets = {
     mobile: 16,
     tablet: 16,
-    computer: 10,
-    largeScreen: 10,
-    widescreen: 10,
+    computer: 11,
+    largeScreen: 11,
+    widescreen: 11,
     width: undefined,
   };
 
   const resultsSortLayoutFacets = {
     mobile: 14,
     tablet: 15,
-    computer: 12,
-    largeScreen: 13,
-    widescreen: 13,
+    computer: 11,
+    largeScreen: 11,
+    widescreen: 11,
   };
 
   // make list full width if no facets available
@@ -74,7 +75,7 @@ const SearchAppLayout = ({ config, appName }) => {
       >
         <Grid relaxed padded>
           <Grid.Row>
-            <Grid.Column width={12} floated="left">
+            <Grid.Column width={11} floated="left">
               <SearchBar buildUID={buildUID} appName={appName}/>
             </Grid.Column>
           </Grid.Row>
@@ -117,12 +118,32 @@ const SearchAppLayout = ({ config, appName }) => {
           {/* results list */}
           <Grid.Column
             as="section"
+            className="search-results-pane"
             aria-label={i18next.t("Search results")}
             {...resultsPaneLayout}
           >
             <SearchAppResultsPane
               layoutOptions={config.layoutOptions} appName={appName} buildUID={buildUID}
             />
+            {/* <div class="ui fluid placeholder rel-mt-3">
+              <div class="header">
+                <div class="line"></div>
+              </div>
+
+              <div class="paragraph">
+                <div class="line"></div>
+              </div>
+
+              <div class="paragraph">
+                <div class="line"></div>
+                <div class="line"></div>
+              </div>
+
+              <div class="paragraph">
+                <div class="line"></div>
+              </div>
+            </div> */}
+
           </Grid.Column>
 
           {/* computer facets sidebar */}
@@ -131,9 +152,9 @@ const SearchAppLayout = ({ config, appName }) => {
               ariaLabel={i18next.t("Search filters")}
               mobile={4}
               tablet={4}
-              computer={6}
-              largeScreen={6}
-              widescreen={6}
+              computer={5}
+              largeScreen={5}
+              widescreen={5}
               open={sidebarVisible}
               onHideClick={() => setSidebarVisible(false)}
             >

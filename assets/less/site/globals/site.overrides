@@ -1,7 +1,6 @@
 @import (css)
   url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
-
 // Responsive classes
 
 :not(.ui.grid).only {
@@ -29,6 +28,19 @@
 .mobile.hidden {
   @media all and (max-width: @largestMobileScreen) {
     display: none !important;
+  }
+}
+
+
+a {
+  color: @linkColor;
+  &.ui.creatibutor-link {
+    color: @darkGold;
+  }
+  &.subject.ui.label {
+    font-size: 1rem;
+    font-weight: normal;
+    padding: 0.25rem 0.5rem;
   }
 }
 
@@ -207,9 +219,7 @@ html.cover-page {
           .buttons-wrapper {
             display: flex;
             flex-direction: column;
-            .browse-btn {
-              background-color: @white !important;
-              border: 1px solid #ddd;
+            .button:first-child {
               margin-bottom: 0.5rem;
             }
           }
@@ -237,7 +247,6 @@ html.cover-page {
     color: @ivy;
   }
 }
-
 
 // Search results
 
@@ -368,6 +377,9 @@ html.cover-page {
             padding-top: 0.5rem;
             // padding-left: 0.5rem;
             // padding-right: 0.5rem;
+            p:last-child {
+              margin-bottom: 2rem;
+            }
           }
 
           .ui.message.file-box-message {
@@ -447,9 +459,6 @@ html.cover-page {
               .card {
                 box-shadow: none;
                 background-color: transparent;
-                .creatibutor-link {
-                  color: @textColor;
-                }
                 .content {
                   padding: 0;
                 }
@@ -461,9 +470,6 @@ html.cover-page {
         &.Contributors {
           .card {
             box-shadow: none;
-            .creatibutor-link {
-              color: @textColor;
-            }
             .content {
               padding-left: 0;
             }
@@ -746,22 +752,8 @@ html.cover-page {
           }
         }
       }
-      &#subjects {
-        .subject {
-          background-color: #fff;
-          color: @textColor;
-        }
-      }
       &#citation {
         margin-bottom: 1rem;
-        .button {
-          background-color: @sidebarBackgroundColor !important;
-          padding-left: 1rem !important;
-          font-weight: bold;
-          text-align: left;
-          color: @textColor;
-          border: 1px solid @borderColor;
-        }
         #citation-style-label {
           margin-right: 0.5rem;
         }
@@ -779,16 +771,6 @@ html.cover-page {
       }
       &#record-export {
         margin-bottom: 1rem;
-        .ui.basic.button {
-          background-color: @sidebarBackgroundColor !important;
-          padding-left: 1rem !important;
-          font-weight: bold;
-          color: @textColor !important;
-        }
-        .menu button {
-          width: 100%;
-          background-color: transparent;
-        }
       }
       &#social-sharing {
         .mastodon-popup {

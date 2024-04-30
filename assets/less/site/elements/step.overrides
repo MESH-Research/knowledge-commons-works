@@ -1,17 +1,26 @@
 
 .ui.steps {
     margin-bottom: 2rem;
-    .step {
+    border-color: @ivy20;
+    .step.link {
       line-height: 1.15rem;
       padding-top: @small;
       padding-bottom: @small;
       background-color: @sidebarBackgroundColor;
+      border-color: @ivy30;
       .title {
         font-size: @small;
         color: @ivy60;
       }
       &:after {
         background-color: @sidebarBackgroundColor;
+        border-color: @ivy30;
+      }
+      &:hover {
+        background-color: @ivory;
+        &::after {
+          background-color: @ivory;
+        }
       }
       &.active {
         background-color: @primaryColor;
@@ -22,6 +31,12 @@
         &::after {
           color: #fff;
           background-color: @primaryColor;
+        }
+        &:hover {
+          background-color: darken(@primaryColor, 10%);
+          &::after {
+            background-color: darken(@primaryColor, 10%);
+          }
         }
       }
       &.has-error {

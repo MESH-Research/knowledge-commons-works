@@ -1,16 +1,16 @@
 .ui.buttons > .ui.button:not(.basic):not(.inverted),
 .ui.buttons:not(.basic):not(.inverted) > .ui.button,
 .ui.button {
-  background-color: @sidebarBackgroundColor;
+  background-color: @white;
   color: @darkGold;
-  box-shadow: 0px 0px 0px 1px @gold20 inset, 0px 0em 0px 0px @goldRgba10 inset;
+  box-shadow: 0px 0px 0px 1px @gold50 inset, 0px 0em 0px 0px @goldRgba10 inset;
   &:hover,
   &:active,
   &:focus {
     background-color: @ivory;
-    color: darken(@darkGold, 10%);
-    box-shadow: 0px 0px 0px 1px @goldRgba50 inset,
-      0px 0em 0px 0px @goldRgba50 inset;
+    color: @ivy80;
+    box-shadow: 0px 0px 0px 1px @verdigris60 inset,
+      0px 0em 0px 0px @verdigris10 inset;
     cursor: pointer;
   }
   &.search {
@@ -30,7 +30,7 @@
   }
 
   &.labeled.icon > .icon {
-    background-color: @verdigrisRgba10;
+    background-color: transparent;
   }
 
   &.icon {
@@ -63,7 +63,7 @@
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
   }
   &.labeled.icon > .icon {
-    background-color: @greenRgba10;
+    background-color: transparent;
   }
 }
 
@@ -72,4 +72,28 @@
         color: @darkGold;
         box-shadow: none;
     }
+}
+
+
+.sidebar-container > .button.ui.fluid.labeled.icon:not(.primary) {
+  background-color: @sidebarBackgroundColor !important;
+  padding-left: 1rem !important;
+  font-weight: bold;
+  text-align: left;
+  color: @sidebarHeaderColor !important;
+  border: 1px solid @borderColor;
+  box-shadow: none;
+}
+
+#record-export {
+  .ui.basic.button {
+    background-color: @sidebarBackgroundColor !important;
+    padding-left: 1rem !important;
+    font-weight: bold;
+    color: @sidebarHeaderColor !important;
+  }
+  .menu button {
+    width: 100%;
+    background-color: transparent;
+  }
 }

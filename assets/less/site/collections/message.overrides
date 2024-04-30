@@ -1,4 +1,8 @@
 .ui.message {
+  background-color: @ivory;
+  border: 1px solid @ivy20;
+  color: @ivy60;
+
   &.warning {
     .header {
       color: @warningTextColor;

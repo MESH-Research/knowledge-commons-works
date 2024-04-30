@@ -144,6 +144,9 @@
 @brand-primary:@primaryColor;
 @defaultBrandColor: @ivy; // #434C5E;
 
+@borderColor: @ivy10;
+@sidebarHeaderColor: @ivy60;
+
 /* ----------------------------
       Semantic state colors
 ------------------------------- */

@@ -8,13 +8,13 @@ import { i18next } from "@translations/invenio_app_rdm/i18next";
 import _get from "lodash/get";
 import _truncate from "lodash/truncate";
 import React, { Component } from "react";
-import Overridable from "react-overridable";
+// import Overridable from "react-overridable";
 import { SearchItemCreators } from "@js/invenio_app_rdm/utils";
 import PropTypes from "prop-types";
-import { Item, Label, Icon } from "semantic-ui-react";
-import { buildUID } from "react-searchkit";
+import { Item, Grid, Icon, Label } from "semantic-ui-react";
+// import { buildUID } from "react-searchkit";
 import { CompactStats } from "./records_list_item_components/CompactStats";
-import { DisplayVerifiedCommunity } from "./records_list_item_components/DisplayVerifiedCommunity";
+// import { DisplayVerifiedCommunity } from "./records_list_item_components/DisplayVerifiedCommunity";
 import { DisplayPartOfCommunities } from "./records_list_item_components/DisplayPartOfCommunities";
 
 class RecordsResultsListItem extends Component {
@@ -77,8 +77,8 @@ class RecordsResultsListItem extends Component {
             <Item.Description>
               {_truncate(descriptionStripped, { length: 350 })}
             </Item.Description>
-            <Item.Extra className="item-footer">
-              <div className="item-footer-left">
+            <Item.Extra className="item-footer ui grid">
+              <Grid.Column mobile={16} tablet={8} computer={8} className="item-footer-left">
                 {subjects.map((subject) => (
                   <Label key={subject.title_l10n} size="tiny">
                     {subject.title_l10n}
@@ -123,9 +123,9 @@ class RecordsResultsListItem extends Component {
 
                   <DisplayPartOfCommunities communities={result.parent?.communities} />
                 </small>
-              </div>
+              </Grid.Column>
 
-              <div className="item-footer-right">
+              <Grid.Column mobile={16} tablet={8} computer={8} className="item-footer-right">
                 <small>
                   <CompactStats
                     uniqueViews={uniqueViews}
@@ -139,7 +139,7 @@ class RecordsResultsListItem extends Component {
                     })}
                   </small>
                 )}
-              </div>
+              </Grid.Column>
             </Item.Extra>
           </Item.Content>
         </Item>
