@@ -55,10 +55,10 @@
           a,
           a:hover,
           .item > span {
-            color: @ivy;
+            color: @ivy80;
           }
           > form > a.ui.button.basic {
-            color: @ivy !important;
+            color: @ivy80 !important;
             i {
               margin-right: 0.5rem !important;
             }

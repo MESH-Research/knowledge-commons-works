@@ -415,56 +415,6 @@ html.cover-page {
 
         &.Details {
           padding-top: 0;
-          .ui.accordion:not(.styled) {
-            padding-bottom: 0;
-            margin-top: 0.5rem;
-            .title {
-              font-weight: bold;
-              font-size: @large;
-              padding: 1rem 0 1rem 1rem;
-              border: 1px solid transparent;
-              border-bottom: 1px solid @internalBorderColor;
-              display: block;
-              background-color: transparent;
-              text-align: left;
-              width: 100%;
-              i.icon.dropdown {
-                float: right;
-              }
-              @media screen and (max-width: @largestMobileScreen) {
-                font-size: @large;
-              }
-              &:first-child {
-                padding-top: 0;
-              }
-            }
-            .active.content {
-              padding-left: 1rem;
-              padding-right: 1rem;
-              padding-bottom: 1.5rem;
-              background-color: #f9f9f9;
-
-              &.Analytics {
-                padding: 0;
-
-                .ui.statistics {
-                  display: none;
-                }
-
-                table {
-                  margin-top: 0;
-                  border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
-                }
-              }
-              .card {
-                box-shadow: none;
-                background-color: transparent;
-                .content {
-                  padding: 0;
-                }
-              }
-            }
-          }
         }
 
         &.Contributors {

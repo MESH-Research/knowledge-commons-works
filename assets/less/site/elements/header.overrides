@@ -1,5 +1,6 @@
 h1.ui.header {
-  color: @ivy;
+  color: @ivy80;
+  margin-top: 2rem !important;
 }
 .deposit-form-header {
   h1.ui.header {
@@ -18,11 +19,11 @@ h2.ui.header {
 #detail-main-content {
   .sidebar-container {
     h2.ui.header {
-      color: sidebarHeaderColor;
+      color: @sidebarHeaderColor;
     }
     .segment {
       h3.ui.header {
-        color: sidebarHeaderColor;
+        color: @sidebarHeaderColor;
       }
     }
   }
@@ -33,6 +34,6 @@ h2.ui.header {
     border-color: @borderColor;
   }
   .ui.tiny.header {
-    color: sidebarHeaderColor;
+    color: @sidebarHeaderColor;
   }
 }
