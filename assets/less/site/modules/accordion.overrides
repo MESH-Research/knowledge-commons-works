@@ -55,3 +55,19 @@
     }
   }
 }
+
+.facet {
+  .ui.accordion:not(.styled) {
+    margin-top: 0;
+    .title {
+      font-weight: normal;
+      font-size: 1rem;
+      border: none;
+      border-bottom: none;
+    }
+    .content.active .list {
+      padding-left: 1.5rem;
+      padding-top: 0;
+    }
+  }
+}

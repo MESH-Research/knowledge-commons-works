@@ -151,7 +151,6 @@
       Semantic state colors
 ------------------------------- */
 @errorTextColor: @salmon; // @negativeColor; // = @red
-@negativeTextColor: @red;
 @errorColor: @errorTextColor; // @negativeColor; // = @red
 @formErrorColor: @errorColor;
 @formErrorBorder: @negativeBorderColor;
@@ -166,6 +165,11 @@
 @positiveColor: @green;
 @positiveTextColor: darken(@green, 10%);
 @positiveBackgroundColor: @seafoam60;
+
+@negativeColor: @red;
+@negativeTextColor: @red;
+@negativeBackgroundColor: #fff6f6;
+@negativeBorderColor: #e0b4b4;
 
 /*-------------------
       Site Colors

@@ -140,7 +140,7 @@ const CommunityDetailsHeader = ({
               </div>
 
               <div className="mobile only">
-                <h1 className="ui medium header mb-5">{communityTitle}</h1>
+                <h1 className="ui large header mb-5">{communityTitle}</h1>
               </div>
             </div>
 

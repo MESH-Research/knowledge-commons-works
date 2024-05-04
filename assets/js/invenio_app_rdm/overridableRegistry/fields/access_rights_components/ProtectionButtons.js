@@ -41,13 +41,13 @@ class ProtectionButtonsComponent extends Component {
   render() {
     const { active, disabled } = this.props;
 
-    const publicColor = active ? "primary" : "";
-    const restrictedColor = !active ? "negative" : "";
+    const publicColor = "primary";
+    const restrictedColor = "negative";
 
     return (
       <Button.Group widths="2">
         <Button
-          className={publicColor}
+          className={`${publicColor} ${!active ? "basic" : ""}`}
           data-testid="protection-buttons-component-public"
           disabled={disabled}
           onClick={this.handlePublicButtonClick}
@@ -56,7 +56,7 @@ class ProtectionButtonsComponent extends Component {
           {i18next.t("Public")}
         </Button>
         <Button
-          className={restrictedColor}
+          className={`${restrictedColor} ${!!active ? "basic" : ""}`}
           data-testid="protection-buttons-component-restricted"
           active={!active}
           onClick={this.handleRestrictionButtonClick}

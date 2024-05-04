@@ -81,6 +81,11 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
+      - INVENIO_LOGGING_CONSOLE=True
+      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_LOGGING_FS_LEVEL=DEBUG
+      - INVENIO_LOGGING_FS_BACKUP_COUNT=10
+      - INVENIO_LOGGING_FS_LOGFILE=/opt/invenio/src/logs/invenio.log
     ports:
       - "5000"
     extra_hosts:
@@ -113,6 +118,11 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
+      - INVENIO_LOGGING_CONSOLE=True
+      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_LOGGING_FS_LEVEL=DEBUG
+      - INVENIO_LOGGING_FS_BACKUP_COUNT=10
+      - INVENIO_LOGGING_FS_LOGFILE=/opt/invenio/src/logs/invenio.log
     volumes:
       # TODO: in production copy these files rather than mounting?
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
@@ -137,6 +147,11 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
+      - INVENIO_LOGGING_CONSOLE=True
+      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_LOGGING_FS_LEVEL=DEBUG
+      - INVENIO_LOGGING_FS_BACKUP_COUNT=10
+      - INVENIO_LOGGING_FS_LOGFILE=/opt/invenio/src/logs/invenio.log
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
     depends_on:

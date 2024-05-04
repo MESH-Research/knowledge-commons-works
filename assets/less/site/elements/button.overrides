@@ -7,10 +7,10 @@
   &:hover,
   &:active,
   &:focus {
-    background-color: @ivory;
-    color: @ivy80;
-    box-shadow: 0px 0px 0px 1px @verdigris60 inset,
-      0px 0em 0px 0px @verdigris10 inset;
+    background-color: @ivy60;
+    color: @white;
+    box-shadow: 0px 0px 0px 1px @ivy70 inset,
+      0px 0em 0px 0px @ivyRgba10 inset;
     cursor: pointer;
   }
   &.search {
@@ -24,9 +24,24 @@
         0px 0em 0px 0px rgba(28, 64, 54, 0.15) inset;
     }
   }
+
+  &.negative {
+    background-color: @negativeColor;
+    color: @white;
+    box-shadow: 0px 0px 0px 1px @negativeColor inset,
+      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: darken(@negativeColor, 10%);
+    }
+  }
+
   &.transparent {
     background-color: transparent;
     box-shadow: none;
+    color: @darkGold;
   }
 
   &.labeled.icon > .icon {
@@ -56,6 +71,36 @@
       0px 0em 0px 0px @verdigris10 inset;
     cursor: pointer;
   }
+
+  &.negative,
+  &.negative {
+    color: @red !important;
+    background-color: @white;
+    box-shadow: 0px 0px 0px 1px @negativeBorderColor inset,
+      0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: @negativeBackgroundColor !important;
+    }
+    &.active {
+      background-color: @negativeColor !important;
+      color: @white !important;
+    }
+  }
+
+  &.primary {
+    color: @primaryColor;
+    background-color: @white;
+    box-shadow: 0px 0px 0px 1px @verdigris50 inset,
+      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: @verdigris10 !important;
+    }
+  }
+
 }
 
 // .ui.buttons .button:not(.basic):not(.inverted) {

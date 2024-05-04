@@ -16,6 +16,12 @@ h2.ui.header {
   }
 }
 
+.page-subheader {
+  h1.ui.header {
+    margin-top: 2rem;
+  }
+}
+
 #detail-main-content {
   .sidebar-container {
     h2.ui.header {
