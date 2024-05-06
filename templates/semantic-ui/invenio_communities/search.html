@@ -12,7 +12,7 @@
 
 {% extends "invenio_communities/base.html" %}
 
-{%- set title = _("Search collections") -%}
+{%- set title = _("Search Collections") + " | " + config.THEME_SHORT_TITLE -%}
 
 {%- block javascript %}
     {{ super() }}
