@@ -18,30 +18,30 @@
     <div class="ui login segment padded">
       <div class="divider hidden"></div>
       {%- block form_header %}
-        <h3 class="ui login header">{{ _('Log in') }}</h3>
+        <h3 class="ui login header">{{ _('Log in with your account from') }}</h3>
       {%- endblock form_header %}
 
       {%- block form_outer %}
+        <div class="ui form">
         {% if config.OAUTHCLIENT_REMOTE_APPS or config.SSO_SAML_IDPS %}
-          <div class="ui form">
             {% for name in config.OAUTHCLIENT_REMOTE_APPS.keys() %}
               {{ oauth_button(name, next=request.args.get('next')) }}
             {% endfor %}
-          </div>
           {% for name in config.SSO_SAML_IDPS.keys() %}
           <div class="field">
-            <a class="fluid ui basic button large" href="{{ url_for('sso_saml.sso', idp=name) }}">
-              <i class="{{ name|lower() }} icon"></i>
+            <a class="fluid ui basic button huge" href="{{ url_for('sso_saml.sso', idp=name) }}">
+              {# <i class="{{ name|lower() }} icon"></i> #}
               {{
-              _('Sign in with %(title)s', title=config.SSO_SAML_IDPS[name]['title']|default("SAML", true))
+              _('%(title)s', title=config.SSO_SAML_IDPS[name]['title']|default("SAML", true))
               }}
             </a>
           </div>
           {% endfor %}
         {% endif %}
+        </div>
       {%- endblock form_outer %}
       <div class="divider hidden"></div>
 
-    </div>
+    </>
 
 {% endblock page_body %}
