@@ -6,12 +6,15 @@
 #
 # Following services are included:
 # - Frontend: Nginx (exposed ports: 80 and 443)
-# - Cache: Redis (exposed port: 6379)
 # - UI application: UWSGI (not exposed)
 # - API application: UWSGI (not exposed)
+# - Message queue: RabbitMQ (exposed ports: 5672, 15672)
+# - pgAdmin:
+#
+# The following services are disabled because the
+# staging instance uses AWS services
 # - Cache: Redis (exposed port: 6379)
 # - DB: (PostgresSQL) (exposed port: 5432 or 3306)
-# - Message queue: RabbitMQ (exposed ports: 5672, 15672)
 # - Search platform: (OpenSearch) (exposed ports: 9200, 9300)
 # - OpenSearch Dashboard (view OS indexes) (exposed ports: 5601)
 #
