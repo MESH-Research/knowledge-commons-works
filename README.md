@@ -374,9 +374,9 @@ Using GIT, clone this repository. You should then have a folder called `knowledg
 
 ## Add and Configure an .env File
 
-Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own .env.private file and place it at the root level of the knowledge-commons-works folder. Any configuration variables to be picked up by Invenio should have the prefix "INVENIO_" added to the beginning of the variable name. Environment variables for other services (e.g., for pgadmin) should not.
+Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own file called `.env` and place it at the root level of the knowledge-commons-works folder. This is a plain text file of key value pairs, with one pair per line, following the pattern `MY_VARIABLE_NAME_IN_CAPS="my value"`. Any configuration variables to be picked up by Invenio should have the prefix "INVENIO_" added to the beginning of the variable name. Environment variables for other services (e.g., for pgadmin) should not. (These prefixes are already present in the following standard variables.)
 
-This file should contain the following variables with these values:
+This file must include the following variables with these values:
 
 FLASK_DEBUG=1
 INVENIO_DATACITE_USERNAME=MSU.CORE
@@ -386,9 +386,9 @@ INVENIO_LOGGING_CONSOLE_LEVEL=NOTSET
 INVENIO_SEARCH_DOMAIN='search:9200'
 INVENIO_SECRET_KEY=CHANGE_ME
 INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
-INVENIO_SITE_UI_URL = "https://localhost"
-INVENIO_SITE_API_URL = "https://localhost/api"
-INVENIO_SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks"
+INVENIO_SITE_UI_URL="https://localhost"
+INVENIO_SITE_API_URL="https://localhost/api"
+INVENIO_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kcworks:kcworks@localhost/kcworks"
 LOCAL_GIT_PACKAGES_PATH=/opt/invenio/src
 POSTGRES_USER=kcworks
 POSTGRES_PASSWORD=kcworks
