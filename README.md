@@ -22,7 +22,7 @@ From there installation involves these steps and commands. These are further exp
     2. Clone the knowledge-commons-works repository with `git clone git@github.com:MESH-Research/knowledge-commons-works.git`
 2. Create your configuration files
     - `cd knowledge-commons-works`
-    - Create and configure the `.env` file in this folder
+    - Create and configure the `.env` file in this folder as described [here](#add-and-configure-an-env-file)
     - Create the `.invenio.private` file with the following contents:
         ```shell
         [cli]
@@ -376,45 +376,66 @@ Using GIT, clone this repository. You should then have a folder called `knowledg
 
 Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own .env.private file and place it at the root level of the knowledge-commons-works folder. Any configuration variables to be picked up by Invenio should have the prefix "INVENIO_" added to the beginning of the variable name. Environment variables for other services (e.g., for pgadmin) should not.
 
-This file should contain at least the following variables, substituting appropriate values after each = sign:
+This file should contain the following variables with these values:
 
-INVENIO_SITE_UI_URL = "https://myhostname"
-INVENIO_SITE_API_URL = "https://myhostname/api"
+FLASK_DEBUG=1
+INVENIO_DATACITE_USERNAME=MSU.CORE
+INVENIO_INSTANCE_PATH=/opt
+INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
+INVENIO_LOGGING_CONSOLE_LEVEL=NOTSET
+INVENIO_SEARCH_DOMAIN='search:9200'
 INVENIO_SECRET_KEY=CHANGE_ME
 INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
-INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
-PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
-PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
+INVENIO_SITE_UI_URL = "https://localhost"
+INVENIO_SITE_API_URL = "https://localhost/api"
+INVENIO_SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks"
+LOCAL_GIT_PACKAGES_PATH=/opt/invenio/src
 POSTGRES_USER=kcworks
 POSTGRES_PASSWORD=kcworks
 POSTGRES_DB=kcworks
-INVENIO_SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks"
-INVENIO_DATACITE_USERNAME=MSU.CORE
-INVENIO_DATACITE_PASSWORD=myinveniodatacitepassword
-INVENIO_INSTANCE_PATH=/opt
+REDIS_DOMAIN='cache:6379'
+TESTING_SERVER_DOMAIN=localhost
+
+Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal by running
+```console
+python -c 'import secrets; print(secrets.token_hex())'
+```
+
+If you are going to use pgAdmin to manage the database, you will also need to add the following variables with the appropriate values for your local development environment:
+
+PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
+PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
+
+Additionally, you should add the following variables with the appropriate values obtained from the Commons administrators:
+
+COMMONS_API_TOKEN=mytoken  # this must be obtained from the Commons administrators
+COMMONS_SEARCH_API_TOKEN=mytoken  # this must be obtained from the Commons administrators
+INVENIO_DATACITE_PASSWORD=myinveniodatacitepassword  # this must be obtained from the Commons administrators
+
+The next variable refers to a path on your local file system. If you are not installing and running python packages locally, you can simply set this to the folder where you cloned the KCWorks code:
+
+INVENIO_LOCAL_INSTANCE_PATH=/path/to/local/virtual/environment/var/instance
+
+Finally, you will need to enter the following variable with a dummy value and then replace it with the actual value after the instance is set up. Once you have an administrative user, you can generate a token for that user in the KC Works admin ui and enter it here:
+
 API_TOKEN=myapitoken
+
+<!-- For most local development environments your INVENIO_SITE_UI_URL and INVENIO_SITE_API_URL will be "https://localhost" and "https://localhost/api" respectively. The INVENIO_INSTANCE_PATH should be set to the full path of the instance directory where InvenioRDM will store its compiled files. This is normally a folder inside your virtual environment folder. For example, on MacOS this might be ~/.local/share/virtualenvs/{virtual env name}/var/instance/ -->
+
+If you are going to be using the KC Works migration tools, you will also need:
+
 MIGRATION_API_TOKEN=myapitoken
 MIGRATION_SERVER_DOMAIN='host.docker.internal'
 MIGRATION_SERVER_PROTOCOL='https'
 MIGRATION_SERVER_DATA_DIR='/opt/invenio/var/import_data'
 MIGRATION_SERVER_LOCAL_DATA_DIR='/path/to/local/import_data'
-TESTING_SERVER_DOMAIN=localhost
-FLASK_DEBUG=1
-INVENIO_LOGGING_CONSOLE_LEVEL=NOTSET
-COMMONS_API_TOKEN=mytoken
-COMMONS_SEARCH_API_TOKEN=mytoken
+
+If you are going to be working with the Invenio modules locally, you will also need:
+
 PYTHON_LOCAL_SITE_PACKAGES_PATH=/path/to/local/virtual/environment/lib/python3.9/site-packages
-LOCAL_GIT_PACKAGES_PATH=/opt/invenio/src
 PYTHON_LOCAL_GIT_PACKAGES_PATH=/path/to/local/git/packages
-INVENIO_LOCAL_INSTANCE_PATH=/path/to/local/virtual/environment/var/instance
 
 
-For most local development environments your INVENIO_SITE_UI_URL and INVENIO_SITE_API_URL will be "https://localhost" and "https://localhost/api" respectively. The INVENIO_INSTANCE_PATH should be set to the full path of the instance directory where InvenioRDM will store its compiled files. This is normally a folder inside your virtual environment folder. For example, on MacOS this might be ~/.local/share/virtualenvs/{virtual env name}/var/instance/
-
-Random values for the INVENIO_SECRET_KEY can be generated in a terminal by running
-```console
-python -c 'import secrets; print(secrets.token_hex())'
-```
 
 ## Install the Invenio Python Modules
 
