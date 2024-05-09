@@ -261,15 +261,20 @@ docker system prune -a
 > [!Caution]
 > Make sure that you run this `prune` command *while the containers are running.* If you run it while the containers are stopped, you will delete the containers and images that you need to run the application, as well as volumes with stored data.
 
-5. Finally, to rebuild the asset files, execute the following command:
+6. Rebuild the asset files with the following command:
 
 ```shell
 docker exec -it knowledge-commons-works-web-ui-1 bash
 bash ./scripts/build-assets.sh
 ```
+7. Restart the docker-compose project once more without rebuilding the containers:
 
-Then refresh your browser to see the changes.
+```shell
+docker-compose --file <your-docker-compose-file-name> stop
+docker-compose --file <your-docker-compose-file-name> up -d
+```
 
+8. Then refresh your browser to see the changes.
 
 
 ## Install Python and Required Python Tools
