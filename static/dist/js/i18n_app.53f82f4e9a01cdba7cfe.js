@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkinvenio_assets=self.webpackChunkinvenio_assets||[]).push([[283],{25231:(e,n,s)=>{var a=s(73);a(document).ready((function(){a("#lang-code").on("change",(function(){a("#language-code-form").submit()}))}))}},e=>{e.O(0,[73],(()=>{return n=25231,e(e.s=n);var n}));e.O()}]);
+//# sourceMappingURL=i18n_app.53f82f4e9a01cdba7cfe.js.map
