@@ -1,5 +1,4 @@
 import click
-import numpy as np
 import json
 from APIclient import APIclient
 import os

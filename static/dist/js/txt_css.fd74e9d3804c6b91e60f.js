@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkinvenio_assets=self.webpackChunkinvenio_assets||[]).push([[6069],{17521:()=>{}},s=>{var e;e=17521,s(s.s=e)}]);
