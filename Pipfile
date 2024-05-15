@@ -51,6 +51,7 @@ invenio-communities = {file = "../invenio-communities", editable = true}
 invenio-groups = {file = "../invenio-groups", editable = true}
 invenio-subjects-fast = "*"
 kcworks = {file = "site", editable = true}
+numpy = "*"
 
 [requires]
 python_version = "3.9"
