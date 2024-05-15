@@ -60,6 +60,7 @@ services:
     extends:
       file: docker-services.yml
       service: frontend
+    container_name: kcworks-frontend
     volumes:
       - ./docker/nginx_containerized/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/nginx_containerized/conf.d:/etc/nginx/conf.d
@@ -80,6 +81,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
+    container_name: kcworks-web-ui
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
     image: monotasker/kcworks:latest
     environment:
@@ -102,6 +104,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
+    container_name: kcworks-web-api
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
     image: monotasker/kcworks:latest
     ports:
@@ -121,6 +124,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
+    container_name: kcworks-worker
     command: ["celery -A invenio_app.celery worker --beat --loglevel INFO"]
     image: monotasker/kcworks:latest
     volumes:

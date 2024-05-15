@@ -57,6 +57,7 @@ services:
     extends:
       file: docker-services.yml
       service: frontend
+    container_name: invenio-frontend
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
