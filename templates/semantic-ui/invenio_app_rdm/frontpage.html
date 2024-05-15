@@ -11,6 +11,8 @@
 
 {%- extends "invenio_theme/frontpage.html" %}
 
+{% set title=config.THEME_SHORT_TITLE %}
+
 {%- block page_header %}
   {%- include "invenio_app_rdm/header_frontpage.html" %}
 {%- endblock page_header %}

@@ -13,7 +13,7 @@ const ImprintPlaceField = ({
   fieldPath, // injected by the custom field loader via the `field` config property
   place,
   label,
-  labelIcon = "map marker alternate",
+  icon = "map marker alternate",
   placeholder,
   description,
   ...extraProps
@@ -23,7 +23,7 @@ const ImprintPlaceField = ({
       <TextField
         fieldPath={fieldPath}
         label={label}
-        labelIcon={labelIcon}
+        icon={icon}
         placeholder={placeholder}
         type={"text"}
         {...extraProps}

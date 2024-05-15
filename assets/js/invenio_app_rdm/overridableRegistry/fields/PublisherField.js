@@ -15,7 +15,7 @@ const PublisherField = ({
   fieldPath,
   disabled,
   label = i18next.t("Publisher"),
-  labelIcon = "building outline",
+  icon = "building outline",
   placeholder = i18next.t("Publisher"),
   helpText,
   required = false,
@@ -25,7 +25,7 @@ const PublisherField = ({
     <TextField
       fieldPath={fieldPath}
       label={label}
-      labelIcon={labelIcon}
+      icon={icon}
       inputIcon={true}
       placeholder={placeholder}
       helpText={helpText}
@@ -39,7 +39,7 @@ const PublisherField = ({
 PublisherField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   placeholder: PropTypes.string,
 };
 

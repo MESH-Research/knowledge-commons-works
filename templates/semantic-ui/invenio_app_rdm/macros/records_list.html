@@ -14,6 +14,7 @@
     id="records-list"
     data-fetch-url="{{ fetch_url }}"
     data-title="{{ title }}"
+    class="{{ title.lower()|replace(' ', '-') }}"
   >
 
     <h2 class="ui header">{{ title }}</h2>
@@ -44,5 +45,5 @@
     {% endfor %}
   </div>
 
-  {{ webpack["invenio-app-rdm-frontpage.js"]}}
+  {{ webpack["invenio-app-rdm-frontpage-custom.js"]}}
 {% endmacro %}

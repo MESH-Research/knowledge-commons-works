@@ -1,0 +1,169 @@
+.ui.buttons > .ui.button:not(.basic):not(.inverted),
+.ui.buttons:not(.basic):not(.inverted) > .ui.button,
+.ui.button {
+  background-color: @white;
+  color: @ivy;
+  box-shadow: 0px 0px 0px 1px @ivy30 inset, 0px 0em 0px 0px @ivy30 inset;
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: @mint50;
+    color: @ivy;
+    box-shadow: 0px 0px 0px 1px @ivy40 inset,
+      0px 0em 0px 0px @ivyRgba10 inset;
+    cursor: pointer;
+  }
+  &.search {
+    background-color: @secondaryColor;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: darken(@secondaryColor, 10%);
+      border-color: darken(@secondaryColor, 10%);
+      box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 10%) inset,
+        0px 0em 0px 0px rgba(28, 64, 54, 0.15) inset;
+    }
+  }
+
+  &.negative {
+    background-color: @negativeTextColor;
+    color: @white;
+    box-shadow: 0px 0px 0px 1px @negativeTextColor inset,
+      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: @negativeBackgroundColor;
+      background-color: @negativeTextColorDarker;
+    }
+  }
+
+  &.transparent {
+    background-color: transparent;
+    box-shadow: none;
+    color: @verdigrisDark;
+  }
+
+  &.labeled.icon > .icon {
+    background-color: transparent;
+  }
+
+  &.icon {
+    .close-btn {
+      margin-top: 1.75rem;
+      float: right;
+    }
+  }
+}
+
+.ui.buttons > .ui.button.basic:not(.inverted),
+.ui.buttons.basic:not(.inverted) > .ui.button,
+.ui.button.basic {
+  background-color: @white;
+  color: @ivy;
+  box-shadow: 0px 0px 0px 1px @ivy30 inset, 0px 0em 0px 0px @ivyRgba10 inset;
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: @mint50;
+    color: @ivy;
+    box-shadow: 0px 0px 0px 1px @ivy40 inset,
+      0px 0em 0px 0px @ivyRgba10 inset;
+    cursor: pointer;
+  }
+
+  &.negative,
+  &.negative {
+    color: @negativeTextColor !important;
+    background-color: @white;
+    box-shadow: 0px 0px 0px 1px @negativeBorderColor inset,
+      0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: @negativeBackgroundColor !important;
+      color: @negativeTextColorDarker !important;
+    }
+    &.active {
+      background-color: @negativeTextColor !important;
+      color: @negativeBackgroundColor !important;
+      box-shadow: 0px 0px 0px 1px @negativeTextColor inset,
+        0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
+      }
+  }
+
+  &.primary {
+    color: @verdigrisDark;
+    background-color: @white;
+    box-shadow: 0px 0px 0px 1px @verdigris60 inset,
+      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    &:hover,
+    &:active,
+    &:focus {
+      color: @ivy80;
+      background-color: @seafoam !important;
+      box-shadow: 0px 0px 0px 1px @verdigris70 inset,
+        0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    }
+  }
+
+}
+
+// .ui.buttons .button:not(.basic):not(.inverted) {
+//     &:first-child {
+//         border-top-left-radius: 0.28571429rem;
+//         border-bottom-left-radius: 0.28571429rem;
+//     }
+// }
+
+.ui.buttons .button.primary:not(.basic):not(.inverted),
+.ui.primary.button {
+  background-color: @verdigrisDark;
+  color: @white;
+  box-shadow: 0px 0px 0px 1px @verdigrisDark inset,
+    0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: @ivy90;
+    color: @seafoam;
+    box-shadow: 0px 0px 0px 1px @ivy90 inset,
+      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+  }
+  &.labeled.icon > .icon {
+    background-color: transparent;
+  }
+}
+
+.invenio-fieldset.resource_type {
+    .menu .button.item {
+        color: @verdigrisDark;
+        box-shadow: none;
+    }
+}
+
+
+.sidebar-container > .button.ui.fluid.labeled.icon:not(.primary) {
+  background-color: @sidebarBackgroundColor !important;
+  padding-left: 1rem !important;
+  font-weight: bold;
+  text-align: left;
+  color: @sidebarHeaderColor !important;
+  border: 1px solid @borderColor;
+  box-shadow: none;
+}
+
+#record-export {
+  .ui.basic.button {
+    background-color: @sidebarBackgroundColor !important;
+    padding-left: 1rem !important;
+    font-weight: bold;
+    color: @sidebarHeaderColor !important;
+    box-shadow: 0px 0px 0px 1px @borderColor inset, 0px 0em 0px 0px @borderColor inset;
+  }
+  .menu button {
+    width: 100%;
+    background-color: transparent;
+  }
+}

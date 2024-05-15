@@ -13,7 +13,7 @@
 
 {% extends "invenio_communities/base.html" %}
 
-{%- set title = _("Collections") -%}
+{%- set title = _("Collections") + " | " + config.THEME_SHORT_TITLE -%}
 
 {%- block javascript %}
   {{ super() }}
@@ -22,14 +22,16 @@
 
 {%- block page_body %}
 <div class="ui container fluid page-subheader-outer communities-frontpage-header ml-0-mobile mr-0-mobile">
-  <div class="ui container centered grid page-subheader rel-pt-1">
-    <div class="centered one column row">
-      <h1 class="ui header">
-        {{ _('Works Collections') }}
-      </h1>
+  <div class="ui container grid page-subheader rel-pt-1">
+    <div class="one column row">
+      <div class="column">
+        <h1 class="ui header">
+          {{ _('Works Collections') }}
+        </h1>
+      </div>
     </div>
-    <div class="two column stackable row">
-      <div class="eight wide tablet five wide computer column mt-auto mb-auto">
+    <div class="two column stackable row rel-mt-2">
+      <div class="sixteen wide mobile ten wide tablet ten wide computer column mb-auto">
         <form action="{{ url_for('invenio_communities.communities_search') }}" class="ui form">
           <div class="ui fluid action input">
             <input
@@ -50,8 +52,10 @@
         </form>
       </div>
       {% if permissions.can_create %}
-        <div class="three wide mobile five wide tablet three wide computer stretched column">
-          <a href="{{ config.COMMUNITIES_ROUTES['new'] }}" class="ui icon left labeled positive button" role="button">
+        <div class="two wide ui column mobile hidden">
+        </div>
+        <div class="eight wide mobile four wide tablet four wide computer column">
+          <a href="{{ config.COMMUNITIES_ROUTES['new'] }}" class="ui icon left labeled primary button" role="button">
             <i class="icon plus"></i>
             {{ _('Start a new collection') }}
           </a>
@@ -61,7 +65,7 @@
     <div class="ui divider hidden"></div>
   </div>
 </div>
-<div class="ui container communities-frontpage rel-mt-3 rel-mb-2">
+<div class="ui container communities-frontpage rel-mb-2">
 
   {% if current_user.is_authenticated %}
     <div class="flex">

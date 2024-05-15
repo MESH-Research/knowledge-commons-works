@@ -23,7 +23,7 @@ const sections = [
   {
     container: userCommunitiesContainer,
     fetchDataUrl: "/api/user/communities?q=&sort=newest&page=1&size=5",
-    emptyMessage: "You are not a member of any collection.",
+    emptyMessage: "You are not yet a member of any collection.",
     defaultLogo: "/static/images/square-placeholder.png",
   },
   {

@@ -1,6 +1,6 @@
 id;title__en;description__en;icon;tags;props__url;props__scheme;props__osi_approved
 0bsd;BSD Zero Clause License;;;all,software;http://landley.net/toybox/license.html;spdx;
-arr;All Rights Reserved;Proprietary material. No permissions are granted for any kind of copyring or re-use. All rights reserved;copyright;all,data,software;https://en.wikipedia.org/wiki/All_rights_reserved;;y
+arr;All Rights Reserved;Proprietary material. No permissions are granted for any kind of copyring or re-use. All rights reserved;copyright;all,data,software;https://en.wikipedia.org/wiki/All_rights_reserved;;
 aal;Attribution Assurance License;;;all,software;https://opensource.org/licenses/attribution;spdx;y
 adsl;Amazon Digital Services License;;;all;https://fedoraproject.org/wiki/Licensing/AmazonDigitalServicesLicense;spdx;
 afl-1.1;Academic Free License v1.1;;;all,software;http://opensource.linux-mirror.org/licenses/afl-1.1.txt;spdx;y
@@ -69,18 +69,18 @@ cc-by-2.5;Creative Commons Attribution 2.5 Generic;;cc-by-icon;all,data;https://
 cc-by-3.0;Creative Commons Attribution 3.0 Unported;;cc-by-icon;all,data;https://creativecommons.org/licenses/by/3.0/legalcode;spdx;
 cc-by-3.0-at;Creative Commons Attribution 3.0 Austria;;cc-by-icon;all,data;https://creativecommons.org/licenses/by/3.0/at/legalcode;spdx;
 cc-by-3.0-us;Creative Commons Attribution 3.0 United States;;cc-by-icon;all,data;https://creativecommons.org/licenses/by/3.0/us/legalcode;spdx;
-cc-by-4.0;Creative Commons Attribution 4.0 International;The Creative Commons Attribution license allows re-distribution and re-use of a licensed work on the condition that the creator is appropriately credited.;cc-by-icon;recommended,all,data;https://creativecommons.org/licenses/by/4.0/legalcode;spdx;
+cc-by-4.0;Creative Commons Attribution 4.0 International;Allows re-distribution and re-use of a licensed work on the condition that the creator is appropriately credited. Allows re-distribution and creation of derivative works for commercial purposes.;cc-by-icon;recommended,all,data;https://creativecommons.org/licenses/by/4.0/legalcode;spdx;
 cc-by-nc-1.0;Creative Commons Attribution Non Commercial 1.0 Generic;;cc-by-nc-icon;all,data;https://creativecommons.org/licenses/by-nc/1.0/legalcode;spdx;
 cc-by-nc-2.0;Creative Commons Attribution Non Commercial 2.0 Generic;;cc-by-nc-icon;all,data;https://creativecommons.org/licenses/by-nc/2.0/legalcode;spdx;
 cc-by-nc-2.5;Creative Commons Attribution Non Commercial 2.5 Generic;;cc-by-nc-icon;all,data;https://creativecommons.org/licenses/by-nc/2.5/legalcode;spdx;
 cc-by-nc-3.0;Creative Commons Attribution Non Commercial 3.0 Unported;;cc-by-nc-icon;all,data;https://creativecommons.org/licenses/by-nc/3.0/legalcode;spdx;
-cc-by-nc-4.0;Creative Commons Attribution Non Commercial 4.0 International;;cc-by-nc-icon;all,data;https://creativecommons.org/licenses/by-nc/4.0/legalcode;spdx;
+cc-by-nc-4.0;Creative Commons Attribution Non Commercial 4.0 International;Allows re-distribution and re-use of a licensed work on the condition that the creator is appropriately credited and that the re-use is not for commercial purposes.;cc-by-nc-icon;recommended,all,data;https://creativecommons.org/licenses/by-nc/4.0/legalcode;spdx;
 cc-by-nc-nd-1.0;Creative Commons Attribution Non Commercial No Derivatives 1.0 Generic;;cc-by-nc-nd-icon;all,data;https://creativecommons.org/licenses/by-nd-nc/1.0/legalcode;spdx;
 cc-by-nc-nd-2.0;Creative Commons Attribution Non Commercial No Derivatives 2.0 Generic;;cc-by-nc-nd-icon;all,data;https://creativecommons.org/licenses/by-nc-nd/2.0/legalcode;spdx;
 cc-by-nc-nd-2.5;Creative Commons Attribution Non Commercial No Derivatives 2.5 Generic;;cc-by-nc-nd-icon;all,data;https://creativecommons.org/licenses/by-nc-nd/2.5/legalcode;spdx;
 cc-by-nc-nd-3.0;Creative Commons Attribution Non Commercial No Derivatives 3.0 Unported;;cc-by-nc-nd-icon;all,data;https://creativecommons.org/licenses/by-nc-nd/3.0/legalcode;spdx;
 cc-by-nc-nd-3.0-igo;Creative Commons Attribution Non Commercial No Derivatives 3.0 IGO;;cc-by-nc-nd-icon;all,data;https://creativecommons.org/licenses/by-nc-nd/3.0/igo/legalcode;spdx;
-cc-by-nc-nd-4.0;Creative Commons Attribution Non Commercial No Derivatives 4.0 International;;cc-by-nc-nd-icon;all,data;https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode;spdx;
+cc-by-nc-nd-4.0;Creative Commons Attribution Non Commercial No Derivatives 4.0 International;Allows re-distribution of a licensed work on the condition that the creator is appropriately credited and that the re-distribution is not for commercial purposes. Does not allow distribution of derivative works or transformed versions of the licensed work;cc-by-nc-nd-icon;recommended,all,data;https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode;spdx;
 cc-by-nc-sa-1.0;Creative Commons Attribution Non Commercial Share Alike 1.0 Generic;;cc-by-nc-sa-icon;all,data;https://creativecommons.org/licenses/by-nc-sa/1.0/legalcode;spdx;
 cc-by-nc-sa-2.0;Creative Commons Attribution Non Commercial Share Alike 2.0 Generic;;cc-by-nc-sa-icon;all,data;https://creativecommons.org/licenses/by-nc-sa/2.0/legalcode;spdx;
 cc-by-nc-sa-2.5;Creative Commons Attribution Non Commercial Share Alike 2.5 Generic;;cc-by-nc-sa-icon;all,data;https://creativecommons.org/licenses/by-nc-sa/2.5/legalcode;spdx;
@@ -97,7 +97,7 @@ cc-by-sa-2.0-uk;Creative Commons Attribution Share Alike 2.0 England and Wales;;
 cc-by-sa-2.5;Creative Commons Attribution Share Alike 2.5 Generic;;cc-by-sa-icon;all,data;https://creativecommons.org/licenses/by-sa/2.5/legalcode;spdx;
 cc-by-sa-3.0;Creative Commons Attribution Share Alike 3.0 Unported;;cc-by-sa-icon;all,data;https://creativecommons.org/licenses/by-sa/3.0/legalcode;spdx;
 cc-by-sa-3.0-at;Creative Commons Attribution-Share Alike 3.0 Austria;;cc-by-sa-icon;all,data;https://creativecommons.org/licenses/by-sa/3.0/at/legalcode;spdx;
-cc-by-sa-4.0;Creative Commons Attribution Share Alike 4.0 International;Permits almost any use subject to providing credit and license notice. Frequently used for media assets and educational materials. The most common license for Open Access scientific publications. Not recommended for software.;cc-by-sa-icon;recommended,all,data;https://creativecommons.org/licenses/by-sa/4.0/legalcode;spdx;
+cc-by-sa-4.0;Creative Commons Attribution Share Alike 4.0 International;Allows re-distribution of a licensed work on the condition that the creator is appropriately credited and that any derivative works or transformed versions of the licensed work must be distributed under the same license as the original.;cc-by-sa-icon;recommended,all,data;https://creativecommons.org/licenses/by-sa/4.0/legalcode;spdx;
 cc-pddc;Creative Commons Public Domain Dedication and Certification;;cc-pddc-icon;all;https://creativecommons.org/licenses/publicdomain/;spdx;
 cc0-1.0;Creative Commons Zero v1.0 Universal;CC0 waives copyright interest in a work you've created and dedicates it to the world-wide public domain. Use CC0 to opt out of copyright entirely and ensure your work has the widest reach.;cc-cc0-icon;recommended,all,data,software;https://creativecommons.org/publicdomain/zero/1.0/legalcode;spdx;
 cddl-1.0;Common Development and Distribution License 1.0;;;all,software;https://opensource.org/licenses/cddl1;spdx;y

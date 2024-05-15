@@ -80,7 +80,7 @@ const BookSeriesField = ({
       render={(arrayHelpers) => (
         <>
           {/* <Form.Field required={required}>
-              <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+              <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
             </Form.Field> */}
 
           {!!values.custom_fields

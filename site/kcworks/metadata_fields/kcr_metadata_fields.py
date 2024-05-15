@@ -229,7 +229,8 @@ KCR_SPONSORING_INSTITUTION_FIELD_UI = {
 
 KCR_CONTENT_WARNING_FIELD_UI = {
     "field": "kcr:content_warning",
-    "ui_widget": "TextArea",
+    "ui_widget": "ContentWarningField",
+    "template": "kcworks/content_warning.html",
     "props": {
         "label": _("Content warning"),
         "description": "Does this deposit contain any potentially "

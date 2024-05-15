@@ -16,7 +16,6 @@ import { ProjectTitleComponent } from "./components/ProjectTitleComponent";
 import { PublicationURLComponent } from "./components/PublicationURLComponent";
 import { SeriesComponent } from "./components/SeriesComponent";
 import { SponsoringInstitutionComponent } from "./components/SponsoringInstitutionComponent";
-import { SubjectsKeywordsComponent } from "./components/SubjectsKeywordsComponent";
 import { VolumeComponent } from "./components/VolumeComponent";
 
 const componentsMap = {
@@ -89,10 +88,6 @@ const componentsMap = {
   SponsoringInstitutionComponent: [
     SponsoringInstitutionComponent,
     ["custom_fields.kcr:sponsoring_institution"],
-  ],
-  SubjectsKeywordsComponent: [
-    SubjectsKeywordsComponent,
-    ["metadata.subjects", "custom_fields.kcr:user_defined_tags"],
   ],
   VolumeComponent: [VolumeComponent, ["custom_fields.kcr:volumes"]],
 };

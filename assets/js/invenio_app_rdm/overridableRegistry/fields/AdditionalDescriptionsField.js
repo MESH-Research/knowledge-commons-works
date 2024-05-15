@@ -139,7 +139,7 @@ const AdditionalDescriptionsField = ({
                     label={i18next.t("Language")}
                     multiple={false}
                     placeholder={i18next.t("select language")}
-                    labelIcon=""
+                    icon=""
                     clearable
                     selectOnBlur={false}
                   />

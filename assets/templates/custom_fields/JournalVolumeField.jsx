@@ -24,7 +24,7 @@ const JournalVolumeField = ({
         fieldPath={fieldPath}
         label={label}
         placeholder={placeholder}
-        labelIcon={icon}
+        icon={icon}
         {...extraProps}
       />
       {description && <label className="helptext mb-0">{description}</label>}

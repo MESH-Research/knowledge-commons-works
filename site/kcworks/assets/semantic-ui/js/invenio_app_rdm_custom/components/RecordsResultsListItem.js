@@ -59,6 +59,8 @@ class RecordsResultsListItem extends Component {
     const allVersionsVisible = filters?.allversions;
     const numOtherVersions = versions.index - 1;
 
+    console.log("ID: ", buildUID("RecordsResultsListItem.layout", "", appName));
+
     // Derivatives
     const viewLink = `/records/${result.id}`;
     return (
@@ -83,24 +85,8 @@ class RecordsResultsListItem extends Component {
       >
         <Item key={key ?? result.id}>
           <Item.Content>
-            <Item.Extra className="labels-actions">
-              <Label horizontal size="small" className="primary">
-                {publicationDate} ({version})
-              </Label>
-              <Label horizontal size="small" className="neutral">
-                {resourceType}
-              </Label>
-              <Label
-                horizontal
-                size="small"
-                className={`access-status ${accessStatusId}`}
-              >
-                {accessStatusIcon && <Icon name={accessStatusIcon} />}
-                {accessStatus}
-              </Label>
-            </Item.Extra>
             <Item.Header as="h2">
-              <a href={viewLink}>{title}</a>
+              <a href={viewLink}>{title} and other</a>
             </Item.Header>
             <Item className="creatibutors">
               <SearchItemCreators creators={creators} othersLink={viewLink} />
@@ -154,6 +140,22 @@ class RecordsResultsListItem extends Component {
                   />
                 </small>
               </div>
+            </Item.Extra>
+            <Item.Extra className="labels-actions">
+              <Label horizontal size="small" className="primary">
+                {publicationDate} ({version})
+              </Label>
+              <Label horizontal size="small" className="neutral">
+                {resourceType}
+              </Label>
+              <Label
+                horizontal
+                size="small"
+                className={`access-status ${accessStatusId}`}
+              >
+                {accessStatusIcon && <Icon name={accessStatusIcon} />}
+                {accessStatus}
+              </Label>
             </Item.Extra>
           </Item.Content>
         </Item>

@@ -6,7 +6,7 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { getIn, FieldArray, useFormikContext } from "formik";
 import { Button, Form, Label, List, Icon } from "semantic-ui-react";
@@ -18,6 +18,7 @@ import { FieldLabel } from "react-invenio-forms";
 import { CreatibutorsItemForm } from "./CreatibutorsModal";
 import { CreatibutorsFieldItem } from "./CreatibutorsFieldItem";
 import { CREATIBUTOR_TYPE } from "./types";
+import { FormUIStateContext } from "@js/invenio_modular_deposit_form/InnerDepositForm";
 // import { GlobalDndContext } from "./GlobalDndContext";
 // import { sortOptions } from "../../utils";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
@@ -102,7 +103,7 @@ const CreatibutorsFieldForm = ({
   id,
   form: { values, errors, initialErrors, initialValues, touched },
   label = i18next.t("Creators"),
-  labelIcon = "user",
+  icon = "user",
   modal = {
     addLabel: i18next.t("Add creator"),
     editLabel: i18next.t("Edit creator"),
@@ -176,16 +177,25 @@ const CreatibutorsFieldForm = ({
     currentUserprofile.affiliations !== ""
       ? [currentUserprofile.affiliations]
       : currentUserprofile?.affiliations;
-  const selfCreatibutor = {
+
+  let selfCreatibutor = {
     person_or_org: {
       family_name: addingSelf
-        ? currentUserprofile?.family_name ||
+        ? currentUserprofile?.name_parts?.last ||
           currentUserprofile?.full_name ||
           ""
         : "",
-      given_name: addingSelf ? currentUserprofile?.given_name || "" : "",
+      given_name: addingSelf ? currentUserprofile?.name_parts?.first || "" : "",
       name: addingSelf ? currentUserprofile?.full_name || "" : "",
       type: "personal",
+      identifiers:
+        addingSelf && currentUserprofile?.identifiers.length > 0
+        ? currentUserprofile.identifiers.map(id => (
+          {
+              scheme: id.scheme,
+              identifier: id.identifier
+          }
+        )) : [],
     },
     role: "author",
     affiliations:
@@ -198,13 +208,14 @@ const CreatibutorsFieldForm = ({
           }))
         : [],
   };
+  console.log("selfCreatibutor", selfCreatibutor);
 
   return (
     <Form.Field
       required={schema === "creators"}
       className={creatibutorsError ? "error" : ""}
     >
-      <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+      <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
       <List>
         {creatibutorsList.map((value, index) => {
           const key = `${fieldPath}.${index}`;
@@ -313,10 +324,9 @@ const CreatibutorsFieldForm = ({
 const CreatibutorsField = ({
   addButtonLabel = i18next.t("Add creator"),
   autocompleteNames = "search",
-  currentUserprofile,
   fieldPath,
   label = undefined,
-  labelIcon = undefined,
+  icon = undefined,
   modal = {
     addLabel: i18next.t("Add creator"),
     editLabel: i18next.t("Edit creator"),
@@ -329,7 +339,7 @@ const CreatibutorsField = ({
     "CreatibutorsField called",
     fieldPath,
     label,
-    labelIcon,
+    icon,
     modal,
     roleOptions,
     schema,
@@ -341,6 +351,7 @@ const CreatibutorsField = ({
   const [showEditForms, setShowEditForms] = useState([]);
   const [creatibutorsTouched, setCreatibutorsTouched] = useState(false);
   const { setFieldTouched } = useFormikContext();
+  const { currentUserprofile } = useContext(FormUIStateContext);
 
   useEffect(() => {
     console.log("useEffect creatibutorsTouched", creatibutorsTouched);
@@ -363,7 +374,7 @@ const CreatibutorsField = ({
             currentUserprofile,
             fieldPath,
             label,
-            labelIcon,
+            icon,
             modalOpen,
             roleOptions,
             modal,
@@ -390,7 +401,7 @@ CreatibutorsFieldForm.propTypes = {
   schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
   autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   roleOptions: PropTypes.array.isRequired,
   form: PropTypes.object.isRequired,
   remove: PropTypes.func.isRequired,
@@ -405,7 +416,7 @@ CreatibutorsField.propTypes = {
   autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   modal: PropTypes.shape({
     addLabel: PropTypes.string.isRequired,
     editLabel: PropTypes.string.isRequired,

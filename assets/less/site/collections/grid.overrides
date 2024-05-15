@@ -1,0 +1,33 @@
+
+#rdm-deposit-form {
+    .ui.grid {
+        margin-top: 0;
+    }
+}
+
+.ui.grid {
+    > .row.sort-options-row.stackable {
+        .column {
+            padding-top: 0 !important;
+            padding-bottom: 0.5rem !important;
+            &:last-child {
+                padding-bottom: 0 !important;
+            }
+            &:first-child {
+                @media all and (max-width: @largestMobileScreen) {
+                    text-align: right;
+                }
+            }
+        }
+    }
+    > .row.result-options > [class*="middle aligned"].column {
+        &:first-child {
+            @media all and (max-width: @largestMobileScreen) {
+                align-self: flex-start !important;
+            }
+        }
+    }
+    &.search-app .search-app-target {
+        width: 100%;
+    }
+}

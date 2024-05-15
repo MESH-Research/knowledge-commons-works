@@ -12,7 +12,7 @@ import { TextField } from "@js/invenio_modular_deposit_form/replacement_componen
 const JournalTitleField = ({
   fieldPath, // injected by the custom field loader via the `field` config property
   title,
-  labelIcon,
+  icon,
   label,
   placeholder,
   description,
@@ -24,7 +24,7 @@ const JournalTitleField = ({
         fieldPath={`${fieldPath}`}
         label={label}
         placeholder={placeholder}
-        labelIcon={labelIcon}
+        icon={icon}
         {...extraProps}
       />
       {description && <label className="helptext mb-0">{description}</label>}

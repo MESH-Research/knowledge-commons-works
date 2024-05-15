@@ -1,0 +1,20 @@
+.ui.message {
+  background-color: @ivory;
+  border: 1px solid @ivy20;
+  color: @ivy60;
+
+  &.warning {
+    .header {
+      color: @warningTextColor;
+    }
+  }
+
+  &.flashed {
+    .ui.grid.centered {
+      text-align: right;
+      .ui.icon.button.close-btn {
+        margin-top: 0;
+      }
+    }
+  }
+}

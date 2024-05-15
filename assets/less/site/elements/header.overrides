@@ -1,0 +1,45 @@
+h1.ui.header {
+  color: @ivy80;
+  margin-top: 2rem !important;
+}
+.deposit-form-header {
+  h1.ui.header {
+    margin-bottom: 0;
+  }
+}
+
+h2.ui.header {
+  color: @primaryColor;
+  &.preselected-community-header {
+    color: @secondaryColor;
+    margin-top: 0;
+  }
+}
+
+.page-subheader {
+  h1.ui.header {
+    margin-top: 2rem;
+  }
+}
+
+#detail-main-content {
+  .sidebar-container {
+    h2.ui.header {
+      color: @sidebarHeaderColor;
+    }
+    .segment {
+      h3.ui.header {
+        color: @sidebarHeaderColor;
+      }
+    }
+  }
+}
+
+.sidebar-container {
+  .ui.attached.header {
+    border-color: @borderColor;
+  }
+  .ui.tiny.header {
+    color: @sidebarHeaderColor;
+  }
+}

@@ -58,7 +58,7 @@ class LicenseFieldForm extends Component {
   render() {
     const {
       label,
-      labelIcon,
+      icon,
       fieldPath,
       uiFieldPath,
       form: { values },
@@ -79,7 +79,7 @@ class LicenseFieldForm extends Component {
 
     return (
         <Form.Field required={required}>
-          <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+          <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
           <List>
             {getIn(values, fieldPath, []).map((value, index) => {
               const license = new VisibleLicense(uiRights, value, index);
@@ -143,7 +143,7 @@ class LicenseFieldForm extends Component {
 
 LicenseFieldForm.propTypes = {
   label: PropTypes.node.isRequired,
-  labelIcon: PropTypes.node,
+  icon: PropTypes.node,
   fieldPath: PropTypes.string.isRequired,
   uiFieldPath: PropTypes.string,
   form: PropTypes.object.isRequired,
@@ -157,7 +157,7 @@ LicenseFieldForm.propTypes = {
 };
 
 LicenseFieldForm.defaultProps = {
-  labelIcon: undefined,
+  icon: undefined,
   uiFieldPath: undefined,
   serializeLicenses: undefined,
 };
@@ -179,7 +179,7 @@ export class LicenseField extends Component {
 LicenseField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   searchConfig: PropTypes.object.isRequired,
   required: PropTypes.bool,
   serializeLicenses: PropTypes.func,
@@ -189,7 +189,7 @@ LicenseField.propTypes = {
 LicenseField.defaultProps = {
   label: i18next.t("Licenses"),
   uiFieldPath: "ui.rights",
-  labelIcon: "drivers license",
+  icon: "drivers license",
   required: false,
   serializeLicenses: undefined,
 };

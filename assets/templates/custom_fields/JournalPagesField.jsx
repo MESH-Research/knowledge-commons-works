@@ -18,7 +18,7 @@ const JournalPagesField = ({
   issue,
   pages,
   issn,
-  labelIcon,
+  icon,
   label,
   placeholder,
   description,
@@ -30,7 +30,7 @@ const JournalPagesField = ({
         fieldPath={`${fieldPath}`}
         label={label}
         placeholder={placeholder}
-        labelIcon={labelIcon}
+        icon={icon}
         {...extraProps}
       />
       {description && <label className="helptext mb-0">{description}</label>}

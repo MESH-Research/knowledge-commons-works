@@ -40,7 +40,7 @@ export const FileUploaderComponent = ({
   isDraftRecord,
   hasParentRecord,
   label = "Upload files",
-  labelIcon = "upload",
+  icon = "upload",
   noFiles = false,
   quota,
   permissions,
@@ -186,7 +186,7 @@ export const FileUploaderComponent = ({
       hasParentRecord={hasParentRecord}
       quota={quota}
       label={label}
-      labelIcon={labelIcon}
+      icon={icon}
       permissions={permissions}
       record={record}
       uploadFiles={uploadFiles}
@@ -210,7 +210,7 @@ export const FileUploaderComponent = ({
           htmlFor={fieldPath}
           className="field-label-class invenio-field-label"
         >
-          {labelIcon && <i className={`${labelIcon} icon`} />}
+          {icon && <i className={`${icon} icon`} />}
           {label}
         </label>
         <Grid>

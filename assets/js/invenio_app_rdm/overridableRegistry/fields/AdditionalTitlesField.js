@@ -111,7 +111,7 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
                   label="Language"
                   multiple={false}
                   placeholder=""
-                  labelIcon={null}
+                  icon={null}
                   clearable
                   selectOnBlur={true}
                   width={4}

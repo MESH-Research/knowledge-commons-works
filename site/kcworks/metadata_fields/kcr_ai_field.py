@@ -30,7 +30,9 @@ class AiUsageCF(BaseCF):
     @property
     def field(self):
         """AiUsage fields definitions."""
-        return Nested({"ai_used": Boolean(), "ai_description": SanitizedUnicode()})
+        return Nested(
+            {"ai_used": Boolean(), "ai_description": SanitizedUnicode()}
+        )
 
     @property
     def mapping(self):
@@ -66,9 +68,7 @@ KCR_AI_USAGE_FIELDS_UI = {
                 },
                 "ai_description": {
                     "label": _("Description of use"),
-                    "description": _(
-                        "Describe how artificial intelligence or machine learning were used."
-                    ),
+                    "description": "",
                 },
                 "icon": "cogs",
                 "description": "",

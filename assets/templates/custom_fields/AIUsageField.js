@@ -4,12 +4,14 @@ import { getIn, useFormikContext } from "formik";
 import { Form } from "semantic-ui-react";
 import { BooleanCheckbox, FieldLabel } from "react-invenio-forms";
 import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/TextArea";
+import PropTypes from "prop-types";
 
 const AIUsageField = ({
   fieldPath,
   label,
   icon,
   description,
+  helpText,
   ai_used,
   ai_description,
   ...restProps
@@ -25,7 +27,6 @@ const AIUsageField = ({
   //   handleValuesChange(values);
   //   // console.log(values.custom_fields);
   // }, [values]);
-  console.log("AI field", getIn(values, `${fieldPath}`, undefined));
 
   return (
     <Form.Field id={fieldPath} name={fieldPath}>
@@ -48,13 +49,24 @@ const AIUsageField = ({
             <TextArea
               fieldPath={`${fieldPath}.ai_description`}
               // label={ai_description.label}
-              description={ai_description.description}
+              description={description}
+              helpText={helpText}
               required={false}
+              aria-describedby="ai-usage-textbox-description"
             />
           )
         : ""}
     </Form.Field>
   );
+};
+
+AIUsageField.propTypes = {
+  fieldPath: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  icon: PropTypes.string,
+  description: PropTypes.string,
+  ai_used: PropTypes.object,
+  ai_description: PropTypes.object,
 };
 
 export default AIUsageField;

@@ -1,15 +1,15 @@
 import React from "react";
 import { Segment } from "semantic-ui-react";
-import { CustomFieldSectionInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
+// import { CustomFieldSectionInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
 
-const AdminMetadataComponent = ({ customFieldsUI, ...extraProps }) => {
+const AdminMetadataComponent = ({ ...extraProps }) => {
   return (
-    <CustomFieldSectionInjector
-      sectionName="Commons admin info"
-      idString="AdminMetadataFields"
-      customFieldsUI={customFieldsUI}
-      {...extraProps}
-    />
+    <span>Not implemented</span>
+    // <CustomFieldSectionInjector
+    //   sectionName="Commons admin info"
+    //   idString="AdminMetadataFields"
+    //   {...extraProps}
+    // />
   );
 };
 

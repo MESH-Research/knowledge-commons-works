@@ -7,7 +7,7 @@
 #}
 {% extends config.THEME_ERROR_TEMPLATE %}
 
-{%- set title = _("Tombstone") + " | " + config.THEME_SITENAME -%}
+{%- set title = _("Tombstone") + " | " + config.THEME_SHORT_TITLE -%}
 {%- if record.ui.tombstone.removal_reason %}
   {%- set removal_reason = record.ui.tombstone.removal_reason.title_l10n %}
 {%- endif %}

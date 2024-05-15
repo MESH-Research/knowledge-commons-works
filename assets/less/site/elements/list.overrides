@@ -1,0 +1,8 @@
+/* List theme overrides */
+
+#licenses ul.details-list li.has-popup {
+    background-color: transparent;
+    &:hover {
+        background-color: transparent;
+    }
+}

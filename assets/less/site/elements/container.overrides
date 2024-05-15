@@ -1,0 +1,7 @@
+/* Container theme overrides */
+
+.invenio-page-body {
+    .ui.container:last-of-type {
+        margin-bottom: 1rem;
+    }
+}

@@ -12,7 +12,7 @@
 
 {% extends "invenio_communities/base.html" %}
 
-{%- set title = _("Search collections") -%}
+{%- set title = _("Search Collections") + " | " + config.THEME_SHORT_TITLE -%}
 
 {%- block javascript %}
     {{ super() }}
@@ -22,10 +22,10 @@
 {%- block page_body %}
 <div class="ui container fluid page-subheader-outer compact ml-0-mobile mr-0-mobile">
   <div class="ui container community-search page-subheader flex align-items-center justify-space-between">
-    <h1 class="ui large header m-0">{{_("Collections")}}</h1>
+    <h1 class="ui large header m-0">{{_("Collections Search")}}</h1>
 
     {% if permissions.can_create %}
-      <a class="ui button positive left labeled icon m-0" href="/collections/new">
+      <a class="ui button primary left labeled icon m-0" href="/collections/new">
         <i class="plus icon" aria-hidden="true"></i>
         {{ _('New collection') }}
       </a>

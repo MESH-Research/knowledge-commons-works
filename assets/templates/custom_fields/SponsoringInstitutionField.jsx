@@ -15,7 +15,7 @@ const SponsoringInstitutionField = ({
   fieldPath,
   disabled,
   label = i18next.t("Sponsoring institution"),
-  labelIcon = "group",
+  icon = "group",
   placeholder,
   helpText,
   required = false,
@@ -25,7 +25,7 @@ const SponsoringInstitutionField = ({
     <TextField
       fieldPath={fieldPath}
       label={label}
-      labelIcon={labelIcon}
+      icon={icon}
       placeholder={placeholder}
       helpText={helpText}
       required={required}
@@ -38,7 +38,7 @@ const SponsoringInstitutionField = ({
 SponsoringInstitutionField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   placeholder: PropTypes.string,
 };
 

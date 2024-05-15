@@ -28,7 +28,7 @@ export class AccessRightFieldCmp extends Component {
       fieldPath,
       formik, // this is our access to the shared current draft
       label = i18next.t("Access Permissions"),
-      labelIcon,
+      icon,
       showMetadataAccess,
       community,
     } = this.props;
@@ -45,7 +45,7 @@ export class AccessRightFieldCmp extends Component {
           htmlFor={fieldPath}
           className="field-label-class invenio-field-label"
         >
-          {labelIcon && <i className={`${labelIcon} icon`} />}
+          {icon && <i className={`${icon} icon`} />}
           {label}
         </label>
         <Grid>
@@ -87,7 +87,7 @@ AccessRightFieldCmp.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   formik: PropTypes.object.isRequired,
   label: PropTypes.string.isRequired,
-  labelIcon: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
   showMetadataAccess: PropTypes.bool,
   community: PropTypes.object,
 };
@@ -123,11 +123,11 @@ export class AccessRightField extends Component {
 AccessRightField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   isMetadataOnly: PropTypes.bool,
 };
 
 AccessRightField.defaultProps = {
-  labelIcon: undefined,
+  icon: undefined,
   isMetadataOnly: undefined,
 };

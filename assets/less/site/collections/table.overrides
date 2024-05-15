@@ -1,0 +1,25 @@
+
+.ui.table {
+    thead th {
+        background-color: @seafoam50;
+        color: @ivy80;
+    }
+    &.striped tbody tr:nth-child(even) {
+        background-color: @ivory50;
+    }
+    &.definition {
+        // thead:not(.full-width) th:nth-child(2) {
+        //     background-color: @ivory;
+        // }
+        tr {
+            td:first-child:not(.ignored) {
+            background-color: @ivory50;
+            color: @darkGold;
+            font-weight: normal;
+            }
+            td:nth-child(2) {
+                border-color: @borderColor;
+            }
+        }
+    }
+}

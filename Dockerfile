@@ -16,7 +16,8 @@ FROM registry.cern.ch/inveniosoftware/almalinux:1
 # ENV PYTHONFAULTHANDLER 1
 
 # Install prerequisites for building xmlsec Python package
-RUN dnf install libxml2-devel xmlsec1-devel xmlsec1-openssl-devel libtool-ltdl-devel -y
+# also adds ps command for debugging
+RUN dnf install libxml2-devel xmlsec1-devel xmlsec1-openssl-devel libtool-ltdl-devel procps -y
 # Copy over directory for kcr instance Python package
 COPY site ./site
 
@@ -26,7 +27,7 @@ COPY Pipfile Pipfile.lock ./
 RUN git clone https://github.com/MESH-Research/invenio-communities.git /opt/invenio/invenio-communities
 # COPY ./invenio-rdm-records/ /opt/invenio/src/invenio-rdm-records/
 RUN git clone https://github.com/MESH-Research/invenio-rdm-records.git /opt/invenio/invenio-rdm-records
-RUN git clone https://github.com/MESH-Research/invenio-groups.git /opt/invenio/invenio-groups/
+RUN git clone https://github.com/MESH-Research/invenio-group-collections.git /opt/invenio/invenio-group-collections/
 RUN git clone https://github.com/MESH-Research/invenio-modular-deposit-form.git /opt/invenio/invenio-modular-deposit-form/
 RUN git clone https://github.com/MESH-Research/invenio-modular-detail-page.git /opt/invenio/invenio-modular-detail-page/
 RUN git clone https://github.com/MESH-Research/invenio-record-importer.git /opt/invenio/invenio-record-importer/
@@ -39,9 +40,20 @@ RUN git clone https://github.com/MESH-Research/invenio-remote-user-data.git /opt
 RUN pipenv install --system
 RUN pip install invenio-cli
 
+RUN echo "[cli]" >> .invenio.private
+RUN echo "services_setup=False" >> .invenio.private
+RUN echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
+
+
 # Copying whole app directory into /opt/invenio/src
 # (WORKDIR is set to that folder in base image)
 COPY ./ .
+ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
+ENV INVENIO_SITE_UI_URL=https://localhost
+ENV INVENIO_SITE_API_URL=https://localhost
+ENV MIGRATION_SERVER_DOMAIN=localhost
+ENV MIGRATION_SERVER_PROTOCOL=http
+ENV MIGRATION_API_TOKEN=changeme
 
 RUN cp -r ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini
 RUN cp -r ./docker/uwsgi/uwsgi_ui.ini ${INVENIO_INSTANCE_PATH}/uwsgi_ui.ini

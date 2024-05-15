@@ -1,0 +1,41 @@
+/* Item theme overrides */
+
+.ui.items {
+  & > .search-result.item {
+    .content {
+      h2.header a {
+        color: @verdigris;
+      }
+      .creatibutor-name {
+        color: @verdigrisDark;
+      }
+      .extra.item-footer {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        .item-footer-left,
+        .item-footer-right {
+          display: flex;
+          flex-direction: column;
+          padding: 0;
+          margin: 0;
+        }
+        .item-footer-right {
+          align-items: flex-end;
+          .created-date {
+            margin-right: 0.5rem;
+          }
+        }
+        &::after {
+          content: none;
+        }
+      }
+    }
+  }
+  &.divided {
+    & > .item.search-result-item {
+      border-top: 1px solid @gold40;
+    }
+  }
+}

@@ -22,7 +22,7 @@ From there installation involves these steps and commands. These are further exp
     2. Clone the knowledge-commons-works repository with `git clone git@github.com:MESH-Research/knowledge-commons-works.git`
 2. Create your configuration files
     - `cd knowledge-commons-works`
-    - Create and configure the `.env` file in this folder
+    - Create and configure the `.env` file in this folder as described [here](#add-and-configure-an-env-file)
     - Create the `.invenio.private` file with the following contents:
         ```shell
         [cli]
@@ -32,7 +32,8 @@ From there installation involves these steps and commands. These are further exp
 3. Start the docker-compose project
     - `docker-compose --file docker-compose.dev.yml up -d`
 4. Initialize the database and other services, and build asset files
-    - enter the `web-ui` container by running `docker exec -it knowledge-commons-works-web-ui-1 bash`
+    - enter the `web-ui` container by running `docker exec -it knowledge_commons_works_web-ui_1 bash`
+        - *note*: The container name may be different depending on your local docker setup. You can find the correct name by running `docker ps`
     - run the script to set up the instance services and build static assets `bash ./scripts/setup-services.sh`
         - *note*: Some of the commands in this script may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
 5. Create your own admin user
@@ -226,6 +227,56 @@ What follows is a step-by-step walk through this process.
 > [!Note]
 > These instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
 
+## Updating an Instance with Upstream Changes
+
+If changes have been made to the upstream Knowledge Commons Works repository and the kcworks container, you will need to update your local instance to reflect those changes. This process involves pulling the changes from the upstream repository, pulling the latest version of the kcworks docker image, restarting the docker-compose project with recreated containers, and rebuilding the asset files.
+
+1. First, to pull the changes from the upstream git repository, execute the following commands from the root knowledge-commons-works folder:
+
+```shell
+git pull origin main
+```
+
+2. Then, to pull the latest version of the kcworks docker image, execute the following command:
+
+```shell
+docker pull monotasker/kcworks:latest
+```
+
+3. Next, to restart the docker-compose project with recreated containers, execute the following commands:
+
+```shell
+docker-compose --file <your-docker-compose-file-name> stop
+docker-compose --file <your-docker-compose-file-name> up -d --build --force-recreate
+```
+
+If you are running a development instance, you will use the `docker-compose.dev.yml` file. If you are running a staging or production instance, you will use the `docker-compose.staging.yml` or `docker-compose.production.yml` files respectively.
+
+4. Clean up leftover containers and images:
+
+```shell
+docker system prune -a
+```
+
+> [!Caution]
+> Make sure that you run this `prune` command *while the containers are running.* If you run it while the containers are stopped, you will delete the containers and images that you need to run the application, as well as volumes with stored data.
+
+6. Rebuild the asset files with the following command:
+
+```shell
+docker exec -it knowledge-commons-works-web-ui-1 bash
+bash ./scripts/build-assets.sh
+```
+7. Restart the docker-compose project once more without rebuilding the containers:
+
+```shell
+docker-compose --file <your-docker-compose-file-name> stop
+docker-compose --file <your-docker-compose-file-name> up -d
+```
+
+8. Then refresh your browser to see the changes.
+
+
 ## Install Python and Required Python Tools
 
 ### Ensure some version of python is installed
@@ -294,7 +345,7 @@ One solution on Linux systems is to install Docker Compose standalone, which use
 
 ```console
 sudo curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
-suod chmod +x /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 Another approach is simply to alias the `docker compose` command to `docker-compose` in the configuration file for your command line shell (.bashrc, .zshrc, or whichever config file is used by your shell).
@@ -329,46 +380,89 @@ Using GIT, clone this repository. You should then have a folder called `knowledg
 
 ## Add and Configure an .env File
 
-Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own .env.private file and place it at the root level of the knowledge-commons-works folder. Any configuration variables to be picked up by Invenio should have the prefix "INVENIO_" added to the beginning of the variable name. Environment variables for other services (e.g., for pgadmin) should not.
+Private environment variables (like security keys) should never be committed to version control or a repository. You must create your own file called `.env` and place it at the root level of the knowledge-commons-works folder. This is a plain text file of key value pairs, with one pair per line, following the pattern `MY_VARIABLE_NAME_IN_CAPS="my value"`. Any configuration variables to be picked up by Invenio should have the prefix "INVENIO_" added to the beginning of the variable name. Environment variables for other services (e.g., for pgadmin) should not. (These prefixes are already present in the following standard variables.)
 
-This file should contain at least the following variables, substituting appropriate values after each = sign:
+### Standardized environment variables
 
-INVENIO_SITE_UI_URL = "https://myhostname"
-INVENIO_SITE_API_URL = "https://myhostname/api"
+This file must include the following variables with these values:
+
+```env
+FLASK_DEBUG=1
+INVENIO_DATACITE_USERNAME=MSU.CORE
+INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
+INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
+INVENIO_LOGGING_CONSOLE_LEVEL=NOTSET
+INVENIO_SEARCH_DOMAIN='search:9200'
 INVENIO_SECRET_KEY=CHANGE_ME
 INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
-INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
-PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
-PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
+INVENIO_SITE_UI_URL="https://localhost"
+INVENIO_SITE_API_URL="https://localhost/api"
+INVENIO_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kcworks:kcworks@localhost/kcworks"
 POSTGRES_USER=kcworks
 POSTGRES_PASSWORD=kcworks
 POSTGRES_DB=kcworks
-INVENIO_SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks"
-INVENIO_DATACITE_USERNAME=MSU.CORE
-INVENIO_DATACITE_PASSWORD=myinveniodatacitepassword
-INVENIO_INSTANCE_PATH=/opt
+PYTHON_LOCAL_GIT_PACKAGES_PATH=/opt/invenio
+REDIS_DOMAIN='cache:6379'
+TESTING_SERVER_DOMAIN=localhost
+```
+
+Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal by running
+```console
+python -c 'import secrets; print(secrets.token_hex())'
+```
+For most local development environments your INVENIO_SITE_UI_URL and INVENIO_SITE_API_URL will be "https://localhost" and "https://localhost/api" respectively.
+
+The INVENIO_INSTANCE_PATH should be set to the full path of the instance directory where InvenioRDM will store its compiled files. Since KC Works runs inside containers, this is normally a standard folder inside the container file systems (/opt/invenio/var/instance). If you were to run InvenioRDM with the python/uwsgi processes installed on your local machine, this would be a folder inside your local virtual environment folder. For example, on MacOS this might be ~/.local/share/virtualenvs/{virtual env name}/var/instance/.
+
+Likewise, the PYTHON_LOCAL_GIT_PACKAGES_PATH is the parent directory that holds cloned packages that aren't available via pip or that have been forked by us. This is normally /opt/invenio/src inside the containers for the uwsgi aplications. But if you are running the python processes locally, this would be the folder where you cloned the git repositories for the forked Invenio modules and the extra KC Works modules.
+
+If you are going to use pgAdmin to manage the database, you will also need to add the following variables with the appropriate values for your local development environment:
+
+```env
+PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
+PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
+```
+
+### Additional environment variables with sensitive information
+
+Additionally, you should add the following variables with the appropriate values obtained from the Commons administrators:
+
+```env
+COMMONS_API_TOKEN=mytoken  # this must be obtained from the Commons administrators
+COMMONS_SEARCH_API_TOKEN=mytoken  # this must be obtained from the Commons administrators
+INVENIO_DATACITE_PASSWORD=myinveniodatacitepassword  # this must be obtained from the Commons administrators
+```
+You will also need to enter the following variable with a dummy value and then replace it with the actual value after the instance is set up. Once you have an administrative user, you can generate a token for that user in the KC Works admin ui and enter it here:
+
+```env
 API_TOKEN=myapitoken
+```
+
+### Additional required environment variables with paths on your local file system
+
+The next variable refers to a path on your local file system. If you are not installing and running python packages locally, you can simply set this to the folder where you cloned the KCWorks code. Otherwise, it should be the path to the InvenioRDM instance folder in the `site-packages` directory of your virtual environment:
+
+```env
+INVENIO_LOCAL_INSTANCE_PATH=/path/to/local/virtual/environment/var/instance
+```
+
+### Optional environment variables for migration tools and local development
+
+If you are going to be using the KC Works migration tools, you will also need:
+
+```env
 MIGRATION_API_TOKEN=myapitoken
 MIGRATION_SERVER_DOMAIN='host.docker.internal'
 MIGRATION_SERVER_PROTOCOL='https'
 MIGRATION_SERVER_DATA_DIR='/opt/invenio/var/import_data'
 MIGRATION_SERVER_LOCAL_DATA_DIR='/path/to/local/import_data'
-TESTING_SERVER_DOMAIN=localhost
-FLASK_DEBUG=1
-INVENIO_LOGGING_CONSOLE_LEVEL=NOTSET
-COMMONS_API_TOKEN=mytoken
-COMMONS_SEARCH_API_TOKEN=mytoken
+```
+
+If you are going to be working with the Invenio modules locally, you will also need:
+
+```env
 PYTHON_LOCAL_SITE_PACKAGES_PATH=/path/to/local/virtual/environment/lib/python3.9/site-packages
-LOCAL_GIT_PACKAGES_PATH=/opt/invenio/src
 PYTHON_LOCAL_GIT_PACKAGES_PATH=/path/to/local/git/packages
-INVENIO_LOCAL_INSTANCE_PATH=/path/to/local/virtual/environment/var/instance
-
-
-For most local development environments your INVENIO_SITE_UI_URL and INVENIO_SITE_API_URL will be "https://localhost" and "https://localhost/api" respectively. The INVENIO_INSTANCE_PATH should be set to the full path of the instance directory where InvenioRDM will store its compiled files. This is normally a folder inside your virtual environment folder. For example, on MacOS this might be ~/.local/share/virtualenvs/{virtual env name}/var/instance/
-
-Random values for the INVENIO_SECRET_KEY can be generated in a terminal by running
-```console
-python -c 'import secrets; print(secrets.token_hex())'
 ```
 
 ## Install the Invenio Python Modules

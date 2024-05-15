@@ -3,14 +3,11 @@ import { Segment } from "semantic-ui-react";
 import { EditionComponent } from "./EditionComponent";
 import { ChapterLabelComponent } from "./ChapterLabelComponent";
 
-const EditionSectionComponent = ({ customFieldsUI, labelMods }) => {
+const EditionSectionComponent = () => {
   return (
     <>
-      <EditionComponent customFieldsUI={customFieldsUI} labelMods={labelMods} />
-      <ChapterLabelComponent
-        customFieldsUI={customFieldsUI}
-        labelMods={labelMods}
-      />
+      <EditionComponent />
+      <ChapterLabelComponent />
     </>
   );
 };

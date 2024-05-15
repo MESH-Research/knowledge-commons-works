@@ -1,2 +1,9 @@
 # Ignore local virtualenv (if present)
 .venv/
+
+.env*
+.invenio.private*
+docker/nginx/samlPrivateKey.key
+docker/nginx_containerized/samlPrivateKey.key
+docker/nginx_staging/samlPrivateKey.key
+docker-compose*

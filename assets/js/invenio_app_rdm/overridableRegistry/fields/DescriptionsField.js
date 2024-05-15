@@ -18,7 +18,7 @@ const DescriptionsField = ({
   classnames,
   fieldPath,
   label = i18next.t("Description"),
-  labelIcon = "pencil",
+  icon = "pencil",
   options,
   editorConfig = undefined,
   recordUI = undefined,
@@ -30,7 +30,7 @@ const DescriptionsField = ({
         fieldPath={fieldPath}
         editorConfig={editorConfig}
         label={
-          <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+          <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
         }
         optimized
       />
@@ -47,7 +47,7 @@ const DescriptionsField = ({
 DescriptionsField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.node,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   editorConfig: PropTypes.object,
   recordUI: PropTypes.object,
   options: PropTypes.object.isRequired,

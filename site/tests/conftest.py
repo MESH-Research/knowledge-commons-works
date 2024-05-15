@@ -25,8 +25,12 @@ import pytest
 #   pytest_invenio.fixtures.entry_points(extra_entry_points
 
 test_config = {
-    "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks-test",
+    # "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks-test",
+    # "INVENIO_SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks-test",
     "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+    "SEARCH_INDEX_PREFIX": "kcworks-test-",
+    # "SITE_UI_URL" = os.environ["INVENIO_SITE_UI_URL"]
+    # "SITE_API_URL" = os.environ["INVENIO_SITE_API_URL"]
     "INVENIO_WTF_CSRF_ENABLED": False,
     "INVENIO_WTF_CSRF_METHODS": [],
     "THEME_FRONTPAGE_TITLE": "Knowledge Commons Repository",
@@ -41,7 +45,7 @@ test_config = {
     "CELERY_TASK_ALWAYS_EAGER": True,
     "CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS": True,
     #  'DEBUG_TB_ENABLED': False,
-    # 'INVENIO_INSTANCE_PATH': '/opt/invenio/var/instance',
+    "INVENIO_INSTANCE_PATH": "/opt/invenio/var/instance",
     #  'MAIL_SUPPRESS_SEND': True,
     #  'OAUTH2_CACHE_TYPE': 'simple',
     #  'OAUTHLIB_INSECURE_TRANSPORT': True,
@@ -73,8 +77,6 @@ def app_config(app_config) -> dict:
     # app_config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///testing.db"
     for k, v in test_config.items():
         app_config[k] = v
-    # print('*******')
-    # pprint(app_config)
     return app_config
 
 
@@ -169,215 +171,28 @@ def resource_type_v(app, resource_type_type):
     return vocab
 
 
-# *** db fixture built into pytest-invenio ***
-# *** but needed to fix call to _make_scoped_session()??? ***
-# @pytest.fixture(scope="function")
-# def db(database):
-#     """Creates a new database session for a test.
-
-#     Scope: function
-
-#     You must use this fixture if your test connects to the database. The
-#     fixture will set a save point and rollback all changes performed during
-#     the test (this is much faster than recreating the entire database).
-#     """
-#     import sqlalchemy as sa
-
-#     connection = database.engine.connect()
-#     transaction = connection.begin()
-
-#     options = dict(bind=connection, binds={})
-#     session = database._make_scoped_session(options=options)
-
-#     session.begin_nested()
-
-#     # `session` is actually a scoped_session. For the `after_transaction_end`
-#     # event, we need a session instance to listen for, hence the `session()`
-#     # call.
-#     @sa.event.listens_for(session(), "after_transaction_end")
-#     def restart_savepoint(sess, trans):
-#         if trans.nested and not trans._parent.nested:
-#             session.expire_all()
-#             session.begin_nested()
-
-#     old_session = database.session
-#     database.session = session
-
-#     yield database
-
-#     session.remove()
-#     transaction.rollback()
-#     connection.close()
-#     database.session = old_session
-# dir(database)
-# ['Model',
-#  'Query',
-#  'Table',
-#  '__class__',
-#  '__delattr__',
-#  '__dict__',
-#  '__dir__',
-#  '__doc__',
-#  '__eq__',
-#  '__format__',
-#  '__ge__',
-#  '__getattr__',
-#  '__getattribute__',
-#  '__gt__',
-#  '__hash__',
-#  '__init__',
-#  '__init_subclass__',
-#  '__le__',
-#  '__lt__',
-#  '__module__',
-#  '__ne__',
-#  '__new__',
-#  '__reduce__',
-#  '__reduce_ex__',
-#  '__repr__',
-#  '__setattr__',
-#  '__sizeof__',
-#  '__str__',
-#  '__subclasshook__',
-#  '__weakref__',
-#  '_add_models_to_shell',
-#  '_app_engines',
-#  '_apply_driver_defaults',
-#  '_call_for_binds',
-#  '_engine_options',
-#  '_make_declarative_base',
-#  '_make_engine',
-#  '_make_metadata',
-#  '_make_scoped_session',
-#  '_make_session_factory',
-#  '_make_table_class',
-#  '_relation',
-#  '_set_rel_query',
-#  '_teardown_commit',
-#  '_teardown_session',
-#  '_user_resources_hooks_registered',
-#  'apply_driver_hacks',
-#  'create_all',
-#  'drop_all',
-#  'dynamic_loader',
-#  'engine',
-#  'engines',
-#  'first_or_404',
-#  'get_binds',
-#  'get_engine',
-#  'get_or_404',
-#  'get_tables_for_bind',
-#  'init_app',
-#  'metadata',
-#  'metadatas',
-#  'one_or_404',
-#  'paginate',
-#  'reflect',
-#  'relationship',
-#  'session']
-
-
-# @pytest.fixture()
-# def users(UserFixture, app, db):
-#     user1 = UserFixture(
-#         email="scottia4@msu.edu",
-#         password="password",
-#     )
-#     user1.create(app, db)
-#     user2 = UserFixture(
-#         email="info@invenio.org",
-#         password="password",
-#     )
-#     user2.create(app, db)
-#     return [user1, user2]
-
-
 @pytest.fixture()
 def users(UserFixture, app, db) -> list:
     """Create example user."""
-    # user1 = UserFixture(
-    #     email="scottia4@msu.edu",
-    #     password="password"
-    # )
-    # user1.create(app, db)
-    # user2 = UserFixture(
-    #     email="scottianw@gmail.com",
-    #     password="password"
-    # )
-    # user2.create(app, db)
-    with db.session.begin_nested():
-        datastore = app.extensions["security"].datastore
-        user1 = datastore.create_user(
-            email="info@inveniosoftware.org",
-            password=hash_password("password"),
-            active=True,
-        )
-        user2 = datastore.create_user(
-            email="ser-testalot@inveniosoftware.org",
-            password=hash_password("beetlesmasher"),
-            active=True,
-        )
+    user1 = UserFixture(email="scottia4@msu.edu", password="password")
+    user1.create(app, db)
+    user2 = UserFixture(email="scottianw@gmail.com", password="password")
+    user2.create(app, db)
+    # with db.session.begin_nested():
+    #     datastore = app.extensions["security"].datastore
+    #     user1 = datastore.create_user(
+    #         email="info@inveniosoftware.org",
+    #         password=hash_password("password"),
+    #         active=True,
+    #     )
+    #     user2 = datastore.create_user(
+    #         email="ser-testalot@inveniosoftware.org",
+    #         password=hash_password("beetlesmasher"),
+    #         active=True,
+    #     )
 
     db.session.commit()
     return [user1, user2]
-
-
-# dir(user)
-# ['__class__',
-#  '__delattr__',
-#  '__dict__',
-#  '__dir__',
-#  '__doc__',
-#  '__eq__',
-#  '__format__',
-#  '__ge__',
-#  '__getattribute__',
-#  '__gt__',
-#  '__hash__',
-#  '__init__',
-#  '__init_subclass__',
-#  '__le__',
-#  '__lt__',
-#  '__module__',
-#  '__ne__',
-#  '__new__',
-#  '__reduce__',
-#  '__reduce_ex__',
-#  '__repr__',
-#  '__setattr__',
-#  '__sizeof__',
-#  '__str__',
-#  '__subclasshook__',
-#  '__weakref__',
-#  '_active',
-#  '_app',
-#  '_client',
-#  '_confirmed',
-#  '_email',
-#  '_identity',
-#  '_login',
-#  '_logout',
-#  '_password',
-#  '_preferences',
-#  '_user',
-#  '_user_profile',
-#  '_username',
-#  'api_login',
-#  'api_logout',
-#  'app_login',
-#  'app_logout',
-#  'create',
-#  'email',
-#  'get_id',
-#  'id',
-#  'identity',
-#  'is_active',
-#  'login',
-#  'logout',
-#  'password',
-#  'refresh',
-#  'user',
-#  'username']
 
 
 @pytest.fixture()

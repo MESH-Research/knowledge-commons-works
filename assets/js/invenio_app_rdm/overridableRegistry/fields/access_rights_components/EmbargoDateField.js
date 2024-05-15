@@ -14,7 +14,7 @@ import { i18next } from "@translations/invenio_rdm_records/i18next";
 export function EmbargoDateField({
   fieldPath,
   label,
-  labelIcon,
+  icon,
   placeholder,
   required,
   helpText,
@@ -22,7 +22,7 @@ export function EmbargoDateField({
   return (
     <TextField
       fieldPath={fieldPath}
-      label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
+      label={<FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
       placeholder={placeholder}
       required={required}
       helpText={helpText}
@@ -33,7 +33,7 @@ export function EmbargoDateField({
 EmbargoDateField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   placeholder: PropTypes.string,
   required: PropTypes.bool,
   helpText: PropTypes.string,
@@ -41,7 +41,7 @@ EmbargoDateField.propTypes = {
 
 EmbargoDateField.defaultProps = {
   required: false,
-  labelIcon: "calendar",
+  icon: "calendar",
   placeholder: i18next.t("YYYY-MM-DD"),
   label: i18next.t("Embargo until"),
   helpText: `${i18next.t("Format")}: ${i18next.t("YYYY-MM-DD")}`,

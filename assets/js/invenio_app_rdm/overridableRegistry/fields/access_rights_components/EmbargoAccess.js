@@ -35,8 +35,8 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
     ? DateTime.fromISO(embargoUntil).toLocaleString(DateTime.DATE_FULL)
     : "???";
 
-  const publicColor = !embargoActive ? "positive" : "";
-  const restrictedColor = embargoActive ? "negative" : "";
+  const publicColor = !embargoActive ? "primary" : "primary";
+  const restrictedColor = embargoActive ? "negative" : "negative";
 
   const handlePublicButtonClick = () => {
     setFieldValue('access.files', "public");
@@ -61,7 +61,7 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
       </label>
       <Button.Group widths="2">
         <Button
-          className={`${publicColor} {!embargoEnabled ? "disabled" : ""}`}
+          className={`${publicColor} ${!embargoEnabled ? "disabled" : ""} ${!embargoActive ? "active" : "basic"}`}
           disabled={!embargoEnabled}
           onClick={handlePublicButtonClick}
           active={!embargoActive}
@@ -72,7 +72,7 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
           active={embargoActive}
           onClick={handleRestrictedButtonClick}
           disabled={!embargoEnabled}
-          className={`${restrictedColor} {!embargoEnabled ? "disabled" : ""}`}
+          className={`${restrictedColor} ${!embargoEnabled ? "disabled" : ""} ${embargoActive ? "active" : "basic"}`}
         >
           {i18next.t("Embargoed")}
         </Button>

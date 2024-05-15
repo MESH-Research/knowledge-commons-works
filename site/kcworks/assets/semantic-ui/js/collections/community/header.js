@@ -45,7 +45,7 @@ const CommunityDetailsHeader = ({
       communityLogoUrl
     )
   ) {
-    pattern = Geopattern.generate(slug);
+    pattern = Geopattern.generate(slug.replace('/', ' '));
 
     // use rgba version of svg pattern color for header background
     const opacity = 0.1;
@@ -140,7 +140,7 @@ const CommunityDetailsHeader = ({
               </div>
 
               <div className="mobile only">
-                <h1 className="ui medium header mb-5">{communityTitle}</h1>
+                <h1 className="ui large header mb-5">{communityTitle}</h1>
               </div>
             </div>
 
@@ -163,14 +163,14 @@ const CommunityDetailsHeader = ({
                 )}
 
                 {website && (
-                  <div className="inline-computer mt-5 rel-mr-1">
+                  <div className="inline-computer mt-5 rel-mr-1 collection-url">
                     <i className="linkify icon" aria-hidden="true"></i>
                     <a href={website}>{website}</a>
                   </div>
                 )}
 
                 {communityType && (
-                  <div className="inline-computer mt-5 rel-mr-1">
+                  <div className="inline-computer mt-5 rel-mr-1 collection-type">
                     <i className="tag icon" aria-hidden="true"></i>
                     <span className="label label-keyword">
                       {communityType}
@@ -180,7 +180,7 @@ const CommunityDetailsHeader = ({
 
                 {organizations &&
                   organizations.map((org, idx) => (
-                    <div className="inline-computer mt-5" key={idx}>
+                    <div className="inline-computer mt-5 org" key={idx}>
                       {idx == 0 && (
                         <i
                           className="building outline icon"
@@ -216,7 +216,7 @@ const CommunityDetailsHeader = ({
         <div className="sixteen wide mobile sixteen wide tablet three wide computer right aligned column">
           <a
             href={`/uploads/new?community=${slug}`}
-            className="ui positive button labeled icon rel-mt-1 theme-secondary"
+            className="ui primary button labeled icon rel-mt-1 theme-secondary"
           >
             <i className="upload icon" aria-hidden="true"></i>
             {i18next.t("Contribute a work")}

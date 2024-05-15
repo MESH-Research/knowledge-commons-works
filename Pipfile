@@ -18,13 +18,14 @@ selenium = "*"
 [packages]
 cchardet = "==2.1.7"
 flask-principal = "*"
+greenlet = {version = "!=0.4.17"}
 halo = "*"
 invenio-app-rdm = {version = "~=12.0.0b3.dev3", extras = ["opensearch2"]}
 invenio-cli = "==1.0.21"
 invenio-s3 = "*"
 invenio-utilities-tuw = "*"
 isbnlib = "*"
-xmlsec = "*"
+xmlsec = "<1.3.14"
 invenio-saml = "*"
 langdetect = "*"
 pip = "*"
@@ -48,10 +49,9 @@ invenio-record-importer = {editable = true, path = "./../invenio-record-importer
 invenio-rdm-records = {file = "../invenio-rdm-records", editable = true}
 invenio-records-resources = {file = "../invenio-records-resources", editable = true}
 invenio-communities = {file = "../invenio-communities", editable = true}
-invenio-groups = {file = "../invenio-groups", editable = true}
-invenio-subjects-fast = "*"
 kcworks = {file = "site", editable = true}
-numpy = "*"
+invenio-group-collections = {file = "../invenio-group-collections", editable = true}
+invenio-subjects-fast = "*"
 
 [requires]
 python_version = "3.9"

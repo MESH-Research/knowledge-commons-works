@@ -22,7 +22,7 @@ import { i18next } from "@translations/invenio_rdm_records/i18next";
 function FundingFieldForm(props) {
   const {
     label,
-    labelIcon,
+    icon,
     fieldPath,
     form: { values },
     move: formikArrayMove,
@@ -88,7 +88,7 @@ function FundingFieldForm(props) {
     // <DndProvider backend={HTML5Backend}>
     // <GlobalDndContext>
       <Form.Field required={required}>
-        <FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />
+        <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
         <List>
           {getIn(values, fieldPath, []).map((value, index) => {
             const key = `${fieldPath}.${index}`;
@@ -168,7 +168,7 @@ function FundingFieldForm(props) {
 
 FundingFieldForm.propTypes = {
   label: PropTypes.node,
-  labelIcon: PropTypes.node,
+  icon: PropTypes.node,
   fieldPath: PropTypes.string.isRequired,
   form: PropTypes.object,
   move: PropTypes.func,
@@ -184,7 +184,7 @@ FundingFieldForm.propTypes = {
 
 FundingFieldForm.defaultProps = {
   label: undefined,
-  labelIcon: undefined,
+  icon: undefined,
   form: undefined,
   move: undefined,
   push: undefined,
@@ -210,7 +210,7 @@ export function FundingField(props) {
 FundingField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
-  labelIcon: PropTypes.string,
+  icon: PropTypes.string,
   searchConfig: PropTypes.object.isRequired,
   required: PropTypes.bool,
   deserializeAward: PropTypes.func,
@@ -220,7 +220,7 @@ FundingField.propTypes = {
 
 FundingField.defaultProps = {
   label: "Awards",
-  labelIcon: "money bill alternate outline",
+  icon: "money bill alternate outline",
   required: false,
   deserializeAward: undefined,
   deserializeFunder: undefined,

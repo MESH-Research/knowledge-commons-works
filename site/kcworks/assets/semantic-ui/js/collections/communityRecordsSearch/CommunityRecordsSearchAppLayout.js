@@ -10,14 +10,10 @@ import { Button, Container, Grid } from "semantic-ui-react";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Trans } from "react-i18next";
-import { SearchConfigurationContext } from "@js/invenio_search_ui/components/context";
+// import { SearchConfigurationContext } from "@js/invenio_search_ui/components/context";
 
 export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
   const [sidebarVisible, setSidebarVisible] = React.useState(false);
-
-  const context = useContext(SearchConfigurationContext);
-  console.log("CommunitiesSearchLayout", config, appName, context);
-  console.log("CommunityRecordsSearchAppLayout", config, appName);
 
   return (
     <Container className="rel-pt-2">
@@ -41,7 +37,7 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
               <Count
                 label={(cmp) => (
                   <Trans key="communityRecordsSearch" count={cmp}>
-                    {cmp} results found
+                    {cmp} works found
                   </Trans>
                 )}
               />

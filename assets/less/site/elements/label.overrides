@@ -1,0 +1,50 @@
+/* Label theme overrides */
+
+.ui.label.basic,
+.ui.label,
+.ui.small.labels .label {
+    background-color: @seafoam;
+    border: 1px solid @verdigris40;
+    color: @ivy80;
+
+    &.transparent {
+        background-color: transparent;
+        border-color: transparent;
+    }
+
+    font-size: @fontSizeSmall;
+    &.small {
+        font-size: @fontSizeSmall;
+    }
+}
+
+.ui.neutral.label {
+    background-color: @ivory;
+    border-color: @ivy20;
+    color: @ivy60;
+}
+
+.ui.label.primary.basic {
+    background-color: @white;
+    border-color: @verdigris30;
+    color: @primaryColor;
+}
+
+.ui.secondary.label {
+    background-color: @gold20;
+    border-color: @gold50;
+    color: @darkGold;
+}
+
+.ui.label.secondary.basic {
+    background-color: @white;
+    border-color: @ivy20;
+    color: @ivy70;
+}
+
+.ui.label.positive.basic,
+.ui.label.access-status.open.basic {
+    background-color: @white;
+    border-color: lighten(@greenLight, 20%);
+    color: @positiveColor;
+}

@@ -4,6 +4,8 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import { parametrize } from "react-overridable";
+
 import { AccessRightField } from "./fields/AccessRightField";
 import { CreatibutorsField } from "./fields/CreatibutorsField";
 import { DescriptionsField } from "./fields/DescriptionsField";
@@ -13,11 +15,16 @@ import { LicenseField } from "./fields/LicenseField";
 import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 import { PublicationDateField } from "./fields/PublicationDateField";
 import { PublisherField } from "./fields/PublisherField";
+import RecordsResultsListItem from "./search/RecordsResultsListItem";
+import { RDMRecordMultipleSearchBarElement } from "./search/RDMRecordMultipleSearchBarElement";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
+import { ResultOptions } from "./search/ResultOptions";
+import { SearchAppLayout } from "./search/SearchAppLayout";
 import { SubjectsField } from "./fields/SubjectsField";
 import { TitlesField } from "./fields/TitlesField";
 import { VersionField } from "./fields/VersionField";
 import { FileUploader } from "./fields/file_uploader_components/index";
+
 
 const MobileActionMenu = () => {
   return (
@@ -26,6 +33,10 @@ const MobileActionMenu = () => {
     </div>
   );
 };
+
+const SearchAppLayoutWithConfig = parametrize(SearchAppLayout, {
+  appName: "InvenioAppRdm.Search",
+});
 
 export const overriddenComponents = {
   "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
@@ -38,6 +49,13 @@ export const overriddenComponents = {
   "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
   "InvenioAppRdm.Deposit.PublicationDateField.container": PublicationDateField,
   "InvenioAppRdm.Deposit.PublisherField.container": PublisherField,
+  "InvenioAppRdm.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
+  "InvenioAppRDM.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
+  "InvenioAppRdm.Search.RecordsResultsListItem.layout": RecordsResultsListItem,
+  "InvenioAppRdm.Search.SearchBar.element": RDMRecordMultipleSearchBarElement,
+  "InvenioAppRdm.Search.SearchApp.layout": SearchAppLayoutWithConfig,
+  "InvenioAppRdm.Search.SearchApp.resultOptions": ResultOptions,
+  "InvenioCommunities.DetailsSearch.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
   "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
   "InvenioAppRdm.Deposit.VersionField.container": VersionField,

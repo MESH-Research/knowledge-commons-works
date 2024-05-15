@@ -8,8 +8,24 @@
 /* This is the single variable that controls them all */
 @emSize: 16px;
 
+/*-------------------
+      Fonts
+--------------------*/
+
 /* The size of page text  */
 @fontSize: 16px;
+@fontSizeBase: @fontSize; // 14px;
+@fontSizeSmall: 0.8571428571rem; // 12px;
+@font-size-small: 12px;
+@font-size-tiny: 10px;
+@font-size-massive: 36px;
+
+/*-------------------
+     Em Sizes
+--------------------*/
+
+@75px : unit( (75 / @emSize), rem);
+@relative75px : unit( (75 / @emSize), em);
 
 /*-------------------
       Breakpoints
@@ -22,34 +38,232 @@
 @widescreenMonitorBreakpoint: 1920px;
 
 /*-------------------
-      Colors
+      Spacing
 --------------------*/
 
-/* Theme colors */
-// @primaryColor: rgb(0, 102, 80); // #006650
-@ivy: #1C4036;
+@labelBottomMargin: 0.28571429rem;
+
+
+/*-------------------
+    Brand Colors
+--------------------*/
+
+@ivy: #1C4036; // rgb(28, 64, 54)
 @verdigris: #669999;
 @gold: #D9B01C;
 @mint: #c9e3db;
 @seafoam: #f0faf5;
 @ivory: #f5f5eb;
 
-@primaryColor: @verdigris;
-@secondaryColor: @gold; // #c2eae1;;
-@footerLightColor: lighten(@ivy, 10%);
-@footerDarkColor: lighten(@gold, 30%);
+@ivy90: #33534a;
+@ivy80: #49665e;
+@ivy70: #607972;
+@ivy60: #607972;
+@ivy50: #8ea09a;
+@ivy40: #a4b2af;
+@ivy30: #bbc5c3;
+@ivy20: #d2d9d7;
+@ivy10: #e8eceb;
+@ivyRgba10: rgba(28, 64, 54, 0.1);
 
-@navbarBackgroundColor: #5eae9b;
-@navbarBackgroundImage: #5eae9b;
-// @navbarBackgroundImage: linear-gradient(12deg, rgb(0, 102, 80) 0%, desaturate(lighten(rgb(0, 102, 80), 5%), 5%) 90%);
+@verdigrisDark: #547d7d;
+@verdigris90: #75a3a4;
+@verdigris80: #85adae;
+@verdigris70: #94b8b7;
+@verdigris60: #a3c2c1;
+@verdigris50: #b2cccc;
+@verdigris40: #c2d7d6;
+@verdigris30: #d1e0e0;
+@verdigris20: #e0eaea;
+@verdigris10: #f0f5f5;
+@verdigrisRgba10: rgba(117, 163, 164, 0.1);
+@verdigrisRgba50: rgba(117, 163, 164, 0.5);
 
-/* Semantic state colors */
-@errorTextColor: #e47719; // @negativeColor; // = @red
-@negativeTextColor: @red;
-@errorColor: #e47719; // @negativeColor; // = @red
+@gold90: #ddb832;
+@gold80: #ddb832;
+@gold70: #e4c860;
+@gold60: #e8cf77;
+@gold50: #ebd78e;
+@gold40: #f0dfa4;
+@gold30: #f3e8bb;
+@gold20: #f8efd2;
+@gold10: #fcf7e9;
+@goldRgba10: rgba(217, 184, 28, 0.1);
+@goldRgba50: rgba(217, 184, 28, 0.5);
+@goldRgba90: rgba(217, 184, 28, 0.9);
+
+@darkGold: #b29017;
+
+@mint70: #daece6;
+@mint50: #e5f1ed;
+@mint30: #eff6f4;
+@mintRgba50: rgba(201, 227, 219, 0.5);
+
+@seafoam90: #f1faf6;
+@seafoam80: #f1faf6;
+@seafoam70: #f5fbf8;
+@seafoam60: #f6fcf9;
+@seafoam50: #f7fcfa;
+@seafoam40: #f9fdfb;
+@seafoam30: #fbfdfc;
+@seafoam20: #fcfefd;
+@seafoam10: #fefffe;
+@seafoamRgba90: rgba(240, 250, 245, 0.9);
+
+@ivory90: #f6f6ec;
+@ivory80: #f7f7ee;
+@ivory70: #f8f8ef;
+@ivory60: #f9f9f2;
+@ivory50: #fafaf5;
+@ivory40: #fbfbf7;
+@ivory30: #fcfcf9;
+@ivory20: #fdfdfb;
+@ivory10: #fefefd;
+@ivoryRgba90: rgba(245, 245, 235, 0.9);
+
+@darkGray: #333;
+@green: #6c7839;
+@greenLight: #8a9f5a;
+@greenRgba10: rgba(122, 151, 80, 0.1);
+@peacock: #4899DB;
+@peacockRgba10: rgba(72, 153, 219, 0.1);
+@white: #fff;
+@salmon: #e47719;
+@red: #db6228;
+@redDark: #b54f1e;
+@yellow: @gold;
+@royalBlue: #005b9e;
+
+/*-------------------
+      Colors
+--------------------*/
+
+@primaryColor: @verdigrisDark;
+@secondaryColor: @gold;
+
+@primaryDarkenColor: darken(@primaryColor, 10%);
+@primaryTextColor: @verdigrisDark !important;
+
+// backwards compatibility
+@brandColor: @primaryColor;
+@brand-primary:@primaryColor;
+@defaultBrandColor: @ivy; // #434C5E;
+
+@borderColor: @ivy10;
+@sidebarHeaderColor: @ivy80;
+
+/* ----------------------------
+      Semantic state colors
+------------------------------- */
+@errorTextColor: @salmon; // @negativeColor; // = @red
+@errorColor: @errorTextColor; // @negativeColor; // = @red
 @formErrorColor: @errorColor;
 @formErrorBorder: @negativeBorderColor;
 @formErrorBackground: lighten(@errorColor, 50%);
 @inputErrorFocusBackground: @formErrorBackground;
 @inputErrorFocusColor: @errorColor;
 @inputErrorFocusBorder: @formErrorBorder;
+
+@warningTextColor: @darkGold;
+@warningBackgroundColor: @gold10;
+
+@positiveColor: @green;
+@positiveTextColor: darken(@green, 10%);
+@positiveBackgroundColor: @seafoam60;
+
+@negativeColor: @red;
+@negativeTextColor: @redDark;
+@negativeTextColorDarker: #963f21;
+@negativeBackgroundColor: #fff6f6;
+@negativeBorderColor: #e0b4b4;
+
+/*-------------------
+      Site Colors
+--------------------*/
+
+@sidebarBackgroundColor: @seafoam50; // #f9f9f9;
+@formButtonColor: @sidebarBackgroundColor;
+
+@signupColor: @green;
+@accessRightOpen: @green;
+@accessRightRestricted: @red;
+@accessRightEmbargoed: @yellow;
+@accessRightMetadataOnly: @teal;
+
+@restricted-components-background-color: #feeaea;
+@restricted-components-border-color: #e0b4b4;
+@embargoed-components-background-color: #fbf8ee;
+@embargoed-components-border-color: #c9ba9b;
+
+@featuredListBackgroundColor: @peacock;
+
+@navbarBackgroundImage: @white;
+@navbarBackgroundColor: @white;
+
+@footerLightColor: @ivy;
+@footerDarkColor: @ivy;
+@subFooterColor: @verdigrisDark;
+@footerTextLightColor: @white;
+@footerTextDarkColor: @seafoam;
+
+@focusedFormBorderColor: #2185d0;
+@focusedFormMutedBorderColor: #2185d0;
+
+@highlightHeaderColor: #ededed;
+@highlightBackgroundColor: @highlightHeaderColor;
+@highlightBackgroundColorHover:  darken(saturate(@highlightHeaderColor, 20), 15, relative);
+@highlightLandingPageBackgroundColor: rgba(173, 206, 224, 0.52);
+@selectedColor: #ededed;
+
+@versionActiveColor: @seafoam; //#d9edf7;
+
+@mutedAccordionHeaderColor: #f5f5f5;
+
+/*-------------------
+      Links
+--------------------*/
+
+@linkColor: @primaryColor;
+@linkUnderline: none;
+@linkHoverColor: darken(@linkColor, 15, relative);
+@linkHoverUnderline: underline;
+
+/*-------------------
+      negative spacing
+--------------------*/
+@coverPageDefaultMargin: 0;
+
+/* ----------------------------
+      borders
+------------------------------- */
+
+@dashedBorder: 2px dashed @borderColor;
+@defaultBorder: 1px solid @solidBorderColor;
+
+/*------------------
+  checkboxes
+------------------*/
+
+@checkboxSize: @relative17px;
+
+/*------------------
+  tables
+------------------*/
+
+@cellVerticalPadding: @relativeMini;
+@cellHorizontalPadding: @relativeMini;
+
+
+/*------------------
+  Images
+------------------*/
+
+@userDashboardAvatarSize: 40px;
+@communityItemLogoWidth: 115px;
+
+
+/*------------------
+  Separators
+------------------*/
+@listSeparator: ";";
+@listCommaSeparator: ",";
