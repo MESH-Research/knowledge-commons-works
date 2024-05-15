@@ -39,9 +39,6 @@ RUN git clone https://github.com/MESH-Research/invenio-remote-user-data.git /opt
 # NOTE: turned off --deploy for dev
 RUN pipenv install --system
 RUN pip install invenio-cli
-# FIXME: temporary workaround for python-xmlsec regression in uwsgi
-RUN pip uninstall lxml xmlsec -y
-RUN pip install --no-binary lxml xmlsec --no-cache-dir
 
 RUN echo "[cli]" >> .invenio.private
 RUN echo "services_setup=False" >> .invenio.private
