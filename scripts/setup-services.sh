@@ -49,4 +49,4 @@ echo -e "${green}All done setting up services."
 echo -e "${yellow}Building assets for Knowledge Commons Works instance...${clear}"
 cd /opt/invenio/src/scripts
 bash ./build-assets.sh
-echo -e "${green}Your instance is now read to use.${clear}"
+echo -e "${green}Your instance is now ready to use.${clear}"

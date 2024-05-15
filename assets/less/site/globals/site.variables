@@ -15,6 +15,7 @@
 /* The size of page text  */
 @fontSize: 16px;
 @fontSizeBase: @fontSize; // 14px;
+@fontSizeSmall: 0.8571428571rem; // 12px;
 @font-size-small: 12px;
 @font-size-tiny: 10px;
 @font-size-massive: 36px;
@@ -65,6 +66,7 @@
 @ivy10: #e8eceb;
 @ivyRgba10: rgba(28, 64, 54, 0.1);
 
+@verdigrisDark: #547d7d;
 @verdigris90: #75a3a4;
 @verdigris80: #85adae;
 @verdigris70: #94b8b7;
@@ -120,13 +122,15 @@
 @ivoryRgba90: rgba(245, 245, 235, 0.9);
 
 @darkGray: #333;
-@green: #7d8b42;
+@green: #6c7839;
+@greenLight: #8a9f5a;
 @greenRgba10: rgba(122, 151, 80, 0.1);
 @peacock: #4899DB;
 @peacockRgba10: rgba(72, 153, 219, 0.1);
 @white: #fff;
 @salmon: #e47719;
 @red: #db6228;
+@redDark: #b54f1e;
 @yellow: @gold;
 @royalBlue: #005b9e;
 
@@ -134,10 +138,11 @@
       Colors
 --------------------*/
 
-@primaryColor: @verdigris;
+@primaryColor: @verdigrisDark;
 @secondaryColor: @gold;
 
 @primaryDarkenColor: darken(@primaryColor, 10%);
+@primaryTextColor: @verdigrisDark !important;
 
 // backwards compatibility
 @brandColor: @primaryColor;
@@ -145,7 +150,7 @@
 @defaultBrandColor: @ivy; // #434C5E;
 
 @borderColor: @ivy10;
-@sidebarHeaderColor: @ivy60;
+@sidebarHeaderColor: @ivy80;
 
 /* ----------------------------
       Semantic state colors
@@ -167,7 +172,8 @@
 @positiveBackgroundColor: @seafoam60;
 
 @negativeColor: @red;
-@negativeTextColor: @red;
+@negativeTextColor: @redDark;
+@negativeTextColorDarker: #963f21;
 @negativeBackgroundColor: #fff6f6;
 @negativeBorderColor: #e0b4b4;
 
@@ -175,7 +181,7 @@
       Site Colors
 --------------------*/
 
-@sidebarBackgroundColor: @ivory60; // #f9f9f9;
+@sidebarBackgroundColor: @seafoam50; // #f9f9f9;
 @formButtonColor: @sidebarBackgroundColor;
 
 @signupColor: @green;
@@ -196,9 +202,9 @@
 
 @footerLightColor: @ivy;
 @footerDarkColor: @ivy;
-@subFooterColor: @ivy80;
+@subFooterColor: @verdigrisDark;
 @footerTextLightColor: @white;
-@footerTextDarkColor: @gold30;
+@footerTextDarkColor: @seafoam;
 
 @focusedFormBorderColor: #2185d0;
 @focusedFormMutedBorderColor: #2185d0;

@@ -49,9 +49,9 @@ invenio-record-importer = {editable = true, path = "./../invenio-record-importer
 invenio-rdm-records = {file = "../invenio-rdm-records", editable = true}
 invenio-records-resources = {file = "../invenio-records-resources", editable = true}
 invenio-communities = {file = "../invenio-communities", editable = true}
-invenio-groups = {file = "../invenio-groups", editable = true}
 invenio-subjects-fast = "*"
 kcworks = {file = "site", editable = true}
+invenio-group-collections = {file = "../invenio-group-collections", editable = true}
 
 [requires]
 python_version = "3.9"

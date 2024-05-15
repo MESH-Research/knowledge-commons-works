@@ -2,14 +2,14 @@
 .ui.buttons:not(.basic):not(.inverted) > .ui.button,
 .ui.button {
   background-color: @white;
-  color: @darkGold;
-  box-shadow: 0px 0px 0px 1px @gold50 inset, 0px 0em 0px 0px @goldRgba10 inset;
+  color: @ivy;
+  box-shadow: 0px 0px 0px 1px @ivy30 inset, 0px 0em 0px 0px @ivy30 inset;
   &:hover,
   &:active,
   &:focus {
-    background-color: @ivy60;
-    color: @white;
-    box-shadow: 0px 0px 0px 1px @ivy70 inset,
+    background-color: @mint50;
+    color: @ivy;
+    box-shadow: 0px 0px 0px 1px @ivy40 inset,
       0px 0em 0px 0px @ivyRgba10 inset;
     cursor: pointer;
   }
@@ -26,22 +26,23 @@
   }
 
   &.negative {
-    background-color: @negativeColor;
+    background-color: @negativeTextColor;
     color: @white;
-    box-shadow: 0px 0px 0px 1px @negativeColor inset,
+    box-shadow: 0px 0px 0px 1px @negativeTextColor inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
 
     &:hover,
     &:active,
     &:focus {
-      background-color: darken(@negativeColor, 10%);
+      color: @negativeBackgroundColor;
+      background-color: @negativeTextColorDarker;
     }
   }
 
   &.transparent {
     background-color: transparent;
     box-shadow: none;
-    color: @darkGold;
+    color: @verdigrisDark;
   }
 
   &.labeled.icon > .icon {
@@ -60,21 +61,21 @@
 .ui.buttons.basic:not(.inverted) > .ui.button,
 .ui.button.basic {
   background-color: @white;
-  color: @darkGold;
-  box-shadow: 0px 0px 0px 1px @gold50 inset, 0px 0em 0px 0px @goldRgba10 inset;
+  color: @ivy;
+  box-shadow: 0px 0px 0px 1px @ivy30 inset, 0px 0em 0px 0px @ivyRgba10 inset;
   &:hover,
   &:active,
   &:focus {
-    background-color: @ivory;
-    color: @ivy80;
-    box-shadow: 0px 0px 0px 1px @verdigris60 inset,
-      0px 0em 0px 0px @verdigris10 inset;
+    background-color: @mint50;
+    color: @ivy;
+    box-shadow: 0px 0px 0px 1px @ivy40 inset,
+      0px 0em 0px 0px @ivyRgba10 inset;
     cursor: pointer;
   }
 
   &.negative,
   &.negative {
-    color: @red !important;
+    color: @negativeTextColor !important;
     background-color: @white;
     box-shadow: 0px 0px 0px 1px @negativeBorderColor inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
@@ -82,22 +83,28 @@
     &:active,
     &:focus {
       background-color: @negativeBackgroundColor !important;
+      color: @negativeTextColorDarker !important;
     }
     &.active {
-      background-color: @negativeColor !important;
-      color: @white !important;
-    }
+      background-color: @negativeTextColor !important;
+      color: @negativeBackgroundColor !important;
+      box-shadow: 0px 0px 0px 1px @negativeTextColor inset,
+        0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
+      }
   }
 
   &.primary {
-    color: @primaryColor;
+    color: @verdigrisDark;
     background-color: @white;
-    box-shadow: 0px 0px 0px 1px @verdigris50 inset,
+    box-shadow: 0px 0px 0px 1px @verdigris60 inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
     &:hover,
     &:active,
     &:focus {
-      background-color: @verdigris10 !important;
+      color: @ivy80;
+      background-color: @seafoam !important;
+      box-shadow: 0px 0px 0px 1px @verdigris70 inset,
+        0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
     }
   }
 
@@ -112,16 +119,16 @@
 
 .ui.buttons .button.primary:not(.basic):not(.inverted),
 .ui.primary.button {
-  background-color: @primaryColor;
+  background-color: @verdigrisDark;
   color: @white;
-  box-shadow: 0px 0px 0px 1px @primaryColor inset,
+  box-shadow: 0px 0px 0px 1px @verdigrisDark inset,
     0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
   &:hover,
   &:active,
   &:focus {
-    background-color: darken(@primaryColor, 10%);
-    color: @white;
-    box-shadow: 0px 0px 0px 1px darken(@primaryColor, 10%) inset,
+    background-color: @ivy90;
+    color: @seafoam;
+    box-shadow: 0px 0px 0px 1px @ivy90 inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
   }
   &.labeled.icon > .icon {
@@ -131,7 +138,7 @@
 
 .invenio-fieldset.resource_type {
     .menu .button.item {
-        color: @darkGold;
+        color: @verdigrisDark;
         box-shadow: none;
     }
 }

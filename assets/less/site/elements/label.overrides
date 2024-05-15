@@ -1,14 +1,20 @@
 /* Label theme overrides */
 
 .ui.label.basic,
-.ui.label {
-    background-color: @ivory;
-    border: 1px solid @ivy20;
-    color: @ivy60;
+.ui.label,
+.ui.small.labels .label {
+    background-color: @seafoam;
+    border: 1px solid @verdigris40;
+    color: @ivy80;
 
     &.transparent {
         background-color: transparent;
         border-color: transparent;
+    }
+
+    font-size: @fontSizeSmall;
+    &.small {
+        font-size: @fontSizeSmall;
     }
 }
 
@@ -20,7 +26,7 @@
 
 .ui.label.primary.basic {
     background-color: @white;
-    border-color: lighten(@primaryColor, 20%);
+    border-color: @verdigris30;
     color: @primaryColor;
 }
 
@@ -32,13 +38,13 @@
 
 .ui.label.secondary.basic {
     background-color: @white;
-    border-color: @secondaryColor;
-    color: @darkGold;
+    border-color: @ivy20;
+    color: @ivy70;
 }
 
 .ui.label.positive.basic,
 .ui.label.access-status.open.basic {
     background-color: @white;
-    border-color: lighten(@positiveColor, 20%);
+    border-color: lighten(@greenLight, 20%);
     color: @positiveColor;
 }

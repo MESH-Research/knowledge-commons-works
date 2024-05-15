@@ -24,7 +24,7 @@
         a:not(.ui.button),
         a {
           position: relative;
-          color: @primaryColor;
+          color: @primaryTextColor;
           &::after {
             content: "";
             position: absolute;
@@ -42,7 +42,7 @@
           }
         }
         a:not(.ui.button):hover {
-          color: darken(@primaryColor, 10%);
+          color: darken(@primaryTextColor, 10%);
           &::after {
             transform: scaleX(1);
             transform-origin: center;

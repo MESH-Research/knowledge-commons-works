@@ -27,7 +27,7 @@ COPY Pipfile Pipfile.lock ./
 RUN git clone https://github.com/MESH-Research/invenio-communities.git /opt/invenio/invenio-communities
 # COPY ./invenio-rdm-records/ /opt/invenio/src/invenio-rdm-records/
 RUN git clone https://github.com/MESH-Research/invenio-rdm-records.git /opt/invenio/invenio-rdm-records
-RUN git clone https://github.com/MESH-Research/invenio-groups.git /opt/invenio/invenio-groups/
+RUN git clone https://github.com/MESH-Research/invenio-group-collections.git /opt/invenio/invenio-group-collections/
 RUN git clone https://github.com/MESH-Research/invenio-modular-deposit-form.git /opt/invenio/invenio-modular-deposit-form/
 RUN git clone https://github.com/MESH-Research/invenio-modular-detail-page.git /opt/invenio/invenio-modular-detail-page/
 RUN git clone https://github.com/MESH-Research/invenio-record-importer.git /opt/invenio/invenio-record-importer/
