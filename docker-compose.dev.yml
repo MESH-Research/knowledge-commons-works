@@ -78,7 +78,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    container_name: kcworks-web-ui
+    container_name: kcworks-ui
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
     image: monotasker/kcworks:latest
     environment:
@@ -94,6 +94,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
+      - ./logs/invenio.log:/opt/invenio/src/logs/invenio.log
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
       # - ${INVENIO_LOCAL_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets
@@ -102,7 +103,6 @@ services:
       - ./templates:/opt/invenio/var/instance/templates
       - ./translations:/opt/invenio/var/instance/translations
       - .:/opt/invenio/src
-      # - static_data:/opt/invenio/var/instance/static
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${MIGRATION_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
@@ -112,7 +112,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    container_name: kcworks-web-api
+    container_name: kcworks-api
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
     image: monotasker/kcworks:latest
     ports:

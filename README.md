@@ -15,7 +15,7 @@ These instructions allow you to run Knowledge Commons Works for local developmen
 
 First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+) and Python (3.9.16 with pipenv).
 
-From there installation involves these steps and commands. These are further explained below, but here is a quick reference:
+From there, installation involves these steps. Each one is further explained below, but here is a quick reference:
 
 1. Clone the git repository
     1. From your command line, navigate to the parent folder where you want the cloned repository code to live
@@ -32,12 +32,12 @@ From there installation involves these steps and commands. These are further exp
 3. Start the docker-compose project
     - `docker-compose --file docker-compose.dev.yml up -d`
 4. Initialize the database and other services, and build asset files
-    - enter the `web-ui` container by running `docker exec -it knowledge_commons_works_web-ui_1 bash`
+    - enter the `web-ui` container by running `docker exec -it kcworks-ui bash`
         - *note*: The container name may be different depending on your local docker setup. You can find the correct name by running `docker ps`
     - run the script to set up the instance services and build static assets `bash ./scripts/setup-services.sh`
         - *note*: Some of the commands in this script may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
 5. Create your own admin user
-    - enter the `web-ui` container by running `docker exec -it knowledge-commons-works-web-ui-1 bash`
+    - enter the `web-ui` container by running `docker exec -it kcworks-ui bash`
     - run the commands:
         - `invenio users create <email> --password <password>`
         - `invenio users activate <email>`
@@ -264,7 +264,7 @@ docker system prune -a
 6. Rebuild the asset files with the following command:
 
 ```shell
-docker exec -it knowledge-commons-works-web-ui-1 bash
+docker exec -it kcworks-ui bash
 bash ./scripts/build-assets.sh
 ```
 7. Restart the docker-compose project once more without rebuilding the containers:

@@ -46,12 +46,14 @@ invenio-modular-detail-page = {editable = true, path = "./../invenio-modular-det
 invenio-modular-deposit-form = {editable = true, path = "./../invenio-modular-deposit-form"}
 invenio-remote-user-data = {editable = true, path = "./../invenio-remote-user-data"}
 invenio-record-importer = {editable = true, path = "./../invenio-record-importer"}
+invenio-group-collections = {file = "../invenio-group-collections", editable = true}
+invenio-subjects-fast = "*"
+invenio-remote-api-provisioner = {file = "../invenio-remote-api-provisioner", editable = true}
 invenio-rdm-records = {file = "../invenio-rdm-records", editable = true}
 invenio-records-resources = {file = "../invenio-records-resources", editable = true}
 invenio-communities = {file = "../invenio-communities", editable = true}
 kcworks = {file = "site", editable = true}
-invenio-group-collections = {file = "../invenio-group-collections", editable = true}
-invenio-subjects-fast = "*"
+numpy = "*"
 
 [requires]
 python_version = "3.9"
