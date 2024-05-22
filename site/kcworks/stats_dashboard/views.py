@@ -19,7 +19,7 @@
 from flask import render_template
 from flask import Blueprint
 from flask.views import MethodView
-from .APIclient import APIclient
+from kcworks.stats_dashboard.APIclient import APIclient
 from pathlib import Path
 from pprint import pprint
 import os
@@ -153,20 +153,16 @@ class StatsDashboard(MethodView):
 
             sections_part_2.append(section)
 
-        return render_template(
-            "base.html",
-            sections_part_1=sections_part_1,
-            sections_part_2=sections_part_2,
-        )
+        return render_template('stats_dashboard/stats_dashboard.html', sections_part_1=sections_part_1, sections_part_2=sections_part_2)
 
 
 def create_blueprint(app):
-    """Register blueprint routes on app."""
-    blueprint = Blueprint(
-        "kcworks_stats_dashboard",
-        __name__,
-        template_folder="../templates",
-    )
+        """Register blueprint routes on app."""
+        blueprint = Blueprint(
+            "kcworks_stats_dashboard_view",
+            __name__,
+            template_folder="../templates",
+        )
 
     # routes = app.config.get("APP_RDM_ROUTES")
 
