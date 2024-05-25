@@ -20,7 +20,7 @@ cchardet = "==2.1.7"
 flask-principal = "*"
 greenlet = {version = "!=0.4.17"}
 halo = "*"
-invenio-app-rdm = {version = "~=12.0.0b3.dev3", extras = ["opensearch2"]}
+invenio-app-rdm = {version = "~=12.0.0b3.dev17", extras = ["opensearch2"]}
 invenio-cli = "==1.0.21"
 invenio-s3 = "*"
 invenio-utilities-tuw = "*"
@@ -54,6 +54,8 @@ invenio-records-resources = {file = "../invenio-records-resources", editable = t
 invenio-communities = {file = "../invenio-communities", editable = true}
 kcworks = {file = "site", editable = true}
 numpy = "*"
+flask-breadcrumbs = "*"
+flask-babelex = "*"
 
 [requires]
 python_version = "3.9"

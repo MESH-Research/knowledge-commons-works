@@ -7,3 +7,13 @@ docker/nginx/samlPrivateKey.key
 docker/nginx_containerized/samlPrivateKey.key
 docker/nginx_staging/samlPrivateKey.key
 docker-compose*
+
+.github/
+.pytest_cache/
+**/.pytest_cache/
+.vscode/
+logs/*
+scripts/experiments
+scripts/sample_files
+site/build
+site/kcworks.egg-info
