@@ -35,7 +35,10 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/usr/local/lib/python3.9/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
 
   web-api:
@@ -55,7 +58,10 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/usr/local/lib/python3.9/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
 
   worker:
@@ -75,5 +81,8 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/usr/local/lib/python3.9/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
