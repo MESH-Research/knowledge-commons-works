@@ -196,10 +196,10 @@ class CommunityCreateForm extends Component {
                   )}
                 </Grid.Column>
               </Grid.Row>
-              <Grid.Row>
+              <Grid.Row className="rel-mb-2">
                 <Grid.Column textAlign="center">
                   <Button
-                    positive
+                    primary
                     icon
                     labelPosition="left"
                     loading={isSubmitting}

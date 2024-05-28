@@ -45,7 +45,8 @@ const CommunityDetailsHeader = ({
       communityLogoUrl
     )
   ) {
-    pattern = Geopattern.generate(slug.replace('/', ' '));
+    pattern = Geopattern.generate(encodeURI(slug));
+    console.log("slug", encodeURI(slug));
 
     // use rgba version of svg pattern color for header background
     const opacity = 0.1;
@@ -54,7 +55,10 @@ const CommunityDetailsHeader = ({
 
     document.getElementsByClassName(
       "page-subheader-outer"
-    )[0].style.backgroundColor = `rgba( ${r}, ${g}, ${b}, ${opacity} )`;
+    )[0].style.background = `rgba( ${r}, ${g}, ${b}, ${opacity} )`;
+    setTimeout(() => {
+      document.querySelectorAll(".page-subheader-outer h1.ui.header").forEach(el => {el.style.color = `${pattern.color}`});
+  }, 100);
   }
 
   let all_menu_items = [
@@ -112,12 +116,7 @@ const CommunityDetailsHeader = ({
       ...all_menu_items,
     ];
   }
-  console.log("canRead", canRead);
-  console.log("canSearchRequests", canSearchRequests);
-  console.log("canUpdate", canUpdate);
-  console.log("canModerate", canModerate);
   const menu_items = all_menu_items.filter((item) => !!item.permissions);
-  console.log("menu_items", menu_items);
 
   return (
     <div class="ui container relaxed grid page-subheader mr-0-mobile ml-0-mobile">
@@ -134,19 +133,18 @@ const CommunityDetailsHeader = ({
                       : "/static/images/square-placeholder-fake.png"
                   }
                   alt={`logo for ${communityTitle} collection`}
-                  className="rel-mb-1"
                   fallbackSrc={pattern !== "" ? pattern.toDataUri() : ""}
                 />
               </div>
 
               <div className="mobile only">
-                <h1 className="ui large header mb-5">{communityTitle}</h1>
+                <h1 className="ui large header">{communityTitle}</h1>
               </div>
             </div>
 
             <div>
               <div className="flex align-items-center mb-5 tablet computer only">
-                <h1 className="ui medium header mb-0">{communityTitle}</h1>
+                <h1 className="ui large header mb-0">{communityTitle}</h1>
 
                 {visibility == "restricted" && (
                   <div className="rel-ml-1">
@@ -235,7 +233,7 @@ const CommunityDetailsHeader = ({
 
       <div className="ui divider mobile only"></div>
 
-      <div className="ui container secondary pointing stackable menu page-subheader pl-0 pr-0 theme-primary">
+      <div className="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary">
         {menu_items.map((item) => (
           <a
             className={`item ${

@@ -17,3 +17,11 @@ scripts/experiments
 scripts/sample_files
 site/build
 site/kcworks.egg-info
+static/admin
+static/dist
+static/bootstrap
+static/css
+static/js
+static/templates
+static/vendor
+static/xsl

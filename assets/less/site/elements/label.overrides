@@ -3,7 +3,7 @@
 .ui.label.basic,
 .ui.label,
 .ui.small.labels .label {
-    background-color: @seafoam;
+    background-color: @sidebarBackgroundColor;
     border: 1px solid @verdigris40;
     color: @ivy80;
 
@@ -24,11 +24,13 @@
     color: @ivy60;
 }
 
-.ui.label.primary.basic {
-    background-color: @white;
-    border-color: @verdigris30;
+.ui.label.primary {
+    background-color: @sidebarBackgroundColor;
+    border-color: @verdigris40;
     color: @primaryColor;
-}
+&.basic {
+    background-color: transparent;
+}}
 
 .ui.secondary.label {
     background-color: @gold20;

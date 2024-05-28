@@ -202,9 +202,9 @@
 
 @footerLightColor: @ivy;
 @footerDarkColor: @ivy;
-@subFooterColor: @verdigrisDark;
+@subFooterColor: @mint;
 @footerTextLightColor: @white;
-@footerTextDarkColor: @seafoam;
+@footerTextDarkColor: @verdigrisDark;
 
 @focusedFormBorderColor: #2185d0;
 @focusedFormMutedBorderColor: #2185d0;

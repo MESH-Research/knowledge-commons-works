@@ -6,6 +6,7 @@
   margin-bottom: 1rem;
   border-radius: @defaultBorderRadius;
   width: auto;
+  border: 1px solid @verdigris20 !important;
 
   > .content {
     margin-bottom: 0;

@@ -26,7 +26,7 @@ export const ResultOptions = ({
         <Grid>
           <Grid.Row verticalAlign="middle" className="stackable sort-options-row">
             <Grid.Column textAlign="left" width={multipleLayouts ? 5 : 8}>
-              <Count label={(cmp) => <>{cmp} work(s) found</>} />
+              <Count label={(cmp) => <>{cmp} work(s) found</>} className="circular" />
               <br />
             </Grid.Column>
             <Grid.Column mobile={10} tablet={8} computer={8} textAlign="right">

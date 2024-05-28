@@ -75,7 +75,7 @@ html.cover-page {
 .theme.header {
   box-shadow: none;
   .beta-banner {
-    background-color: @seafoam;
+    background-color: @mint50;
     color: @verdigrisDark;
     padding: 0.5rem 1rem;
     text-align: center;
@@ -91,9 +91,9 @@ html.cover-page {
 
 // Subheaders
 
-.ui.container.page-subheader-outer {
-  background-color: transparent !important;
-}
+// .ui.container.page-subheader-outer {
+//   background-color: transparent !important;
+// }
 
 // Front page hero area search bar
 
@@ -147,24 +147,21 @@ html.cover-page {
 
   #frontpage-info-bar {
     margin-bottom: 0;
-    border-bottom: 2rem solid transparent;
-    background-color: transparent;
+    padding: 3rem 0;
+    background-color: @mint50;
     .column {
       cursor: pointer;
       background-color: transparent;
       a {
         display: block;
         cursor: pointer;
-        color: @ivy80;
+        color: @verdigrisDark;
         text-decoration: none;
         .huge.icon {
           font-size: 3rem;
         }
         h2 {
-          color: @ivy80;
-          &:hover {
-            color: @ivy;
-          }
+          color: @verdigrisDark;
         }
         @media all and (max-width: @largestTabletScreen) {
           h2 {
@@ -172,10 +169,12 @@ html.cover-page {
           }
         }
       }
-      &:hover {
+      &:hover,
+      &:active,
+      &:focus {
         a,
         h2 {
-          color: @white;
+          color: @ivy;
         }
       }
     }
@@ -1078,5 +1077,8 @@ html.cover-page {
   .footer-bottom {
     background-color: @subFooterColor;
     color: @footerTextDarkColor;
+    a {
+      color: @ivy;
+    }
   }
 }
