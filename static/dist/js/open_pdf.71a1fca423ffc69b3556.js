@@ -1,2 +1,0 @@
-(self.webpackChunkinvenio_assets=self.webpackChunkinvenio_assets||[]).push([[3424],{15186:()=>{document.addEventListener("DOMContentLoaded",(function(){var e=document.getElementById("pdf-file-uri").value;window.PDFView.open(e)}))}},e=>{var n;n=15186,e(e.s=n)}]);
-//# sourceMappingURL=open_pdf.71a1fca423ffc69b3556.js.map
