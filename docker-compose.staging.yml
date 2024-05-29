@@ -89,7 +89,7 @@ services:
       - INVENIO_LOGGING_FS_BACKUP_COUNT=10
       - INVENIO_LOGGING_FS_LOGFILE=/opt/invenio/src/logs/invenio.log
     volumes:
-      - ./logs/invenio.log:/opt/invenio/src/logs/invenio.log
+      - ./logs:/opt/invenio/src/logs
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
       - ./static:/opt/invenio/var/instance/static

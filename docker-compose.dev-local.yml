@@ -40,6 +40,7 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
 
   web-api:
     extends:
@@ -63,6 +64,7 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
 
   worker:
     extends:
@@ -86,3 +88,4 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
