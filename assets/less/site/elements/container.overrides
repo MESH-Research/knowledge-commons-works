@@ -1,7 +1,22 @@
 /* Container theme overrides */
 
 .invenio-page-body {
-    .ui.container:last-of-type {
+    .ui.container.page-subheader-outer {
+        min-height: 8rem;
+        padding-top: 0;
+        background: radial-gradient(ellipse at 100% 0%, @mint50, transparent 60%);
+        .ui.container.page-subheader     {
+            height: 100%;
+        }
+        &.with-submenu {
+            .page-subheader {
+                padding-bottom: 0;
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    > .ui.container:last-of-type {
         margin-bottom: 1rem;
     }
 }

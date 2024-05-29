@@ -55,12 +55,13 @@ export const overriddenComponents = {
   "InvenioAppRdm.Search.SearchBar.element": RDMRecordMultipleSearchBarElement,
   "InvenioAppRdm.Search.SearchApp.layout": SearchAppLayoutWithConfig,
   "InvenioAppRdm.Search.SearchApp.resultOptions": ResultOptions,
-  "InvenioCommunities.DetailsSearch.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
   "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
   "InvenioAppRdm.Deposit.VersionField.container": VersionField,
   "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
   "InvenioAppRdm.Deposit.FileUploader.container": FileUploader,
+  "InvenioCommunities.DetailsSearch.ResultsList.item": RecordsResultsListItem,
   "InvenioModularDetailPage.MobileActionMenu.container": MobileActionMenu,
   // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
+  // InvenioCommunities.Search.SearchApp.layout: CommunityRecordsSearchAppLayout,
 };

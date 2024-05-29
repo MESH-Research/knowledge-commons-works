@@ -1,1 +1,54 @@
 /* Checkbox theme overrides */
+
+.ui.checkbox {
+  label {
+    &::before {
+      border: 1px solid @ivy40;
+    }
+    &::after {
+      border: 1px solid @ivy40;
+    }
+    &:hover,
+    &:active,
+    &:focus {
+      &::before {
+        border: 1px solid @ivy60;
+      }
+      &::after {
+        border: 1px solid @ivy60;
+      }
+    }
+  }
+  &.toggle {
+    label {
+      &::before {
+        border: 1px solid @ivy40;
+      }
+      &::after {
+        border: 1px solid @ivy40;
+      }
+      &:hover,
+      &:active,
+      &:focus {
+        &::before {
+          border: 1px solid @ivy40;
+          background: @ivyRgba10;
+        }
+        &::after {
+          border: 1px solid @ivy40;
+        }
+      }
+    }
+
+    input:checked ~ label {
+      &::before {
+        border: 1px solid @ivy60 !important;
+        background: @ivy60 !important;
+      }
+      &::after {
+        border: 1px solid @ivy60 !important;
+        box-shadow: none;
+      }
+    }
+  }
+}

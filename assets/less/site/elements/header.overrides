@@ -18,7 +18,7 @@ h2.ui.header {
 
 .page-subheader {
   h1.ui.header {
-    margin-top: 2rem;
+    margin-top: 1rem !important;
   }
 }
 
@@ -41,5 +41,15 @@ h2.ui.header {
   }
   .ui.tiny.header {
     color: @sidebarHeaderColor;
+  }
+}
+
+.communities-frontpage {
+  .ui.grid {
+    .ui.row {
+      .ui.header {
+        display: inline-block;
+      }
+    }
   }
 }

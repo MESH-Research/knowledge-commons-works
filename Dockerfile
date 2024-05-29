@@ -22,53 +22,47 @@ RUN dnf install libxml2-devel xmlsec1-devel xmlsec1-openssl-devel libtool-ltdl-d
 COPY site ./site
 
 COPY Pipfile Pipfile.lock ./
-# Copy in forked packages to be installed from local
-# COPY ./invenio-communities/ /opt/invenio/src/invenio-communities/
-RUN git clone https://github.com/MESH-Research/invenio-communities.git /opt/invenio/invenio-communities
-# COPY ./invenio-rdm-records/ /opt/invenio/src/invenio-rdm-records/
-RUN git clone https://github.com/MESH-Research/invenio-rdm-records.git /opt/invenio/invenio-rdm-records
-RUN git clone https://github.com/MESH-Research/invenio-group-collections.git /opt/invenio/invenio-group-collections/
-RUN git clone https://github.com/MESH-Research/invenio-modular-deposit-form.git /opt/invenio/invenio-modular-deposit-form/
-RUN git clone https://github.com/MESH-Research/invenio-modular-detail-page.git /opt/invenio/invenio-modular-detail-page/
-RUN git clone https://github.com/MESH-Research/invenio-record-importer.git /opt/invenio/invenio-record-importer/
-RUN git clone https://github.com/MESH-Research/invenio-records-resources.git /opt/invenio/invenio-records-resources/
-RUN git clone https://github.com/MESH-Research/invenio-remote-api-provisioner.git /opt/invenio/invenio-remote-api-provisioner/
-RUN git clone https://github.com/MESH-Research/invenio-remote-user-data.git /opt/invenio/invenio-remote-user-data/
-# Install python requirements with pipenv in container
+
+RUN git clone https://github.com/MESH-Research/invenio-communities.git /opt/invenio/invenio-communities && \
+    git clone https://github.com/MESH-Research/invenio-rdm-records.git /opt/invenio/invenio-rdm-records && \
+    git clone https://github.com/MESH-Research/invenio-group-collections.git /opt/invenio/invenio-group-collections/ && \
+    git clone https://github.com/MESH-Research/invenio-modular-deposit-form.git /opt/invenio/invenio-modular-deposit-form/ && \
+    git clone https://github.com/MESH-Research/invenio-modular-detail-page.git /opt/invenio/invenio-modular-detail-page/ && \
+    git clone https://github.com/MESH-Research/invenio-record-importer.git /opt/invenio/invenio-record-importer/ && \
+    git clone https://github.com/MESH-Research/invenio-records-resources.git /opt/invenio/invenio-records-resources/ && \
+    git clone https://github.com/MESH-Research/invenio-remote-api-provisioner.git /opt/invenio/invenio-remote-api-provisioner/ && \
+    git clone https://github.com/MESH-Research/invenio-remote-user-data.git /opt/invenio/invenio-remote-user-data/
 
 # NOTE: turned off --deploy for dev
 RUN pipenv install --system
-RUN pip install invenio-cli
 
-RUN echo "[cli]" >> .invenio.private
-RUN echo "services_setup=False" >> .invenio.private
-RUN echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
-
+RUN echo "[cli]" >> .invenio.private && \
+    echo "services_setup=False" >> .invenio.private && \
+    echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
 
 # Copying whole app directory into /opt/invenio/src
 # (WORKDIR is set to that folder in base image)
 COPY ./ .
-ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
-ENV INVENIO_SITE_UI_URL=https://localhost
-ENV INVENIO_SITE_API_URL=https://localhost
-ENV MIGRATION_SERVER_DOMAIN=localhost
-ENV MIGRATION_SERVER_PROTOCOL=http
-ENV MIGRATION_API_TOKEN=changeme
+ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
+    INVENIO_SITE_UI_URL=https://localhost \
+    INVENIO_SITE_API_URL=https://localhost \
+    MIGRATION_SERVER_DOMAIN=localhost \
+    MIGRATION_SERVER_PROTOCOL=http \
+    MIGRATION_API_TOKEN=changeme
 
-RUN cp -r ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini
-RUN cp -r ./docker/uwsgi/uwsgi_ui.ini ${INVENIO_INSTANCE_PATH}/uwsgi_ui.ini
-RUN cp ./invenio.cfg ${INVENIO_INSTANCE_PATH}/invenio.cfg
-RUN cp -r ./templates ${INVENIO_INSTANCE_PATH}/templates
-RUN cp -r ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data
+RUN cp -r ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini && \
+    cp -r ./docker/uwsgi/uwsgi_ui.ini ${INVENIO_INSTANCE_PATH}/uwsgi_ui.ini && \
+    cp ./invenio.cfg ${INVENIO_INSTANCE_PATH}/invenio.cfg && \
+    cp -r ./templates ${INVENIO_INSTANCE_PATH}/templates && \
+    cp -r ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data
 
-RUN invenio collect --verbose
-RUN invenio webpack clean create
-RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less
-RUN cp ./assets/less/theme.config ${INVENIO_INSTANCE_PATH}/assets/less/theme.config
-RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/custom_fields
-RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/search
-RUN invenio webpack install
-RUN invenio shell ./scripts/symlink_assets.py
-RUN invenio webpack build
+RUN invenio collect --verbose && invenio webpack clean create && \
+    mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less && \
+    cp ./assets/less/theme.config ${INVENIO_INSTANCE_PATH}/assets/less/theme.config && \
+    mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/custom_fields && \
+    mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/search && \
+    invenio webpack install && \
+    invenio shell ./scripts/symlink_assets.py && \
+    invenio webpack build
 
 ENTRYPOINT ["bash", "-c"]
