@@ -37,7 +37,6 @@ const CommunityDetailsHeader = ({
   website,
 }) => {
   let pattern = "";
-  console.log("logo", communityLogoUrl);
 
   // user dynamic placeholder pattern in place of vanilla placeholder image
   if (
@@ -144,7 +143,7 @@ const CommunityDetailsHeader = ({
 
             <div>
               <div className="flex align-items-center mb-5 tablet computer only">
-                <h1 className="ui large header mb-0">{communityTitle}</h1>
+                <h1 className="ui huge header mb-0">{communityTitle}</h1>
 
                 {visibility == "restricted" && (
                   <div className="rel-ml-1">

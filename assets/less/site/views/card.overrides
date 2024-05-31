@@ -1,12 +1,23 @@
 /* Card theme overrides */
 
+.ui.card {
+  .meta {
+    color: @darkGray;
+  }
+  .extra {
+    a {
+      color: @ivy;
+    }
+  }
+}
+
 .ui.card.borderless.facet {
   background-color: @sidebarBackgroundColor;
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: @defaultBorderRadius;
   width: auto;
-  border: 1px solid @verdigris20 !important;
+  border: 1px solid @verdigris30 !important;
 
   > .content {
     margin-bottom: 0;

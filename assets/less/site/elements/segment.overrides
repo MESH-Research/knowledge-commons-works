@@ -2,6 +2,29 @@
 
 .ui.segment {
     &.rdm-sidebar {
-        border-color: @borderColor;
+        border-color: @sidebarBorderColor;
+
+        &:first-child,
+        &:last-child {
+            background-color: @sidebarBackgroundColor;
+            margin-bottom: 1rem;
+        }
     }
 }
+.sidebar-container {
+    &#record-versions {
+        .ui.segment {
+          display: flex;
+          align-items: center;
+          &.preview {
+            color: @infoTextColor;
+            background-color: @infoBackgroundColor;
+            border-color: @infoBorderColor;
+            div.dropdown {
+              border-left: 1px solid @infoBorderColor;
+            }
+          }
+        }
+    }
+}
+

@@ -122,3 +122,17 @@
     }
   }
 }
+
+.sidebar-container {
+  &#record-versions {
+    .menu .item {
+      // background-color: transparent;
+      width: 100%;
+      .description.doi {
+        display: block;
+        float: none;
+        margin-left: 0;
+      }
+    }
+  }
+}

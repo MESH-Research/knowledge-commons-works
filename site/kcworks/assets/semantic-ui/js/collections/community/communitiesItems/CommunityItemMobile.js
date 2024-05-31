@@ -27,7 +27,7 @@ export const CommunityItemMobile = ({ result, index }) => {
   );
 
 
-  const pattern = GeoPattern.generate(result.slug);
+  const pattern = GeoPattern.generate(encodeURI(result.slug));
 
   return (
     <Grid className="mobile only item community-item">

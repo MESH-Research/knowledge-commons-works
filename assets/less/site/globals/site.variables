@@ -121,7 +121,7 @@
 @ivory10: #fefefd;
 @ivoryRgba90: rgba(245, 245, 235, 0.9);
 
-@darkGray: #333;
+@darkGray: #4e4e4e;
 @green: #6c7839;
 @greenLight: #8a9f5a;
 @greenRgba10: rgba(122, 151, 80, 0.1);
@@ -150,7 +150,6 @@
 @defaultBrandColor: @ivy; // #434C5E;
 
 @borderColor: @ivy10;
-@sidebarHeaderColor: @ivy80;
 
 /* ----------------------------
       Semantic state colors
@@ -181,7 +180,10 @@
       Site Colors
 --------------------*/
 
-@sidebarBackgroundColor: @seafoam50; // #f9f9f9;
+@sidebarBackgroundColor: @mint30; // #f9f9f9;
+@sidebarHeaderColor: @ivy80;
+@sidebarBorderColor: @verdigris30;
+
 @formButtonColor: @sidebarBackgroundColor;
 
 @signupColor: @green;
@@ -204,7 +206,7 @@
 @footerDarkColor: @ivy;
 @subFooterColor: @mint;
 @footerTextLightColor: @white;
-@footerTextDarkColor: @verdigrisDark;
+@footerTextDarkColor: @white;
 
 @focusedFormBorderColor: #2185d0;
 @focusedFormMutedBorderColor: #2185d0;

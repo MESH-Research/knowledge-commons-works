@@ -1,1 +1,5 @@
 /* Image theme overrides */
+
+.ui.image.community-image img {
+    object-fit: cover;
+}

@@ -4,11 +4,11 @@
   & > .search-result.item {
     .content {
       h2.header a {
-        color: @ivy80;
+        color: @verdigris;  // @ivy80;
       }
       .creatibutors {
         .icon {
-          color: @verdigris;
+          color: @verdigris50;
         }
         .creatibutor-name {
           color: @verdigrisDark;

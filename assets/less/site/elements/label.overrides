@@ -18,6 +18,13 @@
     }
 }
 
+.ui.label.positive,
+.ui.label.access-status.open {
+    background-color: @positiveColor;
+    border: 1px solid;
+    color: @white;
+}
+
 .ui.neutral.label {
     background-color: @ivory;
     border-color: @ivy20;

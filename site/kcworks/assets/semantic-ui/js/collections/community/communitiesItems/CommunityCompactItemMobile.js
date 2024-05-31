@@ -26,7 +26,7 @@ export const CommunityCompactItemMobile = ({
   const communityType = result.ui?.type?.title_l10n;
   const { metadata, ui, links, access, id } = result;
 
-  const pattern = GeoPattern.generate(result.slug);
+  const pattern = GeoPattern.generate(encodeURI(result.slug));
 
   return (
     <div key={id} className={`community-item mobile only ${itemClassName}`}>

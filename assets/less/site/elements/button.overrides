@@ -108,6 +108,22 @@
     }
   }
 
+  &.secondary {
+    color: @verdigrisDark !important;
+    background-color: @white !important;
+    box-shadow: 0px 0px 0px 1px @secondaryColor inset,
+      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    &:hover,
+    &:active,
+    &:focus {
+      color: @ivy80 !important;
+      background-color: @white !important;
+      box-shadow: 0px 0px 0px 1px @secondaryColor inset,
+        0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    }
+
+  }
+
 }
 
 // .ui.buttons .button:not(.basic):not(.inverted) {
@@ -150,7 +166,7 @@
   font-weight: bold;
   text-align: left;
   color: @sidebarHeaderColor !important;
-  border: 1px solid @borderColor;
+  border: 1px solid @sidebarBorderColor;
   box-shadow: none;
 }
 
@@ -160,7 +176,7 @@
     padding-left: 1rem !important;
     font-weight: bold;
     color: @sidebarHeaderColor !important;
-    box-shadow: 0px 0px 0px 1px @borderColor inset, 0px 0em 0px 0px @borderColor inset;
+    box-shadow: 0px 0px 0px 1px @sidebarBorderColor inset, 0px 0em 0px 0px @sidebarBorderColor inset;
   }
   .menu button {
     width: 100%;

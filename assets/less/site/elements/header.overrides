@@ -1,10 +1,15 @@
 h1.ui.header {
-  color: @ivy80;
-  margin-top: 2rem !important;
+  color: @verdigris;
+  margin-top: 2rem;
 }
 .deposit-form-header {
   h1.ui.header {
     margin-bottom: 0;
+  }
+}
+.page-subheader {
+  h1.ui.header {
+    margin-top: 1rem;
   }
 }
 
@@ -16,13 +21,11 @@ h2.ui.header {
   }
 }
 
-.page-subheader {
-  h1.ui.header {
-    margin-top: 1rem !important;
-  }
-}
-
 #detail-main-content {
+  h1.ui.header {
+    margin-top: 0;
+    font-weight: normal;
+  }
   .sidebar-container {
     h2.ui.header {
       color: @sidebarHeaderColor;
@@ -37,10 +40,36 @@ h2.ui.header {
 
 .sidebar-container {
   .ui.attached.header {
-    border-color: @borderColor;
+    border-color: @sidebarBorderColor;
+    &.top {
+      border-bottom: 0;
+      padding-bottom: 0.5rem;
+      font-size: @medium;
+      background-color: @sidebarBackgroundColor;
+    }
+  }
+  .ui.segment.rdm-sidebar > h2.ui.small.header,
+  .ui.segment.rdm-sidebar > .header {
+    border-bottom: 0;
+    margin-bottom: 0;
   }
   .ui.tiny.header {
     color: @sidebarHeaderColor;
+  }
+  &#record-versions {
+    .ui.header.version-label {
+      flex-grow: 1;
+      line-height: 1em;
+      min-height: 1em;
+      padding: @inputPadding;
+      padding-left: 0;
+      position: relative;
+      border: 1px solid transparent;
+
+      &.preview {
+        color: @infoTextColor;
+      }
+    }
   }
 }
 

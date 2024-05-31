@@ -1,1 +1,28 @@
 /* Icon theme overrides */
+
+.inline-id-icon {
+  &.hc_username {
+    margin-bottom: 2px;
+  }
+}
+
+.sidebar-container {
+  &#record-versions {
+    .ui.header.version-label {
+      .icon.loading.tiny {
+        font-size: @tiny;
+      }
+      &.preview {
+        > .icon {
+          display: inline-block;
+          font-size: 1em;
+          margin: 0em;
+          margin-right: 0.28em;
+          position: absolute;
+          right: 0em;
+          text-align: center;
+        }
+      }
+    }
+  }
+}

@@ -66,7 +66,7 @@ class CommunityCard extends Component {
   render() {
     const { community, defaultLogo } = this.props;
 
-    const pattern = GeoPattern.generate(community.slug);
+    const pattern = GeoPattern.generate(encodeURI(community.slug));
 
     return (
       <Card fluid href={`/collections/${community.slug}`}>
