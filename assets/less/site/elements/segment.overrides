@@ -26,5 +26,15 @@
           }
         }
     }
+    &#communities {
+        .ui.segment {
+          background-color: transparent;
+          border: none;
+          padding: 0;
+          .ui.header {
+            margin-top: 0;
+          }
+        }
+      }
 }
 

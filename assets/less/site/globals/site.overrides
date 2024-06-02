@@ -265,23 +265,8 @@ html.cover-page {
     }
   }
 
-  #communities {
-    .segment {
-      background-color: @purpleBackground;
-      color: @purple;
-      border-color: @lightPurple;
-      .ui.header {
-        margin-top: 0;
-        a {
-          color: @purple;
-        }
-      }
-      .row .column:last-child {
-        text-align: right;
-        padding-right: 2rem;
-      }
-    }
-  }
+  // #communities {
+  // }
   .main-record-content {
     h2 {
       font-size: @large;
