@@ -39,9 +39,9 @@
             .row {
                 border: 1px solid @sidebarBorderColor;
                 background-color: @ivory50;
-                &:last-child {
-                    border-bottom: 0;
-                }
+                // &:last-child {
+                //     border-bottom: 0;
+                // }
                 .column:last-child {
                     text-align: right;
                     padding-right: 1rem;
@@ -66,6 +66,7 @@
                 border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
                 &.sole-community {
                 border-radius: @defaultBorderRadius @defaultBorderRadius;
+                border-bottom: 1px solid @sidebarBorderColor;
                 }
             }
             .row.additional-communities {
