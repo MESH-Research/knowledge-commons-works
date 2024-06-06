@@ -66,7 +66,14 @@ textarea {
     &.add-button {
       background-color: transparent;
       box-shadow: none;
-      color: @secondaryColor;
+      color: @linkColor;
+      border: 1px solid transparent;
+      &:hover,
+      &:focus,
+      &:active {
+        color: darken(@linkColor, 15%);
+        border: 1px solid @sidebarBorderColor;
+      }
       &.labeled.icon {
         padding-left: 2.5rem !important;
       }
@@ -164,14 +171,15 @@ textarea {
 
     .sticky-footer-fixed,
     .sticky-footer-static {
-      background-color: @ivy;
-      backdrop-filter: blur(2px);
-      border-top: 2px solid @white;
+      background-color: @sidebarBackgroundColor;
+      // backdrop-filter: blur(2px);
+      border: 1px solid @sidebarBorderColor;
+      border-bottom: none;
       padding: 0;
       display: flex;
       justify-content: space-between;
       min-height: 3.5rem;
-      border-radius: @defaultBorderRadius;
+      border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
       .grid.deposit-form-footer {
         width: 100%;
         margin: 0;
@@ -189,7 +197,7 @@ textarea {
         }
         .footer-message {
           font-size: @small;
-          color: @ivory;
+          color: @sidebarHeaderColor;
           text-align: center;
           padding-left: 0;
           padding-right: 0;
@@ -206,7 +214,7 @@ textarea {
       position: fixed;
       bottom: 0;
       max-width: 900px !important;
-      background-color: rgba(28, 64, 54, 0.8);
+      // background-color: rgba(28, 64, 54, 0.8);
     }
     .sticky-footer-static {
       position: relative;
