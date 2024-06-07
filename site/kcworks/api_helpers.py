@@ -56,6 +56,8 @@ def get_user_profile_info(user_id: int = 0, email: str = "") -> dict:
                     profile_info["orcid"] = i["identifier"]
                 if i["scheme"] == "hc_username":
                     profile_info["username"] = i["identifier"]
+                if i["scheme"] == "kc_username":
+                    profile_info["username"] = i["identifier"]
 
     idp_info = get_user_idp_info(user_id)
     if idp_info:
@@ -286,7 +288,7 @@ def record_commons_search_recid(
     )
     current_app.logger.debug(f"json in callback: {response_json}")
     current_app.logger.debug("payload in callback:")
-    current_app.logger.debug(pformat(payload))
+    current_app.logger.debug(pformat(payload_object))
     try:
         if record_id:
             current_app.logger.debug(
@@ -298,6 +300,7 @@ def record_commons_search_recid(
                 ).to_dict()
             except PIDDoesNotExistError:
                 record = service.search(system_identity, q="slug:{}")
+                record_data = record.to_dict()["hits"]["hits"][0]
             current_app.logger.debug("Record data:")
             current_app.logger.debug(pformat(record_data))
             # search_id = record_data.get("custom_fields", {}).get(
@@ -460,9 +463,9 @@ def record_publish_url_factory(identity, **kwargs):
         "kcr:commons_search_recid"
     ):
         url = (
-            f"https://search.hcommons-dev.org/api/v1/documents/"
+            f"https://search.hcommons-dev.org/v1/documents/"
             f"{record['custom_fields']['kcr:commons_search_recid']}"
         )
     else:
-        url = "https://search.hcommons-dev.org/api/v1/documents"
+        url = "https://search.hcommons-dev.org/v1/documents"
     return url

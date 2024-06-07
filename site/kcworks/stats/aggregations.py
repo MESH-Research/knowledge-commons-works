@@ -64,8 +64,8 @@ class StatAggregatorOverridable(StatAggregator):
                     chunk_size=50,
                 )
             )
-        current_app.logger.debug("aggregated %s", results)
+        # current_app.logger.debug("aggregated %s", results)
         if update_bookmark:
             self.bookmark_api.set_bookmark(end_date)
-        current_app.logger.debug("end_date: %s", end_date)
+        # current_app.logger.debug("end_date: %s", end_date)
         return results
