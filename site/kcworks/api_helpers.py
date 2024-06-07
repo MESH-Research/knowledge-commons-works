@@ -94,7 +94,7 @@ def format_commons_search_payload(identity, record=None, **kwargs):
         "owner": {
             "name": owner.get("full_name", ""),
             "owner_username": owner.get("id_from_idp"),
-            "url": f"{PROFILES_URL_BASE}/{owner.get('id_from_idp')}",
+            "url": f"{PROFILES_URL_BASE}{owner.get('id_from_idp')}",
         },
         "content": "",
         "contributors": [],
@@ -314,9 +314,9 @@ def record_commons_search_recid(
             record_data["custom_fields"]["kcr:commons_search_recid"] = (
                 response_json["_id"]
             )
-            record_data["custom_fields"][
-                "kcr:commons_search_updated"
-            ] = arrow.utcnow().isoformat()
+            record_data["custom_fields"]["kcr:commons_search_updated"] = (
+                arrow.utcnow().isoformat().split(".")[0]
+            )
             del record_data["revision_id"]
             current_app.logger.debug("Updating info:")
             current_app.logger.debug(
@@ -325,17 +325,11 @@ def record_commons_search_recid(
             current_app.logger.debug(
                 record_data["custom_fields"]["kcr:commons_search_updated"]
             )
-            current_app.logger.debug(
-                type(
-                    record_data["custom_fields"]["kcr:commons_search_updated"]
-                )
-            )
             updated = service.update_draft(
                 system_identity,
                 editing_draft.id,
                 data=record_data,
             )
-            db.session.commit()
             current_app.logger.debug("Updated record in callback:")
             current_app.logger.debug(pformat(updated.data))
             published = service.publish(system_identity, editing_draft.id)
