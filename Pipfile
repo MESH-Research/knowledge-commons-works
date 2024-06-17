@@ -56,6 +56,7 @@ kcworks = {file = "site", editable = true}
 numpy = "*"
 flask-breadcrumbs = "*"
 flask-babelex = "*"
+unidecode = "*"
 
 [requires]
 python_version = "3.9"
