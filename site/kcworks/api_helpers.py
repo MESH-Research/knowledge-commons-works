@@ -447,6 +447,8 @@ def choose_record_publish_method(identity, **kwargs):
 def record_publish_url_factory(identity, **kwargs):
     """Create the correct url for publish RDMRecordService events."""
 
+    protocol = current_app.config.get("COMMONS_API_REQUEST_PROTOCOL", "http")
+    domain = current_app.config.get("KC_WORDPRESS_DOMAIN", "hcommons.org")
     # current_app.logger.debug("Making URL================================")
     record = kwargs.get("record")
     # current_app.logger.debug(f"is_published: {record.is_published}")
@@ -457,9 +459,9 @@ def record_publish_url_factory(identity, **kwargs):
         "kcr:commons_search_recid"
     ):
         url = (
-            f"https://search.hcommons-dev.org/v1/documents/"
+            f"{protocol}://search.{domain}/v1/documents/"
             f"{record['custom_fields']['kcr:commons_search_recid']}"
         )
     else:
-        url = "https://search.hcommons-dev.org/v1/documents"
+        url = f"{protocol}://search.{domain}/v1/documents"
     return url
