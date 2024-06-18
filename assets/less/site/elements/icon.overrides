@@ -26,3 +26,13 @@
     }
   }
 }
+
+#rdm-footer-element .footer-top {
+  .icon {
+    svg {
+      fill: #fff;
+      position: relative;
+      top: 0.25rem;
+    }
+  }
+}
