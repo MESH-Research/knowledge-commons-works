@@ -1,0 +1,27 @@
+[submodule "invenio/modules/invenio-communities"]
+	path = invenio/modules/invenio-communities
+	url = https://github.com/MESH-Research/invenio-communities.git
+[submodule "invenio/modules/invenio-rdm-records"]
+	path = invenio/modules/invenio-rdm-records
+	url = https://github.com/MESH-Research/invenio-rdm-records.git
+[submodule "invenio/modules/invenio-group-collections"]
+	path = invenio/modules/invenio-group-collections
+	url = https://github.com/MESH-Research/invenio-group-collections.git
+[submodule "invenio/modules/invenio-modular-detail-page"]
+	path = invenio/modules/invenio-modular-detail-page
+	url = https://github.com/MESH-Research/invenio-modular-detail-page.git
+[submodule "invenio/modules/invenio-record-importer"]
+	path = invenio/modules/invenio-record-importer
+	url = https://github.com/MESH-Research/invenio-record-importer.git
+[submodule "invenio/modules/invenio-records-resources"]
+	path = invenio/modules/invenio-records-resources
+	url = https://github.com/MESH-Research/invenio-records-resources.git
+[submodule "invenio/modules/invenio-remote-api-provisioner"]
+	path = invenio/modules/invenio-remote-api-provisioner
+	url = https://github.com/MESH-Research/invenio-remote-api-provisioner.git
+[submodule "invenio/modules/invenio-remote-user-data"]
+	path = invenio/modules/invenio-remote-user-data
+	url = https://github.com/MESH-Research/invenio-remote-user-data.git
+[submodule "invenio/modules/invenio-modular-deposit-form"]
+	path = invenio/modules/invenio-modular-deposit-form
+	url = https://github.com/MESH-Research/invenio-modular-deposit-form.git

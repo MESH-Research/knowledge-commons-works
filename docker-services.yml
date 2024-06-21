@@ -3,12 +3,12 @@
 # PGADMIN_DEFAULT_EMAIL
 # PGADMIN_DEFAULT_PASSWORD
 
-version: '2.2'
+version: "2.2"
 services:
   app:
-    # build:
-    #   context: ./
-    #   args:
+    build:
+      context: ./kcworks
+      # args:
     #     - ENVIRONMENT=DEV
     image: monotasker/kcworks:latest
     restart: "unless-stopped"
@@ -32,12 +32,11 @@ services:
       - ./.env
   frontend:
     container_name: kcworks-frontend
-    build: ./docker/nginx/
+    build: ./kcworks-frontend
     image: monotasker/kcworks-frontend
     restart: "unless-stopped"
     ports:
       - "80"
-      - "443"
     env_file:
       - ./.env
   cache:

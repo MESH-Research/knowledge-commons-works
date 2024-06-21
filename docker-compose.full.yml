@@ -19,7 +19,7 @@
 # - Search platform: (OpenSearch) (exposed ports: 9200, 9300)
 # - OpenSearch Dashboard (view OS indexes) (exposed ports: 5601)
 #
-version: '2.2'
+version: "2.2"
 services:
   cache:
     extends:
@@ -78,6 +78,7 @@ services:
   # Node.js, NPM and some standard libraries Invenio usually needs
   # command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini --daemonize=logs/uwsgi-ui.log --log-reopen --pidfile=/tmp/kcr_ui.pid"]
   web-ui:
+    context: ./invenio
     extends:
       file: docker-services.yml
       service: app
@@ -92,11 +93,9 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app:/opt/invenio/src
+      - ./instance:/opt/invenio/var/instance
       - /${MIGRATION_SERVER_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
-      - static_data:/opt/invenio/var/instance/static
-      - archived_data:/opt/invenio/var/instance/archive
-      - uploaded_data:/opt/invenio/var/instance/data
 
   # API Rest Application
   # command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini --daemonize=logs/uwsgi-api-${mydate}.log --log-reopen --pidfile=/tmp/kcr_api.pid"]
@@ -115,10 +114,10 @@ services:
       - INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
       - INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://cache:6379/4
     volumes:
-      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app:/opt/invenio/src
+      - ./instance:/opt/invenio/var/instance
       - /${MIGRATION_SERVER_LOCAL_DATA_DIR}:${MIGRATION_SERVER_DATA_DIR}
-      - archived_data:/opt/invenio/var/instance/archive
-      - uploaded_data:/opt/invenio/var/instance/data
+
   # Worker
   worker:
     extends:
@@ -128,7 +127,7 @@ services:
     command: ["celery -A invenio_app.celery worker --beat --loglevel INFO"]
     image: monotasker/kcworks:latest
     volumes:
-      - uploaded_data:/opt/invenio/var/instance/data
+      - ./instance:/opt/invenio/var/instance
     depends_on:
       search:
         condition: service_started
