@@ -15,7 +15,7 @@
 # - Search platform: (OpenSearch) (exposed ports: 9200, 9300)
 # - OpenSearch Dashboard (view OS indexes) (exposed ports: 5601)
 #
-version: "2.2"
+
 services:
   #Development proxy: This container terminates SSL and forwards requests into the application
   # Self-signed certificates are used for development and do not persist between restarts.  However, its a simply exercise to replace
@@ -24,6 +24,7 @@ services:
   # - https://traefik.localtest.me -> Traefik dashboard
   # - https://kcworks.localtest.me -> Frontend application
   # - https://opensearch.localtest.me -> OpenSearch dashboard
+  # - https://pgadmin.localtest.me -> pgAdmin
   proxy:
     image: traefik:v3.0
     command:
@@ -72,6 +73,18 @@ services:
       retries: 3
     volumes:
       - mq_data:/var/lib/rabbitmq
+  pgadmin:
+    extends:
+      file: docker-services.yml
+      service: pgadmin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    labels:
+      traefik.enable: true
+      traefik.http.routers.pgadmin.rule: Host(`pgadmin.localtest.me`)
+      traefik.http.routers.pgadmin.entrypoints: websecure
+      traefik.http.routers.pgadmin.tls: true
+      traefik.http.services.pgadmin.loadbalancer.server.port: 80
   search:
     extends:
       file: docker-services.yml

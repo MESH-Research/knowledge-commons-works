@@ -44,8 +44,9 @@ From there, installation involves these steps. Each one is further explained bel
 6. View the application
    - The Knowledge Commons Works app is now running at `https://kcworks.localtest.me`
    - The REST API is running at `https://kcworks.localtest.me/api`
-   - pgAdmin is running at `https://pgadmin.localtest.me`
    - OpenSearch Dashboards is running at `https://opensearch.localtest.me`
+   - PGAdmin is running at `https://pgadmin.localtest.me`
+   - Traefik's Dashboard is running at `https://traefik.localtest.me`
 
 Further optional steps to allow local debugging or development of the python packages in the Invenio framework and the custom packages created for Knowledge Commons Works:
 
@@ -56,7 +57,7 @@ Further optional steps to allow local debugging or development of the python pac
 2. Install the invenio-cli tool locally (`pip install invenio-cli`)
 3. Install the python packages required by Knowldge Commons Works locally by running `pipenv install` in the `knowledge-commons-works` folder.
    - NOTE: This assumes that you have already cloned the git repositories as described in step 1. If you have not, you will need to do so before running `pipenv install`.
-4. When you start up the docker compose project, add an additional project file to the command: - `docker-compose --file docker-compose.dev.yml --file docker-compose.dev.local.yml up -d`
+4. When you start up the docker compose project, add an additional project file to the command: - `docker-compose  --file docker-compose.dev.local.yml up -d`
 This will mount a variety of local package folders as bind mounts in your running containers. This will allow you to make changes to the python code in the cloned repositories and see those changes reflected in the running Knowledge Commons Works instance.
 <!-- Further optional steps to allow fully local development if desired:
 
@@ -71,11 +72,11 @@ This will mount a variety of local package folders as bind mounts in your runnin
 The application instance and its services can be started and stopped by starting and stopping the docker-compose project:
 
 ```shell
-docker-compose --file docker-compose.dev.yml up -d
+docker-compose  up -d
 ```
 
 ```shell
-docker-compose --file docker-compose.dev.yml stop
+docker-compose  stop
 ```
 
 > [!Caution]
@@ -243,7 +244,7 @@ docker-compose --file <your-docker-compose-file-name> stop
 docker-compose --file <your-docker-compose-file-name> up -d --build --force-recreate
 ```
 
-If you are running a development instance, you will use the `docker-compose.dev.yml` file. If you are running a staging or production instance, you will use the `docker-compose.staging.yml` or `docker-compose.production.yml` files respectively.
+If you are running a development instance, you will use the `docker-compose.yml` file. If you are running a staging or production instance, you will use the `docker-compose.staging.yml` or `docker-compose.production.yml` files respectively.
 
 4. Clean up leftover containers and images:
 
