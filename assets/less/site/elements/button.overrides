@@ -26,9 +26,9 @@
   }
 
   &.negative {
-    background-color: @negativeTextColor;
+    background-color: @redDark !important;
     color: @white;
-    box-shadow: 0px 0px 0px 1px @negativeTextColor inset,
+    box-shadow: 0px 0px 0px 1px @redDark inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
 
     &:hover,
@@ -50,9 +50,16 @@
   }
 
   &.icon {
-    .close-btn {
+    &.close-btn {
       margin-top: 1.75rem;
       float: right;
+
+      &.no-label {
+        margin-top: 1.7rem;
+      }
+    }
+    &.massive.left.fluid.labeled {
+      padding-left: 3em !important;
     }
   }
 }
@@ -75,8 +82,8 @@
 
   &.negative,
   &.negative {
-    color: @negativeTextColor !important;
-    background-color: @white;
+    color: @redDark !important;
+    background-color: @white !important;
     box-shadow: 0px 0px 0px 1px @negativeBorderColor inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
     &:hover,

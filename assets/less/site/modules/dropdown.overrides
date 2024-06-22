@@ -1,4 +1,7 @@
 /* Dropdown theme overrides */
+.ui.selection.dropdown {
+  border-color: @ivy30;
+}
 
 .sidebar-container {
   &#record-versions {
