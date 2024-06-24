@@ -8,39 +8,47 @@
 #}
 <div class="ui container fluid page-subheader-outer shadowless with-submenu ml-0-mobile mr-0-mobile mb-0 rel-pt-2"
      id="dashboard-user-header-container">
-  <div class="ui container page-subheader flex justify-space-between align-items-center">
-    <div class="ui items unstackable m-0">
-      <div class="item">
-        <div class="ui image dashboard-header-avatar">
-          <img src="{{ user_avatar }}" alt="" />
-        </div>
-        <div class="middle aligned content rel-pl-1">
-          <h1 class="ui medium header" aria-label="{{ _("Your dashboard") }}">
-            {{ current_userprofile.full_name or current_user.username or current_userprofile.email or _("Anonymous user") }}
-          </h1>
-          {% if current_userprofile.affiliations %}<div class="meta">{{ current_userprofile.affiliations }}</div>{% endif %}
+  <div class="ui container relaxed grid page-subheader mr-0-mobile ml-0-mobile">
+    <div class="row justify-space-between align-items-center pb-0">
+      <div class="ui column sixteen wide mobile sixteen wide tablet twelve wide computer">
+        <div class="ui items unstackable m-0">
+          <div class="item">
+            <div class="ui image dashboard-header-avatar">
+              <img src="{{ user_avatar }}" alt="" />
+            </div>
+            <div class="middle aligned content">
+              <h1 class="ui medium header" aria-label="{{ _("Your dashboard") }}">
+                {{ current_userprofile.full_name or current_user.username or current_userprofile.email or _("Anonymous user") }}
+              </h1>
+              {% if current_userprofile.affiliations %}<div class="meta">{{ current_userprofile.affiliations }}</div>{% endif %}
+            </div>
+          </div>
         </div>
       </div>
+      <div class="ui column flex sixteen wide mobile sixteen wide tablet four wide computer align-items-center justify-space-around">
+        {% if active_dashboard_menu_item == "uploads" %}
+          <a class="ui tiny button positive left labeled icon m-0"
+            href="/uploads/new">  {# noqa #}
+            <i class="upload icon" aria-hidden="true"></i>
+            {{ _("New work") }}
+          </a>
+        {% endif %}
+        {% if active_dashboard_menu_item == "communities" %}
+          <a class="ui tiny button positive left labeled icon m-0"
+            href="/collections/new">
+            <i class="plus icon" aria-hidden="true"></i>
+            {{ _("New collection") }}
+          </a>
+        {% endif %}
+      </div>
     </div>
-    {% if active_dashboard_menu_item == "uploads" %}
-      <a class="ui tiny button positive left labeled icon m-0"
-         href="/uploads/new">  {# noqa #}
-        <i class="upload icon" aria-hidden="true"></i>
-        {{ _("New work") }}
-      </a>
-    {% endif %}
-    {% if active_dashboard_menu_item == "communities" %}
-      <a class="ui tiny button positive left labeled icon m-0"
-         href="/collections/new">
-        <i class="plus icon" aria-hidden="true"></i>
-        {{ _("New collection") }}
-      </a>
-    {% endif %}
-  </div>
-  <div class="ui container secondary pointing menu page-subheader pl-0">
-    {% for item in current_menu.submenu('dashboard').children %}
-      <a class="item {{ 'active' if active_dashboard_menu_item == item.name }} {{ 'disabled' if not item.url }}"
-         href="{{ item.url | replace('communities', 'collections') }}">{{ item.text | replace('communities', 'collections') }}</a>
-    {% endfor %}
+
+    <div class="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary">
+      {# FIXME: This is a temporary fix to replace 'Communities' with 'Collections' and 'Uploads' with 'Works' in the dashboard menu #}
+      {% for item in current_menu.submenu('dashboard').children %}
+        <a class="item {{ 'active' if active_dashboard_menu_item == item.name }} {{ 'disabled' if not item.url }}"
+          href="{{ item.url | replace('communities', 'collections') }}">{{ item.text | replace('Communities', 'Collections') | replace('Uploads', 'Works')}}</a>
+      {% endfor %}
+    </div>
   </div>
 </div>
