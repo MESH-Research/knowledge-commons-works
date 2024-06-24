@@ -3,57 +3,59 @@
 .ui.label.basic,
 .ui.label,
 .ui.small.labels .label {
-    background-color: @sidebarBackgroundColor;
-    border: 1px solid @verdigris40;
-    color: @ivy80;
+  background-color: @sidebarBackgroundColor;
+  border: 1px solid @verdigris40;
+  color: @ivy80;
 
-    &.transparent {
-        background-color: transparent;
-        border-color: transparent;
-    }
+  &.transparent {
+    background-color: transparent;
+    border-color: transparent;
+  }
 
+  font-size: @fontSizeSmall;
+  &.small {
     font-size: @fontSizeSmall;
-    &.small {
-        font-size: @fontSizeSmall;
-    }
+  }
 }
 
 .ui.label.positive,
 .ui.label.access-status.open {
-    background-color: @positiveColor;
-    border: 1px solid;
-    color: @white;
+  background-color: @positiveColor;
+  border: 1px solid;
+  color: @white;
+}
+
+.ui.secondary.label,
+.ui.label.access-status.metadata-only {
+  background-color: @gold20;
+  border: 1px solid @gold40;
+  color: @darkerGold;
 }
 
 .ui.neutral.label {
-    background-color: @ivory;
-    border-color: @ivy20;
-    color: @ivy60;
+  background-color: @ivory;
+  border-color: @ivy20;
+  color: @ivy60;
 }
 
 .ui.label.primary {
-    background-color: @sidebarBackgroundColor;
-    border-color: @verdigris40;
-    color: @primaryColor;
-&.basic {
+  background-color: @sidebarBackgroundColor;
+  border-color: @verdigris40;
+  color: @primaryColor;
+  &.basic {
     background-color: transparent;
-}}
-
-.ui.secondary.label {
-    background-color: @gold20;
-    border-color: @gold50;
-    color: @darkGold;
+  }
 }
 
 .ui.label.secondary.basic {
-    background-color: @white;
-    border-color: @ivy20;
-    color: @ivy70;
+  background-color: @white;
+  border-color: @ivy20;
+  color: @ivy70;
 }
 
 .ui.label.positive.basic,
 .ui.label.access-status.open.basic {
-    background-color: @white;
-    border-color: lighten(@greenLight, 20%);
-    color: @positiveColor;
+  background-color: @white;
+  border-color: lighten(@greenLight, 20%);
+  color: @positiveColor;
 }

@@ -93,6 +93,7 @@
 @goldRgba90: rgba(217, 184, 28, 0.9);
 
 @darkGold: #b29017;
+@darkerGold: #806711;
 
 @mint70: #daece6;
 @mint50: #e5f1ed;
