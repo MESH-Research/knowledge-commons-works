@@ -119,7 +119,7 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
                 <Form.Field>
                   <Button
                     aria-label={i18next.t("Remove item")}
-                    className="close-btn"
+                    className="close-btn no-label"
                     icon
                     onClick={() => handleRemove(arrayHelpers, index)}
                   >

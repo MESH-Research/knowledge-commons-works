@@ -18,9 +18,9 @@ selenium = "*"
 [packages]
 cchardet = "==2.1.7"
 flask-principal = "*"
-greenlet = {version = "!=0.4.17"}
+greenlet = {}
 halo = "*"
-invenio-app-rdm = {version = "~=12.0.0b3.dev3", extras = ["opensearch2"]}
+invenio-app-rdm = { extras = ["opensearch2"]}
 invenio-cli = "==1.0.21"
 invenio-s3 = "*"
 invenio-utilities-tuw = "*"
@@ -34,7 +34,7 @@ python-dotenv = "*"
 python-iso639 = "*"
 python-stdnum = "*"
 selenium = "*"
-sqlalchemy = {version = "*", extras = ["asyncio"]}
+sqlalchemy = { extras = ["asyncio"]}
 titlecase = "*"
 tqdm = "*"
 timefhuman = "*"
@@ -46,12 +46,17 @@ invenio-modular-detail-page = {editable = true, path = "./../invenio-modular-det
 invenio-modular-deposit-form = {editable = true, path = "./../invenio-modular-deposit-form"}
 invenio-remote-user-data = {editable = true, path = "./../invenio-remote-user-data"}
 invenio-record-importer = {editable = true, path = "./../invenio-record-importer"}
+invenio-group-collections = {file = "../invenio-group-collections", editable = true}
+invenio-subjects-fast = "*"
+invenio-remote-api-provisioner = {file = "../invenio-remote-api-provisioner", editable = true}
 invenio-rdm-records = {file = "../invenio-rdm-records", editable = true}
 invenio-records-resources = {file = "../invenio-records-resources", editable = true}
 invenio-communities = {file = "../invenio-communities", editable = true}
 kcworks = {file = "site", editable = true}
-invenio-group-collections = {file = "../invenio-group-collections", editable = true}
-invenio-subjects-fast = "*"
+numpy = "*"
+flask-breadcrumbs = "*"
+flask-babelex = "*"
+unidecode = "*"
 
 [requires]
 python_version = "3.9"

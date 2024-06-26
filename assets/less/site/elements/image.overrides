@@ -1,1 +1,16 @@
 /* Image theme overrides */
+
+.ui.image.community-image img {
+    object-fit: cover;
+    min-height: 80px;
+}
+.communities-frontpage .community-frontpage-cards .ui.card .image img {
+    object-fit: cover;
+}
+#communities.sidebar-container .row:not(.default-community) .community-image img {
+    object-fit: cover;
+    max-width: 40px;
+    max-height: 40px;
+    min-height: 40px;
+    min-width: 40px;
+}

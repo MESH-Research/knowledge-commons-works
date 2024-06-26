@@ -16,6 +16,14 @@ licenses:
 resourcetypes:
   pid-type: rsrct
   data-file: vocabularies/resource_types.yaml
+subjects:
+  pid-type: sub
+  schemes:
+    - id: Homosaurus
+      name: Homosaurus
+      uri: "https://homosaurus.org/"
+      data-file: vocabularies/homosaurus/subjects_homosaurus.jsonl
+# We disabled FOS subjects
 # subjects:
 #   pid-type: sub
 #   schemes:
@@ -26,7 +34,7 @@ resourcetypes:
 titletypes:
   pid-type: ttyp
   data-file: vocabularies/title_types.yaml
-# TODO: Uncoment this if you want to have all affiliations with ROR identifiers.
+# TODO: Make sure this old way of defining affiliations isn't needed
 # affiliations:
 #   pid-type: aff
 #   schemes:
@@ -34,3 +42,6 @@ titletypes:
 #       name: Research Organization Registry
 #       uri: "https://ror.org/"
 #       data-file: vocabularies/affiliations_ror.yaml
+affiliations:
+  pid-type: aff
+  data-file: vocabularies/affiliations_ror.yaml

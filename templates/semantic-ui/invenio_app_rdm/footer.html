@@ -26,9 +26,22 @@
                     <h2 class="ui small header">{{ title }}</h2>
                 {% endif %}
                 {% for link_set in links %}
-                    {% trans link_url=link_set[1], link_text=link_set[0] %}
-                    <p><a href="{{ link_url }}">{{ link_text }}</a></p>
-                    {% endtrans %}
+                    <p><a href="{{ link_set[1] }}">
+                      {% if link_set|length > 2 %}
+                        {% if link_set[2] == "mastodon" %}
+                          <i class="icon mastodon">
+                            <svg viewBox="0 0 24 24" alt="Mastodon">
+                              <use xlink:href="/static/images/mastodon.svg#mastodon" />
+                            </svg>
+                          </i>
+                        {% else %}
+                          <i class="icon {{ link_set[2] }}"></i>
+                        {% endif %}
+                      {% endif %}
+                      {% trans link_text=link_set[0] %}
+                        {{ link_text }}
+                      {% endtrans %}
+                    </a></p>
                 {% endfor %}
             </div>
             {% endfor %}

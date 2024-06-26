@@ -19,7 +19,7 @@ export default class FeaturedCommunity extends Component {
       "collections"
     );
 
-    const pattern = GeoPattern.generate(community.slug);
+    const pattern = GeoPattern.generate(encodeURI(community.slug));
 
     return (
       <Grid.Column

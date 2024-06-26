@@ -72,24 +72,23 @@ class RecordsResultsListItem extends Component {
               <a href={viewLink}>{title}</a>
             </Item.Header>
             <Item className="creatibutors">
-              <SearchItemCreators creators={creators} othersLink={viewLink} />
+              <Icon name={`${creators.length === 1 ? "user" : "users"}`} /> <SearchItemCreators creators={creators} othersLink={viewLink} />
             </Item>
             <Item.Description>
               {_truncate(descriptionStripped, { length: 350 })}
             </Item.Description>
             <Item.Extra className="item-footer ui grid">
-              <Grid.Column mobile={16} tablet={8} computer={8} className="item-footer-left">
+              <Grid.Column mobile={16} tablet={11} computer={11} className="item-footer-left">
                 {subjects.map((subject) => (
                   <Label key={subject.title_l10n} size="tiny">
                     {subject.title_l10n}
                   </Label>
                 ))}
-                <small>
                   <p>
-                    <Label horizontal size="small" className="basic primary">
+                    <Label horizontal size="small" className="primary">
                       {publicationDate} ({version})
                     </Label>
-                    <Label horizontal size="small" className="basic secondary">
+                    <Label horizontal size="small" className=" primary">
                       {resourceType}
                     </Label>
                     <Label
@@ -100,16 +99,16 @@ class RecordsResultsListItem extends Component {
                       {accessStatusIcon && <Icon name={accessStatusIcon} />}
                       {accessStatus}
                     </Label>
-                    {createdDate && publishingInformation && " | "}
+                    {/* {createdDate && publishingInformation && " | "} */}
+                  </p>
 
                     {publishingInformation && (
-                      <span>
+                      <p>
                         {i18next.t("Published in: {{publishInfo}}", {
                           publishInfo: publishingInformation,
                         })}
-                      </span>
+                      </p>
                     )}
-                  </p>
 
                   {!allVersionsVisible && versions.index > 1 && (
                     <p>
@@ -122,10 +121,9 @@ class RecordsResultsListItem extends Component {
                   )}
 
                   <DisplayPartOfCommunities communities={result.parent?.communities} />
-                </small>
               </Grid.Column>
 
-              <Grid.Column mobile={16} tablet={8} computer={8} className="item-footer-right">
+              <Grid.Column mobile={16} tablet={5} computer={5} className="item-footer-right">
                 <small>
                   <CompactStats
                     uniqueViews={uniqueViews}

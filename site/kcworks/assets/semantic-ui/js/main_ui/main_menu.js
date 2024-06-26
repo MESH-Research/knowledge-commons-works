@@ -225,10 +225,11 @@ const LoginMenu = ({
   accountsEnabled,
   adminMenuItems,
   currentUserEmail,
-  currentUserProfile,
+  externalIdentifiers,
   loginURL,
   logoutURL,
   profilesEnabled,
+  profilesURL,
   settingsMenuItems,
   userAdministrator,
   userAuthenticated,
@@ -237,9 +238,7 @@ const LoginMenu = ({
     currentUserEmail.length >= 31
       ? currentUserEmail.slice(31) + "..."
       : currentUserEmail;
-
-  console.log("LoginMenu ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-  console.log(userAdministrator, userAuthenticated, accountsEnabled, profilesEnabled, adminMenuItems, settingsMenuItems, loginURL, logoutURL, currentUserProfile, readableEmail);
+  const profileURL = externalIdentifiers.external_id ? `${profilesURL}${externalIdentifiers.external_id}` : undefined;
 
   return (
     !!accountsEnabled &&
@@ -267,9 +266,18 @@ const LoginMenu = ({
       <>
         <div className="item">
           {/* {# <i class="user icon"></i> #} */}
-          <span className="inline" href={currentUserProfile}>
-            {readableEmail}
-          </span>
+          {profileURL ? (
+            <Popup
+              content={i18next.t("My KC profile")}
+              trigger={
+                <a role="button" href={profileURL}>{readableEmail}</a>
+              }
+            />
+          ) : (
+            <span className="inline">
+              {readableEmail}
+            </span>
+          )}
         </div>
       </>
     ))
@@ -304,7 +312,7 @@ const MainMenu = ({
   actionsMenuItems,
   adminMenuItems,
   currentUserEmail,
-  currentUserProfile,
+  externalIdentifiers,
   kcWordpressDomain,
   loginURL,
   logoutURL,
@@ -312,6 +320,7 @@ const MainMenu = ({
   notificationsMenuItems,
   plusMenuItems,
   profilesEnabled,
+  profilesURL,
   settingsMenuItems,
   themeLogoURL,
   themeSitename,
@@ -319,8 +328,6 @@ const MainMenu = ({
   userAuthenticated,
   userAdministrator,
 }) => {
-  console.log("mainMenuItems: ", mainMenuItems);
-
   const mainItems = mainMenuItems
     .sort((a, b) => a.order - b.order)
     .filter((i) => i.visible === true);
@@ -410,11 +417,12 @@ const MainMenu = ({
             accountsEnabled={accountsEnabled}
             adminMenuItems={adminMenuItems}
             currentUserEmail={currentUserEmail}
-            currentUserProfile={currentUserProfile}
+            externalIdentifiers={externalIdentifiers}
             loginURL={loginURL}
             logoutURL={logoutURL}
             userAuthenticated={userAuthenticated}
             profilesEnabled={profilesEnabled}
+            profilesURL={profilesURL}
             settingsMenuItems={settingsMenuItems}
             userAdministrator={userAdministrator}
           />
@@ -445,7 +453,7 @@ MainMenu.propTypes = {
   accountsEnabled: PropTypes.bool,
   actionsMenuItems: PropTypes.array,
   adminMenuItems: PropTypes.array,
-  currentUserEmail: PropTypes.string,
+  externalIdentifiers: PropTypes.object,
   loginURL: PropTypes.string,
   logoutURL: PropTypes.string,
   mainMenuItems: PropTypes.array,
@@ -469,6 +477,7 @@ const accountsEnabled =
 const actionsMenuItems = JSON.parse(element.dataset.actionsMenuItems);
 const adminMenuItems = JSON.parse(element.dataset.adminMenuItems);
 const currentUserEmail = element.dataset.currentUserEmail;
+const externalIdentifiers = JSON.parse(element.dataset.externalIdentifiers);
 const kcWordpressDomain = element.dataset.kcWordpressDomain;
 const loginURL = element.dataset.loginUrl;
 const logoutURL = element.dataset.logoutUrl;
@@ -479,6 +488,7 @@ const notificationsMenuItems = JSON.parse(
 const plusMenuItems = JSON.parse(element.dataset.plusMenuItems);
 const profilesEnabled =
   element.dataset.profilesEnabled === "True" ? true : false;
+const profilesURL = element.dataset.profilesUrl;
 const settingsMenuItems = JSON.parse(element.dataset.settingsMenuItems);
 const themeLogoURL = element.dataset.themeLogoUrl;
 const themeSitename = element.dataset.themeSitename;
@@ -496,6 +506,7 @@ ReactDOM.render(
     actionsMenuItems={actionsMenuItems}
     adminMenuItems={adminMenuItems}
     currentUserEmail={currentUserEmail}
+    externalIdentifiers={externalIdentifiers}
     kcWordpressDomain={kcWordpressDomain}
     loginURL={loginURL}
     logoutURL={logoutURL}
@@ -503,6 +514,7 @@ ReactDOM.render(
     notificationsMenuItems={notificationsMenuItems}
     plusMenuItems={plusMenuItems}
     profilesEnabled={profilesEnabled}
+    profilesURL={profilesURL}
     settingsMenuItems={settingsMenuItems}
     themeLogoURL={themeLogoURL}
     themeSitename={themeSitename}

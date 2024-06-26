@@ -6,6 +6,13 @@
 }
 
 .ui.grid {
+    .row {
+        .column {
+            &.justify-space-around {
+                justify-content: space-around;
+            }
+        }
+    }
     > .row.sort-options-row.stackable {
         .column {
             padding-top: 0 !important;
@@ -29,5 +36,57 @@
     }
     &.search-app .search-app-target {
         width: 100%;
+    }
+}
+
+.sidebar-container {
+    &#communities {
+        .ui.grid {
+            margin: 0;
+            .row {
+                border: 1px solid @sidebarBorderColor;
+                background-color: @ivory50;
+                // &:last-child {
+                //     border-bottom: 0;
+                // }
+                .column:last-child {
+                    text-align: right;
+                    padding-right: 1rem;
+                    margin-bottom: 0;
+                }
+            }
+            .row:not(.default-community):not(.additional-communities) {
+                padding: 0.5rem 1rem 0.5rem 0;
+                font-size: 1rem;
+                background-color: transparent;
+                border: none;
+                border-right: 1px solid @sidebarBorderColor;
+                border-left: 1px solid @sidebarBorderColor;
+                &:last-of-type {
+                    border-bottom: 1px solid @sidebarBorderColor;
+                }
+                h3 a {
+                    font-size: @fontSizeSmall;
+                }
+            }
+            .row.default-community {
+                border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
+                &.sole-community {
+                border-radius: @defaultBorderRadius @defaultBorderRadius;
+                border-bottom: 1px solid @sidebarBorderColor;
+                }
+            }
+            .row.additional-communities {
+                background-color: @sidebarBackgroundColor;
+                padding: 0.5rem;
+                padding-left: 1rem;
+                border: 1px solid @sidebarBorderColor;
+                border-top: none;
+                border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
+                align-items: center;
+                justify-content: space-between;
+                color: @verdigrisDark;
+            }
+        }
     }
 }

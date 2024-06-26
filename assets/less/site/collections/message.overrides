@@ -1,7 +1,8 @@
 .ui.message {
-  background-color: @ivory;
-  border: 1px solid @ivy20;
-  color: @ivy60;
+  background-color: @seafoam50;
+  border: 1px solid @verdigris30;
+  color: @verdigrisDark;
+  box-shadow: none;
 
   &.warning {
     .header {

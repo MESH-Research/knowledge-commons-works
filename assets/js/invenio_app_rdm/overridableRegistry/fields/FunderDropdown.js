@@ -76,7 +76,7 @@ export const FunderDropdown = withState(
         scrolling
         multiple={false}
         options={fundersFromFacets || []}
-        allowAdditions={false}
+        allowAdditions={true}
         onChange={onFunderSelect}
         fluid
         selectOnBlur={false}

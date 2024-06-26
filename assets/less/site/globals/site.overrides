@@ -31,11 +31,12 @@
   }
 }
 
+// links
 
 a {
   color: @linkColor;
   &.ui.creatibutor-link {
-    color: @darkGold;
+    color: @verdigrisDark;
   }
   &.subject.ui.label {
     font-size: 1rem;
@@ -75,7 +76,8 @@ html.cover-page {
 .theme.header {
   box-shadow: none;
   .beta-banner {
-    background-color: @seafoam;
+    background-color: @mint50;
+    background-image: url("../../../../static/images/textured_bgs/KCommons_assets_Seafoam_800.png");
     color: @verdigrisDark;
     padding: 0.5rem 1rem;
     text-align: center;
@@ -91,9 +93,9 @@ html.cover-page {
 
 // Subheaders
 
-.ui.container.page-subheader-outer {
-  background-color: transparent !important;
-}
+// .ui.container.page-subheader-outer {
+//   background-color: transparent !important;
+// }
 
 // Front page hero area search bar
 
@@ -147,24 +149,21 @@ html.cover-page {
 
   #frontpage-info-bar {
     margin-bottom: 0;
-    border-bottom: 2rem solid transparent;
-    background-color: transparent;
+    padding: 3rem 0;
+    background-color: @verdigris;
     .column {
       cursor: pointer;
       background-color: transparent;
       a {
         display: block;
         cursor: pointer;
-        color: @ivy80;
+        color: @mint50;
         text-decoration: none;
         .huge.icon {
           font-size: 3rem;
         }
         h2 {
-          color: @ivy80;
-          &:hover {
-            color: @ivy;
-          }
+          color: @mint50;
         }
         @media all and (max-width: @largestTabletScreen) {
           h2 {
@@ -172,7 +171,9 @@ html.cover-page {
           }
         }
       }
-      &:hover {
+      &:hover,
+      &:active,
+      &:focus {
         a,
         h2 {
           color: @white;
@@ -185,7 +186,7 @@ html.cover-page {
 
 #communities-carousel {
   .ui.container.carousel {
-    background-image: url("../../../../static/images/textured_bgs/KCommons_assets_Ivory_600.png");
+    background-image: url("../../../../static/images/textured_bgs/KCommons_assets_Ivory_800.png");
     background-color: @white;
     .ui.container.grid {
       max-width: 100% !important;
@@ -212,10 +213,9 @@ html.cover-page {
     }
     i.icon.angle.left.carousel-arrow,
     i.icon.angle.right.carousel-arrow {
-      color: @primaryColor;
-      opacity: 0.5;
+      color: @verdigris;
       &:hover {
-        opacity: 1;
+        color: @verdigrisDark;
       }
     }
   }
@@ -265,23 +265,8 @@ html.cover-page {
     }
   }
 
-  #communities {
-    .segment {
-      background-color: @purpleBackground;
-      color: @purple;
-      border-color: @lightPurple;
-      .ui.header {
-        margin-top: 0;
-        a {
-          color: @purple;
-        }
-      }
-      .row .column:last-child {
-        text-align: right;
-        padding-right: 2rem;
-      }
-    }
-  }
+  // #communities {
+  // }
   .main-record-content {
     h2 {
       font-size: @large;
@@ -573,22 +558,6 @@ html.cover-page {
       border-bottom-left-radius: @defaultBorderRadius !important;
     }
     .sidebar-container {
-      .ui.top.attached.header {
-        border-bottom: 0;
-        padding-bottom: 0.5rem;
-        font-size: @medium;
-        background-color: @sidebarBackgroundColor;
-      }
-      .ui.segment.rdm-sidebar > h2.ui.small.header,
-      .ui.segment.rdm-sidebar > .header {
-        border-bottom: 0;
-        margin-bottom: 0;
-      }
-      .ui.segment.rdm-sidebar:first-child,
-      .ui.segment.rdm-sidebar:last-child {
-        background-color: @sidebarBackgroundColor;
-        margin-bottom: 1rem;
-      }
       &#record-management {
         margin-bottom: 1rem;
         .ui.fluid.icon.button {
@@ -630,59 +599,8 @@ html.cover-page {
           }
         }
       }
-      &#record-versions {
-        .segment {
-          display: flex;
-          align-items: center;
-          .ui.header.version-label {
-            flex-grow: 1;
-            line-height: 1em;
-            min-height: 1em;
-            padding: @inputPadding;
-            padding-left: 0;
-            position: relative;
-            border: 1px solid transparent;
-            .icon.loading.tiny {
-              font-size: @tiny;
-            }
-            &.preview {
-              color: @infoTextColor;
-              > .icon {
-                display: inline-block;
-                font-size: 1em;
-                margin: 0em;
-                margin-right: 0.28em;
-                position: absolute;
-                right: 0em;
-                text-align: center;
-              }
-            }
-          }
-          .dropdown {
-            box-shadow: none;
-            margin-right: -0.25rem;
-            border-left: 1px solid @borderColor;
-            border-radius: 0 @defaultBorderRadius @defaultBorderRadius 0;
-          }
-          .menu .item {
-            // background-color: transparent;
-            width: 100%;
-            .description.doi {
-              display: block;
-              float: none;
-              margin-left: 0;
-            }
-          }
-          &.preview {
-            color: @infoTextColor;
-            background-color: @infoBackgroundColor;
-            border-color: @infoBorderColor;
-            div.dropdown {
-              border-left: 1px solid @infoBorderColor;
-            }
-          }
-        }
-      }
+      // &#record-versions {
+      // }
       &#citation {
         margin-bottom: 1rem;
         #citation-style-label {
@@ -1077,6 +995,10 @@ html.cover-page {
   }
   .footer-bottom {
     background-color: @subFooterColor;
+    background-image: url("../../../../static/images/textured_bgs/KCommons_assets_Ivy_800.png");
     color: @footerTextDarkColor;
+    a {
+      color: @verdigris60;
+    }
   }
 }

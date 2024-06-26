@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkinvenio_assets=self.webpackChunkinvenio_assets||[]).push([[2004],{1081:(s,e,n)=>{var i=n(28848);n.n(i)().highlightAll()}},s=>{s.O(0,[8848],(()=>{return e=1081,s(s.s=e);var e}));s.O()}]);
-//# sourceMappingURL=prism_js.216ada014be33224b1c8.js.map

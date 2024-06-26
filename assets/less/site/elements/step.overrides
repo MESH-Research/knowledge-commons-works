@@ -1,41 +1,41 @@
 
 .ui.steps {
     margin-bottom: 2rem;
-    border-color: @ivy20;
+    border-color: @sidebarBorderColor;
     .step.link {
       line-height: 1.15rem;
       padding-top: @small;
       padding-bottom: @small;
       background-color: @sidebarBackgroundColor;
-      border-color: @ivy30;
+      border-color: @verdigris60;
       .title {
         font-size: @small;
-        color: @ivy60;
+        color: @sidebarHeaderColor;
       }
       &:after {
         background-color: @sidebarBackgroundColor;
         border-color: @ivy30;
       }
       &:hover {
-        background-color: @ivory;
+        background-color: darken(@sidebarBackgroundColor, 5%);
         &::after {
-          background-color: @ivory;
+          background-color: darken(@sidebarBackgroundColor, 5%);
         }
       }
       &.active {
-        background-color: @primaryColor;
-        color: #fff;
+        background-color: @mint;
+        color: @ivy;
         .title {
-          color: #fff;
+          color: @ivy;
         }
         &::after {
           color: #fff;
-          background-color: @primaryColor;
+          background-color: @mint;
         }
         &:hover {
-          background-color: darken(@primaryColor, 10%);
+          background-color: darken(@mint, 10%);
           &::after {
-            background-color: darken(@primaryColor, 10%);
+            background-color: darken(@mint, 10%);
           }
         }
       }

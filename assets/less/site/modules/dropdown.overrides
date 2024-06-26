@@ -1,1 +1,15 @@
 /* Dropdown theme overrides */
+.ui.selection.dropdown {
+  border-color: @ivy30;
+}
+
+.sidebar-container {
+  &#record-versions {
+    .dropdown {
+      box-shadow: none;
+      margin-right: -0.25rem;
+      border-left: 1px solid @borderColor;
+      border-radius: 0 @defaultBorderRadius @defaultBorderRadius 0;
+    }
+  }
+}

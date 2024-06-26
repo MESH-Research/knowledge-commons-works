@@ -25,7 +25,7 @@ services:
     volumes:
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer:/opt/invenio/invenio-record-importer
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/invenio-communities
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-groups:/opt/invenio/invenio-groups
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections:/opt/invenio/invenio-group-collections
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/invenio-rdm-records
@@ -35,8 +35,14 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_files_rest:/usr/local/lib/python3.9/site-packages/invenio_files_rest
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/usr/local/lib/python3.9/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/usr/local/lib/python3.9/site-packages/invenio_requests
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
 
   web-api:
     extends:
@@ -44,15 +50,48 @@ services:
       service: web-api
     volumes:
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/invenio-communities
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-groups:/opt/invenio/invenio-groups
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections:/opt/invenio/invenio-group-collections
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/invenio-rdm-records
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/invenio-records-resources
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer:/opt/invenio/invenio-record-importer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_files_rest:/usr/local/lib/python3.9/site-packages/invenio_files_rest
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/usr/local/lib/python3.9/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/usr/local/lib/python3.9/site-packages/invenio_requests
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
+
+  worker:
+    extends:
+      file: docker-compose.dev.yml
+      service: worker
+    volumes:
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/invenio-communities
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections:/opt/invenio/invenio-group-collections
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/invenio-rdm-records
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer:/opt/invenio/invenio-record-importer
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/invenio-records-resources
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_files_rest:/usr/local/lib/python3.9/site-packages/invenio_files_rest
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/usr/local/lib/python3.9/site-packages/invenio_indexer
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/usr/local/lib/python3.9/site-packages/invenio_requests
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats

@@ -28,10 +28,10 @@
     padding-right: 1rem;
     padding-bottom: 1.5rem;
     padding-top: 1rem;
-    background-color: @seafoam50;
+    background-color: @seafoam30;
 
     .ui.tiny.header {
-      color: @ivy60;
+      color: @verdigrisDark;
     }
 
     &.Analytics {

@@ -1,0 +1,9 @@
+funders:
+  readers:
+    - type: yaml
+      args:
+        origin: "app_data/vocabularies/funders_ofr.yaml"
+  writers:
+    - type: funders-service
+      args:
+        update: false

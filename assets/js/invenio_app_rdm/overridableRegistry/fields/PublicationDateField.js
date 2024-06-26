@@ -54,6 +54,7 @@ const DateDropdown = ({
         value={value}
         onChange={handleDropdownChange}
         error={error}
+        upward={false}
       />
     </Form.Field>
   );
