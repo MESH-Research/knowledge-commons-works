@@ -1804,12 +1804,12 @@
         },
         "invenio-utilities-tuw": {
             "hashes": [
-                "sha256:3819396bf92d993235f7509edb69fe23463afd6d7a9d130637d26fb2ac1d508e",
-                "sha256:b0e5ff9215861ca10d8ecceca06bb4727303593db949524a48587b092e0c6d01"
+                "sha256:a1d0b74219b6ebad250f0cd52ce51ee4ed8b81b18892f6fc046505c47d2383ed",
+                "sha256:a4c509e08d2a366eb5c0f1f674de42c8766f91e9fdd9e5b4fc5bad084692f097"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.7'",
-            "version": "==2024.1.1"
+            "version": "==2024.1.0"
         },
         "invenio-vocabularies": {
             "hashes": [
