@@ -26,7 +26,7 @@ export const CommunityCompactItemComputer = ({
   const { metadata, ui, links, access, id } = result;
   const communityType = ui?.type?.title_l10n;
 
-  const pattern = GeoPattern.generate(result.slug);
+  const pattern = GeoPattern.generate(encodeURI(result.slug));
 
   return (
     <Item

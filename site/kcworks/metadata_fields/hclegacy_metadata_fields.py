@@ -54,7 +54,9 @@ hclegacy:submitter_id       The user id number (in the HC database) for the
 from invenio_i18n import lazy_gettext as _
 from invenio_records_resources.services.custom_fields import BaseCF, TextCF
 from invenio_records_resources.services.custom_fields.number import IntegerCF
-from invenio_records_resources.services.custom_fields.date import ISODateStringCF
+from invenio_records_resources.services.custom_fields.date import (
+    ISODateStringCF,
+)
 from invenio_vocabularies.services.custom_fields import VocabularyCF
 from marshmallow import fields, validate
 from marshmallow_utils.fields import (
@@ -120,6 +122,8 @@ HCLEGACY_CUSTOM_FIELDS = [
         name="hclegacy:submitter_id",
         field_cls=SanitizedUnicode,
     ),
+    IntegerCF(name="hclegacy:total_views"),
+    IntegerCF(name="hclegacy:total_downloads"),
 ]
 
 
@@ -141,7 +145,10 @@ HCLEGACY_COMMITTEE_DEPOSIT_UI = {
 HCLEGACY_FILE_LOCATION_UI = {
     "field": "hclegacy:file_location",
     "ui_widget": "Input",
-    "props": {"label": "File Location", "helperText": "Enter the file location"},
+    "props": {
+        "label": "File Location",
+        "helperText": "Enter the file location",
+    },
 }
 
 HCLEGACY_FILE_PID_UI = {
@@ -162,7 +169,10 @@ HCLEGACY_PREVIOUSLY_PUBLISHED_UI = {
 HCLEGACY_PUBLICATION_TYPE_UI = {
     "field": "hclegacy:publication_type",
     "ui_widget": "Input",
-    "props": {"label": "Publication Type", "helperText": "Enter the publication type"},
+    "props": {
+        "label": "Publication Type",
+        "helperText": "Enter the publication type",
+    },
 }
 
 HCLEGACY_RECORD_CHANGE_DATE_UI = {
@@ -222,6 +232,18 @@ HCLEGACY_SUBMITTER_ID_UI = {
     "props": {"label": "Submitter ID", "helperText": "Enter the submitter ID"},
 }
 
+HCLEGACY_TOTAL_VIEWS_UI = {
+    "field": "hclegacy:total_views",
+    "ui_widget": "TextField",
+    "props": {"label": "Total views before migration", "helperText": ""},
+}
+
+HCLEGACY_TOTAL_DOWNLOADS_UI = {
+    "field": "hclegacy:total_downloads",
+    "ui_widget": "TextField",
+    "props": {"label": "Total downloads before migration", "helperText": ""},
+}
+
 HCLEGACY_INFO_SECTION_UI = {
     "section": _("Commons legacy info"),
     "fields": [
@@ -238,5 +260,7 @@ HCLEGACY_INFO_SECTION_UI = {
         HCLEGACY_SUBMITTER_ORG_MEMBERSHIPS_UI,
         HCLEGACY_SUBMITTER_AFFILIATION_UI,
         HCLEGACY_SUBMITTER_ID_UI,
+        HCLEGACY_TOTAL_VIEWS_UI,
+        HCLEGACY_TOTAL_DOWNLOADS_UI,
     ],
 }

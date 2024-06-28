@@ -80,7 +80,16 @@ services:
       - "5000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    environment:
+      # - FLASK_ENV=production    ** deprecated
+      - FLASK_DEBUG=1
+      - INVENIO_LOGGING_CONSOLE=True
+      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_LOGGING_FS_LEVEL=DEBUG
+      - INVENIO_LOGGING_FS_BACKUP_COUNT=10
+      - INVENIO_LOGGING_FS_LOGFILE=/opt/invenio/src/logs/invenio.log
     volumes:
+      - ./logs:/opt/invenio/src/logs
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
       - ./static:/opt/invenio/var/instance/static

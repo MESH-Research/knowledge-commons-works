@@ -7,7 +7,6 @@
   under the terms of the MIT License; see LICENSE file for more details.
 #}
 
-
 {%- if config.ACCOUNTS %}
     {%- if not current_user.is_authenticated %}
         <form>
@@ -62,13 +61,13 @@
               <i class="fitted plus icon mobile-hidden"></i>
               <i class="big circle outline icon mobile-hidden"></i>
             </i>
+
             <span class="large screen widescreen only inline">{{ _("Add a work") }}</span>
             <span class="mobile tablet only inline">{{ _("Add a work") }}</span>
           </a>
         </div>
 
-
-        {%- if config.USERPROFILES and (current_user.roles | selectattr("name", "equalto", "administrator") | list) %}
+        {%- if config.USERPROFILES and (current_user.roles | selectattr("name", "equalto", "admin") | list) %}
           <div role="menuitem" id="user-profile-dropdown" class="ui floating dropdown computer only">
             <button id="user-profile-dropdown-btn"
                     class="ui right labeled right floated icon button text"
@@ -147,7 +146,7 @@
 
           <div class="item">
           {# <i class="user icon"></i> #}
-            <a class="inline">{{ current_user.email|truncate(31,true) }}</a>
+            <a class="inline" href="{{ config.get('KC_PROFILES_URL_BASE') }}">{{ current_user.email|truncate(31,true) }}</a>
           </div>
           <a role="button" href="{{ url_for_security('logout') }}" class="ui ">
             <i class="icons computer only">

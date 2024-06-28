@@ -1,1 +1,0 @@
-{"version":3,"file":"css/txt_css.3fba3505fa135ab79b71.css","mappings":"AAAA,gBACE","sources":["webpack://invenio-assets/./scss/invenio_previewer/txt.scss"],"sourcesContent":["#text-previewer {\n  padding: 0.5em;\n}\n\n"],"names":[],"sourceRoot":""}

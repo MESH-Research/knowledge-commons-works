@@ -26,9 +26,9 @@
   }
 
   &.negative {
-    background-color: @negativeTextColor;
+    background-color: @redDark !important;
     color: @white;
-    box-shadow: 0px 0px 0px 1px @negativeTextColor inset,
+    box-shadow: 0px 0px 0px 1px @redDark inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
 
     &:hover,
@@ -50,9 +50,16 @@
   }
 
   &.icon {
-    .close-btn {
+    &.close-btn {
       margin-top: 1.75rem;
       float: right;
+
+      &.no-label {
+        margin-top: 1.7rem;
+      }
+    }
+    &.massive.left.fluid.labeled {
+      padding-left: 3em !important;
     }
   }
 }
@@ -75,8 +82,8 @@
 
   &.negative,
   &.negative {
-    color: @negativeTextColor !important;
-    background-color: @white;
+    color: @redDark !important;
+    background-color: @white !important;
     box-shadow: 0px 0px 0px 1px @negativeBorderColor inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
     &:hover,
@@ -106,6 +113,22 @@
       box-shadow: 0px 0px 0px 1px @verdigris70 inset,
         0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
     }
+  }
+
+  &.secondary {
+    color: @verdigrisDark !important;
+    background-color: @white !important;
+    box-shadow: 0px 0px 0px 1px @secondaryColor inset,
+      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    &:hover,
+    &:active,
+    &:focus {
+      color: @ivy80 !important;
+      background-color: @white !important;
+      box-shadow: 0px 0px 0px 1px @secondaryColor inset,
+        0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    }
+
   }
 
 }
@@ -150,7 +173,7 @@
   font-weight: bold;
   text-align: left;
   color: @sidebarHeaderColor !important;
-  border: 1px solid @borderColor;
+  border: 1px solid @sidebarBorderColor;
   box-shadow: none;
 }
 
@@ -160,7 +183,7 @@
     padding-left: 1rem !important;
     font-weight: bold;
     color: @sidebarHeaderColor !important;
-    box-shadow: 0px 0px 0px 1px @borderColor inset, 0px 0em 0px 0px @borderColor inset;
+    box-shadow: 0px 0px 0px 1px @sidebarBorderColor inset, 0px 0em 0px 0px @sidebarBorderColor inset;
   }
   .menu button {
     width: 100%;

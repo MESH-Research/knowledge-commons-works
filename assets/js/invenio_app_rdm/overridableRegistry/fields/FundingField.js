@@ -92,6 +92,7 @@ function FundingFieldForm(props) {
         <List>
           {getIn(values, fieldPath, []).map((value, index) => {
             const key = `${fieldPath}.${index}`;
+            console.log("FundingFieldForm values: ", value)
             // if award does not exist or has no id, it's a custom one
             const awardType = value?.award?.id ? "standard" : "custom";
             return (
@@ -113,7 +114,8 @@ function FundingFieldForm(props) {
               />
             );
           })}
-          <FundingModal
+          {/* FIXME: Populate the standard awards list properly */}
+          {/* <FundingModal
             searchConfig={searchConfig}
             trigger={
               <Button
@@ -137,7 +139,7 @@ function FundingFieldForm(props) {
             deserializeFunder={deserializeFunder}
             computeFundingContents={computeFundingContents}
             focusAddButtonHandler={focusAddButtonHandler}
-          />
+          /> */}
           <FundingModal
             searchConfig={searchConfig}
             trigger={
@@ -146,7 +148,7 @@ function FundingFieldForm(props) {
                labelPosition="left"
               >
                 <Icon name="add" />
-                {i18next.t("Add custom")}
+                {i18next.t("Add award or funding source")}
               </Button>
             }
             onAwardChange={(selectedFunding) => {

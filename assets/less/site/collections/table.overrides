@@ -5,7 +5,7 @@
         color: @ivy80;
     }
     &.striped tbody tr:nth-child(even) {
-        background-color: @ivory50;
+        background-color: @seafoam50;
     }
     &.definition {
         // thead:not(.full-width) th:nth-child(2) {
@@ -13,8 +13,8 @@
         // }
         tr {
             td:first-child:not(.ignored) {
-            background-color: @ivory50;
-            color: @darkGold;
+            background-color: @seafoam50;
+            color: @ivy80;
             font-weight: normal;
             }
             td:nth-child(2) {

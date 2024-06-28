@@ -17,9 +17,12 @@ kcr:submitter_username  The HC (Wordpress) username of the user who
 """
 
 from invenio_i18n import lazy_gettext as _
-from invenio_records_resources.services.custom_fields import TextCF
+from invenio_records_resources.services.custom_fields import (
+    TextCF,
+    # EDTFDateStringCF,
+)
 from marshmallow import validate
-from marshmallow_utils.fields import SanitizedUnicode
+from marshmallow_utils.fields import SanitizedUnicode, EDTFDateTimeString
 
 KCR_NAMESPACE = {
     "kcr": "",
@@ -88,6 +91,10 @@ KCR_CUSTOM_FIELDS = [
         name="kcr:commons_search_recid",
         field_cls=SanitizedUnicode,
     ),
+    TextCF(
+        name="kcr:commons_search_updated",
+        field_cls=EDTFDateTimeString,
+    ),  # EDTFDateStringCF,
 ]
 
 KCR_INSTITUTION_DEPARTMENT_FIELD_UI = {

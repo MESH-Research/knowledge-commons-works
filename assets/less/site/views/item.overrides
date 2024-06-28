@@ -4,10 +4,22 @@
   & > .search-result.item {
     .content {
       h2.header a {
-        color: @verdigris;
+        color: @verdigris;  // @ivy80;
       }
-      .creatibutor-name {
-        color: @verdigrisDark;
+      .creatibutors {
+        .icon {
+          color: @verdigris50;
+        }
+        .creatibutor-name {
+          color: @verdigrisDark;
+        }
+        .creatibutor-wrap {
+          margin-bottom: 0;
+        }
+      }
+      .description {
+        display: block !important;
+        margin-bottom: 0.75rem;
       }
       .extra.item-footer {
         display: flex;
