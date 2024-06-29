@@ -68,6 +68,7 @@ const SubjectsField = ({
     "FAST-chronological": "time periods",
     "FAST-title": "titles of works",
     "FAST-meeting": "meetings and conferences",
+    "Homosaurus": "homosaurus",
   }
 
   const topFacets = {

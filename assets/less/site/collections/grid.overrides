@@ -1,92 +1,176 @@
-
-#rdm-deposit-form {
+.ui.form {
+  #rdm-deposit-form {
     .ui.grid {
-        margin-top: 0;
+      margin-top: 0;
+
+      .row {
+        &.deposit-form-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
     }
+    fieldset.communities {
+      .ui.grid {
+        margin-bottom: 0;
+      }
+    }
+  }
 }
 
 .ui.grid {
-    .row {
-        .column {
-            &.justify-space-around {
-                justify-content: space-around;
-            }
-        }
+  .row {
+    .column {
+      &.justify-space-around {
+        justify-content: space-around;
+      }
     }
-    > .row.sort-options-row.stackable {
-        .column {
-            padding-top: 0 !important;
-            padding-bottom: 0.5rem !important;
-            &:last-child {
-                padding-bottom: 0 !important;
-            }
-            &:first-child {
-                @media all and (max-width: @largestMobileScreen) {
-                    text-align: right;
-                }
-            }
+  }
+  > .row.sort-options-row.stackable {
+    .column {
+      padding-top: 0 !important;
+      padding-bottom: 0.5rem !important;
+      &:last-child {
+        padding-bottom: 0 !important;
+      }
+      &:first-child {
+        @media all and (max-width: @largestMobileScreen) {
+          text-align: right;
         }
+      }
     }
-    > .row.result-options > [class*="middle aligned"].column {
+  }
+  > .row.result-options > [class*="middle aligned"].column {
+    &:first-child {
+      @media all and (max-width: @largestMobileScreen) {
+        align-self: flex-start !important;
+      }
+    }
+  }
+  &.search-app .search-app-target {
+    width: 100%;
+  }
+  &.save-submit-buttons {
+    margin-left: 0;
+    margin-right: 0;
+    > .row {
+      > .column {
+        p {
+          font-size: 1rem;
+        }
+        .button {
+          margin-bottom: 1rem;
+        }
+        .message {
+          box-shadow: none;
+          border: none;
+          margin-bottom: 1rem;
+          font-size: 1rem;
+          &.negative,
+          &.warning {
+            background-color: @formErrorBackground;
+            color: @errorTextColor;
+            .icon {
+              color: @errorColor;
+              opacity: 1;
+            }
+            .header {
+              color: @errorTextColor;
+              font-size: 1rem;
+            }
+          }
+        }
         &:first-child {
-            @media all and (max-width: @largestMobileScreen) {
-                align-self: flex-start !important;
-            }
+          border-radius: @defaultBorderRadius;
+          padding-bottom: 1rem;
+          .column {
+            border: none !important;
+          }
         }
+      }
     }
-    &.search-app .search-app-target {
-        width: 100%;
+    &.positive {
+      > .row {
+        .column {
+          &:first-child {
+            padding-top: 1rem;
+            background-color: @positiveBackgroundColor;
+            border: 1px solid @positiveBorderColor;
+          }
+        }
+      }
     }
+    &.negative {
+      > .row {
+        .column {
+          &:first-child {
+            padding-top: 1rem;
+            background-color: @formErrorBackground;
+          }
+        }
+      }
+    }
+    &.warning {
+      > .row {
+        .column {
+          &:first-child {
+            padding-top: 1rem;
+            background-color: @formErrorBackground;
+          }
+        }
+      }
+    }
+  }
 }
 
 .sidebar-container {
-    &#communities {
-        .ui.grid {
-            margin: 0;
-            .row {
-                border: 1px solid @sidebarBorderColor;
-                background-color: @ivory50;
-                // &:last-child {
-                //     border-bottom: 0;
-                // }
-                .column:last-child {
-                    text-align: right;
-                    padding-right: 1rem;
-                    margin-bottom: 0;
-                }
-            }
-            .row:not(.default-community):not(.additional-communities) {
-                padding: 0.5rem 1rem 0.5rem 0;
-                font-size: 1rem;
-                background-color: transparent;
-                border: none;
-                border-right: 1px solid @sidebarBorderColor;
-                border-left: 1px solid @sidebarBorderColor;
-                &:last-of-type {
-                    border-bottom: 1px solid @sidebarBorderColor;
-                }
-                h3 a {
-                    font-size: @fontSizeSmall;
-                }
-            }
-            .row.default-community {
-                border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
-                &.sole-community {
-                border-radius: @defaultBorderRadius @defaultBorderRadius;
-                border-bottom: 1px solid @sidebarBorderColor;
-                }
-            }
-            .row.additional-communities {
-                background-color: @sidebarBackgroundColor;
-                padding: 0.5rem;
-                padding-left: 1rem;
-                border: 1px solid @sidebarBorderColor;
-                border-top: none;
-                border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
-                align-items: center;
-                justify-content: space-between;
-                color: @verdigrisDark;
-            }
+  &#communities {
+    .ui.grid {
+      margin: 0;
+      .row {
+        border: 1px solid @sidebarBorderColor;
+        background-color: @ivory50;
+        // &:last-child {
+        //     border-bottom: 0;
+        // }
+        .column:last-child {
+          text-align: right;
+          padding-right: 1rem;
+          margin-bottom: 0;
         }
+      }
+      .row:not(.default-community):not(.additional-communities) {
+        padding: 0.5rem 1rem 0.5rem 0;
+        font-size: 1rem;
+        background-color: transparent;
+        border: none;
+        border-right: 1px solid @sidebarBorderColor;
+        border-left: 1px solid @sidebarBorderColor;
+        &:last-of-type {
+          border-bottom: 1px solid @sidebarBorderColor;
+        }
+        h3 a {
+          font-size: @fontSizeSmall;
+        }
+      }
+      .row.default-community {
+        border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
+        &.sole-community {
+          border-radius: @defaultBorderRadius @defaultBorderRadius;
+          border-bottom: 1px solid @sidebarBorderColor;
+        }
+      }
+      .row.additional-communities {
+        background-color: @sidebarBackgroundColor;
+        padding: 0.5rem;
+        padding-left: 1rem;
+        border: 1px solid @sidebarBorderColor;
+        border-top: none;
+        border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
+        align-items: center;
+        justify-content: space-between;
+        color: @verdigrisDark;
+      }
     }
+  }
 }

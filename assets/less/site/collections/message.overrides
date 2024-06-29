@@ -5,6 +5,12 @@
   box-shadow: none;
 
   &.warning {
+    box-shadow: none;
+    border-color: @warningBorderColor;
+    color: @warningTextColor;
+    .icon {
+      color: @warningColor;
+    }
     .header {
       color: @warningTextColor;
     }

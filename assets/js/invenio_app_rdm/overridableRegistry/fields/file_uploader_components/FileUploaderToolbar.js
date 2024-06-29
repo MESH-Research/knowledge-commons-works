@@ -115,8 +115,8 @@ export const FileUploaderToolbar = (props) => {
                 <List.Item>
                   <Label
                     {...(filesList.length === quota.maxFiles
-                      ? { color: "orange" }
-                      : { color: "blue" })}
+                      ? { color: "warning" }
+                      : { color: "primary" })}
                     image
                   >
                     <Icon name="zip" />
@@ -132,8 +132,8 @@ export const FileUploaderToolbar = (props) => {
                     image
                     {...(humanReadableBytes(filesSize, decimalSizeDisplay) ===
                     humanReadableBytes(quota.maxStorage, decimalSizeDisplay)
-                      ? { color: "orange" }
-                      : { color: "teal" })}
+                      ? { color: "warning" }
+                      : { color: "primary" })}
                   >
                     <Icon name="pie chart" />
                     {humanReadableBytes(
@@ -142,7 +142,7 @@ export const FileUploaderToolbar = (props) => {
                     )}{" "}
                     {i18next.t("of")}{" "}
                     {humanReadableBytes(quota.maxStorage, decimalSizeDisplay)}
-                    <Label.Detail>{" total storage left"}</Label.Detail>
+                    <Label.Detail>{" storage left for this work"}</Label.Detail>
                   </Label>
                 </List.Item>
               </List>

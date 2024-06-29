@@ -3,6 +3,7 @@
     thead th {
         background-color: @seafoam50;
         color: @ivy80;
+        line-height: 1.15rem;
     }
     &.striped tbody tr:nth-child(even) {
         background-color: @seafoam50;

@@ -9,6 +9,7 @@ import { parametrize } from "react-overridable";
 import { AccessRightField } from "./fields/AccessRightField";
 import { CreatibutorsField } from "./fields/CreatibutorsField";
 import { DescriptionsField } from "./fields/DescriptionsField";
+import { FormFeedback } from "./fields/FormFeedback";
 import { FundingField } from "./fields/FundingField";
 import { IdentifiersField } from "./fields/IdentifiersField";
 import { LicenseField } from "./fields/LicenseField";
@@ -43,6 +44,7 @@ export const overriddenComponents = {
   "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
   "InvenioAppRdm.Deposit.ContributorsField.container": CreatibutorsField,
   "InvenioAppRdm.Deposit.DescriptionsField.container": DescriptionsField,
+  "InvenioAppRdm.Deposit.FormFeedback.container": FormFeedback,
   "InvenioAppRdm.Deposit.FundingField.container": FundingField,
   "InvenioAppRdm.Deposit.IdentifiersField.container": IdentifiersField,
   "InvenioAppRdm.Deposit.LicenseField.container": LicenseField,

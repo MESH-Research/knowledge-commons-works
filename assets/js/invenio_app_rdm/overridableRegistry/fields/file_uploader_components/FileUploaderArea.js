@@ -153,14 +153,15 @@ const FileTableRow = ({
             (isDeleting ? (
               <Icon loading name="spinner" />
             ) : (
-              <Icon
-                link
-                className="action primary"
+              <Button
+                className="close-btn no-label"
                 name="trash alternate outline"
                 disabled={isDeleting}
+                negative
                 onClick={() => handleDelete(file)}
                 aria-label={i18next.t("Delete file")}
                 title={i18next.t("Delete file")}
+                icon="trash alternate outline"
               />
             ))}
           {file.uploadState?.isUploading && (

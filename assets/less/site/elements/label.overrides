@@ -2,7 +2,8 @@
 
 .ui.label.basic,
 .ui.label,
-.ui.small.labels .label {
+.ui.small.labels .label,
+.ui.list .item .label {
   background-color: @sidebarBackgroundColor;
   border: 1px solid @verdigris40;
   color: @ivy80;
@@ -15,6 +16,9 @@
   font-size: @fontSizeSmall;
   &.small {
     font-size: @fontSizeSmall;
+  }
+  &.image {
+    background-color: @sidebarBackgroundColor !important;
   }
 }
 
@@ -42,6 +46,12 @@
   background-color: @sidebarBackgroundColor;
   border-color: @verdigris40;
   color: @primaryColor;
+
+  .detail {
+    background-color: @mint50;
+    opacity: 1;
+  }
+
   &.basic {
     background-color: transparent;
   }

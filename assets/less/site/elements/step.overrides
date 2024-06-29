@@ -1,30 +1,45 @@
 
 .ui.steps {
     margin-bottom: 2rem;
-    border-color: @sidebarBorderColor;
+    // border-color: @sidebarBorderColor;
+    border-color: transparent;
     .step.link {
       line-height: 1.15rem;
       padding-top: @small;
       padding-bottom: @small;
       background-color: @sidebarBackgroundColor;
       border-color: @verdigris60;
+      border-top: 1px solid @sidebarBorderColor;
+      border-bottom: 1px solid @sidebarBorderColor;
       .title {
         font-size: @small;
         color: @sidebarHeaderColor;
       }
+      &:first-child {
+        border-left: 1px solid @sidebarBorderColor;
+      }
+      &:last-child {
+        border-right: 1px solid @sidebarBorderColor;
+      }
       &:after {
         background-color: @sidebarBackgroundColor;
-        border-color: @ivy30;
+        border-color: @verdigris60;
       }
-      &:hover {
+      &:hover,
+      &:focus,
+      &:active {
         background-color: darken(@sidebarBackgroundColor, 5%);
         &::after {
           background-color: darken(@sidebarBackgroundColor, 5%);
         }
       }
+      &:focus-visible {
+        outline: none !important;
+      }
       &.active {
         background-color: @mint;
         color: @ivy;
+        border-color: @verdigris50;
         .title {
           color: @ivy;
         }
@@ -32,7 +47,9 @@
           color: #fff;
           background-color: @mint;
         }
-        &:hover {
+        &:hover,
+        &:focus,
+        &:active {
           background-color: darken(@mint, 10%);
           &::after {
             background-color: darken(@mint, 10%);
@@ -44,7 +61,7 @@
         background-color: @negativeBackgroundColor;
         border: 1px solid #e0b4b4;
         .title {
-          color: @errorColor;
+          color: @errorTextColor;
         }
         &.active {
           color: @errorColor;

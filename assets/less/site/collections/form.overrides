@@ -407,6 +407,19 @@ textarea {
           }
         }
 
+        &.invenio-fieldset.file_upload {
+          .ui.fitted.checkbox {
+            padding: 0.5rem;
+            min-height: 21px;
+            min-width: 21px;
+
+            label:before {
+              top: -0.5rem;
+              left: -0.5rem;
+            }
+          }
+        }
+
         &.invenio-fieldset.combined_dates {
           .ui.label.prompt {
             margin-top: 0;
