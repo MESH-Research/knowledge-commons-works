@@ -4,7 +4,10 @@
     .ui.container.page-subheader-outer {
         min-height: 8rem;
         padding-top: 0;
-        background: radial-gradient(ellipse at 100% 0%, @mint50, transparent 60%);
+        background-color: @verdigris;
+        background: radial-gradient(ellipse at 100% 0%, transparent, #fff 60%), url("../../../../static/images/textured_bgs/KCommons_assets_Seafoam_800.png"), @mint;
+        // background: radial-gradient(ellipse at 100% 0%, @mint50, transparent 60%);
+
         .ui.container.page-subheader     {
             height: 100%;
         }

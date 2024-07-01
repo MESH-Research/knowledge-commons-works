@@ -95,6 +95,24 @@ textarea {
   }
 }
 
+#frontpage-search-bar {
+  .ui.form {
+    .ui.input {
+      input {
+        border-color: @darkGold;
+        border-right: none;
+        outline: 3px solid @gold;
+      }
+      button[type="submit"] {
+        outline: 3px solid @gold;
+      }
+    }
+  }
+  .ui.icon.primary.button {
+    outline: 3px solid @verdigrisDark;
+  }
+}
+
 #deposit-form {
   flex-grow: 1;
   display: flex;

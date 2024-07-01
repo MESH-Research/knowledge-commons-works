@@ -18,3 +18,12 @@
 img.community-header-logo {
     border-radius: @defaultBorderRadius;
 }
+
+#communities-carousel .carousel .ui.items .item img {
+    object-fit: cover;
+    border-radius: @defaultBorderRadius;
+    max-width: 150px;
+    max-height: 150px;
+    min-height: 150px;
+    min-width: 150px;
+}

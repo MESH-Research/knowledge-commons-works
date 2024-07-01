@@ -4,7 +4,7 @@
   & > .search-result.item {
     .content {
       h2.header a {
-        color: @verdigris;  // @ivy80;
+        color: @verdigrisDark;  // @ivy80;
       }
       .creatibutors {
         .icon {
