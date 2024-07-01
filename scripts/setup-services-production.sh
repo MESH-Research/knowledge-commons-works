@@ -22,15 +22,27 @@ cyan='\033[0;36m'
 clear='\033[0m'
 
 local fixtures=0
+local destroy=0
 
-while getopts 'f' flag
+while getopts 'fd' flag
 do
     case "${flag}" in
         f) fixtures=1 ;;
+        d) destroy=1 ;;
         *) echo 'Error in command line parsing' >&2
            exit 1
     esac
 done
+
+if [ $destroy==1 ]
+then
+    echo -e "${yellow}Destroying the database...${clear}"
+    invenio db destroy --yes-i-know
+    echo -e "${yellow}Destroying the OpenSearch index...${clear}"
+    invenio index destroy --force --yes-i-know
+    echo -e "${yellow}Clearing the search indexing task queues...${clear}"
+    invenio index queue init purge
+fi
 
 echo -e "${yellow}Setting up services for Knowledge Commons Works instance...${clear}"
 echo -e "${yellow}Creating the database...${clear}"
