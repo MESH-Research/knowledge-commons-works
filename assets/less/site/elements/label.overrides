@@ -69,3 +69,8 @@
   border-color: lighten(@greenLight, 20%);
   color: @positiveColor;
 }
+
+// FIXME: This is a temporary fix for the search sort labels
+#invenio-search-config .row .column label:first-child {
+  display: none;
+}

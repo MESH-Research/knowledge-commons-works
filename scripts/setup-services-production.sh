@@ -48,7 +48,7 @@ echo -e "${yellow}Setting up services for Knowledge Commons Works instance...${c
 echo -e "${yellow}Creating the database...${clear}"
 invenio db init create
 echo -e "${yellow}Setting up s3 storage...${clear}"
-invenio files location s3-default s3://{$INVENIO_S3_BUCKET_NAME} --default;
+invenio files location s3-default s3://$INVENIO_S3_BUCKET_NAME --default;
 echo -e "${yellow}Setting up admin user and role...${clear}"
 invenio roles create admin
 invenio access allow superuser-access role admin

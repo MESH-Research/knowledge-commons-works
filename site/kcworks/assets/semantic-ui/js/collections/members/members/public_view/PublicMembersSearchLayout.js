@@ -28,6 +28,7 @@ const PublicViewSearchBar = () => {
 export class PublicMembersSearchLayout extends Component {
   render() {
     const { config, appName } = this.props;
+    console.log("config", config);
     return (
       <>
         <PublicViewSearchBar />
