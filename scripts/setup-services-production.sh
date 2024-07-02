@@ -66,8 +66,8 @@ invenio roles create administrator
 if [ $fixtures==1 ]
 then
     echo -e "${yellow}Setting up fixtures in two stages (this may take a long time!!)...${clear}"
-    invenio rdm fixtures --verbose
-    invenio rdm-records fixtures --verbose & pid=$!
+    invenio rdm fixtures
+    invenio rdm-records fixtures & pid=$!
     # spinner during fixture setup
     i=1
     sp="\|/-"
