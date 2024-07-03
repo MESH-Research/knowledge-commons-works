@@ -4,6 +4,9 @@
   background-color: @white;
   color: @ivy;
   box-shadow: 0px 0px 0px 1px @ivy30 inset, 0px 0em 0px 0px @ivy30 inset;
+  &:focus-visible {
+    outline: 3px solid @gold !important;
+  }
   &:hover,
   &:active,
   &:focus {
@@ -53,9 +56,19 @@
     &.close-btn {
       margin-top: 1.75rem;
       float: right;
+      background-color: @redDark !important;
+      color: @white;
+      border-color: @redDark;
+      box-shadow: 0px 0px 0px 1px #b54f1e inset, 0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: darken(@redDark, 5%);
+      }
 
       &.no-label {
-        margin-top: 1.7rem;
+        margin-top: 0;
       }
     }
     &.massive.left.fluid.labeled {

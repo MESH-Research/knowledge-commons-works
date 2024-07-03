@@ -118,7 +118,7 @@ const CommunityDetailsHeader = ({
   const menu_items = all_menu_items.filter((item) => !!item.permissions);
 
   return (
-    <div class="ui container relaxed grid page-subheader mr-0-mobile ml-0-mobile">
+    <div className="ui container relaxed grid page-subheader mr-0-mobile ml-0-mobile">
       <div className="row pb-0">
         <div className="sixteen wide mobile sixteen wide tablet thirteen wide computer column">
           <div className="community-header flex align-items-center column-mobile align-items-start-mobile">
@@ -235,6 +235,7 @@ const CommunityDetailsHeader = ({
       <div className="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary">
         {menu_items.map((item) => (
           <a
+            key={item.name}
             className={`item ${
               activeMenuItem === item.name ||
               (activeMenuItem === "search" && item.name === "records")

@@ -3,6 +3,7 @@
 .ui.image.community-image img {
     object-fit: cover;
     min-height: 80px;
+    border-radius: @defaultBorderRadius;
 }
 .communities-frontpage .community-frontpage-cards .ui.card .image img {
     object-fit: cover;
@@ -13,4 +14,16 @@
     max-height: 40px;
     min-height: 40px;
     min-width: 40px;
+}
+img.community-header-logo {
+    border-radius: @defaultBorderRadius;
+}
+
+#communities-carousel .carousel .ui.items .item img {
+    object-fit: cover;
+    border-radius: @defaultBorderRadius;
+    max-width: 150px;
+    max-height: 150px;
+    min-height: 150px;
+    min-width: 150px;
 }

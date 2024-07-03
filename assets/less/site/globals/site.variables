@@ -93,6 +93,7 @@
 @goldRgba90: rgba(217, 184, 28, 0.9);
 
 @darkGold: #b29017;
+@darkerGold: #806711;
 
 @mint70: #daece6;
 @mint50: #e5f1ed;
@@ -129,6 +130,7 @@
 @peacockRgba10: rgba(72, 153, 219, 0.1);
 @white: #fff;
 @salmon: #e47719;
+@salmonDark: #b05c14;
 @red: #db6228;
 @redDark: #b54f1e;
 @yellow: @gold;
@@ -154,21 +156,24 @@
 /* ----------------------------
       Semantic state colors
 ------------------------------- */
-@errorTextColor: @salmon; // @negativeColor; // = @red
-@errorColor: @errorTextColor; // @negativeColor; // = @red
-@formErrorColor: @errorColor;
+@errorTextColor: @salmonDark; // @negativeColor; // = @red
+@errorColor: @salmon; // @negativeColor; // = @red
+@formErrorColor: @salmonDark;
 @formErrorBorder: @negativeBorderColor;
-@formErrorBackground: lighten(@errorColor, 50%);
+@formErrorBackground: #fff6f6; // lighten(@salmon, 50%);
 @inputErrorFocusBackground: @formErrorBackground;
-@inputErrorFocusColor: @errorColor;
+@inputErrorFocusColor: @errorTextColor;
 @inputErrorFocusBorder: @formErrorBorder;
 
-@warningTextColor: @darkGold;
+@warningColor: @gold;
+@warningTextColor: #8d7313; // @darkGold;
 @warningBackgroundColor: @gold10;
+@warningBorderColor: @gold40;
 
 @positiveColor: @green;
-@positiveTextColor: darken(@green, 10%);
+@positiveTextColor: @green; // darken(@green, 10%);
 @positiveBackgroundColor: @seafoam60;
+@positiveBorderColor: @seafoam;
 
 @negativeColor: @red;
 @negativeTextColor: @redDark;

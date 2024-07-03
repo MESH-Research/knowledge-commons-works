@@ -40,8 +40,8 @@ const SubjectsField = ({
 }) => {
   const [limitTo, setLimitTo] = useState("all");
 
-  const serializeSubjects = (subjects) =>
-    subjects.map((subject) => {
+  const serializeSubjects = (subjects) => {
+    const subs = subjects.map((subject) => {
       const scheme = subject.scheme ? `(${subject.scheme}) ` : "";
       return {
         text: !!hideSchemeLabels ? subject.subject : scheme + subject.subject,
@@ -51,6 +51,8 @@ const SubjectsField = ({
         subject: subject.subject,
       };
     });
+    return subs;
+  }
 
   const prepareSuggest = (searchQuery) => {
     const prefix = limitTo === "all" ? "" : `${limitTo}:`;
@@ -66,13 +68,13 @@ const SubjectsField = ({
     "FAST-chronological": "time periods",
     "FAST-title": "titles of works",
     "FAST-meeting": "meetings and conferences",
+    "Homosaurus": "homosaurus",
   }
 
   const topFacets = {
     "FAST-topical": "topics",
     "All": "all",
   }
-  console.log("limitToOptions", limitToOptions);
 
   let facetOptions = limitToOptions.reduce((options, option, it) => {
     if ( Object.keys(facets).includes(option.value) ) {
@@ -83,7 +85,7 @@ const SubjectsField = ({
       });
     }
     return options;
-  }, []).sort((a, b) => a.text < b.text ? -1 : a.text > b. text ? 1 : 0);
+  }, []).sort((a, b) => a.text < b.text ? -1 : a.text > b.text ? 1 : 0);
 
   for (let [key, item] of Object.entries(topFacets)) {
     // FIXME: This is ugly and I'm tired
@@ -120,7 +122,6 @@ const SubjectsField = ({
           </Form.Field> */}
             <Field name={fieldPath} width={10}>
               {({ field, form: { values } }) => {
-                console.log("SubjectsField", field, values);
                 return (
                   <RemoteSelectField
                     {...otherProps}
@@ -143,9 +144,10 @@ const SubjectsField = ({
                     onValueChange={({ formikProps }, selectedSuggestions) => {
                       formikProps.form.setFieldValue(
                         fieldPath,
-                        // save the suggestion objects so we can extract information
-                        // about which value added by the user
-                        selectedSuggestions
+                        selectedSuggestions.map((suggestion) => ({
+                          subject: suggestion.value,
+                          id: suggestion.id,
+                        }))
                       );
                     }}
                     placeholder={placeholder}

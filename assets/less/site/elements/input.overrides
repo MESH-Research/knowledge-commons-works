@@ -15,4 +15,5 @@
   .ui.form input[type="url"] {
     border-color: @ivy30;
   }
+
 }

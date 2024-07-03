@@ -95,6 +95,24 @@ textarea {
   }
 }
 
+#frontpage-search-bar {
+  .ui.form {
+    .ui.input {
+      input {
+        border-color: @darkGold;
+        border-right: none;
+        outline: 3px solid @gold;
+      }
+      button[type="submit"] {
+        outline: 3px solid @gold;
+      }
+    }
+  }
+  .ui.icon.primary.button {
+    outline: 3px solid @verdigrisDark;
+  }
+}
+
 #deposit-form {
   flex-grow: 1;
   display: flex;
@@ -403,6 +421,19 @@ textarea {
                 border-color: @primaryColor;
                 margin: 0;
               }
+            }
+          }
+        }
+
+        &.invenio-fieldset.file_upload {
+          .ui.fitted.checkbox {
+            padding: 0.5rem;
+            min-height: 21px;
+            min-width: 21px;
+
+            label:before {
+              top: -0.5rem;
+              left: -0.5rem;
             }
           }
         }

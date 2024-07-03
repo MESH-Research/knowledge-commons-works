@@ -111,9 +111,9 @@ html.cover-page {
     linear-gradient(
       0deg,
       rgba(255, 255, 255, 1) 0%,
-      rgba(255, 255, 255, 0.9) 20%,
-      rgba(255, 255, 255, 0.9) 47%,
-      rgba(255, 255, 255, 0.9) 93%,
+      rgba(255, 255, 255, 0.93) 20%,
+      rgba(255, 255, 255, 0.93) 47%,
+      rgba(255, 255, 255, 0.93) 93%,
       rgba(255, 255, 255, 1) 98%
     ),
     url("../../../../static/images/pattern/KCommons_assets_pattern small_400.png");
@@ -150,7 +150,8 @@ html.cover-page {
   #frontpage-info-bar {
     margin-bottom: 0;
     padding: 3rem 0;
-    background-color: @verdigris;
+    background-color: @verdigris80;
+    background-image: url("../../../../static/images/textured_bgs/KCommons_assets_Ivy_800.png");
     .column {
       cursor: pointer;
       background-color: transparent;
@@ -177,6 +178,7 @@ html.cover-page {
         a,
         h2 {
           color: @white;
+          text-shadow: 0 0 10px @ivy;
         }
       }
     }
