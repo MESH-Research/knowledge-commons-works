@@ -28,6 +28,7 @@ def create_blueprint(app):
         view_func=AdminLogin.as_view("admin_login"),
     )
 
+
     # Register error handlers
     # blueprint.register_error_handler(PIDDeletedError, record_tombstone_error)
     # blueprint.register_error_handler(
