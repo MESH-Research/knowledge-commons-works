@@ -25,6 +25,7 @@ h2.ui.header {
   h1.ui.header {
     margin-top: 0;
     font-weight: normal;
+    color: @primaryColor;
   }
   .sidebar-container {
     h2.ui.header {
