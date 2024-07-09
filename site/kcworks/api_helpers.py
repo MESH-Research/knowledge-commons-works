@@ -198,7 +198,7 @@ def format_commons_search_collection_payload(identity, record=None, **kwargs):
         data = kwargs.get("draft", {})
 
     try:
-        type_string = "works_collection"
+        type_string = "work"
         type_dict = data["metadata"].get("type", {})
         if type_dict:
             type_string += f"_{type_dict.get('id', '')}"
@@ -289,89 +289,93 @@ def record_commons_search_recid(
     current_app.logger.debug(f"json in callback: {response_json}")
     current_app.logger.debug("payload in callback:")
     current_app.logger.debug(pformat(payload_object))
-    try:
-        if record_id:
-            current_app.logger.debug(
-                f"Record ID: {record_id}, draft ID: {draft_id}"
-            )
-            try:
-                record_data = service.read(
-                    system_identity, record_id
-                ).to_dict()
-            except PIDDoesNotExistError:
-                record = service.search(system_identity, q="slug:{}")
-                record_data = record.to_dict()["hits"]["hits"][0]
-            current_app.logger.debug("Record data:")
-            current_app.logger.debug(pformat(record_data))
-            # search_id = record_data.get("custom_fields", {}).get(
-            #     "kcr:commons_search_recid"
-            # )
-            # current_app.logger.debug(f"search_id: {search_id}")
-            # current_app.logger.debug(
-            #     f"response_json['_id']: {response_json['_id']}"
-            # )
-            editing_draft = service.edit(system_identity, record_id)
-            record_data["custom_fields"]["kcr:commons_search_recid"] = (
-                response_json["_id"]
-            )
-            record_data["custom_fields"]["kcr:commons_search_updated"] = (
-                arrow.utcnow().isoformat().split(".")[0]
-            )
-            del record_data["revision_id"]
-            current_app.logger.debug("Updating info:")
-            current_app.logger.debug(
-                record_data["custom_fields"]["kcr:commons_search_recid"]
-            )
-            current_app.logger.debug(
-                record_data["custom_fields"]["kcr:commons_search_updated"]
-            )
-            updated = service.update_draft(
-                system_identity,
-                editing_draft.id,
-                data=record_data,
-            )
-            current_app.logger.debug("Updated record in callback:")
-            current_app.logger.debug(pformat(updated.data))
-            published = service.publish(system_identity, editing_draft.id)
-            current_app.logger.debug("Published record in callback:")
-            current_app.logger.debug(published.data)
-        elif draft_id:
-            draft_data = (
-                service.read_draft(system_identity, draft_id).to_dict().copy()
-            )
-            search_id = draft_data.get("custom_fields", {}).get(
-                "kcr:commons_search_recid"
-            )
-            current_app.logger.debug(f"search_id: {search_id}")
-            if not search_id or search_id != response_json["_id"]:
-                draft_data["custom_fields"]["kcr:commons_search_recid"] = (
+    if response_json.get("_id"):  # No id is returned for updates
+        try:
+            if record_id:
+                current_app.logger.debug(
+                    f"Record ID: {record_id}, draft ID: {draft_id}"
+                )
+                try:
+                    record_data = service.read(
+                        system_identity, record_id if record_id else draft_id
+                    ).to_dict()
+                except PIDDoesNotExistError:
+                    record_data = service.read_draft(
+                        system_identity, draft_id
+                    ).to_dict()
+                current_app.logger.debug("Record data:")
+                current_app.logger.debug(pformat(record_data))
+                # search_id = record_data.get("custom_fields", {}).get(
+                #     "kcr:commons_search_recid"
+                # )
+                # current_app.logger.debug(f"search_id: {search_id}")
+                # current_app.logger.debug(
+                #     f"response_json['_id']: {response_json['_id']}"
+                # )
+                editing_draft = service.edit(system_identity, record_id)
+                record_data["custom_fields"]["kcr:commons_search_recid"] = (
                     response_json["_id"]
                 )
-                draft_data["custom_fields"][
-                    "kcr:commons_search_updated"
-                ] = arrow.utcnow().format("YYYY-MM-DD HH:mm:ss")
-                del draft_data["revision_id"]
-                current_app.logger.debug("Updating info:")
-                current_app.logger.debug(pformat(draft_data))
-                updated = service.update_draft(
-                    system_identity, draft_id, data=draft_data
+                record_data["custom_fields"]["kcr:commons_search_updated"] = (
+                    arrow.utcnow().isoformat().split(".")[0]
                 )
-                current_app.logger.debug("Updated draft:")
+                del record_data["revision_id"]
+                current_app.logger.debug("Updating info:")
+                current_app.logger.debug(
+                    record_data["custom_fields"]["kcr:commons_search_recid"]
+                )
+                current_app.logger.debug(
+                    record_data["custom_fields"]["kcr:commons_search_updated"]
+                )
+                updated = service.update_draft(
+                    system_identity,
+                    editing_draft.id,
+                    data=record_data,
+                )
+                current_app.logger.debug("Updated record in callback:")
                 current_app.logger.debug(pformat(updated.data))
+                published = service.publish(system_identity, editing_draft.id)
+                current_app.logger.debug("Published record in callback:")
+                current_app.logger.debug(published.data)
+            elif draft_id:
+                draft_data = (
+                    service.read_draft(system_identity, draft_id)
+                    .to_dict()
+                    .copy()
+                )
+                search_id = draft_data.get("custom_fields", {}).get(
+                    "kcr:commons_search_recid"
+                )
+                current_app.logger.debug(f"search_id: {search_id}")
+                if not search_id or search_id != response_json["_id"]:
+                    draft_data["custom_fields"]["kcr:commons_search_recid"] = (
+                        response_json["_id"]
+                    )
+                    draft_data["custom_fields"][
+                        "kcr:commons_search_updated"
+                    ] = arrow.utcnow().format("YYYY-MM-DD HH:mm:ss")
+                    del draft_data["revision_id"]
+                    current_app.logger.debug("Updating info:")
+                    current_app.logger.debug(pformat(draft_data))
+                    updated = service.update_draft(
+                        system_identity, draft_id, data=draft_data
+                    )
+                    current_app.logger.debug("Updated draft:")
+                    current_app.logger.debug(pformat(updated.data))
 
-    except RecordDeletedException as e:
-        current_app.logger.error(
-            f"Record {record_id if record_id else draft_id} has been "
-            f"deleted. Could not record its commons search recid: {e}."
-        )
-        # FIXME: do something here
-        # record["custom_fields"]["kcr:commons_search_recid"] = json["_id"]
-        # return record, draft
-    except PIDDoesNotExistError as e:
-        current_app.logger.error(
-            f"Record {record_id if record_id else draft_id} cannot "
-            f"be found. Could not record its commons search recid: {e}."
-        )
+        except RecordDeletedException as e:
+            current_app.logger.error(
+                f"Record {record_id if record_id else draft_id} has been "
+                f"deleted. Could not record its commons search recid: {e}."
+            )
+            # FIXME: do something here
+            # record["custom_fields"]["kcr:commons_search_recid"] = json["_id"]
+            # return record, draft
+        except PIDDoesNotExistError as e:
+            current_app.logger.error(
+                f"Record {record_id if record_id else draft_id} cannot "
+                f"be found. Could not record its commons search recid: {e}."
+            )
 
 
 @shared_task(
