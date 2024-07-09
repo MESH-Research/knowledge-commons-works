@@ -396,41 +396,42 @@ def record_commons_search_collection_recid(
     )
     current_app.logger.debug(f"json in callback: {response_json}")
     current_app.logger.debug(f"payload in callback: {payload_object}")
-    try:
-        time.sleep(5)
-        current_app.logger.debug(
-            f"Record ID: {record_id}, draft ID: {draft_id}"
-        )
+    if response_json.get("_id"):  # No id is returned for updates
         try:
-            record_data = service.read(system_identity, record_id).to_dict()
-        except PIDDoesNotExistError:
-            records = service.search(
-                system_identity,
-                q="",
-                # q=f"slug:{payload_object['_internal_id']}"
-            ).to_dict()
-            current_app.logger.debug("records search")
-            current_app.logger.debug(pformat(records))
-            record_data = records[0]
+            time.sleep(5)
+            current_app.logger.debug(
+                f"Record ID: {record_id}, draft ID: {draft_id}"
+            )
+            try:
+                record_data = service.read(
+                    system_identity, record_id
+                ).to_dict()
+            except PIDDoesNotExistError:
+                records = service.search(
+                    system_identity, q=f"slug:{payload_object['_internal_id']}"
+                ).to_dict()
+                current_app.logger.debug("records search")
+                current_app.logger.debug(pformat(records))
+                record_data = records["hits"]["hits"][0]
 
-        service.update(
-            system_identity,
-            record_id,
-            update_nested_dict(
-                record_data,
-                {
-                    "custom_fields": {
-                        "kcr:commons_search_recid": response_json["_id"]
-                    }
-                },
-            ),
-        )
-    except CommunityDeletedError as e:
-        print(
-            f"Community {payload_object['record_id']} has been deleted. "
-            f"Could not record its commons search recid. {e}"
-        )
-        # FIXME: do something here
+            service.update(
+                system_identity,
+                record_data["id"],
+                update_nested_dict(
+                    record_data,
+                    {
+                        "custom_fields": {
+                            "kcr:commons_search_recid": response_json["_id"]
+                        }
+                    },
+                ),
+            )
+        except CommunityDeletedError as e:
+            print(
+                f"Community {payload_object['record_id']} has been deleted. "
+                f"Could not record its commons search recid. {e}"
+            )
+            # FIXME: do something here
 
 
 def choose_record_publish_method(identity, **kwargs):
