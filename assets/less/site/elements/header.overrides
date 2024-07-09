@@ -24,7 +24,7 @@ h2.ui.header {
 #detail-main-content {
   h1.ui.header {
     margin-top: 0;
-    font-weight: normal;
+    // font-weight: normal;
     color: @primaryColor;
   }
   .sidebar-container {
