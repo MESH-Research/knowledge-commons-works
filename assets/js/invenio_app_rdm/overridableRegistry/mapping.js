@@ -17,6 +17,7 @@ import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 import { PublicationDateField } from "./fields/PublicationDateField";
 import { PublisherField } from "./fields/PublisherField";
 import RecordsResultsListItem from "./search/RecordsResultsListItem";
+import { RequestsResultsItemTemplateWithCommunity } from "./collections/requests";
 import { RDMRecordMultipleSearchBarElement } from "./search/RDMRecordMultipleSearchBarElement";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
 import { ResultOptions } from "./search/ResultOptions";
@@ -63,6 +64,7 @@ export const overriddenComponents = {
   "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
   "InvenioAppRdm.Deposit.FileUploader.container": FileUploader,
   "InvenioCommunities.DetailsSearch.ResultsList.item": RecordsResultsListItem,
+  "InvenioCommunities.RequestSearch.ResultsList.item": RequestsResultsItemTemplateWithCommunity,
   "InvenioModularDetailPage.MobileActionMenu.container": MobileActionMenu,
   // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
   // InvenioCommunities.Search.SearchApp.layout: CommunityRecordsSearchAppLayout,
