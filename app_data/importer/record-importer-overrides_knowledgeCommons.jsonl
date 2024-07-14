@@ -10,3 +10,5 @@
 {"source_id": "hc:58543", "overrides": {"files|entries":{"ARLISNA_deposit.pdf.bell2.pdf": {"key": "ARLISNA_deposit.pdf.bell2.pdf", "mimetype": "application/pdf", "size": "99199"}}, "custom_fields|hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/humcore/2023/08/ARLISNA_deposit.pdf.bell2.pdf"}}
 {"source_id": "hc:58801", "overrides": {"files|entries":{"ARLISNA_deposit.pdf.bell2.pdf": {"key": "ARLISNA_deposit.pdf.bell2.pdf", "mimetype": "application/pdf", "size": "99199"}}, "custom_fields|hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/humcore/2023/08/ARLISNA_deposit.pdf.bell2.pdf"}}
 {"source_id": "hc:58813", "overrides": {"files|entries":{"ARLISNA_deposit.pdf.harris2.pdf": {"key": "ARLISNA_deposit.pdf.harris2.pdf", "mimetype": "application/pdf", "size": "145426"}}, "custom_fields|hclegacy:file_location": "/srv/www/commons/current/web/app/uploads/humcore/2023/08/ARLISNA_deposit.pdf.harris2.pdf"}}
+{"source_id": "hc:51453", "overrides": {"metadata|dates|0|date": "2023-02-28"}}
+{"source_id": "hc:48557", "skip": "true", "notes": "Removed from CORE"}
