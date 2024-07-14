@@ -25,7 +25,11 @@ it under the terms of the MIT License; see LICENSE file for more details.
 {%- set meta_keywords = record.metadata.subjects | map(attribute="subject") | join(':') %}
 {%- set meta_url = record.links.self_html %}
 {%- set files = record.files %}
+{% if preview_file_item is defined %}
 {%- set meta_pdf_url = preview_file_item.links.content if preview_file_item.mimetype=="application/pdf" else None %}
+{% else %}
+{%- set meta_pdf_url = None %}
+{% endif %}
 
 <meta name="description" content="{{meta_description}}" />
 <meta name="citation_abstract" content="{{meta_description}}" />
