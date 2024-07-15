@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the directory to start from
-dir=/$MIGRATION_LOCAL_DATA_DIR/"humcore"
+dir=/$INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR/"humcore"
 
 # Use find to get all files with quote characters in their names
 # find "$dir" -type f -name "*[“”‘’]*"

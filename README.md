@@ -451,11 +451,11 @@ INVENIO_LOCAL_INSTANCE_PATH=/path/to/local/virtual/environment/var/instance
 If you are going to be using the KC Works migration tools, you will also need:
 
 ```env
-MIGRATION_API_TOKEN=myapitoken
-MIGRATION_SERVER_DOMAIN='host.docker.internal'
-MIGRATION_SERVER_PROTOCOL='https'
-MIGRATION_SERVER_DATA_DIR='/opt/invenio/var/import_data'
-MIGRATION_SERVER_LOCAL_DATA_DIR='/path/to/local/import_data'
+RECORD_IMPORTER_API_TOKEN=myapitoken
+RECORD_IMPORTER_DOMAIN='host.docker.internal'
+RECORD_IMPORTER_PROTOCOL='https'
+RECORD_IMPORTER_DATA_DIR='/opt/invenio/var/import_data'
+RECORD_IMPORTER_LOCAL_DATA_DIR='/path/to/local/import_data'
 ```
 
 If you are going to be working with the Invenio modules locally, you will also need:
