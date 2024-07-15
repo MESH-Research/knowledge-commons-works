@@ -4,12 +4,14 @@ import {
 } from "@js/invenio_search_ui/components";
 import {i18next} from "@translations/invenio_app_rdm/i18next";
 import { RecordSearchBarElement } from "./RecordSearchBarElement";
+import _isEmpty from "lodash/isEmpty";
 
 export const RDMRecordMultipleSearchBarElement = ({ queryString, onInputChange }) => {
   const headerSearchbar = document.getElementById("header-search-bar");
   const searchbarOptions = JSON.parse(headerSearchbar.dataset.options);
+  console.log("options:", searchbarOptions);
 
-  if (!_isEmpty(searchbarOptions)) {
+  if (!_isEmpty(searchbarOptions) && searchbarOptions.length > 1) {
     return (
       <MultipleOptionsSearchBarRSK
         options={searchbarOptions}
