@@ -128,9 +128,10 @@ Thumbs.db
 # *.gz
 subjects_fast.yaml
 serialized_core_data.jsonl
-scripts/core-migrate/core_migrate/logs/core_migrate_touched_records.jsonl
-scripts/core-migrate/core_migrate/logs/core_migrate.log
-scripts/core-migrate/core_migrate/logs/core_migrate.log.*
-scripts/core-migrate/core_migrate/logs/core_migrate_failed_records.jsonl
+scripts/core-migrate/record_importer/logs/record_importer_touched_records.jsonl
+scripts/core-migrate/record_importer/logs/record_importer_created_records.jsonl
+scripts/core-migrate/record_importer/logs/record_importer.log
+scripts/core-migrate/record_importer/logs/record_importer.log.*
+scripts/core-migrate/record_importer/logs/record_importer_failed_records.jsonl
 site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log
 site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*
