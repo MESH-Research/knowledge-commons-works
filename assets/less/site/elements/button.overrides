@@ -1,5 +1,29 @@
-.ui.buttons > .ui.button:not(.basic):not(.inverted),
-.ui.buttons:not(.basic):not(.inverted) > .ui.button,
+.ui.buttons.basic {
+  border-color: transparent;
+
+  .ui.button:last-child {
+    margin-left: 3px;
+    border-left: none;
+  }
+  > .ui.button.active {
+    background-color: @mint50 !important;
+    color: @ivy;
+    box-shadow: 0px 0px 0px 1px @ivy40 inset,
+      0px 0em 0px 0px @ivyRgba10 inset;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: @mint70 !important;
+      color: @ivy;
+      box-shadow: 0px 0px 0px 1px @ivy40 inset,
+        0px 0em 0px 0px @ivyRgba10 inset;
+    }
+  }
+}
+
+.ui.buttons > .ui.button:not(.inverted),
+.ui.buttons:not(.inverted) > .ui.button,
 .ui.button {
   background-color: @white;
   color: @ivy;
@@ -10,7 +34,7 @@
   &:hover,
   &:active,
   &:focus {
-    background-color: @mint50;
+    background-color: @mint30 !important;
     color: @ivy;
     box-shadow: 0px 0px 0px 1px @ivy40 inset,
       0px 0em 0px 0px @ivyRgba10 inset;
@@ -21,7 +45,7 @@
     &:hover,
     &:active,
     &:focus {
-      background-color: darken(@secondaryColor, 10%);
+      background-color: darken(@secondaryColor, 10%) !important;
       border-color: darken(@secondaryColor, 10%);
       box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 10%) inset,
         0px 0em 0px 0px rgba(28, 64, 54, 0.15) inset;
@@ -38,7 +62,17 @@
     &:active,
     &:focus {
       color: @negativeBackgroundColor;
-      background-color: @negativeTextColorDarker;
+      background-color: @negativeTextColorDarker !important;
+    }
+  }
+
+  &.positive {
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: @positiveBackgroundColor;
+      background-color: @positiveColorDown !important;
     }
   }
 
@@ -64,7 +98,7 @@
       &:hover,
       &:active,
       &:focus {
-        background-color: darken(@redDark, 5%);
+        background-color: darken(@redDark, 5%) !important;
       }
 
       &.no-label {
@@ -81,13 +115,13 @@
 .ui.buttons.basic:not(.inverted) > .ui.button,
 .ui.button.basic {
   background-color: @white;
-  color: @ivy;
+  color: @ivy !important;
   box-shadow: 0px 0px 0px 1px @ivy30 inset, 0px 0em 0px 0px @ivyRgba10 inset;
   &:hover,
   &:active,
   &:focus {
-    background-color: @mint50;
-    color: @ivy;
+    background-color: @mint50 !important;
+    color: @ivy !important;
     box-shadow: 0px 0px 0px 1px @ivy40 inset,
       0px 0em 0px 0px @ivyRgba10 inset;
     cursor: pointer;
@@ -121,7 +155,7 @@
     &:hover,
     &:active,
     &:focus {
-      color: @ivy80;
+      color: @ivy80 !important;
       background-color: @seafoam !important;
       box-shadow: 0px 0px 0px 1px @verdigris70 inset,
         0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
@@ -162,7 +196,7 @@
   &:hover,
   &:active,
   &:focus {
-    background-color: @ivy90;
+    background-color: @ivy90 !important;
     color: @seafoam;
     box-shadow: 0px 0px 0px 1px @ivy90 inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
@@ -176,6 +210,18 @@
     .menu .button.item {
         color: @verdigrisDark;
         box-shadow: none;
+        &:active,
+        &:focus,
+        &:hover {
+            background-color: @mint50 !important;
+        }
+        &.active {
+          &:active,
+          &:focus,
+          &:hover {
+              background-color: darken(@verdigrisDark, 5%) !important;
+          }
+        }
     }
 }
 

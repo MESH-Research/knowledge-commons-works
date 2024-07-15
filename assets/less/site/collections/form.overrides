@@ -99,7 +99,7 @@ textarea {
   .ui.form {
     .ui.input {
       input {
-        border-color: @darkGold;
+        border-color: @gold;
         border-right: none;
         outline: 3px solid @gold;
       }

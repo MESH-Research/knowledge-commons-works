@@ -28,7 +28,7 @@
       &:hover,
       &:focus,
       &:active {
-        background-color: darken(@sidebarBackgroundColor, 5%);
+        background-color: darken(@sidebarBackgroundColor, 5%) !important;
         &::after {
           background-color: darken(@sidebarBackgroundColor, 5%);
         }
@@ -50,7 +50,7 @@
         &:hover,
         &:focus,
         &:active {
-          background-color: darken(@mint, 10%);
+          background-color: darken(@mint, 10%) !important;
           &::after {
             background-color: darken(@mint, 10%);
           }

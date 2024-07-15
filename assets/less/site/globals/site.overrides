@@ -178,7 +178,7 @@ html.cover-page {
         a,
         h2 {
           color: @white;
-          text-shadow: 0 0 10px @ivy;
+          text-shadow: 0 0 2rem 000;
         }
       }
     }
