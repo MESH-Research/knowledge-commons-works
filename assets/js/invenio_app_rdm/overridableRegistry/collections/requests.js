@@ -14,7 +14,6 @@ const RequestsResultsItemTemplateCommunity = ({ result, community }) => {
   );
   const MobileRequestsItemWithState = withState(MobileRequestItem);
   const detailsURL = `/collections/${community.slug}/requests/${result.id}`;
-  console.log("got custom");
   return (
     <>
       <ComputerTabletRequestsItemWithState
@@ -35,7 +34,7 @@ RequestsResultsItemTemplateCommunity.propTypes = {
 // object without overriding the root invenio_communities/requests/index.js
 // file where the container is defined. We just override this componennt
 const domContainer = document.getElementById("communities-request-search-root");
-const community = JSON.parse(domContainer.dataset.community);
+const community = domContainer ? JSON.parse(domContainer.dataset.community) : undefined;
 
 const RequestsResultsItemTemplateWithCommunity = parametrize(
   RequestsResultsItemTemplateCommunity,
