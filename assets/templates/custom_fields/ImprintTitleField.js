@@ -14,9 +14,6 @@ import { Divider, Grid } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
 class ImprintTitleField extends Component {
-  componentDidMount() {
-    console.log("ImprintTitleField", this.props);
-  }
   render() {
     const {
       fieldPath, // injected by the custom field loader via the `field` config property

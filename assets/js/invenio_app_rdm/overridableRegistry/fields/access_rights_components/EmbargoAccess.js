@@ -18,7 +18,6 @@ import { useFormikContext } from "formik";
 
 export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
   const { setFieldValue } = useFormikContext();
-  console.log("EmbargoAccess.js: access", access);
   const recordPublic = access.record === "public";
   const filesPublic = access.files === "public";
   const communityPublic = accessCommunity === "public";

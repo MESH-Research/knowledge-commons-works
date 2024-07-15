@@ -161,7 +161,6 @@ export const FileUploaderComponent = ({
 
   const displayImportBtn =
     filesEnabled && isDraftRecord && hasParentRecord && !filesList.length;
-  console.log("FileUploaderComponent displayImportBtn", displayImportBtn);
 
   const wrappedUploadFiles = (formikDraft, acceptedFiles) => {
     formikDraft.files.enabled = true;

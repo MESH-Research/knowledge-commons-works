@@ -92,7 +92,6 @@ const CreatibutorsFieldItem = ({
     return error;
   }
   let firstError = returnBottomError(itemError);
-  console.log("firstError", firstError);
 
   // Initialize the ref explicitely
   drop(dropRef);

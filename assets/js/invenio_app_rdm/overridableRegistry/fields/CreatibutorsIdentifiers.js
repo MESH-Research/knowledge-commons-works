@@ -73,10 +73,7 @@ const CreatibutorsIdentifiers = ({
           <>
             {arrayHelpers.form.values.person_or_org.identifiers?.map(
               (option, index) => {
-                console.log("option", option);
-                console.log("arrayHelpers", arrayHelpers);
                 const fieldPathPrefix = `${fieldPath}.${index}`;
-                console.log("fieldPathPrefix", fieldPathPrefix);
                 return (
                   <Form.Group
                     key={index}

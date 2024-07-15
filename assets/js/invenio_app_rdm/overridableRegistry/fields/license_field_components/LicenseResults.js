@@ -14,7 +14,6 @@ import { i18next } from "@translations/invenio_rdm_records/i18next";
 
 export const LicenseResults = withState(
   ({ currentResultsState: results, serializeLicenses }) => {
-    console.log("LicenseResults", results.data.hits);
     const serializeLicenseResult = serializeLicenses
       ? serializeLicenses
       : (result) => ({

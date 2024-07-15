@@ -19,8 +19,6 @@ export class MembersSearchLayout extends Component {
     const { config, roles, appName } = this.props;
     const filtersClass = new Filters(roles);
     const customFilters = filtersClass.getMembersFilters();
-    console.log("customFilters", customFilters);
-    console.log("config", config);
     return (
       <>
         {/* auto column grid used instead of SUI grid for better searchbar width adjustment */}

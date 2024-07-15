@@ -92,7 +92,7 @@ function FundingFieldForm(props) {
         <List>
           {getIn(values, fieldPath, []).map((value, index) => {
             const key = `${fieldPath}.${index}`;
-            console.log("FundingFieldForm values: ", value)
+            // console.log("FundingFieldForm values: ", value)
             // if award does not exist or has no id, it's a custom one
             const awardType = value?.award?.id ? "standard" : "custom";
             return (

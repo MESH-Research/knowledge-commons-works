@@ -148,7 +148,6 @@ const CreatibutorsFieldForm = ({
   };
 
   const handleOnContributorChange = (selectedCreatibutor, action) => {
-    console.log("handleOnContributorChange");
     setAddingSelf(false);
     formikArrayPush(selectedCreatibutor);
     setModalOpen(action === "saveAndContinue" ? true : false);
@@ -208,7 +207,6 @@ const CreatibutorsFieldForm = ({
           }))
         : [],
   };
-  console.log("selfCreatibutor", selfCreatibutor);
 
   return (
     <Form.Field
@@ -221,7 +219,6 @@ const CreatibutorsFieldForm = ({
           const key = `${fieldPath}.${index}`;
           // const key = `${fieldPath}.${value.person_or_org.name}`;
           const displayName = creatibutorNameDisplay(value);
-          console.log("key is", key);
 
           return (
             <CreatibutorsFieldItem
@@ -335,16 +332,16 @@ const CreatibutorsField = ({
   schema = "creators",
   ...otherProps
 }) => {
-  console.log(
-    "CreatibutorsField called",
-    fieldPath,
-    label,
-    icon,
-    modal,
-    roleOptions,
-    schema,
-    otherProps
-  );
+  // console.log(
+  //   "CreatibutorsField called",
+  //   fieldPath,
+  //   label,
+  //   icon,
+  //   modal,
+  //   roleOptions,
+  //   schema,
+  //   otherProps
+  // );
   // FIXME: This state has to be managed here because the whole fieldarray is reredered and loses state on any state change; seems related to react-dnd
   const [modalOpen, setModalOpen] = useState(false);
   const [addingSelf, setAddingSelf] = useState(false);
@@ -354,7 +351,6 @@ const CreatibutorsField = ({
   const { currentUserprofile } = useContext(FormUIStateContext);
 
   useEffect(() => {
-    console.log("useEffect creatibutorsTouched", creatibutorsTouched);
     // if (creatibutorsTouched) {
     //   setFieldTouched("metadata.creators", true);
     // }

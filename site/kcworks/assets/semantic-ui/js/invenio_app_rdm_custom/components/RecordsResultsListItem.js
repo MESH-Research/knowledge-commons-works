@@ -59,8 +59,6 @@ class RecordsResultsListItem extends Component {
     const allVersionsVisible = filters?.allversions;
     const numOtherVersions = versions.index - 1;
 
-    console.log("ID: ", buildUID("RecordsResultsListItem.layout", "", appName));
-
     // Derivatives
     const viewLink = `/records/${result.id}`;
     return (

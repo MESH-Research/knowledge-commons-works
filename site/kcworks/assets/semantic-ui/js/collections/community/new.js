@@ -106,7 +106,7 @@ class CommunityCreateForm extends Component {
   render() {
     const { formConfig, canCreateRestricted } = this.props;
     const { error } = this.state;
-    console.log("formConfig", formConfig);
+    // console.log("formConfig", formConfig);
     formConfig.access.visibility[0].helpText = i18next.t(
       "Your collection is publicly accessible and shows up in search results.");
     formConfig.access.visibility[1].helpText = i18next.t(

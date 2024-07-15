@@ -45,7 +45,6 @@ const CommunityDetailsHeader = ({
     )
   ) {
     pattern = Geopattern.generate(encodeURI(slug));
-    console.log("slug", encodeURI(slug));
 
     // use rgba version of svg pattern color for header background
     const opacity = 0.1;
@@ -268,8 +267,6 @@ CommunityDetailsHeader.propTypes = {
 // the querySelector
 document.addEventListener("DOMContentLoaded", () => {
   const headerContainer = document.getElementById("community-detail-header");
-
-  console.log("headerContainer.dataset", headerContainer.dataset);
 
   const activeMenuItem = headerContainer.dataset.activeMenuItem;
   const canModerate =

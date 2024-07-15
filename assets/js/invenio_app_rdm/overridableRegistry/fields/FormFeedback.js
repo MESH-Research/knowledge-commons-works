@@ -173,12 +173,12 @@ class DisconnectedFormFeedback extends Component {
       "Missing data for required field.":
         "Missing a value for a required field.",
     };
-    console.log(
-      "errorMessages error:",
-      error,
-      Object.keys(readableEquivalents),
-      readableEquivalents[error]
-    );
+    // console.log(
+    //   "errorMessages error:",
+    //   error,
+    //   Object.keys(readableEquivalents),
+    //   readableEquivalents[error]
+    // );
     if (readableEquivalents[error]) {
       return readableEquivalents[error];
     }
@@ -259,7 +259,7 @@ class DisconnectedFormFeedback extends Component {
     );
 
     // Added step: Make error messages readable
-    console.log("errorMessages step1:", step1);
+    // console.log("errorMessages step1:", step1);
     step1 = Object.fromEntries(
       Object.entries(step1).map(([key, value]) => {
         return [key, value.map((v) => this.makeErrorReadable(key, v))];
@@ -275,7 +275,7 @@ class DisconnectedFormFeedback extends Component {
       let messages = labelledErrorMessages[label] || [];
       labelledErrorMessages[label] = messages.concat(step1[key]);
     }
-    console.log("errorMessages:", labelledErrorMessages);
+    // console.log("errorMessages:", labelledErrorMessages);
 
     return labelledErrorMessages;
   }

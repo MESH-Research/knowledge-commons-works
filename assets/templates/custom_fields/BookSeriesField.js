@@ -55,7 +55,6 @@ const BookSeriesField = ({
   });
 
   const handleAddNew = (arrayHelpers, newItem) => {
-    console.log(arrayHelpers);
     setHaveChangedNumber(true);
     arrayHelpers.push(newItem);
     setSeriesLength(seriesLength + 1);

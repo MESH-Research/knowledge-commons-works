@@ -47,8 +47,6 @@ export const defaultComponents = {
 };
 const overriddenComponents = overrideStore.getAll();
 
-console.log("communities.js");
-
 createSearchAppInit(
   { ...defaultComponents, ...overriddenComponents },
   true,

@@ -9,7 +9,6 @@ import _isEmpty from "lodash/isEmpty";
 export const RDMRecordMultipleSearchBarElement = ({ queryString, onInputChange }) => {
   const headerSearchbar = document.getElementById("header-search-bar");
   const searchbarOptions = JSON.parse(headerSearchbar.dataset.options);
-  console.log("options:", searchbarOptions);
 
   if (!_isEmpty(searchbarOptions) && searchbarOptions.length > 1) {
     return (
