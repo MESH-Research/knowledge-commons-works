@@ -17,6 +17,7 @@ import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 import { PublicationDateField } from "./fields/PublicationDateField";
 import { PublisherField } from "./fields/PublisherField";
 import RecordsResultsListItem from "./search/RecordsResultsListItem";
+import RequestMetadata from "./requests/RequestMetadata";
 import { RequestsResultsItemTemplateWithCommunity } from "./collections/requests";
 import { RDMRecordMultipleSearchBarElement } from "./search/RDMRecordMultipleSearchBarElement";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
@@ -41,6 +42,7 @@ const SearchAppLayoutWithConfig = parametrize(SearchAppLayout, {
 });
 
 export const overriddenComponents = {
+  "InvenioRequest.RequestMetadata.Layout": RequestMetadata,
   "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
   "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
   "InvenioAppRdm.Deposit.ContributorsField.container": CreatibutorsField,
