@@ -1,3 +1,17 @@
+{# -*- coding: utf-8 -*-
+
+  Part of Knowledge Commons Works
+  Copyright (C) 2024 Mesh
+
+  A customization file for Invenio App RDM.
+  Copyright (C) 2017-2024 CERN.
+
+  Invenio App RDM and Knowledge Commons Works are both free software; you
+  can redistribute and/or modify them under the terms of the MIT License;
+  see LICENSE file for more details.
+#}
+
+
 {% if field_value.get('ai_used') %}
     <dt class="ui tiny header">{{ _("AI Used")}}</dt>
     {{field_value.get("ai_used", "Unknown")}}

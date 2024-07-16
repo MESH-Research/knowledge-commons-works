@@ -1,10 +1,13 @@
-{# -*- coding: utf-8 -*-
-
-  This file is part of Invenio.
+{#
+  Based on a file in Invenio App RDM.
   Copyright (C) 2022 CERN.
 
-  Invenio is free software; you can redistribute it and/or modify it
-  under the terms of the MIT License; see LICENSE file for more details.
+  Modifications for Knowledge Commons Works
+  Copyright (C) 2024 Mesh
+
+  Invenio App RDM and Knowledge Commons Works are both free software; you
+  can redistribute and/or modify them under the terms of the MIT License;
+  see LICENSE file for more details.
 #}
 <div class="ui container fluid page-subheader-outer shadowless with-submenu ml-0-mobile mr-0-mobile mb-0 rel-pt-2"
      id="dashboard-user-header-container">
@@ -17,7 +20,7 @@
               <img src="{{ user_avatar }}" alt="" />
             </div>
             <div class="middle aligned content">
-              <h1 class="ui medium header" aria-label="{{ _("Your dashboard") }}">
+              <h1 class="ui medium header" aria-label="{{ _('Your dashboard') }}">
                 {{ current_userprofile.full_name or current_user.username or current_userprofile.email or _("Anonymous user") }}
               </h1>
               {% if current_userprofile.affiliations %}<div class="meta">{{ current_userprofile.affiliations }}</div>{% endif %}
