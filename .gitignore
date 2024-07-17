@@ -15,7 +15,8 @@ __pycache__/
 *.code-workspace
 *.vscode
 
-# x.509 private key
+# x.509 cert and private key
+*.crt
 *.key
 
 # Node module files
