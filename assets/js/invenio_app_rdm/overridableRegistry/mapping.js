@@ -42,7 +42,7 @@ const SearchAppLayoutWithConfig = parametrize(SearchAppLayout, {
 });
 
 export const overriddenComponents = {
-  "InvenioRequest.RequestMetadata.Layout": RequestMetadata,
+  "InvenioRequest.RequestMetadata": RequestMetadata,
   "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
   "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
   "InvenioAppRdm.Deposit.ContributorsField.container": CreatibutorsField,
