@@ -79,7 +79,8 @@ services:
       file: docker-services.yml
       service: app
     container_name: kcworks-ui
-    command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
+    command: ["/opt/invenio/src/docker/startup_ui.sh"]
+    # command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
     image: monotasker/kcworks:latest
     environment:
       - FLASK_ENV=development
@@ -95,6 +96,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
+      - ./docker/startup_ui.sh:/opt/invenio/src/docker/startup_ui.sh
       - ./logs/invenio.log:/opt/invenio/src/logs/invenio.log
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
@@ -114,7 +116,8 @@ services:
       file: docker-services.yml
       service: app
     container_name: kcworks-api
-    command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
+    command: ["/opt/invenio/src/docker/startup_api.sh"]
+    # command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
     image: monotasker/kcworks:latest
     ports:
       - "5001"
@@ -130,7 +133,7 @@ services:
       # - INVENIO_LOGGING_FS_BACKUP_COUNT=10
       # - INVENIO_LOGGING_FS_LOGFILE=/opt/invenio/src/logs/invenio.log
     volumes:
-      # TODO: in production copy these files rather than mounting?
+      - ./docker/startup_api.sh:/opt/invenio/src/docker/startup_api.sh
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
       - ./static:/opt/invenio/var/instance/static
@@ -147,7 +150,8 @@ services:
       file: docker-services.yml
       service: app
     container_name: kcworks-worker
-    command: ["celery -A invenio_app.celery worker --beat --loglevel INFO"]
+    command: ["/opt/invenio/src/docker/startup_worker.sh"]
+    # command: ["celery -A invenio_app.celery worker --beat --loglevel INFO"]
     image: monotasker/kcworks:latest
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -161,6 +165,7 @@ services:
       # - INVENIO_LOGGING_FS_BACKUP_COUNT=10
       # - INVENIO_LOGGING_FS_LOGFILE=/opt/invenio/src/logs/invenio.log
     volumes:
+      - ./docker/startup_worker.sh:/opt/invenio/src/docker/startup_worker.sh
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
       - ./static:/opt/invenio/var/instance/static
