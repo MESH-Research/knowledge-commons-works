@@ -52,9 +52,15 @@ ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
 
 RUN cp -r ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini && \
     cp -r ./docker/uwsgi/uwsgi_ui.ini ${INVENIO_INSTANCE_PATH}/uwsgi_ui.ini && \
+    cp -r ./docker/startup_ui.sh ${INVENIO_INSTANCE_PATH}/startup_ui.sh && \
+    cp -r ./docker/startup_api.sh ${INVENIO_INSTANCE_PATH}/startup_api.sh && \
+    cp -r ./docker/startup_worker.sh ${INVENIO_INSTANCE_PATH}/startup_worker.sh && \
     cp ./invenio.cfg ${INVENIO_INSTANCE_PATH}/invenio.cfg && \
     cp -r ./templates ${INVENIO_INSTANCE_PATH}/templates && \
     cp -r ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data
+RUN chmod +x ${INVENIO_INSTANCE_PATH}/startup_ui.sh && \
+    chmod +x ${INVENIO_INSTANCE_PATH}/startup_api.sh && \
+    chmod +x ${INVENIO_INSTANCE_PATH}/startup_worker.sh
 
 RUN invenio collect --verbose && invenio webpack clean create && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less && \
