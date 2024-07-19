@@ -249,3 +249,7 @@
     background-color: transparent;
   }
 }
+
+.facet-container div.content h2.header .button.right.floated {
+  visibility: hidden;
+}

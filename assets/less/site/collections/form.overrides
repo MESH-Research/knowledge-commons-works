@@ -113,6 +113,10 @@ textarea {
   }
 }
 
+#header-search-bar .ui.action.input {
+  margin-right: 0;
+}
+
 #deposit-form {
   flex-grow: 1;
   display: flex;

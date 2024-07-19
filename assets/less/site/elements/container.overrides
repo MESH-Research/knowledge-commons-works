@@ -22,4 +22,9 @@
     > .ui.container:last-of-type {
         margin-bottom: 1rem;
     }
+
+
+    .request-detail-page .rdm-tab-container.rel-pt-2 {
+        padding-top: 0 !important;
+    }
 }
