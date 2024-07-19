@@ -85,5 +85,5 @@ h2.ui.header {
 }
 
 .request-detail-page .computer-flex-header.rel-mt-2 {
-  margin-top: 0 !important;
+  margin-top: 1rem !important;
 }
