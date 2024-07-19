@@ -170,6 +170,10 @@
         align-items: center;
         justify-content: space-between;
         color: @verdigrisDark;
+        &.open {
+          border-top: 1px solid @sidebarBorderColor;
+          justify-content: flex-end;
+        }
       }
     }
   }
