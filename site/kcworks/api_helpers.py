@@ -198,7 +198,7 @@ def format_commons_search_collection_payload(identity, record=None, **kwargs):
         data = kwargs.get("draft", {})
 
     try:
-        type_string = "work"
+        type_string = "works-collection"
         type_dict = data["metadata"].get("type", {})
         if type_dict:
             type_string += f"_{type_dict.get('id', '')}"
