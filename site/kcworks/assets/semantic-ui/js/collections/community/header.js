@@ -122,7 +122,7 @@ const CommunityDetailsHeader = ({
         <div className="sixteen wide mobile sixteen wide tablet thirteen wide computer column">
           <div className="community-header flex align-items-center column-mobile align-items-start-mobile">
             <div className="flex align-items-center">
-              <div className="ui rounded image community-image mt-5 rel-mr-2">
+              <div className="ui rounded image community-image community-header-logo rel-mr-2">
                 <Image
                   src={
                     communityLogoUrl !==
@@ -141,7 +141,7 @@ const CommunityDetailsHeader = ({
             </div>
 
             <div>
-              <div className="flex align-items-center mb-5 tablet computer only">
+              <div className="flex align-items-center tablet computer only">
                 <h1 className="ui huge header mb-0">{communityTitle}</h1>
 
                 {visibility == "restricted" && (

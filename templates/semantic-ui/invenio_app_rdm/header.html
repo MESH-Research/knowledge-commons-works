@@ -40,7 +40,7 @@
   <header class="theme header">
 
     {%- block site_banner %}
-      <div class="ui container fluid beta-banner"><b>Public Beta version</b> - Please help make this the open, academy-owned platform you want! <a href="https://msu.co1.qualtrics.com/jfe/form/SV_1G1u7r34E4IE8dw">Tell us what you think!</a></div>
+      <div class="ui container fluid beta-banner"><b>Public Beta version</b> - Help build the open, academy-owned platform you want! <a href="https://msu.co1.qualtrics.com/jfe/form/SV_1G1u7r34E4IE8dw">Share your ideas and bug reports!</a></div>
     {%- endblock site_banner %}
     <div class="outer-navbar">
       {%- block banner %}
@@ -53,9 +53,9 @@
         data-accounts-enabled="{{ config.ACCOUNTS != '' }}"
         data-admin-menu-items='{{ admin_menu_items | tojson }}'
         data-current-user-email="{{ current_user.email }}"
-        data-profiles-url="{{ config.KC_PROFILES_URL_BASE }}"
+        data-profiles-url="{{ config.get('KC_PROFILES_URL_BASE') }}"
         data-external-identifiers='{{ external_identifiers | tojson }}'
-        data-kcwordpress-domain="{{ config.KCWORDPRESS_DOMAIN }}"
+        data-kcwordpress-domain="{{ config.get('KC_WORDPRESS_DOMAIN') }}"
         data-login-url="{{ url_for_security('login', next=request.path) }}"
         data-logout-url="{{ url_for_security('logout') }}"
         data-main-menu-items='{{ main_menu_items | tojson }}'

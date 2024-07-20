@@ -138,7 +138,7 @@
           padding-right: 1rem;
           margin-bottom: 0;
         }
-      }
+    }
       .row:not(.default-community):not(.additional-communities) {
         padding: 0.5rem 1rem 0.5rem 0;
         font-size: 1rem;

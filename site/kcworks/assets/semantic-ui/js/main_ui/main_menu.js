@@ -13,6 +13,26 @@ const MenuItem = ({ text, icon, url }) => {
   );
 };
 
+const IconMenuItem = ({ text, icon, url }) => {
+  return (
+    <>
+      <Popup
+        content={i18next.t(text)}
+        trigger={
+          <a role="button" href={url} className="ui computer widescreen only">
+            <i className={`${icon} icon fitted`}></i>
+          </a>
+        }
+      />
+
+      <a role="button" href={url} className="ui tablet mobile only">
+        <i className={`${icon} icon fitted`}></i>
+        <span className="inline">{i18next.t(text)}</span>
+      </a>
+    </>
+  );
+};
+
 const CollapsingMenuItem = ({ text, icon, url }) => {
   return (
     <>
@@ -30,11 +50,10 @@ const CollapsingMenuItem = ({ text, icon, url }) => {
         <span className="inline">{i18next.t(text)}</span>
       </a>
 
-      <a role="button" href={url} className="ui mobile tablet only">
+      <a role="button" href={url} className="ui mobile only">
         <i className={`${icon} icon fitted`}></i>
         <span className="inline">{i18next.t(text)}</span>
       </a>
-
     </>
   );
 };
@@ -238,7 +257,9 @@ const LoginMenu = ({
     currentUserEmail.length >= 31
       ? currentUserEmail.slice(31) + "..."
       : currentUserEmail;
-  const profileURL = externalIdentifiers.external_id ? `${profilesURL}${externalIdentifiers.external_id}` : undefined;
+  const profileURL = externalIdentifiers.external_id
+    ? `${profilesURL}${externalIdentifiers.external_id}`
+    : undefined;
 
   return (
     !!accountsEnabled &&
@@ -267,16 +288,22 @@ const LoginMenu = ({
         <div className="item">
           {/* {# <i class="user icon"></i> #} */}
           {profileURL ? (
-            <Popup
+            <>
+              {/* <Popup
               content={i18next.t("My KC profile")}
               trigger={
                 <a role="button" href={profileURL}>{readableEmail}</a>
               }
-            />
+              className="widescreen only"
+            /> */}
+              <IconMenuItem
+                text="My KC profile"
+                url={profileURL}
+                icon="address card outline"
+              />
+            </>
           ) : (
-            <span className="inline">
-              {readableEmail}
-            </span>
+            <span className="inline">{readableEmail}</span>
           )}
         </div>
       </>
@@ -406,13 +433,31 @@ const MainMenu = ({
         {/* "Plus" menu including adding a record */}
         <PlusMenu plusMenuItems={plusMenuItems} />
 
+        <div className="menu item spacer mobile tablet only">
+          <hr />
+        </div>
+
         <div className={`item`}>
-          <CollapsingMenuItem text="Help and support" url={`https://support.${kcWordpressDomain}`} icon="question circle" />
+          <IconMenuItem
+            text="Help and support"
+            url={`https://support.${kcWordpressDomain}`}
+            icon="question circle"
+          />
+        </div>
+
+        <div className={`item`}>
+          <IconMenuItem
+            text="KC Home"
+            url={`https://${kcWordpressDomain}`}
+            icon="home"
+          />
         </div>
 
         {/* Right-aligned menu items */}
         <div className="right menu item">
-
+          <div className="menu item spacer mobile tablet only">
+            <hr />
+          </div>
           <LoginMenu
             accountsEnabled={accountsEnabled}
             adminMenuItems={adminMenuItems}
@@ -427,22 +472,35 @@ const MainMenu = ({
             userAdministrator={userAdministrator}
           />
 
-
-          {!!accountsEnabled && !!userAuthenticated && actionsItems.map((item, index) => (
+          {!!accountsEnabled &&
+            !!userAuthenticated &&
+            actionsItems.map((item, index) => (
               <div className={`item ${item.text}`} key={index}>
-                <CollapsingMenuItem text={item.text} url={item.url} icon={item.text === "My dashboard" ? "user" : item.icon} />
+                <IconMenuItem
+                  text={item.text}
+                  url={item.url}
+                  icon={item.text === "My dashboard" ? "user" : item.icon}
+                />
               </div>
-            )
-            )}
+            ))}
 
-          {!!accountsEnabled && !!userAuthenticated && notificationsItems.map((item, index) => (
-                  <div className="item inbox" key={index}>
-                    <CollapsingMenuItem text={item.text==="requests" ? "My inbox" : item.text} url={item.url} icon={item.text==="requests" ? "inbox" : item.icon} />
-                  </div>
-                ))}
+          {!!accountsEnabled &&
+            !!userAuthenticated &&
+            notificationsItems.map((item, index) => (
+              <div className="item inbox" key={index}>
+                <IconMenuItem
+                  text={item.text === "requests" ? "My requests" : item.text}
+                  url={item.url}
+                  icon={item.text === "requests" ? "inbox" : item.icon}
+                />
+              </div>
+            ))}
 
-          {!!accountsEnabled && !!userAuthenticated && (<CollapsingMenuItem text="Log out" url={logoutURL} icon="sign-out" />)}
-
+          {!!accountsEnabled && !!userAuthenticated && (
+            <div className="item">
+              <IconMenuItem text="Log out" url={logoutURL} icon="sign-out" />
+            </div>
+          )}
         </div>
       </div>
     </nav>
@@ -496,8 +554,11 @@ const themeSearchbarEnabled =
   element.dataset.themeSearchbarEnabled === "True" ? true : false;
 const userAuthenticated =
   element.dataset.userAuthenticated === "True" ? true : false;
-const userAdministrator =
-  JSON.parse(element.dataset.userRoles).includes("administrator") ? true : false;
+const userAdministrator = JSON.parse(element.dataset.userRoles).includes(
+  "administrator"
+)
+  ? true
+  : false;
 
 // Provide the data property as a prop to the MainMenu component
 ReactDOM.render(

@@ -16,10 +16,28 @@
       }
     }
     #invenio-menu.ui.menu {
+      @media screen and (max-width: @largestTabletScreen) {
+        background-color: @sidebarBackgroundColor;
+      }
       .item:not(.logo) {
+        line-height: 1.3rem;
         & > span {
           padding-left: 1.5rem;
           padding-right: 1.5rem;
+        }
+        hr {
+          width: 100%;
+          background: @sidebarBorderColor;
+          background-color: @sidebarBorderColor;
+          border-color: @sidebarBorderColor;
+          height: 1px;
+          color: @sidebarBorderColor;
+          &::before{
+            content: none;
+          }
+          &::after{
+            content: none;
+          }
         }
         a:not(.ui.button),
         a {

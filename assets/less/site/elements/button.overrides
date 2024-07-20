@@ -253,3 +253,7 @@
 .facet-container div.content h2.header .button.right.floated {
   visibility: hidden;
 }
+
+#detail-main-content .button.tiny.show-less {
+  margin-bottom: 1rem;
+}
