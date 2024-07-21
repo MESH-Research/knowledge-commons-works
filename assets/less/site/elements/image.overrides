@@ -13,7 +13,7 @@
     margin-top: 1rem;
 }
 .communities-frontpage {
-    ..ui.icon.message>.icon:not(.close) {
+    .ui.icon.message>.icon:not(.close) {
         font-size: 2rem;
     }
     .community-frontpage-cards .ui.card .image img {
