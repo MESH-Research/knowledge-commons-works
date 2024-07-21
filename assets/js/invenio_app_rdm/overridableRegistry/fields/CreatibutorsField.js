@@ -350,11 +350,11 @@ const CreatibutorsField = ({
   const { setFieldTouched } = useFormikContext();
   const { currentUserprofile } = useContext(FormUIStateContext);
 
-  useEffect(() => {
+  // useEffect(() => {
     // if (creatibutorsTouched) {
     //   setFieldTouched("metadata.creators", true);
     // }
-  }, [creatibutorsTouched]);
+  // }, [creatibutorsTouched]);
 
   return (
     <FieldArray

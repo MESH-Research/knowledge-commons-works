@@ -15,6 +15,7 @@ import CommunitiesCardGroup from "./CommunitiesCardGroup";
 const userCommunitiesContainer = document.getElementById("user-communities");
 const newCommunitiesContainer = document.getElementById("new-communities");
 const topicCommunitiesContainer = document.getElementById("topic-communities");
+const commonsCommunitiesContainer = document.getElementById("commons-communities");
 const orgCommunitiesContainer = document.getElementById("organization-communities");
 const journalCommunitiesContainer = document.getElementById("journal-communities");
 const eventCommunitiesContainer = document.getElementById("event-communities");
@@ -30,6 +31,12 @@ const sections = [
     container: newCommunitiesContainer,
     fetchDataUrl: "/api/communities?q=&sort=newest&page=1&size=5",
     emptyMessage: "There are no new collections.",
+    defaultLogo: "/static/images/square-placeholder.png",
+  },
+  {
+    container: commonsCommunitiesContainer,
+    fetchDataUrl: "/api/communities?q=metadata.type.id:commons&sort=newest&page=1&size=5",
+    emptyMessage: "There are no commons collections.",
     defaultLogo: "/static/images/square-placeholder.png",
   },
   {

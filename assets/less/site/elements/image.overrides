@@ -1,7 +1,7 @@
 /* Image theme overrides */
 
 .ui.image.community-image {
-    margin-top: 1rem;
+    margin-top: 0;
     img {
     object-fit: cover;
     min-height: 80px;
@@ -9,9 +9,16 @@
     box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
     border: 1px solid @sidebarBorderColor;
 }}
-.communities-frontpage .community-frontpage-cards .ui.card .image img {
-    object-fit: cover;
+.community-header .ui.image.community-image {
+    margin-top: 1rem;
 }
+.communities-frontpage {
+    ..ui.icon.message>.icon:not(.close) {
+        font-size: 2rem;
+    }
+    .community-frontpage-cards .ui.card .image img {
+        object-fit: cover;
+}}
 #communities.sidebar-container .row:not(.default-community) .community-image img {
     object-fit: cover;
     max-width: 40px;
