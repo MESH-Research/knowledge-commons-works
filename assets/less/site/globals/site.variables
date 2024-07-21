@@ -65,6 +65,8 @@
 @ivy20: #d2d9d7;
 @ivy10: #e8eceb;
 @ivyRgba10: rgba(28, 64, 54, 0.1);
+@ivyRgba50: rgba(28, 64, 54, 0.5);
+@ivyRgba90: rgba(28, 64, 54, 0.9);
 
 @verdigrisDark: #547d7d;
 @verdigris90: #75a3a4;
@@ -78,6 +80,7 @@
 @verdigris10: #f0f5f5;
 @verdigrisRgba10: rgba(117, 163, 164, 0.1);
 @verdigrisRgba50: rgba(117, 163, 164, 0.5);
+@verdigrisRgba90: rgba(117, 163, 164, 0.9);
 
 @gold90: #ddb832;
 @gold80: #ddb832;
@@ -95,10 +98,16 @@
 @darkGold: #b29017;
 @darkerGold: #806711;
 
+@mint90: #CFE6DF;
+@mint80: #D4E8E3;
 @mint70: #daece6;
+@mint60: #DEEEEA;
 @mint50: #e5f1ed;
+@mint40: #EAF4F1;
 @mint30: #eff6f4;
+@mintRgba10: rgba(201, 227, 219, 0.1);
 @mintRgba50: rgba(201, 227, 219, 0.5);
+@mintRgba90: rgba(201, 227, 219, 0.9);
 
 @seafoam90: #f1faf6;
 @seafoam80: #f1faf6;
@@ -187,7 +196,7 @@
 
 @sidebarBackgroundColor: @mint30; // #f9f9f9;
 @sidebarHeaderColor: @ivy80;
-@sidebarBorderColor: @verdigris30;
+@sidebarBorderColor: @mint60; // @verdigris20;
 
 @formButtonColor: @sidebarBackgroundColor;
 

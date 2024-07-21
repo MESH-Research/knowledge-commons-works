@@ -29,22 +29,28 @@
   color: @white;
 }
 
+.ui-label.negative,
+.ui.label.access-status.restricted {
+  border-color: @negativeColor;
+  color: @white;
+}
+
 .ui.secondary.label,
 .ui.label.access-status.metadata-only {
   background-color: @gold20;
-  border: 1px solid @gold40;
+  border: 1px solid @gold30;
   color: @darkerGold;
 }
 
 .ui.neutral.label {
   background-color: @ivory;
-  border-color: @ivy20;
+  border-color: darken(@ivory, 2%);
   color: @ivy60;
 }
 
 .ui.label.primary {
   background-color: @sidebarBackgroundColor;
-  border-color: @verdigris40;
+  border-color: @mint40;
   color: @primaryColor;
 
   .detail {

@@ -111,7 +111,8 @@ export const DashboardSearchLayoutHOC = ({
                     values={config.sortOptions}
                     label={(cmp) => (
                       <>
-                        <label className="mr-10">{i18next.t("Sort by")}</label>
+                        {/* FIXME: Work out layout placement
+                        <label className="mr-10">{i18next.t("Sort by")}</label> */}
                         {cmp}
                       </>
                     )}
@@ -133,7 +134,8 @@ export const DashboardSearchLayoutHOC = ({
                     values={config.sortOptions}
                     label={(cmp) => (
                       <>
-                        <label className="mr-10">{i18next.t("Sort by")}</label>
+                        {/* FIXME: Work out layout placement
+                        <label className="mr-10">{i18next.t("Sort by")}</label> */}
                         {cmp}
                       </>
                     )}
