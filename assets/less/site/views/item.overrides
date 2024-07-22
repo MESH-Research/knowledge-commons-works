@@ -1,6 +1,10 @@
 /* Item theme overrides */
 
 .ui.items {
+  &.carousel-items {
+    overflow: hidden;
+    max-height: 15rem;
+  }
   & > .search-result.item {
     .content {
       h2.header a {

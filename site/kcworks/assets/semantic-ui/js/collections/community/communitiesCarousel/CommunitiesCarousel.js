@@ -229,7 +229,7 @@ class CommunitiesCarousel extends Component {
                 <Grid.Column width="12">
                   <Transition.Group
                     as={Item.Group}
-                    className="flex align-items-center justify-center"
+                    className="carousel-items align-items-center justify-center"
                     duration={animationSpeed}
                     animation={`carousel-slide ${animationDirection}`}
                     directional
