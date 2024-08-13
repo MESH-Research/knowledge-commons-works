@@ -18,7 +18,6 @@
 # - Search platform: (OpenSearch) (exposed ports: 9200, 9300)
 # - OpenSearch Dashboard (view OS indexes) (exposed ports: 5601)
 #
-version: '2.2'
 services:
   # cache:
   #   extends:

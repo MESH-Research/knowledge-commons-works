@@ -3,7 +3,6 @@
 # PGADMIN_DEFAULT_EMAIL
 # PGADMIN_DEFAULT_PASSWORD
 
-version: '2.2'
 services:
   app:
     # build:
