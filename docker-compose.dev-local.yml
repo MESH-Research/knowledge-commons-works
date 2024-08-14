@@ -40,6 +40,7 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/usr/local/lib/python3.9/site-packages/invenio_requests
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/usr/local/lib/python3.9/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
@@ -68,6 +69,7 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/usr/local/lib/python3.9/site-packages/invenio_requests
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/usr/local/lib/python3.9/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
@@ -96,6 +98,7 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/usr/local/lib/python3.9/site-packages/invenio_requests
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/usr/local/lib/python3.9/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
