@@ -19,6 +19,7 @@
 from flask import render_template
 from flask import Blueprint
 from flask.views import MethodView
+from flask import current_app
 from kcworks.stats_dashboard.APIclient import APIclient
 from pathlib import Path
 from pprint import pprint
@@ -41,7 +42,8 @@ class StatsDashboard(MethodView):
         """
 
         token = os.environ["API_TOKEN"]
-        client = APIclient(token)
+        my_url = current_app.config.get('SITE_API_URL')
+        client = APIclient(token, my_url)
         sections_part_1 = []
         sections_part_2 = []
         stat_types_1 = ["total_deposits"]

@@ -13,7 +13,7 @@ from collections import OrderedDict
 class APIclient():
     # constructor: an APIResponse object keeps track of headers for the API request, the JSON response from
     # the records endpoint, and a dictionary mapping id->deposit info
-    def __init__(self, bearer_token):
+    def __init__(self, bearer_token, api_url):
         self.bearer = 'Bearer ' + bearer_token
         self.headers = {'Content-Type': 'application/json', 'Authorization': self.bearer, 'Cookie': 
                         'csrftoken=eyJhbGciOiJIUzUxMiIsImlhdCI6MTcwMTExODQ1MiwiZXhwIjoxNzAxMjA0ODUyfQ.IlRrNl \
@@ -23,8 +23,8 @@ class APIclient():
         self.payload = None
         self.records = None
         self.deposits = {}
-        self.records_url = 'https://invenio-dev.hcommons-staging.org/api/records'
-        self.stats_url = 'https://invenio-dev.hcommons-staging.org/api/stats'
+        self.records_url = api_url + '/api/records'
+        self.stats_url = api_url + '/api/stats'
 
 
     # function that returns JSON string from a GET request to records endpoint
