@@ -82,7 +82,7 @@ class RequestMetadata extends Component {
   isResourceDeleted = (details) => details.is_ghost === true;
 
   render() {
-    console.log(this.props);
+    // console.log(this.props);
     const { request } = this.props;
     const expandedCreatedBy = request.expanded?.created_by;
     const expandedReceiver = request.expanded?.receiver;

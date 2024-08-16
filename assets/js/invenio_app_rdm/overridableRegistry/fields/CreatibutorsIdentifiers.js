@@ -22,6 +22,7 @@ const idTypeData = {
   isni: { text: "ISNI", value: "isni", key: "isni" },
   gnd: { text: "GND", value: "gnd", key: "gnd" },
   ror: { text: "ROR", value: "ror", key: "ror" },
+  kc_username: { text: "KC id", value: "kc_username", key: "kc_username" },
 };
 
 const CreatibutorsIdentifiers = ({

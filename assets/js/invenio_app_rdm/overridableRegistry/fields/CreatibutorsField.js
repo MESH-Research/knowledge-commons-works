@@ -183,19 +183,17 @@ const CreatibutorsFieldForm = ({
   }
 
   let myIdentifiers = undefined;
-  if ( currentUserprofile?.identifiers?.length > 0 ) {
-    const rawIdentifiers = Object.fromEntries(
-      Object.entries(currentUserprofile.identifiers).filter(([key, value]) =>
-        key.startsWith("identifier")
-      )
-    );
-    myIdentifiers = Object.fromEntries(
-      Object.entries(rawIdentifiers).map(([key, value]) => {
-        return {identifier: value, scheme: key.replace("identifier_", '')}
-      })
+  const rawIdentifiers = Object.fromEntries(
+    Object.entries(currentUserprofile).filter(([key, value]) =>
+      key.startsWith("identifier") && value !== "" && value !== null
     )
-  };
+  );
 
+  if ( !!rawIdentifiers && Object.keys(rawIdentifiers).length > 0 ) {
+    myIdentifiers = Object.entries(rawIdentifiers).map(([key, value]) => {
+        return {identifier: value, scheme: key.replace("identifier_", '')};
+      });
+  };
 
 
   let selfCreatibutor = {
@@ -223,6 +221,7 @@ const CreatibutorsFieldForm = ({
           }))
         : [],
   };
+
 
   return (
     <Form.Field

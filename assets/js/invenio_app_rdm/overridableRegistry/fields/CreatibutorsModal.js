@@ -458,8 +458,8 @@ const CreatibutorsFormBody = ({
                   // initialOptions={values}
                   fieldPath={identifiersFieldPath}
                   ref={identifiersRef}
-                  label={"Personal identifiers (ORCID, ISNI, or GND)"}
-                  idTypes={["orcid", "isni", "gnd"]}
+                  label={"Personal identifiers (ORCID, KC member id, ISNI, or GND)"}
+                  idTypes={["orcid", "isni", "gnd", "kc_username"]}
                 />
               </div>
             </>
