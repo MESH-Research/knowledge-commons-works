@@ -177,24 +177,40 @@ const CreatibutorsFieldForm = ({
       ? [currentUserprofile.affiliations]
       : currentUserprofile?.affiliations;
 
+  let myNameParts = {};
+  if ( !!currentUserprofile?.name_parts && currentUserprofile?.name_parts !== "" ) {
+    myNameParts = JSON.parse(currentUserprofile.name_parts);
+  }
+
+  let myIdentifiers = undefined;
+  if ( currentUserprofile?.identifiers?.length > 0 ) {
+    const rawIdentifiers = Object.fromEntries(
+      Object.entries(currentUserprofile.identifiers).filter(([key, value]) =>
+        key.startsWith("identifier")
+      )
+    );
+    myIdentifiers = Object.fromEntries(
+      Object.entries(rawIdentifiers).map(([key, value]) => {
+        return {identifier: value, scheme: key.replace("identifier_", '')}
+      })
+    )
+  };
+
+
+
   let selfCreatibutor = {
     person_or_org: {
       family_name: addingSelf
-        ? currentUserprofile?.name_parts?.last ||
+        ? myNameParts?.last ||
           currentUserprofile?.full_name ||
           ""
         : "",
-      given_name: addingSelf ? currentUserprofile?.name_parts?.first || "" : "",
+      given_name: addingSelf ? myNameParts?.first || "" : "",
       name: addingSelf ? currentUserprofile?.full_name || "" : "",
       type: "personal",
       identifiers:
-        addingSelf && currentUserprofile?.identifiers.length > 0
-        ? currentUserprofile.identifiers.map(id => (
-          {
-              scheme: id.scheme,
-              identifier: id.identifier
-          }
-        )) : [],
+        addingSelf && myIdentifiers?.length > 0
+        ? myIdentifiers : [],
     },
     role: "author",
     affiliations:

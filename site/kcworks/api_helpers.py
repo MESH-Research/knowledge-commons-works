@@ -43,21 +43,12 @@ def get_user_profile_info(user_id: int = 0, email: str = "") -> dict:
         user = current_accounts.datastore.find_user(email=email)
     if user and user.user_profile:
         profile_info["name"] = user.user_profile.get("full_name")
-        if user.user_profile.get("name_parts"):
-            profile_info["name"] = " ".join(
-                [
-                    user.user_profile["name_parts"].get("first", ""),
-                    user.user_profile["name_parts"].get("last", ""),
-                ]
-            )
-        if user.user_profile.get("identifiers", []):
-            for i in user.user_profile["identifiers"]:
-                if i["scheme"] == "orcid":
-                    profile_info["orcid"] = i["identifier"]
-                if i["scheme"] == "hc_username":
-                    profile_info["username"] = i["identifier"]
-                if i["scheme"] == "kc_username":
-                    profile_info["username"] = i["identifier"]
+        if user.user_profile.get("identifier_orcid"):
+            profile_info["orcid"] = user.user_profile.get("identifier_orcid")
+        if user.user_profile.get("hc_username"):
+            profile_info["username"] = user.user_profile.get("hc_username")
+        if user.user_profile.get("kc_username"):
+            profile_info["username"] = user.user_profile.get("kc_username")
 
     idp_info = get_user_idp_info(user_id)
     if idp_info:

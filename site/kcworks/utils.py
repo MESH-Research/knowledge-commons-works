@@ -22,7 +22,7 @@ def get_commons_user_from_contributor(contributor: dict) -> str:
     id = ""
     if contributor["person_or_org"].get("identifiers"):
         for identifier in contributor["person_or_org"]["identifiers"]:
-            if identifier["scheme"] == "hc_username":
+            if identifier["scheme"] in ["hc_username", "kc_username"]:
                 id = identifier["identifier"]
     # FIXME: get the username from the email?
     # FIXME: get the username from orcid?
