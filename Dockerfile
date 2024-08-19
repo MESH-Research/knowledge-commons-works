@@ -23,14 +23,14 @@ COPY site ./site
 
 COPY Pipfile Pipfile.lock ./
 
-RUN git clone https://github.com/MESH-Research/invenio-communities.git /opt/invenio/invenio-communities && \
-    git clone https://github.com/MESH-Research/invenio-rdm-records.git /opt/invenio/invenio-rdm-records && \
+RUN git clone -b local-working --single-branch https://github.com/MESH-Research/invenio-communities.git /opt/invenio/invenio-communities && \
+    git clone -b local-working --single-branch https://github.com/MESH-Research/invenio-rdm-records.git /opt/invenio/invenio-rdm-records && \
     git clone -b local-working --single-branch https://github.com/MESH-Research/invenio-vocabularies.git /opt/invenio/invenio-vocabularies && \
     git clone https://github.com/MESH-Research/invenio-group-collections.git /opt/invenio/invenio-group-collections/ && \
     git clone https://github.com/MESH-Research/invenio-modular-deposit-form.git /opt/invenio/invenio-modular-deposit-form/ && \
     git clone https://github.com/MESH-Research/invenio-modular-detail-page.git /opt/invenio/invenio-modular-detail-page/ && \
     git clone https://github.com/MESH-Research/invenio-record-importer.git /opt/invenio/invenio-record-importer/ && \
-    git clone https://github.com/MESH-Research/invenio-records-resources.git /opt/invenio/invenio-records-resources/ && \
+    git clone -b local-working --single-branch https://github.com/MESH-Research/invenio-records-resources.git /opt/invenio/invenio-records-resources/ && \
     git clone https://github.com/MESH-Research/invenio-remote-api-provisioner.git /opt/invenio/invenio-remote-api-provisioner/ && \
     git clone https://github.com/MESH-Research/invenio-remote-user-data.git /opt/invenio/invenio-remote-user-data/
 
