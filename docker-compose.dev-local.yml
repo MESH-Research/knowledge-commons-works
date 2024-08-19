@@ -31,6 +31,7 @@ services:
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/invenio-records-resources
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/invenio-vocabularies
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
@@ -60,6 +61,7 @@ services:
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer:/opt/invenio/invenio-record-importer
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/invenio-vocabularies
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
@@ -89,6 +91,7 @@ services:
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/invenio-records-resources
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
       - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/invenio-vocabularies
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
