@@ -83,12 +83,23 @@ const validationSchema = yupObject().shape({
             person_or_org: yupObject().shape({
               type: yupString().required("A type is required"),
               family_name: yupString()
-                .matches(/(?!\s).+/, "Family name cannot be blank")
-                .required("A family name is required"),
+                .when("type", {
+                  is: "personal",
+                  then: yupString()
+                    .matches(/(?!\s).+/, "Family name cannot be blank")
+                    .required("A family name is required"),
+                }),
               given_name: yupString().matches(/(?!\s).+/, {
                 disallowEmptyString: true,
                 message: "Given name cannot be spaces only",
               }),
+              name: yupString()
+                .when("type", {
+                  is: "organizational",
+                  then: yupString()
+                    .matches(/(?!\s).+/, "Name cannot be blank")
+                    .required("A name is required"),
+                }),
               identifiers: yupArray().of(
                 yupObject().shape({
                   scheme: yupString().required(
