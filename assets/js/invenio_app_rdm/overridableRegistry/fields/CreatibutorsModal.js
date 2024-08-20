@@ -573,10 +573,13 @@ const CreatibutorsItemForm = ({
   initialCreatibutor = {},
   modalAction,
   onCreatibutorChange,
+  onCreatibutorEdit,
   parentFieldPath,
   roleOptions = [],
   schema,
 }) => {
+  console.log("CreatibutorsItemForm initialCreatibutor", initialCreatibutor);
+
   const [saveAndContinueLabel, setSaveAndContinueLabel] = useState(
     i18next.t("Save and add another")
   );

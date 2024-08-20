@@ -6,7 +6,7 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { getIn, FieldArray, useFormikContext } from "formik";
 import { Button, Form, Label, List, Icon } from "semantic-ui-react";
@@ -123,6 +123,7 @@ const CreatibutorsFieldForm = ({
 }) => {
   const creatibutorsList = getIn(values, fieldPath, []);
   const formikInitialValues = getIn(initialValues, fieldPath, []);
+  const [workingCreatibutor, setWorkingCreatibutor] = useState(null);
 
   const error = getIn(errors, fieldPath, null);
   const initialError = getIn(initialErrors, fieldPath, null);
@@ -151,6 +152,11 @@ const CreatibutorsFieldForm = ({
     setAddingSelf(false);
     formikArrayPush(selectedCreatibutor);
     setModalOpen(action === "saveAndContinue" ? true : false);
+    setWorkingCreatibutor(null);
+  };
+
+  const handleOnContributorEdit = (partialCreatibutor) => {
+    setWorkingCreatibutor(partialCreatibutor);
   };
 
   const focusAddButtonHandler = () => {
@@ -307,6 +313,7 @@ const CreatibutorsFieldForm = ({
         (creatibutorsError && typeof creatibutorsError == "string")) && (
         <CreatibutorsItemForm
           onCreatibutorChange={handleOnContributorChange}
+          onCreatibutorEdit={handleOnContributorEdit}
           addLabel={modal.addLabel}
           editLabel={modal.editLabel}
           roleOptions={orderedRoleOptions}
@@ -317,7 +324,7 @@ const CreatibutorsFieldForm = ({
           modalOpen={modalOpen}
           handleModalClose={handleModalClose}
           handleModalOpen={handleModalOpen}
-          initialCreatibutor={selfCreatibutor}
+          initialCreatibutor={!!workingCreatibutor ? workingCreatibutor : selfCreatibutor}
           modalAction="add"
         />
       )}
@@ -423,9 +430,9 @@ CreatibutorsFieldForm.propTypes = {
 };
 
 CreatibutorsField.propTypes = {
+  fieldPath: PropTypes.string.isRequired,
   addButtonLabel: PropTypes.string,
   autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
-  fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
   icon: PropTypes.string,
   modal: PropTypes.shape({
