@@ -69,7 +69,7 @@ const PublicationDateField = ({
   required = true,
   ...extraProps
 }) => {
-  const { setFieldValue, values, touched, setFieldTouched } =
+  const { setFieldValue, values, touched, setFieldTouched, validateForm } =
     useFormikContext();
   const currentDate = new Date();
   const currentYear = String(currentDate.getFullYear());
@@ -122,7 +122,9 @@ const PublicationDateField = ({
     }
     setDateValue(newDateValue);
     setFieldValue(fieldPath, newDateValue);
-    setFieldTouched(fieldPath, true);
+    setFieldTouched(fieldPath, true).then(() => {
+      validateForm();
+    });
   }, [
     yearValue,
     monthValue,
@@ -258,7 +260,8 @@ const PublicationDateField = ({
           field, // { name, value, onChange, onBlur }
           form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
           meta,
-        }) => (
+        }) => {
+          return(
           <Form.Field required={!!required} error={!!meta.error}>
             <FieldLabel
               htmlFor={fieldPath}
@@ -288,7 +291,10 @@ const PublicationDateField = ({
                 <Checkbox
                   label={i18next.t(`${!useRange ? "add" : "include"} end date`)}
                   id="metadata.publication_date.controls.useRange"
-                  onChange={(e, data) => setUseRange(data.checked)}
+                  onChange={(e, data) => {
+                    setUseRange(data.checked);
+                    setFieldTouched(fieldPath, true);
+                  }}
                   checked={useRange}
                 />
               </div>
@@ -320,7 +326,7 @@ const PublicationDateField = ({
               </div>
             )}
           </Form.Field>
-        )}
+        )}}
       </Field>
     </>
   );
