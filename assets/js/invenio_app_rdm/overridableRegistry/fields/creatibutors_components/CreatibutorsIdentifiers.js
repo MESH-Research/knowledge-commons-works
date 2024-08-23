@@ -11,6 +11,7 @@ import { Button, Form, Icon } from "semantic-ui-react";
 import PropTypes, { array } from "prop-types";
 import { FieldLabel, SelectField } from "react-invenio-forms";
 import _unickBy from "lodash/unionBy";
+import _get from "lodash/get";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 import { FieldArray, useFormikContext } from "formik";
@@ -29,7 +30,7 @@ const CreatibutorsIdentifiers = ({
   fieldPath,
   label = i18next.t("Name identifiers"),
   placeholder = "",
-  idTypes = ["orcid", "isni", "gnd", "ror"],
+  idTypes = ["orcid", "isni", "gnd", "ror", "kc_username"],
 }) => {
   // const [selectedOptions, setSelectedOptions] = useState(initialOptions);
 
@@ -64,17 +65,20 @@ const CreatibutorsIdentifiers = ({
   // };
 
   return (
-    <>
+    <Form.Field className="creator-identifiers">
       <FieldLabel htmlFor={`${fieldPath}`} label={label} />
       <FieldArray
         addButtonLabel={i18next.t("Add other titles")}
         name={fieldPath}
-        className="creator-identifiers"
         render={(arrayHelpers) => (
           <>
-            {arrayHelpers.form.values.person_or_org.identifiers?.map(
+            {_get(arrayHelpers.form.values, fieldPath, [])?.map(
               (option, index) => {
                 const fieldPathPrefix = `${fieldPath}.${index}`;
+                console.log("CreatibutorsIdentifiers option", option);
+                console.log("CreatibutorsIdentifiers index", index);
+                console.log("CreatibutorsIdentifiers fieldPathPrefix", fieldPathPrefix);
+
                 return (
                   <Form.Group
                     key={index}
@@ -128,7 +132,7 @@ const CreatibutorsIdentifiers = ({
           </>
         )}
       />
-    </>
+    </Form.Field>
   );
 };
 

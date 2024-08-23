@@ -18,16 +18,6 @@ const AIUsageField = ({
 }) => {
   const { values, setFieldValue } = useFormikContext();
 
-  // useEffect(() => {
-  //   // setFieldValue(fieldPath, { ai_used: false, ai_description: "" });
-  // }, []);
-
-  // useEffect(() => {
-  //   // console.log('changed');
-  //   handleValuesChange(values);
-  //   // console.log(values.custom_fields);
-  // }, [values]);
-
   return (
     <Form.Field id={fieldPath} name={fieldPath}>
       <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />

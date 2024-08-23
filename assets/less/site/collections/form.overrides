@@ -465,7 +465,6 @@ textarea {
         }
 
         &.creators {
-          .field {
             .fields:last-child {
               margin-bottom: 1rem;
             }
@@ -491,9 +490,7 @@ textarea {
               background: @sidebarBackgroundColor;
               font-size: @large;
               font-weight: bold;
-              padding: 1rem 1rem 0.5rem 1.75rem;
               margin-bottom: 0;
-              margin-top: 0;
             }
             .ui.form {
               padding-top: 0.5rem;
@@ -502,8 +499,6 @@ textarea {
               background-color: @sidebarBackgroundColor;
               label {
                 font-weight: bold;
-                margin-bottom: 0.25rem;
-                display: block;
                 font-size: @small;
               }
               > .fields:first-child {
@@ -540,7 +535,7 @@ textarea {
               }
             }
             .creatibutors-item-form-buttons {
-              padding: 0.25rem 1rem 1rem 1.75rem;
+              justify-content: space-between;
               background-color: @sidebarBackgroundColor;
             }
             &.error h2.ui.header {
@@ -595,7 +590,6 @@ textarea {
                   }
                 }
               }
-            }
           }
         }
 
