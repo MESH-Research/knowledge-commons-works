@@ -86,19 +86,43 @@ const CreatibutorsFieldItem = ({
     }
   };
 
-  function returnBottomError(error) {
-    if (error && typeof error === "object") {
-      return returnBottomError(error[Object.keys(error)[0]]);
-    } else if (error && typeof error === "array") {
-      firstError = returnBottomError(
-        itemError.find((elem) => ![undefined, null].includes(elem))
-      );
-    }
-    return error;
-  }
-  let firstError = returnBottomError(itemError);
+  // TODO: Deprecate this function
+  // function returnBottomError(error) {
+  //   if (error && typeof error === "object") {
+  //     return returnBottomError(error[Object.keys(error)[0]]);
+  //   } else if (error && typeof error === "array") {
+  //     firstError = returnBottomError(
+  //       itemError.find((elem) => ![undefined, null].includes(elem))
+  //     );
+  //   }
+  //   return error;
+  // }
+  // let firstError = returnBottomError(itemError);
+
+  function getErrorMessages(itemErrors) {
+    console.log("getErrorMessages itemErrors", itemErrors);
+    let errorMessages = [];
+    if ( typeof itemErrors === "array" ) {
+      itemErrors.forEach((error) => {
+        errorMessages.push(...getErrorMessages(error));
+      });
+    } else if ((typeof itemErrors === "object") && (Object.keys(itemErrors).length > 0)) {
+      for ( const [key, value] of Object.entries(itemErrors)) {
+        if (["object", "array"].includes(typeof value)) {
+          errorMessages.push(...getErrorMessages(value));
+        } else if (typeof value === "string") {
+          errorMessages.push(value);
+        };
+      };
+    };
+    return errorMessages;
+  };
+  const errorMessages = !!itemError ? getErrorMessages(itemError) : [];
 
   // Initialize the ref explicitely
+
+  console.log("CreatibutorsFieldItem showEditForms", showEditForms);
+
   drop(dropRef);
 
   return (
@@ -167,6 +191,7 @@ const CreatibutorsFieldItem = ({
               <List.Content>
                 <List.Description>
                   <span className="creatibutor">
+                    {displayName}{" "}
                     {identifiersList.some((identifier) => identifier.scheme === "orcid") && (
                       <img
                         alt="ORCID logo"
@@ -194,23 +219,11 @@ const CreatibutorsFieldItem = ({
                         height="16"
                       />
                     )}
-                    {displayName}{" "}
+                    {" "}
                     {renderRole(_get(values, `${fieldPathPrefix}.role`), roleOptions)}
                   </span>
                 </List.Description>
-                {firstError && (
-                  <Label pointing="left" prompt>
-                    {firstError.scheme
-                      ? firstError.scheme
-                      : "Invalid identifiers"}
-                  </Label>
-                )}
               </List.Content>
-              {firstError && (
-                <Label pointing="above" prompt>
-                  {firstError}
-                </Label>
-              )}
               </>
             )}
             {showEditForms.includes(index) && (
@@ -229,6 +242,13 @@ const CreatibutorsFieldItem = ({
                 roleOptions={roleOptions}
                 values={values}
               />
+            )}
+            {errorMessages.length > 0 && !showEditForms.includes(index) && (
+              <Label pointing prompt>
+                <List>
+                  {errorMessages.map(e => <List.Item>{e}</List.Item>)}
+                </List>
+              </Label>
             )}
           </>
         </Ref>

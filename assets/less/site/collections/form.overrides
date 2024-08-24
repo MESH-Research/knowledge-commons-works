@@ -90,8 +90,43 @@ textarea {
     font-weight: normal;
   }
 
-  &.deposit-creatibutor-modal .ui.divider {
-    margin: 1.5rem 0;
+  a {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+  }
+
+  .field {
+    &.error {
+      > label {
+        color: @errorColor;
+      }
+      .prompt.label {
+        background-color: @errorColor !important;
+        border-color: @errorColor !important;
+        color: #fff !important;
+      }
+    }
+
+    .field:not(.error),
+    .fields:not(.error) {
+      & > label,
+      & .checkbox:not(.toggle):not(.slider) label {
+        color: @textColor;
+        .text,
+        .item {
+          color: @textColor;
+          background-color: @inputBackground;
+        }
+        .item.selected {
+          background-color: @sidebarBackgroundColor !important;
+        }
+        &::placeholder,
+        .default.text {
+          color: @mutedTextColor;
+          opacity: 0.5;
+        }
+      }
+    }
   }
 }
 
@@ -161,35 +196,6 @@ textarea {
       }
     }
 
-    a {
-      text-decoration: underline;
-      text-decoration-style: dotted;
-    }
-
-    // .fields {
-    //   margin-bottom: 0.5rem;
-    // }
-
-    .field {
-      // margin-bottom: 0.5rem;
-      &.error {
-        label {
-          color: @errorColor;
-        }
-        input[type="text"] {
-          &::before {
-            content: "\f071";
-            margin-right: 0.5em;
-            font-family: Icons;
-          }
-        }
-        .prompt.label {
-          background-color: @errorColor !important;
-          border-color: @errorColor !important;
-          color: #fff !important;
-        }
-      }
-    }
 
     .sticky-footer-fixed,
     .sticky-footer-static {
@@ -546,51 +552,6 @@ textarea {
               border: 1px solid @errorColor;
               border-top: 0;
             }
-            &.error .ui.form {
-              border-left: 1px solid @errorColor;
-              border-right: 1px solid @errorColor;
-              .field:not(.error) {
-                label,
-                .ui.dropdown,
-                input[type="text"] {
-                  color: @textColor;
-                  .text,
-                  .item {
-                    color: @textColor;
-                    background-color: @inputBackground;
-                  }
-                  .item.selected {
-                    background-color: @sidebarBackgroundColor !important;
-                  }
-                  &::placeholder,
-                  .default.text {
-                    color: @mutedTextColor;
-                    opacity: 0.5;
-                  }
-                }
-
-                .checkbox:not(.toggle):not(.slider) label:before,
-                .ui.dropdown,
-                input[type="text"] {
-                  background-color: @inputBackground;
-                  border-color: @borderColor !important;
-                }
-
-                .ui.multiple.selection.dropdown {
-                  .ui.label {
-                    color: @textColor;
-                    border-color: @borderColor !important;
-                    background-color: @sidebarBackgroundColor; // #e8e8e8
-                  }
-                  .selected.item {
-                    background-color: @sidebarBackgroundColor;
-                    span {
-                      background-color: transparent;
-                    }
-                  }
-                }
-              }
-          }
         }
 
         &.ai {

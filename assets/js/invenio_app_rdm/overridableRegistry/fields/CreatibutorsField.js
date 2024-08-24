@@ -9,7 +9,7 @@
 import React, { useContext, useState } from "react";
 import { useStore } from "react-redux";
 import { getIn, FieldArray, useFormikContext } from "formik";
-import { Button, Icon, Label, List, TransitionGroup } from "semantic-ui-react";
+import { Button, Form, Icon, Label, List, TransitionGroup } from "semantic-ui-react";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
 import PropTypes from "prop-types";
@@ -169,35 +169,29 @@ const CreatibutorsField = ({
   fieldPath,
   label = undefined,
   icon = undefined,
+  required = true,
   roleOptions = undefined,
   schema = "creators",
   ...otherProps
 }) => {
-  console.log(
-    "CreatibutorsField called",
-    fieldPath,
-    label,
-    icon,
-    modal,
-    roleOptions,
-    schema,
-    otherProps
-  );
   const store = useStore();
   const config = store.getState().deposit.config;
   const [addingSelf, setAddingSelf] = useState(false);
   const [newItemIndex, setNewItemIndex] = useState(-1);
   const [showEditForms, setShowEditForms] = useState([]);
-  console.log("CreatibutorsField showEditForms", showEditForms);
+  const { errors, initialErrors, initialValues, setFieldTouched, touched, validateForm, values } = useFormikContext();
+  console.log("CreatibutorsField errors", errors);
+  console.log("CreatibutorsField initialErrors", initialErrors);
+  console.log("CreatibutorsField initialValues", initialValues);
+  console.log("CreatibutorsField touched", touched);
 
-  const { errors, initialErrors, initialValues, touched, values } = useFormikContext();
   const { currentUserprofile } = useContext(FormUIStateContext);
 
   const error = _get(errors, fieldPath, null);
   const initialError = getIn(initialErrors, fieldPath, null);
   const creatibutorsTouched = getIn(touched, fieldPath, null);
   const creatibutorsError =
-    (error && creatibutorsTouched) ||
+    (!!error && !!creatibutorsTouched) ||
     (_get(values, fieldPath, []) === _get(initialValues, fieldPath, []) && initialError);
 
   const focusAddButtonHandler = () => {
@@ -210,28 +204,17 @@ const CreatibutorsField = ({
   const handleAddNew = (pushFunc, newItem, filteredEditForms = undefined) => {
     pushFunc(newItem);
     console.log("handleAddNew", newItem);
-    console.log("handleAddNew", pushFunc);
-    console.log("handleAddNew new value", getIn(values, fieldPath));
-    console.log("handleAddNew showEditForms", showEditForms);
-    console.log("handleAddNew filteredEditForms", filteredEditForms);
-
 
     const newIndex = getIn(values, fieldPath).length;
-    console.log("handleAddNew newIndex", newIndex);
 
     setNewItemIndex(newIndex);
     const newEditForms = filteredEditForms!==undefined ? filteredEditForms : showEditForms;
-    console.log("handleAddNew newEditForms", newEditForms);
-
     setShowEditForms([...newEditForms, newIndex]);
-    console.log("handleAddNew showEditForms", [...newEditForms, newIndex]);
-
   };
 
   // Close the editing form after saving or cancelling
   const handleCloseForm = (pushFunc, index, action) => {
     setAddingSelf(false);
-
     const filteredEditForms = showEditForms.filter((elem) => elem !== index);
 
     if (action === "saveAndContinue") {
@@ -240,11 +223,27 @@ const CreatibutorsField = ({
       setShowEditForms(filteredEditForms);
       setNewItemIndex(-1);
     }
+    setFieldTouched(fieldPath, true);
   };
 
   // Open the editing form (edit button)
   const handleOpenForm = (index) => {
     setShowEditForms([...showEditForms, index]);
+    if ( newItemIndex !== index ) {
+      for (let i = 0; i < getIn(values, fieldPath).length; i++) {
+        setFieldTouched(`${fieldPath}.${i}.person_or_org.name`, true);
+        setFieldTouched(`${fieldPath}.${i}.person_or_org.family_name`, true);
+        setFieldTouched(`${fieldPath}.${i}.person_or_org.given_name`, true);
+        setFieldTouched(`${fieldPath}.${i}.role`, true);
+        for (let j = 0; j < getIn(values, `${fieldPath}.${i}.affiliations`).length; j++) {
+          setFieldTouched(`${fieldPath}.${i}.affiliations.${j}.name`, true);
+        };
+        for (let j = 0; j < getIn(values, `${fieldPath}.${i}.person_or_org.identifiers`).length; j++) {
+          setFieldTouched(`${fieldPath}.${i}.person_or_org.identifiers.${j}.identifier`, true);
+          setFieldTouched(`${fieldPath}.${i}.person_or_org.identifiers.${j}.scheme`, true);
+        };
+      };
+    }
   };
 
   // Cancel the editing form (cancel button)
@@ -281,9 +280,15 @@ const CreatibutorsField = ({
   console.log("CreatibutorsField values", values);
 
   return (
+    <Form.Field
+      id={fieldPath}
+      required={required}
+      error={creatibutorsError}
+    >
     <FieldArray
       name={fieldPath}
       className="creators"
+      required={!!required}
       render={(arrayHelpers) => {
         console.log("CreatibutorsField arrayHelpers", arrayHelpers);
 
@@ -396,6 +401,7 @@ const CreatibutorsField = ({
         )
       }}
     />
+    </Form.Field>
   );
 };
 
@@ -409,6 +415,7 @@ CreatibutorsField.propTypes = {
     addLabel: PropTypes.string.isRequired,
     editLabel: PropTypes.string.isRequired,
   }),
+  required: PropTypes.bool,
   roleOptions: PropTypes.array,
   schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
 };

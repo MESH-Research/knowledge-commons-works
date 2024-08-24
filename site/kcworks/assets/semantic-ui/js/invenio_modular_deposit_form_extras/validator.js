@@ -175,6 +175,16 @@ const validationSchema = yupObject().shape({
                 .url("Must be a valid URL (e.g. https://example.com)")
                 .required("You must provide a URL or remove this item"),
             })
+            .when("scheme", {
+              is: "isni",
+              then: yupString()
+                .isni(
+                  "Must be a valid ISNI id (e.g., 0000-0001-2345-6789)"
+                )
+                .required(
+                  "You must provide an ISNI id or remove this row"
+                ),
+            })
             .matches(/(?!\s).+/, {
               disallowEmptyString: true,
               message: "Identifier cannot be blank",

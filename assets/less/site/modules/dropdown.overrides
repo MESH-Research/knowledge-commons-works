@@ -1,6 +1,49 @@
 /* Dropdown theme overrides */
-.ui.selection.dropdown {
-  border-color: @ivy30;
+.ui.selection.dropdown,
+.ui.search.dropdown {
+  border-color: @formInputBorderColor;
+}
+
+.field.error,
+.ui.form .field.error {
+  .field:not(.error),
+  .fields:not(.error) {
+    & .ui.dropdown {
+      color: @textColor;
+      background-color: @inputBackground;
+      border-color: @formInputBorderColor !important;
+      .text,
+      .item {
+        color: @textColor;
+        background-color: @inputBackground;
+      }
+      .item.selected {
+        background-color: @sidebarBackgroundColor !important;
+        .text {
+          background-color: transparent;
+        }
+      }
+      &::placeholder,
+      .default.text {
+        color: @mutedTextColor;
+        opacity: 0.5;
+      }
+
+      &.multiple.selection {
+        .ui.label {
+          color: @textColor;
+          border-color: @formInputBorderColor !important;
+          background-color: @sidebarBackgroundColor; // #e8e8e8
+        }
+        .selected.item {
+          background-color: @sidebarBackgroundColor;
+          span {
+            background-color: transparent;
+          }
+        }
+      }
+    }
+  }
 }
 
 .sidebar-container {

@@ -168,15 +168,6 @@
 /* ----------------------------
       Semantic state colors
 ------------------------------- */
-@errorTextColor: @salmonDark; // @negativeColor; // = @red
-@errorColor: @salmon; // @negativeColor; // = @red
-@formErrorColor: @salmonDark;
-@formErrorBorder: @negativeBorderColor;
-@formErrorBackground: #fff6f6; // lighten(@salmon, 50%);
-@inputErrorFocusBackground: @formErrorBackground;
-@inputErrorFocusColor: @errorTextColor;
-@inputErrorFocusBorder: @formErrorBorder;
-
 @warningColor: @gold;
 @warningTextColor: #8d7313; // @darkGold;
 @warningBackgroundColor: @gold10;
@@ -192,6 +183,16 @@
 @negativeTextColorDarker: #963f21;
 @negativeBackgroundColor: #fff6f6;
 @negativeBorderColor: #e0b4b4;
+@negativeBorderColorLight: #f8e4e4;
+
+@errorTextColor: @negativeTextColor; // @salmonDark; // @negativeColor; // = @red
+@errorColor: @negativeColor; // = @red // @salmon;
+@formErrorColor: @negativeTextColor; // @salmonDark;
+@formErrorBorder: @negativeBorderColor;
+@formErrorBackground: @negativeBackgroundColor; // lighten(@salmon, 50%);
+@inputErrorFocusBackground: @formErrorBackground;
+@inputErrorFocusColor: @errorTextColor;
+@inputErrorFocusBorder: @formErrorBorder;
 
 /*-------------------
       Site Colors
@@ -202,6 +203,9 @@
 @sidebarBorderColor: @mint60; // @verdigris20;
 
 @formButtonColor: @sidebarBackgroundColor;
+@formInputBorderColor: @ivy30;
+@focusedFormBorderColor: #2185d0;
+@focusedFormMutedBorderColor: #2185d0;
 
 @signupColor: @green;
 @accessRightOpen: @green;
@@ -224,9 +228,6 @@
 @subFooterColor: @mint;
 @footerTextLightColor: @white;
 @footerTextDarkColor: @white;
-
-@focusedFormBorderColor: #2185d0;
-@focusedFormMutedBorderColor: #2185d0;
 
 @highlightHeaderColor: #ededed;
 @highlightBackgroundColor: @highlightHeaderColor;

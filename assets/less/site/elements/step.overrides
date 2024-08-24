@@ -4,6 +4,7 @@
     // border-color: @sidebarBorderColor;
     border-color: transparent;
     .step.link {
+      transition: all 0.3s ease;
       line-height: 1.15rem;
       padding-top: @small;
       padding-bottom: @small;
@@ -22,6 +23,7 @@
         border-right: 1px solid @sidebarBorderColor;
       }
       &:after {
+        transition: all 0.3s ease;
         background-color: @sidebarBackgroundColor;
         border-color: @verdigris60;
       }
@@ -32,6 +34,9 @@
         &::after {
           background-color: darken(@sidebarBackgroundColor, 5%);
         }
+      }
+      & + .has-error.active {
+        border-right: 1px solid @errorTextColor;
       }
       &:focus-visible {
         outline: none !important;
@@ -59,21 +64,48 @@
       &.has-error {
         color: @errorColor; // was @errorTextColor
         background-color: @negativeBackgroundColor;
-        border: 1px solid #e0b4b4;
+        border: 1px solid @negativeBorderColor;
+        border-left: 0;
+        border-top: 1px solid @negativeBorderColorLight;
+        border-bottom: 1px solid #f8e4e4;
         .title {
           color: @errorTextColor;
         }
+        &:first-child {
+          border-left: 1px solid #f8e4e4;
+        }
+        &:last-child {
+          border-right: 1px solid #f8e4e4;
+        }
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: darken(@negativeBackgroundColor, 3%) !important;
+          &::after {
+            background-color: darken(@negativeBackgroundColor, 3%) !important;
+          }
+        }
         &.active {
           color: @errorColor;
-          background-color: @errorColor;
-          border: 1px solid #e0b4b4;
+          background-color: @errorTextColor;
+          border-color: @errorTextColor;
           .title {
             color: @errorBackgroundColor;
           }
           &::after {
             color: @negativeBackgroundColor;
-            background-color: @errorColor;
-            border-color: #e0b4b4;
+            background-color: @errorTextColor;
+            border-color: @errorTextColor;
+          }
+          &:hover,
+          &:focus,
+          &:active {
+            background-color: @errorColor !important;
+            border-color: @errorColor !important;
+            &::after {
+              background-color: @errorColor !important;
+              border-color: @errorColor !important;
+            }
           }
         }
         &:after {

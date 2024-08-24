@@ -119,6 +119,7 @@ export const IdentifiersField = ({
             const isUrl = scheme === "url";
             const hasText = !!identifier || identifier !== "";
             const hasScheme = !!scheme || scheme !== "";
+
             return (
               <Form.Group
                 id={`${fieldPath}.${index}`}

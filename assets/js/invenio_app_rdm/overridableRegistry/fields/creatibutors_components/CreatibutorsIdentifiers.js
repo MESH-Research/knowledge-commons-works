@@ -101,7 +101,7 @@ const CreatibutorsIdentifiers = ({
                       selection
                       selectOnBlur
                       optimized
-                      width={4}
+                      fluid
                     />
                     <Form.Field>
                       <Button

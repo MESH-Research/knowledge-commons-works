@@ -1,6 +1,7 @@
 /* Input theme overrides */
 
-.invenio-page-body {
+.invenio-page-body,
+.invenio-page-body .ui.form {
   .ui.input input[type="text"],
   .ui.form input:not([type]),
   .ui.form input[type="date"],
@@ -13,8 +14,56 @@
   .ui.form input[type="time"],
   .ui.form input[type="text"],
   .ui.form input[type="file"],
-  .ui.form input[type="url"] {
-    border-color: @ivy30;
+  .ui.form input[type="url"],
+  .ui.form textarea {
+    border-color: @formInputBorderColor;
   }
 
+  .field.error {
+
+    & > input[type="text"] {
+      &::before {
+        content: "\f071";
+        margin-right: 0.5em;
+        font-family: Icons;
+      }
+    }
+
+    .field:not(.error),
+    .fields:not(.error) {
+      & > input[type="text"],
+      & > .input > input[type="text"] {
+        color: @textColor;
+        background-color: @inputBackground;
+        border-color: @formInputBorderColor !important;
+
+        .text,
+        .item {
+          color: @textColor;
+          background-color: @inputBackground;
+        }
+        .item.selected {
+          background-color: @sidebarBackgroundColor !important;
+        }
+        &::placeholder,
+        .default.text {
+          color: @mutedTextColor;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+
+  #frontpage-search-bar {
+    .ui.form .ui.input {
+      input {
+        border-color: @gold;
+        border-right: none;
+        outline: 3px solid @gold;
+      }
+      button[type="submit"] {
+        outline: 3px solid @gold;
+      }
+    }
+  }
 }
