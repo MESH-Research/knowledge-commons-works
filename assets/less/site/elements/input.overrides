@@ -67,3 +67,7 @@
     }
   }
 }
+
+#header-search-bar .ui.action.input {
+  margin-right: 0;
+}

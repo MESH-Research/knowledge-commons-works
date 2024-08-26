@@ -121,7 +121,7 @@ const CreatibutorsFieldItem = ({
 
   // Initialize the ref explicitely
 
-  console.log("CreatibutorsFieldItem showEditForms", showEditForms);
+  console.log("CreatibutorsFieldItem errorMessages", errorMessages);
 
   drop(dropRef);
 
@@ -130,7 +130,7 @@ const CreatibutorsFieldItem = ({
       <List.Item
         key={index}
         className={
-          hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"
+          `${hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"} ${errorMessages.length > 0 ? "error" : ""}`
         }
       >
         {!isNewItem && (

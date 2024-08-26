@@ -284,6 +284,8 @@ class DisconnectedFormFeedback extends Component {
     const { errors: errorsProp, actionState, clientErrors } = this.props;
 
     // Merge client-side validation errors with backend errors
+    console.log("FormFeedback errorsProp:", errorsProp);
+
     const errors = errorsProp
       ? _merge(errorsProp, clientErrors)
       : clientErrors

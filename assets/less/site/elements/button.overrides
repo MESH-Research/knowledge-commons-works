@@ -100,10 +100,6 @@
       &:focus {
         background-color: darken(@redDark, 5%) !important;
       }
-
-      &.no-label {
-        margin-top: 0;
-      }
     }
     &.massive.left.fluid.labeled {
       padding-left: 3em !important;
@@ -206,6 +202,38 @@
   }
 }
 
+.ui.form,
+.ui.modal {
+  .ui.button {
+    font-weight: normal;
+    &.add-btn,
+    &.add-id-button,
+    &.add-url-button,
+    &.add-button {
+      background-color: transparent;
+      box-shadow: none;
+      color: @linkColor;
+      border: 1px solid transparent;
+      &:hover,
+      &:focus,
+      &:active {
+        color: darken(@linkColor, 15%);
+        border: 1px solid @sidebarBorderColor;
+      }
+      &.labeled.icon {
+        padding-left: 2.5rem !important;
+      }
+      .add.icon {
+        background-color: transparent;
+      }
+    }
+  }
+  .ui.mini.ui.button {
+    font-size: 1em;
+  }
+
+}
+
 .invenio-fieldset.resource_type {
     .menu .button.item {
         color: @verdigrisDark;
@@ -257,3 +285,54 @@
 #detail-main-content .button.tiny.show-less {
   margin-bottom: 1rem;
 }
+
+#frontpage-search-bar {
+  .ui.form .ui.input button[type="submit"] {
+      outline: 3px solid @gold;
+    }
+  .ui.icon.primary.button {
+    outline: 3px solid @verdigrisDark;
+  }
+}
+
+#deposit-form .ui.form .formpageWrapper fieldset.ui.segment {
+  .add-btn {
+    margin: -0.5em 0.5em 0 0;
+    font-weight: normal;
+  }
+
+  &.creators {
+    .ui.form .creatibutors-identifiers-add-button {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+    .creatibutors-item-form-buttons {
+      justify-content: space-between;
+      background-color: @sidebarBackgroundColor;
+    }
+    &.error .creatibutors-item-form-buttons {
+      border: 1px solid @errorColor;
+      border-top: 0;
+    }
+
+  }
+
+  &.licenses {
+    .add-btn {
+      margin-top: 0;
+    }
+  }
+
+  &.communities {
+    .fields {
+      .ui.icon.button.close-btn {
+        margin-top: 0;
+        float: none;
+      }
+      .right-btn-column {
+        text-align: right;
+      }
+    }
+  }
+}
+

@@ -8,7 +8,8 @@
 
 import PropTypes from "prop-types";
 import React from "react";
-import { FieldLabel, TextField } from "react-invenio-forms";
+import { FieldLabel } from "react-invenio-forms";
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 
 export function EmbargoDateField({

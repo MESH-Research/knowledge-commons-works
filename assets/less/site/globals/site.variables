@@ -202,6 +202,7 @@
 @sidebarHeaderColor: @ivy80;
 @sidebarBorderColor: @mint60; // @verdigris20;
 
+@formInputBackgroundColor: @white;
 @formButtonColor: @sidebarBackgroundColor;
 @formInputBorderColor: @ivy30;
 @focusedFormBorderColor: #2185d0;

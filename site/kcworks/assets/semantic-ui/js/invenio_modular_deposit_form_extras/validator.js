@@ -14,24 +14,13 @@ import {
   rorValidator,
 } from "./validatorsForIds";
 
-addMethod(yupString, "ror", function () {
-  return this.test("test-name", rorValidator);
-});
+addMethod(yupString, "ror", rorValidator);
 
-addMethod(yupString, "gnd", function () {
-  return this.test("test-name", gndValidator);
-});
+addMethod(yupString, "gnd", gndValidator);
 
-addMethod(yupString, "orcid", function () {
-  return this.test("test-name", orcidValidator);
-});
+addMethod(yupString, "orcid", orcidValidator);
 
-addMethod(yupString, "isni", function () {
-  return this.test("test-name", function (val) {
-    // Test if argument is an International Standard Name Identifier.
-    return isniValidator(val);
-  });
-});
+addMethod(yupString, "isni", isniValidator);
 
 addMethod(yupString, "dateInSequence", function () {
   return this.test("test-name", function (value) {

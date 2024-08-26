@@ -76,6 +76,163 @@
   color: @positiveColor;
 }
 
+.ui.form,
+.ui.modal {
+  .field {
+    .ui.label.prompt {
+      font-size: 1rem;
+    }
+
+    &.error {
+      > label {
+        color: @errorColor;
+      }
+      .prompt.label {
+        background-color: @errorColor !important;
+        border-color: @errorColor !important;
+        color: #fff !important;
+      }
+    }
+
+    .field:not(.error),
+    .fields:not(.error) {
+        & > label,
+        & .checkbox:not(.toggle):not(.slider) label {
+          color: @textColor;
+      }
+    }
+  }
+}
+
+#deposit-form .ui.form .formPageWrapper fieldset.ui.segment {
+  > .invenio-field-label:first-of-type,
+  > .field > .invenio-field-label:first-of-type,
+  > .field > .field > .invenio-field-label:first-of-type,
+  > .field > label > .invenio-field-label:first-of-type,
+  > .fields > .field.subjects-field-inner > .invenio-field-label:first-of-type {
+    font-size: @big;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    display: block;
+    .icon {
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+    font-family: @headingFontName;
+  }
+  .field > label {
+    margin-bottom: 0.25em;
+    .icon {
+      display: none;
+    }
+  }
+
+  .label.helptext {
+    font-size: 1em;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+  }
+  .helptext:last-child {
+    margin-bottom: 0;
+  }
+
+  &.content_warning {
+    .fields .invenio-field-label {
+      font-weight: normal;
+    }
+  }
+
+  &.subjects_keywords {
+    .helptext {
+      margin-bottom: 0;
+      font-weight: 0;
+    }
+  }
+
+  &.invenio-fieldset.doi {
+    .inline.fields {
+      label {
+        font-weight: normal;
+      }
+    }
+    label.helptext {
+      margin-top: -0.5em;
+    }
+  }
+
+  &.invenio-fieldset.combined_dates {
+    .ui.label.prompt {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    label.helptext {
+      margin-top: 1.5em;
+    }
+  }
+
+  &.creators {
+    .ui.list.creators-list .item {
+      .creatibutor { // creator's name
+        .ui.label {
+          margin-left: 1rem;
+          position: relative;
+          top: -1px;
+        }
+      }
+      .prompt.label { // error messages
+        .ui.list {
+          margin-top: 0;
+          padding-top: 0.25rem;
+          padding-left: 0.25rem;
+        }
+      }
+    }
+
+    .ui.form {
+      label {
+        font-weight: bold;
+        font-size: 1rem;
+      }
+
+      .creatibutors-identifiers-item-row {
+        .field:first-child {
+          label {
+            display: none;
+          }
+        }
+        .pointing.above.prompt {
+          margin-top: 1rem;
+          margin-left: 0;
+          &::before {
+            top: 0;
+            left: 50%;
+          }
+        }
+      }
+    }
+  }
+
+  &.ai {
+    .fields .field .invenio-field-label {
+      font-weight: normal;
+    }
+  }
+
+  &.communities {
+    .fields {
+      .communities-helptext-wrapper {
+        display: flex;
+        align-items: center;
+        .helptext {
+          color: @primaryColor;
+          margin-top: 0;
+        }
+      }
+    }
+  }
+
+}
+
 // FIXME: This is a temporary fix for the search sort labels
 #invenio-search-config .row .column label:first-child {
   display: none;

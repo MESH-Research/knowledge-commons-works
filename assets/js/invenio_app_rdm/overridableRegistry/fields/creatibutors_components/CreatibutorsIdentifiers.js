@@ -9,10 +9,11 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Icon } from "semantic-ui-react";
 import PropTypes, { array } from "prop-types";
-import { FieldLabel, SelectField } from "react-invenio-forms";
+import { FieldLabel } from "react-invenio-forms";
 import _unickBy from "lodash/unionBy";
 import _get from "lodash/get";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { SelectField } from "@js/invenio_modular_deposit_form/replacement_components/SelectField";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 import { FieldArray, useFormikContext } from "formik";
 
@@ -32,7 +33,6 @@ const CreatibutorsIdentifiers = ({
   placeholder = "",
   idTypes = ["orcid", "isni", "gnd", "ror", "kc_username"],
 }) => {
-  // const [selectedOptions, setSelectedOptions] = useState(initialOptions);
 
   const [identifiersLength, setIdentifiersLength] = useState(-1);
   const [haveChangedNumber, setHaveChangedNumber] = useState(false);
@@ -75,9 +75,6 @@ const CreatibutorsIdentifiers = ({
             {_get(arrayHelpers.form.values, fieldPath, [])?.map(
               (option, index) => {
                 const fieldPathPrefix = `${fieldPath}.${index}`;
-                console.log("CreatibutorsIdentifiers option", option);
-                console.log("CreatibutorsIdentifiers index", index);
-                console.log("CreatibutorsIdentifiers fieldPathPrefix", fieldPathPrefix);
 
                 return (
                   <Form.Group
@@ -91,6 +88,8 @@ const CreatibutorsIdentifiers = ({
                       id={`${fieldPathPrefix}.identifier`}
                       label={""}
                       width={10}
+                      required
+                      classnames="flex-grow"
                     />
                     <SelectField
                       fieldPath={`${fieldPathPrefix}.scheme`}
@@ -98,12 +97,14 @@ const CreatibutorsIdentifiers = ({
                       id={`${fieldPathPrefix}.scheme`}
                       label={"Scheme"}
                       options={idTypes.map((option) => idTypeData[option])}
+                      required
                       selection
                       selectOnBlur
                       optimized
                       fluid
+                      classnames="flex-grow"
                     />
-                    <Form.Field>
+                    <Form.Field className="no-label">
                       <Button
                         aria-label={i18next.t("Remove item")}
                         className="close-btn"
@@ -137,13 +138,6 @@ const CreatibutorsIdentifiers = ({
 };
 
 CreatibutorsIdentifiers.propTypes = {
-  initialOptions: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired,
-    })
-  ).isRequired,
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
   placeholder: PropTypes.string,

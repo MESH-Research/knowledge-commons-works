@@ -95,3 +95,10 @@ h2.ui.header {
 .request-detail-page .computer-flex-header.rel-mt-2 {
   margin-top: 1rem !important;
 }
+
+.ui.form,
+.ui.modal {
+  h2 {
+    font-weight: normal;
+  }
+}

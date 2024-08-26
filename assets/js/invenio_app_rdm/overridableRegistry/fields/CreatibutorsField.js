@@ -235,10 +235,10 @@ const CreatibutorsField = ({
         setFieldTouched(`${fieldPath}.${i}.person_or_org.family_name`, true);
         setFieldTouched(`${fieldPath}.${i}.person_or_org.given_name`, true);
         setFieldTouched(`${fieldPath}.${i}.role`, true);
-        for (let j = 0; j < getIn(values, `${fieldPath}.${i}.affiliations`).length; j++) {
+        for (let j = 0; j < getIn(values, `${fieldPath}.${i}.affiliations`, []).length; j++) {
           setFieldTouched(`${fieldPath}.${i}.affiliations.${j}.name`, true);
         };
-        for (let j = 0; j < getIn(values, `${fieldPath}.${i}.person_or_org.identifiers`).length; j++) {
+        for (let j = 0; j < getIn(values, `${fieldPath}.${i}.person_or_org.identifiers`, []).length; j++) {
           setFieldTouched(`${fieldPath}.${i}.person_or_org.identifiers.${j}.identifier`, true);
           setFieldTouched(`${fieldPath}.${i}.person_or_org.identifiers.${j}.scheme`, true);
         };

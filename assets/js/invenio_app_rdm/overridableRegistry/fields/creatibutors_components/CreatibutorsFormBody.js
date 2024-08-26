@@ -209,8 +209,8 @@ const CreatibutorsFormBody = ({
   const typeFieldPath = `${personOrOrgPath}.type`;
   const roleFieldPath = `${fieldPathPrefix}.role`;
 
-  const affiliationsRef = createRef();
-  const identifiersRef = createRef();
+  // const affiliationsRef = createRef();
+  // const identifiersRef = createRef();
   const inputRef = createRef();
   const namesAutocompleteRef = createRef();
   const surnameRef = createRef();
@@ -308,8 +308,8 @@ const CreatibutorsFormBody = ({
                   onPersonSearchChange(
                     { formikProps },
                     selectedSuggestions,
-                    identifiersRef,
-                    affiliationsRef
+                    // identifiersRef,
+                    // affiliationsRef
                   )
                 }
                 ref={namesAutocompleteRef}
@@ -339,7 +339,7 @@ const CreatibutorsFormBody = ({
                 <CreatibutorsIdentifiers
                   // initialOptions={values}
                   fieldPath={identifiersFieldPath}
-                  ref={identifiersRef}
+                  // ref={identifiersRef}
                   label={"Personal identifiers (ORCID, KC member id, ISNI, or GND)"}
                   idTypes={["orcid", "isni", "gnd", "kc_username"]}
                 />
@@ -359,7 +359,6 @@ const CreatibutorsFormBody = ({
             input={{ ref: inputRef }}
           />
           <CreatibutorsIdentifiers
-            initialOptions={_get(values, identifiersFieldPath, [])}
             fieldPath={identifiersFieldPath}
             label={"Organization identifiers (ROR, ISNI, or GND)"}
             idTypes={["ror", "isni", "gnd"]}
@@ -384,7 +383,7 @@ const CreatibutorsFormBody = ({
               />
               <AffiliationsField
                 fieldPath={affiliationsFieldPath}
-                selectRef={affiliationsRef}
+                // selectRef={affiliationsRef}
               />
             </>
           )

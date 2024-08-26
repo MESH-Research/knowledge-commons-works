@@ -27,6 +27,10 @@
   }
 }
 
+#deposit-form .ui.form .field.error > .ui.list > .item.error > .drag-anchor {
+  color: @errorTextColor;
+}
+
 #rdm-footer-element .footer-top {
   .icon {
     svg {

@@ -55,3 +55,15 @@
     }
   }
 }
+
+.error.field {
+  .ui.list {
+    & > .item.error {
+      .content {
+        .description {
+          color: @errorTextColor;
+        }
+      }
+    }
+  }
+}
