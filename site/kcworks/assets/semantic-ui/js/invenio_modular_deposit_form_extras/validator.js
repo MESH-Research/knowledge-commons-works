@@ -10,6 +10,7 @@ import {
 import {
   gndValidator,
   isniValidator,
+  kcUsernameValidator,
   orcidValidator,
   rorValidator,
 } from "./validatorsForIds";
@@ -21,6 +22,8 @@ addMethod(yupString, "gnd", gndValidator);
 addMethod(yupString, "orcid", orcidValidator);
 
 addMethod(yupString, "isni", isniValidator);
+
+addMethod(yupString, "kc_username", kcUsernameValidator);
 
 addMethod(yupString, "dateInSequence", function () {
   return this.test("test-name", function (value) {
@@ -100,6 +103,16 @@ const validationSchema = yupObject().shape({
                       then: yupString()
                         .url("Must be a valid URL (e.g. https://example.com)")
                         .required("You must provide a URL or remove this row"),
+                    })
+                    .when("scheme", {
+                      is: "kc_username",
+                      then: yupString()
+                        .kc_username(
+                          "Must be a valid Knowledge Commons username (e.g., janedoe)"
+                        )
+                        .required(
+                          "You must provide a Knowledge Commons username or remove this row"
+                        ),
                     })
                     .when("scheme", {
                       is: "orcid",

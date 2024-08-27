@@ -31,7 +31,6 @@ import { ORCID } from "orcid-utils";
  */
 function rorValidator(message) {
   return this.test("ror", message, function (val) {
-
     const { path, createError } = this;
 
     const rorRegexp = new RegExp(
@@ -43,12 +42,15 @@ function rorValidator(message) {
     if (typeof val !== "string") {
       return createError({ path, message: "ROR must be a string" });
     } else if (!rorRegexp.test(val)) {
-      return createError({ path, message: message ?? "Invalid ROR identifier" });
+      return createError({
+        path,
+        message: message ?? "Invalid ROR identifier",
+      });
     }
 
     return true;
   });
-};
+}
 
 /**
  * Test if argument is an International Standard Name Identifier.
@@ -93,7 +95,10 @@ function isniValidator(message) {
 
     val = val.replace(/-/g, "").replace(/ /g, "").toUpperCase();
     if (val.length !== 16) {
-      return createError({ path, message: message ?? "ISNI is not a valid length" });
+      return createError({
+        path,
+        message: message ?? "ISNI is not a valid length",
+      });
     }
 
     try {
@@ -103,15 +108,21 @@ function isniValidator(message) {
       }
       const ck = (12 - (r % 11)) % 11;
       if (ck !== convertXTo10(val.slice(-1))) {
-        return createError({ path, message: message ?? "Invalid ISNI identifier" });
-      };
+        return createError({
+          path,
+          message: message ?? "Invalid ISNI identifier",
+        });
+      }
     } catch (error) {
-      return createError({ path, message: message ?? "Invalid ISNI identifier" });
+      return createError({
+        path,
+        message: message ?? "Invalid ISNI identifier",
+      });
     }
 
     return true;
   });
-};
+}
 
 /**
  * Test if argument is a Gemeinsame Normdatei identifier.
@@ -171,7 +182,7 @@ function gndValidator(message) {
 
     return true;
   });
-};
+}
 
 /**
  * Test if argument is an ORCID.
@@ -214,6 +225,85 @@ function orcidValidator(message) {
 
     return true;
   });
-};
+}
 
-export { gndValidator, isniValidator, orcidValidator, rorValidator };
+function sanitizeWPUsername(username, strict = false) {
+  let rawUsername = username;
+
+  // Remove HTML tags
+  username = username.replace(/<\/?[^>]+(>|$)/g, "");
+
+  // Remove accents
+  username = username.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  // Remove percent-encoded characters
+  username = username.replace(/%[a-fA-F0-9]{2}/g, "");
+
+  // Remove HTML entities
+  username = username.replace(/&[^;]+;/g, "");
+
+  // If strict, reduce to ASCII for max portability
+  if (strict) {
+    username = username.replace(/[^a-z0-9 _.\-@]/gi, "");
+  }
+
+  // Remove all whitespace
+  username = username.replace(/\s+/g, "");
+
+  return username;
+}
+
+/**
+ * Test if argument is a valid Knowledge Commons username.
+ *
+ * Returns true if the username is unchanged after it is passed through
+ * the sanitizeWPUsername function, otherwise returns an error message.
+ *
+ * This can be used as a yup validation method using the yup
+ * addMethod function like this:
+ *
+ * import { addMethod } from "yup";
+ * import { kcUsernameValidator } from "./validatorsForIds";
+ * addMethod(yup.string, "kc_username", kcUsernameValidator);
+ *
+ * Then you can use it in a schema like this:
+ *
+ * import * as yup from "yup";
+ * const schema = yup.object().shape({
+ *   kc_username: yup.string().kc_username("Invalid Knowledge Commons username"),
+ * });
+ *
+ * If your schema does not provide a custom error message when
+ * it calls the kc_username method, the default error message will be
+ * "Invalid Knowledge Commons username". Otherwise this is overridden by
+ * the custom error message.
+ *
+ * @param {string} message
+ * @returns either true or an error message
+ */
+function kcUsernameValidator(message) {
+  return this.test("kc_username", message, function (val) {
+    const { path, createError } = this;
+
+    const sanitizedUsername = sanitizeWPUsername(val);
+    console.log("sanitizedUsername", sanitizedUsername);
+    console.log("sanitizedUsername val", val);
+
+    if (val !== sanitizedUsername) {
+      return createError({
+        path,
+        message: message ?? "Invalid Knowledge Commons username",
+      });
+    }
+
+    return true;
+  });
+}
+
+export {
+  gndValidator,
+  isniValidator,
+  kcUsernameValidator,
+  orcidValidator,
+  rorValidator,
+};
