@@ -1,17 +1,24 @@
-// This file is part of Invenio-RDM-Records
-// Copyright (C) 2020-2023 CERN.
-// Copyright (C) 2020-2022 Northwestern University.
-//
-// Invenio-RDM-Records is free software; you can redistribute it and/or modify it
-// under the terms of the MIT License; see LICENSE file for more details.
+/*
+* This file is part of Knowledge Commons Works.
+* Copyright (C) 2024 Mesh Research.
+*
+* Knowledge Commons Works is based on InvenioRDM, and
+* this file is based on code from InvenioRDM. InvenioRDM is
+* Copyright (C) 2020-2024 CERN.
+* Copyright (C) 2020-2022 Northwestern University.
+*
+* InvenioRDM and Knowledge Commons Works are both free software;
+* you can redistribute and/or modify them under the terms of the
+* MIT License; see LICENSE file for more details.
+*/
 
 import PropTypes from "prop-types";
-import React, { Component, useState, useEffect } from "react";
-import { ArrayField, FieldLabel, GroupField } from "react-invenio-forms";
-import { Button, Form, Grid, Icon } from "semantic-ui-react";
+import React, { useState, useEffect } from "react";
+import { FieldLabel } from "react-invenio-forms";
+import { Button, Form, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 // import { emptyIdentifier } from "./initialValues";
-import { FieldArray, Field, useFormikContext } from "formik";
+import { FieldArray, useFormikContext } from "formik";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 import { SelectField } from "@js/invenio_modular_deposit_form/replacement_components/SelectField";
 
@@ -132,12 +139,7 @@ export const IdentifiersField = ({
                 {/* <GroupField key={index} inline> */}
                 <TextField
                   fieldPath={`${fieldPathPrefix}.identifier`}
-                  label={
-                    <label>
-                      <Icon name={!isUrl ? icon : "linkify"} />
-                      {i18next.t(!isUrl ? "Identifier" : "URL")}
-                    </label>
-                  }
+                  label={i18next.t(!isUrl ? "Identifier" : "URL")}
                   required={!isUrl && hasScheme}
                   id={`${fieldPathPrefix}.identifier`}
                   width={!!isUrl ? 14 : 9}
