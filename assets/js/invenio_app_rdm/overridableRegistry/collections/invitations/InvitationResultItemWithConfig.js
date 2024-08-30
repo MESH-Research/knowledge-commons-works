@@ -1,25 +1,31 @@
 /*
- * This file is part of Invenio.
- * Copyright (C) 2022 CERN.
- *
- * Invenio is free software; you can redistribute it and/or modify it
- * under the terms of the MIT License; see LICENSE file for more details.
- */
+* This file is part of Knowledge Commons Works.
+* Copyright (C) 2024 Mesh Research.
+*
+* Knowledge Commons Works is based on InvenioRDM, and
+* this file is based on code from InvenioRDM. InvenioRDM is
+* Copyright (C) 2022-2024 CERN.
+*
+* InvenioRDM and Knowledge Commons Works are both free software;
+* you can redistribute and/or modify them under the terms of the
+* MIT License; see LICENSE file for more details.
+*/
 
+import { parametrize } from "react-overridable";
 import { i18next } from "@translations/invenio_communities/i18next";
 import { DateTime } from "luxon";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Image } from "react-invenio-forms";
 import { Container, Grid, Item, Table } from "semantic-ui-react";
-import { InvitationsContext } from "../../api/invitations/InvitationsContextProvider";
-import { RoleDropdown } from "../components/dropdowns";
+import { InvitationsContext } from "@js/invenio_communities/api/invitations/InvitationsContextProvider";
+import { RoleDropdown } from "@js/invenio_communities/members/components/dropdowns";
 import RequestStatus from "@js/invenio_requests/request/RequestStatus";
 
 const formattedTime = (expiresAt) =>
   DateTime.fromISO(expiresAt).setLocale(i18next.language).toRelative();
 
-export class InvitationResultItem extends Component {
+class InvitationResultItem extends Component {
   constructor(props) {
     super(props);
     const { result } = this.props;
@@ -43,6 +49,8 @@ export class InvitationResultItem extends Component {
       invitation,
     } = this.state;
     const { api: invitationsApi } = this.context;
+    const groupName = community.custom_fields?.['kcr:commons_group_name'] || community.metadata.title;
+    const memberName = member.name.replace(/knowledgeCommons---\d+\|/, `${groupName} group `);
     const rolesCanInviteByType = rolesCanInvite[member.type];
     const memberInvitationExpiration = formattedTime(request.expires_at);
     return (
@@ -54,8 +62,8 @@ export class InvitationResultItem extends Component {
                 <Image src={member.avatar} avatar circular className="mr-10" />
                 <Item.Content>
                   <Item.Header size="small" as="b">
-                    <a href={`/communities/${community.slug}/requests/${request.id}`}>
-                      {member.name}
+                    <a href={`/collections/${community.slug}/requests/${request.id}`}>
+                      {memberName}
                     </a>
                   </Item.Header>
                   {member.description && (
@@ -110,4 +118,13 @@ InvitationResultItem.propTypes = {
   community: PropTypes.object.isRequired,
 };
 
-InvitationResultItem.defaultProps = {};
+const dataAttr = document.getElementById("community-invitations-search-root")?.dataset;
+const community = !!dataAttr ? JSON.parse(dataAttr.community) : {};
+const communitiesRolesCanInvite = !!dataAttr ? JSON.parse(dataAttr.communitiesRolesCanInvite) : {};
+
+const InvitationResultItemWithConfig = parametrize(InvitationResultItem, {
+  config: { rolesCanInvite: communitiesRolesCanInvite },
+  community: community,
+});
+
+export { InvitationResultItemWithConfig, InvitationResultItem };

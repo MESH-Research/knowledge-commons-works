@@ -1,12 +1,6 @@
 import React, { Component } from "react";
 
-import { Input, Array } from "react-invenio-forms";
-import { Grid, Form, Button, Icon } from "semantic-ui-react";
-
-const newExperiment = {
-  title: "",
-  program: "",
-};
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
 export class Volumes extends Component {
   render() {
@@ -23,22 +17,24 @@ export class Volumes extends Component {
 
     return (
       <>
-        <Input
+        <TextField
             fieldPath={`${fieldPath}.total_volumes`}
             label={total_volumes.label}
             icon={total_volumes.icon}
             placeholder={total_volumes.placeholder}
             description={total_volumes.description}
+            helpText={total_volumes.helptext}
             width={width1 || 8}
-        ></Input>
-        <Input
+        ></TextField>
+        <TextField
             fieldPath={`${fieldPath}.volume`}
             label={volume.label}
             icon={volume.icon}
             placeholder={volume.placeholder}
             description={volume.description}
+            helpText={volume.helptext}
             width={width2 || 8}
-        ></Input>
+        ></TextField>
       </>
     );
 }}

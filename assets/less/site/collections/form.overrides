@@ -165,7 +165,6 @@ textarea {
 
     .sticky-footer-fixed,
     .sticky-footer-static {
-      z-index: 1000;
       background-color: @ivy;
       // backdrop-filter: blur(2px);
       border: 1px solid @ivy;
@@ -206,6 +205,7 @@ textarea {
       }
     }
     .sticky-footer-fixed {
+      z-index: 1000;
       position: fixed;
       bottom: 0;
       max-width: 900px !important;

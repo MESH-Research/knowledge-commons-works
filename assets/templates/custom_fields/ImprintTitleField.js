@@ -7,9 +7,7 @@
 
 import React, { Component } from "react";
 
-import { FieldLabel, Input } from "react-invenio-forms";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
-import { Divider, Grid } from "semantic-ui-react";
 
 import PropTypes from "prop-types";
 
@@ -21,20 +19,20 @@ class ImprintTitleField extends Component {
       label,
       description,
       placeholder,
+      helpText,
       icon,
       classnames,
     } = this.props;
 
     return (
-      <>
-        <TextField
-          fieldPath={`${fieldPath}`}
-          label={label}
-          placeholder={placeholder}
-          classnames={classnames}
-        />
-        {description && <label className="helptext mb-0">{description}</label>}
-      </>
+      <TextField
+        fieldPath={`${fieldPath}`}
+        label={label}
+        placeholder={placeholder}
+        classnames={classnames}
+        description={description}
+        helpText={helpText}
+      />
     );
   }
 }

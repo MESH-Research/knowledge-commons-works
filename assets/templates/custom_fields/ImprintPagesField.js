@@ -7,8 +7,7 @@
 
 import React, { Component } from "react";
 
-import { FieldLabel, Input } from "react-invenio-forms";
-import { Divider, Grid } from "semantic-ui-react";
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 
 import PropTypes from "prop-types";
 
@@ -21,20 +20,18 @@ export class ImprintPagesField extends Component {
       label,
       icon,
       placeholder,
-      description
+      description,
+      helpText,
     } = this.props;
     return (
-      <>
-        <Input
-            fieldPath={fieldPath}
-            label={label}
-            placeholder={placeholder}
-            icon={icon}
-        />
-        {description && (
-            <label className="helptext mb-0">{description}</label>
-        )}
-      </>
+      <TextField
+          fieldPath={fieldPath}
+          label={label}
+          placeholder={placeholder}
+          icon={icon}
+          description={description}
+          helpText={helpText}
+      />
     );
   }
 }

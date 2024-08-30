@@ -12,13 +12,16 @@ import { DescriptionsField } from "./fields/DescriptionsField";
 import { FormFeedback } from "./fields/FormFeedback";
 import { FundingField } from "./fields/FundingField";
 import { IdentifiersField } from "./fields/IdentifiersField";
+import { InvitationResultItemWithConfig } from "./collections/invitations/InvitationResultItemWithConfig";
 import { LicenseField } from "./fields/LicenseField";
+import { ManagerMembersResultItemWithConfig } from "./collections/members/manager_view/ManagerMembersResultItem";
 import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 import { PublicationDateField } from "./fields/PublicationDateField";
+import { PublicMembersResultsItemWithCommunity } from "./collections/members/public_view/PublicMembersResultItem";
 import { PublisherField } from "./fields/PublisherField";
 import RecordsResultsListItem from "./search/RecordsResultsListItem";
 import RequestMetadata from "./requests/RequestMetadata";
-import { RequestsResultsItemTemplateWithCommunity } from "./collections/requests";
+import { RequestsResultsItemTemplateWithCommunity } from "./collections/members/requests/RequestsResultsItemTemplate";
 import { RDMRecordMultipleSearchBarElement } from "./search/RDMRecordMultipleSearchBarElement";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
 import { ResultOptions } from "./search/ResultOptions";
@@ -51,7 +54,6 @@ export const overriddenComponents = {
   "InvenioAppRdm.Deposit.FundingField.container": FundingField,
   "InvenioAppRdm.Deposit.IdentifiersField.container": IdentifiersField,
   "InvenioAppRdm.Deposit.LicenseField.container": LicenseField,
-  "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
   "InvenioAppRdm.Deposit.PublicationDateField.container": PublicationDateField,
   "InvenioAppRdm.Deposit.PublisherField.container": PublisherField,
   "InvenioAppRdm.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
@@ -67,7 +69,12 @@ export const overriddenComponents = {
   "InvenioAppRdm.Deposit.FileUploader.container": FileUploader,
   "InvenioCommunities.DetailsSearch.ResultsList.item": RecordsResultsListItem,
   "InvenioCommunities.RequestSearch.ResultsList.item": RequestsResultsItemTemplateWithCommunity,
+  "InvenioCommunities.InvitationsSearch.ResultsList.item": InvitationResultItemWithConfig,
+  "InvenioCommunities.ManagerSearch.ResultsList.item": ManagerMembersResultItemWithConfig,
+  "InvenioCommunities.MemberSearch.ResultsList.item": ManagerMembersResultItemWithConfig,
+  "InvenioCommunities.PublicSearch.ResultsList.item": PublicMembersResultsItemWithCommunity,
   "InvenioModularDetailPage.MobileActionMenu.container": MobileActionMenu,
   // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
   // InvenioCommunities.Search.SearchApp.layout: CommunityRecordsSearchAppLayout,
+  "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
 };
