@@ -154,7 +154,7 @@ const FileTableRow = ({
               <Icon loading name="spinner" />
             ) : (
               <Button
-                className="close-btn no-label"
+                className="close-btn"
                 name="trash alternate outline"
                 disabled={isDeleting}
                 negative
