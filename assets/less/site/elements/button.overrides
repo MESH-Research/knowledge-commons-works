@@ -76,6 +76,17 @@
     }
   }
 
+  &.warning {
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: @warningBackgroundColor;
+      background-color: @warningColorDown !important;
+      box-shadow: 0px 0px 0px 1px @warningColorDown inset
+      }
+  }
+
   &.transparent {
     background-color: transparent;
     box-shadow: none;

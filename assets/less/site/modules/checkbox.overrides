@@ -7,6 +7,9 @@
     }
     &::after {
       border: 1px solid @ivy40;
+      display:absolute;
+      top: -8px;
+      left: -8px;
     }
     &:hover,
     &:active,

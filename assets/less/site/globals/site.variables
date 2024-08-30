@@ -172,6 +172,7 @@
 @warningTextColor: #8d7313; // @darkGold;
 @warningBackgroundColor: @gold10;
 @warningBorderColor: @gold40;
+@warningColorDown: darken(@gold, 10%);
 
 @positiveColor: @green;
 @positiveTextColor: @green; // darken(@green, 10%);
