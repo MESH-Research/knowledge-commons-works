@@ -384,11 +384,42 @@ html.cover-page {
             aspect-ratio: 9/11;
             min-height: 100vh;
             margin-top: 0;
+            border-top: 1px solid @internalBorderColor;
+            border-bottom: 1px solid @internalBorderColor;
+            transition: all 0.5s ease;
             &.hidden {
               display: none;
             }
-            border-top: 1px solid @internalBorderColor;
-            border-bottom: 1px solid @internalBorderColor;
+            &.no-preview,
+            &.mp3,
+            &.wav,
+            &.aac,
+            &.ogg,
+            &.flac,
+            &.mp4,
+            &.webm,
+            &.jpg,
+            &.jpeg,
+            &.png,
+            &.gif,
+            &.zip {
+              min-height:auto;
+              aspect-ratio: auto;
+              height: auto;
+            }
+            &.mp4,
+            &.webm {
+              aspect-ratio: 16/9;
+              border: none;
+            }
+            &.mp3,
+            &.wav,
+            &.aac,
+            &.ogg,
+            &.flac {
+              max-height: 8rem;
+              border: none;
+            }
             @media screen and (max-width: @largestMobileScreen) {
               min-height: 50vh;
             }
@@ -466,6 +497,36 @@ html.cover-page {
             border-bottom: 1px solid @internalBorderColor;
             &.hidden {
               display: none;
+            }
+            &.no-preview,
+            &.mp3,
+            &.wav,
+            &.aac,
+            &.ogg,
+            &.flac,
+            &.mp4,
+            &.webm,
+            &.jpg,
+            &.jpeg,
+            &.png,
+            &.gif,
+            &.zip {
+              min-height:auto;
+              aspect-ratio: auto;
+              height: auto;
+            }
+            &.mp4,
+            &.webm {
+              aspect-ratio: 16/9;
+              border: none;
+            }
+            &.mp3,
+            &.wav,
+            &.aac,
+            &.ogg,
+            &.flac {
+              max-height: 8rem;
+              border: none;
             }
           }
           table tbody {
