@@ -5,6 +5,11 @@
         color: @ivy80;
         line-height: 1.15rem;
     }
+    tr.active,
+    tr td.active {
+        background-color: @mint50 !important;
+        color: @ivy;
+    }
     &.striped tbody tr:nth-child(even) {
         background-color: @seafoam50;
     }
