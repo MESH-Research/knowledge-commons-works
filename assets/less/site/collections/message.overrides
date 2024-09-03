@@ -16,12 +16,47 @@
     }
   }
 
+  &.info {
+    border-color: @infoBorderColor;
+    box-shadow: none;
+    .header {
+      color: @infoTextColor;
+    }
+    .icon {
+      color: @infoColor;
+      &.dropdown {
+        color: @infoTextColor;
+      }
+    }
+  }
+
   &.flashed {
     .ui.grid.centered {
       text-align: right;
       .ui.icon.button.close-btn {
         margin-top: 0;
       }
+    }
+  }
+}
+
+.file-upload-note {
+  .ui.message {
+    .header {
+      font-size: 1rem;
+      margin: 0;
+      font-weight: normal;
+    }
+  }
+}
+
+.ui.message.file-type-message {
+  align-items: flex-start;  // Aligns the icon to the top of the accordion
+  .icon {
+    color: @infoColor;
+    margin-top: 0.2rem;
+    &.dropdown {
+      color: @infoTextColor;
     }
   }
 }

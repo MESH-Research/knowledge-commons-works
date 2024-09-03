@@ -10,6 +10,15 @@
         }
       }
     }
+    .column {
+      &.justify-space-between {
+        justify-content: space-between;
+      }
+      &.storage-col {
+        padding-top: 0;
+        padding-bottom: 1rem;
+      }
+    }
     fieldset.communities {
       .ui.grid {
         margin-bottom: 0;

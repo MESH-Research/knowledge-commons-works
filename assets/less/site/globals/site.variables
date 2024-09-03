@@ -195,6 +195,9 @@
 @inputErrorFocusColor: @errorTextColor;
 @inputErrorFocusBorder: @formErrorBorder;
 
+@infoColor: #6dbcd5;
+@infoBorderColor: #cee8f0;
+
 /*-------------------
       Site Colors
 --------------------*/

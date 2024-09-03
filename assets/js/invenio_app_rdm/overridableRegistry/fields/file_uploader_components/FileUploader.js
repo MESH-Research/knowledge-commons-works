@@ -22,6 +22,7 @@ import { FileUploaderArea } from "./FileUploaderArea";
 import { FileUploaderToolbar } from "./FileUploaderToolbar";
 import { humanReadableBytes } from "react-invenio-forms";
 import Overridable from "react-overridable";
+import { FileTypeMessage } from './FileTypeMessage';
 
 export const UploadState = {
   // initial: 'initial', // no file or the initial file selected
@@ -242,44 +243,47 @@ export const FileUploaderComponent = ({
             )}
           </Overridable>
 
-          <Overridable
-            id="ReactInvenioDeposit.FileUploader.FileUploaderArea.container"
-            filesList={filesList}
-            dropzoneParams={dropzoneParams}
-            isDraftRecord={isDraftRecord}
-            filesEnabled={filesEnabled}
-            deleteFile={deleteFile}
-            decimalSizeDisplay={decimalSizeDisplay}
-            {...uiProps}
-          >
-            {(filesEnabled || isDraftRecord) && (
-              <Grid.Row className="pb-0">
-                <FileUploaderArea
+          <Grid.Row className="file-uploader-container">
+            <Grid.Column width={16}>
+              <Overridable
+                id="ReactInvenioDeposit.FileUploader.FileUploaderArea.container"
+                filesList={filesList}
+                dropzoneParams={dropzoneParams}
+                isDraftRecord={isDraftRecord}
+                filesEnabled={filesEnabled}
+                deleteFile={deleteFile}
+                decimalSizeDisplay={decimalSizeDisplay}
+                {...uiProps}
+              >
+                {(filesEnabled || isDraftRecord) && (
+                  <FileUploaderArea
+                    {...uiProps}
+                    filesList={filesList}
+                    dropzoneParams={dropzoneParams}
+                    isDraftRecord={isDraftRecord}
+                    filesEnabled={filesEnabled}
+                    deleteFile={deleteFile}
+                    decimalSizeDisplay={decimalSizeDisplay}
+                  />
+                )}
+              </Overridable>
+
+              {isDraftRecord && (
+                <FileUploaderToolbar
                   {...uiProps}
-                  filesList={filesList}
-                  dropzoneParams={dropzoneParams}
-                  isDraftRecord={isDraftRecord}
+                  className="file-uploader-toolbar"
+                  config={config}
                   filesEnabled={filesEnabled}
-                  deleteFile={deleteFile}
+                  filesList={filesList}
+                  filesSize={filesSize}
+                  isDraftRecord={isDraftRecord}
+                  quota={quota}
                   decimalSizeDisplay={decimalSizeDisplay}
                 />
-              </Grid.Row>
-            )}
-          </Overridable>
+              )}
 
-          <Grid.Row className="pt-0 pb-5">
-            {isDraftRecord && (
-              <FileUploaderToolbar
-                {...uiProps}
-                config={config}
-                filesEnabled={filesEnabled}
-                filesList={filesList}
-                filesSize={filesSize}
-                isDraftRecord={isDraftRecord}
-                quota={quota}
-                decimalSizeDisplay={decimalSizeDisplay}
-              />
-            )}
+              <FileTypeMessage />
+            </Grid.Column>
           </Grid.Row>
 
           <Overridable
@@ -290,13 +294,18 @@ export const FileUploaderComponent = ({
             {...uiProps}
           >
             {isDraftRecord ? (
-              <Grid.Row className="file-upload-note">
+              <Grid.Row className="file-upload-note pt-0">
                 <Grid.Column width={16}>
-                  <Message visible warning icon={"warning sign"}
-                    content={i18next.t(
-                        "File addition, removal or modification are not allowed after you have published your upload."
-                      )}
-                  />
+                  <Message visible warning icon>
+                    <Icon name="warning sign" size="large" />
+                    <Message.Content>
+                      <Message.Header>
+                        {i18next.t(
+                          "File addition, removal or modification are only allowed for published works when you create a new version."
+                        )}
+                      </Message.Header>
+                    </Message.Content>
+                  </Message>
                 </Grid.Column>
               </Grid.Row>
             ) : (

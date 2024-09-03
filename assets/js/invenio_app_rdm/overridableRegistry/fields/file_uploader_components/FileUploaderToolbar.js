@@ -106,34 +106,18 @@ export const FileUploaderToolbar = (props) => {
               mobile={16}
               tablet={16}
               computer={16}
-              className="storage-col"
+              className="storage-col justify-space-between"
             >
               {/* <Header size="tiny" className="mr-10">
                 {i18next.t("Storage available")}
               </Header> */}
-              <List horizontal>
-                <List.Item>
-                  <Label
-                    {...(filesList.length === quota.maxFiles
-                      ? { color: "warning" }
-                      : { color: "primary" })}
-                    image
-                  >
-                    <Icon name="zip" />
-                    {i18next.t(`{{remaining}} out of {{maxfiles}}`, {
-                      remaining: quota.maxFiles - filesList.length,
-                      maxfiles: quota.maxFiles,
-                    })}
-                    <Label.Detail>{i18next.t(`max files left`)}</Label.Detail>
-                  </Label>
-                </List.Item>
-                <List.Item>
                   <Label
                     image
                     {...(humanReadableBytes(filesSize, decimalSizeDisplay) ===
                     humanReadableBytes(quota.maxStorage, decimalSizeDisplay)
                       ? { color: "warning" }
                       : { color: "primary" })}
+                    className="basic"
                   >
                     <Icon name="pie chart" />
                     {humanReadableBytes(
@@ -144,8 +128,20 @@ export const FileUploaderToolbar = (props) => {
                     {humanReadableBytes(quota.maxStorage, decimalSizeDisplay)}
                     <Label.Detail>{" storage left for this work"}</Label.Detail>
                   </Label>
-                </List.Item>
-              </List>
+                  <Label
+                    {...(filesList.length === quota.maxFiles
+                      ? { color: "warning" }
+                      : { color: "primary" })}
+                    image
+                    className="basic"
+                  >
+                    <Icon name="zip" />
+                    {i18next.t(`{{remaining}} out of {{maxfiles}}`, {
+                      remaining: quota.maxFiles - filesList.length,
+                      maxfiles: quota.maxFiles,
+                    })}
+                    <Label.Detail>{i18next.t(`max files left`)}</Label.Detail>
+                  </Label>
             </Grid.Column>
           )}
         </Overridable>

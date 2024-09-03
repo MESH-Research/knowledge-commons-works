@@ -99,7 +99,7 @@
 
   &.icon {
     &.close-btn {
-      margin-top: 1.75rem;
+      margin-top: 0;
       float: right;
       background-color: @redDark !important;
       color: @white;

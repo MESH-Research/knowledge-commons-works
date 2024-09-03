@@ -60,6 +60,7 @@
 
   &.basic {
     background-color: transparent;
+    border: 1px solid @verdigris40;
   }
 }
 
@@ -208,6 +209,15 @@
             left: 50%;
           }
         }
+      }
+    }
+  }
+
+  &.file_upload {
+    .storage-col {
+      .ui.label {
+        border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
+        border-top: none;
       }
     }
   }

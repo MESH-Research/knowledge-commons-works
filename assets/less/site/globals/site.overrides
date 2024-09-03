@@ -528,6 +528,9 @@ html.cover-page {
               max-height: 8rem;
               border: none;
             }
+            &.no-preview {
+              border-top: none;
+            };
           }
           table tbody {
             tr {

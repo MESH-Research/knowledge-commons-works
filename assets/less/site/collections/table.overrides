@@ -24,3 +24,22 @@
         }
     }
 }
+
+.info {
+    .ui.table {
+        border-color: @infoBorderColor;
+        thead th {
+            background-color: #edfdfd;
+            color: @infoTextColor;
+            border-color: @infoBorderColor;
+        }
+        tr td {
+            &.positive {
+                color: @positiveTextColor;
+            }
+            &.negative {
+                color: @warningTextColor;
+            }
+        }
+    }
+}

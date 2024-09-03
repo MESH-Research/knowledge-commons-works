@@ -71,3 +71,19 @@
     }
   }
 }
+
+.file-type-message {
+  .ui.accordion:not(.styled) {
+    margin-top: 0;
+    .title {
+      font-size: 1rem;
+      font-weight: normal;
+      color: @infoTextColor;
+      border-bottom: none;
+      padding: 0;
+    }
+    .content.active {
+      padding-top: 1rem;
+    }
+  }
+}
