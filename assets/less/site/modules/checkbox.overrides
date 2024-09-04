@@ -56,6 +56,17 @@
   }
 }
 
+.facet-wrapper {
+  .ui.checkbox {
+    label {
+      &::after {
+        top: 0;
+        left: 0;
+      }
+    }
+  }
+}
+
 .field.error {
   .fields:not(.error),
   .field:not(.error) {
