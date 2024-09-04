@@ -16,16 +16,23 @@ export const MembersSearchBarElement = withState(
     placeholder: passedPlaceholder,
     queryString,
     onInputChange,
+    currentQueryState,
     updateQueryState,
     uiProps,
   }) => {
     const placeholder = passedPlaceholder || i18next.t("Search in members ...");
     const onBtnSearchClick = () => {
-      updateQueryState({ queryString });
+      // NOTE: This fixes the pagination breaking when
+      // the search bar is used because the current page is
+      // reset to -1, etc.
+      updateQueryState({ ...currentQueryState, queryString });
     };
     const onKeyPress = (event) => {
       if (event.key === "Enter") {
-        updateQueryState({ queryString });
+        // NOTE: This fixes the pagination breaking when
+        // the search bar is used because the current page is
+        // reset to -1, etc.
+        updateQueryState({ ...currentQueryState, queryString });
       }
     };
     return (

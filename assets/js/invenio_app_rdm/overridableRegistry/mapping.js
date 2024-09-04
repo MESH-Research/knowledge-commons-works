@@ -15,6 +15,7 @@ import { IdentifiersField } from "./fields/IdentifiersField";
 import { InvitationResultItemWithConfig } from "./collections/invitations/InvitationResultItemWithConfig";
 import { LicenseField } from "./fields/LicenseField";
 import { ManagerMembersResultItemWithConfig } from "./collections/members/manager_view/ManagerMembersResultItem";
+import { MembersSearchBarElement } from "./collections/members/components/MembersSearchBarElement";
 import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 import { PublicationDateField } from "./fields/PublicationDateField";
 import { PublicMembersResultsItemWithCommunity } from "./collections/members/public_view/PublicMembersResultItem";
@@ -71,8 +72,11 @@ export const overriddenComponents = {
   "InvenioCommunities.RequestSearch.ResultsList.item": RequestsResultsItemTemplateWithCommunity,
   "InvenioCommunities.InvitationsSearch.ResultsList.item": InvitationResultItemWithConfig,
   "InvenioCommunities.ManagerSearch.ResultsList.item": ManagerMembersResultItemWithConfig,
+  "InvenioCommunities.ManagerSearch.SearchBar.element": MembersSearchBarElement,
   "InvenioCommunities.MemberSearch.ResultsList.item": ManagerMembersResultItemWithConfig,
+  "InvenioCommunities.MemberSearch.SearchBar.element": MembersSearchBarElement,
   "InvenioCommunities.PublicSearch.ResultsList.item": PublicMembersResultsItemWithCommunity,
+  "InvenioCommunities.PublicSearch.SearchBar.element": MembersSearchBarElement,
   "InvenioModularDetailPage.MobileActionMenu.container": MobileActionMenu,
   // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
   // InvenioCommunities.Search.SearchApp.layout: CommunityRecordsSearchAppLayout,

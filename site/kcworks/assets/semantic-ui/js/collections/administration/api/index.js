@@ -1,1 +1,0 @@
-export { InvenioAdministrationCommunitiesApi } from "./api";
