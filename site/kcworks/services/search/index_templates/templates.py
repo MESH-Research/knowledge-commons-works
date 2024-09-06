@@ -16,4 +16,20 @@
 # under the terms of the MIT License. See the LICENSE file in the
 # invenio-app-rdm package for more details.
 
-"""KCWorks customizations to InvenioRDM."""
+"""Index template functions for KCWorks."""
+
+
+def get_index_templates():
+    """Get all index templates to register with invenio_search via entrypoints.
+
+    Note that we don't include the stats templates here since they are declared
+    in the stats config objects and are registered with invenio_search by
+    the stats extension.
+    """
+    return [
+        "kcworks.services.search.index_templates.drafts",
+        "kcworks.services.search.index_templates.records",
+        "kcworks.services.search.index_templates.affiliations",
+        "kcworks.services.search.index_templates.subjects",
+        "kcworks.services.search.index_templates.default",
+    ]

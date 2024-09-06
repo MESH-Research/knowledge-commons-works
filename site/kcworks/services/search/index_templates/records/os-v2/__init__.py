@@ -16,4 +16,4 @@
 # under the terms of the MIT License. See the LICENSE file in the
 # invenio-app-rdm package for more details.
 
-"""KCWorks customizations to InvenioRDM."""
+"""OS-v2 records index templates for KCWorks."""

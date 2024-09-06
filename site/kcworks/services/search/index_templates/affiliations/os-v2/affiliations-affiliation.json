@@ -1,0 +1,14 @@
+{
+  "index_patterns": ["__SEARCH_INDEX_PREFIX__-affiliations-affiliation-*"],
+  "template": {
+    "settings": {
+      "number_of_shards": 2,
+      "number_of_replicas": 1
+    }
+  },
+  "priority": 100,
+  "version": 1,
+  "_meta": {
+    "description": "Default template for KCWorks to lower the number of shards per index from the aws default of 5"
+  }
+}
