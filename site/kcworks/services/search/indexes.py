@@ -36,11 +36,12 @@ def delete_index(index_names: list[str], ignore: Optional[list[int]] = None):
             indices_to_delete = list(lookup_response.keys())
         if len(indices_to_delete) == 0:
             pass
-        elif len(indices_to_delete) == 1:
-            yield (
-                index_name,
-                current_search_client.indices.delete(
-                    index=indices_to_delete[0],
-                    ignore=ignore,
-                ),
-            )
+        elif len(indices_to_delete) >= 1:
+            for index in indices_to_delete:
+                yield (
+                    index,
+                    current_search_client.indices.delete(
+                        index=index,
+                        ignore=ignore,
+                    ),
+                )
