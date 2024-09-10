@@ -1,5 +1,5 @@
 {
-  "index_patterns": ["__SEARCH_INDEX_PREFIX__-affiliations-affiliation-*"],
+  "index_patterns": ["__SEARCH_INDEX_PREFIX__affiliations-affiliation-*"],
   "template": {
     "settings": {
       "number_of_shards": 2,

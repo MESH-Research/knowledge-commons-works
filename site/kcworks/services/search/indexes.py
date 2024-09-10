@@ -26,11 +26,13 @@ def delete_index(index_names: list[str], ignore: Optional[list[int]] = None):
     The indices are specified by their aliases. These must be complete aliases
     (e.g. `kcworks-stats-record-view`).
     """
+    failed_indices = []
     for index_name in index_names:
         lookup_response = current_search_client.indices.get_alias(
             index=index_name, ignore=[404]
         )
         if "error" in lookup_response:
+            failed_indices.append(index_name)
             indices_to_delete = []
         else:
             indices_to_delete = list(lookup_response.keys())
@@ -45,3 +47,5 @@ def delete_index(index_names: list[str], ignore: Optional[list[int]] = None):
                         ignore=ignore,
                     ),
                 )
+    if len(failed_indices) > 0:
+        print(f"Failed to delete indices: {failed_indices}")

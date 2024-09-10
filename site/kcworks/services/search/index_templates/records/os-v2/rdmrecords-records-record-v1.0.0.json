@@ -1,5 +1,5 @@
 {
-  "index_patterns": ["__SEARCH_INDEX_PREFIX__-rdmrecords-records-record-*"],
+  "index_patterns": ["__SEARCH_INDEX_PREFIX__rdmrecords-records-record-*"],
   "template": {
     "settings": {
       "number_of_shards": 2,

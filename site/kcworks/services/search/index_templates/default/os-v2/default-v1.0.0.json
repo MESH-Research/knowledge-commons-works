@@ -6,7 +6,7 @@
       "number_of_replicas": 1
     }
   },
-  "priority": 100,
+  "priority": 50,
   "version": 1,
   "_meta": {
     "description": "Default template for KCWorks to lower the number of shards per index from the aws default of 5"

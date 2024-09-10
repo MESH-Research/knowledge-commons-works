@@ -1,5 +1,5 @@
 {
-  "index_patterns": ["__SEARCH_INDEX_PREFIX__-subjects-subject-*"],
+  "index_patterns": ["__SEARCH_INDEX_PREFIX__subjects-subject-*"],
   "template": {
     "settings": {
       "number_of_shards": 2,
