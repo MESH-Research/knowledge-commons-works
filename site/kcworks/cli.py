@@ -19,10 +19,10 @@
 import click
 from flask.cli import with_appcontext
 from invenio_search.cli import abort_if_false, search_version_check
-from kcworks.services.search.indexes import delete_index
+from kcworks.services.search.indices import delete_index
 import sys
 
-UNMANAGED_INDEXES = [
+UNMANAGED_indices = [
     "kcworks-stats-record-view",
     "kcworks-stats-file-download",
     "kcworks-events-stats-record-view",
@@ -42,34 +42,34 @@ def index():
     pass
 
 
-@index.command("destroy-indexes")
+@index.command("destroy-indices")
 @click.option(
     "--yes-i-know",
     is_flag=True,
     callback=abort_if_false,
     expose_value=False,
-    prompt="Do you know that you are going to destroy all indexes?",
+    prompt="Do you know that you are going to destroy all indices?",
 )
 @click.option("--force", is_flag=True, default=False)
 @with_appcontext
 @search_version_check
 def destroy(force):
-    """Destroy all indexes that are not destroyed by invenio_search
+    """Destroy all indices that are not destroyed by invenio_search
 
     THIS COMMAND WILL WIPE ALL DATA ON USAGE STATS. ONLY RUN THIS WHEN YOU KNOW
     WHAT YOU ARE DOING. Usage stats data is stored in Elasticsearch, and is not
     persisted in the database.
 
-    This command is useful to destroy indexes whose mappings are not registered
+    This command is useful to destroy indices whose mappings are not registered
     with the invenio_search package. These include:
 
-    - the records percolator indexes
+    - the records percolator indices
         - kcworks-rdmrecords-records-record-v2.0.0-percolators
         - kcworks-rdmrecords-records-record-v3.0.0-percolators
         - kcworks-rdmrecords-records-record-v4.0.0-percolators
         - kcworks-rdmrecords-records-record-v5.0.0-percolators
         - kcworks-rdmrecords-records-record-v6.0.0-percolators
-    - the stats indexes
+    - the stats indices
         - kcworks-stats-record-view
         - kcworks-stats-file-download
         - kcworks-events-stats-record-view
@@ -77,12 +77,12 @@ def destroy(force):
         - kcworks-stats-bookmarks
 
     We supply the index aliases without the `kcworks-` prefix because the
-    `invenio_search` package does not know about our indexes.
+    `invenio_search` package does not know about our indices.
     """
-    click.secho("Destroying indexes...", fg="red", bold=True, file=sys.stderr)
+    click.secho("Destroying indices...", fg="red", bold=True, file=sys.stderr)
     with click.progressbar(
-        delete_index(UNMANAGED_INDEXES, ignore=[400, 404] if force else None),
-        length=len(UNMANAGED_INDEXES),
+        delete_index(UNMANAGED_indices, ignore=[400, 404] if force else None),
+        length=len(UNMANAGED_indices),
     ) as bar:
         for name, response in bar:
             bar.label = name

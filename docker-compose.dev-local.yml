@@ -14,7 +14,7 @@
 # - DB: (PostgresSQL) (exposed port: 5432 or 3306)
 # - Message queue: RabbitMQ (exposed ports: 5672, 15672)
 # - Search platform: (OpenSearch) (exposed ports: 9200, 9300)
-# - OpenSearch Dashboard (view OS indexes) (exposed ports: 5601)
+# - OpenSearch Dashboard (view OS indices) (exposed ports: 5601)
 #
 services:
   web-ui:

@@ -87,7 +87,7 @@ docker-compose --file docker-compose.dev.yml stop
 ```
 
 > [!Caution]
-> Do not use the `docker-compose down` command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indexes. YOU DO NOT WANT TO DO THIS!
+> Do not use the `docker-compose down` command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indices. YOU DO NOT WANT TO DO THIS!
 
 If you need to restart the main Flask application (e.g., after making configuration changes) you can do so either by stopping and restarting the docker-compose project or by running the following command inside the `web-ui` container:
 
@@ -507,7 +507,7 @@ This step will
 - pull remote images for other services: mq, search, db, cache, pgadmin, opensearch-dashboards
 - start containers from all of these images and mounts local files or folders into the containers as required in the docker-compose.yml and docker-services.yml files
 
-### Create and initialize the database, search indexes, and task queue
+### Create and initialize the database, search indices, and task queue
 
 Again, from the root knowledge-commons-works folder, run this command:
 ```console
@@ -521,7 +521,7 @@ This step will
 - create Invenio fixtures
 - insert demo data into the database (unless you add the --no-demo-data flag)
 
-Note: If for some reason you need to run this step again, you will need to add the `--force` flag to the `docker-compose` command. This tells Invenio to destroy any existing redis cache, database, index, and task queue before recreating them all. Just be aware that performing this setup again with `--force` will **destroy all data in your database and all OpenSearch indexes**.
+Note: If for some reason you need to run this step again, you will need to add the `--force` flag to the `docker-compose` command. This tells Invenio to destroy any existing redis cache, database, index, and task queue before recreating them all. Just be aware that performing this setup again with `--force` will **destroy all data in your database and all OpenSearch indices**.
 
 ## Start the uwsgi applications and celery worker
 
