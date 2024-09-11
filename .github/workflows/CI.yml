@@ -82,13 +82,17 @@ jobs:
       #     key: local-docker-directory
 
       - name: Build Image
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          docker build . --file Dockerfile --platform=linux/amd64 --tag $REGISTRY/$IMAGE_NAME:$RELEASE_VERSION
+          docker build . --file Dockerfile --platform=linux/amd64 --tag $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
 
       - name: If release version is numbered, tag it as latest as well
         if: env.RELEASE_VERSION != 'latest'
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          docker tag $REGISTRY/$IMAGE_NAME:$RELEASE_VERSION $REGISTRY/$IMAGE_NAME:latest
+          docker tag $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
 
       - name: Push Image
         env:
