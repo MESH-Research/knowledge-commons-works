@@ -22,7 +22,7 @@ from invenio_search.cli import abort_if_false, search_version_check
 from kcworks.services.search.indices import delete_index
 import sys
 
-UNMANAGED_indices = [
+UNMANAGED_INDICES = [
     "kcworks-stats-record-view",
     "kcworks-stats-file-download",
     "kcworks-events-stats-record-view",
@@ -80,9 +80,11 @@ def destroy(force):
     `invenio_search` package does not know about our indices.
     """
     click.secho("Destroying indices...", fg="red", bold=True, file=sys.stderr)
+    # FIXME: We have to find out how many indices will match each alias before
+    # we can set the progressbar length.
     with click.progressbar(
-        delete_index(UNMANAGED_indices, ignore=[400, 404] if force else None),
-        length=len(UNMANAGED_indices),
+        delete_index(UNMANAGED_INDICES, ignore=[400, 404] if force else None),
+        length=len(UNMANAGED_INDICES),
     ) as bar:
         for name, response in bar:
             bar.label = name
