@@ -98,8 +98,8 @@ jobs:
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
-          docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
+          docker push $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
+          docker push $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
 
       - name: Start containers
         run: |
@@ -119,17 +119,17 @@ jobs:
       - name: Remove the Docker image with version number
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        run: docker rmi $DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
+        run: docker rmi $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
 
       - name: Remove the Docker image with latest tag
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        run: docker rmi $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
+        run: docker rmi $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
 
       - name: Remove the local image
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        run: docker rmi $DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
+        run: docker rmi $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
 
       - name: Prune Docker
         run: docker system prune -af
