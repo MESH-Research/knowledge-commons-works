@@ -114,15 +114,16 @@ jobs:
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --all-tags
+          docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME --all-tags
 
       - name: Push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker push $ECR_REGISTRY/$IMAGE_NAME:$RELEASE_VERSION --all-tags
+          docker push $ECR_REGISTRY/$IMAGE_NAME --all-tags
 
       - name: Start containers
+        if: always()
         run: |
           touch .env
           docker compose --file docker-compose.dev.yml up -d
@@ -133,6 +134,7 @@ jobs:
       - name: Destroy containers
         if: always()
         run: |
+          touch .env
           docker compose --file docker-compose.dev.yml down
 
       - name: Remove the Docker image with version number
