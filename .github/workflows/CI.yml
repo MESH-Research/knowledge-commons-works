@@ -16,7 +16,8 @@ on:
 env:
   DOCKER_BUILDKIT: 1
   TARGET_PLATFORMS: linux/amd64,linux/arm64
-  REGISTRY: ghcr.io
+  DOCKERHUB_REGISTRY: docker.io
+  GITHUB_REGISTRY: ghcr.io
   IMAGE_NAME: kcworks
   RELEASE_VERSION: unset
   INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR: ${{vars.INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}}
@@ -62,6 +63,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          mask-password: true
 
       # Checks-out your repository under $GITHUB_WORKSPACE
       - name: Checkout
@@ -85,21 +98,29 @@ jobs:
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          docker build . --file Dockerfile --platform=linux/amd64 --tag $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
+          docker build . --file Dockerfile --platform=linux/amd64 --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
+          docker tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
+          docker tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kcworks:$RELEASE_VERSION
 
       - name: If release version is numbered, tag it as latest as well
         if: env.RELEASE_VERSION != 'latest'
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          docker tag $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
+          docker tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
+          docker tag ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kcworks:$RELEASE_VERSION ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kcworks:latest
 
-      - name: Push Image
+      - name: Push Image to Docker Hub
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          docker push $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
-          docker push $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
+          docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --all-tags
+
+      - name: Push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker push $ECR_REGISTRY/$IMAGE_NAME:$RELEASE_VERSION --all-tags
 
       - name: Start containers
         run: |
