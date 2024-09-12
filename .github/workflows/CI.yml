@@ -120,7 +120,8 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker push $ECR_REGISTRY/$IMAGE_NAME --all-tags
+          echo $ECR_REGISTRY
+          docker push ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kcworks --all-tags
 
       - name: Start containers
         if: always()
