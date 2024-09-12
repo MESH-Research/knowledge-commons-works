@@ -1,4 +1,6 @@
+import arrow
 from datetime import datetime
+from typing import Optional, Union
 from invenio_search.engine import dsl, search
 from invenio_stats.aggregations import StatAggregator
 
@@ -13,10 +15,10 @@ class StatAggregatorOverridable(StatAggregator):
 
     def run(
         self,
-        start_date: str = None,
-        end_date: str = None,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
         update_bookmark: bool = True,
-        previous_bookmark: datetime = None,
+        previous_bookmark: Union[str, None, datetime] = None,
     ):
         """Calculate statistics aggregations."""
         # If no events have been indexed there is nothing to aggregate
@@ -25,14 +27,17 @@ class StatAggregatorOverridable(StatAggregator):
         if not dsl.Index(self.event_index, using=self.client).exists():
             return
 
-        if not previous_bookmark:
-            previous_bookmark = self.bookmark_api.get_bookmark()
+        previous_bookmark = (
+            arrow.get(previous_bookmark).naive
+            if previous_bookmark
+            else self.bookmark_api.get_bookmark()
+        )
         current_app.logger.debug(
             "previous bookmark: %s",
             previous_bookmark.isoformat() if previous_bookmark else None,
         )
         lower_limit = (
-            start_date
+            arrow.get(start_date).naive
             or previous_bookmark
             or self._get_oldest_event_timestamp()
         )
@@ -52,7 +57,7 @@ class StatAggregatorOverridable(StatAggregator):
         # This will be used for the next iteration. Some events might
         # be processed twice
         if not end_date:
-            end_date = datetime.utcnow().isoformat()
+            end_date = arrow.utcnow().isoformat()
 
         results = []
         for dt_key, dt in sorted(dates.items()):
