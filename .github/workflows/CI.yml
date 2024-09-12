@@ -103,8 +103,6 @@ jobs:
 
       - name: Start containers
         run: |
-          # Create an empty .env file since the dev compose project expects
-          # one
           touch .env
           docker compose --file docker-compose.dev.yml up -d
 
