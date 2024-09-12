@@ -102,13 +102,12 @@ jobs:
           docker tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
           docker tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kcworks:$RELEASE_VERSION
 
-      - name: If release version is numbered, tag it as latest as well
+      - name: If release version is numbered, tag it as latest as well for docker hub
         if: env.RELEASE_VERSION != 'latest'
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           docker tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
-          docker tag ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kcworks:$RELEASE_VERSION ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kcworks:latest
 
       - name: Push Image to Docker Hub
         env:
@@ -121,7 +120,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           echo $ECR_REGISTRY
-          docker push ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kcworks --all-tags
+          docker push ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kcworks:$RELEASE_VERSION
 
       - name: Start containers
         if: always()
