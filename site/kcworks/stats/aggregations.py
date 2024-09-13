@@ -15,8 +15,8 @@ class StatAggregatorOverridable(StatAggregator):
 
     def run(
         self,
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
+        start_date: Union[str, None, datetime] = None,
+        end_date: Union[str, None, datetime] = None,
         update_bookmark: bool = True,
         previous_bookmark: Union[str, None, datetime] = None,
     ):
@@ -27,31 +27,26 @@ class StatAggregatorOverridable(StatAggregator):
         if not dsl.Index(self.event_index, using=self.client).exists():
             return
 
+        start_date = arrow.get(start_date).naive if start_date else None
+        end_date = arrow.get(end_date).naive if end_date else None
         previous_bookmark = (
-            arrow.get(previous_bookmark).naive
-            if previous_bookmark
-            else self.bookmark_api.get_bookmark()
+            self.bookmark_api.get_bookmark()
+            if not previous_bookmark
+            else arrow.get(previous_bookmark).naive
         )
-        current_app.logger.debug(
-            "previous bookmark: %s",
-            previous_bookmark.isoformat() if previous_bookmark else None,
-        )
+        current_app.logger.debug("previous bookmark: %s", previous_bookmark)
         lower_limit = (
-            arrow.get(start_date).naive
+            start_date
             or previous_bookmark
             or self._get_oldest_event_timestamp()
         )
-        current_app.logger.debug(
-            "lower limit: %s", lower_limit.isoformat() if lower_limit else None
-        )
+        current_app.logger.debug("lower limit: %s", lower_limit)
         # Stop here if no bookmark could be estimated.
         if lower_limit is None:
             return
 
         upper_limit = self._upper_limit(end_date)
-        current_app.logger.debug(
-            "upper limit: %s", self._upper_limit(end_date).isoformat()
-        )
+        current_app.logger.debug("upper limit: %s", upper_limit)
         dates = self._split_date_range(lower_limit, upper_limit)
         # Let's get the timestamp before we start the aggregation.
         # This will be used for the next iteration. Some events might
@@ -69,7 +64,8 @@ class StatAggregatorOverridable(StatAggregator):
                     chunk_size=50,
                 )
             )
-        # current_app.logger.debug("aggregated %s", results)
+        current_app.logger.debug("aggregated %s", results)
+        print("aggregated ", results)
         if update_bookmark:
             self.bookmark_api.set_bookmark(end_date)
         # current_app.logger.debug("end_date: %s", end_date)
