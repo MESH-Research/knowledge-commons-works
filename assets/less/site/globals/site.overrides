@@ -396,16 +396,19 @@ html.cover-page {
             &.aac,
             &.ogg,
             &.flac,
+            // &.jpg,
+            // &.jpeg,
+            // &.png,
+            // &.gif,
+            &.zip,
             &.mp4,
-            &.webm,
-            &.jpg,
-            &.jpeg,
-            &.png,
-            &.gif,
-            &.zip {
+            &.webm {
               min-height:auto;
               aspect-ratio: auto;
               height: auto;
+            }
+            &.zip {
+              aspect-ratio: 1/1;
             }
             &.mp4,
             &.webm {
