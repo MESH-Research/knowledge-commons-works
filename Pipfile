@@ -41,18 +41,18 @@ uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
 aiohttp = "*"
-invenio-modular-detail-page = {editable = true, path = "./../invenio-modular-detail-page/invenio-modular-detail-page"}
-invenio-modular-deposit-form = {editable = true, path = "./../invenio-modular-deposit-form"}
-invenio-remote-user-data = {editable = true, path = "./../invenio-remote-user-data"}
-invenio-record-importer = {editable = true, path = "./../invenio-record-importer"}
-invenio-group-collections = {file = "../invenio-group-collections", editable = true}
+invenio-modular-detail-page = {editable = true, path = "./submodules/invenio-modular-detail-page/invenio-modular-detail-page"}
+invenio-modular-deposit-form = {editable = true, path = "./submodules/invenio-modular-deposit-form"}
+invenio-remote-user-data = {editable = true, path = "./submodules/invenio-remote-user-data"}
+invenio-record-importer = {editable = true, path = "./submodules/invenio-record-importer"}
+invenio-group-collections = {editable = true, path = "./submodules/invenio-group-collections"}
 invenio-subjects-fast = "*"
-invenio-remote-api-provisioner = {file = "../invenio-remote-api-provisioner", editable = true}
-invenio-rdm-records = {file = "../invenio-rdm-records", editable = true}
-invenio-records-resources = {file = "../invenio-records-resources", editable = true}
-invenio-communities = {file = "../invenio-communities", editable = true}
-invenio-vocabularies = {file = "../invenio-vocabularies", editable = true}
-kcworks = {file = "site", editable = true}
+invenio-remote-api-provisioner = {editable = true, path = "./submodules/invenio-remote-api-provisioner"}
+invenio-rdm-records = {editable = true, path = "./submodules/invenio-rdm-records"}
+invenio-records-resources = {editable = true, path = "./submodules/invenio-records-resources"}
+invenio-communities = {editable = true, path = "./submodules/invenio-communities"}
+invenio-vocabularies = {editable = true, path = "./submodules/invenio-vocabularies"}
+kcworks = {editable = true, path = "./site"}
 numpy = "*"
 flask-breadcrumbs = "*"
 flask-babelex = "*"
