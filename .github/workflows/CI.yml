@@ -116,8 +116,10 @@ jobs:
       - name: Push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         run: |
           echo $ECR_REGISTRY
+          echo $RELEASE_VERSION
           docker push $ECR_REGISTRY/kcworks:$RELEASE_VERSION
 
       - name: Start containers
