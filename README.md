@@ -19,7 +19,7 @@ From there, installation involves these steps. Each one is further explained bel
 
 1. Clone the git repository
     1. From your command line, navigate to the parent folder where you want the cloned repository code to live
-    2. Clone the knowledge-commons-works repository with `git clone git@github.com:MESH-Research/knowledge-commons-works.git`
+    2. Clone the knowledge-commons-works repository with `git clone --recurse-submodules git@github.com:MESH-Research/knowledge-commons-works.git`
 2. Create your configuration files
     - `cd knowledge-commons-works`
     - Create and configure the `.env` file in this folder as described [here](#add-and-configure-an-env-file)
@@ -30,7 +30,7 @@ From there, installation involves these steps. Each one is further explained bel
         instance_path = /opt/invenio/var/instance
         ```
 3. Start the docker-compose project
-    - `docker-compose --file docker-compose.dev.yml up -d`
+    - `docker-compose --file docker-compose.yml up -d`
 4. Initialize the database and other services, and build asset files
     - enter the `web-ui` container by running `docker exec -it kcworks-ui bash`
         - *note*: The container name may be different depending on your local docker setup. You can find the correct name by running `docker ps`
@@ -48,48 +48,49 @@ From there, installation involves these steps. Each one is further explained bel
     - pgAdmin is running at `https://localhost/pgadmin`
     - OpenSearch Dashboards is running at `https://localhost:5601`
 
-Further optional steps to allow local debugging or development of the python packages in the Invenio framework and the custom packages created for Knowledge Commons Works:
+This setup will allow you to make changes to the core Knowledge Commons Works codebase and see those changes reflected in the running application.
+
+### Full local development setup
+
+You will need to take some further steps if you want to
+    - Make and test changes to the various invenio modules that are included as git submodules.
+    - View and insert debugging statements into the code of the various core Invenio packages installed into the python environment.
+To do this, you will need to do the following:
 
 1. In the same parent directory that holds your cloned `knowledge-commons-works` folder, clone the following additional repositories:
-    - `git@github.com:MESH-Research/invenio-record-importer.git`
-    - `git@github.com:MESH-Research/invenio-communities:/opt/invenio/invenio-communities.git`
-    - `git@github.com:MESH-Research/invenio-groups:/opt/invenio/invenio-groups.git`
-    - `git@github.com:MESH-Research/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form.git`
-    - `git@github.com:MESH-Research/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page.git`
-    - `git@github.com:MESH-Research/invenio-rdm-records:/opt/invenio/invenio-rdm-records.git`
-    - `git@github.com:MESH-Research/invenio-records-resources:/opt/invenio/invenio-records-resources.git`
-    - `git@github.com:MESH-Research/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner.git`
-    - `git@github.com:MESH-Research/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data.git`
-The folders holding the cloned code from these repositories should then be direct siblings of your `knowledge-commons-works` folder.
-2. Install the invenio-cli tool locally (`pip install invenio-cli`)
-3. Install the python packages required by Knowldge Commons Works locally by running `pipenv install` in the `knowledge-commons-works` folder.
-    - NOTE: This assumes that you have already cloned the git repositories as described in step 1. If you have not, you will need to do so before running `pipenv install`.
-4. When you start up the docker compose project, add an additional project file to the command:
-    - `docker-compose --file docker-compose.dev.yml --file docker-compose.dev.local.yml up -d`
+    ```shell
+    git clone --single-branch -b main git@github.com:MESH-Research/invenio-record-importer.git
+    git clone --single-branch -b main git@github.com:MESH-Research/invenio-groups.git
+    git clone --single-branch -b main git@github.com:MESH-Research/invenio-modular-deposit-form.git
+    git clone --single-branch -b main git@github.com:MESH-Research/invenio-modular-detail-page.git
+    git clone --single-branch -b main git@github.com:MESH-Research/invenio-remote-api-provisioner.git
+    git clone --single-branch -b main git@github.com:MESH-Research/invenio-remote-user-data.git
+    git clone --single-branch -b main git@github.com:MESH-Research/invenio-communities.git
+    git clone --single-branch -b main git@github.com:MESH-Research/invenio-rdm-records.git
+    git clone --single-branch -b local-working git@github.com:MESH-Research/invenio-records-resources.git
+    git clone --single-branch -b local-working git@github.com:MESH-Research/invenio-vocabularies.git
+    ```
+    The folders holding the cloned code from these repositories should then be direct siblings of your `knowledge-commons-works` folder.
+2. Install the python packages required by Knowldge Commons Works locally by running `pipenv install` in the `knowledge-commons-works` folder.
+3. When you start up the docker compose project, add an additional project file to the command:
+    - `docker-compose --file docker-compose.yml --file docker-compose.dev.yml up -d`
 This will mount a variety of local package folders as bind mounts in your running containers. This will allow you to make changes to the python code in the cloned repositories and see those changes reflected in the running Knowledge Commons Works instance.
-<!-- Further optional steps to allow fully local development if desired:
 
-    1. Install the invenio-cli tool (`pip install invenio-cli`)
-    2. Run `invenio-cli install` locally
-    3. With docker running, run `docker-compose up -d`
-    4. `invenio-cli services setup --force`
-    5.  `bash kcr-startup.sh` -->
-
-### Controlling the Flask application
+### Controlling the KCWorks (Flask) application
 
 The application instance and its services can be started and stopped by starting and stopping the docker-compose project:
 
 ```shell
-docker-compose --file docker-compose.dev.yml up -d
+docker-compose --file docker-compose.yml up -d
 ```
 ```shell
-docker-compose --file docker-compose.dev.yml stop
+docker-compose --file docker-compose.yml stop
 ```
 
 > [!Caution]
 > Do not use the `docker-compose down` command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indices. YOU DO NOT WANT TO DO THIS!
 
-If you need to restart the main Flask application (e.g., after making configuration changes) you can do so either by stopping and restarting the docker-compose project or by running the following command inside the `web-ui` container:
+If you need to restart the main Flask application (e.g., after making configuration changes) you can do so either by stopping and restarting the docker-compose project or by running the following command inside the `kcworks-ui` container:
 
 ```shell
 uwsgi --reload /tmp/uwsgi_ui.pid
@@ -102,7 +103,7 @@ uwsgi --reload /tmp/uwsgi_api.pid
 ```
 But these commands should not be necessary in normal operation.
 
-## Updating the instance with changes
+## Updating the running KCWorks instance with development changes
 
 ### Changes to html template files
 
@@ -119,10 +120,10 @@ Then refresh your browser.
 ### Changes to invenio.cfg
 
 Changes to the invenio.cfg file will only take effect after the instance uwsgi processes are restarted. This can be done by running the following command inside the `web-ui` container:
-
 ```shell
 uwsgi --reload /tmp/uwsgi_ui.pid
 ```
+Or you can restart the docker-compose project, which will also restart the uwsgi processes.
 
 ### Changes to theme (CSS) and javascript files
 
@@ -144,9 +145,13 @@ invenio webpack run start
 
 The file watching will continue until you stop it with CTRL-C. It will continue to occupy the terminal window where you started it. This means that you can see it respond and begin integrating changed files when it finds them. You can also see there any error or warning output from the build process--very helpful for debugging.
 
-### Adding new files or requirements
-
-The watch command will only pick up changes to files that already existed during the last Webpack build. If you add a new javascript or css (less) file, you need to again run the regular build script to include it in the build process.
+> [!Note]
+> The watch command will only pick up changes to files that already existed during the last Webpack build. If you add
+> - a new javascript file
+> - a new css (less) file
+> - a new node.js package requirement
+> then you need to again run the basic (slow) build script to include it in the build process.
+> After that you can run `invenio webpack run start` again to pick up changes on the fly.
 
 ### Adding new node.js packages to be included
 
@@ -191,7 +196,7 @@ Changes to static files like images will require running the collect command to 
 invenio collect -v
 ```
 
-You will then need to restart the uwsgi processes as described above.
+You will then need to restart the uwsgi processes or restart the docker-compose project as described above.
 
 
 ### Changes to python code in the `site` folder
@@ -200,7 +205,7 @@ Changes to python code in the `site` folder should (like changes to template fil
 
 #### Adding new entry points
 
-Sometimes you will need to add new entry points to inform the Flask application about additional code you have provided. This is done via the `setup.py` file in the `site` folder. Once you have added the entry point declaration, you will need to re-install the `kcworks` package in the `web-ui` container. This can be done by running the following command inside the `web-ui` container:
+Sometimes you will need to add new entry points to inform the Flask application about additional code you have provided. This is done via the `setup.py` file in the `site` folder. Once you have added the entry point declaration, you will need to re-install the `kcworks` package in the `kcworks-ui`, `kcworks-api`, and `kcworks-worker` container. This can be done by running the following command inside the each container:
 
 ```shell
 cd /opt/invenio/src/site
@@ -208,16 +213,18 @@ pip install -e .
 uwsgi --reload /tmp/uwsgi_ui.pid
 ```
 
-If you have added js, css, or static files along with the entry point code, you will also need to run the collect and webpack build commands as described above.
+If you have added js, css, or static files along with the entry point code, you will also need to run the collect and webpack build commands as described above and restart the docker-compose project.
+
+Note that entry point changes may be overridden if you pull a more recent version of the kcworks docker image and restart the docker-compose project. Ultimately the entry point changes will have to be added to a new version of the kcworks docker image.
 
 ### Changes to external python modules (including Invenio modules)
 
-Changes to other python modules (including Invenio modules) will require rebuilding the main knowledge-commons-works container. Additions to the python requirements should be added to the `Pipfile` in the knowledge-commons-works folder and committed to the Github repository. You should then request that the kcworks container be rebuilt.
+Changes to other python modules (including Invenio modules) will require rebuilding the main kcworks container. Additions to the python requirements should be added to the `Pipfile` in the kcworks folder and committed to the Github repository. You should then request that the kcworks container be rebuilt with the additions.
 
-In the meantime, required python packages can be installed directly in the `web-ui` container. Enter the container and then install the required package using pipenv:
+In the meantime, required python packages can be installed directly in the `kcworks-ui`, `kcworks-api`, and `kcworks-worker` containers. Enter each container and then install the required package pip (not pipenv):
 
 ```shell
-pipenv install <package-name>
+pip install <package-name>
 ```
 
 ### Digging deeper
@@ -231,26 +238,24 @@ What follows is a step-by-step walk through this process.
 
 If changes have been made to the upstream Knowledge Commons Works repository and the kcworks container, you will need to update your local instance to reflect those changes. This process involves pulling the changes from the upstream repository, pulling the latest version of the kcworks docker image, restarting the docker-compose project with recreated containers, and rebuilding the asset files.
 
-1. First, to pull the changes from the upstream git repository, execute the following commands from the root knowledge-commons-works folder:
+1. First, from the root knowledge-commons-works folder, pull the changes from the upstream git repository:
 
 ```shell
 git pull origin main
 ```
 
-2. Then, to pull the latest version of the kcworks docker image, execute the following command:
+2. Then pull the latest version of the kcworks docker image:
 
 ```shell
 docker pull monotasker/kcworks:latest
 ```
 
-3. Next, to restart the docker-compose project with recreated containers, execute the following commands:
+3. Next, restart the docker-compose project with recreated containers:
 
 ```shell
-docker-compose --file <your-docker-compose-file-name> stop
-docker-compose --file <your-docker-compose-file-name> up -d --build --force-recreate
+docker-compose --file docker-compose.yml stop
+docker-compose --file docker-compose.yml up -d --build --force-recreate
 ```
-
-If you are running a development instance, you will use the `docker-compose.dev.yml` file. If you are running a staging or production instance, you will use the `docker-compose.staging.yml` or `docker-compose.production.yml` files respectively.
 
 4. Clean up leftover containers and images:
 
@@ -267,14 +272,8 @@ docker system prune -a
 docker exec -it kcworks-ui bash
 bash ./scripts/build-assets.sh
 ```
-7. Restart the docker-compose project once more without rebuilding the containers:
 
-```shell
-docker-compose --file <your-docker-compose-file-name> stop
-docker-compose --file <your-docker-compose-file-name> up -d
-```
-
-8. Then refresh your browser to see the changes.
+7. Then refresh your browser to see the changes.
 
 
 ## Install Python and Required Python Tools

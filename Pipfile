@@ -20,7 +20,7 @@ cchardet = "==2.1.7"
 flask-principal = "*"
 greenlet = {}
 halo = "*"
-invenio-app-rdm = {version = "==12.0.2", extras = ["opensearch2"]}
+invenio-app-rdm = {version = "==12.0.8", extras = ["opensearch2"]}
 invenio-s3 = "*"
 invenio-utilities-tuw = "*"
 isbnlib = "*"
