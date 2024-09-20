@@ -79,6 +79,8 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
       # Set up Python 3.9 environment
       - name: Set up Python 3.9
@@ -120,9 +122,6 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         run: |
-          docker image ls
-          echo $ECR_REGISTRY
-          echo $RELEASE_VERSION
           docker push $ECR_REGISTRY/kcworks:$RELEASE_VERSION
 
       - name: Start containers
@@ -139,21 +138,6 @@ jobs:
         run: |
           touch .env
           docker compose --file docker-compose.dev.yml down
-
-      - name: Remove the Docker image with version number
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        run: docker rmi $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
-
-      - name: Remove the Docker image with latest tag
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        run: docker rmi $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
-
-      - name: Remove the local image
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        run: docker rmi $REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
 
       - name: Prune Docker
         run: docker system prune -af

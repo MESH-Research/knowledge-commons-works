@@ -23,8 +23,6 @@ COPY site ./site
 
 COPY Pipfile Pipfile.lock ./
 
-RUN git submodule update --init --recursive
-
 # NOTE: turned off --deploy for dev
 RUN pipenv install --system
 
