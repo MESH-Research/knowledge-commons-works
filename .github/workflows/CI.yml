@@ -99,6 +99,7 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           docker build . --file Dockerfile --platform=linux/amd64 --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kcworks:$RELEASE_VERSION
+          docker image ls
 
       - name: If release version is numbered, tag it as latest as well for docker hub
         if: env.RELEASE_VERSION != 'latest'
@@ -118,6 +119,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         run: |
+          docker image ls
           echo $ECR_REGISTRY
           echo $RELEASE_VERSION
           docker push $ECR_REGISTRY/kcworks:$RELEASE_VERSION
