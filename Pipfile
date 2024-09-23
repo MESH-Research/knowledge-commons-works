@@ -43,8 +43,8 @@ uwsgi-tools = ">=1.1.1"
 aiohttp = "*"
 invenio-modular-detail-page = {editable = true, path = "./submodules/invenio-modular-detail-page/invenio-modular-detail-page"}
 invenio-modular-deposit-form = {editable = true, path = "./submodules/invenio-modular-deposit-form"}
-invenio-remote-user-data = {editable = true, path = "./submodules/invenio-remote-user-data"}
-invenio-record-importer = {editable = true, path = "./submodules/invenio-record-importer"}
+invenio-remote-user-data-kcworks = {editable = true, path = "./submodules/invenio-remote-user-data-kcworks"}
+invenio-record-importer-kcworks = {editable = true, path = "./submodules/invenio-record-importer-kcworks"}
 invenio-group-collections = {editable = true, path = "./submodules/invenio-group-collections"}
 invenio-subjects-fast = "*"
 invenio-remote-api-provisioner = {editable = true, path = "./submodules/invenio-remote-api-provisioner"}

@@ -59,7 +59,7 @@ To do this, you will need to do the following:
 
 1. In the same parent directory that holds your cloned `knowledge-commons-works` folder, clone the following additional repositories:
     ```shell
-    git clone --single-branch -b main git@github.com:MESH-Research/invenio-record-importer.git
+    git clone --single-branch -b main git@github.com:MESH-Research/invenio-record-importer-kcworks.git
     git clone --single-branch -b main git@github.com:MESH-Research/invenio-groups.git
     git clone --single-branch -b main git@github.com:MESH-Research/invenio-modular-deposit-form.git
     git clone --single-branch -b main git@github.com:MESH-Research/invenio-modular-detail-page.git

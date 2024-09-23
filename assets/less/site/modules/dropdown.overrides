@@ -1,4 +1,9 @@
 /* Dropdown theme overrides */
+.ui.dropdown.button .menu {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
 .ui.selection.dropdown,
 .ui.search.dropdown {
   border-color: @formInputBorderColor;

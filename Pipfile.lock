@@ -1707,9 +1707,9 @@
             "markers": "python_version >= '3.7'",
             "path": "./submodules/invenio-rdm-records"
         },
-        "invenio-record-importer": {
+        "invenio-record-importer-kcworks": {
             "editable": true,
-            "path": "./submodules/invenio-record-importer"
+            "path": "./submodules/invenio-record-importer-kcworks"
         },
         "invenio-records": {
             "hashes": [

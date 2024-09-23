@@ -6,9 +6,9 @@
 	path = submodules/invenio-modular-deposit-form
 	url = git@github.com:MESH-Research/invenio-modular-deposit-form.git
 	branch = main
-[submodule "submodules/invenio-record-importer"]
-	path = submodules/invenio-record-importer
-	url = git@github.com:MESH-Research/invenio-record-importer.git
+[submodule "submodules/invenio-record-importer-kcworks"]
+	path = submodules/invenio-record-importer-kcworks
+	url = git@github.com:MESH-Research/invenio-record-importer-kcworks.git
 	branch = main
 [submodule "submodules/invenio-remote-user-data"]
 	path = submodules/invenio-remote-user-data
