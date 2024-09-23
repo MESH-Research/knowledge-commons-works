@@ -1,39 +1,16 @@
-[submodule "submodules/invenio-modular-detail-page"]
-	path = submodules/invenio-modular-detail-page
-	url = git@github.com:MESH-Research/invenio-modular-detail-page.git
-	branch = main
-[submodule "submodules/invenio-modular-deposit-form"]
-	path = submodules/invenio-modular-deposit-form
-	url = git@github.com:MESH-Research/invenio-modular-deposit-form.git
-	branch = main
-[submodule "submodules/invenio-record-importer-kcworks"]
-	path = submodules/invenio-record-importer-kcworks
-	url = git@github.com:MESH-Research/invenio-record-importer-kcworks.git
-	branch = main
-[submodule "submodules/invenio-group-collections"]
-	path = submodules/invenio-group-collections
-	url = git@github.com:MESH-Research/invenio-group-collections.git
-	branch = main
-[submodule "submodules/invenio-remote-api-provisioner"]
-	path = submodules/invenio-remote-api-provisioner
-	url = git@github.com:MESH-Research/invenio-remote-api-provisioner.git
-	branch = main
-[submodule "submodules/invenio-rdm-records"]
-	path = submodules/invenio-rdm-records
-	url = git@github.com:MESH-Research/invenio-rdm-records.git
+[submodule "site/kcworks/dependencies/invenio-records-resources"]
+	path = site/kcworks/dependencies/invenio-records-resources
+	url = https://github.com/MESH-Research/invenio-records-resources.git
 	branch = local-working
-[submodule "submodules/invenio-communities"]
-	path = submodules/invenio-communities
-	url = git@github.com:MESH-Research/invenio-communities.git
+[submodule "site/kcworks/dependencies/invenio-rdm-records"]
+	path = site/kcworks/dependencies/invenio-rdm-records
+	url = https://github.com/MESH-Research/invenio-rdm-records.git
 	branch = local-working
-[submodule "submodules/invenio-records-resources"]
-	path = submodules/invenio-records-resources
-	url = git@github.com:MESH-Research/invenio-records-resources.git
+[submodule "site/kcworks/dependencies/invenio-communities"]
+	path = site/kcworks/dependencies/invenio-communities
+	url = https://github.com/MESH-Research/invenio-communities.git
 	branch = local-working
-[submodule "submodules/invenio-vocabularies"]
-	path = submodules/invenio-vocabularies
-	url = git@github.com:MESH-Research/invenio-vocabularies.git
+[submodule "site/kcworks/dependencies/invenio-vocabularies"]
+	path = site/kcworks/dependencies/invenio-vocabularies
+	url = https://github.com/MESH-Research/invenio-vocabularies.git
 	branch = local-working
-[submodule "submodules/invenio-remote-user-data-kcworks"]
-	path = submodules/invenio-remote-user-data-kcworks
-	url = https://github.com/MESH-Research/invenio-remote-user-data-kcworks.git
