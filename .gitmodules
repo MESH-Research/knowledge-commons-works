@@ -10,10 +10,6 @@
 	path = submodules/invenio-record-importer-kcworks
 	url = git@github.com:MESH-Research/invenio-record-importer-kcworks.git
 	branch = main
-[submodule "submodules/invenio-remote-user-data"]
-	path = submodules/invenio-remote-user-data
-	url = git@github.com:MESH-Research/invenio-remote-user-data.git
-	branch = main
 [submodule "submodules/invenio-group-collections"]
 	path = submodules/invenio-group-collections
 	url = git@github.com:MESH-Research/invenio-group-collections.git
@@ -38,3 +34,6 @@
 	path = submodules/invenio-vocabularies
 	url = git@github.com:MESH-Research/invenio-vocabularies.git
 	branch = local-working
+[submodule "submodules/invenio-remote-user-data-kcworks"]
+	path = submodules/invenio-remote-user-data-kcworks
+	url = https://github.com/MESH-Research/invenio-remote-user-data-kcworks.git
