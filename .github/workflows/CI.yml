@@ -128,7 +128,7 @@ jobs:
         if: always()
         run: |
           touch .env
-          docker compose --file docker-compose.dev.yml up -d
+          docker compose --file docker-compose.yml --file docker-compose.dev.yml up -d
 
       # - name: Run unit tests
       #   run: cd site && pytest
@@ -137,7 +137,7 @@ jobs:
         if: always()
         run: |
           touch .env
-          docker compose --file docker-compose.dev.yml down
+          docker compose --file docker-compose.yml --file docker-compose.dev.yml down
 
       - name: Prune Docker
         run: docker system prune -af
