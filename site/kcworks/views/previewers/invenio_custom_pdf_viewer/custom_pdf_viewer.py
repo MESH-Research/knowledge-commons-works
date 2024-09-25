@@ -14,23 +14,21 @@ from flask import render_template
 
 from invenio_previewer.proxies import current_previewer
 
-previewable_extensions = ['pdf', 'pdfa']
+previewable_extensions = ["pdf", "pdfa"]
 
 
 def can_preview(file):
     """Check if file can be previewed."""
-    return file.has_extensions('.pdf', '.pdfa')
+    return file.has_extensions(".pdf", ".pdfa")
 
 
 def preview(file):
     """Preview file."""
     return render_template(
-        'invenio_custom_pdf_viewer/pdfjs.html',
+        "custom_previewers/invenio_custom_pdf_viewer/pdfjs.html",
         file=file,
         html_tags='dir="ltr" mozdisallowselectionprint moznomarginboxes',
-        css_bundles=['custom_pdf_viewer_css.css'],
-        js_bundles=current_previewer.js_bundles + [
-            'custom_pdf_viewer_js.js',
-            'fullscreen_js.js'
-        ]
+        css_bundles=["custom_pdf_viewer_css.css"],
+        js_bundles=current_previewer.js_bundles
+        + ["custom_pdf_viewer_js.js", "fullscreen_js.js"],
     )
