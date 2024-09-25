@@ -12,6 +12,7 @@ selenium = "*"
 
 [packages]
 aiohttp = "*"
+async-timeout = ">=4.0.3"
 cchardet = "==2.1.7"
 flask-babelex = "*"
 flask-breadcrumbs = "*"

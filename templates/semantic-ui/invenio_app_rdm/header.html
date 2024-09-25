@@ -57,7 +57,7 @@
         data-current-user-email="{{ current_user.email }}"
         data-profiles-url="{{ config.get('KC_PROFILES_URL_BASE') }}"
         data-external-identifiers='{{ external_identifiers | tojson }}'
-        data-kcwordpress-domain="{{ config.get('KC_WORDPRESS_DOMAIN') }}"
+        data-kc-wordpress-domain="{{ config.get('KC_WORDPRESS_DOMAIN') }}"
         data-login-url="{{ url_for_security('login', next=request.path) }}"
         data-logout-url="{{ url_for_security('logout') }}"
         data-main-menu-items='{{ main_menu_items | tojson }}'
