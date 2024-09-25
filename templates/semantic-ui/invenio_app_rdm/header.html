@@ -36,6 +36,8 @@
 {% set external_identifiers = dict(external_id=current_user.external_identifiers[0].id, auth_method=current_user.external_identifiers[0].method) if current_user.external_identifiers else {}
 %}
 
+{{ kcworks_wordpress_domain | pprint }}
+
 <div>
   <header class="theme header">
 

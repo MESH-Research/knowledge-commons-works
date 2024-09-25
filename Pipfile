@@ -3,11 +3,6 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
-[[source]]
-url = "https://test.pypi.org/simple/"
-verify_ssl = true
-name = "testpypi"
-
 [dev-packages]
 check-manifest = ">=0.25"
 halo = "*"
@@ -16,17 +11,32 @@ requests-mock = "*"
 selenium = "*"
 
 [packages]
+aiohttp = "*"
 cchardet = "==2.1.7"
+flask-babelex = "*"
+flask-breadcrumbs = "*"
 flask-principal = "*"
 greenlet = {}
 halo = "*"
 invenio-app-rdm = {version = "==12.0.8", extras = ["opensearch2"]}
+invenio-communities = {editable = true, path = "./site/kcworks/dependencies/invenio-communities"}
+invenio-group-collections-kcworks = {editable = true, path = "./site/kcworks/dependencies/invenio-group-collections-kcworks"}
+invenio-modular-deposit-form = {editable = true, path = "./site/kcworks/dependencies/invenio-modular-deposit-form"}
+invenio-modular-detail-page = {editable = true, path = "./site/kcworks/dependencies/invenio-modular-detail-page"}
+invenio-rdm-records = {editable = true, path = "./site/kcworks/dependencies/invenio-rdm-records"}
+invenio-record-importer-kcworks = {editable = true, path = "./site/kcworks/dependencies/invenio-record-importer-kcworks"}
+invenio-records-resources = {editable = true, path = "./site/kcworks/dependencies/invenio-records-resources"}
+invenio-remote-api-provisioner = {editable = true, path = "./site/kcworks/dependencies/invenio-remote-api-provisioner"}
+invenio-remote-user-data-kcworks = {editable = true, path = "./site/kcworks/dependencies/invenio-remote-user-data-kcworks"}
 invenio-s3 = "*"
-invenio-utilities-tuw = "*"
-isbnlib = "*"
-xmlsec = "<1.3.14"
 invenio-saml = "*"
+invenio-subjects-fast = "*"
+invenio-utilities-tuw = "*"
+invenio-vocabularies = {editable = true, path = "./site/kcworks/dependencies/invenio-vocabularies"}
+isbnlib = "*"
+kcworks = {editable = true, path = "./site"}
 langdetect = "*"
+numpy = "*"
 pip = "*"
 pytest-invenio = "*"
 python-dotenv = "*"
@@ -34,29 +44,14 @@ python-iso639 = "*"
 python-stdnum = "*"
 selenium = "*"
 sqlalchemy = { extras = ["asyncio"]}
+timefhuman = "*"
 titlecase = "*"
 tqdm = "*"
-timefhuman = "*"
-uwsgi = ">=2.0"
-uwsgitop = ">=0.11"
-uwsgi-tools = ">=1.1.1"
-aiohttp = "*"
-invenio-modular-detail-page = {editable = true, path = "./submodules/invenio-modular-detail-page/invenio-modular-detail-page"}
-invenio-modular-deposit-form = {editable = true, path = "./submodules/invenio-modular-deposit-form"}
-invenio-remote-user-data-kcworks = {editable = true, path = "./submodules/invenio-remote-user-data-kcworks"}
-invenio-record-importer-kcworks = {editable = true, path = "./submodules/invenio-record-importer-kcworks"}
-invenio-group-collections = {editable = true, path = "./submodules/invenio-group-collections"}
-invenio-subjects-fast = "*"
-invenio-remote-api-provisioner = {editable = true, path = "./submodules/invenio-remote-api-provisioner"}
-invenio-rdm-records = {editable = true, path = "./submodules/invenio-rdm-records"}
-invenio-records-resources = {editable = true, path = "./submodules/invenio-records-resources"}
-invenio-communities = {editable = true, path = "./submodules/invenio-communities"}
-invenio-vocabularies = {editable = true, path = "./submodules/invenio-vocabularies"}
-kcworks = {editable = true, path = "./site"}
-numpy = "*"
-flask-breadcrumbs = "*"
-flask-babelex = "*"
 unidecode = "*"
+uwsgi = ">=2.0"
+uwsgi-tools = ">=1.1.1"
+uwsgitop = ">=0.11"
+xmlsec = "<1.3.14"
 
 [requires]
 python_version = "3.9"

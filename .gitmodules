@@ -14,3 +14,27 @@
 	path = site/kcworks/dependencies/invenio-vocabularies
 	url = https://github.com/MESH-Research/invenio-vocabularies.git
 	branch = local-working
+[submodule "site/kcworks/dependencies/invenio-group-collections-kcworks"]
+	path = site/kcworks/dependencies/invenio-group-collections-kcworks
+	url = https://github.com/MESH-Research/invenio-group-collections-kcworks.git
+	branch = main
+[submodule "site/kcworks/dependencies/invenio-remote-user-data-kcworks"]
+	path = site/kcworks/dependencies/invenio-remote-user-data-kcworks
+	url = https://github.com/MESH-Research/invenio-remote-user-data-kcworks.git
+	branch = main
+[submodule "site/kcworks/dependencies/invenio-record-importer-kcworks"]
+	path = site/kcworks/dependencies/invenio-record-importer-kcworks
+	url = https://github.com/MESH-Research/invenio-record-importer-kcworks.git
+	branch = main
+[submodule "site/kcworks/dependencies/invenio-remote-api-provisioner"]
+	path = site/kcworks/dependencies/invenio-remote-api-provisioner
+	url = https://github.com/MESH-Research/invenio-remote-api-provisioner.git
+	branch = main
+[submodule "site/kcworks/dependencies/invenio-modular-deposit-form"]
+	path = site/kcworks/dependencies/invenio-modular-deposit-form
+	url = https://github.com/MESH-Research/invenio-modular-deposit-form.git
+	branch = main
+[submodule "site/kcworks/dependencies/invenio-modular-detail-page"]
+	path = site/kcworks/dependencies/invenio-modular-detail-page
+	url = https://github.com/MESH-Research/invenio-modular-detail-page.git
+	branch = main

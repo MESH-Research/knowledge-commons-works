@@ -13,7 +13,7 @@ Copyright 2023-24 Mesh Research. Released under the MIT license. (See the includ
 
 These instructions allow you to run Knowledge Commons Works for local development. The app source files are copied onto your system, but the Flask application and other services (database, search, etc.) are run in Docker containers. The application is served to your browser by an nginx web server running in a separate container.
 
-First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+) and Python (3.9.16 with pipenv).
+First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+) and Python (3.12.0+ with pipenv).
 
 From there, installation involves these steps. Each one is further explained below, but here is a quick reference:
 
@@ -64,7 +64,7 @@ To do this, you will need to do the following:
     git clone --single-branch -b main git@github.com:MESH-Research/invenio-modular-deposit-form.git
     git clone --single-branch -b main git@github.com:MESH-Research/invenio-modular-detail-page.git
     git clone --single-branch -b main git@github.com:MESH-Research/invenio-remote-api-provisioner.git
-    git clone --single-branch -b main git@github.com:MESH-Research/invenio-remote-user-data.git
+    git clone --single-branch -b main git@github.com:MESH-Research/invenio-remote-user-data-kcworks.git
     git clone --single-branch -b main git@github.com:MESH-Research/invenio-communities.git
     git clone --single-branch -b main git@github.com:MESH-Research/invenio-rdm-records.git
     git clone --single-branch -b local-working git@github.com:MESH-Research/invenio-records-resources.git
@@ -386,42 +386,37 @@ Private environment variables (like security keys) should never be committed to 
 This file must include the following variables with these values:
 
 ```env
-FLASK_DEBUG=1
-INVENIO_DATACITE_USERNAME=MSU.CORE
+```
+
+
 INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
-INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
-INVENIO_LOGGING_CONSOLE_LEVEL=NOTSET
+INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR=/
+INVENIO_RECORD_IMPORTER_DATA_DIR=/opt/invenio/var/import_data
 INVENIO_SEARCH_DOMAIN='search:9200'
-INVENIO_SECRET_KEY=CHANGE_ME
-INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
 INVENIO_SITE_UI_URL="https://localhost"
 INVENIO_SITE_API_URL="https://localhost/api"
+REDIS_DOMAIN='cache:6379'
 INVENIO_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kcworks:kcworks@localhost/kcworks"
 POSTGRES_USER=kcworks
-POSTGRES_PASSWORD=kcworks
 POSTGRES_DB=kcworks
-PYTHON_LOCAL_GIT_PACKAGES_PATH=/opt/invenio
-REDIS_DOMAIN='cache:6379'
-TESTING_SERVER_DOMAIN=localhost
-```
+
+The INVENIO_INSTANCE_PATH should be set to the full path of the instance directory where InvenioRDM will store its compiled files. Since KC Works runs inside containers, this is normally a standard folder inside the container file systems (/opt/invenio/var/instance). If you were to run InvenioRDM with the python/uwsgi processes installed on your local machine, this would be a folder inside your local virtual environment folder. For example, on MacOS this might be ~/.local/share/virtualenvs/{virtual env name}/var/instance/.
+
+### Variables for local credentials
+
+Several variables hold random values used to secure the application, or hold passwords and email addresses supplied by the local developer:
+
+INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
+INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
+INVENIO_SECRET_KEY=CHANGE_ME
+POSTGRES_PASSWORD=???
+PGADMIN_DEFAULT_EMAIL=???
+PGADMIN_DEFAULT_PASSWORD=???
 
 Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal by running
 ```console
 python -c 'import secrets; print(secrets.token_hex())'
 ```
-For most local development environments your INVENIO_SITE_UI_URL and INVENIO_SITE_API_URL will be "https://localhost" and "https://localhost/api" respectively.
-
-The INVENIO_INSTANCE_PATH should be set to the full path of the instance directory where InvenioRDM will store its compiled files. Since KC Works runs inside containers, this is normally a standard folder inside the container file systems (/opt/invenio/var/instance). If you were to run InvenioRDM with the python/uwsgi processes installed on your local machine, this would be a folder inside your local virtual environment folder. For example, on MacOS this might be ~/.local/share/virtualenvs/{virtual env name}/var/instance/.
-
-Likewise, the PYTHON_LOCAL_GIT_PACKAGES_PATH is the parent directory that holds cloned packages that aren't available via pip or that have been forked by us. This is normally /opt/invenio/src inside the containers for the uwsgi aplications. But if you are running the python processes locally, this would be the folder where you cloned the git repositories for the forked Invenio modules and the extra KC Works modules.
-
-If you are going to use pgAdmin to manage the database, you will also need to add the following variables with the appropriate values for your local development environment:
-
-```env
-PGADMIN_DEFAULT_EMAIL=myemail@somedomain.edu
-PGADMIN_DEFAULT_PASSWORD=myverysecurepassword
-```
-
 ### Additional environment variables with sensitive information
 
 Additionally, you should add the following variables with the appropriate values obtained from the Commons administrators:
@@ -439,59 +434,33 @@ API_TOKEN=myapitoken
 
 ### Additional required environment variables with paths on your local file system
 
-The next variable refers to a path on your local file system. If you are not installing and running python packages locally, you can simply set this to the folder where you cloned the KCWorks code. Otherwise, it should be the path to the InvenioRDM instance folder in the `site-packages` directory of your virtual environment:
+The next variables refer to paths on your local file system that are used during local development to provide easy access to the source code of various python packages and KCWorks modules:
 
 ```env
-INVENIO_LOCAL_INSTANCE_PATH=/path/to/local/virtual/environment/var/instance
-```
-
-### Optional environment variables for migration tools and local development
-
-If you are going to be using the KC Works migration tools, you will also need:
-
-```env
-RECORD_IMPORTER_API_TOKEN=myapitoken
-RECORD_IMPORTER_DOMAIN='host.docker.internal'
-RECORD_IMPORTER_PROTOCOL='https'
-RECORD_IMPORTER_DATA_DIR='/opt/invenio/var/import_data'
-RECORD_IMPORTER_LOCAL_DATA_DIR='/path/to/local/import_data'
-```
-
-If you are going to be working with the Invenio modules locally, you will also need:
-
-```env
-PYTHON_LOCAL_SITE_PACKAGES_PATH=/path/to/local/virtual/environment/lib/python3.9/site-packages
 PYTHON_LOCAL_GIT_PACKAGES_PATH=/path/to/local/git/packages
+PYTHON_LOCAL_SITE_PACKAGES_PATH=/path/to/local/virtual/environment/lib/python3.12/site-packages
 ```
+
+PYTHON_LOCAL_GIT_PACKAGES_PATH is the parent directory that holds cloned packages that aren't available via pip or that have been forked by us. If you are not working with the KCWorks custom modules locally, this can be set to the folder where you cloned the KCWorks code. Otherwise, it should be the path to the parent folder containing the git repositories for the forked Invenio modules and the extra KC Works modules.
+
+PYTHON_LOCAL_SITE_PACKAGES_PATH is the path to the site-packages folder in your local virtual environment. This assumes that you have run `pipenv install --dev --python=3.12` in your KCWorks project folder to install the python packages locally in a virtual environment.
 
 ## Install the Invenio Python Modules
 
-Navigate to the root knowledge-commons-works folder. Then run the installation script:
+Navigate to the root knowledge-commons-works folder and run
 ```console
-cd ~/path/to/directory/knowledge-commons-works
-invenio-cli install
+pipenv install --dev --python=3.12
 ```
 Note: This installation step will take several minutes.
 
 This stage
 - creates and initializes a Python virtual environment using pipenv
 - locks the python package requirements
-- updates InvenioRDM's internal instance_path variable to match your local installation
-    - this is *not* the folder where you cloned the GIT project, but rather a separate folder where InvenioRDM will place the compiled files used to actually run the application.
-    - normally the instance folder is inside the folder for your new virtual environment. On MacOS this will often be ~/.local/share/virtualenvs/{virtual env name}/var/instance/
 - installs the Invenio python packages (with pipenv)
     - these packages are again installed under your virtual environment folder. On MacOS this is often ~/.local/share/virtualenvs/{virtual env name}/lib/python3.9/site-packages/. You will find several modules installed here with names that start with "invenio_".
 - installs the `kcworks` Python package (with pipenv)
     - alongside the Invenio packages you will also find a `kcworks` package containing any custom extensions to InvenioRDM defined in your `knowledge-commons-works/sites/` folder
 - installs required python dependencies (with pipenv)
-- symlinks invenio.cfg, templates/, app_data/ to your instance folder
-- finds and collects static files into {instance_folder}/static/
-    - static files (like images) are scattered throughout the various Invenio python modules and your local knowledge-commons-works folder. They must be copied to a central location accessible to the web server.
-- finds js and less/scss/css files and builds them in {instance_folder}/assets
-    - again, this gathers and combines js and style files from all of the Invenio python modules and your local kcworks instance. It also gathers a master list of node.js package requirements from these modules.
-    - this build process uses Webpack and is configured in {instance_folder}/assets/webpack.config.js
-    - js requirements are installed by npm as node.js modules in the {instance_folder}/assets/node_modules folder
-    - note, though, that you *cannot* directly modify the package.json, webpack.config.js files in your instance folder. This is because these files are created dynamically by InvenioRDM each time the build process runs.
 
 ## Build and Configure the Containerized Services
 

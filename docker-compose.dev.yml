@@ -22,16 +22,16 @@ services:
       file: docker-compose.yml
       service: web-ui
     volumes:
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer-kcworks:/opt/invenio/invenio-record-importer-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/invenio-communities
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections:/opt/invenio/invenio-group-collections
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/invenio-rdm-records
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/invenio-records-resources
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/invenio-vocabularies
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/site/kcworks/dependencies/invenio-communities
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-group-collections-kcworks
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/site/kcworks/dependencies/invenio-modular-deposit-form
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/site/kcworks/dependencies/invenio-modular-detail-page
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/site/kcworks/dependencies/invenio-rdm-records
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
@@ -52,16 +52,16 @@ services:
       file: docker-compose.yml
       service: web-api
     volumes:
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/invenio-communities
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections:/opt/invenio/invenio-group-collections
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/invenio-rdm-records
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/invenio-records-resources
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer-kcworks:/opt/invenio/invenio-record-importer-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/invenio-vocabularies
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/site/kcworks/dependencies/invenio-communities
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-group-collections-kcworks
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/site/kcworks/dependencies/invenio-modular-deposit-form
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/site/kcworks/dependencies/invenio-modular-detail-page
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/site/kcworks/dependencies/invenio-rdm-records
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
@@ -82,16 +82,16 @@ services:
       file: docker-compose.yml
       service: worker
     volumes:
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/invenio-communities
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections:/opt/invenio/invenio-group-collections
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/invenio-modular-deposit-form
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/invenio-modular-detail-page
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/invenio-rdm-records
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer-kcworks:/opt/invenio/invenio-record-importer-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/invenio-records-resources
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/invenio-remote-api-provisioner
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data:/opt/invenio/invenio-remote-user-data
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/invenio-vocabularies
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/site/kcworks/dependencies/invenio-communities
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-group-collections-kcworks
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/site/kcworks/dependencies/invenio-modular-deposit-form
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/site/kcworks/dependencies/invenio-modular-detail-page
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/site/kcworks/dependencies/invenio-rdm-records
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
+      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
