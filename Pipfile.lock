@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "322acc79d3c3bf4176f34d3b286617e852876698e2d078d511c383599be3ad86"
+            "sha256": "5e2a11f2b0a60fe2229f039eaa05b3c299a3117924a46becb23a1b40920329fa"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -950,11 +950,12 @@
         },
         "flask-admin": {
             "hashes": [
-                "sha256:61421323f19d8dce34e57d5c2b3947af0ab8319d09006d09aa8385998c8da463",
-                "sha256:ef75e519f4b9ab68e45bac8592418037ddf94f7d1fa00399fa40da64d84ce40a"
+                "sha256:24cae2af832b6a611a01d7dc35f42d266c1d6c75a426b869d8cb241b78233369",
+                "sha256:fd8190f1ec3355913a22739c46ed3623f1d82b8112cde324c60a6fc9b21c9406"
             ],
-            "markers": "python_version >= '3.8'",
-            "version": "==2.0.0a0"
+            "index": "pypi",
+            "markers": "python_version >= '3.6'",
+            "version": "==1.6.1"
         },
         "flask-alembic": {
             "hashes": [
@@ -1481,11 +1482,11 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:3f4e23371981b98f0bc082a80e135cfa6e98c9ad734ae729dd8f8f849c0ffc6f",
-                "sha256:636b83322756d7e90eba024fd794b413df7a5e8c0cd17052e411bdeb8b8f7d72"
+                "sha256:89ac94babcd568ddc88e8328ac5765b1e25484c6962dd976e6a18744c6bc5c4c",
+                "sha256:c5753c0a226f5c23486b234c165b8778e4a97b04e194492fd3b7ffd4efcbf099"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==12.0.8"
+            "version": "==12.0.4"
         },
         "invenio-assets": {
             "hashes": [
@@ -1656,11 +1657,11 @@
         },
         "invenio-oaiserver": {
             "hashes": [
-                "sha256:1a35c1d98da34f9d67c3280b5bc6fd9d570acce5245879f45477b4f1798aa5cd",
-                "sha256:4510660812f84fdf599b91c3c9b7c69123f0dddf39f5ae4243dda51acbeeb490"
+                "sha256:73dd1dcb2f716ccf62cafd407aa0ce02c2500079a671fb22df3eb9b73c19a239",
+                "sha256:c037215dc0a6019f6a602f84f68d3ef74ee3c2311c654f1165aa7b06ace03e81"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==2.2.2"
+            "version": "==2.2.3"
         },
         "invenio-oauth2server": {
             "hashes": [
