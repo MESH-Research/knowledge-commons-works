@@ -24,7 +24,7 @@ from flask import render_template
 
 from invenio_previewer.proxies import current_previewer
 
-previewable_extensions = ["pptx", "ppt"]
+previewable_extensions = [".pptx", ".ppt"]
 
 
 def can_preview(file):
@@ -38,9 +38,6 @@ def preview(file):
         "custom_previewers/invenio_custom_pptx_viewer/pptx_viewer.html",
         file=file,
         # html_tags='',
-        # css_bundles=['custom_pdf_viewer_css.css'],
-        # js_bundles=current_previewer.js_bundles + [
-        #     'custom_pdf_viewer_js.js',
-        #     'fullscreen_js.js'
-        # ]
+        js_bundles=current_previewer.js_bundles,
+        css_bundles=current_previewer.css_bundles,
     )

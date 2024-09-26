@@ -24,7 +24,7 @@ from flask import render_template
 
 from invenio_previewer.proxies import current_previewer
 
-previewable_extensions = ["docx", "doc"]
+previewable_extensions = [".docx", ".doc"]
 
 
 def can_preview(file):
@@ -36,11 +36,8 @@ def preview(file):
     """Preview file."""
     return render_template(
         "custom_previewers/invenio_custom_docx_viewer/docx_viewer.html",
-        file=file,
         # html_tags='',
-        # css_bundles=['custom_pdf_viewer_css.css'],
-        # js_bundles=current_previewer.js_bundles + [
-        #     'custom_pdf_viewer_js.js',
-        #     'fullscreen_js.js'
-        # ]
+        file=file,
+        js_bundles=current_previewer.js_bundles,
+        css_bundles=current_previewer.css_bundles,
     )

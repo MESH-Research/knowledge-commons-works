@@ -11,13 +11,12 @@
 
 {%- extends config.PREVIEWER_ABSTRACT_TEMPLATE %}
 
-
 {% block panel %}
 <div class="ui container">
   <div class="ui padded grid column">
     <div class="column">
-        <h3><i class="times icon"></i> {{_('Cannot preview file')}}</h3>
-        <p>{{_('Sorry, we are unfortunately not able to preview MS Powerpoint file formats (.pptx, .ppt).')}}</p>
+        <h3><i class="times icon"></i> {{ _('Cannot preview file') }}</h3>
+        <p>{{ _('Sorry, we are unfortunately not able to preview MS Powerpoint file formats (.pptx, .ppt).') }}</p>
     </div>
   </div>
 </div>

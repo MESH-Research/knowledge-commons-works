@@ -24,7 +24,7 @@ from flask import render_template
 
 from invenio_previewer.proxies import current_previewer
 
-previewable_extensions = ["tex", "bib", "cls"]
+previewable_extensions = [".tex", ".bib", ".cls"]
 
 
 def can_preview(file):
@@ -36,11 +36,8 @@ def preview(file):
     """Preview file."""
     return render_template(
         "custom_previewers/invenio_custom_latex_viewer/latex_viewer.html",
-        file=file,
         # html_tags='',
-        # css_bundles=['custom_pdf_viewer_css.css'],
-        # js_bundles=current_previewer.js_bundles + [
-        #     'custom_pdf_viewer_js.js',
-        #     'fullscreen_js.js'
-        # ]
+        file=file,
+        js_bundles=current_previewer.js_bundles,
+        css_bundles=current_previewer.css_bundles,
     )
