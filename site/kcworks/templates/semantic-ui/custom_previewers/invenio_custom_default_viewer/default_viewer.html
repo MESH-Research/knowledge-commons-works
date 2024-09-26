@@ -18,12 +18,14 @@ MIT License; see LICENSE file for more details.
 
 {%- extends config.PREVIEWER_ABSTRACT_TEMPLATE %}
 
+{% set file_extension = file.filename.split(".")[-1] %}
+
 {% block panel %}
 <div class="ui icon message info">
   <i class="hide icon"></i>
   <div class="content">
     <h3 class="header"> {{ _('Cannot preview file') }}</h3>
-    <p class="ui body">{{ _('Sorry, we cannot currently preview MS Word file formats (.docx, .doc).') }}</p>
+    <p class="ui body">{{ _('Sorry, we cannot currently preview this kind of file') }} ( .{{ file_extension }} )</p>
   </div>
 </div>
 {% endblock panel %}

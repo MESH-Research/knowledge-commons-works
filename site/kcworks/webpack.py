@@ -13,6 +13,8 @@ theme = WebpackThemeBundle(
                 "/pdfjs.js",
                 "custom_pdf_viewer_css": "./scss/invenio_custom_pdf_viewer"
                 "/pdfjs.scss",
+                "custom_default_viewer_css": "./less/site/views/previewers/"
+                "custom_default_viewer.less",
                 "invenio-communities-new-custom": "./js/collections/community"
                 "/new.js",
                 "invenio-communities-frontpage-custom": "./js/collections/"

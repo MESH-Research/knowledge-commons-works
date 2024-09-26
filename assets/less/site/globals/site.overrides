@@ -423,6 +423,10 @@ html.cover-page {
               max-height: 8rem;
               border: none;
             }
+            &.no-preview {
+              border-top: none;
+              border-bottom: none;
+            }
             @media screen and (max-width: @largestMobileScreen) {
               min-height: 50vh;
             }

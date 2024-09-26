@@ -1,10 +1,17 @@
 {# -*- coding: utf-8 -*-
 
-  This file is part of Invenio.
-  Copyright (C) 2015-2020 CERN.
+This file is part of Knowledge Commons Works.
+  Copyright (C) 2024 Mesh Research.
 
-  Invenio is free software; you can redistribute it and/or modify it
-  under the terms of the MIT License; see LICENSE file for more details.
+Knowledge Commons Works is based on InvenioRDM, and
+this file is based on code from InvenioRDM. InvenioRDM is
+  Copyright (C) 2020-2024 CERN.
+  Copyright (C) 2020-2024 Northwestern University.
+  Copyright (C) 2020-2024 T U Wien.
+
+InvenioRDM and Knowledge Commons Works are both free software;
+you can redistribute and/or modify them under the terms of the
+MIT License; see LICENSE file for more details.
 #}
 
 {#- Template for when file doesn't exist or file cannot be previewed #}
@@ -12,13 +19,12 @@
 {%- extends config.PREVIEWER_ABSTRACT_TEMPLATE %}
 
 {% block panel %}
-<div class="ui container">
-  <div class="ui padded grid column">
-    <div class="column">
-        <h3><i class="times icon"></i> {{ _('Cannot preview file') }}</h3>
-        <p>{{ _('Sorry, we are unfortunately not able to preview MS Powerpoint file formats (.pptx, .ppt).') }}</p>
-    </div>
+<div class="ui icon message info">
+  <i class="hide icon"></i>
+  <div class="content">
+    <h3 class="header"> {{ _('Cannot preview file') }}</h3>
+    <p class="ui body">{{ _('Sorry, we cannot currently preview PowerPoint file formats (.pptx, .ppt).') }}</p>
   </div>
 </div>
-{% endblock %}
+{% endblock panel %}
 

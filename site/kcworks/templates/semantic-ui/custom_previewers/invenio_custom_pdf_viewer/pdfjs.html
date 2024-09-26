@@ -1,16 +1,31 @@
-{# -*- coding: utf-8 -*- This file is part of Invenio. Copyright (C) 2015-2020
-CERN. Copyright (C) 2022 TU Wien. Invenio is free software; you can redistribute
-it and/or modify it under the terms of the MIT License; see LICENSE file for
-more details. #} {%- extends config.PREVIEWER_BASE_TEMPLATE %} {%- block
-html_tags %} {{ html_tags|safe }} {%- endblock %} {%- block head %} {{ super()
-}}
-<meta name="google" content="notranslate" />
-<link
-  rel="resource"
-  type="application/l10n"
-  href="{{ url_for('static', filename='js/pdfjs/web/locale/locale.properties') }}"
-/>
-{%- endblock %} {%- block page_body %}
+{# -*- coding: utf-8 -*-
+
+This file is part of Knowledge Commons Works.
+  Copyright (C) 2024 Mesh Research.
+
+Knowledge Commons Works is based on InvenioRDM, and
+this file is based on code from InvenioRDM. InvenioRDM is
+  Copyright (C) 2020-2024 CERN.
+  Copyright (C) 2020-2024 Northwestern University.
+  Copyright (C) 2020-2024 T U Wien.
+
+InvenioRDM and Knowledge Commons Works are both free software;
+you can redistribute and/or modify them under the terms of the
+MIT License; see LICENSE file for more details.
+#}
+
+{%- extends config.PREVIEWER_BASE_TEMPLATE %}
+{%- block html_tags %} {{ html_tags|safe }} {%- endblock %}
+{%- block head %}
+  {{ super() }}
+  <meta name="google" content="notranslate" />
+  <link
+    rel="resource"
+    type="application/l10n"
+    href="{{ url_for('static', filename='js/pdfjs/web/locale/locale.properties') }}"
+  />
+{%- endblock head %}
+{%- block page_body %}
 <div id="outerContainer" class="loadingInProgress">
   <div id="sidebarContainer">
     <div id="toolbarSidebar">
