@@ -9,6 +9,7 @@ halo = "*"
 jsonlines = "*"
 requests-mock = "*"
 selenium = "*"
+docker-services-cli = "*"
 
 [packages]
 aiohttp = "*"
