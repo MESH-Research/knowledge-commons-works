@@ -122,18 +122,26 @@ const FileTypeMessage = () => {
         <Accordion>
           <Accordion.Title active={isOpen} onClick={handleAccordionClick}>
             <Icon name="dropdown" />
-            {i18next.t("Supported file types with KCWorks previews...")}
+            {i18next.t("List of supported file types with KCWorks previews...")}
           </Accordion.Title>
           <Accordion.Content active={isOpen}>
+            <p>
+              {i18next.t(
+                "Supported file types ")}
+              <b>{i18next.t("can be previewed")}</b>
+              {i18next.t(" on the work detail page. Unsupported file types ")}
+              <b>{i18next.t("can still be uploaded")}</b>
+              {i18next.t(" but will not be displayed.")}
+            </p>
             <Table celled>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>{i18next.t("File Type")}</Table.HeaderCell>
                   <Table.HeaderCell className="positive">
-                    {i18next.t("Supported")}
+                    {i18next.t("Previewable")}
                   </Table.HeaderCell>
                   <Table.HeaderCell className="negative">
-                    {i18next.t("Not Supported")}
+                    {i18next.t("Not Previewable (Uploadable)")}
                   </Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
@@ -166,11 +174,6 @@ const FileTypeMessage = () => {
                 <FileTypeRow category="Other" types={fileCategories.other} />
               </Table.Body>
             </Table>
-            <p>
-              {i18next.t(
-                "Supported file types can be previewed on the work detail page. Unsupported file types can still be uploaded, but will not be displayed."
-              )}
-            </p>
           </Accordion.Content>
         </Accordion>
       </Message.Content>
