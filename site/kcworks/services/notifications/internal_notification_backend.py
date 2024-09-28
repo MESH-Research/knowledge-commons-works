@@ -19,4 +19,5 @@ class InternalNotificationBackend(
             notification=notification, recipient=recipient
         )
         app.logger.info(template)
-        # institutation_communication_tool.send_message(user_id=recipient.data["id"], template["md_body"])
+        # institutation_communication_tool.send_message(
+        #     user_id=recipient.data["id"], template["md_body"])

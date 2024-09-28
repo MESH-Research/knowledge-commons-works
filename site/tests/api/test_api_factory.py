@@ -1,17 +1,22 @@
 import json
 from pprint import pprint
-from pytest_invenio.fixtures import search_clear
 
 
-def test_draft_creation(running_app, client, client_with_login, minimal_record,
-                        headers, search_clear):
-    """
-    """
+def test_draft_creation(
+    running_app,
+    client,
+    client_with_login,
+    minimal_record,
+    headers,
+    search_clear,
+):
+    """ """
     r = client.get("/records", headers=headers)
     pprint(r.json)
-    response = client_with_login.post("/records",
-                           data=json.dumps(minimal_record), headers=headers)
-    pprint('$$$$$$$')
+    response = client_with_login.post(
+        "/records", data=json.dumps(minimal_record), headers=headers
+    )
+    pprint("$$$$$$$")
     # pprint(app_config)
     pprint(response.json)
     pprint(response.headers)
@@ -22,14 +27,14 @@ def test_draft_creation(running_app, client, client_with_login, minimal_record,
     assert response.status_code == 201
 
 
-def test_db(client):
+def test_db(running_app, client):
 
-    res = client.get('/')
+    res = client.get("/")
     assert res.json == {
-        'message': 'The requested URL was not found on the server. If you '
-                   'entered the URL manually please check your spelling and '
-                   'try again.',
-        'status': 404
+        "message": "The requested URL was not found on the server. If you "
+        "entered the URL manually please check your spelling and "
+        "try again.",
+        "status": 404,
     }
 
     # res2 = client.get('/api/records/jznz9-qhx89')
@@ -37,7 +42,6 @@ def test_db(client):
     # assert res2 == {}
 
     assert True
-
 
 
 # dir(response from client.get)

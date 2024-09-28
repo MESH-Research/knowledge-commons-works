@@ -1,11 +1,11 @@
 from pprint import pprint
 
 
-def test_sample():
+def test_sample(running_app):
     assert True
 
 
-def test_frontpage(client, base_app):
+def test_frontpage(running_app, client):
     # pprint(dir(base_client))
     # pprint(dir(base_app))
     response = client.get("/")

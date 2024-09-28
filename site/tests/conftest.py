@@ -1,52 +1,76 @@
 from collections import namedtuple
-from flask_security import login_user, logout_user
-from flask_security.utils import hash_password
-from invenio_access.models import ActionRoles, Role
-from invenio_access.permissions import superuser_access, system_identity
-from invenio_accounts.testutils import login_user_via_session
-from invenio_administration.permissions import administration_access_action
-from invenio_app.factory import create_ui, create_app
-from invenio_vocabularies.proxies import current_service as vocabulary_service
-from invenio_vocabularies.records.api import Vocabulary
-from pprint import pprint
-from pytest_invenio.fixtures import base_client, db, UserFixture
-import pytest
+import os
+from pathlib import Path
+from invenio_app.factory import create_app as create_ui_api
+from invenio_queues import current_queues
 
-# pytest_invenio provides these fixtures (among others):
-#   pytest_invenio.fixtures.app(base_app, search, database)
-#   pytest_invenio.fixtures.app_config(db_uri, broker_uri, celery_config_ext)
-#   pytest_invenio.fixtures.appctx(base_app)
-#   pytest_invenio.fixtures.base_app(create_app, app_config, request, default_handler)
-#   pytest_invenio.fixtures.base_client(base_app)
-#   pytest_invenio.fixtures.browser(request)
-#   pytest_invenio.fixtures.cli_runner(base_app)
-#   pytest_invenio.fixtures.db(database)
-#   pytest_invenio.fixtures.default_handler()
-#   pytest_invenio.fixtures.entry_points(extra_entry_points
+from .fixtures.identifiers import test_config_identifiers
+from .fixtures.custom_fields import test_config_fields
+from .fixtures.stats import test_config_stats
+from .fixtures.saml import test_config_saml
+
+# from pytest_invenio.fixtures import base_client, db, UserFixture
+import pytest
+import importlib
+
+var = "invenio_config"
+package = importlib.import_module(var)
+config = {k: v for k, v in package.__dict__.items()}
+
+pytest_plugins = [
+    "celery.contrib.pytest",
+    "tests.fixtures.communities",
+    "tests.fixtures.custom_fields",
+    "tests.fixtures.records",
+    "tests.fixtures.stats",
+    "tests.fixtures.users",
+    "tests.fixtures.vocabularies.affiliations",
+    "tests.fixtures.vocabularies.community_types",
+    "tests.fixtures.vocabularies.date_types",
+    "tests.fixtures.vocabularies.descriptions",
+    "tests.fixtures.vocabularies.languages",
+    "tests.fixtures.vocabularies.licenses",
+    "tests.fixtures.vocabularies.resource_types",
+    "tests.fixtures.vocabularies.roles",
+    "tests.fixtures.vocabularies.subjects",
+    "tests.helpers.sample_records.basic",
+]
+
+
+def _(x):
+    """Identity function for string extraction."""
+    return x
+
+
+test_config = {**config}
 
 test_config = {
-    # "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks-test",
-    # "INVENIO_SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://kcworks:kcworks@localhost/kcworks-test",
+    **test_config_identifiers,
+    **test_config_fields,
+    **test_config_stats,
+    **test_config_saml,
+    "SQLALCHEMY_DATABASE_URI": (
+        "postgresql+psycopg2://kcworks:kcworks@localhost:5432/kcworks"
+    ),
     "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-    "SEARCH_INDEX_PREFIX": "kcworks-test-",
-    # "SITE_UI_URL" = os.environ["INVENIO_SITE_UI_URL"]
-    # "SITE_API_URL" = os.environ["INVENIO_SITE_API_URL"]
+    "SEARCH_INDEX_PREFIX": "",
+    "POSTGRES_USER": "kcworks",
+    "POSTGRES_PASSWORD": "kcworks",
+    "POSTGRES_DB": "kcworks",
     "INVENIO_WTF_CSRF_ENABLED": False,
     "INVENIO_WTF_CSRF_METHODS": [],
-    "THEME_FRONTPAGE_TITLE": "Knowledge Commons Repository",
     "APP_DEFAULT_SECURE_HEADERS": {
         "content_security_policy": {"default-src": []},
         "force_https": False,
     },
-    "APP_THEME": ["semantic-ui"],
-    "BROKER_URL": "amqp://guest:guest@localhost:5672//",
+    # "BROKER_URL": "amqp://guest:guest@localhost:5672//",
     "CELERY_CACHE_BACKEND": "memory",
     "CELERY_RESULT_BACKEND": "cache",
     "CELERY_TASK_ALWAYS_EAGER": True,
     "CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS": True,
     #  'DEBUG_TB_ENABLED': False,
     "INVENIO_INSTANCE_PATH": "/opt/invenio/var/instance",
-    #  'MAIL_SUPPRESS_SEND': True,
+    "MAIL_SUPPRESS_SEND": True,
     #  'OAUTH2_CACHE_TYPE': 'simple',
     #  'OAUTHLIB_INSECURE_TRANSPORT': True,
     "RATELIMIT_ENABLED": False,
@@ -54,229 +78,47 @@ test_config = {
     "SECURITY_PASSWORD_SALT": "test-secret-key",
     "TESTING": True,
 }
-#  'THEME_ICONS': {'bootstrap3': {'*': 'fa fa-{} fa-fw',
-#                                 'codepen': 'fa fa-codepen fa-fw',
-#                                 'cogs': 'fa fa-cogs fa-fw',
-#                                 'key': 'fa fa-key fa-fw',
-#                                 'link': 'fa fa-link fa-fw',
-#                                 'shield': 'fa fa-shield fa-fw',
-#                                 'user': 'fa fa-user fa-fw'},
-#                  'semantic-ui': {'*': '{} icon',
-#                                  'codepen': 'codepen icon',
-#                                  'cogs': 'cogs icon',
-#                                  'key': 'key icon',
-#                                  'link': 'linkify icon',
-#                                  'shield': 'shield alternate icon',
-#                                  'user': 'user icon'}},
+
+parent_path = Path(__file__).parent
+log_folder_path = parent_path / "test_logs"
+log_file_path = log_folder_path / "invenio.log"
+if not log_file_path.exists():
+    log_file_path.parent.mkdir(parents=True, exist_ok=True)
+    log_file_path.touch()
+
+test_config["FLASK_DEBUG"] = True
+test_config["LOGGING_FS_LEVEL"] = "DEBUG"
+test_config["INVENIO_LOGGING_FS_LEVEL"] = "DEBUG"
+test_config["LOGGING_FS_LOGFILE"] = str(log_file_path)
+
+# enable DataCite DOI provider
+test_config["DATACITE_ENABLED"] = True
+test_config["DATACITE_USERNAME"] = "INVALID"
+test_config["DATACITE_PASSWORD"] = "INVALID"
+test_config["DATACITE_DATACENTER_SYMBOL"] = "TEST"
+test_config["DATACITE_PREFIX"] = "10.17613"
+test_config["DATACITE_TEST_MODE"] = True
+# ...but fake it
+
+test_config["SITE_API_URL"] = os.environ.get(
+    "INVENIO_SITE_API_URL", "https://127.0.0.1:5000"
+)
+test_config["SITE_UI_URL"] = os.environ.get(
+    "INVENIO_SITE_UI_URL", "https://127.0.0.1:5000"
+)
 
 
-# ### tests/conftest.py ###
-# Common application configuration goes here
-@pytest.fixture(scope="module")
-def app_config(app_config) -> dict:
-    # app_config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///testing.db"
-    for k, v in test_config.items():
-        app_config[k] = v
-    return app_config
+# @pytest.fixture(scope="module")
+# def extra_entry_points() -> dict:
+#     return {
+#         # 'invenio_db.models': [
+#         #     'mock_module = mock_module.models',
+#         # ]
+#     }
 
 
-@pytest.fixture(scope="module")
-def extra_entry_points() -> dict:
-    return {
-        # 'invenio_db.models': [
-        #     'mock_module = mock_module.models',
-        # ]
-    }
-
-
-@pytest.fixture(scope="module")
-def resource_type_type(app):
-    """Resource type vocabulary type."""
-    return vocabulary_service.create_type(
-        system_identity, "resourcetypes", "rsrct"
-    )
-
-
-@pytest.fixture(scope="module")
-def resource_type_v(app, resource_type_type):
-    """Resource type vocabulary record."""
-    vocabulary_service.create(
-        system_identity,
-        {
-            "id": "dataset",
-            "icon": "table",
-            "props": {
-                "csl": "dataset",
-                "datacite_general": "Dataset",
-                "datacite_type": "",
-                "openaire_resourceType": "21",
-                "openaire_type": "dataset",
-                "eurepo": "info:eu-repo/semantics/other",
-                "schema.org": "https://schema.org/Dataset",
-                "subtype": "",
-                "type": "dataset",
-            },
-            "title": {"en": "Dataset"},
-            "tags": ["depositable", "linkable"],
-            "type": "resourcetypes",
-        },
-    )
-
-    vocabulary_service.create(
-        system_identity,
-        {  # create base resource type
-            "id": "image",
-            "props": {
-                "csl": "figure",
-                "datacite_general": "Image",
-                "datacite_type": "",
-                "openaire_resourceType": "25",
-                "openaire_type": "dataset",
-                "eurepo": "info:eu-repo/semantic/other",
-                "schema.org": "https://schema.org/ImageObject",
-                "subtype": "",
-                "type": "image",
-            },
-            "icon": "chart bar outline",
-            "title": {"en": "Image"},
-            "tags": ["depositable", "linkable"],
-            "type": "resourcetypes",
-        },
-    )
-
-    vocab = vocabulary_service.create(
-        system_identity,
-        {
-            "id": "image-photo",
-            "props": {
-                "csl": "graphic",
-                "datacite_general": "Image",
-                "datacite_type": "Photo",
-                "openaire_resourceType": "25",
-                "openaire_type": "dataset",
-                "eurepo": "info:eu-repo/semantic/other",
-                "schema.org": "https://schema.org/Photograph",
-                "subtype": "image-photo",
-                "type": "image",
-            },
-            "icon": "chart bar outline",
-            "title": {"en": "Photo"},
-            "tags": ["depositable", "linkable"],
-            "type": "resourcetypes",
-        },
-    )
-
-    Vocabulary.index.refresh()
-
-    return vocab
-
-
-@pytest.fixture()
-def users(UserFixture, app, db) -> list:
-    """Create example user."""
-    user1 = UserFixture(email="scottia4@msu.edu", password="password")
-    user1.create(app, db)
-    user2 = UserFixture(email="scottianw@gmail.com", password="password")
-    user2.create(app, db)
-    # with db.session.begin_nested():
-    #     datastore = app.extensions["security"].datastore
-    #     user1 = datastore.create_user(
-    #         email="info@inveniosoftware.org",
-    #         password=hash_password("password"),
-    #         active=True,
-    #     )
-    #     user2 = datastore.create_user(
-    #         email="ser-testalot@inveniosoftware.org",
-    #         password=hash_password("beetlesmasher"),
-    #         active=True,
-    #     )
-
-    db.session.commit()
-    return [user1, user2]
-
-
-@pytest.fixture()
-def admin_role_need(db):
-    """Store 1 role with 'superuser-access' ActionNeed.
-
-    WHY: This is needed because expansion of ActionNeed is
-         done on the basis of a User/Role being associated with that Need.
-         If no User/Role is associated with that Need (in the DB), the
-         permission is expanded to an empty list.
-    """
-    role = Role(name="administration-access")
-    db.session.add(role)
-
-    action_role = ActionRoles.create(
-        action=administration_access_action, role=role
-    )
-    db.session.add(action_role)
-
-    db.session.commit()
-
-    return action_role.need
-
-
-@pytest.fixture()
-def admin(UserFixture, app, db, admin_role_need):
-    """Admin user for requests."""
-    u = UserFixture(
-        email="admin@inveniosoftware.org",
-        password="admin",
-    )
-    u.create(app, db)
-
-    datastore = app.extensions["security"].datastore
-    _, role = datastore._prepare_role_modify_args(
-        u.user, "administration-access"
-    )
-
-    datastore.add_role_to_user(u.user, role)
-    db.session.commit()
-    return u
-
-
-@pytest.fixture()
-def superuser_role_need(db):
-    """Store 1 role with 'superuser-access' ActionNeed.
-
-    WHY: This is needed because expansion of ActionNeed is
-         done on the basis of a User/Role being associated with that Need.
-         If no User/Role is associated with that Need (in the DB), the
-         permission is expanded to an empty list.
-    """
-    role = Role(name="superuser-access")
-    db.session.add(role)
-
-    action_role = ActionRoles.create(action=superuser_access, role=role)
-    db.session.add(action_role)
-
-    db.session.commit()
-
-    return action_role.need
-
-
-@pytest.fixture()
-def superuser_identity(admin, superuser_role_need):
-    """Superuser identity fixture."""
-    identity = admin.identity
-    identity.provides.add(superuser_role_need)
-    return identity
-
-
-@pytest.fixture()
-def client_with_login(client, users):
-    """Log in a user to the client."""
-    user = users[0]
-    # user = users[0].user
-    # pprint('^^^^^^^')
-    # pprint(user.__class__())
-    # pprint(dir(user))
-    login_user(user)
-    login_user_via_session(client, email=user.email)
-    return client
-
-
+# This is a namedtuple that holds all the fixtures we're likely to need
+# in a single test.
 RunningApp = namedtuple(
     "RunningApp",
     [
@@ -284,40 +126,50 @@ RunningApp = namedtuple(
         "superuser_identity",
         "location",
         "cache",
-        "resource_type_v",
-        # "subject_v",
-        # "languages_v",
-        # "affiliations_v",
-        # "title_type_v",
-        # "description_type_v",
-        # "date_type_v",
-        # "contributors_role_v",
-        # "relation_type_v",
-        # "licenses_v",
-        # "funders_v",
+        "affiliations_v",
         # "awards_v",
+        "community_type_v",
+        "contributors_role_v",
+        "creators_role_v",
+        "date_type_v",
+        "description_type_v",
+        # "funders_v",
+        "language_v",
+        "licenses_v",
+        # "relation_type_v",
+        "resource_type_v",
+        "subject_v",
+        # "title_type_v",
+        "create_communities_custom_fields",
+        "create_records_custom_fields",
     ],
 )
 
 
-@pytest.fixture
+# This fixture allows us to pass each test a list of commonly used fixtures
+# with a single name.
+@pytest.fixture(scope="function")
 def running_app(
     app,
     superuser_identity,
     location,
     cache,
-    resource_type_v,
-    # subject_v,
-    # languages_v,
-    # affiliations_v,
-    # title_type_v,
-    # description_type_v,
-    # date_type_v,
-    # contributors_role_v,
-    # relation_type_v,
-    # licenses_v,
-    # funders_v,
+    affiliations_v,
     # awards_v,
+    community_type_v,
+    contributors_role_v,
+    creators_role_v,
+    date_type_v,
+    description_type_v,
+    # funders_v,
+    language_v,
+    licenses_v,
+    # relation_type_v,
+    resource_type_v,
+    subject_v,
+    # title_type_v,
+    create_communities_custom_fields,
+    create_records_custom_fields,
 ):
     """This fixture provides an app with the typically needed db data loaded.
 
@@ -329,16 +181,59 @@ def running_app(
         superuser_identity,
         location,
         cache,
-        resource_type_v,
-        # subject_v,
-        # languages_v,
-        # affiliations_v,
-        # title_type_v,
-        # description_type_v,
-        # date_type_v,
-        # contributors_role_v,
-        # relation_type_v,
-        # licenses_v,
-        # funders_v,
+        affiliations_v,
         # awards_v,
+        community_type_v,
+        contributors_role_v,
+        creators_role_v,
+        date_type_v,
+        description_type_v,
+        # funders_v,
+        language_v,
+        licenses_v,
+        # relation_type_v,
+        resource_type_v,
+        subject_v,
+        # title_type_v,
+        create_communities_custom_fields,
+        create_records_custom_fields,
     )
+
+
+# Here we're setting up the module-scoped app fixture.
+@pytest.fixture(scope="module")
+def app(
+    app,
+    app_config,
+    database,
+    search,
+    affiliations_v,
+    # awards_v,
+    community_type_v,
+    contributors_role_v,
+    creators_role_v,
+    date_type_v,
+    description_type_v,
+    # funders_v,
+    language_v,
+    licenses_v,
+    # relation_type_v,
+    resource_type_v,
+    subject_v,
+    # title_type_v,
+):
+    """This fixture provides an app with the typically needed fixtures."""
+    current_queues.declare()
+    yield app
+
+
+@pytest.fixture(scope="module")
+def app_config(app_config) -> dict:
+    for k, v in test_config.items():
+        app_config[k] = v
+    return app_config
+
+
+@pytest.fixture(scope="module")
+def create_app():
+    return create_ui_api
