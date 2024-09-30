@@ -35,5 +35,5 @@ filterwarnings = ["error"]
 branch = true
 source = ["flaskr", "tests"]
 
-[tool.ruff]
-src = ["src"]
+# [tool.ruff]
+# src = ["src"]

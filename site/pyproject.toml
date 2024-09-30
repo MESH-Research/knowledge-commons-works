@@ -57,8 +57,5 @@ plugins = [
   "tests.helpers.sample_records.basic",
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
-
 [tool.setuptools.package-data]
 "*" = ["*.po", "*.pot", "*.mo"]
