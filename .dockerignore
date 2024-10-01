@@ -23,7 +23,6 @@ scripts/experiments
 scripts/sample_files
 site/build
 site/kcworks.egg-info
-site/kcworks/dependencies
 static/admin
 static/dist
 static/bootstrap
