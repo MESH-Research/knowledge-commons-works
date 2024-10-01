@@ -131,7 +131,8 @@ jobs:
           docker compose --file docker-compose.yml --file docker-compose.dev.yml up -d
 
       # - name: Run unit tests
-      #   run: cd site && pytest
+      #   run: |
+      #     docker exec -it kcworks-ui bash -c "cd /opt/invenio/src/site && PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest"
 
       - name: Destroy containers
         if: always()

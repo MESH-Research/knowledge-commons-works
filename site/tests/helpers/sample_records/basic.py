@@ -32,7 +32,7 @@ def minimal_record():
             "publication_date": "2020-06-01",
             # because DATACITE_ENABLED is True, this field is required
             "publisher": "Acme Inc",
-            "resource_type": {"id": "image-photo"},
+            "resource_type": {"id": "image-photograph"},
             "title": "A Romans story",
         },
     }
@@ -58,7 +58,7 @@ def full_record(users):
         "created": "2023-01-01",
         "updated": "2023-01-02",
         "metadata": {
-            "resource_type": {"id": "image-photo"},
+            "resource_type": {"id": "image-photograph"},
             "creators": [
                 {
                     "person_or_org": {

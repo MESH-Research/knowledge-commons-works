@@ -1,17 +1,16 @@
 from collections import namedtuple
 import os
 from pathlib import Path
+import importlib
 from invenio_app.factory import create_app as create_ui_api
 from invenio_queues import current_queues
+from marshmallow import Schema, fields
+import pytest
 
 from .fixtures.identifiers import test_config_identifiers
 from .fixtures.custom_fields import test_config_fields
 from .fixtures.stats import test_config_stats
 from .fixtures.saml import test_config_saml
-
-# from pytest_invenio.fixtures import base_client, db, UserFixture
-import pytest
-import importlib
 
 var = "invenio_config"
 package = importlib.import_module(var)
@@ -79,6 +78,21 @@ test_config = {
     "TESTING": True,
 }
 
+
+class CustomUserProfileSchema(Schema):
+    """The default user profile schema."""
+
+    full_name = fields.String()
+    affiliations = fields.String()
+    name_parts = fields.String()
+    identifier_email = fields.String()
+    identifier_orcid = fields.String()
+    identifier_kc_username = fields.String()
+
+
+test_config["ACCOUNTS_USER_PROFILE_SCHEMA"] = CustomUserProfileSchema
+
+
 parent_path = Path(__file__).parent
 log_folder_path = parent_path / "test_logs"
 log_file_path = log_folder_path / "invenio.log"
@@ -123,7 +137,6 @@ RunningApp = namedtuple(
     "RunningApp",
     [
         "app",
-        "superuser_identity",
         "location",
         "cache",
         "affiliations_v",
@@ -151,7 +164,6 @@ RunningApp = namedtuple(
 @pytest.fixture(scope="function")
 def running_app(
     app,
-    superuser_identity,
     location,
     cache,
     affiliations_v,
@@ -178,7 +190,6 @@ def running_app(
     """
     return RunningApp(
         app,
-        superuser_identity,
         location,
         cache,
         affiliations_v,

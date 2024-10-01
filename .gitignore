@@ -82,6 +82,9 @@ test.db
 
 # Logs
 logs/*
+*.log
+**/logs/*
+**/test_logs/*
 nohup.out
 
 # auto-symlinked during build process

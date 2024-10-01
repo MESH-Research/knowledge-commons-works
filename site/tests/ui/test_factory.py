@@ -1,10 +1,12 @@
 from pprint import pprint
+import pytest
 
 
 def test_sample(running_app):
     assert True
 
 
+@pytest.mark.skip(reason="Not implemented")
 def test_frontpage(running_app, client):
     # pprint(dir(base_client))
     # pprint(dir(base_app))

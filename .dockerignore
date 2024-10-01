@@ -2,6 +2,7 @@
 .venv/
 
 .env*
+**/.env*
 .invenio.private*
 docker/nginx/samlPrivateKey.key
 docker/nginx_containerized/samlPrivateKey.key
@@ -9,15 +10,20 @@ docker/nginx_staging/samlPrivateKey.key
 docker-compose*
 
 .git/
+**/.git*
 .github/
+**/.github*
 .pytest_cache/
 **/.pytest_cache/
 .vscode/
 logs/*
+**/test_logs
+**/logs
 scripts/experiments
 scripts/sample_files
 site/build
 site/kcworks.egg-info
+site/kcworks/dependencies
 static/admin
 static/dist
 static/bootstrap

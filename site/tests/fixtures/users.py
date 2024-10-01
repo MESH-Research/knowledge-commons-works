@@ -1,7 +1,9 @@
+from typing import Callable
 from flask_login import login_user
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles, Role
 from invenio_access.permissions import superuser_access
+from invenio_accounts.models import User
 from invenio_accounts.testutils import login_user_via_session
 from invenio_administration.permissions import administration_access_action
 from invenio_oauthclient.models import UserIdentity
@@ -10,19 +12,72 @@ import pytest
 
 
 @pytest.fixture(scope="function")
-def user_factory(UserFixture, app, db, admin_role_need):
-    """Factory for creating test users."""
+def user_factory(
+    UserFixture, app, db, admin_role_need, requests_mock
+) -> Callable:
+    """Factory for creating test users.
+
+    Returns:
+        a factory function that returns a user.
+    """
 
     def make_user(
         email: str = "myuser@inveniosoftware.org",
         password: str = "password",
         token: bool = False,
         admin: bool = False,
-        saml: str = "knowledgeCommons",
+        saml_src: str = "knowledgeCommons",
+        saml_id: str = "myuser",
+        new_remote_data: dict = {},
     ) -> UserFixture:
+        """Create a user.
+
+        Args:
+            email: The email address of the user.
+            password: The password of the user.
+            token: Whether the user should have a token.
+            admin: Whether the user should have admin access.
+            saml_src: The source of the user's saml authentication.
+            saml_id: The user's ID for saml authentication.
+
+        Returns:
+            The created UserFixture object. This has the following attributes:
+            - user: The created Invenio User object.
+            - mock_adapter: The requests_mock adapter for the api call to
+                sync user data from the remote service.
+            - identity: The identity of the user.
+            - allowed_token: The API auth token of the user.
+        """
+
+        # Mock remote data that's already in the user fixture.
+        mock_remote_data = {
+            "username": saml_id,
+            "email": email,
+            "name": new_remote_data.get("name", ""),
+            "first_name": new_remote_data.get("first_name", ""),
+            "last_name": new_remote_data.get("last_name", ""),
+            "institutional_affiliation": new_remote_data.get(
+                "institutional_affiliation", ""
+            ),
+            "orcid": new_remote_data.get("orcid", ""),
+            "preferred_language": new_remote_data.get(
+                "preferred_language", ""
+            ),
+            "time_zone": new_remote_data.get("time_zone", ""),
+            "groups": new_remote_data.get("groups", ""),
+        }
+
+        # Mock the remote api call.
+        base_url = "https://hcommons-dev.org/wp-json/commons/v1/users"
+        remote_url = f"{base_url}/{saml_id}"
+        mock_adapter = requests_mock.get(
+            remote_url,
+            json=mock_remote_data,
+        )
+
         u = UserFixture(
             email=email,
-            password=password,
+            password=hash_password(password),
         )
         u.create(app, db)
 
@@ -38,8 +93,9 @@ def user_factory(UserFixture, app, db, admin_role_need):
             )
             datastore.add_role_to_user(u.user, role)
 
-        if saml:
-            UserIdentity.create(u.user, "knowledgeCommons", "myuser")
+        if saml_src and saml_id:
+            UserIdentity.create(u.user, saml_src, saml_id)
+            u.mock_adapter = mock_adapter
 
         db.session.commit()
 
@@ -48,37 +104,7 @@ def user_factory(UserFixture, app, db, admin_role_need):
     return make_user
 
 
-@pytest.fixture()
-def users(UserFixture, app, db) -> list:
-    """Create example user."""
-    # user1 = UserFixture(
-    #     email="scottia4@msu.edu",
-    #     password="password"
-    # )
-    # user1.create(app, db)
-    # user2 = UserFixture(
-    #     email="scottianw@gmail.com",
-    #     password="password"
-    # )
-    # user2.create(app, db)
-    with db.session.begin_nested():
-        datastore = app.extensions["security"].datastore
-        user1 = datastore.create_user(
-            email="info@inveniosoftware.org",
-            password=hash_password("password"),
-            active=True,
-        )
-        user2 = datastore.create_user(
-            email="ser-testalot@inveniosoftware.org",
-            password=hash_password("beetlesmasher"),
-            active=True,
-        )
-
-    db.session.commit()
-    return [user1, user2]
-
-
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def admin_role_need(db):
     """Store 1 role with 'superuser-access' ActionNeed.
 
@@ -99,32 +125,23 @@ def admin_role_need(db):
     return action_role.need
 
 
-@pytest.fixture()
-def admin(UserFixture, app, db, admin_role_need):
+@pytest.fixture(scope="function")
+def admin(user_factory):
     """Admin user for requests."""
-    u = UserFixture(
+
+    u = user_factory(
         email="admin@inveniosoftware.org",
-        password="admin",
-    )
-    u.create(app, db)
-
-    u.allowed_token = Token.create_personal(
-        "webhook", u.id, scopes=[]  # , is_internal=False
-    ).access_token
-
-    datastore = app.extensions["security"].datastore
-    _, role = datastore._prepare_role_modify_args(
-        u.user, "administration-access"
+        password="password",
+        admin=True,
+        token=True,
+        saml_src="knowledgeCommons",
+        saml_id="admin",
     )
 
-    UserIdentity.create(u.user, "knowledgeCommons", "myuser")
-
-    datastore.add_role_to_user(u.user, role)
-    db.session.commit()
     return u
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def superuser_role_need(db):
     """Store 1 role with 'superuser-access' ActionNeed.
 
@@ -144,7 +161,7 @@ def superuser_role_need(db):
     return action_role.need
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def superuser_identity(admin, superuser_role_need):
     """Superuser identity fixture."""
     identity = admin.identity
@@ -152,14 +169,77 @@ def superuser_identity(admin, superuser_role_need):
     return identity
 
 
-@pytest.fixture()
-def client_with_login(client, users):
-    """Log in a user to the client."""
-    user = users[0]
-    # user = users[0].user
-    # pprint('^^^^^^^')
-    # pprint(user.__class__())
-    # pprint(dir(user))
-    login_user(user)
-    login_user_via_session(client, email=user.email)
-    return client
+@pytest.fixture(scope="module")
+def user1_data():
+    """Data for user1."""
+
+    return {
+        "saml_id": "user1",
+        "email": "user1@inveniosoftware.org",
+        "name": "User One",
+        "first_name": "User",
+        "last_name": "One",
+        "institutional_affiliation": "Michigan State University",
+        "orcid": "123-456-7891",
+        "preferred_language": "en",
+        "time_zone": "UTC",
+        "groups": [
+            {"id": 12345, "name": "awesome-mock", "role": "admin"},
+            {"id": 67891, "name": "admin", "role": "member"},
+        ],
+    }
+
+
+@pytest.fixture(scope="function")
+def client_with_login(requests_mock, app):
+    """Log in a user to the client.
+
+    Returns a factory function that returns a client with a logged in user.
+
+    Args:
+        user: The user to log in.
+        new_remote_data: Optional. Data absent from the user's initial data
+            that should be added in the mocked remote API call at login.
+    """
+
+    def log_in_user(
+        client,
+        user: User,
+        new_remote_data: dict = {},
+    ):
+        saml_id = user.external_identifiers[0].id
+
+        # Mock remote data that's already in the user fixture.
+        mock_remote_data = {
+            "username": saml_id,
+            "email": user.email,
+            "name": user.user_profile.get("full_name", ""),
+            "first_name": user.user_profile.get("first_name", ""),
+            "last_name": user.user_profile.get("last_name", ""),
+            "institutional_affiliation": user.user_profile.get(
+                "affiliations", ""
+            ),
+            "orcid": user.user_profile.get("orcid", ""),
+            "preferred_language": user.user_profile.get(
+                "preferred_language", ""
+            ),
+            "time_zone": user.user_profile.get("time_zone", ""),
+            "groups": user.user_profile.get("groups", ""),
+        }
+
+        # Mock adding any missing data from remote API call.
+        mock_remote_data.update(new_remote_data)
+
+        # Mock the remote api call.
+        base_url = "https://hcommons-dev.org/wp-json/commons/v1/users"
+        remote_url = f"{base_url}/{saml_id}"
+        mock_adapter = requests_mock.get(
+            remote_url,
+            json=mock_remote_data,
+        )
+
+        login_user(user)
+        login_user_via_session(client, email=user.email)
+        return client, mock_adapter
+
+    return log_in_user
