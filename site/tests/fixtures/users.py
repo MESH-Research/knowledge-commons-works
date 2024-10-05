@@ -8,6 +8,7 @@ from invenio_accounts.testutils import login_user_via_session
 from invenio_administration.permissions import administration_access_action
 from invenio_oauthclient.models import UserIdentity
 from invenio_oauth2server.models import Token
+import os
 import pytest
 
 
@@ -208,6 +209,7 @@ def client_with_login(requests_mock, app):
         new_remote_data: dict = {},
     ):
         saml_id = user.external_identifiers[0].id
+        token = os.getenv("COMMONS_API_TOKEN")
 
         # Mock remote data that's already in the user fixture.
         mock_remote_data = {
@@ -236,6 +238,7 @@ def client_with_login(requests_mock, app):
         mock_adapter = requests_mock.get(
             remote_url,
             json=mock_remote_data,
+            headers={"Authorization": f"Bearer {token}"},
         )
 
         login_user(user)

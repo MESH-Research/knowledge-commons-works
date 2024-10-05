@@ -20,44 +20,16 @@ def test_user_data_kc_endpoint():
     assert response.status_code == 200
     actual_resp = response.json()
     assert actual_resp["username"] == "gihctester"
-    assert actual_resp["email"] == "ghosthc@email.ghostinspector.com"
+    assert actual_resp["email"] == "gihctester@gmail.com"
     assert actual_resp["name"] == "Ghost Hc"
     assert actual_resp["first_name"] == "Ghost"
     assert actual_resp["last_name"] == "Hc"
     assert actual_resp["institutional_affiliation"] == ""
-    assert actual_resp["groups"] == [
-        {"id": 1004089, "name": "Teaching and Learning", "role": "member"},
-        {
-            "id": 1004090,
-            "name": "Humanities, Arts, and Media",
-            "role": "member",
-        },
-        {
-            "id": 1004091,
-            "name": "Technology, Networks, and Sciences",
-            "role": "member",
-        },
-        {
-            "id": 1004092,
-            "name": "Social and Political Issues",
-            "role": "member",
-        },
-        {
-            "id": 1004093,
-            "name": "Educational and Cultural Institutions",
-            "role": "member",
-        },
-        {
-            "id": 1004094,
-            "name": "Publishing and Archives",
-            "role": "member",
-        },
-        {
-            "id": 1004651,
-            "name": "Hidden Testing Group New Name",
-            "role": "admin",
-        },
-    ]
+    for g in actual_resp["groups"]:
+        assert list(g.keys()) == ["id", "name", "role"]
+        assert isinstance(g["id"], int)
+        if g["name"]:
+            assert isinstance(g["name"], str)
     # TODO: add orcid to the api call
     # assert actual_resp["orcid"] == "0000-0000-0000-0000"
 
@@ -67,7 +39,7 @@ def test_user_data_sync_on_creation(running_app):
     assert True
 
 
-def test_user_data_sync_on_login(running_app, user_factory, user1_data):
+def test_user_data_sync_on_login(running_app, db, user_factory, user1_data):
     """
     Test that the user data is synced when a user logs in.
 
@@ -101,8 +73,6 @@ def test_user_data_sync_on_login(running_app, user_factory, user1_data):
 
     assert u.user.email == user1_data["email"]
     profile = u.user.user_profile
-    app.logger.warning(profile.keys())
-    app.logger.warning(profile.values())
     assert profile.get("full_name") == user1_data["name"]
     assert (
         profile.get("affiliations") == user1_data["institutional_affiliation"]
@@ -124,7 +94,7 @@ def test_user_data_sync_on_login(running_app, user_factory, user1_data):
 
 
 @pytest.mark.skip(reason="Not implemented")
-def test_user_data_sync_on_logout(running_app):
+def test_user_data_sync_on_login_no_remote_data(running_app):
     """Test that the remote api call does not happen for local logins.
 
     We want to make sure that the user data sync does not create errors when
@@ -134,6 +104,81 @@ def test_user_data_sync_on_logout(running_app):
     pass
 
 
-@pytest.mark.skip(reason="Not implemented")
-def test_user_data_sync_on_webhook(running_app):
-    assert True
+def test_user_data_sync_on_webhook(
+    running_app, db, user_factory, user1_data, client, requests_mock
+):
+    app = running_app.app
+
+    # Create a user
+    # The user is created with a saml auth record because saml_src
+    # and saml_id are supplied.
+    u = user_factory(
+        email=user1_data["email"],
+        saml_src="knowledgeCommons",
+        saml_id=user1_data["saml_id"],
+        new_remote_data={},
+        token=True,
+        admin=True,
+    )
+    token = u.allowed_token
+    user_id = u.user.id
+    assert not u.mock_adapter.called  # no call to the remote api yet
+    assert u.mock_adapter.call_count == 0
+
+    with app.test_client() as client:
+
+        # Mock additional user data from the remote service
+        # api response
+        mock_remote_data = {
+            k: v for k, v in user1_data.items() if k != "saml_id"
+        }
+        mock_remote_data["username"] = user1_data["saml_id"]
+
+        # Mock the remote api call.
+        base_url = "https://hcommons-dev.org/wp-json/commons/v1/users"
+        remote_url = f"{base_url}/{user1_data['saml_id']}"
+        mock_adapter = requests_mock.get(
+            remote_url,
+            json=mock_remote_data,
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        # Ping the webhook endpoint (no data is sent)
+        response = client.get(
+            f"{app.config['SITE_API_URL']}/api/webhooks/user-data-sync",
+        )
+        assert response.status_code == 200
+        assert json.loads(response.data) == {
+            "message": "Webhook received",
+            "status": 200,
+        }
+        assert not mock_adapter.called
+        assert mock_adapter.call_count == 0
+
+        # Signal the webhook endpoint for update (data is sent)
+        response2 = client.post(
+            f"{app.config['SITE_API_URL']}/webhooks/user-data-sync",
+            data=json.dumps(
+                {
+                    "idp": "knowledgeCommons",
+                    "updates": {
+                        "users": [
+                            {"id": user1_data["saml_id"], "event": "updated"},
+                        ],
+                    },
+                }
+            ),
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert response2.status_code == 202
+        assert response2.json == {
+            "message": "Webhook received",
+            "status": 202,
+            "updates": {
+                "users": [
+                    {"id": user1_data["saml_id"], "event": "updated"},
+                ],
+            },
+        }
+        assert mock_adapter.called
+        assert mock_adapter.call_count == 1

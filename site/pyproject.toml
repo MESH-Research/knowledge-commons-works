@@ -9,6 +9,15 @@ dynamic = ["version"]
 [project.optional-dependencies]
 tests = ["pytest-invenio>=2.1.0,<3.0.0"]
 
+[project.entry-points."invenio_base.apps"]
+kcworks = "kcworks.ext:KCWorks"
+
+[project.entry-points."invenio_base.api_apps"]
+kcworks = "kcworks.ext:KCWorks"
+
+[project.entry-points."invenio_base.api_blueprints"]
+kcworks_api = "kcworks.views.views:create_api_blueprint"
+
 [project.entry-points."invenio_base.blueprints"]
 kcworks_views = "kcworks.views.views:create_blueprint"
 knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"

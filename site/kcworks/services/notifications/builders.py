@@ -1,7 +1,10 @@
 from kcworks.services.notifications.internal_notification_backend import (
     InternalNotificationBackend,
 )
-
+from kcworks.services.notifications.generators import (
+    CustomRequestParticipantsRecipient,
+)
+from invenio_notifications.services.generators import RecipientBackendGenerator
 from invenio_rdm_records.notifications.builders import (
     CommunityInclusionAcceptNotificationBuilder,
     CommunityInclusionCancelNotificationBuilder,
@@ -20,9 +23,12 @@ from invenio_rdm_records.notifications.builders import (
     # UserAccessRequestDeclineNotificationBuilder,
     # UserAccessRequestSubmitNotificationBuilder,
 )
-
 from invenio_requests.notifications.builders import (
     CommentRequestEventCreateNotificationBuilder,
+)
+from invenio_users_resources.notifications.generators import (
+    EmailRecipient,
+    IfEmailRecipient,
 )
 
 # from invenio_communities.notifications.builders import (
@@ -34,13 +40,23 @@ from invenio_requests.notifications.builders import (
 # )
 
 
+class UserInternalBackend(RecipientBackendGenerator):
+    """User related internal backend generator for a notification."""
+
+    def __call__(self, notification, recipient, backends):
+        """Add backend id to backends."""
+        backend_id = InternalNotificationBackend.id
+        backends.append(backend_id)
+        return backend_id
+
+
 class CustomCommunityInclusionAcceptNotificationBuilder(
     CommunityInclusionAcceptNotificationBuilder
 ):
     recipient_backends = (
         CommunityInclusionAcceptNotificationBuilder.recipient_backends
         + [
-            InternalNotificationBackend(),
+            UserInternalBackend(),
         ]
     )
 
@@ -51,7 +67,7 @@ class CustomCommunityInclusionCancelNotificationBuilder(
     recipient_backends = (
         CommunityInclusionCancelNotificationBuilder.recipient_backends
         + [
-            InternalNotificationBackend(),
+            UserInternalBackend(),
         ]
     )
 
@@ -62,7 +78,7 @@ class CustomCommunityInclusionDeclineNotificationBuilder(
     recipient_backends = (
         CommunityInclusionDeclineNotificationBuilder.recipient_backends
         + [
-            InternalNotificationBackend(),
+            UserInternalBackend(),
         ]
     )
 
@@ -73,7 +89,7 @@ class CustomCommunityInclusionExpireNotificationBuilder(
     recipient_backends = (
         CommunityInclusionExpireNotificationBuilder.recipient_backends
         + [
-            InternalNotificationBackend(),
+            UserInternalBackend(),
         ]
     )
 
@@ -84,7 +100,7 @@ class CustomCommunityInclusionSubmittedNotificationBuilder(
     recipient_backends = (
         CommunityInclusionSubmittedNotificationBuilder.recipient_backends
         + [
-            InternalNotificationBackend(),
+            UserInternalBackend(),
         ]
     )
 
@@ -92,9 +108,18 @@ class CustomCommunityInclusionSubmittedNotificationBuilder(
 class CustomCommentRequestEventCreateNotificationBuilder(
     CommentRequestEventCreateNotificationBuilder
 ):
+    recipients = (
+        CustomRequestParticipantsRecipient(key="request"),
+        IfEmailRecipient(
+            key="request.created_by",
+            then_=[EmailRecipient(key="request.created_by")],
+            else_=[],
+        ),
+    )
+
     recipient_backends = (
         CommentRequestEventCreateNotificationBuilder.recipient_backends
         + [
-            InternalNotificationBackend(),
+            UserInternalBackend(),
         ]
     )

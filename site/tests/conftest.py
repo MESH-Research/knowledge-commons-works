@@ -11,6 +11,7 @@ from .fixtures.identifiers import test_config_identifiers
 from .fixtures.custom_fields import test_config_fields
 from .fixtures.stats import test_config_stats
 from .fixtures.saml import test_config_saml
+from .fixtures.frontend import MockManifestLoader
 
 var = "invenio_config"
 package = importlib.import_module(var)
@@ -69,29 +70,23 @@ test_config = {
     "CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS": True,
     #  'DEBUG_TB_ENABLED': False,
     "INVENIO_INSTANCE_PATH": "/opt/invenio/var/instance",
-    "MAIL_SUPPRESS_SEND": True,
+    "MAIL_SUPPRESS_SEND": False,
+    "MAIL_SERVER": "smtp.sparkpostmail.com",
+    "MAIL_PORT": 587,
+    "MAIL_USE_TLS": True,
+    "MAIL_USE_SSL": False,
+    "MAIL_USERNAME": os.getenv("SPARKPOST_USERNAME"),
+    "MAIL_PASSWORD": os.getenv("SPARKPOST_API_KEY"),
+    "MAIL_DEFAULT_SENDER": os.getenv("INVENIO_ADMIN_EMAIL"),
     #  'OAUTH2_CACHE_TYPE': 'simple',
     #  'OAUTHLIB_INSECURE_TRANSPORT': True,
     "RATELIMIT_ENABLED": False,
     "SECRET_KEY": "test-secret-key",
     "SECURITY_PASSWORD_SALT": "test-secret-key",
+    "WEBPACKEXT_MANIFEST_LOADER": MockManifestLoader,
     "TESTING": True,
+    "DEBUG": True,
 }
-
-
-class CustomUserProfileSchema(Schema):
-    """The default user profile schema."""
-
-    full_name = fields.String()
-    affiliations = fields.String()
-    name_parts = fields.String()
-    identifier_email = fields.String()
-    identifier_orcid = fields.String()
-    identifier_kc_username = fields.String()
-
-
-test_config["ACCOUNTS_USER_PROFILE_SCHEMA"] = CustomUserProfileSchema
-
 
 parent_path = Path(__file__).parent
 log_folder_path = parent_path / "test_logs"
@@ -100,7 +95,6 @@ if not log_file_path.exists():
     log_file_path.parent.mkdir(parents=True, exist_ok=True)
     log_file_path.touch()
 
-test_config["FLASK_DEBUG"] = True
 test_config["LOGGING_FS_LEVEL"] = "DEBUG"
 test_config["INVENIO_LOGGING_FS_LEVEL"] = "DEBUG"
 test_config["LOGGING_FS_LOGFILE"] = str(log_file_path)
@@ -118,9 +112,25 @@ test_config["SITE_API_URL"] = os.environ.get(
     "INVENIO_SITE_API_URL", "https://127.0.0.1:5000"
 )
 test_config["SITE_UI_URL"] = os.environ.get(
-    "INVENIO_SITE_UI_URL", "https://127.0.0.1:5000"
+    "INVENIO_SITE_UI_URL", "https://127.0.0.1:5000/api"
 )
 
+
+class CustomUserProfileSchema(Schema):
+    """The default user profile schema."""
+
+    full_name = fields.String()
+    affiliations = fields.String()
+    name_parts = fields.String()
+    identifier_email = fields.String()
+    identifier_orcid = fields.String()
+    identifier_kc_username = fields.String()
+    unread_notifications = fields.String()
+
+
+test_config["ACCOUNTS_USER_PROFILE_SCHEMA"] = CustomUserProfileSchema()
+
+# @pytest.fixture(scope="module")
 
 # @pytest.fixture(scope="module")
 # def extra_entry_points() -> dict:

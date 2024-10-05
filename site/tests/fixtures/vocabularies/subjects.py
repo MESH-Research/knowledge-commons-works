@@ -4,6 +4,8 @@ from invenio_access.permissions import system_identity
 from invenio_pidstore.errors import PIDAlreadyExists
 from invenio_vocabularies.contrib.subjects.api import Subject
 from invenio_records_resources.proxies import current_service_registry
+from psycopg2.errors import UniqueViolation
+from sqlalchemy.exc import IntegrityError
 
 
 @pytest.fixture(scope="module")
@@ -240,6 +242,6 @@ def subject_v(app, subjects_service):
                 system_identity,
                 subject,
             )
-        except PIDAlreadyExists:
+        except (PIDAlreadyExists, UniqueViolation, IntegrityError):
             pass
     Subject.index.refresh()

@@ -65,10 +65,6 @@ def test_draft_creation(
             data=json.dumps(minimal_record),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
-        pprint("$$$$$$$")
-        app.logger.warning(response.json)
-        pprint(response.json)
-        pprint(response.headers)
         assert response.status_code == 201
 
         actual_draft = response.json
