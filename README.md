@@ -386,9 +386,6 @@ Private environment variables (like security keys) should never be committed to 
 This file must include the following variables with these values:
 
 ```env
-```
-
-
 INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
 INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR=/
 INVENIO_RECORD_IMPORTER_DATA_DIR=/opt/invenio/var/import_data
@@ -396,9 +393,10 @@ INVENIO_SEARCH_DOMAIN='search:9200'
 INVENIO_SITE_UI_URL="https://localhost"
 INVENIO_SITE_API_URL="https://localhost/api"
 REDIS_DOMAIN='cache:6379'
-INVENIO_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kcworks:kcworks@localhost/kcworks"
+INVENIO_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kcworks:kcworks@db/kcworks"
 POSTGRES_USER=kcworks
 POSTGRES_DB=kcworks
+```
 
 The INVENIO_INSTANCE_PATH should be set to the full path of the instance directory where InvenioRDM will store its compiled files. Since KC Works runs inside containers, this is normally a standard folder inside the container file systems (/opt/invenio/var/instance). If you were to run InvenioRDM with the python/uwsgi processes installed on your local machine, this would be a folder inside your local virtual environment folder. For example, on MacOS this might be ~/.local/share/virtualenvs/{virtual env name}/var/instance/.
 
@@ -406,12 +404,14 @@ The INVENIO_INSTANCE_PATH should be set to the full path of the instance directo
 
 Several variables hold random values used to secure the application, or hold passwords and email addresses supplied by the local developer:
 
+```env
 INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
 INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
 INVENIO_SECRET_KEY=CHANGE_ME
 POSTGRES_PASSWORD=???
 PGADMIN_DEFAULT_EMAIL=???
 PGADMIN_DEFAULT_PASSWORD=???
+```
 
 Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal by running
 ```console
