@@ -21,10 +21,12 @@
 {%- endblock javascript %}
 
 {%- block user_dashboard_body %}
-  <div
-    id="invenio-search-config"
-    data-invenio-search-config='{{ search_app_rdm_user_communities_config(app_id="InvenioAppRdm.DashboardCommunities") | tojson }}'
-    data-can-create-community='{{ can_create_community | tojson }}'
-  >
+  <div class="ui container rel-mt-2">
+    <div
+      id="invenio-search-config"
+      data-invenio-search-config='{{ search_app_rdm_user_communities_config(app_id="InvenioAppRdm.DashboardCommunities") | tojson }}'
+      data-can-create-community='{{ can_create_community | tojson }}'
+    >
+    </div>
   </div>
 {%- endblock user_dashboard_body %}

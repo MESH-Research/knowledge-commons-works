@@ -1,4 +1,4 @@
-from flask import current_app as app, jsonify, g
+from flask import current_app as app, jsonify, g, request
 from flask_login import current_user
 from flask.views import MethodView
 from invenio_access.utils import get_identity
@@ -42,12 +42,15 @@ class InternalNotifications(MethodView):
         # to be able to authenticate the request somehow from client side
         # for methods other than GET
         if action == "clear":
-            current_internal_notifications.clear_unread(
+            request_id = request.args.get("request_id")
+            comment_id = request.args.get("comment_id")
+            unread_notification = current_internal_notifications.clear_unread(
                 get_identity(current_user),
                 user_id=user_id,
-                notification_id=None,
+                request_id=request_id,
+                comment_id=comment_id,
             )
-            return "", 204
+            return jsonify(unread_notification), 200
         elif action == "list":
             unread_notifications = current_internal_notifications.read_unread(
                 get_identity(current_user), user_id=user_id
@@ -59,6 +62,21 @@ class InternalNotifications(MethodView):
                 "Valid actions are 'clear' and 'list'."
             )
 
+    # def post(self, user_id):
+    #     """
+    #     Handle POST requests to the user notifications unread endpoint.
+
+    #     This action is used to clear the user's unread notifications. It
+    #     is permitted only for the system process and the user themselves.
+    #     """
+    #     request_id = request.args.get("request_id")
+    #     comment_id = request.args.get("comment_id")
+    #     body = request.json
+    #     new_notification = current_internal_notifications.update(
+    #         get_identity(current_user), user_id, request_id, comment_id, body
+    #     )
+    #     return jsonify(new_notification), 200
+
     def delete(self, user_id):
         """
         Handle DELETE requests to the user notifications unread endpoint.
@@ -66,16 +84,18 @@ class InternalNotifications(MethodView):
         This action is used to clear the user's unread notifications. It
         is permitted only for the system process and the user themselves.
         """
+        request_id = request.args.get("request_id")
+        comment_id = request.args.get("comment_id")
         self.logger.warning(
             "****Received DELETE request to internal notifications endpoint"
             f"for user_id: {user_id}"
         )
-        # if not current_user.is_authenticated:
-        #     raise Unauthorized
-        # if not current_user.id == user_id:
-        #     raise Forbidden
+        if not current_user.is_authenticated:
+            raise Unauthorized
+        if not current_user.id == user_id:
+            raise Forbidden
 
-        # current_internal_notifications.clear_unread_notifications(
-        #     get_identity(current_user), user_id
-        # )
+        current_internal_notifications.clear_unread_notifications(
+            get_identity(current_user), user_id, request_id, comment_id
+        )
         return "", 204

@@ -63,8 +63,6 @@ def create_api_blueprint(app):
             # url_prefix="/api",  # NOTE: already registered as api blueprint
         )
 
-        # routes = app.config.get("APP_RDM_ROUTES")
-
         blueprint.add_url_rule(
             "/users/<int:user_id>/notifications/unread/<string:action>",
             view_func=InternalNotifications.as_view("internal_notifications"),

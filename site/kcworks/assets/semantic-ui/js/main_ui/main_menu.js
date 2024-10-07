@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
-import { Popup } from "semantic-ui-react";
+import { Label, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
 const MenuItem = ({ text, icon, url }) => {
@@ -13,14 +13,19 @@ const MenuItem = ({ text, icon, url }) => {
   );
 };
 
-const IconMenuItem = ({ text, icon, url }) => {
+const IconMenuItem = ({ text, icon, url, badge }) => {
   return (
     <>
       <Popup
         content={i18next.t(text)}
         trigger={
-          <a role="button" href={url} className="ui computer widescreen only">
+          <a role="button" href={url} className="ui computer widescreen large monitor only">
             <i className={`${icon} icon fitted`}></i>
+            {badge !== undefined && (
+              <Label className="unread-notifications-badge" color="orange" floating>
+                {badge}
+              </Label>
+            )}
           </a>
         }
       />
@@ -45,7 +50,7 @@ const CollapsingMenuItem = ({ text, icon, url }) => {
         }
       />
 
-      <a role="button" href={url} className="ui widescreen only">
+      <a role="button" href={url} className="ui widescreen large monitor only">
         <i className={`${icon} icon fitted`}></i>
         <span className="inline">{i18next.t(text)}</span>
       </a>
@@ -150,7 +155,7 @@ const UserMenu = ({
       <div
         role="menuitem"
         id="user-profile-dropdown"
-        className="ui floating dropdown computer only"
+        className="ui floating dropdown computer widescreen large monitor only"
       >
         <button
           id="user-profile-dropdown-btn"
@@ -355,6 +360,7 @@ const MainMenu = ({
   themeSearchbarEnabled,
   userAuthenticated,
   userAdministrator,
+  userId,
 }) => {
   const mainItems = mainMenuItems
     .sort((a, b) => a.order - b.order)
@@ -365,6 +371,40 @@ const MainMenu = ({
   const notificationsItems = notificationsMenuItems
     .sort((a, b) => a.order - b.order)
     .filter((i) => i.visible === true);
+  const [unreadNotifications, setUnreadNotifications] = useState([]);
+
+  const fetchUnreadNotifications = async () => {
+    const response = await fetch(
+      `/api/users/${userId}/notifications/unread/list`
+    );
+    const data = await response.json();
+    // Store unread notifications in session storage.
+    // This is to avoid fetching the same notifications in
+    // independent components that can't share a context.
+    sessionStorage.setItem(`unreadNotifications`, JSON.stringify(data));
+    // Dispatch a storage event to update other components that are listening.
+    window.dispatchEvent(new Event("storage"));
+    return data;
+  };
+
+  const updateUnreadNotifications = () => {
+    const unreadFromStorage = JSON.parse(sessionStorage.getItem(`unreadNotifications`));
+    setUnreadNotifications(unreadFromStorage);
+    console.log("unreadFromStorage", unreadFromStorage);
+  }
+
+  useEffect(() => {
+    if (![null, undefined, ""].includes(userId)) {
+      fetchUnreadNotifications();
+      window.addEventListener("storage", () => {
+        console.log("storage event fired");
+        updateUnreadNotifications();
+      });
+    }
+    return () => {
+      window.removeEventListener("storage", updateUnreadNotifications);
+    }
+  }, [userId]);
 
   return (
     <nav id="invenio-nav" className="ui menu borderless stackable p-0">
@@ -493,6 +533,7 @@ const MainMenu = ({
                   text={item.text === "requests" ? "My requests" : item.text}
                   url={item.url}
                   icon={item.text === "requests" ? "inbox" : item.icon}
+                  badge={unreadNotifications.length > 0 ? unreadNotifications.length : undefined}
                 />
               </div>
             ))}
@@ -525,6 +566,7 @@ MainMenu.propTypes = {
   themeSearchbarEnabled: PropTypes.bool,
   userAuthenticated: PropTypes.bool,
   userAdministrator: PropTypes.bool,
+  userId: PropTypes.string,
 };
 
 // Get the HTML element
@@ -554,6 +596,7 @@ const themeLogoURL = element.dataset.themeLogoUrl;
 const themeSitename = element.dataset.themeSitename;
 const themeSearchbarEnabled =
   element.dataset.themeSearchbarEnabled === "True" ? true : false;
+const userId = element.dataset.userId;
 const userAuthenticated =
   element.dataset.userAuthenticated === "True" ? true : false;
 const userAdministrator = JSON.parse(element.dataset.userRoles).includes(
@@ -584,6 +627,7 @@ ReactDOM.render(
     themeSitename={themeSitename}
     themeSearchbarEnabled={themeSearchbarEnabled}
     userAuthenticated={userAuthenticated}
+    userId={userId}
     userAdministrator={userAdministrator}
   />,
   element

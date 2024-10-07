@@ -9,19 +9,16 @@ import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 import { Icon } from "semantic-ui-react";
 
-class RequestStatus extends Component {
-  render() {
-    const { status } = this.props;
-    return (
-      <Overridable id={`RequestStatus.layout.${status}`} status={status}>
-        <div>
-          <Icon name="bars" />
-          <span>{status}</span>
-        </div>
-      </Overridable>
-    );
-  }
-}
+const RequestStatus = ({ status }) => {
+  return (
+    <Overridable id={`RequestStatus.layout.${status}`} status={status}>
+      <div>
+        <Icon name="bars" />
+        <span>{status}</span>
+      </div>
+    </Overridable>
+  );
+};
 
 RequestStatus.propTypes = {
   status: PropTypes.string.isRequired,

@@ -21,7 +21,8 @@ import { PublicationDateField } from "./fields/PublicationDateField";
 import { PublicMembersResultsItemWithCommunity } from "./collections/members/public_view/PublicMembersResultItem";
 import { PublisherField } from "./fields/PublisherField";
 import RecordsResultsListItem from "./search/RecordsResultsListItem";
-import RequestMetadata from "./requests/RequestMetadata";
+import { RequestMetadata } from "./requests/RequestMetadata";
+import { RequestsResultsItemTemplateDashboard } from "./user_dashboard/RequestsResultsItemTemplateDashboard";
 import { RequestsResultsItemTemplateWithCommunity } from "./collections/members/requests/RequestsResultsItemTemplate";
 import { RDMRecordMultipleSearchBarElement } from "./search/RDMRecordMultipleSearchBarElement";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
@@ -46,28 +47,29 @@ const SearchAppLayoutWithConfig = parametrize(SearchAppLayout, {
 });
 
 export const overriddenComponents = {
-  "InvenioRequest.RequestMetadata": RequestMetadata,
+  "InvenioRequest.RequestMetadata.Layout": RequestMetadata,
+  "InvenioAppRdm.DashboardRequests.ResultsList.item": RequestsResultsItemTemplateDashboard,
   "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
   "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
   "InvenioAppRdm.Deposit.ContributorsField.container": CreatibutorsField,
   "InvenioAppRdm.Deposit.DescriptionsField.container": DescriptionsField,
   "InvenioAppRdm.Deposit.FormFeedback.container": FormFeedback,
+  "InvenioAppRdm.Deposit.FileUploader.container": FileUploader,
   "InvenioAppRdm.Deposit.FundingField.container": FundingField,
   "InvenioAppRdm.Deposit.IdentifiersField.container": IdentifiersField,
   "InvenioAppRdm.Deposit.LicenseField.container": LicenseField,
   "InvenioAppRdm.Deposit.PublicationDateField.container": PublicationDateField,
   "InvenioAppRdm.Deposit.PublisherField.container": PublisherField,
+  "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
+  "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
+  "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
+  "InvenioAppRdm.Deposit.VersionField.container": VersionField,
   "InvenioAppRdm.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRDM.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Search.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Search.SearchBar.element": RDMRecordMultipleSearchBarElement,
   "InvenioAppRdm.Search.SearchApp.layout": SearchAppLayoutWithConfig,
   "InvenioAppRdm.Search.SearchApp.resultOptions": ResultOptions,
-  "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
-  "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
-  "InvenioAppRdm.Deposit.VersionField.container": VersionField,
-  "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
-  "InvenioAppRdm.Deposit.FileUploader.container": FileUploader,
   "InvenioCommunities.DetailsSearch.ResultsList.item": RecordsResultsListItem,
   "InvenioCommunities.RequestSearch.ResultsList.item": RequestsResultsItemTemplateWithCommunity,
   "InvenioCommunities.InvitationsSearch.ResultsList.item": InvitationResultItemWithConfig,

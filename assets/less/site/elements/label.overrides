@@ -247,3 +247,13 @@
 #invenio-search-config .row .column label:first-child {
   display: none;
 }
+
+.ui.floating.label.unread-notifications-badge {
+  top: 0.9rem;
+  left: 87%;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0.25rem !important;
+  line-height: 1rem;
+  text-align: center;
+}

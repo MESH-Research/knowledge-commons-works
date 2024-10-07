@@ -58,15 +58,15 @@
     {{ _("There's been some activity in your Knowledge Commons Works collection '{community_title}'. ").format(community_title=community_title) }}
     {{ _("The work '{record_title}' was submitted for inclusion in the collection by '{creator_name}'. ").format(record_title=record_title, creator_name=creator_name) }}
 
-{% if message %}
-{{ _("They left the following message: ")}}
-{{message}}
-{% endif %}
+    {% if message %}
+    {{ _("They left the following message: ") }}
+    {{ message }}
+    {% endif %}
 
-[{{ _("Review the submitted work") }}]({{ request_link }})
+    [{{ _("Review the submitted work") }}]({{ request_link }})
 
-{{ _("This is an auto-generated message.") }}
-{# {{ _("This is an auto-generated message. To manage notifications, visit your account settings")}} #}
+    {{ _("This is an auto-generated message.") }}
+    {# {{ _("This is an auto-generated message. To manage notifications, visit your account settings")}} #}
 {%- endblock plain_body %}
 
 {# Markdown for Slack/Mattermost/chat #}

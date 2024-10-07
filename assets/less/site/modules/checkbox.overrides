@@ -1,15 +1,23 @@
 /* Checkbox theme overrides */
 
 .ui.checkbox {
+  &.fitted {
+    label {
+      &::after {
+        top: -8px;
+        left: -8px;
+      }
+    }
+  }
   label {
     &::before {
       border: 1px solid @ivy40;
     }
     &::after {
       border: 1px solid @ivy40;
-      display:absolute;
-      top: -8px;
-      left: -8px;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
     &:hover,
     &:active,
@@ -56,16 +64,16 @@
   }
 }
 
-.facet-wrapper {
-  .ui.checkbox {
-    label {
-      &::after {
-        top: 0;
-        left: 0;
-      }
-    }
-  }
-}
+// .facet-wrapper {
+//   .ui.checkbox {
+//     label {
+//       &::after {
+//         top: 0;
+//         left: 0;
+//       }
+//     }
+//   }
+// }
 
 .field.error {
   .fields:not(.error),

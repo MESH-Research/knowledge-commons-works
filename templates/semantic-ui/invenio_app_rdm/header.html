@@ -1,11 +1,17 @@
-{#
-    -*- coding: utf-8 -*-
-    Copyright (C) 2019-2020 CERN.
-    Copyright (C) 2019-2020 Northwestern University.
-    Copyright (C) 2021 New York University.
+{# -*- coding: utf-8 -*-
 
-    Invenio App RDM is free software; you can redistribute it and/or modify it
-    under the terms of the MIT License; see LICENSE file for more details.
+This file is part of Knowledge Commons Works.
+  Copyright (C) 2024 Mesh Research.
+
+Knowledge Commons Works is based on InvenioRDM, and
+this file is based on code from InvenioRDM. InvenioRDM is
+  Copyright (C) 2020-2024 CERN.
+  Copyright (C) 2020-2024 Northwestern University.
+  Copyright (C) 2020-2024 T U Wien.
+
+InvenioRDM and Knowledge Commons Works are both free software;
+you can redistribute and/or modify them under the terms of the
+MIT License; see LICENSE file for more details.
 #}
 
 {% set main_menu_items = [] %}
@@ -70,6 +76,7 @@
         data-theme-logo-url="{{ url_for('static', filename=config.THEME_LOGO) }}"
         data-theme-sitename="{{ config.THEME_SITENAME }}"
         data-user-authenticated="{{ current_user.is_authenticated }}"
+        data-user-id="{{ current_user.id }}"
         data-user-roles='{{ current_user.roles | map(attribute="name") | list | tojson }}'
       >
       </div>

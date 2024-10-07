@@ -21,9 +21,11 @@
 {%- endblock javascript %}
 
 {%- block user_dashboard_body %}
-  <div
-    id="invenio-search-config"
-    data-invenio-search-config='{{ search_app_rdm_user_requests_config(app_id="InvenioAppRdm.DashboardRequests") | tojson }}'
-  >
+  <div class="ui container rel-mt-2">
+    <div
+      id="invenio-search-config"
+      data-invenio-search-config='{{ search_app_rdm_user_requests_config(app_id="InvenioAppRdm.DashboardRequests") | tojson }}'
+    >
+    </div>
   </div>
 {%- endblock user_dashboard_body %}

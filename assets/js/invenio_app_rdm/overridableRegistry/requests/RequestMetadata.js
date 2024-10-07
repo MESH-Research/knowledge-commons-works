@@ -5,9 +5,11 @@
 // Invenio RDM Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import axios from "axios";
 import { i18next } from "@translations/invenio_requests/i18next";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import GeoPattern from "geopattern";
 import { Image } from "react-invenio-forms";
 import Overridable from "react-overridable";
 import { Divider, Header, Icon, Message } from "semantic-ui-react";
@@ -33,9 +35,9 @@ const User = ({ user }) => (
     </span>
   </div>
 );
-const Community = ({ community }) => (
+const Community = ({ community, pattern }) => (
   <div className="flex">
-    <Image src={community.links.logo} avatar size="tiny" className="mr-5" ui={false} />
+    <Image src={community.links.logo} avatar size="tiny" className="mr-5" ui={false} fallbackSrc={pattern.toDataUri()} />
     <a href={`/collections/${community.slug}`}>{community.metadata.title}</a>
   </div>
 );
@@ -65,7 +67,8 @@ const EntityDetails = ({ userData, details }) => {
   if (isUser) {
     return <User user={details} />;
   } else if (isCommunity) {
-    return <Community community={details} />;
+    const pattern = GeoPattern.generate(encodeURI(details.slug));
+    return <Community community={details} pattern={pattern} />;
   } else if (isExternalEmail) {
     return <ExternalEmail email={details} />;
   } else if (isGroup) {
@@ -78,94 +81,132 @@ const DeletedResource = ({ details }) => (
   <Message negative>{details.metadata.title}</Message>
 );
 
-class RequestMetadata extends Component {
-  isResourceDeleted = (details) => details.is_ghost === true;
+const RequestMetadata = ({ request }) => {
+  const isResourceDeleted = (details) => details.is_ghost === true;
 
-  render() {
-    // console.log(this.props);
-    const { request } = this.props;
-    const expandedCreatedBy = request.expanded?.created_by;
-    const expandedReceiver = request.expanded?.receiver;
-    return (
-      <Overridable id="InvenioRequest.RequestMetadata.Layout" request={request}>
-        <>
-          {expandedCreatedBy !== undefined && (
-            <>
-              <Header as="h3" size="tiny">
-                {i18next.t("Creator")}
-              </Header>
-              {this.isResourceDeleted(expandedCreatedBy) ? (
-                <DeletedResource details={expandedCreatedBy} />
-              ) : (
-                <EntityDetails
-                  userData={request.created_by}
-                  details={request.expanded?.created_by}
-                />
-              )}
-              <Divider />
-            </>
-          )}
+  console.log("RequestMetadata", request);
+  const expandedCreatedBy = request.expanded?.created_by;
+  const expandedReceiver = request.expanded?.receiver;
 
-          <Header as="h3" size="tiny">
-            {i18next.t("Receiver")}
-          </Header>
-          {this.isResourceDeleted(expandedReceiver) ? (
-            <DeletedResource details={expandedReceiver} />
-          ) : (
-            <EntityDetails
-              userData={request.receiver}
-              details={request.expanded?.receiver}
-            />
-          )}
-          <Divider />
+  // Get unread notifications from session storage
+  const unreadNotifications = JSON.parse(sessionStorage.getItem('unreadNotifications')) || [];
+  console.log("unreadNotifications in RequestMetadata", unreadNotifications);
 
-          <Header as="h3" size="tiny">
-            {i18next.t("Request type")}
-          </Header>
-          <RequestTypeLabel type={request.type} />
-          <Divider />
+  // Check if the current request.id is in unreadNotifications
+  const isUnread = unreadNotifications.some(notification => notification.request_id === request.id);
 
-          <Header as="h3" size="tiny">
-            {i18next.t("Status")}
-          </Header>
-          <RequestStatus status={request.status} />
-          <Divider />
-
-          <Header as="h3" size="tiny">
-            {i18next.t("Created")}
-          </Header>
-          {toRelativeTime(request.created, i18next.language)}
-
-          {request.expires_at && (
-            <>
-              <Divider />
-              <Header as="h3" size="tiny">
-                {i18next.t("Expires")}
-              </Header>
-              {toRelativeTime(request.expires_at, i18next.language)}
-            </>
-          )}
-
-          {request.status === "accepted" && request.topic?.record && (
-            <>
-              <Divider />
-              <Header as="h3" size="tiny">
-                {i18next.t("Record")}
-              </Header>
-              <a href={`/records/${request.topic.record}`}>{request.title}</a>
-            </>
-          )}
-        </>
-      </Overridable>
-    );
+  // Check if the creator is the current user and set creator_reading state
+  let creator_reading = null;
+  if (request.expanded?.created_by?.is_current_user === true) {
+    creator_reading = request.expanded.created_by.id;
   }
+
+  // Log the creator_reading state for debugging
+  console.log("creator_reading:", creator_reading);
+
+  if (!!isUnread && !!creator_reading) {
+
+    const apiConfig = {
+      withCredentials: true,
+      xsrfCookieName: "csrftoken",
+      xsrfHeaderName: "X-CSRFToken",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.inveniordm.v1+json",
+      },
+    };
+    const axiosWithConfig = axios.create(apiConfig);
+
+    axiosWithConfig.get(`/api/users/${creator_reading}/notifications/unread/clear`, {
+      request_id: request.id,
+    })
+    .then(response => {
+      console.log('Unread notification cleared successfully');
+      console.log('response', response);
+      // Update the unreadNotifications in session storage
+      sessionStorage.setItem('unreadNotifications', JSON.stringify(response.data));
+      // Dispatch a storage event to update other components that are listening
+      window.dispatchEvent(new Event("storage"));
+    })
+    .catch(error => {
+      console.error('Error clearing unread notification:', error);
+    });
+  }
+
+  return (
+      <>
+        {expandedCreatedBy !== undefined && (
+          <>
+            <Header as="h3" size="tiny">
+              {i18next.t("Creator")}
+            </Header>
+            {isResourceDeleted(expandedCreatedBy) ? (
+              <DeletedResource details={expandedCreatedBy} />
+            ) : (
+              <EntityDetails
+                userData={request.created_by}
+                details={request.expanded?.created_by}
+              />
+            )}
+            <Divider />
+          </>
+        )}
+
+        <Header as="h3" size="tiny">
+          {i18next.t("Receiver")}
+        </Header>
+        {isResourceDeleted(expandedReceiver) ? (
+          <DeletedResource details={expandedReceiver} />
+        ) : (
+          <EntityDetails
+            userData={request.receiver}
+            details={request.expanded?.receiver}
+          />
+        )}
+        <Divider />
+
+        <Header as="h3" size="tiny">
+          {i18next.t("Request type")}
+        </Header>
+        <RequestTypeLabel type={request.type} />
+        <Divider />
+
+        <Header as="h3" size="tiny">
+          {i18next.t("Status")}
+        </Header>
+        <RequestStatus status={request.status} />
+        <Divider />
+
+        <Header as="h3" size="tiny">
+          {i18next.t("Created")}
+        </Header>
+        {toRelativeTime(request.created, i18next.language)}
+
+        {request.expires_at && (
+          <>
+            <Divider />
+            <Header as="h3" size="tiny">
+              {i18next.t("Expires")}
+            </Header>
+            {toRelativeTime(request.expires_at, i18next.language)}
+          </>
+        )}
+
+        {request.status === "accepted" && request.topic?.record && (
+          <>
+            <Divider />
+            <Header as="h3" size="tiny">
+              {i18next.t("Record")}
+            </Header>
+            <a href={`/records/${request.topic.record}`}>{request.title}</a>
+          </>
+        )}
+      </>
+  );
 }
 
 RequestMetadata.propTypes = {
   request: PropTypes.object.isRequired,
 };
 
-export default Overridable.component(
-  "InvenioRequests.RequestMetadata",
-  RequestMetadata
-);
+export { RequestMetadata };

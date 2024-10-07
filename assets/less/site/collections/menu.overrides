@@ -42,6 +42,7 @@
         a:not(.ui.button),
         a {
           position: relative;
+          padding: 1.7rem 1rem;
           color: @primaryTextColor;
           &::after {
             content: "";
@@ -49,7 +50,7 @@
             width: 100%;
             transform: scaleX(0);
             height: 2px;
-            bottom: 1rem;
+            bottom: 0rem;
             left: 0;
             background-color: @primaryColor;
             transform-origin: bottom right;
@@ -70,10 +71,18 @@
           box-shadow: none;
         }
         &.right.menu {
+          a {
+            background-color: @mint !important;
+            &:hover,
+            &:focus,
+            &:active {
+              background-color: @mint80 !important;
+            }
+          }
           a,
           a:hover,
           .item > span {
-            color: @ivy80;
+            color: @ivy80 !important;
           }
           > form > a.ui.button.basic {
             color: @ivy80 !important;
