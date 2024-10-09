@@ -1,0 +1,70 @@
+{% set invitation_request = notification.context.request %}
+{% set receiver = invitation_request.receiver %}
+{% set community = invitation_request.created_by %}
+{% set request_id = invitation_request.id %}
+{% set message = notification.context.message | safe if notification.context.message else '' %}
+{% set community_title = community.metadata.title %}
+{% set receiver_name = receiver.username or receiver.profile.full_name %}
+
+{# TODO: use request.links.self_html when issue issue is resolved: https://github.com/inveniosoftware/invenio-rdm-records/issues/1327 #}
+{% set request_link = "{ui}/me/requests/{id}".format(
+    ui=config.SITE_UI_URL, id=request_id
+    )
+%}
+{% set account_settings_link = "{ui}/account/settings/notifications".format(
+    ui=config.SITE_UI_URL
+    )
+%}
+
+{%- block subject -%}
+   {{ _("❌ Community member invitation cancelled for @{user_name}").format(user_name=receiver_name) }}
+{%- endblock subject -%}
+
+{%- block html_body -%}
+<table style="font-family:'Lato',Helvetica,Arial,sans-serif;border-spacing:15px">
+    <tr>
+        <td>{{ _("The invitation for '@{user_name}' to join community '{community_title}' was cancelled").format(user_name=receiver_name,community_title=community_title) }}
+        {% if message %} 
+        {{ _(" with the following message:")}}
+        {% endif %}
+        </td>
+    </tr>
+    <tr>
+        {% if message %} 
+        <td><em>"{{message}}"</em></td>
+        {% endif %}
+    </tr>
+    <tr>
+        <td><a href="{{ request_link }}" class="button">{{ _("Check out the invitation")}}</a></td>
+    </tr>
+    <tr>
+        <td><strong>_</strong></td>
+    </tr>
+    <tr>
+        <td style="font-size:smaller">{{ _("This is an auto-generated message. To manage notifications, visit your")}} <a href="{{account_settings_link}}">{{ _("account settings")}}</a>.</td>
+    </tr>
+</table>
+{%- endblock html_body %}
+
+{%- block plain_body -%}
+{{ _("The invitation for @{user_name} to join your community '{community_title}' was cancelled").format(user_name=receiver_name,community_title=community_title) }}
+
+{% if message %} 
+{{ _("with the following message:")}}
+{{message}}
+{% endif %}
+
+{{ _("Check out the invitation:") }} {{ request_link }}
+{%- endblock plain_body %}
+
+{# Markdown for Slack/Mattermost/chat #}
+{%- block md_body -%}
+{{ _("The invitation for *@{user_name}* to join your community *'{community_title}'* was cancelled").format(user_name=receiver_name,community_title=community_title) }}
+
+{% if message %} 
+{{ _("with the following message:")}}
+{{message}}
+{% endif %}
+
+[{{ _("Check out the invitation") }}]({{ request_link }})
+{%- endblock md_body %}

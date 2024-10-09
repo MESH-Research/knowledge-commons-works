@@ -25,7 +25,7 @@
 <table style="font-family:'Lato',Helvetica,Arial,sans-serif;border-spacing:15px">
     <tr>
         <td>
-           {{ _("There's been some activity on your Knowledge Commons Works account.")}}
+           {{ _("There's been some activity on your Knowledge Commons Works account.") }}
         </td>
     </tr>
     <tr>
@@ -35,7 +35,7 @@
         <td><em>{{ request_event_content }}</em></td>
     </tr>
     <tr>
-        <td><a href="{{ request_link }}" class="button">{{ _("Check out the request")}}</a></td>
+        <td><a href="{{ request_link }}" class="button">{{ _("Check out the request") }}</a></td>
     </tr>
     <tr>
         <td><strong>_</strong></td>
@@ -50,8 +50,8 @@
 {%- endblock html_body %}
 
 {%- block plain_body -%}
-{{ _("There's been some activity on your Knowledge Commons Works account.")}}
-{{ _("'{user_name}' commented on the request '{request_title}':").format(user_name=event_creator_name, request_title=request_title) }}.
+{{ _("There's been some activity on your Knowledge Commons Works account.  ") }}
+{{ _("'{user_name}' commented on the request '{request_title}':  ").format(user_name=event_creator_name, request_title=request_title) }}.
 
 {{ request_event_content }}
 
@@ -63,12 +63,12 @@
 
 {# Markdown for Slack/Mattermost/chat #}
 {%- block md_body -%}
-{{ _("There's been some activity on your Knowledge Commons Works account.  ")}}
+{{ _("There's been some activity on your Knowledge Commons Works account.  ") }}
 {{ _("'{user_name}' commented on the request '{request_title}':  ").format(user_name=event_creator_name, request_title=request_title) }}.
 
 {{ request_event_content }}
 
-[{{ _("Check out the request") }}]({{ request_link }}){{ _(".  ")}}
+[{{ _("Check out the request") }}]( {{ request_link }} ){{ _(".  ") }}
 
 {{ _("This is an auto-generated message.") }}
 {# {{ _("This is an auto-generated message. To manage notifications, visit your account settings")}} #}
