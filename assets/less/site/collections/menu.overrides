@@ -60,8 +60,11 @@
             margin-left: 0.5rem;
           }
         }
-        a:not(.ui.button):hover {
+        a:not(.ui.button):hover,
+        a:not(.ui.button):focus,
+        a:not(.ui.button):active {
           color: darken(@primaryTextColor, 10%);
+          background-color: @seafoam;
           &::after {
             transform: scaleX(1);
             transform-origin: center;
@@ -71,12 +74,15 @@
           box-shadow: none;
         }
         &.right.menu {
+          border-right: 0.5rem solid @mint;
+          border-left: 0.5rem solid @mint;
+          background-color: @mint;
           a {
             background-color: @mint !important;
             &:hover,
             &:focus,
             &:active {
-              background-color: @mint80 !important;
+              background-color: @mint60 !important;
             }
           }
           a,

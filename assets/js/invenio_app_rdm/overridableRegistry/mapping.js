@@ -24,6 +24,7 @@ import RecordsResultsListItem from "./search/RecordsResultsListItem";
 import { RequestMetadata } from "./requests/RequestMetadata";
 import { RequestsResultsItemTemplateDashboard } from "./user_dashboard/RequestsResultsItemTemplateDashboard";
 import { RequestsResultsItemTemplateWithCommunity } from "./collections/members/requests/RequestsResultsItemTemplate";
+import { RequestsSearchLayout } from "./requests/search/RequestsSearchLayout";
 import { RDMRecordMultipleSearchBarElement } from "./search/RDMRecordMultipleSearchBarElement";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
 import { ResultOptions } from "./search/ResultOptions";
@@ -46,8 +47,13 @@ const SearchAppLayoutWithConfig = parametrize(SearchAppLayout, {
   appName: "InvenioAppRdm.Search",
 });
 
+const RequestsSearchLayoutWithApp = parametrize(RequestsSearchLayout, {
+  appName: "InvenioAppRdm.DashboardRequests",
+});
+
 export const overriddenComponents = {
   "InvenioRequest.RequestMetadata.Layout": RequestMetadata,
+  "InvenioAppRdm.DashboardRequests.SearchApp.layout": RequestsSearchLayoutWithApp,
   "InvenioAppRdm.DashboardRequests.ResultsList.item": RequestsResultsItemTemplateDashboard,
   "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
   "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,

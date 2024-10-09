@@ -1,5 +1,8 @@
 .ui.buttons.basic {
   border-color: transparent;
+  .ui.button {
+    position: relative;
+  }
 
   .ui.button:last-child {
     margin-left: 3px;
@@ -346,4 +349,3 @@
     }
   }
 }
-

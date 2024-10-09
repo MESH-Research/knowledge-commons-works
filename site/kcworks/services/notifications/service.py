@@ -5,6 +5,7 @@ from invenio_accounts.proxies import current_accounts
 from invenio_notifications.models import Notification
 from invenio_records_resources.services import Service, ServiceConfig
 from invenio_records_resources.services.base.config import ConfiguratorMixin
+from pprint import pformat
 from typing import Optional
 import json
 from kcworks.services.notifications.permissions import (
@@ -76,6 +77,9 @@ class InternalNotificationService(Service):
                     - unread_comments: A list of IDs of the unread comments
                                       for the request.
         """
+        app.logger.warning(
+            f"Starting with {user.user_profile.get('unread_notifications', None)}"
+        )
         unread = json.loads(
             user.user_profile.get("unread_notifications", "[]")
         )
@@ -83,23 +87,29 @@ class InternalNotificationService(Service):
         notification_type = notification.type
         request_type = notification.context.get("request", {}).get("type")
         request_status = notification.context.get("request", {}).get("status")
-        recipient_id = notification.context.get("recipient", {}).get("id")
+        request_creator_id = (
+            notification.context.get("request", {})
+            .get("created_by", {})
+            .get("id")
+        )
+
+        app.logger.warning(f"Unread notifications before: {pformat(unread)}")
+        app.logger.warning(f"Notification type: {notification_type}")
+        app.logger.warning(f"request_creator_id: {request_creator_id}")
+        app.logger.warning(f"user_id: {user.id}")
 
         # FIXME: For the time being, we don't notify collection curators
-        # about submissions
-        if (
-            notification_type
-            in [
-                "community-submission.submit",
-                "community-inclusion.submit",
-                "community-submission.create",
-                "community-inclusion.create",
-                "community-submission.cancel",
-                "community-inclusion.cancel",
-                "comment-request-event.create",
-            ]
-            and recipient_id != user.id
-        ):
+        # about submissions, so we don't add to their unread lists
+        # when the user.id is not the request creator.
+        if notification_type in [
+            "community-submission.submit",
+            "community-inclusion.submit",
+            "community-submission.create",
+            "community-inclusion.create",
+            "community-submission.cancel",
+            "community-inclusion.cancel",
+            "comment-request-event.create",
+        ] and str(request_creator_id) != str(user.id):
             return unread
 
         existing_request = None
@@ -107,6 +117,7 @@ class InternalNotificationService(Service):
             if item["request_id"] == request_id:
                 existing_request = unread.pop(index)
                 break
+        app.logger.warning(f"Existing request: {existing_request}")
 
         if existing_request:
             existing_request["notification_type"] = notification_type
@@ -119,6 +130,9 @@ class InternalNotificationService(Service):
                 existing_request.setdefault("unread_comments", []).append(
                     comment_id
                 )
+            app.logger.warning(
+                f"Existing request after update: {existing_request}"
+            )
             unread.append(existing_request)
         else:
             new_item = {
@@ -133,9 +147,10 @@ class InternalNotificationService(Service):
                     "id"
                 )
                 new_item["unread_comments"].append(comment_id)
+            app.logger.warning(f"New item: {new_item}")
             unread.append(new_item)
 
-        app.logger.warning(f"Unread notifications: {unread}")
+        app.logger.warning(f"Unread notifications after: {pformat(unread)}")
 
         return unread
 
@@ -217,14 +232,14 @@ class InternalNotificationService(Service):
                         rest.append(request_object)
             else:
                 rest.append(request_object)
-            unread = json.dumps(rest)
+            unread = rest
         else:
-            unread = "[]"
-        profile["unread_notifications"] = unread
+            unread = []
+        profile["unread_notifications"] = json.dumps(unread)
         user.user_profile = profile
         current_accounts.datastore.commit()
 
-        return user.user_profile.get("unread_notifications")
+        return unread
 
     def update_unread(
         self, identity: Identity, user_id: int, notification: dict
@@ -241,9 +256,11 @@ class InternalNotificationService(Service):
         :returns: The updated user object.
         """
         self.require_permission(identity, "update_unread", user_id=user_id)
+        app.logger.warning(f"Updating unread notifications for user {user_id}")
 
         user = current_accounts.datastore.get_user_by_id(user_id)
         profile = user.user_profile
+        app.logger.warning(f"getting items")
         items = self._prepare_unread_list(notification, user)
         profile.update({"unread_notifications": json.dumps(items)})
         user.user_profile = profile

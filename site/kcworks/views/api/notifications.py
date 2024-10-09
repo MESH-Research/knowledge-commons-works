@@ -29,7 +29,8 @@ class InternalNotifications(MethodView):
         is permitted for any user.
         """
         self.logger.warning(
-            "****Received GET request to internal notifications endpoint"
+            f"****Received GET {action} request to internal "
+            "notifications endpoint"
             f"for user_id: {user_id}, current user: {g.identity}"
         )
         if not current_user.is_authenticated:
@@ -50,11 +51,19 @@ class InternalNotifications(MethodView):
                 request_id=request_id,
                 comment_id=comment_id,
             )
+            self.logger.warning(
+                f"****Returning {unread_notification} unread notification"
+            )
+            self.logger.warning(unread_notification)
             return jsonify(unread_notification), 200
         elif action == "list":
             unread_notifications = current_internal_notifications.read_unread(
                 get_identity(current_user), user_id=user_id
             )
+            self.logger.warning(
+                f"****Returning {len(unread_notifications)} unread notifications"
+            )
+            self.logger.warning(unread_notifications)
             return jsonify(unread_notifications), 200
         else:
             raise BadRequest(
