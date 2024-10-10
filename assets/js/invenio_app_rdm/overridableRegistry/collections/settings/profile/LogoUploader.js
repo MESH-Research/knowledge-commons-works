@@ -1,11 +1,17 @@
 /*
- * This file is part of Invenio.
- * Copyright (C) 2016-2022 CERN.
- * Copyright (C) 2021-2023 Northwestern University.
- *
- * Invenio is free software; you can redistribute it and/or modify it
- * under the terms of the MIT License; see LICENSE file for more details.
- */
+* This file is part of Knowledge Commons Works.
+*   Copyright (C) 2024 Mesh Research.
+*
+* Knowledge Commons Works is based on InvenioRDM, and
+* this file is based on code from InvenioRDM. InvenioRDM is
+*   Copyright (C) 2020-2024 CERN.
+*   Copyright (C) 2020-2024 Northwestern University.
+*   Copyright (C) 2020-2024 T U Wien.
+*
+* InvenioRDM and Knowledge Commons Works are both free software;
+* you can redistribute and/or modify them under the terms of the
+* MIT License; see LICENSE file for more details.
+*/
 
 import { i18next } from "@translations/invenio_communities/i18next";
 import React, { useState } from "react";
@@ -13,8 +19,8 @@ import Dropzone from "react-dropzone";
 import { humanReadableBytes } from "react-invenio-forms";
 import { Image } from "react-invenio-forms";
 import { Button, Divider, Header, Icon, Message } from "semantic-ui-react";
-import { CommunityApi } from "../../api";
-import { DeleteButton } from "./DeleteButton";
+import { CommunityApi } from "@js/invenio_communities/api";
+import { DeleteButton } from "@js/invenio_communities/settings/profile/DeleteButton";
 import PropTypes from "prop-types";
 
 function noCacheUrl(url) {
@@ -153,4 +159,4 @@ LogoUploader.propTypes = {
   logoMaxSize: PropTypes.number.isRequired,
 };
 
-export default LogoUploader;
+export { LogoUploader };

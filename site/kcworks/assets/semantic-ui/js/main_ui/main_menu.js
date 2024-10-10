@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
-import { Label, Popup } from "semantic-ui-react";
+import { Button, Label, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
 const MenuItem = ({ text, icon, url }) => {
@@ -75,7 +75,7 @@ const SubMenu = ({ item }) => {
         href={item.url}
       >
         {/* // FIXME: safe filter??? */}
-        {item.text}
+        {item.text.replace(/<[^>]*>/g, '')}
         <b className="caret"></b>
       </a>
       <ul className="dropdown-menu">
@@ -152,25 +152,28 @@ const UserMenu = ({
 
   return (
     <>
+    <div className="item">
       <div
         role="menuitem"
         id="user-profile-dropdown"
-        className="ui floating dropdown computer widescreen large monitor only"
+        className="ui item floating dropdown computer widescreen large monitor only"
       >
-        <button
+        <div
+          as="a"
+          role="button"
           id="user-profile-dropdown-btn"
-          className="ui right labeled right floated icon button text"
-          aria-controls="user-profile-menu"
+          className=""
+          aria-controls="user-settings-menu"
           aria-expanded="false"
           aria-haspopup="menu"
-          aria-label="{i18next.t('My account')}"
+          aria-label="{i18next.t('Settings')}"
         >
-          <span>
-            {/* {#  <i class="user icon"></i> #} */}
-            {readableEmail}
-          </span>
-          <i className="dropdown icon"></i>
-        </button>
+          {/* <span> */}
+            <i className="cog icon"></i>
+            {/* {readableEmail} */}
+          {/* </span> */}
+          {/* <i className="dropdown icon"></i> */}
+        </div>
 
         <div
           id="user-profile-menu"
@@ -183,10 +186,10 @@ const UserMenu = ({
               role="menuitem"
               className="item"
               href={item.url}
-              tabindex="-1"
+              tabIndex="-1"
               key={index}
             >
-              {item.text}
+              {item.text.replace(/<[^>]*>/g, '')}
             </a>
           ))}
 
@@ -197,33 +200,23 @@ const UserMenu = ({
               role="menuitem"
               className="item"
               href={item.url}
-              tabindex="-1"
+              tabIndex="-1"
               key={index}
             >
-              {item.text}
+              {item.text.replace(/<[^>]*>/g, '')}
             </a>
           ))}
 
-          {adminItems.length > 0 && <div className="ui divider"></div>}
-
-          <a role="menuitem" className="item" href={logoutURL} tabindex="-1">
-            <i className="fitted sign-out icon"></i>
-            <span className="mobile tablet only inline">
-              {i18next.t("Log out")}
-            </span>
-            <span className="widescreen only inline">
-              {i18next.t("Log out")}
-            </span>
-          </a>
         </div>
       </div>
+    </div>
 
       <div className="sub-menu mobile tablet only">
         <h2 className="ui small header">{i18next.t("My account")}</h2>
 
         {settingsItems.map((item, index) => (
           <a role="menuitem" className="item" href={item.url} key={index}>
-            {item.text}
+            {item.text.replace(/<[^>]*>/g, '')}
           </a>
         ))}
 
@@ -231,7 +224,7 @@ const UserMenu = ({
 
         {adminItems.map((item, index) => (
           <a role="menuitem" className="item" href={item.url} key={index}>
-            {item.text}
+            {item.text.replace(/<[^>]*>/g, '')}
           </a>
         ))}
         {adminItems.length > 0 && <div className="ui divider"></div>}
@@ -444,6 +437,10 @@ const MainMenu = ({
                 {%- include "invenio_app_rdm/searchbar.html" %}
             )} */}
 
+        <div className={`item`}>
+          <MenuItem text="Search" url={"/search"} icon="search" />
+        </div>
+
         {/* "Main" menu, including collections */}
         {mainItems.map((item, index) =>
           !!item.children ? (
@@ -466,10 +463,6 @@ const MainMenu = ({
             </div>
           )
         )}
-
-        <div className={`item`}>
-          <MenuItem text="Search" url={"/search"} icon="search" />
-        </div>
 
         {/* "Plus" menu including adding a record */}
         <PlusMenu plusMenuItems={plusMenuItems} />

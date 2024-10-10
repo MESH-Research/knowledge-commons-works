@@ -20,9 +20,9 @@
     @media all and (max-width: @computerBreakpoint) {
       display: none !important;
     }
-    @media all and (min-width: @widescreenMonitorBreakpoint) {
-      display: none !important;
-    }
+    // @media all and (min-width: @widescreenMonitorBreakpoint) {
+    //   display: none !important;
+    // }
   }
 }
 .mobile.hidden {

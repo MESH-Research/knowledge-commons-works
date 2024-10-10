@@ -52,6 +52,7 @@ textarea {
         }
       }
     }
+
   }
 
   a {
@@ -116,6 +117,11 @@ textarea {
       }
     }
   }
+}
+
+
+.ui.form.communities-profile {
+  padding-top: 0.9rem;
 }
 
 #deposit-form {
