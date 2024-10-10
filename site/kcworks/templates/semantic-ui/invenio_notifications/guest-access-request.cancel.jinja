@@ -15,38 +15,46 @@
 %}
 
 {%- block subject -%}
-    {{ _("❌ Access request canceled") }}
+    {{ _("KCWorks | Access request canceled") }}
 {%- endblock subject -%}
 
 {%- block html_body -%}
-    <table>
+    <table style="font-family:'Lato',Helvetica,Arial,sans-serif;border-spacing:15px">
+        <tr>
+            <td>{{ _("There's been some activity in your Knowledge Commons Works account.") }}</td>
+        </tr>
         <tr>
             <td>{{ _("Your access request has been canceled") }}
-            {% if message %} 
-            {{ _(" with the following message:")}}
+            {% if message %}
+            {{ _(" with the following message:") }}
             {% endif %}
             </td>
         </tr>
         <tr>
-            {% if message %} 
-            <td><em>{{message}}</em></td>
+            {% if message %}
+            <td><em>{{ message }}</em></td>
             {% endif %}
         </tr>
         <tr>
-            <td><a href="{{ record_link }}" target="_blank">{{ _("View the record")}}</a></td>
+            <td><a href="{{ record_link }}" class="button"> {{ _("View the record") }}</a></td>
         </tr>
         <tr>
             <td><strong>_</strong></td>
         </tr>
         <tr>
-            <td>{{ _("This is an auto-generated message. To manage notifications, visit your")}} <a href="{{account_settings_link}}">{{ _("account settings")}}</a>.</td>
+            <td style="font-size:smaller">{{ _("This is an auto-generated message.") }}</td>
         </tr>
+        {# <tr>
+            <td style="font-size:smaller">{{ _("This is an auto-generated message. To manage notifications, visit your")}} <a href="{{account_settings_link}}">{{ _("account settings")}}</a>.</td>
+        </tr> #}
     </table>
 {%- endblock html_body %}
 
 {%- block plain_body -%}
+{{ _("There's been some activity in your Knowledge Commons Works account.") }}
+
 {{ _("Your access request has been canceled") }}
-{% if message %} 
+{% if message %}
 
 {{ _("with the following message:")}}
 {{message}}
@@ -54,13 +62,15 @@
 {% endif %}
 {{ _("View the record: ") }}{{ record_link }}
 
-{{ _("This is an auto-generated message. To manage notifications, visit your account settings")}}
+{{ _("This is an auto-generated message.") }}
 {%- endblock plain_body -%}
 
 {# Markdown for Slack/Mattermost/chat #}
 {%- block md_body -%}
-{{ _("Your access request has been canceled") }}
-{% if message %} 
+{{ _("There's been some activity in your Knowledge Commons Works account.  ") }}
+
+{{ _("Your access request has been canceled  ") }}
+{% if message %}
 
 {{ _("with the following message:")}}
 {{message}}
@@ -68,5 +78,5 @@
 {% endif %}
 [{{ _("View the record") }}]({{ record_link }})
 
-{{ _("This is an auto-generated message. To manage notifications, visit your account settings")}}
+{{ _("This is an auto-generated message.") }}
 {%- endblock md_body -%}

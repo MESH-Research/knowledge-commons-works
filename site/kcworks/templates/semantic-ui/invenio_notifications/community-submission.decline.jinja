@@ -30,19 +30,19 @@
             </td>
         </tr>
         <tr>
-            <td>{{ _("The curators of '{community_title}' have declined your submission to the collection: '{record_title}'.").format(community_title=community_title, record_title=record_title) }}
+            <td>{{ _("The curators of '{community_title}' have declined your submission to the collection: '{record_title}'. ").format(community_title=community_title, record_title=record_title) }}
             {% if message %}
-            {{ _("They sent the following message:")}}
+            {{ _("They sent the following message: ")}}
             {% endif %}
             </td>
         </tr>
         <tr>
             {% if message %}
-            <td><em>{{message}}</em></td>
+            <td><em>{{ message }}</em></td>
             {% endif %}
         </tr>
         <tr>
-            <td><a href="{{ request_link }}" class="button">{{ _("Check out the submission request")}}</a></td>
+            <td><a href="{{ request_link }}" class="button">{{ _("Check out the submission")}}</a></td>
         </tr>
         <tr>
             <td><strong>_</strong></td>
@@ -59,15 +59,16 @@
 {%- endblock html_body %}
 
 {%- block plain_body -%}
-{{ _("There's been some activity on your Knowledge Commons Works account.") }}
-{{ _("The curators of '{community_title}' have declined your submission to the collection: '{record_title}'.").format(community_title=community_title, record_title=record_title) }}
+{{ _("There's been some activity on your Knowledge Commons Works account. ") }}
+
+{{ _("The curators of '{community_title}' have declined your submission to the collection: '{record_title}'. ").format(community_title=community_title, record_title=record_title) }}
 
 {% if message %}
-{{ _("with the following message:")}}
-{{message}}
+{{ _("with the following message:") }}
+{{ message }}
 {% endif %}
 
-{{ _("Check out the submission request: {request_link}").format(request_link=request_link) }}
+{{ _("Check out the submission: {request_link}").format(request_link=request_link) }}
 
 {{ _("This is an auto-generated message.") }}
 {# {{ _("This is an auto-generated message. To manage notifications, visit your account settings")}} #}
@@ -76,14 +77,15 @@
 {# Markdown for Slack/Mattermost/chat #}
 {%- block md_body -%}
 {{ _("There's been some activity on your Knowledge Commons Works account.  ") }}
-{{ _("The curators of '{community_title}' have declined your submission to the collection: '{record_title}'.").format(community_title=community_title, record_title=record_title) }}
+
+{{ _("The curators of '{community_title}' have declined your submission to the collection: '{record_title}'.  ").format(community_title=community_title, record_title=record_title) }}
 
 {% if message %}
-{{ _("with the following message:")}}
+{{ _("They sent the following message:  ")}}
 {{message}}
 {% endif %}
 
-[{{_("Check out the submission request")}}]({{request_link}})
+[{{_("Check out the submission")}}]({{request_link}})
 
 {{ _("This is an auto-generated message.") }}
 {# {{ _("This is an auto-generated message. To manage notifications, visit your account settings")}} #}
