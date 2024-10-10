@@ -1,3 +1,6 @@
+from kcworks.services.records.components.first_record_component import (
+    FirstRecordComponent,
+)
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -29,3 +32,14 @@ class KCWorks(object):
         self.internal_notifications_service = InternalNotificationService(
             InternalNotificationServiceConfig.build(app)
         )
+
+    def init_components(self, app):
+        """Initialize components for the extension.
+
+        Args:
+            app (_type_): _description_
+        """
+        app.config["RDM_RECORD_COMPONENTS"] = [
+            *app.config["RDM_RECORD_COMPONENTS"],
+            FirstRecordComponent,
+        ]
