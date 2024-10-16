@@ -63,7 +63,7 @@ const RequestStatusFilterComponent = ({
     const storedNotifications = sessionStorage.getItem("unreadNotifications");
     if (storedNotifications && storedNotifications !== "[]") {
       const unread = JSON.parse(storedNotifications);
-      console.log("unread", unread);
+      console.log("unread in RequestStatusFilterComponent", unread);
       const pendingUnread = unread.filter(
         (notification) =>
           REQUEST_STATUSES.PENDING.includes(notification.request_status)
@@ -84,7 +84,7 @@ const RequestStatusFilterComponent = ({
     return () => {
       window.removeEventListener("storage", updateUnreadNotifications);
     };
-  }, [updateUnreadNotifications]);
+  }, []);
 
   return (
     <Button.Group basic>

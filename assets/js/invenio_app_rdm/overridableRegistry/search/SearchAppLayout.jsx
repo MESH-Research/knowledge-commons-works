@@ -18,10 +18,12 @@ import { Container, Grid, Button } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_search_ui/i18next";
 import _isEmpty from "lodash/isEmpty";
 import {
-  SearchAppFacets,
+  // SearchAppFacets,
   SearchAppResultsPane,
   SearchBar,
 } from "@js/invenio_search_ui/components";
+import { ContribSearchAppFacets } from "@js/invenio_search_ui/components/common/facets";
+import { ContribSearchHelpLinks } from "@js/invenio_search_ui/components/common/facets";
 import {
     ResultOptions,
 } from "@js/invenio_search_ui/components/Results";
@@ -158,7 +160,15 @@ const SearchAppLayout = ({ config, appName }) => {
               open={sidebarVisible}
               onHideClick={() => setSidebarVisible(false)}
             >
-              <SearchAppFacets aggs={config.aggs} appName={appName} buildUID={buildUID}/>
+              {help && (
+                <Card className="borderless facet mt-0">
+                  <Card.Content>
+                    <Card.Header as="h2">{i18next.t("Help")}</Card.Header>
+                    <ContribSearchHelpLinks appName={appName}/>
+                  </Card.Content>
+                </Card>
+              )}
+              <ContribSearchAppFacets aggs={config.aggs} appName={appName} buildUID={buildUID} help={false} />
             </GridResponsiveSidebarColumn>
           )}
 

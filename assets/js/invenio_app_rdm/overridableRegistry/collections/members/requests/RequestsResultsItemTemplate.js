@@ -2,11 +2,10 @@ import PropTypes from "prop-types";
 import React from "react";
 import { withState } from "react-searchkit";
 import { parametrize } from "react-overridable";
-
 import {
-  MobileRequestItem,
   ComputerTabletRequestItem,
-} from "@js/invenio_requests/search";
+} from "../../../requests/ComputerTabletRequestItem";
+import { MobileRequestItem } from "../../../requests/MobileRequestItem";
 
 const RequestsResultsItemTemplateCommunity = ({ result, community }) => {
   const ComputerTabletRequestsItemWithState = withState(

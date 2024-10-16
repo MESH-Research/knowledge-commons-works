@@ -79,7 +79,7 @@ export const MobileRequestItem = ({
             <RequestStatusLabel status={result.status} />
           )}
           {isUnread && (
-            <Label color="orange" className="small horizontal">{ hasUnreadComments ? i18next.t("New") : i18next.t("New comment") }</Label>
+            <Label color="orange" className="small horizontal">{ !hasUnreadComments ? i18next.t("New") : i18next.t("New comment") }</Label>
           )}
         </Item.Extra>
         <Item.Header className="truncate-lines-2 rel-mt-1">

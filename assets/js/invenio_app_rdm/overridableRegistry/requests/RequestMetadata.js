@@ -117,8 +117,10 @@ const RequestMetadata = ({ request }) => {
     };
     const axiosWithConfig = axios.create(apiConfig);
 
+    console.log("request.id in RequestMetadata", request.id);
+
     axiosWithConfig.get(`/api/users/${creator_reading}/notifications/unread/clear`, {
-      request_id: request.id,
+      params: {request_id: request.id},
     })
     .then(response => {
       console.log('Unread notification cleared successfully');
