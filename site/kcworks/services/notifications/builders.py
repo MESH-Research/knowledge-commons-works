@@ -1,18 +1,23 @@
+from flask import current_app
+from invenio_accounts.models import User
 from invenio_notifications.models import Notification
 from invenio_notifications.registry import EntityResolverRegistry
 from invenio_notifications.services.filters import KeyRecipientFilter
 from invenio_notifications.services.builders import NotificationBuilder
 from invenio_notifications.services.generators import (
     EntityResolve,
-    UserEmailBackend,
+    # UserEmailBackend,
 )
-from kcworks.services.notifications.internal_notification_backend import (
+from kcworks.services.notifications.backends import (
     InternalNotificationBackend,
+    EmailNotificationBackend,
 )
 from kcworks.services.notifications.generators import (
     CustomRequestParticipantsRecipient,
+    ModeratorRoleRecipient,
 )
 from invenio_notifications.services.generators import RecipientBackendGenerator
+from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 from invenio_rdm_records.notifications.builders import (
     CommunityInclusionAcceptNotificationBuilder,
     CommunityInclusionCancelNotificationBuilder,
@@ -42,6 +47,7 @@ from invenio_users_resources.notifications.generators import (
     EmailRecipient,
     IfEmailRecipient,
 )
+from kcworks.services.accounts.api import UserAPI
 
 # from invenio_communities.notifications.builders import (
 #     CommunityInvitationAcceptNotificationBuilder,
@@ -50,6 +56,7 @@ from invenio_users_resources.notifications.generators import (
 #     CommunityInvitationExpireNotificationBuilder,
 #     CommunityInvitationSubmittedNotificationBuilder,
 # )
+from kcworks.services.notifications.backends import EmailNotificationBackend
 
 
 class UserInternalBackend(RecipientBackendGenerator):
@@ -58,6 +65,16 @@ class UserInternalBackend(RecipientBackendGenerator):
     def __call__(self, notification, recipient, backends):
         """Add backend id to backends."""
         backend_id = InternalNotificationBackend.id
+        backends.append(backend_id)
+        return backend_id
+
+
+class UserEmailBackend(RecipientBackendGenerator):
+    """User related email backend generator for a notification."""
+
+    def __call__(self, notification, recipient, backends):
+        """Add backend id to backends."""
+        backend_id = EmailNotificationBackend.id
         backends.append(backend_id)
         return backend_id
 
@@ -87,6 +104,9 @@ class CustomCommunityInclusionCancelNotificationBuilder(
 class CustomCommunityInclusionDeclineNotificationBuilder(
     CommunityInclusionDeclineNotificationBuilder
 ):
+
+    recipients = CommunityInclusionDeclineNotificationBuilder.recipients
+
     recipient_backends = (
         CommunityInclusionDeclineNotificationBuilder.recipient_backends
         + [
@@ -139,16 +159,23 @@ class CustomCommentRequestEventCreateNotificationBuilder(
 
 class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
 
-    type = "user-first-record.created"
+    type = "user-first-record.create"
 
     @classmethod
-    def build(cls, record, sender_ident):
+    def build(cls, data: dict, record: RDMDraft, sender: User):
         """Build notification with context."""
         return Notification(
             type=cls.type,
             context={
+                "data": data,
                 "record": record,
-                "sender_ident": sender_ident.id,
+                "sender": UserAPI(
+                    email=sender.email,
+                    id=sender.id,
+                    username=sender.username,
+                    user_profile=sender.user_profile,
+                    preferences=sender.preferences,
+                ),
             },
         )
 
@@ -177,11 +204,7 @@ class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
     # ]
 
     recipients = [
-        IfEmailRecipient(
-            key="request.created_by",
-            then_=[EmailRecipient(key="request.created_by")],
-            else_=[],
-        ),
+        ModeratorRoleRecipient(),
     ]
 
     # recipient_filters = [
@@ -198,32 +221,28 @@ class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
 
 class FirstRecordPublishedNotificationBuilder(NotificationBuilder):
 
-    type = "user-first-record.published"
+    type = "user-first-record.publish"
 
     @classmethod
-    def build(cls, record, sender_ident):
+    def build(cls, draft: RDMDraft, record: RDMRecord, sender: User):
         """Build notification with context."""
         return Notification(
             type=cls.type,
             context={
-                "record": EntityResolverRegistry.reference_entity(record),
-                "sender_ident": EntityResolverRegistry.reference_entity(
-                    sender_ident
+                "draft": draft,
+                "record": record,
+                "sender": UserAPI(
+                    email=sender.email,
+                    id=sender.id,
+                    username=sender.username,
+                    user_profile=sender.user_profile,
+                    preferences=sender.preferences,
                 ),
             },
         )
 
-    # context = [
-    #     EntityResolve(key="record"),
-    #     EntityResolve(key="sender_ident"),
-    # ]
-
     recipients = [
-        IfEmailRecipient(
-            key="sender_ident",
-            then_=[EmailRecipient(key="sender_ident")],
-            else_=[],
-        ),
+        ModeratorRoleRecipient(),
     ]
 
     recipient_backends = [

@@ -3,6 +3,7 @@ from flask_login import current_user
 from flask.views import MethodView
 from invenio_access.utils import get_identity
 from kcworks.proxies import current_internal_notifications
+from typing import Optional
 from werkzeug.exceptions import Unauthorized, Forbidden, BadRequest
 
 
@@ -43,8 +44,8 @@ class InternalNotifications(MethodView):
         # to be able to authenticate the request somehow from client side
         # for methods other than GET
         if action == "clear":
-            request_id = request.args.get("request_id")
-            comment_id = request.args.get("comment_id")
+            request_id: Optional[str] = request.args.get("request_id")
+            comment_id: Optional[str] = request.args.get("comment_id")
             unread_notification = current_internal_notifications.clear_unread(
                 get_identity(current_user),
                 user_id=user_id,
@@ -104,7 +105,9 @@ class InternalNotifications(MethodView):
         if not current_user.id == user_id:
             raise Forbidden
 
-        current_internal_notifications.clear_unread_notifications(
-            get_identity(current_user), user_id, request_id, comment_id
+        remaining_unread = (
+            current_internal_notifications.clear_unread_notifications(
+                get_identity(current_user), user_id, request_id, comment_id
+            )
         )
-        return "", 204
+        return jsonify({"remaining_unread": remaining_unread}), 200

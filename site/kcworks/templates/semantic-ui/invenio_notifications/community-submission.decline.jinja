@@ -32,7 +32,7 @@
         <tr>
             <td>{{ _("The curators of '{community_title}' have declined your submission to the collection: '{record_title}'. ").format(community_title=community_title, record_title=record_title) }}
             {% if message %}
-            {{ _("They sent the following message: ")}}
+            {{ _("They sent the following message:") }}
             {% endif %}
             </td>
         </tr>
@@ -42,7 +42,7 @@
             {% endif %}
         </tr>
         <tr>
-            <td><a href="{{ request_link }}" class="button">{{ _("Check out the submission")}}</a></td>
+            <td><a href="{{ request_link }}" class="button">{{ _("Check out the submission") }}</a></td>
         </tr>
         <tr>
             <td><strong>_</strong></td>
@@ -53,7 +53,7 @@
             </td>
         </tr>
         {# <tr>
-            <td style="font-size:smaller">{{ _("This is an auto-generated message. To manage notifications, visit your")}} <a href="{{account_settings_link}}">{{ _("account settings")}}</a>.</td>
+            <td style="font-size:smaller">{{ _("This is an auto-generated message. To manage notifications, visit your") }} <a href="{{account_settings_link}}">{{ _("account settings") }}</a>.</td>
         </tr> #}
     </table>
 {%- endblock html_body %}
@@ -81,11 +81,11 @@
 {{ _("The curators of '{community_title}' have declined your submission to the collection: '{record_title}'.  ").format(community_title=community_title, record_title=record_title) }}
 
 {% if message %}
-{{ _("They sent the following message:  ")}}
-{{message}}
+{{ _("They sent the following message: ") }}
+{{ message }}
 {% endif %}
 
-[{{_("Check out the submission")}}]({{request_link}})
+[{{ _("Check out the submission") }}]({{ request_link }})
 
 {{ _("This is an auto-generated message.") }}
 {# {{ _("This is an auto-generated message. To manage notifications, visit your account settings")}} #}

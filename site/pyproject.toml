@@ -51,6 +51,7 @@ plugins = [
   "tests.fixtures.custom_fields",
   "tests.fixtures.identifiers",
   "tests.fixtures.records",
+  "tests.fixtures.roles",
   "tests.fixtures.saml",
   "tests.fixtures.stats",
   "tests.fixtures.users",

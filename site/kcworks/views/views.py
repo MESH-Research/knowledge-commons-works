@@ -66,7 +66,7 @@ def create_api_blueprint(app):
         blueprint.add_url_rule(
             "/users/<int:user_id>/notifications/unread/<string:action>",
             view_func=InternalNotifications.as_view("internal_notifications"),
-            methods=["GET"],
+            methods=["GET", "DELETE"],
         )
 
         # Register error handlers

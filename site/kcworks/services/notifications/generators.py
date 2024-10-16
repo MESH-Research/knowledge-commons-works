@@ -7,6 +7,7 @@
 
 """Notification generators."""
 
+from flask import current_app
 from invenio_access.permissions import system_identity
 from invenio_notifications.models import Recipient
 from invenio_notifications.services.generators import RecipientGenerator
@@ -15,6 +16,99 @@ from invenio_records.dictutils import dict_lookup
 from invenio_records_resources.services.errors import PermissionDeniedError
 from invenio_search.engine import dsl
 from invenio_users_resources.proxies import current_users_service
+from invenio_accounts.proxies import current_accounts
+
+
+class RoleRecipient(RecipientGenerator):
+    """Recipient generator based on a role."""
+
+    def __init__(self, key):
+        """Constructor."""
+        self.key = key
+
+    def __call__(self, notification, recipients: dict):
+        """Fetch users with a specified role and add as recipients."""
+
+        user_ids = set()
+
+        role = current_accounts.datastore.find_role(self.key)
+        current_app.logger.warning(f"role: {role}")
+        for u in role.users:
+            user_ids.add(u.id)
+
+        current_app.logger.warning(f"user_ids: {user_ids}")
+
+        # FIXME: This search query is not working in tests
+        # possibly because the test users are not indexed?
+        #
+        # filter_ = dsl.Q("terms", id=list(user_ids))
+        # users = current_users_service.scan(
+        #     system_identity, extra_filter=filter_
+        # )
+        users = []
+        for uid in [u for u in user_ids if u != "system"]:
+            try:
+                users.append(
+                    current_users_service.read(
+                        system_identity, id_=uid
+                    ).to_dict()
+                )
+            except PermissionDeniedError as e:
+                current_app.logger.warning(f"Error fetching user {uid}: {e}")
+        for u in users:
+            recipients[u["id"]] = Recipient(data=u)
+
+        current_app.logger.warning(f"recipients: {recipients}")
+
+        return recipients
+
+
+class ModeratorRoleRecipient(RecipientGenerator):
+    """Recipient class factory function based on the moderator role.
+
+    This allows the recipient to be dynamically loaded from the config
+    at runtime so that an app context is available to access the
+    app config.
+    """
+
+    def __call__(self, notification, recipients: dict):
+        """Fetch users with a specified role and add as recipients."""
+
+        user_ids = set()
+
+        rolename = current_app.config.get(
+            "NOTIFICATIONS_MODERATOR_ROLE", "admin-moderator"
+        )
+        current_app.logger.warning(f"rolename: {rolename}")
+
+        role = current_accounts.datastore.find_role(rolename)
+        current_app.logger.warning(f"role: {role}")
+        for u in role.users:
+            user_ids.add(u.id)
+
+        current_app.logger.warning(f"user_ids: {user_ids}")
+
+        # FIXME: This search query is not working in tests
+        # possibly because the test users are not indexed?
+        #
+        # filter_ = dsl.Q("terms", id=list(user_ids))
+        # users = current_users_service.scan(
+        #     system_identity, extra_filter=filter_
+        # )
+        users = []
+        for uid in [u for u in user_ids if u != "system"]:
+            try:
+                users.append(
+                    current_users_service.read(
+                        system_identity, id_=uid
+                    ).to_dict()
+                )
+            except PermissionDeniedError as e:
+                current_app.logger.warning(f"Error fetching user {uid}: {e}")
+        for u in users:
+            recipients[u["id"]] = Recipient(data=u)
+
+        return recipients
 
 
 class CustomRequestParticipantsRecipient(RecipientGenerator):
@@ -92,6 +186,5 @@ class CustomRequestParticipantsRecipient(RecipientGenerator):
                 current_app.logger.warning(f"Error fetching user {uid}: {e}")
         for u in users:
             recipients[u["id"]] = Recipient(data=u)
-        from flask import current_app
 
         return recipients

@@ -3,14 +3,23 @@ from flask_principal import Identity
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
 from invenio_notifications.models import Notification
-from invenio_records_resources.services import Service, ServiceConfig
-from invenio_records_resources.services.base.config import ConfiguratorMixin
-from pprint import pformat
-from typing import Optional
+from invenio_records_resources.services import Service, ServiceConfig  # noqa
+from invenio_records_resources.services.base.config import (
+    ConfiguratorMixin,
+)  # noqa
+from typing import Optional, TypedDict
 import json
 from kcworks.services.notifications.permissions import (
     InternalNotificationPermissionPolicy,
 )
+
+
+class UnreadNotification(TypedDict):
+    request_id: str
+    notification_type: str
+    request_type: str
+    request_status: str
+    unread_comments: list[str]
 
 
 class InternalNotificationServiceConfig(ServiceConfig, ConfiguratorMixin):
@@ -51,7 +60,7 @@ class InternalNotificationService(Service):
 
     def _prepare_unread_list(
         self, notification: Notification, user: User
-    ) -> list[str]:
+    ) -> list[UnreadNotification]:
         """Prepare the list of unread items for a user's internal inbox.
 
         If the notification is a request event (create, accept, decline, etc.),
@@ -77,12 +86,14 @@ class InternalNotificationService(Service):
                     - unread_comments: A list of IDs of the unread comments
                                       for the request.
         """
-        app.logger.warning(
-            f"Starting with {user.user_profile.get('unread_notifications', None)}"
-        )
         unread = json.loads(
             user.user_profile.get("unread_notifications", "[]")
         )
+        unread = [
+            UnreadNotification(**n)
+            for n in unread
+            if isinstance(n, dict) and n.get("request_id")
+        ]  # Filter out non-dict items in case of a bad update
         request_id = notification.context.get("request", {}).get("id")
         notification_type = notification.type
         request_type = notification.context.get("request", {}).get("type")
@@ -92,11 +103,6 @@ class InternalNotificationService(Service):
             .get("created_by", {})
             .get("id")
         )
-
-        app.logger.warning(f"Unread notifications before: {pformat(unread)}")
-        app.logger.warning(f"Notification type: {notification_type}")
-        app.logger.warning(f"request_creator_id: {request_creator_id}")
-        app.logger.warning(f"user_id: {user.id}")
 
         # FIXME: For the time being, we don't notify collection curators
         # about submissions, so we don't add to their unread lists
@@ -117,7 +123,6 @@ class InternalNotificationService(Service):
             if item["request_id"] == request_id:
                 existing_request = unread.pop(index)
                 break
-        app.logger.warning(f"Existing request: {existing_request}")
 
         if existing_request:
             existing_request["notification_type"] = notification_type
@@ -130,31 +135,27 @@ class InternalNotificationService(Service):
                 existing_request.setdefault("unread_comments", []).append(
                     comment_id
                 )
-            app.logger.warning(
-                f"Existing request after update: {existing_request}"
-            )
             unread.append(existing_request)
         else:
-            new_item = {
-                "request_id": request_id,
-                "notification_type": notification_type,
-                "request_type": request_type,
-                "request_status": request_status,
-                "unread_comments": [],
-            }
+            new_item = UnreadNotification(
+                request_id=request_id,
+                notification_type=notification_type,
+                request_type=request_type,
+                request_status=request_status,
+                unread_comments=[],
+            )
             if notification_type == "comment-request-event.create":
                 comment_id = notification.context.get("request_event", {}).get(
                     "id"
                 )
                 new_item["unread_comments"].append(comment_id)
-            app.logger.warning(f"New item: {new_item}")
             unread.append(new_item)
-
-        app.logger.warning(f"Unread notifications after: {pformat(unread)}")
 
         return unread
 
-    def read_unread(self, identity: Identity, user_id: int) -> User:
+    def read_unread(
+        self, identity: Identity, user_id: int
+    ) -> list[UnreadNotification]:
         """
         Read the unread notifications for a user.
 
@@ -168,10 +169,19 @@ class InternalNotificationService(Service):
         self.require_permission(identity, "read_unread", user_id=user_id)
 
         user = current_accounts.datastore.get_user_by_id(user_id)
+        app.logger.warning(
+            f"starting with: "
+            f"{user.user_profile.get('unread_notifications', [])}"
+        )
         try:
             unread_notifications = json.loads(
                 user.user_profile.get("unread_notifications")
             )
+            unread_notifications = [
+                UnreadNotification(**n)
+                for n in unread_notifications
+                if isinstance(n, dict) and n.get("request_id")
+            ]  # Filter out non-dict items in case of a bad update
         except TypeError:  # because the field is not set
             unread_notifications = []
         return unread_notifications
@@ -180,9 +190,9 @@ class InternalNotificationService(Service):
         self,
         identity: Identity,
         user_id: int,
-        request_id: Optional[int] = None,
-        comment_id: Optional[int] = None,
-    ) -> User:
+        request_id: Optional[str] = None,
+        comment_id: Optional[str] = None,
+    ) -> list[UnreadNotification]:
         """
         Clear the unread notifications for a user.
 
@@ -214,24 +224,37 @@ class InternalNotificationService(Service):
         user = current_accounts.datastore.get_user(user_id)
         profile = user.user_profile
         unread = json.loads(profile.get("unread_notifications", "[]"))
+        unread = [
+            UnreadNotification(**n)
+            for n in unread
+            if isinstance(n, dict) and n.get("request_id")
+        ]  # Filter out non-dict items in case of a bad update
+        app.logger.warning(f"unread: {unread}")
+        app.logger.warning(f"comment_id: {comment_id}")
+        app.logger.warning(f"request_id: {request_id}")
         if comment_id and not request_id:
             raise ValueError(
                 "Request ID is required when providing a comment ID."
             )
         elif request_id:
-            request_object = [
+            app.logger.warning(f"request_id: {request_id}")
+            request_objects = [
                 n for n in unread if n["request_id"] == request_id
             ]
+            app.logger.warning(f"request_objects: {request_objects}")
+            request_object = request_objects[0] if request_objects else None
+            app.logger.warning(f"request_object: {request_object}")
             rest = [n for n in unread if n["request_id"] != request_id]
             if comment_id:
-                if request_object.get(
-                    "unread_comments"
-                ) and comment_id in request_object.get("unread_comments"):
+                if (
+                    request_object
+                    and request_object.get("unread_comments")
+                    and comment_id in request_object.get("unread_comments")
+                ):
                     request_object["unread_comments"].remove(comment_id)
                     if len(request_object.get("unread_comments")) == 0:
                         rest.append(request_object)
-            else:
-                rest.append(request_object)
+            app.logger.warning(f"rest: {rest}")
             unread = rest
         else:
             unread = []
@@ -242,7 +265,7 @@ class InternalNotificationService(Service):
         return unread
 
     def update_unread(
-        self, identity: Identity, user_id: int, notification: dict
+        self, identity: Identity, user_id: int, notification: Notification
     ) -> list[dict]:
         """
         Update the unread notifications for a user.
@@ -260,7 +283,7 @@ class InternalNotificationService(Service):
 
         user = current_accounts.datastore.get_user_by_id(user_id)
         profile = user.user_profile
-        app.logger.warning(f"getting items")
+        app.logger.warning("getting items")
         items = self._prepare_unread_list(notification, user)
         profile.update({"unread_notifications": json.dumps(items)})
         user.user_profile = profile

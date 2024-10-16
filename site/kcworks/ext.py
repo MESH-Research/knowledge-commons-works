@@ -1,3 +1,6 @@
+from invenio_rdm_records.services.components import (
+    DefaultRecordsComponents,
+)
 from kcworks.services.records.components.first_record_component import (
     FirstRecordComponent,
 )
@@ -21,10 +24,11 @@ class KCWorks(object):
                 the extension
         """
         self.init_services(app)
+        self.init_components(app)
         app.extensions["kcworks"] = self
 
     def init_services(self, app):
-        """Initialize services for the extension.
+        """Initialize services for the KCWorks extension.
 
         Args:
             app (_type_): _description_
@@ -34,12 +38,15 @@ class KCWorks(object):
         )
 
     def init_components(self, app):
-        """Initialize components for the extension.
+        """Initialize service components for the KCWorks extension.
 
         Args:
             app (_type_): _description_
         """
-        app.config["RDM_RECORD_COMPONENTS"] = [
-            *app.config["RDM_RECORD_COMPONENTS"],
+        components = app.config.get(
+            "RDM_RECORDS_SERVICE_COMPONENTS", [*DefaultRecordsComponents]
+        )
+        components += [
             FirstRecordComponent,
         ]
+        app.config["RDM_RECORDS_SERVICE_COMPONENTS"] = components

@@ -1,9 +1,12 @@
 from collections import namedtuple
+from flask import current_app
 import os
 from pathlib import Path
 import importlib
 from invenio_app.factory import create_app as create_ui_api
 from invenio_queues import current_queues
+from invenio_notifications.ext import InvenioNotifications
+import jinja2
 from marshmallow import Schema, fields
 import pytest
 
@@ -22,6 +25,7 @@ pytest_plugins = [
     "tests.fixtures.communities",
     "tests.fixtures.custom_fields",
     "tests.fixtures.records",
+    "tests.fixtures.roles",
     "tests.fixtures.stats",
     "tests.fixtures.users",
     "tests.fixtures.vocabularies.affiliations",
@@ -57,8 +61,10 @@ test_config = {
     "POSTGRES_USER": "kcworks",
     "POSTGRES_PASSWORD": "kcworks",
     "POSTGRES_DB": "kcworks",
-    "INVENIO_WTF_CSRF_ENABLED": False,
-    "INVENIO_WTF_CSRF_METHODS": [],
+    "WTF_CSRF_ENABLED": False,
+    "WTF_CSRF_METHODS": [],
+    "RATELIMIT_ENABLED": False,
+    "APP_THEME": "semantic-ui",
     "APP_DEFAULT_SECURE_HEADERS": {
         "content_security_policy": {"default-src": []},
         "force_https": False,
@@ -96,7 +102,6 @@ if not log_file_path.exists():
     log_file_path.touch()
 
 test_config["LOGGING_FS_LEVEL"] = "DEBUG"
-test_config["INVENIO_LOGGING_FS_LEVEL"] = "DEBUG"
 test_config["LOGGING_FS_LOGFILE"] = str(log_file_path)
 
 # enable DataCite DOI provider
@@ -109,10 +114,10 @@ test_config["DATACITE_TEST_MODE"] = True
 # ...but fake it
 
 test_config["SITE_API_URL"] = os.environ.get(
-    "INVENIO_SITE_API_URL", "https://127.0.0.1:5000"
+    "INVENIO_SITE_API_URL", "https://127.0.0.1:5000/api"
 )
 test_config["SITE_UI_URL"] = os.environ.get(
-    "INVENIO_SITE_UI_URL", "https://127.0.0.1:5000/api"
+    "INVENIO_SITE_UI_URL", "https://127.0.0.1:5000"
 )
 
 
@@ -221,6 +226,30 @@ def running_app(
     )
 
 
+@pytest.fixture(scope="module")
+def template_loader():
+    """Fixture providing overloaded and custom templates to test app."""
+
+    def load_tempates(app):
+        site_path = Path(__file__).parent.parent
+        templates_path = site_path / "kcworks" / "templates" / "semantic-ui"
+        custom_loader = jinja2.ChoiceLoader(
+            [
+                app.jinja_loader,
+                jinja2.FileSystemLoader([str(templates_path)]),
+            ]
+        )
+        assert templates_path.exists()
+        app.jinja_loader = custom_loader
+        app.jinja_env.loader = custom_loader
+
+        app.logger.warning(f"template_loader: {dir(app.jinja_env)}")
+        app.logger.warning(f"template_loader A: {app.jinja_env.loader}")
+        app.logger.warning(f"template_loader A: {app.jinja_loader}")
+
+    return load_tempates
+
+
 # Here we're setting up the module-scoped app fixture.
 @pytest.fixture(scope="module")
 def app(
@@ -242,9 +271,12 @@ def app(
     resource_type_v,
     subject_v,
     # title_type_v,
+    template_loader,
+    admin_roles,
 ):
     """This fixture provides an app with the typically needed fixtures."""
     current_queues.declare()
+    template_loader(app)
     yield app
 
 
