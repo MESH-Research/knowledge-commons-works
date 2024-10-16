@@ -1,8 +1,12 @@
-import requests
+from flask_login import login_user
+from invenio_accounts.proxies import current_accounts
 import json
 import os
 import pytest
-from flask_login import login_user
+import requests
+
+# from invenio_accounts.testutils import login_user_via_session
+from kcworks.services.accounts.saml import knowledgeCommons_account_setup
 
 
 def test_user_data_kc_endpoint():
@@ -20,7 +24,7 @@ def test_user_data_kc_endpoint():
     assert response.status_code == 200
     actual_resp = response.json()
     assert actual_resp["username"] == "gihctester"
-    assert actual_resp["email"] == "gihctester@gmail.com"
+    assert actual_resp["email"] == "ghosthc@email.ghostinspector.com"
     assert actual_resp["name"] == "Ghost Hc"
     assert actual_resp["first_name"] == "Ghost"
     assert actual_resp["last_name"] == "Hc"
@@ -35,11 +39,13 @@ def test_user_data_kc_endpoint():
 
 
 @pytest.mark.skip(reason="Not implemented")
-def test_user_data_sync_on_creation(running_app):
-    assert True
+def test_group_data_kc_endpoint():
+    pass
 
 
-def test_user_data_sync_on_login(running_app, db, user_factory, user1_data):
+def test_user_data_sync_on_login(
+    running_app, db, user_factory, user1_data, search_clear
+):
     """
     Test that the user data is synced when a user logs in.
 
@@ -49,8 +55,6 @@ def test_user_data_sync_on_login(running_app, db, user_factory, user1_data):
     Also tests that the api call does *not* happen for simple programmatic
     user creation. It only happens when the user logs in.
     """
-    app = running_app.app
-
     # Mock additional user data from the remote service
     # api response
     new_data_payload = {k: v for k, v in user1_data.items() if k != "saml_id"}
@@ -105,7 +109,14 @@ def test_user_data_sync_on_login_no_remote_data(running_app):
 
 
 def test_user_data_sync_on_webhook(
-    running_app, db, user_factory, user1_data, client, requests_mock
+    running_app,
+    db,
+    user_factory,
+    user1_data,
+    client,
+    requests_mock,
+    headers,
+    search_clear,
 ):
     app = running_app.app
 
@@ -125,60 +136,155 @@ def test_user_data_sync_on_webhook(
     assert not u.mock_adapter.called  # no call to the remote api yet
     assert u.mock_adapter.call_count == 0
 
-    with app.test_client() as client:
+    # Mock additional user data from the remote service
+    # api response
+    mock_remote_data = {k: v for k, v in user1_data.items() if k != "saml_id"}
+    mock_remote_data["username"] = user1_data["saml_id"]
 
-        # Mock additional user data from the remote service
-        # api response
-        mock_remote_data = {
-            k: v for k, v in user1_data.items() if k != "saml_id"
-        }
-        mock_remote_data["username"] = user1_data["saml_id"]
+    # Mock the remote api call.
+    base_url = "https://hcommons-dev.org/wp-json/commons/v1/users"
+    remote_url = f"{base_url}/{user1_data['saml_id']}"
+    mock_adapter = requests_mock.get(
+        remote_url,
+        json=mock_remote_data,
+        headers={"Authorization": f"Bearer {token}"},
+    )
 
-        # Mock the remote api call.
-        base_url = "https://hcommons-dev.org/wp-json/commons/v1/users"
-        remote_url = f"{base_url}/{user1_data['saml_id']}"
-        mock_adapter = requests_mock.get(
-            remote_url,
-            json=mock_remote_data,
-            headers={"Authorization": f"Bearer {token}"},
-        )
+    # Ping the webhook endpoint (no data is sent)
+    response = client.get(
+        f"{app.config['SITE_API_URL']}/webhooks/user_data_update",
+    )
+    assert response.status_code == 200
+    assert json.loads(response.data) == {
+        "message": "Webhook receiver is active",
+        "status": 200,
+    }
+    assert not mock_adapter.called
+    assert mock_adapter.call_count == 0
 
-        # Ping the webhook endpoint (no data is sent)
-        response = client.get(
-            f"{app.config['SITE_API_URL']}/api/webhooks/user-data-sync",
-        )
-        assert response.status_code == 200
-        assert json.loads(response.data) == {
-            "message": "Webhook received",
-            "status": 200,
-        }
-        assert not mock_adapter.called
-        assert mock_adapter.call_count == 0
+    # Signal the webhook endpoint for update (data is sent)
+    response2 = client.post(
+        f"{app.config['SITE_API_URL']}/webhooks/user_data_update",
+        data=json.dumps(
+            {
+                "idp": "knowledgeCommons",
+                "updates": {
+                    "users": [
+                        {"id": user1_data["saml_id"], "event": "updated"},
+                    ],
+                },
+            }
+        ),
+        headers={**headers, "Authorization": f"Bearer {token}"},
+    )
+    assert response2.status_code == 202
+    assert response2.json == {
+        "message": "Webhook notification accepted",
+        "status": 202,
+        "updates": {
+            "users": [
+                {"id": user1_data["saml_id"], "event": "updated"},
+            ],
+        },
+    }
+    assert mock_adapter.called
+    assert mock_adapter.call_count == 1  # only one call to the remote api
 
-        # Signal the webhook endpoint for update (data is sent)
-        response2 = client.post(
-            f"{app.config['SITE_API_URL']}/webhooks/user-data-sync",
-            data=json.dumps(
-                {
-                    "idp": "knowledgeCommons",
-                    "updates": {
-                        "users": [
-                            {"id": user1_data["saml_id"], "event": "updated"},
-                        ],
-                    },
-                }
-            ),
-            headers={"Authorization": f"Bearer {token}"},
-        )
-        assert response2.status_code == 202
-        assert response2.json == {
-            "message": "Webhook received",
-            "status": 202,
-            "updates": {
-                "users": [
-                    {"id": user1_data["saml_id"], "event": "updated"},
-                ],
-            },
-        }
-        assert mock_adapter.called
-        assert mock_adapter.call_count == 1
+    # Check that the user data was updated in the db
+    user = current_accounts.datastore.get_user_by_id(user_id)
+    assert user.email == user1_data["email"]
+    assert user.user_profile.get("full_name") == user1_data["name"]
+    assert (
+        user.user_profile.get("identifier_kc_username")
+        == user1_data["saml_id"]
+    )
+    assert user.user_profile.get("identifier_orcid") == user1_data["orcid"]
+    assert json.loads(user.user_profile.get("name_parts")) == {
+        "first": user1_data["first_name"],
+        "last": user1_data["last_name"],
+    }
+    assert [r.name for r in user.roles] == [
+        "administration-access",
+        "knowledgeCommons---12345|admin",
+        "knowledgeCommons---67891|member",
+    ]
+    assert (
+        user.user_profile.get("affiliations")
+        == user1_data["institutional_affiliation"]
+    )
+
+
+def test_user_data_sync_on_account_setup(
+    running_app, db, user_factory, requests_mock, search_clear
+):
+    # Mock the remote API endpoint
+    requests_mock.get(
+        "https://hcommons-dev.org/wp-json/commons/v1/users/testuser",
+        json={
+            "username": "testuser",
+            "email": "testuser@example.com",
+            "name": "Test User",
+            "first_name": "Test",
+            "last_name": "User",
+            "institutional_affiliation": "Test University",
+            "orcid": "0000-0001-2345-6789",
+            "groups": [
+                {"id": 12345, "name": "test-group", "role": "member"},
+            ],
+        },
+    )
+
+    # Create a new user
+    u = user_factory(
+        email="testuser@example.com",
+        token=False,
+        admin=False,
+        saml_src=None,
+        saml_id=None,
+    )
+    user = u.user
+    user_id = user.id
+
+    # Prepare account_info
+    account_info = {
+        "external_id": "testuser",
+        "external_method": "knowledgeCommons",
+    }
+
+    updated = knowledgeCommons_account_setup(user, account_info)
+    assert updated
+
+    # Verify that the user was activated and updated
+    updated_user = current_accounts.datastore.get_user_by_id(user_id)
+    assert updated_user.active
+    assert updated_user.username == "knowledgeCommons-testuser"
+    assert updated_user.email == "testuser@example.com"
+    assert updated_user.user_profile.get("full_name") == "Test User"
+    assert updated_user.user_profile.get("affiliations") == "Test University"
+    assert (
+        updated_user.user_profile.get("identifier_orcid")
+        == "0000-0001-2345-6789"
+    )
+    assert json.loads(updated_user.user_profile.get("name_parts")) == {
+        "first": "Test",
+        "last": "User",
+    }
+
+    # Verify group membership
+    user_roles = [role.name for role in user.roles]
+    assert "knowledgeCommons---12345|member" in user_roles
+
+
+@pytest.mark.skip(reason="Not implemented")
+def test_user_data_sync_on_account_setup_already_linked(running_app):
+    pass
+
+
+@pytest.mark.skip(reason="Not implemented")
+def test_user_data_sync_after_one_week(running_app):
+    pass
+
+
+@pytest.mark.skip(reason="Not implemented")
+def test_group_data_sync_on_webhook(running_app):
+    pass

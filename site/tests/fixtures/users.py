@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Optional
 from flask_login import login_user
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles, Role
@@ -27,8 +27,8 @@ def user_factory(
         password: str = "password",
         token: bool = False,
         admin: bool = False,
-        saml_src: str = "knowledgeCommons",
-        saml_id: str = "myuser",
+        saml_src: Optional[str] = "knowledgeCommons",
+        saml_id: Optional[str] = "myuser",
         new_remote_data: dict = {},
     ) -> UserFixture:
         """Create a user.

@@ -133,7 +133,7 @@ RESOURCE_TYPES = [
             "openaire_type": "article",
             "eurepo": "info:eu-repo/semantics/other",
             "schema.org": "https://schema.org/Article",
-            "subtype": "",
+            "subtype": "textDocument-journalArticle",
             "type": "textDocument",
         },
         "title": {"en": "Journal Article"},

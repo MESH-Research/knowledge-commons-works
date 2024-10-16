@@ -1,11 +1,9 @@
 import pytest
 
 from invenio_access.permissions import system_identity
-from invenio_pidstore.errors import PIDAlreadyExists
+from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_vocabularies.contrib.subjects.api import Subject
 from invenio_records_resources.proxies import current_service_registry
-from psycopg2.errors import UniqueViolation
-from sqlalchemy.exc import IntegrityError
 
 
 @pytest.fixture(scope="module")
@@ -238,10 +236,10 @@ def subject_v(app, subjects_service):
 
     for subject in subject_data:
         try:
+            subjects_service.read(system_identity, id_=subject["id"])
+        except PIDDoesNotExistError:
             subjects_service.create(
                 system_identity,
                 subject,
             )
-        except (PIDAlreadyExists, UniqueViolation, IntegrityError):
-            pass
     Subject.index.refresh()

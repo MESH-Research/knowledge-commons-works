@@ -1,8 +1,12 @@
 from datetime import datetime, timezone
 from flask import current_app
+from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_accounts
-from invenio_saml.invenio_accounts.utils import account_link_external_id
 from invenio_oauthclient.errors import AlreadyLinkedError
+from invenio_remote_user_data_kcworks.proxies import (
+    current_remote_user_data_service,
+)
+from invenio_saml.invenio_accounts.utils import account_link_external_id
 
 
 def knowledgeCommons_account_setup(user, account_info):
@@ -23,8 +27,33 @@ def knowledgeCommons_account_setup(user, account_info):
         if not user.active:
             assert current_accounts.datastore.activate_user(user)
         current_accounts.datastore.commit()
+        current_app.logger.warning(
+            f"Updating user from remote service: {user.id}"
+        )
+        current_remote_user_data_service.update_user_from_remote(
+            system_identity,
+            user.id,
+            account_info["external_method"],
+            account_info["external_id"],
+        )
+        current_app.logger.warning(
+            f"User updated from remote service: {user.id}"
+        )
+        return True
     except AlreadyLinkedError:
-        pass
+        current_app.logger.warning(
+            f"Updating user from remote service: {user.id}"
+        )
+        current_remote_user_data_service.update_user_from_remote(
+            system_identity,
+            user.id,
+            account_info["external_method"],
+            account_info["external_id"],
+        )
+        current_app.logger.warning(
+            f"User updated from remote service: {user.id}"
+        )
+        return False
 
 
 def knowledgeCommons_account_info(attributes, remote_app):
