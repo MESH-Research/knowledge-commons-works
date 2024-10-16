@@ -14,7 +14,7 @@ import {
   buildUID,
 } from "react-searchkit";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
-import { Container, Grid, Button } from "semantic-ui-react";
+import { Card, Container, Grid, List, Button } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_search_ui/i18next";
 import _isEmpty from "lodash/isEmpty";
 import {
@@ -22,15 +22,35 @@ import {
   SearchAppResultsPane,
   SearchBar,
 } from "@js/invenio_search_ui/components";
-import { ContribSearchAppFacets } from "@js/invenio_search_ui/components/common/facets";
-import { ContribSearchHelpLinks } from "@js/invenio_search_ui/components/common/facets";
+import { ContribSearchAppFacets } from "@js/invenio_search_ui/components";
 import {
     ResultOptions,
 } from "@js/invenio_search_ui/components/Results";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
-const SearchAppLayout = ({ config, appName }) => {
+const ContribSearchHelpLinks = (props) => {
+  const { appName } = props;
+  return (
+    <Overridable id={buildUID("SearchHelpLinks", "", appName)}>
+      <List>
+        <List.Item>
+          <a href="/help/search">{i18next.t("Advanced search guide")}</a>
+        </List.Item>
+      </List>
+    </Overridable>
+  );
+};
+
+ContribSearchHelpLinks.propTypes = {
+  appName: PropTypes.string,
+};
+
+ContribSearchHelpLinks.defaultProps = {
+  appName: "",
+};
+
+const SearchAppLayout = ({ config, appName, help=true, toggle=true }) => {
 
   // console.log("SearchAppLayout", config, appName);
   // console.log("SearchAppLayout", config.aggs);
@@ -168,7 +188,7 @@ const SearchAppLayout = ({ config, appName }) => {
                   </Card.Content>
                 </Card>
               )}
-              <ContribSearchAppFacets aggs={config.aggs} appName={appName} buildUID={buildUID} help={false} />
+              <ContribSearchAppFacets aggs={config.aggs} appName={appName} buildUID={buildUID} help={false} toggle={toggle} />
             </GridResponsiveSidebarColumn>
           )}
 

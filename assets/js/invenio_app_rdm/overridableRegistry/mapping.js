@@ -8,10 +8,12 @@ import { parametrize } from "react-overridable";
 
 import { AccessRightField } from "./fields/AccessRightField";
 import { CreatibutorsField } from "./fields/CreatibutorsField";
+import { ContribSearchAppFacets } from "@js/invenio_search_ui/components/common/facets";
 import { CommunityPrivilegesFormLayout } from "./collections/settings/privileges/CommunityPrivilegesFormLayout";
 import { CurationPolicyFormLayout } from "./collections/settings/curation_policy/CurationPolicyFormLayout";
 import { DangerZone } from "./collections/settings/profile/DangerZone";
 import { DescriptionsField } from "./fields/DescriptionsField";
+import { FileUploader } from "./fields/file_uploader_components/index";
 import { FormFeedback } from "./fields/FormFeedback";
 import { FundingField } from "./fields/FundingField";
 import { IdentifiersField } from "./fields/IdentifiersField";
@@ -21,23 +23,23 @@ import { LogoUploader } from "./collections/settings/profile/LogoUploader";
 import { ManagerMembersResultItemWithConfig } from "./collections/members/manager_view/ManagerMembersResultItem";
 import { MembersSearchBarElement } from "./collections/members/components/MembersSearchBarElement";
 import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
+import Pagination from "./search/Pagination";
 import { PublicationDateField } from "./fields/PublicationDateField";
 import { PublicMembersResultsItemWithCommunity } from "./collections/members/public_view/PublicMembersResultItem";
 import { PublisherField } from "./fields/PublisherField";
+import { RDMRecordMultipleSearchBarElement } from "./search/RDMRecordMultipleSearchBarElement";
 import RecordsResultsListItem from "./search/RecordsResultsListItem";
 import { RequestMetadata } from "./requests/RequestMetadata";
 import { RequestsResultsItemTemplateDashboard } from "./user_dashboard/RequestsResultsItemTemplateDashboard";
 import { RequestsResultsItemTemplateWithCommunity } from "./collections/members/requests/RequestsResultsItemTemplate";
 import { RequestsSearchLayout } from "./requests/search/RequestsSearchLayout";
-import { RDMRecordMultipleSearchBarElement } from "./search/RDMRecordMultipleSearchBarElement";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
+import { RequestActions } from "./requests/actions/RequestActions";
 import { ResultOptions } from "./search/ResultOptions";
 import { SearchAppLayout } from "./search/SearchAppLayout";
 import { SubjectsField } from "./fields/SubjectsField";
 import { TitlesField } from "./fields/TitlesField";
 import { VersionField } from "./fields/VersionField";
-import { FileUploader } from "./fields/file_uploader_components/index";
-
 
 const MobileActionMenu = () => {
   return (
@@ -57,6 +59,11 @@ const DashboardRequestsSearchLayoutWithApp = parametrize(RequestsSearchLayout, {
 
 const CommunityRequestsSearchLayoutWithApp = parametrize(RequestsSearchLayout, {
   appName: "InvenioCommunities.RequestSearch",
+});
+
+const ContribSearchAppFacetsWithConfig = parametrize(ContribSearchAppFacets, {
+  toggle: true,
+  help: true,
 });
 
 export const overriddenComponents = {
@@ -81,7 +88,9 @@ export const overriddenComponents = {
   "InvenioAppRDM.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Search.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Search.SearchBar.element": RDMRecordMultipleSearchBarElement,
+  "InvenioAppRdm.Search.SearchApp.facets": ContribSearchAppFacetsWithConfig,
   "InvenioAppRdm.Search.SearchApp.layout": SearchAppLayoutWithConfig,
+  "InvenioAppRdm.Search.SearchApp.pagination": Pagination,
   "InvenioAppRdm.Search.SearchApp.resultOptions": ResultOptions,
   "InvenioCommunities.CommunityPrivilegesForm.layout": CommunityPrivilegesFormLayout,
   "InvenioCommunities.CurationPolicyForm.layout": CurationPolicyFormLayout,
@@ -100,6 +109,7 @@ export const overriddenComponents = {
   "InvenioModularDetailPage.MobileActionMenu.container": MobileActionMenu,
   // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
   // InvenioCommunities.Search.SearchApp.layout: CommunityRecordsSearchAppLayout,
+  "InvenioRequests.RequestActions": RequestActions,
   "InvenioRequest.RequestMetadata.Layout": RequestMetadata,
   "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
 };
