@@ -66,41 +66,18 @@
   <div id="frontpage-info-bar" class="ui container fluid rel-mt-2">
     <div class="ui container grid">
     <div class="row">
+      {% for title, link, icon in config.get("FRONTPAGE_GUIDE_LINKS") %}
       <div class="eight wide mobile four wide tablet four wide computer column center aligned">
-        <a href="#">
+        <a href="{{ link }}">
         <h2 class="ui center aligned header ">
-          {{ _("Discover") }}
+          {{ title }}
         </h2>
-        <i class="fitted search huge icon"></i>
+        <i class="fitted {{ icon }} huge icon"></i>
         </a>
       </div>
-      <div  class="eight wide mobile four wide tablet four wide computer  column center aligned">
-        <a href="#">
-        <h2 class="ui center aligned header">
-          {{ _("Publish") }}
-        </h2>
-        <i class="fitted bullhorn huge icon"></i>
-        </a>
-      </div>
-      <div class="eight wide mobile four wide tablet four wide computer column center aligned">
-        <a href="#">
-        <h2 class="ui center aligned header">
-          {{ _("Collect") }}
-        </h2>
-        <i class="fitted copy outline huge icon"></i>
-        </a>
-      </div>
-      <div class="eight wide mobile four wide tablet four wide computer column center aligned">
-        <a href="#">
-        <h2 class="ui center aligned header">
-          {{ _("Collaborate") }}
-        </h2>
-        <i class="fitted group huge icon"></i>
-        </a>
-      </div>
-    </div>
+      {% endfor %}
     </div>
   </div>
 </div>
 
-{% endblock %}
+{% endblock navbar %}
