@@ -39,7 +39,17 @@ def test_stats_backend_processing(
     )
     record_id = published.id
     metadata_record = published.to_dict()
-    dt = arrow.now()
+    dt = arrow.utcnow()
+
+    # set previous bookmark to one tz aware
+    # to ensure that it is properly handled by the tests
+    # file-download aggregation runs with no bookmark
+    # record-view aggregation runs with tz naive bookmark
+    # to cover those cases
+    # TODO: Parametrize to run with tz naive bookmark too
+    aggr_cfg = current_stats.aggregations["record-view-agg"]
+    aggr = aggr_cfg.cls(name=aggr_cfg.name, **aggr_cfg.params)
+    aggr.bookmark_api.set_bookmark(dt.shift(days=-1).isoformat())
 
     file_download_uid = str(uuid.uuid4())
     bucket_id = str(uuid.uuid4())
@@ -90,9 +100,6 @@ def test_stats_backend_processing(
     assert events == [("file-download", (1, 0)), ("record-view", (1, 0))]
     current_search.flush_and_refresh(index="*")
 
-    # Check that the events are stored in the search index
-
-    app.logger.warning(current_stats.aggregations)
     # Process the aggregations
     agg_task = aggregate_events.si(
         list(current_stats.aggregations.keys()),
@@ -101,9 +108,7 @@ def test_stats_backend_processing(
         update_bookmark=True,
     )
     aggs = agg_task.apply(throw=True)
-    assert aggs.result == [[(1, 0), (0, 0)], [(1, 0), (0, 0)]]
-
-    # Check that the aggregations are stored in the search index
+    assert aggs.result == [[(1, 0)], [(0, 0), (1, 0)]]
 
     # Check that the stats are available on the record
 
