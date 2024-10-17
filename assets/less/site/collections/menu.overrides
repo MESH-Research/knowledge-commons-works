@@ -19,7 +19,7 @@
       @media screen and (max-width: @largestTabletScreen) {
         background-color: @sidebarBackgroundColor;
       }
-      .item:not(.logo) {
+      > .item:not(.logo) {
         line-height: 1.3rem;
         & > span {
           padding-left: 1.5rem;
@@ -39,12 +39,23 @@
             content: none;
           }
         }
+        &:nth-last-child(2) {
+          margin-right: 1rem;
+          a:not(.ui.button) {
+            color: @primaryColor;
+          }
+        }
+        &:nth-last-child(3) {
+          a:not(.ui.button) {
+            color: @primaryColor;
+          }
+        }
         a:not(.ui.button),
         a,
         div[role="menuitem"] {
           position: relative;
           padding: 1.7rem 1rem;
-          color: @primaryTextColor;
+          color: @ivy80;
           &::after {
             content: "";
             position: absolute;
