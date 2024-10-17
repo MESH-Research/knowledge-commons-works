@@ -37,7 +37,7 @@ test_config_stats["STATS_REGISTER_INDEX_TEMPLATES"] = True
 test_config_stats["STATS_EVENTS"] = {
     "file-download": {
         "templates": (
-            "invenio_record_importer_kcworks.services.search.index_templates.stats.file_download"
+            "kcworks.services.search.index_templates.stats.file_download"
         ),
         # "templates": "invenio_rdm_records.records.stats.templates."
         # "events.file_download",
@@ -56,7 +56,7 @@ test_config_stats["STATS_EVENTS"] = {
     },
     "record-view": {
         "templates": (
-            "invenio_record_importer_kcworks.services.search.index_templates.stats.record_view"
+            "kcworks.services.search.index_templates.stats.record_view"
         ),
         # "templates": "invenio_rdm_records.records.stats.templates."
         # "events.record_view",
@@ -79,7 +79,7 @@ test_config_stats["STATS_EVENTS"] = {
 test_config_stats["STATS_AGGREGATIONS"] = {
     "file-download-agg": {
         "templates": (
-            "invenio_record_importer_kcworks.services.search.index_templates.stats.aggr_file_download"
+            "kcworks.services.search.index_templates.stats.aggr_file_download"
         ),
         # "templates": "invenio_rdm_records.records.stats.templates."
         # "aggregations.aggr_file_download",
@@ -108,7 +108,7 @@ test_config_stats["STATS_AGGREGATIONS"] = {
     },
     "record-view-agg": {
         "templates": (
-            "invenio_record_importer_kcworks.services.search.index_templates.stats.aggr_record_view"
+            "kcworks.services.search.index_templates.stats.aggr_record_view"
         ),
         # "templates": "invenio_rdm_records.records.stats.templates."
         # "aggregations.aggr_record_view",
@@ -146,6 +146,7 @@ def create_stats_indices(app):
         **test_config_stats["STATS_AGGREGATIONS"],
     }
     template_paths = [c["templates"] for c in configs.values()]
+    app.logger.warning(f"template_paths: {template_paths}")
     templates = {}
     try:
         results = []
