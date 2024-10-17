@@ -6,6 +6,7 @@ import importlib
 from invenio_app.factory import create_app as create_ui_api
 from invenio_queues import current_queues
 from invenio_notifications.ext import InvenioNotifications
+from invenio_search.proxies import current_search, current_search_client
 import jinja2
 from marshmallow import Schema, fields
 import pytest
@@ -224,6 +225,18 @@ def running_app(
         create_communities_custom_fields,
         create_records_custom_fields,
     )
+
+
+@pytest.fixture(scope="function")
+def search_clear(search_clear):
+    """Clear search indices after test finishes (function scope)."""
+    #     # current_search_client.indices.delete(index="*")
+    #     # current_search_client.indices.delete_template("*")
+    #     # list(current_search.create())
+    #     # list(current_search.put_templates())
+    yield search_clear
+    current_search_client.indices.delete(index="*")
+    # current_search_client.indices.delete_template("*")
 
 
 @pytest.fixture(scope="module")
