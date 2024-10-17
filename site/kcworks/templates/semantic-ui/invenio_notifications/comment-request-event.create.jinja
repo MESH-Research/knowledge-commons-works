@@ -2,7 +2,7 @@
 {% set invenio_request_event = notification.context.request_event %}
 
 {# created_by is either a resolved user or an email (for guests) #}
-{% set event_creator_name = invenio_request_event.created_by.username or invenio_request_event.created_by %}
+{% set event_creator_name = invenio_request_event.created_by.profile.full_name or invenio_request_event.created_by.username %}
 {% set request_id = invenio_request.id %}
 {% set request_event_content = invenio_request_event.payload.content | safe %}
 {% set request_title = invenio_request.title | safe %}
