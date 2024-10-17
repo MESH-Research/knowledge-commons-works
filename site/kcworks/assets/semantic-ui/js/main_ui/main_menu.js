@@ -227,7 +227,7 @@ const UserMenu = ({
             {item.text.replace(/<[^>]*>/g, '')}
           </a>
         ))}
-        {adminItems.length > 0 && <div className="ui divider"></div>}
+        {adminItems?.length > 0 && <div className="ui divider"></div>}
 
         <a role="menuitem" className="item" href={logoutURL}>
           <i className="fitted sign-out icon"></i>
@@ -526,7 +526,7 @@ const MainMenu = ({
                   text={item.text === "requests" ? "My requests" : item.text}
                   url={item.url}
                   icon={item.text === "requests" ? "inbox" : item.icon}
-                  badge={unreadNotifications.length > 0 ? unreadNotifications.length : undefined}
+                  badge={unreadNotifications?.length > 0 ? unreadNotifications?.length : undefined}
                 />
               </div>
             ))}
