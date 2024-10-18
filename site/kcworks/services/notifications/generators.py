@@ -32,11 +32,8 @@ class RoleRecipient(RecipientGenerator):
         user_ids = set()
 
         role = current_accounts.datastore.find_role(self.key)
-        current_app.logger.warning(f"role: {role}")
         for u in role.users:
             user_ids.add(u.id)
-
-        current_app.logger.warning(f"user_ids: {user_ids}")
 
         # FIXME: This search query is not working in tests
         # possibly because the test users are not indexed?
@@ -58,8 +55,6 @@ class RoleRecipient(RecipientGenerator):
         for u in users:
             recipients[u["id"]] = Recipient(data=u)
 
-        current_app.logger.warning(f"recipients: {recipients}")
-
         return recipients
 
 
@@ -79,14 +74,9 @@ class ModeratorRoleRecipient(RecipientGenerator):
         rolename = current_app.config.get(
             "NOTIFICATIONS_MODERATOR_ROLE", "admin-moderator"
         )
-        current_app.logger.warning(f"rolename: {rolename}")
-
         role = current_accounts.datastore.find_role(rolename)
-        current_app.logger.warning(f"role: {role}")
         for u in role.users:
             user_ids.add(u.id)
-
-        current_app.logger.warning(f"user_ids: {user_ids}")
 
         # FIXME: This search query is not working in tests
         # possibly because the test users are not indexed?

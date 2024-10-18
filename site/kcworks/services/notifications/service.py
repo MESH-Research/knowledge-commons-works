@@ -165,14 +165,9 @@ class InternalNotificationService(Service):
 
         :returns: The user object.
         """
-        app.logger.warning(f"Reading unread notifications for user {user_id}")
         self.require_permission(identity, "read_unread", user_id=user_id)
 
         user = current_accounts.datastore.get_user_by_id(user_id)
-        app.logger.warning(
-            f"starting with: "
-            f"{user.user_profile.get('unread_notifications', [])}"
-        )
         try:
             unread_notifications = json.loads(
                 user.user_profile.get("unread_notifications")
@@ -229,21 +224,15 @@ class InternalNotificationService(Service):
             for n in unread
             if isinstance(n, dict) and n.get("request_id")
         ]  # Filter out non-dict items in case of a bad update
-        app.logger.warning(f"unread: {unread}")
-        app.logger.warning(f"comment_id: {comment_id}")
-        app.logger.warning(f"request_id: {request_id}")
         if comment_id and not request_id:
             raise ValueError(
                 "Request ID is required when providing a comment ID."
             )
         elif request_id:
-            app.logger.warning(f"request_id: {request_id}")
             request_objects = [
                 n for n in unread if n["request_id"] == request_id
             ]
-            app.logger.warning(f"request_objects: {request_objects}")
             request_object = request_objects[0] if request_objects else None
-            app.logger.warning(f"request_object: {request_object}")
             rest = [n for n in unread if n["request_id"] != request_id]
             if comment_id:
                 if (
@@ -254,7 +243,6 @@ class InternalNotificationService(Service):
                     request_object["unread_comments"].remove(comment_id)
                     if len(request_object.get("unread_comments")) == 0:
                         rest.append(request_object)
-            app.logger.warning(f"rest: {rest}")
             unread = rest
         else:
             unread = []
@@ -279,11 +267,9 @@ class InternalNotificationService(Service):
         :returns: The updated user object.
         """
         self.require_permission(identity, "update_unread", user_id=user_id)
-        app.logger.warning(f"Updating unread notifications for user {user_id}")
 
         user = current_accounts.datastore.get_user_by_id(user_id)
         profile = user.user_profile
-        app.logger.warning("getting items")
         items = self._prepare_unread_list(notification, user)
         profile.update({"unread_notifications": json.dumps(items)})
         user.user_profile = profile

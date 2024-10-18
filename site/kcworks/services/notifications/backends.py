@@ -30,9 +30,10 @@ class CustomJinjaTemplateLoaderMixin:
         if not current_i18n.is_locale_available(locale):
             locale = get_locale()
 
+        # FIXME: This is a hack to get the templates to load during tests..
+        # Not clear why the jinja loaders aren't being set properly.
         site_path = Path(__file__).parent.parent.parent
         templates_path = site_path / "templates" / "semantic-ui"
-        current_app.logger.warning(f"custom templates_path: {templates_path}")
         custom_loader = jinja2.ChoiceLoader(
             [
                 current_app.jinja_loader,
@@ -42,16 +43,6 @@ class CustomJinjaTemplateLoaderMixin:
         assert templates_path.exists()
         current_app.jinja_loader = custom_loader
         current_app.jinja_env.loader = custom_loader
-
-        current_app.logger.warning(
-            f"template_loader: {dir(current_app.jinja_env)}"
-        )
-        current_app.logger.warning(
-            f"template_loader A: {current_app.jinja_env.loader}"
-        )
-        current_app.logger.warning(
-            f"template_loader A: {current_app.jinja_loader}"
-        )
 
         template = current_app.jinja_env.select_template(
             [
@@ -120,11 +111,6 @@ class InternalNotificationBackend(NotificationBackend):
 
     def send(self, notification, recipient):
         """Send the notification message to the user's in-app notifications."""
-
-        current_app.logger.warning(
-            f"Sending notification to user {recipient.data['id']}"
-        )
-        current_app.logger.warning(pformat(notification))
 
         updated = current_internal_notifications.update_unread(
             identity=system_identity,

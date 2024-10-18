@@ -146,7 +146,6 @@ def create_stats_indices(app):
         **test_config_stats["STATS_AGGREGATIONS"],
     }
     template_paths = [c["templates"] for c in configs.values()]
-    app.logger.warning(f"template_paths: {template_paths}")
     templates = {}
     try:
         results = []

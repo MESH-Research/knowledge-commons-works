@@ -29,11 +29,6 @@ class InternalNotifications(MethodView):
         This action is used to read the user's unread notifications. It
         is permitted for any user.
         """
-        self.logger.warning(
-            f"****Received GET {action} request to internal "
-            "notifications endpoint"
-            f"for user_id: {user_id}, current user: {g.identity}"
-        )
         if not current_user.is_authenticated:
             raise Unauthorized
         if not current_user.id == user_id:
@@ -52,19 +47,11 @@ class InternalNotifications(MethodView):
                 request_id=request_id,
                 comment_id=comment_id,
             )
-            self.logger.warning(
-                f"****Returning {unread_notification} unread notification"
-            )
-            self.logger.warning(unread_notification)
             return jsonify(unread_notification), 200
         elif action == "list":
             unread_notifications = current_internal_notifications.read_unread(
                 get_identity(current_user), user_id=user_id
             )
-            self.logger.warning(
-                f"****Returning {len(unread_notifications)} unread notifications"
-            )
-            self.logger.warning(unread_notifications)
             return jsonify(unread_notifications), 200
         else:
             raise BadRequest(
@@ -96,10 +83,6 @@ class InternalNotifications(MethodView):
         """
         request_id = request.args.get("request_id")
         comment_id = request.args.get("comment_id")
-        self.logger.warning(
-            "****Received DELETE request to internal notifications endpoint"
-            f"for user_id: {user_id}"
-        )
         if not current_user.is_authenticated:
             raise Unauthorized
         if not current_user.id == user_id:

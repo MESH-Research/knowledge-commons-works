@@ -27,31 +27,19 @@ def knowledgeCommons_account_setup(user, account_info):
         if not user.active:
             assert current_accounts.datastore.activate_user(user)
         current_accounts.datastore.commit()
-        current_app.logger.warning(
-            f"Updating user from remote service: {user.id}"
-        )
         current_remote_user_data_service.update_user_from_remote(
             system_identity,
             user.id,
             account_info["external_method"],
             account_info["external_id"],
-        )
-        current_app.logger.warning(
-            f"User updated from remote service: {user.id}"
         )
         return True
     except AlreadyLinkedError:
-        current_app.logger.warning(
-            f"Updating user from remote service: {user.id}"
-        )
         current_remote_user_data_service.update_user_from_remote(
             system_identity,
             user.id,
             account_info["external_method"],
             account_info["external_id"],
-        )
-        current_app.logger.warning(
-            f"User updated from remote service: {user.id}"
         )
         return False
 
