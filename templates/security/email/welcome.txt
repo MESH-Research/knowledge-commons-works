@@ -1,0 +1,25 @@
+Welcome to Knowledge Commons Works!
+
+{{ _('Welcome %(email)s!', email=user.email) }}!
+
+{% if security.confirmable %}
+{{ _('You can confirm your email through the link below:') }}
+
+{{ confirmation_link }}
+{% endif %}
+
+We want to thank you for choosing the Commons and Knowledge Commons Works as your go-to for open access publishing and research.
+
+Wondering how to get started? Check out our guide for new users at https://support.hcommons-dev.org/what-is-kcworks/
+
+And don't forget to stay in touch with the Knowledge Commons community:
+
+- Keep up with current happenings with our monthly newsletter (https://hcommons.us9.list-manage.com/subscribe?u=db7b80b27372be53e3cc37dfb&id=ab124b16b0)!
+
+- Follow us on X (https://twitter.com/humcommons) or Mastodon (https://hcommons.social/@hello)!
+
+- Have a question or request? Email us at hello@hcommons.org!
+
+- Use Mastodon? Check out our server (https://hcommons.social/about)!
+
+- Haven't logged into Knowledge Commons for a while? Visit https://hcommons.org and see what's new!

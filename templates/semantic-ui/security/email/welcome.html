@@ -1,0 +1,29 @@
+
+<table>
+    <tr>
+        <td>
+            <center >
+            <h1>Welcome to Knowledge Commons Works!</h1>
+            </center>
+            <p>{{ _('Welcome %(email)s!', email=user.email) }}</p>
+            {% if security.confirmable %}
+            <p>{{ _('You can confirm your email through the link below:') }}</p>
+
+            <p><a href="{{ confirmation_link }}">{{ _('Confirm my account') }}</a></p>
+            {% endif %}
+
+            <p>We want to thank you for choosing the Commons and Knowledge Commons Works as your go-to for open access publishing and research.</p>
+
+            <p>Wondering how to get started? Check out our <a href="https://support.hcommons-dev.org/what-is-kcworks/">guide for new users</a>!</p>
+
+            <p>And don't forget to stay in touch with the Knowledge Commons community:</p>
+            <ul>
+                <li>Keep up with current happenings with our <a href="https://hcommons.us9.list-manage.com/subscribe?u=db7b80b27372be53e3cc37dfb&id=ab124b16b0">monthly newsletter</a>.</li>
+                <li>Follow us on <a href="https://twitter.com/humcommons">X</a> or <a href="https://hcommons.social/@hello">Mastodon</a>!</li>
+                <li>Have a question or request? Email us at <a href="mailto:hello@hcommons.org">info@hcommons.org</a>!</li>
+                <li>Use Mastodon? Check out our server, <a href="https://hcommons.social/about">hcommons.social</a>!</li>
+                <li>Haven't logged into Knowledge Commons for a while? Visit <a href="https://hcommons.org">hcommons.org</a>!</li>
+            </ul>
+        </td>
+    </tr>
+</table>
