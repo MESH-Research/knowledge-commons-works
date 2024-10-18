@@ -60,4 +60,20 @@
       border-radius: 0 @defaultBorderRadius @defaultBorderRadius 0;
     }
   }
+  &#download {
+    .dropdown {
+      max-width: 100%;
+      .menu {
+        padding-bottom: 0.5rem;
+        max-width: 100%;
+        .item {
+          .text {
+            white-space: normal;
+            padding-bottom: 0.25rem;
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
 }
