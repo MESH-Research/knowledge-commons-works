@@ -90,6 +90,16 @@
       }
   }
 
+  &.blue {
+    background-color: @blue;
+    color: @white;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: darken(@blue, 5%) !important;
+    }
+  }
+
   &.transparent {
     background-color: transparent;
     box-shadow: none;
