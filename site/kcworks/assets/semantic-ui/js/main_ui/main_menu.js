@@ -432,6 +432,8 @@ const MainMenu = ({
           <span className="navicon"></span>
         </button>
 
+        <h2 className="ui header mobile tablet only ml-20">Menu</h2>
+
         {/* Searchbar not implemented yet */}
         {/* {!!themeSearchbar && (
                 {%- include "invenio_app_rdm/searchbar.html" %}
@@ -468,7 +470,6 @@ const MainMenu = ({
         <PlusMenu plusMenuItems={plusMenuItems} />
 
         <div className="menu item spacer mobile tablet only">
-          <hr />
         </div>
 
         <div className={`item`}>
@@ -490,7 +491,6 @@ const MainMenu = ({
         {/* Right-aligned menu items */}
         <div className="right menu item">
           <div className="menu item spacer mobile tablet only">
-            <hr />
           </div>
           <LoginMenu
             accountsEnabled={accountsEnabled}

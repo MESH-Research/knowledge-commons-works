@@ -4,6 +4,13 @@
   color: @verdigrisDark;
   box-shadow: none;
 
+  &.negative,
+  &.file-box-message {
+    border: 1px solid @negativeBorderColor;
+    box-shadow: none;
+    // box-shadow: 0px 0px 0px 1px @negativeBorderColor inset, 0px 0px 0px 0px rgba(0, 0, 0, 0);
+  }
+
   &.warning {
     box-shadow: none;
     border-color: @warningBorderColor;

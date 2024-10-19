@@ -44,6 +44,12 @@ a {
     padding: 0.25rem 0.5rem;
   }
 }
+.creatibutors {
+  a[class$="-icon-link"] {
+    display: flex;
+    align-items: center;
+  }
+}
 
 // FIXME: hidden for now
 
@@ -122,7 +128,7 @@ html.cover-page {
       @seafoamRgba95 20%,
       @seafoamRgba95 47%,
       @seafoamRgba95 93%,
-      @white 98%
+      @white 100%
     ),
     url("../../../../static/images/pattern/KCommons_assets_pattern small_400.png");
   background-position: 45% 20%;
@@ -189,6 +195,16 @@ html.cover-page {
         h2 {
           color: @white;
           text-shadow: 0 0 2rem 000;
+        }
+      }
+      &:first-child {
+        @media all and (max-width: @largestMobileScreen) {
+          margin-bottom:5rem;
+        }
+      }
+      &:nth-child(2) {
+        @media all and (max-width: @largestMobileScreen) {
+          margin-bottom: 5rem;
         }
       }
     }
@@ -1068,6 +1084,24 @@ html.cover-page {
               height: 2.5rem;
               min-width: 8rem;
               margin-left: 0;
+            }
+          }
+        }
+        @media all and (max-width: @largestTabletScreen) {
+          .supporter-image-link {
+            img {
+              margin-left: 1.5rem;
+            }
+          }
+          .supporter-image-link:nth-child(2),
+          .supporter-image-link:first-child {
+            img {
+              margin-left: 4rem;
+            }
+          }
+          .supporter-image-link:first-child {
+            img {
+              margin-bottom: 0.5rem;
             }
           }
         }

@@ -9,18 +9,46 @@
     box-shadow: none;
 
     &.active {
+      h2.header {
+        @media all and (max-width: @largestTabletScreen) {
+          margin-top: 0;
+        }
+      }
       #invenio-menu.ui.menu {
         @media all and (max-width: @largestTabletScreen) {
           z-index: 1000;
+          top: 0;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+        @media all and (min-width: @largestMobileScreen) and (max-width: @largestTabletScreen) {
+          max-width: 40vw;
+        }
+        .item {
+          @media screen and (max-width: @largestTabletScreen) {
+            padding: 0;
+          }
+        }
+        #rdm-close-burger-menu-icon {
+          @media screen and (max-width: @largestTabletScreen) {
+            margin-right: 1rem;
+            margin-bottom: 0;
+          }
         }
       }
     }
     #invenio-menu.ui.menu {
       @media screen and (max-width: @largestTabletScreen) {
         background-color: @sidebarBackgroundColor;
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: 1.5rem;
       }
       > .item:not(.logo) {
         line-height: 1.3rem;
+        @media screen and (max-width: @largestTabletScreen) {
+          padding: 0;
+        }
         & > span {
           padding-left: 1.5rem;
           padding-right: 1.5rem;
@@ -56,6 +84,9 @@
           position: relative;
           padding: 1.7rem 1rem;
           color: @ivy80;
+          @media screen and (max-width: @largestTabletScreen) {
+            padding: 1.25rem 1.5rem;
+          }
           &::after {
             content: "";
             position: absolute;
@@ -92,6 +123,12 @@
           border-right: 0.5rem solid @mint;
           border-left: 0.5rem solid @mint;
           background-color: @mint;
+          @media screen and (max-width: @largestTabletScreen) {
+            border-right: 0;
+            border-left: 0;
+            margin-top: 1.5rem;
+            padding: 1.5rem 0;
+          }
           a,
           div[role="menuitem"] {
             background-color: @mint !important;
@@ -131,6 +168,7 @@
   }
   .item.logo {
     width: 17rem;
+    margin-left: -0.25rem;
     .logo-link {
       display: flex;
       align-items: center;

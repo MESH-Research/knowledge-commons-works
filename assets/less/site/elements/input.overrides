@@ -54,16 +54,17 @@
     }
   }
 
-  #frontpage-search-bar {
-    .ui.form .ui.input {
-      input {
-        border-color: @gold;
-        border-right: none;
-        outline: 3px solid @gold;
-      }
-      button[type="submit"] {
-        outline: 3px solid @gold;
-      }
+}
+
+#frontpage-search-bar {
+  .ui.form .ui.input {
+    input {
+      border-color: @gold;
+      border-right: none;
+      outline: 3px solid @gold;
+    }
+    button[type="submit"] {
+      outline: 3px solid @gold;
     }
   }
 }

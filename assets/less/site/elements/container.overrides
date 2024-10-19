@@ -1,5 +1,20 @@
 /* Container theme overrides */
 
+.ui.container {
+  &#frontpage-hero-section {
+    @media all and (max-width: @largestMobileScreen) {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+    #frontpage-info-bar {
+      @media all and (max-width: @largestMobileScreen) {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
+  }
+}
+
 .invenio-page-body {
   .ui.container.page-subheader-outer {
     min-height: 8rem;
