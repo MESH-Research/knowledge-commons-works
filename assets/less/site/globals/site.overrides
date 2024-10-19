@@ -1087,7 +1087,7 @@ html.cover-page {
             }
           }
         }
-        @media all and (max-width: @largestTabletScreen) {
+        @media all and (max-width: @largestTabletScreen) and (min-width: @largestMobileScreen) {
           .supporter-image-link {
             img {
               margin-left: 1.5rem;
