@@ -383,14 +383,12 @@ const MainMenu = ({
   const updateUnreadNotifications = () => {
     const unreadFromStorage = JSON.parse(sessionStorage.getItem(`unreadNotifications`));
     setUnreadNotifications(unreadFromStorage);
-    console.log("unreadFromStorage", unreadFromStorage);
   }
 
   useEffect(() => {
     if (![null, undefined, ""].includes(userId)) {
       fetchUnreadNotifications();
       window.addEventListener("storage", () => {
-        console.log("storage event fired");
         updateUnreadNotifications();
       });
     }

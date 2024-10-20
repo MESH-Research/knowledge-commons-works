@@ -84,27 +84,50 @@ const DeletedResource = ({ details }) => (
 const RequestMetadata = ({ request }) => {
   const isResourceDeleted = (details) => details.is_ghost === true;
 
-  console.log("RequestMetadata", request);
   const expandedCreatedBy = request.expanded?.created_by;
   const expandedReceiver = request.expanded?.receiver;
 
   // Get unread notifications from session storage
   const unreadNotifications = JSON.parse(sessionStorage.getItem('unreadNotifications')) || [];
-  console.log("unreadNotifications in RequestMetadata", unreadNotifications);
 
   // Check if the current request.id is in unreadNotifications
   const isUnread = unreadNotifications.some(notification => notification.request_id === request.id);
 
-  // Check if the creator is the current user and set creator_reading state
-  let creator_reading = null;
-  if (request.expanded?.created_by?.is_current_user === true) {
-    creator_reading = request.expanded.created_by.id;
+  // Determine if the request should clear the unread notification
+  // - For submissions and inclusions, the creator should clear their own unread
+  //   request notifications.
+  // - For invitations, the receiver should clear their own unread request
+  //   notifications.
+  // - Otherwise, the request should not clear the unread notification by
+  //   default.
+  //
+  // Returns the user's id if the request should clear the unread notification,
+  // false otherwise.
+  const shouldClear = (request) => {
+    let creator_reading = null;
+    if (request.expanded?.created_by?.is_current_user === true) {
+      creator_reading = request.expanded.created_by.id;
+    }
+    let receiver_reading = null;
+    if (request.expanded?.receiver?.is_current_user === true) {
+      receiver_reading = request.expanded.receiver.id;
+    }
+
+    if (request.type === "community-submission" || request.type === "community-inclusion") {
+      if (!!isUnread && !!creator_reading) {
+        return creator_reading;
+      }
+    } else if (request.type === "community-invitation") {
+      if (!!isUnread && !!receiver_reading) {
+        return receiver_reading;
+      }
+    }
+    return false;
   }
 
-  // Log the creator_reading state for debugging
-  console.log("creator_reading:", creator_reading);
+  const userToClear = shouldClear(request);
 
-  if (!!isUnread && !!creator_reading) {
+  if (!!userToClear) {
 
     const apiConfig = {
       withCredentials: true,
@@ -117,14 +140,10 @@ const RequestMetadata = ({ request }) => {
     };
     const axiosWithConfig = axios.create(apiConfig);
 
-    console.log("request.id in RequestMetadata", request.id);
-
-    axiosWithConfig.get(`/api/users/${creator_reading}/notifications/unread/clear`, {
+    axiosWithConfig.get(`/api/users/${userToClear}/notifications/unread/clear`, {
       params: {request_id: request.id},
     })
     .then(response => {
-      console.log('Unread notification cleared successfully');
-      console.log('response', response);
       // Update the unreadNotifications in session storage
       sessionStorage.setItem('unreadNotifications', JSON.stringify(response.data));
       // Dispatch a storage event to update other components that are listening

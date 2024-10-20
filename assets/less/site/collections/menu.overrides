@@ -194,6 +194,7 @@
         max-height: 4rem;
         @media screen and (max-width: @largestMobileScreen) {
           max-height: 3rem;
+          margin-top: 0.25rem;
         }
       }
       .title-wrapper {

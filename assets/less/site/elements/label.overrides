@@ -16,6 +16,8 @@
   font-size: @fontSizeSmall;
   &.small {
     font-size: @fontSizeSmall;
+    margin-bottom: 0.25rem;
+    margin-top: 0.25rem;
   }
   &.image {
     background-color: @sidebarBackgroundColor !important;
@@ -35,11 +37,18 @@
   color: @white;
 }
 
-.ui.secondary.label,
-.ui.label.access-status.metadata-only {
+.ui.secondary.label {
   background-color: @gold20;
-  border: 1px solid @gold30;
+  border: 1px solid @gold40;
   color: @darkerGold;
+
+}
+
+.ui.label.secondary.basic,
+.ui.label.access-status.metadata-only {
+  background-color: @white;
+  border-color: @ivy20;
+  color: @ivy70;
 }
 
 .ui.neutral.label {
@@ -64,11 +73,6 @@
   }
 }
 
-.ui.label.secondary.basic {
-  background-color: @white;
-  border-color: @ivy20;
-  color: @ivy70;
-}
 
 .ui.label.positive.basic,
 .ui.label.access-status.open.basic {

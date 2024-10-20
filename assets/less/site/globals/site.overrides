@@ -1105,8 +1105,29 @@ html.cover-page {
             }
           }
         }
-        @media all and (max-width: 1200px) {
+        @media all and (max-width: @largestMobileScreen) {
           justify-content: center;
+          .supporter-image-link {
+            img {
+              margin-right: 1.5rem;
+            }
+            &:first-child {
+              img {
+                margin-right: 0;
+              }
+            }
+            &:nth-child(2) {
+              img {
+                margin-top: 1.25rem;
+              }
+            }
+            &:nth-child(3) {
+              img {
+                margin-right: 2rem;
+                margin-bottom: 1.5rem;
+              }
+            }
+          }
         }
       }
       &.sponsors-column {

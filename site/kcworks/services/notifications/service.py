@@ -7,11 +7,12 @@ from invenio_records_resources.services import Service, ServiceConfig  # noqa
 from invenio_records_resources.services.base.config import (
     ConfiguratorMixin,
 )  # noqa
-from typing import Optional, TypedDict
 import json
 from kcworks.services.notifications.permissions import (
     InternalNotificationPermissionPolicy,
 )
+from pprint import pformat
+from typing import Optional, TypedDict
 
 
 class UnreadNotification(TypedDict):
@@ -103,19 +104,41 @@ class InternalNotificationService(Service):
             .get("created_by", {})
             .get("id")
         )
+        request_receiver_id = (
+            notification.context.get("request", {})
+            .get("receiver", {})
+            .get("id")
+        )
 
         # FIXME: For the time being, we don't notify collection curators
-        # about submissions, so we don't add to their unread lists
-        # when the user.id is not the request creator.
+        # about submissions or invitation events in-app, so we don't add
+        # to their unread lists
         if notification_type in [
             "community-submission.submit",
-            "community-inclusion.submit",
             "community-submission.create",
-            "community-inclusion.create",
             "community-submission.cancel",
+            "community-inclusion.submit",
+            "community-inclusion.create",
             "community-inclusion.cancel",
-            "comment-request-event.create",
         ] and str(request_creator_id) != str(user.id):
+            return unread
+        elif notification_type in [
+            "community-invitation.accept",
+            "community-invitation.decline",
+            "community-invitation.expire",
+        ] and str(request_receiver_id) != str(user.id):
+            return unread
+        elif (
+            notification_type == "comment-request-event.create"
+            and request_type in ["community-submission", "community-inclusion"]
+            and str(request_creator_id) != str(user.id)
+        ):
+            return unread
+        elif (
+            notification_type == "comment-request-event.create"
+            and request_type == "community-invitation"
+            and str(request_receiver_id) != str(user.id)
+        ):
             return unread
 
         existing_request = None

@@ -17,6 +17,7 @@ import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { Image } from "react-invenio-forms";
 import { AccessStatusLabel } from "./labels/AccessStatusLabel";
 import Geopattern from "geopattern";
+import { Dropdown } from "semantic-ui-react";
 import { PropTypes } from "prop-types";
 
 const CommunityDetailsHeader = ({
@@ -115,6 +116,15 @@ const CommunityDetailsHeader = ({
     ];
   }
   const menu_items = all_menu_items.filter((item) => !!item.permissions);
+  const dropdown_items = menu_items.map((item) => ({
+    key: item.name,
+    text: item.text,
+    icon: item.icon,
+    value: item.url,
+  }));
+  const dropdown_default_item = dropdown_items.find(
+    (item) => item.key === activeMenuItem
+  );
 
   return (
     <div className="ui container relaxed grid page-subheader mr-0-mobile ml-0-mobile">
@@ -231,7 +241,7 @@ const CommunityDetailsHeader = ({
 
       <div className="ui divider mobile only"></div>
 
-      <div className="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary">
+      <div className="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary computer tablet widescreen large monitor only">
         {menu_items.map((item) => (
           <a
             key={item.name}
@@ -248,6 +258,16 @@ const CommunityDetailsHeader = ({
           </a>
         ))}
       </div>
+      <Dropdown
+        fluid
+        selection
+        className="mobile only selection fluid mr-15 ml-15 mb-15"
+        options={dropdown_items}
+        defaultValue={dropdown_default_item.value}
+        onChange={(e, data) => {
+          window.location.href = data.value;
+        }}
+      />
     </div>
   );
 };

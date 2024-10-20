@@ -104,7 +104,7 @@ const SearchAppLayout = ({ config, appName, help=true, toggle=true }) => {
         </Grid>
       </Overridable>
 
-      <Grid relaxed>
+      <Grid className={`${appName} search-results-options`}>
         <Grid.Row
           textAlign="right"
           columns={columnsAmount}
@@ -115,8 +115,9 @@ const SearchAppLayout = ({ config, appName, help=true, toggle=true }) => {
               only="mobile tablet"
               mobile={2}
               tablet={1}
-              textAlign="center"
+              textAlign="left"
               verticalAlign="middle"
+              className="search-results-options-filter-button"
             >
               <Button
                 basic

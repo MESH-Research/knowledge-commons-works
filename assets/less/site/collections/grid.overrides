@@ -38,7 +38,10 @@
   > .row.sort-options-row.stackable {
     .column {
       padding-top: 0 !important;
+      @media all and (max-width: @largestMobileScreen) {
+        padding-right: 0 !important;
       padding-bottom: 0.5rem !important;
+      }
       &:last-child {
         padding-bottom: 0 !important;
       }
@@ -53,11 +56,18 @@
     &:first-child {
       @media all and (max-width: @largestMobileScreen) {
         align-self: flex-start !important;
+        padding-left: 0;
       }
     }
   }
   &.search-app .search-app-target {
     width: 100%;
+    &.search-results-options {
+      @media all and (max-width: @largestMobileScreen) {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
   }
   &.save-submit-buttons {
     margin-left: 0;
