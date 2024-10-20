@@ -92,7 +92,10 @@ h2.ui.header {
   }
 }
 
-.request-detail-page .computer-flex-header.rel-mt-2 {
+.request-detail-page > .computer-flex-header.rel-mt-2 {
+  margin-top: 1rem !important;
+}
+.request-detail-page > .flex.wrap.space-between:first-child {
   margin-top: 1rem !important;
 }
 
