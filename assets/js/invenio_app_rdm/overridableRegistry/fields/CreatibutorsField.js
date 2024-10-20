@@ -180,10 +180,6 @@ const CreatibutorsField = ({
   const [newItemIndex, setNewItemIndex] = useState(-1);
   const [showEditForms, setShowEditForms] = useState([]);
   const { errors, initialErrors, initialValues, setFieldTouched, touched, validateForm, values } = useFormikContext();
-  console.log("CreatibutorsField errors", errors);
-  console.log("CreatibutorsField initialErrors", initialErrors);
-  console.log("CreatibutorsField initialValues", initialValues);
-  console.log("CreatibutorsField touched", touched);
 
   const { currentUserprofile } = useContext(FormUIStateContext);
 
@@ -203,7 +199,6 @@ const CreatibutorsField = ({
   // Add new creatibutor to the list (bottom add button)
   const handleAddNew = (pushFunc, newItem, filteredEditForms = undefined) => {
     pushFunc(newItem);
-    console.log("handleAddNew", newItem);
 
     const newIndex = getIn(values, fieldPath).length;
 
@@ -277,8 +272,6 @@ const CreatibutorsField = ({
     config.vocabularies.contributors.role
   );
 
-  console.log("CreatibutorsField values", values);
-
   return (
     <Form.Field
       id={fieldPath}
@@ -290,8 +283,6 @@ const CreatibutorsField = ({
       className="creators"
       required={!!required}
       render={(arrayHelpers) => {
-        console.log("CreatibutorsField arrayHelpers", arrayHelpers);
-
         return(
         <>
           <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
@@ -306,8 +297,6 @@ const CreatibutorsField = ({
             {getIn(arrayHelpers.form.values, fieldPath, []).map((value, index) => {
               const fieldPathPrefix = `${fieldPath}.${index}`;
               const displayName = creatibutorNameDisplay(value);
-              console.log("CreatibutorsField array item value", value);
-              console.log("CreatibutorsField array item index", index);
 
               return (
                 <CreatibutorsFieldItem

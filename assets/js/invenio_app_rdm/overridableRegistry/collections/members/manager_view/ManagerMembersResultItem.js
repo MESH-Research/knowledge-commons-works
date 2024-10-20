@@ -26,8 +26,6 @@ const ManagerMembersResultItem  = ({ result, config, community }) => {
 
   const groupName = community.custom_fields?.['kcr:commons_group_name'] || community.metadata.title;
   const memberName = innerResult.member.name.replace(/knowledgeCommons---\d+\|/, `${groupName} group `);
-  console.log("ManagerMembersResultItem memberName", memberName);
-
 
   const updateMemberRole = (data, value) => {
     setInnerResult({ ...innerResult, ...{ role: value } });

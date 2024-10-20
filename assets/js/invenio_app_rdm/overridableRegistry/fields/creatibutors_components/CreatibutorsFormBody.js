@@ -223,15 +223,10 @@ const CreatibutorsFormBody = ({
     }
   };
 
-  console.log("CreatibutorsFormBody typeFieldPath", typeFieldPath);
-  console.log("CreatibutorsFormBody type", _get(values, typeFieldPath));
-
   return (
     <>
       <Field name={typeFieldPath}>
         {({ field, form }) => {
-          console.log("CreatibutorsFormBody field", field);
-          console.log("CreatibutorsFormBody rest", form);
           return(
           <Form.Group>
             <Checkbox

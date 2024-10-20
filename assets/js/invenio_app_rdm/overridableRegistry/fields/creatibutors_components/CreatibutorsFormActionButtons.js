@@ -19,8 +19,6 @@ const CreatibutorsFormActionButtons = ({
   saveAndContinueLabel,
   setShowPersonForm,
 }) => {
-  console.log( "CreatibutorsFormActionButtons index", index );
-
   return (
     <>
       <Button

@@ -85,10 +85,10 @@ class RecordsResultsListItem extends Component {
                   </Label>
                 ))}
                   <p>
-                    <Label horizontal size="small" className="primary">
+                    <Label horizontal size="small" className="">
                       {publicationDate} ({version})
                     </Label>
-                    <Label horizontal size="small" className=" primary">
+                    <Label horizontal size="small" className="">
                       {resourceType}
                     </Label>
                     <Label

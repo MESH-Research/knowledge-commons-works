@@ -41,8 +41,6 @@ const CreatibutorsFieldItem = ({
   setShowEditForms,
   values,
 }) => {
-  console.log("CreatibutorsFieldItem index", index);
-
   const identifiersList = _get(
     values,
     `${fieldPathPrefix}.person_or_org.identifiers`,
@@ -100,7 +98,6 @@ const CreatibutorsFieldItem = ({
   // let firstError = returnBottomError(itemError);
 
   function getErrorMessages(itemErrors) {
-    console.log("getErrorMessages itemErrors", itemErrors);
     let errorMessages = [];
     if ( typeof itemErrors === "array" ) {
       itemErrors.forEach((error) => {
@@ -120,9 +117,6 @@ const CreatibutorsFieldItem = ({
   const errorMessages = !!itemError ? getErrorMessages(itemError) : [];
 
   // Initialize the ref explicitely
-
-  console.log("CreatibutorsFieldItem errorMessages", errorMessages);
-
   drop(dropRef);
 
   return (

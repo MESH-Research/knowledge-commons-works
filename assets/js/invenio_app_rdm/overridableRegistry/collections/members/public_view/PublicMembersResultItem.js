@@ -7,8 +7,6 @@ import { parametrize } from "react-overridable";
 
 class PublicMemberPublicViewResultItem extends Component {
   render() {
-    console.log("PublicMemberPublicViewResultItem", this.props);
-
     const { result } = this.props;
     const avatar = result.member.avatar;
     return (

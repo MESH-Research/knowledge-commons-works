@@ -13,7 +13,6 @@ const RequestsResultsItemTemplateCommunity = ({ result, community }) => {
   );
   const MobileRequestsItemWithState = withState(MobileRequestItem);
   const detailsURL = `/collections/${community.slug}/requests/${result.id}`;
-  console.log("RequestsResultsItemTemplateCommunity", result, community);
 
   return (
     <>

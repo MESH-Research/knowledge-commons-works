@@ -286,8 +286,6 @@ function kcUsernameValidator(message) {
     const { path, createError } = this;
 
     const sanitizedUsername = sanitizeWPUsername(val);
-    console.log("sanitizedUsername", sanitizedUsername);
-    console.log("sanitizedUsername val", val);
 
     if (val !== sanitizedUsername) {
       return createError({
