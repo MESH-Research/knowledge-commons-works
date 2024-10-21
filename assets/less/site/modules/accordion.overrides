@@ -87,3 +87,16 @@
     }
   }
 }
+
+.communities-settings,
+.communities-members {
+  .accordion.ui.inverted.invenio-accordion-field {
+    .title {
+      background-color: transparent;
+      font-size: @big;
+      font-weight: bold;
+      color: @textColor;
+      padding-left: 0.75rem;
+    }
+  }
+}

@@ -89,6 +89,13 @@ const CommunityDetailsHeader = ({
       permissions: canUpdate,
       url: `/collections/${slug}/settings`,
     },
+    {
+      name: "contribute",
+      text: "Contribute",
+      icon: "plus",
+      permissions: canRead,
+      url: `/uploads/new?community=${slug}`
+    }
   ];
   if (!!hasCurationPolicyContent) {
     all_menu_items = [
@@ -127,99 +134,113 @@ const CommunityDetailsHeader = ({
   );
 
   return (
-    <div className="ui container relaxed grid page-subheader mr-0-mobile ml-0-mobile">
-      <div className="row pb-0">
-        <div className="sixteen wide mobile sixteen wide tablet thirteen wide computer column">
-          <div className="community-header flex align-items-center column-mobile align-items-start-mobile">
-            <div className="flex align-items-center">
-              <div className="ui rounded image community-image community-header-logo rel-mr-2">
-                <Image
-                  src={
-                    communityLogoUrl !==
-                    "/static/images/square-placeholder.png"
-                      ? communityLogoUrl
-                      : "/static/images/square-placeholder-fake.png"
-                  }
-                  alt={`logo for ${communityTitle} collection`}
-                  fallbackSrc={pattern !== "" ? pattern.toDataUri() : ""}
-                />
-              </div>
-
-              <div className="mobile only">
-                <h1 className="ui large header">{communityTitle}</h1>
+    <div className="ui container relaxed grid page-subheader community-header mr-0-mobile ml-0-mobile">
+      <div className="row pb-0 community-header">
+        <div className="sixteen wide mobile three wide tablet two wide computer column pt-5">
+          <div className="ui rounded image community-image community-header-logo">
+            <Image
+              src={
+                communityLogoUrl !==
+                "/static/images/square-placeholder.png"
+                  ? communityLogoUrl
+                  : "/static/images/square-placeholder-fake.png"
+              }
+              alt={`logo for ${communityTitle} collection`}
+              fallbackSrc={pattern !== "" ? pattern.toDataUri() : ""}
+            />
+          </div>
+        </div>
+        <div className="sixteen wide mobile thirteen wide tablet fourteen wide computer column">
+          <div className="ui grid">
+            <div className="row">
+              <div className="column">
+                <h1 className="ui huge header mb-0">{communityTitle}</h1>
               </div>
             </div>
-
-            <div>
-              <div className="flex align-items-center tablet computer only">
-                <h1 className="ui huge header mb-0">{communityTitle}</h1>
-
-                {visibility == "restricted" && (
+            {visibility == "restricted" && (
+              <div className="row">
+                <div className="column">
                   <div className="rel-ml-1">
                     <AccessStatusLabel />
                   </div>
-                )}
-              </div>
-
-              <div>
-                {visibility == "restricted" && (
                   <div className="mobile only rel-mb-1">
                     <AccessStatusLabel />
                   </div>
-                )}
-
-                {website && (
-                  <div className="inline-computer mt-5 rel-mr-1 collection-url">
-                    <i className="linkify icon" aria-hidden="true"></i>
-                    <a href={website}>{website}</a>
-                  </div>
-                )}
-
-                {communityType && (
-                  <div className="inline-computer mt-5 rel-mr-1 collection-type">
-                    <i className="tag icon" aria-hidden="true"></i>
-                    <span className="label label-keyword">
-                      {communityType}
-                    </span>
-                  </div>
-                )}
-
-                {organizations &&
-                  organizations.map((org, idx) => (
-                    <div className="inline-computer mt-5 org" key={idx}>
-                      {idx == 0 && (
-                        <i
-                          className="building outline icon"
-                          aria-hidden="true"
-                        ></i>
-                      )}
-
-                      {org.name}
-
-                      {org.id && (
-                        <a
-                          href={`https://ror.org/${org.id}`}
-                          aria-label={`${org.name}'s ROR ${i18next.t(
-                            "profile"
-                          )}`}
-                          title={`${org.name}'s ROR ${i18next.t("profile")}`}
-                          target="_blank"
-                        >
-                          <img
-                            className="inline-id-icon"
-                            src={rorIconUrl}
-                            alt=""
-                          />
-                        </a>
-                      )}
-                      {idx <= organizations.length - 2 && <span>,&nbsp;</span>}
-                    </div>
-                  ))}
+                </div>
               </div>
-            </div>
+            )}
+            {website && (
+              <div className="row collection-url">
+                <div className="column">
+                  <i className="linkify icon" aria-hidden="true"></i>
+                  <a href={website}>{website}</a>
+                </div>
+              </div>
+            )}
+
+            {communityType && (
+              <div className="row collection-type">
+                <div className="column">
+                  <i className="tag icon" aria-hidden="true"></i>
+                  <span className="label label-keyword">
+                    {communityType}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {organizations && (
+              <div className="row">
+                <div className="column">
+                {organizations.map((org, idx) => (
+                <div className="inline-computer mt-5 org" key={idx}>
+                  {idx == 0 && (
+                    <i
+                      className="building outline icon"
+                      aria-hidden="true"
+                    ></i>
+                  )}
+                  {org.name}
+                  {org.id && (
+                    <a
+                      href={`https://ror.org/${org.id}`}
+                      aria-label={`${org.name}'s ROR ${i18next.t(
+                        "profile"
+                      )}`}
+                      title={`${org.name}'s ROR ${i18next.t("profile")}`}
+                      target="_blank"
+                    >
+                      <img
+                        className="inline-id-icon"
+                        src={rorIconUrl}
+                        alt=""
+                      />
+                    </a>
+                  )}
+                  {idx <= organizations.length - 2 && <span>,&nbsp;</span>}
+                </div>
+                ))}
+                </div>
+              </div>
+              )}
           </div>
         </div>
-        <div className="sixteen wide mobile sixteen wide tablet three wide computer right aligned column">
+
+        <div className="sixteen wide column mobile only mt-15 mb-15 community-header-mobile-menu">
+          <Dropdown
+            fluid
+            selection
+            className="selection fluid community-header-mobile-menu"
+            options={dropdown_items}
+            defaultValue={dropdown_default_item.value}
+            onChange={(e, data) => {
+              window.location.href = data.value;
+            }}
+          />
+        </div>
+      </div>
+
+        {/* <div className="sixteen wide mobile sixteen wide tablet three wide computer right aligned column">
           <a
             href={`/uploads/new?community=${slug}`}
             className="ui primary button labeled icon rel-mt-1 theme-secondary"
@@ -227,6 +248,7 @@ const CommunityDetailsHeader = ({
             <i className="upload icon" aria-hidden="true"></i>
             {i18next.t("Contribute a work")}
           </a>
+          FIXME: Put moderation link somewhere
           {canModerate && (
             <a
               href={`/administration/communities?q=slug:${slug}`}
@@ -236,10 +258,7 @@ const CommunityDetailsHeader = ({
               {i18next.t("Manage collection")}
             </a>
           )}
-        </div>
-      </div>
-
-      <div className="ui divider mobile only"></div>
+        </div> */}
 
       <div className="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary computer tablet widescreen large monitor only">
         {menu_items.map((item) => (
@@ -258,16 +277,7 @@ const CommunityDetailsHeader = ({
           </a>
         ))}
       </div>
-      <Dropdown
-        fluid
-        selection
-        className="mobile only selection fluid mr-15 ml-15 mb-15"
-        options={dropdown_items}
-        defaultValue={dropdown_default_item.value}
-        onChange={(e, data) => {
-          window.location.href = data.value;
-        }}
-      />
+
     </div>
   );
 };

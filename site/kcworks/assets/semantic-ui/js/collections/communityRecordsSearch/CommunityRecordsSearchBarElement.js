@@ -30,7 +30,7 @@ export const CommunityRecordsSearchBarElement = ({ queryString, onInputChange })
     // backwards compatibility
     return (
       <CommunityRecordsSingleSearchBarElement
-        placeholder={i18next.t("Search collection records...")}
+        placeholder={i18next.t("Search collection works...")}
         queryString={queryString}
         onInputChange={onInputChange}
       />

@@ -243,3 +243,31 @@
     }
   }
 }
+
+.communities-settings,
+.communities-members {
+  .ui.vertical.menu {
+    width: auto;
+    border: 1px solid transparent;
+    box-shadow: none;
+
+    .item {
+      &.active {
+        background-color: transparent;
+        border-left: 2px solid @primaryColor;
+        color: @textColor !important;
+        &:first-child,
+        &:last-child {
+          border-radius: 0;
+        }
+        @media all and (max-width: @largestMobileScreen) {
+          border-left: none;
+          border-bottom: 2px solid @secondaryColor;
+        }
+      }
+      &:before {
+        background-color: transparent;
+      }
+    }
+  }
+}

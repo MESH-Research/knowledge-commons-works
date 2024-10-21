@@ -18,43 +18,45 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
   return (
     <Container className="rel-pt-2">
       <Grid>
-        <Grid.Column only="mobile tablet" mobile={2} tablet={1}>
-          <Button
-            basic
-            icon="sliders"
-            onClick={() => setSidebarVisible(true)}
-            aria-label={i18next.t("Filter results")}
-          />
-        </Grid.Column>
-
-        <Grid.Column mobile={14} tablet={15} computer={12} floated="left">
-          <Grid>
-            <Grid.Column width={16}>
+        <Grid.Row className="community-record-search-bar pb-10">
+          <Grid.Column computer={12} tablet={16} mobile={16}>
               <SearchBar buildUID={buildUID} placeholder={i18next.t("Search records in collection...")} />
-            </Grid.Column>
-
-            <Grid.Column width={4} textAlign="left">
-              <Count
-                label={(cmp) => (
-                  <Trans key="communityRecordsSearch" count={cmp}>
-                    {cmp} works found
-                  </Trans>
-                )}
+          </Grid.Column>
+          <Grid.Column width={4} className="computer widescreen large monitor only">
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row className="community-record-search-options pt-0">
+            <Grid.Column only="mobile tablet" mobile={2} tablet={1} className="pr-0">
+              <Button
+                basic
+                icon="sliders"
+                onClick={() => setSidebarVisible(true)}
+                aria-label={i18next.t("Filter results")}
               />
             </Grid.Column>
-            <Grid.Column width={12} textAlign="right">
+            <Grid.Column mobile={10} tablet={8} computer={8}>
               <Sort
                 values={config.sortOptions}
                 label={(cmp) => (
                   <>
-                    <label className="mr-10">{i18next.t("Sort by")}</label>
+                    {/* <label className="mr-10">{i18next.t("Sort by")}</label> */}
                     {cmp}
                   </>
                 )}
               />
             </Grid.Column>
-          </Grid>
-        </Grid.Column>
+            <Grid.Column width={4} tablet={7} computer={4} mobile={4} textAlign="right">
+              <Count
+                label={(cmp) => (
+                  <Trans key="communityRecordsSearch" count={cmp}>
+                    {cmp} <span className="tablet computer widescreen large monitor only">&nbsp;works </span>found
+                  </Trans>
+                )}
+              />
+            </Grid.Column>
+            <Grid.Column width={4} className="computer widescreen large monitor only">
+            </Grid.Column>
+        </Grid.Row>
 
         <Grid.Row>
           <Grid.Column mobile={16} tablet={16} computer={12}>
@@ -71,7 +73,7 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
             // eslint-disable-next-line react/no-children-prop
             children={
               <>
-                <h2 className="ui header">{i18next.t("Search filters")}</h2>
+                <h2 className="ui header mobile tablet only">{i18next.t("Search filters")}</h2>
                 <SearchAppFacets aggs={config.aggs} appName={appName} />
               </>
             }

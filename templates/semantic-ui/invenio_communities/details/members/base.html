@@ -24,7 +24,7 @@
     } %}
     <div class="three wide computer sixteen wide tablet sixteen wide mobile column">
 
-      <h2>Members</h2>
+      <h2 class="tablet computer widescreen large monitor only">Members</h2>
       <div class="ui vertical computer horizontal tablet horizontal mobile menu theme-primary-menu">
         {% for menu_key, (menu_item, menu_link, permission_to_show) in menu_items.items() if permission_to_show %}
           <a href="{{ menu_link }}" class="{{ 'brand item active' if active_members_menu_item and menu_key == active_members_menu_item }} {{ 'disabled' if not menu_link }} item">{{ menu_item }}</a>

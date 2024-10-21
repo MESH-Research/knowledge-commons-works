@@ -7,6 +7,11 @@
 .ui.selection.dropdown,
 .ui.search.dropdown {
   border-color: @formInputBorderColor;
+  &.community-header-mobile-menu {
+    .menu {
+      max-height: 15rem;
+    }
+  }
 }
 
 .field.error,
