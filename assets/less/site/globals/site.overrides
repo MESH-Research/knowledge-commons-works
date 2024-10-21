@@ -225,20 +225,6 @@ html.cover-page {
       h2.ui.header {
         margin-top: 1rem;
       }
-      .column {
-        padding-bottom: 0;
-      }
-      .item {
-        .content {
-          .buttons-wrapper {
-            display: flex;
-            flex-direction: column;
-            .button:first-child {
-              margin-bottom: 0.5rem;
-            }
-          }
-        }
-      }
       &:nth-child(2) {
         margin-top: 0;
       }
@@ -1087,10 +1073,11 @@ html.cover-page {
             }
           }
         }
-        @media all and (max-width: @largestTabletScreen) and (min-width: @largestMobileScreen) {
+        @media all and (max-width: 1260px) and (min-width: @largestMobileScreen) {
           .supporter-image-link {
             img {
               margin-left: 1.5rem;
+              margin-bottom: 0.5rem;
             }
           }
           .supporter-image-link:nth-child(2),
@@ -1107,24 +1094,43 @@ html.cover-page {
         }
         @media all and (max-width: @largestMobileScreen) {
           justify-content: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
           .supporter-image-link {
             img {
-              margin-right: 1.5rem;
-            }
-            &:first-child {
-              img {
-                margin-right: 0;
-              }
+              margin-right: auto;
+              margin-left: auto;
             }
             &:nth-child(2) {
               img {
+                position: relative;
+                left: 5px;
                 margin-top: 1.25rem;
               }
             }
             &:nth-child(3) {
               img {
-                margin-right: 2rem;
+                position: relative;
+                left: -5px;
                 margin-bottom: 1.5rem;
+              }
+            }
+          }
+        }
+        @media all and (min-width: @largestMobileScreen) and (max-width: 1260px) {
+          .supporter-image-link {
+            img {
+              margin-left: 8rem;
+            }
+            &:nth-child(2) {
+              img {
+                margin-left: 7.7rem;
+              }
+            }
+            &:first-child {
+              img {
+                margin-left: 8.5rem;
               }
             }
           }

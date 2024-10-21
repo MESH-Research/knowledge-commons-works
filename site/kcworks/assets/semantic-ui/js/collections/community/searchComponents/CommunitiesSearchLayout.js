@@ -77,7 +77,12 @@ export const CommunitiesSearchLayout = ({ config, appName }) => {
             open={sidebarVisible}
             onHideClick={() => setSidebarVisible(false)}
             // eslint-disable-next-line react/no-children-prop
-            children={<SearchAppFacets aggs={config.aggs} appName={appName} />}
+            children={
+              <>
+                <h2 className="ui header">{i18next.t("Search filters")}</h2>
+                <SearchAppFacets aggs={config.aggs} appName={appName} />
+              </>
+            }
           />
           <Grid.Column mobile={16} tablet={16} computer={12}>
             <SearchAppResultsPane

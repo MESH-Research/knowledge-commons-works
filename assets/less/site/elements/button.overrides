@@ -30,7 +30,7 @@
 .ui.button {
   background-color: @white;
   color: @ivy;
-  box-shadow: 0px 0px 0px 1px @ivy30 inset, 0px 0em 0px 0px @ivy30 inset;
+  box-shadow: 0px 0px 0px 1px @verdigris90 inset, 0px 0em 0px 0px @verdigris90 inset;
   &:focus-visible {
     outline: 3px solid @gold !important;
   }
@@ -104,6 +104,12 @@
     background-color: transparent;
     box-shadow: none;
     color: @verdigrisDark;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: transparent;
+      color: @ivy;
+    }
   }
 
   &.labeled.icon > .icon {

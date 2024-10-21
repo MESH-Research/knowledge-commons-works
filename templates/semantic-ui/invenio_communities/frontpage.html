@@ -45,12 +45,14 @@
         </div>
         {% if permissions.can_create %}
           <div class="one wide ui column mobile hidden"></div>
-          <div class="eight wide mobile five wide tablet five wide computer column">
+          <div class="eight wide mobile five wide tablet five wide computer right aligned pr-0 column">
             <a href="{{ config.COMMUNITIES_ROUTES['new'] }}"
                class="ui icon left labeled primary button"
                role="button">
               <i class="icon plus"></i>
-              {{ _("Start a new collection") }}
+              <span class="mobile only">{{ _("New collection") }}</span>
+              <span class="tablet only">{{ _("New") }}</span>
+              <span class="computer widescreen large monitor only">{{ _("New collection") }}</span>
             </a>
           </div>
         {% endif %}

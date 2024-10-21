@@ -27,7 +27,7 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
           />
         </Grid.Column>
 
-        <Grid.Column mobile={14} tablet={14} computer={12} floated="left">
+        <Grid.Column mobile={14} tablet={15} computer={12} floated="left">
           <Grid>
             <Grid.Column width={16}>
               <SearchBar buildUID={buildUID} placeholder={i18next.t("Search records in collection...")} />
@@ -69,7 +69,12 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
             open={sidebarVisible}
             onHideClick={() => setSidebarVisible(false)}
             // eslint-disable-next-line react/no-children-prop
-            children={<SearchAppFacets aggs={config.aggs} appName={appName} />}
+            children={
+              <>
+                <h2 className="ui header">{i18next.t("Search filters")}</h2>
+                <SearchAppFacets aggs={config.aggs} appName={appName} />
+              </>
+            }
             computer={4}
             largeScreen={4}
             widescreen={4}

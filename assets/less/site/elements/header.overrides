@@ -8,12 +8,19 @@ h1.ui.header {
   }
 }
 .page-subheader {
+  @media all and (max-width: @largestMobileScreen) {
+    text-align: center;
+  }
   h1.ui.header,
   h1.ui.huge.header {
     margin-top: 1rem;
     font-size: 3rem;
+    @media all and (max-width: @largestMobileScreen) {
+      font-size: 2rem;
+    }
   }
 }
+
 
 h2.ui.header {
   color: @primaryColor;
@@ -21,12 +28,22 @@ h2.ui.header {
     color: @secondaryColor;
     margin-top: 0;
   }
+  @media (max-width: @largestMobileScreen) {
+    font-size: 1.5rem;
+  }
 }
 
 .carousel h2.ui.header,
 #records-list h2.ui.header {
   font-size: 2.5rem;
   color: @ivy;
+  @media (max-width: @largestMobileScreen) {
+    font-size: 2rem;
+    text-align: center;
+  }
+  @media all and (min-width: @largestMobileScreen) and (max-width: @largestTabletScreen) {
+    text-align: center;
+  }
 }
 
 #detail-main-content {

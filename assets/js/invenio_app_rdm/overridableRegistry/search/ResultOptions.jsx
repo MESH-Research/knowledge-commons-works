@@ -24,6 +24,7 @@ export const ResultOptions = ({
   return (
     (total || null) && (
         <Grid>
+          <h2 className="ui header">{i18next.t("Search help & filters")}</h2>
           <Grid.Row verticalAlign="middle" className="stackable sort-options-row">
             <Grid.Column textAlign="left" width={multipleLayouts ? 5 : 8}>
               {sortOptions && (

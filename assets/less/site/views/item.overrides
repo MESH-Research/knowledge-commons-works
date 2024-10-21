@@ -4,6 +4,43 @@
   &.carousel-items {
     overflow: hidden;
     max-height: 15rem;
+    @media (max-width: @largestMobileScreen) {
+      max-height: 27rem;
+      padding-bottom: 4rem;
+      padding-top: 1.5rem;
+      text-align: center;
+    }
+    .item.carousel {
+      @media all and (min-width: @largestMobileScreen) and (max-width: @largestTabletScreen) {
+        padding-bottom: 4rem;
+      }
+      div {
+        @media (max-width: @largestMobileScreen) {
+          padding-right: 0;
+        }
+      }
+      .grid {
+        @media all and (min-width: @largestMobileScreen) and (max-width: @largestTabletScreen) {
+          padding-left: 2rem;
+        }
+      }
+      .buttons-wrapper {
+        display: flex;
+        flex-direction: column;
+        @media all and (min-width: @largestMobileScreen) and (max-width: @largestTabletScreen) {
+          flex-direction: row;
+          align-items: flex-start;
+        }
+        .button {
+          @media all and (min-width: @largestMobileScreen) and (max-width: @largestTabletScreen) {
+            max-width: 10rem;
+          }
+          &:first-child {
+            margin-bottom: 0.5rem;
+          }
+        }
+      }
+    }
   }
   & > .search-result.item {
     .content {
@@ -52,6 +89,21 @@
   &.divided {
     & > .item.search-result-item {
       border-top: 1px solid @gold40;
+    }
+  }
+}
+
+#communities-search {
+  .ui.items {
+    .item.community-item {
+      padding: 0;
+      .bottom.aligned.column {
+        @media all and (max-width: @largestMobileScreen) {
+          .text-muted {
+            color: @primaryColor;
+          }
+        }
+      }
     }
   }
 }

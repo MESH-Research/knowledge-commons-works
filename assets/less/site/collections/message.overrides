@@ -23,6 +23,9 @@
     .header {
       color: @warningTextColor;
     }
+    &.mobile-deposit-warning {
+      display: block;
+    }
   }
 
   &.info {
