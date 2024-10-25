@@ -31,6 +31,12 @@
   }
 }
 
+// alignments
+
+.justify-space-between {
+  justify-content: space-between !important;
+}
+
 // links
 
 a {
@@ -312,7 +318,7 @@ html.cover-page {
       padding-bottom: 0.5rem;
       @media only screen and (max-width: @largestMobileScreen) {
         h1 {
-          font-size: @big;
+          font-size: 1.5rem;
           padding-top: 1rem;
         }
       }

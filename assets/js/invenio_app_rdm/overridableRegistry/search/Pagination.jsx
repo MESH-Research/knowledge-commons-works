@@ -14,7 +14,7 @@ import React, { Component, useContext } from "react";
 import Overridable from "react-overridable";
 import { Pagination as Paginator } from "semantic-ui-react";
 import { AppContext } from "react-searchkit";
-import { ShouldRender } from "react-searchkit";
+import ShouldRender from "./ShouldRender";
 
 const defaultOptions = {
   boundaryRangeCount: 1,

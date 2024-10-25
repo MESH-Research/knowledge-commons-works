@@ -4,7 +4,10 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import React from "react";
 import { parametrize } from "react-overridable";
+import { Button } from "semantic-ui-react";
+import { i18next } from "@translations/invenio_rdm_records/i18next";
 
 import { AccessRightField } from "./fields/AccessRightField";
 import { CreatibutorsField } from "./fields/CreatibutorsField";
@@ -66,9 +69,25 @@ const ContribSearchAppFacetsWithConfig = parametrize(ContribSearchAppFacets, {
   help: true,
 });
 
+export const DashboardUploadsSearchLayout = parametrize(SearchAppLayout, {
+  searchBarPlaceholder: i18next.t("Search in my works..."),
+  newBtn: (
+    <Button
+      positive
+      icon="upload"
+      href="/uploads/new"
+      content={i18next.t("New upload")}
+      floated="right"
+    />
+  ),
+  appName: "InvenioAppRdm.DashboardUploads",
+});
+
 export const overriddenComponents = {
   "InvenioAppRdm.DashboardRequests.SearchApp.layout": DashboardRequestsSearchLayoutWithApp,
   "InvenioAppRdm.DashboardRequests.ResultsList.item": RequestsResultsItemTemplateDashboard,
+  "InvenioAppRdm.DashboardUploads.SearchApp.layout": DashboardUploadsSearchLayout,
+  "InvenioAppRdm.DashboardUploads.ResultsList.item": RecordsResultsListItem,
   "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
   "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
   "InvenioAppRdm.Deposit.ContributorsField.container": CreatibutorsField,

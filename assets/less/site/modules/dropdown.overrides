@@ -4,6 +4,14 @@
   border-top-left-radius: 0;
 }
 
+.search-options-row {
+  .ui.dropdown {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+
 .ui.selection.dropdown,
 .ui.search.dropdown {
   border-color: @formInputBorderColor;

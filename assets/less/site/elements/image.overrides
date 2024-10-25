@@ -1,5 +1,12 @@
 /* Image theme overrides */
 
+.ui.image.dashboard-header-avatar {
+  max-width: 64px;
+  @media all and (max-width: @largestMobileScreen) {
+    margin-bottom: 2rem;
+  }
+}
+
 .ui.image.community-image {
   margin-top: 0;
   img {

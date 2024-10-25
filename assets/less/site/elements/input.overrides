@@ -74,4 +74,8 @@
 
 #header-search-bar .ui.action.input {
   margin-right: 0;
+  @media all and (max-width: @largestMobileScreen) {
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
 }

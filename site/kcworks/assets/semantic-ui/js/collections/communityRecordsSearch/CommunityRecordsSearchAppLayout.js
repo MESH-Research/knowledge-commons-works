@@ -25,7 +25,7 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
           <Grid.Column width={4} className="computer widescreen large monitor only">
           </Grid.Column>
         </Grid.Row>
-        <Grid.Row className="community-record-search-options pt-0">
+        <Grid.Row className="community-record-search-options search-options-row pt-0">
             <Grid.Column only="mobile tablet" mobile={2} tablet={1} className="pr-0">
               <Button
                 basic

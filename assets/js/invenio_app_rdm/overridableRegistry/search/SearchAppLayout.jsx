@@ -10,27 +10,25 @@ import PropTypes from "prop-types";
 import React from "react";
 import Overridable from "react-overridable";
 import {
-  withState,
   buildUID,
 } from "react-searchkit";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
-import { Card, Container, Grid, List, Button } from "semantic-ui-react";
+import { Card, Container, Grid, List } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_search_ui/i18next";
 import _isEmpty from "lodash/isEmpty";
 import {
   // SearchAppFacets,
   SearchAppResultsPane,
-  SearchBar,
+  // SearchBar,
 } from "@js/invenio_search_ui/components";
 import { ContribSearchAppFacets } from "@js/invenio_search_ui/components";
 import {
-    ResultOptions,
-} from "@js/invenio_search_ui/components/Results";
-
-const ResultOptionsWithState = withState(ResultOptions);
+    ResultOptionsWithState,
+} from "./ResultOptions";
+import { RecordSearchBarElement } from "./RecordSearchBarElement";
 
 const ContribSearchHelpLinks = (props) => {
-  const { appName } = props;
+  const { appName="" } = props;
   return (
     <Overridable id={buildUID("SearchHelpLinks", "", appName)}>
       <List>
@@ -46,21 +44,13 @@ ContribSearchHelpLinks.propTypes = {
   appName: PropTypes.string,
 };
 
-ContribSearchHelpLinks.defaultProps = {
-  appName: "",
-};
 
 const SearchAppLayout = ({ config, appName, help=true, toggle=true }) => {
-
-  // console.log("SearchAppLayout", config, appName);
-  // console.log("SearchAppLayout", config.aggs);
-  // console.log("UUID:", buildUID("SearchApp.sort"));
 
   const [sidebarVisible, setSidebarVisible] = React.useState(false);
   const facetsAvailable = !_isEmpty(config.aggs);
 
   const resultsPaneLayoutNoFacets = { width: 16 };
-  const resultsSortLayoutNoFacets = { width: 16 };
 
   const resultsPaneLayoutFacets = {
     mobile: 16,
@@ -71,70 +61,47 @@ const SearchAppLayout = ({ config, appName, help=true, toggle=true }) => {
     width: undefined,
   };
 
-  const resultsSortLayoutFacets = {
-    mobile: 14,
-    tablet: 15,
-    computer: 11,
-    largeScreen: 11,
-    widescreen: 11,
-  };
-
   // make list full width if no facets available
   const resultsPaneLayout = facetsAvailable
     ? resultsPaneLayoutFacets
     : resultsPaneLayoutNoFacets;
 
-  const resultSortLayout = facetsAvailable
-    ? resultsSortLayoutFacets
-    : resultsSortLayoutNoFacets;
-
   const columnsAmount = facetsAvailable ? 2 : 1;
 
   return (
     <Container fluid>
-      <Overridable
-        id={buildUID("SearchApp.searchbarContainer", "", appName)}
-      >
-        <Grid relaxed padded>
-          <Grid.Row>
-            <Grid.Column width={11} floated="left">
-              <SearchBar buildUID={buildUID} appName={appName}/>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Overridable>
+        <Grid>
+          <Overridable
+            id={buildUID("SearchApp.searchbarContainer", "", appName)}
+          >
+              <Grid.Row className="pb-0 pt-0">
+                <Grid.Column
+                  mobile={16}
+                  tablet={16}
+                  computer={11}
+                  largeScreen={11}
+                  widescreen={11}
+                >
+                  <RecordSearchBarElement buildUID={buildUID} appName={appName} />
+                </Grid.Column>
+                <Grid.Column
+                  mobile={4}
+                  tablet={4}
+                  computer={5}
+                  largeScreen={5}
+                  widescreen={5}
+                >
+                </Grid.Column>
+              </Grid.Row>
+          </Overridable>
 
-      <Grid className={`${appName} search-results-options`}>
-        <Grid.Row
-          textAlign="right"
-          columns={columnsAmount}
-          className="result-options"
-        >
-          {facetsAvailable && (
-            <Grid.Column
-              only="mobile tablet"
-              mobile={2}
-              tablet={1}
-              textAlign="left"
-              verticalAlign="middle"
-              className="search-results-options-filter-button"
-            >
-              <Button
-                basic
-                icon="sliders"
-                onClick={() => setSidebarVisible(true)}
-                aria-label={i18next.t("Filter results")}
-              />
-            </Grid.Column>
-          )}
-
-          <Grid.Column {...resultSortLayout} floated="left">
-            <ResultOptionsWithState
-              sortOptions={config.sortOptions}
-              layoutOptions={config.layoutOptions}
-            />
-          </Grid.Column>
-        </Grid.Row>
+        <ResultOptionsWithState
+          appName={appName}
+          facetsAvailable={facetsAvailable}
+          sortOptions={config.sortOptions}
+          layoutOptions={config.layoutOptions}
+          setSidebarVisible={setSidebarVisible}
+        />
 
         <Grid.Row columns={columnsAmount}>
 
@@ -181,6 +148,7 @@ const SearchAppLayout = ({ config, appName, help=true, toggle=true }) => {
               open={sidebarVisible}
               onHideClick={() => setSidebarVisible(false)}
             >
+              <h2 className="ui header mobile tablet only">Search Help and Filters</h2>
               {help && (
                 <Card className="borderless facet mt-0">
                   <Card.Content>
@@ -202,6 +170,8 @@ const SearchAppLayout = ({ config, appName, help=true, toggle=true }) => {
 SearchAppLayout.propTypes = {
   config: PropTypes.object.isRequired,
   appName: PropTypes.string.isRequired,
+  help: PropTypes.bool,
+  toggle: PropTypes.bool,
 };
 
 export { SearchAppLayout };
