@@ -93,8 +93,8 @@ services:
       # - INVENIO_LOGGING_FS_LOGFILE=/opt/invenio/src/logs/invenio.log
     ports:
       - "5000"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
     volumes:
       # - ./docker/startup_ui.sh:/opt/invenio/src/docker/startup_ui.sh
       - ./logs/invenio.log:/opt/invenio/src/logs/invenio.log
@@ -122,8 +122,8 @@ services:
     image: monotasker/kcworks:latest
     ports:
       - "5001"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
@@ -155,8 +155,8 @@ services:
     # command: ["/opt/invenio/src/docker/startup_worker.sh"]
     # command: ["celery -A invenio_app.celery worker --beat --loglevel INFO"]
     image: monotasker/kcworks:latest
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1

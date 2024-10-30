@@ -116,17 +116,6 @@ def test_stats_backend_processing(
     record_stats = Statistics.get_record_stats(
         record_id, parent_recid=metadata_record["parent"]["id"]
     )
-    app.logger.warning(current_search_client.indices.get("*record-view*"))
-    app.logger.warning(current_search_client.indices.get("*file-download*"))
-    app.logger.warning(current_search_client.indices.get_alias("*"))
-    app.logger.warning(
-        current_search_client.indices.get_index_template("*record-view*")
-    )
-    app.logger.warning(
-        current_search_client.search(
-            index="events-stats-record-view-2024-10", q="*"
-        )
-    )
 
     assert record_stats == {
         "this_version": {

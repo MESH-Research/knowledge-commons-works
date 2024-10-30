@@ -100,7 +100,12 @@
     @media all and (max-width: @largestTabletScreen) {
       padding-bottom: 0;
     }
-
+    @media all and (max-width: @largestMobileScreen) {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding-left: 1rem;
+      padding-right: 1.5rem;
+    }
     .column {
       &:first-child {
         @media all and (max-width: @largestMobileScreen) {
@@ -114,10 +119,6 @@
           margin-bottom: -1rem;
         }
       }
-    }
-    @media all and (max-width: @largestMobileScreen) {
-      margin-left: 0 !important;
-      margin-right: 0 !important;
     }
     .result-options {
       .column:nth-child(2) {

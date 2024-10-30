@@ -22,7 +22,7 @@ from invenio_records_resources.services.custom_fields import (
     # EDTFDateStringCF,
 )
 from marshmallow import validate
-from marshmallow_utils.fields import SanitizedUnicode, EDTFDateTimeString
+from marshmallow_utils.fields import SanitizedUnicode, TZDateTime
 
 KCR_NAMESPACE = {
     "kcr": "",
@@ -93,7 +93,8 @@ KCR_CUSTOM_FIELDS = [
     ),
     TextCF(
         name="kcr:commons_search_updated",
-        field_cls=EDTFDateTimeString,
+        field_cls=SanitizedUnicode,
+        # FIXME: This should be a field that tests the string as iso datetime
     ),  # EDTFDateStringCF,
 ]
 

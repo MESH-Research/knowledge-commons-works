@@ -17,6 +17,7 @@ h1.ui.header {
     font-size: 3rem;
     @media all and (max-width: @largestMobileScreen) {
       font-size: 2rem;
+      margin-top: 2rem;
     }
   }
 }

@@ -1,4 +1,4 @@
-from flask import current_app
+import pytest
 from flask_security import current_user
 from flask_security.utils import login_user, logout_user
 import json
@@ -23,8 +23,6 @@ from invenio_records_resources.services.errors import PermissionDeniedError
 from invenio_users_resources.records.api import UserAggregate
 from invenio_users_resources.services.users.tasks import reindex_users
 from kcworks.proxies import current_internal_notifications
-from pprint import pformat
-import pytest
 
 
 def test_notify_for_request_acceptance(
@@ -1283,9 +1281,6 @@ def test_clear_one_unread_notification_by_view(
         len(json.loads(user.user_profile.get("unread_notifications", "[]")))
         == 2
     )
-    app.logger.warning(
-        f"user.user_profile.unread_notifications: {user.user_profile.get('unread_notifications')}"
-    )
 
     # set up a logged in client
     login_user(user)
@@ -1412,7 +1407,8 @@ def test_notification_on_first_upload(
     Test that the admin account is notified on a user's first upload.
 
     Ensure that a notification of the type "user-first-record.created"
-    (built by kcworks.services.notifications.builders.FirstRecordCreatedNotificationBuilder)
+    (built by kcworks.services.notifications.builders.
+     FirstRecordCreatedNotificationBuilder)
     is emitted when the RDMRecordService.create() method is called and the
     user creating the draft has no other draft or published records.
 
@@ -1447,7 +1443,7 @@ def test_notification_on_first_upload(
         saml_src=None,
         saml_id=None,
     )
-    admin_id = admin.user.id
+    # admin_id = admin.user.id
     admin_role = current_accounts.datastore.find_or_create_role(
         name="admin-moderator"
     )

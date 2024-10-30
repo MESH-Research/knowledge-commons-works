@@ -16,10 +16,20 @@ from .fixtures.custom_fields import test_config_fields
 from .fixtures.stats import test_config_stats
 from .fixtures.saml import test_config_saml
 from .fixtures.frontend import MockManifestLoader
+from kcworks import invenio_config
 
 var = "invenio_config"
 package = importlib.import_module(var)
-config = {k: v for k, v in package.__dict__.items()}
+# This code is not importing variables from ./invenio_config.py because:
+# 1. It's using importlib to dynamically import a module named "invenio_config"
+# 2. It's creating a dictionary from all attributes of that module
+# 3. The local ./invenio_config.py file is not being referenced
+
+# Or if we want to create a dictionary of all variables:
+
+config = {
+    k: v for k, v in invenio_config.__dict__.items() if not k.startswith("_")
+}
 
 pytest_plugins = [
     "celery.contrib.pytest",
@@ -47,9 +57,8 @@ def _(x):
     return x
 
 
-test_config = {**config}
-
 test_config = {
+    **config,
     **test_config_identifiers,
     **test_config_fields,
     **test_config_stats,
@@ -73,7 +82,7 @@ test_config = {
     # "BROKER_URL": "amqp://guest:guest@localhost:5672//",
     "CELERY_CACHE_BACKEND": "memory",
     "CELERY_RESULT_BACKEND": "cache",
-    "CELERY_TASK_ALWAYS_EAGER": True,
+    "CELERY_TASK_ALWAYS_EAGER": False,
     "CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS": True,
     #  'DEBUG_TB_ENABLED': False,
     "INVENIO_INSTANCE_PATH": "/opt/invenio/var/instance",
@@ -255,10 +264,6 @@ def template_loader():
         assert templates_path.exists()
         app.jinja_loader = custom_loader
         app.jinja_env.loader = custom_loader
-
-        app.logger.warning(f"template_loader: {dir(app.jinja_env)}")
-        app.logger.warning(f"template_loader A: {app.jinja_env.loader}")
-        app.logger.warning(f"template_loader A: {app.jinja_loader}")
 
     return load_tempates
 

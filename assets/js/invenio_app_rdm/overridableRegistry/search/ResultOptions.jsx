@@ -33,7 +33,7 @@ const ResultOptions = ({
       tablet: 1,
     },
     sortOptions: {
-      mobile: 8,
+      mobile: 10,
       tablet: 7,
       computer: 4,
     },

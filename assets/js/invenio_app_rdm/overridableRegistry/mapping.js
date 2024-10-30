@@ -38,7 +38,7 @@ import { RequestsResultsItemTemplateWithCommunity } from "./collections/members/
 import { RequestsSearchLayout } from "./requests/search/RequestsSearchLayout";
 import { RelatedWorksField } from "./fields/RelatedWorksField";
 import { RequestActions } from "./requests/actions/RequestActions";
-import { ResultOptions } from "./search/ResultOptions";
+import { ResultOptionsWithState } from "./search/ResultOptions";
 import { SearchAppLayout } from "./search/SearchAppLayout";
 import { SubjectsField } from "./fields/SubjectsField";
 import { TitlesField } from "./fields/TitlesField";
@@ -110,7 +110,7 @@ export const overriddenComponents = {
   "InvenioAppRdm.Search.SearchApp.facets": ContribSearchAppFacetsWithConfig,
   "InvenioAppRdm.Search.SearchApp.layout": SearchAppLayoutWithConfig,
   "InvenioAppRdm.Search.SearchApp.pagination": Pagination,
-  "InvenioAppRdm.Search.SearchApp.resultOptions": ResultOptions,
+  "InvenioAppRdm.Search.SearchApp.resultOptions": ResultOptionsWithState,
   "InvenioCommunities.CommunityPrivilegesForm.layout": CommunityPrivilegesFormLayout,
   "InvenioCommunities.CurationPolicyForm.layout": CurationPolicyFormLayout,
   "InvenioCommunities.CommunityProfileForm.GridRow.DangerZone": DangerZone,

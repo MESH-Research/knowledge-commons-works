@@ -16,6 +16,7 @@ import { Pagination as Paginator } from "semantic-ui-react";
 import { AppContext } from "react-searchkit";
 import ShouldRender from "./ShouldRender";
 
+
 const defaultOptions = {
   boundaryRangeCount: 1,
   siblingRangeCount: 1,

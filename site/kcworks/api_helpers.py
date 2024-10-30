@@ -1,11 +1,11 @@
 import arrow
 from celery import shared_task
 from flask import current_app
+from flask_principal import Identity
 from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_communities.proxies import current_communities
 from invenio_communities.errors import CommunityDeletedError
-from invenio_db import db
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.proxies import current_rdm_records
 from invenio_rdm_records.services.errors import (
@@ -50,17 +50,22 @@ def get_user_profile_info(user_id: int = 0, email: str = "") -> dict:
         if user.user_profile.get("kc_username"):
             profile_info["username"] = user.user_profile.get("kc_username")
 
-    idp_info = get_user_idp_info(user_id)
+    idp_info = get_user_idp_info(user)
     if idp_info:
         profile_info["username"] = idp_info["id_from_idp"]
 
     return profile_info
 
 
-def format_commons_search_payload(identity, record=None, **kwargs):
+def format_commons_search_payload(
+    identity: Identity,
+    record: dict = {},
+    owner: dict = {},
+    data: dict = {},
+    draft: dict = {},
+    **kwargs,
+) -> dict:
     """Format payload for external service."""
-    owner = kwargs.get("owner")
-
     UI_URL_BASE = os.environ.get(
         "INVENIO_SITE_UI_URL", "http://works.kcommons.org"
     )
@@ -71,16 +76,14 @@ def format_commons_search_payload(identity, record=None, **kwargs):
         "KC_PROFILES_URL_BASE", "http://hcommons.org/profiles"
     )
 
-    data = kwargs.get("data", {})
     if not data:
-        data = kwargs.get("draft", {})
-    # current_app.logger.debug(pformat(data))
+        data = draft
 
     payload = {
-        "_internal_id": data["id"],
+        "_internal_id": record["id"],
         "content_type": "work",
         "network_node": "works",
-        "primary_url": f"{UI_URL_BASE}/records/{data['id']}",
+        "primary_url": f"{UI_URL_BASE}/records/{record['id']}",
         "other_urls": [],
         "owner": {
             "name": owner.get("full_name", ""),
@@ -114,7 +117,7 @@ def format_commons_search_payload(identity, record=None, **kwargs):
             except iso639.LanguageNotFoundError:
                 current_app.logger.error(
                     f"kcworks.api_helpers: Language not found while "
-                    f"provisioning search for record {data['id']}: "
+                    f"provisioning search for record {record['id']}: "
                     f"{languages[0]['id']}"
                 )
 
@@ -149,8 +152,10 @@ def format_commons_search_payload(identity, record=None, **kwargs):
             # FIXME: add owner info if matches the owner's name/username?
             payload["contributors"].append(c_info)
 
-        if data["metadata"].get("pids", {}).get("doi", {}):
-            f"https://doi.org/{record['pids']['doi']['identifier']}",
+        if record["metadata"].get("pids", {}).get("doi", {}):
+            payload["other_urls"].append(
+                f"https://doi.org/{record['pids']['doi']['identifier']}"
+            )
         for u in [
             i
             for i in data["metadata"].get("identifiers", [])
@@ -167,10 +172,16 @@ def format_commons_search_payload(identity, record=None, **kwargs):
     return payload
 
 
-def format_commons_search_collection_payload(identity, record=None, **kwargs):
+def format_commons_search_collection_payload(
+    identity: Identity,
+    record: dict = {},
+    owner: dict = {},
+    data: dict = {},
+    draft: dict = {},
+    **kwargs,
+) -> dict:
     """Format payload for external service."""
     # FIXME: Handle multiple owners???
-    owner = kwargs.get("owner")
     current_app.logger.debug("owner")
     current_app.logger.debug(owner)
 
@@ -184,13 +195,12 @@ def format_commons_search_collection_payload(identity, record=None, **kwargs):
         "KC_PROFILES_URL_BASE", "http://hcommons.org/profiles"
     )
 
-    data = kwargs.get("data", {})
     if not data:
-        data = kwargs.get("draft", {})
+        data = draft
 
     try:
         type_string = "works-collection"
-        type_dict = data["metadata"].get("type", {})
+        type_dict = record["metadata"].get("type", {})
         if type_dict:
             type_string += f"_{type_dict.get('id', '')}"
         payload = {
@@ -260,112 +270,82 @@ def format_commons_search_collection_payload(identity, record=None, **kwargs):
     # retry_kwargs={"max_retries": 1},
 )
 def record_commons_search_recid(
-    response_json,
-    service_type=None,
-    service_method=None,
-    request_url=None,
-    payload_object=None,
-    record_id=None,
-    draft_id=None,
+    response_json: dict,
+    service_type: str = "",
+    service_method: str = "",
+    request_url: str = "",
+    payload_object: dict = {},
+    record: dict = {},
+    draft: dict = {},
     **kwargs,
-):
+) -> None:
     """Record the _id of the commons search record."""
-
-    # time.sleep(5)
+    record_changes = False
     service = current_rdm_records.records_service
     current_app.logger.debug(
         "Callback fired to record search recid for "
-        f"record {record_id}, draft {draft_id}"
+        f"record {record.get('id')}, draft {draft.get('id')}"
     )
     current_app.logger.debug(f"json in callback: {response_json}")
     current_app.logger.debug("payload in callback:")
     current_app.logger.debug(pformat(payload_object))
-    if response_json.get("_id"):  # No id is returned for updates
+
+    record = record if record else draft
+
+    editing_draft = service.edit(system_identity, id_=draft["id"])
+    new_metadata = editing_draft.to_dict()
+    search_id = new_metadata.get("custom_fields", {}).get(
+        "kcr:commons_search_recid"
+    )
+
+    if record.get("access", {}).get("record") != "public":
+        if search_id:
+            new_metadata["custom_fields"].pop("kcr:commons_search_recid")
+            new_metadata["custom_fields"][
+                "kcr:commons_search_updated"
+            ] = arrow.utcnow().isoformat()
+            record_changes = True
+
+    if response_json.get("_id"):  # NOTE: No id is returned for updates
+        if not search_id or search_id != response_json["_id"]:
+            new_metadata["custom_fields"]["kcr:commons_search_recid"] = (
+                response_json["_id"]
+            )
+            new_metadata["custom_fields"][
+                "kcr:commons_search_updated"
+            ] = arrow.utcnow().isoformat()
+            record_changes = True
+
+    if record_changes:
         try:
-            if record_id:
-                current_app.logger.debug(
-                    f"Record ID: {record_id}, draft ID: {draft_id}"
-                )
-                try:
-                    record_data = service.read(
-                        system_identity, record_id if record_id else draft_id
-                    ).to_dict()
-                except PIDDoesNotExistError:
-                    record_data = service.read_draft(
-                        system_identity, draft_id
-                    ).to_dict()
-                current_app.logger.debug("Record data:")
-                current_app.logger.debug(pformat(record_data))
-                # search_id = record_data.get("custom_fields", {}).get(
-                #     "kcr:commons_search_recid"
-                # )
-                # current_app.logger.debug(f"search_id: {search_id}")
-                # current_app.logger.debug(
-                #     f"response_json['_id']: {response_json['_id']}"
-                # )
-                editing_draft = service.edit(system_identity, record_id)
-                record_data["custom_fields"]["kcr:commons_search_recid"] = (
-                    response_json["_id"]
-                )
-                record_data["custom_fields"]["kcr:commons_search_updated"] = (
-                    arrow.utcnow().isoformat().split(".")[0]
-                )
-                del record_data["revision_id"]
-                current_app.logger.debug("Updating info:")
-                current_app.logger.debug(
-                    record_data["custom_fields"]["kcr:commons_search_recid"]
-                )
-                current_app.logger.debug(
-                    record_data["custom_fields"]["kcr:commons_search_updated"]
-                )
-                updated = service.update_draft(
-                    system_identity,
-                    editing_draft.id,
-                    data=record_data,
-                )
-                current_app.logger.debug("Updated record in callback:")
-                current_app.logger.debug(pformat(updated.data))
-                published = service.publish(system_identity, editing_draft.id)
-                current_app.logger.debug("Published record in callback:")
-                current_app.logger.debug(published.data)
-            elif draft_id:
-                draft_data = (
-                    service.read_draft(system_identity, draft_id)
-                    .to_dict()
-                    .copy()
-                )
-                search_id = draft_data.get("custom_fields", {}).get(
-                    "kcr:commons_search_recid"
-                )
-                current_app.logger.debug(f"search_id: {search_id}")
-                if not search_id or search_id != response_json["_id"]:
-                    draft_data["custom_fields"]["kcr:commons_search_recid"] = (
-                        response_json["_id"]
-                    )
-                    draft_data["custom_fields"][
-                        "kcr:commons_search_updated"
-                    ] = arrow.utcnow().format("YYYY-MM-DD HH:mm:ss")
-                    del draft_data["revision_id"]
-                    current_app.logger.debug("Updating info:")
-                    current_app.logger.debug(pformat(draft_data))
-                    updated = service.update_draft(
-                        system_identity, draft_id, data=draft_data
-                    )
-                    current_app.logger.debug("Updated draft:")
-                    current_app.logger.debug(pformat(updated.data))
+            del new_metadata["revision_id"]
+
+            updated = service.update_draft(
+                system_identity,
+                new_metadata["id"],
+                data=new_metadata,
+            )
+
+            new_draft = service.read_draft(
+                system_identity, draft["id"]
+            ).to_dict()
+
+            published = service.publish(system_identity, draft["id"])
 
         except RecordDeletedException as e:
             current_app.logger.error(
-                f"Record {record_id if record_id else draft_id} has been "
-                f"deleted. Could not record its commons search recid: {e}."
+                f"Record {record.get('id') if record else draft.get('id')} "
+                f"has been deleted. Could not record its commons search recid: "
+                f"{e}."
             )
             # FIXME: do something here
             # record["custom_fields"]["kcr:commons_search_recid"] = json["_id"]
             # return record, draft
         except PIDDoesNotExistError as e:
             current_app.logger.error(
-                f"Record {record_id if record_id else draft_id} cannot "
-                f"be found. Could not record its commons search recid: {e}."
+                f"Record {record.get('id') if record else draft.get('id')} "
+                f"cannot be found. Could not record its commons search recid: "
+                f"{e}."
             )
 
 
@@ -373,15 +353,15 @@ def record_commons_search_recid(
     ignore_result=False,  # retry_backoff=True, retry_kwargs={"max_retries": 5}
 )
 def record_commons_search_collection_recid(
-    response_json,
-    service_type=None,
-    service_method=None,
-    request_url=None,
-    payload_object=None,
-    record_id=None,
-    draft_id=None,
+    response_json: dict,
+    service_type: str = "",
+    service_method: str = "",
+    request_url: str = "",
+    payload_object: dict = {},
+    record_id: str = "",
+    draft_id: str = "",
     **kwargs,
-):
+) -> None:
     """Record the _id of the commons search record."""
 
     service = current_communities.service
@@ -429,29 +409,32 @@ def record_commons_search_collection_recid(
             # FIXME: do something here
 
 
-def choose_record_publish_method(identity, **kwargs):
+def choose_record_publish_method(
+    identity: Identity, record: dict = {}, draft: dict = {}, **kwargs
+) -> str:
     """Choose the correct http method for publish RDMRecordService events."""
-    record = kwargs.get("record")
     http_method = "POST"
-    if record.is_published and record.get("custom_fields", {}).get(
+    if record["is_published"] and record.get("custom_fields", {}).get(
         "kcr:commons_search_recid"
     ):
         http_method = "PUT"
+    if draft.get("access", {}).get("record") != "public":
+        http_method = "DELETE"
     return http_method
 
 
-def record_publish_url_factory(identity, **kwargs):
+def record_publish_url_factory(
+    identity: Identity, record: dict = {}, draft: dict = {}, **kwargs
+) -> str:
     """Create the correct url for publish RDMRecordService events."""
 
     protocol = current_app.config.get("COMMONS_API_REQUEST_PROTOCOL", "http")
     domain = current_app.config.get("KC_WORDPRESS_DOMAIN", "hcommons.org")
-    # current_app.logger.debug("Making URL================================")
-    record = kwargs.get("record")
-    # current_app.logger.debug(f"is_published: {record.is_published}")
-    # current_app.logger.debug(
-    #     f"recid: {record.get('custom_fields', {}).get('kcr:commons_search_recid')}"  # noqa: E501
-    # )
-    if record.is_published and record.get("custom_fields", {}).get(
+
+    # NOTE: This condition catches both updates to published records and
+    # removal of records from the commons search index when they are
+    # no longer publicly visible
+    if draft.get("is_published") and draft.get("custom_fields", {}).get(
         "kcr:commons_search_recid"
     ):
         url = (

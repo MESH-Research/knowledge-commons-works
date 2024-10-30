@@ -52,11 +52,9 @@ def test_draft_creation(
         saml_id="user1",
     )
     user = u.user
-    print(user)
     # identity = u.identity
     # print(identity)
     token = u.allowed_token
-    print(token)
 
     with app.test_client() as client:
         logged_in_client, _ = client_with_login(client, user)
@@ -265,11 +263,9 @@ def test_record_publication(
         saml_id="user1",
     )
     user = u.user
-    print(user)
     # identity = u.identity
     # print(identity)
     token = u.allowed_token
-    print(token)
 
     with app.test_client() as client:
         logged_in_client, _ = client_with_login(client, user)
