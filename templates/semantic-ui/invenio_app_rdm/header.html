@@ -63,6 +63,7 @@ MIT License; see LICENSE file for more details.
         data-external-identifiers='{{ external_identifiers | tojson }}'
         data-kc-help-url="{{ config.get('KC_HELP_URL') }}"
         data-kc-faq-url="{{ config.get('KC_FAQ_URL') }}"
+        data-kc-works-help-url="{{ config.get('KC_WORKS_HELP_URL') }}"
         data-kc-wordpress-domain="{{ config.get('KC_WORDPRESS_DOMAIN') }}"
         data-login-url="{{ url_for_security('login', next=request.path) }}"
         data-logout-url="{{ url_for_security('logout') }}"

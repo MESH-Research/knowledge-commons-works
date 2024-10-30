@@ -339,6 +339,7 @@ const MainMenu = ({
   currentUserEmail,
   externalIdentifiers,
   kcWordpressDomain,
+  kcWorksHelpUrl,
   kcFaqUrl,
   loginURL,
   logoutURL,
@@ -473,7 +474,7 @@ const MainMenu = ({
         <div className={`item`}>
           <IconMenuItem
             text="Help and support"
-            url={kcFaqUrl}
+            url={kcWorksHelpUrl}
             icon="question circle"
           />
         </div>
@@ -547,6 +548,7 @@ MainMenu.propTypes = {
   externalIdentifiers: PropTypes.object,
   loginURL: PropTypes.string,
   logoutURL: PropTypes.string,
+  kcWorksHelpUrl: PropTypes.string,
   mainMenuItems: PropTypes.array,
   notificationsMenuItems: PropTypes.array,
   plusMenuItems: PropTypes.array,
@@ -572,6 +574,7 @@ const currentUserEmail = element.dataset.currentUserEmail;
 const externalIdentifiers = JSON.parse(element.dataset.externalIdentifiers);
 const kcWordpressDomain = element.dataset.kcWordpressDomain;
 const kcFaqUrl = element.dataset.kcFaqUrl;
+const kcWorksHelpUrl = element.dataset.kcWorksHelpUrl;
 const loginURL = element.dataset.loginUrl;
 const logoutURL = element.dataset.logoutUrl;
 const mainMenuItems = JSON.parse(element.dataset.mainMenuItems);
@@ -605,6 +608,7 @@ ReactDOM.render(
     currentUserEmail={currentUserEmail}
     externalIdentifiers={externalIdentifiers}
     kcFaqUrl={kcFaqUrl}
+    kcWorksHelpUrl={kcWorksHelpUrl}
     kcWordpressDomain={kcWordpressDomain}
     loginURL={loginURL}
     logoutURL={logoutURL}
