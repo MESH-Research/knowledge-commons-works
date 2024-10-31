@@ -338,9 +338,9 @@ const MainMenu = ({
   adminMenuItems,
   currentUserEmail,
   externalIdentifiers,
-  kcWordpressDomain,
-  kcWorksHelpUrl,
   kcFaqUrl,
+  kcWorksHelpUrl,
+  kcWordpressDomain,
   loginURL,
   logoutURL,
   mainMenuItems,
@@ -353,8 +353,8 @@ const MainMenu = ({
   themeSitename,
   themeSearchbarEnabled,
   userAuthenticated,
-  userAdministrator,
   userId,
+  userAdministrator,
 }) => {
   const mainItems = mainMenuItems
     .sort((a, b) => a.order - b.order)
