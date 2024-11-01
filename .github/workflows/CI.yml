@@ -57,7 +57,7 @@ jobs:
       - name: Label production
         if: github.event_name == 'push' && github.ref == 'refs/heads/production'
         run: |
-          echo "RELEASE_VERSION=production" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=latest" >> $GITHUB_ENV
       - name: Label staging
         if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
         run: |
@@ -115,13 +115,6 @@ jobs:
         run: |
           docker build . --file Dockerfile --platform=linux/amd64 --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $ECR_REGISTRY/kcworks:$RELEASE_VERSION
           docker image ls
-
-        # - name: If release version is numbered, tag it as latest as well for docker hub
-        # if: env.RELEASE_VERSION != 'latest'
-        # env:
-        #   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        # run: |
-        #   docker tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
 
       - name: Push Image to Docker Hub
         env:
