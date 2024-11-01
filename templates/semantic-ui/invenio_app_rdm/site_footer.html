@@ -15,7 +15,7 @@
         {%- block footer_bottom_right %}
 
           <div class="eight wide column middle right aligned">
-            {% set support_url = 'https://sustaining.' + config.get("KC_WORDPRESS_DOMAIN") +  '/financial/ways-to-give/' %}
+            {% set support_url = 'https://about.' + config.get("KC_WORDPRESS_DOMAIN") +  '/contribute/' %}
             {% trans support = support_url %}
               <a href="{{ support }}">Support the Commons</a>
             {% endtrans %}
