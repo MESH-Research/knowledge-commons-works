@@ -7,11 +7,15 @@ on:
   push:
     branches:
       - "main"
+      - "production"
+      - "staging"
     tags:
       - release*
   pull_request:
     branches:
       - main
+      - production
+      - staging
 
 env:
   DOCKER_BUILDKIT: 1
@@ -50,6 +54,14 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           echo "RELEASE_VERSION=latest" >> $GITHUB_ENV
+      - name: Label production
+        if: github.event_name == 'push' && github.ref == 'refs/heads/production'
+        run: |
+          echo "RELEASE_VERSION=production" >> $GITHUB_ENV
+      - name: Label staging
+        if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
+        run: |
+          echo "RELEASE_VERSION=staging" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -104,12 +116,12 @@ jobs:
           docker build . --file Dockerfile --platform=linux/amd64 --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $ECR_REGISTRY/kcworks:$RELEASE_VERSION
           docker image ls
 
-      - name: If release version is numbered, tag it as latest as well for docker hub
-        if: env.RELEASE_VERSION != 'latest'
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        run: |
-          docker tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
+        # - name: If release version is numbered, tag it as latest as well for docker hub
+        # if: env.RELEASE_VERSION != 'latest'
+        # env:
+        #   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        # run: |
+        #   docker tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:latest
 
       - name: Push Image to Docker Hub
         env:
@@ -118,6 +130,7 @@ jobs:
           docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME --all-tags
 
       - name: Push image to Amazon ECR
+        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
