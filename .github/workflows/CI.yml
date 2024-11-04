@@ -57,7 +57,7 @@ jobs:
       - name: Label production
         if: github.event_name == 'push' && github.ref == 'refs/heads/production'
         run: |
-          echo "RELEASE_VERSION=latest" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=production" >> $GITHUB_ENV
       - name: Label staging
         if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
         run: |
