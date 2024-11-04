@@ -123,7 +123,7 @@ jobs:
           docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME --all-tags
 
       - name: Push image to Amazon ECR
-        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging'
+        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging' || env.RELEASE_VERSION == 'latest'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
