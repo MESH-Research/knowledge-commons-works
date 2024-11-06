@@ -594,7 +594,7 @@ const userId = element.dataset.userId;
 const userAuthenticated =
   element.dataset.userAuthenticated === "True" ? true : false;
 const userAdministrator = JSON.parse(element.dataset.userRoles).includes(
-  "administrator"
+  "administration"
 )
   ? true
   : false;
