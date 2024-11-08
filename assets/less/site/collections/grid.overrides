@@ -227,7 +227,7 @@
           margin-bottom: 0;
         }
     }
-      .row:not(.default-community):not(.additional-communities) {
+      .row:not(.default-community):not(.additional-communities):not(.manage-communities) {
         padding: 0.5rem 1rem 0.5rem 0;
         font-size: 1rem;
         background-color: transparent;
@@ -248,7 +248,8 @@
           border-bottom: 1px solid @sidebarBorderColor;
         }
       }
-      .row.additional-communities {
+      .row.additional-communities,
+      .row.manage-communities {
         background-color: @sidebarBackgroundColor;
         padding: 0.5rem;
         padding-left: 1rem;

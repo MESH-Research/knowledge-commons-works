@@ -20,6 +20,7 @@
     @media all and (max-width: @computerBreakpoint) {
       display: none !important;
     }
+    // FIXME: allow for hiding on larger screens
     // @media all and (min-width: @widescreenMonitorBreakpoint) {
     //   display: none !important;
     // }
@@ -28,6 +29,14 @@
 .mobile.hidden {
   @media all and (max-width: @largestMobileScreen) {
     display: none !important;
+  }
+}
+
+#communities.sidebar-container {
+  .manage-collections-text.computer.only {
+    @media all and (min-width: @largeMonitorBreakpoint) {
+      display: none !important;
+    }
   }
 }
 
