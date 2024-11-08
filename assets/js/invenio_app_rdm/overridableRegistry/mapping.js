@@ -32,6 +32,7 @@ import { PublicMembersResultsItemWithCommunity } from "./collections/members/pub
 import { PublisherField } from "./fields/PublisherField";
 import { RDMRecordMultipleSearchBarElement } from "./search/RDMRecordMultipleSearchBarElement";
 import RecordsResultsListItem from "./search/RecordsResultsListItem";
+import { RecordResultsListItemDashboard } from "./search/RecordsResultsListItemDashboard";
 import { RequestMetadata } from "./requests/RequestMetadata";
 import { RequestsResultsItemTemplateDashboard } from "./user_dashboard/RequestsResultsItemTemplateDashboard";
 import { RequestsResultsItemTemplateWithCommunity } from "./collections/members/requests/RequestsResultsItemTemplate";
@@ -87,7 +88,7 @@ export const overriddenComponents = {
   "InvenioAppRdm.DashboardRequests.SearchApp.layout": DashboardRequestsSearchLayoutWithApp,
   "InvenioAppRdm.DashboardRequests.ResultsList.item": RequestsResultsItemTemplateDashboard,
   "InvenioAppRdm.DashboardUploads.SearchApp.layout": DashboardUploadsSearchLayout,
-  "InvenioAppRdm.DashboardUploads.ResultsList.item": RecordsResultsListItem,
+  "InvenioAppRdm.DashboardUploads.ResultsList.item": RecordResultsListItemDashboard,
   "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
   "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
   "InvenioAppRdm.Deposit.ContributorsField.container": CreatibutorsField,
