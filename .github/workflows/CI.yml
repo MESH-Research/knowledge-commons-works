@@ -109,7 +109,7 @@ jobs:
       #     key: local-docker-directory
 
       - name: Build AMD Image for production or main
-        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'main'
+        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest'
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
