@@ -86,6 +86,9 @@ logs/*
 **/logs/*
 **/test_logs/*
 nohup.out
+record_importer_created_records.jsonl
+record_importer_failed_records.jsonl
+record_importer_touched_records.jsonl
 record_importer_created_records*.jsonl
 record_importer_failed_records*.jsonl
 record_importer_touched_records*.jsonl
