@@ -292,6 +292,25 @@
   color: @sidebarHeaderColor !important;
   border: 1px solid @sidebarBorderColor;
   box-shadow: none;
+
+  &.secondary {
+    background-color: @secondaryBackgroundColor !important;
+    color: @secondaryTextColor !important;
+    box-shadow: none !important;
+    border: 1px solid @warningBorderColor;
+  }
+  &.secondary.basic {
+    background-color: transparent !important;
+    color: @warningTextColor !important;
+    .icon {
+      color: @secondaryColor !important;
+    }
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: @secondaryBackgroundColor !important;
+    }
+  }
 }
 
 #record-export {

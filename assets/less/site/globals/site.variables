@@ -153,10 +153,12 @@
 --------------------*/
 
 @primaryColor: @verdigrisDark;
-@secondaryColor: @gold;
-
 @primaryDarkenColor: darken(@primaryColor, 10%);
 @primaryTextColor: @verdigrisDark !important;
+
+@secondaryColor: @gold;
+@secondaryTextColor: #8d7313; // @darkGold;
+@secondaryBackgroundColor: @gold10;
 
 // backwards compatibility
 @brandColor: @primaryColor;
