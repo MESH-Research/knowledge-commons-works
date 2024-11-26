@@ -133,7 +133,7 @@ const ResultOptions = ({
             label={(cmp) => (
               <>
                 {cmp}{" "}
-                <span className="tablet computer widescreen large monitor only">
+                <span className="tablet computer widescreen large-monitor only">
                   &nbsp;works{" "}
                 </span>
                 found

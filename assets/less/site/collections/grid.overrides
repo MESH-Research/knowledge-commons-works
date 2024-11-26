@@ -226,8 +226,15 @@
           padding-right: 1rem;
           margin-bottom: 0;
         }
-    }
-      .row:not(.default-community):not(.additional-communities) {
+      }
+      .row.manage-communities {
+        background-color: transparent !important;
+        padding: 0;
+        border: none !important;
+      }
+      .row:not(.default-community):not(.additional-communities):not(
+          .manage-communities
+        ) {
         padding: 0.5rem 1rem 0.5rem 0;
         font-size: 1rem;
         background-color: transparent;
@@ -247,11 +254,21 @@
           border-radius: @defaultBorderRadius @defaultBorderRadius;
           border-bottom: 1px solid @sidebarBorderColor;
         }
+        & + .row.manage-communities {
+          .ui.button {
+            border-top: none !important;
+            border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
+            &:hover,
+            &:active,
+            &:focus {
+              border-top: 1px solid @mint;
+            }
+          }
+        }
       }
       .row.additional-communities {
         background-color: @sidebarBackgroundColor;
-        padding: 0.5rem;
-        padding-left: 1rem;
+        padding: 0;
         border: 1px solid @sidebarBorderColor;
         border-top: none;
         border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
@@ -261,6 +278,28 @@
         &.open {
           border-top: 1px solid @sidebarBorderColor;
           justify-content: flex-end;
+        }
+        .button {
+          width: 100%;
+          text-align: left;
+          border: none !important;
+          box-shadow: none !important;
+          padding-left: 1rem;
+          margin: 0;
+        }
+        & + .row.manage-communities {
+          .ui.button {
+            border-top: none !important;
+            border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
+            &:hover,
+            &:active,
+            &:focus {
+              border-top: 1px solid @mint;
+            }
+          }
+        }
+        &:has(+ .row.manage-communities) {
+          border-radius: 0 0 0 0 !important;
         }
       }
     }

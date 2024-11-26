@@ -4,30 +4,40 @@
 // Responsive classes
 
 :not(.ui.grid).only {
-  &.large.monitor:not(.computer) {
+  &.large-monitor:not(.computer) {
     @media all and (max-width: @largeMonitorBreakpoint) {
       display: none !important;
     }
   }
 
-  &.widescreen:not(.large.monitor):not(.computer) {
+  &.widescreen:not(.large-monitor):not(.computer) {
     @media all and (max-width: @widescreenMonitorBreakpoint) {
       display: none !important;
     }
   }
 
-  &.computer:not(.large.monitor):not(.large.screen):not(.tablet):not(.mobile) {
+  &.computer:not(.large-monitor):not(.widescreen):not(.tablet):not(.mobile) {
     @media all and (max-width: @computerBreakpoint) {
       display: none !important;
     }
+    // FIXME: allow for hiding on larger screens
     // @media all and (min-width: @widescreenMonitorBreakpoint) {
     //   display: none !important;
     // }
   }
 }
+
 .mobile.hidden {
   @media all and (max-width: @largestMobileScreen) {
     display: none !important;
+  }
+}
+
+#communities.sidebar-container {
+  .manage-collections-text.computer.only {
+    @media all and (min-width: @largeMonitorBreakpoint) {
+      display: none !important;
+    }
   }
 }
 
@@ -665,22 +675,6 @@ html.cover-page {
         .ui.button.icon.right.labeled {
           padding-left: 1rem !important;
         }
-        .ui.button {
-          text-align: left;
-        }
-        .menu .item {
-          width: 100%;
-          // background-color: transparent;
-          .text {
-            overflow-wrap: anywhere;
-            word-break: break-all;
-          }
-        }
-        .menu .item .description.filesize {
-          display: block;
-          float: none;
-          margin-left: 0;
-        }
       }
       #record-details-download {
         padding-right: 0;
@@ -743,59 +737,6 @@ html.cover-page {
     }
   }
 
-  // mobile menu
-
-  .ui.menu.sticky.bottom {
-    // FIXME: dropdown submenu breaks this: position: sticky;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    justify-content: center;
-    background-color: transparent;
-    .item {
-      background-color: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(2px);
-      border-top: 2px solid @white;
-      &.active {
-        background-color: rgba(0, 0, 0, 1);
-      }
-      &:first-child {
-        border-radius: @defaultBorderRadius 0 0 0;
-        border-left: 2px solid @white;
-      }
-      &:last-child {
-        border-radius: 0 @defaultBorderRadius 0 0;
-        border-right: 2px solid @white;
-      }
-      &#record-details-export.ui.dropdown {
-        .menu {
-          left: -75%;
-        }
-      }
-      &#record-details-download.ui.dropdown {
-        .menu {
-          left: -250%;
-          .description.filesize {
-            display: block;
-            float: none;
-            margin-left: 0;
-            margin-top: 0.5rem;
-          }
-          &::after {
-            left: 81%;
-          }
-        }
-      }
-      &.ui.dropdown {
-        .menu {
-          left: -200%;
-          backdrop-filter: none;
-          font-size: @medium;
-        }
-      }
-    }
-  }
 
   // previewer
 

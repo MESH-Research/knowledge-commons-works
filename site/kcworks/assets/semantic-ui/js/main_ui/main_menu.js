@@ -4,22 +4,22 @@ import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { Button, Label, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
-const MenuItem = ({ text, icon, url }) => {
+const MenuItem = ({ text, icon, url, tabIndex }) => {
   return (
-    <a role="button" href={url} className="ui ">
+    <a role="button" href={url} className="ui " tabIndex={tabIndex}>
       <i className={`${icon} icon fitted`}></i>
       <span className="inline">{i18next.t(text)}</span>
     </a>
   );
 };
 
-const IconMenuItem = ({ text, icon, url, badge }) => {
+const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
   return (
     <>
       <Popup
         content={i18next.t(text)}
         trigger={
-          <a role="button" href={url} className="ui computer widescreen large monitor only">
+          <a role="button" href={url} className="ui computer widescreen large-monitor only" tabIndex={tabIndex}>
             <i className={`${icon} icon fitted`}></i>
             {badge !== undefined && (
               <Label className="unread-notifications-badge" color="orange" floating>
@@ -30,7 +30,7 @@ const IconMenuItem = ({ text, icon, url, badge }) => {
         }
       />
 
-      <a role="button" href={url} className="ui tablet mobile only">
+      <a role="button" href={url} className="ui tablet mobile only" tabIndex={tabIndex}>
         <i className={`${icon} icon fitted`}></i>
         <span className="inline">{i18next.t(text)}</span>
       </a>
@@ -38,24 +38,24 @@ const IconMenuItem = ({ text, icon, url, badge }) => {
   );
 };
 
-const CollapsingMenuItem = ({ text, icon, url }) => {
+const CollapsingMenuItem = ({ text, icon, url, tabIndex }) => {
   return (
     <>
       <Popup
         content={i18next.t(text)}
         trigger={
-          <a role="button" href={url} className="ui computer only">
+          <a role="button" href={url} className="ui computer only" tabIndex={tabIndex}>
             <i className={`${icon} icon fitted`}></i>
           </a>
         }
       />
 
-      <a role="button" href={url} className="ui widescreen large monitor only">
+      <a role="button" href={url} className="ui widescreen large-monitor only" tabIndex={tabIndex}>
         <i className={`${icon} icon fitted`}></i>
         <span className="inline">{i18next.t(text)}</span>
       </a>
 
-      <a role="button" href={url} className="ui mobile only">
+      <a role="button" href={url} className="ui mobile only" tabIndex={tabIndex}>
         <i className={`${icon} icon fitted`}></i>
         <span className="inline">{i18next.t(text)}</span>
       </a>
@@ -63,7 +63,7 @@ const CollapsingMenuItem = ({ text, icon, url }) => {
   );
 };
 
-const SubMenu = ({ item }) => {
+const SubMenu = ({ item, index }) => {
   return (
     <div className={`dropdown ${item.active ? " active" : ""}`}>
       <a
@@ -73,6 +73,7 @@ const SubMenu = ({ item }) => {
         aria-haspopup="true"
         aria-expanded="false"
         href={item.url}
+        tabIndex={index}
       >
         {/* // FIXME: safe filter??? */}
         {item.text.replace(/<[^>]*>/g, '')}
@@ -94,7 +95,7 @@ const SubMenu = ({ item }) => {
   );
 };
 
-const PlusMenu = ({ plusMenuItems }) => {
+const PlusMenu = ({ plusMenuItems, baseTabIndex }) => {
   return (
     //   {# {%- if plus_menu_items %}
     //     <div role="menuitem" class="rdm-plus-menu rdm-plus-menu-responsive ui dropdown floating pr-15 computer only" aria-label="{{ _("Quick create") }}">
@@ -129,6 +130,7 @@ const PlusMenu = ({ plusMenuItems }) => {
         role="menuitem"
         aria-label={i18next.t("Quick create")}
         href={plusMenuItems[0].url}
+        tabIndex={baseTabIndex}
       >
         <i className="fitted upload icon"></i>
         <span className="inline">{i18next.t("Add a work")}</span>
@@ -142,6 +144,7 @@ const UserMenu = ({
   logoutURL,
   readableEmail,
   settingsMenuItems,
+  tabIndex,
 }) => {
   const settingsItems = settingsMenuItems
     .sort((a, b) => a.order - b.order)
@@ -156,7 +159,7 @@ const UserMenu = ({
       <div
         role="menuitem"
         id="user-profile-dropdown"
-        className="ui item floating dropdown computer widescreen large monitor only"
+        className="ui item floating dropdown computer widescreen large-monitor only"
       >
         <div
           as="a"
@@ -166,7 +169,8 @@ const UserMenu = ({
           aria-controls="user-settings-menu"
           aria-expanded="false"
           aria-haspopup="menu"
-          aria-label="{i18next.t('Settings')}"
+          aria-label={i18next.t('Settings')}
+          tabIndex={tabIndex}
         >
           {/* <span> */}
             <i className="cog icon"></i>
@@ -186,7 +190,7 @@ const UserMenu = ({
               role="menuitem"
               className="item"
               href={item.url}
-              tabIndex="-1"
+              tabIndex={-1}
               key={index}
             >
               {item.text.replace(/<[^>]*>/g, '')}
@@ -200,7 +204,7 @@ const UserMenu = ({
               role="menuitem"
               className="item"
               href={item.url}
-              tabIndex="-1"
+              tabIndex={-1}
               key={index}
             >
               {item.text.replace(/<[^>]*>/g, '')}
@@ -215,7 +219,7 @@ const UserMenu = ({
         <h2 className="ui small header">{i18next.t("My account")}</h2>
 
         {settingsItems.map((item, index) => (
-          <a role="menuitem" className="item" href={item.url} key={index}>
+          <a role="menuitem" className="item" href={item.url} key={index} tabIndex={0}>
             {item.text.replace(/<[^>]*>/g, '')}
           </a>
         ))}
@@ -223,13 +227,13 @@ const UserMenu = ({
         <div className="ui divider"></div>
 
         {adminItems.map((item, index) => (
-          <a role="menuitem" className="item" href={item.url} key={index}>
+          <a role="menuitem" className="item" href={item.url} key={index} tabIndex={0}>
             {item.text.replace(/<[^>]*>/g, '')}
           </a>
         ))}
         {adminItems?.length > 0 && <div className="ui divider"></div>}
 
-        <a role="menuitem" className="item" href={logoutURL}>
+        <a role="menuitem" className="item" href={logoutURL} tabIndex={0}>
           <i className="fitted sign-out icon"></i>
           {i18next.t("Log out")}
         </a>
@@ -250,6 +254,7 @@ const LoginMenu = ({
   settingsMenuItems,
   userAdministrator,
   userAuthenticated,
+  tabIndex,
 }) => {
   const readableEmail =
     currentUserEmail.length >= 31
@@ -263,7 +268,7 @@ const LoginMenu = ({
     !!accountsEnabled &&
     (!userAuthenticated ? (
       <form>
-        <a href={loginURL} className="ui basic button">
+        <a href={loginURL} className="ui basic button" tabIndex={tabIndex}>
           <i className="fitted sign-in icon"></i>
           {i18next.t("Log in")}
         </a>
@@ -280,6 +285,7 @@ const LoginMenu = ({
         logoutURL={logoutURL}
         readableEmail={readableEmail}
         settingsMenuItems={settingsMenuItems}
+        tabIndex={tabIndex}
       />
     ) : (
       <>
@@ -298,6 +304,7 @@ const LoginMenu = ({
                 text="My KC profile"
                 url={profileURL}
                 icon="address card outline"
+                tabIndex={tabIndex}
               />
             </>
           ) : (
@@ -312,7 +319,7 @@ const LoginMenu = ({
 const Brand = ({ themeLogoURL, themeSitename }) => {
   const siteNameOverride = "Works";
   return themeLogoURL !== "" ? (
-    <a className="logo-link" href="/">
+    <a className="logo-link" href="/" aria-label={i18next.t(siteNameOverride ? siteNameOverride : themeSitename)} tabIndex="0">
       <img
         className="ui image rdm-logo"
         src={`${themeLogoURL}`}
@@ -439,14 +446,14 @@ const MainMenu = ({
             )} */}
 
         <div className={`item`}>
-          <MenuItem text="Search" url={"/search"} icon="search" />
+          <MenuItem text="Search" url={"/search"} icon="search" tabIndex="0" />
         </div>
 
         {/* "Main" menu, including collections */}
         {mainItems.map((item, index) =>
           !!item.children ? (
             <div className="item" key={index}>
-              <SubMenu item={item} />
+              <SubMenu item={item} index={0} />
             </div>
           ) : (
             <div
@@ -460,13 +467,14 @@ const MainMenu = ({
                 }`}
                 icon={item.text === "Communities" ? "copy" : item.icon}
                 key={index}
+                tabIndex={0}
               />
             </div>
           )
         )}
 
         {/* "Plus" menu including adding a record */}
-        <PlusMenu plusMenuItems={plusMenuItems} />
+        <PlusMenu plusMenuItems={plusMenuItems} baseTabIndex={0} />
 
         <div className="menu item spacer mobile tablet only">
         </div>
@@ -476,6 +484,7 @@ const MainMenu = ({
             text="Help and support"
             url={kcWorksHelpUrl}
             icon="question circle"
+            tabIndex={0}
           />
         </div>
 
@@ -484,6 +493,7 @@ const MainMenu = ({
             text="KC Home"
             url={`https://${kcWordpressDomain}`}
             icon="home"
+            tabIndex={0}
           />
         </div>
 
@@ -503,6 +513,7 @@ const MainMenu = ({
             profilesURL={profilesURL}
             settingsMenuItems={settingsMenuItems}
             userAdministrator={userAdministrator}
+            tabIndex={0}
           />
 
           {!!accountsEnabled &&
@@ -513,6 +524,7 @@ const MainMenu = ({
                   text={item.text}
                   url={item.url}
                   icon={item.text === "My dashboard" ? "user" : item.icon}
+                  tabIndex={0}
                 />
               </div>
             ))}
@@ -526,13 +538,14 @@ const MainMenu = ({
                   url={item.url}
                   icon={item.text === "requests" ? "inbox" : item.icon}
                   badge={unreadNotifications?.length > 0 ? unreadNotifications?.length : undefined}
+                  tabIndex={0}
                 />
               </div>
             ))}
 
           {!!accountsEnabled && !!userAuthenticated && (
             <div className="item">
-              <IconMenuItem text="Log out" url={logoutURL} icon="sign-out" />
+              <IconMenuItem text="Log out" url={logoutURL} icon="sign-out" tabIndex={0} />
             </div>
           )}
         </div>
@@ -594,7 +607,7 @@ const userId = element.dataset.userId;
 const userAuthenticated =
   element.dataset.userAuthenticated === "True" ? true : false;
 const userAdministrator = JSON.parse(element.dataset.userRoles).includes(
-  "administrator"
+  "administration"
 )
   ? true
   : false;

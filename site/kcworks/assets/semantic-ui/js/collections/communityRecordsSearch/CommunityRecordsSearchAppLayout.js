@@ -22,7 +22,7 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
           <Grid.Column computer={12} tablet={16} mobile={16}>
               <SearchBar buildUID={buildUID} placeholder={i18next.t("Search records in collection...")} />
           </Grid.Column>
-          <Grid.Column width={4} className="computer widescreen large monitor only">
+          <Grid.Column width={4} className="computer widescreen large-monitor only">
           </Grid.Column>
         </Grid.Row>
         <Grid.Row className="community-record-search-options search-options-row pt-0">
@@ -49,12 +49,12 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
               <Count
                 label={(cmp) => (
                   <Trans key="communityRecordsSearch" count={cmp}>
-                    {cmp} <span className="tablet computer widescreen large monitor only">&nbsp;works </span>found
+                    {cmp} <span className="tablet computer widescreen large-monitor only">&nbsp;works </span>found
                   </Trans>
                 )}
               />
             </Grid.Column>
-            <Grid.Column width={4} className="computer widescreen large monitor only">
+            <Grid.Column width={4} className="computer widescreen large-monitor only">
             </Grid.Column>
         </Grid.Row>
 
