@@ -1,5 +1,28 @@
 /* Item theme overrides */
 
+.ui.dropdown.stacked-items > .menu > .item {
+  display: flex;
+  justify-content: space-between;
+  & > .description {
+    order: 2;
+  }
+  & > .text {
+    order: 1;
+  }
+}
+
+.ui.dropdown.stacked-content > .menu > .item {
+  display: flex;
+  align-items: baseline;
+  .content {
+    display: flex;
+    flex-direction: column;
+    .header {
+      line-height: 1.5rem;
+    }
+  }
+}
+
 .ui.items {
   &.carousel-items {
     overflow: hidden;

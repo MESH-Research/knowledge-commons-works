@@ -58,14 +58,14 @@ export const CommunitiesSearchLayout = ({ config, appName }) => {
         {/* End mobile/tablet search header */}
 
         {/* Desktop search header */}
-        <Grid.Row className="computer widescreen large monitor only communities-search-bar">
+        <Grid.Row className="computer widescreen large-monitor only communities-search-bar">
           <Grid.Column width={12}>
             <SearchBar placeholder={i18next.t("Search collections...")} />
           </Grid.Column>
           <Grid.Column width={4} />
         </Grid.Row>
         {config.sortOptions && (
-          <Grid.Row className="computer widescreen large monitor only communities-search-options">
+          <Grid.Row className="computer widescreen large-monitor only communities-search-options">
             <Grid.Column width={12}>
               <Sort
                 values={config.sortOptions}

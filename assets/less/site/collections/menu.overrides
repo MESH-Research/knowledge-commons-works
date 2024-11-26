@@ -49,6 +49,11 @@
         @media screen and (max-width: @largestTabletScreen) {
           padding: 0;
         }
+        &:hover,
+        &:focus,
+        &:active {
+          z-index: 100;
+        }
         & > span {
           padding-left: 1.5rem;
           padding-right: 1.5rem;
@@ -60,10 +65,10 @@
           border-color: @sidebarBorderColor;
           height: 1px;
           color: @sidebarBorderColor;
-          &::before{
+          &::before {
             content: none;
           }
-          &::after{
+          &::after {
             content: none;
           }
         }
@@ -244,6 +249,7 @@
   }
 }
 
+
 .communities-settings,
 .communities-members {
   .ui.vertical.menu {
@@ -271,3 +277,63 @@
     }
   }
 }
+
+
+// detail page mobile menu
+
+.ui.menu.sticky.bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    justify-content: center;
+    background-color: transparent;
+    .item {
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(2px);
+      border-top: 2px solid @white;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: #333;
+        z-index: 100;
+      }
+      &.active {
+        background-color: rgba(0, 0, 0, 1);
+      }
+      &:first-child {
+        border-radius: @defaultBorderRadius 0 0 0;
+        border-left: 2px solid @white;
+      }
+      &:last-child {
+        border-radius: 0 @defaultBorderRadius 0 0;
+        border-right: 2px solid @white;
+      }
+      &#record-details-export.ui.dropdown {
+        .menu {
+          left: -75%;
+        }
+      }
+      &#record-details-download.ui.dropdown {
+        .menu {
+          left: -250%;
+          .description.filesize {
+            display: block;
+            float: none;
+            margin-left: 0;
+            margin-top: 0.5rem;
+          }
+          &::after {
+            left: 81%;
+          }
+        }
+      }
+      &.ui.dropdown {
+        .menu {
+          left: -200%;
+          backdrop-filter: none;
+          font-size: @medium;
+        }
+      }
+    }
+  }

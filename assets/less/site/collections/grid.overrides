@@ -228,27 +228,9 @@
         }
       }
       .row.manage-communities {
-        font-weight: bold;
         background-color: transparent !important;
-        border: 1px solid @warningBorderColor !important;
-        color: @warningTextColor !important;
-        &:hover,
-        &:active,
-        &:focus {
-          background-color: @warningBackgroundColor !important;
-        }
-        > .dropdown > .icon {
-          color: @secondaryColor !important;
-          float: right;
-        }
-        &.add {
-          border-top: 1px solid @warningBorderColor !important;
-          &:hover,
-          &:active,
-          &:focus {
-            border-top: 1px solid @mint;
-          }
-        }
+        padding: 0;
+        border: none !important;
       }
       .row:not(.default-community):not(.additional-communities):not(
           .manage-communities
@@ -273,19 +255,20 @@
           border-bottom: 1px solid @sidebarBorderColor;
         }
         & + .row.manage-communities {
-          border-top: none !important;
-          &:hover,
-          &:active,
-          &:focus {
-            border-top: 1px solid @mint;
+          .ui.button {
+            border-top: none !important;
+            border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
+            &:hover,
+            &:active,
+            &:focus {
+              border-top: 1px solid @mint;
+            }
           }
         }
       }
-      .row.additional-communities,
-      .row.manage-communities {
+      .row.additional-communities {
         background-color: @sidebarBackgroundColor;
-        padding: 0.5rem;
-        padding-left: 1rem;
+        padding: 0;
         border: 1px solid @sidebarBorderColor;
         border-top: none;
         border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
@@ -295,6 +278,28 @@
         &.open {
           border-top: 1px solid @sidebarBorderColor;
           justify-content: flex-end;
+        }
+        .button {
+          width: 100%;
+          text-align: left;
+          border: none !important;
+          box-shadow: none !important;
+          padding-left: 1rem;
+          margin: 0;
+        }
+        & + .row.manage-communities {
+          .ui.button {
+            border-top: none !important;
+            border-radius: 0 0 @defaultBorderRadius @defaultBorderRadius;
+            &:hover,
+            &:active,
+            &:focus {
+              border-top: 1px solid @mint;
+            }
+          }
+        }
+        &:has(+ .row.manage-communities) {
+          border-radius: 0 0 0 0 !important;
         }
       }
     }

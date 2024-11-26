@@ -198,11 +198,11 @@ class CommunitiesCarousel extends Component {
               className="carousel rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile"
             >
               <Grid container className="rel-mb-0">
-                <Grid.Column width="2" className="tablet computer widescreen large monitor only" />
-                <Grid.Column computer="12" tablet="12" mobile="16" widescreen="12" largeMonitor="12" className="twelve wide large monitor mb-15">
+                <Grid.Column width="2" className="tablet computer widescreen large-monitor only" />
+                <Grid.Column computer="12" tablet="12" mobile="16" widescreen="12" largeMonitor="12" className="twelve wide large-monitor mb-15">
                 <Header as="h2">{title}</Header>
                 </Grid.Column>
-                <Grid.Column width="2" className="tablet computer widescreen large monitor only" />
+                <Grid.Column width="2" className="tablet computer widescreen large-monitor only" />
               </Grid>
 
               <Grid container onFocus={this.stopCarousel} onBlur={this.startCarousel}>

@@ -260,7 +260,7 @@ const CommunityDetailsHeader = ({
           )}
         </div> */}
 
-      <div className="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary computer tablet widescreen large monitor only">
+      <div className="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary computer tablet widescreen large-monitor only">
         {menu_items.map((item) => (
           <a
             key={item.name}
