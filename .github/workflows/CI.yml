@@ -117,13 +117,13 @@ jobs:
           docker build . --file Dockerfile --platform=linux/amd64 --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $ECR_REGISTRY/kcworks:$RELEASE_VERSION
           docker image ls
 
-      - name: Build ARM Image for staging
+      - name: Build AMD Image for staging
         if: env.RELEASE_VERSION == 'staging'
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker build . --file Dockerfile --platform=linux/arm64 --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $ECR_REGISTRY/kcworks:$RELEASE_VERSION
+          docker build . --file Dockerfile --platform=linux/amd64 --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $ECR_REGISTRY/kcworks:$RELEASE_VERSION
           docker image ls
 
       - name: Push Image to Docker Hub
