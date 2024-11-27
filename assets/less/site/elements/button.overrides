@@ -302,7 +302,7 @@
 
   &.secondary {
     background-color: @secondaryBackgroundColor !important;
-    color: @secondaryTextColor !important;
+    color: @warningTextColor !important;
     box-shadow: none !important;
     border: 1px solid @warningBorderColor;
   }
