@@ -459,9 +459,6 @@ textarea {
             .ui.message {
               display: flex;
               align-items: center;
-              .info.icon {
-                font-size: @huge;
-              }
               p {
                 margin: 0;
               }
@@ -496,8 +493,15 @@ textarea {
             align-items: center;
             > .field:first-child > .grid {
               align-items: center;
+              margin-right: 1rem;
+              overflow-x: auto;
+              max-height: 10rem;
               .ui-small-header {
                 margin-top: 0;
+              }
+              .community-header-logo {
+                max-width: 2.5rem;
+                max-height: 2.5rem;
               }
             }
           }

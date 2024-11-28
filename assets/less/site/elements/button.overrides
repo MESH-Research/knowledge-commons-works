@@ -27,13 +27,13 @@
 
 .ui.buttons > .ui.button:not(.inverted),
 .ui.buttons:not(.inverted) > .ui.button,
-.ui.button {
+.ui.button,
+.ui.info.message .button,
+.ui.info.message .ui.button.icon {
   background-color: @white;
   color: @ivy;
   box-shadow: 0px 0px 0px 1px @verdigris90 inset, 0px 0em 0px 0px @verdigris90 inset;
-  // &:focus-visible {
-  //   outline: 3px solid @gold !important;
-  // }
+
   &:hover,
   &:active,
   &:focus {
@@ -70,12 +70,21 @@
   }
 
   &.positive {
+    color: @white;
+    background-color: @positiveColor !important;
+    box-shadow: none !important;
+    border: 1px solid @positiveColor;
 
     &:hover,
     &:active,
     &:focus {
       color: @positiveBackgroundColor;
       background-color: @positiveColorDown !important;
+      border: 1px solid @positiveColorDown;
+    }
+
+    .icon {
+      color: @white;
     }
   }
 
