@@ -155,7 +155,6 @@ const UserMenu = ({
 
   return (
     <>
-    <div className="item">
       <div
         role="menuitem"
         id="user-profile-dropdown"
@@ -213,7 +212,6 @@ const UserMenu = ({
 
         </div>
       </div>
-    </div>
 
       <div className="sub-menu mobile tablet only">
         <h2 className="ui small header">{i18next.t("My account")}</h2>

@@ -12,6 +12,9 @@
   img {
     object-fit: cover;
     min-height: 80px;
+    min-width: 80px;
+    max-height: 80px;
+    max-width: 80px;
     border-radius: @defaultBorderRadius;
     box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
     border: 1px solid @sidebarBorderColor;
@@ -20,6 +23,9 @@
   &.mini {
     img {
       min-height: 45px;
+      min-width: 45px;
+      max-height: 45px;
+      max-width: 45px;
     }
   }
 }
