@@ -141,6 +141,7 @@
             &:focus,
             &:active {
               background-color: @mint60 !important;
+              z-index: 100;
             }
           }
           a,

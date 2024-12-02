@@ -500,8 +500,11 @@ textarea {
                 margin-top: 0;
               }
               .community-header-logo {
+                width: 2.5rem;
+                height: 2.5rem;
                 max-width: 2.5rem;
                 max-height: 2.5rem;
+                object-fit: cover;
               }
             }
           }
