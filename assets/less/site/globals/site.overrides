@@ -67,6 +67,12 @@ a {
   }
 }
 
+.login.segment {
+  .ui.button {
+    text-decoration: none;
+  }
+}
+
 // FIXME: hidden for now
 
 #skip-to-main {
