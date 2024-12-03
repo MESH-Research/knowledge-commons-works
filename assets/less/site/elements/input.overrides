@@ -1,6 +1,7 @@
 /* Input theme overrides */
 .ui.action.input:not([class*="left action"]) > input:focus {
   border-color: @formInputBorderColor;
+  border-right-color: transparent !important;
 }
 
 .invenio-page-body,

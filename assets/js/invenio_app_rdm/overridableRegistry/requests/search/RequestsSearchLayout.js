@@ -68,7 +68,7 @@ export const RequestsSearchLayout = ({ config, appName }) => {
             width={4}
             open={sidebarVisible}
             onHideClick={() => setSidebarVisible(false)}
-            className="widescreen large monitor only"
+            className="widescreen large-monitor only"
           >
             <SearchAppFacets aggs={config.aggs} appName={appName} />
           </GridResponsiveSidebarColumn>

@@ -51,7 +51,14 @@ echo -e "${yellow}Setting up s3 storage...${clear}"
 invenio files location s3-default s3://$INVENIO_S3_BUCKET_NAME --default;
 echo -e "${yellow}Setting up admin user and role...${clear}"
 invenio roles create admin
+invenio roles create administration
+invenio roles create administration-moderation
+invenio roles create admin-moderator
 invenio access allow superuser-access role admin
+invenio access allow superuser-access role administration
+invenio access allow superuser-access role administration-moderation
+invenio access allow administration-access role administration
+invenio access allow administration-moderation role administration-moderation
 echo -e "${yellow}Setting up OpenSearch index...${clear}"
 invenio index init
 echo -e "${yellow}Setting up custom metadata fields...${clear}"
@@ -62,7 +69,6 @@ pybabel compile -d /opt/invenio/src/translations
 echo -e "${yellow}Setting up task queues...${clear}"
 invenio queues declare
 echo -e "${yellow}Creating administrator role...${clear}"
-invenio roles create administrator
 if [ $fixtures==1 ]
 then
     echo -e "${yellow}Setting up fixtures in two stages (this may take a long time!!)...${clear}"

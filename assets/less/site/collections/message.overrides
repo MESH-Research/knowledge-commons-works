@@ -4,6 +4,10 @@
   color: @verdigrisDark;
   box-shadow: none;
 
+  p {
+    flex-grow: 1;
+  }
+
   &.negative,
   &.file-box-message {
     border: 1px solid @negativeBorderColor;
@@ -54,6 +58,9 @@
 
 .file-upload-note {
   .ui.message {
+    .info.icon {
+      margin-top: 0.2rem;
+    }
     .header {
       font-size: 1rem;
       margin: 0;
@@ -64,11 +71,21 @@
 
 .ui.message.file-type-message {
   align-items: flex-start;  // Aligns the icon to the top of the accordion
-  .icon {
+  .large.icon {
     color: @infoColor;
-    margin-top: 0.2rem;
-    &.dropdown {
-      color: @infoTextColor;
-    }
+    margin-right: 1.5rem;
+    font-size: 1.5rem !important;
+    position: relative;
+    left: 1px;
+  }
+}
+
+.file-uploader-container > .column > .column:first-child {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  & + .info.message {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: none;
   }
 }

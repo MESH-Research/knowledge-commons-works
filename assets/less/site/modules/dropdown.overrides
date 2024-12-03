@@ -1,16 +1,16 @@
 /* Dropdown theme overrides */
-.ui.dropdown.button .menu {
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
-}
-
-.search-options-row {
-  .ui.dropdown {
-    width: 100%;
-    min-width: 0;
+.ui.dropdown.button {
+  .menu {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+  }
+  &.pointing {
+    .menu {
+      border-top-right-radius: @defaultBorderRadius;
+      border-top-left-radius: @defaultBorderRadius;
+    }
   }
 }
-
 
 .ui.selection.dropdown,
 .ui.search.dropdown {
@@ -21,6 +21,106 @@
     }
   }
 }
+
+.ui.dropdown.button.primary-sidebar,
+.ui.dropdown.button.primary-sidebar.basic {
+  box-shadow: none !important;
+  &:hover:not(.primary),
+  &:focus:not(.primary),
+  &:active:not(.primary) {
+    border-color: @ivy40;
+    box-shadow: none;
+    background-color: @mint50 !important;
+  }
+  .menu {
+    background-color: @mint80;
+    border-color: @verdigris50;
+    &::after {
+      background-color: @verdigris50;
+    }
+    .item {
+      z-index: 100;
+      background-color: @mint50;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: @mint60;
+      }
+      &:first-child {
+        border-top-left-radius: @defaultBorderRadius;
+        border-top-right-radius: @defaultBorderRadius;
+      }
+      &:last-child {
+        border-bottom-left-radius: @defaultBorderRadius;
+        border-bottom-right-radius: @defaultBorderRadius;
+      }
+      &.selected {
+        background-color: @mint;
+      }
+      &.active {
+        font-weight: normal;
+      }
+      .description {
+        color: @ivy80;
+      }
+    }
+  }
+
+  &.right {
+    .menu {
+      margin-top: 0 !important;
+    }
+  }
+}
+
+.ui.dropdown.sidebar-secondary {
+  .menu {
+    background-color: @gold10;
+    border-color: @gold;
+    margin-top: 1rem !important;
+    .item {
+      color: darken(@warningTextColor, 10%);
+      background-color: @gold10;
+      z-index: 100;
+      &.selected,
+      &:active,
+      &:focus,
+      &:hover {
+        background-color: @gold30;
+        color: darken(@warningTextColor, 10%);
+        z-index: 100;
+      }
+      &:hover {
+        background-color: @gold20;
+      }
+      &:first-child {
+        border-top-left-radius: @defaultBorderRadius;
+        border-top-right-radius: @defaultBorderRadius;
+      }
+      &:last-child {
+        border-bottom-left-radius: @defaultBorderRadius;
+        border-bottom-right-radius: @defaultBorderRadius;
+      }
+    }
+    &::after {
+      background-color: @gold;
+      border-color: @gold;
+    }
+
+  }
+
+  &.right {
+    .menu {
+      margin-top: 0 !important;
+      &::after {
+        border-color: @gold;
+        border-color: @gold;
+      }
+    }
+  }
+}
+
+// Form dropdowns
 
 .field.error,
 .ui.form .field.error {
@@ -64,10 +164,23 @@
   }
 }
 
+// Specific dropdowns
+
+.search-options-row {
+  .ui.dropdown {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 .sidebar-container {
+  &#record-management {
+    .dropdown > .icon {
+      float: right;
+    }
+  }
   &#record-versions {
-    .dropdown {
-      box-shadow: none;
+    .dropdown.button.primary-sidebar {
       margin-right: -0.25rem;
       border-left: 1px solid @borderColor;
       border-radius: 0 @defaultBorderRadius @defaultBorderRadius 0;
@@ -77,15 +190,33 @@
     .dropdown {
       max-width: 100%;
       .menu {
-        padding-bottom: 0.5rem;
         max-width: 100%;
         .item {
+          .header,
           .text {
             white-space: normal;
-            padding-bottom: 0.25rem;
+            overflow-wrap: anywhere;
+            word-break: break-all;
             display: inline-block;
           }
+          &:last-child {
+            border-top: 1px solid @verdigris50;
+          }
+          &:nth-last-child(2) {
+            border-top: 1px solid @verdigris50;
+          }
         }
+      }
+      & > .icon {
+        float: right;
+      }
+    }
+  }
+  &#communities {
+    .row.manage-communities {
+      > .dropdown > .icon {
+        color: @secondaryColor !important;
+        float: right;
       }
     }
   }

@@ -1,25 +1,14 @@
-Welcome to Knowledge Commons Works!
+Welcome to KCWorks, the next generation of the Knowledge Commons repository! With KCWorks (https://kcworks.hcommons.org), you can:
 
-{{ _('Welcome %(email)s!', email=user.email) }}!
+- Mint DOIs for every work you upload
+- Share your works through feeds to Google Scholar, core.ac.uk, and other metadata aggregators
+- Create multiple versions of one work, and add multiple files within one record
+- Contribute to collections of similar works
+- Control the metadata you’d like to share about a work, and hide works that are outdated
 
-{% if security.confirmable %}
-{{ _('You can confirm your email through the link below:') }}
+KCWorks is currently in public beta, which means the repository is fully functional, but we’re still tweaking things behind the scenes. Use this form to provide us with feedback: https://msu.co1.qualtrics.com/jfe/form/SV_1G1u7r34E4IE8dw.
 
-{{ confirmation_link }}
-{% endif %}
+Need additional assistance with KCWorks? Visit support.hcommons.org to view our full help guides.
 
-We want to thank you for choosing the Commons and Knowledge Commons Works as your go-to for open access publishing and research.
-
-Wondering how to get started? Check out our guide for new users at https://support.hcommons-dev.org/what-is-kcworks/
-
-And don't forget to stay in touch with the Knowledge Commons community:
-
-- Keep up with current happenings with our monthly newsletter (https://hcommons.us9.list-manage.com/subscribe?u=db7b80b27372be53e3cc37dfb&id=ab124b16b0)!
-
-- Follow us on X (https://twitter.com/humcommons) or Mastodon (https://hcommons.social/@hello)!
-
-- Have a question or request? Email us at hello@hcommons.org!
-
-- Use Mastodon? Check out our server (https://hcommons.social/about)!
-
-- Haven't logged into Knowledge Commons for a while? Visit https://hcommons.org and see what's new!
+Happy sharing!
+The Knowledge Commons Team

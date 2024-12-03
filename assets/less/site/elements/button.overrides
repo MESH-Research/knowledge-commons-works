@@ -27,13 +27,13 @@
 
 .ui.buttons > .ui.button:not(.inverted),
 .ui.buttons:not(.inverted) > .ui.button,
-.ui.button {
+.ui.button,
+.ui.info.message .button,
+.ui.info.message .ui.button.icon {
   background-color: @white;
   color: @ivy;
   box-shadow: 0px 0px 0px 1px @verdigris90 inset, 0px 0em 0px 0px @verdigris90 inset;
-  &:focus-visible {
-    outline: 3px solid @gold !important;
-  }
+
   &:hover,
   &:active,
   &:focus {
@@ -70,12 +70,21 @@
   }
 
   &.positive {
+    color: @white;
+    background-color: @positiveColor !important;
+    box-shadow: none !important;
+    border: 1px solid @positiveColor;
 
     &:hover,
     &:active,
     &:focus {
       color: @positiveBackgroundColor;
       background-color: @positiveColorDown !important;
+      border: 1px solid @positiveColorDown;
+    }
+
+    .icon {
+      color: @white;
     }
   }
 
@@ -284,7 +293,13 @@
 }
 
 
-.sidebar-container > .button.ui.fluid.labeled.icon:not(.primary) {
+.sidebar-container .button.ui.fluid.labeled.icon.primary,
+.sidebar-container .button.ui.fluid.icon.primary {
+  padding-left: 1rem !important;
+}
+
+.sidebar-container .button.ui.fluid.labeled.icon:not(.primary),
+.sidebar-container .button.ui.fluid.icon:not(.primary) {
   background-color: @sidebarBackgroundColor !important;
   padding-left: 1rem !important;
   font-weight: bold;
@@ -292,6 +307,26 @@
   color: @sidebarHeaderColor !important;
   border: 1px solid @sidebarBorderColor;
   box-shadow: none;
+  margin-right: 0;
+
+  &.secondary {
+    background-color: @secondaryBackgroundColor !important;
+    color: @warningTextColor !important;
+    box-shadow: none !important;
+    border: 1px solid @warningBorderColor;
+  }
+  &.secondary.basic {
+    background-color: transparent !important;
+    color: darken(@warningTextColor, 10%) !important;
+    .icon {
+      color: @secondaryColor !important;
+    }
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: @secondaryBackgroundColor !important;
+    }
+  }
 }
 
 #record-export {
