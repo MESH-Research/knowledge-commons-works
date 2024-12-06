@@ -95,7 +95,9 @@ def create_api_blueprint(app):
             lambda e: make_response(
                 jsonify(
                     {
-                        "message": "You are not authorized to perform this action",
+                        "message": (
+                            "You are not authorized to perform this action"
+                        ),
                         "status": 403,
                     }
                 ),
