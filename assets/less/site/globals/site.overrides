@@ -683,6 +683,7 @@ html.cover-page {
         margin-bottom: 1rem;
         .ui.button.icon.right.labeled {
           padding-left: 1rem !important;
+          text-align: left;
         }
       }
       #record-details-download {
