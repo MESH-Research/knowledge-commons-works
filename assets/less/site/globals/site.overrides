@@ -364,6 +364,9 @@ html.cover-page {
           margin-bottom: 0.25rem;
           margin-top: 1rem;
         }
+        dd {
+          overflow-wrap: break-word;
+        }
       }
       .record-details-tab {
         &.ui.attached.segment {
@@ -680,6 +683,7 @@ html.cover-page {
         margin-bottom: 1rem;
         .ui.button.icon.right.labeled {
           padding-left: 1rem !important;
+          text-align: left;
         }
       }
       #record-details-download {
@@ -717,6 +721,27 @@ html.cover-page {
         margin-bottom: 1rem;
       }
       &#social-sharing {
+        .button {
+          margin-bottom: 0.25rem;
+          .icon {
+            color: @primaryTextColor;
+            svg {
+              height: 1em;
+              width: 1em;
+              fill: @primaryTextColor;
+            }
+          }
+          &:hover,
+          &:focus,
+          &:active {
+            .icon {
+              color: @ivy !important;
+              svg {
+                fill: @ivy !important;
+              }
+            }
+          }
+        }
         .mastodon-popup {
           width: 2.75rem;
           height: 0.25rem;
@@ -724,12 +749,18 @@ html.cover-page {
           position: absolute;
           background-color: transparent;
         }
-        .button {
-          margin-bottom: 0.25rem;
+        .icon.bluesky {
           svg {
-            height: 1em;
-            width: 1em;
-            fill: @primaryColor;
+            position: relative;
+            top: 1.5px;
+          }
+        }
+        .icon.mastodon {
+          svg {
+            position: relative;
+            top: -0.5px;
+            height: 1.15em;
+            width: 1.15em;
           }
         }
       }

@@ -17,3 +17,5 @@
 # invenio-app-rdm package for more details.
 
 """KCWorks customizations to InvenioRDM."""
+
+__version__ = "0.3.2-beta5"
