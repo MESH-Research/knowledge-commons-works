@@ -3,6 +3,13 @@
 
 # Changes
 
+## 0.3.2-beta5 (2024-12-11)
+
+- Added Bluesky sharing option to detail page
+- Fixed line wrapping of long values in record sidebar details
+- Added OpenGraph image metadata property to record detail page
+    - This allows social media platforms to display the KCWorks logo instead of a random image they might find on the page.
+
 ## 0.3.1-beta4 (2024-12-10)
 
 - Added sort options for publication date to record search

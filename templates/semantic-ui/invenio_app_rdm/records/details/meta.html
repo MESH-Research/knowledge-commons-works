@@ -115,6 +115,7 @@
 {# <meta name="citation_lastpage" content="{{record.custom_fields['journal:journal'].pages}}" /> #}
 
 {{- meta_opengraph(meta_title, meta_description, url=meta_url) }}
+<meta property="og:image" content="{{config['SITE_UI_URL']}}{{url_for('static', filename=config['THEME_LOGO'])}}" />
 
 {{- meta_twittercard(meta_title, meta_description) }}
 
