@@ -6,3 +6,9 @@
         background-color: transparent;
     }
 }
+
+.details-list {
+    dd {
+        overflow-wrap: break-word;
+    }
+}
