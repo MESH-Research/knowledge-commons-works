@@ -59,20 +59,24 @@ You will need to take some further steps if you want to
     - View and insert debugging statements into the code of the various core Invenio packages installed into the python environment.
 To do this, you will need to do the following:
 
-1. In the same parent directory that holds your cloned `knowledge-commons-works` folder, clone the following additional repositories:
+1. Ensure the required git submodules are cloned by running the following commands in the `knowledge-commons-works` folder:
     ```shell
-    git clone --single-branch -b main git@github.com:MESH-Research/invenio-record-importer-kcworks.git
-    git clone --single-branch -b main git@github.com:MESH-Research/invenio-groups.git
-    git clone --single-branch -b main git@github.com:MESH-Research/invenio-modular-deposit-form.git
-    git clone --single-branch -b main git@github.com:MESH-Research/invenio-modular-detail-page.git
-    git clone --single-branch -b main git@github.com:MESH-Research/invenio-remote-api-provisioner.git
-    git clone --single-branch -b main git@github.com:MESH-Research/invenio-remote-user-data-kcworks.git
-    git clone --single-branch -b main git@github.com:MESH-Research/invenio-communities.git
-    git clone --single-branch -b main git@github.com:MESH-Research/invenio-rdm-records.git
-    git clone --single-branch -b local-working git@github.com:MESH-Research/invenio-records-resources.git
-    git clone --single-branch -b local-working git@github.com:MESH-Research/invenio-vocabularies.git
+    git submodule update --init --recursive
     ```
-    The folders holding the cloned code from these repositories should then be direct siblings of your `knowledge-commons-works` folder.
+    This will clone the following repositories:
+    ```shell
+    main git@github.com:MESH-Research/invenio-record-importer-kcworks.git
+    main git@github.com:MESH-Research/invenio-groups.git
+    main git@github.com:MESH-Research/invenio-modular-deposit-form.git
+    main git@github.com:MESH-Research/invenio-modular-detail-page.git
+    main git@github.com:MESH-Research/invenio-remote-api-provisioner.git
+    main git@github.com:MESH-Research/invenio-remote-user-data-kcworks.git
+    main git@github.com:MESH-Research/invenio-communities.git
+    main git@github.com:MESH-Research/invenio-rdm-records.git
+    local-working git@github.com:MESH-Research/invenio-records-resources.git
+    local-working git@github.com:MESH-Research/invenio-vocabularies.git
+    ```
+    These cloned repositories should then appear under the `knowledge-commons-works/site/kcworks/dependencies` folder.
 2. Install the python packages required by Knowldge Commons Works locally by running `pipenv install` in the `knowledge-commons-works` folder.
 3. When you start up the docker compose project, add an additional project file to the command:
     - `docker-compose --file docker-compose.yml --file docker-compose.dev.yml up -d`
@@ -170,7 +174,538 @@ User data is synced uni-directionally from KC to KCWorks. A user's data is synce
 
 ### Metadata Schema Customizations
 
-#### KCWorks Custom Fields (kcworks/site/custom_fields)
+The default InvenioRDM metadata schema is defined in the `invenio-rdm-records` package and documented [here](https://inveniordm.docs.cern.ch/reference/metadata/). It also includes a number of optional metadata fields which have been enabled in KCWorks, documented [here](https://inveniordm.docs.cern.ch/reference/metadata/optional_metadata/).
+
+Beyond these InvenioRDM fields, KCWorks adds a number of custom metadata fields to the schema using InvenioRDM's custom field mechanism. These are all located in the top-level `custom_fields` field of the record metadata. They are prefixed with two different namespaces:
+- `kcr`: custom fields that are used to store data from the KC system. These fields **may** be used for new data, but are not required.
+- `hclegacy`: custom fields that are used to store data from the legacy CORE database. These fields **must not** be used for new data.
+
+#### Notes about Implementation of Core InvenioRDM Fields
+
+##### metadata.subjects
+
+Note that KCWorks employs the FAST controlled vocabulary for the `subjects` field, complemented by the Homosaurus vocabulary. FAST subjects in the `metadata.subjects` array must include the complete WorldCat url for the subject heading, the standard human-readable label, and a `scheme` including "FAST" followed by a hyphen and the FAST facet name in lowercase (i.e., one of "FAST-topical", "FAST-geographic", "FAST-corporate", "FAST-formgenre", "FAST-event", "FAST-meeting", "FAST-personal").
+
+Subject from the Homosaurus vocabulary must similarly include the complete homosaurus.org url as the `id`, the standard human-readable label as the `subject`, and a `scheme` with the value "Homosaurus".
+
+Example:
+```json
+{
+    "subjects": [
+        {
+            "id": "http://id.worldcat.org/fast/123456",
+            "subject": "Art History",
+            "scheme": "FAST-topical"
+        },
+        {
+            "id": "https://homosaurus.org/v3/homoit0000669",
+            "subject": "Intersex variations",
+            "scheme": "Homosaurus"
+        }
+    ]
+}
+```
+
+##### metadata.creators/metadata.contributors
+
+Note that the KC username of a creator or contributor may be stored in the `person_or_org.identifiers` array of the creator or contributor object with the scheme `kc_username`.
+
+Users are also strongly encouraged to include an ORCID identifier in the `person_or_org.identifiers` array with the scheme `orcid`.
+
+> [!Note]
+> The KC username is the primary link between a KCWorks record and a KC user. If you want a work to be associated with a KC user, you must include the KC username in creator or contributor object.
+
+Example:
+```json
+{
+    "person_or_org": {
+        "identifiers": [
+            {
+                "scheme": "kc_username",
+                "identifier": "jdoe"
+            },
+            {
+                "scheme": "orcid",
+                "identifier": "0000-0000-0000-0000"
+            }
+        ]
+    }
+}
+```
+
+#### KCWorks Custom Fields (kcworks/site/metadata_fields)
+
+##### kcr:ai_usage
+
+Type: `Object[boolean, string]`
+
+This field stores data about any use of generative AI in the production of the record.
+
+Example:
+```json
+{
+    "kcr:ai_usage": {
+        "ai_used": true,
+        "ai_description": "This paper was edited using generative AI editing software."
+    }
+}
+```
+
+##### kcr:media
+
+Type: `Array[string]`
+
+This field stores a list of media or materials involved in the creation of the record. This field is used to store free-form user-defined descriptors of the media or materials and does not impose any controlled vocabulary.
+
+Example:
+```json
+{
+    "kcr:media": ["watercolor", "found objects", "audio recordings"]
+}
+```
+
+##### kcr:commons_domain
+
+Type: `string`
+
+This field stores the KC organizational (Commons) domain associated with the KCWorks record, if any. The record should also be placed in the KCWorks collection associated with this organization.
+
+Example:
+```json
+{
+    "kcr:commons_domain": "arlisna.hcommons.org"
+}
+```
+
+##### kcr:chapter_label
+
+Type: `string`
+
+This field stores the label of the chapter associated with the KCWorks record, if any. This allows us to differentiate between a simple chapter label (e.g. "Chapter 1") and a more substantive title for the same chapter (e.g., "The Role of AI in Modern Art").
+
+Example:
+```json
+{
+    "kcr:chapter_label": "Chapter 1"
+}
+```
+
+##### kcr:content_warning
+
+Type: `string`
+
+This field stores an optional content warning for the KCWorks record. This is used to flag the record for KCWorks users so that they can be aware of potentially problematic content in the record. **This field is not to be used for content moderation by KCWorks moderators or admins. It is only to be used voluntarily and as desired by the record submitter.**
+
+Example:
+```json
+{
+    "kcr:content_warning": "This work contains detailed accounts of abuse that may be distressing to some readers."
+}
+```
+
+##### kcr:course_title
+
+Type: `string`
+
+This field stores the title of the course associated with the KCWorks record. It is intended primarily for use with syllabi and instructional materials.
+
+Example:
+```json
+{
+    "kcr:course_title": "Introduction to Modern Art"
+}
+```
+
+##### kcr:degree
+
+Type: `string`
+
+This field stores the educational degree (e.g., PhD, DPhil, MA, etc.) associated with the KCWorks record. It is intended primarily for use with theses and dissertations.
+
+Example:
+```json
+{
+    "kcr:degree": "PhD"
+}
+```
+
+##### kcr:discipline
+
+Type: `string`
+
+This field stores the academic discipline associated with the KCWorks record. It is intended primarily for use with theses, dissertations, and other educational artifacts. It is not intended as a general-purpose field for describing the subject matter of the KCWorks record. For that, you should use the `metadata.subjects` and `kcr:user_defined_tags` fields.
+
+This field is intended to complement the `thesis:university` and `kcr:institution_department` fields.
+
+This field is not constrained by any controlled vocabulary.
+
+Example:
+```json
+{
+    "kcr:discipline": "Latin American Literature"
+}
+```
+
+##### kcr:edition
+
+Type: `string`
+
+This field stores a descriptor for the edition of the KCWorks record, if any.
+
+Example:
+```json
+{
+    "kcr:edition": "Second Edition"
+}
+```
+
+##### kcr:meeting_organization
+
+Type: `string`
+
+This field stores the name of the organization associated with the meeting or conference associated with the KCWorks record. It is intended primarily for use with conference papers, presentations, proceedings, etc.
+
+Example:
+```json
+{
+    "kcr:meeting_organization": "American Association of Art Historians"
+}
+```
+
+##### kcr:project_title
+
+Type: `string`
+
+This field stores the title of a project for which the KCWorks record was created. It can be used flexibly for, e.g., grant-funded projects, research projects, artistic projects, etc.
+
+Example:
+```json
+{
+    "kcr:project_title": "Kingston Poetry Residency, 2024"
+}
+```
+
+##### kcr:publication_url
+
+Type: `string` (URL)
+
+This field stores the URL of the publication associated with the KCWorks record. It is *not* the URL of the KCWorks record itself or of the work it contains. For example, if the KCWorks record contains a journal article, it would *not* hold the URL for the published journal article. It is intended to hold the URL of the publication *as a whole* that the KCWorks record is based on or is a part of. So it might hold the main URL for the journal in which the article was published, or the main URL for the book in which the chapter was published, etc.
+
+This string must be a valid URL.
+
+Example:
+```json
+{
+    "kcr:publication_url": "https://www.example.com/publication/123456"
+}
+```
+
+##### kcr:sponsoring_institution
+
+Type: `string`
+
+This field stores the name of the institution that sponsored the KCWorks record. One intended use is for unpublished materials such white papers that were sponsored or commissioned by an institution. The field may also be used for the institution hosting a conference or workshop associated with the KCWorks record (as distinct from the organization that sponsored the event).
+
+Note that this field is not intended for the degree-granting institution associated with a thesis or dissertation. That institution's title should be stored in the `thesis:university` field.
+
+Example:
+```json
+{
+    "kcr:sponsoring_institution": "University of Toronto"
+}
+```
+
+##### kcr:submitter_email
+
+Type: `string` (email address)
+
+This field stores the email address of the submitter of the KCWorks record. It must be a valid email address.
+
+Example:
+```json
+{
+    "kcr:submitter_email": "john.doe@example.com"
+}
+```
+
+##### kcr:submitter_username
+
+Type: `string`
+
+This field stores the KC username of the submitter of the KCWorks record. This should be used even if the submitter is also a contributor to the KCWorks record and has included the same username in the `metadata.creators.person_or_org.identifiers` array.
+
+Example:
+```json
+{
+    "kcr:submitter_username": "jdoe"
+}
+```
+
+##### kcr:institution_department
+
+Type: `string`
+
+This field stores the institutional department in which a thesis, dissertation, or other educational artifact was produced. It is intended to complement the `thesis:university` field, which stores the degree-granting institution.
+
+Example:
+```json
+{
+    "kcr:institution_department": "Art History"
+}
+```
+
+##### kcr:book_series
+
+Type: `Object[string, string]`
+
+This field stores the title of a series that contains the KCWorks record, along with the optional volume number of the work within the series.
+
+
+Example:
+```json
+{
+    "kcr:book_series": {
+        "series_title": "The Complete Works of Jane Austen",
+        "series_volume": "Volume 1"
+    }
+}
+```
+
+##### kcr:user_defined_tags
+
+Type: `Array[string]`
+
+This field stores a list of user-defined tags for the KCWorks record. Unlike the `metadata.subjects` field, these tags are not constrained by any controlled vocabulary. Items should be free-form strings that describe the KCWorks record in a way that is not covered by the `metadata.subjects` field.
+
+> [!Note]
+> The `kcr:user_defined_tags` field is intended to supplement the `metadata.subjects` field, not as the primary means of describing the KCWorks record's subject matter. Assigning proper `metadata.subjects` entries allows for much more effective search and discovery of the KCWorks record.
+
+Example:
+```json
+{
+    "kcr:user_defined_tags": ["Ukranian refugees", "Migrants in Europe"]
+}
+```
+
+##### kcr:commons_search_recid (system field)
+
+This field is used to store the persistent identifier for the KCWorks record in the KC central search index.
+
+> [!Warning]
+> This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
+
+##### kcr:commons_search_updated (system field)
+
+Type: `string` (ISO 8601 datetime string)
+
+This field stores the date and time when the KCWorks record was last updated in the KC central search index.
+
+> [!Warning]
+> This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
+
+#### HC Legacy Custom Fields
+
+The `hclegacy` namespace is used for custom fields that are used to store data from the legacy CORE database. These fields should not be used for new data.
+
+##### custom_fields.hclegacy:groups_for_deposit
+
+Type: `Array[Object[string, string]]`
+
+This field is used to store the groups to which a legacy CORE record belonged before import into KCWorks. It was used to create corresponding KCWorks collections during migration.
+
+Example:
+```json
+{
+    "hclegacy:groups_for_deposit": [
+        {
+            "group_name": "Group Name",
+            "group_identifier": "Group Identifier"
+        }
+    ]
+}
+```
+
+##### custom_fields.hclegacy:collection
+
+Type: `string`
+
+This field is used to store the org collection to which a legacy CORE record belonged before import into KCWorks. It was used to create corresponding KCWorks org collections during migration.
+
+Example:
+```json
+{
+    "hclegacy:collection": "Collection Name"
+}
+```
+
+##### custom_fields.hclegacy:committee_deposit
+
+Type: `integer`
+
+This field is used to store the committee deposit number for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:committee_deposit": 123456
+}
+```
+
+##### custom_fields.hclegacy:file_location
+
+Type: `string`
+
+This field is used to store the relative path the the file for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:file_location": "/path/to/file.pdf"
+}
+```
+
+##### custom_fields.hclegacy:file_pid
+
+Type: `string`
+
+This field is used to store the persistent identifier for the file for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:file_pid": "hc:123456"
+}
+```
+
+##### custom_fields.hclegacy:previously_published
+
+Type: `string`
+
+This field is used to store the previously published status for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:previously_published": "true"
+}
+```
+
+##### custom_fields.hclegacy:publication_type
+
+Type: `string`
+
+This field is used to store the publication type for a legacy CORE record. It was used during migration to help determine the KCWorks resource type of the record. It is only preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:publication_type": "Journal Article"
+}
+```
+
+##### custom_fields.hclegacy:record_change_date
+
+Type: `string` (ISO 8601 datetime string)
+
+This field is used to store the date of the last change to a legacy CORE record. It was not used during migration to KCWorks and is only preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:record_change_date": "2024-01-01T00:00:00Z"
+}
+```
+
+##### custom_fields.hclegacy:record_creation_date
+
+Type: `string` (ISO 8601 datetime string)
+
+This field is used to store the date of the creation of a legacy CORE record. It was not used during migration because InvenioRDM does not allow overriding of the record creation date. It is only preserved for historical purposes and should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:record_creation_date": "2024-01-01T00:00:00Z"
+}
+```
+
+##### custom_fields.hclegacy:record_identifier
+
+Type: `string`
+
+This field is used to store the internal system identifier for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:record_identifier": "1001634-1263"
+}
+```
+
+##### custom_fields.hclegacy:submitter_org_memberships
+
+Type: `array[string]`
+
+This field is used to store the organizations to which a legacy CORE record's submitter belonged before import into KCWorks. It was used to create corresponding KCWorks org collections during migration and assign the work to those org collections.
+
+Example:
+```json
+{
+    "hclegacy:submitter_org_memberships": ["arlisna", "mla"]
+}
+```
+
+##### custom_fields.hclegacy:submitter_affiliation
+
+Type: `string`
+
+This field is used to store the organizational affiliation of a legacy CORE record's submitter at the time of import into KCWorks. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:submitter_affiliation": "University of Toronto"
+}
+```
+
+##### custom_fields.hclegacy:submitter_id
+
+Type: `string`
+
+This field is used to store the internal KC system user id of a legacy CORE record's submitter. It was used during migration to assign ownership of the newly created record, and is preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:submitter_id": "123456"
+}
+```
+
+##### custom_fields.hclegacy:total_views
+
+Type: `integer`
+
+This field is used to store the total number of views for a legacy CORE record prior to import into KCWorks. It was used during migration to create KCWorks usage stats aggregations for the record. It is only preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:total_views": 123456
+}
+```
+
+##### custom_fields.hclegacy:total_downloads
+
+Type: `integer`
+
+This field is used to store the total number of downloads for a legacy CORE record prior to import into KCWorks. It was used during migration to create KCWorks usage stats aggregations for the record. It is only preserved for historical purposes. It should not be used for new data.
+
+Example:
+```json
+{
+    "hclegacy:total_downloads": 123456
+}
+```
 
 ### Bulk Record Import (invenio-record-importer-kcworks)
 
@@ -185,6 +720,70 @@ User data is synced uni-directionally from KC to KCWorks. A user's data is synce
 #### invenio-vocabularies
 
 ## KCWorks Configuration of InvenioRDM
+
+## KCWorks CLI Commands
+
+### Running Invenio CLI Commands
+
+InvenioRDM includes a number of CLI commands that can be run from the command line. These are invoked using the `invenio` command followed by the command name and any arguments. For example, to run the `invenio users create` command, you would use the following command:
+
+```shell
+invenio users create <email> --password <password>
+```
+
+For a list of all available CLI commands, run the following command:
+```shell
+invenio --help
+```
+
+Note that the `invenio` command wraps the underlying `flask` CLI command, so any command that can be run with `flask` can also be run with `invenio`.
+
+### Running CLI Commands in the KCWorks Container
+
+Since the main KCWorks processes are run in docker containers, you will need to run the CLI commands inside the ui container (not the worker or api containers).
+
+To run a CLI command in the KCWorks container during local development, you can use the following command:
+```shell
+docker exec -it kcworks-ui bash
+invenio <command> <arguments>
+```
+
+On the staging and production instances, the container name is generated dynamically whenever the service is deployed. You can find the correct name by running `docker ps | grep ui` command. Then run the CLI command inside that container:
+```shell
+docker exec -it <container-name> bash
+invenio <command> <arguments>
+```
+
+### KCWorks Custom CLI Commands
+
+KCWorks includes a number of custom CLI commands that are not part of the core InvenioRDM system. Further documentation can be found by running any command with the `--help` option.
+
+- `invenio importer`
+    - **provided by the `invenio-record-importer-kcworks` package**
+    - bulk imports records into the KCWorks instance.
+    - this provides the sub-commands:
+        - `invenio importer serialize`: serializes records from the legacy CORE database export into a JSON file suitable for import into the KCWorks instance.
+        - `invenio importer load`: loads serialized records from a JSON file into the KCWorks instance.
+        - `invenio importer read`: reads records from the data to be imported into the KCWorks instance.
+        - `invenio importer create-user`: creates a KCWorks user linked to a KC user.
+        - `invenio importer count-records`: counts the number of records in the data to be imported.
+        - `invenio importer delete-records`: deletes records from the KCWorks instance.
+        - `invenio importer create-stats`: creates usage stats aggregations for the imported records to correspond to the records' usage before import.
+        - `invenio importer aggregations`: aggregates the synthetic usage events for the imported records to produce usage stats for the imported records.
+
+- `invenio kcworks-index destroy`
+    - **provided by the main KCWorks package** (kcworks/site/cli.py)
+    - destroys search indices for the KCWorks instance that are *not* destroyed by the main KCWorks index destroy command. These are primarily the indices for storing usage events and aggregated usage data.
+    - **WARNING:** This data *only* exists in the OpenSearch indices. It is not backed up by the database and will be lost if the indices are destroyed. Use this command with extreme caution.
+
+- `invenio kcworks-users name-parts`
+    - **provided by the main KCWorks package** (kcworks/site/cli.py)
+    - either reads or updates how KCWorks will divide a user's name into parts (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata.
+
+- `invenio user-data update`
+    - **provided by the `invenio-remote-user-data-kcworks` package**
+    - updates a single user's data from the remote KC user data service.
+    - with the `--groups` option, updates a group collection's metadata from the remote KC group data service.
 
 ## KCWorks Infrastructure
 
