@@ -18,6 +18,7 @@ import { CreatibutorsFieldItem } from "./creatibutors_components/CreatibutorsFie
 import { CREATIBUTOR_TYPE } from "./types";
 import { FormUIStateContext } from "@js/invenio_modular_deposit_form/InnerDepositForm";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { getFamilyName, getGivenName } from "../../../kcworks/names";
 
 /**
  * Sort a list of string values (options).
@@ -114,11 +115,15 @@ const makeSelfCreatibutor = (currentUserprofile) => {
 
   let myNameParts = {};
   if (
-    !!currentUserprofile?.name_parts &&
-    currentUserprofile?.name_parts !== ""
+    !!currentUserprofile?.name_parts_local &&
+    currentUserprofile?.name_parts_local !== ""
   ) {
+    myNameParts = JSON.parse(currentUserprofile.name_parts_local);
+  } else if (!!currentUserprofile?.name_parts && currentUserprofile?.name_parts !== "") {
     myNameParts = JSON.parse(currentUserprofile.name_parts);
   }
+  const part1 = [myNameParts?.given, myNameParts?.first, myNameParts?.middle, myNameParts?.nickname].filter(Boolean).join(" ");
+  const part2 = [myNameParts?.family_prefix, myNameParts?.family_prefix_fixed, myNameParts?.spousal, myNameParts?.parental, myNameParts?.family, myNameParts?.last, ].filter(Boolean).join(" ");
 
   let myIdentifiers = undefined;
   const rawIdentifiers = Object.fromEntries(
@@ -136,8 +141,14 @@ const makeSelfCreatibutor = (currentUserprofile) => {
 
   let selfCreatibutor = {
     person_or_org: {
-      family_name: myNameParts?.last || currentUserprofile?.full_name || "",
-      given_name: myNameParts?.first || "",
+      family_name:
+        getFamilyName(myNameParts) ||
+        currentUserprofile?.full_name ||
+        "",
+      given_name:
+        getGivenName(myNameParts) ||
+        myNameParts?.first ||
+        "",
       name: currentUserprofile?.full_name || "",
       type: "personal",
       identifiers: myIdentifiers?.length > 0 ? myIdentifiers : [],

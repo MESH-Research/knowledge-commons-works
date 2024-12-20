@@ -3,6 +3,23 @@
 
 # Changes
 
+## 0.3.3-beta6 (2024-12-18)
+
+- Names
+    - Added the infrastructure to customize the division of users' names into parts so that it can be divided as desired when, e.g., the user's name is being auto-filled in the name fields of the upload form. This involves
+        - a new "name_parts_local" field to the user profile schema. This field contains the user's name parts if they have been modified within the KCWorks system. This is sometimes necessary when the user data synced from the remote user data service does not divide the user's name correctly.
+        - a cli command to update the user's name parts.
+        - a new "names" js module that contains functions to get the user's full name, full name in inverted order, family name, and given name from the user's name parts.
+        - updates to the CreatibutorsField component to use the new "names" js module and the customized name parts if they are present in a user's profile.
+- Detail page
+    - Added missing aria-label properties for accessibility
+- Collections
+    - Fixed wording of empty results message for collection members search
+        - Previously, the empty results message used "community" instead of "collection".
+    - Tweaks to layout of collection detail page header
+- Remote user data service
+    - Fixed bug where user profile data was not being updated because comparison with initial data was not being made correctly. This means that, among other things, ORCID ids will now be added correctly when the user chooses "add self" on the upload form.
+
 ## 0.3.2-beta5 (2024-12-11)
 
 - Added Bluesky sharing option to detail page

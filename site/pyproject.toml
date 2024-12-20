@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kcworks"
-version = "0.3.2-beta5"
+version = "0.3.3-beta6"
 
 [project.optional-dependencies]
 tests = ["pytest-invenio>=2.1.0,<3.0.0"]
@@ -37,10 +37,12 @@ custom_latex_viewer = "kcworks.views.previewers.invenio_custom_latex_viewer.cust
 kcworks = "kcworks.services.search.index_templates.templates:get_index_templates"
 
 [project.entry-points."flask.commands"]
-kcworks-index = "kcworks.cli:index"
+kcworks-users = "kcworks.cli:kcworks_users"
+kcworks-index = "kcworks.cli:kcworks_index"
 
 [project.scripts]
-kcworks-index = "kcworks.cli:index"
+kcworks-users = "kcworks.cli:kcworks_users"
+kcworks-index = "kcworks.cli:kcworks_index"
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "kcworks"]

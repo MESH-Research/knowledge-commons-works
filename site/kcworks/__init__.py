@@ -18,4 +18,4 @@
 
 """KCWorks customizations to InvenioRDM."""
 
-__version__ = "0.3.2-beta5"
+__version__ = "0.3.3-beta6"
