@@ -34,7 +34,7 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
                 aria-label={i18next.t("Filter results")}
               />
             </Grid.Column>
-            <Grid.Column mobile={10} tablet={8} computer={8}>
+            <Grid.Column mobile={10} tablet={6} computer={4}>
               <Sort
                 values={config.sortOptions}
                 label={(cmp) => (
@@ -45,7 +45,7 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
                 )}
               />
             </Grid.Column>
-            <Grid.Column width={4} tablet={7} computer={4} mobile={4} textAlign="right">
+            <Grid.Column width={4} tablet={7} computer={8} mobile={6} textAlign="right">
               <Count
                 label={(cmp) => (
                   <Trans key="communityRecordsSearch" count={cmp}>

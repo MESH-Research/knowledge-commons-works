@@ -48,8 +48,21 @@
           .row:first-child {
             padding-bottom: 0;
           }
-          .row:nth-child(2) {
+          .row:not(:first-child) {
             padding-top: 0;
+            padding-bottom: 0;
+            a {
+              display: inline-block;
+              margin-left: 1rem;
+              width: 1.5rem;
+              height: 1.5rem;
+              background-color: @white;
+              padding-left: 1.5px;
+              padding-bottom: 2px;
+            }
+          }
+          .row:last-child {
+            padding-bottom: 1rem;
           }
         }
       }

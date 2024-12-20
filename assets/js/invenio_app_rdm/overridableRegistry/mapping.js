@@ -24,6 +24,7 @@ import { InvitationResultItemWithConfig } from "./collections/invitations/Invita
 import { LicenseField } from "./fields/LicenseField";
 import { LogoUploader } from "./collections/settings/profile/LogoUploader";
 import { ManagerMembersResultItemWithConfig } from "./collections/members/manager_view/ManagerMembersResultItem";
+import { MembersEmptyResults } from "./collections/members/components/MembersEmptyResults";
 import { MembersSearchBarElement } from "./collections/members/components/MembersSearchBarElement";
 import { MetadataOnlyToggle } from "./fields/MetadataOnlyToggle";
 import Pagination from "./search/Pagination";
@@ -120,12 +121,15 @@ export const overriddenComponents = {
   "InvenioCommunities.RequestSearch.ResultsList.item": RequestsResultsItemTemplateWithCommunity,
   "InvenioCommunities.RequestSearch.SearchApp.layout": CommunityRequestsSearchLayoutWithApp,
   "InvenioCommunities.InvitationsSearch.ResultsList.item": InvitationResultItemWithConfig,
+  "InvenioCommunities.ManagerSearch.EmptyResults.element": MembersEmptyResults,
   "InvenioCommunities.ManagerSearch.ResultsList.item": ManagerMembersResultItemWithConfig,
   "InvenioCommunities.ManagerSearch.SearchBar.element": MembersSearchBarElement,
   "InvenioCommunities.MemberSearch.ResultsList.item": ManagerMembersResultItemWithConfig,
+  "InvenioCommunities.MemberSearch.EmptyResults.element": MembersEmptyResults,
   "InvenioCommunities.MemberSearch.SearchBar.element": MembersSearchBarElement,
   "InvenioCommunities.PublicSearch.ResultsList.item": PublicMembersResultsItemWithCommunity,
   "InvenioCommunities.PublicSearch.SearchBar.element": MembersSearchBarElement,
+  "InvenioCommunities.PublicSearch.EmptyResults.element": MembersEmptyResults,
   "InvenioModularDetailPage.MobileActionMenu.container": MobileActionMenu,
   // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
   // InvenioCommunities.Search.SearchApp.layout: CommunityRecordsSearchAppLayout,
