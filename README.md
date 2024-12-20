@@ -184,9 +184,22 @@ Beyond these InvenioRDM fields, KCWorks adds a number of custom metadata fields 
 
 ##### metadata.subjects
 
-Note that KCWorks employs the FAST controlled vocabulary for the `subjects` field, complemented by the Homosaurus vocabulary. FAST subjects in the `metadata.subjects` array must include the complete WorldCat url for the subject heading, the standard human-readable label, and a `scheme` including "FAST" followed by a hyphen and the FAST facet name in lowercase (i.e., one of "FAST-topical", "FAST-geographic", "FAST-corporate", "FAST-formgenre", "FAST-event", "FAST-meeting", "FAST-personal").
+Note that KCWorks employs the FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) for the `subjects` field, complemented by the Homosaurus vocabulary (https://homosaurus.org/).
 
-Subject from the Homosaurus vocabulary must similarly include the complete homosaurus.org url as the `id`, the standard human-readable label as the `subject`, and a `scheme` with the value "Homosaurus".
+The FAST vocabulary is divided into a number of sub-vocabularies called "facets", allowing more efficient searching and less ambiguity in the subject headings. FAST subjects in the `metadata.subjects` array must include the complete WorldCat url for the subject heading, the standard human-readable label, and a `scheme` including "FAST" followed by a hyphen and the FAST facet name in lowercase: i.e., one of
+- "FAST-topical"
+- "FAST-geographic"
+- "FAST-corporate"
+- "FAST-formgenre"
+- "FAST-event"
+- "FAST-meeting"
+- "FAST-personal"
+- "FAST-title"
+- "FAST-chronological"
+
+You can search the FAST subject headings and their corresponding WorldCat urls [here](https://fast.oclc.org/searchfast). The OCLC also provides helpful tools such as assignFAST, which suggests FAST subject headings based on a string (https://fast.oclc.org/assignfast/) and a converter from LCSH subject headings to FAST subject (http://fast.oclc.org/lcsh2fast).
+
+Subject from the Homosaurus vocabulary must similarly include the complete homosaurus.org url as the `id`, the standard human-readable label as the `subject`, and a `scheme` with the value "Homosaurus". The Homosaurus subject headings can be searched [here](https://homosaurus.org/search/v3).
 
 Example:
 ```json
