@@ -19,7 +19,7 @@ const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
       <Popup
         content={i18next.t(text)}
         trigger={
-          <a role="button" href={url} className="ui computer widescreen large-monitor only" tabIndex={tabIndex}>
+          <a role="button" href={url} className="ui computer widescreen large-monitor only" tabIndex={tabIndex} aria-label={i18next.t(text)}>
             <i className={`${icon} icon fitted`}></i>
             {badge !== undefined && (
               <Label className="unread-notifications-badge" color="orange" floating>
@@ -30,7 +30,7 @@ const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
         }
       />
 
-      <a role="button" href={url} className="ui tablet mobile only" tabIndex={tabIndex}>
+      <a role="button" href={url} className="ui tablet mobile only" tabIndex={tabIndex} aria-label={i18next.t(text)}>
         <i className={`${icon} icon fitted`}></i>
         <span className="inline">{i18next.t(text)}</span>
       </a>
@@ -213,7 +213,7 @@ const UserMenu = ({
         </div>
       </div>
 
-      <div className="sub-menu mobile tablet only">
+      <div className="sub-menu mobile tablet only" role="menu">
         <h2 className="ui small header">{i18next.t("My account")}</h2>
 
         {settingsItems.map((item, index) => (
@@ -477,18 +477,18 @@ const MainMenu = ({
         <div className="menu item spacer mobile tablet only">
         </div>
 
-        <div className={`item`}>
+        <div className={`item`} role="menuitem">
           <IconMenuItem
-            text="Help and support"
+            text={i18next.t("Help and support")}
             url={kcWorksHelpUrl}
             icon="question circle"
             tabIndex={0}
           />
         </div>
 
-        <div className={`item`}>
+        <div className={`item`} role="menuitem">
           <IconMenuItem
-            text="KC Home"
+            text={i18next.t("KC Home")}
             url={`https://${kcWordpressDomain}`}
             icon="home"
             tabIndex={0}
@@ -496,7 +496,7 @@ const MainMenu = ({
         </div>
 
         {/* Right-aligned menu items */}
-        <div className="right menu item">
+        <div className="right menu item" role="group">
           <div className="menu item spacer mobile tablet only">
           </div>
           <LoginMenu

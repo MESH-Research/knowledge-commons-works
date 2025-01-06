@@ -22,6 +22,8 @@ from invenio_search.cli import abort_if_false, search_version_check
 from kcworks.services.search.indices import delete_index
 import sys
 
+from kcworks.services.users.cli import name_parts as name_parts_command
+
 UNMANAGED_INDICES = [
     "kcworks-stats-record-view",
     "kcworks-stats-file-download",
@@ -37,12 +39,21 @@ UNMANAGED_INDICES = [
 
 
 @click.group()
-def index():
-    """Utility commands for search index management."""
+def kcworks_users():
+    """Utility commands for Knowledge Commons Works."""
     pass
 
 
-@index.command("destroy-indices")
+kcworks_users.add_command(name_parts_command)
+
+
+@click.group()
+def kcworks_index():
+    """KCWorks utility commands for search index management."""
+    pass
+
+
+@kcworks_index.command("destroy-indices")
 @click.option(
     "--yes-i-know",
     is_flag=True,
@@ -53,7 +64,7 @@ def index():
 @click.option("--force", is_flag=True, default=False)
 @with_appcontext
 @search_version_check
-def destroy(force):
+def destroy_indices(force):
     """Destroy all indices that are not destroyed by invenio_search
 
     THIS COMMAND WILL WIPE ALL DATA ON USAGE STATS. ONLY RUN THIS WHEN YOU KNOW
