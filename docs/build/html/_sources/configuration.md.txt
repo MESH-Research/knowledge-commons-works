@@ -1,1 +1,0 @@
-# KCWorks Configuration of InvenioRDM
