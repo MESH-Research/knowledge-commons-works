@@ -12,6 +12,7 @@ Welcome to Knowledge Commons Works's documentation!
 
    README
    installation
+   metadata
    customizations
    configuration
    cli_commands

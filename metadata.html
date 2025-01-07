@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Configuration of InvenioRDM" href="configuration.html" /><link rel="prev" title="Metadata Schema and Vocabularies" href="metadata.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Customizations to InvenioRDM" href="customizations.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Customizations to InvenioRDM - Knowledge Commons Works 0.3.3 documentation</title>
+        <title>Metadata Schema and Vocabularies - Knowledge Commons Works 0.3.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -202,8 +202,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata Schema and Vocabularies</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Customizations to InvenioRDM</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Metadata Schema and Vocabularies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customizations.html">Customizations to InvenioRDM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration of InvenioRDM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_commands.html">CLI Commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="infrastructure.html">KCWorks Infrastructure</a></li>
@@ -230,7 +230,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="_sources/customizations.md.txt" title="View this page">
+  <a class="muted-link" href="_sources/metadata.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -250,106 +250,277 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="customizations-to-inveniordm">
-<h1>Customizations to InvenioRDM<a class="headerlink" href="#customizations-to-inveniordm" title="Link to this heading">¶</a></h1>
-<section id="template-customizations">
-<h2>Template Customizations<a class="headerlink" href="#template-customizations" title="Link to this heading">¶</a></h2>
-<section id="page-templates">
-<h3>Page templates<a class="headerlink" href="#page-templates" title="Link to this heading">¶</a></h3>
-</section>
-<section id="email-templates">
-<h3>Email templates<a class="headerlink" href="#email-templates" title="Link to this heading">¶</a></h3>
-<p>Custom email templates are located in <code class="docutils literal notranslate"><span class="pre">site/kcworks/templates/semantic-ui/invenio_notifications</span></code>. These override the default templates provided by InvenioRDM, and include both html and plaintext versions of each email, as well has markdown templates for other notification backends.</p>
-<p>Additional email templates are added for KCWorks-specific email types.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">user-first-record.create.jinja</span></code>: sent to KCWorks moderators when a user has created their first record.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">user-first-record.publish.jinja</span></code>: sent to KCWorks moderators when a user’s first record is published.</p></li>
-</ul>
-</section>
-</section>
-<section id="record-detail-page-customizations">
-<h2>Record Detail Page Customizations<a class="headerlink" href="#record-detail-page-customizations" title="Link to this heading">¶</a></h2>
-<section id="modular-framework-invenio-modular-detail-page">
-<h3>Modular Framework (invenio-modular-detail-page)<a class="headerlink" href="#modular-framework-invenio-modular-detail-page" title="Link to this heading">¶</a></h3>
-</section>
-<section id="overrides-in-the-kcworks-package-kcworks-site">
-<h3>Overrides in the KCWorks Package (kcworks/site)<a class="headerlink" href="#overrides-in-the-kcworks-package-kcworks-site" title="Link to this heading">¶</a></h3>
-</section>
-</section>
-<section id="deposit-form-customizations">
-<h2>Deposit Form Customizations<a class="headerlink" href="#deposit-form-customizations" title="Link to this heading">¶</a></h2>
-<section id="modular-framework-invenio-modular-deposit-form">
-<h3>Modular Framework (invenio-modular-deposit-form)<a class="headerlink" href="#modular-framework-invenio-modular-deposit-form" title="Link to this heading">¶</a></h3>
-</section>
-<section id="id1">
-<h3>Overrides in the KCWorks Package (kcworks/site)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
-</section>
-</section>
-<section id="collections">
-<h2>Collections<a class="headerlink" href="#collections" title="Link to this heading">¶</a></h2>
-<section id="collections-for-kc-groups-invenio-group-collections-kcworks">
-<h3>Collections for KC Groups (invenio-group-collections-kcworks)<a class="headerlink" href="#collections-for-kc-groups-invenio-group-collections-kcworks" title="Link to this heading">¶</a></h3>
-</section>
-</section>
-<section id="notifications">
-<h2>Notifications<a class="headerlink" href="#notifications" title="Link to this heading">¶</a></h2>
-<section id="in-app-notifications">
-<h3>In-app notifications<a class="headerlink" href="#in-app-notifications" title="Link to this heading">¶</a></h3>
-<p>A user’s unread notifications are tracked in the user’s profile record.</p>
-</section>
-<section id="content-moderation-notifications">
-<h3>Content moderation notifications<a class="headerlink" href="#content-moderation-notifications" title="Link to this heading">¶</a></h3>
-<section id="user-first-record-notifications">
-<h4>User-first-record notifications<a class="headerlink" href="#user-first-record-notifications" title="Link to this heading">¶</a></h4>
-<p>Emails are sent to the KCWorks moderators when a user creates their first draft and publishes their first record. This is implemented using</p>
-<ul class="simple">
-<li><p>a custom service component for the RDMRecord service (kcworks.services.notifications.services.FirstRecordCreatedNotificationService) that runs during draft creation and publication and</p>
-<ul>
-<li><p>checks whether the user has any other drafts or published records.</p></li>
-<li><p>if not, adds a NotificationOp to the unit of work for the record operation to emit a notification of the type “user-first-record.create” or “user-first-record.publish”.</p></li>
-</ul>
-</li>
-<li><p>two custom notification builder classes (kcworks.services.notifications.builders.FirstRecordPublishedNotificationBuilder and kcworks.services.notifications.builders.FirstRecordCreatedNotificationBuilder) that build the notifications.</p>
-<ul>
-<li><p>these builders define the notification recipients using a custom ModeratorRoleRecipient generator (kcworks.services.notifications.generators.ModeratorRoleRecipient) and sends the notification to all users with the role defined in the NOTIFICATIONS_MODERATOR_ROLE config variable.</p></li>
-<li><p>they also define the notification backends to be used for sending the notification. In this case, a custom EmailBackend (kcworks.services.notifications.backends.EmailBackend) that sends email via the Flask-Mail extension.</p></li>
-</ul>
-</li>
-<li><p>custom email templates for the notifications, located at <code class="docutils literal notranslate"><span class="pre">site/kcworks/templates/semantic-ui/invenio_notifications/</span></code>.</p></li>
-</ul>
-</section>
-</section>
-</section>
-<section id="integrations-with-kc">
-<h2>Integrations with KC<a class="headerlink" href="#integrations-with-kc" title="Link to this heading">¶</a></h2>
-<section id="user-data-sync-invenio-remote-user-data-kcworks">
-<h3>User Data Sync (invenio-remote-user-data-kcworks)<a class="headerlink" href="#user-data-sync-invenio-remote-user-data-kcworks" title="Link to this heading">¶</a></h3>
-<p>User data is synced uni-directionally from KC to KCWorks. A user’s data is synced with KC when</p>
-<ol class="arabic simple">
-<li><p>the user’s SAML authentication info is first saved in KCWorks</p></li>
-<li><p>the user logs into KCWorks</p></li>
-<li><p>a webhook signal is received by KCWorks from KC</p></li>
-</ol>
-</section>
-<section id="kc-search-provisioning-invenio-remote-api-provisioner">
-<h3>KC Search Provisioning (invenio-remote-api-provisioner)<a class="headerlink" href="#kc-search-provisioning-invenio-remote-api-provisioner" title="Link to this heading">¶</a></h3>
-</section>
-<section id="saml-authentication">
-<h3>SAML Authentication<a class="headerlink" href="#saml-authentication" title="Link to this heading">¶</a></h3>
-</section>
-</section>
-<section id="metadata-schema-customizations">
-<h2>Metadata Schema Customizations<a class="headerlink" href="#metadata-schema-customizations" title="Link to this heading">¶</a></h2>
-<p>The default InvenioRDM metadata schema is defined in the <code class="docutils literal notranslate"><span class="pre">invenio-rdm-records</span></code> package and documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/">here</a>. It also includes a number of optional metadata fields which have been enabled in KCWorks, documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/optional_metadata/">here</a>.</p>
+          <section id="metadata-schema-and-vocabularies">
+<h1>Metadata Schema and Vocabularies<a class="headerlink" href="#metadata-schema-and-vocabularies" title="Link to this heading">¶</a></h1>
+<p>The default metadata schema for InvenioRDM records is defined in the <code class="docutils literal notranslate"><span class="pre">invenio-rdm-records</span></code> package and documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/">here</a>. It also includes a number of optional metadata fields which have been enabled in KCWorks, documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/optional_metadata/">here</a>.</p>
 <p>Beyond these InvenioRDM fields, KCWorks adds a number of custom metadata fields to the schema using InvenioRDM’s custom field mechanism. These are all located in the top-level <code class="docutils literal notranslate"><span class="pre">custom_fields</span></code> field of the record metadata. They are prefixed with two different namespaces:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">kcr</span></code>: custom fields that are used to store data from the KC system. These fields <strong>may</strong> be used for new data, but are not required.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hclegacy</span></code>: custom fields that are used to store data from the legacy CORE database. These fields <strong>must not</strong> be used for new data.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hclegacy</span></code>: custom fields that are used to store data from the legacy CORE repository. These fields <strong>must not</strong> be used for new data.</p></li>
 </ul>
+<section id="example-json-record">
+<h2>Example JSON record<a class="headerlink" href="#example-json-record" title="Link to this heading">¶</a></h2>
+<p>What follows is an example of a complete metadata record (JSON object) used to create a KCWorks record. The various fields and their possible values are described in the sections below.</p>
+<p>Note that no single actual record would include all of these fields. The example is provided to illustrate the structure of the metadata record and the sort of values that are valid for each field.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;custom_fields&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;code:codeRepository&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/my-project&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;code:programmingLanguage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Python&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;JavaScript&quot;</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;code:developmentStatus&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;active&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;journal:journal&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My Journal Title&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;issue&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;volume&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;pages&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;123-456&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;issn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0378-5955&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;imprint:imprint&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My Book Title&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;pages&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;458&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;isbn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0-06-251587-X&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;place&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lagos&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;meeting:meeting&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;dates&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;October 2022&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;place&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Michigan State University&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Fall 2022 Meeting of the Humanities Commons Working Group&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;acronym&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MET&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://myevent.org&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;kcr:ai_usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ai_used&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;ai_description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;I used ChatGPT to generate the references.&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;kcr:book_series&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;series_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My series&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;series_volume&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;kcr:commons_domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hcommons.org&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:course_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My course&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:degree&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PhD&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:discipline&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Education&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:edition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2nd&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:institution_department&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Education&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:media&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;printed paper&quot;</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;kcr:meeting_organization&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Humanities Commons&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:notes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;These are some notes about the deposit not intended for the public record.&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:project_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My project&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:publication_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://mycourse.org&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:sponsoring_institution&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MSU&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:submitter_email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jane.doe@hcommons.org&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:submitter_username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;janedoe&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;kcr:volumes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;total_volumes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;volume&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;kcr:user_defined_tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;Access&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;Digital humanities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;Collaboration&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;resource_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;instructionalResource-syllabus&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;creators&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;person_or_org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Doe, Jane&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;personal&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;given_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jane&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;family_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Doe&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="p">{</span>
+<span class="w">                            </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;orcid&quot;</span><span class="p">,</span>
+<span class="w">                            </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0000-0001-2345-6789&quot;</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                    </span><span class="p">]</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;author&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;affiliations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Michigan State University&quot;</span><span class="p">}]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A Syllabus for a Digital Pedagogy Course&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;additional_titles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Teaching in the Age of AI&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;subtitle&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;lang&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eng&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;publisher&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;KCWorks&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;publication_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2018/2020-09&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;subjects&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://id.worldcat.org/fast/958235&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;subject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;History&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAST-topical&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://id.worldcat.org/fast/1086436&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;subject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Race&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAST-topical&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://id.worldcat.org/fast/966892&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;subject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Identity (Psychology)&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAST-topical&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;contributors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;person_or_org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;personal&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;given_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;family_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Doe&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="p">{</span>
+<span class="w">                            </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;orcid&quot;</span><span class="p">,</span>
+<span class="w">                            </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0000-0001-2345-6780&quot;</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                    </span><span class="p">]</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;affiliations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Michigan State University&quot;</span><span class="p">}]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;dates&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-01-01&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The date when the syllabus was made available.&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;formats&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;application/pdf&quot;</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;languages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eng&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/syllabus&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;url&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;related_identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;10.1234/foo.bar&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;doi&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;relation_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iscitedby&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;resource_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dataset&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;sizes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;11 pages&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;32 x 24 cm&quot;</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v1.0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;rights&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cc-by-nc-4.0&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;en&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allows re-distribution and re-use of a licensed work on the condition that the creator is appropriately credited and that the re-use is not for commercial purposes.&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;link&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://creativecommons.org/licenses/by-nc/4.0/legalcode&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;h1&gt;A description&lt;/h1&gt; &lt;p&gt;with HTML tags&lt;/p&gt;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;additional_descriptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Some additional description about the methods involved in the syllabus.&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;methods&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;de&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Technische Informationen&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;en&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Technical info&quot;</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;lang&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eng&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;en&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;English&quot;</span><span class="p">}}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;locations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;features&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;geometry&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Point&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;coordinates&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">-32.94682</span><span class="p">,</span><span class="w"> </span><span class="mf">-60.63932</span><span class="p">]</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                    </span><span class="nt">&quot;place&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;test location place&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;test location description&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="p">{</span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345abcde&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;wikidata&quot;</span><span class="p">},</span>
+<span class="w">                        </span><span class="p">{</span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345abcde&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;geonames&quot;</span><span class="p">}</span>
+<span class="w">                    </span><span class="p">]</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;funding&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;funder&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00k4n6c32&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;award&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="p">{</span>
+<span class="w">                            </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://sandbox.zenodo.org/&quot;</span><span class="p">,</span>
+<span class="w">                            </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;url&quot;</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                    </span><span class="p">],</span>
+<span class="w">                    </span><span class="nt">&quot;number&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;111023&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;en&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Launching of the research program on meaning processing&quot;</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;access&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;record&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;restricted&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;embargo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">True</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;until&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2029-01-01&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Publisher requires embargo.&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="controlled-vocabularies">
+<h2>Controlled Vocabularies<a class="headerlink" href="#controlled-vocabularies" title="Link to this heading">¶</a></h2>
+<section id="subject-headings">
+<h3>Subject headings<a class="headerlink" href="#subject-headings" title="Link to this heading">¶</a></h3>
+<section id="fast">
+<h4>FAST<a class="headerlink" href="#fast" title="Link to this heading">¶</a></h4>
+<p>The FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) is used for the <code class="docutils literal notranslate"><span class="pre">subjects</span></code> field.</p>
+</section>
+<section id="homosaurus">
+<h4>Homosaurus<a class="headerlink" href="#homosaurus" title="Link to this heading">¶</a></h4>
+<p>The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https://homosaurus.org/) for subjects related to sexuality and gender identity.</p>
+</section>
+</section>
+<section id="organizations">
+<h3>Organizations<a class="headerlink" href="#organizations" title="Link to this heading">¶</a></h3>
+<section id="ror">
+<h4>ROR<a class="headerlink" href="#ror" title="Link to this heading">¶</a></h4>
+<p>The Research Organization Registry (https://ror.org/) is used for the <code class="docutils literal notranslate"><span class="pre">organizations</span></code> field.</p>
+</section>
+</section>
+</section>
 <section id="notes-about-implementation-of-core-inveniordm-fields">
-<h3>Notes about Implementation of Core InvenioRDM Fields<a class="headerlink" href="#notes-about-implementation-of-core-inveniordm-fields" title="Link to this heading">¶</a></h3>
+<h2>Notes about Implementation of Core InvenioRDM Fields<a class="headerlink" href="#notes-about-implementation-of-core-inveniordm-fields" title="Link to this heading">¶</a></h2>
 <section id="metadata-subjects">
-<h4>metadata.subjects<a class="headerlink" href="#metadata-subjects" title="Link to this heading">¶</a></h4>
+<h3>metadata.subjects<a class="headerlink" href="#metadata-subjects" title="Link to this heading">¶</a></h3>
 <p>Note that KCWorks employs the FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) for the <code class="docutils literal notranslate"><span class="pre">subjects</span></code> field, complemented by the Homosaurus vocabulary (https://homosaurus.org/).</p>
 <p>The FAST vocabulary is divided into a number of sub-vocabularies called “facets”, allowing more efficient searching and less ambiguity in the subject headings. FAST subjects in the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> array must include the complete WorldCat url for the subject heading, the standard human-readable label, and a <code class="docutils literal notranslate"><span class="pre">scheme</span></code> including “FAST” followed by a hyphen and the FAST facet name in lowercase: i.e., one of</p>
 <ul class="simple">
@@ -384,7 +555,7 @@
 </div>
 </section>
 <section id="metadata-creators-metadata-contributors">
-<h4>metadata.creators/metadata.contributors<a class="headerlink" href="#metadata-creators-metadata-contributors" title="Link to this heading">¶</a></h4>
+<h3>metadata.creators/metadata.contributors<a class="headerlink" href="#metadata-creators-metadata-contributors" title="Link to this heading">¶</a></h3>
 <p>Note that the KC username of a creator or contributor may be stored in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> array of the creator or contributor object with the scheme <code class="docutils literal notranslate"><span class="pre">kc_username</span></code>.</p>
 <p>Users are also strongly encouraged to include an ORCID identifier in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> array with the scheme <code class="docutils literal notranslate"><span class="pre">orcid</span></code>.</p>
 <blockquote>
@@ -408,7 +579,6 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
 </section>
 <section id="kcworks-custom-fields-kcworks-site-metadata-fields">
 <h3>KCWorks Custom Fields (kcworks/site/metadata_fields)<a class="headerlink" href="#kcworks-custom-fields-kcworks-site-metadata-fields" title="Link to this heading">¶</a></h3>
@@ -817,24 +987,6 @@ This field is automatically generated by the <code class="docutils literal notra
 </section>
 </section>
 </section>
-<section id="bulk-record-import-invenio-record-importer-kcworks">
-<h2>Bulk Record Import (invenio-record-importer-kcworks)<a class="headerlink" href="#bulk-record-import-invenio-record-importer-kcworks" title="Link to this heading">¶</a></h2>
-</section>
-<section id="forked-core-invenio-modules">
-<h2>Forked Core Invenio Modules<a class="headerlink" href="#forked-core-invenio-modules" title="Link to this heading">¶</a></h2>
-<section id="invenio-communities">
-<h3>invenio-communities<a class="headerlink" href="#invenio-communities" title="Link to this heading">¶</a></h3>
-</section>
-<section id="invenio-rdm-records">
-<h3>invenio-rdm-records<a class="headerlink" href="#invenio-rdm-records" title="Link to this heading">¶</a></h3>
-</section>
-<section id="invenio-records-resources">
-<h3>invenio-records-resources<a class="headerlink" href="#invenio-records-resources" title="Link to this heading">¶</a></h3>
-</section>
-<section id="invenio-vocabularies">
-<h3>invenio-vocabularies<a class="headerlink" href="#invenio-vocabularies" title="Link to this heading">¶</a></h3>
-</section>
-</section>
 </section>
 
         </article>
@@ -842,23 +994,23 @@ This field is automatically generated by the <code class="docutils literal notra
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="configuration.html">
+          <a class="next-page" href="customizations.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Configuration of InvenioRDM</div>
+                <div class="title">Customizations to InvenioRDM</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="metadata.html">
+          <a class="prev-page" href="installation.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Metadata Schema and Vocabularies</div>
+                <div class="title">Installation</div>
                 
               </div>
             </a>
@@ -892,46 +1044,23 @@ This field is automatically generated by the <code class="docutils literal notra
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Customizations to InvenioRDM</a><ul>
-<li><a class="reference internal" href="#template-customizations">Template Customizations</a><ul>
-<li><a class="reference internal" href="#page-templates">Page templates</a></li>
-<li><a class="reference internal" href="#email-templates">Email templates</a></li>
+<li><a class="reference internal" href="#">Metadata Schema and Vocabularies</a><ul>
+<li><a class="reference internal" href="#example-json-record">Example JSON record</a></li>
+<li><a class="reference internal" href="#controlled-vocabularies">Controlled Vocabularies</a><ul>
+<li><a class="reference internal" href="#subject-headings">Subject headings</a><ul>
+<li><a class="reference internal" href="#fast">FAST</a></li>
+<li><a class="reference internal" href="#homosaurus">Homosaurus</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#record-detail-page-customizations">Record Detail Page Customizations</a><ul>
-<li><a class="reference internal" href="#modular-framework-invenio-modular-detail-page">Modular Framework (invenio-modular-detail-page)</a></li>
-<li><a class="reference internal" href="#overrides-in-the-kcworks-package-kcworks-site">Overrides in the KCWorks Package (kcworks/site)</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#deposit-form-customizations">Deposit Form Customizations</a><ul>
-<li><a class="reference internal" href="#modular-framework-invenio-modular-deposit-form">Modular Framework (invenio-modular-deposit-form)</a></li>
-<li><a class="reference internal" href="#id1">Overrides in the KCWorks Package (kcworks/site)</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#collections">Collections</a><ul>
-<li><a class="reference internal" href="#collections-for-kc-groups-invenio-group-collections-kcworks">Collections for KC Groups (invenio-group-collections-kcworks)</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#notifications">Notifications</a><ul>
-<li><a class="reference internal" href="#in-app-notifications">In-app notifications</a></li>
-<li><a class="reference internal" href="#content-moderation-notifications">Content moderation notifications</a><ul>
-<li><a class="reference internal" href="#user-first-record-notifications">User-first-record notifications</a></li>
+<li><a class="reference internal" href="#organizations">Organizations</a><ul>
+<li><a class="reference internal" href="#ror">ROR</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#integrations-with-kc">Integrations with KC</a><ul>
-<li><a class="reference internal" href="#user-data-sync-invenio-remote-user-data-kcworks">User Data Sync (invenio-remote-user-data-kcworks)</a></li>
-<li><a class="reference internal" href="#kc-search-provisioning-invenio-remote-api-provisioner">KC Search Provisioning (invenio-remote-api-provisioner)</a></li>
-<li><a class="reference internal" href="#saml-authentication">SAML Authentication</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#metadata-schema-customizations">Metadata Schema Customizations</a><ul>
 <li><a class="reference internal" href="#notes-about-implementation-of-core-inveniordm-fields">Notes about Implementation of Core InvenioRDM Fields</a><ul>
 <li><a class="reference internal" href="#metadata-subjects">metadata.subjects</a></li>
 <li><a class="reference internal" href="#metadata-creators-metadata-contributors">metadata.creators/metadata.contributors</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#kcworks-custom-fields-kcworks-site-metadata-fields">KCWorks Custom Fields (kcworks/site/metadata_fields)</a><ul>
 <li><a class="reference internal" href="#kcr-ai-usage">kcr:ai_usage</a></li>
 <li><a class="reference internal" href="#kcr-media">kcr:media</a></li>
@@ -973,14 +1102,6 @@ This field is automatically generated by the <code class="docutils literal notra
 <li><a class="reference internal" href="#custom-fields-hclegacy-total-downloads">custom_fields.hclegacy:total_downloads</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a class="reference internal" href="#bulk-record-import-invenio-record-importer-kcworks">Bulk Record Import (invenio-record-importer-kcworks)</a></li>
-<li><a class="reference internal" href="#forked-core-invenio-modules">Forked Core Invenio Modules</a><ul>
-<li><a class="reference internal" href="#invenio-communities">invenio-communities</a></li>
-<li><a class="reference internal" href="#invenio-rdm-records">invenio-rdm-records</a></li>
-<li><a class="reference internal" href="#invenio-records-resources">invenio-records-resources</a></li>
-<li><a class="reference internal" href="#invenio-vocabularies">invenio-vocabularies</a></li>
 </ul>
 </li>
 </ul>
