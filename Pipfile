@@ -10,6 +10,8 @@ jsonlines = "*"
 requests-mock = "*"
 selenium = "*"
 docker-services-cli = "*"
+sphinx = "*"
+myst-parser = "*"
 
 [packages]
 aiohttp = "*"

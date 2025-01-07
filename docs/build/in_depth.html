@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>In-depth Development Installation Instructions (NEEDS UPDATING) &#8212; Knowledge Commons Works 0.3.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=d5a15cff"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reference" href="reference.html" />
+    <link rel="prev" title="Developing KCWorks" href="developing.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="in-depth-development-installation-instructions-needs-updating">
+<h1>In-depth Development Installation Instructions (NEEDS UPDATING)<a class="headerlink" href="#in-depth-development-installation-instructions-needs-updating" title="Link to this heading">¶</a></h1>
+<section id="install-python-and-required-python-tools">
+<h2>Install Python and Required Python Tools<a class="headerlink" href="#install-python-and-required-python-tools" title="Link to this heading">¶</a></h2>
+<section id="ensure-some-version-of-python-is-installed">
+<h3>Ensure some version of python is installed<a class="headerlink" href="#ensure-some-version-of-python-is-installed" title="Link to this heading">¶</a></h3>
+<p>Most operating systems (especially MacOS and Linux) will already have a version of Python installed. You can proceed directly to the next step.</p>
+</section>
+<section id="install-pyenv-and-pipenv">
+<h3>Install pyenv and pipenv<a class="headerlink" href="#install-pyenv-and-pipenv" title="Link to this heading">¶</a></h3>
+<p>First install the <strong>pyenv</strong> tool to manage python versions, and the <strong>pipenv</strong> tool to manage virtual environments. (There are other tools to use for virtual environment management, but InvenioRDM is built to work with pipenv.)</p>
+<p>Instructions for Linux, MacOS, and Windows can be found here: https://www.newline.co/courses/create-a-serverless-slackbot-with-aws-lambda-and-python/installing-python-3-and-pyenv-on-macos-windows-and-linux</p>
+</section>
+<section id="install-and-enable-python-3-9-16">
+<h3>Install and enable Python 3.9.16<a class="headerlink" href="#install-and-enable-python-3-9-16" title="Link to this heading">¶</a></h3>
+<p>Invenio’s command line tools require a specific python version to work reliably. Currently this is python 3.9.16.  At the command line, first install this python version using pyenv:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pyenv install 3.9.16</span>
+</pre></div>
+</div>
+<p>Note: It is important to use cpython. Invenio does not support other python interpreters (like pypy) and advises against using anaconda python in particular for running the RDM application.</p>
+<p>Just because this python version is installed does not guarantee it will be used. Next, navigate to the directory where you cloned the source code, and set the correct python version to be used locally:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd ~/path/to/directory/knowledge-commons-works</span>
+<span class="go">pyenv local 3.9.16</span>
+</pre></div>
+</div>
+<section id="install-the-invenio-cli-command-line-tool">
+<h4>Install the invenio-cli command line tool<a class="headerlink" href="#install-the-invenio-cli-command-line-tool" title="Link to this heading">¶</a></h4>
+<p>From the same directory Use pip to install the <strong>invenio-cli</strong> python package. (Do not use pipenv yet or create a virtual environment.)</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install invenio-cli</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="install-docker-20-10-10-and-docker-compose-1-17-0">
+<h2>Install Docker 20.10.10+ and Docker-compose 1.17.0+<a class="headerlink" href="#install-docker-20-10-10-and-docker-compose-1-17-0" title="Link to this heading">¶</a></h2>
+<section id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Link to this heading">¶</a></h3>
+<p>If you are using Ubuntu Linux, follow the steps for installing Docker and Docker-compose explained here: https://linux.how2shout.com/install-and-configure-docker-compose-on-ubuntu-22-04-lts-jammy/</p>
+<p>You must then create a <code class="docutils literal notranslate"><span class="pre">docker</span></code> group and add the current user to it (so that you can run docker commands without sudo). This is <em>required</em> for the invenio-cli scripts to work, and it must be done for the <em>same user</em> that will run the cli commands:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo usermod --append --groups docker $USER</span>
+</pre></div>
+</div>
+<p>You will likely want to configure Docker to start on system boot with systemd.</p>
+</section>
+<section id="macos">
+<h3>MacOS<a class="headerlink" href="#macos" title="Link to this heading">¶</a></h3>
+<p>If you are using MacOS, follow the steps for installing Docker desktop explained here: https://docs.docker.com/desktop/install/mac-install/</p>
+<p>You will then need to ensure Docker has enough memory to run all the InvenioRDM containers. In the Docker Desktop app,</p>
+<ul class="simple">
+<li><p>click settings cog icon (top bar near right)</p></li>
+<li><p>set the memory slider under the “Resources” tab manually to at least 6-8GB</p></li>
+</ul>
+<p>Note: The environment variable recommended in the InvenioRDM documentation for MacOS 11 Big Sur is <em>not</em> necessary for newer MacOS versions.</p>
+</section>
+<section id="fixing-docker-compose-not-found-error">
+<h3>Fixing docker-compose “not found” error<a class="headerlink" href="#fixing-docker-compose-not-found-error" title="Link to this heading">¶</a></h3>
+<p>With the release of compose v2, the command syntax changed from <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> to <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> (a command followed by a sub-command instead of one hyphenated command). This will break the invenio-cli scripts, which use the <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> command and you will receive an error asking you to install the “docker-compose” package.</p>
+<p>One solution on Linux systems is to install Docker Compose standalone, which uses the old <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> syntax:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose</span>
+<span class="go">sudo chmod +x /usr/local/bin/docker-compose</span>
+</pre></div>
+</div>
+<p>Another approach is simply to alias the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> command to <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> in the configuration file for your command line shell (.bashrc, .zshrc, or whichever config file is used by your shell).</p>
+<p>See further https://docs.docker.com/compose/install/other/</p>
+</section>
+<section id="docker-log-rotation">
+<h3>Docker log rotation<a class="headerlink" href="#docker-log-rotation" title="Link to this heading">¶</a></h3>
+<p>Regardless of your operating system, you should set up log rotation for containers to keep the size of logging files from getting out of control. Either set your default logging driver to “local” (which rotates log files automatically) or set logging configuration if you use the “json-file” logging driver. See https://docs.docker.com/config/containers/logging/configure/</p>
+</section>
+<section id="note-about-docker-contexts">
+<h3>Note about docker contexts<a class="headerlink" href="#note-about-docker-contexts" title="Link to this heading">¶</a></h3>
+<p>Make sure to always use the same Docker context to run all of the containers for InvenioRDM. See further, https://docs.docker.com/engine/context/working-with-contexts/</p>
+</section>
+</section>
+<section id="install-node-js-and-nvm">
+<h2>Install Node.js and NVM<a class="headerlink" href="#install-node-js-and-nvm" title="Link to this heading">¶</a></h2>
+<p>Currently InvenioRDM (v. 11) requires Node.js version 16.19.1. The best way to install and manage Node.js versions is using the nvm version manager. You can find instructions here: https://www.freecodecamp.org/news/node-version-manager-nvm-install-guide/</p>
+<p>Once nvm is installed, install the required Node.js version and set it as the active version:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nvm install v16.19.1</span>
+<span class="go">nvm use 16.19.1</span>
+</pre></div>
+</div>
+<p>You may have other Node versions installed as well, so before a session working with Knowledge Commons Works it’s a good idea to make sure you’re using the correct version. On MacOS and Linux you can check
+from the command line with</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">which node</span>
+</pre></div>
+</div>
+</section>
+<section id="clone-the-knowledge-commons-works-code">
+<h2>Clone the knowledge-commons-works Code<a class="headerlink" href="#clone-the-knowledge-commons-works-code" title="Link to this heading">¶</a></h2>
+<p>Using GIT, clone this repository. You should then have a folder called <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code> (unless you chose to name it something else) on your local computer.</p>
+</section>
+<section id="add-and-configure-an-environment-file">
+<h2>Add and Configure an Environment File<a class="headerlink" href="#add-and-configure-an-environment-file" title="Link to this heading">¶</a></h2>
+<section id="standardized-environment-variables">
+<h3>Standardized environment variables<a class="headerlink" href="#standardized-environment-variables" title="Link to this heading">¶</a></h3>
+<p>This file must include the following variables with these values:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INVENIO_INSTANCE_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">invenio</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">instance</span>
+<span class="n">INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR</span><span class="o">=/</span>
+<span class="n">INVENIO_RECORD_IMPORTER_DATA_DIR</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">invenio</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">import_data</span>
+<span class="n">INVENIO_SEARCH_DOMAIN</span><span class="o">=</span><span class="s1">&#39;search:9200&#39;</span>
+<span class="n">INVENIO_SITE_UI_URL</span><span class="o">=</span><span class="s2">&quot;https://localhost&quot;</span>
+<span class="n">INVENIO_SITE_API_URL</span><span class="o">=</span><span class="s2">&quot;https://localhost/api&quot;</span>
+<span class="n">REDIS_DOMAIN</span><span class="o">=</span><span class="s1">&#39;cache:6379&#39;</span>
+<span class="n">INVENIO_SQLALCHEMY_DATABASE_URI</span><span class="o">=</span><span class="s2">&quot;postgresql+psycopg2://kcworks:kcworks@db/kcworks&quot;</span>
+<span class="n">POSTGRES_USER</span><span class="o">=</span><span class="n">kcworks</span>
+<span class="n">POSTGRES_DB</span><span class="o">=</span><span class="n">kcworks</span>
+</pre></div>
+</div>
+<p>The INVENIO_INSTANCE_PATH should be set to the full path of the instance directory where InvenioRDM will store its compiled files. Since KC Works runs inside containers, this is normally a standard folder inside the container file systems (/opt/invenio/var/instance). If you were to run InvenioRDM with the python/uwsgi processes installed on your local machine, this would be a folder inside your local virtual environment folder. For example, on MacOS this might be ~/.local/share/virtualenvs/{virtual env name}/var/instance/.</p>
+</section>
+<section id="variables-for-local-credentials">
+<h3>Variables for local credentials<a class="headerlink" href="#variables-for-local-credentials" title="Link to this heading">¶</a></h3>
+<p>Several variables hold random values used to secure the application, or hold passwords and email addresses supplied by the local developer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>INVENIO_CSRF_SECRET_SALT=&#39;..put a long random value here..&#39;
+INVENIO_SECURITY_LOGIN_SALT=&#39;..put a long random value here..&#39;
+INVENIO_SECRET_KEY=CHANGE_ME
+POSTGRES_PASSWORD=???
+PGADMIN_DEFAULT_EMAIL=???
+PGADMIN_DEFAULT_PASSWORD=???
+</pre></div>
+</div>
+<p>Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal by running</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -c &#39;import secrets; print(secrets.token_hex())&#39;</span>
+</pre></div>
+</div>
+<section id="additional-environment-variables-with-sensitive-information">
+<h4>Additional environment variables with sensitive information<a class="headerlink" href="#additional-environment-variables-with-sensitive-information" title="Link to this heading">¶</a></h4>
+<p>Additionally, you should add the following variables with the appropriate values obtained from the Commons administrators:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">COMMONS_API_TOKEN</span><span class="o">=</span><span class="n">mytoken</span>  <span class="c1"># this must be obtained from the Commons administrators</span>
+<span class="n">COMMONS_SEARCH_API_TOKEN</span><span class="o">=</span><span class="n">mytoken</span>  <span class="c1"># this must be obtained from the Commons administrators</span>
+<span class="n">INVENIO_DATACITE_PASSWORD</span><span class="o">=</span><span class="n">myinveniodatacitepassword</span>  <span class="c1"># this must be obtained from the Commons administrators</span>
+</pre></div>
+</div>
+<p>You will also need to enter the following variable with a dummy value and then replace it with the actual value after the instance is set up. Once you have an administrative user, you can generate a token for that user in the KC Works admin ui and enter it here:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">API_TOKEN</span><span class="o">=</span><span class="n">myapitoken</span>
+</pre></div>
+</div>
+</section>
+<section id="additional-required-environment-variables-with-paths-on-your-local-file-system">
+<h4>Additional required environment variables with paths on your local file system<a class="headerlink" href="#additional-required-environment-variables-with-paths-on-your-local-file-system" title="Link to this heading">¶</a></h4>
+<p>The next variables refer to paths on your local file system that are used during local development to provide easy access to the source code of various python packages and KCWorks modules:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PYTHON_LOCAL_GIT_PACKAGES_PATH</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">packages</span>
+<span class="n">PYTHON_LOCAL_SITE_PACKAGES_PATH</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">virtual</span><span class="o">/</span><span class="n">environment</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.12</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span>
+</pre></div>
+</div>
+<p>PYTHON_LOCAL_GIT_PACKAGES_PATH is the parent directory that holds cloned packages that aren’t available via pip or that have been forked by us. If you are not working with the KCWorks custom modules locally, this can be set to the folder where you cloned the KCWorks code. Otherwise, it should be the path to the parent folder containing the git repositories for the forked Invenio modules and the extra KC Works modules.</p>
+<p>PYTHON_LOCAL_SITE_PACKAGES_PATH is the path to the site-packages folder in your local virtual environment. This assumes that you have run <code class="docutils literal notranslate"><span class="pre">pipenv</span> <span class="pre">install</span> <span class="pre">--dev</span> <span class="pre">--python=3.12</span></code> in your KCWorks project folder to install the python packages locally in a virtual environment.</p>
+</section>
+</section>
+</section>
+<section id="install-the-invenio-python-modules">
+<h2>Install the Invenio Python Modules<a class="headerlink" href="#install-the-invenio-python-modules" title="Link to this heading">¶</a></h2>
+<p>Navigate to the root knowledge-commons-works folder and run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv install --dev --python=3.12</span>
+</pre></div>
+</div>
+<p>Note: This installation step will take several minutes.</p>
+<p>This stage</p>
+<ul class="simple">
+<li><p>creates and initializes a Python virtual environment using pipenv</p></li>
+<li><p>locks the python package requirements</p></li>
+<li><p>installs the Invenio python packages (with pipenv)</p>
+<ul>
+<li><p>these packages are again installed under your virtual environment folder. On MacOS this is often ~/.local/share/virtualenvs/{virtual env name}/lib/python3.9/site-packages/. You will find several modules installed here with names that start with “invenio_”.</p></li>
+</ul>
+</li>
+<li><p>installs the <code class="docutils literal notranslate"><span class="pre">kcworks</span></code> Python package (with pipenv)</p>
+<ul>
+<li><p>alongside the Invenio packages you will also find a <code class="docutils literal notranslate"><span class="pre">kcworks</span></code> package containing any custom extensions to InvenioRDM defined in your <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works/sites/</span></code> folder</p></li>
+</ul>
+</li>
+<li><p>installs required python dependencies (with pipenv)</p></li>
+</ul>
+</section>
+<section id="build-and-configure-the-containerized-services">
+<h2>Build and Configure the Containerized Services<a class="headerlink" href="#build-and-configure-the-containerized-services" title="Link to this heading">¶</a></h2>
+<section id="build-and-start-the-containers">
+<h3>Build and start the containers<a class="headerlink" href="#build-and-start-the-containers" title="Link to this heading">¶</a></h3>
+<p>Make sure you are in the root knowledge-commons-works folder and then run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker-compose up -d</span>
+</pre></div>
+</div>
+<p>This step will</p>
+<ul class="simple">
+<li><p>build the docker image for the nginx web server (frontend) using ./docker/nginx/Dockerfile</p></li>
+<li><p>pull remote images for other services: mq, search, db, cache, pgadmin, opensearch-dashboards</p></li>
+<li><p>start containers from all of these images and mounts local files or folders into the containers as required in the docker-compose.yml and docker-services.yml files</p></li>
+</ul>
+</section>
+<section id="create-and-initialize-the-database-search-indices-and-task-queue">
+<h3>Create and initialize the database, search indices, and task queue<a class="headerlink" href="#create-and-initialize-the-database-search-indices-and-task-queue" title="Link to this heading">¶</a></h3>
+<p>Again, from the root knowledge-commons-works folder, run this command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">invenio-cli services setup</span>
+</pre></div>
+</div>
+<p>This step will</p>
+<ul class="simple">
+<li><p>create the postgresql database and table structure</p></li>
+<li><p>create Invenio admin role and assigns it superuser access</p></li>
+<li><p>begin indexing with OpenSearch</p></li>
+<li><p>create Invenio fixtures</p></li>
+<li><p>insert demo data into the database (unless you add the –no-demo-data flag)</p></li>
+</ul>
+<p>Note: If for some reason you need to run this step again, you will need to add the <code class="docutils literal notranslate"><span class="pre">--force</span></code> flag to the <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> command. This tells Invenio to destroy any existing redis cache, database, index, and task queue before recreating them all. Just be aware that performing this setup again with <code class="docutils literal notranslate"><span class="pre">--force</span></code> will <strong>destroy all data in your database and all OpenSearch indices</strong>.</p>
+</section>
+<section id="start-the-uwsgi-applications-and-celery-worker">
+<h3>Start the uwsgi applications and celery worker<a class="headerlink" href="#start-the-uwsgi-applications-and-celery-worker" title="Link to this heading">¶</a></h3>
+<p>Finally, you need to start the actual applications. Knowledge Commons Works is actually run as two separate applications: one providing an html user interface, and one providing a REST api and serving JSON responses. Each application is served to the nginx web server by its own uwsgi process. The nginx server begins automatically when the <code class="docutils literal notranslate"><span class="pre">frontend</span></code> docker container starts, but the uwsgi applications run on your local machine and need to be started directly.</p>
+<p>These applications are also supported by a Celery worker process. This is a task queue that (with the help of the RabbitMQ docker container) frees up the python applications from being blocked by long-running tasks like indexing. The celery worker also runs on your local machine and must be started directly.</p>
+<p>If you want to quickly start all of these processes in the background (as daemons), you can run the kcr-startup.sh script in the root knowledge-commons-works directory:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash kcr-startup.sh</span>
+</pre></div>
+</div>
+<p>The processes will output request and error logging to files in the <code class="docutils literal notranslate"><span class="pre">logs</span></code> folder of your knowledge-commons-works folder.</p>
+<p>To stop these processes, simply run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash kcr-shutdown.sh</span>
+</pre></div>
+</div>
+<p>If you would like to view the real time log output of these processes, you can also start them individually in three separate terminals:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv run celery --app invenio_app.celery worker --beat --events --loglevel INFO</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv run uwsgi docker/uwsgi/uwsgi_ui.ini --pidfile=/tmp/kcr_ui.pid</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv run uwsgi docker/uwsgi/uwsgi_rest.ini  --pidfile=/tmp/kcr_api.pid</span>
+</pre></div>
+</div>
+<p>These processes can be stopped individually by pressing CTRL-C</p>
+</section>
+<section id="create-an-admin-user">
+<h3>Create an admin user<a class="headerlink" href="#create-an-admin-user" title="Link to this heading">¶</a></h3>
+<p>From the command line, run these commands to create and activate the admin user:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv run invenio users create &lt;email&gt; --password &lt;password&gt;</span>
+<span class="go">pipenv run invenio users activate &lt;email&gt;</span>
+</pre></div>
+</div>
+<p>If you want this user to have access to the administration panel in Invenio, you also need to run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv run invenio access allow administration-access user &lt;email&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="use-the-application">
+<h2>Use the application!<a class="headerlink" href="#use-the-application" title="Link to this heading">¶</a></h2>
+<p>You should now be able to access the following:</p>
+<ul class="simple">
+<li><p>The Knowledge Commons Works app (https://localhost)</p></li>
+<li><p>The Knowledge Commons Works REST api (https://localhost/api)</p></li>
+<li><p>pgAdmin for database management (https://localhost/pgadmin)</p></li>
+<li><p>Opensearch Dashboards for managing search (https://localhost:5601)</p></li>
+</ul>
+<section id="controlling-the-application-services">
+<h3>Controlling the Application Services<a class="headerlink" href="#controlling-the-application-services" title="Link to this heading">¶</a></h3>
+<p>Once Knowledge Commons Works is installed, you can manage its services from the command line. <strong>Note: Unless otherwise specified, the commands below must be run from the root knowledge-commons-works folder.</strong></p>
+</section>
+<section id="startup-and-shutdown-scripts">
+<h3>Startup and shutdown scripts<a class="headerlink" href="#startup-and-shutdown-scripts" title="Link to this heading">¶</a></h3>
+<p>The bash script kcr-startup.sh will start
+- the containerized services (if not running)
+- the celery worker
+- the two uwsgi processes
+It will also ensure that you have a .env file and copy your set your INVENIO_INSTANCE_PATH variable in that file to your local instance folder, matching the instance_path variable in your .invenio.private file.</p>
+<p>Simply navigate to the root knowledge-commons-works folder and run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash ./kcr-startup.sh</span>
+</pre></div>
+</div>
+<p>To stop the processes and containerized services, simply run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash ./kcr-shutdown.sh</span>
+</pre></div>
+</div>
+</section>
+<section id="controlling-just-the-containerized-services">
+<h3>Controlling just the containerized services<a class="headerlink" href="#controlling-just-the-containerized-services" title="Link to this heading">¶</a></h3>
+<p>If you want to stop or start just the containerized services (rather than the local processes), you can use the invenio cli:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">invenio-cli services start</span>
+<span class="go">invenio-cli services stop</span>
+</pre></div>
+</div>
+<p>Or you can control them directly with the docker-compose command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker-compose up -d</span>
+<span class="go">docker-compose stop</span>
+</pre></div>
+</div>
+<p>Note that stopping the containers this way will not destroy the data and configuration which live in docker volumes. Those volumes persist as long as the containers are not destroyed. <strong>Do not use the <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">down</span></code> command unless you want the containers to be destroyed.</strong></p>
+</section>
+<section id="view-logging-output-for-uwsgi-processes">
+<h3>View logging output for uwsgi processes<a class="headerlink" href="#view-logging-output-for-uwsgi-processes" title="Link to this heading">¶</a></h3>
+<p>Activity and error logging for the two uwsgi processes are written to date-stamped files in the knowledge-commons-works/logs/ folder. To watch the live logging output from one of these processes, open a new terminal in your knowledge-commons-works folder and run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tail -f logs/uwsgi-ui-{date}.log</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tail -f logs/uwsgi-api-{date}.log</span>
+</pre></div>
+</div>
+</section>
+<section id="view-container-logging-output">
+<h3>View container logging output<a class="headerlink" href="#view-container-logging-output" title="Link to this heading">¶</a></h3>
+<p>The logging output (and stdout) can be viewed with Docker Desktop using its convenient ui. It can also be viewed from the command line using:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker logs &lt;image-name&gt; -f</span>
+</pre></div>
+</div>
+<p>The names of the various images are:</p>
+<ul class="simple">
+<li><p>nginx: kcworks-frontend-1</p></li>
+<li><p>RabbitMQ: kcworks-mq-1</p></li>
+<li><p>PostgreSQL: kcworks-db-1</p></li>
+<li><p>OpenSearch: kcworks-search-1</p></li>
+<li><p>Redis: kcworks-cache-1</p></li>
+<li><p>OpenSearch Dashboards: kcworks-opensearch-dashboards-1</p></li>
+<li><p>pgAdmin: kcworks-pgadmin-1</p></li>
+</ul>
+</section>
+<section id="controlling-containerized-nginx-server">
+<h3>Controlling containerized nginx server<a class="headerlink" href="#controlling-containerized-nginx-server" title="Link to this heading">¶</a></h3>
+<p>The frontend container is configured so that the configuration files in docker/nginx/ are bind mounted. This means that changes to those config files can be seen in the running container and enabled without rebuilding the container. To reload the nginx configuration, first <strong>enter the frontend container</strong>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker exec -it kcworks-frontend-1 bash</span>
+</pre></div>
+</div>
+<p>Then tell gninx to reload the config files:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nginx -s reload</span>
+</pre></div>
+</div>
+<p>You can also test the nginx config prior to reloading by running</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nginx -t</span>
+</pre></div>
+</div>
+<p>Alternately, you can rebuild and restart the frontend container by running</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker-compose up -d --build frontend</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Knowledge Commons Works</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation for Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customizations.html">KCWorks Customizations to InvenioRDM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">KCWorks Configuration of InvenioRDM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_commands.html">KCWorks CLI Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infrastructure.html">KCWorks Infrastructure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing KCWorks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">In-depth Development Installation Instructions (NEEDS UPDATING)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-python-and-required-python-tools">Install Python and Required Python Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-docker-20-10-10-and-docker-compose-1-17-0">Install Docker 20.10.10+ and Docker-compose 1.17.0+</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-node-js-and-nvm">Install Node.js and NVM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clone-the-knowledge-commons-works-code">Clone the knowledge-commons-works Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-and-configure-an-environment-file">Add and Configure an Environment File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-the-invenio-python-modules">Install the Invenio Python Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-and-configure-the-containerized-services">Build and Configure the Containerized Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-the-application">Use the application!</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="developing.html" title="previous chapter">Developing KCWorks</a></li>
+      <li>Next: <a href="reference.html" title="next chapter">Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Mesh Research.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/in_depth.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
