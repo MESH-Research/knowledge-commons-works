@@ -5,6 +5,8 @@
 KCWorks uses semantic versioning (https://semver.org/). When a new release is made, the version number should be incremented in the following files:
 
 - `README.md`
+- `docs/source/README.md`
+- `docs/source/conf.py`
 - `site/pyproject.toml`
 - `site/kcworks/__init__.py`
 

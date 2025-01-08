@@ -11,6 +11,7 @@ Welcome to Knowledge Commons Works's documentation!
    :caption: Contents:
 
    README
+   CHANGES
    installation
    metadata
    customizations
