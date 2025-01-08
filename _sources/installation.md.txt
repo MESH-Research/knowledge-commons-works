@@ -8,36 +8,58 @@ First you will need to have the correct versions of Docker (20.10.10+ with Docke
 
 From there, installation involves these steps. Each one is further explained below, but here is a quick reference:
 
-1. Clone the git repository
-    1. From your command line, navigate to the parent folder where you want the cloned repository code to live
-    2. Clone the knowledge-commons-works repository with `git clone --recurse-submodules git@github.com:MESH-Research/knowledge-commons-works.git`
-2. Create your configuration files
-    - `cd knowledge-commons-works`
-    - Create and configure the `.env` file in this folder as described {ref}`here <in_depth:add and configure an environment file>`
-    - Create the `.invenio.private` file with the following contents:
-        ```shell
-        [cli]
-        services_setup = True
-        instance_path = /opt/invenio/var/instance
-        ```
-3. Start the docker-compose project
-    - `docker-compose --file docker-compose.yml up -d`
-4. Initialize the database and other services, and build asset files
-    - enter the `web-ui` container by running `docker exec -it kcworks-ui bash`
-        - *note*: The container name may be different depending on your local docker setup. You can find the correct name by running `docker ps`
-    - run the script to set up the instance services and build static assets `bash ./scripts/setup-services.sh`
-        - *note*: Some of the commands in this script may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
-5. Create your own admin user
-    - enter the `web-ui` container by running `docker exec -it kcworks-ui bash`
-    - run the commands:
-        - `invenio users create <email> --password <password>`
-        - `invenio users activate <email>`
-        - `invenio access allow administration-access user <email>`
-6. View the application
-    - The Knowledge Commons Works app is now running at `https://localhost`
-    - The REST API is running at `https://localhost/api`
-    - pgAdmin is running at `https://localhost/pgadmin`
-    - OpenSearch Dashboards is running at `https://localhost:5601`
+### 1. Clone the git repository
+
+- From your command line, navigate to the parent folder where you want the cloned repository code to live
+- Clone the knowledge-commons-works repository with `git clone git@github.com:MESH-Research/knowledge-commons-works.git && git submodule update --init`
+
+> **Note**: Do not use the `--recurse-submodules` option when cloning the repository or the `--recursive` option when initializing the submodules. This will clone redundant copies of the inter-dependent submodules.
+
+### 2. Create your configuration files
+
+- `cd knowledge-commons-works`
+- Create and configure the `.env` file in this folder as described {ref}`here <in_depth:add and configure an environment file>`
+- Create the `.invenio.private` file with the following contents:
+
+```shell
+[cli]
+services_setup = True
+instance_path = /opt/invenio/var/instance
+```
+### 3. Start the docker-compose project
+
+- `docker-compose --file docker-compose.yml up -d`
+
+### 4. Initialize the database and other services, and build asset files
+
+- enter the `web-ui` container by running `docker exec -it kcworks-ui bash`
+
+> **Note**: The container name may be different depending on your local docker setup. You can find the correct name by running `docker ps`
+
+- run the script to set up the instance services and build static assets `bash ./scripts/setup-services.sh`
+
+> **Note**: Some of the commands in this script may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
+
+### 5. Create your own admin user
+
+- enter the `web-ui` container by running `docker exec -it kcworks-ui bash`
+
+> **Note**: The container name may be different depending on your local docker setup. You can find the correct name by running `docker ps`
+
+- run the commands:
+
+```shell
+invenio users create <email> --password <password>
+invenio users activate <email>
+invenio access allow administration-access user <email>
+```
+
+### 6. View the application
+
+- The Knowledge Commons Works app is now running at `https://localhost`
+- The REST API is running at `https://localhost/api`
+- pgAdmin is running at `https://localhost/pgadmin`
+- OpenSearch Dashboards is running at `https://localhost:5601`
 
 This setup will allow you to make changes to the core Knowledge Commons Works codebase and see those changes reflected in the running application.
 
@@ -50,12 +72,12 @@ To do this, you will need to do the following:
 
 1. Ensure the required git submodules are cloned by running the following commands in the `knowledge-commons-works` folder:
     ```shell
-    git submodule update --init --recursive
+    git submodule update --init
     ```
     This will clone the following repositories:
     ```shell
     main git@github.com:MESH-Research/invenio-record-importer-kcworks.git
-    main git@github.com:MESH-Research/invenio-group-collections.git
+    main git@github.com:MESH-Research/invenio-group-collections-kcworks.git
     main git@github.com:MESH-Research/invenio-modular-deposit-form.git
     main git@github.com:MESH-Research/invenio-modular-detail-page.git
     main git@github.com:MESH-Research/invenio-remote-api-provisioner.git

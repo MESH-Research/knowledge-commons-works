@@ -7,7 +7,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>Installation - Knowledge Commons Works 0.3.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
@@ -257,67 +257,77 @@
 <p>These instructions allow you to run Knowledge Commons Works for local development. The app source files are copied onto your system, but the Flask application and other services (database, search, etc.) are run in Docker containers. The application is served to your browser by an nginx web server running in a separate container.</p>
 <p>First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+) and Python (3.12.0+ with pipenv).</p>
 <p>From there, installation involves these steps. Each one is further explained below, but here is a quick reference:</p>
-<ol class="arabic">
-<li><p>Clone the git repository</p>
-<ol class="arabic simple">
+<section id="clone-the-git-repository">
+<h3>1. Clone the git repository<a class="headerlink" href="#clone-the-git-repository" title="Link to this heading">¶</a></h3>
+<ul class="simple">
 <li><p>From your command line, navigate to the parent folder where you want the cloned repository code to live</p></li>
-<li><p>Clone the knowledge-commons-works repository with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">--recurse-submodules</span> <span class="pre">git&#64;github.com:MESH-Research/knowledge-commons-works.git</span></code></p></li>
-</ol>
-</li>
-<li><p>Create your configuration files</p>
-<ul>
+<li><p>Clone the knowledge-commons-works repository with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:MESH-Research/knowledge-commons-works.git</span> <span class="pre">&amp;&amp;</span> <span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span></code></p></li>
+</ul>
+<blockquote>
+<div><p><strong>Note</strong>: Do not use the <code class="docutils literal notranslate"><span class="pre">--recurse-submodules</span></code> option when cloning the repository or the <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> option when initializing the submodules. This will clone redundant copies of the inter-dependent submodules.</p>
+</div></blockquote>
+</section>
+<section id="create-your-configuration-files">
+<h3>2. Create your configuration files<a class="headerlink" href="#create-your-configuration-files" title="Link to this heading">¶</a></h3>
+<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">knowledge-commons-works</span></code></p></li>
 <li><p>Create and configure the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file in this folder as described <a class="reference internal" href="in_depth.html#add-and-configure-an-environment-file"><span class="std std-ref">here</span></a></p></li>
-<li><p>Create the <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file with the following contents:</p>
+<li><p>Create the <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file with the following contents:</p></li>
+</ul>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>cli<span class="o">]</span>
 <span class="nv">services_setup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>True
 <span class="nv">instance_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>/opt/invenio/var/instance
 </pre></div>
 </div>
-</li>
-</ul>
-</li>
-<li><p>Start the docker-compose project</p>
+</section>
+<section id="start-the-docker-compose-project">
+<h3>3. Start the docker-compose project<a class="headerlink" href="#start-the-docker-compose-project" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">--file</span> <span class="pre">docker-compose.yml</span> <span class="pre">up</span> <span class="pre">-d</span></code></p></li>
 </ul>
-</li>
-<li><p>Initialize the database and other services, and build asset files</p>
-<ul class="simple">
-<li><p>enter the <code class="docutils literal notranslate"><span class="pre">web-ui</span></code> container by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span> <span class="pre">-it</span> <span class="pre">kcworks-ui</span> <span class="pre">bash</span></code></p>
-<ul>
-<li><p><em>note</em>: The container name may be different depending on your local docker setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p></li>
-</ul>
-</li>
-<li><p>run the script to set up the instance services and build static assets <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./scripts/setup-services.sh</span></code></p>
-<ul>
-<li><p><em>note</em>: Some of the commands in this script may take a while to run. Patience is required! The <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> command in particular may take up to an hour to complete during which time it provides no feedback. Don’t despair! It is working.</p></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Create your own admin user</p>
+</section>
+<section id="initialize-the-database-and-other-services-and-build-asset-files">
+<h3>4. Initialize the database and other services, and build asset files<a class="headerlink" href="#initialize-the-database-and-other-services-and-build-asset-files" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>enter the <code class="docutils literal notranslate"><span class="pre">web-ui</span></code> container by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span> <span class="pre">-it</span> <span class="pre">kcworks-ui</span> <span class="pre">bash</span></code></p></li>
-<li><p>run the commands:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">users</span> <span class="pre">create</span> <span class="pre">&lt;email&gt;</span> <span class="pre">--password</span> <span class="pre">&lt;password&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">users</span> <span class="pre">activate</span> <span class="pre">&lt;email&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">access</span> <span class="pre">allow</span> <span class="pre">administration-access</span> <span class="pre">user</span> <span class="pre">&lt;email&gt;</span></code></p></li>
 </ul>
-</li>
+<blockquote>
+<div><p><strong>Note</strong>: The container name may be different depending on your local docker setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>run the script to set up the instance services and build static assets <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./scripts/setup-services.sh</span></code></p></li>
 </ul>
-</li>
-<li><p>View the application</p>
+<blockquote>
+<div><p><strong>Note</strong>: Some of the commands in this script may take a while to run. Patience is required! The <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> command in particular may take up to an hour to complete during which time it provides no feedback. Don’t despair! It is working.</p>
+</div></blockquote>
+</section>
+<section id="create-your-own-admin-user">
+<h3>5. Create your own admin user<a class="headerlink" href="#create-your-own-admin-user" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>enter the <code class="docutils literal notranslate"><span class="pre">web-ui</span></code> container by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span> <span class="pre">-it</span> <span class="pre">kcworks-ui</span> <span class="pre">bash</span></code></p></li>
+</ul>
+<blockquote>
+<div><p><strong>Note</strong>: The container name may be different depending on your local docker setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>run the commands:</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>users<span class="w"> </span>create<span class="w"> </span>&lt;email&gt;<span class="w"> </span>--password<span class="w"> </span>&lt;password&gt;
+invenio<span class="w"> </span>users<span class="w"> </span>activate<span class="w"> </span>&lt;email&gt;
+invenio<span class="w"> </span>access<span class="w"> </span>allow<span class="w"> </span>administration-access<span class="w"> </span>user<span class="w"> </span>&lt;email&gt;
+</pre></div>
+</div>
+</section>
+<section id="view-the-application">
+<h3>6. View the application<a class="headerlink" href="#view-the-application" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The Knowledge Commons Works app is now running at <code class="docutils literal notranslate"><span class="pre">https://localhost</span></code></p></li>
 <li><p>The REST API is running at <code class="docutils literal notranslate"><span class="pre">https://localhost/api</span></code></p></li>
 <li><p>pgAdmin is running at <code class="docutils literal notranslate"><span class="pre">https://localhost/pgadmin</span></code></p></li>
 <li><p>OpenSearch Dashboards is running at <code class="docutils literal notranslate"><span class="pre">https://localhost:5601</span></code></p></li>
 </ul>
-</li>
-</ol>
 <p>This setup will allow you to make changes to the core Knowledge Commons Works codebase and see those changes reflected in the running application.</p>
+</section>
 </section>
 <section id="full-local-development-setup">
 <h2>Full local development setup<a class="headerlink" href="#full-local-development-setup" title="Link to this heading">¶</a></h2>
@@ -327,12 +337,12 @@
 To do this, you will need to do the following:</p>
 <ol class="arabic">
 <li><p>Ensure the required git submodules are cloned by running the following commands in the <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code> folder:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init
 </pre></div>
 </div>
 <p>This will clone the following repositories:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>main<span class="w"> </span>git@github.com:MESH-Research/invenio-record-importer-kcworks.git
-main<span class="w"> </span>git@github.com:MESH-Research/invenio-group-collections.git
+main<span class="w"> </span>git@github.com:MESH-Research/invenio-group-collections-kcworks.git
 main<span class="w"> </span>git@github.com:MESH-Research/invenio-modular-deposit-form.git
 main<span class="w"> </span>git@github.com:MESH-Research/invenio-modular-detail-page.git
 main<span class="w"> </span>git@github.com:MESH-Research/invenio-remote-api-provisioner.git
@@ -435,7 +445,15 @@ Do not use the <code class="docutils literal notranslate"><span class="pre">dock
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#quickstart">Quickstart</a></li>
+<li><a class="reference internal" href="#quickstart">Quickstart</a><ul>
+<li><a class="reference internal" href="#clone-the-git-repository">1. Clone the git repository</a></li>
+<li><a class="reference internal" href="#create-your-configuration-files">2. Create your configuration files</a></li>
+<li><a class="reference internal" href="#start-the-docker-compose-project">3. Start the docker-compose project</a></li>
+<li><a class="reference internal" href="#initialize-the-database-and-other-services-and-build-asset-files">4. Initialize the database and other services, and build asset files</a></li>
+<li><a class="reference internal" href="#create-your-own-admin-user">5. Create your own admin user</a></li>
+<li><a class="reference internal" href="#view-the-application">6. View the application</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#full-local-development-setup">Full local development setup</a></li>
 <li><a class="reference internal" href="#controlling-the-kcworks-flask-application">Controlling the KCWorks (Flask) application</a></li>
 </ul>

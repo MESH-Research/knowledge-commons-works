@@ -7,7 +7,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>Developing KCWorks - Knowledge Commons Works 0.3.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
@@ -252,6 +252,54 @@
         <article role="main" id="furo-main-content">
           <section id="developing-kcworks">
 <h1>Developing KCWorks<a class="headerlink" href="#developing-kcworks" title="Link to this heading">¶</a></h1>
+<section id="version-numbering">
+<h2>Version Numbering<a class="headerlink" href="#version-numbering" title="Link to this heading">¶</a></h2>
+<p>KCWorks uses semantic versioning (https://semver.org/). When a new release is made, the version number should be incremented in the following files:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">site/pyproject.toml</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">site/kcworks/__init__.py</span></code></p></li>
+</ul>
+<p>While in beta, the version number should be followed by a numbered <code class="docutils literal notranslate"><span class="pre">-beta</span></code> suffix: e.g., <code class="docutils literal notranslate"><span class="pre">0.3.3-beta6</span></code>. This suffix should be updated continuously (without starting over again for minor releases) until version 1.0.0 is reached and KCWorks leaves beta.</p>
+<p>Bug fixes and other changes that do not introduce new features (including changes to documentation, build processes, etc.) should be considered <code class="docutils literal notranslate"><span class="pre">patch</span></code> releases.</p>
+<p>New features should be considered <code class="docutils literal notranslate"><span class="pre">minor</span></code> releases.</p>
+</section>
+<section id="version-control">
+<h2>Version Control<a class="headerlink" href="#version-control" title="Link to this heading">¶</a></h2>
+<section id="git-branching-strategy">
+<h3>Git Branching Strategy<a class="headerlink" href="#git-branching-strategy" title="Link to this heading">¶</a></h3>
+<p>KCWorks employs a modified version of the Gitlab Flow branching strategy for version control. The repository has four persistent branches:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">main</span></code> is the default branch and is the reference point for active development. It will usually not be ready for production deployment.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">staging</span></code> is the branch that is deployed to the staging server. It is created from the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch when changes are ready to be tested. No commits should be made directly to the <code class="docutils literal notranslate"><span class="pre">staging</span></code> branch except to merge changes from <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">production</span></code> is the branch that is deployed to the development server. It is created from the <code class="docutils literal notranslate"><span class="pre">staging</span></code> branch when changes are ready to be deployed to the production server. No commits should be made directly to the <code class="docutils literal notranslate"><span class="pre">production</span></code> branch except to merge changes from <code class="docutils literal notranslate"><span class="pre">staging</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gh_pages</span></code> is the branch that is used to generate the static documentation site for KCWorks on Github Pages. This branch is automatically updated from the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p></li>
+</ul>
+<p>New changes should be made to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch or to a temporary <code class="docutils literal notranslate"><span class="pre">feature</span></code> or <code class="docutils literal notranslate"><span class="pre">bugfix</span></code> branch created from the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch. These temporary branches should be merged back into <code class="docutils literal notranslate"><span class="pre">main</span></code> as often as possible, and the temporary branches deleted.</p>
+<p>No commits should be made directly to the <code class="docutils literal notranslate"><span class="pre">staging</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code> branches. All changes should be made to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch and then merged into <code class="docutils literal notranslate"><span class="pre">staging</span></code> and <code class="docutils literal notranslate"><span class="pre">production</span></code> via pull requests. This is especially important because changes pushed to <code class="docutils literal notranslate"><span class="pre">staging</span></code> and <code class="docutils literal notranslate"><span class="pre">production</span></code> branches will be automatically uploaded to the respective servers.</p>
+</section>
+<section id="commit-strategy">
+<h3>Commit strategy<a class="headerlink" href="#commit-strategy" title="Link to this heading">¶</a></h3>
+<p>Wherever possible, a commit should represent a single completed change. We try to avoid <code class="docutils literal notranslate"><span class="pre">wip</span></code> commits in order to keep the commit history readable.</p>
+<p>In practice, though, we will often need to make incremental commits, particularly on feature and bugfix branches. The practice should be to squash all of the related commits into a single commit before merging the changes into <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p>
+</section>
+<section id="naming-commits">
+<h3>Naming Commits<a class="headerlink" href="#naming-commits" title="Link to this heading">¶</a></h3>
+</section>
+<section id="tagging-releases">
+<h3>Tagging Releases<a class="headerlink" href="#tagging-releases" title="Link to this heading">¶</a></h3>
+<p>Whenever the KCWorks version number changes, it that commit should be tagged with the new version number. This can be done by running the following command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>&lt;version-number&gt;<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release &lt;version-number&gt;&quot;</span>
+</pre></div>
+</div>
+<p>We do not create branches for each numbered release.</p>
+</section>
+<section id="git-submodules">
+<h3>Git Submodules<a class="headerlink" href="#git-submodules" title="Link to this heading">¶</a></h3>
+<p>KCWorks uses git submodules to manage dependencies. The submodules are located in the <code class="docutils literal notranslate"><span class="pre">site/kcworks/dependencies</span></code> folder. The submodules are cloned from the upstream repositories when the KCWorks instance is first created. They are updated from the upstream repositories when the KCWorks instance is updated.</p>
+<p>Note that in some cases there are inter-dependencies between these submodules. For example, the <code class="docutils literal notranslate"><span class="pre">invenio-record-importer-kcworks</span></code> submodule has its own dependency on the <code class="docutils literal notranslate"><span class="pre">invenio-group-collections-kcworks</span></code> submodule. When cloning the KCWorks repository, you <strong>should not use the <code class="docutils literal notranslate"><span class="pre">--recurse-submodules</span></code> option</strong> because this will clone redundant copies of these inter-dependent submodules. Instead, you should clone the KCWorks repository and then initialize the submodules in a separate step with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span></code>. Likewise, when updating the KCWorks submodules, you should use the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--remote</span></code> command <strong>without the <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> option</strong>.</p>
+</section>
+</section>
 <section id="updating-the-running-kcworks-instance-with-development-changes">
 <h2>Updating the running KCWorks instance with development changes<a class="headerlink" href="#updating-the-running-kcworks-instance-with-development-changes" title="Link to this heading">¶</a></h2>
 <section id="changes-to-html-template-files">
@@ -502,6 +550,15 @@ bash<span class="w"> </span>./scripts/build-assets.sh
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Developing KCWorks</a><ul>
+<li><a class="reference internal" href="#version-numbering">Version Numbering</a></li>
+<li><a class="reference internal" href="#version-control">Version Control</a><ul>
+<li><a class="reference internal" href="#git-branching-strategy">Git Branching Strategy</a></li>
+<li><a class="reference internal" href="#commit-strategy">Commit strategy</a></li>
+<li><a class="reference internal" href="#naming-commits">Naming Commits</a></li>
+<li><a class="reference internal" href="#tagging-releases">Tagging Releases</a></li>
+<li><a class="reference internal" href="#git-submodules">Git Submodules</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#updating-the-running-kcworks-instance-with-development-changes">Updating the running KCWorks instance with development changes</a><ul>
 <li><a class="reference internal" href="#changes-to-html-template-files">Changes to html template files</a></li>
 <li><a class="reference internal" href="#changes-to-invenio-cfg">Changes to invenio.cfg</a></li>
