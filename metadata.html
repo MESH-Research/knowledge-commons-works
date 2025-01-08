@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Customizations to InvenioRDM" href="customizations.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Metadata Schema and Vocabularies - Knowledge Commons Works 0.3.3 documentation</title>
+        <title>Metadata Schema, Vocabularies, and Identifiers - Knowledge Commons Works 0.3.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -203,7 +203,7 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGES.html">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Metadata Schema and Vocabularies</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizations.html">Customizations to InvenioRDM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration of InvenioRDM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_commands.html">CLI Commands</a></li>
@@ -251,16 +251,18 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="metadata-schema-and-vocabularies">
-<h1>Metadata Schema and Vocabularies<a class="headerlink" href="#metadata-schema-and-vocabularies" title="Link to this heading">¶</a></h1>
+          <section id="metadata-schema-vocabularies-and-identifiers">
+<h1>Metadata Schema, Vocabularies, and Identifiers<a class="headerlink" href="#metadata-schema-vocabularies-and-identifiers" title="Link to this heading">¶</a></h1>
 <p>The default metadata schema for InvenioRDM records is defined in the <code class="docutils literal notranslate"><span class="pre">invenio-rdm-records</span></code> package and documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/">here</a>. It also includes a number of optional metadata fields which have been enabled in KCWorks, documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/optional_metadata/">here</a>.</p>
 <p>Beyond these InvenioRDM fields, KCWorks adds a number of custom metadata fields to the schema using InvenioRDM’s custom field mechanism. These are all located in the top-level <code class="docutils literal notranslate"><span class="pre">custom_fields</span></code> field of the record metadata. They are prefixed with two different namespaces:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">kcr</span></code>: custom fields that are used to store data from the KC system. These fields <strong>may</strong> be used for new data, but are not required.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">hclegacy</span></code>: custom fields that are used to store data from the legacy CORE repository. These fields <strong>must not</strong> be used for new data.</p></li>
 </ul>
-<section id="example-json-record">
-<h2>Example JSON record<a class="headerlink" href="#example-json-record" title="Link to this heading">¶</a></h2>
+<section id="example-metadata-record">
+<h2>Example metadata record<a class="headerlink" href="#example-metadata-record" title="Link to this heading">¶</a></h2>
+<section id="json-object-for-record-creation">
+<h3>JSON object for record creation<a class="headerlink" href="#json-object-for-record-creation" title="Link to this heading">¶</a></h3>
 <p>What follows is an example of a complete metadata record (JSON object) used to create a KCWorks record. The various fields and their possible values are described in the sections below.</p>
 <p>Note that no single actual record would include all of these fields. The example is provided to illustrate the structure of the metadata record and the sort of values that are valid for each field.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -497,29 +499,102 @@
 </pre></div>
 </div>
 </section>
+<section id="json-object-retrieved-from-the-record-api">
+<h3>JSON object retrieved from the record API<a class="headerlink" href="#json-object-retrieved-from-the-record-api" title="Link to this heading">¶</a></h3>
+<p>The JSON object retrieved from the record API shares the same basic structure as the JSON object used to create the record, except that it includes a number of additional fields. Some properties are also filled out with additional details (e.g., readable titles for licenses, etc.)</p>
+</section>
+</section>
 <section id="controlled-vocabularies">
 <h2>Controlled Vocabularies<a class="headerlink" href="#controlled-vocabularies" title="Link to this heading">¶</a></h2>
 <section id="subject-headings">
 <h3>Subject headings<a class="headerlink" href="#subject-headings" title="Link to this heading">¶</a></h3>
 <section id="fast">
 <h4>FAST<a class="headerlink" href="#fast" title="Link to this heading">¶</a></h4>
-<p>The FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) is used for the <code class="docutils literal notranslate"><span class="pre">subjects</span></code> field.</p>
+<p>The FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) is used for the <code class="docutils literal notranslate"><span class="pre">subjects</span></code> field. See the <a class="reference internal" href="#metadata.subjects"><span class="xref myst">metadata.subjects</span></a> section for more information about how to include FAST subjects in a KCWorks record.</p>
 </section>
 <section id="homosaurus">
 <h4>Homosaurus<a class="headerlink" href="#homosaurus" title="Link to this heading">¶</a></h4>
-<p>The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https://homosaurus.org/) for subjects related to sexuality and gender identity.</p>
+<p>The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https://homosaurus.org/) for subjects related to sexuality and gender identity. See the <a class="reference internal" href="#metadata.subjects"><span class="xref myst">metadata.subjects</span></a> section for information about how to include Homosaurus subjects in a KCWorks record.</p>
+</section>
+<section id="resource-types">
+<h4>Resource types<a class="headerlink" href="#resource-types" title="Link to this heading">¶</a></h4>
+</section>
+<section id="creator-contributor-roles">
+<h4>Creator/contributor roles<a class="headerlink" href="#creator-contributor-roles" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+</section>
+<section id="identifier-schemes">
+<h2>Identifier Schemes<a class="headerlink" href="#identifier-schemes" title="Link to this heading">¶</a></h2>
+<section id="works">
+<h3>Works<a class="headerlink" href="#works" title="Link to this heading">¶</a></h3>
+<section id="doi">
+<h4>DOI<a class="headerlink" href="#doi" title="Link to this heading">¶</a></h4>
+<p>KCWorks (and InvenioRDM) supports the DOI identifier scheme to identify works in the repository. Note that two DOIs are minted for each KCWorks record: one for the current version of the record, and one for the work as a whole (including all versions). The version-specific DOI is stored in the <code class="docutils literal notranslate"><span class="pre">pids</span></code> property of the metadata record (<code class="docutils literal notranslate"><span class="pre">pids.identifiers.doi</span></code>). The work DOI is stored in the <code class="docutils literal notranslate"><span class="pre">parent.pids.doi</span></code> property of the <code class="docutils literal notranslate"><span class="pre">parent</span></code> object.</p>
+<p>These DOIs are minted by DataCite (https://datacite.org/) and the attached metadata is maintained automatically by KCWorks.</p>
+<p>Additional DOIs minted elsewhere can be attached to a KCWorks record. If provided at record creation such external DOIs can be used as the record’s primary identifier (in <code class="docutils literal notranslate"><span class="pre">pids.doi</span></code>). Otherwise, they can be added using the <code class="docutils literal notranslate"><span class="pre">identifiers</span></code> property of the metadata record using the scheme <code class="docutils literal notranslate"><span class="pre">alternate-doi</span></code>. In both cases, these externally minted DOIs are <strong>not</strong> maintained automatically by KCWorks.</p>
+</section>
+<section id="oai">
+<h4>OAI<a class="headerlink" href="#oai" title="Link to this heading">¶</a></h4>
+<p>KCWorks also supports the OAI identifier scheme. The OAI identifier for a KCWorks record is stored in the <code class="docutils literal notranslate"><span class="pre">pids</span></code> property of the metadata record (<code class="docutils literal notranslate"><span class="pre">pids.identifiers.oai</span></code>).</p>
+</section>
+<section id="issn">
+<h4>ISSN<a class="headerlink" href="#issn" title="Link to this heading">¶</a></h4>
+</section>
+<section id="isbn">
+<h4>ISBN<a class="headerlink" href="#isbn" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="people">
+<h3>People<a class="headerlink" href="#people" title="Link to this heading">¶</a></h3>
+<section id="orcid-recommended">
+<h4>ORCID (recommended)<a class="headerlink" href="#orcid-recommended" title="Link to this heading">¶</a></h4>
+<p>KCWorks (and InvenioRDM) supports the ORCID identifier scheme. The ORCID of the submitter of the KCWorks record is stored in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> property of the <code class="docutils literal notranslate"><span class="pre">creators</span></code> array (<code class="docutils literal notranslate"><span class="pre">creators[0].person_or_org.identifiers.identifier</span></code>). A KCWorks user’s ORCID id is also drawn from their KC profile (if they have provided one) and stored in their system user profile (as <code class="docutils literal notranslate"><span class="pre">&lt;user_object&gt;.user_profile.identifier_orcid</span></code>).</p>
+<p>For details on how to use ORCID identifiers in KCWorks, see the section on <a class="reference internal" href="#metadata.creators"><span class="xref myst">Metadata.creators</span></a> below.</p>
+</section>
+<section id="kc-username-recommended">
+<h4>KC Username (recommended)<a class="headerlink" href="#kc-username-recommended" title="Link to this heading">¶</a></h4>
+<p>KCWorks also allows the use of Knowledge Commons usernames as identifiers. The KC username of the submitter of the KCWorks record is stored in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> property of the <code class="docutils literal notranslate"><span class="pre">creators</span></code> array (<code class="docutils literal notranslate"><span class="pre">creators[0].person_or_org.identifiers.identifier</span></code>) using the scheme <code class="docutils literal notranslate"><span class="pre">kc_username</span></code>.</p>
+<p>For details on how to use KC usernames in KCWorks, see the section on <a class="reference internal" href="#metadata.creators"><span class="xref myst">Metadata.creators</span></a> below.</p>
+</section>
+<section id="gnd">
+<h4>GND<a class="headerlink" href="#gnd" title="Link to this heading">¶</a></h4>
+<p>KCWorks also supports the Integrated Authority File (GND) identifier scheme (https://www.dnb.de/EN/Professionell/Standardisierung/GND/gnd_node.html). The GND identifier of the submitter of the KCWorks record is stored in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> property of the <code class="docutils literal notranslate"><span class="pre">creators</span></code> array (<code class="docutils literal notranslate"><span class="pre">creators[0].person_or_org.identifiers.identifier</span></code>) using the scheme <code class="docutils literal notranslate"><span class="pre">gnd</span></code>.</p>
+</section>
+<section id="isni">
+<h4>ISNI<a class="headerlink" href="#isni" title="Link to this heading">¶</a></h4>
+<p>KCWorks also supports the ISNI identifier scheme (https://isni.org/). The ISNI of the submitter of the KCWorks record is stored in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> property of the <code class="docutils literal notranslate"><span class="pre">creators</span></code> array (<code class="docutils literal notranslate"><span class="pre">creators[0].person_or_org.identifiers.identifier</span></code>) using the scheme <code class="docutils literal notranslate"><span class="pre">isni</span></code>.</p>
 </section>
 </section>
 <section id="organizations">
 <h3>Organizations<a class="headerlink" href="#organizations" title="Link to this heading">¶</a></h3>
-<section id="ror">
-<h4>ROR<a class="headerlink" href="#ror" title="Link to this heading">¶</a></h4>
-<p>The Research Organization Registry (https://ror.org/) is used for the <code class="docutils literal notranslate"><span class="pre">organizations</span></code> field.</p>
+<section id="ror-recommended">
+<h4>ROR (recommended)<a class="headerlink" href="#ror-recommended" title="Link to this heading">¶</a></h4>
+<p>Organization identifiers can appear in the <code class="docutils literal notranslate"><span class="pre">creators</span></code> and <code class="docutils literal notranslate"><span class="pre">contributors</span></code> arrays, either for organizational creators/contributors or in the <code class="docutils literal notranslate"><span class="pre">affiliations</span></code> array of a personal creator/contributor. These fields <em>may</em> identify an organization using its id in Research Organization Registry (https://ror.org/) using the scheme <code class="docutils literal notranslate"><span class="pre">ror</span></code>, although free text names are also supported.</p>
+</section>
+<section id="grid-deprecated">
+<h4>Grid (deprecated)<a class="headerlink" href="#grid-deprecated" title="Link to this heading">¶</a></h4>
+<p>KCWorks also supports the Grid identifier scheme (https://www.grid.ac/) for organizations using the scheme <code class="docutils literal notranslate"><span class="pre">grid</span></code>. This scheme is deprecated in favour of ROR, however, and should not be used for new identifiers.</p>
+</section>
+<section id="id1">
+<h4>GND<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<p>KCWorks also supports the Integrated Authority File (GND) identifier scheme (https://www.dnb.de/EN/Professionell/Standardisierung/GND/gnd_node.html) for organizations using the scheme <code class="docutils literal notranslate"><span class="pre">gnd</span></code>.</p>
+</section>
+</section>
+<section id="funders">
+<h3>Funders<a class="headerlink" href="#funders" title="Link to this heading">¶</a></h3>
+<section id="id2">
+<h4>DOI<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
+<p>Funders in the <code class="docutils literal notranslate"><span class="pre">metadata.funding</span></code> array can be identified using DOIs and the scheme <code class="docutils literal notranslate"><span class="pre">doi</span></code>.</p>
+</section>
+<section id="ofr">
+<h4>OFR<a class="headerlink" href="#ofr" title="Link to this heading">¶</a></h4>
+<p>Funders in the <code class="docutils literal notranslate"><span class="pre">metadata.funding</span></code> array can also be identified using the Open Funder Registry (https://openfunder.org/) identifiers and the scheme <code class="docutils literal notranslate"><span class="pre">ofr</span></code>.</p>
 </section>
 </section>
 </section>
-<section id="notes-about-implementation-of-core-inveniordm-fields">
-<h2>Notes about Implementation of Core InvenioRDM Fields<a class="headerlink" href="#notes-about-implementation-of-core-inveniordm-fields" title="Link to this heading">¶</a></h2>
+<section id="kcworks-implementation-of-core-inveniordm-fields">
+<h2>KCWorks Implementation of Core InvenioRDM Fields<a class="headerlink" href="#kcworks-implementation-of-core-inveniordm-fields" title="Link to this heading">¶</a></h2>
 <section id="metadata-subjects">
 <h3>metadata.subjects<a class="headerlink" href="#metadata-subjects" title="Link to this heading">¶</a></h3>
 <p>Note that KCWorks employs the FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) for the <code class="docutils literal notranslate"><span class="pre">subjects</span></code> field, complemented by the Homosaurus vocabulary (https://homosaurus.org/).</p>
@@ -581,10 +656,11 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </pre></div>
 </div>
 </section>
+</section>
 <section id="kcworks-custom-fields-kcworks-site-metadata-fields">
-<h3>KCWorks Custom Fields (kcworks/site/metadata_fields)<a class="headerlink" href="#kcworks-custom-fields-kcworks-site-metadata-fields" title="Link to this heading">¶</a></h3>
+<h2>KCWorks Custom Fields (kcworks/site/metadata_fields)<a class="headerlink" href="#kcworks-custom-fields-kcworks-site-metadata-fields" title="Link to this heading">¶</a></h2>
 <section id="kcr-ai-usage">
-<h4>kcr:ai_usage<a class="headerlink" href="#kcr-ai-usage" title="Link to this heading">¶</a></h4>
+<h3>kcr:ai_usage<a class="headerlink" href="#kcr-ai-usage" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">Object[boolean,</span> <span class="pre">string]</span></code></p>
 <p>This field stores data about any use of generative AI in the production of the record.</p>
 <p>Example:</p>
@@ -598,7 +674,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-media">
-<h4>kcr:media<a class="headerlink" href="#kcr-media" title="Link to this heading">¶</a></h4>
+<h3>kcr:media<a class="headerlink" href="#kcr-media" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">Array[string]</span></code></p>
 <p>This field stores a list of media or materials involved in the creation of the record. This field is used to store free-form user-defined descriptors of the media or materials and does not impose any controlled vocabulary.</p>
 <p>Example:</p>
@@ -609,7 +685,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-commons-domain">
-<h4>kcr:commons_domain<a class="headerlink" href="#kcr-commons-domain" title="Link to this heading">¶</a></h4>
+<h3>kcr:commons_domain<a class="headerlink" href="#kcr-commons-domain" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores the KC organizational (Commons) domain associated with the KCWorks record, if any. The record should also be placed in the KCWorks collection associated with this organization.</p>
 <p>Example:</p>
@@ -620,7 +696,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-chapter-label">
-<h4>kcr:chapter_label<a class="headerlink" href="#kcr-chapter-label" title="Link to this heading">¶</a></h4>
+<h3>kcr:chapter_label<a class="headerlink" href="#kcr-chapter-label" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores the label of the chapter associated with the KCWorks record, if any. This allows us to differentiate between a simple chapter label (e.g. “Chapter 1”) and a more substantive title for the same chapter (e.g., “The Role of AI in Modern Art”).</p>
 <p>Example:</p>
@@ -631,7 +707,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-content-warning">
-<h4>kcr:content_warning<a class="headerlink" href="#kcr-content-warning" title="Link to this heading">¶</a></h4>
+<h3>kcr:content_warning<a class="headerlink" href="#kcr-content-warning" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores an optional content warning for the KCWorks record. This is used to flag the record for KCWorks users so that they can be aware of potentially problematic content in the record. <strong>This field is not to be used for content moderation by KCWorks moderators or admins. It is only to be used voluntarily and as desired by the record submitter.</strong></p>
 <p>Example:</p>
@@ -642,7 +718,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-course-title">
-<h4>kcr:course_title<a class="headerlink" href="#kcr-course-title" title="Link to this heading">¶</a></h4>
+<h3>kcr:course_title<a class="headerlink" href="#kcr-course-title" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores the title of the course associated with the KCWorks record. It is intended primarily for use with syllabi and instructional materials.</p>
 <p>Example:</p>
@@ -653,7 +729,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-degree">
-<h4>kcr:degree<a class="headerlink" href="#kcr-degree" title="Link to this heading">¶</a></h4>
+<h3>kcr:degree<a class="headerlink" href="#kcr-degree" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores the educational degree (e.g., PhD, DPhil, MA, etc.) associated with the KCWorks record. It is intended primarily for use with theses and dissertations.</p>
 <p>Example:</p>
@@ -664,7 +740,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-discipline">
-<h4>kcr:discipline<a class="headerlink" href="#kcr-discipline" title="Link to this heading">¶</a></h4>
+<h3>kcr:discipline<a class="headerlink" href="#kcr-discipline" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores the academic discipline associated with the KCWorks record. It is intended primarily for use with theses, dissertations, and other educational artifacts. It is not intended as a general-purpose field for describing the subject matter of the KCWorks record. For that, you should use the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> and <code class="docutils literal notranslate"><span class="pre">kcr:user_defined_tags</span></code> fields.</p>
 <p>This field is intended to complement the <code class="docutils literal notranslate"><span class="pre">thesis:university</span></code> and <code class="docutils literal notranslate"><span class="pre">kcr:institution_department</span></code> fields.</p>
@@ -677,7 +753,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-edition">
-<h4>kcr:edition<a class="headerlink" href="#kcr-edition" title="Link to this heading">¶</a></h4>
+<h3>kcr:edition<a class="headerlink" href="#kcr-edition" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores a descriptor for the edition of the KCWorks record, if any.</p>
 <p>Example:</p>
@@ -688,7 +764,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-meeting-organization">
-<h4>kcr:meeting_organization<a class="headerlink" href="#kcr-meeting-organization" title="Link to this heading">¶</a></h4>
+<h3>kcr:meeting_organization<a class="headerlink" href="#kcr-meeting-organization" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores the name of the organization associated with the meeting or conference associated with the KCWorks record. It is intended primarily for use with conference papers, presentations, proceedings, etc.</p>
 <p>Example:</p>
@@ -699,7 +775,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-project-title">
-<h4>kcr:project_title<a class="headerlink" href="#kcr-project-title" title="Link to this heading">¶</a></h4>
+<h3>kcr:project_title<a class="headerlink" href="#kcr-project-title" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores the title of a project for which the KCWorks record was created. It can be used flexibly for, e.g., grant-funded projects, research projects, artistic projects, etc.</p>
 <p>Example:</p>
@@ -710,7 +786,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-publication-url">
-<h4>kcr:publication_url<a class="headerlink" href="#kcr-publication-url" title="Link to this heading">¶</a></h4>
+<h3>kcr:publication_url<a class="headerlink" href="#kcr-publication-url" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (URL)</p>
 <p>This field stores the URL of the publication associated with the KCWorks record. It is <em>not</em> the URL of the KCWorks record itself or of the work it contains. For example, if the KCWorks record contains a journal article, it would <em>not</em> hold the URL for the published journal article. It is intended to hold the URL of the publication <em>as a whole</em> that the KCWorks record is based on or is a part of. So it might hold the main URL for the journal in which the article was published, or the main URL for the book in which the chapter was published, etc.</p>
 <p>This string must be a valid URL.</p>
@@ -722,7 +798,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-sponsoring-institution">
-<h4>kcr:sponsoring_institution<a class="headerlink" href="#kcr-sponsoring-institution" title="Link to this heading">¶</a></h4>
+<h3>kcr:sponsoring_institution<a class="headerlink" href="#kcr-sponsoring-institution" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores the name of the institution that sponsored the KCWorks record. One intended use is for unpublished materials such white papers that were sponsored or commissioned by an institution. The field may also be used for the institution hosting a conference or workshop associated with the KCWorks record (as distinct from the organization that sponsored the event).</p>
 <p>Note that this field is not intended for the degree-granting institution associated with a thesis or dissertation. That institution’s title should be stored in the <code class="docutils literal notranslate"><span class="pre">thesis:university</span></code> field.</p>
@@ -734,7 +810,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-submitter-email">
-<h4>kcr:submitter_email<a class="headerlink" href="#kcr-submitter-email" title="Link to this heading">¶</a></h4>
+<h3>kcr:submitter_email<a class="headerlink" href="#kcr-submitter-email" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (email address)</p>
 <p>This field stores the email address of the submitter of the KCWorks record. It must be a valid email address.</p>
 <p>Example:</p>
@@ -745,7 +821,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-submitter-username">
-<h4>kcr:submitter_username<a class="headerlink" href="#kcr-submitter-username" title="Link to this heading">¶</a></h4>
+<h3>kcr:submitter_username<a class="headerlink" href="#kcr-submitter-username" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores the KC username of the submitter of the KCWorks record. This should be used even if the submitter is also a contributor to the KCWorks record and has included the same username in the <code class="docutils literal notranslate"><span class="pre">metadata.creators.person_or_org.identifiers</span></code> array.</p>
 <p>Example:</p>
@@ -756,7 +832,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-institution-department">
-<h4>kcr:institution_department<a class="headerlink" href="#kcr-institution-department" title="Link to this heading">¶</a></h4>
+<h3>kcr:institution_department<a class="headerlink" href="#kcr-institution-department" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field stores the institutional department in which a thesis, dissertation, or other educational artifact was produced. It is intended to complement the <code class="docutils literal notranslate"><span class="pre">thesis:university</span></code> field, which stores the degree-granting institution.</p>
 <p>Example:</p>
@@ -767,7 +843,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-book-series">
-<h4>kcr:book_series<a class="headerlink" href="#kcr-book-series" title="Link to this heading">¶</a></h4>
+<h3>kcr:book_series<a class="headerlink" href="#kcr-book-series" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">Object[string,</span> <span class="pre">string]</span></code></p>
 <p>This field stores the title of a series that contains the KCWorks record, along with the optional volume number of the work within the series.</p>
 <p>Example:</p>
@@ -781,7 +857,7 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </div>
 </section>
 <section id="kcr-user-defined-tags">
-<h4>kcr:user_defined_tags<a class="headerlink" href="#kcr-user-defined-tags" title="Link to this heading">¶</a></h4>
+<h3>kcr:user_defined_tags<a class="headerlink" href="#kcr-user-defined-tags" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">Array[string]</span></code></p>
 <p>This field stores a list of user-defined tags for the KCWorks record. Unlike the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> field, these tags are not constrained by any controlled vocabulary. Items should be free-form strings that describe the KCWorks record in a way that is not covered by the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> field.</p>
 <blockquote>
@@ -796,7 +872,7 @@ The <code class="docutils literal notranslate"><span class="pre">kcr:user_define
 </div>
 </section>
 <section id="kcr-commons-search-recid-system-field">
-<h4>kcr:commons_search_recid (system field)<a class="headerlink" href="#kcr-commons-search-recid-system-field" title="Link to this heading">¶</a></h4>
+<h3>kcr:commons_search_recid (system field)<a class="headerlink" href="#kcr-commons-search-recid-system-field" title="Link to this heading">¶</a></h3>
 <p>This field is used to store the persistent identifier for the KCWorks record in the KC central search index.</p>
 <blockquote>
 <div><p>[!Warning]
@@ -804,7 +880,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div></blockquote>
 </section>
 <section id="kcr-commons-search-updated-system-field">
-<h4>kcr:commons_search_updated (system field)<a class="headerlink" href="#kcr-commons-search-updated-system-field" title="Link to this heading">¶</a></h4>
+<h3>kcr:commons_search_updated (system field)<a class="headerlink" href="#kcr-commons-search-updated-system-field" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (ISO 8601 datetime string)</p>
 <p>This field stores the date and time when the KCWorks record was last updated in the KC central search index.</p>
 <blockquote>
@@ -814,10 +890,10 @@ This field is automatically generated by the <code class="docutils literal notra
 </section>
 </section>
 <section id="hc-legacy-custom-fields">
-<h3>HC Legacy Custom Fields<a class="headerlink" href="#hc-legacy-custom-fields" title="Link to this heading">¶</a></h3>
+<h2>HC Legacy Custom Fields<a class="headerlink" href="#hc-legacy-custom-fields" title="Link to this heading">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">hclegacy</span></code> namespace is used for custom fields that are used to store data from the legacy CORE database. These fields should not be used for new data.</p>
 <section id="custom-fields-hclegacy-groups-for-deposit">
-<h4>custom_fields.hclegacy:groups_for_deposit<a class="headerlink" href="#custom-fields-hclegacy-groups-for-deposit" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:groups_for_deposit<a class="headerlink" href="#custom-fields-hclegacy-groups-for-deposit" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">Array[Object[string,</span> <span class="pre">string]]</span></code></p>
 <p>This field is used to store the groups to which a legacy CORE record belonged before import into KCWorks. It was used to create corresponding KCWorks collections during migration.</p>
 <p>Example:</p>
@@ -833,7 +909,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-collection">
-<h4>custom_fields.hclegacy:collection<a class="headerlink" href="#custom-fields-hclegacy-collection" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:collection<a class="headerlink" href="#custom-fields-hclegacy-collection" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field is used to store the org collection to which a legacy CORE record belonged before import into KCWorks. It was used to create corresponding KCWorks org collections during migration.</p>
 <p>Example:</p>
@@ -844,7 +920,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-committee-deposit">
-<h4>custom_fields.hclegacy:committee_deposit<a class="headerlink" href="#custom-fields-hclegacy-committee-deposit" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:committee_deposit<a class="headerlink" href="#custom-fields-hclegacy-committee-deposit" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
 <p>This field is used to store the committee deposit number for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -855,7 +931,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-file-location">
-<h4>custom_fields.hclegacy:file_location<a class="headerlink" href="#custom-fields-hclegacy-file-location" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:file_location<a class="headerlink" href="#custom-fields-hclegacy-file-location" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field is used to store the relative path the the file for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -866,7 +942,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-file-pid">
-<h4>custom_fields.hclegacy:file_pid<a class="headerlink" href="#custom-fields-hclegacy-file-pid" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:file_pid<a class="headerlink" href="#custom-fields-hclegacy-file-pid" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field is used to store the persistent identifier for the file for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -877,7 +953,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-previously-published">
-<h4>custom_fields.hclegacy:previously_published<a class="headerlink" href="#custom-fields-hclegacy-previously-published" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:previously_published<a class="headerlink" href="#custom-fields-hclegacy-previously-published" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field is used to store the previously published status for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -888,7 +964,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-publication-type">
-<h4>custom_fields.hclegacy:publication_type<a class="headerlink" href="#custom-fields-hclegacy-publication-type" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:publication_type<a class="headerlink" href="#custom-fields-hclegacy-publication-type" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field is used to store the publication type for a legacy CORE record. It was used during migration to help determine the KCWorks resource type of the record. It is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -899,7 +975,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-record-change-date">
-<h4>custom_fields.hclegacy:record_change_date<a class="headerlink" href="#custom-fields-hclegacy-record-change-date" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:record_change_date<a class="headerlink" href="#custom-fields-hclegacy-record-change-date" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (ISO 8601 datetime string)</p>
 <p>This field is used to store the date of the last change to a legacy CORE record. It was not used during migration to KCWorks and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -910,7 +986,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-record-creation-date">
-<h4>custom_fields.hclegacy:record_creation_date<a class="headerlink" href="#custom-fields-hclegacy-record-creation-date" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:record_creation_date<a class="headerlink" href="#custom-fields-hclegacy-record-creation-date" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (ISO 8601 datetime string)</p>
 <p>This field is used to store the date of the creation of a legacy CORE record. It was not used during migration because InvenioRDM does not allow overriding of the record creation date. It is only preserved for historical purposes and should not be used for new data.</p>
 <p>Example:</p>
@@ -921,7 +997,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-record-identifier">
-<h4>custom_fields.hclegacy:record_identifier<a class="headerlink" href="#custom-fields-hclegacy-record-identifier" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:record_identifier<a class="headerlink" href="#custom-fields-hclegacy-record-identifier" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field is used to store the internal system identifier for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -932,7 +1008,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-submitter-org-memberships">
-<h4>custom_fields.hclegacy:submitter_org_memberships<a class="headerlink" href="#custom-fields-hclegacy-submitter-org-memberships" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:submitter_org_memberships<a class="headerlink" href="#custom-fields-hclegacy-submitter-org-memberships" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">array[string]</span></code></p>
 <p>This field is used to store the organizations to which a legacy CORE record’s submitter belonged before import into KCWorks. It was used to create corresponding KCWorks org collections during migration and assign the work to those org collections.</p>
 <p>Example:</p>
@@ -943,7 +1019,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-submitter-affiliation">
-<h4>custom_fields.hclegacy:submitter_affiliation<a class="headerlink" href="#custom-fields-hclegacy-submitter-affiliation" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:submitter_affiliation<a class="headerlink" href="#custom-fields-hclegacy-submitter-affiliation" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field is used to store the organizational affiliation of a legacy CORE record’s submitter at the time of import into KCWorks. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -954,7 +1030,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-submitter-id">
-<h4>custom_fields.hclegacy:submitter_id<a class="headerlink" href="#custom-fields-hclegacy-submitter-id" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:submitter_id<a class="headerlink" href="#custom-fields-hclegacy-submitter-id" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 <p>This field is used to store the internal KC system user id of a legacy CORE record’s submitter. It was used during migration to assign ownership of the newly created record, and is preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -965,7 +1041,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-total-views">
-<h4>custom_fields.hclegacy:total_views<a class="headerlink" href="#custom-fields-hclegacy-total-views" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:total_views<a class="headerlink" href="#custom-fields-hclegacy-total-views" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
 <p>This field is used to store the total number of views for a legacy CORE record prior to import into KCWorks. It was used during migration to create KCWorks usage stats aggregations for the record. It is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -976,7 +1052,7 @@ This field is automatically generated by the <code class="docutils literal notra
 </div>
 </section>
 <section id="custom-fields-hclegacy-total-downloads">
-<h4>custom_fields.hclegacy:total_downloads<a class="headerlink" href="#custom-fields-hclegacy-total-downloads" title="Link to this heading">¶</a></h4>
+<h3>custom_fields.hclegacy:total_downloads<a class="headerlink" href="#custom-fields-hclegacy-total-downloads" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
 <p>This field is used to store the total number of downloads for a legacy CORE record prior to import into KCWorks. It was used during migration to create KCWorks usage stats aggregations for the record. It is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
@@ -985,7 +1061,6 @@ This field is automatically generated by the <code class="docutils literal notra
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
 </section>
 </section>
 </section>
@@ -1045,23 +1120,55 @@ This field is automatically generated by the <code class="docutils literal notra
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Metadata Schema and Vocabularies</a><ul>
-<li><a class="reference internal" href="#example-json-record">Example JSON record</a></li>
+<li><a class="reference internal" href="#">Metadata Schema, Vocabularies, and Identifiers</a><ul>
+<li><a class="reference internal" href="#example-metadata-record">Example metadata record</a><ul>
+<li><a class="reference internal" href="#json-object-for-record-creation">JSON object for record creation</a></li>
+<li><a class="reference internal" href="#json-object-retrieved-from-the-record-api">JSON object retrieved from the record API</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#controlled-vocabularies">Controlled Vocabularies</a><ul>
 <li><a class="reference internal" href="#subject-headings">Subject headings</a><ul>
 <li><a class="reference internal" href="#fast">FAST</a></li>
 <li><a class="reference internal" href="#homosaurus">Homosaurus</a></li>
+<li><a class="reference internal" href="#resource-types">Resource types</a></li>
+<li><a class="reference internal" href="#creator-contributor-roles">Creator/contributor roles</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#identifier-schemes">Identifier Schemes</a><ul>
+<li><a class="reference internal" href="#works">Works</a><ul>
+<li><a class="reference internal" href="#doi">DOI</a></li>
+<li><a class="reference internal" href="#oai">OAI</a></li>
+<li><a class="reference internal" href="#issn">ISSN</a></li>
+<li><a class="reference internal" href="#isbn">ISBN</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#people">People</a><ul>
+<li><a class="reference internal" href="#orcid-recommended">ORCID (recommended)</a></li>
+<li><a class="reference internal" href="#kc-username-recommended">KC Username (recommended)</a></li>
+<li><a class="reference internal" href="#gnd">GND</a></li>
+<li><a class="reference internal" href="#isni">ISNI</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#organizations">Organizations</a><ul>
-<li><a class="reference internal" href="#ror">ROR</a></li>
+<li><a class="reference internal" href="#ror-recommended">ROR (recommended)</a></li>
+<li><a class="reference internal" href="#grid-deprecated">Grid (deprecated)</a></li>
+<li><a class="reference internal" href="#id1">GND</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#funders">Funders</a><ul>
+<li><a class="reference internal" href="#id2">DOI</a></li>
+<li><a class="reference internal" href="#ofr">OFR</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#notes-about-implementation-of-core-inveniordm-fields">Notes about Implementation of Core InvenioRDM Fields</a><ul>
+<li><a class="reference internal" href="#kcworks-implementation-of-core-inveniordm-fields">KCWorks Implementation of Core InvenioRDM Fields</a><ul>
 <li><a class="reference internal" href="#metadata-subjects">metadata.subjects</a></li>
 <li><a class="reference internal" href="#metadata-creators-metadata-contributors">metadata.creators/metadata.contributors</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#kcworks-custom-fields-kcworks-site-metadata-fields">KCWorks Custom Fields (kcworks/site/metadata_fields)</a><ul>
 <li><a class="reference internal" href="#kcr-ai-usage">kcr:ai_usage</a></li>
 <li><a class="reference internal" href="#kcr-media">kcr:media</a></li>
@@ -1101,8 +1208,6 @@ This field is automatically generated by the <code class="docutils literal notra
 <li><a class="reference internal" href="#custom-fields-hclegacy-submitter-id">custom_fields.hclegacy:submitter_id</a></li>
 <li><a class="reference internal" href="#custom-fields-hclegacy-total-views">custom_fields.hclegacy:total_views</a></li>
 <li><a class="reference internal" href="#custom-fields-hclegacy-total-downloads">custom_fields.hclegacy:total_downloads</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
