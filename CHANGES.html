@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Changes" href="CHANGES.html" /><link rel="prev" title="Welcome to Knowledge Commons Works’s documentation!" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="installation.html" /><link rel="prev" title="About" href="README.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>About - Knowledge Commons Works 0.3.3 documentation</title>
+        <title>Changes - Knowledge Commons Works 0.3.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -200,8 +200,8 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">About</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGES.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata Schema and Vocabularies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizations.html">Customizations to InvenioRDM</a></li>
@@ -231,7 +231,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="_sources/README.md.txt" title="View this page">
+  <a class="muted-link" href="_sources/CHANGES.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -251,13 +251,134 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="about">
-<h1>About<a class="headerlink" href="#about" title="Link to this heading">¶</a></h1>
-<p>Knowledge Commons Works is a collaborative tool for storing and sharing academic research. It is part of Knowledge Commons and is built on an instance of the InvenioRDM repository system.</p>
-<p>Version 0.3.3-beta6</p>
-<section id="copyright">
-<h2>Copyright<a class="headerlink" href="#copyright" title="Link to this heading">¶</a></h2>
-<p>Copyright 2023-24 Mesh Research. Released under the MIT license. (See the included LICENSE.txt file.)</p>
+          <!-- This file is part of Knowledge Commons Works. -->
+<!-- Copyright (C) 2024 Mesh Research. -->
+<section id="changes">
+<h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
+<section id="beta6-2024-12-18">
+<h2>0.3.3-beta6 (2024-12-18)<a class="headerlink" href="#beta6-2024-12-18" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Names</p>
+<ul>
+<li><p>Added the infrastructure to customize the division of users’ names into parts so that it can be divided as desired when, e.g., the user’s name is being auto-filled in the name fields of the upload form. This involves</p>
+<ul>
+<li><p>a new “name_parts_local” field to the user profile schema. This field contains the user’s name parts if they have been modified within the KCWorks system. This is sometimes necessary when the user data synced from the remote user data service does not divide the user’s name correctly.</p></li>
+<li><p>a cli command to update the user’s name parts.</p></li>
+<li><p>a new “names” js module that contains functions to get the user’s full name, full name in inverted order, family name, and given name from the user’s name parts.</p></li>
+<li><p>updates to the CreatibutorsField component to use the new “names” js module and the customized name parts if they are present in a user’s profile.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Detail page</p>
+<ul>
+<li><p>Added missing aria-label properties for accessibility</p></li>
+</ul>
+</li>
+<li><p>Collections</p>
+<ul>
+<li><p>Fixed wording of empty results message for collection members search</p>
+<ul>
+<li><p>Previously, the empty results message used “community” instead of “collection”.</p></li>
+</ul>
+</li>
+<li><p>Tweaks to layout of collection detail page header</p></li>
+</ul>
+</li>
+<li><p>Remote user data service</p>
+<ul>
+<li><p>Fixed bug where user profile data was not being updated because comparison with initial data was not being made correctly. This means that, among other things, ORCID ids will now be added correctly when the user chooses “add self” on the upload form.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="beta5-2024-12-11">
+<h2>0.3.2-beta5 (2024-12-11)<a class="headerlink" href="#beta5-2024-12-11" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added Bluesky sharing option to detail page</p></li>
+<li><p>Fixed line wrapping of long values in record sidebar details</p></li>
+<li><p>Added OpenGraph image metadata property to record detail page</p>
+<ul>
+<li><p>This allows social media platforms to display the KCWorks logo instead of a random image they might find on the page.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="beta4-2024-12-10">
+<h2>0.3.1-beta4 (2024-12-10)<a class="headerlink" href="#beta4-2024-12-10" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added sort options for publication date to record search</p>
+<ul>
+<li><p>This allows users to sort records by the date they were published.</p></li>
+<li><p>It also allows publication-date sorting in API requests to the search API. Among other things, this allows users’ KC profiles to display records in publication date order.</p></li>
+</ul>
+</li>
+<li><p>Community selection modal bug fixes</p>
+<ul>
+<li><p>This affects the modal that appears both during record submission on the upload form and during collection management on the detail page.</p></li>
+<li><p>Fixed the sort order of search results in the modal. These were being sorted by record creation date, leading to a confusing sort order. It now sorts by “best match”. This allows, e.g., “Knowledge Commons” to find the main KC collection.</p></li>
+<li><p>Also fixed the handling of ‘/’ in the search query string. This allows, e.g., “ARLIS/NA” to find the ARLIS/NA collection, where previously it would produce an error.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="beta3-2024-11-30">
+<h2>0.3.0-beta3 (2024-11-30)<a class="headerlink" href="#beta3-2024-11-30" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Record detail page</p>
+<ul>
+<li><p>Added ui for collection management</p>
+<ul>
+<li><p>A new menu appears in the detail page sidebar when a user has permission to edit a record. This
+allows users to manage the record’s collections right from the detail page.</p></li>
+<li><p>With this menu users can now</p>
+<ul>
+<li><p>submit a request to have an existing published record added to a collection.</p></li>
+<li><p>add a record to multiple collections</p></li>
+<li><p>remove a record from some or all of its collections</p></li>
+<li><p>view pending collection submissions for the record</p></li>
+</ul>
+</li>
+<li><p>change which collection appears as the primary collection for the record (i.e., the collection whose logo appears in the record’s detail page sidebar)</p></li>
+</ul>
+</li>
+<li><p>Refactored record management menu</p></li>
+<li><p>Refactored all sidebar menus (including the record management menu) to allow accessible
+keyboard navigation</p></li>
+<li><p>Fixed display of event metadata</p></li>
+<li><p>Added display for work doi as well as version doi</p>
+<ul>
+<li><p>Each record has at least two DOIs: a work DOI and a version DOI. The work DOI is the DOI for the record as a whole. It always points to the most recent version of the work, even if the user creates new versions in the future. The other identifier is the version DOI, which will always point to the specific version of the work that the user is currently viewing. Previously, only the version DOI was displayed, which could be confusing if the user created a new version of the work.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Upload form</p>
+<ul>
+<li><p>Added proper messages to collections widget for published records</p>
+<ul>
+<li><p>since collections for published records are now managed from the detail page, the collections widget now displays messages to users pointing them to the detail page to manage collections.</p></li>
+</ul>
+</li>
+<li><p>Added clearer titles to form when editing an existing record
+or creating a new version</p>
+<ul>
+<li><p>Previously, the form would display “Editing Published Record” both when editing the metadata of an existing published version <em>and</em> when creating a new version. The header now displays “Creating New Version” when creating a new version, and “Editing Published Record” when editing the metadata of an existing published version.</p></li>
+</ul>
+</li>
+<li><p>Changed default publisher from “unknown” to “Knowledge Commons”</p>
+<ul>
+<li><p>Previously, the default publisher was “unknown”. This was especially confusing for resource types where the publisher field is hidden on the upload form. Now, the default publisher is “Knowledge Commons”.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Solved collection links bug with custom routes</p>
+<ul>
+<li><p>This is a back-end technical fix that should not be visible to users.</p></li>
+</ul>
+</li>
+</ul>
 </section>
 </section>
 
@@ -266,23 +387,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="CHANGES.html">
+          <a class="next-page" href="installation.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Changes</div>
+                <div class="title">Installation</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="index.html">
+          <a class="prev-page" href="README.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Home</div>
+                <div class="title">About</div>
                 
               </div>
             </a>
@@ -316,8 +437,11 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">About</a><ul>
-<li><a class="reference internal" href="#copyright">Copyright</a></li>
+<li><a class="reference internal" href="#">Changes</a><ul>
+<li><a class="reference internal" href="#beta6-2024-12-18">0.3.3-beta6 (2024-12-18)</a></li>
+<li><a class="reference internal" href="#beta5-2024-12-11">0.3.2-beta5 (2024-12-11)</a></li>
+<li><a class="reference internal" href="#beta4-2024-12-10">0.3.1-beta4 (2024-12-10)</a></li>
+<li><a class="reference internal" href="#beta3-2024-11-30">0.3.0-beta3 (2024-11-30)</a></li>
 </ul>
 </li>
 </ul>

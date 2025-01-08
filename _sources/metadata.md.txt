@@ -239,7 +239,7 @@ Note that no single actual record would include all of these fields. The example
         "record": "public",
         "files": "restricted",
         "embargo": {
-            "active": True,
+            "active": true,
             "until": "2029-01-01",
             "reason": "Publisher requires embargo.",
         }
@@ -268,7 +268,7 @@ The Research Organization Registry (https://ror.org/) is used for the `organizat
 
 ## Notes about Implementation of Core InvenioRDM Fields
 
-#### metadata.subjects
+### metadata.subjects
 
 Note that KCWorks employs the FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) for the `subjects` field, complemented by the Homosaurus vocabulary (https://homosaurus.org/).
 
@@ -305,7 +305,7 @@ Example:
 }
 ```
 
-#### metadata.creators/metadata.contributors
+### metadata.creators/metadata.contributors
 
 Note that the KC username of a creator or contributor may be stored in the `person_or_org.identifiers` array of the creator or contributor object with the scheme `kc_username`.
 
