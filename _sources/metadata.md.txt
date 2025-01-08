@@ -273,7 +273,7 @@ The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https:
 
 ### Works
 
-#### DOI
+#### DOI (primary identifier)
 
 KCWorks (and InvenioRDM) supports the DOI identifier scheme to identify works in the repository. Note that two DOIs are minted for each KCWorks record: one for the current version of the record, and one for the work as a whole (including all versions). The version-specific DOI is stored in the `pids` property of the metadata record (`pids.identifiers.doi`). The work DOI is stored in the `parent.pids.doi` property of the `parent` object.
 
@@ -281,13 +281,17 @@ These DOIs are minted by DataCite (https://datacite.org/) and the attached metad
 
 Additional DOIs minted elsewhere can be attached to a KCWorks record. If provided at record creation such external DOIs can be used as the record's primary identifier (in `pids.doi`). Otherwise, they can be added using the `identifiers` property of the metadata record using the scheme `alternate-doi`. In both cases, these externally minted DOIs are **not** maintained automatically by KCWorks.
 
-#### OAI
+#### OAI (secondary identifier)
 
 KCWorks also supports the OAI identifier scheme. The OAI identifier for a KCWorks record is stored in the `pids` property of the metadata record (`pids.identifiers.oai`).
 
-#### ISSN
+#### Handle (secondary identifier)
 
-#### ISBN
+KCWorks also supports the Handle identifier scheme (https://handle.net/). The Handle identifier for a KCWorks record is stored in the `identifiers` property of the metadata record (`identifiers[0].identifier`) using the scheme `handle`.
+
+#### ISSN (secondary identifier)
+
+#### ISBN (secondary identifier)
 
 ### People
 
@@ -329,7 +333,7 @@ KCWorks also supports the Integrated Authority File (GND) identifier scheme (htt
 
 #### DOI
 
-Funders in the `metadata.funding` array can be identified using DOIs and the scheme `doi`.
+Funders in the `metadata.funding` array can be identified using DOIs formed with a FundRef id and the scheme `doi`.
 
 #### OFR
 
