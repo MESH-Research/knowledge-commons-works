@@ -42,7 +42,7 @@ hclegacy:record_identifier      A number used in the original Solr indexing. It
                                 concatenates the site ID (id number for HC, MLA, etc.) and original item id number in the
                                 CORE database.
 hclegacy:society            The HC societies to which the original uploader of
-                            the CORE deposit belonged. It should include the society from whose site the deposit was made, although this may not be the case for bulk uploads. Possible values are: arlisna, hc, msu, ajs, hastac, sah, aseees, caa, up.
+                            the CORE deposit belonged. It should include the society from whose site the deposit was made, although this may not be the case for bulk uploads. Possible values are: arlisna, hc, msu, ajs, hastac, sah, aseees, caa, up. (Deprecated and never used.)
 hclegacy:submitter_org_memberships  The HC organizations to which the user
                                     who uploaded the deposit belonged.
 hclegacy:submitter_affiliation  The institutional affiliation of the user
@@ -106,7 +106,7 @@ HCLEGACY_CUSTOM_FIELDS = [
         field_cls=SanitizedUnicode,
     ),
     TextCF(
-        name="hclegacy:society",
+        name="hclegacy:society",  # Deprecated and never used.
         field_cls=SanitizedUnicode,
     ),
     TextCF(

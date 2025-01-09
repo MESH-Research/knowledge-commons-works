@@ -10,6 +10,9 @@ jsonlines = "*"
 requests-mock = "*"
 selenium = "*"
 docker-services-cli = "*"
+sphinx = "*"
+myst-parser = "*"
+furo = "*"
 
 [packages]
 aiohttp = "*"
@@ -21,9 +24,10 @@ flask-breadcrumbs = "*"
 flask-principal = "*"
 greenlet = {}
 halo = "*"
-invenio-app-rdm = { extras = ["opensearch2"]}
+invenio-app-rdm = {version = ">=12.0.0,<13.0.0", extras = ["opensearch2"]}
 invenio-communities = {editable = true, path = "./site/kcworks/dependencies/invenio-communities"}
 invenio-group-collections-kcworks = {editable = true, path = "./site/kcworks/dependencies/invenio-group-collections-kcworks"}
+invenio-logging = {version = "<2.1.2"}
 invenio-modular-deposit-form = {editable = true, path = "./site/kcworks/dependencies/invenio-modular-deposit-form"}
 invenio-modular-detail-page = {editable = true, path = "./site/kcworks/dependencies/invenio-modular-detail-page"}
 invenio-rdm-records = {editable = true, path = "./site/kcworks/dependencies/invenio-rdm-records"}

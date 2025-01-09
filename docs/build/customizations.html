@@ -1,0 +1,1002 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Configuration of InvenioRDM" href="configuration.html" /><link rel="prev" title="Metadata Schema and Vocabularies" href="metadata.html" />
+
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
+        <title>Customizations to InvenioRDM - Knowledge Commons Works 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Knowledge Commons Works 0.3.3 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.3.3 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata Schema and Vocabularies</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Customizations to InvenioRDM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration of InvenioRDM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_commands.html">CLI Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infrastructure.html">KCWorks Infrastructure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing KCWorks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="in_depth.html">In-depth Installation Instructions (NEEDS UPDATING)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/customizations.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="customizations-to-inveniordm">
+<h1>Customizations to InvenioRDM<a class="headerlink" href="#customizations-to-inveniordm" title="Link to this heading">¶</a></h1>
+<section id="template-customizations">
+<h2>Template Customizations<a class="headerlink" href="#template-customizations" title="Link to this heading">¶</a></h2>
+<section id="page-templates">
+<h3>Page templates<a class="headerlink" href="#page-templates" title="Link to this heading">¶</a></h3>
+</section>
+<section id="email-templates">
+<h3>Email templates<a class="headerlink" href="#email-templates" title="Link to this heading">¶</a></h3>
+<p>Custom email templates are located in <code class="docutils literal notranslate"><span class="pre">site/kcworks/templates/semantic-ui/invenio_notifications</span></code>. These override the default templates provided by InvenioRDM, and include both html and plaintext versions of each email, as well has markdown templates for other notification backends.</p>
+<p>Additional email templates are added for KCWorks-specific email types.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user-first-record.create.jinja</span></code>: sent to KCWorks moderators when a user has created their first record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">user-first-record.publish.jinja</span></code>: sent to KCWorks moderators when a user’s first record is published.</p></li>
+</ul>
+</section>
+</section>
+<section id="record-detail-page-customizations">
+<h2>Record Detail Page Customizations<a class="headerlink" href="#record-detail-page-customizations" title="Link to this heading">¶</a></h2>
+<section id="modular-framework-invenio-modular-detail-page">
+<h3>Modular Framework (invenio-modular-detail-page)<a class="headerlink" href="#modular-framework-invenio-modular-detail-page" title="Link to this heading">¶</a></h3>
+</section>
+<section id="overrides-in-the-kcworks-package-kcworks-site">
+<h3>Overrides in the KCWorks Package (kcworks/site)<a class="headerlink" href="#overrides-in-the-kcworks-package-kcworks-site" title="Link to this heading">¶</a></h3>
+</section>
+</section>
+<section id="deposit-form-customizations">
+<h2>Deposit Form Customizations<a class="headerlink" href="#deposit-form-customizations" title="Link to this heading">¶</a></h2>
+<section id="modular-framework-invenio-modular-deposit-form">
+<h3>Modular Framework (invenio-modular-deposit-form)<a class="headerlink" href="#modular-framework-invenio-modular-deposit-form" title="Link to this heading">¶</a></h3>
+</section>
+<section id="id1">
+<h3>Overrides in the KCWorks Package (kcworks/site)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+</section>
+</section>
+<section id="collections">
+<h2>Collections<a class="headerlink" href="#collections" title="Link to this heading">¶</a></h2>
+<section id="collections-for-kc-groups-invenio-group-collections-kcworks">
+<h3>Collections for KC Groups (invenio-group-collections-kcworks)<a class="headerlink" href="#collections-for-kc-groups-invenio-group-collections-kcworks" title="Link to this heading">¶</a></h3>
+</section>
+</section>
+<section id="notifications">
+<h2>Notifications<a class="headerlink" href="#notifications" title="Link to this heading">¶</a></h2>
+<section id="in-app-notifications">
+<h3>In-app notifications<a class="headerlink" href="#in-app-notifications" title="Link to this heading">¶</a></h3>
+<p>A user’s unread notifications are tracked in the user’s profile record.</p>
+</section>
+<section id="content-moderation-notifications">
+<h3>Content moderation notifications<a class="headerlink" href="#content-moderation-notifications" title="Link to this heading">¶</a></h3>
+<section id="user-first-record-notifications">
+<h4>User-first-record notifications<a class="headerlink" href="#user-first-record-notifications" title="Link to this heading">¶</a></h4>
+<p>Emails are sent to the KCWorks moderators when a user creates their first draft and publishes their first record. This is implemented using</p>
+<ul class="simple">
+<li><p>a custom service component for the RDMRecord service (kcworks.services.notifications.services.FirstRecordCreatedNotificationService) that runs during draft creation and publication and</p>
+<ul>
+<li><p>checks whether the user has any other drafts or published records.</p></li>
+<li><p>if not, adds a NotificationOp to the unit of work for the record operation to emit a notification of the type “user-first-record.create” or “user-first-record.publish”.</p></li>
+</ul>
+</li>
+<li><p>two custom notification builder classes (kcworks.services.notifications.builders.FirstRecordPublishedNotificationBuilder and kcworks.services.notifications.builders.FirstRecordCreatedNotificationBuilder) that build the notifications.</p>
+<ul>
+<li><p>these builders define the notification recipients using a custom ModeratorRoleRecipient generator (kcworks.services.notifications.generators.ModeratorRoleRecipient) and sends the notification to all users with the role defined in the NOTIFICATIONS_MODERATOR_ROLE config variable.</p></li>
+<li><p>they also define the notification backends to be used for sending the notification. In this case, a custom EmailBackend (kcworks.services.notifications.backends.EmailBackend) that sends email via the Flask-Mail extension.</p></li>
+</ul>
+</li>
+<li><p>custom email templates for the notifications, located at <code class="docutils literal notranslate"><span class="pre">site/kcworks/templates/semantic-ui/invenio_notifications/</span></code>.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="integrations-with-kc">
+<h2>Integrations with KC<a class="headerlink" href="#integrations-with-kc" title="Link to this heading">¶</a></h2>
+<section id="user-data-sync-invenio-remote-user-data-kcworks">
+<h3>User Data Sync (invenio-remote-user-data-kcworks)<a class="headerlink" href="#user-data-sync-invenio-remote-user-data-kcworks" title="Link to this heading">¶</a></h3>
+<p>User data is synced uni-directionally from KC to KCWorks. A user’s data is synced with KC when</p>
+<ol class="arabic simple">
+<li><p>the user’s SAML authentication info is first saved in KCWorks</p></li>
+<li><p>the user logs into KCWorks</p></li>
+<li><p>a webhook signal is received by KCWorks from KC</p></li>
+</ol>
+</section>
+<section id="kc-search-provisioning-invenio-remote-api-provisioner">
+<h3>KC Search Provisioning (invenio-remote-api-provisioner)<a class="headerlink" href="#kc-search-provisioning-invenio-remote-api-provisioner" title="Link to this heading">¶</a></h3>
+</section>
+<section id="saml-authentication">
+<h3>SAML Authentication<a class="headerlink" href="#saml-authentication" title="Link to this heading">¶</a></h3>
+</section>
+</section>
+<section id="metadata-schema-customizations">
+<h2>Metadata Schema Customizations<a class="headerlink" href="#metadata-schema-customizations" title="Link to this heading">¶</a></h2>
+<p>The default InvenioRDM metadata schema is defined in the <code class="docutils literal notranslate"><span class="pre">invenio-rdm-records</span></code> package and documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/">here</a>. It also includes a number of optional metadata fields which have been enabled in KCWorks, documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/optional_metadata/">here</a>.</p>
+<p>Beyond these InvenioRDM fields, KCWorks adds a number of custom metadata fields to the schema using InvenioRDM’s custom field mechanism. These are all located in the top-level <code class="docutils literal notranslate"><span class="pre">custom_fields</span></code> field of the record metadata. They are prefixed with two different namespaces:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">kcr</span></code>: custom fields that are used to store data from the KC system. These fields <strong>may</strong> be used for new data, but are not required.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hclegacy</span></code>: custom fields that are used to store data from the legacy CORE database. These fields <strong>must not</strong> be used for new data.</p></li>
+</ul>
+<section id="notes-about-implementation-of-core-inveniordm-fields">
+<h3>Notes about Implementation of Core InvenioRDM Fields<a class="headerlink" href="#notes-about-implementation-of-core-inveniordm-fields" title="Link to this heading">¶</a></h3>
+<section id="metadata-subjects">
+<h4>metadata.subjects<a class="headerlink" href="#metadata-subjects" title="Link to this heading">¶</a></h4>
+<p>Note that KCWorks employs the FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) for the <code class="docutils literal notranslate"><span class="pre">subjects</span></code> field, complemented by the Homosaurus vocabulary (https://homosaurus.org/).</p>
+<p>The FAST vocabulary is divided into a number of sub-vocabularies called “facets”, allowing more efficient searching and less ambiguity in the subject headings. FAST subjects in the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> array must include the complete WorldCat url for the subject heading, the standard human-readable label, and a <code class="docutils literal notranslate"><span class="pre">scheme</span></code> including “FAST” followed by a hyphen and the FAST facet name in lowercase: i.e., one of</p>
+<ul class="simple">
+<li><p>“FAST-topical”</p></li>
+<li><p>“FAST-geographic”</p></li>
+<li><p>“FAST-corporate”</p></li>
+<li><p>“FAST-formgenre”</p></li>
+<li><p>“FAST-event”</p></li>
+<li><p>“FAST-meeting”</p></li>
+<li><p>“FAST-personal”</p></li>
+<li><p>“FAST-title”</p></li>
+<li><p>“FAST-chronological”</p></li>
+</ul>
+<p>You can search the FAST subject headings and their corresponding WorldCat urls <a class="reference external" href="https://fast.oclc.org/searchfast">here</a>. The OCLC also provides helpful tools such as assignFAST, which suggests FAST subject headings based on a string (https://fast.oclc.org/assignfast/) and a converter from LCSH subject headings to FAST subject (http://fast.oclc.org/lcsh2fast).</p>
+<p>Subject from the Homosaurus vocabulary must similarly include the complete homosaurus.org url as the <code class="docutils literal notranslate"><span class="pre">id</span></code>, the standard human-readable label as the <code class="docutils literal notranslate"><span class="pre">subject</span></code>, and a <code class="docutils literal notranslate"><span class="pre">scheme</span></code> with the value “Homosaurus”. The Homosaurus subject headings can be searched <a class="reference external" href="https://homosaurus.org/search/v3">here</a>.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;subjects&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://id.worldcat.org/fast/123456&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;subject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Art History&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAST-topical&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://homosaurus.org/v3/homoit0000669&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;subject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Intersex variations&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Homosaurus&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="metadata-creators-metadata-contributors">
+<h4>metadata.creators/metadata.contributors<a class="headerlink" href="#metadata-creators-metadata-contributors" title="Link to this heading">¶</a></h4>
+<p>Note that the KC username of a creator or contributor may be stored in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> array of the creator or contributor object with the scheme <code class="docutils literal notranslate"><span class="pre">kc_username</span></code>.</p>
+<p>Users are also strongly encouraged to include an ORCID identifier in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> array with the scheme <code class="docutils literal notranslate"><span class="pre">orcid</span></code>.</p>
+<blockquote>
+<div><p>[!Note]
+The KC username is the primary link between a KCWorks record and a KC user. If you want a work to be associated with a KC user, you must include the KC username in creator or contributor object.</p>
+</div></blockquote>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;person_or_org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kc_username&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jdoe&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;orcid&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0000-0000-0000-0000&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="kcworks-custom-fields-kcworks-site-metadata-fields">
+<h3>KCWorks Custom Fields (kcworks/site/metadata_fields)<a class="headerlink" href="#kcworks-custom-fields-kcworks-site-metadata-fields" title="Link to this heading">¶</a></h3>
+<section id="kcr-ai-usage">
+<h4>kcr:ai_usage<a class="headerlink" href="#kcr-ai-usage" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">Object[boolean,</span> <span class="pre">string]</span></code></p>
+<p>This field stores data about any use of generative AI in the production of the record.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:ai_usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;ai_used&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;ai_description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This paper was edited using generative AI editing software.&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-media">
+<h4>kcr:media<a class="headerlink" href="#kcr-media" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">Array[string]</span></code></p>
+<p>This field stores a list of media or materials involved in the creation of the record. This field is used to store free-form user-defined descriptors of the media or materials and does not impose any controlled vocabulary.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:media&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;watercolor&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;found objects&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;audio recordings&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-commons-domain">
+<h4>kcr:commons_domain<a class="headerlink" href="#kcr-commons-domain" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores the KC organizational (Commons) domain associated with the KCWorks record, if any. The record should also be placed in the KCWorks collection associated with this organization.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:commons_domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;arlisna.hcommons.org&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-chapter-label">
+<h4>kcr:chapter_label<a class="headerlink" href="#kcr-chapter-label" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores the label of the chapter associated with the KCWorks record, if any. This allows us to differentiate between a simple chapter label (e.g. “Chapter 1”) and a more substantive title for the same chapter (e.g., “The Role of AI in Modern Art”).</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:chapter_label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Chapter 1&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-content-warning">
+<h4>kcr:content_warning<a class="headerlink" href="#kcr-content-warning" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores an optional content warning for the KCWorks record. This is used to flag the record for KCWorks users so that they can be aware of potentially problematic content in the record. <strong>This field is not to be used for content moderation by KCWorks moderators or admins. It is only to be used voluntarily and as desired by the record submitter.</strong></p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:content_warning&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This work contains detailed accounts of abuse that may be distressing to some readers.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-course-title">
+<h4>kcr:course_title<a class="headerlink" href="#kcr-course-title" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores the title of the course associated with the KCWorks record. It is intended primarily for use with syllabi and instructional materials.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:course_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Introduction to Modern Art&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-degree">
+<h4>kcr:degree<a class="headerlink" href="#kcr-degree" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores the educational degree (e.g., PhD, DPhil, MA, etc.) associated with the KCWorks record. It is intended primarily for use with theses and dissertations.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:degree&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PhD&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-discipline">
+<h4>kcr:discipline<a class="headerlink" href="#kcr-discipline" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores the academic discipline associated with the KCWorks record. It is intended primarily for use with theses, dissertations, and other educational artifacts. It is not intended as a general-purpose field for describing the subject matter of the KCWorks record. For that, you should use the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> and <code class="docutils literal notranslate"><span class="pre">kcr:user_defined_tags</span></code> fields.</p>
+<p>This field is intended to complement the <code class="docutils literal notranslate"><span class="pre">thesis:university</span></code> and <code class="docutils literal notranslate"><span class="pre">kcr:institution_department</span></code> fields.</p>
+<p>This field is not constrained by any controlled vocabulary.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:discipline&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Latin American Literature&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-edition">
+<h4>kcr:edition<a class="headerlink" href="#kcr-edition" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores a descriptor for the edition of the KCWorks record, if any.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:edition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Second Edition&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-meeting-organization">
+<h4>kcr:meeting_organization<a class="headerlink" href="#kcr-meeting-organization" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores the name of the organization associated with the meeting or conference associated with the KCWorks record. It is intended primarily for use with conference papers, presentations, proceedings, etc.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:meeting_organization&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;American Association of Art Historians&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-project-title">
+<h4>kcr:project_title<a class="headerlink" href="#kcr-project-title" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores the title of a project for which the KCWorks record was created. It can be used flexibly for, e.g., grant-funded projects, research projects, artistic projects, etc.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:project_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Kingston Poetry Residency, 2024&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-publication-url">
+<h4>kcr:publication_url<a class="headerlink" href="#kcr-publication-url" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (URL)</p>
+<p>This field stores the URL of the publication associated with the KCWorks record. It is <em>not</em> the URL of the KCWorks record itself or of the work it contains. For example, if the KCWorks record contains a journal article, it would <em>not</em> hold the URL for the published journal article. It is intended to hold the URL of the publication <em>as a whole</em> that the KCWorks record is based on or is a part of. So it might hold the main URL for the journal in which the article was published, or the main URL for the book in which the chapter was published, etc.</p>
+<p>This string must be a valid URL.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:publication_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://www.example.com/publication/123456&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-sponsoring-institution">
+<h4>kcr:sponsoring_institution<a class="headerlink" href="#kcr-sponsoring-institution" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores the name of the institution that sponsored the KCWorks record. One intended use is for unpublished materials such white papers that were sponsored or commissioned by an institution. The field may also be used for the institution hosting a conference or workshop associated with the KCWorks record (as distinct from the organization that sponsored the event).</p>
+<p>Note that this field is not intended for the degree-granting institution associated with a thesis or dissertation. That institution’s title should be stored in the <code class="docutils literal notranslate"><span class="pre">thesis:university</span></code> field.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:sponsoring_institution&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;University of Toronto&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-submitter-email">
+<h4>kcr:submitter_email<a class="headerlink" href="#kcr-submitter-email" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (email address)</p>
+<p>This field stores the email address of the submitter of the KCWorks record. It must be a valid email address.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:submitter_email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;john.doe@example.com&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-submitter-username">
+<h4>kcr:submitter_username<a class="headerlink" href="#kcr-submitter-username" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores the KC username of the submitter of the KCWorks record. This should be used even if the submitter is also a contributor to the KCWorks record and has included the same username in the <code class="docutils literal notranslate"><span class="pre">metadata.creators.person_or_org.identifiers</span></code> array.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:submitter_username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jdoe&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-institution-department">
+<h4>kcr:institution_department<a class="headerlink" href="#kcr-institution-department" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field stores the institutional department in which a thesis, dissertation, or other educational artifact was produced. It is intended to complement the <code class="docutils literal notranslate"><span class="pre">thesis:university</span></code> field, which stores the degree-granting institution.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:institution_department&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Art History&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-book-series">
+<h4>kcr:book_series<a class="headerlink" href="#kcr-book-series" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">Object[string,</span> <span class="pre">string]</span></code></p>
+<p>This field stores the title of a series that contains the KCWorks record, along with the optional volume number of the work within the series.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:book_series&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;series_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The Complete Works of Jane Austen&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;series_volume&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Volume 1&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-user-defined-tags">
+<h4>kcr:user_defined_tags<a class="headerlink" href="#kcr-user-defined-tags" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">Array[string]</span></code></p>
+<p>This field stores a list of user-defined tags for the KCWorks record. Unlike the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> field, these tags are not constrained by any controlled vocabulary. Items should be free-form strings that describe the KCWorks record in a way that is not covered by the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> field.</p>
+<blockquote>
+<div><p>[!Note]
+The <code class="docutils literal notranslate"><span class="pre">kcr:user_defined_tags</span></code> field is intended to supplement the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> field, not as the primary means of describing the KCWorks record’s subject matter. Assigning proper <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> entries allows for much more effective search and discovery of the KCWorks record.</p>
+</div></blockquote>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;kcr:user_defined_tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Ukranian refugees&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Migrants in Europe&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="kcr-commons-search-recid-system-field">
+<h4>kcr:commons_search_recid (system field)<a class="headerlink" href="#kcr-commons-search-recid-system-field" title="Link to this heading">¶</a></h4>
+<p>This field is used to store the persistent identifier for the KCWorks record in the KC central search index.</p>
+<blockquote>
+<div><p>[!Warning]
+This field is automatically generated by the <code class="docutils literal notranslate"><span class="pre">invenio-remote-api-provisioner</span></code> service when a KCWorks record is published. It <em>must not</em> be set by the user.</p>
+</div></blockquote>
+</section>
+<section id="kcr-commons-search-updated-system-field">
+<h4>kcr:commons_search_updated (system field)<a class="headerlink" href="#kcr-commons-search-updated-system-field" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (ISO 8601 datetime string)</p>
+<p>This field stores the date and time when the KCWorks record was last updated in the KC central search index.</p>
+<blockquote>
+<div><p>[!Warning]
+This field is automatically generated by the <code class="docutils literal notranslate"><span class="pre">invenio-remote-api-provisioner</span></code> service when a KCWorks record is published. It <em>must not</em> be set by the user.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="hc-legacy-custom-fields">
+<h3>HC Legacy Custom Fields<a class="headerlink" href="#hc-legacy-custom-fields" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">hclegacy</span></code> namespace is used for custom fields that are used to store data from the legacy CORE database. These fields should not be used for new data.</p>
+<section id="custom-fields-hclegacy-groups-for-deposit">
+<h4>custom_fields.hclegacy:groups_for_deposit<a class="headerlink" href="#custom-fields-hclegacy-groups-for-deposit" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">Array[Object[string,</span> <span class="pre">string]]</span></code></p>
+<p>This field is used to store the groups to which a legacy CORE record belonged before import into KCWorks. It was used to create corresponding KCWorks collections during migration.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:groups_for_deposit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Group Name&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;group_identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Group Identifier&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-collection">
+<h4>custom_fields.hclegacy:collection<a class="headerlink" href="#custom-fields-hclegacy-collection" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field is used to store the org collection to which a legacy CORE record belonged before import into KCWorks. It was used to create corresponding KCWorks org collections during migration.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:collection&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Collection Name&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-committee-deposit">
+<h4>custom_fields.hclegacy:committee_deposit<a class="headerlink" href="#custom-fields-hclegacy-committee-deposit" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
+<p>This field is used to store the committee deposit number for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:committee_deposit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-file-location">
+<h4>custom_fields.hclegacy:file_location<a class="headerlink" href="#custom-fields-hclegacy-file-location" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field is used to store the relative path the the file for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:file_location&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/file.pdf&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-file-pid">
+<h4>custom_fields.hclegacy:file_pid<a class="headerlink" href="#custom-fields-hclegacy-file-pid" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field is used to store the persistent identifier for the file for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:file_pid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hc:123456&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-previously-published">
+<h4>custom_fields.hclegacy:previously_published<a class="headerlink" href="#custom-fields-hclegacy-previously-published" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field is used to store the previously published status for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:previously_published&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;true&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-publication-type">
+<h4>custom_fields.hclegacy:publication_type<a class="headerlink" href="#custom-fields-hclegacy-publication-type" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field is used to store the publication type for a legacy CORE record. It was used during migration to help determine the KCWorks resource type of the record. It is only preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:publication_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Journal Article&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-record-change-date">
+<h4>custom_fields.hclegacy:record_change_date<a class="headerlink" href="#custom-fields-hclegacy-record-change-date" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (ISO 8601 datetime string)</p>
+<p>This field is used to store the date of the last change to a legacy CORE record. It was not used during migration to KCWorks and is only preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:record_change_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-record-creation-date">
+<h4>custom_fields.hclegacy:record_creation_date<a class="headerlink" href="#custom-fields-hclegacy-record-creation-date" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (ISO 8601 datetime string)</p>
+<p>This field is used to store the date of the creation of a legacy CORE record. It was not used during migration because InvenioRDM does not allow overriding of the record creation date. It is only preserved for historical purposes and should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:record_creation_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-record-identifier">
+<h4>custom_fields.hclegacy:record_identifier<a class="headerlink" href="#custom-fields-hclegacy-record-identifier" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field is used to store the internal system identifier for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:record_identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1001634-1263&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-submitter-org-memberships">
+<h4>custom_fields.hclegacy:submitter_org_memberships<a class="headerlink" href="#custom-fields-hclegacy-submitter-org-memberships" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">array[string]</span></code></p>
+<p>This field is used to store the organizations to which a legacy CORE record’s submitter belonged before import into KCWorks. It was used to create corresponding KCWorks org collections during migration and assign the work to those org collections.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:submitter_org_memberships&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;arlisna&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mla&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-submitter-affiliation">
+<h4>custom_fields.hclegacy:submitter_affiliation<a class="headerlink" href="#custom-fields-hclegacy-submitter-affiliation" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field is used to store the organizational affiliation of a legacy CORE record’s submitter at the time of import into KCWorks. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:submitter_affiliation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;University of Toronto&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-submitter-id">
+<h4>custom_fields.hclegacy:submitter_id<a class="headerlink" href="#custom-fields-hclegacy-submitter-id" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>This field is used to store the internal KC system user id of a legacy CORE record’s submitter. It was used during migration to assign ownership of the newly created record, and is preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:submitter_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;123456&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-total-views">
+<h4>custom_fields.hclegacy:total_views<a class="headerlink" href="#custom-fields-hclegacy-total-views" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
+<p>This field is used to store the total number of views for a legacy CORE record prior to import into KCWorks. It was used during migration to create KCWorks usage stats aggregations for the record. It is only preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:total_views&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-fields-hclegacy-total-downloads">
+<h4>custom_fields.hclegacy:total_downloads<a class="headerlink" href="#custom-fields-hclegacy-total-downloads" title="Link to this heading">¶</a></h4>
+<p>Type: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
+<p>This field is used to store the total number of downloads for a legacy CORE record prior to import into KCWorks. It was used during migration to create KCWorks usage stats aggregations for the record. It is only preserved for historical purposes. It should not be used for new data.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hclegacy:total_downloads&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="bulk-record-import-invenio-record-importer-kcworks">
+<h2>Bulk Record Import (invenio-record-importer-kcworks)<a class="headerlink" href="#bulk-record-import-invenio-record-importer-kcworks" title="Link to this heading">¶</a></h2>
+</section>
+<section id="forked-core-invenio-modules">
+<h2>Forked Core Invenio Modules<a class="headerlink" href="#forked-core-invenio-modules" title="Link to this heading">¶</a></h2>
+<section id="invenio-communities">
+<h3>invenio-communities<a class="headerlink" href="#invenio-communities" title="Link to this heading">¶</a></h3>
+</section>
+<section id="invenio-rdm-records">
+<h3>invenio-rdm-records<a class="headerlink" href="#invenio-rdm-records" title="Link to this heading">¶</a></h3>
+</section>
+<section id="invenio-records-resources">
+<h3>invenio-records-resources<a class="headerlink" href="#invenio-records-resources" title="Link to this heading">¶</a></h3>
+</section>
+<section id="invenio-vocabularies">
+<h3>invenio-vocabularies<a class="headerlink" href="#invenio-vocabularies" title="Link to this heading">¶</a></h3>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="configuration.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Configuration of InvenioRDM</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="metadata.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Metadata Schema and Vocabularies</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Mesh Research
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Customizations to InvenioRDM</a><ul>
+<li><a class="reference internal" href="#template-customizations">Template Customizations</a><ul>
+<li><a class="reference internal" href="#page-templates">Page templates</a></li>
+<li><a class="reference internal" href="#email-templates">Email templates</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#record-detail-page-customizations">Record Detail Page Customizations</a><ul>
+<li><a class="reference internal" href="#modular-framework-invenio-modular-detail-page">Modular Framework (invenio-modular-detail-page)</a></li>
+<li><a class="reference internal" href="#overrides-in-the-kcworks-package-kcworks-site">Overrides in the KCWorks Package (kcworks/site)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#deposit-form-customizations">Deposit Form Customizations</a><ul>
+<li><a class="reference internal" href="#modular-framework-invenio-modular-deposit-form">Modular Framework (invenio-modular-deposit-form)</a></li>
+<li><a class="reference internal" href="#id1">Overrides in the KCWorks Package (kcworks/site)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#collections">Collections</a><ul>
+<li><a class="reference internal" href="#collections-for-kc-groups-invenio-group-collections-kcworks">Collections for KC Groups (invenio-group-collections-kcworks)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#notifications">Notifications</a><ul>
+<li><a class="reference internal" href="#in-app-notifications">In-app notifications</a></li>
+<li><a class="reference internal" href="#content-moderation-notifications">Content moderation notifications</a><ul>
+<li><a class="reference internal" href="#user-first-record-notifications">User-first-record notifications</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#integrations-with-kc">Integrations with KC</a><ul>
+<li><a class="reference internal" href="#user-data-sync-invenio-remote-user-data-kcworks">User Data Sync (invenio-remote-user-data-kcworks)</a></li>
+<li><a class="reference internal" href="#kc-search-provisioning-invenio-remote-api-provisioner">KC Search Provisioning (invenio-remote-api-provisioner)</a></li>
+<li><a class="reference internal" href="#saml-authentication">SAML Authentication</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#metadata-schema-customizations">Metadata Schema Customizations</a><ul>
+<li><a class="reference internal" href="#notes-about-implementation-of-core-inveniordm-fields">Notes about Implementation of Core InvenioRDM Fields</a><ul>
+<li><a class="reference internal" href="#metadata-subjects">metadata.subjects</a></li>
+<li><a class="reference internal" href="#metadata-creators-metadata-contributors">metadata.creators/metadata.contributors</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kcworks-custom-fields-kcworks-site-metadata-fields">KCWorks Custom Fields (kcworks/site/metadata_fields)</a><ul>
+<li><a class="reference internal" href="#kcr-ai-usage">kcr:ai_usage</a></li>
+<li><a class="reference internal" href="#kcr-media">kcr:media</a></li>
+<li><a class="reference internal" href="#kcr-commons-domain">kcr:commons_domain</a></li>
+<li><a class="reference internal" href="#kcr-chapter-label">kcr:chapter_label</a></li>
+<li><a class="reference internal" href="#kcr-content-warning">kcr:content_warning</a></li>
+<li><a class="reference internal" href="#kcr-course-title">kcr:course_title</a></li>
+<li><a class="reference internal" href="#kcr-degree">kcr:degree</a></li>
+<li><a class="reference internal" href="#kcr-discipline">kcr:discipline</a></li>
+<li><a class="reference internal" href="#kcr-edition">kcr:edition</a></li>
+<li><a class="reference internal" href="#kcr-meeting-organization">kcr:meeting_organization</a></li>
+<li><a class="reference internal" href="#kcr-project-title">kcr:project_title</a></li>
+<li><a class="reference internal" href="#kcr-publication-url">kcr:publication_url</a></li>
+<li><a class="reference internal" href="#kcr-sponsoring-institution">kcr:sponsoring_institution</a></li>
+<li><a class="reference internal" href="#kcr-submitter-email">kcr:submitter_email</a></li>
+<li><a class="reference internal" href="#kcr-submitter-username">kcr:submitter_username</a></li>
+<li><a class="reference internal" href="#kcr-institution-department">kcr:institution_department</a></li>
+<li><a class="reference internal" href="#kcr-book-series">kcr:book_series</a></li>
+<li><a class="reference internal" href="#kcr-user-defined-tags">kcr:user_defined_tags</a></li>
+<li><a class="reference internal" href="#kcr-commons-search-recid-system-field">kcr:commons_search_recid (system field)</a></li>
+<li><a class="reference internal" href="#kcr-commons-search-updated-system-field">kcr:commons_search_updated (system field)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hc-legacy-custom-fields">HC Legacy Custom Fields</a><ul>
+<li><a class="reference internal" href="#custom-fields-hclegacy-groups-for-deposit">custom_fields.hclegacy:groups_for_deposit</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-collection">custom_fields.hclegacy:collection</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-committee-deposit">custom_fields.hclegacy:committee_deposit</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-file-location">custom_fields.hclegacy:file_location</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-file-pid">custom_fields.hclegacy:file_pid</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-previously-published">custom_fields.hclegacy:previously_published</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-publication-type">custom_fields.hclegacy:publication_type</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-record-change-date">custom_fields.hclegacy:record_change_date</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-record-creation-date">custom_fields.hclegacy:record_creation_date</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-record-identifier">custom_fields.hclegacy:record_identifier</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-submitter-org-memberships">custom_fields.hclegacy:submitter_org_memberships</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-submitter-affiliation">custom_fields.hclegacy:submitter_affiliation</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-submitter-id">custom_fields.hclegacy:submitter_id</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-total-views">custom_fields.hclegacy:total_views</a></li>
+<li><a class="reference internal" href="#custom-fields-hclegacy-total-downloads">custom_fields.hclegacy:total_downloads</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bulk-record-import-invenio-record-importer-kcworks">Bulk Record Import (invenio-record-importer-kcworks)</a></li>
+<li><a class="reference internal" href="#forked-core-invenio-modules">Forked Core Invenio Modules</a><ul>
+<li><a class="reference internal" href="#invenio-communities">invenio-communities</a></li>
+<li><a class="reference internal" href="#invenio-rdm-records">invenio-rdm-records</a></li>
+<li><a class="reference internal" href="#invenio-records-resources">invenio-records-resources</a></li>
+<li><a class="reference internal" href="#invenio-vocabularies">invenio-vocabularies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=d5a15cff"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    </body>
+</html>
