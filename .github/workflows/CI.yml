@@ -11,11 +11,11 @@ on:
       - "staging"
     tags:
       - release*
-  pull_request:
-    branches:
-      - main
-      - production
-      - staging
+  # pull_request:
+  #   branches:
+  #     - main
+  #     - production
+  #     - staging
 
 env:
   DOCKER_BUILDKIT: 1
