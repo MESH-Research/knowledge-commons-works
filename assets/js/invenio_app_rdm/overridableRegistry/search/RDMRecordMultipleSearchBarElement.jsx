@@ -6,6 +6,8 @@ import {i18next} from "@translations/invenio_app_rdm/i18next";
 import { RecordSearchBarElement } from "./RecordSearchBarElement";
 import _isEmpty from "lodash/isEmpty";
 
+// Note: This search bar element is necessary for the unique
+// needs of the main works search page.
 export const RDMRecordMultipleSearchBarElement = ({ queryString, onInputChange }) => {
   const headerSearchbar = document.getElementById("header-search-bar");
   const searchbarOptions = JSON.parse(headerSearchbar.dataset.options);
