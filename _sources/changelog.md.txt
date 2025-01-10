@@ -4,6 +4,11 @@
 
 # Changes
 
+## 0.3.5-beta8 (2025-01-10)
+
+- Dashboard works search
+    - Fixed the bug that broke works searching from the dashboard.
+
 ## 0.3.4-beta7 (2025-01-09)
 
 - Upload form collection selector
