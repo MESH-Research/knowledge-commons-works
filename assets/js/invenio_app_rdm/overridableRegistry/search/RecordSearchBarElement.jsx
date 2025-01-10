@@ -1,23 +1,28 @@
 
 import { i18next } from "@translations/invenio_communities/i18next";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import { withState } from "react-searchkit";
 import { Input } from "semantic-ui-react";
-
 
 export const RecordSearchBarElement = withState(
   ({
     placeholder: passedPlaceholder,
     queryString,
-    onInputChange,
+    // onInputChange,
     updateQueryState,
     currentQueryState,
+    uiProps
   }) => {
     const placeholder = passedPlaceholder || i18next.t("Search");
+    const [currentValue, setCurrentValue] = useState(queryString || currentQueryState.queryString || "");
+
+    const onInputChange = (value) => {
+      setCurrentValue(value);
+    };
 
     const onSearch = () => {
-      updateQueryState({ ...currentQueryState, queryString });
+      updateQueryState({ ...currentQueryState, queryString: currentValue });
     };
 
     const onBtnSearchClick = () => {
@@ -28,6 +33,7 @@ export const RecordSearchBarElement = withState(
         onSearch();
       }
     };
+
     return (
       <Input
         action={{
@@ -41,9 +47,18 @@ export const RecordSearchBarElement = withState(
         onChange={(event, { value }) => {
           onInputChange(value);
         }}
-        value={queryString}
+        value={currentValue}
         onKeyPress={onKeyPress}
+        {...uiProps}
       />
     );
   }
 );
+
+RecordSearchBarElement.propTypes = {
+  placeholder: PropTypes.string,
+  queryString: PropTypes.string,
+  onInputChange: PropTypes.func,
+  updateQueryState: PropTypes.func,
+  currentQueryState: PropTypes.object,
+};
