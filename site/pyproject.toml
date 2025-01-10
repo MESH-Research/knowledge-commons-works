@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kcworks"
-version = "0.3.4-beta7"
+version = "0.3.5-beta8"
 
 [project.optional-dependencies]
 tests = ["pytest-invenio>=2.1.0,<3.0.0"]

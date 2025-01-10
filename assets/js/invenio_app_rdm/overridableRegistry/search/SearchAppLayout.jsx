@@ -25,6 +25,7 @@ import { ContribSearchAppFacets } from "@js/invenio_search_ui/components";
 import {
     ResultOptionsWithState,
 } from "./ResultOptions";
+import { SearchBar } from "@js/invenio_search_ui/components";
 import { RecordSearchBarElement } from "./RecordSearchBarElement";
 
 const ContribSearchHelpLinks = (props) => {
@@ -71,29 +72,39 @@ const SearchAppLayout = ({ config, appName, help=true, toggle=true }) => {
   return (
     <Container fluid>
         <Grid>
-          <Overridable
-            id={buildUID("SearchApp.searchbarContainer", "", appName)}
-          >
-              <Grid.Row className="pb-0 pt-0">
-                <Grid.Column
-                  mobile={16}
-                  tablet={16}
-                  computer={11}
-                  largeScreen={11}
-                  widescreen={11}
+          <Grid.Row className="pb-0 pt-0">
+            <Grid.Column
+              mobile={16}
+              tablet={16}
+              computer={11}
+              largeScreen={11}
+              widescreen={11}
+            >
+              <Overridable
+                id={buildUID("SearchApp.searchbarContainer", "", appName)}
+              >
+                <Overridable
+                  id={buildUID("SearchApp.searchbar", "", appName)}
                 >
-                  <RecordSearchBarElement buildUID={buildUID} appName={appName} />
-                </Grid.Column>
-                <Grid.Column
-                  mobile={4}
-                  tablet={4}
-                  computer={5}
-                  largeScreen={5}
-                  widescreen={5}
-                >
-                </Grid.Column>
-              </Grid.Row>
-          </Overridable>
+                  <Overridable
+                    id={buildUID("SearchBar.element", "", appName)}
+                  >
+                    {/* invenio_search_ui SearchBar Overridable id: "<appName>.SearchApp.searchbar"
+                    and wraps searchkit Searchbar with Overridable id: "<appName>.SearchBar.element" */}
+                    <RecordSearchBarElement appName={appName} buildUID={buildUID} />
+                  </Overridable>
+                </Overridable>
+              </Overridable>
+            </Grid.Column>
+            <Grid.Column
+              mobile={4}
+              tablet={4}
+              computer={5}
+              largeScreen={5}
+              widescreen={5}
+            >
+            </Grid.Column>
+          </Grid.Row>
 
         <ResultOptionsWithState
           appName={appName}
