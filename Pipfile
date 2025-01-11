@@ -44,7 +44,7 @@ isbnlib = "*"
 langdetect = "*"
 numpy = "*"
 pip = "*"
-pytest-invenio = "*"
+pytest-invenio = {version = "<3.0.0"}
 python-dotenv = "*"
 python-iso639 = "*"
 python-stdnum = "*"
