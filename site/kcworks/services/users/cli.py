@@ -1,5 +1,5 @@
 import click
-from .service import UserProfileService
+from kcworks.services.users.service import UserProfileService
 from flask.cli import with_appcontext
 from pprint import pprint
 
