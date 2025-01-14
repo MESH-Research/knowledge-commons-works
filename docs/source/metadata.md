@@ -271,14 +271,13 @@ Prior to the start of development on the KCWorks repository we did a deep dive i
 
 We have broken down resource types over eight categories, including support for various art objects, multimedia files, online course files, virtual reality, and software. Each category - Dataset, Image, Instructional Resource, Presentation, Publication, Software, Audiovisual, and Other - has within it specific metadata fields that provide the ability to fully describe the object. 
 
-The eight top resource types and many of the subtypes are derived from the list in [the Datacite schema under resourceTypeGeneral](https://datacite-metadata-schema.readthedocs.io/en/4.6/appendices/appendix-1/resourceTypeGeneral/).The rest derived from our original resource types in the [CORE repository](https://works.hcommons.org/records/f9xww-xwr22), launched in 2016 as part of Humanities Commons. 
+The eight top resource types and many of the subtypes are derived from the list in [the Datacite schema under resourceTypeGeneral](https://datacite-metadata-schema.readthedocs.io/en/4.6/appendices/appendix-1/resourceTypeGeneral/). The rest derived from our original resource types in the [CORE repository](https://works.hcommons.org/records/f9xww-xwr22), launched in 2016 as part of Humanities Commons. 
 
 Each top level category - Dataset, Image, Instructional Resource, Presentation, Publication, Software, Audiovisual, and Other - has within it specific metadata fields that provide the ability to fully describe the object. As we mapped our existing resource types we had to add two custom types to support legal scholars: Legal Comment and Legal Response, which support the Michigan State University School of Law and their deposits of legal scholarship. 
 
 #### Creator/contributor roles
 
 Keeping with our support for a wide variety of objects and disciplines, our creator roles are more diverse than just "author," "editor," or "translator." For contribuors we were influenced by the [CRediT Taxonomy](https://credit.niso.org/), finding ways of recognizing labor even when the contribution is not immediately visible. Included in both creator and contributor roles a selection of types taken from the [Variations Metadata](https://dlib.indiana.edu/projects/variations3/metadata/guide/controlVocabs/contributorRoles.html) taxonomy, providing the ability to credit those who engage in creative and musical works. 
-
 
 ## Identifier Schemes
 
