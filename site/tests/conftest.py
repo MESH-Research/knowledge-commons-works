@@ -1,3 +1,5 @@
+from celery import Celery
+from celery.contrib.testing.worker import start_worker
 from collections import namedtuple
 from flask import current_app
 import os
@@ -27,11 +29,9 @@ package = importlib.import_module(var)
 
 # Or if we want to create a dictionary of all variables:
 
-config = {
-    k: v for k, v in invenio_config.__dict__.items() if not k.startswith("_")
-}
+config = {k: v for k, v in invenio_config.__dict__.items() if not k.startswith("_")}
 
-pytest_plugins = [
+pytest_plugins = (
     "celery.contrib.pytest",
     "tests.fixtures.communities",
     "tests.fixtures.custom_fields",
@@ -49,7 +49,7 @@ pytest_plugins = [
     "tests.fixtures.vocabularies.roles",
     "tests.fixtures.vocabularies.subjects",
     "tests.helpers.sample_records.basic",
-]
+)
 
 
 def _(x):
@@ -80,8 +80,8 @@ test_config = {
         "force_https": False,
     },
     # "BROKER_URL": "amqp://guest:guest@localhost:5672//",
-    "CELERY_CACHE_BACKEND": "memory",
-    "CELERY_RESULT_BACKEND": "cache",
+    # "CELERY_CACHE_BACKEND": "memory",
+    # "CELERY_RESULT_BACKEND": "cache",
     "CELERY_TASK_ALWAYS_EAGER": False,
     "CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS": True,
     #  'DEBUG_TB_ENABLED': False,
@@ -154,6 +154,32 @@ test_config["ACCOUNTS_USER_PROFILE_SCHEMA"] = CustomUserProfileSchema()
 #         #     'mock_module = mock_module.models',
 #         # ]
 #     }
+
+
+@pytest.fixture(scope="session")
+def celery_config(celery_config):
+    celery_config["broker_url"] = "amqp://guest:guest@localhost:5672//"
+    # celery_config["cache_backend"] = "memory"
+    # celery_config["result_backend"] = "cache"
+    celery_config["result_backend"] = "redis://localhost:6379/2"
+    # celery_config["logfile"] = "celery.log"
+    celery_config["loglevel"] = "DEBUG"
+    celery_config["task_always_eager"] = True
+
+    return celery_config
+
+
+@pytest.fixture(scope="session")
+def flask_celery_app(celery_config):
+    app = Celery("invenio_app.celery")
+    app.config_from_object(celery_config)
+    return app
+
+
+@pytest.fixture(scope="session")
+def flask_celery_worker(flask_celery_app):
+    with start_worker(flask_celery_app, perform_ping_check=False) as worker:
+        yield worker
 
 
 # This is a namedtuple that holds all the fixtures we're likely to need
