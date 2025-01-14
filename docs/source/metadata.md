@@ -267,6 +267,12 @@ The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https:
 
 #### Resource types
 
+Prior to the start of development on the KCWorks repository we did a deep dive into the metadata structures and resource types supported by the other large scholarly repositories, including Dryad, arXiv, and Zenodo. As technology has changed scholarship has taken on more forms, including virtual reality, podcasts, and even role-playing and video games. The InvenioRDM platform gave us the opportunity to customize our metadata further by resource type (as defined by the Datacite schema). As an open repository that serves a multidisciplinary audience we created a list that combines the resource types from multiple sources. 
+
+We have broken down resource types over eight categories, including support for various art objects, multimedia files, online course files, virtual reality, and software. Each category - Dataset, Image, Instructional Resource, Presentation, Publication, Software, Audiovisual, and Other - has within it specific metadata fields that provide the ability to fully describe the object. 
+
+The eight top resource types and many of the subtypes are derived from the list in [the Datacite schema under resourceTypeGeneral](https://datacite-metadata-schema.readthedocs.io/en/4.6/appendices/appendix-1/resourceTypeGeneral/).The rest derived from our original resource types in the CORE repository. Each top level category - Dataset, Image, Instructional Resource, Presentation, Publication, Software, Audiovisual, and Other - has within it specific metadata fields that provide the ability to fully describe the object. As we mapped our existing resource types we had to add two custom types to support legal scholars: Legal Comment and Legal Response, which support the Michigan State University School of Law and their deposits of legal scholarship. Also included were some types taken from the [Variations Metadata](https://dlib.indiana.edu/projects/variations3/metadata/guide/controlVocabs/contributorRoles.html) list, providing the ability to credit those who engage in creative and musical works. 
+
 #### Creator/contributor roles
 
 ## Identifier Schemes
