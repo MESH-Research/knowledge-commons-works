@@ -301,7 +301,11 @@ KCWorks also supports the Handle identifier scheme (https://handle.net/). The Ha
 
 #### ISSN (secondary identifier)
 
+An ISSN is an eight digit code that identifies a print or electronic newspaper, journal, magazine, or other periodical. More information on the ISSN can be found on [ISSN.org](https://www.issn.org/understanding-the-issn/what-is-an-issn/).
+
 #### ISBN (secondary identifier)
+
+An ISBN (International Standard Book Number) is a ten (pre-2007) or 13 digit (2007 to present) identifier used to identify both print and electronic published books. More information on the ISBN can be found on [ISBN-international.org](https://www.isbn-international.org/content/what-isbn/10).
 
 ### People
 
