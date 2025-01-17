@@ -266,7 +266,7 @@ The FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science
 
 The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https://homosaurus.org/) for subjects related to sexuality and gender identity. See the [metadata.subjects](#metadata.subjects) section for information about how to include Homosaurus subjects in a KCWorks record.
 
-#### Resource types
+## Resource types
 
  As an open repository that serves a multidisciplinary audience, KCWorks uses a custom vocabulary of resource types designed (a) to support the wide variety of scholarly materials we accept and (b) to facilitate ease of use for depositors. The terms in this vocabulary are mapped to DataCite's [resourceTypeGeneral](https://schema.datacite.org/meta/kernel-4.4/doc/DataCite_Schema_v4.4.pdf) vocabulary and a number of other resource type vocabularies (COAR, CSL, EUREPO, Schema.org). This allows correct export of metadata to DataCite and in other metadata formats.
 
@@ -367,7 +367,7 @@ Note that (like with the base InvenioRDM resource types), neither the list of to
 You can compare the KCWorks resource types with the list from the original Humanities Commons CORE repository [here](https://works.hcommons.org/records/f9xww-xwr22). The KCWorks resource type vocabulary is not structured in the same way as the CORE vocabulary (which was a flat list), but the KCWorks subtypes encompass all of the original CORE types.
 
 
-#### Creator/contributor roles
+## Creator/contributor roles
 
 Keeping with our support for a wide variety of objects and disciplines, our creator roles are more diverse than just "author," "editor," or "translator." For contribuors we were influenced by the [CRediT Taxonomy](https://credit.niso.org/), finding ways of recognizing labor even when the contribution is not immediately visible. Included in both creator and contributor roles a selection of types taken from the [Variations Metadata](https://dlib.indiana.edu/projects/variations3/metadata/guide/controlVocabs/contributorRoles.html) taxonomy, providing the ability to credit those who engage in creative and musical works.
 
