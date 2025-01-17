@@ -254,11 +254,13 @@
           <section id="metadata-schema-vocabularies-and-identifiers">
 <h1>Metadata Schema, Vocabularies, and Identifiers<a class="headerlink" href="#metadata-schema-vocabularies-and-identifiers" title="Link to this heading">¶</a></h1>
 <p>The default metadata schema for InvenioRDM records is defined in the <code class="docutils literal notranslate"><span class="pre">invenio-rdm-records</span></code> package and documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/">here</a>. It also includes a number of optional metadata fields which have been enabled in KCWorks, documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/optional_metadata/">here</a>.</p>
-<p>Beyond these InvenioRDM fields, KCWorks adds a number of custom metadata fields to the schema using InvenioRDM’s custom field mechanism. These are all located in the top-level <code class="docutils literal notranslate"><span class="pre">custom_fields</span></code> field of the record metadata. They are prefixed with two different namespaces:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">kcr</span></code>: custom fields that are used to store data from the KC system. These fields <strong>may</strong> be used for new data, but are not required.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hclegacy</span></code>: custom fields that are used to store data from the legacy CORE repository. These fields <strong>must not</strong> be used for new data.</p></li>
-</ul>
+<p>In this documentation we provide</p>
+<ol class="arabic simple">
+<li><p>A full example of a KCWorks record metadata object</p></li>
+<li><p>A list of the controlled vocabularies and identifier schemes supported by KCWorks</p></li>
+<li><p>Discussion of how some of the standard InvenioRDM metadata fields are used in KCWorks</p></li>
+<li><p>A list of the custom metadata fields KCWorks adds to the base InvenioRDM schema</p></li>
+</ol>
 <section id="example-metadata-record">
 <h2>Example metadata record<a class="headerlink" href="#example-metadata-record" title="Link to this heading">¶</a></h2>
 <section id="json-object-for-record-creation">
@@ -518,10 +520,120 @@
 </section>
 <section id="resource-types">
 <h4>Resource types<a class="headerlink" href="#resource-types" title="Link to this heading">¶</a></h4>
-<p>Prior to the start of development on the KCWorks repository we did a deep dive into the metadata structures and resource types supported by the other large scholarly repositories, including Dryad, arXiv, and Zenodo. As technology has changed scholarship has taken on more forms, including virtual reality, podcasts, and even role-playing and video games. The InvenioRDM platform gave us the opportunity to customize our metadata further by resource type (as defined by the Datacite schema). As an open repository that serves a multidisciplinary audience we created a list that combines the resource types from multiple sources.</p>
-<p>We have broken down resource types over eight categories, including support for various art objects, multimedia files, online course files, virtual reality, and software. Each category - Dataset, Image, Instructional Resource, Presentation, Publication, Software, Audiovisual, and Other - has within it specific metadata fields that provide the ability to fully describe the object.</p>
-<p>The eight top resource types and many of the subtypes are derived from the list in <a class="reference external" href="https://datacite-metadata-schema.readthedocs.io/en/4.6/appendices/appendix-1/resourceTypeGeneral/">the Datacite schema under resourceTypeGeneral</a>. The rest derived from our original resource types in the <a class="reference external" href="https://works.hcommons.org/records/f9xww-xwr22">CORE repository</a>, launched in 2016 as part of Humanities Commons.</p>
-<p>Each top level category - Dataset, Image, Instructional Resource, Presentation, Publication, Software, Audiovisual, and Other - has within it specific metadata fields that provide the ability to fully describe the object. As we mapped our existing resource types we had to add two custom types to support legal scholars: Legal Comment and Legal Response, which support the Michigan State University School of Law and their deposits of legal scholarship.</p>
+<p>As an open repository that serves a multidisciplinary audience, KCWorks uses a custom vocabulary of resource types designed (a) to support the wide variety of scholarly materials we accept and (b) to facilitate ease of use for depositors. The terms in this vocabulary are mapped to DataCite’s <a class="reference external" href="https://schema.datacite.org/meta/kernel-4.4/doc/DataCite_Schema_v4.4.pdf">resourceTypeGeneral</a> vocabulary and a number of other resource type vocabularies (COAR, CSL, EUREPO, Schema.org). This allows correct export of metadata to DataCite and in other metadata formats.</p>
+<p>InvenioRDM employs a hierarchical structure of resource types, each of which has a number of subtypes. In KCWorks the 8 top-level resource types are:</p>
+<ul class="simple">
+<li><p>audiovisual</p></li>
+<li><p>dataset</p></li>
+<li><p>image</p></li>
+<li><p>instructionalResource</p></li>
+<li><p>presentation</p></li>
+<li><p>software</p></li>
+<li><p>textDocument</p></li>
+<li><p>other</p></li>
+</ul>
+<p>We selected these top-level types in part to allow division of the many subtypes into manageable groups. This allows us to provide a wide range of resource types while also allowing users to easily find the resource type that best fits their deposit.</p>
+<p>Beneath these top-level types are a number of subtypes, which are listed below. Where the DataCite schema allows free-text, arbitrary subtypes, we have followed InvenioRDM’s approach of using a controlled vocabulary of subtypes. Where our list of top-level types is short, we have erred on the side of including more subtypes. Again, this allows us to support a wide range of materials without forcing them to choose a subtype that does not fit. It also allows us to tailor the user interface of the upload form to the specific subtype of the record being deposited, preventing the confusion and overwhelm of users being presented with many metadata fields which are not relevant to their material.</p>
+<p>The following is the complete list of KCWorks resource types with their subtypes. This list may be expanded in the future.</p>
+<ul class="simple">
+<li><p>audiovisual</p>
+<ul>
+<li><p>documentary</p></li>
+<li><p>interviewRecording</p></li>
+<li><p>musicalRecording</p></li>
+<li><p>other</p></li>
+<li><p>performance</p></li>
+<li><p>podcastEpisode</p></li>
+<li><p>audioRecording</p></li>
+<li><p>videoRecording</p></li>
+</ul>
+</li>
+<li><p>dataset</p></li>
+<li><p>image</p>
+<ul>
+<li><p>chart</p></li>
+<li><p>diagram</p></li>
+<li><p>figure</p></li>
+<li><p>map</p></li>
+<li><p>visualArt</p></li>
+<li><p>photograph</p></li>
+<li><p>other</p></li>
+</ul>
+</li>
+<li><p>instructionalResource</p>
+<ul>
+<li><p>curriculum</p></li>
+<li><p>lessonPlan</p></li>
+<li><p>syllabus</p></li>
+<li><p>other</p></li>
+</ul>
+</li>
+<li><p>presentation</p>
+<ul>
+<li><p>conferencePaper</p></li>
+<li><p>conferencePoster</p></li>
+<li><p>presentationText</p></li>
+<li><p>slides</p></li>
+<li><p>other</p></li>
+</ul>
+</li>
+<li><p>software</p>
+<ul>
+<li><p>3DModel</p></li>
+<li><p>application</p></li>
+<li><p>computationalModel</p></li>
+<li><p>computationalNotebook</p></li>
+<li><p>service</p></li>
+<li><p>other</p></li>
+</ul>
+</li>
+<li><p>textDocument</p>
+<ul>
+<li><p>abstract</p></li>
+<li><p>bibliography</p></li>
+<li><p>blogPost</p></li>
+<li><p>book</p></li>
+<li><p>bookSection</p></li>
+<li><p>conferenceProceeding</p></li>
+<li><p>dataManagementPlan</p></li>
+<li><p>documentation</p></li>
+<li><p>editorial</p></li>
+<li><p>essay</p></li>
+<li><p>interviewTranscript</p></li>
+<li><p>journalArticle</p></li>
+<li><p>legalComment</p></li>
+<li><p>legalResponse</p></li>
+<li><p>magazineArticle</p></li>
+<li><p>monograph</p></li>
+<li><p>newspaperArticle</p></li>
+<li><p>onlinePublication</p></li>
+<li><p>poeticWork</p></li>
+<li><p>preprint</p></li>
+<li><p>report</p></li>
+<li><p>workingPaper</p></li>
+<li><p>review</p></li>
+<li><p>technicalStandard</p></li>
+<li><p>thesis</p></li>
+<li><p>whitePaper</p></li>
+<li><p>other</p></li>
+</ul>
+</li>
+<li><p>other</p>
+<ul>
+<li><p>catalog</p></li>
+<li><p>collection</p></li>
+<li><p>event</p></li>
+<li><p>interactiveResource</p></li>
+<li><p>notes</p></li>
+<li><p>patent</p></li>
+<li><p>peerReview</p></li>
+<li><p>physicalObject</p></li>
+<li><p>workflow</p></li>
+</ul>
+</li>
+</ul>
+<p>Note that (like with the base InvenioRDM resource types), neither the list of top-level resource types nor the list of subtypes exactly matches the vocabulary provided by DataCite under <a class="reference external" href="https://datacite-metadata-schema.readthedocs.io/en/4.6/appendices/appendix-1/resourceTypeGeneral/">resourceTypeGeneral</a>. Those types are all included in the KCWorks vocabulary–some as top-level types, some as subtypes. But because we do not follow DataCite in allowing arbitrary free-text subtypes, we have needed to greatly expand the list of subtypes to support the wide variety of materials we accept. As mentioned above, however, each subtype is mapped to a DataCite resourceTypeGeneral value for correct export to DataCite and other metadata formats.</p>
+<p>You can compare the KCWorks resource types with the list from the original Humanities Commons CORE repository <a class="reference external" href="https://works.hcommons.org/records/f9xww-xwr22">here</a>. The KCWorks resource type vocabulary is not structured in the same way as the CORE vocabulary (which was a flat list), but the KCWorks subtypes encompass all of the original CORE types.</p>
 </section>
 <section id="creator-contributor-roles">
 <h4>Creator/contributor roles<a class="headerlink" href="#creator-contributor-roles" title="Link to this heading">¶</a></h4>
@@ -670,6 +782,11 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 </section>
 <section id="kcworks-custom-fields-kcworks-site-metadata-fields">
 <h2>KCWorks Custom Fields (kcworks/site/metadata_fields)<a class="headerlink" href="#kcworks-custom-fields-kcworks-site-metadata-fields" title="Link to this heading">¶</a></h2>
+<p>Beyond the standard InvenioRDM metadata fields, KCWorks adds a number of custom metadata fields to the schema using InvenioRDM’s custom field mechanism. These are all located in the top-level <code class="docutils literal notranslate"><span class="pre">custom_fields</span></code> field of the record metadata. They are prefixed with two different namespaces:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">kcr</span></code>: custom fields that are used to store data from the KC system. These fields <strong>may</strong> be used for new data, but are not required.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hclegacy</span></code>: custom fields that are used to store data from the legacy CORE repository. These fields <strong>must not</strong> be used for new data.</p></li>
+</ul>
 <section id="kcr-ai-usage">
 <h3>kcr:ai_usage<a class="headerlink" href="#kcr-ai-usage" title="Link to this heading">¶</a></h3>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">Object[boolean,</span> <span class="pre">string]</span></code></p>
