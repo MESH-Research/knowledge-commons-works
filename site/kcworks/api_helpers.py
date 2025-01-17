@@ -66,9 +66,7 @@ def format_commons_search_payload(
     **kwargs,
 ) -> dict:
     """Format payload for external service."""
-    UI_URL_BASE = os.environ.get(
-        "INVENIO_SITE_UI_URL", "http://works.kcommons.org"
-    )
+    UI_URL_BASE = os.environ.get("INVENIO_SITE_UI_URL", "http://works.kcommons.org")
     API_URL_BASE = os.environ.get(
         "INVENIO_SITE_API_URL", "http://works.kcommons.org/api"
     )
@@ -96,9 +94,7 @@ def format_commons_search_payload(
     if data.get("metadata", {}):
         meta = {
             "title": re.sub("<.*?>", "", data["metadata"].get("title", "")),
-            "description": re.sub(
-                "<.*?>", "", data["metadata"].get("description", "")
-            ),
+            "description": re.sub("<.*?>", "", data["metadata"].get("description", "")),
             "publication_date": data["metadata"].get("publication_date", ""),
             "modified_date": arrow.utcnow().format("YYYY-MM-DD"),
             "contributors": [],
@@ -164,9 +160,7 @@ def format_commons_search_payload(
             payload["other_urls"].append(u["identifier"])
 
         if "files" in data.keys() and data["files"].get("enabled") is True:
-            payload["other_urls"].append(
-                f"{API_URL_BASE}/records/{data['id']}/files"
-            )
+            payload["other_urls"].append(f"{API_URL_BASE}/records/{data['id']}/files")
     # FIXME: use marshmallow schema to validate payload here
 
     return payload
@@ -185,9 +179,7 @@ def format_commons_search_collection_payload(
     current_app.logger.debug("owner")
     current_app.logger.debug(owner)
 
-    UI_URL_BASE = os.environ.get(
-        "INVENIO_SITE_UI_URL", "http://works.kcommons.org"
-    )
+    UI_URL_BASE = os.environ.get("INVENIO_SITE_UI_URL", "http://works.kcommons.org")
     API_URL_BASE = os.environ.get(
         "INVENIO_SITE_API_URL", "http://works.kcommons.org/api"
     )
@@ -233,9 +225,7 @@ def format_commons_search_collection_payload(
             }
         if data.get("metadata", {}):
             meta = {
-                "title": re.sub(
-                    "<.*?>", "", data["metadata"].get("title", "")
-                ),
+                "title": re.sub("<.*?>", "", data["metadata"].get("title", "")),
                 "description": re.sub(
                     "<.*?>", "", data["metadata"].get("description", "")
                 ),
@@ -250,9 +240,7 @@ def format_commons_search_collection_payload(
         else:
             payload["publication_date"] = arrow.utcnow().format("YYYY-MM-DD")
         if data.get("updated"):
-            payload["modified_date"] = arrow.get(data["updated"]).format(
-                "YYYY-MM-DD"
-            )
+            payload["modified_date"] = arrow.get(data["updated"]).format("YYYY-MM-DD")
         else:
             payload["modified_date"] = arrow.utcnow().format("YYYY-MM-DD")
         # FIXME: Add contributors???
@@ -265,11 +253,13 @@ def format_commons_search_collection_payload(
 
 @shared_task(
     ignore_result=False,
+    bind=True,
     # autoretry_for=(Exception,),
     # retry_backoff=True,
     # retry_kwargs={"max_retries": 1},
 )
 def record_commons_search_recid(
+    self,
     response_json: dict,
     service_type: str = "",
     service_method: str = "",
@@ -294,9 +284,7 @@ def record_commons_search_recid(
 
     editing_draft = service.edit(system_identity, id_=draft["id"])
     new_metadata = editing_draft.to_dict()
-    search_id = new_metadata.get("custom_fields", {}).get(
-        "kcr:commons_search_recid"
-    )
+    search_id = new_metadata.get("custom_fields", {}).get("kcr:commons_search_recid")
 
     if record.get("access", {}).get("record") != "public":
         if search_id:
@@ -308,9 +296,9 @@ def record_commons_search_recid(
 
     if response_json.get("_id"):  # NOTE: No id is returned for updates
         if not search_id or search_id != response_json["_id"]:
-            new_metadata["custom_fields"]["kcr:commons_search_recid"] = (
-                response_json["_id"]
-            )
+            new_metadata["custom_fields"]["kcr:commons_search_recid"] = response_json[
+                "_id"
+            ]
             new_metadata["custom_fields"][
                 "kcr:commons_search_updated"
             ] = arrow.utcnow().isoformat()
@@ -326,9 +314,7 @@ def record_commons_search_recid(
                 data=new_metadata,
             )
 
-            new_draft = service.read_draft(
-                system_identity, draft["id"]
-            ).to_dict()
+            new_draft = service.read_draft(system_identity, draft["id"]).to_dict()
 
             published = service.publish(system_identity, draft["id"])
 
@@ -350,9 +336,11 @@ def record_commons_search_recid(
 
 
 @shared_task(
-    ignore_result=False,  # retry_backoff=True, retry_kwargs={"max_retries": 5}
+    ignore_result=False,
+    bind=True,  # retry_backoff=True, retry_kwargs={"max_retries": 5}
 )
 def record_commons_search_collection_recid(
+    self,
     response_json: dict,
     service_type: str = "",
     service_method: str = "",
@@ -374,13 +362,9 @@ def record_commons_search_collection_recid(
     if response_json.get("_id"):  # No id is returned for updates
         try:
             time.sleep(5)
-            current_app.logger.debug(
-                f"Record ID: {record_id}, draft ID: {draft_id}"
-            )
+            current_app.logger.debug(f"Record ID: {record_id}, draft ID: {draft_id}")
             try:
-                record_data = service.read(
-                    system_identity, record_id
-                ).to_dict()
+                record_data = service.read(system_identity, record_id).to_dict()
             except PIDDoesNotExistError:
                 records = service.search(
                     system_identity, q=f"slug:{payload_object['_internal_id']}"
