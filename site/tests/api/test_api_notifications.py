@@ -1,5 +1,4 @@
 import pytest
-from celery import shared_task
 from flask_security import current_user
 from flask_security.utils import login_user, logout_user
 import json
@@ -25,36 +24,7 @@ from invenio_users_resources.records.api import UserAggregate
 from invenio_users_resources.services.users.tasks import reindex_users
 from kcworks.proxies import current_internal_notifications
 from pprint import pformat
-from typing import Optional
-
-
-@shared_task(bind=True)
-def mock_send_remote_api_update(
-    self,
-    identity_id: str = "",
-    record: dict = {},
-    is_published: bool = False,
-    is_draft: bool = False,
-    is_deleted: bool = False,
-    parent: Optional[dict] = None,
-    latest_version_index: Optional[int] = None,
-    latest_version_id: Optional[str] = None,
-    current_version_index: Optional[int] = None,
-    draft: Optional[dict] = None,
-    endpoint: str = "",
-    service_type: str = "",
-    service_method: str = "",
-    **kwargs,
-):
-    pass
-
-
-@pytest.fixture
-def mock_send_remote_api_update_fixture(mocker):
-    mocker.patch(
-        "invenio_remote_api_provisioner.components.send_remote_api_update",  # noqa: E501
-        mock_send_remote_api_update,
-    )
+import time
 
 
 def test_notify_for_request_acceptance(
@@ -234,7 +204,10 @@ def test_notify_for_request_acceptance(
         comment = comments.get("hits", {}).get("hits", [])[-1]
         comment_id = comment.get("id")
 
+        time.sleep(10)
+
         # check that the user is notified by mail
+        assert app.config.get("MAIL_SUPPRESS_SEND") is False
         assert len(mailbox) == 2  # 1 for accept, 1 for comment
         # TODO: Test overridden templates
         assert mailbox[0].recipients == [user.email]

@@ -1,14 +1,12 @@
 from celery import Celery
 from celery.contrib.testing.worker import start_worker
 from collections import namedtuple
-from flask import current_app
 import os
 from pathlib import Path
 import importlib
 from invenio_app.factory import create_app as create_ui_api
 from invenio_queues import current_queues
-from invenio_notifications.ext import InvenioNotifications
-from invenio_search.proxies import current_search, current_search_client
+from invenio_search.proxies import current_search_client
 import jinja2
 from marshmallow import Schema, fields
 import pytest
@@ -37,6 +35,7 @@ pytest_plugins = (
     "tests.fixtures.custom_fields",
     "tests.fixtures.records",
     "tests.fixtures.roles",
+    "tests.fixtures.search_provisioning",
     "tests.fixtures.stats",
     "tests.fixtures.users",
     "tests.fixtures.vocabularies.affiliations",
@@ -79,11 +78,12 @@ test_config = {
         "content_security_policy": {"default-src": []},
         "force_https": False,
     },
-    # "BROKER_URL": "amqp://guest:guest@localhost:5672//",
+    "BROKER_URL": "amqp://guest:guest@localhost:5672//",
     # "CELERY_CACHE_BACKEND": "memory",
     # "CELERY_RESULT_BACKEND": "cache",
-    "CELERY_TASK_ALWAYS_EAGER": False,
+    "CELERY_TASK_ALWAYS_EAGER": True,
     "CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS": True,
+    "CELERY_LOGLEVEL": "DEBUG",
     #  'DEBUG_TB_ENABLED': False,
     "INVENIO_INSTANCE_PATH": "/opt/invenio/var/instance",
     "MAIL_SUPPRESS_SEND": False,
@@ -113,6 +113,7 @@ if not log_file_path.exists():
 
 test_config["LOGGING_FS_LEVEL"] = "DEBUG"
 test_config["LOGGING_FS_LOGFILE"] = str(log_file_path)
+test_config["CELERY_LOGFILE"] = str(log_folder_path / "celery.log")
 
 # enable DataCite DOI provider
 test_config["DATACITE_ENABLED"] = True
@@ -158,28 +159,32 @@ test_config["ACCOUNTS_USER_PROFILE_SCHEMA"] = CustomUserProfileSchema()
 
 @pytest.fixture(scope="session")
 def celery_config(celery_config):
-    celery_config["broker_url"] = "amqp://guest:guest@localhost:5672//"
-    # celery_config["cache_backend"] = "memory"
-    # celery_config["result_backend"] = "cache"
-    celery_config["result_backend"] = "redis://localhost:6379/2"
-    # celery_config["logfile"] = "celery.log"
+    celery_config["logfile"] = str(log_folder_path / "celery.log")
     celery_config["loglevel"] = "DEBUG"
     celery_config["task_always_eager"] = True
+    celery_config["cache_backend"] = "memory"
+    celery_config["result_backend"] = "cache"
+    celery_config["task_eager_propagates_exceptions"] = True
 
     return celery_config
 
 
 @pytest.fixture(scope="session")
-def flask_celery_app(celery_config):
-    app = Celery("invenio_app.celery")
-    app.config_from_object(celery_config)
-    return app
+def celery_enable_logging():
+    return True
 
 
-@pytest.fixture(scope="session")
-def flask_celery_worker(flask_celery_app):
-    with start_worker(flask_celery_app, perform_ping_check=False) as worker:
-        yield worker
+# @pytest.fixture(scope="session")
+# def flask_celery_app(celery_config):
+#     app = Celery("invenio_app.celery")
+#     app.config_from_object(celery_config)
+#     return app
+
+
+# @pytest.fixture(scope="session")
+# def flask_celery_worker(flask_celery_app):
+#     with start_worker(flask_celery_app, perform_ping_check=False) as worker:
+#         yield worker
 
 
 # This is a namedtuple that holds all the fixtures we're likely to need
@@ -279,15 +284,21 @@ def template_loader():
     """Fixture providing overloaded and custom templates to test app."""
 
     def load_tempates(app):
-        site_path = Path(__file__).parent.parent
-        templates_path = site_path / "kcworks" / "templates" / "semantic-ui"
+        site_path = (
+            Path(__file__).parent.parent / "kcworks" / "templates" / "semantic-ui"
+        )
+        root_path = Path(__file__).parent.parent.parent / "templates"
+        for path in (
+            site_path,
+            root_path,
+        ):
+            assert path.exists()
         custom_loader = jinja2.ChoiceLoader(
             [
                 app.jinja_loader,
-                jinja2.FileSystemLoader([str(templates_path)]),
+                jinja2.FileSystemLoader([str(site_path), str(root_path)]),
             ]
         )
-        assert templates_path.exists()
         app.jinja_loader = custom_loader
         app.jinja_env.loader = custom_loader
 

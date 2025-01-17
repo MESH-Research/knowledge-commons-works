@@ -24,24 +24,31 @@ def test_search_provisioning_at_publication(
 
     # Create a new draft
     service = current_rdm_records.records_service
+    minimal_record["files"] = {"enabled": False}
     draft = service.create(system_identity, minimal_record)
     draft_id = draft.id
     app.logger.warning(f"draft: {pformat(draft.to_dict())}")
+    app.logger.debug(
+        f"CELERY_TASK_ALWAYS_EAGER: {app.config['CELERY_TASK_ALWAYS_EAGER']}"
+    )
 
     # Verify that no API call was made during draft creation
     assert requests_mock.call_count == 0
 
     # Construct the mocked api_url using the factory function
     config = app.config["REMOTE_API_PROVISIONER_EVENTS"]["rdm_record"][
-        list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["rdm_record"].keys())[
-            0
-        ]
+        list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["rdm_record"].keys())[0]
     ]["publish"]
     api_url = config["url_factory"](system_identity, record=draft)
+    app.logger.debug(f"api_url: {api_url}")
 
     # Choose the HTTP method using the factory function
     http_method_factory = config["http_method"]
-    http_method = http_method_factory(system_identity, record=draft)
+    # NOTE: In service component, the draft and record are both dicts
+    http_method = http_method_factory(
+        system_identity, draft=draft.to_dict(), record=draft.to_dict()
+    )  # noqa: E501
+    app.logger.debug(f"http_method: {http_method}")
 
     # Mock the external API call for publication
     mock_response = {
@@ -61,21 +68,20 @@ def test_search_provisioning_at_publication(
             for c in minimal_record["metadata"]["creators"]
         ],
         "primary_url": f"{app.config['SITE_UI_URL']}/records/{draft_id}",
-        "other_urls": [
-            f"{app.config['SITE_API_URL']}/records/{draft_id}/files"
-        ],
+        "other_urls": [f"{app.config['SITE_API_URL']}/records/{draft_id}/files"],
         "publication_date": minimal_record["metadata"]["publication_date"],
         "modified_date": "2024-06-07",
         "content_type": "work",
         "network_node": "works",
     }
-    requests_mock.request(http_method, api_url, json=mock_response)
+    mock_adapter = requests_mock.request(
+        http_method, "https://search.hcommons-dev.org/v1/documents", json=mock_response
+    )  # noqa: E501
+    app.logger.debug(f"mock_adapter: {dir(mock_adapter)}")
 
     # Publish the draft
     published_record = service.publish(system_identity, draft_id)
-    app.logger.warning(
-        f"published_record: {pformat(published_record.to_dict())}"
-    )
+    app.logger.warning(f"published_record: {pformat(published_record.to_dict())}")
 
     # Allow time for the background task to complete
     import time
@@ -87,10 +93,7 @@ def test_search_provisioning_at_publication(
     last_request = requests_mock.last_request
     assert last_request.url == api_url
     assert last_request.method == http_method
-    assert (
-        last_request.headers["Authorization"]
-        == f"Bearer {config['auth_token']}"
-    )
+    assert last_request.headers["Authorization"] == f"Bearer {config['auth_token']}"
 
     # Check if the payload was correct
     payload_formatter = config["payload"]
@@ -107,13 +110,8 @@ def test_search_provisioning_at_publication(
     record = service.read(system_identity, draft_id)
 
     # Check if the record ID was recorded correctly
-    assert (
-        record["custom_fields"]["kcr:commons_search_recid"]
-        == mock_response["_id"]
-    )
+    assert record["custom_fields"]["kcr:commons_search_recid"] == mock_response["_id"]
 
     # Check if the timestamp was recorded (within a 10-second window)
-    recorded_time = arrow.get(
-        record["custom_fields"]["kcr:commons_search_updated"]
-    )
+    recorded_time = arrow.get(record["custom_fields"]["kcr:commons_search_updated"])
     assert (arrow.utcnow() - recorded_time).total_seconds() < 10

@@ -1,3 +1,4 @@
+import datetime
 from invenio_saml.handlers import acs_handler_factory
 
 test_config_saml = {
@@ -53,16 +54,13 @@ test_config_saml = {
                     "singleSignOnService": {
                         # URL Target of the IdP where the Authentication
                         # Request Message will be sent.
-                        "url": (
-                            "https://proxy.hcommons-dev.org/Saml2/sso/redirect"
-                        ),
+                        "url": ("https://proxy.hcommons-dev.org/Saml2/sso/redirect"),
                         # SAML protocol binding to be used when returning the
                         # <Response> message. OneLogin Toolkit supports
                         # the HTTP-Redirect binding
                         # only for this endpoint.
                         "binding": (
-                            "urn:oasis:names:tc:SAML:2.0:bindings:"
-                            "HTTP-Redirect"
+                            "urn:oasis:names:tc:SAML:2.0:bindings:" "HTTP-Redirect"
                         ),
                     },
                     # SLO endpoint info of the IdP.
@@ -75,8 +73,7 @@ test_config_saml = {
                         # the HTTP-Redirect binding
                         # only for this endpoint.
                         "binding": (
-                            "urn:oasis:names:tc:SAML:2.0:bindings:"
-                            "HTTP-Redirect"
+                            "urn:oasis:names:tc:SAML:2.0:bindings:" "HTTP-Redirect"
                         ),
                     },
                     # Public X.509 certificate of the IdP
@@ -109,9 +106,7 @@ test_config_saml = {
                     "wantMessagesSigned": False,
                     "wantNameId": True,
                     "wantNameIdEncrypted": False,
-                    "digestAlgorithm": (
-                        "http://www.w3.org/2001/04/xmlenc#sha256"
-                    ),
+                    "digestAlgorithm": ("http://www.w3.org/2001/04/xmlenc#sha256"),
                 },
             },
             # Account Mapping
@@ -120,9 +115,7 @@ test_config_saml = {
                 # "name": "urn:oid:2.5.4.3",  # "cn"
                 "name": "urn:oid:2.5.4.42",  # "givenName"
                 "surname": "urn:oid:2.5.4.4",  # "sn"
-                "external_id": (
-                    "urn:oid:2.16.840.1.113730.3.1.3"
-                ),  # "employeeNumber"
+                "external_id": ("urn:oid:2.16.840.1.113730.3.1.3"),  # "employeeNumber"
             },  # FIXME: new entity id url, assertion consumer service url,
             # certificate
             # "title", 'urn:oid:2.5.4.12': ['Hc Developer'],
@@ -145,4 +138,204 @@ test_config_saml = {
             "auto_confirm": True,
         }
     }
+}
+
+
+idp_responses = {
+    "joanjett": {  # ORCID login
+        "raw_data": {
+            "urn:oid:2.5.4.4": ["Jett"],
+            "urn:oid:2.5.4.3": ["Joan Jett"],
+            "urn:oid:2.5.4.12": ["Masters Student"],
+            "urn:oid:2.5.4.42": ["Joan"],
+            "urn:oid:2.5.4.10": ["Uc Davis"],
+            "urn:oid:0.9.2342.19200300.100.1.3": ["jj@inveniosoftware.com"],
+            "urn:oid:2.16.840.1.113730.3.1.3": ["joanjett"],
+            "urn:oid:0.9.2342.19200300.100.1.1": [
+                "0000-0001-5847-8734@orcid-gateway.hcommons.org"
+            ],
+            "urn:oid:1.3.6.1.4.1.5923.1.5.1.1": ["CO:COU:HC:members:active"],
+            "urn:oid:1.3.6.1.4.1.49574.110.13": [
+                "https://orcid-gateway.hcommons.org/simplesaml/saml2/idp"
+            ],
+            "urn:oid:1.3.6.1.4.1.49574.110.10": ["ORCID Login"],
+            "urn:oid:1.3.6.1.4.1.49574.110.11": ["Humanities Commons"],
+            "urn:oid:1.3.6.1.4.1.49574.110.12": ["Humanities Commons"],
+        },
+        "extracted_data": {
+            "user": {
+                "email": "jj@inveniosoftware.com",
+                "profile": {
+                    "username": "knowledgeCommons-joanjett",
+                    "full_name": "Joan Jett",
+                },
+            },
+            "external_id": "joanjett",
+            "external_method": "knowledgeCommons",
+            "active": True,
+            "confirmed_at": datetime.datetime(
+                2025, 1, 14, 4, 28, 58, 725756, tzinfo=datetime.timezone.utc
+            ),
+        },
+    },
+    "user1": {  # Google login
+        "raw_data": {
+            "urn:oid:2.5.4.4": ["One"],  # surname
+            "urn:oid:2.5.4.3": ["User Number One"],  # registered name (single value)
+            "urn:oid:2.5.4.12": ["Independent Scholar"],  # title (role or job title)
+            "urn:oid:2.5.4.42": ["User Number"],  # givenName
+            "urn:oid:0.9.2342.19200300.100.1.3": ["user1@inveniosoftware.org"],  # mail
+            "urn:oid:2.16.840.1.113730.3.1.3": ["user1"],  # employeeNumber
+            "urn:oid:0.9.2342.19200300.100.1.1": [  # uid
+                "100103028069838784737+google.com@google-gateway.hcommons.org"
+            ],
+            "urn:oid:1.3.6.1.4.1.5923.1.5.1.1": [
+                "CO:COU:HC:members:active"
+            ],  # isMemberOf
+            "urn:oid:1.3.6.1.4.1.49574.110.13": [
+                "https://google-gateway.hcommons.org/idp/shibboleth"
+            ],
+            "urn:oid:1.3.6.1.4.1.49574.110.10": ["Log in with Google"],
+            "urn:oid:1.3.6.1.4.1.49574.110.11": ["Humanities Commons"],
+            "urn:oid:1.3.6.1.4.1.49574.110.12": ["Humanities Commons"],
+        },
+        "extracted_data": {
+            "user": {
+                "email": "user1@inveniosoftware.org",
+                "profile": {
+                    "username": "knowledgeCommons-user1",
+                    "full_name": "User Number One",
+                    "affiliations": "Independent Scholar",
+                },
+            },
+            "external_id": "user1",
+            "external_method": "knowledgeCommons",
+            "active": True,
+            "confirmed_at": datetime.datetime(
+                2025, 1, 15, 15, 27, 0, 60172, tzinfo=datetime.timezone.utc
+            ),
+        },
+    },
+    "user2": {  # MSU okta login
+        "raw_data": {
+            "urn:oid:2.5.4.4": ["Doe"],  # surname
+            "urn:oid:2.5.4.3": ["Jane Doe"],  # registered name (single value)
+            "urn:oid:2.5.4.12": ["Assistant Professor"],  # title (role or job title)
+            "urn:oid:2.5.4.42": ["Jane"],  # givenName
+            "urn:oid:2.5.4.10": ["College Of Human Medicine"],  # department
+            "urn:oid:0.9.2342.19200300.100.1.3": ["jane.doe@msu.edu"],  # mail
+            "urn:oid:2.16.840.1.113730.3.1.3": ["janedoe"],  # employeeNumber
+            "urn:oid:0.9.2342.19200300.100.1.1": ["jane.doe@msu.edu"],  # uid
+            "urn:oid:1.3.6.1.4.1.5923.1.5.1.1": [
+                "CO:COU:HC:members:active"
+            ],  # isMemberOf
+            "urn:oid:1.3.6.1.4.1.49574.110.13": [
+                "http://www.okta.com/exk14psg1ywhVgvYL358"
+            ],
+        },
+        "extracted_data": {
+            "user": {
+                "email": "jane.doe@msu.edu",
+                "profile": {
+                    "username": "knowledgeCommons-janedoe",
+                    "full_name": "Jane Doe",
+                    "affiliations": "College Of Human Medicine",
+                },
+            },
+            "external_id": "janedoe",
+            "external_method": "knowledgeCommons",
+            "active": True,
+            "confirmed_at": datetime.datetime(
+                2025, 1, 15, 15, 24, 45, 598091, tzinfo=datetime.timezone.utc
+            ),
+        },
+    },
+    "user3": {  # Local KC login
+        # FIXME: Unobfuscated email not sent by KC because no email
+        # address is marked as "official"
+        "raw_data": {
+            "urn:oid:2.5.4.4": ["Hc"],  # surname
+            "urn:oid:2.5.4.3": ["Ghost Hc"],  # registered name (single value)
+            "urn:oid:2.5.4.12": ["Tester"],  # title (role or job title)
+            "urn:oid:2.5.4.42": ["Ghost"],  # givenName
+            "urn:oid:2.16.840.1.113730.3.1.3": ["gihctester"],  # employeeNumber
+            "urn:oid:0.9.2342.19200300.100.1.1": [
+                "gihctester@hc-idp.hcommons.org"
+            ],  # uid
+            "urn:oid:1.3.6.1.4.1.5923.1.5.1.1": [
+                "CO:COU:ARLISNA:members:active",
+                "CO:COU:HASTAC:members:active",
+                "CO:COU:HC:members:active",
+                "CO:COU:MLA:members:active",
+                "CO:COU:MSU:members:active",
+                "CO:COU:SAH:members:active",
+                "CO:COU:STEMEDPLUS:members:active",
+                "CO:COU:UP:members:active",
+                "Humanities Commons:HASTAC_Educational and Cultural Institutions",
+                "Humanities Commons:HASTAC_Humanities, Arts, and Media",
+                "Humanities Commons:HASTAC_Publishing and Archives",
+                "Humanities Commons:HASTAC_Social and Political Issues",
+                "Humanities Commons:HASTAC_Teaching and Learning",
+                "Humanities Commons:HASTAC_Technology, Networks, and Sciences",
+            ],  # isMemberOf
+            "urn:oid:1.3.6.1.4.1.49574.110.13": [
+                "https://hc-idp.hcommons.org/idp/shibboleth"
+            ],
+            "urn:oid:1.3.6.1.4.1.49574.110.10": ["HC Login"],
+            "urn:oid:1.3.6.1.4.1.49574.110.11": ["Humanities Commons IdPofLR"],
+            "urn:oid:1.3.6.1.4.1.49574.110.12": ["Humanities Commons IdPofLR"],
+        },
+        "extracted_data": {
+            "user": {
+                "email": None,  # FIXME: Unobfuscated email not sent by
+                # KC because no email marked as official
+                "profile": {
+                    "full_name": "Ghost Hc",
+                    "username": "knowledgeCommons-gihctester",
+                },
+            },
+            "external_id": "gihctester",
+            "external_method": "knowledgeCommons",
+            "active": True,
+            "confirmed_at": datetime.datetime(
+                2025, 1, 15, 15, 24, 45, 598091, tzinfo=datetime.timezone.utc
+            ),
+        },
+    },
+    "user4": {  # Local KC login (this time with official email)
+        "raw_data": {
+            "urn:oid:2.5.4.4": ["Tester"],
+            "urn:oid:2.5.4.3": ["Ghost Tester"],
+            "urn:oid:2.5.4.12": ["Tester"],
+            "urn:oid:2.5.4.42": ["Ghost"],
+            "urn:oid:2.5.4.10": ["Knowledge Commons"],
+            "urn:oid:0.9.2342.19200300.100.1.3": [
+                "jrghosttester@email.ghostinspector.com"
+            ],
+            "urn:oid:2.16.840.1.113730.3.1.3": ["ghostrjtester"],
+            "urn:oid:0.9.2342.19200300.100.1.1": ["ghostrjtester@hc-idp.hcommons.org"],
+            "urn:oid:1.3.6.1.4.1.5923.1.5.1.1": ["CO:COU:HC:members:active"],
+            "urn:oid:1.3.6.1.4.1.49574.110.13": [
+                "https://hc-idp.hcommons.org/idp/shibboleth"
+            ],
+            "urn:oid:1.3.6.1.4.1.49574.110.10": ["HC Login"],
+            "urn:oid:1.3.6.1.4.1.49574.110.11": ["Humanities Commons IdPofLR"],
+            "urn:oid:1.3.6.1.4.1.49574.110.12": ["Humanities Commons IdPofLR"],
+        },
+        "extracted_data": {
+            "user": {
+                "email": "jrghosttester@email.ghostinspector.com",
+                "profile": {
+                    "full_name": "Ghost Tester",
+                    "username": "knowledgeCommons-ghostrjtester",
+                },
+            },
+            "external_id": "ghostrjtester",
+            "external_method": "knowledgeCommons",
+            "active": True,
+            "confirmed_at": datetime.datetime(
+                2025, 1, 15, 15, 40, 18, 235822, tzinfo=datetime.timezone.utc
+            ),
+        },
+    },
 }
