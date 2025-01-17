@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from flask import current_app
 from invenio_access.permissions import system_identity
+from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
 from invenio_oauthclient.errors import AlreadyLinkedError
 from invenio_remote_user_data_kcworks.proxies import (
@@ -9,7 +10,7 @@ from invenio_remote_user_data_kcworks.proxies import (
 from invenio_saml.invenio_accounts.utils import account_link_external_id
 
 
-def knowledgeCommons_account_setup(user, account_info):
+def knowledgeCommons_account_setup(user: User, account_info: dict) -> bool:
     """SAML account setup which extends invenio_saml default.
 
     The default only links ``User`` and ``UserIdentity``. This
@@ -44,7 +45,7 @@ def knowledgeCommons_account_setup(user, account_info):
         return False
 
 
-def knowledgeCommons_account_info(attributes, remote_app):
+def knowledgeCommons_account_info(attributes: dict, remote_app: str) -> dict:
     """Return account info for remote user.
 
     This function uses the mappings configuration variable inside your IdP
@@ -64,20 +65,44 @@ def knowledgeCommons_account_info(attributes, remote_app):
 
     mappings = remote_app_config["mappings"]
 
-    name = attributes[mappings["name"]][0]
-    surname = attributes[mappings["surname"]][0]
-    email = attributes[mappings["email"]][0]
-    external_id = attributes[mappings["external_id"]][0].lower()
-    username = (
-        remote_app + "-" + external_id.split("@")[0].lower()
-        if "@" in external_id
-        else remote_app + "-" + external_id.lower()
-    )
+    try:
+        external_id = attributes[mappings["external_id"]][0].lower()
+        username = (
+            remote_app + "-" + external_id.split("@")[0].lower()
+            if "@" in external_id
+            else remote_app + "-" + external_id.lower()
+        )
+        name = attributes.get(mappings["name"], [None])[0]
+        surname = attributes.get(mappings["surname"], [None])[0]
+        email = attributes.get(mappings["email"], [None])[0]
+        affiliations = ""
+
+        if email is None:
+            remote_data: dict = current_remote_user_data_service.fetch_from_remote_api(
+                remote_app, external_id
+            )
+            print(f"Remote data: {remote_data}")
+            email: str = remote_data.get("users", {}).get("email", None)
+            assert email is not None
+    except KeyError:
+        raise ValueError(
+            f"Missing required KC account username in SAML response from IDP: no "
+            f"entity with key {mappings['external_id']}"
+        )
+    except AssertionError:
+        raise ValueError(
+            f"Missing required KC account email in SAML response from IDP: no "
+            f"entity with key {mappings['email']} and fetch from KC api failed"
+        )
 
     return dict(
         user=dict(
             email=email,
-            profile=dict(username=username, full_name=name + " " + surname),
+            profile=dict(
+                username=username,
+                full_name=name + " " + surname,
+                affiliations=affiliations,
+            ),
         ),
         external_id=external_id,
         external_method=remote_app,
