@@ -371,6 +371,82 @@ You can compare the KCWorks resource types with the list from the original Human
 
 Keeping with our support for a wide variety of objects and disciplines, our creator roles are more diverse than just "author," "editor," or "translator." For contribuors we were influenced by the [CRediT Taxonomy](https://credit.niso.org/), finding ways of recognizing labor even when the contribution is not immediately visible. Included in both creator and contributor roles a selection of types taken from the [Variations Metadata](https://dlib.indiana.edu/projects/variations3/metadata/guide/controlVocabs/contributorRoles.html) taxonomy, providing the ability to credit those who engage in creative and musical works.
 
+The complete list of creator/contributor roles is:
+
+- actor
+- adaptor
+- annotator
+- analyst
+- arranger
+- artisan
+- artist
+- attributedName
+- author
+- authorOfIntroduction
+- authorOfForeword
+- authorOfAfterword
+- committeeChair
+- choreographer
+- cinematographer
+- collaborator
+- collector
+- committeeMember
+- composer
+- conductor
+- consultant
+- contactperson
+- correspondent
+- datacollector
+- datacurator
+- datamanager
+- dedicatee
+- designer
+- director
+- distributor
+- donor
+- drafter
+- editor
+- examiner
+- formerOwner
+- hostinginstitution
+- illustrator
+- interviewee
+- interviewer
+- inventor
+- juror
+- licensee
+- lyricist
+- manufacturer
+- organizer
+- owner
+- performer
+- photographer
+- printer
+- producer
+- projectOrTeamLeader
+- projectOrTeamManager
+- projectOrTeamMember
+- recording engineer
+- referee
+- registrationagency
+- registrationauthority
+- relatedperson
+- reporter
+- researcher
+- researchgroup
+- researchParticipant
+- rightsholder
+- screenplayAuthor
+- speaker
+- supervisor
+- transcriber
+- translator
+- witness
+- workpackageleader
+- writerOfAccompanying
+
+Note that where InvenioRDM provides distinct custom vocabularies for creators and contributors, KCWorks employs a single creator/contributor vocabulary. This is in keeping with our handling of the `creators` and `contributors` fields, discussed below.
+
 ## Identifier Schemes
 
 ### Works
