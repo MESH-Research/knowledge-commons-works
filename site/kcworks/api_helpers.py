@@ -418,8 +418,10 @@ def record_publish_url_factory(
     # NOTE: This condition catches both updates to published records and
     # removal of records from the commons search index when they are
     # no longer publicly visible
-    if draft.get("is_published") and draft.get("custom_fields", {}).get(
-        "kcr:commons_search_recid"
+    if (
+        record.get("is_published")
+        and record.get("custom_fields", {}).get("kcr:commons_search_recid")
+        or draft.get("access", {}).get("record") != "public"
     ):
         url = (
             f"{protocol}://search.{domain}/v1/documents/"

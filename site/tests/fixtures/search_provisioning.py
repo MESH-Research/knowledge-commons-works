@@ -1,5 +1,7 @@
 import pytest
 from celery import shared_task
+from invenio_queues.proxies import current_queues
+from pprint import pformat
 from typing import Optional
 
 
@@ -67,3 +69,20 @@ def mock_search_api_request(requests_mock):
         return mock_adapter
 
     return mock_request
+
+
+# TODO: This didn't work
+# @pytest.fixture(scope="function")
+# def mock_signal_subscriber(app, monkeypatch):
+#     """Mock ext.on_api_provisioning_triggered event subscriber."""
+
+#     def mocksubscriber(app_obj, *args, **kwargs):
+#         with app_obj.app_context():
+#             app_obj.logger.debug("Mocked remote_api_provisioning_triggered")
+#             app_obj.logger.debug("Events:")
+#             app_obj.logger(
+#                 pformat(current_queues.queues["remote-api-provisioning-events"].events)
+#             )
+#             raise RuntimeError("Mocked remote_api_provisioning_triggered")
+
+#     return mocksubscriber

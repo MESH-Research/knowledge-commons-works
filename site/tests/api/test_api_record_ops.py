@@ -1,6 +1,8 @@
 import json
 import pytest
 import re
+from invenio_access.permissions import system_identity
+from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from ..fixtures.users import user_data_set
 
 import arrow
@@ -236,7 +238,7 @@ def test_draft_creation(
 
 
 # @pytest.mark.skip(reason="Not implemented")
-def test_record_publication(
+def test_record_publication_metadata_only_api(
     running_app,
     db,
     client_with_login,
@@ -295,8 +297,50 @@ def test_record_publication(
         assert not actual_published["ui"]["is_draft"]
 
 
+def test_record_publication_metadata_only_service(
+    running_app,
+    db,
+    client_with_login,
+    minimal_record,
+    headers,
+    user_factory,
+    search_clear,
+    celery_worker,
+    mock_send_remote_api_update_fixture,
+):
+    """Test that a system user can create a draft record internally."""
+    app = running_app.app
+
+    minimal_record.update({"files": {"enabled": False}})
+    response = records_service.create(system_identity, minimal_record)
+    actual_draft = response.to_dict()
+    actual_draft_id = actual_draft["id"]
+
+    publish_response = records_service.publish(system_identity, actual_draft_id)
+
+    actual_published = publish_response.to_dict()
+    assert actual_published["id"] == actual_draft_id
+    assert actual_published["is_published"]
+    assert not actual_published["is_draft"]
+    assert actual_published["versions"]["is_latest"]
+    assert actual_published["versions"]["is_latest_draft"] is True
+    assert actual_published["versions"]["index"] == 1
+    assert actual_published["status"] == "published"
+
+    read_result = records_service.read(system_identity, actual_draft_id)
+    actual_read = read_result.to_dict()
+    assert actual_read["id"] == actual_draft_id
+    assert actual_read["metadata"]["title"] == "A Romans story"
+    assert actual_read["is_published"]
+    assert not actual_read["is_draft"]
+    assert actual_read["versions"]["is_latest"]
+    assert actual_read["versions"]["is_latest_draft"] is True
+    assert actual_read["versions"]["index"] == 1
+    assert actual_read["status"] == "published"
+
+
 @pytest.mark.skip(reason="Not implemented")
-def test_record_draft_update(
+def test_record_draft_update_metadata_only_api(
     running_app,
     db,
     client_with_login,
@@ -306,6 +350,45 @@ def test_record_draft_update(
     search_clear,
 ):
     pass
+
+
+def test_record_draft_update_metadata_only_service(
+    running_app,
+    db,
+    client_with_login,
+    minimal_record,
+    headers,
+    user_factory,
+    search_clear,
+    celery_worker,
+    mock_send_remote_api_update_fixture,
+):
+    app = running_app.app
+
+    minimal_record.update({"files": {"enabled": False}})
+    response = records_service.create(system_identity, minimal_record)
+    actual_draft = response.to_dict()
+    actual_draft_id = actual_draft["id"]
+
+    minimal_edited = minimal_record.copy()
+    minimal_edited["metadata"]["title"] = "A Romans Story 2"
+    edited_draft = records_service.update_draft(
+        system_identity, actual_draft_id, minimal_edited
+    )
+    actual_edited = edited_draft.to_dict()
+    actual_edited["metadata"]["title"] = "A Romans Story 2"
+
+    publish_response = records_service.publish(system_identity, actual_edited["id"])
+
+    actual_published = publish_response.to_dict()
+    assert actual_published["id"] == actual_draft_id
+    assert actual_published["metadata"]["title"] == "A Romans Story 2"
+    assert actual_published["is_published"]
+    assert not actual_published["is_draft"]
+    assert actual_published["versions"]["is_latest"]
+    assert actual_published["versions"]["is_latest_draft"] is True
+    assert actual_published["versions"]["index"] == 1
+    assert actual_published["status"] == "published"
 
 
 @pytest.mark.skip(reason="Not implemented")
