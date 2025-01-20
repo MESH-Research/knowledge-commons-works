@@ -103,10 +103,9 @@ html.cover-page {
 
 .theme.header {
   box-shadow: none;
-  .beta-banner {
-    background-color: @mint50;
-    background-image: url("../../../../static/images/textured_bgs/KCommons_assets_Seafoam_800.png");
-    color: @verdigrisDark;
+
+  .banner {
+
     padding: 0.5rem 1rem;
     text-align: center;
     font-size: 16px;
@@ -115,6 +114,24 @@ html.cover-page {
     margin-right: 0 !important;
     a {
       text-decoration: underline;
+    }
+    &.primary {
+      background-color: @mint50;
+      background-image: url("../../../../static/images/textured_bgs/KCommons_assets_Seafoam_800.png");
+      color: @verdigrisDark;
+      border-bottom: 1px solid @verdigris50;
+    }
+    &.secondary {
+      background-color: @verdigrisDark;
+      background-image: none;
+      color: @white;
+      padding: 0.5rem 1rem;
+      text-align: center;
+      font-weight: bold;
+      // text-shadow: 0 0 0.5rem 000;
+      a {
+        color: @white;
+      }
     }
   }
 }

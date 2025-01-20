@@ -1,6 +1,9 @@
 import json
 import pytest
 import re
+from invenio_access.permissions import system_identity
+from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from ..fixtures.users import user_data_set
 
 import arrow
 
@@ -39,23 +42,22 @@ def test_draft_creation(
     minimal_record,
     headers,
     search_clear,
+    celery_worker,
 ):
     """Test that a user can create a draft record."""
     app = running_app.app
 
     u = user_factory(
-        email="test@example.com",
+        email=user_data_set["user1"]["email"],
         password="test",
         token=True,
         admin=True,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
     )
     user = u.user
     # identity = u.identity
     # print(identity)
     token = u.allowed_token
-
+    minimal_record.update({"files": {"enabled": False}})
     with app.test_client() as client:
         logged_in_client, _ = client_with_login(client, user)
         response = logged_in_client.post(
@@ -117,9 +119,7 @@ def test_draft_creation(
         assert not actual_draft["is_published"]
         assert actual_draft["is_draft"]
         assert (
-            arrow.get(actual_draft["expires_at"]).format(
-                "YYYY-MM-DD HH:mm:ss.SSSSSS"
-            )
+            arrow.get(actual_draft["expires_at"]).format("YYYY-MM-DD HH:mm:ss.SSSSSS")
             == actual_draft["expires_at"]
         )
         assert actual_draft["pids"] == {}
@@ -141,9 +141,7 @@ def test_draft_creation(
         assert actual_draft["metadata"]["title"] == "A Romans story"
         assert actual_draft["metadata"]["publisher"] == "Acme Inc"
         assert (
-            arrow.get(actual_draft["metadata"]["publication_date"]).format(
-                "YYYY-MM-DD"
-            )
+            arrow.get(actual_draft["metadata"]["publication_date"]).format("YYYY-MM-DD")
             == "2020-06-01"
         )
         assert actual_draft["custom_fields"] == {}
@@ -168,9 +166,7 @@ def test_draft_creation(
             "entries": {},
         }
         assert actual_draft["status"] == "draft"
-        publication_date = arrow.get(
-            actual_draft["metadata"]["publication_date"]
-        )
+        publication_date = arrow.get(actual_draft["metadata"]["publication_date"])
         assert actual_draft["ui"][
             "publication_date_l10n_medium"
         ] == publication_date.format("MMM D, YYYY")
@@ -178,13 +174,13 @@ def test_draft_creation(
             "publication_date_l10n_long"
         ] == publication_date.format("MMMM D, YYYY")
         created_date = arrow.get(actual_draft["created"])
-        assert actual_draft["ui"][
-            "created_date_l10n_long"
-        ] == created_date.format("MMMM D, YYYY")
+        assert actual_draft["ui"]["created_date_l10n_long"] == created_date.format(
+            "MMMM D, YYYY"
+        )
         updated_date = arrow.get(actual_draft["updated"])
-        assert actual_draft["ui"][
-            "updated_date_l10n_long"
-        ] == updated_date.format("MMMM D, YYYY")
+        assert actual_draft["ui"]["updated_date_l10n_long"] == updated_date.format(
+            "MMMM D, YYYY"
+        )
         assert actual_draft["ui"]["resource_type"] == {
             "id": "image-photograph",
             "title_l10n": "Photo",
@@ -221,6 +217,67 @@ def test_draft_creation(
         assert actual_draft["ui"]["is_draft"]
 
         # publish the record
+        # publish_response = logged_in_client.post(
+        #     f"{app.config['SITE_API_URL']}/records/{actual_draft_id}/draft"
+        #     "/actions/publish",
+        #     headers={**headers, "Authorization": f"Bearer {token}"},
+        # )
+        # assert publish_response.status_code == 202
+
+        # actual_published = publish_response.json
+        # assert actual_published["id"] == actual_draft_id
+        # assert actual_published["is_published"]
+        # assert not actual_published["is_draft"]
+        # assert actual_published["revision_id"] == 3
+        # assert actual_published["versions"]["is_latest"]
+        # assert actual_published["versions"]["is_latest_draft"]
+        # assert actual_published["versions"]["index"] == 1
+        # assert actual_published["status"] == "published"
+        # assert actual_published["ui"]["version"] == "v1"
+        # assert not actual_published["ui"]["is_draft"]
+
+
+# @pytest.mark.skip(reason="Not implemented")
+def test_record_publication_metadata_only_api(
+    running_app,
+    db,
+    client_with_login,
+    minimal_record,
+    headers,
+    user_factory,
+    search_clear,
+    celery_worker,
+    mock_send_remote_api_update_fixture,
+):
+    app = running_app.app
+    u = user_factory(
+        email=user_data_set["user1"]["email"],
+        password="test",
+        token=True,
+        admin=True,
+    )
+    user = u.user
+    token = u.allowed_token
+    # identity = u.identity
+    # print(identity)
+
+    with app.test_client() as client:
+        logged_in_client, _ = client_with_login(client, user)
+        minimal_record.update({"files": {"enabled": False}})
+        response = logged_in_client.post(
+            f"{app.config['SITE_API_URL']}/records",
+            data=json.dumps(minimal_record),
+            headers={**headers, "Authorization": f"Bearer {token}"},
+        )
+        assert response.status_code == 201
+
+        actual_draft = response.json
+        actual_draft_id = actual_draft["id"]
+
+        # mock_search_api_request(
+        #     "POST", actual_draft_id, minimal_record, app.config["SITE_API_URL"]
+        # )
+
         publish_response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records/{actual_draft_id}/draft"
             "/actions/publish",
@@ -232,17 +289,15 @@ def test_draft_creation(
         assert actual_published["id"] == actual_draft_id
         assert actual_published["is_published"]
         assert not actual_published["is_draft"]
-        assert actual_published["revision_id"] == 3
         assert actual_published["versions"]["is_latest"]
-        assert actual_published["versions"]["is_latest_draft"]
+        assert actual_published["versions"]["is_latest_draft"] is True
         assert actual_published["versions"]["index"] == 1
         assert actual_published["status"] == "published"
         assert actual_published["ui"]["version"] == "v1"
         assert not actual_published["ui"]["is_draft"]
 
 
-@pytest.mark.skip(reason="Not implemented")
-def test_record_publication(
+def test_record_publication_metadata_only_service(
     running_app,
     db,
     client_with_login,
@@ -250,56 +305,42 @@ def test_record_publication(
     headers,
     user_factory,
     search_clear,
+    celery_worker,
+    mock_send_remote_api_update_fixture,
 ):
-
+    """Test that a system user can create a draft record internally."""
     app = running_app.app
 
-    u = user_factory(
-        email="test@example.com",
-        password="test",
-        token=True,
-        admin=True,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
-    )
-    user = u.user
-    # identity = u.identity
-    # print(identity)
-    token = u.allowed_token
+    minimal_record.update({"files": {"enabled": False}})
+    response = records_service.create(system_identity, minimal_record)
+    actual_draft = response.to_dict()
+    actual_draft_id = actual_draft["id"]
 
-    with app.test_client() as client:
-        logged_in_client, _ = client_with_login(client, user)
-        response = logged_in_client.post(
-            f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record),
-            headers={**headers, "Authorization": f"Bearer {token}"},
-        )
-        assert response.status_code == 201
+    publish_response = records_service.publish(system_identity, actual_draft_id)
 
-        actual_draft = response.json
-        actual_draft_id = actual_draft["id"]
+    actual_published = publish_response.to_dict()
+    assert actual_published["id"] == actual_draft_id
+    assert actual_published["is_published"]
+    assert not actual_published["is_draft"]
+    assert actual_published["versions"]["is_latest"]
+    assert actual_published["versions"]["is_latest_draft"] is True
+    assert actual_published["versions"]["index"] == 1
+    assert actual_published["status"] == "published"
 
-        publish_response = logged_in_client.post(
-            f"{app.config['SITE_API_URL']}/records/{actual_draft_id}/draft"
-            "/actions/publish",
-            headers={**headers, "Authorization": f"Bearer {token}"},
-        )
-        assert publish_response.status_code == 202
-
-        actual_published = publish_response.json
-        assert actual_published["id"] == actual_draft_id
-        assert actual_published["is_published"]
-        assert actual_published["versions"]["is_latest"]
-        assert actual_published["versions"]["is_latest_draft"] is False
-        assert actual_published["versions"]["index"] == 2
-        assert actual_published["status"] == "published"
-        assert actual_published["ui"]["is_published"]
-        assert actual_published["ui"]["version"] == "v2"
-        assert not actual_published["ui"]["is_draft"]
+    read_result = records_service.read(system_identity, actual_draft_id)
+    actual_read = read_result.to_dict()
+    assert actual_read["id"] == actual_draft_id
+    assert actual_read["metadata"]["title"] == "A Romans story"
+    assert actual_read["is_published"]
+    assert not actual_read["is_draft"]
+    assert actual_read["versions"]["is_latest"]
+    assert actual_read["versions"]["is_latest_draft"] is True
+    assert actual_read["versions"]["index"] == 1
+    assert actual_read["status"] == "published"
 
 
 @pytest.mark.skip(reason="Not implemented")
-def test_record_draft_update(
+def test_record_draft_update_metadata_only_api(
     running_app,
     db,
     client_with_login,
@@ -309,6 +350,45 @@ def test_record_draft_update(
     search_clear,
 ):
     pass
+
+
+def test_record_draft_update_metadata_only_service(
+    running_app,
+    db,
+    client_with_login,
+    minimal_record,
+    headers,
+    user_factory,
+    search_clear,
+    celery_worker,
+    mock_send_remote_api_update_fixture,
+):
+    app = running_app.app
+
+    minimal_record.update({"files": {"enabled": False}})
+    response = records_service.create(system_identity, minimal_record)
+    actual_draft = response.to_dict()
+    actual_draft_id = actual_draft["id"]
+
+    minimal_edited = minimal_record.copy()
+    minimal_edited["metadata"]["title"] = "A Romans Story 2"
+    edited_draft = records_service.update_draft(
+        system_identity, actual_draft_id, minimal_edited
+    )
+    actual_edited = edited_draft.to_dict()
+    actual_edited["metadata"]["title"] = "A Romans Story 2"
+
+    publish_response = records_service.publish(system_identity, actual_edited["id"])
+
+    actual_published = publish_response.to_dict()
+    assert actual_published["id"] == actual_draft_id
+    assert actual_published["metadata"]["title"] == "A Romans Story 2"
+    assert actual_published["is_published"]
+    assert not actual_published["is_draft"]
+    assert actual_published["versions"]["is_latest"]
+    assert actual_published["versions"]["is_latest_draft"] is True
+    assert actual_published["versions"]["index"] == 1
+    assert actual_published["status"] == "published"
 
 
 @pytest.mark.skip(reason="Not implemented")

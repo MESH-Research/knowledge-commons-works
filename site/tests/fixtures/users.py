@@ -1,5 +1,6 @@
-from typing import Callable, Optional
+from typing import Callable, Optional, Union
 from flask_login import login_user
+from flask_principal import Identity
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles, Role
 from invenio_access.permissions import superuser_access
@@ -10,11 +11,69 @@ from invenio_oauthclient.models import UserIdentity
 from invenio_oauth2server.models import Token
 import os
 import pytest
+from pytest_invenio.fixtures import UserFixtureBase
+from requests_mock.adapter import _Matcher as Matcher
+
+
+@pytest.fixture(scope="function")
+def mock_user_data_api(requests_mock) -> Callable:
+    """Mock the user data api."""
+
+    def mock_api_call(saml_id: str, mock_remote_data: dict) -> Matcher:
+        protocol = os.environ.get(
+            "INVENIO_COMMONS_API_REQUEST_PROTOCOL", "http"
+        )  # noqa: E501
+        base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
+        remote_url = f"{base_url}/{saml_id}"
+        mock_adapter = requests_mock.get(
+            remote_url,
+            json=mock_remote_data,
+        )
+        return mock_adapter
+
+    return mock_api_call
+
+
+@pytest.fixture(scope="function")
+def user_data_to_remote_data(requests_mock):
+
+    def convert_user_data_to_remote_data(
+        saml_id: str, email: str, user_data: dict
+    ) -> dict[str, Union[str, list[dict[str, str]]]]:
+        mock_remote_data = {
+            "username": saml_id,
+            "email": email,
+            "name": user_data.get("name", ""),
+            "first_name": user_data.get("first_name", ""),
+            "last_name": user_data.get("last_name", ""),
+            "institutional_affiliation": user_data.get("institutional_affiliation", ""),
+            "orcid": user_data.get("orcid", ""),
+            "preferred_language": user_data.get("preferred_language", ""),
+            "time_zone": user_data.get("time_zone", ""),
+            "groups": user_data.get("groups", ""),
+        }
+        return mock_remote_data
+
+    return convert_user_data_to_remote_data
+
+
+class AugmentedUserFixture(UserFixtureBase):
+    """Augmented UserFixtureBase class."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.mock_adapter: Optional[Matcher] = None
+        self.allowed_token: Optional[str] = None
 
 
 @pytest.fixture(scope="function")
 def user_factory(
-    UserFixture, app, db, admin_role_need, requests_mock
+    app,
+    db,
+    admin_role_need,
+    requests_mock,
+    mock_user_data_api,
+    user_data_to_remote_data,
 ) -> Callable:
     """Factory for creating test users.
 
@@ -30,7 +89,7 @@ def user_factory(
         saml_src: Optional[str] = "knowledgeCommons",
         saml_id: Optional[str] = "myuser",
         new_remote_data: dict = {},
-    ) -> UserFixture:
+    ) -> AugmentedUserFixture:
         """Create a user.
 
         Args:
@@ -51,32 +110,13 @@ def user_factory(
         """
 
         # Mock remote data that's already in the user fixture.
-        mock_remote_data = {
-            "username": saml_id,
-            "email": email,
-            "name": new_remote_data.get("name", ""),
-            "first_name": new_remote_data.get("first_name", ""),
-            "last_name": new_remote_data.get("last_name", ""),
-            "institutional_affiliation": new_remote_data.get(
-                "institutional_affiliation", ""
-            ),
-            "orcid": new_remote_data.get("orcid", ""),
-            "preferred_language": new_remote_data.get(
-                "preferred_language", ""
-            ),
-            "time_zone": new_remote_data.get("time_zone", ""),
-            "groups": new_remote_data.get("groups", ""),
-        }
-
-        # Mock the remote api call.
-        base_url = "https://hcommons-dev.org/wp-json/commons/v1/users"
-        remote_url = f"{base_url}/{saml_id}"
-        mock_adapter = requests_mock.get(
-            remote_url,
-            json=mock_remote_data,
+        mock_remote_data = user_data_to_remote_data(
+            saml_id, new_remote_data.get("email") or email, new_remote_data
         )
+        # Mock the remote api call.
+        mock_adapter = mock_user_data_api(saml_id, mock_remote_data)
 
-        u = UserFixture(
+        u = AugmentedUserFixture(
             email=email,
             password=hash_password(password),
         )
@@ -117,9 +157,7 @@ def admin_role_need(db):
     role = Role(name="administration-access")
     db.session.add(role)
 
-    action_role = ActionRoles.create(
-        action=administration_access_action, role=role
-    )
+    action_role = ActionRoles.create(action=administration_access_action, role=role)
     db.session.add(action_role)
 
     db.session.commit()
@@ -127,10 +165,10 @@ def admin_role_need(db):
 
 
 @pytest.fixture(scope="function")
-def admin(user_factory):
+def admin(user_factory) -> AugmentedUserFixture:
     """Admin user for requests."""
 
-    u = user_factory(
+    u: AugmentedUserFixture = user_factory(
         email="admin@inveniosoftware.org",
         password="password",
         admin=True,
@@ -163,7 +201,7 @@ def superuser_role_need(db):
 
 
 @pytest.fixture(scope="function")
-def superuser_identity(admin, superuser_role_need):
+def superuser_identity(admin: AugmentedUserFixture, superuser_role_need) -> Identity:
     """Superuser identity fixture."""
     identity = admin.identity
     identity.provides.add(superuser_role_need)
@@ -171,17 +209,17 @@ def superuser_identity(admin, superuser_role_need):
 
 
 @pytest.fixture(scope="module")
-def user1_data():
+def user1_data() -> dict:
     """Data for user1."""
 
     return {
         "saml_id": "user1",
         "email": "user1@inveniosoftware.org",
-        "name": "User One",
-        "first_name": "User",
+        "name": "User Number One",
+        "first_name": "User Number",
         "last_name": "One",
         "institutional_affiliation": "Michigan State University",
-        "orcid": "123-456-7891",
+        "orcid": "0000-0002-1825-0097",  # official dummy orcid
         "preferred_language": "en",
         "time_zone": "UTC",
         "groups": [
@@ -189,6 +227,96 @@ def user1_data():
             {"id": 67891, "name": "admin", "role": "member"},
         ],
     }
+
+
+user_data_set = {
+    "joanjett": {
+        "saml_id": "joanjett",
+        "email": "jj@inveniosoftware.com",
+        "name": "Joan Jett",
+        "first_name": "Joan",
+        "last_name": "Jett",
+        "institutional_affiliation": "Uc Davis",
+        "orcid": "",
+        "groups": [],
+    },
+    "user1": {
+        "saml_id": "user1",
+        "email": "user1@inveniosoftware.org",
+        "name": "User Number One",
+        "first_name": "User Number",
+        "last_name": "One",
+        "institutional_affiliation": "Michigan State University",
+        "orcid": "0000-0002-1825-0097",  # official dummy orcid
+        "preferred_language": "en",
+        "time_zone": "UTC",
+        "groups": [
+            {"id": 12345, "name": "awesome-mock", "role": "admin"},
+            {"id": 67891, "name": "admin", "role": "member"},
+        ],
+    },
+    "user2": {
+        "saml_id": "janedoe",
+        "email": "jane.doe@msu.edu",
+        "name": "Jane Doe",
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "institutional_affiliation": "College Of Human Medicine",
+        "orcid": "0000-0002-1825-0097",  # official dummy orcid
+    },
+    "user3": {
+        "saml_id": "gihctester",
+        "email": "ghosthc@lblyoehp.mailosaur.net",
+        # FIXME: Unobfuscated email not sent by
+        # KC because no email marked as official.
+        # Also, different email address than shown in KC profile.
+        "name": "Ghost Hc",
+        "first_name": "Ghost",
+        "last_name": "Hc",
+        "groups": [
+            {"id": 1004089, "name": "Teaching and Learning", "role": "member"},
+            {"id": 1004090, "name": "Humanities, Arts, and Media", "role": "member"},
+            {
+                "id": 1004091,
+                "name": "Technology, Networks, and Sciences",
+                "role": "member",
+            },
+            {"id": 1004092, "name": "Social and Political Issues", "role": "member"},
+            {
+                "id": 1004093,
+                "name": "Educational and Cultural Institutions",
+                "role": "member",
+            },
+            {"id": 1004094, "name": "Publishing and Archives", "role": "member"},
+            {"id": 1004651, "name": "Hidden Testing Group New Name", "role": "admin"},
+            {"id": 1004939, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004940, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004941, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004942, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004943, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004944, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004945, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004946, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004947, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004948, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004949, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004950, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004951, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004952, "name": "GI Hidden Group for testing", "role": "admin"},
+            {"id": 1004953, "name": "GI Hidden Group for testing", "role": "admin"},
+        ],
+    },
+    "user4": {
+        "saml_id": "ghostrjtester",
+        "email": "jrghosttester@email.ghostinspector.com",
+        "name": "Ghost Tester",
+        "first_name": "Ghost",
+        "last_name": "Tester",
+        "institutional_affiliation": "Michigan State University",
+        "orcid": "0000-0002-1825-0097",  # official dummy orcid
+        "groups": [],
+    },
+}
 
 
 @pytest.fixture(scope="function")
@@ -220,11 +348,11 @@ def client_with_login(requests_mock, app):
             "last_name": user.user_profile.get("last_name", ""),
             "institutional_affiliation": user.user_profile.get(
                 "affiliations", ""
-            ),
+            ),  # noqa: E501
             "orcid": user.user_profile.get("orcid", ""),
             "preferred_language": user.user_profile.get(
                 "preferred_language", ""
-            ),
+            ),  # noqa: E501
             "time_zone": user.user_profile.get("time_zone", ""),
             "groups": user.user_profile.get("groups", ""),
         }
@@ -233,7 +361,10 @@ def client_with_login(requests_mock, app):
         mock_remote_data.update(new_remote_data)
 
         # Mock the remote api call.
-        base_url = "https://hcommons-dev.org/wp-json/commons/v1/users"
+        protocol = os.environ.get(
+            "INVENIO_COMMONS_API_REQUEST_PROTOCOL", "http"
+        )  # noqa: E501
+        base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
         remote_url = f"{base_url}/{saml_id}"
         mock_adapter = requests_mock.get(
             remote_url,

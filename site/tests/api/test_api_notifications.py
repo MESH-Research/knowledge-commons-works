@@ -23,10 +23,13 @@ from invenio_records_resources.services.errors import PermissionDeniedError
 from invenio_users_resources.records.api import UserAggregate
 from invenio_users_resources.services.users.tasks import reindex_users
 from kcworks.proxies import current_internal_notifications
+from pprint import pformat
+import time
 
 
 def test_notify_for_request_acceptance(
     running_app,
+    appctx,
     db,
     user_factory,
     minimal_community_factory,
@@ -37,9 +40,21 @@ def test_notify_for_request_acceptance(
     search_clear,
     admin,
     mailbox,
+    celery_worker,
+    mocker,
+    mock_send_remote_api_update_fixture,
 ):
     """
-    Test that the user is notified when a request is accepted.
+    Test that the user is notified when a collection submission is accepted.
+
+    This integration test uses actual requests and events, and uses a live
+    asynchronous celery worker to send the notifications. Mail actually passes
+    through the normal mail sending process, so we can test the templates. But
+    the mail is intercepted by the `mailbox` fixture before it is actually
+    sent.
+
+    We patch the `send_remote_api_update` method to avoid actually sending
+    the search provisioning api message during record publication.
     """
     app = running_app.app
     admin_id = admin.user.id
@@ -77,6 +92,7 @@ def test_notify_for_request_acceptance(
         # check that the record was created *and* indexed
         read_draft = records_service.read_draft(system_identity, draft_id)
         assert read_draft.id == draft_id
+        app.logger.debug(f"read_draft: {pformat(read_draft)}")
 
         indexed_record = records_service.search_drafts(
             system_identity,
@@ -188,31 +204,30 @@ def test_notify_for_request_acceptance(
         comment = comments.get("hits", {}).get("hits", [])[-1]
         comment_id = comment.get("id")
 
+        time.sleep(10)
+
         # check that the user is notified by mail
+        assert app.config.get("MAIL_SUPPRESS_SEND") is False
         assert len(mailbox) == 2  # 1 for accept, 1 for comment
         # TODO: Test overridden templates
         assert mailbox[0].recipients == [user.email]
         assert mailbox[0].sender == app.config.get("MAIL_DEFAULT_SENDER")
         assert "accepted" in mailbox[0].subject
-        # assert (
-        #     mailbox[0].subject
-        #     == "KCWorks | Collection submission accepted for 'A Romans
-        # )
+        assert (
+            mailbox[0].subject
+            == "KCWorks | Collection submission accepted for 'A Romans story'"
+        )
 
         # TODO: Test overridden templates
         assert mailbox[1].recipients == [user.email]
         assert mailbox[1].sender == app.config.get("MAIL_DEFAULT_SENDER")
         assert "comment" in mailbox[1].subject
-        # assert (
-        #     mailbox[1].subject
-        #     == "KCWorks | New comment on your collection submission for
-        # )
+        assert mailbox[1].subject == "KCWorks | New comment on 'A Romans story'"
 
         # by internal notification
         submitter = current_accounts.datastore.get_user_by_id(user.id)
-        assert json.loads(
-            submitter.user_profile.get("unread_notifications")
-        ) == [
+        unread_json = submitter.user_profile.get("unread_notifications")
+        assert json.loads(unread_json) == [
             {
                 "notification_type": "comment-request-event.create",
                 "request_id": request_id,
@@ -235,10 +250,23 @@ def test_notify_for_request_decline(
     search_clear,
     admin,
     mailbox,
+    mocker,
+    celery_worker,
+    mock_send_remote_api_update_fixture,
 ):
     """
     Test that the user is notified when a request is declined.
+
+    This integration test uses actual requests and events, and uses a live
+    asynchronous celery worker to send the notifications. Mail actually passes
+    through the normal mail sending process, so we can test the templates. But
+    the mail is intercepted by the `mailbox` fixture before it is actually
+    sent.
+
+    We patch the `send_remote_api_update` method to avoid actually sending
+    the search provisioning api message during record publication.
     """
+
     app = running_app.app
     admin_id = admin.user.id
     community = minimal_community_factory(owner=admin_id)
@@ -408,9 +436,7 @@ def test_notify_for_request_decline(
         # )
 
         # by internal notification
-        assert json.loads(
-            submitter.user_profile.get("unread_notifications")
-        ) == [
+        assert json.loads(submitter.user_profile.get("unread_notifications")) == [
             {
                 "request_id": request_id,
                 "notification_type": "comment-request-event.create",
@@ -434,6 +460,8 @@ def test_notify_for_request_cancellation(
     search_clear,
     admin,
     mailbox,
+    celery_worker,
+    mock_send_remote_api_update_fixture,
 ):
     """
     Test that the user is notified when a request is cancelled.
@@ -588,9 +616,7 @@ def test_notify_for_request_cancellation(
         assert json.loads(unread_notifications) == []
 
         reviewer = current_accounts.datastore.get_user_by_id(admin_id)
-        assert json.loads(
-            reviewer.user_profile.get("unread_notifications")
-        ) == [
+        assert json.loads(reviewer.user_profile.get("unread_notifications")) == [
             {
                 "request_id": request_id,
                 "notification_type": "community-submission.cancel",
@@ -612,6 +638,8 @@ def test_notify_for_new_request_comment(
     search_clear,
     admin,
     mailbox,
+    celery_worker,
+    mock_send_remote_api_update_fixture,
 ):
     """
     Test that the user is notified when a new comment is added
@@ -751,13 +779,9 @@ def test_notify_for_new_request_comment(
         assert response._record.request_id == request_id
         comment_data = response.to_dict()
         assert comment_data.get("created_by").get("user") == str(admin_id)
-        assert (
-            comment_data.get("payload").get("content") == "I have a question."
-        )
+        assert comment_data.get("payload").get("content") == "I have a question."
         assert comment_data.get("payload").get("format") == "html"
-        assert (
-            comment_data.get("links").get("self").split("/")[-3] == request_id
-        )
+        assert comment_data.get("links").get("self").split("/")[-3] == request_id
         assert comment_data.get("type") == "C"
         assert comment_data.get("revision_id") == 1
         comment_id = comment_data.get("id")
@@ -858,9 +882,7 @@ def test_read_unread_notifications_by_service(
     identity = get_identity(user)
     identity.provides.add(SystemRoleNeed("any_user"))
 
-    unread_notifications = current_internal_notifications.read_unread(
-        identity, user.id
-    )
+    unread_notifications = current_internal_notifications.read_unread(identity, user.id)
     assert len(unread_notifications) == 2
     assert unread_notifications == [
         {
@@ -934,10 +956,7 @@ def test_clear_unread_notifications_by_service(
     db.session.commit()
 
     # check that the user has unread notifications
-    assert (
-        len(json.loads(user.user_profile.get("unread_notifications", "[]")))
-        == 2
-    )
+    assert len(json.loads(user.user_profile.get("unread_notifications", "[]"))) == 2
 
     # clear the unread notifications via service
     identity = get_identity(user)
@@ -948,9 +967,7 @@ def test_clear_unread_notifications_by_service(
 
     # check that the user has no unread notifications
     final_user = current_accounts.datastore.get_user_by_id(user.id)
-    assert (
-        json.loads(final_user.user_profile.get("unread_notifications")) == []
-    )
+    assert json.loads(final_user.user_profile.get("unread_notifications")) == []
 
     # now try to clear someone else's notifications
     with pytest.raises(PermissionDeniedError):
@@ -991,10 +1008,7 @@ def test_clear_unread_notifications_by_service(
     db.session.commit()
 
     # check that the user has unread notifications
-    assert (
-        len(json.loads(user.user_profile.get("unread_notifications", "[]")))
-        == 2
-    )
+    assert len(json.loads(user.user_profile.get("unread_notifications", "[]"))) == 2
 
     # now system identity can clear the notifications
     current_internal_notifications.clear_unread(
@@ -1004,9 +1018,7 @@ def test_clear_unread_notifications_by_service(
 
     # check that the user has no unread notifications
     final_user = current_accounts.datastore.get_user_by_id(user.id)
-    assert (
-        json.loads(final_user.user_profile.get("unread_notifications")) == []
-    )
+    assert json.loads(final_user.user_profile.get("unread_notifications")) == []
 
 
 def test_read_unread_notifications_by_view(
@@ -1059,10 +1071,7 @@ def test_read_unread_notifications_by_view(
     db.session.commit()
 
     # check that the user has unread notifications
-    assert (
-        len(json.loads(user.user_profile.get("unread_notifications", "[]")))
-        == 2
-    )
+    assert len(json.loads(user.user_profile.get("unread_notifications", "[]"))) == 2
 
     # set up a logged in client
     with app.test_client() as client:
@@ -1071,8 +1080,7 @@ def test_read_unread_notifications_by_view(
 
         # read the unread notifications
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{user.id}/"
-            "notifications/unread/list"
+            f"{app.config['SITE_API_URL']}/users/{user.id}/" "notifications/unread/list"
         )
         assert response.status_code == 200
         assert len(json.loads(response.data)) == 2
@@ -1094,8 +1102,7 @@ def test_read_unread_notifications_by_view(
     with app.test_client() as client:
         # NOTE: New client has its own session
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{user.id}/"
-            "notifications/unread/list"
+            f"{app.config['SITE_API_URL']}/users/{user.id}/" "notifications/unread/list"
         )
         assert response.status_code == 401
         assert json.loads(response.data) == {
@@ -1164,10 +1171,7 @@ def test_clear_unread_notifications_by_view(
     db.session.commit()
 
     # check that the user has unread notifications
-    assert (
-        len(json.loads(user.user_profile.get("unread_notifications", "[]")))
-        == 2
-    )
+    assert len(json.loads(user.user_profile.get("unread_notifications", "[]"))) == 2
 
     # set up a logged in client
     with app.test_client() as client:
@@ -1187,10 +1191,7 @@ def test_clear_unread_notifications_by_view(
 
         # check that the user has no unread notifications
         final_user = current_accounts.datastore.get_user_by_id(user.id)
-        assert (
-            json.loads(final_user.user_profile.get("unread_notifications"))
-            == []
-        )
+        assert json.loads(final_user.user_profile.get("unread_notifications")) == []
 
         # try to clear someone else's notifications
         response = client.get(
@@ -1277,10 +1278,7 @@ def test_clear_one_unread_notification_by_view(
     db.session.commit()
 
     # check that the user has unread notifications
-    assert (
-        len(json.loads(user.user_profile.get("unread_notifications", "[]")))
-        == 2
-    )
+    assert len(json.loads(user.user_profile.get("unread_notifications", "[]"))) == 2
 
     # set up a logged in client
     login_user(user)
@@ -1341,9 +1339,7 @@ def test_unread_endpoint_bad_methods(
         "status": 405,
     }
 
-    csrf_token = next(
-        c.value for c in client.cookie_jar if c.name == "csrftoken"
-    )
+    csrf_token = next(c.value for c in client.cookie_jar if c.name == "csrftoken")
     headers["X-CSRFToken"] = csrf_token
 
     response = client.put(
@@ -1402,6 +1398,8 @@ def test_notification_on_first_upload(
     client,
     headers,
     mailbox,
+    celery_worker,
+    mock_send_remote_api_update_fixture,
 ):
     """
     Test that the admin account is notified on a user's first upload.
@@ -1444,9 +1442,7 @@ def test_notification_on_first_upload(
         saml_id=None,
     )
     # admin_id = admin.user.id
-    admin_role = current_accounts.datastore.find_or_create_role(
-        name="admin-moderator"
-    )
+    admin_role = current_accounts.datastore.find_or_create_role(name="admin-moderator")
     current_accounts.datastore.add_role_to_user(admin.user, admin_role)
     current_accounts.datastore.commit()
 
