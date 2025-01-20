@@ -49,12 +49,13 @@ testpaths = ["tests", "kcworks"]
 addopts = "--doctest-glob='*.rst' --doctest-modules --ignore=tests/helpers --ignore=kcworks/dependencies --ignore=kcworks/stats_dashboard"
 plugins = [
   "tests.fixtures.communities",
-  "tests.fixtures.metadata_fields",
   "tests.fixtures.custom_fields",
   "tests.fixtures.identifiers",
+  "tests.fixtures.metadata_fields",
   "tests.fixtures.records",
   "tests.fixtures.roles",
   "tests.fixtures.saml",
+  "tests.fixtures.search_provisioning",
   "tests.fixtures.stats",
   "tests.fixtures.users",
   "tests.fixtures.vocabularies.affiliations",
