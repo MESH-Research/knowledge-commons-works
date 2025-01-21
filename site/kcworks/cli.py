@@ -23,6 +23,10 @@ from kcworks.services.search.indices import delete_index
 import sys
 
 from kcworks.services.users.cli import name_parts as name_parts_command
+from kcworks.services.users.cli import read as read_command
+from kcworks.services.users.cli import groups as groups_command
+from kcworks.services.users.cli import group_users as group_users_command
+from kcworks.services.users.cli import user_groups as user_groups_command
 
 UNMANAGED_INDICES = [
     "kcworks-stats-record-view",
@@ -45,6 +49,10 @@ def kcworks_users():
 
 
 kcworks_users.add_command(name_parts_command)
+kcworks_users.add_command(read_command)
+kcworks_users.add_command(groups_command)
+kcworks_users.add_command(group_users_command)
+kcworks_users.add_command(user_groups_command)
 
 
 @click.group()
