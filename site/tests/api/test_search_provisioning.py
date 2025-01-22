@@ -33,6 +33,9 @@ def test_trigger_search_provisioning(
     app = running_app.app
     assert app.config["DATACITE_TEST_MODE"] is True
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
+    kc_domain = app.config["KC_WORDPRESS_DOMAIN"]
+    kc_protocol = app.config["COMMONS_API_REQUEST_PROTOCOL"]
+    works_url = app.config["SITE_UI_URL"]
 
     rec_url = list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["rdm_record"].keys())[0]
     remote_response = {
@@ -43,7 +46,7 @@ def test_trigger_search_provisioning(
     }
     mock_adapter = requests_mock.request(
         "POST",
-        "https://search.hcommons-dev.org/v1/documents",
+        f"{kc_protocol}://search.{kc_domain}/v1/documents",
         json=remote_response,
         headers={"Authorization": "Bearer 12345"},
     )  # noqa: E501
@@ -84,12 +87,12 @@ def test_trigger_search_provisioning(
         "_internal_id": record.id,
         "content_type": "work",
         "network_node": "works",
-        "primary_url": "https://localhost/records/" + record.id,
+        "primary_url": f"{works_url}/records/" + record.id,
         "other_urls": [],
         "owner": {
             "name": "",
             "owner_username": None,
-            "url": "https://hcommons-dev.org/members/None",
+            "url": f"{kc_protocol}://{kc_domain}/members/None",
         },
         "content": "",
         "contributors": [
@@ -173,9 +176,9 @@ def test_trigger_search_provisioning(
         "owner": {
             "name": "",
             "owner_username": None,
-            "url": "https://hcommons-dev.org/members/None",
+            "url": f"{kc_protocol}://{kc_domain}/members/None",
         },
-        "primary_url": "https://localhost/records/sx7xz-c4895",
+        "primary_url": f"{works_url}/records/sx7xz-c4895",
         "publication_date": "2025-01-17",
         "thumbnail_url": "",
     }
@@ -208,9 +211,9 @@ def test_trigger_search_provisioning(
         "owner": {
             "name": "",
             "owner_username": None,
-            "url": "https://hcommons-dev.org/members/None",
+            "url": f"{kc_protocol}://{kc_domain}/members/None",
         },
-        "primary_url": "https://localhost/records/" + new_published_version.data["id"],
+        "primary_url": f"{works_url}/records/" + new_published_version.data["id"],
         "publication_date": new_published_version.data["metadata"]["publication_date"],
         "thumbnail_url": "",
         "title": "A Romans Story 3",
@@ -440,6 +443,7 @@ def test_trigger_community_provisioning(
     This should not prompt any remote API operations.
     """
     app = running_app.app
+    works_url = app.config["SITE_UI_URL"]
 
     # Set up mock subscriber and intercept message to callback
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
@@ -453,7 +457,7 @@ def test_trigger_community_provisioning(
         "_internal_id": "1234AbCD?",  # can't mock because set at runtime
         "_id": "2E9SqY0Bdd2QL-HGeUuA",
         "title": "My Community",
-        "primary_url": "http://works.kcommons.org/records/1234",
+        "primary_url": f"{works_url}/collections/my-community",
     }
     requests_mock.post(
         rec_url,
@@ -488,13 +492,13 @@ def test_trigger_community_provisioning(
         "_internal_id": "my-community",
         "content_type": "works-collection",
         "network_node": "works",
-        "primary_url": "https://localhost/collections/my-community",
+        "primary_url": f"{works_url}/collections/my-community",
         "owner": {"name": "", "username": "", "url": ""},
         "contributors": [],
         "content": "",
         "other_urls": [
-            "https://localhost/collections/my-community/members/public",
-            "https://localhost/collections/my-community/records",
+            f"{works_url}/collections/my-community/members/public",
+            f"{works_url}/collections/my-community/records",
         ],
         "title": "My Community",
         "description": "A description",
@@ -561,13 +565,13 @@ def test_trigger_community_provisioning(
         "_internal_id": "my-community",
         "content_type": "works-collection",
         "network_node": "works",
-        "primary_url": "https://localhost/collections/my-community",
+        "primary_url": f"{works_url}/collections/my-community",
         "owner": {"name": "", "username": "", "url": ""},
         "contributors": [],
         "content": "",
         "other_urls": [
-            "https://localhost/collections/my-community/members/public",
-            "https://localhost/collections/my-community/records",
+            f"{works_url}/collections/my-community/members/public",
+            f"{works_url}/collections/my-community/records",
         ],
         "title": "My Community 3",
         "description": "A description",
