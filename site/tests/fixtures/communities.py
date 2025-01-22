@@ -103,7 +103,7 @@ def group_communities_data_set():
 
 
 @pytest.fixture(scope="function")
-def minimal_community_factory(app, admin, create_communities_custom_fields):
+def minimal_community_factory(app, user_factory, create_communities_custom_fields):
     """
     Create a minimal community for testing.
 
@@ -113,7 +113,7 @@ def minimal_community_factory(app, admin, create_communities_custom_fields):
 
     def create_minimal_community(owner=None):
         if owner is None:
-            owner = admin.user.id
+            owner = user_factory().user.id
 
         community_data = {
             "access": {
@@ -165,9 +165,7 @@ def minimal_community_factory(app, admin, create_communities_custom_fields):
 
 
 @pytest.fixture(scope="function")
-def sample_communities_factory(
-    app, db, create_communities_custom_fields
-) -> Callable:
+def sample_communities_factory(app, db, create_communities_custom_fields) -> Callable:
     """
     Create communities for testing linked to commons groups.
 
@@ -204,9 +202,7 @@ def sample_communities_factory(
                 rec = current_communities.service.create(
                     identity=system_identity, data=rec_data
                 )
-                assert (
-                    rec["metadata"]["title"] == rec_data["metadata"]["title"]
-                )
+                assert rec["metadata"]["title"] == rec_data["metadata"]["title"]
             Community.index.refresh()
         except ma.exceptions.ValidationError:
             print("Error creating communities.")

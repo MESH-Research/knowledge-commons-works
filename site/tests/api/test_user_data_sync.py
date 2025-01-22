@@ -88,6 +88,7 @@ def test_do_user_data_update_task(
     user_data_to_remote_data: Callable,
     requests_mock,
     celery_worker,
+    search_clear,
 ):
     """
     Test that the do_user_data_update task does what it's supposed to do.
@@ -423,15 +424,15 @@ def test_user_data_sync_on_account_setup(
 
 
 @pytest.mark.skip(reason="Not implemented")
-def test_user_data_sync_on_account_setup_already_linked(running_app):
+def test_user_data_sync_on_account_setup_already_linked(running_app, search_clear):
     pass
 
 
 @pytest.mark.skip(reason="Not implemented")
-def test_user_data_sync_after_one_week(running_app):
+def test_user_data_sync_after_one_week(running_app, search_clear):
     pass
 
 
 @pytest.mark.skip(reason="Not implemented")
-def test_group_data_sync_on_webhook(running_app):
+def test_group_data_sync_on_webhook(running_app, search_clear):
     pass

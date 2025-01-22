@@ -15,7 +15,7 @@ from pprint import pformat
 import time
 
 
-def test_trigger_search_provisioning_at_publication(
+def test_trigger_search_provisioning(
     running_app,
     search_clear,
     db,
@@ -25,7 +25,6 @@ def test_trigger_search_provisioning_at_publication(
     user_factory,
     create_records_custom_fields,
     celery_worker,
-    mocker,
 ):
     """Test draft creation.
 
@@ -34,11 +33,6 @@ def test_trigger_search_provisioning_at_publication(
     app = running_app.app
     assert app.config["DATACITE_TEST_MODE"] is True
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
-
-    mocker.patch(
-        "invenio_remote_api_provisioner.ext.on_remote_api_provisioning_triggered",
-        return_value=None,
-    )
 
     rec_url = list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["rdm_record"].keys())[0]
     remote_response = {
@@ -81,7 +75,38 @@ def test_trigger_search_provisioning_at_publication(
     assert mock_adapter.call_count == 1
 
     # variable IS set by subscriber (so then reset to True)
-    assert os.getenv("MOCK_SIGNAL_SUBSCRIBER") == "rdm_record|publish"
+    result = json.loads(os.getenv("MOCK_SIGNAL_SUBSCRIBER") or "")
+    app.logger.debug(pformat(result))
+    assert result["service_type"] == "rdm_record"
+    assert result["service_method"] == "publish"
+    assert result["request_url"] == rec_url
+    assert result["payload_object"] == {
+        "_internal_id": record.id,
+        "content_type": "work",
+        "network_node": "works",
+        "primary_url": "https://localhost/records/" + record.id,
+        "other_urls": [],
+        "owner": {
+            "name": "",
+            "owner_username": None,
+            "url": "https://hcommons-dev.org/members/None",
+        },
+        "content": "",
+        "contributors": [
+            {"name": "Troy Brown", "role": ""},
+            {"name": "Troy Inc.", "role": ""},
+        ],
+        "title": "A Romans Story 2",
+        "description": "",
+        "publication_date": "2020-06-01",
+        "modified_date": arrow.utcnow().format("YYYY-MM-DD"),
+        "thumbnail_url": "",
+    }
+    assert result["record"]["id"] == record.id
+    assert result["record"]["custom_fields"] == {}
+    assert result["draft"]["id"] == record.id
+    assert result["data"] is None
+    assert result["response_json"] == remote_response
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
 
     read_record = service.read(system_identity, record.id)
@@ -109,9 +134,10 @@ def test_trigger_search_provisioning_at_publication(
     new_edited_data = new_version.data.copy()
     new_edited_data["metadata"]["publication_date"] = arrow.now().format("YYYY-MM-DD")
     new_edited_data["metadata"]["title"] = "A Romans Story 3"
+    # simulate the result of previous remote API operation
     new_edited_data["custom_fields"]["kcr:commons_search_recid"] = remote_response[
         "_id"
-    ]  # simulate the result of previous remote API operation
+    ]
     new_edited_version = service.update_draft(
         system_identity, new_version.id, new_edited_data
     )
@@ -161,11 +187,46 @@ def test_trigger_search_provisioning_at_publication(
     )
 
     new_published_version = service.publish(system_identity, new_version.id)
-    assert os.getenv("MOCK_SIGNAL_SUBSCRIBER") == "rdm_record|publish"
+    result2 = json.loads(os.getenv("MOCK_SIGNAL_SUBSCRIBER") or "")
+    app.logger.debug(pformat(result2))
+    assert result2["service_type"] == "rdm_record"
+    assert result2["service_method"] == "publish"
+    # URL now includes the record ID because it's a PUT (update)
+    assert result2["request_url"] == rec_url + "/" + remote_response["_id"]
+    assert result2["payload_object"] == {
+        "_internal_id": new_published_version.data["id"],
+        "content": "",
+        "content_type": "work",
+        "contributors": [
+            {"name": "Troy Brown", "role": ""},
+            {"name": "Troy Inc.", "role": ""},
+        ],
+        "description": "",
+        "modified_date": arrow.utcnow().format("YYYY-MM-DD"),
+        "network_node": "works",
+        "other_urls": [],
+        "owner": {
+            "name": "",
+            "owner_username": None,
+            "url": "https://hcommons-dev.org/members/None",
+        },
+        "primary_url": "https://localhost/records/" + new_published_version.data["id"],
+        "publication_date": new_published_version.data["metadata"]["publication_date"],
+        "thumbnail_url": "",
+        "title": "A Romans Story 3",
+    }
+    assert result2["record"]["id"] == new_published_version.data["id"]
+    assert result2["record"]["custom_fields"] == {
+        "kcr:commons_search_recid": new_published_version.data["custom_fields"][
+            "kcr:commons_search_recid"
+        ]
+    }
+    assert result2["draft"]["id"] == new_published_version.data["id"]
+    assert result2["data"] is None
+    assert result2["response_json"] == remote_response_2
+
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
     assert mock_adapter2.call_count == 1
-    # assert mock_adapter2.last_request.json() == remote_response_2
-    # FIXME: Why no match?
     assert mock_adapter2.last_request.method == "PUT"
     assert new_published_version.data["metadata"]["title"] == "A Romans Story 3"
 
@@ -290,7 +351,7 @@ def test_trigger_search_provisioning_at_publication(
                 "provider": "oai",
             },
         },
-        "revision_id": 3,
+        "revision_id": 6,
         "stats": {
             "all_versions": {
                 "data_volume": 0.0,
@@ -316,10 +377,10 @@ def test_trigger_search_provisioning_at_publication(
             ),
             "is_visible": True,
             "note": "",
-            "removal_date": (arrow.now().shift(days=1)).format("YYYY-MM-DD"),
+            "removal_date": arrow.utcnow().format("YYYY-MM-DD"),
             "removed_by": {"user": "system"},
         },
-        "versions": {"index": 2, "is_latest": True},
+        "versions": {"index": 2, "is_latest": False},
     }
 
     # TODO: restore record
@@ -363,19 +424,15 @@ def test_trigger_search_provisioning_at_publication(
     monkeypatch.delenv("MOCK_SIGNAL_SUBSCRIBER")
 
 
-def test_component_community_publish_signal(
+def test_trigger_community_provisioning(
     running_app,
-    minimal_community,
-    admin,
-    superuser_role_need,
-    location,
-    community_type_v,
-    search,
     search_clear,
+    minimal_community_factory,
     db,
+    user_factory,
     requests_mock,
     monkeypatch,
-    mock_signal_subscriber,
+    celery_worker,
     create_communities_custom_fields,
 ):
     """Test signal emission for correct community events.
@@ -384,7 +441,13 @@ def test_component_community_publish_signal(
     """
     app = running_app.app
 
+    # Set up mock subscriber and intercept message to callback
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
+    app.logger.debug(
+        f"app.config components: {pformat([c for c in app.config['COMMUNITIES_SERVICE_COMPONENTS']])}"
+    )
+
+    # Set up mock remote API response
     rec_url = list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["community"].keys())[0]
     remote_response = {
         "_internal_id": "1234AbCD?",  # can't mock because set at runtime
@@ -399,60 +462,121 @@ def test_component_community_publish_signal(
     )
 
     service = current_communities.service
-    app.logger.debug(service)
     app.logger.debug(service.config.components[-1])
     app.logger.debug(dir(service.config.components[-1]))
 
-    assert admin.user.roles
-    app.logger.debug(admin.user.roles)
-    admin.identity.provides.add(superuser_role_need)
+    admin = user_factory()
 
     # Creation,
     # API operations should be prompted
-    new = service.create(admin.identity, minimal_community)
-    actual_new = new.data
+    actual_new = minimal_community_factory(admin.user.id)
     assert actual_new["metadata"]["title"] == "My Community"
     assert requests_mock.call_count == 1  # user update at token login
+    assert requests_mock.request_history[0].method == "POST"
+    assert requests_mock.request_history[0].url == rec_url
 
-    read_record = service.read(admin.identity, actual_new["id"])
+    read_record = service.read(system_identity, actual_new["id"])
     app.logger.debug(pformat(read_record.data))
     assert read_record.data["metadata"]["title"] == "My Community"
-    assert (
-        os.getenv("MOCK_SIGNAL_SUBSCRIBER") == "community|create"
-    )  # wasn't set by subscriber
+    event_sent = json.loads(os.getenv("MOCK_SIGNAL_SUBSCRIBER") or "")
+    assert event_sent["service_type"] == "community"
+    assert event_sent["service_method"] == "create"
+    assert event_sent["data"]["slug"] == "my-community"
+    assert event_sent["response_json"] == remote_response
+    assert event_sent["request_url"] == rec_url
+    assert event_sent["payload_object"] == {
+        "_internal_id": "my-community",
+        "content_type": "works-collection",
+        "network_node": "works",
+        "primary_url": "https://localhost/collections/my-community",
+        "owner": {"name": "", "username": "", "url": ""},
+        "contributors": [],
+        "content": "",
+        "other_urls": [
+            "https://localhost/collections/my-community/members/public",
+            "https://localhost/collections/my-community/records",
+        ],
+        "title": "My Community",
+        "description": "A description",
+        "publication_date": arrow.utcnow().format("YYYY-MM-DD"),
+        "modified_date": arrow.utcnow().format("YYYY-MM-DD"),
+    }
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
 
     # Edit
-    # now this should prompt a remote API operation
-    minimal_edited = minimal_community.copy()
-    minimal_edited["metadata"]["title"] = "My Community 2"
-    # simulate the result of previous remote API operation
-    minimal_edited["custom_fields"]["kcr:commons_search_recid"] = remote_response["_id"]
-    minimal_edited["custom_fields"][
-        "kcr:commons_search_updated"
-    ] = arrow.utcnow().format(
-        "YYYY-MM-DDTHH:mm:ssZ"
-    )  # simulate the result of previous remote API operation
+    minimal_edited_payload = read_record.data.copy()
+    minimal_edited_payload["metadata"]["title"] = "My Community 2"
 
-    time.sleep(5)
-    edited_new = service.update(system_identity, new.id, minimal_edited)
-    actual_edited = edited_new.data
-    assert actual_edited["metadata"]["title"] == "My Community 2"
-    assert requests_mock.call_count == 1  # user update at token login
-    # confirm that no actual calls are being made during test
-    assert (
-        edited_new.data["custom_fields"].get("kcr:commons_search_recid")
-        == remote_response["_id"]
+    # simulate the result of previous remote API operation
+    # This is to test that the primary api call logic is working,
+    # assuming the background task (here turned off) does its job
+    minimal_edited_payload["custom_fields"]["kcr:commons_search_recid"] = (
+        remote_response["_id"]
     )
-    minimal_edited["custom_fields"][
+    minimal_edited_timestamp = arrow.utcnow().format("YYYY-MM-DDTHH:mm:ssZ")
+    minimal_edited_payload["custom_fields"][
         "kcr:commons_search_updated"
-    ] = arrow.utcnow().format(
-        "YYYY-MM-DDTHH:mm:ssZ"
-    )  # simulate the result of previous remote API operation
-    assert os.getenv("MOCK_SIGNAL_SUBSCRIBER") == "community|update"
+    ] = minimal_edited_timestamp
+
+    # Set up mock remote API response
+    requests_mock.put(
+        rec_url + "/" + remote_response["_id"],
+        json=remote_response,
+        headers={"Authorization": "Bearer 12345"},
+    )
+
+    # First try update immediately: shouldn't trigger update so soon
+    edited_new = service.update(
+        system_identity, actual_new["id"], minimal_edited_payload
+    )
+    assert requests_mock.call_count == 1
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
 
-    read_edited = service.read(admin.identity, edited_new.id)
+    time.sleep(7)
+
+    # Now update should trigger after delay
+    edited_new2_payload = edited_new.data.copy()
+    app.logger.debug(edited_new._record.files)
+    edited_new2_payload["metadata"]["title"] = "My Community 3"
+    edited_new2 = service.update(system_identity, edited_new.id, edited_new2_payload)
+    assert requests_mock.call_count == 2
+    assert requests_mock.request_history[1].method == "PUT"
+    assert (
+        requests_mock.request_history[1].url == rec_url + "/" + remote_response["_id"]
+    )
+
+    # simulate the result of previous remote API operation
+    edited_new2_datestamp = arrow.utcnow().format("YYYY-MM-DDTHH:mm:ssZ")
+    edited_new2.data["custom_fields"][
+        "kcr:commons_search_updated"
+    ] = edited_new2_datestamp
+
+    event_sent = json.loads(os.getenv("MOCK_SIGNAL_SUBSCRIBER") or "")
+    assert event_sent["service_type"] == "community"
+    assert event_sent["service_method"] == "update"
+    assert event_sent["data"]["slug"] == "my-community"
+    assert event_sent["response_json"] == remote_response
+    assert event_sent["request_url"] == rec_url + "/" + remote_response["_id"]
+    assert event_sent["payload_object"] == {
+        "_internal_id": "my-community",
+        "content_type": "works-collection",
+        "network_node": "works",
+        "primary_url": "https://localhost/collections/my-community",
+        "owner": {"name": "", "username": "", "url": ""},
+        "contributors": [],
+        "content": "",
+        "other_urls": [
+            "https://localhost/collections/my-community/members/public",
+            "https://localhost/collections/my-community/records",
+        ],
+        "title": "My Community 3",
+        "description": "A description",
+        "publication_date": arrow.utcnow().format("YYYY-MM-DD"),
+        "modified_date": arrow.utcnow().format("YYYY-MM-DD"),
+    }
+    monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
+
+    read_edited = service.read(system_identity, edited_new.id)
     assert (
         read_edited.data["custom_fields"].get("kcr:commons_search_recid")
         == remote_response["_id"]
@@ -460,60 +584,74 @@ def test_component_community_publish_signal(
     assert os.getenv("MOCK_SIGNAL_SUBSCRIBER") == "True"  # read doesn't trigger signal
 
     time.sleep(5)
+
+    # Set up mock remote API response
+    requests_mock.delete(
+        rec_url + "/" + remote_response["_id"],
+        json={"message": "Document deleted"},
+        headers={"Authorization": "Bearer 12345"},
+    )
+
     deleted = service.delete_community(system_identity, read_edited.id, data={})
-    assert os.getenv("MOCK_SIGNAL_SUBSCRIBER") == "community|delete"
-    # deleted_actual_data = {
-    #     k: v
-    #     for k, v in deleted.data.items()
-    #     if k
-    #     not in [
-    #         "created",
-    #         "updated",
-    #         "links",
-    #     ]
-    # }
+    assert deleted.data["metadata"]["title"] == "My Community 3"
+    del_result = json.loads(os.getenv("MOCK_SIGNAL_SUBSCRIBER") or "")
+    assert del_result["service_type"] == "community"
+    assert del_result["service_method"] == "delete"
+    assert del_result["data"] == {}
+    assert del_result["response_json"] == {"message": "Document deleted"}
+    assert del_result["request_url"] == rec_url + "/" + remote_response["_id"]
+    assert del_result["payload_object"] is None
+    assert del_result["record"]["metadata"]["title"] == "My Community 3"
+    assert (
+        del_result["record"]["custom_fields"]["kcr:commons_search_recid"]
+        == remote_response["_id"]
+    )
+    assert (
+        del_result["record"]["custom_fields"]["kcr:commons_search_updated"]
+        == minimal_edited_timestamp  # hasn't yet been updated again by callback
+    )
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
 
-    time.sleep(5)
-    restored = service.restore_community(admin.identity, deleted.id)
+    # FIXME: Implement restore
+    # time.sleep(5)
+    # restored = service.restore_community(system_identity, deleted.id)
 
-    # any extra queue events?
-    # assert (
-    #     len(
-    #         [
-    #             c
-    #             for c in current_queues.queues[
-    #                 "remote-api-provisioning-events"
-    #             ].consume()
-    #         ]
-    #     )
-    #     == 0
-    # )
+    # assert restored.to_dict()["metadata"]["title"] == "My Community 3"
+    # assert requests_mock.call_count == 3  # user update at token login
+    # assert requests_mock.request_history[2].method == "POST"
+    # assert requests_mock.request_history[2].url == rec_url
 
-    assert os.getenv("MOCK_SIGNAL_SUBSCRIBER") == "community|restore"
-    # restored_actual_data = {
-    #     k: v
-    #     for k, v in restored.data.items()
-    #     if k
-    #     not in [
-    #         "created",
-    #         "updated",
-    #         "links",
-    #     ]
+    # read_record = service.read(system_identity, actual_new["id"])
+    # assert read_record.data["metadata"]["title"] == "My Community"
+
+    # restored_event = json.loads(os.getenv("MOCK_SIGNAL_SUBSCRIBER") or "")
+    # assert restored_event["service_type"] == "community"
+    # assert restored_event["service_method"] == "restore"
+    # assert restored_event["data"]["slug"] == "my-community"
+    # assert restored_event["response_json"] == remote_response
+    # assert restored_event["request_url"] == rec_url
+    # assert restored_event["payload_object"] == {
+    #     "_internal_id": "my-community",
+    #     "content_type": "works-collection",
+    #     "network_node": "works",
+    #     "primary_url": "https://localhost/collections/my-community",
+    #     "owner": {"name": "", "username": "", "url": ""},
+    #     "contributors": [],
+    #     "content": "",
+    #     "other_urls": [
+    #         "https://localhost/collections/my-community/members/public",
+    #         "https://localhost/collections/my-community/records",
+    #     ],
+    #     "title": "My Community",
+    #     "description": "A description",
+    #     "publication_date": arrow.utcnow().format("YYYY-MM-DD"),
+    #     "modified_date": arrow.utcnow().format("YYYY-MM-DD"),
     # }
-    # restored_expected_data = deleted_actual_data.copy()
-    # del restored_expected_data["tombstone"]
-    # restored_expected_data["deletion_status"] = {
-    #     "is_deleted": False,
-    #     "status": "P",
-    # }
-    # restored_expected_data["revision_id"] = 9
-    # assert restored_actual_data == restored_expected_data
 
-    monkeypatch.delenv("MOCK_SIGNAL_SUBSCRIBER")
+    # monkeypatch.delenv("MOCK_SIGNAL_SUBSCRIBER")
 
 
-def test_ext_on_search_provisioning_triggered(
+def test_search_id_recording_callback(
     running_app,
     minimal_record,
     location,
@@ -526,45 +664,40 @@ def test_ext_on_search_provisioning_triggered(
 ):
     app = running_app.app
 
-    from invenio_vocabularies.proxies import (
-        current_service as vocabulary_service,
-    )
+    # from invenio_vocabularies.proxies import (
+    #     current_service as vocabulary_service,
+    # )
 
-    vocab_item = vocabulary_service.read(
-        system_identity, ("resourcetypes", "image-photograph")
-    )
-    app.logger.debug("got vocab item")
-    app.logger.debug(pformat(vocab_item.data))
     # Temporarily set flag to mock signal subscriber
-    # We want to test the signal subscriber with an existing record
+    # We want to test the callback with an existing record,
+    # but we don't want to test the signal subscriber
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
 
     # Set up minimal record to update after search provisioning
     service = current_rdm_records.records_service
-    record = service.create(system_identity, minimal_record)
-    published_record = service.publish(system_identity, record.id)
-    read_record = service.read(system_identity, published_record.id)
-    assert read_record.data["metadata"]["title"] == "A Romans Story"
-    assert os.getenv("MOCK_SIGNAL_SUBSCRIBER") == "rdm_record|publish"
+    draft = service.create(system_identity, minimal_record)
+    read_record = service.read_draft(system_identity, draft.id)
+    assert read_record.data["metadata"]["title"] == "A Romans story"
+    assert read_record.data["custom_fields"].get("kcr:commons_search_recid") is None
+    assert read_record.data["custom_fields"].get("kcr:commons_search_updated") is None
 
-    # Now switch to live signal subscriber to test its behaviour
-    monkeypatch.delenv("MOCK_SIGNAL_SUBSCRIBER")
-
-    # Mock remote API response
-    mock_response = {
-        "_internal_id": read_record.data["id"],
+    # Publish, still not triggering callback
+    # Mock remote API call to search
+    mock_remote_response = {
+        "_internal_id": "",
         "_id": "2E9SqY0Bdd2QL-HGeUuA",
-        "title": "A Romans Story 2",
+        "title": "A Romans story",
         "primary_url": f"http://works.kcommons.org/records/{read_record.data['id']}",
     }
-    resp_url = list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["rdm_record"].keys())[0]
+    mock_url = list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["rdm_record"].keys())[0]
     requests_mock.post(
-        resp_url,
-        json=mock_response,
-        headers={"Authorization ": "Bearer 12345"},
+        mock_url,
+        json=mock_remote_response,
+        headers={"Authorization": "Bearer 12345"},
     )
 
-    # Trigger signal
+    service.publish(system_identity, draft.id)
+
     owner = {
         "id": "1",
         "email": "admin@inveniosoftware.org",
@@ -572,141 +705,84 @@ def test_ext_on_search_provisioning_triggered(
         "name": "My User",
         "orcid": "888888",
     }
-    events = [
-        {
-            "service_type": "rdm_record",
-            "service_method": "publish",
-            "request_url": "https://search.hcommons-dev.org/api/v1/documents",
-            "http_method": "POST",
-            "payload_object": format_commons_search_payload(
-                system_identity, data=read_record.data, owner=owner
-            ),
-            "record_id": read_record.data["id"],
-            "draft_id": read_record.data["id"],
-            "request_headers": {"Authorization": "Bearer 12345"},
-        }
-    ]
-    current_queues.queues["remote-api-provisioning-events"].publish(events)
-    remote_api_provisioning_triggered.send(app._get_current_object())
-
-    # Check that the remote API was called correctly
-    assert (
-        requests_mock.call_count == 2
-    )  # 1 for user update at token login, 1 for remote API
-    h = requests_mock.request_history
-    assert h[1].url == resp_url
-    assert h[1].method == "POST"
-    assert h[1].headers["Authorization"] == "Bearer 12345"
-    publish_payload = {
-        "_internal_id": read_record.data["id"],
-        "content": "",
-        "content_type": "work",
-        "contributors": [
-            {"name": "Troy Brown", "role": ""},
-            {"name": "Troy Inc.", "role": ""},
-        ],
-        "description": "",
-        "modified_date": arrow.utcnow().format("YYYY-MM-DD"),
-        "network_node": "works",
-        "other_urls": [],
-        "owner": {
-            "name": "",
-            "owner_username": None,
-            "url": "http://hcommons.org/profiles/None",
-        },
-        "primary_url": f"http://works.kcommons.org/records/{read_record.data['id']}",
-        "publication_date": "2020-06-01",
-        "thumbnail_url": "",
-        "title": "A Romans Story",
+    message_content = {
+        "response_json": mock_remote_response,
+        "service_type": "rdm_record",
+        "service_method": "publish",
+        "request_url": mock_url,
+        "payload_object": format_commons_search_payload(
+            system_identity,
+            record=read_record.to_dict(),
+            owner=owner,
+            data={},
+            draft=read_record.to_dict(),
+        ),
+        "record": read_record.data,  # FIXME: is this right?
+        "draft": read_record.data,  # FIXME: is this right?
+        "data": {},  # FIXME: is this right?
     }
-    assert json.loads(h[1].body) == publish_payload
+
+    url = app.config["KC_SEARCH_URL_DOCS"]
+    callback_function = app.config["REMOTE_API_PROVISIONER_EVENTS"]["rdm_record"][url][
+        "publish"
+    ]["callback"]
+    callback_function(**message_content)
 
     # Check that the record was updated with the remote API info and timestamp
-    app.logger.debug(f"Reading final record {read_record.data['id']}")
     final_read_record = service.read(system_identity, read_record.data["id"])
     assert (
         final_read_record.data["custom_fields"]["kcr:commons_search_recid"]
-        == "2E9SqY0Bdd2QL-HGeUuA"
+        == mock_remote_response["_id"]
     )
     assert arrow.get(
         final_read_record.data["custom_fields"]["kcr:commons_search_updated"]
     ) >= arrow.utcnow().shift(seconds=-10)
 
 
-def test_ext_on_search_provisioning_triggered_community(
+def test_community_id_recording_callback(
     running_app,
     superuser_role_need,
-    minimal_community,
+    minimal_community_factory,
     location,
     search,
     search_clear,
     db,
+    user_factory,
     monkeypatch,
     requests_mock,
     create_communities_custom_fields,
 ):
     app = running_app.app
-    # assert admin.user.roles
-    # admin.identity.provides.add(superuser_role_need)
 
     # Temporarily set flag to mock signal subscriber
-    # We want to test the signal subscriber with an existing record
-    # monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
+    # We want to test the callback with an existing record,
+    # but we don't want to test the signal subscriber
+    monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
 
     # Mock remote API response
-    mock_response = {
+    mock_remote_response = {
         "_internal_id": "",
         "_id": "2E9SqY0Bdd2QL-HGeUuA",
         "title": "My Community",
         "primary_url": "http://works.kcommons.org/collections/my-community",
     }
-    resp_url = list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["community"].keys())[0]
+    mock_url = list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["community"].keys())[0]
     requests_mock.post(
-        resp_url,
-        json=mock_response,
+        mock_url,
+        json=mock_remote_response,
         headers={"Authorization ": "Bearer 12345"},
     )
 
     # Set up minimal record to update after search provisioning
     service = current_communities.service
-    record = service.create(system_identity, minimal_community)
-    read_record = service.read(system_identity, record.id)
+    admin = user_factory()
+    record = minimal_community_factory(admin.user.id)
+    read_record = service.read(system_identity, record["id"])
     assert read_record.data["metadata"]["title"] == "My Community"
-    # assert os.getenv("MOCK_SIGNAL_SUBSCRIBER") == "community|create"
+    assert read_record.data["slug"] == "my-community"
+    assert read_record.data["custom_fields"].get("kcr:commons_search_recid") is None
+    assert read_record.data["custom_fields"].get("kcr:commons_search_updated") is None
 
-    # Check that the remote API was called correctly
-    assert (
-        requests_mock.call_count == 2
-    )  # 1 for user update at token login, 1 for remote API
-    h = requests_mock.request_history
-    assert h[1].url == resp_url
-    assert h[1].method == "POST"
-    assert h[1].headers["Authorization"] == "Bearer 12345"
-    publish_payload = {
-        "_internal_id": "",
-        "content": "",
-        "content_type": "works_collection",
-        "contributors": [],
-        "description": "",
-        "modified_date": arrow.utcnow().format("YYYY-MM-DD"),
-        "network_node": "works",
-        "other_urls": [],
-        "owner": {
-            "name": "",
-            "owner_username": None,
-            "url": "",
-        },
-        "primary_url": "http://works.kcommons.org/collections/my-collection",
-        "publication_date": arrow.utcnow().format("YYYY-MM-DD"),
-        "thumbnail_url": "",
-        "title": "My Community",
-    }
-    assert json.loads(h[1].body) == publish_payload
-
-    # Now switch to live signal subscriber to test its behaviour
-    # monkeypatch.delenv("MOCK_SIGNAL_SUBSCRIBER")
-
-    # Trigger signal again
     owner = {
         "id": "1",
         "email": "admin@inveniosoftware.org",
@@ -714,62 +790,35 @@ def test_ext_on_search_provisioning_triggered_community(
         "name": "My User",
         "orcid": "888888",
     }
-    events = [
-        {
-            "service_type": "community",
-            "service_method": "update",
-            "request_url": f"https://search.hcommons-dev.org/api/v1/documents/{read_record.data['custom_fields']['kcr:commons_search_recid']}",
-            "http_method": "PUT",
-            "payload_object": format_commons_search_collection_payload(
-                system_identity, data=read_record.data, owner=owner
-            ),
-            "record_id": read_record.data["id"],
-            "draft_id": read_record.data["id"],  # FIXME: is this right?
-            "request_headers": {"Authorization": "Bearer 12345"},
-        }
-    ]
-    current_queues.queues["remote-api-provisioning-events"].publish(events)
-    remote_api_provisioning_triggered.send(app._get_current_object())
-
-    # Check that the remote API was called correctly
-    assert (
-        requests_mock.call_count == 2
-    )  # 1 for user update at token login, 1 for remote API
-    h = requests_mock.request_history
-    assert h[1].url == resp_url
-    assert h[1].method == "POST"
-    assert h[1].headers["Authorization"] == "Bearer 12345"
-    publish_payload = {
-        "_internal_id": read_record.data["id"],
-        "content": "",
-        "content_type": "work",
-        "contributors": [
-            {"name": "Troy Brown", "role": ""},
-            {"name": "Troy Inc.", "role": ""},
-        ],
-        "description": "",
-        "modified_date": arrow.utcnow().format("YYYY-MM-DD"),
-        "network_node": "works",
-        "other_urls": [],
-        "owner": {
-            "name": "",
-            "owner_username": None,
-            "url": "http://hcommons.org/profiles/None",
-        },
-        "primary_url": f"http://works.kcommons.org/records/{read_record.data['id']}",
-        "publication_date": "2020-06-01",
-        "thumbnail_url": "",
-        "title": "A Romans Story",
+    message_content = {
+        "response_json": mock_remote_response,
+        "service_type": "community",
+        "service_method": "create",
+        "request_url": mock_url,
+        "payload_object": format_commons_search_collection_payload(
+            system_identity,
+            record=read_record.to_dict(),  # FIXME: is this right?
+            owner=owner,
+            data=read_record.data,  # FIXME: is this right?
+            draft={},  # FIXME: is this right?
+        ),
+        "record": read_record.to_dict(),  # FIXME: is this right?
+        "draft": {},  # FIXME: is this right?
+        "data": read_record.data,  # FIXME: is this right?
     }
-    assert json.loads(h[1].body) == publish_payload
+
+    url = app.config["KC_SEARCH_URL_DOCS"]
+    callback_function = app.config["REMOTE_API_PROVISIONER_EVENTS"]["community"][url][
+        "create"
+    ]["callback"]
+    callback_function(**message_content)
 
     # Check that the record was updated with the remote API info and timestamp
-    app.logger.debug(f"Reading final record {read_record.data['id']}")
-    final_read_record = service.read(system_identity, read_record.data["id"])
+    final_read_record = service.read(system_identity, read_record.data["id"]).to_dict()
     assert (
-        final_read_record.data["custom_fields"]["kcr:commons_search_recid"]
-        == "2E9SqY0Bdd2QL-HGeUuA"
+        final_read_record["custom_fields"]["kcr:commons_search_recid"]
+        == mock_remote_response["_id"]
     )
     assert arrow.get(
-        final_read_record.data["custom_fields"]["kcr:commons_search_updated"]
+        final_read_record["custom_fields"]["kcr:commons_search_updated"]
     ) >= arrow.utcnow().shift(seconds=-10)

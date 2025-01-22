@@ -114,7 +114,13 @@ def test_knowledgeCommons_account_info(
     ],
 )
 def test_knowledgeCommons_account_setup(
-    running_app, appctx, db, user_factory: Callable, user_data: dict, idp_data: dict
+    running_app,
+    appctx,
+    db,
+    user_factory: Callable,
+    user_data: dict,
+    idp_data: dict,
+    search_clear: Callable,
 ) -> None:
     """
     Test the account setup function
@@ -200,6 +206,7 @@ def test_account_register_on_login(
     api_call_count: int,
     mailbox,
     celery_worker,
+    search_clear: Callable,
 ) -> None:
     """
     Test the registration function if a user is not already registered.

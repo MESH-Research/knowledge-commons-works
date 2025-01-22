@@ -834,6 +834,7 @@ def test_read_unread_notifications_by_service(
     client,
     client_with_login,
     headers,
+    search_clear,
 ):
     """
     Test that the user's unread notifications are read by the service.
@@ -1029,6 +1030,7 @@ def test_read_unread_notifications_by_view(
     client_with_login,
     headers,
     admin,
+    search_clear,
 ):
     """
     Test that the user's unread notifications are read by the view.
