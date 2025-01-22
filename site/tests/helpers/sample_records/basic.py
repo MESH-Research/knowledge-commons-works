@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def minimal_record():
     """Minimal record data as dict coming from the external world."""
     return {
@@ -38,7 +38,7 @@ def minimal_record():
     }
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def full_record(users):
     """Full record data as dict coming from the external world."""
     return {
@@ -116,9 +116,7 @@ def full_record(users):
                 }
             ],
             "languages": [{"id": "dan"}, {"id": "eng"}],
-            "identifiers": [
-                {"identifier": "1924MNRAS..84..308E", "scheme": "bibcode"}
-            ],
+            "identifiers": [{"identifier": "1924MNRAS..84..308E", "scheme": "bibcode"}],
             "related_identifiers": [
                 {
                     "identifier": "10.1234/foo.bar",
@@ -214,9 +212,7 @@ def full_record(users):
                     "id": "445aaacd-9de1-41ab-af52-25ab6cb93df7",
                 }
             ],
-            "meta": {
-                "big-dataset.zip": {"description": "File containing the data."}
-            },
+            "meta": {"big-dataset.zip": {"description": "File containing the data."}},
         },
         "notes": ["Under investigation for copyright infringement."],
     }

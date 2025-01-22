@@ -207,7 +207,7 @@ def test_notify_for_request_acceptance(
         time.sleep(10)
 
         # check that the user is notified by mail
-        assert app.config.get("MAIL_SUPPRESS_SEND") is False
+        assert app.config.get("MAIL_SUPPRESS_SEND") in [False, "false"]
         assert len(mailbox) == 2  # 1 for accept, 1 for comment
         # TODO: Test overridden templates
         assert mailbox[0].recipients == [user.email]
@@ -834,6 +834,7 @@ def test_read_unread_notifications_by_service(
     client,
     client_with_login,
     headers,
+    search_clear,
 ):
     """
     Test that the user's unread notifications are read by the service.
@@ -1029,6 +1030,7 @@ def test_read_unread_notifications_by_view(
     client_with_login,
     headers,
     admin,
+    search_clear,
 ):
     """
     Test that the user's unread notifications are read by the view.
