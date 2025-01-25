@@ -206,6 +206,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizations.html">Customizations to InvenioRDM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration of InvenioRDM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_commands.html">CLI Commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="infrastructure.html">KCWorks Infrastructure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developing.html">Developing KCWorks</a></li>
@@ -252,7 +253,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="metadata-schema-vocabularies-and-identifiers">
-<h1>Metadata Schema, Vocabularies, and Identifiers<a class="headerlink" href="#metadata-schema-vocabularies-and-identifiers" title="Link to this heading">¶</a></h1>
+<span id="id1"></span><h1>Metadata Schema, Vocabularies, and Identifiers<a class="headerlink" href="#metadata-schema-vocabularies-and-identifiers" title="Link to this heading">¶</a></h1>
 <p>The default metadata schema for InvenioRDM records is defined in the <code class="docutils literal notranslate"><span class="pre">invenio-rdm-records</span></code> package and documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/">here</a>. It also includes a number of optional metadata fields which have been enabled in KCWorks, documented <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/metadata/optional_metadata/">here</a>.</p>
 <p>In this documentation we provide</p>
 <ol class="arabic simple">
@@ -512,11 +513,11 @@
 <h3>Subject headings<a class="headerlink" href="#subject-headings" title="Link to this heading">¶</a></h3>
 <section id="fast">
 <h4>FAST<a class="headerlink" href="#fast" title="Link to this heading">¶</a></h4>
-<p>The FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) is used for the <code class="docutils literal notranslate"><span class="pre">subjects</span></code> field. See the <a class="reference internal" href="#metadata.subjects"><span class="xref myst">metadata.subjects</span></a> section for more information about how to include FAST subjects in a KCWorks record.</p>
+<p>The FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) is used for the <code class="docutils literal notranslate"><span class="pre">subjects</span></code> field. See the <a class="reference internal" href="#metadata-subjects"><span class="xref myst">metadata.subjects</span></a> section for more information about how to include FAST subjects in a KCWorks record.</p>
 </section>
 <section id="homosaurus">
 <h4>Homosaurus<a class="headerlink" href="#homosaurus" title="Link to this heading">¶</a></h4>
-<p>The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https://homosaurus.org/) for subjects related to sexuality and gender identity. See the <a class="reference internal" href="#metadata.subjects"><span class="xref myst">metadata.subjects</span></a> section for information about how to include Homosaurus subjects in a KCWorks record.</p>
+<p>The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https://homosaurus.org/) for subjects related to sexuality and gender identity. See the <a class="reference internal" href="#metadata-subjects"><span class="xref myst">metadata.subjects</span></a> section for information about how to include Homosaurus subjects in a KCWorks record.</p>
 </section>
 </section>
 </section>
@@ -748,12 +749,12 @@
 <section id="orcid-recommended">
 <h4>ORCID (recommended)<a class="headerlink" href="#orcid-recommended" title="Link to this heading">¶</a></h4>
 <p>KCWorks (and InvenioRDM) supports the ORCID identifier scheme. The ORCID of the submitter of the KCWorks record is stored in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> property of the <code class="docutils literal notranslate"><span class="pre">creators</span></code> array (<code class="docutils literal notranslate"><span class="pre">creators[0].person_or_org.identifiers.identifier</span></code>). A KCWorks user’s ORCID id is also drawn from their KC profile (if they have provided one) and stored in their system user profile (as <code class="docutils literal notranslate"><span class="pre">&lt;user_object&gt;.user_profile.identifier_orcid</span></code>).</p>
-<p>For details on how to use ORCID identifiers in KCWorks, see the section on <a class="reference internal" href="#metadata.creators"><span class="xref myst">Metadata.creators</span></a> below.</p>
+<p>For details on how to use ORCID identifiers in KCWorks, see the section on <a class="reference internal" href="#metadata-creators-metadata-contributors"><span class="xref myst">Metadata.creators</span></a> below.</p>
 </section>
 <section id="kc-username-recommended">
 <h4>KC Username (recommended)<a class="headerlink" href="#kc-username-recommended" title="Link to this heading">¶</a></h4>
 <p>KCWorks also allows the use of Knowledge Commons usernames as identifiers. The KC username of the submitter of the KCWorks record is stored in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> property of the <code class="docutils literal notranslate"><span class="pre">creators</span></code> array (<code class="docutils literal notranslate"><span class="pre">creators[0].person_or_org.identifiers.identifier</span></code>) using the scheme <code class="docutils literal notranslate"><span class="pre">kc_username</span></code>.</p>
-<p>For details on how to use KC usernames in KCWorks, see the section on <a class="reference internal" href="#metadata.creators"><span class="xref myst">Metadata.creators</span></a> below.</p>
+<p>For details on how to use KC usernames in KCWorks, see the section on <a class="reference internal" href="#metadata-creators-metadata-contributors"><span class="xref myst">Metadata.creators</span></a> below.</p>
 </section>
 <section id="gnd">
 <h4>GND<a class="headerlink" href="#gnd" title="Link to this heading">¶</a></h4>
@@ -774,8 +775,8 @@
 <h4>Grid (deprecated)<a class="headerlink" href="#grid-deprecated" title="Link to this heading">¶</a></h4>
 <p>KCWorks also supports the Grid identifier scheme (https://www.grid.ac/) for organizations using the scheme <code class="docutils literal notranslate"><span class="pre">grid</span></code>. This scheme is deprecated in favour of ROR, however, and should not be used for new identifiers.</p>
 </section>
-<section id="id1">
-<h4>GND<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<section id="id2">
+<h4>GND<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
 <p>KCWorks also supports the Integrated Authority File (GND) identifier scheme (https://www.dnb.de/EN/Professionell/Standardisierung/GND/gnd_node.html) for organizations using the scheme <code class="docutils literal notranslate"><span class="pre">gnd</span></code>.</p>
 </section>
 </section>
@@ -1358,7 +1359,7 @@ This field is automatically generated by the <code class="docutils literal notra
 <li><a class="reference internal" href="#organizations">Organizations</a><ul>
 <li><a class="reference internal" href="#ror-recommended">ROR (recommended)</a></li>
 <li><a class="reference internal" href="#grid-deprecated">Grid (deprecated)</a></li>
-<li><a class="reference internal" href="#id1">GND</a></li>
+<li><a class="reference internal" href="#id2">GND</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#funders">Funders</a><ul>
