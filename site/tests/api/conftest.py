@@ -18,7 +18,7 @@ def headers():
     """Default headers for making requests."""
     return {
         "content-type": "application/json",
-        "accept": "application/vnd.inveniordm.v1+json",
+        # "accept": "application/vnd.inveniordm.v1+json",
     }
 
 

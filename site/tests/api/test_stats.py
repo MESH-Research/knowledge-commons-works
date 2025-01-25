@@ -11,8 +11,8 @@ import uuid
 
 
 @pytest.mark.skip("Not implemented")
-def test_stat_creation(running_app, db, search_clear, minimal_record):
-    draft = current_rdm_records_service.create(system_identity, minimal_record)
+def test_stat_creation(running_app, db, search_clear, minimal_record_metadata):
+    draft = current_rdm_records_service.create(system_identity, minimal_record_metadata)
     published = current_rdm_records_service.publish(system_identity, draft["id"])
     record_id = published["id"]
     metadata_record = published["metadata"]
@@ -24,13 +24,13 @@ def test_stats_backend_processing(
     running_app,
     db,
     search_clear,
-    minimal_record,
+    minimal_record_metadata,
     user_factory,
     create_stats_indices,
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
-    draft = current_rdm_records_service.create(system_identity, minimal_record)
+    draft = current_rdm_records_service.create(system_identity, minimal_record_metadata)
     published = current_rdm_records_service.publish(system_identity, draft["id"])
     record_id = published.id
     metadata_record = published.to_dict()
