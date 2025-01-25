@@ -20,6 +20,7 @@ templates_path = ["_templates"]
 exclude_patterns = []
 
 autosectionlabel_prefix_document = True
+autosectionlabel_maxdepth = 4
 
 
 # -- Options for HTML output -------------------------------------------------
