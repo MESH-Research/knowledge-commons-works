@@ -20,6 +20,7 @@ Welcome to the Knowledge Commons Works technical documentation!
    cli_commands
    infrastructure
    developing
+   architecture
    in_depth
    reference
 
