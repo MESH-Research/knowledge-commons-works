@@ -1,7 +1,7 @@
 import pytest
 from celery import shared_task
-from invenio_queues.proxies import current_queues
-from pprint import pformat
+
+# from pprint import pformat
 from typing import Optional
 
 

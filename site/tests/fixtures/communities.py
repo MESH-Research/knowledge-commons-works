@@ -9,101 +9,140 @@ import traceback
 from typing import Callable, Optional
 
 
-def group_communities_data_set():
+@pytest.fixture(scope="function")
+def communities_links_factory():
     """
-    Create metadata for group collections for testing.
+    Create links for communities for testing.
     """
-    communities_data = []
-    groups_data = {
-        "knowledgeCommons": [
-            (
-                "123",
-                "Commons Group 1",
-                "Community 1",
-            ),
-            (
-                "456",
-                "Commons Group 2",
-                "Community 2",
-            ),
-            (
-                "789",
-                "Commons Group 3",
-                "Community 3",
-            ),
-            (
-                "101112",
-                "Commons Group 4",
-                "Community 4",
-            ),
-        ],
-        "msuCommons": [
-            (
-                "131415",
-                "MSU Group 1",
-                "MSU Community 1",
-            ),
-            (
-                "161718",
-                "MSU Group 2",
-                "MSU Community 2",
-            ),
-            (
-                "181920",
-                "MSU Group 3",
-                "MSU Community 3",
-            ),
-            (
-                "212223",
-                "MSU Group 4",
-                "MSU Community 4",
-            ),
-        ],
-    }
-    # Each top-level key is a commons instance, and each value is a list of tuples,
-    # where each tuple is a group on that commons.
-    # In each group tuple, the first element is the commons group id, the second
-    # is the group name, and the third is the community name.
 
-    for instance in groups_data.keys():
-        for c in groups_data[instance]:
-            slug = c[2].lower().replace("-", "").replace(" ", "")
-            rec_data = {
-                "access": {
-                    "visibility": "public",
-                    "member_policy": "open",
-                    "record_policy": "open",
-                },
-                "slug": c[2].lower().replace(" ", "-"),
-                "metadata": {
-                    "title": c[2],
-                    "description": c[2] + " description",
-                    "type": {
-                        "id": "event",
-                    },
-                    "curation_policy": "Curation policy",
-                    "page": f"Information for {c[2].lower()}",
-                    "website": f"https://{slug}.com",
-                    "organizations": [
-                        {
-                            "name": "Organization 1",
-                        }
-                    ],
-                },
-                "custom_fields": {
-                    "kcr:commons_instance": instance,
-                    "kcr:commons_group_id": c[0],
-                    "kcr:commons_group_name": c[1],
-                    "kcr:commons_group_description": (f"{c[1]} description"),
-                    "kcr:commons_group_visibility": "public",
-                },
-            }
-            communities_data.append(rec_data)
-    return communities_data
+    def assemble_links(community_id: str, slug: str):
+        return {
+            "featured": f"https://localhost/api/communities/{community_id}/featured",
+            "invitations": (
+                f"https://localhost/api/communities/{community_id}/invitations"
+            ),
+            "logo": f"https://localhost/api/communities/{community_id}/logo",
+            "members": f"https://localhost/api/communities/{community_id}/members",
+            "membership_requests": (
+                f"https://localhost/api/communities/{community_id}/membership-requests"
+            ),
+            "public_members": (
+                f"https://localhost/api/communities/{community_id}/members/public"
+            ),
+            "records": f"https://localhost/api/communities/{community_id}/records",
+            "rename": f"https://localhost/api/communities/{community_id}/rename",
+            "requests": f"https://localhost/api/communities/{community_id}/requests",
+            "self": f"https://localhost/api/communities/{community_id}",
+            "self_html": f"https://localhost/collections/{slug}",
+            "settings_html": f"https://localhost/collections/{slug}/settings",
+        }
+
+    return assemble_links
 
 
 @pytest.fixture(scope="function")
-def minimal_community_factory(app, user_factory, create_communities_custom_fields):
+def group_communities_data_factory():
+    """
+    Create metadata for group collections for testing.
+    """
+
+    def assemble_data() -> list[dict]:
+        communities_data = []
+        groups_data = {
+            "knowledgeCommons": [
+                (
+                    "123",
+                    "Commons Group 1",
+                    "Community 1",
+                ),
+                (
+                    "456",
+                    "Commons Group 2",
+                    "Community 2",
+                ),
+                (
+                    "789",
+                    "Commons Group 3",
+                    "Community 3",
+                ),
+                (
+                    "101112",
+                    "Commons Group 4",
+                    "Community 4",
+                ),
+            ],
+            "msuCommons": [
+                (
+                    "131415",
+                    "MSU Group 1",
+                    "MSU Community 1",
+                ),
+                (
+                    "161718",
+                    "MSU Group 2",
+                    "MSU Community 2",
+                ),
+                (
+                    "181920",
+                    "MSU Group 3",
+                    "MSU Community 3",
+                ),
+                (
+                    "212223",
+                    "MSU Group 4",
+                    "MSU Community 4",
+                ),
+            ],
+        }
+        # Each top-level key is a commons instance, and each value is a list of tuples,
+        # where each tuple is a group on that commons.
+        # In each group tuple, the first element is the commons group id, the second
+        # is the group name, and the third is the community name.
+
+        for instance in groups_data.keys():
+            for c in groups_data[instance]:
+                slug = c[2].lower().replace("-", "").replace(" ", "")
+                rec_data = {
+                    "access": {
+                        "visibility": "public",
+                        "member_policy": "open",
+                        "record_policy": "open",
+                        "review_policy": "closed",
+                        "members_visibility": "public",
+                    },
+                    "slug": c[2].lower().replace(" ", "-"),
+                    "children": {"allow": False},
+                    "metadata": {
+                        "title": c[2],
+                        "description": c[2] + " description",
+                        "type": {
+                            "id": "event",
+                        },
+                        "curation_policy": "Curation policy",
+                        "page": f"Information for {c[2].lower()}",
+                        "website": f"https://{slug}.com",
+                        "organizations": [
+                            {
+                                "name": "Organization 1",
+                            }
+                        ],
+                    },
+                    "custom_fields": {
+                        "kcr:commons_instance": instance,
+                        "kcr:commons_group_id": c[0],
+                        "kcr:commons_group_name": c[1],
+                        "kcr:commons_group_description": (f"{c[1]} description"),
+                        "kcr:commons_group_visibility": "public",
+                    },
+                }
+                communities_data.append(rec_data)
+        return communities_data
+
+    return assemble_data
+
+
+@pytest.fixture(scope="function")
+def minimal_community_factory(app, db, user_factory, create_communities_custom_fields):
     """
     Create a minimal community for testing.
 
@@ -193,7 +232,9 @@ def minimal_community_factory(app, user_factory, create_communities_custom_field
 
 
 @pytest.fixture(scope="function")
-def sample_communities_factory(app, db, create_communities_custom_fields) -> Callable:
+def sample_communities_factory(
+    app, db, create_communities_custom_fields, group_communities_data_factory
+) -> Callable:
     """
     Create communities for testing linked to commons groups.
 
@@ -214,7 +255,7 @@ def sample_communities_factory(app, db, create_communities_custom_fields) -> Cal
                   to commons groups.
     """
 
-    def create_communities(app, metadata=[]) -> None:
+    def create_communities(metadata: list[dict] = []) -> None:
         """
         Create communities for testing linked to commons groups.
         """
@@ -224,7 +265,7 @@ def sample_communities_factory(app, db, create_communities_custom_fields) -> Cal
         if communities.total > 0:
             print("Communities already exist.")
             return
-        communities_data = metadata or group_communities_data_set()
+        communities_data = metadata or group_communities_data_factory()
         try:
             for rec_data in communities_data:
                 rec = current_communities.service.create(
