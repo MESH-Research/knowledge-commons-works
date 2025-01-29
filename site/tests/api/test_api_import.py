@@ -2,6 +2,7 @@ from invenio_access.permissions import authenticated_user
 from invenio_access.utils import get_identity
 import json
 from pathlib import Path
+from pprint import pformat
 
 
 def test_import_records(
@@ -49,12 +50,13 @@ def test_import_records(
                         )
                     ],
                 },
-                headers={"Authorization": f"Bearer {token}"},
+                headers={
+                    "Content-Type": "multipart/form-data",
+                    "Authorization": f"Bearer {token}",
+                },
             )
         print(response.text)
-        print(app.config["SITE_API_URL"])
-        print(f"{app.config['SITE_API_URL']}/import/{community.to_dict()['slug']}")
-        assert response.status_code == 200
+        assert response.status_code == 201
         assert response.json == {"status": "success", "data": []}
 
 

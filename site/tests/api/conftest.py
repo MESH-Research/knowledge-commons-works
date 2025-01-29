@@ -3,12 +3,12 @@
 # from pprint import pprint
 import pytest
 
-# from invenio_app.factory import create_api
+from invenio_app.factory import create_api
 
 # from pytest_invenio.fixtures import UserFixture, database, db
 
 
-# @pytest.fixture(scope='module')
+# @pytest.fixture(scope="module")
 # def create_app():
 #     return create_api
 
