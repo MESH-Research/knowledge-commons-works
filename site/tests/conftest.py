@@ -113,6 +113,10 @@ if not log_file_path.exists():
 test_config["LOGGING_FS_LEVEL"] = "DEBUG"
 test_config["LOGGING_FS_LOGFILE"] = str(log_file_path)
 test_config["CELERY_LOGFILE"] = str(log_folder_path / "celery.log")
+test_config["RECORD_IMPORTER_DATA_DIR"] = str(
+    parent_path / "helpers" / "sample_import_data"
+)
+test_config["RECORD_IMPORTER_LOGS_LOCATION"] = log_folder_path
 
 # enable DataCite DOI provider
 test_config["DATACITE_ENABLED"] = True
