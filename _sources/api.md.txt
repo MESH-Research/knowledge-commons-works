@@ -103,9 +103,10 @@ Why is this API needed? The InvenioRDM REST API can be fragile and difficult to 
 
 ### Who can use the import API?
 
-The import API is available to any registered active user who has obtained an OAuth token for API operations.
+The import API is available to authorized organizations who have obtained an OAuth token for API operations.
 
-If the import is to include placing the work directly in a collection, without passing through the review process, the user must have sufficient permissions to publish directly in the collection. Exactly what role they must have in the collection ("owner", "manager", "curator", "reader") depends on the collection's review policy.
+If the import is to include placing the work directly in a collection, without passing through the review process, the user to whom
+the token is issued must also have sufficient permissions to publish directly in the collection. Exactly what role they must have in the collection ("owner", "manager", "curator", "reader") depends on the collection's review policy.
 
 The exception to this rule is for collection owners, who may override the collection's review policy and import works directly into the collection without review.
 
@@ -130,8 +131,8 @@ This request must be made with a multipart/form-data request. The request body m
 | Name | Required | Content Type | Description |
 |-------|----------|--------------|-------------|
 | `files` | yes | `application/octet-stream` | The (binary) file content to be uploaded. If multiple files are being uploaded, a body part with this same name ("files") must be provided for each file. If more than three or four files are being uploaded, it is recommended to provide a single zip archive containing all of the files. The files will be assigned to the appropriate work based on filename, so where multiple files are provided these **must be unique**. If a zip archive is provided, the files must be contained in a single compressed folder with no subfolders. |
-| `metadata` | yes | `application/json` | An array of JSON metadata objects, each of which will be used to create a new work. Each must following the KCWorks implementation of the InvenioRDM metadata schema described {ref}`here <metadata:metadata-schema-vocabularies-and-identifiers>`. In addition, an array of owners for the work may optionally be provided by adding an `access.owned_by` property to each metadata object. |
-| `collection` | no | `text/plain` | The ID (either the url slug or the UUID) of the collection to which the work should be published. If this value is provided, the work will be submitted to the collection immediately after import. If the collection requires review, the work will be placed in the collection's review queue. |
+| `metadata` | yes | `application/json` | An array of JSON metadata objects, each of which will be used to create a new work. Each must following the KCWorks implementation of the InvenioRDM metadata schema described {ref}`here <metadata:metadata-schema-vocabularies-and-identifiers>`. In addition, an array of owners for the work may optionally be provided by adding an `access.owned_by` property to each metadata object. Note that if no owners are provided, the work will be created with the organizational account that issued the OAuth token as the owner. |
+| `collection` | no | `text/plain` | The ID (either the url slug or the UUID) of the collection to which the work should be published. If this value is provided, the work will be submitted to the collection immediately after import. If the collection requires review, and the `review_required` parameter is set to "true", the work will be placed in the collection's review queue. |
 | `review_required` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the work should be reviewed before publication. This setting is only relevant if the work is intended for publication in a collection that requires review. It will override the collection's usual review policy, since the work is being uploaded by a collection administrator. (Default: "true") |
 | `strict_validation` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the import request should be rejected if any validation errors are encountered. If this value is "false", the imported work will be created in KCWorks even if some of the provided metadata does not conform to the KCWorks metadata schema, provided these are not required fields. If this value is "true", the import request will be rejected if any validation errors are encountered. (Default: "true") |
 | `all_or_none` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the entire import request should be rejected if any of the works fail to be created (whether for validation errors, upload errors, or other reasons). If this value is "false", the import request will be accepted even if some of the works cannot be created. The response in this case will include a list of works that were successfully created and a list of errors for the works that failed to be created. (Default: "true") |
@@ -142,7 +143,7 @@ The array of owners, if provided in a metadata object's `access.owned_by` proper
 |-----|----------|------|-------------|
 | `full_name` | yes | `string` | The full name of the user. |
 | `email` | yes | `string` | The email address of the user. |
-| `identifiers` | no | `array` | An array of identifiers for the user. Any identifier schemes supported by KCWorks will be accepted. |
+| `identifiers` | no | `array` | An array of identifiers for the user. Any identifier schemes supported by KCWorks will be accepted. If the user already has a KCWorks account, the `kc_username` scheme should be used and the user's username provided as the identifier. |
 
 The resulting `owners` list should be shaped like this:
 
@@ -176,16 +177,21 @@ Content-Type: application/json
 This response will include a JSON object with the following fields:
 
 - `status`: The status of the import request, which will be "success" if the import request was successful.
-- `data`: An array of JSON objects with the following fields:
+- `data`: An array of JSON objects, one for each record that was created in the operation
+- `errors`: An array of JSON objects, one for each record that failed to be created. (In a successful import, this array will be empty.)
+- `message`: A message describing the import request. (In a successful import, this will be "All records were successfully imported".)
+
+Each object in the `data` array will have the following fields:
 
 | key | type | description |
 |-----|------|-------------|
-| `record_id` | `string` | The ID of the new work. |
-| `record_url` | `string` | The URL of the new work. |
-| `files` | `array` | A list of the filenames for the files that were successfully uploaded. This is for convenience. Details about the files, including their size and checksum, are available in the `files` property of the `metadata` object. |
+| `item_index` | `integer` | The index of the record in the import request. (Starting with 0 for the first record.) |
+| `record_id` | `string` | The KCWorks ID of the new work. |
+| `record_url` | `string` | The URL of the new work. This is the URL of the work's landing page on KCWorks. Other URLs for the work, including the endpoints for API operations, are available in the `links` property of the record's `metadata` object. |
+| `files` | `object` | An object whose keys are the filenames for the files that were successfully uploaded and whose values are 2 member arrays. The first member is a string representing the status of the file upload operation. The second member is an array of string error messages if any errors occurred during the upload. Further details about the files, including their size and checksum, are available in the `files` property of the `metadata` object. |
 | `collection_id` | `string` | The ID of the collection to which the work was published, if any. This is provided for convenience. Details about the collection are available in the `parent.communities` property of the `metadata` object. |
-| `errors` | `array` | A list of errors that occurred during the import process. These might include validation errors for certain fields in the provided metadata that did not prevent creation of the work. (Only provided if the request was made with `strict_validation` set to "false".) |
-| `metadata` | `object` | The metadata for the created work, in JSON format, following the KCWorks implementation of the InvenioRDM metadata schema described {ref}`here <metadata:metadata-schema-vocabularies-and-identifiers>`. |
+| `errors` | `array` | A list of objects, each of which describes an error that occurred during the import process. These might include validation errors for certain fields in the provided metadata that did not prevent creation of the work. |
+| `metadata` | `object` | The metadata for the created work, in JSON format, following the KCWorks implementation of the InvenioRDM metadata schema described {ref}`here <metadata:metadata-schema-vocabularies-and-identifiers>`. The returned metadata will include internal KCWorks system fields such as `created`, `updated`, `revision_id`, `id`, etc. It is identical to the metadata that would be returned by a GET request to the records API endpoint on KCWorks. |
 
 The response object will be shaped like this:
 
@@ -197,7 +203,10 @@ The response object will be shaped like this:
             "item_index": 0,
             "record_id": "1234567890",
             "record_url": "https://works.hcommons.org/records/1234567890",
-            "files": ["file1.pdf", "file2.pdf"],
+            "files": {
+                "file1.pdf": ["success", []],
+                "file2.pdf": ["success", []]
+            },
             "collection_id": "1234567890",
             "errors": [],
             "metadata": {
@@ -208,14 +217,19 @@ The response object will be shaped like this:
             "item_index": 1,
             "record_id": "1234567891",
             "record_url": "https://works.hcommons.org/records/1234567891",
-            "files": ["file1.pdf", "file2.pdf"],
+            "files": {
+                "file1.pdf": ["success", []],
+                "file2.pdf": ["success", []]
+            },
             "collection_id": "1234567890",
             "errors": [],
             "metadata": {
                 /* ... */
             }
         }
-    ]
+    ],
+    "errors": [],
+    "message": "All records were successfully imported."
 }
 ```
 
@@ -228,7 +242,7 @@ HTTP/1.1 403 Forbidden
 Content-Type: application/json
 ```
 
-This response will include a JSON object:
+This response will include a JSON object with the following fields:
 
 ```json
 {
@@ -249,24 +263,38 @@ a. the `strict_validation` request parameter was set to "true" and all of the su
 b. the `strict_validation` parameter is set to "false", but the validation errors affected fields that are required for the works to be created.
 c. the `all_or_none` request parameter is set to "true" and some of the supplied metadata objects raise validation errors.
 
-The response will include a JSON object with the following fields:
+The response will include a JSON object with the same shape as the successful response, but with the following differences:
+
+- The `status` field will be "error".
+- The `data` field will be an empty array.
+- The `errors` field will be an array of objects, each of which describes a work that failed to be created. In each object the `record_id` and `record_url` fields will be `null`, since the work was not created. The `errors` field will be an array of objects, each of which describes an error that occurred during the attempt to create the work. The `metadata` field will still contain the metadata that was provided in the request for reference.
 
 ```json
 {
     "status": "error",
     "message": "The request metadata is malformed or invalid.",
+    "data": [],
     "errors": [
         {
             "item_index": 0,
+            "record_id": null,
+            "record_url": null,
             "errors": [
                 {
                     "field": "title",
                     "message": "Required field missing."
                 }
-            ]
+            ],
+            "files": {},
+            "collection_id": "1234567890",
+            "metadata": {
+                /* ... */
+            }
         },
         {
             "item_index": 1,
+            "record_id": null,
+            "record_url": null,
             "errors": [
                 {
                     "field": "metadata.creators.0.occupation",
@@ -276,13 +304,63 @@ The response will include a JSON object with the following fields:
                     "field": "metadata.publication_date",
                     "message": "Date is not in Extended Date Time Format (EDTF)."
                 }
-            ]
+            ],
+            "files": {},
+            "collection_id": "1234567890",
+            "metadata": {
+                /* ... */
+            }
         }
     ]
 }
 ```
 
-If only some of the works to be imported are malformed or invalid, and the `all_or_none` request parameter is set to "false", the response will be `207 Multi-Status`.
+### A partially successful import response
+
+If only some of the works to be imported are malformed or invalid, and the `all_or_none` request parameter is set to "false", the response will be `207 Multi-Status`. In this case the response will be shaped much like the successful and unsuccessful responses described above, but there will be items in *both* the `data` and `errors` arrays. The items in the `data` array will be works that were successfully created, and the items in the `errors` array will be works that failed to be created.
+
+The response will be shaped like this:
+
+```json
+{
+    "status": "multi_status",
+    "message": "The request metadata is malformed or invalid.",
+    "data": [
+        {
+            "item_index": 1,
+            "record_id": "1234567891",
+            "record_url": "https://works.hcommons.org/records/1234567891",
+            "files": {
+                "file1.pdf": ["success", []],
+                "file2.pdf": ["success", []]
+            },
+            "collection_id": "1234567890",
+            "errors": [],
+            "metadata": {
+                /* ... */
+            }
+        }
+    ],
+    "errors": [
+        {
+            "item_index": 0,
+            "record_id": null,
+            "record_url": null,
+            "errors": [
+                {
+                    "field": "title",
+                    "message": "Required field missing."
+                }
+            ],
+            "files": {},
+            "collection_id": "1234567890",
+            "metadata": {
+                /* ... */
+            }
+        },
+    ]
+}
+```
 
 #### The request file upload failed
 
@@ -344,7 +422,10 @@ If the `all_or_none` request parameter is set to "false", it is possible that so
                 "item_index": 0,
                 "record_id": "1234567890",
                 "record_url": "https://works.hcommons.org/records/1234567890",
-                "files": ["file1.pdf", "file2.pdf"],
+                "files": {
+                    "file1.pdf": ["success", []],
+                    "file2.pdf": ["success", []]
+                },
                 "collection_id": "1234567890",
                 "errors": [],
                 "metadata": {
@@ -355,23 +436,37 @@ If the `all_or_none` request parameter is set to "false", it is possible that so
         "failed": [
             {
                 "item_index": 1,
+                "record_id": null,
+                "record_url": null,
                 "message": "The request metadata is malformed or invalid.",
                 "errors": [
                     {
                         "field": "title",
                         "message": "Required field missing.",
                     }
-                ]
+                ],
+                "files": {},
+                "collection_id": "1234567890",
+                "metadata": {
+                    /* ... */
+                }
             },
             {
                 "item_index": 2,
+                "record_id": null,
+                "record_url": null,
                 "message": "The file content is corrupted or invalid.",
                 "errors": [
                     {
                         "file": "file3.pdf",
                         "message": "The file exceeds the maximum file size."
                     }
-                ]
+                ],
+                "files": {},
+                "collection_id": "1234567890",
+                "metadata": {
+                    /* ... */
+                }
             }
         ]
     }
