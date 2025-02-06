@@ -528,7 +528,7 @@ the token is issued must also have sufficient permissions to publish directly in
 <h3>The import request<a class="headerlink" href="#the-import-request" title="Link to this heading">¶</a></h3>
 <section id="request">
 <h4>Request<a class="headerlink" href="#request" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POST</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">works</span><span class="o">.</span><span class="n">hcommons</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">import</span><span class="o">/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POST</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">works</span><span class="o">.</span><span class="n">hcommons</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">import</span><span class="o">/&lt;</span><span class="n">my</span><span class="o">-</span><span class="n">collection</span><span class="o">-</span><span class="nb">id</span><span class="o">&gt;</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
 </pre></div>
 </div>
 </section>
@@ -538,6 +538,28 @@ the token is issued must also have sufficient permissions to publish directly in
 <span class="n">Accept</span><span class="p">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
 <span class="n">Authorization</span><span class="p">:</span> <span class="n">Bearer</span> \<span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">key</span>\<span class="o">&gt;</span>
 </pre></div>
+</div>
+</section>
+<section id="request-url-path-parameters">
+<h4>Request url path parameters<a class="headerlink" href="#request-url-path-parameters" title="Link to this heading">¶</a></h4>
+<p>Only one URL path parameter is required:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">collection</span></code></p></td>
+<td><p>no</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+<td><p>The ID (either the url slug or the UUID) of the collection to which the work should be published. If this value is provided, the work will be submitted to the collection immediately after import. If the collection requires review, and the <code class="docutils literal notranslate"><span class="pre">review_required</span></code> parameter is set to “true”, the work will be placed in the collection’s review queue.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="request-body">
@@ -563,22 +585,17 @@ the token is issued must also have sufficient permissions to publish directly in
 <td><p><code class="docutils literal notranslate"><span class="pre">application/json</span></code></p></td>
 <td><p>An array of JSON metadata objects, each of which will be used to create a new work. Each must following the KCWorks implementation of the InvenioRDM metadata schema described <span class="xref std std-ref">here</span>. In addition, an array of owners for the work may optionally be provided by adding an <code class="docutils literal notranslate"><span class="pre">access.owned_by</span></code> property to each metadata object. Note that if no owners are provided, the work will be created with the organizational account that issued the OAuth token as the owner.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">collection</span></code></p></td>
-<td><p>no</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">text/plain</span></code></p></td>
-<td><p>The ID (either the url slug or the UUID) of the collection to which the work should be published. If this value is provided, the work will be submitted to the collection immediately after import. If the collection requires review, and the <code class="docutils literal notranslate"><span class="pre">review_required</span></code> parameter is set to “true”, the work will be placed in the collection’s review queue.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">review_required</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">review_required</span></code></p></td>
 <td><p>no</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">text/plain</span></code></p></td>
 <td><p>A string representation of a boolean (either “true” or “false”) indicating whether the work should be reviewed before publication. This setting is only relevant if the work is intended for publication in a collection that requires review. It will override the collection’s usual review policy, since the work is being uploaded by a collection administrator. (Default: “true”)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">strict_validation</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">strict_validation</span></code></p></td>
 <td><p>no</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">text/plain</span></code></p></td>
 <td><p>A string representation of a boolean (either “true” or “false”) indicating whether the import request should be rejected if any validation errors are encountered. If this value is “false”, the imported work will be created in KCWorks even if some of the provided metadata does not conform to the KCWorks metadata schema, provided these are not required fields. If this value is “true”, the import request will be rejected if any validation errors are encountered. (Default: “true”)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">all_or_none</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">all_or_none</span></code></p></td>
 <td><p>no</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">text/plain</span></code></p></td>
 <td><p>A string representation of a boolean (either “true” or “false”) indicating whether the entire import request should be rejected if any of the works fail to be created (whether for validation errors, upload errors, or other reasons). If this value is “false”, the import request will be accepted even if some of the works cannot be created. The response in this case will include a list of works that were successfully created and a list of errors for the works that failed to be created. (Default: “true”)</p></td>
@@ -2081,6 +2098,7 @@ This API was implemented with a distributed network of independent Commons insta
 <li><a class="reference internal" href="#the-import-request">The import request</a><ul>
 <li><a class="reference internal" href="#request">Request</a></li>
 <li><a class="reference internal" href="#required-headers">Required headers</a></li>
+<li><a class="reference internal" href="#request-url-path-parameters">Request url path parameters</a></li>
 <li><a class="reference internal" href="#request-body">Request body</a></li>
 </ul>
 </li>
