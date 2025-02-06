@@ -31,6 +31,7 @@ config = {k: v for k, v in invenio_config.__dict__.items() if not k.startswith("
 
 pytest_plugins = (
     "celery.contrib.pytest",
+    "tests.fixtures.files",
     "tests.fixtures.communities",
     "tests.fixtures.custom_fields",
     "tests.fixtures.records",

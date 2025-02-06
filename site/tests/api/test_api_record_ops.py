@@ -34,12 +34,12 @@ def test_draft_creation_api(
     user = u.user
     token = u.allowed_token
 
-    minimal_record_metadata.update({"files": {"enabled": False}})
+    minimal_record_metadata["in"].update({"files": {"enabled": False}})
     with app.test_client() as client:
         logged_in_client = client_with_login(client, user)
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(minimal_record_metadata["in"]),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -208,7 +208,7 @@ def test_draft_creation_service(
     minimal_draft_record_factory,
 ):
     app = running_app.app
-    result = minimal_draft_record_factory(metadata=minimal_record_metadata)
+    result = minimal_draft_record_factory(metadata=minimal_record_metadata["in"])
     actual_draft = result.to_dict()
     app.logger.debug(f"actual_draft: {pformat(actual_draft)}")
     assert actual_draft["is_draft"]
@@ -221,23 +221,23 @@ def test_draft_creation_service(
     assert actual_draft["files"]["entries"] == {}
     assert (
         actual_draft["metadata"]["creators"]
-        == minimal_record_metadata["metadata"]["creators"]
+        == minimal_record_metadata["in"]["metadata"]["creators"]
     )
     assert (
         actual_draft["metadata"]["publisher"]
-        == minimal_record_metadata["metadata"]["publisher"]
+        == minimal_record_metadata["in"]["metadata"]["publisher"]
     )
     assert (
         actual_draft["metadata"]["publication_date"]
-        == minimal_record_metadata["metadata"]["publication_date"]
+        == minimal_record_metadata["in"]["metadata"]["publication_date"]
     )
     assert (
         actual_draft["metadata"]["resource_type"]["id"]
-        == minimal_record_metadata["metadata"]["resource_type"]["id"]
+        == minimal_record_metadata["in"]["metadata"]["resource_type"]["id"]
     )
     assert (
         actual_draft["metadata"]["title"]
-        == minimal_record_metadata["metadata"]["title"]
+        == minimal_record_metadata["in"]["metadata"]["title"]
     )
 
     read_result = records_service.read_draft(system_identity, actual_draft["id"])
@@ -272,10 +272,10 @@ def test_record_publication_api(
 
     with app.test_client() as client:
         logged_in_client = client_with_login(client, user)
-        minimal_record_metadata.update({"files": {"enabled": False}})
+        minimal_record_metadata["in"].update({"files": {"enabled": False}})
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(minimal_record_metadata["in"]),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -314,8 +314,8 @@ def test_record_publication_service(
 ):
     """Test that a system user can create a draft record internally."""
 
-    minimal_record_metadata.update({"files": {"enabled": False}})
-    result = minimal_draft_record_factory(metadata=minimal_record_metadata)
+    minimal_record_metadata["in"].update({"files": {"enabled": False}})
+    result = minimal_draft_record_factory(metadata=minimal_record_metadata["in"])
     actual_draft = result.to_dict()
     actual_draft_id = actual_draft["id"]
 
@@ -360,12 +360,12 @@ def test_record_draft_update_api(
     user = u.user
     token = u.allowed_token
 
-    minimal_record_metadata.update({"files": {"enabled": False}})
+    minimal_record_metadata["in"].update({"files": {"enabled": False}})
     with app.test_client() as client:
         logged_in_client = client_with_login(client, user)
         creation_response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(minimal_record_metadata["in"]),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert creation_response.status_code == 201
@@ -373,10 +373,10 @@ def test_record_draft_update_api(
         actual_draft = creation_response.json
         actual_draft_id = actual_draft["id"]
 
-        minimal_record_metadata["metadata"]["title"] = "A Romans Story 2"
+        minimal_record_metadata["in"]["metadata"]["title"] = "A Romans Story 2"
         update_response = logged_in_client.put(
             f"{app.config['SITE_API_URL']}/records/{actual_draft_id}/draft",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(minimal_record_metadata["in"]),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert update_response.status_code == 200
@@ -418,11 +418,11 @@ def test_record_draft_update_service(
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
-    minimal_record_metadata.update({"files": {"enabled": False}})
-    draft_result = minimal_draft_record_factory(metadata=minimal_record_metadata)
-    minimal_record_metadata["metadata"]["title"] = "A Romans Story 2"
+    minimal_record_metadata["in"].update({"files": {"enabled": False}})
+    draft_result = minimal_draft_record_factory(metadata=minimal_record_metadata["in"])
+    minimal_record_metadata["in"]["metadata"]["title"] = "A Romans Story 2"
     edited_draft_result = records_service.update_draft(
-        system_identity, draft_result.id, minimal_record_metadata
+        system_identity, draft_result.id, minimal_record_metadata["in"]
     )
     actual_edited = edited_draft_result.to_dict()
     assert actual_edited["id"] == draft_result.id
@@ -491,9 +491,9 @@ def test_record_file_upload_api_not_enabled(
     file_list = [{"key": "sample.pdf"}]
 
     with app.test_client() as client:
-        minimal_record_metadata["files"] = {"enabled": False}
+        minimal_record_metadata["in"]["files"] = {"enabled": False}
         draft_result = minimal_draft_record_factory(
-            identity=identity, metadata=minimal_record_metadata
+            identity=identity, metadata=minimal_record_metadata["in"]
         )
         draft_id = draft_result.id
 
@@ -546,9 +546,9 @@ def test_record_file_upload_api(
     file_list = [{"key": "sample.pdf"}]
 
     with app.test_client() as client:
-        minimal_record_metadata["files"] = {"enabled": True}
+        minimal_record_metadata["in"]["files"] = {"enabled": True}
         draft_result = minimal_draft_record_factory(
-            identity=identity, metadata=minimal_record_metadata
+            identity=identity, metadata=minimal_record_metadata["in"]
         )
         draft_id = draft_result.id
 
@@ -830,21 +830,23 @@ def test_record_view_api(
         }
         assert (
             record["metadata"]["creators"]
-            == minimal_record_metadata["metadata"]["creators"]
+            == minimal_record_metadata["in"]["metadata"]["creators"]
         )
         assert (
             record["metadata"]["publication_date"]
-            == minimal_record_metadata["metadata"]["publication_date"]
+            == minimal_record_metadata["in"]["metadata"]["publication_date"]
         )
         assert (
             record["metadata"]["publisher"]
-            == minimal_record_metadata["metadata"]["publisher"]
+            == minimal_record_metadata["in"]["metadata"]["publisher"]
         )
         # Add title to resource type (updated by system after draft creation)
-        minimal_record_metadata["metadata"]["resource_type"]["title"] = {"en": "Photo"}
+        minimal_record_metadata["in"]["metadata"]["resource_type"]["title"] = {
+            "en": "Photo"
+        }
         assert (
             record["metadata"]["resource_type"]
-            == minimal_record_metadata["metadata"]["resource_type"]
+            == minimal_record_metadata["in"]["metadata"]["resource_type"]
         )
         assert not record["is_draft"]
         assert record["is_published"]

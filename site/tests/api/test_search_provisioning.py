@@ -54,13 +54,13 @@ def test_trigger_search_provisioning(
     service = current_rdm_records.records_service
 
     # Draft creation, no remote API operations should be prompted
-    draft = service.create(system_identity, minimal_record_metadata)
+    draft = service.create(system_identity, minimal_record_metadata["in"])
     actual_draft = draft.data
     assert actual_draft["metadata"]["title"] == "A Romans story"
     assert mock_adapter.call_count == 0
 
     # Draft edit, no remote API operations should be prompted
-    minimal_edited = minimal_record_metadata.copy()
+    minimal_edited = minimal_record_metadata["in"].copy()
     minimal_edited["metadata"]["title"] = "A Romans Story 2"
     edited_draft = service.update_draft(system_identity, draft.id, minimal_edited)
     actual_edited = edited_draft.data.copy()
@@ -447,9 +447,6 @@ def test_trigger_community_provisioning(
 
     # Set up mock subscriber and intercept message to callback
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
-    app.logger.debug(
-        f"app.config components: {pformat([c for c in app.config['COMMUNITIES_SERVICE_COMPONENTS']])}"
-    )
 
     # Set up mock remote API response
     rec_url = list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["community"].keys())[0]
@@ -679,7 +676,7 @@ def test_search_id_recording_callback(
 
     # Set up minimal record to update after search provisioning
     service = current_rdm_records.records_service
-    draft = service.create(system_identity, minimal_record_metadata)
+    draft = service.create(system_identity, minimal_record_metadata["in"])
     read_record = service.read_draft(system_identity, draft.id)
     assert read_record.data["metadata"]["title"] == "A Romans story"
     assert read_record.data["custom_fields"].get("kcr:commons_search_recid") is None

@@ -82,7 +82,7 @@ def test_notify_for_request_acceptance(
         logged_in_client = client
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(minimal_record_metadata["in"]["in"]),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -294,7 +294,7 @@ def test_notify_for_request_decline(
         logged_in_client = client
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(minimal_record_metadata["in"]),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -494,7 +494,7 @@ def test_notify_for_request_cancellation(
         logged_in_client = client
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(minimal_record_metadata["in"]),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -670,7 +670,7 @@ def test_notify_for_new_request_comment(
     with app.test_client() as client:
         response = client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(minimal_record_metadata["in"]),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -1459,7 +1459,7 @@ def test_notification_on_first_upload(
     # Create the first draft
     draft1_response = client.post(
         f"{app.config['SITE_API_URL']}/records",
-        data=json.dumps(minimal_record_metadata),
+        data=json.dumps(minimal_record_metadata["in"]),
         headers={**headers, "Authorization": f"Bearer {token}"},
     )
     assert draft1_response.status_code == 201
@@ -1484,9 +1484,15 @@ def test_notification_on_first_upload(
         f"'{app.config.get('SITE_UI_URL')}/records/{first_draft_id}'>"
         f"View draft</a>)" in email.html
     )
-    assert f"Draft title: {minimal_record_metadata['metadata']['title']}" in email.body
-    assert f"Draft title: {minimal_record_metadata['metadata']['title']}" in email.html
-    # assert f"Full metadata: {minimal_record_metadata}" in email.body
+    assert (
+        f"Draft title: {minimal_record_metadata['in']['metadata']['title']}"
+        in email.body
+    )
+    assert (
+        f"Draft title: {minimal_record_metadata['in']['metadata']['title']}"
+        in email.html
+    )
+    # assert f"Full metadata: {minimal_record_metadata["in"]}" in email.body
     assert f"User ID: {user_id}" in email.body
     assert f"User ID: {user_id}" in email.html
     assert f"User email: {user_email}" in email.body
@@ -1499,7 +1505,7 @@ def test_notification_on_first_upload(
     # Create a second draft work (different work)
     draft2_response = client.post(
         f"{app.config['SITE_API_URL']}/records",
-        data=json.dumps(minimal_record_metadata),
+        data=json.dumps(minimal_record_metadata["in"]),
         headers={**headers, "Authorization": f"Bearer {token}"},
     )
     assert draft2_response.status_code == 201
@@ -1527,8 +1533,14 @@ def test_notification_on_first_upload(
     app.logger.debug(f"email.body: {pformat(email.body)}")
     assert f"Work ID: {first_draft_id}" in email.body
     assert f"Work ID: {first_draft_id}" in email.html
-    assert f"Work title: {minimal_record_metadata['metadata']['title']}" in email.body
-    assert f"Work title: {minimal_record_metadata['metadata']['title']}" in email.html
+    assert (
+        f"Work title: {minimal_record_metadata['in']['metadata']['title']}"
+        in email.body
+    )
+    assert (
+        f"Work title: {minimal_record_metadata['in']['metadata']['title']}"
+        in email.html
+    )
     assert f"User ID: {user_id}" in email.body
     assert f"User ID: {user_id}" in email.html
     assert f"User email: {user_email}" in email.body
