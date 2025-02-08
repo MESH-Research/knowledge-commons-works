@@ -1,5 +1,3 @@
-from celery import Celery
-from celery.contrib.testing.worker import start_worker
 from collections import namedtuple
 import os
 from pathlib import Path

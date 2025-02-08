@@ -1,4 +1,4 @@
-rec45177 = {
+sample_metadata_chapter5_pdf = {
     "input": {
         "created": "2022-03-31T13:53:16Z",
         "pids": {
@@ -231,9 +231,7 @@ rec45177 = {
             "contributors": [
                 {
                     "person_or_org": {
-                        "family_name": (
-                            "ARLIS/NA Cataloging Advisory Committee"
-                        ),
+                        "family_name": ("ARLIS/NA Cataloging Advisory Committee"),
                         "given_name": "",
                         "name": "ARLIS/NA Cataloging Advisory Committee",
                         "type": "personal",
@@ -528,9 +526,7 @@ rec45177 = {
             "contributors": [
                 {
                     "person_or_org": {
-                        "family_name": (
-                            "ARLIS/NA Cataloging Advisory Committee"
-                        ),
+                        "family_name": ("ARLIS/NA Cataloging Advisory Committee"),
                         "given_name": "",
                         "name": "ARLIS/NA Cataloging Advisory Committee",
                         "type": "personal",
@@ -812,9 +808,7 @@ rec45177 = {
             "contributors": [
                 {
                     "person_or_org": {
-                        "family_name": (
-                            "ARLIS/NA Cataloging Advisory Committee"
-                        ),
+                        "family_name": ("ARLIS/NA Cataloging Advisory Committee"),
                         "given_name": "",
                         "name": "ARLIS/NA Cataloging Advisory Committee",
                         "type": "personal",

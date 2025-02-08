@@ -1,4 +1,4 @@
-rec33383 = {
+sample_metadata_journal_article_pdf = {
     "input": {
         "access": {
             "embargo": {"active": True, "reason": None, "until": "2030-11-25"},
@@ -37,9 +37,7 @@ rec33383 = {
             "hclegacy:previously_published": "published",
             "hclegacy:record_change_date": "2023-01-23T14:20:48Z",
             "hclegacy:record_creation_date": "2020-11-25T12:35:10Z",
-            "hclegacy:submitter_affiliation": (
-                "University of Southern California"
-            ),
+            "hclegacy:submitter_affiliation": ("University of Southern California"),
             "hclegacy:submitter_id": "1008812",
             "hclegacy:submitter_org_memberships": ["hc"],
             "hclegacy:total_views": 103,
@@ -118,9 +116,7 @@ rec33383 = {
             # ],
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "University of Southern California"}
-                    ],
+                    "affiliations": [{"name": "University of Southern California"}],
                     "person_or_org": {
                         "family_name": "Roberts",
                         "given_name": "Alexandre",
@@ -195,9 +191,7 @@ rec33383 = {
                     "id": "arr",
                     "icon": "copyright",
                     "props": {
-                        "url": (
-                            "https://en.wikipedia.org/wiki/All_rights_reserved"
-                        )
+                        "url": ("https://en.wikipedia.org/wiki/All_rights_reserved")
                     },
                     "title": {"en": "All Rights Reserved"},
                 }
@@ -280,9 +274,7 @@ rec33383 = {
             "hclegacy:previously_published": "published",
             "hclegacy:record_change_date": "2023-01-23T14:20:48Z",
             "hclegacy:record_creation_date": "2020-11-25T12:35:10Z",
-            "hclegacy:submitter_affiliation": (
-                "University of Southern California"
-            ),
+            "hclegacy:submitter_affiliation": ("University of Southern California"),
             "hclegacy:submitter_id": "1008812",
             "hclegacy:submitter_org_memberships": ["hc"],
             "hclegacy:total_views": 103,
@@ -361,9 +353,7 @@ rec33383 = {
             # ],
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "University of Southern California"}
-                    ],
+                    "affiliations": [{"name": "University of Southern California"}],
                     "person_or_org": {
                         "family_name": "Roberts",
                         "given_name": "Alexandre",
@@ -505,9 +495,7 @@ rec33383 = {
             "hclegacy:previously_published": "published",
             "hclegacy:record_change_date": "2023-01-23T14:20:48Z",
             "hclegacy:record_creation_date": "2020-11-25T12:35:10Z",
-            "hclegacy:submitter_affiliation": (
-                "University of Southern California"
-            ),
+            "hclegacy:submitter_affiliation": ("University of Southern California"),
             "hclegacy:submitter_id": "1008812",
             "hclegacy:submitter_org_memberships": ["hc"],
             "hclegacy:total_views": 103,
@@ -593,9 +581,7 @@ rec33383 = {
             # ],
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "University of Southern California"}
-                    ],
+                    "affiliations": [{"name": "University of Southern California"}],
                     "person_or_org": {
                         "family_name": "Roberts",
                         "given_name": "Alexandre",

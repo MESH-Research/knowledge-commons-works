@@ -1,13 +1,7 @@
-rec11451 = {
+sample_metadata_chapter_pdf = {
     "input": {
         "created": "2017-03-08T05:01:44Z",
-        "pids": {
-            "doi": {
-                "client": "datacite",
-                "identifier": "10.17613/M6733G",
-                "provider": "datacite",
-            }
-        },
+        "pids": {},
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -19,9 +13,7 @@ rec11451 = {
             "hclegacy:groups_for_deposit": [
                 {
                     "group_identifier": "174",
-                    "group_name": (
-                        "East Asian Languages and Literatures after 1900"
-                    ),
+                    "group_name": ("East Asian Languages and Literatures after 1900"),
                 },
                 {
                     "group_identifier": "246",
@@ -74,133 +66,80 @@ rec11451 = {
             },
         },
         "metadata": {
-            "additional_descriptions": [
-                {
-                    "description": (
-                        "There are three "
-                        "main East Asian "
-                        "approaches to "
-                        "interpreting "
-                        "Ophelia. The first "
-                        "is informed by the "
-                        "fascination with "
-                        "and reaction "
-                        "against the "
-                        "Victorian "
-                        "pictorialization "
-                        "of Ophelia, "
-                        "especially John "
-                        "Everett Millais’s "
-                        "famous Ophelia "
-                        "(1851), that "
-                        "emphasized, as "
-                        "Kimberly Rhodes "
-                        "describes, her "
-                        "“pathos, "
-                        "innocence, and "
-                        "beauty rather than "
-                        "the unseemly "
-                        "detail of her "
-                        "death.” Despite "
-                        "having lived "
-                        "through negative "
-                        "experiences, "
-                        "Ophelia retains a "
-                        "childlike "
-                        "innocence in these "
-                        "rewritings. For "
-                        "example, New "
-                        "Hamlet by Lao She "
-                        "(penname of Shu "
-                        "Qingchun, "
-                        "1899-1966) "
-                        "parodies China’s "
-                        "“Hamlet complex” "
-                        "(the inability to "
-                        "act at a time of "
-                        "national crisis) "
-                        "and the "
-                        "fascination with "
-                        "an Ophelia "
-                        "submerged in "
-                        "water. Both "
-                        "Ophelia and "
-                        "Millais’s painting "
-                        "are featured in "
-                        "two of Japanese "
-                        "writer Natsume "
-                        "Sōseki’s early "
-                        "twentieth-century "
-                        "novels. A second "
-                        "approach "
-                        "emphasizes the "
-                        "local context. "
-                        "Adapters used "
-                        "local values to "
-                        "engage with and "
-                        "even critique the "
-                        "Victorian "
-                        "narrative "
-                        "tradition of "
-                        "moralization. Late "
-                        "nineteenth-century "
-                        "translator Lin Shu "
-                        "(1852-1924), for "
-                        "example, tones "
-                        "down the "
-                        "sentimentalization "
-                        "of Ophelia in his "
-                        "classical Chinese "
-                        "rewriting of "
-                        "Charles and Mary "
-                        "Lamb’s Tales from "
-                        "Shakespeare, "
-                        "showcasing the "
-                        "conflict between "
-                        "Victorian and "
-                        "Confucian moral "
-                        "codes. The third "
-                        "approach focuses "
-                        "upon an "
-                        "objectified and "
-                        "sexualized "
-                        "Ophelia. As other "
-                        "chapters in this "
-                        "volume "
-                        "demonstrate, this "
-                        "is not exclusively "
-                        "an Asian "
-                        "phenomenon. "
-                        "However, the "
-                        "eroticism "
-                        "associated with "
-                        "the Ophelia figure "
-                        "in a number of "
-                        "Asian stage and "
-                        "screen versions of "
-                        "Hamlet, such as "
-                        "Sherwood Hu’s film "
-                        "Prince of the "
-                        "Himalayas (2006), "
-                        "aligns Ophelia "
-                        "with East Asian "
-                        "ideals of "
-                        "femininity, but "
-                        "also brings out "
-                        "the sexuality that "
-                        "is latent or "
-                        "suppressed in "
-                        "Victorian "
-                        "interpretations. "
-                        "They do so by "
-                        "aligning Ophelia "
-                        "with East Asian "
-                        "ideals of "
-                        "femininity."
-                    ),
-                    "type": {"id": "other", "title": {"en": "Other"}},
-                }
-            ],
+            # "additional_descriptions": [
+            #     {
+            #         "description": (
+            #             "There are three main East Asian approaches to "
+            #             "interpreting Ophelia. The first is informed by "
+            #             "the fascination with and reaction against the "
+            #             "Victorian pictorialization of Ophelia, especially "
+            #             "John Everett Millais’s famous Ophelia (1851), "
+            #             "that emphasized, as Kimberly Rhodes describes, her "
+            #             "“pathos, innocence, and beauty rather than the "
+            #             "unseemly detail of her death.” Despite having "
+            #             "lived through negative experiences, Ophelia "
+            #             "retains a childlike innocence in these rewritings. "
+            #             "For example, New Hamlet by Lao She (penname of "
+            #             "Shu Qingchun, 1899-1966) parodies China’s "
+            #             "Hamlet complex against the Victorian pictorialization "
+            #             "of Ophelia, especially John Everett Millais’s "
+            #             "famous Ophelia (1851), that emphasized, as Kimberly "
+            #             "Rhodes describes, her “pathos, innocence, and "
+            #             "beauty rather than the unseemly detail of her "
+            #             "death.” Despite having lived through negative "
+            #             "experiences, Ophelia retains a childlike "
+            #             "innocence in these rewritings. For example, New "
+            #             "Hamlet by Lao She (penname of Shu Qingchun, "
+            #             "1899-1966) parodies China’s Hamlet complex "
+            #             "against the Victorian pictorialization of Ophelia, "
+            #             "especially John Everett Millais’s famous Ophelia "
+            #             "(1851), that emphasized, as Kimberly Rhodes describes, "
+            #             "her “pathos, innocence, and beauty rather than the "
+            #             "unseemly detail of her death.” Despite having lived "
+            #             "through negative experiences, Ophelia retains a "
+            #             "childlike innocence in these rewritings. For example, "
+            #             "New Hamlet by Lao She (penname of Shu Qingchun, "
+            #             "1899-1966) parodies China’s Hamlet complex "
+            #             "against the Victorian pictorialization of Ophelia, "
+            #             "especially John Everett Millais’s famous Ophelia "
+            #             "(1851), that emphasized, as Kimberly Rhodes describes, "
+            #             "her “pathos, innocence, and beauty rather than the "
+            #             "unseemly detail of her death.” Despite having lived "
+            #             "through negative experiences, Ophelia retains a "
+            #             "childlike innocence in these rewritings. For example, "
+            #             "New Hamlet by Lao She (penname of Shu Qingchun, "
+            #             "1899-1966) “Hamlet complex” (the inability to "
+            #             "act at a time of national crisis) and the "
+            #             "fascination with an Ophelia submerged in water. "
+            #             "Both Ophelia and Millais’s painting are featured in "
+            #             "two of Japanese writer Natsume Sōseki’s early "
+            #             "twentieth-century novels. A second approach "
+            #             "emphasizes the local context. Adapters used "
+            #             "local values to engage with and even critique the "
+            #             "Victorian narrative tradition of moralization. Late "
+            #             "nineteenth-century translator Lin Shu "
+            #             "(1852-1924), for example, tones "
+            #             "down the sentimentalization of Ophelia in his "
+            #             "classical Chinese rewriting of Charles and Mary "
+            #             "Lamb’s Tales from Shakespeare, showcasing the "
+            #             "conflict between Victorian and Confucian moral codes. "
+            #             "The third approach focuses upon an objectified "
+            #             "and sexualized Ophelia. As other chapters in "
+            #             "this volume demonstrate, this is not "
+            #             "exclusively an Asian phenomenon. However, the "
+            #             "eroticism associated with the Ophelia figure "
+            #             "in a number of Asian stage and screen versions of "
+            #             "Hamlet, such as Sherwood Hu’s film Prince of "
+            #             "the Himalayas (2006), aligns Ophelia with East "
+            #             "Asian ideals of femininity, but also brings out "
+            #             "the sexuality that is latent or suppressed in "
+            #             "Victorian interpretations. They do so by "
+            #             "aligning Ophelia with East Asian ideals of "
+            #             "femininity."
+            #         ),
+            #         "type": {"id": "other", "title": {"en": "Other"}},
+            #     }
+            # ],
             "creators": [
                 {
                     "affiliations": [{"name": "George Washington U"}],
@@ -294,7 +233,9 @@ rec11451 = {
                     "icon": "cc-by-nc-icon",
                     "props": {
                         "scheme": "spdx",
-                        "url": "https://creativecommons.org/licenses/by-nc/4.0/legalcode",
+                        "url": (
+                            "https://creativecommons.org/licenses/by-nc/4.0/legalcode"
+                        ),
                     },
                     "title": {
                         "en": (
@@ -328,8 +269,7 @@ rec11451 = {
             ],
             "publisher": "Palgrave",
             "title": (
-                "The Paradox of Female Agency: Ophelia and East Asian "
-                "Sensibilities"
+                "The Paradox of Female Agency: Ophelia and East Asian " "Sensibilities"
             ),
         },
         "parent": {"access": {"owned_by": [{"user": "49"}]}},
@@ -356,9 +296,7 @@ rec11451 = {
             "hclegacy:groups_for_deposit": [
                 {
                     "group_identifier": "174",
-                    "group_name": (
-                        "East Asian Languages and Literatures after 1900"
-                    ),
+                    "group_name": ("East Asian Languages and Literatures after 1900"),
                 },
                 {
                     "group_identifier": "246",
@@ -523,8 +461,7 @@ rec11451 = {
             ],
             "publisher": "Palgrave",
             "title": (
-                "The Paradox of Female Agency: Ophelia and East Asian "
-                "Sensibilities"
+                "The Paradox of Female Agency: Ophelia and East Asian " "Sensibilities"
             ),
         },
         "parent": {"access": {"owned_by": [{"user": "49"}]}},
@@ -551,9 +488,7 @@ rec11451 = {
             "hclegacy:groups_for_deposit": [
                 {
                     "group_identifier": "174",
-                    "group_name": (
-                        "East Asian Languages and Literatures after 1900"
-                    ),
+                    "group_name": ("East Asian Languages and Literatures after 1900"),
                 },
                 {
                     "group_identifier": "246",
@@ -799,8 +734,7 @@ rec11451 = {
             ],
             "publisher": "Palgrave",
             "title": (
-                "The Paradox of Female Agency: Ophelia and East Asian "
-                "Sensibilities"
+                "The Paradox of Female Agency: Ophelia and East Asian " "Sensibilities"
             ),
         },
         "parent": {"access": {"owned_by": [{"user": "49"}]}},

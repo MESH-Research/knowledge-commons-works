@@ -1,4 +1,4 @@
-rec42615 = {
+sample_metadata_journal_article2_pdf = {
     "input": {
         "created": "2021-11-10T15:06:20Z",
         "pids": {
@@ -32,8 +32,7 @@ rec42615 = {
                 "issue": "2",
                 "pages": "359-370",
                 "title": (
-                    "Journal of Traditional Building, Architecture and "
-                    "Urbanism"
+                    "Journal of Traditional Building, Architecture and " "Urbanism"
                 ),
             },
             "kcr:commons_domain": "sah.hcommons.org",
@@ -60,8 +59,7 @@ rec42615 = {
             "entries": {
                 "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf": {  # noqa: E501
                     "key": (
-                        "palazzo-vernacular_patterns_in_portugal_and_b"
-                        "razil-2021.pdf"
+                        "palazzo-vernacular_patterns_in_portugal_and_b" "razil-2021.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -240,8 +238,7 @@ rec42615 = {
                 "issue": "2",
                 "pages": "359-370",
                 "title": (
-                    "Journal of Traditional Building, Architecture and "
-                    "Urbanism"
+                    "Journal of Traditional Building, Architecture and " "Urbanism"
                 ),
             },
             "kcr:commons_domain": "sah.hcommons.org",
@@ -268,8 +265,7 @@ rec42615 = {
             "entries": {
                 "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf": {  # noqa: E501
                     "key": (
-                        "palazzo-vernacular_patterns_in_portugal_and_b"
-                        "razil-2021.pdf"
+                        "palazzo-vernacular_patterns_in_portugal_and_b" "razil-2021.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -428,8 +424,7 @@ rec42615 = {
                 "issue": "2",
                 "pages": "359-370",
                 "title": (
-                    "Journal of Traditional Building, Architecture and "
-                    "Urbanism"
+                    "Journal of Traditional Building, Architecture and " "Urbanism"
                 ),
             },
             "kcr:commons_domain": "sah.hcommons.org",
@@ -456,8 +451,7 @@ rec42615 = {
             "entries": {
                 "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf": {  # noqa: E501
                     "key": (
-                        "palazzo-vernacular_patterns_in_portugal_and_b"
-                        "razil-2021.pdf"
+                        "palazzo-vernacular_patterns_in_portugal_and_b" "razil-2021.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
