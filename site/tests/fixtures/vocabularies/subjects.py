@@ -188,11 +188,6 @@ subject_data = [
         "subject": "East Asian literature",
     },
     {
-        "id": "http://id.worldcat.org/fast/1047055",
-        "scheme": "FAST-topical",
-        "subject": "Oral history",
-    },
-    {
         "id": "http://id.worldcat.org/fast/1710945",
         "scheme": "FAST-topical",
         "subject": "Church history--Primitive and early church",

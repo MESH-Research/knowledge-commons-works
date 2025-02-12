@@ -6,7 +6,7 @@ sample_metadata_journal_article_pdf = {
             "record": "public",
             "status": "embargoed",
         },
-        "created": "2020-11-25T12:35:10Z",
+        # "created": "2020-11-25T12:35:10Z",
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -16,24 +16,24 @@ sample_metadata_journal_article_pdf = {
                 "pdf"
             ),
             "hclegacy:file_pid": "hc:33384",
-            "hclegacy:groups_for_deposit": [
-                {
-                    "group_identifier": "1004129",
-                    "group_name": "Arabic script manuscripts",
-                },
-                {
-                    "group_identifier": "1001234",
-                    "group_name": "Islamicate Studies",
-                },
-                {
-                    "group_identifier": "1000753",
-                    "group_name": "Medieval Studies",
-                },
-                {
-                    "group_identifier": "1000830",
-                    "group_name": "Science Studies and the History of Science",
-                },
-            ],
+            # "hclegacy:groups_for_deposit": [
+            #     {
+            #         "group_identifier": "1004129",
+            #         "group_name": "Arabic script manuscripts",
+            #     },
+            #     {
+            #         "group_identifier": "1001234",
+            #         "group_name": "Islamicate Studies",
+            #     },
+            #     {
+            #         "group_identifier": "1000753",
+            #         "group_name": "Medieval Studies",
+            #     },
+            #     {
+            #         "group_identifier": "1000830",
+            #         "group_name": "Science Studies and the History of Science",
+            #     },
+            # ],
             "hclegacy:previously_published": "published",
             "hclegacy:record_change_date": "2023-01-23T14:20:48Z",
             "hclegacy:record_creation_date": "2020-11-25T12:35:10Z",
@@ -225,7 +225,26 @@ sample_metadata_journal_article_pdf = {
                 "University"
             ),
         },
-        "parent": {"access": {"owned_by": [{"user": "1008812"}]}},
+        "parent": {
+            "access": {
+                "owned_by": [
+                    {
+                        "email": "test@example.com",
+                        "identifiers": [
+                            {"identifier": "jdoe", "scheme": "kc_username"},
+                        ],
+                    },
+                    {
+                        "full_name": "John Doe",
+                        "email": "john.doe@example.com",
+                        "identifiers": [
+                            {"identifier": "0000-0000-0000-0000", "scheme": "orcid"},
+                            {"identifier": "jdoe", "scheme": "kc_username"},
+                        ],
+                    },
+                ]
+            }
+        },
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -233,7 +252,7 @@ sample_metadata_journal_article_pdf = {
                 "provider": "datacite",
             }
         },
-        "updated": "2023-01-23T14:20:48Z",
+        # "updated": "2023-01-23T14:20:48Z",
     },
     "expected_serialized": {
         "record_source": "knowledgeCommons",

@@ -36,16 +36,16 @@ sample_metadata_chapter2_pdf = {
                 "pages": "57-74",
                 "title": "Habad Hasidism: History, Thought, Image",
             },
-            "hclegacy:groups_for_deposit": [
-                {
-                    "group_identifier": "1000610",
-                    "group_name": "Jewish Mysticism",
-                },
-                {
-                    "group_identifier": "1000611",
-                    "group_name": "Modern Jewish Thought and Theology",
-                },
-            ],
+            # "hclegacy:groups_for_deposit": [
+            #     {
+            #         "group_identifier": "1000610",
+            #         "group_name": "Jewish Mysticism",
+            #     },
+            #     {
+            #         "group_identifier": "1000611",
+            #         "group_name": "Modern Jewish Thought and Theology",
+            #     },
+            # ],
             "hclegacy:record_change_date": "2019-01-29T03:57:00Z",
             "hclegacy:record_creation_date": "2019-01-29T03:57:00Z",
         },

@@ -1,3 +1,4 @@
+import copy
 from pprint import pformat
 from flask import current_app, Flask
 import pytest
@@ -6,10 +7,12 @@ from arrow import Arrow
 import datetime
 from flask_principal import Identity
 from invenio_access.permissions import system_identity
+from invenio_accounts.proxies import current_accounts
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from typing import Optional, Any
 from .files import build_file_links
+from .vocabularies.resource_types import RESOURCE_TYPES
 
 
 @pytest.fixture(scope="function")
@@ -141,9 +144,104 @@ def compare_metadata_draft(running_app):
     return _comparison_factory
 
 
-class TestRecordMetadata:
+@pytest.fixture(scope="function")
+def record_metadata(running_app):
+    def _factory(
+        metadata_in: dict = {},
+        app: Flask = current_app,
+        community_list: list[dict] = [],
+        file_entries: dict = {},
+        owner_id: Optional[str] = "1",
+    ):
+        return TestRecordMetadata(
+            metadata_in=metadata_in,
+            app=running_app.app,
+            community_list=community_list,
+            file_entries=file_entries,
+            owner_id=owner_id,
+        )
 
-    default_metadata_in = {
+    return _factory
+
+
+class TestRecordMetadata:
+    """TestRecordMetadata is a utility class for mocking metadata for a record.
+
+    Given a metadata dictionary like the one required for record creation, an
+    instance of this class provides several versions of the metadata:
+
+    - `metadata_in` (property): The original metadata submitted for record creation.
+    - `draft` (property): The metadata as it appears in the record draft.
+    - `published` (property): The metadata as it appears in the published record.
+
+    The `metadata_in` property can be updated with new values via the `update_metadata`
+    method. The updates will be reflected in the `draft` and `published` metadata
+    properties.
+
+    The `draft` and `published` properties are read-only.
+
+    The class also provides comparison methods to check whether a given metadata
+    dictionary matches the expected metadata for a draft or published record.
+    - `compare_draft`
+    - `compare_published`
+
+    This class is intended to be used in conjunction with the function-scoped
+    `record_metadata` fixture, which will create a new instance of this class
+    for each test function.
+
+    Usage example:
+
+    ```python
+    def my_test_function(record_metadata):
+        test_metadata = record_metadata(
+            metadata_in={
+                "title": "Old Title",
+            },
+            community_list=[],
+            file_entries={},
+            owner_id="1",
+        )
+
+        # Update the input metadata on the fly.
+        test_metadata.update_metadata({"title": "New Title"})
+        assert test_metadata.draft["title"] == "New Title"
+        assert test_metadata.published["title"] == "New Title"
+
+        # Get the draft and published metadata as dictionaries.
+        metadata_out_draft = test_metadata.draft
+        metadata_out_published = test_metadata.published
+
+        # Use the compare methods to check whether draft and published metadata
+        # from test operations match the expected metadata.
+        # Note that you don't need to pass in the expected metadata as a dictionary,
+        # just the actual metadata.
+        test_metadata.compare_draft(my_draft_dict_to_test)
+        test_metadata.compare_published(my_published_dict_to_test)
+
+        # Compare actual metadata dictionaries with expected metadata dictionaries
+        # with variations seen in REST API results.
+        test_metadata.compare_draft_via_api(my_draft_dict_to_test, by_api=True)
+        test_metadata.compare_published_via_api(my_published_dict_to_test, by_api=True)
+    ```
+
+    The input metadata dictionary can include the distinctive content used in the
+    streamlined import API. For example:
+
+    ```python
+    metadata_in={
+        "parent": {
+            "access": {
+                "owned_by": [
+                    {"email": "test@example.com"},
+                    {"email": "test2@example.com"},
+                ]
+            },
+        },
+    }
+    ```
+    """
+
+    default_metadata_in: dict = {
         "pids": {},
         "access": {
             "record": "public",
@@ -198,9 +296,8 @@ class TestRecordMetadata:
             owner_id (str, optional): The record owner ID. Defaults to "1".
         """
         self.app = app
-        starting_metadata_in = TestRecordMetadata.default_metadata_in.copy()
-        starting_metadata_in.update(metadata_in)
-        self._metadata_in = starting_metadata_in
+        starting_metadata_in = copy.deepcopy(TestRecordMetadata.default_metadata_in)
+        self._metadata_in: dict = metadata_in if metadata_in else starting_metadata_in
         self.community_list = community_list
         self.file_entries = file_entries
         self.owner_id = owner_id
@@ -218,18 +315,23 @@ class TestRecordMetadata:
             self.app.logger.debug(f"updating metadata key {key} with value {val}")
             new_metadata_in = replace_value_in_nested_dict(self.metadata_in, key, val)
             self.app.logger.debug(f"new metadata_in: {pformat(new_metadata_in)}")
-            self._metadata_in = new_metadata_in
+            self._metadata_in = (
+                new_metadata_in
+                if isinstance(new_metadata_in, dict)
+                else self.metadata_in
+            )
 
     @property
-    def metadata_in(self):
+    def metadata_in(self) -> dict:
         """Minimal record data as dict coming from the external world.
 
         Fields that can't be set before record creation:
         """
+        self._metadata_in["files"] = {"enabled": False}
         return self._metadata_in
 
     @metadata_in.setter
-    def metadata_in(self, value):
+    def metadata_in(self, value: dict) -> None:
         self._metadata_in = value
 
     @staticmethod
@@ -265,13 +367,22 @@ class TestRecordMetadata:
         }
 
     @staticmethod
-    def build_published_record_links(record_id, base_url, ui_base_url, parent_id):
+    def build_published_record_links(
+        record_id: str,
+        base_url: str,
+        ui_base_url: str,
+        parent_id: str,
+        record_doi: str = "",
+    ):
+        if not record_doi:
+            record_doi = f"10.17613/{record_id}"
+        parent_doi = f"10.17613/{parent_id}"
         links = TestRecordMetadata.build_draft_record_links(
             record_id, base_url, ui_base_url
         )
         links["archive"] = f"{base_url}/records/{record_id}/files-archive"
         links["archive_media"] = f"{base_url}/records/{record_id}/media-files-archive"
-        links["doi"] = f"https://handle.stage.datacite.org/10.17613/{record_id}"
+        links["doi"] = f"https://handle.stage.datacite.org/{record_doi}"
         links["draft"] = f"{base_url}/records/{record_id}/draft"
         links["files"] = f"{base_url}/records/{record_id}/files"
         links["latest"] = f"{base_url}/records/{record_id}/versions/latest"
@@ -281,12 +392,12 @@ class TestRecordMetadata:
         del links["record"]
         del links["record_html"]
         links["parent"] = f"{base_url}/records/{parent_id}"
-        links["parent_doi"] = f"{ui_base_url}/doi/10.17613/{parent_id}"
+        links["parent_doi"] = f"{ui_base_url}/doi/{parent_doi}"
         links["parent_html"] = f"{ui_base_url}/records/{parent_id}"
         del links["review"]
         links["self"] = f"{base_url}/records/{record_id}"
         links["self_html"] = f"{ui_base_url}/records/{record_id}"
-        links["self_doi"] = f"{ui_base_url}/doi/10.17613/{record_id}"
+        links["self_doi"] = f"{ui_base_url}/doi/{record_doi}"
         links["self_iiif_manifest"] = f"{base_url}/iiif/record:{record_id}/manifest"
         links["self_iiif_sequence"] = (
             f"{base_url}/iiif/record:{record_id}/sequence/default"
@@ -301,20 +412,27 @@ class TestRecordMetadata:
         Fields that can't be set before record creation:
         """
         metadata_out_draft = self.metadata_in.copy()
-        metadata_out_draft["access"]["embargo"] = {"active": False, "reason": None}
-        metadata_out_draft["access"]["status"] = "metadata-only"
+        metadata_out_draft.get("access", {})["embargo"] = {
+            "active": False,
+            "reason": None,
+        }
+        metadata_out_draft.get("access", {})["status"] = "metadata-only"
         metadata_out_draft["deletion_status"] = {"is_deleted": False, "status": "P"}
-        metadata_out_draft["custom_fields"] = {}
+        metadata_out_draft["custom_fields"] = self.metadata_in.get("custom_fields", {})
         metadata_out_draft["is_draft"] = True
         metadata_out_draft["is_published"] = False
+        current_resource_type = [
+            t
+            for t in RESOURCE_TYPES
+            if t["id"] == metadata_out_draft["metadata"]["resource_type"]["id"]
+        ][0]
+        metadata_out_draft["metadata"]["resource_type"]["title"] = (
+            current_resource_type["title"]
+        )
         metadata_out_draft["versions"] = {
             "index": 1,
             "is_latest": False,
             "is_latest_draft": True,
-        }
-        metadata_out_draft["metadata"]["resource_type"] = {
-            "id": "image-photograph",
-            "title": {"en": "Photo"},
         }
         metadata_out_draft["media_files"] = {
             "count": 0,
@@ -434,10 +552,27 @@ class TestRecordMetadata:
             "is_latest": True,
             "is_latest_draft": True,
         }
-        metadata_out_published["metadata"]["resource_type"] = {
-            "id": "image-photograph",
-            "title": {"en": "Photo"},
-        }
+        owners_in = self.metadata_in.get("parent", {}).get("access", {}).get("owned_by")
+        if isinstance(owners_in, list):  # When by import, this is a list of dicts
+            owner_users = [
+                current_accounts.datastore.get_user_by_email(owner["email"])
+                for owner in owners_in
+            ]
+            metadata_out_published["parent"]["access"]["owned_by"] = (
+                {"user": str(owner_users[0].id)} if owner_users else None
+            )
+            if len(owner_users) > 1:
+                metadata_out_published["parent"]["access"]["grants"] = [
+                    {
+                        "origin": None,
+                        "subject": {
+                            "id": str(owner.id),
+                            "type": "user",
+                        },
+                        "permission": "manage",
+                    }
+                    for owner in owner_users[1:]
+                ]
         return metadata_out_published
 
     def __str__(self):
@@ -490,6 +625,7 @@ class TestRecordMetadata:
         """
         app = self.app
         expected = self.published.copy() if not expected else expected
+
         if by_api:
             expected = self._as_via_api(expected)
         try:
@@ -527,6 +663,7 @@ class TestRecordMetadata:
                 app.config["SITE_API_URL"],
                 app.config["SITE_UI_URL"],
                 actual["parent"]["id"],
+                actual["pids"]["doi"]["identifier"],
             )
             assert actual["media_files"] == {
                 "count": 0,
@@ -594,11 +731,11 @@ class TestRecordMetadata:
             assert actual["pids"] == {
                 "doi": {
                     "client": "datacite",
-                    "identifier": f"10.17613/{actual['id']}",
+                    "identifier": f"{actual['pids']['doi']['identifier']}",
                     "provider": "datacite",
                 },
                 "oai": {
-                    "identifier": f"oai:https://localhost:{actual['id']}",
+                    "identifier": f"oai:{app.config['SITE_UI_URL']}:{actual['id']}",
                     "provider": "oai",
                 },
             }
@@ -613,7 +750,43 @@ class TestRecordMetadata:
             raise e
 
 
+@pytest.fixture(scope="function")
+def record_metadata_with_files(running_app):
+    def _factory(
+        metadata_in: dict = {},
+        app: Flask = current_app,
+        community_list: list[dict] = [],
+        file_entries: dict = {},
+        owner_id: Optional[str] = "1",
+    ):
+        return TestRecordMetadataWithFiles(
+            metadata_in=metadata_in,
+            app=running_app.app,
+            community_list=community_list,
+            file_entries=file_entries,
+            owner_id=owner_id,
+        )
+
+    return _factory
+
+
 class TestRecordMetadataWithFiles(TestRecordMetadata):
+    """
+    This class extends the TestRecordMetadata class for records with files
+
+    In addition to the usual instantiation arguments, the `file_entries` argument
+    can be used to provide a dictionary of file entries shaped like the
+    `files` section of the streamlined import API. For example:
+
+    ```python
+    file_entries={
+        "file1": {"mimetype": "text/plain", "size": 100},
+        "file2": {"mimetype": "text/plain", "size": 200},
+    }
+
+    The `file_access_status` argument can be used to set the access status of the files. (Default: "open")
+    ```
+    """
 
     def __init__(
         self,
@@ -631,9 +804,8 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
             file_entries=file_entries,
             owner_id=owner_id,
         )
-        starting_metadata_in = TestRecordMetadata.default_metadata_in
-        starting_metadata_in.update(metadata_in)
-        self._metadata_in = starting_metadata_in
+        starting_metadata_in = TestRecordMetadata.default_metadata_in.copy()
+        self._metadata_in = metadata_in if metadata_in else starting_metadata_in
         self.record_id = record_id
         self.file_entries = file_entries
         self.file_access_status = file_access_status
@@ -642,7 +814,7 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
     def metadata_in(self):
         self._metadata_in["files"]["enabled"] = True
         self._metadata_in["files"]["entries"] = self.file_entries
-        self._metadata_in["access"]["status"] = self.file_access_status
+        self._metadata_in.get("access", {})["status"] = self.file_access_status
         return self._metadata_in
 
     def _add_file_entries(self, metadata):

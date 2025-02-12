@@ -36,8 +36,7 @@ test_config_identifiers = {
             "providers": ["datacite"],
             "required": True,
             "condition": (
-                lambda rec: rec.pids.get("doi", {}).get("provider")
-                == "datacite"
+                lambda rec: rec.pids.get("doi", {}).get("provider") == "datacite"
             ),
             "label": _("Concept DOI"),
             "validator": idutils.is_doi,
@@ -60,9 +59,7 @@ test_config_identifiers = {
         providers.ExternalPIDProvider(
             "external",
             "doi",
-            validators=[
-                providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])
-            ],
+            validators=[providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])],
             label=_("DOI"),
         ),
         # OAI identifier
@@ -82,9 +79,7 @@ test_config_identifiers = {
         providers.ExternalPIDProvider(
             "external",
             "doi",
-            validators=[
-                providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])
-            ],
+            validators=[providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])],
             label=_("DOI"),
         ),
         # OAI identifier
@@ -152,6 +147,16 @@ test_config_identifiers = {
         },
         "other": {
             "label": _("Other"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
+        "import_id": {
+            "label": _("Import ID"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
+        "neh_id": {
+            "label": _("NEH ID"),
             "validator": always_valid,
             "datacite": "Other",
         },

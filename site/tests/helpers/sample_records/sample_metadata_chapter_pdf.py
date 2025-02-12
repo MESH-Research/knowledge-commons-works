@@ -10,25 +10,12 @@ sample_metadata_chapter_pdf = {
                 "female_agency_ophelia.pdf"
             ),
             "hclegacy:file_pid": "hc:11452",
-            "hclegacy:groups_for_deposit": [
-                {
-                    "group_identifier": "174",
-                    "group_name": ("East Asian Languages and Literatures after 1900"),
-                },
-                {
-                    "group_identifier": "246",
-                    "group_name": "Global Shakespeares",
-                },
-                {
-                    "group_identifier": "97",
-                    "group_name": "GS Drama and Performance",
-                },
-                {"group_identifier": "25", "group_name": "LLC Shakespeare"},
-                {
-                    "group_identifier": "91",
-                    "group_name": "TC Translation Studies",
-                },
-            ],
+            # "hclegacy:groups_for_deposit": [
+            #     {
+            #         "group_identifier": "174",
+            #         "group_name": ("East Asian Languages and Literatures after 1900"),
+            #     },
+            # ],
             "hclegacy:submitter_id": "49",
             "hclegacy:previously_published": "published",
             "hclegacy:record_change_date": "2017-09-16T16:41:52Z",

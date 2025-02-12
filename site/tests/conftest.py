@@ -64,7 +64,7 @@ test_config = {
         "postgresql+psycopg2://kcworks:kcworks@localhost:5432/kcworks"
     ),
     "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-    "SEARCH_INDEX_PREFIX": "",
+    "SEARCH_INDEX_PREFIX": "",  # TODO: Search index prefix triggers errors
     "POSTGRES_USER": "kcworks",
     "POSTGRES_PASSWORD": "kcworks",
     "POSTGRES_DB": "kcworks",
@@ -269,16 +269,21 @@ def running_app(
     )
 
 
-@pytest.fixture(scope="function")
-def search_clear(search_clear):
-    """Clear search indices after test finishes (function scope)."""
-    #     # current_search_client.indices.delete(index="*")
-    #     # current_search_client.indices.delete_template("*")
-    #     # list(current_search.create())
-    #     # list(current_search.put_templates())
-    yield search_clear
-    current_search_client.indices.delete(index="*")
-    # current_search_client.indices.delete_template("*")
+# @pytest.fixture(scope="function")
+# def search_clear(search_clear):
+#     """Clear search indices after test finishes (function scope)."""
+#     #     # current_search_client.indices.delete(index="*")
+#     #     # current_search_client.indices.delete_template("*")
+#     #     # list(current_search.create())
+#     #     # list(current_search.put_templates())
+#     yield search_clear
+
+#     from invenio_vocabularies.records.api import Vocabulary
+
+#     Vocabulary.index.refresh()
+#     # current_search_client.indices.delete(index="*")
+
+#     # current_search_client.indices.delete_template("*")
 
 
 @pytest.fixture(scope="module")

@@ -8,9 +8,7 @@ from invenio_vocabularies.proxies import current_service as vocabulary_service
 @pytest.fixture(scope="module")
 def resource_type_type(app):
     """Resource type vocabulary type."""
-    return vocabulary_service.create_type(
-        system_identity, "resourcetypes", "rsrct"
-    )
+    return vocabulary_service.create_type(system_identity, "resourcetypes", "rsrct")
 
 
 RESOURCE_TYPES = [
