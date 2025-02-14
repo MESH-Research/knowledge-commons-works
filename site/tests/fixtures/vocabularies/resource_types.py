@@ -1,6 +1,8 @@
+import copy
 import pytest
 
 from invenio_access.permissions import system_identity
+from invenio_pidstore.errors import PIDAlreadyExists
 from invenio_vocabularies.records.api import Vocabulary
 from invenio_vocabularies.proxies import current_service as vocabulary_service
 
@@ -250,9 +252,14 @@ RESOURCE_TYPES = [
 
 
 @pytest.fixture(scope="module")
-def resource_type_v(app, resource_type_type):
+def resource_types():
+    return copy.deepcopy(RESOURCE_TYPES)
+
+
+@pytest.fixture(scope="module")
+def resource_type_v(app, resource_type_type, resource_types):
     """Resource type vocabulary record."""
-    for resource_type in RESOURCE_TYPES:
+    for resource_type in resource_types:
         vocabulary_service.create(system_identity, resource_type)
 
     Vocabulary.index.refresh()

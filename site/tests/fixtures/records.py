@@ -330,10 +330,6 @@ class TestRecordMetadata:
         self._metadata_in["files"] = {"enabled": False}
         return self._metadata_in
 
-    @metadata_in.setter
-    def metadata_in(self, value: dict) -> None:
-        self._metadata_in = value
-
     @staticmethod
     def build_draft_record_links(record_id, base_url, ui_base_url):
         return {
@@ -411,7 +407,7 @@ class TestRecordMetadata:
 
         Fields that can't be set before record creation:
         """
-        metadata_out_draft = self.metadata_in.copy()
+        metadata_out_draft = copy.deepcopy(self.metadata_in)
         metadata_out_draft.get("access", {})["embargo"] = {
             "active": False,
             "reason": None,
@@ -423,7 +419,7 @@ class TestRecordMetadata:
         metadata_out_draft["is_published"] = False
         current_resource_type = [
             t
-            for t in RESOURCE_TYPES
+            for t in copy.deepcopy(RESOURCE_TYPES)
             if t["id"] == metadata_out_draft["metadata"]["resource_type"]["id"]
         ][0]
         metadata_out_draft["metadata"]["resource_type"]["title"] = (
@@ -544,7 +540,7 @@ class TestRecordMetadata:
 
         Fields that can't be set before record creation:
         """
-        metadata_out_published = self.draft.copy()
+        metadata_out_published = copy.deepcopy(self.draft)
         metadata_out_published["is_draft"] = False
         metadata_out_published["is_published"] = True
         metadata_out_published["versions"] = {

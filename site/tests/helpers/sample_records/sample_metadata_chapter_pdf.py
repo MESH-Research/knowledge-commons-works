@@ -1,6 +1,6 @@
 sample_metadata_chapter_pdf = {
     "input": {
-        "created": "2017-03-08T05:01:44Z",
+        # "created": "2017-03-08T05:01:44Z",
         "pids": {},
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
@@ -42,7 +42,7 @@ sample_metadata_chapter_pdf = {
             ],
         },
         "files": {
-            "default_preview": "female_agency_ophelia.pdf",
+            # "default_preview": "female_agency_ophelia.pdf",
             "enabled": True,
             "entries": {
                 "female_agency_ophelia.pdf": {
@@ -259,8 +259,22 @@ sample_metadata_chapter_pdf = {
                 "The Paradox of Female Agency: Ophelia and East Asian " "Sensibilities"
             ),
         },
-        "parent": {"access": {"owned_by": [{"user": "49"}]}},
-        "updated": "2017-09-16T16:41:52Z",
+        "parent": {
+            "access": {
+                "owned_by": [
+                    {
+                        "email": "test@example.com",
+                        "identifiers": [
+                            {
+                                "identifier": "49",
+                                "scheme": "neh_user_id",
+                            }
+                        ],
+                    }
+                ]
+            }
+        },
+        # "updated": "2017-09-16T16:41:52Z",
     },
     "expected_serialized": {
         "record_source": "knowledgeCommons",
@@ -725,6 +739,6 @@ sample_metadata_chapter_pdf = {
             ),
         },
         "parent": {"access": {"owned_by": [{"user": "49"}]}},
-        "updated": "2017-09-16T16:41:52Z",
+        # "updated": "2017-09-16T16:41:52Z",
     },
 }

@@ -269,21 +269,21 @@ def running_app(
     )
 
 
-# @pytest.fixture(scope="function")
-# def search_clear(search_clear):
-#     """Clear search indices after test finishes (function scope)."""
-#     #     # current_search_client.indices.delete(index="*")
-#     #     # current_search_client.indices.delete_template("*")
-#     #     # list(current_search.create())
-#     #     # list(current_search.put_templates())
-#     yield search_clear
+@pytest.fixture(scope="function")
+def search_clear(search_clear):
+    """Clear search indices after test finishes (function scope)."""
+    #     #     # current_search_client.indices.delete(index="*")
+    #     #     # current_search_client.indices.delete_template("*")
+    #     #     # list(current_search.create())
+    #     #     # list(current_search.put_templates())
+    yield search_clear
 
-#     from invenio_vocabularies.records.api import Vocabulary
+    # FIXME: Resource types are getting deleted from the index after
+    # class finishes
 
-#     Vocabulary.index.refresh()
-#     # current_search_client.indices.delete(index="*")
+    #     # current_search_client.indices.delete(index="*")
 
-#     # current_search_client.indices.delete_template("*")
+    #     # current_search_client.indices.delete_template("*")
 
 
 @pytest.fixture(scope="module")
@@ -319,19 +319,19 @@ def app(
     app_config,
     database,
     search,
-    affiliations_v,
+    # affiliations_v,
     # awards_v,
-    community_type_v,
-    contributors_role_v,
-    creators_role_v,
-    date_type_v,
-    description_type_v,
+    # community_type_v,
+    # contributors_role_v,
+    # creators_role_v,
+    # date_type_v,
+    # description_type_v,
     # funders_v,
-    language_v,
-    licenses_v,
+    # language_v,
+    # licenses_v,
     # relation_type_v,
-    resource_type_v,
-    subject_v,
+    # resource_type_v,
+    # subject_v,
     # title_type_v,
     template_loader,
     admin_roles,

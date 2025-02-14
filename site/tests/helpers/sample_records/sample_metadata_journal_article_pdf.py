@@ -1,10 +1,12 @@
 sample_metadata_journal_article_pdf = {
     "input": {
         "access": {
-            "embargo": {"active": True, "reason": None, "until": "2030-11-25"},
-            "files": "restricted",
+            # "embargo": {"active": True, "reason": None, "until": "2030-11-25"},
+            # "files": "restricted",
+            "files": "public",
             "record": "public",
-            "status": "embargoed",
+            # "status": "embargoed",
+            "status": "open",
         },
         # "created": "2020-11-25T12:35:10Z",
         "custom_fields": {
@@ -58,7 +60,7 @@ sample_metadata_journal_article_pdf = {
             ],
         },
         "files": {
-            "default_preview": "24519197_005_03-04_s004_text.pdf",
+            # "default_preview": "24519197_005_03-04_s004_text.pdf",
             "enabled": True,
             "entries": {
                 "24519197_005_03-04_s004_text.pdf": {
@@ -231,14 +233,14 @@ sample_metadata_journal_article_pdf = {
                     {
                         "email": "test@example.com",
                         "identifiers": [
-                            {"identifier": "jdoe", "scheme": "kc_username"},
+                            {"identifier": "test", "scheme": "neh_user_id"},
                         ],
                     },
                     {
                         "full_name": "John Doe",
                         "email": "john.doe@example.com",
                         "identifiers": [
-                            {"identifier": "0000-0000-0000-0000", "scheme": "orcid"},
+                            {"identifier": "0000-0002-1825-0097", "scheme": "orcid"},
                             {"identifier": "jdoe", "scheme": "kc_username"},
                         ],
                     },

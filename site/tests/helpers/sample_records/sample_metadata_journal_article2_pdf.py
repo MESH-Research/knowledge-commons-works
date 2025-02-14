@@ -201,7 +201,18 @@ sample_metadata_journal_article2_pdf = {
                 "and Adaptations"
             ),
         },
-        "parent": {"access": {"owned_by": [{"user": "1011841"}]}},
+        "parent": {
+            "access": {
+                "owned_by": [
+                    {
+                        "email": "test@example.com",
+                        "identifiers": [
+                            {"identifier": "1011841", "scheme": "neh_user_id"}
+                        ],
+                    }
+                ]
+            }
+        },
         "updated": "2021-11-10T15:06:20Z",
     },
     "expected_serialized": {

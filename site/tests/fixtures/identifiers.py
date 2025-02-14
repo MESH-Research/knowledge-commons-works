@@ -150,13 +150,13 @@ test_config_identifiers = {
             "validator": always_valid,
             "datacite": "Other",
         },
-        "import_id": {
-            "label": _("Import ID"),
+        "import-recid": {
+            "label": _("Import Record ID"),
             "validator": always_valid,
             "datacite": "Other",
         },
-        "neh_id": {
-            "label": _("NEH ID"),
+        "neh-recid": {
+            "label": _("NEH Record ID"),
             "validator": always_valid,
             "datacite": "Other",
         },
@@ -180,6 +180,16 @@ test_config_identifiers = {
         },
         "kc_username": {
             "label": _("KC member"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
+        "neh_user_id": {
+            "label": _("NEH user ID"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
+        "import_user_id": {
+            "label": _("Import user ID"),
             "validator": always_valid,
             "datacite": "Other",
         },

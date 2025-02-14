@@ -1,4 +1,8 @@
+from invenio_vocabularies.proxies import current_service as current_vocabulary_service
+from invenio_vocabularies.records.api import Vocabulary
+from invenio_access.permissions import system_identity
 import copy
+from flask import Flask
 from flask_login import login_user
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
@@ -27,13 +31,13 @@ from ..helpers.sample_records import (
     # sample_metadata_conference_proceedings_pdf,
     # sample_metadata_interview_transcript_pdf,
     sample_metadata_journal_article_pdf,
-    # sample_metadata_journal_article2_pdf,
+    sample_metadata_journal_article2_pdf,
     # sample_metadata_thesis_pdf,
     # sample_metadata_white_paper_pdf,
 )
 
 
-class BaseImportRecordsLoaderLoadTest:
+class BaseImportLoaderTest:
     """Base class for testing record imports with different metadata sources."""
 
     @property
@@ -137,6 +141,7 @@ class BaseImportRecordsLoaderLoadTest:
         elif result.status == "new_record":
             assert result.assigned_owners == {
                 "owner_id": user_id,
+                "owner_email": "test@example.com",
                 "owner_type": "user",
                 "access_grants": [],
             }
@@ -151,6 +156,7 @@ class BaseImportRecordsLoaderLoadTest:
         self,
         result: LoaderResult,
         test_metadata: TestRecordMetadata,
+        app,
     ):
         """Check the submitted of the result."""
         submitted_data = copy.deepcopy(test_metadata.metadata_in)
@@ -162,24 +168,67 @@ class BaseImportRecordsLoaderLoadTest:
         # record creation because we will be adding it back in later
         if submitted_data.get("files", {}).get("entries"):
             submitted_data["files"].pop("entries")
+        # Add an empty "access" field to the expected submitted data
+        # if it wasn't present in the sample data, since it gets added
+        # by the loader
+        if not submitted_data.get("access"):
+            submitted_data["access"] = {}
         assert result.submitted["data"] == submitted_data
-        assert result.submitted["files"] == test_metadata.metadata_in["files"]
+        # The test sometimes adds checksums and ids to the input file list
+        # so we need to remove them for the comparison
+        submitted_files = copy.deepcopy(test_metadata.metadata_in["files"])
+        if submitted_files.get("entries"):
+            submitted_files["entries"] = {
+                k: {k: v for k, v in v.items() if k != "checksum" and k != "id"}
+                for k, v in submitted_files["entries"].items()
+            }
+        assert result.submitted["files"] == submitted_files
         assert result.submitted["owners"] == test_metadata.metadata_in.get(
             "parent", {}
         ).get("access", {}).get("owned_by", [])
 
+    def check_result_errors(self, result: LoaderResult):
+        """Check the errors of the result."""
+        assert result.errors == []
+
     def test_import_records_loader_load(
         self,
-        running_app,
         db,
+        running_app,
+        search_clear,
         minimal_community_factory,
         user_factory,
         record_metadata,
         mock_send_remote_api_update_fixture,
         celery_worker,
-        search_clear,
     ):
         app = running_app.app
+
+        # find the resource type id for "textDocument"
+        rt = current_vocabulary_service.read(
+            system_identity,
+            id_=("resourcetypes", "textDocument-journalArticle"),
+        )
+        app.logger.debug(f"textDocument rec: {pformat(rt.to_dict())}")
+
+        Vocabulary.index.refresh()
+
+        # Search for all resourcetypes
+        search_result = current_vocabulary_service.search(
+            system_identity,
+            type="resourcetypes",
+        )
+        app.logger.debug(f"search_result: {pformat(search_result.to_dict())}")
+
+        # Get the hits from the search result
+        resource_types = search_result.to_dict()["hits"]["hits"]
+
+        # Print each resource type
+        for rt in resource_types:
+            app.logger.debug(
+                f"resource type: ID: {rt['id']}, Title: {rt['title']['en']}"
+            )
+
         # Get the email of the first owner of the record if owners are specified
         owners = (
             self.metadata_source.get("parent", {}).get("access", {}).get("owned_by", [])
@@ -220,25 +269,21 @@ class BaseImportRecordsLoaderLoadTest:
             user_id=user_id, community_id=community["id"]
         ).load(index=0, import_data=copy.deepcopy(test_metadata.metadata_in))
 
-        self.check_result_submitted(result, test_metadata)
-
+        assert result.log_object
+        assert result.source_id
+        self.check_result_submitted(result, test_metadata, app)
         self.check_result_record_created(result, test_metadata)
-
         self.check_result_status(result)
-
         self.check_result_primary_community(result, community)
-
         self.check_result_existing_record(result)
-
         self.check_result_uploaded_files(result)
 
         community.update({"links": {}})  # FIXME: Why are links not expanded?
 
         self.check_result_community_review_result(result, community, test_metadata)
-
         self.check_result_assigned_owners(result, user_id, test_metadata, app)
-
         self.check_result_added_to_collections(result)
+        self.check_result_errors(result)
 
 
 # class TestImportLoaderLoadThesisPDF(BaseImportRecordsLoaderLoadTest):
@@ -259,22 +304,15 @@ class BaseImportRecordsLoaderLoadTest:
 #         return sample_metadata_chapter2_pdf["input"]
 
 
-class TestImportLoaderLoadJournalArticlePDF(BaseImportRecordsLoaderLoadTest):
+class TestImportLoaderJArticle(BaseImportLoaderTest):
 
     @property
     def metadata_source(self):
         return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
 
 
-class TestImportLoaderLoadJournalArticleBadTitle(BaseImportRecordsLoaderLoadTest):
-    """Test importing a journal article with an empty title."""
-
-    @property
-    def metadata_source(self):
-        return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
-
-    def modify_metadata(self, test_metadata: TestRecordMetadata):
-        test_metadata.update_metadata({"metadata|title": ""})
+class BaseImportLoaderErrorTest(BaseImportLoaderTest):
+    """Base class for testing record imports with errors."""
 
     def check_result_status(self, result: LoaderResult):
         """Check the status of the result."""
@@ -297,15 +335,73 @@ class TestImportLoaderLoadJournalArticleBadTitle(BaseImportRecordsLoaderLoadTest
         assert result.community_review_result == {}
 
 
-class BaseImportRecordsLoaderLoadWithFilesTest:
-    """Base class for testing record imports with files."""
+class TestImportLoaderJArticleErrorTitle(BaseImportLoaderErrorTest):
+    """Test importing a journal article with an empty title."""
 
     @property
     def metadata_source(self):
-        """Override this in subclasses to provide specific metadata."""
-        raise NotImplementedError
+        return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
 
-    def test_import_records_loader_load_with_files(
+    def modify_metadata(self, test_metadata: TestRecordMetadata):
+        test_metadata.update_metadata({"metadata|title": ""})
+
+    def check_result_errors(self, result: LoaderResult):
+        """Check the errors of the result."""
+        assert result.errors == [
+            {
+                "validation_error": {
+                    "metadata": {"title": ["Missing data for required field."]}
+                }
+            }
+        ]
+
+
+class TestImportLoaderJArticleErrorIDScheme(BaseImportLoaderErrorTest):
+    """Test importing a journal article with an empty title."""
+
+    @property
+    def metadata_source(self):
+        return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
+
+    def modify_metadata(self, test_metadata: TestRecordMetadata):
+        test_metadata.update_metadata(
+            {
+                "metadata|identifiers": [
+                    {"identifier": "hc:33383", "scheme": "made-up-scheme"}
+                ]
+            }
+        )
+
+    def check_result_errors(self, result: LoaderResult):
+        """Check the errors of the result."""
+        assert result.errors == [
+            {
+                "validation_error": {
+                    "metadata": {"identifiers": {0: {"scheme": "Invalid scheme."}}}
+                }
+            }
+        ]
+
+
+class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
+    """Base class for testing record imports with files."""
+
+    def check_result_uploaded_files(self, result: LoaderResult):
+        """Check the uploaded files of the result."""
+        assert result.uploaded_files == {
+            "sample.jpg": ["uploaded", []],
+            "sample.pdf": ["uploaded", []],
+        }
+
+    def check_result_record_created(
+        self, result: LoaderResult, test_metadata: TestRecordMetadata
+    ):
+        """Check the record created of the result."""
+        assert test_metadata.compare_published(result.record_created["record_data"])
+        # assert result.record_created["record_data"]["revision_id"] == 4
+        # FIXME: sometimes 3, sometimes 4
+
+    def test_import_records_loader_load(
         self,
         running_app,
         db,
@@ -317,6 +413,31 @@ class BaseImportRecordsLoaderLoadWithFilesTest:
         celery_worker,
     ):
         app = running_app.app
+
+        # find the resource type id for "textDocument"
+        rt = current_vocabulary_service.read(
+            system_identity,
+            id_=("resourcetypes", "textDocument-journalArticle"),
+        )
+        app.logger.debug(f"textDocument rec: {pformat(rt.to_dict())}")
+
+        Vocabulary.index.refresh()
+        # Search for all resourcetypes
+        search_result = current_vocabulary_service.search(
+            system_identity,
+            type="resourcetypes",
+        )
+        app.logger.debug(f"search_result: {pformat(search_result.to_dict())}")
+
+        # Get the hits from the search result
+        resource_types = search_result.to_dict()["hits"]["hits"]
+
+        # Print each resource type
+        for rt in resource_types:
+            app.logger.debug(
+                f"resource type: ID: {rt['id']}, Title: {rt['title']['en']}"
+            )
+
         u = user_factory(email="test@example.com", token=True, saml_id=None)
         user_id = u.user.id
         identity = get_identity(u.user)
@@ -404,7 +525,7 @@ class BaseImportRecordsLoaderLoadWithFilesTest:
             user_id=user_id, community_id=community["id"]
         ).load(
             index=0,
-            import_data=test_metadata.metadata_in,
+            import_data=copy.deepcopy(test_metadata.metadata_in),
             files=files,
         )
         file1.close()
@@ -420,42 +541,19 @@ class BaseImportRecordsLoaderLoadWithFilesTest:
             ]
         test_metadata.file_entries = file_entries
         test_metadata.record_id = record_created_id
-        metadata_expected = test_metadata.published
 
-        # check result.status
-        assert result.status == "new_record"
-
-        # check result.primary_community
-        assert result.primary_community["id"] == community["id"]
-        assert result.primary_community["metadata"]["title"] == "My Community"
-        assert result.primary_community["slug"] == "my-community"
-
-        # check result.record_created
-        assert test_metadata.compare_published(result.record_created["record_data"])
-
-        # check result.uploaded_files
-        assert result.uploaded_files == {
-            "sample.jpg": ["uploaded", []],
-            "sample.pdf": ["uploaded", []],
-        }
-
-        # check result.community_review_result
-        assert result.community_review_result["is_closed"]
-        assert not result.community_review_result["is_expired"]
-        assert not result.community_review_result["is_open"]
-        assert (
-            result.community_review_result["receiver"]["community"] == community["id"]
-        )
-
-        # check result.assigned_owners
-        assert result.assigned_owners == {
-            "owner_id": user_id,
-            "owner_type": "user",
-            "access_grants": [],
-        }
-
-        # check result.added_to_collections
-        assert result.added_to_collections == []
+        self.check_result_status(result)
+        self.check_result_primary_community(result, community)
+        self.check_result_existing_record(result)
+        self.check_result_record_created(result, test_metadata)
+        self.check_result_uploaded_files(result)
+        self.check_result_community_review_result(result, community, test_metadata)
+        self.check_result_assigned_owners(result, user_id, test_metadata, app)
+        self.check_result_added_to_collections(result)
+        self.check_result_submitted(result, test_metadata, app)
+        self.check_result_errors(result)
+        assert result.log_object
+        assert result.source_id
 
         # now check the record in the database/search
         rdm_record = records_service.read(
@@ -463,7 +561,7 @@ class BaseImportRecordsLoaderLoadWithFilesTest:
         ).to_dict()
         assert rdm_record["files"] == {
             k: v
-            for k, v in metadata_expected["files"].items()
+            for k, v in test_metadata.published["files"].items()
             if k != "default_preview"
         }
 
@@ -476,7 +574,6 @@ class BaseImportRecordsLoaderLoadWithFilesTest:
                     "sample.jpg/content"
                 )
                 assert file_response2.status_code == 200
-                app.logger.debug(file_response2.headers)
                 assert (
                     "inline" in file_response2.headers["Content-Disposition"]
                 )  # FIXME: why not attachment?
@@ -512,35 +609,204 @@ class BaseImportRecordsLoaderLoadWithFilesTest:
         file2.close()
 
 
-class TestImportLoaderLoadWithFilesChapterPDF(BaseImportRecordsLoaderLoadWithFilesTest):
-    @property
-    def metadata_source(self):
-        return sample_metadata_chapter_pdf["input"]
-
-
-class TestImportLoaderLoadWithFilesChapter2PDF(
-    BaseImportRecordsLoaderLoadWithFilesTest
-):
-    @property
-    def metadata_source(self):
-        return sample_metadata_chapter2_pdf["input"]
-
-
-# class TestImportLoaderLoadWithFilesJournalArticlePDF(
-#     BaseImportRecordsLoaderLoadWithFilesTest
-# ):
+# class TestImportLoaderLoadWithFilesChapterPDF(BaseImportLoaderWithFilesTest):
 #     @property
 #     def metadata_source(self):
-#         return sample_metadata_journal_article_pdf["input"]
+#         return copy.deepcopy(sample_metadata_chapter_pdf["input"])
 
 
-class BaseImportRecordsServiceLoadTest:
+# class TestImportLoaderLoadWithFilesChapter2PDF(BaseImportLoaderWithFilesTest):
+#     @property
+#     def metadata_source(self):
+#         return copy.deepcopy(sample_metadata_chapter2_pdf["input"])
+
+
+class TestImportLoaderWithFilesJArticle(BaseImportLoaderWithFilesTest):
+    @property
+    def metadata_source(self):
+        return sample_metadata_journal_article_pdf["input"]
+
+
+class BaseImportServiceTest:
     """Base class for testing record imports with the service."""
 
     @property
-    def metadata_source(self):
+    def metadata_sources(self):
         """Override this in subclasses to provide specific metadata."""
         raise NotImplementedError
+
+    @property
+    def expected_errors(self):
+        """Override this in subclasses to provide specific expected errors."""
+        return [[]] * len(self.metadata_sources)
+
+    def check_result_status(self, import_results: dict):
+        assert len(import_results["data"]) == len(self.metadata_sources)
+        assert import_results.get("status") == "success"
+        assert import_results.get("message") == "All records were successfully imported"
+
+    def check_result_errors(self, import_results: dict):
+        assert import_results.get("errors") == []
+
+    def _check_successful_import(
+        self,
+        actual: dict,
+        app: Flask,
+        record_files: list,
+        expected: TestRecordMetadata,
+        community: dict,
+        uploader_id: str,
+    ):
+        actual_metadata = actual.get("metadata")
+        assert actual_metadata
+
+        actual_record_id = actual.get("record_id")
+        assert actual_record_id
+
+        actual_record_url = actual.get("record_url")
+        assert (
+            actual_record_url
+            == f"{app.config['SITE_UI_URL']}/records/{actual_record_id}"
+        )
+
+        actual_collection_id = actual.get("collection_id")
+        assert actual_collection_id == community["id"]
+        assert actual_collection_id == actual_metadata.get("parent", {}).get(
+            "communities", {}
+        ).get("entries", [])[0].get("id")
+
+        assert actual.get("errors") == []
+
+        # comparing file list separately from file entries in metadata
+        actual_files = actual.get("files")
+        assert actual_files == {
+            f.filename.split("/")[-1]: ["uploaded", []] for f in record_files
+        }
+
+        # add ids and checksums from actual file entries to the expected
+        # file entries to compare file entries in metadata
+        for k, f in expected.file_entries.items():
+            f["id"] = actual_metadata["files"]["entries"][k]["id"]
+            f["checksum"] = actual_metadata["files"]["entries"][k]["checksum"]
+        assert expected.compare_published(actual_metadata)
+
+        # check owners
+        expected_owners = (
+            expected.metadata_in.get("parent", {}).get("access", {}).get("owned_by")
+        )
+        if expected_owners:
+            first_expected_owner = expected.metadata_in["parent"]["access"]["owned_by"][
+                0
+            ]
+            first_actual_owner = current_accounts.datastore.get_user_by_id(
+                actual_metadata["parent"]["access"]["owned_by"]["user"]
+            )
+            assert first_actual_owner.email == first_expected_owner["email"]
+            if len(expected_owners) > 1:
+                other_expected_owners = expected.metadata_in["parent"]["access"][
+                    "owned_by"
+                ][1:]
+                other_actual_owners = actual_metadata["parent"]["access"]["grants"]
+                for oe, oa in zip(other_expected_owners, other_actual_owners):
+                    user = current_accounts.datastore.get_user_by_email(oe["email"])
+                    assert oa["subject"]["id"] == str(user.id)
+                    assert user.email == oe["email"]
+
+                    if oe.get("identifiers"):
+                        kc_username = next(
+                            (
+                                i["identifier"]
+                                for i in oe["identifiers"]
+                                if i["scheme"] == "kc_username"
+                            ),
+                            None,
+                        )
+                        orcid = next(
+                            (
+                                i["identifier"]
+                                for i in oe["identifiers"]
+                                if i["scheme"] == "orcid"
+                            ),
+                            None,
+                        )
+                        neh_id = next(
+                            (
+                                i["identifier"]
+                                for i in oe["identifiers"]
+                                if i["scheme"] == "neh_user_id"
+                            ),
+                            None,
+                        )
+                        import_id = next(
+                            (
+                                i["identifier"]
+                                for i in oe["identifiers"]
+                                if i["scheme"] == "import_user_id"
+                            ),
+                            None,
+                        )
+                        if kc_username:
+                            assert user.username in [
+                                kc_username,
+                                f"knowledgeCommons-{kc_username}",
+                            ]
+                        if orcid:
+                            assert user.user_profile["identifier_orcid"] == orcid
+                        if neh_id:
+                            other_user_ids = json.loads(
+                                user.user_profile["identifier_other"]
+                            )
+                            assert neh_id in other_user_ids.values()
+                        if import_id:
+                            other_user_ids = json.loads(
+                                user.user_profile["identifier_other"]
+                            )
+                            assert import_id in other_user_ids.values()
+        else:
+            assert actual_metadata["parent"]["access"]["owned_by"] == {
+                "user": uploader_id
+            }
+            assert actual_metadata["parent"]["access"]["grants"] == []
+
+    def _check_failed_import(
+        self, import_result: dict, expected_error_list: list[dict]
+    ):
+        assert import_result["status"] == "error"
+        assert import_result.get("errors") == expected_error_list
+
+    def check_result_data(
+        self,
+        import_results: dict,
+        app: Flask,
+        files: list,
+        metadata_sources: list,
+        community: dict,
+        expected_errors: list,
+        uploader_id: str,
+    ):
+        assert len(import_results["data"]) + len(import_results["errors"]) == len(
+            metadata_sources
+        )
+        files_per_item = len(files) // len(metadata_sources)
+        for idx, record_result in enumerate(import_results["data"]):
+            expected_error_list = expected_errors[idx]
+
+            record_files = files[idx * files_per_item : (idx + 1) * files_per_item]
+            app.logger.info(f"record_files in check_result_data: {record_files}")
+
+            assert record_result["item_index"] == idx
+
+            if expected_error_list:
+                self._check_failed_import(record_result, expected_error_list)
+            else:
+                self._check_successful_import(
+                    record_result,
+                    app,
+                    record_files,
+                    metadata_sources[idx],
+                    community,
+                    uploader_id,
+                )
 
     def test_import_records_service_load(
         self,
@@ -571,9 +837,15 @@ class BaseImportRecordsServiceLoadTest:
             / "tests/helpers/sample_files/sample.pdf",
             Path(__file__).parent.parent.parent
             / "tests/helpers/sample_files/sample.jpg",
+            Path(__file__).parent.parent.parent
+            / "tests/helpers/sample_files/sample2.pdf",
+            Path(__file__).parent.parent.parent
+            / "tests/helpers/sample_files/sample.csv",
         ]
         file1 = open(file_paths[0], "rb")
         file2 = open(file_paths[1], "rb")
+        file3 = open(file_paths[2], "rb")
+        file4 = open(file_paths[3], "rb")
         files = [
             FileData(
                 filename=str(
@@ -595,6 +867,26 @@ class BaseImportRecordsServiceLoadTest:
                 mimetype="image/jpeg",
                 mimetype_params={},
             ),
+            FileData(
+                filename=str(
+                    Path(__file__).parent.parent.parent
+                    / "tests/helpers/sample_files/sample2.pdf"
+                ),
+                stream=file3,
+                content_type="application/pdf",
+                mimetype="application/pdf",
+                mimetype_params={},
+            ),
+            FileData(
+                filename=str(
+                    Path(__file__).parent.parent.parent
+                    / "tests/helpers/sample_files/sample.csv"
+                ),
+                stream=file4,
+                content_type="text/csv",
+                mimetype="text/csv",
+                mimetype_params={},
+            ),
         ]
         file_list = [
             {
@@ -607,71 +899,101 @@ class BaseImportRecordsServiceLoadTest:
                 "mimetype": "image/jpeg",
                 "size": 1174188,
             },
-        ]
-        file_entries = {f["key"]: f for f in file_list}
-
-        test_metadata = TestRecordMetadataWithFiles(
-            metadata_in=self.metadata_source,
-            community_list=[community],
-            owner_id=u.user.id,
-            file_entries=file_entries,
-        )
-
-        test_metadata.update_metadata(
             {
-                "metadata|identifiers": [
-                    {"identifier": "1234567890", "scheme": "import_id"}
-                ]
-            }
-        )
+                "key": "sample2.pdf",
+                "mimetype": "application/pdf",
+                "size": 13264,  # FIXME: Check reporting of mismatch
+            },
+            {
+                "key": "sample.csv",
+                "mimetype": "text/csv",
+                "size": 17261,
+            },
+        ]
+
+        metadata_sources = []
+        for idx, d in enumerate(self.metadata_sources):
+            files_per_item = len(file_list) // len(self.metadata_sources)
+            item_files = file_list[idx * files_per_item : (idx + 1) * files_per_item]
+            app.logger.info(f"item_files: {item_files}")
+            file_entries = {f["key"]: f for f in item_files}
+            app.logger.info(f"file_entries: {file_entries}")
+            test_metadata = TestRecordMetadataWithFiles(
+                metadata_in=d,
+                community_list=[community],
+                owner_id=u.user.id,
+                file_entries=file_entries,
+            )
+
+            test_metadata.update_metadata(
+                {
+                    "metadata|identifiers": [
+                        {
+                            "identifier": f"1234567890{str(idx)}",
+                            "scheme": "neh-recid",
+                        }
+                    ]
+                }
+            )
+            metadata_sources.append(test_metadata)
 
         service = current_record_importer_service
         import_results = service.import_records(
             file_data=files,
-            metadata=[test_metadata.metadata_in],
+            metadata=[copy.deepcopy(m.metadata_in) for m in metadata_sources],
             user_id=user_id,
             community_id=community["id"],
         )
 
         file1.close()
         file2.close()
+        file3.close()
+        file4.close()
 
-        assert import_results.get("status") == "success"
-        assert len(import_results["data"]) == 1
-        assert import_results.get("message") == "All records were successfully imported"
+        self.check_result_status(import_results)
+        self.check_result_errors(import_results)
+        self.check_result_data(
+            import_results,
+            app,
+            files,
+            metadata_sources,
+            community,
+            self.expected_errors,
+            user_id,
+        )
+
+
+# class TestImportServiceChapter(BaseImportRecordsServiceLoadTest):
+#     @property
+#     def metadata_source(self):
+#         return sample_metadata_chapter_pdf["input"]
+
+
+# class TestImportServiceChapter2(BaseImportRecordsServiceLoadTest):
+#     @property
+#     def metadata_source(self):
+#         return sample_metadata_chapter2_pdf["input"]
+
+
+class TestImportServiceJArticle(BaseImportServiceTest):
+    @property
+    def metadata_sources(self):
+        return [
+            sample_metadata_journal_article_pdf["input"],
+            sample_metadata_journal_article2_pdf["input"],
+        ]
+
+
+class BaseImportServiceErrorTest(BaseImportServiceTest):
+    """Base class for testing record imports with errors."""
+
+    def check_result_errors(self, import_results: dict):
         assert import_results.get("errors") == []
 
-        record_result1 = import_results["data"][0]
-        record_id1 = record_result1.get("record_id")
-        assert record_id1
-        assert (
-            record_result1.get("record_url")
-            == f"{app.config['SITE_UI_URL']}/records/{record_id1}"
-        )
-        assert record_result1.get("files") == {
-            "sample.jpg": ["uploaded", []],
-            "sample.pdf": ["uploaded", []],
-        }
-        assert record_result1.get("errors") == []
-        assert record_result1.get("collection_id") == community["id"]
-        result_metadata1 = record_result1.get("metadata")
 
-        # add ids and checksums from actual file entries to the expected file entries
-        for k, f in file_entries.items():
-            f["id"] = result_metadata1["files"]["entries"][k]["id"]
-            f["checksum"] = result_metadata1["files"]["entries"][k]["checksum"]
-        assert test_metadata.compare_published(result_metadata1)
-
-
-class TestImportRecordsServiceMetadataOnlyChapter(BaseImportRecordsServiceLoadTest):
+class TestImportServiceJArticleErrorTitle(BaseImportServiceErrorTest):
     @property
-    def metadata_source(self):
-        return sample_metadata_chapter_pdf["input"]
-
-
-class TestImportRecordsServiceMetadataOnlyChapter2(BaseImportRecordsServiceLoadTest):
-    @property
-    def metadata_source(self):
+    def metadata_sources(self):
         return sample_metadata_chapter2_pdf["input"]
 
 

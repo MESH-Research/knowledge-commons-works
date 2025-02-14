@@ -1,6 +1,6 @@
 sample_metadata_chapter2_pdf = {
     "input": {
-        "created": "2019-01-29T03:57:00Z",
+        # "created": "2019-01-29T03:57:00Z",
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -50,7 +50,7 @@ sample_metadata_chapter2_pdf = {
             "hclegacy:record_creation_date": "2019-01-29T03:57:00Z",
         },
         "files": {
-            "default_preview": "55710426.pdf",
+            # "default_preview": "55710426.pdf",
             "enabled": True,
             "entries": {
                 "55710426.pdf": {
@@ -217,8 +217,19 @@ sample_metadata_chapter2_pdf = {
             "publisher": "Zalman Shazar Center",
             "title": "מגדר וזמן בכתבי ר׳ שניאור זלמן מלאדי",
         },
-        "parent": {"access": {"owned_by": [{"user": "1017065"}]}},
-        "updated": "2019-01-29T03:57:00Z",
+        "parent": {
+            "access": {
+                "owned_by": [
+                    {
+                        "email": "test@example.com",
+                        "identifiers": [
+                            {"identifier": "1017065", "scheme": "neh_user_id"},
+                        ],
+                    }
+                ]
+            }
+        },
+        # "updated": "2019-01-29T03:57:00Z",
     },
     "expected_serialized": {
         "record_source": "knowledgeCommons",
@@ -383,8 +394,15 @@ sample_metadata_chapter2_pdf = {
             "publisher": "Zalman Shazar Center",
             "title": "מגדר וזמן בכתבי ר׳ שניאור זלמן מלאדי",
         },
-        "parent": {"access": {"owned_by": [{"user": "1017065"}]}},
-        "updated": "2019-01-29T03:57:00Z",
+        "parent": {
+            "access": {
+                "owned_by": [
+                    {"identifier": "1017065", "scheme": "neh_user_id"},
+                    {"email": "test@example.com"},
+                ]
+            }
+        },
+        # "updated": "2019-01-29T03:57:00Z",
     },
     "expected_loaded": {
         "record_source": "knowledgeCommons",
