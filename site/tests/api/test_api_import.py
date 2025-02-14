@@ -251,6 +251,13 @@ class BaseImportLoaderTest:
             community_list=[community],
             owner_id=user_id,
         )
+        test_metadata.update_metadata(
+            {
+                "metadata|identifiers": [
+                    {"identifier": "1234567890", "scheme": "import-recid"}
+                ]
+            }
+        )
         self.modify_metadata(test_metadata)
 
         for u in (
@@ -367,7 +374,8 @@ class TestImportLoaderJArticleErrorIDScheme(BaseImportLoaderErrorTest):
         test_metadata.update_metadata(
             {
                 "metadata|identifiers": [
-                    {"identifier": "hc:33383", "scheme": "made-up-scheme"}
+                    {"identifier": "hc:33383", "scheme": "my-made-up-scheme"},
+                    {"identifier": "1234567890", "scheme": "import-recid"},
                 ]
             }
         )
@@ -496,6 +504,13 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
             community_list=[community],
             owner_id=user_id,
             file_entries=file_entries,
+        )
+        test_metadata.update_metadata(
+            {
+                "metadata|identifiers": [
+                    {"identifier": "hc:33383", "scheme": "import-recid"}
+                ]
+            }
         )
         for u in (
             test_metadata.metadata_in.get("parent", {})
@@ -636,8 +651,102 @@ class BaseImportServiceTest:
         raise NotImplementedError
 
     @property
+    def files_to_upload(self):
+        """Override this in subclasses to provide different files to upload.
+
+        The default defined here assumes two input records with two files each.
+        """
+
+        file_paths = [
+            Path(__file__).parent.parent.parent
+            / "tests/helpers/sample_files/sample.pdf",
+            Path(__file__).parent.parent.parent
+            / "tests/helpers/sample_files/sample.jpg",
+            Path(__file__).parent.parent.parent
+            / "tests/helpers/sample_files/sample2.pdf",
+            Path(__file__).parent.parent.parent
+            / "tests/helpers/sample_files/sample.csv",
+        ]
+        file1 = open(file_paths[0], "rb")
+        file2 = open(file_paths[1], "rb")
+        file3 = open(file_paths[2], "rb")
+        file4 = open(file_paths[3], "rb")
+        files = [
+            FileData(
+                filename=str(
+                    Path(__file__).parent.parent.parent
+                    / "tests/helpers/sample_files/sample.pdf"
+                ),
+                stream=file1,
+                content_type="application/pdf",
+                mimetype="application/pdf",
+                mimetype_params={},
+            ),
+            FileData(
+                filename=str(
+                    Path(__file__).parent.parent.parent
+                    / "tests/helpers/sample_files/sample.jpg"
+                ),
+                stream=file2,
+                content_type="image/jpeg",
+                mimetype="image/jpeg",
+                mimetype_params={},
+            ),
+            FileData(
+                filename=str(
+                    Path(__file__).parent.parent.parent
+                    / "tests/helpers/sample_files/sample2.pdf"
+                ),
+                stream=file3,
+                content_type="application/pdf",
+                mimetype="application/pdf",
+                mimetype_params={},
+            ),
+            FileData(
+                filename=str(
+                    Path(__file__).parent.parent.parent
+                    / "tests/helpers/sample_files/sample.csv"
+                ),
+                stream=file4,
+                content_type="text/csv",
+                mimetype="text/csv",
+                mimetype_params={},
+            ),
+        ]
+        file_list = [
+            {
+                "key": "sample.pdf",
+                "mimetype": "application/pdf",
+                "size": 13264,  # FIXME: Check reporting of mismatch
+            },
+            {
+                "key": "sample.jpg",
+                "mimetype": "image/jpeg",
+                "size": 1174188,
+            },
+            {
+                "key": "sample2.pdf",
+                "mimetype": "application/pdf",
+                "size": 13264,  # FIXME: Check reporting of mismatch
+            },
+            {
+                "key": "sample.csv",
+                "mimetype": "text/csv",
+                "size": 17261,
+            },
+        ]
+        file_streams = [file1, file2, file3, file4]
+        return files, file_list, file_streams
+
+    @property
     def expected_errors(self):
-        """Override this in subclasses to provide specific expected errors."""
+        """Override this in subclasses to provide specific expected errors.
+
+        The expected errors should be a list of lists, where each inner list
+        contains the expected errors for a record. If the record is expected to
+        succeed, the inner list should be empty. The outer list should have the
+        same length as the metadata sources.
+        """
         return [[]] * len(self.metadata_sources)
 
     def check_result_status(self, import_results: dict):
@@ -832,87 +941,12 @@ class BaseImportServiceTest:
         community_record = minimal_community_factory(owner=u.user.id)
         community = community_record.to_dict()
 
-        file_paths = [
-            Path(__file__).parent.parent.parent
-            / "tests/helpers/sample_files/sample.pdf",
-            Path(__file__).parent.parent.parent
-            / "tests/helpers/sample_files/sample.jpg",
-            Path(__file__).parent.parent.parent
-            / "tests/helpers/sample_files/sample2.pdf",
-            Path(__file__).parent.parent.parent
-            / "tests/helpers/sample_files/sample.csv",
-        ]
-        file1 = open(file_paths[0], "rb")
-        file2 = open(file_paths[1], "rb")
-        file3 = open(file_paths[2], "rb")
-        file4 = open(file_paths[3], "rb")
-        files = [
-            FileData(
-                filename=str(
-                    Path(__file__).parent.parent.parent
-                    / "tests/helpers/sample_files/sample.pdf"
-                ),
-                stream=file1,
-                content_type="application/pdf",
-                mimetype="application/pdf",
-                mimetype_params={},
-            ),
-            FileData(
-                filename=str(
-                    Path(__file__).parent.parent.parent
-                    / "tests/helpers/sample_files/sample.jpg"
-                ),
-                stream=file2,
-                content_type="image/jpeg",
-                mimetype="image/jpeg",
-                mimetype_params={},
-            ),
-            FileData(
-                filename=str(
-                    Path(__file__).parent.parent.parent
-                    / "tests/helpers/sample_files/sample2.pdf"
-                ),
-                stream=file3,
-                content_type="application/pdf",
-                mimetype="application/pdf",
-                mimetype_params={},
-            ),
-            FileData(
-                filename=str(
-                    Path(__file__).parent.parent.parent
-                    / "tests/helpers/sample_files/sample.csv"
-                ),
-                stream=file4,
-                content_type="text/csv",
-                mimetype="text/csv",
-                mimetype_params={},
-            ),
-        ]
-        file_list = [
-            {
-                "key": "sample.pdf",
-                "mimetype": "application/pdf",
-                "size": 13264,  # FIXME: Check reporting of mismatch
-            },
-            {
-                "key": "sample.jpg",
-                "mimetype": "image/jpeg",
-                "size": 1174188,
-            },
-            {
-                "key": "sample2.pdf",
-                "mimetype": "application/pdf",
-                "size": 13264,  # FIXME: Check reporting of mismatch
-            },
-            {
-                "key": "sample.csv",
-                "mimetype": "text/csv",
-                "size": 17261,
-            },
-        ]
+        # Remember to close the file streams after the import is complete
+        files, file_list, file_streams = self.files_to_upload
 
-        metadata_sources = []
+        metadata_source_objects = []
         for idx, d in enumerate(self.metadata_sources):
+            app.logger.info(f"d: {pformat(d)}")
             files_per_item = len(file_list) // len(self.metadata_sources)
             item_files = file_list[idx * files_per_item : (idx + 1) * files_per_item]
             app.logger.info(f"item_files: {item_files}")
@@ -935,20 +969,18 @@ class BaseImportServiceTest:
                     ]
                 }
             )
-            metadata_sources.append(test_metadata)
+            metadata_source_objects.append(test_metadata)
 
         service = current_record_importer_service
         import_results = service.import_records(
             file_data=files,
-            metadata=[copy.deepcopy(m.metadata_in) for m in metadata_sources],
+            metadata=[copy.deepcopy(m.metadata_in) for m in metadata_source_objects],
             user_id=user_id,
             community_id=community["id"],
         )
 
-        file1.close()
-        file2.close()
-        file3.close()
-        file4.close()
+        for file in file_streams:
+            file.close()
 
         self.check_result_status(import_results)
         self.check_result_errors(import_results)
@@ -956,7 +988,7 @@ class BaseImportServiceTest:
             import_results,
             app,
             files,
-            metadata_sources,
+            metadata_source_objects,
             community,
             self.expected_errors,
             user_id,
@@ -975,7 +1007,7 @@ class BaseImportServiceTest:
 #         return sample_metadata_chapter2_pdf["input"]
 
 
-class TestImportServiceJArticle(BaseImportServiceTest):
+class TestImportServiceJArticleSuccess(BaseImportServiceTest):
     @property
     def metadata_sources(self):
         return [
@@ -984,17 +1016,113 @@ class TestImportServiceJArticle(BaseImportServiceTest):
         ]
 
 
-class BaseImportServiceErrorTest(BaseImportServiceTest):
+class BaseImportServiceErrorTestAllOrNone(BaseImportServiceTest):
     """Base class for testing record imports with errors."""
 
+    def check_result_status(self, import_results: dict):
+        assert len(import_results["data"]) == 0
+        assert import_results.get("status") == "error"
+        # if only some records are expected to fail
+        if len([e for e in self.expected_errors if e]) < len(self.metadata_sources):
+            assert (
+                import_results.get("message")
+                == "Some records could not be imported, and the 'all_or_none' flag was "
+                "set to True, so the import was aborted."
+            )  # noqa: E501
+        # if all records are expected to fail
+        else:
+            assert import_results.get("message") == ""
+
     def check_result_errors(self, import_results: dict):
-        assert import_results.get("errors") == []
+        error_item_indices = [
+            index for index, error in enumerate(self.expected_errors) if error
+        ]
+        assert len(import_results["errors"]) == len(error_item_indices)
+        for i, actual_error_item in enumerate(import_results["errors"]):
+            assert actual_error_item["item_index"] == error_item_indices[i]
+            assert (
+                actual_error_item["errors"]
+                == self.expected_errors[error_item_indices[i]]
+            )
+            if actual_error_item[
+                "metadata"
+            ]:  # make sure metadata present when expected
+                item_recid = actual_error_item["metadata"]["id"]
+                assert item_recid not in [
+                    r["metadata"]["id"] for r in import_results["data"]
+                ]
+                created_record = records_service.read(
+                    system_identity, id_=item_recid
+                ).to_dict()
+                assert created_record["status"] == "deleted"
+
+    def check_result_data(self, import_results: dict, *args, **kwargs):
+        assert len(import_results["data"]) == 0
 
 
-class TestImportServiceJArticleErrorTitle(BaseImportServiceErrorTest):
+class TestImportServiceJArticleErrorTitle(BaseImportServiceErrorTestAllOrNone):
     @property
     def metadata_sources(self):
-        return sample_metadata_chapter2_pdf["input"]
+        meta1 = copy.deepcopy(sample_metadata_chapter_pdf["input"])
+        meta1["metadata"]["title"] = ""
+        meta2 = copy.deepcopy(sample_metadata_chapter2_pdf["input"])
+        return [meta1, meta2]
+
+    @property
+    def expected_errors(self):
+        return [
+            [
+                {
+                    "validation_error": {
+                        "metadata": {"title": ["Missing data for required field."]}
+                    }
+                }
+            ],
+            [],
+        ]
+
+
+class TestImportServiceJArticleErrorMissingFile(BaseImportServiceErrorTestAllOrNone):
+    @property
+    def metadata_sources(self):
+        meta1 = copy.deepcopy(sample_metadata_chapter_pdf["input"])
+        meta1["metadata"]["title"] = ""
+        meta2 = copy.deepcopy(sample_metadata_chapter2_pdf["input"])
+        return [meta1, meta2]
+
+    @property
+    def files_to_upload(self):
+        """Override the default files to upload to remove the first file.
+
+        The first record should fail now, even though the second record
+        is the one with the invalid metadata.
+        """
+        files, file_list, file_streams = super().files_to_upload
+        file_streams[0].close()
+        file_streams = file_streams[1:]
+        files = files[1:]
+        # leave the file list the same so that there's a mismatch between
+        # the files and the file list (entries)
+        return files, file_list, file_streams
+
+    @property
+    def expected_errors(self):
+        """
+        The first record should fail because the file is missing.
+        The second record should fail because the metadata is invalid.
+        """
+        return [
+            [
+                {
+                    "file upload failures": {
+                        "sample.pdf": [
+                            "failed",
+                            ["File sample.pdf not found in list of files."],
+                        ]
+                    },
+                },
+            ],
+        ]
 
 
 class BaseImportRecordsAPITest:
@@ -1093,16 +1221,16 @@ class BaseImportRecordsAPITest:
                 assert not rdm_record["files"]["enabled"]
 
 
-class TestImportRecordsAPIMetadataOnlyChapter(BaseImportRecordsAPITest):
+class TestImportAPIMetadataOnlyJournalArticle(BaseImportRecordsAPITest):
     @property
     def metadata_source(self):
-        return sample_metadata_chapter_pdf["input"]
+        return sample_metadata_journal_article_pdf["input"]
 
 
-class TestImportRecordsAPIMetadataOnlyChapter2(BaseImportRecordsAPITest):
+class TestImportAPIMetadataOnlyJournalArticle2(BaseImportRecordsAPITest):
     @property
     def metadata_source(self):
-        return sample_metadata_chapter2_pdf["input"]
+        return sample_metadata_journal_article2_pdf["input"]
 
 
 class BaseImportRecordsAPIWithFilesTest:

@@ -312,9 +312,7 @@ class TestRecordMetadata:
             are the new values to update the metadata with at those paths.
         """
         for key, val in metadata_updates.items():
-            self.app.logger.debug(f"updating metadata key {key} with value {val}")
             new_metadata_in = replace_value_in_nested_dict(self.metadata_in, key, val)
-            self.app.logger.debug(f"new metadata_in: {pformat(new_metadata_in)}")
             self._metadata_in = (
                 new_metadata_in
                 if isinstance(new_metadata_in, dict)
