@@ -170,11 +170,7 @@ sample_metadata_journal_article_pdf = {
                 "philologically."
             ),
             "identifiers": [
-                {"identifier": "hc:33383", "scheme": "hclegacy-pid"},
-                {
-                    "identifier": "1000360-40298",
-                    "scheme": "hclegacy-record-id",
-                },
+                {"identifier": "1234567890", "scheme": "import-recid"},
                 {"identifier": "10.1163/24519197-BJA10007", "scheme": "doi"},
                 {"identifier": "2451-9197", "scheme": "issn"},
             ],
