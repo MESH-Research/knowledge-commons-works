@@ -603,7 +603,10 @@ the token is issued must also have sufficient permissions to publish directly in
 </tbody>
 </table>
 </div>
-<p>The array of owners, if provided in a metadata object’s <code class="docutils literal notranslate"><span class="pre">access.owned_by</span></code> property, must include at least the full name and email address of the users to be added as owners of the work. If the user already has a Knowledge Commons account, their username should also be provided. Additional identifiers (e.g., ORCID) may be provided as well to help avoid duplicate accounts, since a KCWorks account will be created for each user if they do not already have one.</p>
+</section>
+<section id="identifying-the-owners-of-the-work">
+<h4>Identifying the owners of the work<a class="headerlink" href="#identifying-the-owners-of-the-work" title="Link to this heading">¶</a></h4>
+<p>The array of owners, if provided in a metadata object’s <code class="docutils literal notranslate"><span class="pre">parent.access.owned_by</span></code> property, must include at least the full name and email address of the users to be added as owners of the work. If the user already has a Knowledge Commons account, their username should also be provided. Additional identifiers (e.g., ORCID) may be provided as well to help avoid duplicate accounts, since a KCWorks account will be created for each user if they do not already have one.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -627,7 +630,7 @@ the token is issued must also have sufficient permissions to publish directly in
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">identifiers</span></code></p></td>
 <td><p>no</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">array</span></code></p></td>
-<td><p>An array of identifiers for the user. Any identifier schemes supported by KCWorks will be accepted. If the user already has a KCWorks account, the <code class="docutils literal notranslate"><span class="pre">kc_username</span></code> scheme should be used and the user’s username provided as the identifier.</p></td>
+<td><p>An array of identifiers for the user. Any identifier schemes supported by KCWorks will be accepted. If the user already has a KCWorks account, the <code class="docutils literal notranslate"><span class="pre">kc_username</span></code> scheme should be used and the user’s username provided as the identifier. If you wish to provide an ORCID, it is recommended to use the <code class="docutils literal notranslate"><span class="pre">orcid</span></code> scheme. Identifiers for external organizations should be provided using the <code class="docutils literal notranslate"><span class="pre">import_user_id</span></code> scheme.</p></td>
 </tr>
 </tbody>
 </table>
@@ -645,6 +648,10 @@ the token is issued must also have sufficient permissions to publish directly in
 <span class="w">            </span><span class="p">{</span>
 <span class="w">                </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jdoe&quot;</span><span class="p">,</span>
 <span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kc_username&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567890&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;import_user_id&quot;</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
@@ -652,6 +659,122 @@ the token is issued must also have sufficient permissions to publish directly in
 </pre></div>
 </div>
 <p>Note that it is <em>not</em> assumed that the creators of a work should be the work’s owners. The creators will only be added as owners if each of them is listed in the <code class="docutils literal notranslate"><span class="pre">access.owned_by</span></code> property of the work’s metadata object.</p>
+<blockquote>
+<div><p>Note, too, that only the first member of the owners array will technically be assigned as the work’s owner in KCWorks. The other owners will be assigned access grants to the work with “manage” permissions.</p>
+</div></blockquote>
+</section>
+<section id="identifying-the-work-for-import">
+<h4>Identifying the work for import<a class="headerlink" href="#identifying-the-work-for-import" title="Link to this heading">¶</a></h4>
+<p>It is crucial that each work to be imported is assigned a unique identifier. This may be an identifier used internally by the importing organization, it may be a universally unique string such as a UUID, or it may be a universal identifier such as a DOI or a handle. In either case it must be unique across all works to be imported for the collection. This identifier will be used to identify the work in the response, and will be used to identify the work when checking for duplicate imports.</p>
+<p>The identifier may be provided in the <code class="docutils literal notranslate"><span class="pre">metadata</span></code> object as an <code class="docutils literal notranslate"><span class="pre">identifiers</span></code> array with the scheme <code class="docutils literal notranslate"><span class="pre">import-recid</span></code>. E.g.,</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567890&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;import-recid&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="c1">// ... other identifiers ...</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="example-import-request">
+<h3>Example import request<a class="headerlink" href="#example-import-request" title="Link to this heading">¶</a></h3>
+<p>The following example shows a request to import a single work with two files and a single owner.</p>
+<section id="metadata-json-object">
+<h4>Metadata JSON object<a class="headerlink" href="#metadata-json-object" title="Link to this heading">¶</a></h4>
+<p>The metadata JSON object for a journal article with a PDF file and a Word file, with a single owner might look like this:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;resource_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textDocument-journalArticle&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;creators&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;person_or_org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;personal&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Fitzpatrick, Kathleen&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;given_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Kathleen&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;family_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Fitzpatrick&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kfitz&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kc_username&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;author&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;affiliations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Modern Languages Association&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Giving It Away: Sharing and the Future of Scholarly Communication&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;publisher&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;University of Toronto Press Inc. (UTPress)&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;publication_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;languages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eng&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567890&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;import-recid&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;10.3138/jsp.43.4.347&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;doi&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1710-1166&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;issn&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;rights&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cc-by-4.0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;en&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Creative Commons Attribution 4.0 International&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Open access has great potential to transform the future of scholarly communication, but its success will require a focus on values -- and particularly generosity -- rather than on costs.&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;custom_fields&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;journal:journal&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Journal of Scholarly Publishing&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;issue&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;volume&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;43&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;pages&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;347-362&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;issn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1198-9742&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;kcr:user_defined_tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;open access&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;Scholarly communication&quot;</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;owned_by&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;full_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Kathleen Fitzpatrick&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kfitz@msu.edu&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kfitz&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kc_username&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;fitzpatrick-givingitaway.docx&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">149619</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fitzpatrick-givingitaway.docx&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;fitzpatrick-givingitaway.pdf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">234567</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fitzpatrick-givingitaway.pdf&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h4>Request<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
+<p>To submit the article to be included in the <code class="docutils literal notranslate"><span class="pre">my-organization</span></code> collection, one might use a command line tool like <code class="docutils literal notranslate"><span class="pre">curl</span></code>, with the following command.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">works</span><span class="o">.</span><span class="n">hcommons</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">import</span><span class="o">/</span><span class="n">my</span><span class="o">-</span><span class="n">collection</span><span class="o">-</span><span class="nb">id</span> \
+  <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: multipart/form-data&quot;</span> \
+  <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Accept: application/json&quot;</span> \
+  <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Authorization: Bearer &lt;your-api-key&gt;&quot;</span> \
+  <span class="o">-</span><span class="n">F</span> <span class="s2">&quot;files=@path/to/files/fitzpatrick-givingitaway.pdf&quot;</span> \
+  <span class="o">-</span><span class="n">F</span> <span class="s2">&quot;files=@path/to/files/fitzpatrick-givingitaway.docx&quot;</span> \
+  <span class="o">-</span><span class="n">F</span> <span class="s2">&quot;metadata={// ... metadata JSON object goes here as a string ... //}&quot;</span>
+</pre></div>
+</div>
+<p>Of course, in most cases the request will be made programmatically, not via a command line tool. The syntax for the request will vary depending on the programming language and tools being used.</p>
 </section>
 </section>
 <section id="a-successful-import-response">
@@ -683,25 +806,29 @@ the token is issued must also have sufficient permissions to publish directly in
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">record_id</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
-<td><p>The KCWorks ID of the new work.</p></td>
+<td><p>The internal KCWorks ID of the new work.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">record_url</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source_id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+<td><p>The external identifier for the work that was provided in the import request using the <code class="docutils literal notranslate"><span class="pre">import-recid</span></code> scheme.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">record_url</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
 <td><p>The URL of the new work. This is the URL of the work’s landing page on KCWorks. Other URLs for the work, including the endpoints for API operations, are available in the <code class="docutils literal notranslate"><span class="pre">links</span></code> property of the record’s <code class="docutils literal notranslate"><span class="pre">metadata</span></code> object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">files</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">files</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
 <td><p>An object whose keys are the filenames for the files that were successfully uploaded and whose values are 2 member arrays. The first member is a string representing the status of the file upload operation. The second member is an array of string error messages if any errors occurred during the upload. Further details about the files, including their size and checksum, are available in the <code class="docutils literal notranslate"><span class="pre">files</span></code> property of the <code class="docutils literal notranslate"><span class="pre">metadata</span></code> object.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">collection_id</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">collection_id</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
 <td><p>The ID of the collection to which the work was published, if any. This is provided for convenience. Details about the collection are available in the <code class="docutils literal notranslate"><span class="pre">parent.communities</span></code> property of the <code class="docutils literal notranslate"><span class="pre">metadata</span></code> object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">errors</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">errors</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">array</span></code></p></td>
 <td><p>A list of objects, each of which describes an error that occurred during the import process. These might include validation errors for certain fields in the provided metadata that did not prevent creation of the work.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
 <td><p>The metadata for the created work, in JSON format, following the KCWorks implementation of the InvenioRDM metadata schema described <span class="xref std std-ref">here</span>. The returned metadata will include internal KCWorks system fields such as <code class="docutils literal notranslate"><span class="pre">created</span></code>, <code class="docutils literal notranslate"><span class="pre">updated</span></code>, <code class="docutils literal notranslate"><span class="pre">revision_id</span></code>, <code class="docutils literal notranslate"><span class="pre">id</span></code>, etc. It is identical to the metadata that would be returned by a GET request to the records API endpoint on KCWorks.</p></td>
 </tr>
@@ -781,7 +908,11 @@ c. the <code class="docutils literal notranslate"><span class="pre">all_or_none<
 </ul>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The request metadata is malformed or invalid.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">(</span>
+<span class="w">        </span><span class="s2">&quot;No records were successfully imported. Please check the list of failed records &quot;</span>
+<span class="w">        </span><span class="s2">&quot;in the &#39;errors&#39; field for more information. Each failed item should have its own &quot;</span>
+<span class="w">        </span><span class="s2">&quot;list of specific errors.&quot;</span>
+<span class="w">    </span><span class="err">)</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">    </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
@@ -828,15 +959,23 @@ c. the <code class="docutils literal notranslate"><span class="pre">all_or_none<
 </section>
 <section id="a-partially-successful-import-response">
 <h3>A partially successful import response<a class="headerlink" href="#a-partially-successful-import-response" title="Link to this heading">¶</a></h3>
+<blockquote>
+<div><p>NOT YET IMPLEMENTED. At present the <code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> request parameter will always be “true”.</p>
+</div></blockquote>
 <p>If only some of the works to be imported are malformed or invalid, and the <code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> request parameter is set to “false”, the response will be <code class="docutils literal notranslate"><span class="pre">207</span> <span class="pre">Multi-Status</span></code>. In this case the response will be shaped much like the successful and unsuccessful responses described above, but there will be items in <em>both</em> the <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">errors</span></code> arrays. The items in the <code class="docutils literal notranslate"><span class="pre">data</span></code> array will be works that were successfully created, and the items in the <code class="docutils literal notranslate"><span class="pre">errors</span></code> array will be works that failed to be created.</p>
 <p>The response will be shaped like this:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;multi_status&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The request metadata is malformed or invalid.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">(</span>
+<span class="w">        </span><span class="s2">&quot;Some records were successfully imported, but some failed. Please check the &quot;</span>
+<span class="w">        </span><span class="s2">&quot;list of failed records in the &#39;errors&#39; field for more information. Each failed &quot;</span>
+<span class="w">        </span><span class="s2">&quot;item should have its own list of specific errors.&quot;</span>
+<span class="w">    </span><span class="err">)</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="nt">&quot;item_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;record_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567891&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;source_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xxx1234567891&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;record_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://works.hcommons.org/records/1234567891&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="nt">&quot;file1.pdf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[]],</span>
@@ -853,6 +992,7 @@ c. the <code class="docutils literal notranslate"><span class="pre">all_or_none<
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="nt">&quot;item_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;record_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;source_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xxx1234567890&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;record_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">                </span><span class="p">{</span>
@@ -879,102 +1019,71 @@ c. the <code class="docutils literal notranslate"><span class="pre">all_or_none<
 <p>If the file content is uploaded but for some reason is considered corrupted or invalid, a <code class="docutils literal notranslate"><span class="pre">400</span> <span class="pre">Bad</span> <span class="pre">Request</span></code> response will be returned. This response will include a JSON object with the following fields:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The file content is corrupted or invalid.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">(</span>
+<span class="w">        </span><span class="s2">&quot;No records were successfully imported. Please check the list of failed records &quot;</span>
+<span class="w">        </span><span class="s2">&quot;in the &#39;errors&#39; field for more information. Each failed item should have its own &quot;</span>
+<span class="w">        </span><span class="s2">&quot;list of specific errors.&quot;</span>
+<span class="w">    </span><span class="err">)</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">    </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="nt">&quot;item_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;record_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;source_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xxx1234567890&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;record_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">                </span><span class="p">{</span>
-<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file1.pdf&quot;</span><span class="p">,</span>
-<span class="w">                    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The file size does not match the supplied metadata.&quot;</span>
-<span class="w">                </span><span class="p">},</span>
-<span class="w">                </span><span class="p">{</span>
-<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file2.pdf&quot;</span><span class="p">,</span>
-<span class="w">                    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The file checksum does not match the supplied metadata.&quot;</span>
+<span class="w">                    </span><span class="nt">&quot;validation_error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Missing data for required field.&quot;</span><span class="p">]}</span>
+<span class="w">                    </span><span class="p">}</span>
 <span class="w">                </span><span class="p">}</span>
-<span class="w">            </span><span class="p">]</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;file1.pdf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;uploaded&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[]]</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;collection_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567890&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="cm">/* ... */</span>
+<span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="nt">&quot;item_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;record_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;source_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xxx1234567891&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;record_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">                </span><span class="p">{</span>
-<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file3.pdf&quot;</span><span class="p">,</span>
-<span class="w">                    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The file exceeds the maximum file size.&quot;</span>
-<span class="w">                </span><span class="p">}</span>
-<span class="w">            </span><span class="p">]</span>
+<span class="w">                    </span><span class="nt">&quot;validation_error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;creators&quot;</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;occupation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Unknown field.&quot;</span><span class="p">]}}</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;validation_error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;publication_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Date is not in Extended Date Time Format (EDTF).&quot;</span><span class="p">]}</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file upload failures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;sample.pdf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                            </span><span class="s2">&quot;failed&quot;</span><span class="p">,</span>
+<span class="w">                            </span><span class="p">[</span><span class="s2">&quot;File sample.pdf not found in list of files.&quot;</span><span class="p">],</span>
+<span class="w">                        </span><span class="p">]</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;sample.pdf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;failed&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;File sample.pdf not found in list of files.&quot;</span><span class="p">]],</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;collection_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567890&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="cm">/* ... */</span>
+<span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>If an upload simply fails to complete and times out, the client will instead receive a <code class="docutils literal notranslate"><span class="pre">504</span> <span class="pre">Gateway</span> <span class="pre">Timeout</span></code> response.</p>
-</section>
-<section id="only-some-of-the-works-to-be-imported-failed">
-<h4>Only some of the works to be imported failed<a class="headerlink" href="#only-some-of-the-works-to-be-imported-failed" title="Link to this heading">¶</a></h4>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">207</span> <span class="ne">Multi-Status</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-</pre></div>
-</div>
-<p>If the <code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> request parameter is set to “false”, it is possible that some of the works to be imported were successfully created and others were not. In this case, the response will be <code class="docutils literal notranslate"><span class="pre">207</span> <span class="pre">Multi-Status</span></code> and will include a JSON object with the following fields:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;multi_status&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;succeeded&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;item_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;record_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567890&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;record_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://works.hcommons.org/records/1234567890&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                    </span><span class="nt">&quot;file1.pdf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[]],</span>
-<span class="w">                    </span><span class="nt">&quot;file2.pdf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[]]</span>
-<span class="w">                </span><span class="p">},</span>
-<span class="w">                </span><span class="nt">&quot;collection_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567890&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">                </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                    </span><span class="cm">/* ... */</span>
-<span class="w">                </span><span class="p">}</span>
-<span class="w">            </span><span class="p">},</span>
-<span class="w">        </span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;failed&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;item_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;record_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;record_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The request metadata is malformed or invalid.&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">                    </span><span class="p">{</span>
-<span class="w">                        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="p">,</span>
-<span class="w">                        </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Required field missing.&quot;</span><span class="p">,</span>
-<span class="w">                    </span><span class="p">}</span>
-<span class="w">                </span><span class="p">],</span>
-<span class="w">                </span><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<span class="w">                </span><span class="nt">&quot;collection_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567890&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                    </span><span class="cm">/* ... */</span>
-<span class="w">                </span><span class="p">}</span>
-<span class="w">            </span><span class="p">},</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;item_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;record_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;record_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The file content is corrupted or invalid.&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">                    </span><span class="p">{</span>
-<span class="w">                        </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file3.pdf&quot;</span><span class="p">,</span>
-<span class="w">                        </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The file exceeds the maximum file size.&quot;</span>
-<span class="w">                    </span><span class="p">}</span>
-<span class="w">                </span><span class="p">],</span>
-<span class="w">                </span><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<span class="w">                </span><span class="nt">&quot;collection_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567890&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                    </span><span class="cm">/* ... */</span>
-<span class="w">                </span><span class="p">}</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">]</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 </section>
 </section>
 <section id="what-happens-to-an-import-request-that-fails">
@@ -1118,8 +1227,8 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </section>
 <section id="requesting-all-collections">
 <h4>Requesting all collections<a class="headerlink" href="#requesting-all-collections" title="Link to this heading">¶</a></h4>
-<section id="id6">
-<h5>Request<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h5>
+<section id="id7">
+<h5>Request<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h5>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">https://works.hcommons.org/api/group_collections</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
@@ -1260,18 +1369,18 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </section>
 <section id="requesting-collections-for-a-commons-instance">
 <h4>Requesting collections for a Commons instance<a class="headerlink" href="#requesting-collections-for-a-commons-instance" title="Link to this heading">¶</a></h4>
-<section id="id7">
-<h5>Request<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h5>
+<section id="id8">
+<h5>Request<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h5>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">https://works.hcommons.org/api/group_collections?commons_instance=knowledgeCommons&amp;sort=updated-asc</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 </section>
-<section id="id8">
-<h5>Successful response status code<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h5>
+<section id="id9">
+<h5>Successful response status code<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h5>
 <p><code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
 </section>
-<section id="id9">
-<h5>Successful Response Body:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h5>
+<section id="id10">
+<h5>Successful Response Body:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h5>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;aggregations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1381,8 +1490,8 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </pre></div>
 </div>
 </section>
-<section id="id10">
-<h5>Successful response headers<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h5>
+<section id="id11">
+<h5>Successful response headers<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h5>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1405,18 +1514,18 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 <section id="requesting-collections-for-a-specific-group">
 <h4>Requesting collections for a specific group<a class="headerlink" href="#requesting-collections-for-a-specific-group" title="Link to this heading">¶</a></h4>
 <p>Note that if you specify a <code class="docutils literal notranslate"><span class="pre">commons_group_id</span></code> value, you must <em>also</em> provide a <code class="docutils literal notranslate"><span class="pre">commons_instance</span></code> value. This is to avoid confusion if different Commons instances use the same internal id for groups.</p>
-<section id="id11">
-<h5>Request<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h5>
+<section id="id12">
+<h5>Request<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h5>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">https://works.hcommons.org/api/group_collections?commons_instance=knowledgeCommons&amp;commons_group_id=12345</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 </section>
-<section id="id12">
-<h5>Successful response status code<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h5>
+<section id="id13">
+<h5>Successful response status code<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h5>
 <p><code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
 </section>
-<section id="id13">
-<h5>Successful Response Body:<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h5>
+<section id="id14">
+<h5>Successful Response Body:<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h5>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;aggregations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1526,8 +1635,8 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </pre></div>
 </div>
 </section>
-<section id="id14">
-<h5>Successful response headers<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h5>
+<section id="id15">
+<h5>Successful response headers<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h5>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1547,18 +1656,18 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 <section id="requesting-a-specific-collection">
 <h4>Requesting a specific collection<a class="headerlink" href="#requesting-a-specific-collection" title="Link to this heading">¶</a></h4>
 <p>While other kinds of requests require query parameters, a request for metadata on a specific Commons Works collection can be made by simply adding the community’s slug to the end of the url path. Once again, this will only succeed for collections that are linked to a Commons instance group. Collections that exist independently on Knowledge Commons Works will not be found at the <code class="docutils literal notranslate"><span class="pre">group_collections</span></code> endpoint and should be requested at the <code class="docutils literal notranslate"><span class="pre">communities</span></code> endpoint instead.</p>
-<section id="id15">
-<h5>Request<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h5>
+<section id="id16">
+<h5>Request<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h5>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">https://works.hcommons.org/api/group_collections/my-collection-slug</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 </section>
-<section id="id16">
-<h5>Successful Response Status Code<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h5>
+<section id="id17">
+<h5>Successful Response Status Code<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h5>
 <p><code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
 </section>
-<section id="id17">
-<h5>Successful Response Body:<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h5>
+<section id="id18">
+<h5>Successful Response Body:<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h5>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5402d72b-b144-4891-aa8e-1038515d68f7&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
@@ -1649,8 +1758,8 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 <p>In future it may be possible to restore deleted collections, but this is not currently implemented.</p>
 <!-- TODO: Implement collection restoration -->
 </section>
-<section id="id18">
-<h4>Request<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h4>
+<section id="id19">
+<h4>Request<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h4>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">https://works.hcommons.org/api/group_collections</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
@@ -1673,8 +1782,8 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </table>
 </div>
 </section>
-<section id="id19">
-<h4>Request body<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h4>
+<section id="id20">
+<h4>Request body<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h4>
 <p>The request body must be a JSON object with the following fields:</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
@@ -1709,12 +1818,12 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </pre></div>
 </div>
 </section>
-<section id="id20">
-<h4>Successful response status code<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h4>
+<section id="id21">
+<h4>Successful response status code<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">201</span> <span class="pre">Created</span></code></p>
 </section>
-<section id="id21">
-<h4>Successful response body<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h4>
+<section id="id22">
+<h4>Successful response body<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;commons_group_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;collection_slug&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;new-collection-slug&quot;</span>
@@ -1739,8 +1848,8 @@ invalid data.</p></li>
 PATCH requests to change group ownership of the collection are not yet implemented.</p>
 <p>A PATCH request to this endpoint modifies an existing collection in Invenio by changing the Commons group to which it belongs. This is the <em>only</em> modification that can be made to a collection via this endpoint. Other modifications to Commons group metadata should be handled by signalling the Invenio webhook for commons group metadata updates. Modifications to internal metadata or settings for the Invenio collection should be made view the Invenio “communities” API or the collection settings UI.</p>
 <p>Note that the collection memberships in Invenio will be automatically transferred to the new Commons group. The corporate roles for the old Commons group will be removed from the collection and corporate roles for the new Commons group will be added to its membership with appropriate permissions. But any individual memberships that have been granted through the Invenio UI will be left unchanged. If the new collection administrators wish to change these individual memberships, they will need to do so through the Invenio UI.</p>
-<section id="id22">
-<h4>Request<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h4>
+<section id="id23">
+<h4>Request<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h4>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">https://works.hcommons.org/api/group_collections/my-collection-slug</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
@@ -1763,8 +1872,8 @@ PATCH requests to change group ownership of the collection are not yet implement
 </table>
 </div>
 </section>
-<section id="id23">
-<h4>Request body<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h4>
+<section id="id24">
+<h4>Request body<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;commons_instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;knowledgeCommons&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;old_commons_group_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
@@ -1775,12 +1884,12 @@ PATCH requests to change group ownership of the collection are not yet implement
 </pre></div>
 </div>
 </section>
-<section id="id24">
-<h4>Successful response status code<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h4>
+<section id="id25">
+<h4>Successful response status code<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
 </section>
-<section id="id25">
-<h4>Successful response body<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h4>
+<section id="id26">
+<h4>Successful response body<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;collection&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;my-collection-slug&quot;</span>
 <span class="w">    </span><span class="nt">&quot;old_commons_group_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
@@ -1789,8 +1898,8 @@ PATCH requests to change group ownership of the collection are not yet implement
 </pre></div>
 </div>
 </section>
-<section id="id26">
-<h4>Unsuccessful response codes<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h4>
+<section id="id27">
+<h4>Unsuccessful response codes<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>400 Bad Request: The request body is missing required fields or contains
 invalid data.</p></li>
@@ -1816,8 +1925,8 @@ Once a group collection has been deleted, its former URL slug is still registere
 <p>[!NOTE]
 Group collections are soft deleted and can in principle be restored within a short period after the delete signal has been sent. Eventually, though, the soft deleted collection records will be
 automatically purged entirely from the database. There is also no API mechanism for restoring them. So delete operations should be regarded as permanent and irrevocable.</p>
-<section id="id27">
-<h4>Request<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h4>
+<section id="id28">
+<h4>Request<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h4>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">https://works.hcommons.org/api/group_collections/my-collection-slug?commons_instance=knowledgeCommons&amp;commons_group_id=12345</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
@@ -1840,12 +1949,12 @@ automatically purged entirely from the database. There is also no API mechanism 
 </table>
 </div>
 </section>
-<section id="id28">
-<h4>Successful response status code<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h4>
+<section id="id29">
+<h4>Successful response status code<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">204</span> <span class="pre">No</span> <span class="pre">Content</span></code></p>
 </section>
-<section id="id29">
-<h4>Unsuccessful response codes<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h4>
+<section id="id30">
+<h4>Unsuccessful response codes<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>400 Bad Request: The request did not include the required parameters or the parameters are not well formed.</p></li>
 <li><p>403 Forbidden: The requesting agent is not authorized to delete the collection. The collection may not belong to the Commons instance making the request, or it may not belong to the specified Commons group.</p></li>
@@ -2100,6 +2209,13 @@ This API was implemented with a distributed network of independent Commons insta
 <li><a class="reference internal" href="#required-headers">Required headers</a></li>
 <li><a class="reference internal" href="#request-url-path-parameters">Request url path parameters</a></li>
 <li><a class="reference internal" href="#request-body">Request body</a></li>
+<li><a class="reference internal" href="#identifying-the-owners-of-the-work">Identifying the owners of the work</a></li>
+<li><a class="reference internal" href="#identifying-the-work-for-import">Identifying the work for import</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example-import-request">Example import request</a><ul>
+<li><a class="reference internal" href="#metadata-json-object">Metadata JSON object</a></li>
+<li><a class="reference internal" href="#id6">Request</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#a-successful-import-response">A successful import response</a></li>
@@ -2110,7 +2226,6 @@ This API was implemented with a distributed network of independent Commons insta
 </li>
 <li><a class="reference internal" href="#a-partially-successful-import-response">A partially successful import response</a><ul>
 <li><a class="reference internal" href="#the-request-file-upload-failed">The request file upload failed</a></li>
-<li><a class="reference internal" href="#only-some-of-the-works-to-be-imported-failed">Only some of the works to be imported failed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#what-happens-to-an-import-request-that-fails">What happens to an import request that fails?</a></li>
@@ -2125,30 +2240,30 @@ This API was implemented with a distributed network of independent Commons insta
 <li><a class="reference internal" href="#sorting">Sorting</a></li>
 <li><a class="reference internal" href="#pagination">Pagination</a></li>
 <li><a class="reference internal" href="#requesting-all-collections">Requesting all collections</a><ul>
-<li><a class="reference internal" href="#id6">Request</a></li>
+<li><a class="reference internal" href="#id7">Request</a></li>
 <li><a class="reference internal" href="#successful-response-status-code">Successful Response Status Code</a></li>
 <li><a class="reference internal" href="#successful-response-body">Successful response body</a></li>
 <li><a class="reference internal" href="#successful-response-headers">Successful Response Headers</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#requesting-collections-for-a-commons-instance">Requesting collections for a Commons instance</a><ul>
-<li><a class="reference internal" href="#id7">Request</a></li>
-<li><a class="reference internal" href="#id8">Successful response status code</a></li>
-<li><a class="reference internal" href="#id9">Successful Response Body:</a></li>
-<li><a class="reference internal" href="#id10">Successful response headers</a></li>
+<li><a class="reference internal" href="#id8">Request</a></li>
+<li><a class="reference internal" href="#id9">Successful response status code</a></li>
+<li><a class="reference internal" href="#id10">Successful Response Body:</a></li>
+<li><a class="reference internal" href="#id11">Successful response headers</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#requesting-collections-for-a-specific-group">Requesting collections for a specific group</a><ul>
-<li><a class="reference internal" href="#id11">Request</a></li>
-<li><a class="reference internal" href="#id12">Successful response status code</a></li>
-<li><a class="reference internal" href="#id13">Successful Response Body:</a></li>
-<li><a class="reference internal" href="#id14">Successful response headers</a></li>
+<li><a class="reference internal" href="#id12">Request</a></li>
+<li><a class="reference internal" href="#id13">Successful response status code</a></li>
+<li><a class="reference internal" href="#id14">Successful Response Body:</a></li>
+<li><a class="reference internal" href="#id15">Successful response headers</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#requesting-a-specific-collection">Requesting a specific collection</a><ul>
-<li><a class="reference internal" href="#id15">Request</a></li>
-<li><a class="reference internal" href="#id16">Successful Response Status Code</a></li>
-<li><a class="reference internal" href="#id17">Successful Response Body:</a></li>
+<li><a class="reference internal" href="#id16">Request</a></li>
+<li><a class="reference internal" href="#id17">Successful Response Status Code</a></li>
+<li><a class="reference internal" href="#id18">Successful Response Body:</a></li>
 </ul>
 </li>
 </ul>
@@ -2158,25 +2273,25 @@ This API was implemented with a distributed network of independent Commons insta
 <li><a class="reference internal" href="#handling-group-name-changes">Handling group name changes</a></li>
 <li><a class="reference internal" href="#handling-collection-name-collisions">Handling collection name collisions</a></li>
 <li><a class="reference internal" href="#handling-deleted-group-collections">Handling deleted group collections</a></li>
-<li><a class="reference internal" href="#id18">Request</a></li>
-<li><a class="reference internal" href="#id19">Request body</a></li>
-<li><a class="reference internal" href="#id20">Successful response status code</a></li>
-<li><a class="reference internal" href="#id21">Successful response body</a></li>
+<li><a class="reference internal" href="#id19">Request</a></li>
+<li><a class="reference internal" href="#id20">Request body</a></li>
+<li><a class="reference internal" href="#id21">Successful response status code</a></li>
+<li><a class="reference internal" href="#id22">Successful response body</a></li>
 <li><a class="reference internal" href="#unsuccessful-response-codes">Unsuccessful response codes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#changing-the-group-ownership-of-a-collection-patch">Changing the Group Ownership of a Collection (PATCH)</a><ul>
-<li><a class="reference internal" href="#id22">Request</a></li>
-<li><a class="reference internal" href="#id23">Request body</a></li>
-<li><a class="reference internal" href="#id24">Successful response status code</a></li>
-<li><a class="reference internal" href="#id25">Successful response body</a></li>
-<li><a class="reference internal" href="#id26">Unsuccessful response codes</a></li>
+<li><a class="reference internal" href="#id23">Request</a></li>
+<li><a class="reference internal" href="#id24">Request body</a></li>
+<li><a class="reference internal" href="#id25">Successful response status code</a></li>
+<li><a class="reference internal" href="#id26">Successful response body</a></li>
+<li><a class="reference internal" href="#id27">Unsuccessful response codes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#deleting-a-group-s-collection-delete">Deleting a Group’s Collection (DELETE)</a><ul>
-<li><a class="reference internal" href="#id27">Request</a></li>
-<li><a class="reference internal" href="#id28">Successful response status code</a></li>
-<li><a class="reference internal" href="#id29">Unsuccessful response codes</a></li>
+<li><a class="reference internal" href="#id28">Request</a></li>
+<li><a class="reference internal" href="#id29">Successful response status code</a></li>
+<li><a class="reference internal" href="#id30">Unsuccessful response codes</a></li>
 </ul>
 </li>
 </ul>

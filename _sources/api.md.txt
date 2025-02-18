@@ -145,13 +145,15 @@ This request must be made with a multipart/form-data request. The request body m
 | `strict_validation` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the import request should be rejected if any validation errors are encountered. If this value is "false", the imported work will be created in KCWorks even if some of the provided metadata does not conform to the KCWorks metadata schema, provided these are not required fields. If this value is "true", the import request will be rejected if any validation errors are encountered. (Default: "true") |
 | `all_or_none` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the entire import request should be rejected if any of the works fail to be created (whether for validation errors, upload errors, or other reasons). If this value is "false", the import request will be accepted even if some of the works cannot be created. The response in this case will include a list of works that were successfully created and a list of errors for the works that failed to be created. (Default: "true") |
 
-The array of owners, if provided in a metadata object's `access.owned_by` property, must include at least the full name and email address of the users to be added as owners of the work. If the user already has a Knowledge Commons account, their username should also be provided. Additional identifiers (e.g., ORCID) may be provided as well to help avoid duplicate accounts, since a KCWorks account will be created for each user if they do not already have one.
+#### Identifying the owners of the work
+
+The array of owners, if provided in a metadata object's `parent.access.owned_by` property, must include at least the full name and email address of the users to be added as owners of the work. If the user already has a Knowledge Commons account, their username should also be provided. Additional identifiers (e.g., ORCID) may be provided as well to help avoid duplicate accounts, since a KCWorks account will be created for each user if they do not already have one.
 
 | key | required | type | description |
 |-----|----------|------|-------------|
 | `full_name` | yes | `string` | The full name of the user. |
 | `email` | yes | `string` | The email address of the user. |
-| `identifiers` | no | `array` | An array of identifiers for the user. Any identifier schemes supported by KCWorks will be accepted. If the user already has a KCWorks account, the `kc_username` scheme should be used and the user's username provided as the identifier. |
+| `identifiers` | no | `array` | An array of identifiers for the user. Any identifier schemes supported by KCWorks will be accepted. If the user already has a KCWorks account, the `kc_username` scheme should be used and the user's username provided as the identifier. If you wish to provide an ORCID, it is recommended to use the `orcid` scheme. Identifiers for external organizations should be provided using the `import_user_id` scheme. |
 
 The resulting `owners` list should be shaped like this:
 
@@ -168,12 +170,136 @@ The resulting `owners` list should be shaped like this:
             {
                 "identifier": "jdoe",
                 "scheme": "kc_username"
+            },
+            {
+                "identifier": "1234567890",
+                "scheme": "import_user_id"
             }
         ]
     }
 ]
 ```
 Note that it is *not* assumed that the creators of a work should be the work's owners. The creators will only be added as owners if each of them is listed in the `access.owned_by` property of the work's metadata object.
+
+> Note, too, that only the first member of the owners array will technically be assigned as the work's owner in KCWorks. The other owners will be assigned access grants to the work with "manage" permissions.
+
+#### Identifying the work for import
+
+It is crucial that each work to be imported is assigned a unique identifier. This may be an identifier used internally by the importing organization, it may be a universally unique string such as a UUID, or it may be a universal identifier such as a DOI or a handle. In either case it must be unique across all works to be imported for the collection. This identifier will be used to identify the work in the response, and will be used to identify the work when checking for duplicate imports.
+
+The identifier may be provided in the `metadata` object as an `identifiers` array with the scheme `import-recid`. E.g.,
+
+```json
+{
+    "identifiers": [
+        {
+            "identifier": "1234567890",
+            "scheme": "import-recid"
+        },
+        // ... other identifiers ...
+    ]
+}
+```
+
+### Example import request
+
+The following example shows a request to import a single work with two files and a single owner.
+
+#### Metadata JSON object
+
+The metadata JSON object for a journal article with a PDF file and a Word file, with a single owner might look like this:
+
+```json
+{
+  "metadata": {
+    "resource_type": {
+      "id": "textDocument-journalArticle",
+    },
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Fitzpatrick, Kathleen",
+          "given_name": "Kathleen",
+          "family_name": "Fitzpatrick",
+          "identifiers": [ { "identifier": "kfitz", "scheme": "kc_username" } ]
+        },
+        "role": { "id": "author" },
+        "affiliations": [ { "name": "Modern Languages Association" } ]
+      }
+    ],
+    "title": "Giving It Away: Sharing and the Future of Scholarly Communication",
+    "publisher": "University of Toronto Press Inc. (UTPress)",
+    "publication_date": "2012",
+    "languages": [ { "id": "eng" } ],
+    "identifiers": [
+      { "identifier": "1234567890", "scheme": "import-recid" },
+      { "identifier": "10.3138/jsp.43.4.347", "scheme": "doi" },
+      { "identifier": "1710-1166", "scheme": "issn" },
+    ],
+    "rights": [
+      {
+        "id": "cc-by-4.0",
+        "title": {
+          "en": "Creative Commons Attribution 4.0 International"
+        },
+      }
+    ],
+    "description": "Open access has great potential to transform the future of scholarly communication, but its success will require a focus on values -- and particularly generosity -- rather than on costs."
+  },
+  "custom_fields": {
+    "journal:journal": {
+      "title": "Journal of Scholarly Publishing",
+      "issue": "4",
+      "volume": "43",
+      "pages": "347-362",
+      "issn": "1198-9742"
+    },
+    "kcr:user_defined_tags": [
+      "open access",
+      "Scholarly communication"
+    ],
+  },
+  "parent": {
+    "owned_by": [
+      {
+        "full_name": "Kathleen Fitzpatrick",
+        "email": "kfitz@msu.edu",
+        "identifiers": [ { "identifier": "kfitz", "scheme": "kc_username" } ]
+      }
+    ]
+  },
+  "files": {
+    "enabled": true,
+    "entries": {
+      "fitzpatrick-givingitaway.docx": {
+        "size": 149619,
+        "key": "fitzpatrick-givingitaway.docx",
+      },
+      "fitzpatrick-givingitaway.pdf": {
+        "size": 234567,
+        "key": "fitzpatrick-givingitaway.pdf",
+      }
+    }
+  },
+}
+```
+
+#### Request
+
+To submit the article to be included in the `my-organization` collection, one might use a command line tool like `curl`, with the following command.
+
+```
+curl -X POST https://works.hcommons.org/api/import/my-collection-id \
+  -H "Content-Type: multipart/form-data" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <your-api-key>" \
+  -F "files=@path/to/files/fitzpatrick-givingitaway.pdf" \
+  -F "files=@path/to/files/fitzpatrick-givingitaway.docx" \
+  -F "metadata={// ... metadata JSON object goes here as a string ... //}"
+```
+
+Of course, in most cases the request will be made programmatically, not via a command line tool. The syntax for the request will vary depending on the programming language and tools being used.
 
 ### A successful import response
 
@@ -194,7 +320,8 @@ Each object in the `data` array will have the following fields:
 | key | type | description |
 |-----|------|-------------|
 | `item_index` | `integer` | The index of the record in the import request. (Starting with 0 for the first record.) |
-| `record_id` | `string` | The KCWorks ID of the new work. |
+| `record_id` | `string` | The internal KCWorks ID of the new work. |
+| `source_id` | `string` | The external identifier for the work that was provided in the import request using the `import-recid` scheme. |
 | `record_url` | `string` | The URL of the new work. This is the URL of the work's landing page on KCWorks. Other URLs for the work, including the endpoints for API operations, are available in the `links` property of the record's `metadata` object. |
 | `files` | `object` | An object whose keys are the filenames for the files that were successfully uploaded and whose values are 2 member arrays. The first member is a string representing the status of the file upload operation. The second member is an array of string error messages if any errors occurred during the upload. Further details about the files, including their size and checksum, are available in the `files` property of the `metadata` object. |
 | `collection_id` | `string` | The ID of the collection to which the work was published, if any. This is provided for convenience. Details about the collection are available in the `parent.communities` property of the `metadata` object. |
@@ -280,7 +407,11 @@ The response will include a JSON object with the same shape as the successful re
 ```json
 {
     "status": "error",
-    "message": "The request metadata is malformed or invalid.",
+    "message": (
+        "No records were successfully imported. Please check the list of failed records "
+        "in the 'errors' field for more information. Each failed item should have its own "
+        "list of specific errors."
+    ),
     "data": [],
     "errors": [
         {
@@ -325,6 +456,8 @@ The response will include a JSON object with the same shape as the successful re
 
 ### A partially successful import response
 
+> NOT YET IMPLEMENTED. At present the `all_or_none` request parameter will always be "true".
+
 If only some of the works to be imported are malformed or invalid, and the `all_or_none` request parameter is set to "false", the response will be `207 Multi-Status`. In this case the response will be shaped much like the successful and unsuccessful responses described above, but there will be items in *both* the `data` and `errors` arrays. The items in the `data` array will be works that were successfully created, and the items in the `errors` array will be works that failed to be created.
 
 The response will be shaped like this:
@@ -332,11 +465,16 @@ The response will be shaped like this:
 ```json
 {
     "status": "multi_status",
-    "message": "The request metadata is malformed or invalid.",
+    "message": (
+        "Some records were successfully imported, but some failed. Please check the "
+        "list of failed records in the 'errors' field for more information. Each failed "
+        "item should have its own list of specific errors."
+    ),
     "data": [
         {
             "item_index": 1,
             "record_id": "1234567891",
+            "source_id": "xxx1234567891",
             "record_url": "https://works.hcommons.org/records/1234567891",
             "files": {
                 "file1.pdf": ["success", []],
@@ -353,6 +491,7 @@ The response will be shaped like this:
         {
             "item_index": 0,
             "record_id": null,
+            "source_id": "xxx1234567890",
             "record_url": null,
             "errors": [
                 {
@@ -382,104 +521,71 @@ If the file content is uploaded but for some reason is considered corrupted or i
 ```json
 {
     "status": "error",
-    "message": "The file content is corrupted or invalid.",
+    "message": (
+        "No records were successfully imported. Please check the list of failed records "
+        "in the 'errors' field for more information. Each failed item should have its own "
+        "list of specific errors."
+    ),
+    "data": [],
     "errors": [
         {
             "item_index": 0,
+            "record_id": null,
+            "source_id": "xxx1234567890",
+            "record_url": null,
             "errors": [
                 {
-                    "file": "file1.pdf",
-                    "message": "The file size does not match the supplied metadata."
-                },
-                {
-                    "file": "file2.pdf",
-                    "message": "The file checksum does not match the supplied metadata."
+                    "validation_error": {
+                        "metadata": {"title": ["Missing data for required field."]}
+                    }
                 }
-            ]
+            ],
+            "files": {
+                "file1.pdf": ["uploaded", []]
+            },
+            "collection_id": "1234567890",
+            "metadata": {
+                /* ... */
+            }
         },
         {
             "item_index": 1,
+            "record_id": null,
+            "source_id": "xxx1234567891",
+            "record_url": null,
             "errors": [
                 {
-                    "file": "file3.pdf",
-                    "message": "The file exceeds the maximum file size."
-                }
-            ]
+                    "validation_error": {
+                        "metadata": {"creators" {"occupation": ["Unknown field."]}}
+                    }
+                },
+                {
+                    "validation_error": {
+                        "metadata": {"publication_date": ["Date is not in Extended Date Time Format (EDTF)."]}
+                    }
+                },
+                {
+                    "file upload failures": {
+                        "sample.pdf": [
+                            "failed",
+                            ["File sample.pdf not found in list of files."],
+                        ]
+                    },
+                },
+            ],
+            "files": {
+                "sample.pdf": ["failed", ["File sample.pdf not found in list of files."]],
+            },
+            "collection_id": "1234567890",
+            "metadata": {
+                /* ... */
+            }
         }
     ]
 }
 ```
 
 If an upload simply fails to complete and times out, the client will instead receive a `504 Gateway Timeout` response.
-
-#### Only some of the works to be imported failed
-
-```http
-HTTP/1.1 207 Multi-Status
-Content-Type: application/json
-```
-
-If the `all_or_none` request parameter is set to "false", it is possible that some of the works to be imported were successfully created and others were not. In this case, the response will be `207 Multi-Status` and will include a JSON object with the following fields:
-
-```json
-{
-    "status": "multi_status",
-    "data": {
-        "succeeded": [
-            {
-                "item_index": 0,
-                "record_id": "1234567890",
-                "record_url": "https://works.hcommons.org/records/1234567890",
-                "files": {
-                    "file1.pdf": ["success", []],
-                    "file2.pdf": ["success", []]
-                },
-                "collection_id": "1234567890",
-                "errors": [],
-                "metadata": {
-                    /* ... */
-                }
-            },
-        ],
-        "failed": [
-            {
-                "item_index": 1,
-                "record_id": null,
-                "record_url": null,
-                "message": "The request metadata is malformed or invalid.",
-                "errors": [
-                    {
-                        "field": "title",
-                        "message": "Required field missing.",
-                    }
-                ],
-                "files": {},
-                "collection_id": "1234567890",
-                "metadata": {
-                    /* ... */
-                }
-            },
-            {
-                "item_index": 2,
-                "record_id": null,
-                "record_url": null,
-                "message": "The file content is corrupted or invalid.",
-                "errors": [
-                    {
-                        "file": "file3.pdf",
-                        "message": "The file exceeds the maximum file size."
-                    }
-                ],
-                "files": {},
-                "collection_id": "1234567890",
-                "metadata": {
-                    /* ... */
-                }
-            }
-        ]
-    }
-}
-```
 
 ### What happens to an import request that fails?
 
