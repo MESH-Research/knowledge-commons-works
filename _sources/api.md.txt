@@ -207,10 +207,10 @@ The following example shows a request to import a single work with two files and
 
 #### Metadata JSON object
 
-The metadata JSON object for a journal article with a PDF file and a Word file, with a single owner might look like this:
+The metadata JSON string for a journal article with a PDF file and a Word file, with a single owner might look like the sample below. **Note that the metadata must be provided as an array of metadata objects, even if it contains only a single object.**
 
 ```json
-{
+[{
   "metadata": {
     "resource_type": {
       "id": "textDocument-journalArticle",
@@ -282,7 +282,7 @@ The metadata JSON object for a journal article with a PDF file and a Word file, 
       }
     }
   },
-}
+}]
 ```
 
 #### Request
