@@ -179,18 +179,7 @@ sample_metadata_journal_article_pdf = {
             "resource_type": {"id": "textDocument-journalArticle"},
             "rights": [
                 {
-                    "description": {
-                        "en": (
-                            "Proprietary material. No permissions are "
-                            "granted for any kind of copyring or "
-                            "re-use. All rights reserved"
-                        )
-                    },
                     "id": "arr",
-                    "icon": "copyright",
-                    "props": {
-                        "url": ("https://en.wikipedia.org/wiki/All_rights_reserved")
-                    },
                     "title": {"en": "All Rights Reserved"},
                 }
             ],
