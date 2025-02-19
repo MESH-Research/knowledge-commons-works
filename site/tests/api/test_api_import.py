@@ -6,6 +6,9 @@ from flask_login import login_user
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_accounts
+from invenio_communities.proxies import current_communities
+from invenio_communities.communities.records.api import Community
+from invenio_communities.utils import load_community_needs
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_record_importer_kcworks.proxies import current_record_importer_service
 from invenio_record_importer_kcworks.record_loader import RecordLoader
@@ -648,6 +651,9 @@ class BaseImportServiceTest:
     def by_api(self):
         return False
 
+    def make_submitter(self, user_factory, community_id):
+        return None, None
+
     @property
     def metadata_sources(self):
         """Override this in subclasses to provide specific metadata."""
@@ -1039,10 +1045,6 @@ class BaseImportServiceTest:
         user_id = u.user.id
         identity = get_identity(u.user)
         identity.provides.add(authenticated_user)
-        if self.by_api:
-            token = u.allowed_token
-        else:
-            login_user(u.user)
 
         # FIXME: We need to actually create a KC account for the users
         # assigned as owners, not just a KCWorks account. Or maybe send
@@ -1051,6 +1053,15 @@ class BaseImportServiceTest:
 
         community_record = minimal_community_factory(owner=u.user.id)
         community = community_record.to_dict()
+
+        submitter_identity, submitter_token = self.make_submitter(
+            user_factory, community["id"]
+        )
+        if not submitter_identity:
+            submitter_identity, submitter_token = identity, u.allowed_token
+
+        if not self.by_api:
+            login_user(submitter_identity.user)
 
         # Remember to close the file streams after the import is complete
         files, file_list, file_streams = self.files_to_upload
@@ -1081,22 +1092,23 @@ class BaseImportServiceTest:
             )
             metadata_source_objects.append(test_metadata)
 
-        if self.by_api:
+        if self.by_api and submitter_token:
             import_results, status_code = self._do_api_import(
                 app,
                 community,
                 file_streams,
-                token,
+                submitter_token,
                 metadata_source_objects,
             )
         else:
+            load_community_needs(identity)
             service = current_record_importer_service
             import_results = service.import_records(
+                identity=submitter_identity,
                 file_data=files,
                 metadata=[
                     copy.deepcopy(m.metadata_in) for m in metadata_source_objects
                 ],
-                user_id=user_id,
                 community_id=community["id"],
             )
             status_code = None
@@ -1216,6 +1228,25 @@ class TestImportAPIJournalArticle(BaseImportServiceTest):
             copy.deepcopy(sample_metadata_journal_article_pdf["input"]),
             copy.deepcopy(sample_metadata_journal_article2_pdf["input"]),
         ]
+
+
+class TestImportAPIInsufficientPermissions(TestImportAPIJournalArticle):
+
+    def make_submitter(self, user_factory, community_id):
+        """Try using API with a user that is just a "reader" in the community."""
+        new_user = user_factory(email="another@example.com", token=True, saml_id=None)
+
+        current_communities.service.members.add(
+            system_identity,
+            community_id,
+            data={
+                "members": [{"type": "user", "id": str(new_user.user.id)}],
+                "role": "reader",
+            },
+        )
+        Community.index.refresh()
+
+        return new_user.user.id, new_user.allowed_token
 
 
 class TestImportAPIJournalArticleErrorTitle(TestImportServiceJArticleErrorTitle):
