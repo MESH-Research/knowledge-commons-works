@@ -22,6 +22,7 @@ from pprint import pformat
 import re
 import sys
 from typing import Optional
+from ..fixtures.communities import make_community_member
 from ..fixtures.files import file_md5
 from ..fixtures.records import TestRecordMetadata, TestRecordMetadataWithFiles
 from ..helpers.sample_records import (
@@ -651,6 +652,10 @@ class BaseImportServiceTest:
     def by_api(self):
         return False
 
+    @property
+    def community_access_override(self):
+        return {}
+
     def make_submitter(self, user_factory, community_id):
         return None, None
 
@@ -758,7 +763,17 @@ class BaseImportServiceTest:
         """
         return [[]] * len(self.metadata_sources)
 
-    def check_result_status(self, import_results: dict, status_code: Optional[int]):
+    def check_result_status(
+        self, import_results: dict, status_code: Optional[int]
+    ) -> bool:
+        """Check the status of the import results.
+
+        Returns True if the status is as expected, False otherwise.
+
+        The boolean return is to allow for short-circuiting the main
+        test execution if the status reflects a response that will lack
+        a body with data or errors (e.g., 403).
+        """
         if not any([e for e in self.expected_errors if e]):
             if self.by_api:
                 assert status_code == 201
@@ -790,6 +805,7 @@ class BaseImportServiceTest:
                     "failed records in the 'errors' field for more information. Each "
                     "failed item should have its own list of specific errors."
                 )
+        return True
 
     def _check_response_files(self, actual_files, record_files):
         assert actual_files == {
@@ -908,12 +924,12 @@ class BaseImportServiceTest:
     def _check_successful_import(
         self,
         actual: dict,
-        app: Flask,
         record_files: list,
         expected: TestRecordMetadataWithFiles,
         community: dict,
         uploader_id: str,
     ):
+        assert self.app
         actual_metadata = actual.get("metadata")
         assert actual_metadata
 
@@ -929,7 +945,7 @@ class BaseImportServiceTest:
 
         actual_record_url = actual.get("record_url")
         assert actual_record_url == (
-            f"{app.config['SITE_UI_URL']}/records/{actual_record_id}"
+            f"{self.app.config['SITE_UI_URL']}/records/{actual_record_id}"
         )
 
         actual_collection_id = actual.get("collection_id")
@@ -966,12 +982,12 @@ class BaseImportServiceTest:
     def check_result_data(
         self,
         import_results: dict,
-        app: Flask,
         files: list,
         metadata_sources: list,
         community: dict,
         uploader_id: str,
     ) -> None:
+        assert self.app
         expected_error_count = len([e for e in self.expected_errors if e])
         if expected_error_count > 0:
             assert len(import_results["data"]) == 0
@@ -994,7 +1010,6 @@ class BaseImportServiceTest:
 
                 self._check_successful_import(
                     actual_record_result,
-                    app,
                     record_files,
                     metadata_sources[idx],
                     community,
@@ -1003,15 +1018,15 @@ class BaseImportServiceTest:
 
     def _do_api_import(
         self,
-        app: Flask,
         community: dict,
         file_streams: list,
         token: str,
         metadata_source_objects: list[TestRecordMetadataWithFiles],
     ) -> tuple[Optional[dict], int]:
-        with app.test_client() as client:
+        assert self.app
+        with self.app.test_client() as client:
             actual_response = client.post(
-                f"{app.config['SITE_API_URL']}/import/{community['slug']}",
+                f"{self.app.config['SITE_API_URL']}/import/{community['slug']}",
                 content_type="multipart/form-data",
                 data={
                     "metadata": json.dumps(
@@ -1040,7 +1055,7 @@ class BaseImportServiceTest:
         search_clear,
         mock_send_remote_api_update_fixture,
     ):
-        app = running_app.app
+        self.app = running_app.app
         u = user_factory(email="test@example.com", token=True, saml_id=None)
         user_id = u.user.id
         identity = get_identity(u.user)
@@ -1051,7 +1066,10 @@ class BaseImportServiceTest:
         # them an email with a link to create a KC account with the same
         # email address?
 
-        community_record = minimal_community_factory(owner=u.user.id)
+        community_record = minimal_community_factory(
+            owner=u.user.id,
+            access=self.community_access_override,
+        )
         community = community_record.to_dict()
 
         submitter_identity, submitter_token = self.make_submitter(
@@ -1094,7 +1112,6 @@ class BaseImportServiceTest:
 
         if self.by_api and submitter_token:
             import_results, status_code = self._do_api_import(
-                app,
                 community,
                 file_streams,
                 submitter_token,
@@ -1117,16 +1134,15 @@ class BaseImportServiceTest:
             file.close()
 
         assert import_results is not None
-        self.check_result_status(import_results, status_code)
-        self.check_result_errors(import_results)
-        self.check_result_data(
-            import_results,
-            app,
-            files,
-            metadata_source_objects,
-            community,
-            user_id,
-        )
+        if self.check_result_status(import_results, status_code):
+            self.check_result_errors(import_results)
+            self.check_result_data(
+                import_results,
+                files,
+                metadata_source_objects,
+                community,
+                user_id,
+            )
 
 
 # class TestImportServiceChapter(BaseImportRecordsServiceLoadTest):
@@ -1230,22 +1246,69 @@ class TestImportAPIJournalArticle(BaseImportServiceTest):
         ]
 
 
-class TestImportAPIInsufficientPermissions(TestImportAPIJournalArticle):
+class BaseInsufficientPermissionsTest(TestImportAPIJournalArticle):
+    """Base class for tests that check the API with insufficient permissions."""
+
+    def check_result_status(self, import_results: dict, status_code: Optional[int]):
+        if self.by_api:
+            assert status_code == 403
+        assert import_results.get("message") == (
+            "The user does not have the necessary permissions to "
+            "import records via this endpoint."
+        )
+        return False  # to stop the test execution from looking for data/errors
+
+
+class TestImportAPIInsufficientPermissionsReader(BaseInsufficientPermissionsTest):
+    """Test importing records via the API with insufficient permissions.
+
+    The community allows direct publishing by curators and managers
+    (review policy "open"), but uploader is only a reader.
+    """
+
+    @property
+    def community_access_override(self):
+        return {"review_policy": "open", "record_policy": "open"}
 
     def make_submitter(self, user_factory, community_id):
         """Try using API with a user that is just a "reader" in the community."""
         new_user = user_factory(email="another@example.com", token=True, saml_id=None)
+        make_community_member(new_user.user.id, "reader", community_id)
+        return new_user.user.id, new_user.allowed_token
 
-        current_communities.service.members.add(
-            system_identity,
-            community_id,
-            data={
-                "members": [{"type": "user", "id": str(new_user.user.id)}],
-                "role": "reader",
-            },
-        )
-        Community.index.refresh()
 
+class TestImportAPIInsufficientPermissionsCurator(BaseInsufficientPermissionsTest):
+    """Test importing records via the API with insufficient permissions.
+
+    The community does not allow direct publishing (review policy "closed"),
+    and uploader is only a manager.
+    """
+
+    @property
+    def community_access_override(self):
+        return {"review_policy": "closed", "record_policy": "closed"}
+
+    def make_submitter(self, user_factory, community_id):
+        """Try using API with a user that is just a "reader" in the community."""
+        new_user = user_factory(email="another@example.com", token=True, saml_id=None)
+        make_community_member(new_user.user.id, "manager", community_id)
+        return new_user.user.id, new_user.allowed_token
+
+
+class TestImportAPIInsufficientPermissionsOwner(BaseInsufficientPermissionsTest):
+    """Test importing records via the API with insufficient permissions.
+
+    The community allows direct publishing (review policy "open"),
+    but uploader is not a community member.
+    """
+
+    @property
+    def community_access_override(self):
+        return {"review_policy": "open", "record_policy": "open"}
+
+    def make_submitter(self, user_factory, community_id):
+        """Try using API with a user that is not a community member."""
+        new_user = user_factory(email="another@example.com", token=True, saml_id=None)
         return new_user.user.id, new_user.allowed_token
 
 

@@ -9,6 +9,18 @@ import traceback
 from typing import Callable, Optional
 
 
+def make_community_member(user_id: int, role: str, community_id: str) -> None:
+    """
+    Make a member of a community.
+    """
+    current_communities.service.members.add(
+        system_identity,
+        community_id,
+        data={"members": [{"type": "user", "id": str(user_id)}], "role": role},
+    )
+    Community.index.refresh()
+
+
 @pytest.fixture(scope="function")
 def communities_links_factory():
     """
