@@ -520,9 +520,11 @@
 <section id="who-can-use-the-import-api">
 <h3>Who can use the import API?<a class="headerlink" href="#who-can-use-the-import-api" title="Link to this heading">¶</a></h3>
 <p>The import API is available to authorized organizations who have obtained an OAuth token for API operations.</p>
-<p>If the import is to include placing the work directly in a collection, without passing through the review process, the user to whom
-the token is issued must also have sufficient permissions to publish directly in the collection. Exactly what role they must have in the collection (“owner”, “manager”, “curator”, “reader”) depends on the collection’s review policy.</p>
-<p>The exception to this rule is for collection owners, who may override the collection’s review policy and import works directly into the collection without review.</p>
+<p>The import API places the works directly in a collection, without passing through the review process. So, the user to whom the token is issued must have sufficient permissions to publish directly in the collection. The exact role required depends on the collection’s review policy:</p>
+<ul class="simple">
+<li><p><em>If the review policy allows managers and curators to skip the review process</em>, the user of the import API must have one of the roles “manager,” “curator,” or “owner” in the collection.</p></li>
+<li><p><em>If the review policy requires all submissions to be reviewed</em>, the user of the import API must have the “owner” role in the collection.</p></li>
+</ul>
 </section>
 <section id="the-import-request">
 <h3>The import request<a class="headerlink" href="#the-import-request" title="Link to this heading">¶</a></h3>
