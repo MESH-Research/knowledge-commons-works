@@ -47,7 +47,6 @@ pytest_plugins = (
     "tests.fixtures.vocabularies.resource_types",
     "tests.fixtures.vocabularies.roles",
     "tests.fixtures.vocabularies.subjects",
-    "tests.helpers.sample_records.basic",
 )
 
 
@@ -81,7 +80,7 @@ test_config = {
     "BROKER_URL": "amqp://guest:guest@localhost:5672//",
     # "CELERY_CACHE_BACKEND": "memory",
     # "CELERY_RESULT_BACKEND": "cache",
-    "CELERY_TASK_ALWAYS_EAGER": True,
+    "CELERY_TASK_ALWAYS_EAGER": False,
     "CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS": True,
     "CELERY_LOGLEVEL": "DEBUG",
     #  'DEBUG_TB_ENABLED': False,

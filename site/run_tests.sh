@@ -53,10 +53,10 @@ fi
 eval "$(PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run docker-services-cli up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
 # Note: expansion of pytest_args looks like below to not cause an unbound
 # variable error when 1) "nounset" and 2) the array is empty.
-if [ -z "pytest_args[@]" ]; then
-	PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest ${pytest_args[@]}
-else
+if [ ${#pytest_args[@]} -eq 0 ]; then
 	PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest -vv
+else
+	PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest ${pytest_args[@]}
 fi
 # python -m sphinx.cmd.build -qnN -b doctest docs docs/_build/doctest
 tests_exit_code=$?

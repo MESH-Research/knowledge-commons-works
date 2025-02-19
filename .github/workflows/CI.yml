@@ -6,6 +6,7 @@ on:
   # Trigger on push to main or tags matching v*
   push:
     branches:
+      - "dev"
       - "main"
       - "production"
       - "staging"
@@ -54,6 +55,10 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           echo "RELEASE_VERSION=latest" >> $GITHUB_ENV
+      - name: Label dev
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        run: |
+          echo "RELEASE_VERSION=dev" >> $GITHUB_ENV
       - name: Label production
         if: github.event_name == 'push' && github.ref == 'refs/heads/production'
         run: |
@@ -109,16 +114,7 @@ jobs:
       #     key: local-docker-directory
 
       - name: Build AMD Image for production or main
-        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest'
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          docker build . --file Dockerfile --platform=linux/amd64 --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $ECR_REGISTRY/kcworks:$RELEASE_VERSION
-          docker image ls
-
-      - name: Build AMD Image for staging
-        if: env.RELEASE_VERSION == 'staging'
+        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest' || env.RELEASE_VERSION == 'dev' || env.RELEASE_VERSION == 'staging'
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -133,7 +129,7 @@ jobs:
           docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME --all-tags
 
       - name: Push production or staging image to Amazon ECR
-        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging'
+        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging' || env.RELEASE_VERSION == 'dev'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
@@ -145,10 +141,6 @@ jobs:
         run: |
           touch .env
           docker compose --file docker-compose.yml --file docker-compose.dev.yml up -d
-
-      # - name: Run unit tests
-      #   run: |
-      #     docker exec -it kcworks-ui bash -c "cd /opt/invenio/src/site && PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest"
 
       - name: Destroy containers
         if: always()

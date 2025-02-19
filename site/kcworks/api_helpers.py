@@ -192,9 +192,10 @@ def format_commons_search_collection_payload(
 
     try:
         type_string = "works-collection"
-        type_dict = record["metadata"].get("type", {})
-        if type_dict:
-            type_string += f"_{type_dict.get('id', '')}"
+        # FIXME: Do we add the collection type to the type string?
+        # type_dict = record["metadata"].get("type", {})
+        # if type_dict:
+        #     type_string += f"_{type_dict.get('id', '')}"
         payload = {
             "_internal_id": data["slug"],
             "content_type": type_string,
@@ -209,14 +210,11 @@ def format_commons_search_collection_payload(
             # TODO: Get collection members?
             "contributors": [],
             "content": "",
+            "other_urls": [
+                f"{UI_URL_BASE}/collections/{data['slug']}/members/public",
+                f"{UI_URL_BASE}/collections/{data['slug']}/records",
+            ],
         }
-        if data.get("id"):
-            payload["other_urls"] = (
-                [
-                    f"{UI_URL_BASE}/collections/{data['id']}/members/public",
-                    f"{UI_URL_BASE}/collections/{data['id']}/records",
-                ],
-            )
         if owner:
             payload["owner"] = {
                 "name": owner.get("full_name", ""),
@@ -337,7 +335,7 @@ def record_commons_search_recid(
 
 @shared_task(
     ignore_result=False,
-    bind=True,  # retry_backoff=True, retry_kwargs={"max_retries": 5}
+    bind=True,
 )
 def record_commons_search_collection_recid(
     self,
@@ -380,7 +378,8 @@ def record_commons_search_collection_recid(
                     record_data,
                     {
                         "custom_fields": {
-                            "kcr:commons_search_recid": response_json["_id"]
+                            "kcr:commons_search_recid": response_json["_id"],
+                            "kcr:commons_search_updated": arrow.utcnow().isoformat(),
                         }
                     },
                 ),

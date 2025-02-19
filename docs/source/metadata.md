@@ -1,3 +1,4 @@
+(metadata-schema-vocabularies-and-identifiers)=
 # Metadata Schema, Vocabularies, and Identifiers
 
 The default metadata schema for InvenioRDM records is defined in the `invenio-rdm-records` package and documented [here](https://inveniordm.docs.cern.ch/reference/metadata/). It also includes a number of optional metadata fields which have been enabled in KCWorks, documented [here](https://inveniordm.docs.cern.ch/reference/metadata/optional_metadata/).
@@ -260,11 +261,11 @@ The JSON object retrieved from the record API shares the same basic structure as
 
 #### FAST
 
-The FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) is used for the `subjects` field. See the [metadata.subjects](#metadata.subjects) section for more information about how to include FAST subjects in a KCWorks record.
+The FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) is used for the `subjects` field. See the [metadata.subjects](#metadata-subjects) section for more information about how to include FAST subjects in a KCWorks record.
 
 #### Homosaurus
 
-The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https://homosaurus.org/) for subjects related to sexuality and gender identity. See the [metadata.subjects](#metadata.subjects) section for information about how to include Homosaurus subjects in a KCWorks record.
+The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https://homosaurus.org/) for subjects related to sexuality and gender identity. See the [metadata.subjects](#metadata-subjects) section for information about how to include Homosaurus subjects in a KCWorks record.
 
 ## Resource types
 
@@ -481,13 +482,13 @@ An ISBN (International Standard Book Number) is a ten (pre-2007) or 13 digit (20
 
 KCWorks (and InvenioRDM) supports the ORCID identifier scheme. The ORCID of the submitter of the KCWorks record is stored in the `person_or_org.identifiers` property of the `creators` array (`creators[0].person_or_org.identifiers.identifier`). A KCWorks user's ORCID id is also drawn from their KC profile (if they have provided one) and stored in their system user profile (as `<user_object>.user_profile.identifier_orcid`).
 
-For details on how to use ORCID identifiers in KCWorks, see the section on [Metadata.creators](#metadata.creators) below.
+For details on how to use ORCID identifiers in KCWorks, see the section on [Metadata.creators](#metadata-creators-metadata-contributors) below.
 
 #### KC Username (recommended)
 
 KCWorks also allows the use of Knowledge Commons usernames as identifiers. The KC username of the submitter of the KCWorks record is stored in the `person_or_org.identifiers` property of the `creators` array (`creators[0].person_or_org.identifiers.identifier`) using the scheme `kc_username`.
 
-For details on how to use KC usernames in KCWorks, see the section on [Metadata.creators](#metadata.creators) below.
+For details on how to use KC usernames in KCWorks, see the section on [Metadata.creators](#metadata-creators-metadata-contributors) below.
 
 #### GND
 
