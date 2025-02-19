@@ -105,10 +105,9 @@ Why is this API needed? The InvenioRDM REST API can be fragile and difficult to 
 
 The import API is available to authorized organizations who have obtained an OAuth token for API operations.
 
-If the import is to include placing the work directly in a collection, without passing through the review process, the user to whom
-the token is issued must also have sufficient permissions to publish directly in the collection. Exactly what role they must have in the collection ("owner", "manager", "curator", "reader") depends on the collection's review policy.
-
-The exception to this rule is for collection owners, who may override the collection's review policy and import works directly into the collection without review.
+The import API places the works directly in a collection, without passing through the review process. So, the user to whom the token is issued must have sufficient permissions to publish directly in the collection. The exact role required depends on the collection's review policy:
+- *If the review policy allows managers and curators to skip the review process*, the user of the import API must have one of the roles "manager," "curator," or "owner" in the collection.
+- *If the review policy requires all submissions to be reviewed*, the user of the import API must have the "owner" role in the collection.
 
 ### The import request
 
