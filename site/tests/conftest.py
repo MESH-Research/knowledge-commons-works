@@ -47,7 +47,6 @@ pytest_plugins = (
     "tests.fixtures.vocabularies.resource_types",
     "tests.fixtures.vocabularies.roles",
     "tests.fixtures.vocabularies.subjects",
-    "tests.helpers.sample_records.basic",
 )
 
 

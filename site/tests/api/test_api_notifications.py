@@ -29,11 +29,10 @@ import time
 
 def test_notify_for_request_acceptance(
     running_app,
-    appctx,
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record,
+    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -58,7 +57,9 @@ def test_notify_for_request_acceptance(
     """
     app = running_app.app
     admin_id = admin.user.id
-    community = minimal_community_factory(owner=admin_id)
+    community_rec = minimal_community_factory(owner=admin_id)
+    community_meta = community_rec.to_dict()
+    app.logger.debug(f"community_meta: {pformat(community_meta)}")
     assert len(mailbox) == 0
 
     # Create a user with a community submission
@@ -81,7 +82,7 @@ def test_notify_for_request_acceptance(
         logged_in_client = client
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record),
+            data=json.dumps(minimal_record_metadata),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -103,12 +104,12 @@ def test_notify_for_request_acceptance(
 
         # create a review request (can't use REST API for this)
         review_body = {
-            "receiver": {"community": f"{community['id']}"},
+            "receiver": {"community": f"{community_meta['id']}"},
             "type": "community-submission",
         }
 
         response = logged_in_client.put(
-            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/" "review",
+            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/review",
             data=json.dumps(review_body),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
@@ -129,7 +130,7 @@ def test_notify_for_request_acceptance(
         # not asserting it
         assert request_data["status"] == "created"
         # assert request_data["updated"] == request_created_date  # not exact
-        assert request_data["receiver"] == {"community": f"{community['id']}"}
+        assert request_data["receiver"] == {"community": f"{community_meta['id']}"}
         assert request_data["revision_id"] == 2
 
         request_id = request_data.get("id")
@@ -183,7 +184,7 @@ def test_notify_for_request_acceptance(
         load_community_needs(reviewer_identity)  # since we didn't log in
         review_accepted = current_requests_service.execute_action(
             reviewer_identity,
-            submitted_request.id,
+            request_id,
             "accept",
             data=accept_body,
         )
@@ -243,7 +244,7 @@ def test_notify_for_request_decline(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record,
+    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -269,7 +270,8 @@ def test_notify_for_request_decline(
 
     app = running_app.app
     admin_id = admin.user.id
-    community = minimal_community_factory(owner=admin_id)
+    community_rec = minimal_community_factory(owner=admin_id)
+    community_meta = community_rec.to_dict()
     assert len(mailbox) == 0
 
     # Create a user with a community submission
@@ -292,7 +294,7 @@ def test_notify_for_request_decline(
         logged_in_client = client
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record),
+            data=json.dumps(minimal_record_metadata),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -313,7 +315,7 @@ def test_notify_for_request_decline(
 
         # create a review request (can't use REST API for this)
         review_body = {
-            "receiver": {"community": f"{community['id']}"},
+            "receiver": {"community": f"{community_meta['id']}"},
             "type": "community-submission",
         }
 
@@ -339,7 +341,7 @@ def test_notify_for_request_decline(
         # not asserting it
         assert request_data["status"] == "created"
         # assert request_data["updated"] == request_created_date  # not exact
-        assert request_data["receiver"] == {"community": f"{community['id']}"}
+        assert request_data["receiver"] == {"community": f"{community_meta['id']}"}
         assert request_data["revision_id"] == 2
 
         request_id = request_data.get("id")
@@ -453,7 +455,7 @@ def test_notify_for_request_cancellation(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record,
+    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -468,7 +470,8 @@ def test_notify_for_request_cancellation(
     """
     app = running_app.app
     admin_id = admin.user.id
-    community = minimal_community_factory(owner=admin_id)
+    community_rec = minimal_community_factory(owner=admin_id)
+    community_meta = community_rec.to_dict()
     assert len(mailbox) == 0
 
     # Create a user with a community submission
@@ -491,7 +494,7 @@ def test_notify_for_request_cancellation(
         logged_in_client = client
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record),
+            data=json.dumps(minimal_record_metadata),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -512,7 +515,7 @@ def test_notify_for_request_cancellation(
 
         # create a review request (can't use REST API for this)
         review_body = {
-            "receiver": {"community": f"{community['id']}"},
+            "receiver": {"community": f"{community_meta['id']}"},
             "type": "community-submission",
         }
 
@@ -538,7 +541,7 @@ def test_notify_for_request_cancellation(
         # not asserting it
         assert request_data["status"] == "created"
         # assert request_data["updated"] == request_created_date  # not exact
-        assert request_data["receiver"] == {"community": f"{community['id']}"}
+        assert request_data["receiver"] == {"community": f"{community_meta['id']}"}
         assert request_data["revision_id"] == 2
 
         request_id = request_data.get("id")
@@ -631,7 +634,7 @@ def test_notify_for_new_request_comment(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record,
+    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -646,7 +649,8 @@ def test_notify_for_new_request_comment(
     """
     app = running_app.app
     admin_id = admin.user.id
-    community = minimal_community_factory(owner=admin_id)
+    community_rec = minimal_community_factory(owner=admin_id)
+    community_meta = community_rec.to_dict()
     assert len(mailbox) == 0
 
     # Create a user with a community submission
@@ -666,7 +670,7 @@ def test_notify_for_new_request_comment(
     with app.test_client() as client:
         response = client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record),
+            data=json.dumps(minimal_record_metadata),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -687,7 +691,7 @@ def test_notify_for_new_request_comment(
 
         # create a review request (can't use REST API for this)
         review_body = {
-            "receiver": {"community": f"{community['id']}"},
+            "receiver": {"community": f"{community_meta['id']}"},
             "type": "community-submission",
         }
 
@@ -713,7 +717,7 @@ def test_notify_for_new_request_comment(
         # not asserting it
         assert request_data["status"] == "created"
         # assert request_data["updated"] == request_created_date  # not exact
-        assert request_data["receiver"] == {"community": f"{community['id']}"}
+        assert request_data["receiver"] == {"community": f"{community_meta['id']}"}
         assert request_data["revision_id"] == 2
 
         request_id = request_data.get("id")
@@ -830,7 +834,7 @@ def test_read_unread_notifications_by_service(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record,
+    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -908,7 +912,7 @@ def test_clear_unread_notifications_by_service(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record,
+    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -1123,7 +1127,7 @@ def test_clear_unread_notifications_by_view(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record,
+    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -1231,7 +1235,7 @@ def test_clear_one_unread_notification_by_view(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record,
+    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -1394,7 +1398,7 @@ def test_unread_endpoint_bad_methods(
 def test_notification_on_first_upload(
     running_app,
     user_factory,
-    minimal_record,
+    minimal_record_metadata,
     db,
     search_clear,
     client,
@@ -1453,14 +1457,14 @@ def test_notification_on_first_upload(
     login_user_via_session(client, email=user.email)
 
     # Create the first draft
-    response = client.post(
+    draft1_response = client.post(
         f"{app.config['SITE_API_URL']}/records",
-        data=json.dumps(minimal_record),
+        data=json.dumps(minimal_record_metadata),
         headers={**headers, "Authorization": f"Bearer {token}"},
     )
-    assert response.status_code == 201
-    first_draft_id = response.json.get("id")
-    record_title = response.json.get("metadata").get("title")
+    assert draft1_response.status_code == 201
+    first_draft_id = draft1_response.json.get("id")
+    record_title = draft1_response.json.get("metadata").get("title")
 
     # Check that an email was sent to the admin
     assert len(mailbox) == 1
@@ -1480,9 +1484,9 @@ def test_notification_on_first_upload(
         f"'{app.config.get('SITE_UI_URL')}/records/{first_draft_id}'>"
         f"View draft</a>)" in email.html
     )
-    assert f"Draft title: {minimal_record['metadata']['title']}" in email.body
-    assert f"Draft title: {minimal_record['metadata']['title']}" in email.html
-    # assert f"Full metadata: {minimal_record}" in email.body
+    assert f"Draft title: {minimal_record_metadata['metadata']['title']}" in email.body
+    assert f"Draft title: {minimal_record_metadata['metadata']['title']}" in email.html
+    # assert f"Full metadata: {minimal_record_metadata}" in email.body
     assert f"User ID: {user_id}" in email.body
     assert f"User ID: {user_id}" in email.html
     assert f"User email: {user_email}" in email.body
@@ -1492,24 +1496,24 @@ def test_notification_on_first_upload(
     assert "A new user has created their first draft." in email.body
     assert "A new user has created their first draft." in email.html
 
-    # Create a second draft
-    response = client.post(
+    # Create a second draft work (different work)
+    draft2_response = client.post(
         f"{app.config['SITE_API_URL']}/records",
-        data=json.dumps(minimal_record),
+        data=json.dumps(minimal_record_metadata),
         headers={**headers, "Authorization": f"Bearer {token}"},
     )
-    assert response.status_code == 201
+    assert draft2_response.status_code == 201
 
     # Check that no new notification was created for the admin
     assert len(mailbox) == 1
 
     # Publish the first draft
-    response = client.post(
+    draft1_publish_response = client.post(
         f"{app.config['SITE_API_URL']}/records/{first_draft_id}/draft/"
         "actions/publish",
         headers={**headers, "Authorization": f"Bearer {token}"},
     )
-    assert response.status_code == 202
+    assert draft1_publish_response.status_code == 202
 
     # Check that a new notification was created for the admin
     assert len(mailbox) == 2
@@ -1520,10 +1524,11 @@ def test_notification_on_first_upload(
         f"a work: '{record_title}'" in email.subject
     )
     assert email.sender == app.config["MAIL_DEFAULT_SENDER"]
+    app.logger.debug(f"email.body: {pformat(email.body)}")
     assert f"Work ID: {first_draft_id}" in email.body
     assert f"Work ID: {first_draft_id}" in email.html
-    assert f"Work title: {minimal_record['metadata']['title']}" in email.body
-    assert f"Work title: {minimal_record['metadata']['title']}" in email.html
+    assert f"Work title: {minimal_record_metadata['metadata']['title']}" in email.body
+    assert f"Work title: {minimal_record_metadata['metadata']['title']}" in email.html
     assert f"User ID: {user_id}" in email.body
     assert f"User ID: {user_id}" in email.html
     assert f"User email: {user_email}" in email.body

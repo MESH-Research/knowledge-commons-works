@@ -334,46 +334,9 @@ def client_with_login(requests_mock, app):
     def log_in_user(
         client,
         user: User,
-        new_remote_data: dict = {},
     ):
-        saml_id = user.external_identifiers[0].id
-        token = os.getenv("COMMONS_API_TOKEN")
-
-        # Mock remote data that's already in the user fixture.
-        mock_remote_data = {
-            "username": saml_id,
-            "email": user.email,
-            "name": user.user_profile.get("full_name", ""),
-            "first_name": user.user_profile.get("first_name", ""),
-            "last_name": user.user_profile.get("last_name", ""),
-            "institutional_affiliation": user.user_profile.get(
-                "affiliations", ""
-            ),  # noqa: E501
-            "orcid": user.user_profile.get("orcid", ""),
-            "preferred_language": user.user_profile.get(
-                "preferred_language", ""
-            ),  # noqa: E501
-            "time_zone": user.user_profile.get("time_zone", ""),
-            "groups": user.user_profile.get("groups", ""),
-        }
-
-        # Mock adding any missing data from remote API call.
-        mock_remote_data.update(new_remote_data)
-
-        # Mock the remote api call.
-        protocol = os.environ.get(
-            "INVENIO_COMMONS_API_REQUEST_PROTOCOL", "http"
-        )  # noqa: E501
-        base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
-        remote_url = f"{base_url}/{saml_id}"
-        mock_adapter = requests_mock.get(
-            remote_url,
-            json=mock_remote_data,
-            headers={"Authorization": f"Bearer {token}"},
-        )
-
         login_user(user)
         login_user_via_session(client, email=user.email)
-        return client, mock_adapter
+        return client
 
     return log_in_user

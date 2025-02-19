@@ -21,7 +21,7 @@ def test_trigger_search_provisioning(
     db,
     requests_mock,
     monkeypatch,
-    minimal_record,
+    minimal_record_metadata,
     user_factory,
     create_records_custom_fields,
     celery_worker,
@@ -54,13 +54,13 @@ def test_trigger_search_provisioning(
     service = current_rdm_records.records_service
 
     # Draft creation, no remote API operations should be prompted
-    draft = service.create(system_identity, minimal_record)
+    draft = service.create(system_identity, minimal_record_metadata)
     actual_draft = draft.data
     assert actual_draft["metadata"]["title"] == "A Romans story"
     assert mock_adapter.call_count == 0
 
     # Draft edit, no remote API operations should be prompted
-    minimal_edited = minimal_record.copy()
+    minimal_edited = minimal_record_metadata.copy()
     minimal_edited["metadata"]["title"] = "A Romans Story 2"
     edited_draft = service.update_draft(system_identity, draft.id, minimal_edited)
     actual_edited = edited_draft.data.copy()
@@ -657,7 +657,7 @@ def test_trigger_community_provisioning(
 
 def test_search_id_recording_callback(
     running_app,
-    minimal_record,
+    minimal_record_metadata,
     location,
     search,
     search_clear,
@@ -679,7 +679,7 @@ def test_search_id_recording_callback(
 
     # Set up minimal record to update after search provisioning
     service = current_rdm_records.records_service
-    draft = service.create(system_identity, minimal_record)
+    draft = service.create(system_identity, minimal_record_metadata)
     read_record = service.read_draft(system_identity, draft.id)
     assert read_record.data["metadata"]["title"] == "A Romans story"
     assert read_record.data["custom_fields"].get("kcr:commons_search_recid") is None

@@ -16,9 +16,11 @@ Welcome to the Knowledge Commons Works technical documentation!
    metadata
    customizations
    configuration
+   api
    cli_commands
    infrastructure
    developing
+   architecture
    in_depth
    reference
 

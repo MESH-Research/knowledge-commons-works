@@ -1,13 +1,17 @@
-# Metadata Schema and Vocabularies
+(metadata-schema-vocabularies-and-identifiers)=
+# Metadata Schema, Vocabularies, and Identifiers
 
 The default metadata schema for InvenioRDM records is defined in the `invenio-rdm-records` package and documented [here](https://inveniordm.docs.cern.ch/reference/metadata/). It also includes a number of optional metadata fields which have been enabled in KCWorks, documented [here](https://inveniordm.docs.cern.ch/reference/metadata/optional_metadata/).
 
-Beyond these InvenioRDM fields, KCWorks adds a number of custom metadata fields to the schema using InvenioRDM's custom field mechanism. These are all located in the top-level `custom_fields` field of the record metadata. They are prefixed with two different namespaces:
+In this documentation we provide
+1. A full example of a KCWorks record metadata object
+2. A list of the controlled vocabularies and identifier schemes supported by KCWorks
+3. Discussion of how some of the standard InvenioRDM metadata fields are used in KCWorks
+4. A list of the custom metadata fields KCWorks adds to the base InvenioRDM schema
 
-- `kcr`: custom fields that are used to store data from the KC system. These fields **may** be used for new data, but are not required.
-- `hclegacy`: custom fields that are used to store data from the legacy CORE repository. These fields **must not** be used for new data.
+## Example metadata record
 
-## Example JSON record
+### JSON object for record creation
 
 What follows is an example of a complete metadata record (JSON object) used to create a KCWorks record. The various fields and their possible values are described in the sections below.
 
@@ -247,26 +251,278 @@ Note that no single actual record would include all of these fields. The example
 }
 ```
 
+### JSON object retrieved from the record API
+
+The JSON object retrieved from the record API shares the same basic structure as the JSON object used to create the record, except that it includes a number of additional fields. Some properties are also filled out with additional details (e.g., readable titles for licenses, etc.)
+
 ## Controlled Vocabularies
 
 ### Subject headings
 
 #### FAST
 
-The FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) is used for the `subjects` field.
+The FAST controlled vocabulary (https://www.oclc.org/research/areas/data-science/fast.html) is used for the `subjects` field. See the [metadata.subjects](#metadata-subjects) section for more information about how to include FAST subjects in a KCWorks record.
 
 #### Homosaurus
 
-The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https://homosaurus.org/) for subjects related to sexuality and gender identity.
+The FAST vocabulary is augmented in KCWorks by the Homosaurus vocabulary (https://homosaurus.org/) for subjects related to sexuality and gender identity. See the [metadata.subjects](#metadata-subjects) section for information about how to include Homosaurus subjects in a KCWorks record.
+
+## Resource types
+
+ As an open repository that serves a multidisciplinary audience, KCWorks uses a custom vocabulary of resource types designed (a) to support the wide variety of scholarly materials we accept and (b) to facilitate ease of use for depositors. The terms in this vocabulary are mapped to DataCite's [resourceTypeGeneral](https://schema.datacite.org/meta/kernel-4.4/doc/DataCite_Schema_v4.4.pdf) vocabulary and a number of other resource type vocabularies (COAR, CSL, EUREPO, Schema.org). This allows correct export of metadata to DataCite and in other metadata formats.
+
+InvenioRDM employs a hierarchical structure of resource types, each of which has a number of subtypes. In KCWorks the 8 top-level resource types are:
+
+- audiovisual
+- dataset
+- image
+- instructionalResource
+- presentation
+- software
+- textDocument
+- other
+
+We selected these top-level types in part to allow division of the many subtypes into manageable groups. This allows us to provide a wide range of resource types while also allowing users to easily find the resource type that best fits their deposit.
+
+Beneath these top-level types are a number of subtypes, which are listed below. Where the DataCite schema allows free-text, arbitrary subtypes, we have followed InvenioRDM's approach of using a controlled vocabulary of subtypes. Where our list of top-level types is short, we have erred on the side of including more subtypes. Again, this allows us to support a wide range of materials without forcing them to choose a subtype that does not fit. It also allows us to tailor the user interface of the upload form to the specific subtype of the record being deposited, preventing the confusion and overwhelm of users being presented with many metadata fields which are not relevant to their material.
+
+The following is the complete list of KCWorks resource types with their subtypes. This list may be expanded in the future.
+
+- audiovisual
+    - documentary
+    - interviewRecording
+    - musicalRecording
+    - other
+    - performance
+    - podcastEpisode
+    - audioRecording
+    - videoRecording
+- dataset
+- image
+    - chart
+    - diagram
+    - figure
+    - map
+    - visualArt
+    - photograph
+    - other
+- instructionalResource
+    - curriculum
+    - lessonPlan
+    - syllabus
+    - other
+- presentation
+    - conferencePaper
+    - conferencePoster
+    - presentationText
+    - slides
+    - other
+- software
+    - 3DModel
+    - application
+    - computationalModel
+    - computationalNotebook
+    - service
+    - other
+- textDocument
+    - abstract
+    - bibliography
+    - blogPost
+    - book
+    - bookSection
+    - conferenceProceeding
+    - dataManagementPlan
+    - documentation
+    - editorial
+    - essay
+    - interviewTranscript
+    - journalArticle
+    - legalComment
+    - legalResponse
+    - magazineArticle
+    - monograph
+    - newspaperArticle
+    - onlinePublication
+    - poeticWork
+    - preprint
+    - report
+    - workingPaper
+    - review
+    - technicalStandard
+    - thesis
+    - whitePaper
+    - other
+- other
+    - catalog
+    - collection
+    - event
+    - interactiveResource
+    - notes
+    - patent
+    - peerReview
+    - physicalObject
+    - workflow
+
+Note that (like with the base InvenioRDM resource types), neither the list of top-level resource types nor the list of subtypes exactly matches the vocabulary provided by DataCite under [resourceTypeGeneral](https://datacite-metadata-schema.readthedocs.io/en/4.6/appendices/appendix-1/resourceTypeGeneral/). Those types are all included in the KCWorks vocabulary--some as top-level types, some as subtypes. But because we do not follow DataCite in allowing arbitrary free-text subtypes, we have needed to greatly expand the list of subtypes to support the wide variety of materials we accept. As mentioned above, however, each subtype is mapped to a DataCite resourceTypeGeneral value for correct export to DataCite and other metadata formats.
+
+You can compare the KCWorks resource types with the list from the original Humanities Commons CORE repository [here](https://works.hcommons.org/records/f9xww-xwr22). The KCWorks resource type vocabulary is not structured in the same way as the CORE vocabulary (which was a flat list), but the KCWorks subtypes encompass all of the original CORE types.
+
+
+## Creator/contributor roles
+
+Keeping with our support for a wide variety of objects and disciplines, our creator roles are more diverse than just "author," "editor," or "translator." For contribuors we were influenced by the [CRediT Taxonomy](https://credit.niso.org/), finding ways of recognizing labor even when the contribution is not immediately visible. Included in both creator and contributor roles a selection of types taken from the [Variations Metadata](https://dlib.indiana.edu/projects/variations3/metadata/guide/controlVocabs/contributorRoles.html) taxonomy, providing the ability to credit those who engage in creative and musical works.
+
+The complete list of creator/contributor roles is:
+
+- actor
+- adaptor
+- annotator
+- analyst
+- arranger
+- artisan
+- artist
+- attributedName
+- author
+- authorOfIntroduction
+- authorOfForeword
+- authorOfAfterword
+- committeeChair
+- choreographer
+- cinematographer
+- collaborator
+- collector
+- committeeMember
+- composer
+- conductor
+- consultant
+- contactperson
+- correspondent
+- datacollector
+- datacurator
+- datamanager
+- dedicatee
+- designer
+- director
+- distributor
+- donor
+- drafter
+- editor
+- examiner
+- formerOwner
+- hostinginstitution
+- illustrator
+- interviewee
+- interviewer
+- inventor
+- juror
+- licensee
+- lyricist
+- manufacturer
+- organizer
+- owner
+- performer
+- photographer
+- printer
+- producer
+- projectOrTeamLeader
+- projectOrTeamManager
+- projectOrTeamMember
+- recording engineer
+- referee
+- registrationagency
+- registrationauthority
+- relatedperson
+- reporter
+- researcher
+- researchgroup
+- researchParticipant
+- rightsholder
+- screenplayAuthor
+- speaker
+- supervisor
+- transcriber
+- translator
+- witness
+- workpackageleader
+- writerOfAccompanying
+
+Note that where InvenioRDM provides distinct custom vocabularies for creators and contributors, KCWorks employs a single creator/contributor vocabulary. This is in keeping with our handling of the `creators` and `contributors` fields, discussed below.
+
+## Identifier Schemes
+
+### Works
+
+#### DOI (primary identifier)
+
+KCWorks (and InvenioRDM) supports the DOI identifier scheme to identify works in the repository. Note that two DOIs are minted for each KCWorks record: one for the current version of the record, and one for the work as a whole (including all versions). The version-specific DOI is stored in the `pids` property of the metadata record (`pids.identifiers.doi`). The work DOI is stored in the `parent.pids.doi` property of the `parent` object.
+
+These DOIs are minted by DataCite (https://datacite.org/) and the attached metadata is maintained automatically by KCWorks.
+
+Additional DOIs minted elsewhere can be attached to a KCWorks record. If provided at record creation such external DOIs can be used as the record's primary identifier (in `pids.doi`). Otherwise, they can be added using the `identifiers` property of the metadata record using the scheme `alternate-doi`. In both cases, these externally minted DOIs are **not** maintained automatically by KCWorks.
+
+#### OAI (secondary identifier)
+
+KCWorks also supports the OAI identifier scheme. The OAI identifier for a KCWorks record is stored in the `pids` property of the metadata record (`pids.identifiers.oai`).
+
+#### Handle (secondary identifier)
+
+KCWorks also supports the Handle identifier scheme (https://handle.net/). The Handle identifier for a KCWorks record is stored in the `identifiers` property of the metadata record (`identifiers[0].identifier`) using the scheme `handle`.
+
+#### ISSN (secondary identifier)
+
+An ISSN is an eight digit code that identifies a print or electronic newspaper, journal, magazine, or other periodical. More information on the ISSN can be found on [ISSN.org](https://www.issn.org/understanding-the-issn/what-is-an-issn/).
+
+#### ISBN (secondary identifier)
+
+An ISBN (International Standard Book Number) is a ten (pre-2007) or 13 digit (2007 to present) identifier used to identify both print and electronic published books. More information on the ISBN can be found on [ISBN-international.org](https://www.isbn-international.org/content/what-isbn/10).
+
+### People
+
+#### ORCID (recommended)
+
+KCWorks (and InvenioRDM) supports the ORCID identifier scheme. The ORCID of the submitter of the KCWorks record is stored in the `person_or_org.identifiers` property of the `creators` array (`creators[0].person_or_org.identifiers.identifier`). A KCWorks user's ORCID id is also drawn from their KC profile (if they have provided one) and stored in their system user profile (as `<user_object>.user_profile.identifier_orcid`).
+
+For details on how to use ORCID identifiers in KCWorks, see the section on [Metadata.creators](#metadata-creators-metadata-contributors) below.
+
+#### KC Username (recommended)
+
+KCWorks also allows the use of Knowledge Commons usernames as identifiers. The KC username of the submitter of the KCWorks record is stored in the `person_or_org.identifiers` property of the `creators` array (`creators[0].person_or_org.identifiers.identifier`) using the scheme `kc_username`.
+
+For details on how to use KC usernames in KCWorks, see the section on [Metadata.creators](#metadata-creators-metadata-contributors) below.
+
+#### GND
+
+KCWorks also supports the Integrated Authority File (GND) identifier scheme (https://www.dnb.de/EN/Professionell/Standardisierung/GND/gnd_node.html). The GND identifier of the submitter of the KCWorks record is stored in the `person_or_org.identifiers` property of the `creators` array (`creators[0].person_or_org.identifiers.identifier`) using the scheme `gnd`.
+
+#### ISNI
+
+KCWorks also supports the ISNI identifier scheme (https://isni.org/). The ISNI of the submitter of the KCWorks record is stored in the `person_or_org.identifiers` property of the `creators` array (`creators[0].person_or_org.identifiers.identifier`) using the scheme `isni`.
 
 ### Organizations
 
-#### ROR
+#### ROR (recommended)
 
-The Research Organization Registry (https://ror.org/) is used for the `organizations` field.
+Organization identifiers can appear in the `creators` and `contributors` arrays, either for organizational creators/contributors or in the `affiliations` array of a personal creator/contributor. These fields *may* identify an organization using its id in Research Organization Registry (https://ror.org/) using the scheme `ror`, although free text names are also supported.
 
+#### Grid (deprecated)
 
-## Notes about Implementation of Core InvenioRDM Fields
+KCWorks also supports the Grid identifier scheme (https://www.grid.ac/) for organizations using the scheme `grid`. This scheme is deprecated in favour of ROR, however, and should not be used for new identifiers.
+
+#### GND
+
+KCWorks also supports the Integrated Authority File (GND) identifier scheme (https://www.dnb.de/EN/Professionell/Standardisierung/GND/gnd_node.html) for organizations using the scheme `gnd`.
+
+### Funders
+
+#### DOI
+
+Funders in the `metadata.funding` array can be identified using DOIs formed with a FundRef id and the scheme `doi`.
+
+#### OFR
+
+Funders in the `metadata.funding` array can also be identified using the Open Funder Registry (https://openfunder.org/) identifiers and the scheme `ofr`.
+
+## KCWorks Implementation of Core InvenioRDM Fields
 
 ### metadata.subjects
 
@@ -332,9 +588,14 @@ Example:
 }
 ```
 
-### KCWorks Custom Fields (kcworks/site/metadata_fields)
+## KCWorks Custom Fields (kcworks/site/metadata_fields)
 
-#### kcr:ai_usage
+Beyond the standard InvenioRDM metadata fields, KCWorks adds a number of custom metadata fields to the schema using InvenioRDM's custom field mechanism. These are all located in the top-level `custom_fields` field of the record metadata. They are prefixed with two different namespaces:
+
+- `kcr`: custom fields that are used to store data from the KC system. These fields **may** be used for new data, but are not required.
+- `hclegacy`: custom fields that are used to store data from the legacy CORE repository. These fields **must not** be used for new data.
+
+### kcr:ai_usage
 
 Type: `Object[boolean, string]`
 
@@ -350,7 +611,7 @@ Example:
 }
 ```
 
-#### kcr:media
+### kcr:media
 
 Type: `Array[string]`
 
@@ -363,7 +624,7 @@ Example:
 }
 ```
 
-#### kcr:commons_domain
+### kcr:commons_domain
 
 Type: `string`
 
@@ -376,7 +637,7 @@ Example:
 }
 ```
 
-#### kcr:chapter_label
+### kcr:chapter_label
 
 Type: `string`
 
@@ -389,7 +650,7 @@ Example:
 }
 ```
 
-#### kcr:content_warning
+### kcr:content_warning
 
 Type: `string`
 
@@ -402,7 +663,7 @@ Example:
 }
 ```
 
-#### kcr:course_title
+### kcr:course_title
 
 Type: `string`
 
@@ -415,7 +676,7 @@ Example:
 }
 ```
 
-#### kcr:degree
+### kcr:degree
 
 Type: `string`
 
@@ -428,7 +689,7 @@ Example:
 }
 ```
 
-#### kcr:discipline
+### kcr:discipline
 
 Type: `string`
 
@@ -445,7 +706,7 @@ Example:
 }
 ```
 
-#### kcr:edition
+### kcr:edition
 
 Type: `string`
 
@@ -458,7 +719,7 @@ Example:
 }
 ```
 
-#### kcr:meeting_organization
+### kcr:meeting_organization
 
 Type: `string`
 
@@ -471,7 +732,7 @@ Example:
 }
 ```
 
-#### kcr:project_title
+### kcr:project_title
 
 Type: `string`
 
@@ -484,7 +745,7 @@ Example:
 }
 ```
 
-#### kcr:publication_url
+### kcr:publication_url
 
 Type: `string` (URL)
 
@@ -499,7 +760,7 @@ Example:
 }
 ```
 
-#### kcr:sponsoring_institution
+### kcr:sponsoring_institution
 
 Type: `string`
 
@@ -514,7 +775,7 @@ Example:
 }
 ```
 
-#### kcr:submitter_email
+### kcr:submitter_email
 
 Type: `string` (email address)
 
@@ -527,7 +788,7 @@ Example:
 }
 ```
 
-#### kcr:submitter_username
+### kcr:submitter_username
 
 Type: `string`
 
@@ -540,7 +801,7 @@ Example:
 }
 ```
 
-#### kcr:institution_department
+### kcr:institution_department
 
 Type: `string`
 
@@ -553,7 +814,7 @@ Example:
 }
 ```
 
-#### kcr:book_series
+### kcr:book_series
 
 Type: `Object[string, string]`
 
@@ -570,7 +831,7 @@ Example:
 }
 ```
 
-#### kcr:user_defined_tags
+### kcr:user_defined_tags
 
 Type: `Array[string]`
 
@@ -586,14 +847,14 @@ Example:
 }
 ```
 
-#### kcr:commons_search_recid (system field)
+### kcr:commons_search_recid (system field)
 
 This field is used to store the persistent identifier for the KCWorks record in the KC central search index.
 
 > [!Warning]
 > This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
 
-#### kcr:commons_search_updated (system field)
+### kcr:commons_search_updated (system field)
 
 Type: `string` (ISO 8601 datetime string)
 
@@ -602,11 +863,11 @@ This field stores the date and time when the KCWorks record was last updated in 
 > [!Warning]
 > This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
 
-### HC Legacy Custom Fields
+## HC Legacy Custom Fields
 
 The `hclegacy` namespace is used for custom fields that are used to store data from the legacy CORE database. These fields should not be used for new data.
 
-#### custom_fields.hclegacy:groups_for_deposit
+### custom_fields.hclegacy:groups_for_deposit
 
 Type: `Array[Object[string, string]]`
 
@@ -624,7 +885,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:collection
+### custom_fields.hclegacy:collection
 
 Type: `string`
 
@@ -637,7 +898,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:committee_deposit
+### custom_fields.hclegacy:committee_deposit
 
 Type: `integer`
 
@@ -650,7 +911,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:file_location
+### custom_fields.hclegacy:file_location
 
 Type: `string`
 
@@ -663,7 +924,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:file_pid
+### custom_fields.hclegacy:file_pid
 
 Type: `string`
 
@@ -676,7 +937,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:previously_published
+### custom_fields.hclegacy:previously_published
 
 Type: `string`
 
@@ -689,7 +950,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:publication_type
+### custom_fields.hclegacy:publication_type
 
 Type: `string`
 
@@ -702,7 +963,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:record_change_date
+### custom_fields.hclegacy:record_change_date
 
 Type: `string` (ISO 8601 datetime string)
 
@@ -715,7 +976,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:record_creation_date
+### custom_fields.hclegacy:record_creation_date
 
 Type: `string` (ISO 8601 datetime string)
 
@@ -728,7 +989,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:record_identifier
+### custom_fields.hclegacy:record_identifier
 
 Type: `string`
 
@@ -741,7 +1002,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:submitter_org_memberships
+### custom_fields.hclegacy:submitter_org_memberships
 
 Type: `array[string]`
 
@@ -754,7 +1015,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:submitter_affiliation
+### custom_fields.hclegacy:submitter_affiliation
 
 Type: `string`
 
@@ -767,7 +1028,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:submitter_id
+### custom_fields.hclegacy:submitter_id
 
 Type: `string`
 
@@ -780,7 +1041,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:total_views
+### custom_fields.hclegacy:total_views
 
 Type: `integer`
 
@@ -793,7 +1054,7 @@ Example:
 }
 ```
 
-#### custom_fields.hclegacy:total_downloads
+### custom_fields.hclegacy:total_downloads
 
 Type: `integer`
 
