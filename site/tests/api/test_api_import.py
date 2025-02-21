@@ -1,13 +1,10 @@
-from invenio_vocabularies.proxies import current_service as current_vocabulary_service
-from invenio_vocabularies.records.api import Vocabulary
 import copy
-from flask import Flask
 from flask_login import login_user
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
+from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
-from invenio_communities.proxies import current_communities
-from invenio_communities.communities.records.api import Community
+from invenio_communities.members.records.api import Member
 from invenio_communities.utils import load_community_needs
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_record_importer_kcworks.proxies import current_record_importer_service
@@ -16,6 +13,8 @@ from invenio_record_importer_kcworks.types import (
     FileData,
     LoaderResult,
 )
+from invenio_vocabularies.proxies import current_service as current_vocabulary_service
+from invenio_vocabularies.records.api import Vocabulary
 import json
 from pathlib import Path
 from pprint import pformat
@@ -838,16 +837,31 @@ class BaseImportServiceTest:
                 ).to_dict()
                 assert created_record["status"] == "deleted"
 
+    def _check_owners_in_community(
+        self,
+        community_members: list,
+        user: User,
+        uploader_id: str,
+    ):
+        target_roles = (
+            ["reader"] if user.id != uploader_id else ["curator", "manager", "owner"]
+        )
+        assert any(
+            m.user_id == user.id and m.role in target_roles for m in community_members
+        )
+
     def _check_owners(
         self,
         actual_metadata: dict,
         expected: TestRecordMetadataWithFiles,
         uploader_id: str,
+        community_id: str,
     ):
         expected_owners = (
             expected.metadata_in.get("parent", {}).get("access", {}).get("owned_by")
         )
         if expected_owners:
+            community_members = Member.get_members(community_id)
             first_expected_owner = expected.metadata_in["parent"]["access"]["owned_by"][
                 0
             ]
@@ -855,6 +869,9 @@ class BaseImportServiceTest:
                 actual_metadata["parent"]["access"]["owned_by"]["user"]
             )
             assert first_actual_owner.email == first_expected_owner["email"]
+            self._check_owners_in_community(
+                community_members, first_actual_owner, uploader_id
+            )
             if len(expected_owners) > 1:
                 other_expected_owners = expected.metadata_in["parent"]["access"][
                     "owned_by"
@@ -915,6 +932,11 @@ class BaseImportServiceTest:
                                 user.user_profile["identifier_other"]
                             )
                             assert import_id in other_user_ids.values()
+                    # make sure they were added to the community
+                    # as reader (unless they are the uploader)
+                    self._check_owners_in_community(
+                        community_members, user, uploader_id
+                    )
         else:
             assert actual_metadata["parent"]["access"]["owned_by"] == {
                 "user": uploader_id
@@ -966,7 +988,7 @@ class BaseImportServiceTest:
             f["checksum"] = actual_metadata["files"]["entries"][k]["checksum"]
         assert expected.compare_published(actual_metadata)
 
-        self._check_owners(actual_metadata, expected, uploader_id)
+        self._check_owners(actual_metadata, expected, uploader_id, community["id"])
 
         # Check the record in the database
         record_id1 = actual_metadata.get("id")

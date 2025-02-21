@@ -2,6 +2,8 @@ from collections import namedtuple
 import os
 from pathlib import Path
 import importlib
+import shutil
+import tempfile
 from invenio_app.factory import create_app as create_ui_api
 from invenio_queues import current_queues
 from invenio_search.proxies import current_search_client
@@ -187,6 +189,31 @@ def celery_enable_logging():
 # def flask_celery_worker(flask_celery_app):
 #     with start_worker(flask_celery_app, perform_ping_check=False) as worker:
 #         yield worker
+
+
+@pytest.yield_fixture(scope="module")
+def location(database):
+    """Creates a simple default location for a test.
+
+    Scope: function
+
+    Use this fixture if your test requires a `files location <https://invenio-
+    files-rest.readthedocs.io/en/latest/api.html#invenio_files_rest.models.
+    Location>`_. The location will be a default location with the name
+    ``pytest-location``.
+    """
+    from invenio_files_rest.models import Location
+
+    uri = tempfile.mkdtemp()
+    location_obj = Location(name="pytest-location", uri=uri, default=True)
+
+    database.session.add(location_obj)
+    database.session.commit()
+
+    yield location_obj
+
+    # TODO: Submit PR to pytest-invenio to fix the below line in the stock fixture
+    shutil.rmtree(uri)
 
 
 # This is a namedtuple that holds all the fixtures we're likely to need

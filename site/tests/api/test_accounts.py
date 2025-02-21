@@ -1,13 +1,16 @@
+import copy
+from pprint import pformat
 import pytest
 import datetime
 from flask import Flask
 from invenio_accounts import current_accounts
 from invenio_accounts.models import User
-from invenio_saml.handlers import acs_handler_factory
 import json
 from kcworks.services.accounts.saml import (
     knowledgeCommons_account_info,
     knowledgeCommons_account_setup,
+    knowledgeCommons_account_get_user,
+    acs_handler_factory,
 )
 import pytz
 from requests_mock.adapter import _Matcher as Matcher
@@ -18,37 +21,32 @@ from ..fixtures.users import user_data_set, AugmentedUserFixture
 
 
 @pytest.mark.parametrize(
-    "attributes,output,user_data,api_call_count",
+    "attributes,output,user_data",
     [
         (
             idp_responses["joanjett"]["raw_data"],
             idp_responses["joanjett"]["extracted_data"],
             user_data_set["joanjett"],
-            0,
         ),
         (
             idp_responses["user1"]["raw_data"],
             idp_responses["user1"]["extracted_data"],
             user_data_set["user1"],
-            0,
         ),
         (
             idp_responses["user2"]["raw_data"],
             idp_responses["user2"]["extracted_data"],
             user_data_set["user2"],
-            0,
         ),
         (
             idp_responses["user3"]["raw_data"],
             idp_responses["user3"]["extracted_data"],
             user_data_set["user3"],
-            1,
         ),
         (
             idp_responses["user4"]["raw_data"],
             idp_responses["user4"]["extracted_data"],
             user_data_set["user4"],
-            0,
         ),
     ],
 )
@@ -61,7 +59,6 @@ def test_knowledgeCommons_account_info(
     user_data: dict,
     mock_user_data_api: Callable,
     user_data_to_remote_data: Callable,
-    api_call_count: int,
 ) -> None:
     """
     Test the custom handler
@@ -75,12 +72,8 @@ def test_knowledgeCommons_account_info(
     info: dict = knowledgeCommons_account_info(
         attributes, remote_app="knowledgeCommons"
     )
-    if api_call_count == 1:  # Here the api is only called if no email is provided
-        assert mock_adapter.called
-        assert mock_adapter.call_count == 1
-    else:
-        assert not mock_adapter.called
-        assert mock_adapter.call_count == 0
+    assert mock_adapter.called
+    assert mock_adapter.call_count == 1
 
     expected_result_email: str = (
         output["user"]["email"]
@@ -97,10 +90,143 @@ def test_knowledgeCommons_account_info(
     assert info["user"]["profile"]["username"] == output["user"]["profile"]["username"]
     assert info["external_id"] == output["external_id"]
     assert info["external_method"] == output["external_method"]
+    assert info["user"]["profile"].get("identifier_orcid", "") == output["user"][
+        "profile"
+    ].get("identifier_orcid", "")
+    assert info["user"]["profile"].get("identifier_kc_username", "") == output["user"][
+        "profile"
+    ].get("identifier_kc_username", "")
     assert info["active"] == output["active"]
     assert datetime.datetime.now(tz=pytz.timezone("US/Eastern")) - info[
         "confirmed_at"
     ] < datetime.timedelta(seconds=10)
+
+
+@pytest.mark.parametrize(
+    "original_email,original_orcid,original_kc_username,"
+    "user_data,idp_data,already_linked,user_expected",
+    [
+        (  # pre-existing user with same email and ORCID
+            user_data_set["user1"]["email"],
+            user_data_set["user1"]["orcid"],
+            user_data_set["user1"]["saml_id"],
+            user_data_set["user1"],
+            idp_responses["user1"]["extracted_data"],
+            False,
+            True,
+        ),
+        (  # pre-existing user with same email and empty ORCID
+            user_data_set["user1"]["email"],
+            "",
+            user_data_set["user1"]["saml_id"],
+            user_data_set["user1"],
+            idp_responses["user1"]["extracted_data"],
+            False,
+            True,
+        ),
+        (  # pre-existing user with different email and same ORCID
+            "other@example.com",
+            user_data_set["user1"]["orcid"],
+            user_data_set["user1"]["saml_id"],
+            user_data_set["user1"],
+            idp_responses["user1"]["extracted_data"],
+            False,
+            True,
+        ),
+        (  # already linked user with same email and ORCID
+            user_data_set["user1"]["email"],
+            user_data_set["user1"]["orcid"],
+            user_data_set["user1"]["saml_id"],
+            user_data_set["user1"],
+            idp_responses["user1"]["extracted_data"],
+            True,
+            True,
+        ),
+        (  # pre-existing user with different email and empty ORCID but KC username
+            "other@example.com",
+            "",
+            user_data_set["user1"]["saml_id"],
+            user_data_set["user1"],
+            idp_responses["user1"]["extracted_data"],
+            False,
+            True,
+        ),
+        (  # pre-existing user with different email, empty ORCID, and empty KC username
+            "other@example.com",
+            "",
+            "",
+            user_data_set["user1"],
+            idp_responses["user1"]["extracted_data"],
+            False,
+            False,
+        ),
+    ],
+)
+def test_knowledgeCommons_account_get_user(
+    running_app,
+    appctx,
+    db,
+    user_factory: Callable,
+    original_email: str,
+    original_orcid: str,
+    original_kc_username: str,
+    user_data: dict,
+    idp_data: dict,
+    already_linked: bool,
+    user_expected: bool,
+    mock_user_data_api: Callable,
+    user_data_to_remote_data: Callable,
+) -> None:
+    """
+    Test the account get user function, which should match a SAML login based on
+    either email or ORCID.
+
+    case 1: The pre-existing KCWorks user has the same email as the IDP response
+    case 2: The pre-existing KCWorks user has a different email as the IDP response
+    case 3: The KCWorks user is already linked to an external ID
+    """
+    app: Flask = running_app.app
+
+    if not already_linked:
+        u: AugmentedUserFixture = user_factory(
+            email=original_email,
+            password="password",
+            saml_id=None,
+            orcid=original_orcid,
+            kc_username=original_kc_username,
+        )
+        assert not u.mock_adapter
+    else:
+        u: AugmentedUserFixture = user_factory(
+            email=original_email,
+            password="password",
+            saml_src="knowledgeCommons",
+            saml_id=user_data["saml_id"],
+            new_remote_data=user_data,
+        )
+    assert u.user is not None
+    app.logger.debug(f"user profile: {u.user.user_profile}")
+
+    matched_user: Optional[User] = knowledgeCommons_account_get_user(idp_data)
+    app.logger.debug(f"matched user: {pformat(matched_user)}")
+
+    if user_expected:
+        assert matched_user is not None
+        assert matched_user.id == u.user.id
+        # email, username, identifier_orcid, identifier_kc_username are not
+        # updated yet on returned User object
+        assert matched_user.email == original_email
+        assert matched_user.username == (
+            None if not already_linked else f"knowledgeCommons-{user_data['saml_id']}"
+        )
+        assert matched_user.user_profile.get("identifier_orcid") == (
+            original_orcid if original_orcid != "" else None
+        )  # not updated yet
+        assert matched_user.user_profile.get("identifier_kc_username") == (
+            original_kc_username if original_kc_username != "" else None
+        )
+    else:
+        assert matched_user is None
 
 
 @pytest.mark.parametrize(
@@ -183,15 +309,15 @@ def test_knowledgeCommons_account_setup(
 @pytest.mark.parametrize(
     "idp_data,user_data,api_call_count",
     [
-        (idp_responses["joanjett"]["raw_data"], user_data_set["joanjett"], 1),
-        (idp_responses["user1"]["raw_data"], user_data_set["user1"], 1),
-        (idp_responses["user2"]["raw_data"], user_data_set["user2"], 1),
+        (idp_responses["joanjett"]["raw_data"], user_data_set["joanjett"], 2),
+        (idp_responses["user1"]["raw_data"], user_data_set["user1"], 2),
+        (idp_responses["user2"]["raw_data"], user_data_set["user2"], 2),
         (
             idp_responses["user3"]["raw_data"],
             user_data_set["user3"],
             2,
-        ),  # IDP response has no email
-        (idp_responses["user4"]["raw_data"], user_data_set["user4"], 1),
+        ),  # IDP response has no email (now making request for everyone)
+        (idp_responses["user4"]["raw_data"], user_data_set["user4"], 2),
     ],
 )
 def test_account_register_on_login(
