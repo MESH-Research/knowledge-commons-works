@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="CLI Commands" href="cli_commands.html" /><link rel="prev" title="Configuration of InvenioRDM" href="configuration.html" />
 
-    <!-- Generated with Sphinx 8.2.0 and Furo 2024.08.06 -->
+    <!-- Generated with Sphinx 8.2.1 and Furo 2024.08.06 -->
         <title>API - Knowledge Commons Works 0.3.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
@@ -664,6 +664,18 @@
 <blockquote>
 <div><p>Note, too, that only the first member of the owners array will technically be assigned as the work’s owner in KCWorks. The other owners will be assigned access grants to the work with “manage” permissions.</p>
 </div></blockquote>
+</section>
+<section id="kc-accounts-for-work-owners">
+<h4>KC accounts for work owners<a class="headerlink" href="#kc-accounts-for-work-owners" title="Link to this heading">¶</a></h4>
+<p>KCWorks will create an internal KCWorks account for each work owner who does not already have an account on Knowledge Commons. Note that this <em>does not</em> create a full Knowledge Commons account. The owner will still need to visit Knowledge Commons to create an account through the usual registration process. When they do so, their KCWorks account will be linked to their Knowledge Commons account and they will be able to manage and edit their uploaded works.</p>
+<blockquote>
+<div><p>It is vital that the owner provide an identifier when they create their Knowledge Commons account that matches an identifier provided for them in the <code class="docutils literal notranslate"><span class="pre">owned_by</span></code> property of the work’s metadata object. This allows KCWorks to link the owner’s KCWorks account to their Knowledge Commons account after they register. The connecting identifier may be</p>
+<ul class="simple">
+<li><p>the same primary email address</p></li>
+<li><p>the same ORCID identifier</p></li>
+</ul>
+</div></blockquote>
+<p>If an owner does not already belong to the collection to which the records are being imported, that owner will also be added to the collection’s membership with the “reader” role. The allows them access to any records restricted to the collection’s membership, but does not afford them any additional permissions. What it does mean is that collection managers will be able to see all of the work owners in the list of collection members on the collection’s landing page.</p>
 </section>
 <section id="identifying-the-work-for-import">
 <h4>Identifying the work for import<a class="headerlink" href="#identifying-the-work-for-import" title="Link to this heading">¶</a></h4>
@@ -2212,6 +2224,7 @@ This API was implemented with a distributed network of independent Commons insta
 <li><a class="reference internal" href="#request-url-path-parameters">Request url path parameters</a></li>
 <li><a class="reference internal" href="#request-body">Request body</a></li>
 <li><a class="reference internal" href="#identifying-the-owners-of-the-work">Identifying the owners of the work</a></li>
+<li><a class="reference internal" href="#kc-accounts-for-work-owners">KC accounts for work owners</a></li>
 <li><a class="reference internal" href="#identifying-the-work-for-import">Identifying the work for import</a></li>
 </ul>
 </li>
