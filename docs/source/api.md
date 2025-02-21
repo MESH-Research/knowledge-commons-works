@@ -182,6 +182,16 @@ Note that it is *not* assumed that the creators of a work should be the work's o
 
 > Note, too, that only the first member of the owners array will technically be assigned as the work's owner in KCWorks. The other owners will be assigned access grants to the work with "manage" permissions.
 
+#### KC accounts for work owners
+
+KCWorks will create an internal KCWorks account for each work owner who does not already have an account on Knowledge Commons. Note that this *does not* create a full Knowledge Commons account. The owner will still need to visit Knowledge Commons to create an account through the usual registration process. When they do so, their KCWorks account will be linked to their Knowledge Commons account and they will be able to manage and edit their uploaded works.
+
+> It is vital that the owner provide an identifier when they create their Knowledge Commons account that matches an identifier provided for them in the `owned_by` property of the work's metadata object. This allows KCWorks to link the owner's KCWorks account to their Knowledge Commons account after they register. The connecting identifier may be
+> - the same primary email address
+> - the same ORCID identifier
+
+If an owner does not already belong to the collection to which the records are being imported, that owner will also be added to the collection's membership with the "reader" role. The allows them access to any records restricted to the collection's membership, but does not afford them any additional permissions. What it does mean is that collection managers will be able to see all of the work owners in the list of collection members on the collection's landing page.
+
 #### Identifying the work for import
 
 It is crucial that each work to be imported is assigned a unique identifier. This may be an identifier used internally by the importing organization, it may be a universally unique string such as a UUID, or it may be a universal identifier such as a DOI or a handle. In either case it must be unique across all works to be imported for the collection. This identifier will be used to identify the work in the response, and will be used to identify the work when checking for duplicate imports.
