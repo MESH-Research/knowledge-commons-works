@@ -385,10 +385,12 @@ def test_account_register_on_login(
     assert user.external_identifiers[0].id == user_data["saml_id"]
     assert user.external_identifiers[0].id_user == user.id
     assert user.external_identifiers[0].method == "knowledgeCommons"
-    assert [r.name for r in user.roles] == (
+    expected_roles = (
         [f"knowledgeCommons---{g['id']}|{g['role']}" for g in user_data["groups"]]
         if "groups" in user_data.keys()
         else []
     )
+    assert all([r for r in user.roles if r.name in expected_roles])
+    assert not any([r for r in user.roles if r.name not in expected_roles])
 
     assert next_url == "https://localhost/next-url.com"

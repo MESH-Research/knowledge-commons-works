@@ -839,16 +839,26 @@ class BaseImportServiceTest:
 
     def _check_owners_in_community(
         self,
-        community_members: list,
+        community_members: list[Member],
         user: User,
-        uploader_id: str,
+        uploader_id: int,
     ):
         target_roles = (
             ["reader"] if user.id != uploader_id else ["curator", "manager", "owner"]
         )
-        assert any(
-            m.user_id == user.id and m.role in target_roles for m in community_members
+        self.app.logger.debug(
+            f"user.id: {user.id}, type(user.id): {type(user.id)}, uploader_id: {uploader_id}, type(uploader_id): {type(uploader_id)}, target_roles: {target_roles}"
         )
+        self.app.logger.debug(
+            f"community_members: {pformat([(m.user_id, type(m.user_id), m.role) for m in community_members])}"
+        )
+        matching_ids = [m for m in community_members if m.user_id == user.id]
+        self.app.logger.debug(
+            f"matching_ids: {pformat([(m.user_id, m.role) for m in matching_ids])}"
+        )
+        assert matching_ids
+        assert matching_ids[0].role in target_roles
+        assert len(matching_ids) == 1
 
     def _check_owners(
         self,
@@ -862,6 +872,10 @@ class BaseImportServiceTest:
         )
         if expected_owners:
             community_members = Member.get_members(community_id)
+            self.app.logger.debug(f"community_members: {pformat(community_members)}")
+            self.app.logger.debug(
+                f"community_members: {pformat([(m.user_id, m.role) for m in community_members])}"
+            )
             first_expected_owner = expected.metadata_in["parent"]["access"]["owned_by"][
                 0
             ]

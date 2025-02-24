@@ -43,12 +43,6 @@ def knowledgeCommons_account_get_user(account_info=None):
             if user:
                 return user
 
-        email = account_info.get("user", {}).get("email")
-        if email:
-            current_app.logger.debug(f"email: {email}")
-            email_match = User.query.filter_by(email=email).one_or_none()
-            if email_match:
-                return email_match
         orcid = account_info.get("user", {}).get("profile", {}).get("identifier_orcid")
         if orcid:
             current_app.logger.debug(f"orcid: {orcid}")
@@ -75,6 +69,12 @@ def knowledgeCommons_account_get_user(account_info=None):
                 ).one_or_none()
             if kc_username_match:
                 return kc_username_match
+        email = account_info.get("user", {}).get("email")
+        if email:
+            current_app.logger.debug(f"email: {email}")
+            email_match = User.query.filter_by(email=email).one_or_none()
+            if email_match:
+                return email_match
     return None
 
 

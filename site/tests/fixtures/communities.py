@@ -3,6 +3,7 @@ from invenio_access.permissions import system_identity, authenticated_user
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_communities.communities.records.api import Community
+from invenio_communities.members.records.api import Member
 from invenio_communities.proxies import current_communities
 import marshmallow as ma
 import traceback
