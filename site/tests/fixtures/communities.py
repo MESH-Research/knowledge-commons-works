@@ -3,10 +3,23 @@ from invenio_access.permissions import system_identity, authenticated_user
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_communities.communities.records.api import Community
+from invenio_communities.members.records.api import Member
 from invenio_communities.proxies import current_communities
 import marshmallow as ma
 import traceback
 from typing import Callable, Optional
+
+
+def make_community_member(user_id: int, role: str, community_id: str) -> None:
+    """
+    Make a member of a community.
+    """
+    current_communities.service.members.add(
+        system_identity,
+        community_id,
+        data={"members": [{"type": "user", "id": str(user_id)}], "role": role},
+    )
+    Community.index.refresh()
 
 
 @pytest.fixture(scope="function")

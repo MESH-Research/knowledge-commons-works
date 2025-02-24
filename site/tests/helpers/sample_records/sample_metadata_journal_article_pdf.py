@@ -1,12 +1,14 @@
-rec33383 = {
+sample_metadata_journal_article_pdf = {
     "input": {
         "access": {
-            "embargo": {"active": True, "reason": None, "until": "2030-11-25"},
-            "files": "restricted",
+            # "embargo": {"active": True, "reason": None, "until": "2030-11-25"},
+            # "files": "restricted",
+            "files": "public",
             "record": "public",
-            "status": "embargoed",
+            # "status": "embargoed",
+            "status": "open",
         },
-        "created": "2020-11-25T12:35:10Z",
+        # "created": "2020-11-25T12:35:10Z",
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -16,30 +18,28 @@ rec33383 = {
                 "pdf"
             ),
             "hclegacy:file_pid": "hc:33384",
-            "hclegacy:groups_for_deposit": [
-                {
-                    "group_identifier": "1004129",
-                    "group_name": "Arabic script manuscripts",
-                },
-                {
-                    "group_identifier": "1001234",
-                    "group_name": "Islamicate Studies",
-                },
-                {
-                    "group_identifier": "1000753",
-                    "group_name": "Medieval Studies",
-                },
-                {
-                    "group_identifier": "1000830",
-                    "group_name": "Science Studies and the History of Science",
-                },
-            ],
+            # "hclegacy:groups_for_deposit": [
+            #     {
+            #         "group_identifier": "1004129",
+            #         "group_name": "Arabic script manuscripts",
+            #     },
+            #     {
+            #         "group_identifier": "1001234",
+            #         "group_name": "Islamicate Studies",
+            #     },
+            #     {
+            #         "group_identifier": "1000753",
+            #         "group_name": "Medieval Studies",
+            #     },
+            #     {
+            #         "group_identifier": "1000830",
+            #         "group_name": "Science Studies and the History of Science",
+            #     },
+            # ],
             "hclegacy:previously_published": "published",
             "hclegacy:record_change_date": "2023-01-23T14:20:48Z",
             "hclegacy:record_creation_date": "2020-11-25T12:35:10Z",
-            "hclegacy:submitter_affiliation": (
-                "University of Southern California"
-            ),
+            "hclegacy:submitter_affiliation": ("University of Southern California"),
             "hclegacy:submitter_id": "1008812",
             "hclegacy:submitter_org_memberships": ["hc"],
             "hclegacy:total_views": 103,
@@ -60,7 +60,7 @@ rec33383 = {
             ],
         },
         "files": {
-            "default_preview": "24519197_005_03-04_s004_text.pdf",
+            # "default_preview": "24519197_005_03-04_s004_text.pdf",
             "enabled": True,
             "entries": {
                 "24519197_005_03-04_s004_text.pdf": {
@@ -118,9 +118,7 @@ rec33383 = {
             # ],
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "University of Southern California"}
-                    ],
+                    "affiliations": [{"name": "University of Southern California"}],
                     "person_or_org": {
                         "family_name": "Roberts",
                         "given_name": "Alexandre",
@@ -172,11 +170,7 @@ rec33383 = {
                 "philologically."
             ),
             "identifiers": [
-                {"identifier": "hc:33383", "scheme": "hclegacy-pid"},
-                {
-                    "identifier": "1000360-40298",
-                    "scheme": "hclegacy-record-id",
-                },
+                {"identifier": "1234567890", "scheme": "import-recid"},
                 {"identifier": "10.1163/24519197-BJA10007", "scheme": "doi"},
                 {"identifier": "2451-9197", "scheme": "issn"},
             ],
@@ -185,20 +179,7 @@ rec33383 = {
             "resource_type": {"id": "textDocument-journalArticle"},
             "rights": [
                 {
-                    "description": {
-                        "en": (
-                            "Proprietary material. No permissions are "
-                            "granted for any kind of copyring or "
-                            "re-use. All rights reserved"
-                        )
-                    },
                     "id": "arr",
-                    "icon": "copyright",
-                    "props": {
-                        "url": (
-                            "https://en.wikipedia.org/wiki/All_rights_reserved"
-                        )
-                    },
                     "title": {"en": "All Rights Reserved"},
                 }
             ],
@@ -231,7 +212,26 @@ rec33383 = {
                 "University"
             ),
         },
-        "parent": {"access": {"owned_by": [{"user": "1008812"}]}},
+        "parent": {
+            "access": {
+                "owned_by": [
+                    {
+                        "email": "test@example.com",
+                        "identifiers": [
+                            {"identifier": "test", "scheme": "neh_user_id"},
+                        ],
+                    },
+                    {
+                        "full_name": "John Doe",
+                        "email": "john.doe@example.com",
+                        "identifiers": [
+                            {"identifier": "0000-0002-1825-0097", "scheme": "orcid"},
+                            {"identifier": "jdoe", "scheme": "kc_username"},
+                        ],
+                    },
+                ]
+            }
+        },
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -239,7 +239,7 @@ rec33383 = {
                 "provider": "datacite",
             }
         },
-        "updated": "2023-01-23T14:20:48Z",
+        # "updated": "2023-01-23T14:20:48Z",
     },
     "expected_serialized": {
         "record_source": "knowledgeCommons",
@@ -280,9 +280,7 @@ rec33383 = {
             "hclegacy:previously_published": "published",
             "hclegacy:record_change_date": "2023-01-23T14:20:48Z",
             "hclegacy:record_creation_date": "2020-11-25T12:35:10Z",
-            "hclegacy:submitter_affiliation": (
-                "University of Southern California"
-            ),
+            "hclegacy:submitter_affiliation": ("University of Southern California"),
             "hclegacy:submitter_id": "1008812",
             "hclegacy:submitter_org_memberships": ["hc"],
             "hclegacy:total_views": 103,
@@ -361,9 +359,7 @@ rec33383 = {
             # ],
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "University of Southern California"}
-                    ],
+                    "affiliations": [{"name": "University of Southern California"}],
                     "person_or_org": {
                         "family_name": "Roberts",
                         "given_name": "Alexandre",
@@ -505,9 +501,7 @@ rec33383 = {
             "hclegacy:previously_published": "published",
             "hclegacy:record_change_date": "2023-01-23T14:20:48Z",
             "hclegacy:record_creation_date": "2020-11-25T12:35:10Z",
-            "hclegacy:submitter_affiliation": (
-                "University of Southern California"
-            ),
+            "hclegacy:submitter_affiliation": ("University of Southern California"),
             "hclegacy:submitter_id": "1008812",
             "hclegacy:submitter_org_memberships": ["hc"],
             "hclegacy:total_views": 103,
@@ -593,9 +587,7 @@ rec33383 = {
             # ],
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "University of Southern California"}
-                    ],
+                    "affiliations": [{"name": "University of Southern California"}],
                     "person_or_org": {
                         "family_name": "Roberts",
                         "given_name": "Alexandre",

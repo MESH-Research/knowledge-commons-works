@@ -25,6 +25,7 @@ from invenio_users_resources.services.users.tasks import reindex_users
 from kcworks.proxies import current_internal_notifications
 from pprint import pformat
 import time
+from ..fixtures.records import TestRecordMetadata
 
 
 def test_notify_for_request_acceptance(
@@ -32,7 +33,6 @@ def test_notify_for_request_acceptance(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -77,12 +77,14 @@ def test_notify_for_request_acceptance(
     # assert user.user_profile.get("full_name") == "Test User"
     assert user.user_profile.get("unread_notifications", "null") == "null"
 
+    metadata = TestRecordMetadata(app=app)
+
     with app.test_client() as client:
         # logged_in_client, _ = client_with_login(client, user)
         logged_in_client = client
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(metadata.metadata_in),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -244,7 +246,6 @@ def test_notify_for_request_decline(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -289,12 +290,14 @@ def test_notify_for_request_decline(
     # assert user.user_profile.get("full_name") == "Test User"
     assert user.user_profile.get("unread_notifications", "null") == "null"
 
+    metadata = TestRecordMetadata(app=app)
+
     with app.test_client() as client:
         # logged_in_client, _ = client_with_login(client, user)
         logged_in_client = client
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(metadata.metadata_in),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -455,7 +458,6 @@ def test_notify_for_request_cancellation(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -489,12 +491,14 @@ def test_notify_for_request_cancellation(
     # assert user.user_profile.get("full_name") == "Test User"
     assert user.user_profile.get("unread_notifications", "null") == "null"
 
+    metadata = TestRecordMetadata(app=app)
+
     with app.test_client() as client:
         # logged_in_client, _ = client_with_login(client, user)
         logged_in_client = client
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(metadata.metadata_in),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -634,7 +638,6 @@ def test_notify_for_new_request_comment(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -667,10 +670,12 @@ def test_notify_for_new_request_comment(
     token = u.allowed_token
     assert user.user_profile.get("unread_notifications", "null") == "null"
 
+    metadata = TestRecordMetadata(app=app)
+
     with app.test_client() as client:
         response = client.post(
             f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(minimal_record_metadata),
+            data=json.dumps(metadata.metadata_in),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 201
@@ -834,7 +839,6 @@ def test_read_unread_notifications_by_service(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -912,7 +916,6 @@ def test_clear_unread_notifications_by_service(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -1127,7 +1130,6 @@ def test_clear_unread_notifications_by_view(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -1235,7 +1237,6 @@ def test_clear_one_unread_notification_by_view(
     db,
     user_factory,
     minimal_community_factory,
-    minimal_record_metadata,
     client,
     client_with_login,
     headers,
@@ -1398,7 +1399,6 @@ def test_unread_endpoint_bad_methods(
 def test_notification_on_first_upload(
     running_app,
     user_factory,
-    minimal_record_metadata,
     db,
     search_clear,
     client,
@@ -1456,10 +1456,12 @@ def test_notification_on_first_upload(
     login_user(user)
     login_user_via_session(client, email=user.email)
 
+    metadata = TestRecordMetadata(app=app)
+
     # Create the first draft
     draft1_response = client.post(
         f"{app.config['SITE_API_URL']}/records",
-        data=json.dumps(minimal_record_metadata),
+        data=json.dumps(metadata.metadata_in),
         headers={**headers, "Authorization": f"Bearer {token}"},
     )
     assert draft1_response.status_code == 201
@@ -1484,9 +1486,8 @@ def test_notification_on_first_upload(
         f"'{app.config.get('SITE_UI_URL')}/records/{first_draft_id}'>"
         f"View draft</a>)" in email.html
     )
-    assert f"Draft title: {minimal_record_metadata['metadata']['title']}" in email.body
-    assert f"Draft title: {minimal_record_metadata['metadata']['title']}" in email.html
-    # assert f"Full metadata: {minimal_record_metadata}" in email.body
+    assert f"Draft title: {metadata.draft['metadata']['title']}" in email.body
+    assert f"Draft title: {metadata.draft['metadata']['title']}" in email.html
     assert f"User ID: {user_id}" in email.body
     assert f"User ID: {user_id}" in email.html
     assert f"User email: {user_email}" in email.body
@@ -1499,7 +1500,7 @@ def test_notification_on_first_upload(
     # Create a second draft work (different work)
     draft2_response = client.post(
         f"{app.config['SITE_API_URL']}/records",
-        data=json.dumps(minimal_record_metadata),
+        data=json.dumps(metadata.metadata_in),
         headers={**headers, "Authorization": f"Bearer {token}"},
     )
     assert draft2_response.status_code == 201
@@ -1527,8 +1528,8 @@ def test_notification_on_first_upload(
     app.logger.debug(f"email.body: {pformat(email.body)}")
     assert f"Work ID: {first_draft_id}" in email.body
     assert f"Work ID: {first_draft_id}" in email.html
-    assert f"Work title: {minimal_record_metadata['metadata']['title']}" in email.body
-    assert f"Work title: {minimal_record_metadata['metadata']['title']}" in email.html
+    assert f"Work title: {metadata.draft['metadata']['title']}" in email.body
+    assert f"Work title: {metadata.draft['metadata']['title']}" in email.html
     assert f"User ID: {user_id}" in email.body
     assert f"User ID: {user_id}" in email.html
     assert f"User email: {user_email}" in email.body

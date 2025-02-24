@@ -1,4 +1,4 @@
-rec48799 = {
+sample_metadata_white_paper_pdf = {
     "input": {
         "created": "2022-09-29T14:34:36Z",
         "custom_fields": {
@@ -179,13 +179,10 @@ rec48799 = {
                     "props": {
                         "scheme": "spdx",
                         "url": (
-                            "https://creativecommons.org/licenses/by/"
-                            "4.0/legalcode"
+                            "https://creativecommons.org/licenses/by/" "4.0/legalcode"
                         ),
                     },
-                    "title": {
-                        "en": "Creative Commons Attribution 4.0 International"
-                    },
+                    "title": {"en": "Creative Commons Attribution 4.0 International"},
                 }
             ],
             "title": "Super Apps: A Platform Lab Report",
@@ -569,15 +566,10 @@ rec48799 = {
                     "props": {
                         "scheme": "spdx",
                         "url": (
-                            "https://creativecommons.org/licenses/by/4.0/"
-                            "legalcode"
+                            "https://creativecommons.org/licenses/by/4.0/" "legalcode"
                         ),
                     },
-                    "title": {
-                        "en": (
-                            "Creative Commons Attribution 4.0 International"
-                        )
-                    },
+                    "title": {"en": ("Creative Commons Attribution 4.0 International")},
                 }
             ],
             "title": "Super Apps: A Platform Lab Report",
