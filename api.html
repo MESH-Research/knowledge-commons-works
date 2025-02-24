@@ -519,9 +519,13 @@
 <p>Why is this API needed? The InvenioRDM REST API can be fragile and difficult to use, particularly for clients who are not familiar with the system. The creation and acceptance of a review request is redundant where collection administrators are uploading works for a collection they administer. The file upload steps are also not truly stateless, introducing the possibility of a file upload being interrupted and left incomplete, even if the upload of the file’s content was successful.</p>
 <section id="who-can-use-the-import-api">
 <h3>Who can use the import API?<a class="headerlink" href="#who-can-use-the-import-api" title="Link to this heading">¶</a></h3>
-<p>The import API is available to authorized organizations who have obtained an OAuth token for API operations.</p>
+<p>The import API is available to authorized organizations who have obtained an OAuth token for API operations.
+The import API is available to authorized organizations who have obtained an OAuth token for API operations.</p>
 <p>The import API places the works directly in a collection, without passing through the review process. So, the user to whom the token is issued must have sufficient permissions to publish directly in the collection. The exact role required depends on the collection’s review policy:</p>
 <ul class="simple">
+<li><p><em>If the review policy allows managers and curators to skip the review process</em>, the user of the import API must have one of the roles “manager,” “curator,” or “owner” in the collection.</p></li>
+<li><p><em>If the review policy requires all submissions to be reviewed</em>, the user of the import API must have the “owner” role in the collection.
+The import API places the works directly in a collection, without passing through the review process. So, the user to whom the token is issued must have sufficient permissions to publish directly in the collection. The exact role required depends on the collection’s review policy:</p></li>
 <li><p><em>If the review policy allows managers and curators to skip the review process</em>, the user of the import API must have one of the roles “manager,” “curator,” or “owner” in the collection.</p></li>
 <li><p><em>If the review policy requires all submissions to be reviewed</em>, the user of the import API must have the “owner” role in the collection.</p></li>
 </ul>
@@ -531,6 +535,7 @@
 <section id="request">
 <h4>Request<a class="headerlink" href="#request" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POST</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">works</span><span class="o">.</span><span class="n">hcommons</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">import</span><span class="o">/&lt;</span><span class="n">my</span><span class="o">-</span><span class="n">collection</span><span class="o">-</span><span class="nb">id</span><span class="o">&gt;</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="n">POST</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">works</span><span class="o">.</span><span class="n">hcommons</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">import</span><span class="o">/&lt;</span><span class="n">my</span><span class="o">-</span><span class="n">collection</span><span class="o">-</span><span class="nb">id</span><span class="o">&gt;</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
 </pre></div>
 </div>
 </section>
@@ -544,6 +549,28 @@
 </section>
 <section id="request-url-path-parameters">
 <h4>Request url path parameters<a class="headerlink" href="#request-url-path-parameters" title="Link to this heading">¶</a></h4>
+<p>Only one URL path parameter is required:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">collection</span></code></p></td>
+<td><p>no</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+<td><p>The ID (either the url slug or the UUID) of the collection to which the work should be published. If this value is provided, the work will be submitted to the collection immediately after import. If the collection requires review, and the <code class="docutils literal notranslate"><span class="pre">review_required</span></code> parameter is set to “true”, the work will be placed in the collection’s review queue.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id6">
+<h4>Request url path parameters<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
 <p>Only one URL path parameter is required:</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
@@ -585,7 +612,7 @@
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code></p></td>
 <td><p>yes</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">application/json</span></code></p></td>
-<td><p>An array of JSON metadata objects, each of which will be used to create a new work. Each must following the KCWorks implementation of the InvenioRDM metadata schema described <span class="xref std std-ref">here</span>. In addition, an array of owners for the work may optionally be provided by adding an <code class="docutils literal notranslate"><span class="pre">access.owned_by</span></code> property to each metadata object. Note that if no owners are provided, the work will be created with the organizational account that issued the OAuth token as the owner.</p></td>
+<td><p>An array of JSON metadata objects, each of which will be used to create a new work. Each must following the KCWorks implementation of the InvenioRDM metadata schema described <span class="xref std std-ref">here</span>. In addition, an array of owners for the work may optionally be provided by adding a <code class="docutils literal notranslate"><span class="pre">parent.access.owned_by</span></code> property to each metadata object. Note that if no owners are provided, the work will be created with the organizational account that issued the OAuth token as the owner.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">review_required</span></code></p></td>
 <td><p>no</p></td>
@@ -608,6 +635,10 @@
 </section>
 <section id="identifying-the-owners-of-the-work">
 <h4>Identifying the owners of the work<a class="headerlink" href="#identifying-the-owners-of-the-work" title="Link to this heading">¶</a></h4>
+<p>The array of owners, if provided in a metadata object’s <code class="docutils literal notranslate"><span class="pre">parent.access.owned_by</span></code> property, must include at least the full name and email address of the users to be added as owners of the work. If the user already has a Knowledge Commons account, their username should also be provided. Additional identifiers (e.g., ORCID) may be provided as well to help avoid duplicate accounts, since a KCWorks account will be created for each user if they do not already have one.</p>
+</section>
+<section id="id7">
+<h4>Identifying the owners of the work<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
 <p>The array of owners, if provided in a metadata object’s <code class="docutils literal notranslate"><span class="pre">parent.access.owned_by</span></code> property, must include at least the full name and email address of the users to be added as owners of the work. If the user already has a Knowledge Commons account, their username should also be provided. Additional identifiers (e.g., ORCID) may be provided as well to help avoid duplicate accounts, since a KCWorks account will be created for each user if they do not already have one.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
@@ -776,8 +807,8 @@
 </pre></div>
 </div>
 </section>
-<section id="id6">
-<h4>Request<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
+<section id="id8">
+<h4>Request<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h4>
 <p>To submit the article to be included in the <code class="docutils literal notranslate"><span class="pre">my-organization</span></code> collection, one might use a command line tool like <code class="docutils literal notranslate"><span class="pre">curl</span></code>, with the following command.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">works</span><span class="o">.</span><span class="n">hcommons</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">import</span><span class="o">/</span><span class="n">my</span><span class="o">-</span><span class="n">collection</span><span class="o">-</span><span class="nb">id</span> \
   <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: multipart/form-data&quot;</span> \
@@ -1241,8 +1272,8 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </section>
 <section id="requesting-all-collections">
 <h4>Requesting all collections<a class="headerlink" href="#requesting-all-collections" title="Link to this heading">¶</a></h4>
-<section id="id7">
-<h5>Request<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h5>
+<section id="id9">
+<h5>Request<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h5>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">https://works.hcommons.org/api/group_collections</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
@@ -1383,18 +1414,18 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </section>
 <section id="requesting-collections-for-a-commons-instance">
 <h4>Requesting collections for a Commons instance<a class="headerlink" href="#requesting-collections-for-a-commons-instance" title="Link to this heading">¶</a></h4>
-<section id="id8">
-<h5>Request<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h5>
+<section id="id10">
+<h5>Request<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h5>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">https://works.hcommons.org/api/group_collections?commons_instance=knowledgeCommons&amp;sort=updated-asc</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 </section>
-<section id="id9">
-<h5>Successful response status code<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h5>
+<section id="id11">
+<h5>Successful response status code<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h5>
 <p><code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
 </section>
-<section id="id10">
-<h5>Successful Response Body:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h5>
+<section id="id12">
+<h5>Successful Response Body:<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h5>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;aggregations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1504,8 +1535,8 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </pre></div>
 </div>
 </section>
-<section id="id11">
-<h5>Successful response headers<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h5>
+<section id="id13">
+<h5>Successful response headers<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h5>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1528,18 +1559,18 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 <section id="requesting-collections-for-a-specific-group">
 <h4>Requesting collections for a specific group<a class="headerlink" href="#requesting-collections-for-a-specific-group" title="Link to this heading">¶</a></h4>
 <p>Note that if you specify a <code class="docutils literal notranslate"><span class="pre">commons_group_id</span></code> value, you must <em>also</em> provide a <code class="docutils literal notranslate"><span class="pre">commons_instance</span></code> value. This is to avoid confusion if different Commons instances use the same internal id for groups.</p>
-<section id="id12">
-<h5>Request<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h5>
+<section id="id14">
+<h5>Request<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h5>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">https://works.hcommons.org/api/group_collections?commons_instance=knowledgeCommons&amp;commons_group_id=12345</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 </section>
-<section id="id13">
-<h5>Successful response status code<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h5>
+<section id="id15">
+<h5>Successful response status code<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h5>
 <p><code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
 </section>
-<section id="id14">
-<h5>Successful Response Body:<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h5>
+<section id="id16">
+<h5>Successful Response Body:<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h5>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;aggregations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1649,8 +1680,8 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </pre></div>
 </div>
 </section>
-<section id="id15">
-<h5>Successful response headers<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h5>
+<section id="id17">
+<h5>Successful response headers<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h5>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1670,18 +1701,18 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 <section id="requesting-a-specific-collection">
 <h4>Requesting a specific collection<a class="headerlink" href="#requesting-a-specific-collection" title="Link to this heading">¶</a></h4>
 <p>While other kinds of requests require query parameters, a request for metadata on a specific Commons Works collection can be made by simply adding the community’s slug to the end of the url path. Once again, this will only succeed for collections that are linked to a Commons instance group. Collections that exist independently on Knowledge Commons Works will not be found at the <code class="docutils literal notranslate"><span class="pre">group_collections</span></code> endpoint and should be requested at the <code class="docutils literal notranslate"><span class="pre">communities</span></code> endpoint instead.</p>
-<section id="id16">
-<h5>Request<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h5>
+<section id="id18">
+<h5>Request<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h5>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">https://works.hcommons.org/api/group_collections/my-collection-slug</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 </section>
-<section id="id17">
-<h5>Successful Response Status Code<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h5>
+<section id="id19">
+<h5>Successful Response Status Code<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h5>
 <p><code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
 </section>
-<section id="id18">
-<h5>Successful Response Body:<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h5>
+<section id="id20">
+<h5>Successful Response Body:<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h5>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5402d72b-b144-4891-aa8e-1038515d68f7&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
@@ -1772,8 +1803,8 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 <p>In future it may be possible to restore deleted collections, but this is not currently implemented.</p>
 <!-- TODO: Implement collection restoration -->
 </section>
-<section id="id19">
-<h4>Request<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h4>
+<section id="id21">
+<h4>Request<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h4>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">https://works.hcommons.org/api/group_collections</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
@@ -1796,8 +1827,8 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </table>
 </div>
 </section>
-<section id="id20">
-<h4>Request body<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h4>
+<section id="id22">
+<h4>Request body<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h4>
 <p>The request body must be a JSON object with the following fields:</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
@@ -1832,12 +1863,12 @@ all Commons groups. (Commons Works collections not linked to a Commons group wil
 </pre></div>
 </div>
 </section>
-<section id="id21">
-<h4>Successful response status code<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h4>
+<section id="id23">
+<h4>Successful response status code<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">201</span> <span class="pre">Created</span></code></p>
 </section>
-<section id="id22">
-<h4>Successful response body<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h4>
+<section id="id24">
+<h4>Successful response body<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;commons_group_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;collection_slug&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;new-collection-slug&quot;</span>
@@ -1862,8 +1893,8 @@ invalid data.</p></li>
 PATCH requests to change group ownership of the collection are not yet implemented.</p>
 <p>A PATCH request to this endpoint modifies an existing collection in Invenio by changing the Commons group to which it belongs. This is the <em>only</em> modification that can be made to a collection via this endpoint. Other modifications to Commons group metadata should be handled by signalling the Invenio webhook for commons group metadata updates. Modifications to internal metadata or settings for the Invenio collection should be made view the Invenio “communities” API or the collection settings UI.</p>
 <p>Note that the collection memberships in Invenio will be automatically transferred to the new Commons group. The corporate roles for the old Commons group will be removed from the collection and corporate roles for the new Commons group will be added to its membership with appropriate permissions. But any individual memberships that have been granted through the Invenio UI will be left unchanged. If the new collection administrators wish to change these individual memberships, they will need to do so through the Invenio UI.</p>
-<section id="id23">
-<h4>Request<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h4>
+<section id="id25">
+<h4>Request<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h4>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">https://works.hcommons.org/api/group_collections/my-collection-slug</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
@@ -1886,8 +1917,8 @@ PATCH requests to change group ownership of the collection are not yet implement
 </table>
 </div>
 </section>
-<section id="id24">
-<h4>Request body<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h4>
+<section id="id26">
+<h4>Request body<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;commons_instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;knowledgeCommons&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;old_commons_group_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
@@ -1898,12 +1929,12 @@ PATCH requests to change group ownership of the collection are not yet implement
 </pre></div>
 </div>
 </section>
-<section id="id25">
-<h4>Successful response status code<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h4>
+<section id="id27">
+<h4>Successful response status code<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
 </section>
-<section id="id26">
-<h4>Successful response body<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h4>
+<section id="id28">
+<h4>Successful response body<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;collection&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;my-collection-slug&quot;</span>
 <span class="w">    </span><span class="nt">&quot;old_commons_group_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
@@ -1912,8 +1943,8 @@ PATCH requests to change group ownership of the collection are not yet implement
 </pre></div>
 </div>
 </section>
-<section id="id27">
-<h4>Unsuccessful response codes<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h4>
+<section id="id29">
+<h4>Unsuccessful response codes<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>400 Bad Request: The request body is missing required fields or contains
 invalid data.</p></li>
@@ -1939,8 +1970,8 @@ Once a group collection has been deleted, its former URL slug is still registere
 <p>[!NOTE]
 Group collections are soft deleted and can in principle be restored within a short period after the delete signal has been sent. Eventually, though, the soft deleted collection records will be
 automatically purged entirely from the database. There is also no API mechanism for restoring them. So delete operations should be regarded as permanent and irrevocable.</p>
-<section id="id28">
-<h4>Request<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h4>
+<section id="id30">
+<h4>Request<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h4>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">https://works.hcommons.org/api/group_collections/my-collection-slug?commons_instance=knowledgeCommons&amp;commons_group_id=12345</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
@@ -1963,12 +1994,12 @@ automatically purged entirely from the database. There is also no API mechanism 
 </table>
 </div>
 </section>
-<section id="id29">
-<h4>Successful response status code<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h4>
+<section id="id31">
+<h4>Successful response status code<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">204</span> <span class="pre">No</span> <span class="pre">Content</span></code></p>
 </section>
-<section id="id30">
-<h4>Unsuccessful response codes<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h4>
+<section id="id32">
+<h4>Unsuccessful response codes<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>400 Bad Request: The request did not include the required parameters or the parameters are not well formed.</p></li>
 <li><p>403 Forbidden: The requesting agent is not authorized to delete the collection. The collection may not belong to the Commons instance making the request, or it may not belong to the specified Commons group.</p></li>
@@ -2222,15 +2253,17 @@ This API was implemented with a distributed network of independent Commons insta
 <li><a class="reference internal" href="#request">Request</a></li>
 <li><a class="reference internal" href="#required-headers">Required headers</a></li>
 <li><a class="reference internal" href="#request-url-path-parameters">Request url path parameters</a></li>
+<li><a class="reference internal" href="#id6">Request url path parameters</a></li>
 <li><a class="reference internal" href="#request-body">Request body</a></li>
 <li><a class="reference internal" href="#identifying-the-owners-of-the-work">Identifying the owners of the work</a></li>
+<li><a class="reference internal" href="#id7">Identifying the owners of the work</a></li>
 <li><a class="reference internal" href="#kc-accounts-for-work-owners">KC accounts for work owners</a></li>
 <li><a class="reference internal" href="#identifying-the-work-for-import">Identifying the work for import</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#example-import-request">Example import request</a><ul>
 <li><a class="reference internal" href="#metadata-json-object">Metadata JSON object</a></li>
-<li><a class="reference internal" href="#id6">Request</a></li>
+<li><a class="reference internal" href="#id8">Request</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#a-successful-import-response">A successful import response</a></li>
@@ -2255,30 +2288,30 @@ This API was implemented with a distributed network of independent Commons insta
 <li><a class="reference internal" href="#sorting">Sorting</a></li>
 <li><a class="reference internal" href="#pagination">Pagination</a></li>
 <li><a class="reference internal" href="#requesting-all-collections">Requesting all collections</a><ul>
-<li><a class="reference internal" href="#id7">Request</a></li>
+<li><a class="reference internal" href="#id9">Request</a></li>
 <li><a class="reference internal" href="#successful-response-status-code">Successful Response Status Code</a></li>
 <li><a class="reference internal" href="#successful-response-body">Successful response body</a></li>
 <li><a class="reference internal" href="#successful-response-headers">Successful Response Headers</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#requesting-collections-for-a-commons-instance">Requesting collections for a Commons instance</a><ul>
-<li><a class="reference internal" href="#id8">Request</a></li>
-<li><a class="reference internal" href="#id9">Successful response status code</a></li>
-<li><a class="reference internal" href="#id10">Successful Response Body:</a></li>
-<li><a class="reference internal" href="#id11">Successful response headers</a></li>
+<li><a class="reference internal" href="#id10">Request</a></li>
+<li><a class="reference internal" href="#id11">Successful response status code</a></li>
+<li><a class="reference internal" href="#id12">Successful Response Body:</a></li>
+<li><a class="reference internal" href="#id13">Successful response headers</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#requesting-collections-for-a-specific-group">Requesting collections for a specific group</a><ul>
-<li><a class="reference internal" href="#id12">Request</a></li>
-<li><a class="reference internal" href="#id13">Successful response status code</a></li>
-<li><a class="reference internal" href="#id14">Successful Response Body:</a></li>
-<li><a class="reference internal" href="#id15">Successful response headers</a></li>
+<li><a class="reference internal" href="#id14">Request</a></li>
+<li><a class="reference internal" href="#id15">Successful response status code</a></li>
+<li><a class="reference internal" href="#id16">Successful Response Body:</a></li>
+<li><a class="reference internal" href="#id17">Successful response headers</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#requesting-a-specific-collection">Requesting a specific collection</a><ul>
-<li><a class="reference internal" href="#id16">Request</a></li>
-<li><a class="reference internal" href="#id17">Successful Response Status Code</a></li>
-<li><a class="reference internal" href="#id18">Successful Response Body:</a></li>
+<li><a class="reference internal" href="#id18">Request</a></li>
+<li><a class="reference internal" href="#id19">Successful Response Status Code</a></li>
+<li><a class="reference internal" href="#id20">Successful Response Body:</a></li>
 </ul>
 </li>
 </ul>
@@ -2288,25 +2321,25 @@ This API was implemented with a distributed network of independent Commons insta
 <li><a class="reference internal" href="#handling-group-name-changes">Handling group name changes</a></li>
 <li><a class="reference internal" href="#handling-collection-name-collisions">Handling collection name collisions</a></li>
 <li><a class="reference internal" href="#handling-deleted-group-collections">Handling deleted group collections</a></li>
-<li><a class="reference internal" href="#id19">Request</a></li>
-<li><a class="reference internal" href="#id20">Request body</a></li>
-<li><a class="reference internal" href="#id21">Successful response status code</a></li>
-<li><a class="reference internal" href="#id22">Successful response body</a></li>
+<li><a class="reference internal" href="#id21">Request</a></li>
+<li><a class="reference internal" href="#id22">Request body</a></li>
+<li><a class="reference internal" href="#id23">Successful response status code</a></li>
+<li><a class="reference internal" href="#id24">Successful response body</a></li>
 <li><a class="reference internal" href="#unsuccessful-response-codes">Unsuccessful response codes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#changing-the-group-ownership-of-a-collection-patch">Changing the Group Ownership of a Collection (PATCH)</a><ul>
-<li><a class="reference internal" href="#id23">Request</a></li>
-<li><a class="reference internal" href="#id24">Request body</a></li>
-<li><a class="reference internal" href="#id25">Successful response status code</a></li>
-<li><a class="reference internal" href="#id26">Successful response body</a></li>
-<li><a class="reference internal" href="#id27">Unsuccessful response codes</a></li>
+<li><a class="reference internal" href="#id25">Request</a></li>
+<li><a class="reference internal" href="#id26">Request body</a></li>
+<li><a class="reference internal" href="#id27">Successful response status code</a></li>
+<li><a class="reference internal" href="#id28">Successful response body</a></li>
+<li><a class="reference internal" href="#id29">Unsuccessful response codes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#deleting-a-group-s-collection-delete">Deleting a Group’s Collection (DELETE)</a><ul>
-<li><a class="reference internal" href="#id28">Request</a></li>
-<li><a class="reference internal" href="#id29">Successful response status code</a></li>
-<li><a class="reference internal" href="#id30">Unsuccessful response codes</a></li>
+<li><a class="reference internal" href="#id30">Request</a></li>
+<li><a class="reference internal" href="#id31">Successful response status code</a></li>
+<li><a class="reference internal" href="#id32">Unsuccessful response codes</a></li>
 </ul>
 </li>
 </ul>

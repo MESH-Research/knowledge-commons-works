@@ -4,6 +4,34 @@
 
 # Changes
 
+## 0.4.0-beta9 (2025-02-25)
+
+- Importer
+    - Added a new streamlined importer API.
+- Remote user data service
+    - Fixed bug where user profile data was not being updated because comparison with initial data was not being made correctly.
+    - Improved handling of timeout errors when fetching data from the remote source.
+- Documentation
+    - Added documentation for the new importer API.
+    - Improved documentation for other API endpoints and metadata fields.
+    - Added documentation of InvenioRDM service architecture for developers.
+- Email notifications
+    - Improved formatting of moderation email notifications for first uploads/publications.
+- Testing
+    - Extensive improvements to the test suite, including new tests for the new importer API and remote user data service.
+    - Added workflow to run tests on Github
+- User data sync
+    - Fixed several bugs in the user data sync process.
+    - Added cli commands to fetch KCWorks user and group data
+- Search provisioning
+    - Fixed bugs in search provisioning and implemented new tests.
+- Export menu
+    - Fixed a bug preventing the export menu from working on the detail page.
+- Large uploads
+    - Raised max content length for large uploads.
+- Account linking
+    - Now can link existing KCWorks accounts to KC accounts on login based on email address, ORCID id, or KC username.
+
 ## 0.3.5-beta8 (2025-01-10)
 
 - Dashboard works search

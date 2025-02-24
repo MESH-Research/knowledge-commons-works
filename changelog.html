@@ -257,6 +257,66 @@
 <!-- Copyright (C) 2024 Mesh Research. -->
 <section id="changes">
 <h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
+<section id="beta9-2025-02-25">
+<h2>0.4.0-beta9 (2025-02-25)<a class="headerlink" href="#beta9-2025-02-25" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Importer</p>
+<ul>
+<li><p>Added a new streamlined importer API.</p></li>
+</ul>
+</li>
+<li><p>Remote user data service</p>
+<ul>
+<li><p>Fixed bug where user profile data was not being updated because comparison with initial data was not being made correctly.</p></li>
+<li><p>Improved handling of timeout errors when fetching data from the remote source.</p></li>
+</ul>
+</li>
+<li><p>Documentation</p>
+<ul>
+<li><p>Added documentation for the new importer API.</p></li>
+<li><p>Improved documentation for other API endpoints and metadata fields.</p></li>
+<li><p>Added documentation of InvenioRDM service architecture for developers.</p></li>
+</ul>
+</li>
+<li><p>Email notifications</p>
+<ul>
+<li><p>Improved formatting of moderation email notifications for first uploads/publications.</p></li>
+</ul>
+</li>
+<li><p>Testing</p>
+<ul>
+<li><p>Extensive improvements to the test suite, including new tests for the new importer API and remote user data service.</p></li>
+<li><p>Added workflow to run tests on Github</p></li>
+</ul>
+</li>
+<li><p>User data sync</p>
+<ul>
+<li><p>Fixed several bugs in the user data sync process.</p></li>
+<li><p>Added cli commands to fetch KCWorks user and group data</p></li>
+</ul>
+</li>
+<li><p>Search provisioning</p>
+<ul>
+<li><p>Fixed bugs in search provisioning and implemented new tests.</p></li>
+</ul>
+</li>
+<li><p>Export menu</p>
+<ul>
+<li><p>Fixed a bug preventing the export menu from working on the detail page.</p></li>
+</ul>
+</li>
+<li><p>Large uploads</p>
+<ul>
+<li><p>Raised max content length for large uploads.</p></li>
+</ul>
+</li>
+<li><p>Account linking</p>
+<ul>
+<li><p>Now can link existing KCWorks accounts to KC accounts on login based on email address, ORCID id, or KC username.</p></li>
+</ul>
+</li>
+</ul>
+</section>
 <section id="beta8-2025-01-10">
 <h2>0.3.5-beta8 (2025-01-10)<a class="headerlink" href="#beta8-2025-01-10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
@@ -471,6 +531,7 @@ or creating a new version</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changes</a><ul>
+<li><a class="reference internal" href="#beta9-2025-02-25">0.4.0-beta9 (2025-02-25)</a></li>
 <li><a class="reference internal" href="#beta8-2025-01-10">0.3.5-beta8 (2025-01-10)</a></li>
 <li><a class="reference internal" href="#beta7-2025-01-09">0.3.4-beta7 (2025-01-09)</a></li>
 <li><a class="reference internal" href="#beta6-2024-12-18">0.3.3-beta6 (2024-12-18)</a></li>
