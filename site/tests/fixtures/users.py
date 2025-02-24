@@ -23,7 +23,7 @@ def mock_user_data_api(requests_mock) -> Callable:
 
     def mock_api_call(saml_id: str, mock_remote_data: dict) -> Matcher:
         protocol = os.environ.get(
-            "INVENIO_COMMONS_API_REQUEST_PROTOCOL", "http"
+            "INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https"
         )  # noqa: E501
         base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
         remote_url = f"{base_url}/{saml_id}"
