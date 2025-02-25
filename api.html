@@ -691,6 +691,22 @@ The import API places the works directly in a collection, without passing throug
 </div></blockquote>
 <p>If an owner does not already belong to the collection to which the records are being imported, that owner will also be added to the collection’s membership with the “reader” role. The allows them access to any records restricted to the collection’s membership, but does not afford them any additional permissions. What it does mean is that collection managers will be able to see all of the work owners in the list of collection members on the collection’s landing page.</p>
 </section>
+<section id="email-notifications-for-work-owners">
+<h4>Email notifications for work owners<a class="headerlink" href="#email-notifications-for-work-owners" title="Link to this heading">¶</a></h4>
+<p>When a work is imported into a collection, the work owners will receive an email notification. This email will include a link to the work’s landing page on KCWorks. The email subject line and the email template used for this notification are configurable on a collection-by-collection basis. Authorized organizations should discuss the desired content with the KCWorks team.</p>
+<p>For KCWorks developers: The configuration for this email is found in the config variable <code class="docutils literal notranslate"><span class="pre">RECORD_IMPORTER_COMMUNITIES</span></code> in the KCWorks instance’s <code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> file. This is a dictionary whose keys are the collection slugs and whose values are dictionaries with the following keys:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">email_subject_import</span></code>: The subject line for the email notification.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">email_template_import</span></code>: The name of the Jinja2 template file to use for the email notification. These templates must be located in the <code class="docutils literal notranslate"><span class="pre">templates/security/email</span></code> directory. One template file with an <code class="docutils literal notranslate"><span class="pre">.html</span></code> extension and one with a <code class="docutils literal notranslate"><span class="pre">.txt</span></code> extension are required, with identical names apart from the extension. The name provided in the <code class="docutils literal notranslate"><span class="pre">email_template_import</span></code> key should be the filename without the <code class="docutils literal notranslate"><span class="pre">.html</span></code> or <code class="docutils literal notranslate"><span class="pre">.txt</span></code> extension.</p></li>
+</ul>
+<p>The template will receive the following variables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">record</span></code>: A dictionary containing the metadata for the imported work.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">community_page_url</span></code>: The URL of the collection’s landing page on KCWorks.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kc_registration_link</span></code>: The URL of the Knowledge Commons registration page.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">user</span></code>: The KCWorks User object for the user being notified.</p></li>
+</ul>
+</section>
 <section id="identifying-the-work-for-import">
 <h4>Identifying the work for import<a class="headerlink" href="#identifying-the-work-for-import" title="Link to this heading">¶</a></h4>
 <p>It is crucial that each work to be imported is assigned a unique identifier. This may be an identifier used internally by the importing organization, it may be a universally unique string such as a UUID, or it may be a universal identifier such as a DOI or a handle. In either case it must be unique across all works to be imported for the collection. This identifier will be used to identify the work in the response, and will be used to identify the work when checking for duplicate imports.</p>
@@ -2240,6 +2256,7 @@ This API was implemented with a distributed network of independent Commons insta
 <li><a class="reference internal" href="#identifying-the-owners-of-the-work">Identifying the owners of the work</a></li>
 <li><a class="reference internal" href="#id6">Identifying the owners of the work</a></li>
 <li><a class="reference internal" href="#kc-accounts-for-work-owners">KC accounts for work owners</a></li>
+<li><a class="reference internal" href="#email-notifications-for-work-owners">Email notifications for work owners</a></li>
 <li><a class="reference internal" href="#identifying-the-work-for-import">Identifying the work for import</a></li>
 </ul>
 </li>

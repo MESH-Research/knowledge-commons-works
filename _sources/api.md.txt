@@ -201,6 +201,23 @@ KCWorks will create an internal KCWorks account for each work owner who does not
 
 If an owner does not already belong to the collection to which the records are being imported, that owner will also be added to the collection's membership with the "reader" role. The allows them access to any records restricted to the collection's membership, but does not afford them any additional permissions. What it does mean is that collection managers will be able to see all of the work owners in the list of collection members on the collection's landing page.
 
+#### Email notifications for work owners
+
+When a work is imported into a collection, the work owners will receive an email notification. This email will include a link to the work's landing page on KCWorks. The email subject line and the email template used for this notification are configurable on a collection-by-collection basis. Authorized organizations should discuss the desired content with the KCWorks team.
+
+For KCWorks developers: The configuration for this email is found in the config variable `RECORD_IMPORTER_COMMUNITIES` in the KCWorks instance's `invenio.cfg` file. This is a dictionary whose keys are the collection slugs and whose values are dictionaries with the following keys:
+
+- `email_subject_import`: The subject line for the email notification.
+- `email_template_import`: The name of the Jinja2 template file to use for the email notification. These templates must be located in the `templates/security/email` directory. One template file with an `.html` extension and one with a `.txt` extension are required, with identical names apart from the extension. The name provided in the `email_template_import` key should be the filename without the `.html` or `.txt` extension.
+
+The template will receive the following variables:
+
+- `record`: A dictionary containing the metadata for the imported work.
+- `community_page_url`: The URL of the collection's landing page on KCWorks.
+- `kc_registration_link`: The URL of the Knowledge Commons registration page.
+- `user`: The KCWorks User object for the user being notified.
+
+
 #### Identifying the work for import
 
 It is crucial that each work to be imported is assigned a unique identifier. This may be an identifier used internally by the importing organization, it may be a universally unique string such as a UUID, or it may be a universal identifier such as a DOI or a handle. In either case it must be unique across all works to be imported for the collection. This identifier will be used to identify the work in the response, and will be used to identify the work when checking for duplicate imports.
