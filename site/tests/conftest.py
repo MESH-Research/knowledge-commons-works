@@ -1,9 +1,9 @@
-from celery import Celery
-from celery.contrib.testing.worker import start_worker
 from collections import namedtuple
 import os
 from pathlib import Path
 import importlib
+import shutil
+import tempfile
 from invenio_app.factory import create_app as create_ui_api
 from invenio_queues import current_queues
 from invenio_search.proxies import current_search_client
@@ -31,6 +31,7 @@ config = {k: v for k, v in invenio_config.__dict__.items() if not k.startswith("
 
 pytest_plugins = (
     "celery.contrib.pytest",
+    "tests.fixtures.files",
     "tests.fixtures.communities",
     "tests.fixtures.custom_fields",
     "tests.fixtures.records",
@@ -65,7 +66,7 @@ test_config = {
         "postgresql+psycopg2://kcworks:kcworks@localhost:5432/kcworks"
     ),
     "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-    "SEARCH_INDEX_PREFIX": "",
+    "SEARCH_INDEX_PREFIX": "",  # TODO: Search index prefix triggers errors
     "POSTGRES_USER": "kcworks",
     "POSTGRES_PASSWORD": "kcworks",
     "POSTGRES_DB": "kcworks",
@@ -113,6 +114,10 @@ if not log_file_path.exists():
 test_config["LOGGING_FS_LEVEL"] = "DEBUG"
 test_config["LOGGING_FS_LOGFILE"] = str(log_file_path)
 test_config["CELERY_LOGFILE"] = str(log_folder_path / "celery.log")
+test_config["RECORD_IMPORTER_DATA_DIR"] = str(
+    parent_path / "helpers" / "sample_import_data"
+)
+test_config["RECORD_IMPORTER_LOGS_LOCATION"] = log_folder_path
 
 # enable DataCite DOI provider
 test_config["DATACITE_ENABLED"] = True
@@ -184,6 +189,31 @@ def celery_enable_logging():
 # def flask_celery_worker(flask_celery_app):
 #     with start_worker(flask_celery_app, perform_ping_check=False) as worker:
 #         yield worker
+
+
+@pytest.yield_fixture(scope="module")
+def location(database):
+    """Creates a simple default location for a test.
+
+    Scope: function
+
+    Use this fixture if your test requires a `files location <https://invenio-
+    files-rest.readthedocs.io/en/latest/api.html#invenio_files_rest.models.
+    Location>`_. The location will be a default location with the name
+    ``pytest-location``.
+    """
+    from invenio_files_rest.models import Location
+
+    uri = tempfile.mkdtemp()
+    location_obj = Location(name="pytest-location", uri=uri, default=True)
+
+    database.session.add(location_obj)
+    database.session.commit()
+
+    yield location_obj
+
+    # TODO: Submit PR to pytest-invenio to fix the below line in the stock fixture
+    shutil.rmtree(uri)
 
 
 # This is a namedtuple that holds all the fixtures we're likely to need
@@ -269,13 +299,18 @@ def running_app(
 @pytest.fixture(scope="function")
 def search_clear(search_clear):
     """Clear search indices after test finishes (function scope)."""
-    #     # current_search_client.indices.delete(index="*")
-    #     # current_search_client.indices.delete_template("*")
-    #     # list(current_search.create())
-    #     # list(current_search.put_templates())
+    #     #     # current_search_client.indices.delete(index="*")
+    #     #     # current_search_client.indices.delete_template("*")
+    #     #     # list(current_search.create())
+    #     #     # list(current_search.put_templates())
     yield search_clear
+
+    # FIXME: Resource types are getting deleted from the index after
+    # class finishes
+
+    # Have to manually delete to catch stats indices
     current_search_client.indices.delete(index="*")
-    # current_search_client.indices.delete_template("*")
+    current_search_client.indices.delete_template("*")
 
 
 @pytest.fixture(scope="module")
@@ -311,19 +346,19 @@ def app(
     app_config,
     database,
     search,
-    affiliations_v,
+    # affiliations_v,
     # awards_v,
-    community_type_v,
-    contributors_role_v,
-    creators_role_v,
-    date_type_v,
-    description_type_v,
+    # community_type_v,
+    # contributors_role_v,
+    # creators_role_v,
+    # date_type_v,
+    # description_type_v,
     # funders_v,
-    language_v,
-    licenses_v,
+    # language_v,
+    # licenses_v,
     # relation_type_v,
-    resource_type_v,
-    subject_v,
+    # resource_type_v,
+    # subject_v,
     # title_type_v,
     template_loader,
     admin_roles,

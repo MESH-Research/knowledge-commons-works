@@ -1,10 +1,12 @@
 from typing import Callable, Optional, Union
+from flask import current_app
 from flask_login import login_user
 from flask_principal import Identity
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles, Role
 from invenio_access.permissions import superuser_access
 from invenio_accounts.models import User
+from invenio_accounts.proxies import current_accounts
 from invenio_accounts.testutils import login_user_via_session
 from invenio_administration.permissions import administration_access_action
 from invenio_oauthclient.models import UserIdentity
@@ -21,7 +23,7 @@ def mock_user_data_api(requests_mock) -> Callable:
 
     def mock_api_call(saml_id: str, mock_remote_data: dict) -> Matcher:
         protocol = os.environ.get(
-            "INVENIO_COMMONS_API_REQUEST_PROTOCOL", "http"
+            "INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https"
         )  # noqa: E501
         base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
         remote_url = f"{base_url}/{saml_id}"
@@ -88,6 +90,8 @@ def user_factory(
         admin: bool = False,
         saml_src: Optional[str] = "knowledgeCommons",
         saml_id: Optional[str] = "myuser",
+        orcid: Optional[str] = "",
+        kc_username: Optional[str] = "",
         new_remote_data: dict = {},
     ) -> AugmentedUserFixture:
         """Create a user.
@@ -116,6 +120,9 @@ def user_factory(
         # Mock the remote api call.
         mock_adapter = mock_user_data_api(saml_id, mock_remote_data)
 
+        if not orcid and new_remote_data.get("orcid"):
+            orcid = new_remote_data.get("orcid")
+
         u = AugmentedUserFixture(
             email=email,
             password=hash_password(password),
@@ -134,10 +141,25 @@ def user_factory(
             )
             datastore.add_role_to_user(u.user, role)
 
-        if saml_src and saml_id:
+        if u.user and orcid:
+            profile = u.user.user_profile
+            profile["identifier_orcid"] = orcid
+            u.user.user_profile = profile
+
+        if u.user and kc_username:
+            profile = u.user.user_profile
+            profile["identifier_kc_username"] = kc_username
+            u.user.user_profile = profile
+
+        if u.user and saml_src and saml_id:
+            u.user.username = f"{saml_src}-{saml_id}"
+            profile = u.user.user_profile
+            profile["identifier_kc_username"] = saml_id
+            u.user.user_profile = profile
             UserIdentity.create(u.user, saml_src, saml_id)
             u.mock_adapter = mock_adapter
 
+        current_accounts.datastore.commit()
         db.session.commit()
 
         return u

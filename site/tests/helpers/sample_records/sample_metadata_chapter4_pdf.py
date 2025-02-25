@@ -1,4 +1,4 @@
-rec34031 = {
+sample_metadata_chapter4_pdf = {
     "input": {
         "created": "2021-01-11T23:48:41Z",
         "pids": {
@@ -46,8 +46,7 @@ rec34031 = {
             "entries": {
                 "gnosticism-theorized-major-trends-and-approaches-dillon.pdf": {  # noqa: E501
                     "key": (
-                        "gnosticism-theorized-major-trends-and-approaches-"
-                        "dillon.pdf"
+                        "gnosticism-theorized-major-trends-and-approaches-" "dillon.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -123,9 +122,7 @@ rec34031 = {
                     "id": "arr",
                     "icon": "copyright",
                     "props": {
-                        "url": (
-                            "https://en.wikipedia.org/wiki/All_rights_reserved"
-                        )
+                        "url": ("https://en.wikipedia.org/wiki/All_rights_reserved")
                     },
                     "title": {"en": "All Rights Reserved"},
                 }
@@ -208,8 +205,7 @@ rec34031 = {
             "entries": {
                 "gnosticism-theorized-major-trends-and-approaches-dillon.pdf": {  # noqa: E501
                     "key": (
-                        "gnosticism-theorized-major-trends-and-approaches-"
-                        "dillon.pdf"
+                        "gnosticism-theorized-major-trends-and-approaches-" "dillon.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -352,8 +348,7 @@ rec34031 = {
             "entries": {
                 "gnosticism-theorized-major-trends-and-approaches-dillon.pdf": {  # noqa: E501
                     "key": (
-                        "gnosticism-theorized-major-trends-and-approaches-"
-                        "dillon.pdf"
+                        "gnosticism-theorized-major-trends-and-approaches-" "dillon.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",

@@ -104,7 +104,11 @@ Why is this API needed? The InvenioRDM REST API can be fragile and difficult to 
 ### Who can use the import API?
 
 The import API is available to authorized organizations who have obtained an OAuth token for API operations.
+The import API is available to authorized organizations who have obtained an OAuth token for API operations.
 
+The import API places the works directly in a collection, without passing through the review process. So, the user to whom the token is issued must have sufficient permissions to publish directly in the collection. The exact role required depends on the collection's review policy:
+- *If the review policy allows managers and curators to skip the review process*, the user of the import API must have one of the roles "manager," "curator," or "owner" in the collection.
+- *If the review policy requires all submissions to be reviewed*, the user of the import API must have the "owner" role in the collection.
 The import API places the works directly in a collection, without passing through the review process. So, the user to whom the token is issued must have sufficient permissions to publish directly in the collection. The exact role required depends on the collection's review policy:
 - *If the review policy allows managers and curators to skip the review process*, the user of the import API must have one of the roles "manager," "curator," or "owner" in the collection.
 - *If the review policy requires all submissions to be reviewed*, the user of the import API must have the "owner" role in the collection.
@@ -113,6 +117,7 @@ The import API places the works directly in a collection, without passing throug
 
 #### Request
 ```
+POST https://works.hcommons.org/api/import/<my-collection-id> HTTP/1.1
 POST https://works.hcommons.org/api/import/<my-collection-id> HTTP/1.1
 ```
 
@@ -132,6 +137,15 @@ Only one URL path parameter is required:
 | `collection` | no | `string` | The ID (either the url slug or the UUID) of the collection to which the work should be published. If this value is provided, the work will be submitted to the collection immediately after import. If the collection requires review, and the `review_required` parameter is set to "true", the work will be placed in the collection's review queue. |
 
 
+#### Request url path parameters
+
+Only one URL path parameter is required:
+
+| Name | Required | Type | Description |
+|------|----------|------|-------------|
+| `collection` | no | `string` | The ID (either the url slug or the UUID) of the collection to which the work should be published. If this value is provided, the work will be submitted to the collection immediately after import. If the collection requires review, and the `review_required` parameter is set to "true", the work will be placed in the collection's review queue. |
+
+
 #### Request body
 
 This request must be made with a multipart/form-data request. The request body must include parts with following names:
@@ -139,11 +153,14 @@ This request must be made with a multipart/form-data request. The request body m
 | Name | Required | Content Type | Description |
 |-------|----------|--------------|-------------|
 | `files` | yes | `application/octet-stream` | The (binary) file content to be uploaded. If multiple files are being uploaded, a body part with this same name ("files") must be provided for each file. If more than three or four files are being uploaded, it is recommended to provide a single zip archive containing all of the files. The files will be assigned to the appropriate work based on filename, so where multiple files are provided these **must be unique**. If a zip archive is provided, the files must be contained in a single compressed folder with no subfolders. |
-| `metadata` | yes | `application/json` | An array of JSON metadata objects, each of which will be used to create a new work. Each must following the KCWorks implementation of the InvenioRDM metadata schema described {ref}`here <metadata:metadata-schema-vocabularies-and-identifiers>`. In addition, an array of owners for the work may optionally be provided by adding an `access.owned_by` property to each metadata object. Note that if no owners are provided, the work will be created with the organizational account that issued the OAuth token as the owner. |
+| `metadata` | yes | `application/json` | An array of JSON metadata objects, each of which will be used to create a new work. Each must following the KCWorks implementation of the InvenioRDM metadata schema described {ref}`here <metadata:metadata-schema-vocabularies-and-identifiers>`. In addition, an array of owners for the work may optionally be provided by adding a `parent.access.owned_by` property to each metadata object. Note that if no owners are provided, the work will be created with the organizational account that issued the OAuth token as the owner. |
 | `review_required` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the work should be reviewed before publication. This setting is only relevant if the work is intended for publication in a collection that requires review. It will override the collection's usual review policy, since the work is being uploaded by a collection administrator. (Default: "true") |
 | `strict_validation` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the import request should be rejected if any validation errors are encountered. If this value is "false", the imported work will be created in KCWorks even if some of the provided metadata does not conform to the KCWorks metadata schema, provided these are not required fields. If this value is "true", the import request will be rejected if any validation errors are encountered. (Default: "true") |
 | `all_or_none` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the entire import request should be rejected if any of the works fail to be created (whether for validation errors, upload errors, or other reasons). If this value is "false", the import request will be accepted even if some of the works cannot be created. The response in this case will include a list of works that were successfully created and a list of errors for the works that failed to be created. (Default: "true") |
 
+#### Identifying the owners of the work
+
+The array of owners, if provided in a metadata object's `parent.access.owned_by` property, must include at least the full name and email address of the users to be added as owners of the work. If the user already has a Knowledge Commons account, their username should also be provided. Additional identifiers (e.g., ORCID) may be provided as well to help avoid duplicate accounts, since a KCWorks account will be created for each user if they do not already have one.
 #### Identifying the owners of the work
 
 The array of owners, if provided in a metadata object's `parent.access.owned_by` property, must include at least the full name and email address of the users to be added as owners of the work. If the user already has a Knowledge Commons account, their username should also be provided. Additional identifiers (e.g., ORCID) may be provided as well to help avoid duplicate accounts, since a KCWorks account will be created for each user if they do not already have one.
