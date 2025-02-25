@@ -308,9 +308,9 @@ def search_clear(search_clear):
     # FIXME: Resource types are getting deleted from the index after
     # class finishes
 
-    #     # current_search_client.indices.delete(index="*")
-
-    #     # current_search_client.indices.delete_template("*")
+    # Have to manually delete to catch stats indices
+    current_search_client.indices.delete(index="*")
+    current_search_client.indices.delete_template("*")
 
 
 @pytest.fixture(scope="module")
