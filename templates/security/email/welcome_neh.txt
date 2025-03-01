@@ -1,0 +1,16 @@
+
+Your NEH Open Access Deposit is Ready
+
+Congratulations! Your NEH funded research has just been added to the NEH open access repository ({{ community_page_url }}) hosted on Knowledge Commons Works. Your work "{{ record['metadata']['title'] }}" is now available to the public and can be found at {{ record['links']['self_html'] }}.
+
+Your research has been assigned a DOI, which is a permanent identifier for your work: {{ record['pids']['doi']['identifier'] }}. It is discoverable by search engines as well as from the NEH funded research search page and the global Knowledge Commons Works search page.
+
+If you wish to manage your work yourself, and you have a Knowledge Commons account, you can log in. This will allow you to:
+
+- edit and update the metadata for your work
+- share your work with others
+- create updated versions of your work with new files
+
+If you wish to manage your work yourself, and you do not have a Knowledge Commons account, you can create one at {{ config.get('KC_REGISTER_URL') }}. Be sure to use the same email address to which this email was sent when you create the Knowledge Commons account: {{ user['email'] }}.
+
+Need additional assistance with Knowledge Commons Works? Visit {{ config.get('KC_HELP_URL') }} to view our full help guides or contact us at {{ config.get('KC_HELP_EMAIL') }} (or use the contact form at {{ config.get('KC_CONTACT_FORM_URL') }})

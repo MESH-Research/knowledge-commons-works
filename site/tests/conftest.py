@@ -1,14 +1,14 @@
 from collections import namedtuple
+from pprint import pformat
 import os
 from pathlib import Path
 import importlib
 import shutil
 import tempfile
-from invenio_app.factory import create_app as create_ui_api
+from invenio_app.factory import create_app as _create_app
 from invenio_queues import current_queues
 from invenio_search.proxies import current_search_client
 import jinja2
-from marshmallow import Schema, fields
 import pytest
 
 from .fixtures.identifiers import test_config_identifiers
@@ -73,7 +73,6 @@ test_config = {
     "WTF_CSRF_ENABLED": False,
     "WTF_CSRF_METHODS": [],
     "RATELIMIT_ENABLED": False,
-    "APP_THEME": "semantic-ui",
     "APP_DEFAULT_SECURE_HEADERS": {
         "content_security_policy": {"default-src": []},
         "force_https": False,
@@ -136,28 +135,15 @@ test_config["SITE_UI_URL"] = os.environ.get(
 )
 
 
-class CustomUserProfileSchema(Schema):
-    """The default user profile schema."""
-
-    full_name = fields.String()
-    affiliations = fields.String()
-    name_parts = fields.String()
-    identifier_email = fields.String()
-    identifier_orcid = fields.String()
-    identifier_kc_username = fields.String()
-    unread_notifications = fields.String()
-
-
-test_config["ACCOUNTS_USER_PROFILE_SCHEMA"] = CustomUserProfileSchema()
-
-# @pytest.fixture(scope="module")
-
 # @pytest.fixture(scope="module")
 # def extra_entry_points() -> dict:
 #     return {
-#         # 'invenio_db.models': [
-#         #     'mock_module = mock_module.models',
-#         # ]
+#         "invenio_base.api_blueprints": [
+#             "kcworks_templates = tests.fixtures.template_loader:template_blueprint_loader"
+#         ],
+#         "invenio_base.blueprints": [
+#             "kcworks_templates = tests.fixtures.template_loader:template_blueprint_loader"
+#         ],
 #     }
 
 
@@ -346,20 +332,6 @@ def app(
     app_config,
     database,
     search,
-    # affiliations_v,
-    # awards_v,
-    # community_type_v,
-    # contributors_role_v,
-    # creators_role_v,
-    # date_type_v,
-    # description_type_v,
-    # funders_v,
-    # language_v,
-    # licenses_v,
-    # relation_type_v,
-    # resource_type_v,
-    # subject_v,
-    # title_type_v,
     template_loader,
     admin_roles,
 ):
@@ -377,5 +349,5 @@ def app_config(app_config) -> dict:
 
 
 @pytest.fixture(scope="module")
-def create_app():
-    return create_ui_api
+def create_app(instance_path, entry_points):
+    return _create_app

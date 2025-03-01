@@ -1,0 +1,26 @@
+
+
+<table>
+    <tr>
+        <td>
+            <center >
+            <h1>Your NEH Open Access Deposit is Ready</h1>
+            </center>
+            <p>Congratulations! Your NEH funded research has just been added to the <a href="{{ community_page_url }}">NEH open access repository</a> hosted on Knowledge Commons Works. Your work <i>{{ record['metadata']['title'] }}</i> is now available to the public and can be found at <a href="{{ record['links']['self_html'] }}">{{ record['links']['self_html'] }}</a>.</p>
+
+            <p>Your research has been assigned a DOI, which is a permanent identifier for your work: {{ record['pids']['doi']['identifier'] }}. It is discoverable by search engines as well as from the NEH funded research search page and the global Knowledge Commons Works search page.</p>
+
+            <p>If you wish to manage your work yourself, and you have a Knowledge Commons account, you can log in. This will allow you to:
+                <ul>
+                    <li>edit and update the metadata for your work</li>
+                    <li>share your work with others</li>
+                    <li>create updated versions of your work with new files</li>
+                </ul>
+            </p>
+
+            <p>If you wish to manage your work yourself, and you do not have a Knowledge Commons account, you can create one at <a href="{{ config.get('KC_REGISTER_URL') }}">{{ config.get('KC_REGISTER_URL') }}</a>. Be sure to use the same email address to which this email was sent when you create the Knowledge Commons account: <i>{{ user["email"] }}</i>.</p>
+
+            <p>Need additional assistance with Knowledge Commons Works? Visit <a href="{{ config.get('KC_HELP_URL') }}">{{ config.get('KC_HELP_URL') }}</a> to view our full help guides or contact us at <a href="mailto:{{ config.get('KC_HELP_EMAIL') }}">{{ config.get('KC_HELP_EMAIL') }}</a> (or use the <a href="{{ config.get('KC_CONTACT_FORM_URL') }}">contact form</a>)</p>
+        </td>
+    </tr>
+</table>

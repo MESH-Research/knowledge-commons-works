@@ -149,10 +149,8 @@ This request must be made with a multipart/form-data request. The request body m
 | `review_required` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the work should be reviewed before publication. This setting is only relevant if the work is intended for publication in a collection that requires review. It will override the collection's usual review policy, since the work is being uploaded by a collection administrator. (Default: "true") |
 | `strict_validation` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the import request should be rejected if any validation errors are encountered. If this value is "false", the imported work will be created in KCWorks even if some of the provided metadata does not conform to the KCWorks metadata schema, provided these are not required fields. If this value is "true", the import request will be rejected if any validation errors are encountered. (Default: "true") |
 | `all_or_none` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the entire import request should be rejected if any of the works fail to be created (whether for validation errors, upload errors, or other reasons). If this value is "false", the import request will be accepted even if some of the works cannot be created. The response in this case will include a list of works that were successfully created and a list of errors for the works that failed to be created. (Default: "true") |
+| `notify_record_owners` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the owners of the work should be notified by email of the work's creation. (Default: "true") |
 
-#### Identifying the owners of the work
-
-The array of owners, if provided in a metadata object's `parent.access.owned_by` property, must include at least the full name and email address of the users to be added as owners of the work. If the user already has a Knowledge Commons account, their username should also be provided. Additional identifiers (e.g., ORCID) may be provided as well to help avoid duplicate accounts, since a KCWorks account will be created for each user if they do not already have one.
 #### Identifying the owners of the work
 
 The array of owners, if provided in a metadata object's `parent.access.owned_by` property, must include at least the full name and email address of the users to be added as owners of the work. If the user already has a Knowledge Commons account, their username should also be provided. Additional identifiers (e.g., ORCID) may be provided as well to help avoid duplicate accounts, since a KCWorks account will be created for each user if they do not already have one.
@@ -200,6 +198,23 @@ KCWorks will create an internal KCWorks account for each work owner who does not
 > - the same ORCID identifier
 
 If an owner does not already belong to the collection to which the records are being imported, that owner will also be added to the collection's membership with the "reader" role. The allows them access to any records restricted to the collection's membership, but does not afford them any additional permissions. What it does mean is that collection managers will be able to see all of the work owners in the list of collection members on the collection's landing page.
+
+#### Email notifications for work owners
+
+When a work is imported into a collection, the work owners will receive an email notification unless the `notify_record_owners` parameter is set to "false". This email will include a link to the work's landing page on KCWorks. The email subject line and the email template used for this notification are configurable on a collection-by-collection basis. Authorized organizations should discuss the desired content with the KCWorks team.
+
+For KCWorks developers: The configuration for this email is found in the config variable `RECORD_IMPORTER_COMMUNITIES` in the KCWorks instance's `invenio.cfg` file. This is a dictionary whose keys are the collection slugs and whose values are dictionaries with the following keys:
+
+- `email_subject_import`: The subject line for the email notification.
+- `email_template_import`: The name of the Jinja2 template file to use for the email notification. These templates must be located in the `templates/security/email` directory. One template file with an `.html` extension and one with a `.txt` extension are required, with identical names apart from the extension. The name provided in the `email_template_import` key should be the filename without the `.html` or `.txt` extension.
+
+The template will receive the following variables:
+
+- `record`: A dictionary containing the metadata for the imported work.
+- `community_page_url`: The URL of the collection's landing page on KCWorks.
+- `kc_registration_link`: The URL of the Knowledge Commons registration page.
+- `user`: The KCWorks User object for the user being notified.
+
 
 #### Identifying the work for import
 

@@ -1481,19 +1481,23 @@ def test_notification_on_first_upload(
         f"Draft ID: {first_draft_id} ({app.config.get('SITE_UI_URL')}/records/"
         f"{first_draft_id})" in email.body
     )
-    assert (
-        f"Draft ID: {first_draft_id} (<a href="
-        f"'{app.config.get('SITE_UI_URL')}/records/{first_draft_id}'>"
-        f"View draft</a>)" in email.html
-    )
+    site_ui_url = app.config.get("SITE_UI_URL")
+    assert (  # fmt: off
+        f"<td><b>Draft ID</b></td>\n        <td>"
+        f'{first_draft_id} (<a href="{site_ui_url}/records/'
+        f'{first_draft_id}">View draft</a>)\n        </td>' in email.html
+    )  # fmt: on
     assert f"Draft title: {metadata.draft['metadata']['title']}" in email.body
-    assert f"Draft title: {metadata.draft['metadata']['title']}" in email.html
+    assert (
+        f"<td><b>Draft title</b></td>\n        <td>{metadata.draft['metadata']['title']}</td>"
+        in email.html
+    )
     assert f"User ID: {user_id}" in email.body
-    assert f"User ID: {user_id}" in email.html
+    assert f"<td><b>User ID</b></td>\n        <td>{user_id}</td>" in email.html
     assert f"User email: {user_email}" in email.body
-    assert f"User email: {user_email}" in email.html
+    assert f"<td><b>User email</b></td>\n        <td>{user_email}</td>" in email.html
     assert f"User name: {username}" in email.body
-    assert f"User name: {username}" in email.html
+    assert f"<td><b>User name</b></td>\n        <td>{username}</td>" in email.html
     assert "A new user has created their first draft." in email.body
     assert "A new user has created their first draft." in email.html
 
@@ -1526,15 +1530,22 @@ def test_notification_on_first_upload(
     )
     assert email.sender == app.config["MAIL_DEFAULT_SENDER"]
     app.logger.debug(f"email.body: {pformat(email.body)}")
+    assert (
+        f"<td><b>Work ID</b></td>\n        "
+        f"<td>{first_draft_id} (<a href=\"{app.config.get('SITE_UI_URL')}/records/"
+        f'{first_draft_id}">View work</a>)\n        </td>' in email.html
+    )
     assert f"Work ID: {first_draft_id}" in email.body
-    assert f"Work ID: {first_draft_id}" in email.html
+    assert (
+        f"<td><b>Work title</b></td>\n        "
+        f"<td>{metadata.draft['metadata']['title']}</td>" in email.html
+    )
     assert f"Work title: {metadata.draft['metadata']['title']}" in email.body
-    assert f"Work title: {metadata.draft['metadata']['title']}" in email.html
     assert f"User ID: {user_id}" in email.body
-    assert f"User ID: {user_id}" in email.html
+    assert f"<td><b>User ID</b></td>\n        <td>{user_id}</td>" in email.html
     assert f"User email: {user_email}" in email.body
-    assert f"User email: {user_email}" in email.html
+    assert f"<td><b>User email</b></td>\n        <td>{user_email}</td>" in email.html
     assert f"User name: {username}" in email.body
-    assert f"User name: {username}" in email.html
+    assert f"<td><b>User name</b></td>\n        <td>{username}</td>" in email.html
     assert "A new user has published their first work." in email.body
     assert "A new user has published their first work." in email.html
