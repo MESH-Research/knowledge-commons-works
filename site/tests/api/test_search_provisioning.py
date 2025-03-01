@@ -470,7 +470,7 @@ def test_trigger_community_provisioning(
 
     # Creation,
     # API operations should be prompted
-    actual_new = minimal_community_factory(admin.user.id)
+    actual_new = minimal_community_factory(admin.user.id, mock_search_api=False)
     assert actual_new["metadata"]["title"] == "My Community"
     assert requests_mock.call_count == 1  # user update at token login
     assert requests_mock.request_history[0].method == "POST"

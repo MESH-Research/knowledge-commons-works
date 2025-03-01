@@ -1,4 +1,4 @@
-Welcome to KCWorks, the next generation of the Knowledge Commons repository! With KCWorks (https://works.hcommons.org), you can:
+{{ _('Welcome %(email)s', email=user.email) }} to Knowledge Commons Works, the open access repository for Knowledge Commons! With KCWorks ({{ config.get("SITE_UI_URL") }}), you can:
 
 - Mint DOIs for every work you upload
 - Share your works through feeds to Google Scholar, core.ac.uk, and other metadata aggregators
@@ -6,9 +6,9 @@ Welcome to KCWorks, the next generation of the Knowledge Commons repository! Wit
 - Contribute to collections of similar works
 - Control the metadata you’d like to share about a work, and hide works that are outdated
 
-KCWorks is currently in public beta, which means the repository is fully functional, but we’re still tweaking things behind the scenes. Use this form to provide us with feedback: https://support.hcommons.org/contact-us/
+KCWorks is currently in public beta, which means the repository is fully functional, but we’re still tweaking things behind the scenes. Use this form to provide us with feedback: {{ config.get("KC_CONTACT_FORM_URL") }}
 
-Need additional assistance with KCWorks? Visit support.hcommons.org to view our full help guides.
+Need additional assistance with KCWorks? Visit {{ config.get("KC_HELP_URL") }} to view our full help guides.
 
 Happy sharing!
 The Knowledge Commons Team

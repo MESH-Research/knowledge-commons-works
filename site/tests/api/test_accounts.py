@@ -1,10 +1,10 @@
-import copy
 from pprint import pformat
 import pytest
 import datetime
 from flask import Flask
 from invenio_accounts import current_accounts
 from invenio_accounts.models import User
+from invenio_record_importer_kcworks.services.users import UsersHelper
 import json
 from kcworks.services.accounts.saml import (
     knowledgeCommons_account_info,
@@ -16,6 +16,7 @@ import pytz
 from requests_mock.adapter import _Matcher as Matcher
 from types import SimpleNamespace
 from typing import Callable, Optional
+
 from ..fixtures.saml import idp_responses
 from ..fixtures.users import user_data_set, AugmentedUserFixture
 
@@ -365,6 +366,16 @@ def test_account_register_on_login(
     assert mailbox[0].subject == "Welcome to KCWorks!"
     assert mailbox[0].recipients == [user_data["email"]]
     assert mailbox[0].sender == app.config["MAIL_DEFAULT_SENDER"]
+    assert "Welcome to Knowledge Commons Works!" in mailbox[0].html
+    assert (
+        f"Welcome {user_data['email']} to Knowledge Commons Works," in mailbox[0].body
+    )
+    assert user_data["email"] in mailbox[0].html
+    assert user_data["email"] in mailbox[0].body
+    assert app.config["KC_HELP_URL"] in mailbox[0].html
+    assert app.config["KC_HELP_URL"] in mailbox[0].body
+    assert app.config["KC_CONTACT_FORM_URL"] in mailbox[0].html
+    assert app.config["KC_CONTACT_FORM_URL"] in mailbox[0].body
 
     user: User = current_accounts.datastore.get_user_by_email(user_data["email"])
     assert user.email == user_data["email"]
@@ -394,3 +405,38 @@ def test_account_register_on_login(
     assert not any([r for r in user.roles if r.name not in expected_roles])
 
     assert next_url == "https://localhost/next-url.com"
+
+
+def test_create_user_via_importer(
+    running_app,
+    appctx,
+    db,
+    mailbox,
+    celery_worker,
+    search_clear: Callable,
+) -> None:
+    """
+    Test the creation of a user programmatically via the importer.
+
+    Among other things, test that the correct welcome email is sent to the user.
+    """
+    app: Flask = running_app.app
+    user = UsersHelper().create_invenio_user(
+        user_email="test@example.com",
+        full_name="Test User",
+        community_owner=[],
+        orcid="0000-0002-1825-0097",
+        other_user_ids=[
+            {"identifier": "test", "scheme": "neh_user_id"},
+            {"identifier": "test2", "scheme": "import_user_id"},
+        ],
+    )
+    assert user["user"] is not None
+    assert user["user"].email == "test@example.com"
+    assert user["user"].username is None
+    assert user["user"].user_profile.get("full_name") == "Test User"
+    assert user["user"].user_profile.get("identifier_kc_username") is None
+    assert user["user"].user_profile.get("identifier_orcid") == "0000-0002-1825-0097"
+    assert user["user"].user_profile.get("name_parts") is None
+    assert user["user"].user_profile.get("affiliations") is None
+    assert len(mailbox) == 0

@@ -72,7 +72,7 @@ class BaseImportLoaderTest:
         """Check the primary community of the result."""
         assert result.primary_community["id"] == community["id"]
         assert result.primary_community["metadata"]["title"] == "My Community"
-        assert result.primary_community["slug"] == "my-community"
+        assert result.primary_community["slug"] == "neh"
 
     def check_result_existing_record(self, result: LoaderResult):
         """Check the existing record of the result."""
@@ -110,6 +110,7 @@ class BaseImportLoaderTest:
         user_id: str,
         test_metadata: TestRecordMetadata,
         app,
+        mailbox,
     ):
         """Check the assigned owners of the result."""
         owners = (
@@ -117,13 +118,11 @@ class BaseImportLoaderTest:
             .get("access", {})
             .get("owned_by")
         )
-        app.logger.debug(f"check_result_assigned_owners: {pformat(owners)}")
         if owners and result.status == "new_record":
             owners = [
                 current_accounts.datastore.get_user_by_email(owner["email"])
                 for owner in owners
             ]
-            app.logger.debug(f"check_result_assigned_owners Users: {pformat(owners)}")
             assert result.assigned_owners == {
                 "owner_email": owners[0].email,
                 "owner_id": owners[0].id,
@@ -140,6 +139,51 @@ class BaseImportLoaderTest:
                     for owner in owners[1:]
                 ],
             }
+            assert len(mailbox) == len(owners)
+            for owner in owners:
+                owner_sent_mail = [m for m in mailbox if m.recipients == [owner.email]][
+                    0
+                ]
+                assert (
+                    owner_sent_mail.subject == "Your NEH Open Access Deposit is Ready"
+                )
+                assert owner_sent_mail.recipients == [owner.email]
+                assert owner_sent_mail.sender == app.config["MAIL_DEFAULT_SENDER"]
+                assert "Your NEH Open Access Deposit is Ready" in owner_sent_mail.html
+                assert "Your NEH Open Access Deposit is Ready" in owner_sent_mail.body
+                assert (
+                    test_metadata.metadata_in["metadata"]["title"]
+                    in owner_sent_mail.html
+                )
+                assert (
+                    test_metadata.metadata_in["metadata"]["title"]
+                    in owner_sent_mail.body
+                )
+                assert (
+                    result.record_created["record_data"]["pids"]["doi"]["identifier"]
+                    in owner_sent_mail.html
+                )
+                assert (
+                    result.record_created["record_data"]["pids"]["doi"]["identifier"]
+                    in owner_sent_mail.body
+                )
+                assert (
+                    result.record_created["record_data"]["links"]["self_html"]
+                    in owner_sent_mail.html
+                )
+                assert (
+                    result.record_created["record_data"]["links"]["self_html"]
+                    in owner_sent_mail.body
+                )
+                assert (
+                    result.primary_community["links"]["self_html"]
+                    in owner_sent_mail.html
+                )
+                assert (
+                    result.primary_community["links"]["self_html"]
+                    in owner_sent_mail.body
+                )
+
         elif result.status == "new_record":
             assert result.assigned_owners == {
                 "owner_id": user_id,
@@ -203,33 +247,32 @@ class BaseImportLoaderTest:
         record_metadata,
         mock_send_remote_api_update_fixture,
         celery_worker,
+        mailbox,
     ):
         app = running_app.app
 
         # find the resource type id for "textDocument"
-        rt = current_vocabulary_service.read(
-            system_identity,
-            id_=("resourcetypes", "textDocument-journalArticle"),
-        )
-        app.logger.debug(f"textDocument rec: {pformat(rt.to_dict())}")
+        # rt = current_vocabulary_service.read(
+        #     system_identity,
+        #     id_=("resourcetypes", "textDocument-journalArticle"),
+        # )
 
-        Vocabulary.index.refresh()
+        # Vocabulary.index.refresh()
 
         # Search for all resourcetypes
-        search_result = current_vocabulary_service.search(
-            system_identity,
-            type="resourcetypes",
-        )
-        app.logger.debug(f"search_result: {pformat(search_result.to_dict())}")
+        # search_result = current_vocabulary_service.search(
+        #     system_identity,
+        #     type="resourcetypes",
+        # )
 
         # Get the hits from the search result
-        resource_types = search_result.to_dict()["hits"]["hits"]
+        # resource_types = search_result.to_dict()["hits"]["hits"]
 
         # Print each resource type
-        for rt in resource_types:
-            app.logger.debug(
-                f"resource type: ID: {rt['id']}, Title: {rt['title']['en']}"
-            )
+        # for rt in resource_types:
+        #     app.logger.debug(
+        #         f"resource type: ID: {rt['id']}, Title: {rt['title']['en']}"
+        #     )
 
         # Get the email of the first owner of the record if owners are specified
         owners = (
@@ -245,7 +288,7 @@ class BaseImportLoaderTest:
         identity.provides.add(authenticated_user)
         login_user(u.user)
 
-        community_record = minimal_community_factory(owner=user_id)
+        community_record = minimal_community_factory(owner=user_id, slug="neh")
         community = community_record.to_dict()
 
         test_metadata = record_metadata(
@@ -290,7 +333,7 @@ class BaseImportLoaderTest:
         community.update({"links": {}})  # FIXME: Why are links not expanded?
 
         self.check_result_community_review_result(result, community, test_metadata)
-        self.check_result_assigned_owners(result, user_id, test_metadata, app)
+        self.check_result_assigned_owners(result, user_id, test_metadata, app, mailbox)
         self.check_result_added_to_collections(result)
         self.check_result_errors(result)
 
@@ -421,6 +464,7 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
         record_metadata_with_files,
         mock_send_remote_api_update_fixture,
         celery_worker,
+        mailbox,
     ):
         app = running_app.app
 
@@ -429,7 +473,6 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
             system_identity,
             id_=("resourcetypes", "textDocument-journalArticle"),
         )
-        app.logger.debug(f"textDocument rec: {pformat(rt.to_dict())}")
 
         Vocabulary.index.refresh()
         # Search for all resourcetypes
@@ -437,7 +480,6 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
             system_identity,
             type="resourcetypes",
         )
-        app.logger.debug(f"search_result: {pformat(search_result.to_dict())}")
 
         # Get the hits from the search result
         resource_types = search_result.to_dict()["hits"]["hits"]
@@ -454,7 +496,7 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
         identity.provides.add(authenticated_user)
         login_user(u.user)
 
-        community_record = minimal_community_factory(owner=user_id)
+        community_record = minimal_community_factory(owner=user_id, slug="neh")
         community = community_record.to_dict()
 
         file_paths = [
@@ -565,7 +607,7 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
         self.check_result_record_created(result, test_metadata)
         self.check_result_uploaded_files(result)
         self.check_result_community_review_result(result, community, test_metadata)
-        self.check_result_assigned_owners(result, user_id, test_metadata, app)
+        self.check_result_assigned_owners(result, user_id, test_metadata, app, mailbox)
         self.check_result_added_to_collections(result)
         self.check_result_submitted(result, test_metadata, app)
         self.check_result_errors(result)
@@ -846,16 +888,7 @@ class BaseImportServiceTest:
         target_roles = (
             ["reader"] if user.id != uploader_id else ["curator", "manager", "owner"]
         )
-        self.app.logger.debug(
-            f"user.id: {user.id}, type(user.id): {type(user.id)}, uploader_id: {uploader_id}, type(uploader_id): {type(uploader_id)}, target_roles: {target_roles}"
-        )
-        self.app.logger.debug(
-            f"community_members: {pformat([(m.user_id, type(m.user_id), m.role) for m in community_members])}"
-        )
         matching_ids = [m for m in community_members if m.user_id == user.id]
-        self.app.logger.debug(
-            f"matching_ids: {pformat([(m.user_id, m.role) for m in matching_ids])}"
-        )
         assert matching_ids
         assert matching_ids[0].role in target_roles
         assert len(matching_ids) == 1
@@ -866,16 +899,15 @@ class BaseImportServiceTest:
         expected: TestRecordMetadataWithFiles,
         uploader_id: str,
         community_id: str,
+        community_slug: str,
+        mailbox,
+        mocker,
     ):
         expected_owners = (
             expected.metadata_in.get("parent", {}).get("access", {}).get("owned_by")
         )
         if expected_owners:
             community_members = Member.get_members(community_id)
-            self.app.logger.debug(f"community_members: {pformat(community_members)}")
-            self.app.logger.debug(
-                f"community_members: {pformat([(m.user_id, m.role) for m in community_members])}"
-            )
             first_expected_owner = expected.metadata_in["parent"]["access"]["owned_by"][
                 0
             ]
@@ -884,7 +916,7 @@ class BaseImportServiceTest:
             )
             assert first_actual_owner.email == first_expected_owner["email"]
             self._check_owners_in_community(
-                community_members, first_actual_owner, uploader_id
+                community_members, first_actual_owner, int(uploader_id)
             )
             if len(expected_owners) > 1:
                 other_expected_owners = expected.metadata_in["parent"]["access"][
@@ -949,8 +981,67 @@ class BaseImportServiceTest:
                     # make sure they were added to the community
                     # as reader (unless they are the uploader)
                     self._check_owners_in_community(
-                        community_members, user, uploader_id
+                        community_members, user, int(uploader_id)
                     )
+
+            self.app.logger.debug(
+                f"mailbox: {pformat([m.recipients for m in mailbox])}"
+            )
+            self.app.logger.debug(
+                f"mailbox: {pformat([email.body for email in mailbox])}"
+            )
+            # multiple records created with the one mailbox
+            if not self.by_api:  # can't detect async email sending in test
+                mails_for_record = [
+                    m for m in mailbox if actual_metadata["metadata"]["title"] in m.html
+                ]
+                assert len(mails_for_record) == len(expected_owners)
+                for owner in expected_owners:
+                    owner_sent_mail = [
+                        m for m in mails_for_record if m.recipients == [owner["email"]]
+                    ][0]
+                    self.app.logger.debug(
+                        f"owner to send mail: {pformat(owner['email'])}"
+                    )
+                    self.app.logger.debug(
+                        f"owner_sent_mail recipients: "
+                        f"{pformat(owner_sent_mail.recipients)}"
+                    )
+                    assert (
+                        owner_sent_mail.subject
+                        == "Your NEH Open Access Deposit is Ready"
+                    )
+                    assert owner_sent_mail.recipients == [owner["email"]]
+                    assert (
+                        owner_sent_mail.sender == self.app.config["MAIL_DEFAULT_SENDER"]
+                    )
+                    assert (
+                        "Your NEH Open Access Deposit is Ready" in owner_sent_mail.html
+                    )
+                    assert (
+                        "Your NEH Open Access Deposit is Ready" in owner_sent_mail.body
+                    )
+                    assert actual_metadata["metadata"]["title"] in owner_sent_mail.html
+                    assert actual_metadata["metadata"]["title"] in owner_sent_mail.body
+                    assert (
+                        actual_metadata["pids"]["doi"]["identifier"]
+                        in owner_sent_mail.html
+                    )
+                    assert (
+                        actual_metadata["pids"]["doi"]["identifier"]
+                        in owner_sent_mail.body
+                    )
+                    assert actual_metadata["links"]["self_html"] in owner_sent_mail.html
+                    assert actual_metadata["links"]["self_html"] in owner_sent_mail.body
+                    assert (
+                        f"{self.app.config['SITE_UI_URL']}/collections/{community_slug}"
+                        in owner_sent_mail.html
+                    )
+                    assert (
+                        f"{self.app.config['SITE_UI_URL']}/collections/{community_slug}"
+                        in owner_sent_mail.body
+                    )
+
         else:
             assert actual_metadata["parent"]["access"]["owned_by"] == {
                 "user": uploader_id
@@ -964,6 +1055,8 @@ class BaseImportServiceTest:
         expected: TestRecordMetadataWithFiles,
         community: dict,
         uploader_id: str,
+        mailbox,
+        mocker,
     ):
         assert self.app
         actual_metadata = actual.get("metadata")
@@ -1002,7 +1095,15 @@ class BaseImportServiceTest:
             f["checksum"] = actual_metadata["files"]["entries"][k]["checksum"]
         assert expected.compare_published(actual_metadata)
 
-        self._check_owners(actual_metadata, expected, uploader_id, community["id"])
+        self._check_owners(
+            actual_metadata,
+            expected,
+            uploader_id,
+            community["id"],
+            community["slug"],
+            mailbox,
+            mocker,
+        )
 
         # Check the record in the database
         record_id1 = actual_metadata.get("id")
@@ -1022,6 +1123,8 @@ class BaseImportServiceTest:
         metadata_sources: list,
         community: dict,
         uploader_id: str,
+        mailbox,
+        mocker,
     ) -> None:
         assert self.app
         expected_error_count = len([e for e in self.expected_errors if e])
@@ -1050,6 +1153,8 @@ class BaseImportServiceTest:
                     metadata_sources[idx],
                     community,
                     uploader_id,
+                    mailbox,
+                    mocker,
                 )
 
     def _do_api_import(
@@ -1072,6 +1177,7 @@ class BaseImportServiceTest:
                     "review_required": "true",
                     "strict_validation": "true",
                     "all_or_none": "true",
+                    "notify_record_owners": "false",  # Will error otherwise
                     "files": file_streams,
                 },
                 headers={
@@ -1090,6 +1196,8 @@ class BaseImportServiceTest:
         user_factory,
         search_clear,
         mock_send_remote_api_update_fixture,
+        mailbox,
+        mocker,
     ):
         self.app = running_app.app
         u = user_factory(email="test@example.com", token=True, saml_id=None)
@@ -1097,12 +1205,8 @@ class BaseImportServiceTest:
         identity = get_identity(u.user)
         identity.provides.add(authenticated_user)
 
-        # FIXME: We need to actually create a KC account for the users
-        # assigned as owners, not just a KCWorks account. Or maybe send
-        # them an email with a link to create a KC account with the same
-        # email address?
-
         community_record = minimal_community_factory(
+            slug="neh",
             owner=u.user.id,
             access=self.community_access_override,
         )
@@ -1115,7 +1219,7 @@ class BaseImportServiceTest:
             submitter_identity, submitter_token = identity, u.allowed_token
 
         if not self.by_api:
-            login_user(submitter_identity.user)
+            login_user(submitter_identity.user)  # type: ignore
 
         # Remember to close the file streams after the import is complete
         files, file_list, file_streams = self.files_to_upload
@@ -1178,6 +1282,8 @@ class BaseImportServiceTest:
                 metadata_source_objects,
                 community,
                 user_id,
+                mailbox,
+                mocker,
             )
 
 
@@ -1267,7 +1373,7 @@ class TestImportServiceJArticleErrorMissingFile(BaseImportServiceTest):
         ]
 
 
-class TestImportAPIJournalArticle(BaseImportServiceTest):
+class TestImportAPIJArticleSuccess(BaseImportServiceTest):
     """Test importing two journal articles via the API with no errors."""
 
     @property
@@ -1282,7 +1388,7 @@ class TestImportAPIJournalArticle(BaseImportServiceTest):
         ]
 
 
-class BaseInsufficientPermissionsTest(TestImportAPIJournalArticle):
+class BaseInsufficientPermissionsTest(TestImportAPIJArticleSuccess):
     """Base class for tests that check the API with insufficient permissions."""
 
     def check_result_status(self, import_results: dict, status_code: Optional[int]):
@@ -1348,15 +1454,13 @@ class TestImportAPIInsufficientPermissionsOwner(BaseInsufficientPermissionsTest)
         return new_user.user.id, new_user.allowed_token
 
 
-class TestImportAPIJournalArticleErrorTitle(TestImportServiceJArticleErrorTitle):
+class TestImportAPIJArticleErrorTitle(TestImportServiceJArticleErrorTitle):
     @property
     def by_api(self):
         return True
 
 
-class TestImportAPIJournalArticleErrorMissingFile(
-    TestImportServiceJArticleErrorMissingFile
-):
+class TestImportAPIJArticleErrorMissingFile(TestImportServiceJArticleErrorMissingFile):
     @property
     def by_api(self):
         return True
