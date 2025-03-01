@@ -4,7 +4,13 @@
 
 # Changes
 
-## 0.4.0-beta9 (2025-02-25)
+## 0.3.7-beta10 (2025-03-01)
+
+- Importer
+    - Added email notifications for failed imports along with a new API flag to disable them.
+
+
+## 0.3.6-beta9 (2025-02-25)
 
 - Importer
     - Added a new streamlined importer API.
