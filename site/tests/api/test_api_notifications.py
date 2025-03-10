@@ -1501,6 +1501,9 @@ def test_notification_on_first_upload(
     assert "A new user has created their first draft." in email.body
     assert "A new user has created their first draft." in email.html
 
+    # Refresh the index to ensure the draft is indexed
+    RDMDraft.index.refresh()
+
     # Create a second draft work (different work)
     draft2_response = client.post(
         f"{app.config['SITE_API_URL']}/records",

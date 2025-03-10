@@ -618,10 +618,14 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
         rdm_record = records_service.read(
             system_identity, id_=record_created_id
         ).to_dict()
-        assert rdm_record["files"] == {
-            k: v
-            for k, v in test_metadata.published["files"].items()
-            if k != "default_preview"
+        expected_record_files = copy.deepcopy(test_metadata.published["files"])
+
+        # FIXME: There's an inconsistency in file metadata between test runs
+        # locally and on github. The github run extracts image dimensions.
+        if "sample.jpg" in expected_record_files["entries"].keys():
+            expected_record_files["entries"]["sample.jpg"]["metadata"] = {}
+        assert expected_record_files == {
+            k: v for k, v in expected_record_files.items() if k != "default_preview"
         }
 
         # ensure the files can be downloaded

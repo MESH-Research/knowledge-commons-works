@@ -641,6 +641,11 @@ class TestRecordMetadata:
                     == expected["files"]["entries"][k]["storage_class"]
                 )
                 if v["metadata"]:
+                    if v["key"] == "sample.jpg":  # meta drawn from file
+                        expected["files"]["entries"][k]["metadata"] = {
+                            "height": 1672,
+                            "width": 1254,
+                        }
                     assert v["metadata"] == expected["files"]["entries"][k]["metadata"]
                 else:
                     assert not expected["files"]["entries"][k]["metadata"]
@@ -719,7 +724,7 @@ class TestRecordMetadata:
                 assert actual["parent"]["pids"] == {
                     "doi": {
                         "client": "datacite",
-                        "identifier": (f"10.17613/{actual['parent']['id']}"),
+                        "identifier": f"10.17613/{actual['parent']['id']}",
                         "provider": "datacite",
                     },
                 }

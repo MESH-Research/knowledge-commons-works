@@ -1,3 +1,4 @@
+from pprint import pformat
 import arrow
 from invenio_access.permissions import system_identity
 from invenio_search.proxies import current_search
@@ -36,6 +37,13 @@ def test_stats_backend_processing(
     record_id = published.id
     metadata_record = published.to_dict()
     dt = arrow.utcnow()
+
+    # ensure that the stats queue is empty
+    # before we add any events to it
+    old_view_events = [p for p in current_stats.consume("record-view")]
+    old_download_events = [p for p in current_stats.consume("file-download")]
+    app.logger.debug(f"pre-existing view events: {pformat(old_view_events)}")
+    app.logger.debug(f"pre-existing download events: {pformat(old_download_events)}")
 
     # set previous bookmark to one tz aware
     # to ensure that it is properly handled by the tests
@@ -91,7 +99,27 @@ def test_stats_backend_processing(
             }
         ],
     )
+
+    # put events in search index from queue
     events = process_events(["file-download", "record-view"])
+
+    current_search.flush_and_refresh(index="*")
+    # app.logger.debug(
+    #     f"events: {pformat(current_search_client.indices.get('*record-view*'))}"
+    # )
+    # app.logger.debug(
+    #     f"events: {pformat(current_search_client.indices.get('*file-download*'))}"
+    # )
+    # view_records = current_search_client.search(
+    #     index="events-stats-record-view", body={}
+    # )
+    # app.logger.debug(f"view_records: {pformat(view_records)}")
+    # download_records = current_search_client.search(
+    #     index="events-stats-file-download", body={}
+    # )
+    # app.logger.debug(f"download_records: {pformat(download_records)}")
+
+    # check that events are in search index
     assert len(events) == 2
     assert events == [("file-download", (1, 0)), ("record-view", (1, 0))]
     current_search.flush_and_refresh(index="*")
