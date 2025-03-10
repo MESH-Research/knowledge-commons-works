@@ -1,4 +1,4 @@
-name: CI
+name: Container Build
 
 on:
   # Allow manual triggering of the workflow
