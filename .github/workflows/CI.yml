@@ -120,6 +120,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           docker build . --file Dockerfile --platform=linux/amd64 --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $ECR_REGISTRY/kcworks:$RELEASE_VERSION
+          docker build ./docker/nginx_production/ --platform=linux/amd64 --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend:$RELEASE_VERSION --tag $ECR_REGISTRY/$IMAGE_NAME-frontend:$RELEASE_VERSION
           docker image ls
 
       - name: Push Image to Docker Hub
@@ -127,6 +128,7 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME --all-tags
+          docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend --all-tags
 
       - name: Push production or staging image to Amazon ECR
         if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging' || env.RELEASE_VERSION == 'dev'
@@ -135,6 +137,7 @@ jobs:
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         run: |
           docker push $ECR_REGISTRY/kcworks:$RELEASE_VERSION
+          docker push $ECR_REGISTRY/$IMAGE_NAME-frontend:$RELEASE_VERSION
 
       - name: Start containers
         if: always()
