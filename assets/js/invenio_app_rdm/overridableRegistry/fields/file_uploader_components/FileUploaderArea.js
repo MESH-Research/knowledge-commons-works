@@ -11,7 +11,7 @@ import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { useFormikContext } from "formik";
 import _get from "lodash/get";
 import PropTypes from "prop-types";
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import {
   Button,
@@ -63,10 +63,21 @@ const FileTableRow = ({
   defaultPreview,
   setDefaultPreview,
   decimalSizeDisplay,
+  noFilesUploading,
 }) => {
   const [isCancelling, setIsCancelling] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const isDefaultPreview = defaultPreview === file.name;
+
+  // This is a workaround to prevent the pending label from flashing as "failed"
+  // when a new row first appears.
+  const [showPendingLabel, setShowPendingLabel] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowPendingLabel(true);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleDelete = async (file) => {
     setIsDeleting(true);
@@ -95,7 +106,7 @@ const FileTableRow = ({
           onChange={() => setDefaultPreview(isDefaultPreview ? "" : file.name)}
         />
       </Table.Cell>
-      <Table.Cell data-label={i18next.t("Filename")} width={10}>
+      <Table.Cell data-label={i18next.t("Filename")} width={6}>
         <div>
           {file.uploadState.isPending ? (
             file.name
@@ -104,7 +115,7 @@ const FileTableRow = ({
               href={_get(file, "links.content", "")}
               target="_blank"
               rel="noopener noreferrer"
-              className="mr-5"
+              className="mr-5 breakable-text"
             >
               {file.name}
             </a>
@@ -131,25 +142,44 @@ const FileTableRow = ({
         <Table.Cell
           className="file-upload-pending"
           data-label={i18next.t("Progress")}
-          width={2}
+          width={6}
         >
           {!file.uploadState?.isPending && (
-            <Progress
-              className="file-upload-progress primary"
-              percent={file.progressPercentage}
-              error={file.uploadState.isFailed}
-              size="medium"
-              progress
-              autoSuccess
-              active
-            />
+            <>
+              {file.uploadState?.isFailed && (
+                <span className="ui warning text">
+                  <Icon name="warning sign" />
+                  {i18next.t("Failed")}
+                </span>
+              )}
+              <Progress
+                className="file-upload-progress primary"
+                percent={file.progressPercentage}
+                error={file.uploadState.isFailed}
+                size="medium"
+                progress
+                autoSuccess
+                active
+              />
+            </>
           )}
-          {file.uploadState?.isPending && <span>{i18next.t("Pending")}</span>}
+          {file.uploadState?.isPending && showPendingLabel && (
+            <>
+              {!file.uploadState?.isFailed && !noFilesUploading ? (
+                <span>{i18next.t("Pending")}</span>
+              ) : (
+                <span className="ui warning text">
+                  <Icon name="warning sign" />
+                  {i18next.t("Failed")}
+                </span>
+              )}
+            </>
+          )}
         </Table.Cell>
       )}
       {isDraftRecord && (
         <Table.Cell textAlign="right" width={2}>
-          {(file.uploadState?.isFinished || file.uploadState?.isFailed) &&
+          {(file.uploadState?.isFinished || file.uploadState?.isFailed || (file.uploadState?.isPending && !file.uploadState?.isUploading)) &&
             (isDeleting ? (
               <Icon loading name="spinner" />
             ) : (
@@ -271,6 +301,7 @@ const FilesListTable = ({
   filesList,
   deleteFile,
   decimalSizeDisplay,
+  noFilesUploading,
 }) => {
   const { setFieldValue, values: formikDraft } = useFormikContext();
   const defaultPreview = _get(formikDraft, "files.default_preview", "");
@@ -290,6 +321,7 @@ const FilesListTable = ({
                 setFieldValue("files.default_preview", filename)
               }
               decimalSizeDisplay={decimalSizeDisplay}
+              noFilesUploading={noFilesUploading}
             />
           );
         })}
@@ -312,10 +344,13 @@ FilesListTable.defaultProps = {
   decimalSizeDisplay: undefined,
 };
 
+
 export class FileUploaderArea extends Component {
   render() {
     const { filesEnabled, dropzoneParams, filesList, isDraftRecord } =
       this.props;
+    const noFilesUploading = filesList.every((file) => file.uploadState?.isUploading === false);
+
     return filesEnabled || isDraftRecord ? (
       <Dropzone {...dropzoneParams}>
         {({ getRootProps, getInputProps, open: openFileDialog }) => (
@@ -324,7 +359,7 @@ export class FileUploaderArea extends Component {
               <input {...getInputProps()} />
               {filesList.length !== 0 && (
                 <Grid.Column verticalAlign="middle">
-                  <FilesListTable {...this.props} />
+                  <FilesListTable {...this.props} noFilesUploading={noFilesUploading} />
                 </Grid.Column>
               )}
               <FileUploadBox {...this.props} openFileDialog={openFileDialog} />
