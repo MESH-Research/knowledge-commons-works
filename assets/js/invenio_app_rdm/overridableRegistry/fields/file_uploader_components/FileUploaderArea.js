@@ -85,6 +85,8 @@ const FileTableRow = ({
     file.cancelUploadFn();
   };
 
+  console.log(file.uploadState);
+
   return (
     <Table.Row key={file.name}>
       <Table.Cell data-label={i18next.t("Default preview")} width={2}>
@@ -95,7 +97,7 @@ const FileTableRow = ({
           onChange={() => setDefaultPreview(isDefaultPreview ? "" : file.name)}
         />
       </Table.Cell>
-      <Table.Cell data-label={i18next.t("Filename")} width={10}>
+      <Table.Cell data-label={i18next.t("Filename")} width={6}>
         <div>
           {file.uploadState.isPending ? (
             file.name
@@ -104,7 +106,7 @@ const FileTableRow = ({
               href={_get(file, "links.content", "")}
               target="_blank"
               rel="noopener noreferrer"
-              className="mr-5"
+              className="mr-5 breakable-text"
             >
               {file.name}
             </a>
@@ -131,25 +133,44 @@ const FileTableRow = ({
         <Table.Cell
           className="file-upload-pending"
           data-label={i18next.t("Progress")}
-          width={2}
+          width={6}
         >
           {!file.uploadState?.isPending && (
-            <Progress
-              className="file-upload-progress primary"
-              percent={file.progressPercentage}
-              error={file.uploadState.isFailed}
-              size="medium"
-              progress
-              autoSuccess
-              active
-            />
+            <>
+              {file.uploadState?.isFailed && (
+                <span className="ui warning text">
+                  <Icon name="warning sign" />
+                  {i18next.t("Failed")}
+                </span>
+              )}
+              <Progress
+                className="file-upload-progress primary"
+                percent={file.progressPercentage}
+                error={file.uploadState.isFailed}
+                size="medium"
+                progress
+                autoSuccess
+                active
+              />
+            </>
           )}
-          {file.uploadState?.isPending && <span>{i18next.t("Pending")}</span>}
+          {file.uploadState?.isPending && (
+            <>
+              {(file.uploadState?.isFailed || !file.uploadState?.isUploading) ? (
+                <span className="ui warning text">
+                  <Icon name="warning sign" />
+                  {i18next.t("Failed")}
+                </span>
+              ) : (
+                <span>{i18next.t("Pending")}</span>
+              )}
+            </>
+          )}
         </Table.Cell>
       )}
       {isDraftRecord && (
         <Table.Cell textAlign="right" width={2}>
-          {(file.uploadState?.isFinished || file.uploadState?.isFailed) &&
+          {(file.uploadState?.isFinished || file.uploadState?.isFailed || (file.uploadState?.isPending && !file.uploadState?.isUploading)) &&
             (isDeleting ? (
               <Icon loading name="spinner" />
             ) : (
