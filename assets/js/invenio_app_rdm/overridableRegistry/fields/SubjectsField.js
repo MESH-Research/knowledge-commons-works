@@ -130,7 +130,7 @@ const SubjectsField = ({
                     clearable={clearable}
                     description={undefined}  /** Description is rendered separately */
                     fieldPath={fieldPath}
-                    helpText={undefined} /** Help text is rendered separately */
+                    helpText={"For best results, choose a subject category at right."} /** Help text is rendered separately */
                     initialSuggestions={getIn(values, fieldPath, [])}
                     label={
                       <>
