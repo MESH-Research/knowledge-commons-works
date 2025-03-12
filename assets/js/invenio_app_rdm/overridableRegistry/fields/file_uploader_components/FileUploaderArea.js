@@ -96,6 +96,8 @@ const FileTableRow = ({
     file.cancelUploadFn();
   };
 
+  console.log(file.uploadState);
+
   return (
     <Table.Row key={file.name}>
       <Table.Cell data-label={i18next.t("Default preview")} width={2}>
@@ -163,15 +165,15 @@ const FileTableRow = ({
               />
             </>
           )}
-          {file.uploadState?.isPending && showPendingLabel && (
+          {file.uploadState?.isPending && (
             <>
-              {!file.uploadState?.isFailed && !noFilesUploading ? (
-                <span>{i18next.t("Pending")}</span>
-              ) : (
+              {(file.uploadState?.isFailed || !file.uploadState?.isUploading) ? (
                 <span className="ui warning text">
                   <Icon name="warning sign" />
                   {i18next.t("Failed")}
                 </span>
+              ) : (
+                <span>{i18next.t("Pending")}</span>
               )}
             </>
           )}
