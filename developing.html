@@ -398,7 +398,7 @@ After that you can run <code class="docutils literal notranslate"><span class="p
 </section>
 <section id="changes-to-python-code-in-the-site-folder">
 <h3>Changes to python code in the <code class="docutils literal notranslate"><span class="pre">site</span></code> folder<a class="headerlink" href="#changes-to-python-code-in-the-site-folder" title="Link to this heading">¶</a></h3>
-<p>Changes to python code in the <code class="docutils literal notranslate"><span class="pre">site</span></code> folder should (like changes to template files) take effect immediately in the running Knowledge Commons Works instance. You simply need to refresh the page in your browser.</p>
+<p>Changes to python code in the <code class="docutils literal notranslate"><span class="pre">site</span></code> folder should (like changes to template files) take effect immediately in the running Knowledge Commons Works instance, provided that the <code class="docutils literal notranslate"><span class="pre">build-assets.sh</span></code> script has been run since the last updated image was built. You simply need to refresh the page in your browser.</p>
 <section id="adding-new-entry-points">
 <h4>Adding new entry points<a class="headerlink" href="#adding-new-entry-points" title="Link to this heading">¶</a></h4>
 <p>Sometimes you will need to add new entry points to inform the Flask application about additional code you have provided. This is done via the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file in the <code class="docutils literal notranslate"><span class="pre">site</span></code> folder. Once you have added the entry point declaration, you will need to re-install the <code class="docutils literal notranslate"><span class="pre">kcworks</span></code> package in the <code class="docutils literal notranslate"><span class="pre">kcworks-ui</span></code>, <code class="docutils literal notranslate"><span class="pre">kcworks-api</span></code>, and <code class="docutils literal notranslate"><span class="pre">kcworks-worker</span></code> container. This can be done by running the following command inside the each container:</p>
@@ -471,21 +471,24 @@ bash<span class="w"> </span>./scripts/build-assets.sh
 <li><p>Then refresh your browser to see the changes.</p></li>
 </ol>
 </section>
-<section id="running-automated-tests-needs-updating">
-<h2>Running automated tests (NEEDS UPDATING)<a class="headerlink" href="#running-automated-tests-needs-updating" title="Link to this heading">¶</a></h2>
+<section id="running-automated-tests">
+<h2>Running automated tests<a class="headerlink" href="#running-automated-tests" title="Link to this heading">¶</a></h2>
 <p>Automated tests (unit tests and integration tests) are run every time a commit is pushed to the knowledge-commons-works Github repo. You can (and should) also run the test suite locally.</p>
-<p>There are currently two distinct sets of tests that have to be run separately: python tests run using invenio’s fixtures, and javascript tests run separately using jest.</p>
+<p>There are currently three distinct sets of tests that have to be run separately:
+(a) python tests run using invenio’s fixtures,
+(b) javascript tests run separately using jest,
+(c) Ghost Inspector tests that run on the deployed site (staging or production).</p>
 <section id="python-tests">
 <h3>Python tests<a class="headerlink" href="#python-tests" title="Link to this heading">¶</a></h3>
-<p>The python test suite includes (a) unit tests for back end code, (b) tests of ui views and api requests run with a client fixture, (c) user interaction tests run with selenium webdriver. To run the unit tests and view/request tests, navigate to the root knowledge-commons-works folder and run</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv run pytest</span>
+<p>The python test suite includes (a) unit tests for back end code, (b) tests of ui views and api requests run with a client fixture. To run the unit tests and view/request tests, navigate to the root <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works/site</span></code> folder and run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run_tests.sh</span>
 </pre></div>
 </div>
-<p>By default the selenium browser interaction tests are not run. To include these, run pytest with the E2E environment variable set to “yes”:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv run E2E=yes pytest</span>
-</pre></div>
-</div>
-<p>Running the selenium tests also requires that you have the Selenium Client and Chrome Webdriver installed locally.</p>
+<p>Note that you will need to have your local docker service running for these tests to work, since they use the <code class="docutils literal notranslate"><span class="pre">docker-services-cli</span></code> tool to start the required services.</p>
+<blockquote>
+<div><p>[!Note]
+Ensure that you have stopped the docker-compose project for your local development instance before running the tests! Otherwise, you will get conflicts with the services that are started by the tests.</p>
+</div></blockquote>
 </section>
 <section id="javascript-tests">
 <h3>Javascript tests<a class="headerlink" href="#javascript-tests" title="Link to this heading">¶</a></h3>
@@ -498,6 +501,14 @@ bash<span class="w"> </span>./scripts/build-assets.sh
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">npm install</span>
 </pre></div>
 </div>
+</section>
+<section id="ghost-inspector-tests">
+<h3>Ghost Inspector tests<a class="headerlink" href="#ghost-inspector-tests" title="Link to this heading">¶</a></h3>
+<p>The Ghost Inspector tests are run on the deployed site (staging or production). They run on a regular schedule and are used to ensure that the site is working as expected.</p>
+<blockquote>
+<div><p>[!Note]
+At present, Ghost Inspector tests are not run automatically when a pull request is merged into the <code class="docutils literal notranslate"><span class="pre">staging</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code> branches. This should be implemented in the future once deployment to the respective servers is fully automated.</p>
+</div></blockquote>
 </section>
 </section>
 </section>
@@ -588,9 +599,10 @@ bash<span class="w"> </span>./scripts/build-assets.sh
 </li>
 <li><a class="reference internal" href="#digging-deeper">Digging deeper</a></li>
 <li><a class="reference internal" href="#updating-an-instance-with-upstream-changes">Updating an Instance with Upstream Changes</a></li>
-<li><a class="reference internal" href="#running-automated-tests-needs-updating">Running automated tests (NEEDS UPDATING)</a><ul>
+<li><a class="reference internal" href="#running-automated-tests">Running automated tests</a><ul>
 <li><a class="reference internal" href="#python-tests">Python tests</a></li>
 <li><a class="reference internal" href="#javascript-tests">Javascript tests</a></li>
+<li><a class="reference internal" href="#ghost-inspector-tests">Ghost Inspector tests</a></li>
 </ul>
 </li>
 </ul>

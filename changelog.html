@@ -257,12 +257,54 @@
 <!-- Copyright (C) 2024 Mesh Research. -->
 <section id="changes">
 <h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
+<section id="beta11-2025-03-14">
+<h2>0.3.8-beta11 (2025-03-14)<a class="headerlink" href="#beta11-2025-03-14" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>File Uploads</p>
+<ul>
+<li><p>Fixed a bug causing large file uploads to fail.</p></li>
+<li><p>Partially fixed a bug causing some parallel file uploads to fail. (A complete fix will require changes to InvenioRDM.)</p></li>
+<li><p>Added a button to allow deleting files (and so retrying them) when an upload has failed.</p></li>
+<li><p>Minor UI improvements to the upload form file upload widget:</p>
+<ul>
+<li><p>layout improvements for the file list</p></li>
+<li><p>changed the “pending” label to “failed” when a file’s content upload has failed.</p></li>
+<li><p>added a note advising against parallel uploads of large files</p></li>
+<li><p>added a flag in the file list if a file type cannot be previewed</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Search</p>
+<ul>
+<li><p>Added a note to the subjects widget of the upload form to advise users to select a subject category.</p></li>
+</ul>
+</li>
+<li><p>Documentation</p>
+<ul>
+<li><p>Some improvements to the developer documentation.</p></li>
+</ul>
+</li>
+<li><p>Testing</p>
+<ul>
+<li><p>Several improvements to the test suite allowing the tests to pass on Github as well as locally.</p></li>
+</ul>
+</li>
+<li><p>Server</p>
+<ul>
+<li><p>Upgraded the nginx server to version 1.27.4</p></li>
+<li><p>Added automated building of the kcworks-frontend docker image on push to each branch, just as with the main kcworks image.</p></li>
+</ul>
+</li>
+</ul>
+</section>
 <section id="beta10-2025-03-01">
 <h2>0.3.7-beta10 (2025-03-01)<a class="headerlink" href="#beta10-2025-03-01" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Importer</p>
 <ul>
-<li><p>Added email notifications for failed imports along with a new API flag to disable them.</p></li>
+<li><p>Added email notifications to the owners of records imported using the new importer API.</p></li>
+<li><p>Added a new API flag to disable these email notifications.</p></li>
 </ul>
 </li>
 </ul>
@@ -541,6 +583,7 @@ or creating a new version</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changes</a><ul>
+<li><a class="reference internal" href="#beta11-2025-03-14">0.3.8-beta11 (2025-03-14)</a></li>
 <li><a class="reference internal" href="#beta10-2025-03-01">0.3.7-beta10 (2025-03-01)</a></li>
 <li><a class="reference internal" href="#beta9-2025-02-25">0.3.6-beta9 (2025-02-25)</a></li>
 <li><a class="reference internal" href="#beta8-2025-01-10">0.3.5-beta8 (2025-01-10)</a></li>
