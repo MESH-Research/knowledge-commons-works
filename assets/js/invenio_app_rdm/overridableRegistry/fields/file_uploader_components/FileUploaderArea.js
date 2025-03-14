@@ -32,7 +32,7 @@ const FileTableHeader = ({ isDraftRecord }) => (
   <Table.Header>
     <Table.Row>
       <Table.HeaderCell>
-        {i18next.t("Set as preview")}{" "}
+        {i18next.t("Main preview")}{" "}
         <Popup
           content="Choose the file to be previewed by default on the record detail page."
           trigger={<Icon fitted name="help circle" size="small" />}
@@ -83,7 +83,8 @@ const FileTableRow = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowPendingLabel(true);
-    }, 3000);
+      console.log("showPendingLabel", showPendingLabel);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -144,7 +145,7 @@ const FileTableRow = ({
           {!isSupportedFile && (
             <Popup
               content={i18next.t("Visitors will be able to download this file and view it with external applications, but will not be able to preview it in KCWorks.")}
-              trigger={(<Label icon="warning sign" size="small" content={<span>{i18next.t("File type not supported for previews.")}</span>}/>)}
+              trigger={(<Label icon="warning sign" size="small" content={<span>{i18next.t("File type not supported for previews")}</span>}/>)}
             />
           )}
         </div>
@@ -177,7 +178,7 @@ const FileTableRow = ({
               />
             </>
           )}
-          {file.uploadState?.isPending && showPendingLabel && (
+          {(file.uploadState?.isPending && showPendingLabel) && (
             <>
               {!file.uploadState?.isFailed && !noFilesUploading ? (
                 <span>{i18next.t("Pending")}</span>
