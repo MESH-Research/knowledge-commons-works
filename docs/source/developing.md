@@ -159,7 +159,7 @@ You will then need to restart the uwsgi processes or restart the docker-compose 
 
 ### Changes to python code in the `site` folder
 
-Changes to python code in the `site` folder should (like changes to template files) take effect immediately in the running Knowledge Commons Works instance. You simply need to refresh the page in your browser.
+Changes to python code in the `site` folder should (like changes to template files) take effect immediately in the running Knowledge Commons Works instance, provided that the `build-assets.sh` script has been run since the last updated image was built. You simply need to refresh the page in your browser.
 
 #### Adding new entry points
 
@@ -233,23 +233,25 @@ bash ./scripts/build-assets.sh
 
 7. Then refresh your browser to see the changes.
 
-## Running automated tests (NEEDS UPDATING)
+## Running automated tests
 
 Automated tests (unit tests and integration tests) are run every time a commit is pushed to the knowledge-commons-works Github repo. You can (and should) also run the test suite locally.
 
-There are currently two distinct sets of tests that have to be run separately: python tests run using invenio's fixtures, and javascript tests run separately using jest.
+There are currently three distinct sets of tests that have to be run separately:
+(a) python tests run using invenio's fixtures,
+(b) javascript tests run separately using jest,
+(c) Ghost Inspector tests that run on the deployed site (staging or production).
 
 ### Python tests
 
-The python test suite includes (a) unit tests for back end code, (b) tests of ui views and api requests run with a client fixture, (c) user interaction tests run with selenium webdriver. To run the unit tests and view/request tests, navigate to the root knowledge-commons-works folder and run
+The python test suite includes (a) unit tests for back end code, (b) tests of ui views and api requests run with a client fixture. To run the unit tests and view/request tests, navigate to the root `knowledge-commons-works/site` folder and run
 ```console
-pipenv run pytest
+bash run_tests.sh
 ```
-By default the selenium browser interaction tests are not run. To include these, run pytest with the E2E environment variable set to "yes":
-```console
-pipenv run E2E=yes pytest
-```
-Running the selenium tests also requires that you have the Selenium Client and Chrome Webdriver installed locally.
+Note that you will need to have your local docker service running for these tests to work, since they use the `docker-services-cli` tool to start the required services.
+
+> [!Note]
+> Ensure that you have stopped the docker-compose project for your local development instance before running the tests! Otherwise, you will get conflicts with the services that are started by the tests.
 
 ### Javascript tests
 
@@ -263,3 +265,10 @@ Note that these tests run using a local npm configuration in the knowledge-commo
 ```console
 npm install
 ```
+
+### Ghost Inspector tests
+
+The Ghost Inspector tests are run on the deployed site (staging or production). They run on a regular schedule and are used to ensure that the site is working as expected.
+
+> [!Note]
+> At present, Ghost Inspector tests are not run automatically when a pull request is merged into the `staging` or `production` branches. This should be implemented in the future once deployment to the respective servers is fully automated.

@@ -4,10 +4,31 @@
 
 # Changes
 
+## 0.3.8-beta11 (2025-03-14)
+
+- File Uploads
+    - Fixed a bug causing large file uploads to fail.
+    - Partially fixed a bug causing some parallel file uploads to fail. (A complete fix will require changes to InvenioRDM.)
+    - Added a button to allow deleting files (and so retrying them) when an upload has failed.
+    - Minor UI improvements to the upload form file upload widget:
+        - layout improvements for the file list
+        - changed the "pending" label to "failed" when a file's content upload has failed.
+        - added a note advising against parallel uploads of large files
+- Search
+    - Added a note to the subjects widget of the upload form to advise users to select a subject category.
+- Documentation
+    - Some improvements to the developer documentation.
+- Testing
+    - Several improvements to the test suite allowing the tests to pass on Github as well as locally.
+- Server
+    - Upgraded the nginx server to version 1.27.4
+    - Added automated building of the kcworks-frontend docker image on push to each branch, just as with the main kcworks image.
+
 ## 0.3.7-beta10 (2025-03-01)
 
 - Importer
-    - Added email notifications for failed imports along with a new API flag to disable them.
+    - Added email notifications to the owners of records imported using the new importer API.
+    - Added a new API flag to disable these email notifications.
 
 
 ## 0.3.6-beta9 (2025-02-25)
