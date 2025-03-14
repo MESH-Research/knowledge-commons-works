@@ -19,12 +19,14 @@ import {
   Grid,
   Header,
   Icon,
+  Label,
   Popup,
   Progress,
   Segment,
   Table,
 } from "semantic-ui-react";
 import { humanReadableBytes } from "react-invenio-forms";
+import { supportedExtensions } from "./index";
 
 const FileTableHeader = ({ isDraftRecord }) => (
   <Table.Header>
@@ -68,6 +70,12 @@ const FileTableRow = ({
   const [isCancelling, setIsCancelling] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const isDefaultPreview = defaultPreview === file.name;
+  const fileExtension = file.name.split('.').pop().toLowerCase();
+  console.log("file", file);
+  console.log("fileExtension", fileExtension);
+  const isSupportedFile = Object.values(supportedExtensions).some(
+    extensions => extensions.includes(fileExtension)
+  );
 
   // This is a workaround to prevent the pending label from flashing as "failed"
   // when a new row first appears.
@@ -75,7 +83,7 @@ const FileTableRow = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowPendingLabel(true);
-    }, 1000);
+    }, 3000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -100,7 +108,7 @@ const FileTableRow = ({
 
   return (
     <Table.Row key={file.name}>
-      <Table.Cell data-label={i18next.t("Default preview")} width={2}>
+      <Table.Cell data-label={i18next.t("Default preview")} width={1}>
         {/* TODO: Investigate if react-deposit-forms optimized Checkbox field
                   would be more performant */}
         <Checkbox
@@ -108,7 +116,7 @@ const FileTableRow = ({
           onChange={() => setDefaultPreview(isDefaultPreview ? "" : file.name)}
         />
       </Table.Cell>
-      <Table.Cell data-label={i18next.t("Filename")} width={6}>
+      <Table.Cell data-label={i18next.t("Filename")} width={7}>
         <div>
           {file.uploadState.isPending ? (
             file.name
@@ -124,8 +132,8 @@ const FileTableRow = ({
           )}
           <br />
           {file.checksum && (
-            <div className="ui text-muted">
-              <span style={{ fontSize: "10px" }}>{file.checksum}</span>{" "}
+            <div className="ui text-muted mt-5">
+              <small>{file.checksum}</small>{" "}
               <Popup
                 content={i18next.t(
                   "This is the file fingerprint (MD5 checksum), which can be used to verify the file integrity."
@@ -134,6 +142,12 @@ const FileTableRow = ({
                 position="top center"
               />
             </div>
+          )}
+          {!isSupportedFile && (
+            <Popup
+              content={i18next.t("Visitors will be able to download this file and view it with external applications, but will not be able to preview it in KCWorks.")}
+              trigger={(<Label icon="warning sign" size="small" content={<span>{i18next.t("File type not supported for previews.")}</span>}/>)}
+            />
           )}
         </div>
       </Table.Cell>
