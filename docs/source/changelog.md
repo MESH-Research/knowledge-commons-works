@@ -14,6 +14,7 @@
         - layout improvements for the file list
         - changed the "pending" label to "failed" when a file's content upload has failed.
         - added a note advising against parallel uploads of large files
+        - added a flag in the file list if a file type cannot be previewed
 - Search
     - Added a note to the subjects widget of the upload form to advise users to select a subject category.
 - Documentation
