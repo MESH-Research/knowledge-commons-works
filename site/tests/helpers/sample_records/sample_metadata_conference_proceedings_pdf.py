@@ -1,4 +1,4 @@
-rec16079 = {
+sample_metadata_conference_proceedings_pdf = {
     "input": {
         "created": "2017-10-26T12:31:39Z",
         "pids": {
@@ -175,9 +175,7 @@ rec16079 = {
                             "https://creativecommons.org/licenses/by/4.0/legalcode"
                         ),
                     },
-                    "title": {
-                        "en": "Creative Commons Attribution 4.0 International"
-                    },
+                    "title": {"en": "Creative Commons Attribution 4.0 International"},
                 }
             ],
             "subjects": [
@@ -598,13 +596,10 @@ rec16079 = {
                     "props": {
                         "scheme": "spdx",
                         "url": (
-                            "https://creativecommons.org/licenses/by/"
-                            "4.0/legalcode"
+                            "https://creativecommons.org/licenses/by/" "4.0/legalcode"
                         ),
                     },
-                    "title": {
-                        "en": "Creative Commons Attribution 4.0 International"
-                    },
+                    "title": {"en": "Creative Commons Attribution 4.0 International"},
                 }
             ],
             "subjects": [

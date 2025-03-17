@@ -168,6 +168,7 @@ idp_responses = {
                 "profile": {
                     "username": "knowledgeCommons-joanjett",
                     "full_name": "Joan Jett",
+                    "identifier_kc_username": "joanjett",
                 },
             },
             "external_id": "joanjett",
@@ -206,6 +207,9 @@ idp_responses = {
                     "username": "knowledgeCommons-user1",
                     "full_name": "User Number One",
                     "affiliations": "Independent Scholar",
+                    # Added from api call
+                    "identifier_orcid": "0000-0002-1825-0097",  # official dummy orcid
+                    "identifier_kc_username": "user1",
                 },
             },
             "external_id": "user1",
@@ -240,6 +244,8 @@ idp_responses = {
                     "username": "knowledgeCommons-janedoe",
                     "full_name": "Jane Doe",
                     "affiliations": "College Of Human Medicine",
+                    "identifier_orcid": "0000-0002-1825-0097",
+                    "identifier_kc_username": "janedoe",
                 },
             },
             "external_id": "janedoe",
@@ -290,8 +296,9 @@ idp_responses = {
                 "email": None,  # FIXME: Unobfuscated email not sent by
                 # KC because no email marked as official
                 "profile": {
-                    "full_name": "Ghost Hc",
                     "username": "knowledgeCommons-gihctester",
+                    "full_name": "Ghost Hc",
+                    "identifier_kc_username": "gihctester",
                 },
             },
             "external_id": "gihctester",
@@ -326,8 +333,10 @@ idp_responses = {
             "user": {
                 "email": "jrghosttester@email.ghostinspector.com",
                 "profile": {
-                    "full_name": "Ghost Tester",
                     "username": "knowledgeCommons-ghostrjtester",
+                    "full_name": "Ghost Tester",
+                    "identifier_orcid": "0000-0002-1825-0097",
+                    "identifier_kc_username": "ghostrjtester",
                 },
             },
             "external_id": "ghostrjtester",

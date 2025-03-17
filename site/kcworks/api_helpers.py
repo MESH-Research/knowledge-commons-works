@@ -66,10 +66,16 @@ def format_commons_search_payload(
     **kwargs,
 ) -> dict:
     """Format payload for external service."""
-    UI_URL_BASE = os.environ.get("INVENIO_SITE_UI_URL", "http://works.kcommons.org")
-    API_URL_BASE = os.environ.get(
-        "INVENIO_SITE_API_URL", "http://works.kcommons.org/api"
-    )
+    UI_URL_BASE = os.environ.get("INVENIO_SITE_UI_URL", "")
+    if not UI_URL_BASE:
+        UI_URL_BASE = current_app.config.get(
+            "SITE_UI_URL", "https://works.kcommons.org"
+        )
+    API_URL_BASE = os.environ.get("INVENIO_SITE_API_URL", "")
+    if not API_URL_BASE:
+        API_URL_BASE = current_app.config.get(
+            "SITE_API_URL", "https://works.kcommons.org/api"
+        )
     PROFILES_URL_BASE = current_app.config.get(
         "KC_PROFILES_URL_BASE", "http://hcommons.org/profiles"
     )

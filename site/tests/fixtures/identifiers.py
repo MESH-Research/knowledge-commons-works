@@ -36,8 +36,7 @@ test_config_identifiers = {
             "providers": ["datacite"],
             "required": True,
             "condition": (
-                lambda rec: rec.pids.get("doi", {}).get("provider")
-                == "datacite"
+                lambda rec: rec.pids.get("doi", {}).get("provider") == "datacite"
             ),
             "label": _("Concept DOI"),
             "validator": idutils.is_doi,
@@ -60,9 +59,7 @@ test_config_identifiers = {
         providers.ExternalPIDProvider(
             "external",
             "doi",
-            validators=[
-                providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])
-            ],
+            validators=[providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])],
             label=_("DOI"),
         ),
         # OAI identifier
@@ -82,9 +79,7 @@ test_config_identifiers = {
         providers.ExternalPIDProvider(
             "external",
             "doi",
-            validators=[
-                providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])
-            ],
+            validators=[providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])],
             label=_("DOI"),
         ),
         # OAI identifier
@@ -155,6 +150,16 @@ test_config_identifiers = {
             "validator": always_valid,
             "datacite": "Other",
         },
+        "import-recid": {
+            "label": _("Import Record ID"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
+        "neh-recid": {
+            "label": _("NEH Record ID"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
     },
     "RDM_RECORDS_PERSONORG_SCHEMES": {
         **RDM_RECORDS_PERSONORG_SCHEMES,
@@ -175,6 +180,16 @@ test_config_identifiers = {
         },
         "kc_username": {
             "label": _("KC member"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
+        "neh_user_id": {
+            "label": _("NEH user ID"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
+        "import_user_id": {
+            "label": _("Import user ID"),
             "validator": always_valid,
             "datacite": "Other",
         },

@@ -1,4 +1,4 @@
-rec44881 = {
+sample_metadata_interview_transcript_pdf = {
     "input": {
         "pids": {
             "doi": {

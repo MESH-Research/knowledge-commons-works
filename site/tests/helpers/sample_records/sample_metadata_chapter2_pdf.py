@@ -1,6 +1,6 @@
-rec22625 = {
+sample_metadata_chapter2_pdf = {
     "input": {
-        "created": "2019-01-29T03:57:00Z",
+        # "created": "2019-01-29T03:57:00Z",
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -36,21 +36,21 @@ rec22625 = {
                 "pages": "57-74",
                 "title": "Habad Hasidism: History, Thought, Image",
             },
-            "hclegacy:groups_for_deposit": [
-                {
-                    "group_identifier": "1000610",
-                    "group_name": "Jewish Mysticism",
-                },
-                {
-                    "group_identifier": "1000611",
-                    "group_name": "Modern Jewish Thought and Theology",
-                },
-            ],
+            # "hclegacy:groups_for_deposit": [
+            #     {
+            #         "group_identifier": "1000610",
+            #         "group_name": "Jewish Mysticism",
+            #     },
+            #     {
+            #         "group_identifier": "1000611",
+            #         "group_name": "Modern Jewish Thought and Theology",
+            #     },
+            # ],
             "hclegacy:record_change_date": "2019-01-29T03:57:00Z",
             "hclegacy:record_creation_date": "2019-01-29T03:57:00Z",
         },
         "files": {
-            "default_preview": "55710426.pdf",
+            # "default_preview": "55710426.pdf",
             "enabled": True,
             "entries": {
                 "55710426.pdf": {
@@ -65,7 +65,8 @@ rec22625 = {
             #     [{'description': ('The issue of gender has been a topic of '
             #                      'discussion in the research of Hasidism since S. '
             #                      'A. Horodecky’s book (1923), in which he '
-            #                      'claimed that Hasidism brought about full ' 'equality of Jewish men and women in the field '
+            #                      'claimed that Hasidism brought about full '
+            #                      'equality of Jewish men and women in the field '
             #                      'of spirituality. Although his claims have been '
             #                      'by and large rejected, most\nscholars agree that '
             #                      'the twentieth century Chabad movement has '
@@ -216,8 +217,19 @@ rec22625 = {
             "publisher": "Zalman Shazar Center",
             "title": "מגדר וזמן בכתבי ר׳ שניאור זלמן מלאדי",
         },
-        "parent": {"access": {"owned_by": [{"user": "1017065"}]}},
-        "updated": "2019-01-29T03:57:00Z",
+        "parent": {
+            "access": {
+                "owned_by": [
+                    {
+                        "email": "test@example.com",
+                        "identifiers": [
+                            {"identifier": "1017065", "scheme": "neh_user_id"},
+                        ],
+                    }
+                ]
+            }
+        },
+        # "updated": "2019-01-29T03:57:00Z",
     },
     "expected_serialized": {
         "record_source": "knowledgeCommons",
@@ -382,8 +394,15 @@ rec22625 = {
             "publisher": "Zalman Shazar Center",
             "title": "מגדר וזמן בכתבי ר׳ שניאור זלמן מלאדי",
         },
-        "parent": {"access": {"owned_by": [{"user": "1017065"}]}},
-        "updated": "2019-01-29T03:57:00Z",
+        "parent": {
+            "access": {
+                "owned_by": [
+                    {"identifier": "1017065", "scheme": "neh_user_id"},
+                    {"email": "test@example.com"},
+                ]
+            }
+        },
+        # "updated": "2019-01-29T03:57:00Z",
     },
     "expected_loaded": {
         "record_source": "knowledgeCommons",

@@ -1,4 +1,4 @@
-rec22647 = {
+sample_metadata_chapter3_pdf = {
     "input": {
         "created": "2019-02-01T19:30:52Z",
         "pids": {
@@ -836,9 +836,7 @@ rec22647 = {
                 },
             ],
             "publisher": "Oxford University Press",
-            "title": (
-                "Unfixing Epic: Homeric Orality and Contemporary Performance"
-            ),
+            "title": ("Unfixing Epic: Homeric Orality and Contemporary Performance"),
         },
         "parent": {"access": {"owned_by": [{"user": "1012453"}]}},
         "updated": "2019-02-01T19:30:52Z",

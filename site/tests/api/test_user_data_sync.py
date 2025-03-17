@@ -21,7 +21,7 @@ def test_user_data_kc_endpoint():
 
     The focus here is on the json schema being returned
     """
-    protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "http")
+    protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https")
     base_url = f"{protocol}://hcommons.org/wp-json/commons/v1/users"
     url = f"{base_url}/gihctester"
     token = os.environ.get("COMMONS_API_TOKEN_PROD")
@@ -112,8 +112,15 @@ def test_do_user_data_update_task(
     )
     assert isinstance(u.user, User)
     user = u.user
+    # strip the user_profile and username to make sure all the parts update
+    # otherwise identifier_kc_username and identifier_orcid as well as username
+    # will be set already at account creation time
+    user.user_profile = {}
+    user.username = None
+    current_accounts.datastore.commit()
+
     user_id: int = user.id
-    assert user.username is None  # FIXME: Why no username yet?
+    assert user.username is None
     assert user.email == starting_email
     assert user.user_profile == {}
     assert user.roles == []
@@ -285,7 +292,7 @@ def test_user_data_sync_on_webhook(
     mock_remote_data["username"] = user1_data["saml_id"]
 
     # Mock the remote api call.
-    protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "http")
+    protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https")
     base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
     remote_url = f"{base_url}/{user1_data['saml_id']}"
     mock_adapter = requests_mock.get(
@@ -363,7 +370,7 @@ def test_user_data_sync_on_account_setup(
     running_app, db, user_factory, requests_mock, search_clear
 ):
     # Mock the remote API endpoint
-    protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "http")
+    protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https")
     base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
     remote_url = f"{base_url}/testuser"
     requests_mock.get(

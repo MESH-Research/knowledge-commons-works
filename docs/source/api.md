@@ -104,7 +104,11 @@ Why is this API needed? The InvenioRDM REST API can be fragile and difficult to 
 ### Who can use the import API?
 
 The import API is available to authorized organizations who have obtained an OAuth token for API operations.
+The import API is available to authorized organizations who have obtained an OAuth token for API operations.
 
+The import API places the works directly in a collection, without passing through the review process. So, the user to whom the token is issued must have sufficient permissions to publish directly in the collection. The exact role required depends on the collection's review policy:
+- *If the review policy allows managers and curators to skip the review process*, the user of the import API must have one of the roles "manager," "curator," or "owner" in the collection.
+- *If the review policy requires all submissions to be reviewed*, the user of the import API must have the "owner" role in the collection.
 The import API places the works directly in a collection, without passing through the review process. So, the user to whom the token is issued must have sufficient permissions to publish directly in the collection. The exact role required depends on the collection's review policy:
 - *If the review policy allows managers and curators to skip the review process*, the user of the import API must have one of the roles "manager," "curator," or "owner" in the collection.
 - *If the review policy requires all submissions to be reviewed*, the user of the import API must have the "owner" role in the collection.
@@ -113,6 +117,7 @@ The import API places the works directly in a collection, without passing throug
 
 #### Request
 ```
+POST https://works.hcommons.org/api/import/<my-collection-id><my-collection-id> HTTP/1.1
 POST https://works.hcommons.org/api/import/<my-collection-id> HTTP/1.1
 ```
 
@@ -139,10 +144,12 @@ This request must be made with a multipart/form-data request. The request body m
 | Name | Required | Content Type | Description |
 |-------|----------|--------------|-------------|
 | `files` | yes | `application/octet-stream` | The (binary) file content to be uploaded. If multiple files are being uploaded, a body part with this same name ("files") must be provided for each file. If more than three or four files are being uploaded, it is recommended to provide a single zip archive containing all of the files. The files will be assigned to the appropriate work based on filename, so where multiple files are provided these **must be unique**. If a zip archive is provided, the files must be contained in a single compressed folder with no subfolders. |
-| `metadata` | yes | `application/json` | An array of JSON metadata objects, each of which will be used to create a new work. Each must following the KCWorks implementation of the InvenioRDM metadata schema described {ref}`here <metadata:metadata-schema-vocabularies-and-identifiers>`. In addition, an array of owners for the work may optionally be provided by adding an `access.owned_by` property to each metadata object. Note that if no owners are provided, the work will be created with the organizational account that issued the OAuth token as the owner. |
+| `metadata` | yes | `application/json` | An array of JSON metadata objects, each of which will be used to create a new work. Each must following the KCWorks implementation of the InvenioRDM metadata schema described {ref}`here <metadata:metadata-schema-vocabularies-and-identifiers>`. In addition, an array of owners for the work may optionally be provided by adding a `parent.access.owned_by` property to each metadata object. Note that if no owners are provided, the work will be created with the organizational account that issued the OAuth token as the owner. |
+| `metadata` | yes | `application/json` | An array of JSON metadata objects, each of which will be used to create a new work. Each must following the KCWorks implementation of the InvenioRDM metadata schema described {ref}`here <metadata:metadata-schema-vocabularies-and-identifiers>`. In addition, an array of owners for the work may optionally be provided by adding a `parent.access.owned_by` property to each metadata object. Note that if no owners are provided, the work will be created with the organizational account that issued the OAuth token as the owner. |
 | `review_required` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the work should be reviewed before publication. This setting is only relevant if the work is intended for publication in a collection that requires review. It will override the collection's usual review policy, since the work is being uploaded by a collection administrator. (Default: "true") |
 | `strict_validation` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the import request should be rejected if any validation errors are encountered. If this value is "false", the imported work will be created in KCWorks even if some of the provided metadata does not conform to the KCWorks metadata schema, provided these are not required fields. If this value is "true", the import request will be rejected if any validation errors are encountered. (Default: "true") |
 | `all_or_none` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the entire import request should be rejected if any of the works fail to be created (whether for validation errors, upload errors, or other reasons). If this value is "false", the import request will be accepted even if some of the works cannot be created. The response in this case will include a list of works that were successfully created and a list of errors for the works that failed to be created. (Default: "true") |
+| `notify_record_owners` | no | `text/plain` | A string representation of a boolean (either "true" or "false") indicating whether the owners of the work should be notified by email of the work's creation. (Default: "true") |
 
 #### Identifying the owners of the work
 
@@ -181,6 +188,33 @@ The resulting `owners` list should be shaped like this:
 Note that it is *not* assumed that the creators of a work should be the work's owners. The creators will only be added as owners if each of them is listed in the `access.owned_by` property of the work's metadata object.
 
 > Note, too, that only the first member of the owners array will technically be assigned as the work's owner in KCWorks. The other owners will be assigned access grants to the work with "manage" permissions.
+
+#### KC accounts for work owners
+
+KCWorks will create an internal KCWorks account for each work owner who does not already have an account on Knowledge Commons. Note that this *does not* create a full Knowledge Commons account. The owner will still need to visit Knowledge Commons to create an account through the usual registration process. When they do so, their KCWorks account will be linked to their Knowledge Commons account and they will be able to manage and edit their uploaded works.
+
+> It is vital that the owner provide an identifier when they create their Knowledge Commons account that matches an identifier provided for them in the `owned_by` property of the work's metadata object. This allows KCWorks to link the owner's KCWorks account to their Knowledge Commons account after they register. The connecting identifier may be
+> - the same primary email address
+> - the same ORCID identifier
+
+If an owner does not already belong to the collection to which the records are being imported, that owner will also be added to the collection's membership with the "reader" role. The allows them access to any records restricted to the collection's membership, but does not afford them any additional permissions. What it does mean is that collection managers will be able to see all of the work owners in the list of collection members on the collection's landing page.
+
+#### Email notifications for work owners
+
+When a work is imported into a collection, the work owners will receive an email notification unless the `notify_record_owners` parameter is set to "false". This email will include a link to the work's landing page on KCWorks. The email subject line and the email template used for this notification are configurable on a collection-by-collection basis. Authorized organizations should discuss the desired content with the KCWorks team.
+
+For KCWorks developers: The configuration for this email is found in the config variable `RECORD_IMPORTER_COMMUNITIES` in the KCWorks instance's `invenio.cfg` file. This is a dictionary whose keys are the collection slugs and whose values are dictionaries with the following keys:
+
+- `email_subject_import`: The subject line for the email notification.
+- `email_template_import`: The name of the Jinja2 template file to use for the email notification. These templates must be located in the `templates/security/email` directory. One template file with an `.html` extension and one with a `.txt` extension are required, with identical names apart from the extension. The name provided in the `email_template_import` key should be the filename without the `.html` or `.txt` extension.
+
+The template will receive the following variables:
+
+- `record`: A dictionary containing the metadata for the imported work.
+- `community_page_url`: The URL of the collection's landing page on KCWorks.
+- `kc_registration_link`: The URL of the Knowledge Commons registration page.
+- `user`: The KCWorks User object for the user being notified.
+
 
 #### Identifying the work for import
 

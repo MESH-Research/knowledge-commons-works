@@ -1,3 +1,4 @@
+from pprint import pformat
 import arrow
 from invenio_access.permissions import system_identity
 from invenio_search.proxies import current_search
@@ -5,36 +6,44 @@ from invenio_stats.proxies import current_stats
 from invenio_stats.tasks import process_events, aggregate_events
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_rdm_records.records.stats.api import Statistics
-from invenio_search.proxies import current_search_client
 import pytest
 import uuid
 
+from ..fixtures.records import TestRecordMetadata
+
 
 @pytest.mark.skip("Not implemented")
-def test_stat_creation(running_app, db, search_clear, minimal_record_metadata):
-    draft = current_rdm_records_service.create(system_identity, minimal_record_metadata)
+def test_stat_creation(running_app, db, search_clear):
+    app = running_app.app
+    metadata = TestRecordMetadata(app=app)
+    draft = current_rdm_records_service.create(system_identity, metadata.metadata_in)
     published = current_rdm_records_service.publish(system_identity, draft["id"])
-    record_id = published["id"]
-    metadata_record = published["metadata"]
-    pid = published["pid"]
-    dt = arrow.now()
+    metadata.compare_published(published.to_dict())
 
 
 def test_stats_backend_processing(
     running_app,
     db,
     search_clear,
-    minimal_record_metadata,
     user_factory,
     create_stats_indices,
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
-    draft = current_rdm_records_service.create(system_identity, minimal_record_metadata)
+    app = running_app.app
+    metadata = TestRecordMetadata(app=app)
+    draft = current_rdm_records_service.create(system_identity, metadata.metadata_in)
     published = current_rdm_records_service.publish(system_identity, draft["id"])
     record_id = published.id
     metadata_record = published.to_dict()
     dt = arrow.utcnow()
+
+    # ensure that the stats queue is empty
+    # before we add any events to it
+    old_view_events = [p for p in current_stats.consume("record-view")]
+    old_download_events = [p for p in current_stats.consume("file-download")]
+    app.logger.debug(f"pre-existing view events: {pformat(old_view_events)}")
+    app.logger.debug(f"pre-existing download events: {pformat(old_download_events)}")
 
     # set previous bookmark to one tz aware
     # to ensure that it is properly handled by the tests
@@ -90,7 +99,27 @@ def test_stats_backend_processing(
             }
         ],
     )
+
+    # put events in search index from queue
     events = process_events(["file-download", "record-view"])
+
+    current_search.flush_and_refresh(index="*")
+    # app.logger.debug(
+    #     f"events: {pformat(current_search_client.indices.get('*record-view*'))}"
+    # )
+    # app.logger.debug(
+    #     f"events: {pformat(current_search_client.indices.get('*file-download*'))}"
+    # )
+    # view_records = current_search_client.search(
+    #     index="events-stats-record-view", body={}
+    # )
+    # app.logger.debug(f"view_records: {pformat(view_records)}")
+    # download_records = current_search_client.search(
+    #     index="events-stats-file-download", body={}
+    # )
+    # app.logger.debug(f"download_records: {pformat(download_records)}")
+
+    # check that events are in search index
     assert len(events) == 2
     assert events == [("file-download", (1, 0)), ("record-view", (1, 0))]
     current_search.flush_and_refresh(index="*")

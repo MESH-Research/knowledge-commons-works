@@ -54,9 +54,9 @@ eval "$(PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-wor
 # Note: expansion of pytest_args looks like below to not cause an unbound
 # variable error when 1) "nounset" and 2) the array is empty.
 if [ ${#pytest_args[@]} -eq 0 ]; then
-	PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest -vv
+	PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest -vv --disable-warnings
 else
-	PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest ${pytest_args[@]}
+	PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest ${pytest_args[@]} --disable-warnings
 fi
 # python -m sphinx.cmd.build -qnN -b doctest docs docs/_build/doctest
 tests_exit_code=$?

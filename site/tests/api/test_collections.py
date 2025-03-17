@@ -17,6 +17,7 @@ def test_collection_submission_by_owner_open(
     minimal_community_factory,
     minimal_draft_record_factory,
     headers,
+    search_clear,
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
@@ -164,6 +165,7 @@ def test_collection_submission_by_curator_closed(
     minimal_community_factory,
     minimal_draft_record_factory,
     headers,
+    search_clear,
     mock_send_remote_api_update_fixture,
     celery_worker,
 ):
@@ -252,6 +254,8 @@ def test_collection_submission_by_curator_closed(
 
 def test_group_collection_read_all(
     running_app,
+    db,
+    search_clear,
     headers,
     user_factory,
     sample_communities_factory,
@@ -281,10 +285,10 @@ def test_group_collection_read_all(
         assert len(response.json["hits"]["hits"]) == 4
         assert response.json["sortBy"] == "updated-desc"
         assert response.json["links"] == {
-            "next": f"{app.config['SITE_API_URL']}/group_collections?"
+            "next": f"{app.config['SITE_API_URL']}/communities?"
             "page=2&q=%2B_exists_%3Acustom_fields.kcr%5C%3Acommons_instance%20"
             "&size=4&sort=updated-desc",
-            "self": f"{app.config['SITE_API_URL']}/group_collections?"
+            "self": f"{app.config['SITE_API_URL']}/communities?"
             "page=1&q=%2B_exists_%3Acustom_fields.kcr%5C%3Acommons_instance%20"
             "&size=4&sort=updated-desc",
         }
@@ -325,5 +329,7 @@ def test_group_collection_read_all(
 
 
 @pytest.mark.skip(reason="Not implemented")
-def test_group_collections_read_one(running_app, headers, user_factory):
+def test_group_collections_read_one(
+    running_app, db, search_clear, headers, user_factory
+):
     pass

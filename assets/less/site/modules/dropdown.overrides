@@ -192,13 +192,6 @@
       .menu {
         max-width: 100%;
         .item {
-          .header,
-          .text {
-            white-space: normal;
-            overflow-wrap: anywhere;
-            word-break: break-all;
-            display: inline-block;
-          }
           &:last-child {
             border-top: 1px solid @verdigris50;
           }

@@ -47,6 +47,18 @@
   justify-content: space-between !important;
 }
 
+// typography
+.breakable-text {
+  word-break: break-all;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  display: inline-block;
+}
+
+.warning.text {
+  color: @negativeTextColor;
+}
+
 // links
 
 a {
@@ -709,10 +721,6 @@ html.cover-page {
         // padding-bottom: 1rem;
         table {
           margin-bottom: 0;
-          a.filename {
-            overflow-wrap: anywhere;
-            word-break: break-all;
-          }
         }
       }
       // &#record-versions {

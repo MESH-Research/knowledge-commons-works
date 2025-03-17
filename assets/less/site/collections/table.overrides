@@ -28,16 +28,6 @@
             }
         }
     }
-    &.files {
-        tr {
-            td {
-                a.filename {
-                    white-space: normal;
-                    word-break: break-all;
-                }
-            }
-        }
-    }
 }
 
 .info {

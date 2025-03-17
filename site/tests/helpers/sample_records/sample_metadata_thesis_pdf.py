@@ -1,4 +1,4 @@
-rec38367 = {
+sample_metadata_thesis_pdf = {
     "input": {
         "created": "2021-04-26T05:57:56Z",
         "custom_fields": {
@@ -42,9 +42,7 @@ rec38367 = {
                 "macroeconomics",
                 "modelling",
             ],
-            "thesis:university": (
-                "Universidad Nacional Autónoma de México (UNAM)"
-            ),
+            "thesis:university": ("Universidad Nacional Autónoma de México (UNAM)"),
         },
         "files": {
             "default_preview": (
@@ -132,9 +130,7 @@ rec38367 = {
             ],
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "Université Sorbonne Paris Nord"}
-                    ],
+                    "affiliations": [{"name": "Université Sorbonne Paris Nord"}],
                     "person_or_org": {
                         "family_name": "Martínez Hernández",
                         "given_name": "Alberto-Gabino",
@@ -228,9 +224,7 @@ rec38367 = {
                     "id": "arr",
                     "icon": "copyright",
                     "props": {
-                        "url": (
-                            "https://en.wikipedia.org/wiki/All_rights_reserved"
-                        )
+                        "url": ("https://en.wikipedia.org/wiki/All_rights_reserved")
                     },
                     "title": {"en": "All Rights Reserved"},
                 }
@@ -313,9 +307,7 @@ rec38367 = {
                 "macroeconomics",
                 "modelling",
             ],
-            "thesis:university": (
-                "Universidad Nacional Autónoma de México (UNAM)"
-            ),
+            "thesis:university": ("Universidad Nacional Autónoma de México (UNAM)"),
         },
         "files": {
             "default_preview": (
@@ -336,9 +328,7 @@ rec38367 = {
         "metadata": {
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "Université Sorbonne Paris Nord"}
-                    ],
+                    "affiliations": [{"name": "Université Sorbonne Paris Nord"}],
                     "person_or_org": {
                         "family_name": "Martínez Hernández",
                         "given_name": "Alberto-Gabino",
@@ -566,9 +556,7 @@ rec38367 = {
                 "macroeconomics",
                 "modelling",
             ],
-            "thesis:university": (
-                "Universidad Nacional Autónoma de México (UNAM)"
-            ),
+            "thesis:university": ("Universidad Nacional Autónoma de México (UNAM)"),
         },
         "files": {
             "default_preview": (
@@ -596,9 +584,7 @@ rec38367 = {
         "metadata": {
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "Université Sorbonne Paris Nord"}
-                    ],
+                    "affiliations": [{"name": "Université Sorbonne Paris Nord"}],
                     "person_or_org": {
                         "family_name": "Martínez Hernández",
                         "given_name": "Alberto-Gabino",

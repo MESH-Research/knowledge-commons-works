@@ -3,27 +3,7 @@ import { Accordion, Icon, Table, Message } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 import { FormUIStateContext } from "@js/invenio_modular_deposit_form/InnerDepositForm";
 import PropTypes from "prop-types";
-
-const supportedExtensions = {
-  text: ["txt", "pdf", "pdfa", "md"],
-  image: ["jpg", "jpeg", "png", "gif", "tif", "tiff", "jp2"],
-  video: ["mp4", "webm"],
-  audio: ["mp3", "wav", "flac", "aac"],
-  structuredData: ["json", "xml", "csv", "dsv"],
-  sourceCode: ["py", "js", "java", "cpp", "ipynb"],
-  archive: ["zip"],
-};
-
-const unsupportedExtensions = {
-  text: ["doc", "docx"],
-  image: [],
-  video: ["avi", "mov"],
-  audio: [],
-  structuredData: [],
-  sourceCode: [],
-  archive: ["tar", "gz"],
-  other: [],
-};
+import { supportedExtensions, unsupportedExtensions } from "./index";
 
 const categorizeFileTypes = (extensions) => {
   const categories = Object.keys(supportedExtensions).reduce(

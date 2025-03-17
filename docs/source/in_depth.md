@@ -107,7 +107,7 @@ Using GIT, clone this repository. You should then have a folder called `knowledg
 
 ### Standardized environment variables
 
-This file must include the following variables with these values:
+For local development, this file must include the following variables with these values:
 
 ```
 INVENIO_INSTANCE_PATH=/opt/invenio/var/instance

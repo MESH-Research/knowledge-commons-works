@@ -3,10 +3,23 @@ from invenio_access.permissions import system_identity, authenticated_user
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_communities.communities.records.api import Community
+from invenio_communities.members.records.api import Member
 from invenio_communities.proxies import current_communities
 import marshmallow as ma
 import traceback
 from typing import Callable, Optional
+
+
+def make_community_member(user_id: int, role: str, community_id: str) -> None:
+    """
+    Make a member of a community.
+    """
+    current_communities.service.members.add(
+        system_identity,
+        community_id,
+        data={"members": [{"type": "user", "id": str(user_id)}], "role": role},
+    )
+    Community.index.refresh()
 
 
 @pytest.fixture(scope="function")
@@ -142,7 +155,9 @@ def group_communities_data_factory():
 
 
 @pytest.fixture(scope="function")
-def minimal_community_factory(app, db, user_factory, create_communities_custom_fields):
+def minimal_community_factory(
+    app, db, user_factory, create_communities_custom_fields, requests_mock, monkeypatch
+):
     """
     Create a minimal community for testing.
 
@@ -157,6 +172,7 @@ def minimal_community_factory(app, db, user_factory, create_communities_custom_f
         access: dict = {},
         custom_fields: dict = {},
         members: dict = {"reader": [], "curator": [], "manager": [], "owner": []},
+        mock_search_api: bool = True,
     ):
         """
         Create a minimal community for testing.
@@ -166,6 +182,27 @@ def minimal_community_factory(app, db, user_factory, create_communities_custom_f
 
         If no owner is specified, a new user is created and used as the owner.
         """
+        # Mock the search API for the community
+        if mock_search_api:
+            # Set up mock subscriber and intercept message to callback
+            monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
+
+            search_api_url = list(
+                app.config["REMOTE_API_PROVISIONER_EVENTS"]["community"].keys()
+            )[0]
+            remote_response = {
+                "_internal_id": "1234AbCD?",  # can't mock because set at runtime
+                "_id": "2E9SqY0Bdd2QL-HGeUuA34AbCD?",
+                "title": "My Community",
+                "primary_url": "http://works.kcommons.org/collections/my-community",
+            }
+            requests_mock.request(
+                "POST",
+                search_api_url,
+                json=remote_response,
+                headers={"Authorization": "Bearer 12345"},
+            )  # noqa: E501
+
         if owner is None:
             owner = user_factory().user.id
         slug = slug or "my-community"

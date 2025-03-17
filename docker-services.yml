@@ -30,9 +30,9 @@ services:
     env_file:
       - ./.env
   frontend:
-    container_name: kcworks-frontend
-    build: ./docker/nginx/
-    image: monotasker/kcworks-frontend
+    container_name: kcworks-frontend:local
+    build: ./docker/nginx_local/
+    image: monotasker/kcworks-frontend:local
     restart: "unless-stopped"
     ports:
       - "80"
