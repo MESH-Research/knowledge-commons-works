@@ -12,6 +12,7 @@ Welcome to the Knowledge Commons Works technical documentation!
 
    README
    changelog
+   known_issues
    installation
    metadata
    customizations

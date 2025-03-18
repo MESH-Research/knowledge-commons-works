@@ -4,6 +4,67 @@
 
 # Changes
 
+## Not yet released
+
+- Documentation
+    - Added documentation of known issues.
+
+## 0.3.8-beta11 (2025-03-14)
+
+- File Uploads
+    - Fixed a bug causing large file uploads to fail.
+    - Partially fixed a bug causing some parallel file uploads to fail. (A complete fix will require changes to InvenioRDM.)
+    - Added a button to allow deleting files (and so retrying them) when an upload has failed.
+    - Minor UI improvements to the upload form file upload widget:
+        - layout improvements for the file list
+        - changed the "pending" label to "failed" when a file's content upload has failed.
+        - added a note advising against parallel uploads of large files
+        - added a flag in the file list if a file type cannot be previewed
+- Search
+    - Added a note to the subjects widget of the upload form to advise users to select a subject category.
+- Documentation
+    - Some improvements to the developer documentation.
+- Testing
+    - Several improvements to the test suite allowing the tests to pass on Github as well as locally.
+- Server
+    - Upgraded the nginx server to version 1.27.4
+    - Added automated building of the kcworks-frontend docker image on push to each branch, just as with the main kcworks image.
+
+## 0.3.7-beta10 (2025-03-01)
+
+- Importer
+    - Added email notifications to the owners of records imported using the new importer API.
+    - Added a new API flag to disable these email notifications.
+
+
+## 0.3.6-beta9 (2025-02-25)
+
+- Importer
+    - Added a new streamlined importer API.
+- Remote user data service
+    - Fixed bug where user profile data was not being updated because comparison with initial data was not being made correctly.
+    - Improved handling of timeout errors when fetching data from the remote source.
+- Documentation
+    - Added documentation for the new importer API.
+    - Improved documentation for other API endpoints and metadata fields.
+    - Added documentation of InvenioRDM service architecture for developers.
+- Email notifications
+    - Improved formatting of moderation email notifications for first uploads/publications.
+- Testing
+    - Extensive improvements to the test suite, including new tests for the new importer API and remote user data service.
+    - Added workflow to run tests on Github
+- User data sync
+    - Fixed several bugs in the user data sync process.
+    - Added cli commands to fetch KCWorks user and group data
+- Search provisioning
+    - Fixed bugs in search provisioning and implemented new tests.
+- Export menu
+    - Fixed a bug preventing the export menu from working on the detail page.
+- Large uploads
+    - Raised max content length for large uploads.
+- Account linking
+    - Now can link existing KCWorks accounts to KC accounts on login based on email address, ORCID id, or KC username.
+
 ## 0.3.5-beta8 (2025-01-10)
 
 - Dashboard works search

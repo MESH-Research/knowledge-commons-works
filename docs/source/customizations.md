@@ -29,6 +29,87 @@ Additional email templates are added for KCWorks-specific email types.
 
 ### Collections for KC Groups (invenio-group-collections-kcworks)
 
+## Record Permissions
+
+### Per-field editing permissions
+
+KCWorks adds the ability to set per-field editing permissions for record owners. This is implemented by a custom service component (``kcworks.services.records.components.PerFieldPermissionsComponent`) that runs during record modification and selectively blocks edits to certain fields. Attempts to edit restricted fields will raise a ValidationError with a message indicating that the field is restricted.
+
+The component runs during the `update_draft`, `publish`, `new_version`, and `delete_record` record operations. It looks at which fields have been modified from the previous version of the record (the draft if the record is not yet published, or the published record if it is published) and checks to see if the current user has permission to edit the field in question. If not, it raises a ValidationError with a message indicating that the field is restricted.
+
+#### Per-field permissions configuration
+
+The permissions are configured in the `invenio.cfg` file using the `RDM_RECORDS_PERMISSIONS_PER_FIELD` variable like this:
+
+```python
+RDM_RECORDS_PERMISSIONS_PER_FIELD = {
+    "default": {
+        "policy": {
+            "custom_fields.kcr:commons_domain": "community_moderators",
+        },
+        "notify_on_change": False,
+        "grace_period": None,
+    },
+    "sample_community": {
+        "policy": {
+            "custom_fields.kcr:commons_domain": "community_moderators",
+        },
+        "notify_on_change": True,
+        "grace_period": "1 day",
+    }
+}
+```
+
+The `default` key is used to configure the permissions for all records that do not have a specific community configuration. Other keys are the URL slugs for specific communities and are used to configure the permissions for records in specific communities. These community-specific configurations are optional but take precedence over the default configuration. If no community-specific configuration is found, the default configuration will be used. If no default configuration is found, per-field permissions will only be applied to records published to a community that has a community-specific configuration.
+
+This configuration would be for a community with the URL slug `sample_community`. The `kcr:commons_domain` field is being restricted to moderators for this community.
+
+#### Defining the permissions
+
+The values for each key in the `RDM_RECORDS_PERMISSIONS_PER_FIELD` config variable can take one of two forms:
+
+1. a permission policy object or
+2. a dictionary mapping field names to a list of community role levels (one or more of `owner`, `manager`, `curator`, `admin`, `reader`).
+
+If a dictionary is provided, this will be used to generate a permission policy object with the following structure:
+
+```python
+from invenio_access.permissions import Permission, ActionNeed, ParameterizedActionNeed
+update_restricted_field_permission = Permission(ParameterizedActionNeed('update-restricted-field', field_name='custom_fields.kcr:commons_domain'))
+
+update_restricted_field_permission.allows(my_identity)
+```
+
+with policy
+
+#### Enabling per-field permissions
+
+In order to enable per-field permissions, the `PerFieldPermissionsComponent` must be added to the `RDM_RECORDS_SERVICE_COMPONENTS` config variable.
+
+```python
+RDM_RECORDS_SERVICE_COMPONENTS = [
+    RDM_RECORDS_SERVICE_COMPONENTS*,
+    "kcworks.services.records.components.PerFieldPermissionsComponent",
+]
+```
+
+#### Which community's permissions apply?
+
+Since KCWorks records can be included in multiple communities, the per-field permissions component needs to know which community's permissions to apply. There are two controls for this:
+
+1. **The default display community** for the record is the one whose permissions are applied. This is the community whose id is stored in `parent.communities.default` field of the record.
+2. The default display community **can be set as one of the restricted fields** for the record.
+
+So if a record is included in the `romantic_literature` community, and that community is set as the default community for the record, then the permissions applied will be those of the `romantic_literature` community. If the `romantic_literature` community has no per-field permissions configured, then the default permissions will be used. If no default permissions are configured, then the record will be unrestricted.
+
+If the `romantic_literature` community's per-field permissions restrict changing the `parent.communities.default` field, then the record owner will not be able to remove the record from the `romantic_literature` community or change the default community for the record. The record can only be removed from the community, or its default community changed to another community, by an `owner`, `manager`, or `curator` of the `romantic_literature` community.
+
+> [!Note]
+> If a community has per-field permission restrictions configured, this will be displayed in the user interface when the record owner submits it to the community.
+
+> [!Note]
+> A one-time notification to all record owners if/when the community's per-field permissions are changed. Depending on collection policy, record owners may be allowed a grace period to update their records before the permissions are enforced.
+
 ## Notifications
 
 ### In-app notifications
@@ -47,6 +128,24 @@ Emails are sent to the KCWorks moderators when a user creates their first draft 
     - these builders define the notification recipients using a custom ModeratorRoleRecipient generator (kcworks.services.notifications.generators.ModeratorRoleRecipient) and sends the notification to all users with the role defined in the NOTIFICATIONS_MODERATOR_ROLE config variable.
     - they also define the notification backends to be used for sending the notification. In this case, a custom EmailBackend (kcworks.services.notifications.backends.EmailBackend) that sends email via the Flask-Mail extension.
 - custom email templates for the notifications, located at `site/kcworks/templates/semantic-ui/invenio_notifications/`.
+
+### Notifications for import API record owners
+
+The streamlined import API sends notifications to the owners of the records being imported. These notifications are implemented by the `invenio-record-importer-kcworks` package. They are configured using the `RECORD_IMPORTER_COMMUNITIES` config variable, like this:
+
+```python
+RECORD_IMPORTER_COMMUNITIES = {
+    "sample_community": {
+        "email_subject_register": "Your KCWorks Record is Ready",
+        "email_template_register": "welcome_sample_community",
+    }
+}
+```
+
+This configuration would be for a community with the URL slug `sample_community`. The `email_subject_register` value sets the subject line for the email notification sent to the record owners. The `email_template_register` value sets the template to use for the email notification. The template must be located in the `templates/security/email` directory of the KCWorks instance directory.
+
+> [!Note]
+> These notifications will *only* be sent for records imported using the streamlined import API. They will *not* be sent for records imported using the old importer API.
 
 ## Integrations with KC
 

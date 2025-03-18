@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="In-depth Installation Instructions (NEEDS UPDATING)" href="in_depth.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="installation.html" /><link rel="prev" title="Changes" href="changelog.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>Reference - Knowledge Commons Works 0.3.8 documentation</title>
+        <title>Known Issues - Knowledge Commons Works 0.3.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -202,7 +202,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Known Issues</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizations.html">Customizations to InvenioRDM</a></li>
@@ -213,7 +213,7 @@
 <li class="toctree-l1"><a class="reference internal" href="developing.html">Developing KCWorks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">KCWorks Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="in_depth.html">In-depth Installation Instructions (NEEDS UPDATING)</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
 </ul>
 
 </div>
@@ -234,7 +234,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="_sources/reference.md.txt" title="View this page">
+  <a class="muted-link" href="_sources/known_issues.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -254,11 +254,34 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="reference">
-<h1>Reference<a class="headerlink" href="#reference" title="Link to this heading">¶</a></h1>
-<section id="inveniordm-documentation">
-<h2>InvenioRDM Documentation<a class="headerlink" href="#inveniordm-documentation" title="Link to this heading">¶</a></h2>
-<p>The Knowledge Commons Works is built as an instance of InvenioRDM. The InvenioRDM Documentation, including customization and development information, can be found at https://inveniordm.docs.cern.ch/.</p>
+          <section id="known-issues">
+<h1>Known Issues<a class="headerlink" href="#known-issues" title="Link to this heading">¶</a></h1>
+<section id="uploading-files">
+<h2>Uploading files<a class="headerlink" href="#uploading-files" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Parallel uploads will fail if they are started after a large file has already started uploading.</strong></p>
+<ul>
+<li><p>Behaviour:</p>
+<ul>
+<li><p>Even small files begun while a large file is uploading will fail if it is more than 2 minutes before the large file finishes. The files will appear to succeed (the bar will reach 100%) but when the first file completes, the subsequent files will switch and be shown as failed.</p></li>
+<li><p>This is a limitation of the InvenioRDM file uploading infrastructure and will take significant time to fix (not a current priority).</p></li>
+<li><p>It should only happen if the first file takes longer than 2 minutes to upload. (Around 200mb on a fast connection.)</p></li>
+</ul>
+</li>
+<li><p>Cause:</p>
+<ul>
+<li><p>Although the PUT requests to send the file content are made in parallel, the requests are processed by InvenioRDM sequentially in a queue. This can leave some upload requests waiting a long time for a response if they are queued behind a large file upload. If this wait time exceeds 2 minutes, the load balancer will cut off the idle connection causing the upload to fail.</p></li>
+</ul>
+</li>
+<li><p>Workaround:</p>
+<ul>
+<li><p>wait for large files to finish uploading before starting other uploads.</p></li>
+<li><p>if an upload does fail, click the trash icon to remove it and try that file again on its own.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </section>
 </section>
 
@@ -267,15 +290,23 @@
       <footer>
         
         <div class="related-pages">
-          
-          <a class="prev-page" href="in_depth.html">
+          <a class="next-page" href="installation.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Installation</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="changelog.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">In-depth Installation Instructions (NEEDS UPDATING)</div>
+                <div class="title">Changes</div>
                 
               </div>
             </a>
@@ -309,8 +340,8 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Reference</a><ul>
-<li><a class="reference internal" href="#inveniordm-documentation">InvenioRDM Documentation</a></li>
+<li><a class="reference internal" href="#">Known Issues</a><ul>
+<li><a class="reference internal" href="#uploading-files">Uploading files</a></li>
 </ul>
 </li>
 </ul>
