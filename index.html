@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="About" href="README.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Knowledge Commons Works 0.3.5 documentation</title>
+        <title>Knowledge Commons Works 0.3.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">Knowledge Commons Works 0.3.5 documentation</div></a>
+      <a href="#"><div class="brand">Knowledge Commons Works 0.3.8 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.3.5 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.3.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -202,6 +202,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizations.html">Customizations to InvenioRDM</a></li>
@@ -259,10 +260,14 @@
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html">About</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="README.html#copyright">Copyright</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#copyright-and-license">Copyright and License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#source-code">Source Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#contributing">Contributing</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#not-yet-released">Not yet released</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#beta11-2025-03-14">0.3.8-beta11 (2025-03-14)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#beta10-2025-03-01">0.3.7-beta10 (2025-03-01)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#beta9-2025-02-25">0.3.6-beta9 (2025-02-25)</a></li>
@@ -272,6 +277,10 @@
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#beta5-2024-12-11">0.3.2-beta5 (2024-12-11)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#beta4-2024-12-10">0.3.1-beta4 (2024-12-10)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#beta3-2024-11-30">0.3.0-beta3 (2024-11-30)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="known_issues.html#uploading-files">Uploading files</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
@@ -296,6 +305,7 @@
 <li class="toctree-l2"><a class="reference internal" href="customizations.html#record-detail-page-customizations">Record Detail Page Customizations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="customizations.html#deposit-form-customizations">Deposit Form Customizations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="customizations.html#collections">Collections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="customizations.html#record-permissions">Record Permissions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="customizations.html#notifications">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="customizations.html#integrations-with-kc">Integrations with KC</a></li>
 <li class="toctree-l2"><a class="reference internal" href="customizations.html#metadata-schema-customizations">Metadata Schema Customizations</a></li>
@@ -330,6 +340,9 @@
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">KCWorks Architecture</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#inveniordm-s-layered-architecture">InvenioRDM’s Layered Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#inveniordm-services">InvenioRDM Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#inveniordm-record-objects">InvenioRDM Record Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#how-tos-creating-and-modifying-records">How Tos: Creating and Modifying Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#how-tos-custom-record-service-components">How Tos: Custom Record Service Components</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="in_depth.html">In-depth Installation Instructions (NEEDS UPDATING)</a><ul>
@@ -390,7 +403,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=ba50482b"></script>
+</div><script src="_static/documentation_options.js?v=c1cae59a"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

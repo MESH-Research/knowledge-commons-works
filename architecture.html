@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="In-depth Installation Instructions (NEEDS UPDATING)" href="in_depth.html" /><link rel="prev" title="Developing KCWorks" href="developing.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>KCWorks Architecture - Knowledge Commons Works 0.3.5 documentation</title>
+        <title>KCWorks Architecture - Knowledge Commons Works 0.3.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Knowledge Commons Works 0.3.5 documentation</div></a>
+      <a href="index.html"><div class="brand">Knowledge Commons Works 0.3.8 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.3.5 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.3.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -202,6 +202,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizations.html">Customizations to InvenioRDM</a></li>
@@ -686,6 +687,512 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
 </section>
 </section>
 </section>
+<section id="inveniordm-record-objects">
+<h2>InvenioRDM Record Objects<a class="headerlink" href="#inveniordm-record-objects" title="Link to this heading">¶</a></h2>
+<section id="api-level-record-objects">
+<h3>API-level Record Objects<a class="headerlink" href="#api-level-record-objects" title="Link to this heading">¶</a></h3>
+<section id="rdmdraft-invenio-rdm-records-records-api-rdmdraft">
+<h4><code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code>)<a class="headerlink" href="#rdmdraft-invenio-rdm-records-records-api-rdmdraft" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> object is a subclass of the <code class="docutils literal notranslate"><span class="pre">Record</span></code> object (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records.api.Record</span></code>) and includes all of the submitted metadata values, along with the keys:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">$schema</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">revision_id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">version_id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pid</span></code> (as opposed to <code class="docutils literal notranslate"><span class="pre">pids</span></code>, a separate field)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">media_files</span></code> (if not present in <code class="docutils literal notranslate"><span class="pre">data</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">custom_fields</span></code> (if not present in <code class="docutils literal notranslate"><span class="pre">data</span></code>)</p></li>
+</ul>
+<p>Its <strong>dict</strong> has the following shape (these values are available by key and <em>also</em> as dot properties):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="s1">&#39;$schema&#39;</span><span class="p">:</span> <span class="s1">&#39;local://records/record-v6.0.0.json&#39;</span><span class="p">,</span>
+<span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;pk&#39;</span><span class="p">:</span> <span class="mi">88</span><span class="p">,</span>
+    <span class="s1">&#39;pid_type&#39;</span><span class="p">:</span> <span class="s1">&#39;recid&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;obj_type&#39;</span><span class="p">:</span> <span class="s1">&#39;rec&#39;</span>
+<span class="p">},</span>
+<span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;9f06s-7d583&#39;</span><span class="p">,</span>
+<span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">},</span>
+<span class="s1">&#39;media_files&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">},</span>
+<span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;resource_type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;image-photograph&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;creators&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;personal&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;given_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;family_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown, Troy&#39;</span><span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;organizational&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy Inc.&#39;</span><span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;A Romans story&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;publisher&#39;</span><span class="p">:</span> <span class="s1">&#39;Acme Inc&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;publication_date&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-06-01&#39;</span>
+<span class="p">},</span>
+<span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
+<span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;record&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span>
+<span class="p">},</span>
+<span class="s1">&#39;pids&#39;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> also has the following properties:</p>
+<ul class="simple">
+<li><p>‘bucket’,</p></li>
+<li><p>‘bucket_id’,</p></li>
+<li><p>‘created’,</p></li>
+<li><p>‘dumper’,</p></li>
+<li><p>‘expires_at’,</p></li>
+<li><p>‘fork_version_id’,</p></li>
+<li><p>‘format_checker’,</p></li>
+<li><p>‘has_draft’,</p></li>
+<li><p>‘index’,</p></li>
+<li><p>‘is_deleted’,</p></li>
+<li><p>‘is_draft’,</p></li>
+<li><p>‘is_published’,</p></li>
+<li><p>‘media_bucket’,</p></li>
+<li><p>‘media_bucket_id’,</p></li>
+<li><p>‘model’,</p></li>
+<li><p>‘model_cls’,</p></li>
+<li><p>‘parent’,</p></li>
+<li><p>‘parent_record_cls’,</p></li>
+<li><p>‘revision_id’,</p></li>
+<li><p>‘revisions’,</p></li>
+<li><p>‘schema’,</p></li>
+<li><p>‘status’,</p></li>
+<li><p>‘updated’,</p></li>
+<li><p>‘validator’,</p></li>
+<li><p>‘versions’,</p></li>
+<li><p>‘versions_model_cls’</p></li>
+</ul>
+<p>And the following methods (among others, including standard <code class="docutils literal notranslate"><span class="pre">dict</span></code> methods)</p>
+<ul class="simple">
+<li><p>‘cleanup_drafts’,</p></li>
+<li><p>‘clear’,</p></li>
+<li><p>‘clear_none’,</p></li>
+<li><p>‘commit’,</p></li>
+<li><p>‘copy’,</p></li>
+<li><p>‘dumps’,</p></li>
+<li><p>‘get_latest_by_parent’,</p></li>
+<li><p>‘get_record’,</p></li>
+<li><p>‘get_records’,</p></li>
+<li><p>‘get_records_by_parent’,</p></li>
+<li><p>‘items’,</p></li>
+<li><p>‘keys’,</p></li>
+<li><p>‘loads’,</p></li>
+<li><p>‘new_version’,</p></li>
+<li><p>‘register’,</p></li>
+<li><p>‘relations’,</p></li>
+<li><p>‘revert’,</p></li>
+<li><p>‘send_signals’,</p></li>
+<li><p>‘undelete’,</p></li>
+<li><p>‘validate’,</p></li>
+</ul>
+</section>
+</section>
+<section id="service-level-response-objects">
+<h3>Service-level Response Objects<a class="headerlink" href="#service-level-response-objects" title="Link to this heading">¶</a></h3>
+</section>
+</section>
+<section id="how-tos-creating-and-modifying-records">
+<h2>How Tos: Creating and Modifying Records<a class="headerlink" href="#how-tos-creating-and-modifying-records" title="Link to this heading">¶</a></h2>
+<section id="creating-and-modifying-records-in-general">
+<h3>Creating and Modifying Records in General<a class="headerlink" href="#creating-and-modifying-records-in-general" title="Link to this heading">¶</a></h3>
+<p>All InvenioRDM record services inherit the same core methods from the <code class="docutils literal notranslate"><span class="pre">RecordService</span></code> class. In the examples below, the <code class="docutils literal notranslate"><span class="pre">service</span></code> variable represents an instance of a record service. The <code class="docutils literal notranslate"><span class="pre">identity</span></code> variable represents an identity object.</p>
+<section id="update-a-record">
+<h4>Update a record<a class="headerlink" href="#update-a-record" title="Link to this heading">¶</a></h4>
+<p>Note that this will not work for deposit records, since they are not directly editable. The RDMRecordService <code class="docutils literal notranslate"><span class="pre">update</span></code> method will raise a <code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> error. Those records must be updated via a draft. Other record services, though, allow direct updates.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span><span class="o">.</span><span class="n">_record</span>
+<span class="n">record</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+
+<span class="c1"># the refresh is required because the access system field takes precedence</span>
+<span class="c1"># over the record&#39;s data in &#39;record.commit()&#39;</span>
+<span class="n">record</span><span class="o">.</span><span class="n">access</span><span class="o">.</span><span class="n">refresh_from_dict</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="s2">&quot;access&quot;</span><span class="p">])</span>
+<span class="n">record</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="n">service</span><span class="o">.</span><span class="n">indexer</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="delete-a-record">
+<h4>Delete a record<a class="headerlink" href="#delete-a-record" title="Link to this heading">¶</a></h4>
+<p>Note that this will not work for deposit records, since they are not directly deletable. The RDMRecordService <code class="docutils literal notranslate"><span class="pre">delete</span></code> method will raise a <code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> error. Those records must be deleted via a draft. Other record services, though, allow direct deletions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">deleted_record</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="reading-deposit-records-rdmrecordservice">
+<h3>Reading Deposit Records (RDMRecordService)<a class="headerlink" href="#reading-deposit-records-rdmrecordservice" title="Link to this heading">¶</a></h3>
+<p>Note that, unlike most record service retrieval methods, the <code class="docutils literal notranslate"><span class="pre">read</span></code> method does not use the search index. It retrieves the record from the database directly with a SQLAlchemy query. This means, though, that it will not always include the latest data from the search index, and that updated information present in a <code class="docutils literal notranslate"><span class="pre">read</span></code> result may not yet be present in the search index.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+
+<span class="n">one_record</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+<span class="n">all_records</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
+<span class="n">multiple_records</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">read_many</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-and-modifying-a-deposit-record-rdmrecordservice">
+<h3>Creating and Modifying a Deposit Record (RDMRecordService)<a class="headerlink" href="#creating-and-modifying-a-deposit-record-rdmrecordservice" title="Link to this heading">¶</a></h3>
+<section id="the-inveniordm-record-life-cycle">
+<h4>The InvenioRDM Record Life Cycle<a class="headerlink" href="#the-inveniordm-record-life-cycle" title="Link to this heading">¶</a></h4>
+<p>InvenioRDM uses a “draft-first” approach to record creation and modification. Records are created as drafts and the published in a separate step. Published records cannot be modified directly. Instead, a new draft must be created, updated with new metadata, and then published again.</p>
+<p>No revision history is kept for drafts or for edits to published records. Only a record’s latest draft is kept, and only its latest published state is preserved. In order to preserve a history of changes, you must create new record <em>versions</em>. When a new <em>version</em> is created, the previous version’s published state is preserved. A new draft is created that can be published without affecting the previous version. This new version can, in turn, be edited and re-published any number of times without any preserved history. When desired, a new permanently preserved state for the record can by frozen by creating yet another new version.</p>
+<p>While a record is in draft state, it can be hard deleted with no preserved record. Once a draft has been published, it can generally only be soft deleted. The record is no longer available or discoverable via the search index, but a tombstone placeholder is preserved. This provides a record that can be presented if, for example, someone tries to access a deleted record’s DOI link.</p>
+<p>The life cycle of records for a single work can be represented in a diagram like this:</p>
+<img src="_static/invenioRdmRecordLifeCycle.jpg" alt="RDMRecord Life Cycle" width="100%"/>
+<p>The solid arrows represent methods of the <code class="docutils literal notranslate"><span class="pre">RDMRecordService</span></code> class. The beige rectangles represent preserved versions of the record, recoverable record states in its revision history.</p>
+</section>
+<section id="gotchas-with-the-rdmrecordservice">
+<h4>Gotchas with the RDMRecordService<a class="headerlink" href="#gotchas-with-the-rdmrecordservice" title="Link to this heading">¶</a></h4>
+<p>Note that InvenioRDM only ever allows one draft to be associated with a record. There is no editing history for drafts. So draft updates are “destructive” in the sense that the previous state of the draft is lost. If you need to keep a history of changes, you must create published versions of the record.</p>
+</section>
+<section id="create-a-draft-of-a-new-record">
+<h4>Create a draft of a new record<a class="headerlink" href="#create-a-draft-of-a-new-record" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+<span class="n">draft</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="hard-delete-a-draft">
+<h4>Hard delete a draft<a class="headerlink" href="#hard-delete-a-draft" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+
+<span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">delete_draft</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>No tombstone is created for a hard deleted draft. It cannot be recovered once deleted.</p>
+</section>
+<section id="update-an-unpublished-draft">
+<h4>Update an unpublished draft<a class="headerlink" href="#update-an-unpublished-draft" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+<span class="n">draft_data</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">read_draft</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1"># update the metadata...</span>
+<span class="n">edited_draft</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">update_draft</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="update-a-published-record-via-a-new-draft">
+<h4>Update a published record via a new draft<a class="headerlink" href="#update-a-published-record-via-a-new-draft" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+
+<span class="c1"># create a draft of the published record</span>
+<span class="n">draft_of_published</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">edit</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span>
+<span class="c1"># update the draft</span>
+<span class="n">updated_draft</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">update_draft</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+<span class="c1"># publish the draft</span>
+<span class="n">published_record</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="create-a-new-version-of-a-published-record">
+<h4>Create a new version of a published record<a class="headerlink" href="#create-a-new-version-of-a-published-record" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+
+<span class="n">new_version_draft</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">new_version</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The new version draft is a new draft of the published record. It includes the previous version’s published state, which can be edited and published again.</p>
+<p>Note that the new version draft is not automatically published. You must publish it separately. Its internal InvenioRDM record id (<code class="docutils literal notranslate"><span class="pre">id</span></code>) is the same as the previous version’s id. But the new version, once published, will be assigned a new DOI.</p>
+</section>
+<section id="soft-delete-a-published-record">
+<h4>Soft-delete a published record<a class="headerlink" href="#soft-delete-a-published-record" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+
+<span class="n">tombstone_info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;no specific reason, tbh&quot;</span><span class="p">}</span>
+<span class="n">deleted_record</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">delete_record</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                                           <span class="n">tombstone_info</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="restore-a-soft-deleted-record">
+<h4>Restore a soft-deleted record<a class="headerlink" href="#restore-a-soft-deleted-record" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+
+<span class="n">restored_record</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">restore_record</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="how-tos-custom-record-service-components">
+<h2>How Tos: Custom Record Service Components<a class="headerlink" href="#how-tos-custom-record-service-components" title="Link to this heading">¶</a></h2>
+<section id="component-methods">
+<h3>Component Methods<a class="headerlink" href="#component-methods" title="Link to this heading">¶</a></h3>
+<p>The following documents the arguments and data available to the various service component methods for the <code class="docutils literal notranslate"><span class="pre">RDMRecordService</span></code>.</p>
+<section id="create">
+<h4>create()<a class="headerlink" href="#create" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">create</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.create</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>data: dict</p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code></p></li>
+<li><p>errors: list</p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+<section id="data">
+<h5><code class="docutils literal notranslate"><span class="pre">data</span></code><a class="headerlink" href="#data" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> value is a simple <code class="docutils literal notranslate"><span class="pre">dict</span></code> holding the submitted data to be used to create the record. It has the general shape of the InvenioRDM record schema, although it lacks several of the top-level keys that are present in a record object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="s1">&#39;access&#39;</span><span class="p">:</span>  <span class="p">{</span>
+    <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;record&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span>
+<span class="p">},</span>
+<span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
+<span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+<span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;creators&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;family_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;given_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown, Troy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;personal&#39;</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy Inc.&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;organizational&#39;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;publication_date&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-06-01&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;publisher&#39;</span><span class="p">:</span> <span class="s1">&#39;Acme Inc&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;resource_type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;image-photograph&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;A Romans story&#39;</span>
+<span class="p">},</span>
+<span class="s1">&#39;pids&#39;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In particular, the <code class="docutils literal notranslate"><span class="pre">data</span></code> value lacks the following keys:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">revision_id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">version_id</span></code></p></li>
+</ul>
+<p>If the record has not yet been published (or a DOI reserved), the ‘pids’ key will be empty.</p>
+</section>
+<section id="record">
+<h5><code class="docutils literal notranslate"><span class="pre">record</span></code><a class="headerlink" href="#record" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">record</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code> object that includes all of the <code class="docutils literal notranslate"><span class="pre">data</span></code> values, along with the keys:</p>
+<ul class="simple">
+<li><p>$schema</p></li>
+<li><p>pid (as opposed to pids, a separate field)</p></li>
+<li><p>media_files (if not present in <code class="docutils literal notranslate"><span class="pre">data</span></code>)</p></li>
+<li><p>custom_fields (if not present in <code class="docutils literal notranslate"><span class="pre">data</span></code>)</p></li>
+</ul>
+<p>For more information on the <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> object, see the <a class="reference internal" href="#invenio-rdm-record-objects"><span class="xref myst">InvenioRDM Record Objects</span></a> section.</p>
+</section>
+</section>
+<section id="update-draft">
+<h4>update_draft()<a class="headerlink" href="#update-draft" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">update_draft</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.update_draft</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code></p></li>
+<li><p>data: dict</p></li>
+<li><p>errors: list</p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+<section id="id1">
+<h5><code class="docutils literal notranslate"><span class="pre">record</span></code><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">record</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code> object that represents the draft in its previous state (before the update).</p>
+</section>
+<section id="id2">
+<h5><code class="docutils literal notranslate"><span class="pre">data</span></code><a class="headerlink" href="#id2" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> value is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> holding the submitted data to be used to update the draft. It has the general shape of the InvenioRDM record schema, although it lacks several of the top-level keys that are present in a record object.</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">data</span></code> value input at the start of the <code class="docutils literal notranslate"><span class="pre">update_draft</span></code> method represents the complete new metadata for the draft. It is not a delta from the previous metadata.</p>
+</section>
+<section id="errors">
+<h5><code class="docutils literal notranslate"><span class="pre">errors</span></code><a class="headerlink" href="#errors" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">errors</span></code> value is a list of errors that occurred during the validation of the <code class="docutils literal notranslate"><span class="pre">data</span></code> value (during self.schema.load()).</p>
+</section>
+</section>
+<section id="publish">
+<h4>publish()<a class="headerlink" href="#publish" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">publish</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.publish</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>draft: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code></p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+<section id="draft">
+<h5><code class="docutils literal notranslate"><span class="pre">draft</span></code><a class="headerlink" href="#draft" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">draft</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code> object that represents the draft in its previous state (before the publish).</p>
+</section>
+<section id="id3">
+<h5><code class="docutils literal notranslate"><span class="pre">record</span></code><a class="headerlink" href="#id3" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">record</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code> object that represents the published record.</p>
+</section>
+</section>
+<section id="edit">
+<h4>edit()<a class="headerlink" href="#edit" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">edit</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RDMRecordService.edit</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>draft: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code></p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+<section id="id4">
+<h5><code class="docutils literal notranslate"><span class="pre">draft</span></code><a class="headerlink" href="#id4" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">draft</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code> object. If a draft already existed for the published record, this represents the draft in its previous state (before the edit). If no draft existed, this represents the new draft being created by the <code class="docutils literal notranslate"><span class="pre">RDMRecordService.edit</span></code> method.</p>
+</section>
+<section id="id5">
+<h5><code class="docutils literal notranslate"><span class="pre">record</span></code><a class="headerlink" href="#id5" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">record</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code> object that represents the published record.</p>
+</section>
+</section>
+<section id="new-version">
+<h4>new_version()<a class="headerlink" href="#new-version" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">new_version</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RDMRecordService.new_version</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>draft: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code></p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+<section id="id6">
+<h5><code class="docutils literal notranslate"><span class="pre">draft</span></code><a class="headerlink" href="#id6" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">draft</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code> object that represents the <strong>new</strong> draft being created by the <code class="docutils literal notranslate"><span class="pre">RDMRecordService.new_version</span></code> method.</p>
+</section>
+<section id="id7">
+<h5><code class="docutils literal notranslate"><span class="pre">record</span></code><a class="headerlink" href="#id7" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">record</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code> object that represents the previous published record (the final state of the previous version).</p>
+</section>
+</section>
+<section id="delete-draft">
+<h4>delete_draft()<a class="headerlink" href="#delete-draft" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">delete_draft</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.delete_draft</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>draft: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code></p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>force: bool</p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+<p>Note: If the draft has no corresponding published record, the parent record will automatically be deleted. Otherwise, the published record and its parent will be left untouched.</p>
+<section id="id8">
+<h5><code class="docutils literal notranslate"><span class="pre">draft</span></code><a class="headerlink" href="#id8" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">draft</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code> object that represents the draft to be deleted.</p>
+</section>
+<section id="id9">
+<h5><code class="docutils literal notranslate"><span class="pre">record</span></code><a class="headerlink" href="#id9" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">record</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code> object that represents the published record corresponding to the draft (if one exists).</p>
+</section>
+<section id="force">
+<h5><code class="docutils literal notranslate"><span class="pre">force</span></code><a class="headerlink" href="#force" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">force</span></code> value is a boolean that indicates whether the draft should be hard deleted. Generally, this is True if there is no corresponding published record. If there is a published record, the <code class="docutils literal notranslate"><span class="pre">force</span></code> value is False and the draft will be soft deleted in order to preserve the draft’s <code class="docutils literal notranslate"><span class="pre">version_id</span></code> counter for optimistic concurrency control.</p>
+</section>
+</section>
+<section id="delete-record">
+<h4>delete_record()<a class="headerlink" href="#delete-record" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">delete_record</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.delete_record</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>data: dict</p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+<section id="id10">
+<h5><code class="docutils literal notranslate"><span class="pre">data</span></code><a class="headerlink" href="#id10" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> value is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> holding the tombstone information after it has been expanded by self.schema_tombstone.load().</p>
+</section>
+<section id="id11">
+<h5><code class="docutils literal notranslate"><span class="pre">record</span></code><a class="headerlink" href="#id11" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">record</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code> object that represents the record to be deleted.</p>
+</section>
+</section>
+<section id="update-tombstone">
+<h4>update_tombstone()<a class="headerlink" href="#update-tombstone" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">update_tombstone</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.update_tombstone</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>data: dict</p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+<section id="id12">
+<h5><code class="docutils literal notranslate"><span class="pre">data</span></code><a class="headerlink" href="#id12" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> value is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> holding the tombstone information after it has been expanded by self.schema_tombstone.load().</p>
+</section>
+<section id="id13">
+<h5><code class="docutils literal notranslate"><span class="pre">record</span></code><a class="headerlink" href="#id13" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">record</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code> object that represents the record to be deleted.</p>
+</section>
+</section>
+<section id="restore-record">
+<h4>restore_record()<a class="headerlink" href="#restore-record" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">restore_record</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.restore_record</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+</section>
+<section id="mark-record-for-purge">
+<h4>mark_record_for_purge()<a class="headerlink" href="#mark-record-for-purge" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">mark_record_for_purge</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.mark_record_for_purge</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+</section>
+<section id="unmark-record-for-purge">
+<h4>unmark_record_for_purge()<a class="headerlink" href="#unmark-record-for-purge" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">unmark_record_for_purge</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.unmark_record_for_purge</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+</section>
+<section id="lift-embargo">
+<h4>lift_embargo()<a class="headerlink" href="#lift-embargo" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">lift_embargo</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.lift_embargo</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>draft: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code></p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+</section>
+<section id="import-files">
+<h4>import_files()<a class="headerlink" href="#import-files" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">import_files</span></code> method of a service component is called before the completion of the <code class="docutils literal notranslate"><span class="pre">RecordService.import_files</span></code> method. It receives the following arguments:</p>
+<ul class="simple">
+<li><p>identity: <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code></p></li>
+<li><p>draft: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code></p></li>
+<li><p>record: <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></li>
+<li><p>uow: <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.uow.UnitOfWork</span></code></p></li>
+</ul>
+<section id="id14">
+<h5><code class="docutils literal notranslate"><span class="pre">draft</span></code><a class="headerlink" href="#id14" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">draft</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code> object that represents the new draft being created for a new record version.</p>
+</section>
+<section id="id15">
+<h5><code class="docutils literal notranslate"><span class="pre">record</span></code><a class="headerlink" href="#id15" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">record</span></code> value is a <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code> object that represents the previous published version of the record.</p>
+</section>
+</section>
+</section>
+</section>
 </section>
 
         </article>
@@ -773,6 +1280,92 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
 </li>
 </ul>
 </li>
+<li><a class="reference internal" href="#inveniordm-record-objects">InvenioRDM Record Objects</a><ul>
+<li><a class="reference internal" href="#api-level-record-objects">API-level Record Objects</a><ul>
+<li><a class="reference internal" href="#rdmdraft-invenio-rdm-records-records-api-rdmdraft"><code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code>)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#service-level-response-objects">Service-level Response Objects</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-tos-creating-and-modifying-records">How Tos: Creating and Modifying Records</a><ul>
+<li><a class="reference internal" href="#creating-and-modifying-records-in-general">Creating and Modifying Records in General</a><ul>
+<li><a class="reference internal" href="#update-a-record">Update a record</a></li>
+<li><a class="reference internal" href="#delete-a-record">Delete a record</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#reading-deposit-records-rdmrecordservice">Reading Deposit Records (RDMRecordService)</a></li>
+<li><a class="reference internal" href="#creating-and-modifying-a-deposit-record-rdmrecordservice">Creating and Modifying a Deposit Record (RDMRecordService)</a><ul>
+<li><a class="reference internal" href="#the-inveniordm-record-life-cycle">The InvenioRDM Record Life Cycle</a></li>
+<li><a class="reference internal" href="#gotchas-with-the-rdmrecordservice">Gotchas with the RDMRecordService</a></li>
+<li><a class="reference internal" href="#create-a-draft-of-a-new-record">Create a draft of a new record</a></li>
+<li><a class="reference internal" href="#hard-delete-a-draft">Hard delete a draft</a></li>
+<li><a class="reference internal" href="#update-an-unpublished-draft">Update an unpublished draft</a></li>
+<li><a class="reference internal" href="#update-a-published-record-via-a-new-draft">Update a published record via a new draft</a></li>
+<li><a class="reference internal" href="#create-a-new-version-of-a-published-record">Create a new version of a published record</a></li>
+<li><a class="reference internal" href="#soft-delete-a-published-record">Soft-delete a published record</a></li>
+<li><a class="reference internal" href="#restore-a-soft-deleted-record">Restore a soft-deleted record</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-tos-custom-record-service-components">How Tos: Custom Record Service Components</a><ul>
+<li><a class="reference internal" href="#component-methods">Component Methods</a><ul>
+<li><a class="reference internal" href="#create">create()</a><ul>
+<li><a class="reference internal" href="#data"><code class="docutils literal notranslate"><span class="pre">data</span></code></a></li>
+<li><a class="reference internal" href="#record"><code class="docutils literal notranslate"><span class="pre">record</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#update-draft">update_draft()</a><ul>
+<li><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">record</span></code></a></li>
+<li><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">data</span></code></a></li>
+<li><a class="reference internal" href="#errors"><code class="docutils literal notranslate"><span class="pre">errors</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#publish">publish()</a><ul>
+<li><a class="reference internal" href="#draft"><code class="docutils literal notranslate"><span class="pre">draft</span></code></a></li>
+<li><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">record</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#edit">edit()</a><ul>
+<li><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">draft</span></code></a></li>
+<li><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">record</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#new-version">new_version()</a><ul>
+<li><a class="reference internal" href="#id6"><code class="docutils literal notranslate"><span class="pre">draft</span></code></a></li>
+<li><a class="reference internal" href="#id7"><code class="docutils literal notranslate"><span class="pre">record</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#delete-draft">delete_draft()</a><ul>
+<li><a class="reference internal" href="#id8"><code class="docutils literal notranslate"><span class="pre">draft</span></code></a></li>
+<li><a class="reference internal" href="#id9"><code class="docutils literal notranslate"><span class="pre">record</span></code></a></li>
+<li><a class="reference internal" href="#force"><code class="docutils literal notranslate"><span class="pre">force</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#delete-record">delete_record()</a><ul>
+<li><a class="reference internal" href="#id10"><code class="docutils literal notranslate"><span class="pre">data</span></code></a></li>
+<li><a class="reference internal" href="#id11"><code class="docutils literal notranslate"><span class="pre">record</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#update-tombstone">update_tombstone()</a><ul>
+<li><a class="reference internal" href="#id12"><code class="docutils literal notranslate"><span class="pre">data</span></code></a></li>
+<li><a class="reference internal" href="#id13"><code class="docutils literal notranslate"><span class="pre">record</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#restore-record">restore_record()</a></li>
+<li><a class="reference internal" href="#mark-record-for-purge">mark_record_for_purge()</a></li>
+<li><a class="reference internal" href="#unmark-record-for-purge">unmark_record_for_purge()</a></li>
+<li><a class="reference internal" href="#lift-embargo">lift_embargo()</a></li>
+<li><a class="reference internal" href="#import-files">import_files()</a><ul>
+<li><a class="reference internal" href="#id14"><code class="docutils literal notranslate"><span class="pre">draft</span></code></a></li>
+<li><a class="reference internal" href="#id15"><code class="docutils literal notranslate"><span class="pre">record</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -784,7 +1377,7 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=ba50482b"></script>
+</div><script src="_static/documentation_options.js?v=c1cae59a"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

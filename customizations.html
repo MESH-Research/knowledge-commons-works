@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Configuration of InvenioRDM" href="configuration.html" /><link rel="prev" title="Metadata Schema, Vocabularies, and Identifiers" href="metadata.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Customizations to InvenioRDM - Knowledge Commons Works 0.3.5 documentation</title>
+        <title>Customizations to InvenioRDM - Knowledge Commons Works 0.3.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Knowledge Commons Works 0.3.5 documentation</div></a>
+      <a href="index.html"><div class="brand">Knowledge Commons Works 0.3.8 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.3.5 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.3.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -202,6 +202,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Customizations to InvenioRDM</a></li>
@@ -294,6 +295,82 @@
 <h3>Collections for KC Groups (invenio-group-collections-kcworks)<a class="headerlink" href="#collections-for-kc-groups-invenio-group-collections-kcworks" title="Link to this heading">¶</a></h3>
 </section>
 </section>
+<section id="record-permissions">
+<h2>Record Permissions<a class="headerlink" href="#record-permissions" title="Link to this heading">¶</a></h2>
+<section id="per-field-editing-permissions">
+<h3>Per-field editing permissions<a class="headerlink" href="#per-field-editing-permissions" title="Link to this heading">¶</a></h3>
+<p>KCWorks adds the ability to set per-field editing permissions for record owners. This is implemented by a custom service component (``kcworks.services.records.components.PerFieldPermissionsComponent`) that runs during record modification and selectively blocks edits to certain fields. Attempts to edit restricted fields will raise a ValidationError with a message indicating that the field is restricted.</p>
+<p>The component runs during the <code class="docutils literal notranslate"><span class="pre">update_draft</span></code>, <code class="docutils literal notranslate"><span class="pre">publish</span></code>, <code class="docutils literal notranslate"><span class="pre">new_version</span></code>, and <code class="docutils literal notranslate"><span class="pre">delete_record</span></code> record operations. It looks at which fields have been modified from the previous version of the record (the draft if the record is not yet published, or the published record if it is published) and checks to see if the current user has permission to edit the field in question. If not, it raises a ValidationError with a message indicating that the field is restricted.</p>
+<section id="per-field-permissions-configuration">
+<h4>Per-field permissions configuration<a class="headerlink" href="#per-field-permissions-configuration" title="Link to this heading">¶</a></h4>
+<p>The permissions are configured in the <code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> file using the <code class="docutils literal notranslate"><span class="pre">RDM_RECORDS_PERMISSIONS_PER_FIELD</span></code> variable like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RDM_RECORDS_PERMISSIONS_PER_FIELD</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;custom_fields.kcr:commons_domain&quot;</span><span class="p">:</span> <span class="s2">&quot;community_moderators&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;notify_on_change&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;grace_period&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;sample_community&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;custom_fields.kcr:commons_domain&quot;</span><span class="p">:</span> <span class="s2">&quot;community_moderators&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;notify_on_change&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;grace_period&quot;</span><span class="p">:</span> <span class="s2">&quot;1 day&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">default</span></code> key is used to configure the permissions for all records that do not have a specific community configuration. Other keys are the URL slugs for specific communities and are used to configure the permissions for records in specific communities. These community-specific configurations are optional but take precedence over the default configuration. If no community-specific configuration is found, the default configuration will be used. If no default configuration is found, per-field permissions will only be applied to records published to a community that has a community-specific configuration.</p>
+<p>This configuration would be for a community with the URL slug <code class="docutils literal notranslate"><span class="pre">sample_community</span></code>. The <code class="docutils literal notranslate"><span class="pre">kcr:commons_domain</span></code> field is being restricted to moderators for this community.</p>
+</section>
+<section id="defining-the-permissions">
+<h4>Defining the permissions<a class="headerlink" href="#defining-the-permissions" title="Link to this heading">¶</a></h4>
+<p>The values for each key in the <code class="docutils literal notranslate"><span class="pre">RDM_RECORDS_PERMISSIONS_PER_FIELD</span></code> config variable can take one of two forms:</p>
+<ol class="arabic simple">
+<li><p>a permission policy object or</p></li>
+<li><p>a dictionary mapping field names to a list of community role levels (one or more of <code class="docutils literal notranslate"><span class="pre">owner</span></code>, <code class="docutils literal notranslate"><span class="pre">manager</span></code>, <code class="docutils literal notranslate"><span class="pre">curator</span></code>, <code class="docutils literal notranslate"><span class="pre">admin</span></code>, <code class="docutils literal notranslate"><span class="pre">reader</span></code>).</p></li>
+</ol>
+<p>If a dictionary is provided, this will be used to generate a permission policy object with the following structure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_access.permissions</span> <span class="kn">import</span> <span class="n">Permission</span><span class="p">,</span> <span class="n">ActionNeed</span><span class="p">,</span> <span class="n">ParameterizedActionNeed</span>
+<span class="n">update_restricted_field_permission</span> <span class="o">=</span> <span class="n">Permission</span><span class="p">(</span><span class="n">ParameterizedActionNeed</span><span class="p">(</span><span class="s1">&#39;update-restricted-field&#39;</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="s1">&#39;custom_fields.kcr:commons_domain&#39;</span><span class="p">))</span>
+
+<span class="n">update_restricted_field_permission</span><span class="o">.</span><span class="n">allows</span><span class="p">(</span><span class="n">my_identity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>with policy</p>
+</section>
+<section id="enabling-per-field-permissions">
+<h4>Enabling per-field permissions<a class="headerlink" href="#enabling-per-field-permissions" title="Link to this heading">¶</a></h4>
+<p>In order to enable per-field permissions, the <code class="docutils literal notranslate"><span class="pre">PerFieldPermissionsComponent</span></code> must be added to the <code class="docutils literal notranslate"><span class="pre">RDM_RECORDS_SERVICE_COMPONENTS</span></code> config variable.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RDM_RECORDS_SERVICE_COMPONENTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">RDM_RECORDS_SERVICE_COMPONENTS</span><span class="o">*</span><span class="p">,</span>
+    <span class="s2">&quot;kcworks.services.records.components.PerFieldPermissionsComponent&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="which-community-s-permissions-apply">
+<h4>Which community’s permissions apply?<a class="headerlink" href="#which-community-s-permissions-apply" title="Link to this heading">¶</a></h4>
+<p>Since KCWorks records can be included in multiple communities, the per-field permissions component needs to know which community’s permissions to apply. There are two controls for this:</p>
+<ol class="arabic simple">
+<li><p><strong>The default display community</strong> for the record is the one whose permissions are applied. This is the community whose id is stored in <code class="docutils literal notranslate"><span class="pre">parent.communities.default</span></code> field of the record.</p></li>
+<li><p>The default display community <strong>can be set as one of the restricted fields</strong> for the record.</p></li>
+</ol>
+<p>So if a record is included in the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community, and that community is set as the default community for the record, then the permissions applied will be those of the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community. If the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community has no per-field permissions configured, then the default permissions will be used. If no default permissions are configured, then the record will be unrestricted.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community’s per-field permissions restrict changing the <code class="docutils literal notranslate"><span class="pre">parent.communities.default</span></code> field, then the record owner will not be able to remove the record from the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community or change the default community for the record. The record can only be removed from the community, or its default community changed to another community, by an <code class="docutils literal notranslate"><span class="pre">owner</span></code>, <code class="docutils literal notranslate"><span class="pre">manager</span></code>, or <code class="docutils literal notranslate"><span class="pre">curator</span></code> of the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community.</p>
+<blockquote>
+<div><p>[!Note]
+If a community has per-field permission restrictions configured, this will be displayed in the user interface when the record owner submits it to the community.</p>
+</div></blockquote>
+<blockquote>
+<div><p>[!Note]
+A one-time notification to all record owners if/when the community’s per-field permissions are changed. Depending on collection policy, record owners may be allowed a grace period to update their records before the permissions are enforced.</p>
+</div></blockquote>
+</section>
+</section>
+</section>
 <section id="notifications">
 <h2>Notifications<a class="headerlink" href="#notifications" title="Link to this heading">¶</a></h2>
 <section id="in-app-notifications">
@@ -321,6 +398,23 @@
 <li><p>custom email templates for the notifications, located at <code class="docutils literal notranslate"><span class="pre">site/kcworks/templates/semantic-ui/invenio_notifications/</span></code>.</p></li>
 </ul>
 </section>
+</section>
+<section id="notifications-for-import-api-record-owners">
+<h3>Notifications for import API record owners<a class="headerlink" href="#notifications-for-import-api-record-owners" title="Link to this heading">¶</a></h3>
+<p>The streamlined import API sends notifications to the owners of the records being imported. These notifications are implemented by the <code class="docutils literal notranslate"><span class="pre">invenio-record-importer-kcworks</span></code> package. They are configured using the <code class="docutils literal notranslate"><span class="pre">RECORD_IMPORTER_COMMUNITIES</span></code> config variable, like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RECORD_IMPORTER_COMMUNITIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;sample_community&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;email_subject_register&quot;</span><span class="p">:</span> <span class="s2">&quot;Your KCWorks Record is Ready&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;email_template_register&quot;</span><span class="p">:</span> <span class="s2">&quot;welcome_sample_community&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This configuration would be for a community with the URL slug <code class="docutils literal notranslate"><span class="pre">sample_community</span></code>. The <code class="docutils literal notranslate"><span class="pre">email_subject_register</span></code> value sets the subject line for the email notification sent to the record owners. The <code class="docutils literal notranslate"><span class="pre">email_template_register</span></code> value sets the template to use for the email notification. The template must be located in the <code class="docutils literal notranslate"><span class="pre">templates/security/email</span></code> directory of the KCWorks instance directory.</p>
+<blockquote>
+<div><p>[!Note]
+These notifications will <em>only</em> be sent for records imported using the streamlined import API. They will <em>not</em> be sent for records imported using the old importer API.</p>
+</div></blockquote>
 </section>
 </section>
 <section id="integrations-with-kc">
@@ -915,12 +1009,23 @@ This field is automatically generated by the <code class="docutils literal notra
 <li><a class="reference internal" href="#collections-for-kc-groups-invenio-group-collections-kcworks">Collections for KC Groups (invenio-group-collections-kcworks)</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#record-permissions">Record Permissions</a><ul>
+<li><a class="reference internal" href="#per-field-editing-permissions">Per-field editing permissions</a><ul>
+<li><a class="reference internal" href="#per-field-permissions-configuration">Per-field permissions configuration</a></li>
+<li><a class="reference internal" href="#defining-the-permissions">Defining the permissions</a></li>
+<li><a class="reference internal" href="#enabling-per-field-permissions">Enabling per-field permissions</a></li>
+<li><a class="reference internal" href="#which-community-s-permissions-apply">Which community’s permissions apply?</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#notifications">Notifications</a><ul>
 <li><a class="reference internal" href="#in-app-notifications">In-app notifications</a></li>
 <li><a class="reference internal" href="#content-moderation-notifications">Content moderation notifications</a><ul>
 <li><a class="reference internal" href="#user-first-record-notifications">User-first-record notifications</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#notifications-for-import-api-record-owners">Notifications for import API record owners</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#integrations-with-kc">Integrations with KC</a><ul>
@@ -997,7 +1102,7 @@ This field is automatically generated by the <code class="docutils literal notra
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=ba50482b"></script>
+</div><script src="_static/documentation_options.js?v=c1cae59a"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

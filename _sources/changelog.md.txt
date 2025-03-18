@@ -4,6 +4,11 @@
 
 # Changes
 
+## Not yet released
+
+- Documentation
+    - Added documentation of known issues.
+
 ## 0.3.8-beta11 (2025-03-14)
 
 - File Uploads
