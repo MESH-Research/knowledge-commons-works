@@ -460,7 +460,390 @@ And the following methods (among others, including standard `dict` methods)
 - 'undelete',
 - 'validate',
 
+##### Creating an RDMDraft object
+
+The `RDMDraft` object can be created by calling the `create` method on the `RDMDraft` class. This method takes a dictionary of data to be used to create the record and returns an `RDMDraft` object.
+
+```python
+draft = RDMDraft.create({
+    "metadata": {
+        "title": "My Title",
+        "description": "My Description"
+    }
+})
+```
+
+
+#### `RDMRecord` (`invenio_rdm_records.records.api.RDMRecord`)
+
+The `RDMRecord` object is a subclass of the `Record` object (defined in `invenio_records.api.Record`).
+
+The `RDMRecord` object has the following metadata properties that are available as dot properties and by key.
+
+- `access`
+- `custom_fields`
+- `deletion_status`
+- `errors`
+- `files`
+- `id`
+- `media_files`
+- `metadata`
+- `pids`
+
+One additional key, `$schema`, is not available as a dot property. It provides the name of the schema used to validate the RDMRecord instance prior to publication. The actual schema object is stored in the `schema` property.
+
+The object also has the following properties that are not part of the metadata and cannot be accessed by key:
+
+- `bucket`: The bucket object used to store files for the RDMRecord instance
+- `bucket_id`: The ID for the bucket used to store files for the RDMRecord instance
+- `created`: The date and time the RDMRecord instance was created
+- 'dumper': The dumper class for serializing RDMRecord instances to JSON (e.g., for search indexing)
+- 'enable_jsonref': Whether to enable JSON references ????
+- 'format_checker': The format checker for the RDMRecord class
+- 'index': The OpenSearch index for the RDMRecord class
+- `is_deleted`: Whether the RDMRecord instance has been deleted
+- `is_draft`: Whether the RDMRecord instance is a draft
+- `is_published`: Whether the RDMRecord instance has been published
+- `media_bucket_id`: The ID for the bucket used to store media files for the RDMRecord instance
+- 'model': The SQLAlchemy model instance providing the ORM object for the RDMRecord instance
+- 'model_cls': The SQLAlchemy model class providing the ORM for the RDMRecord class
+- 'next_latest_published_record_by_parent': The next latest published record (published version) that shares the same parent record
+- `parent`: The parent record for the RDMRecord instance
+- 'pid': The PID for the RDMRecord instance. This is not the same as the record's `id`, which is shared by all versions of the record (both draft and published). It is the unique UUID for the RDMRecord instance.
+- 'relations': The ORM relations for the RDMRecord instance
+- 'revisions': The revisions for the RDMRecord instance
+- 'schema': The schema used to validate the RDMRecord instance prior to publication
+- 'revision_id': The revision ID for the RDMRecord instance
+- 'stats': The stats for the RDMRecord instance
+- 'status': The status of the RDMRecord instance ("draft", "published", "deleted", etc.)
+- `tombstone`
+- 'updated': The updated date for the RDMRecord instance
+- 'validator': The validator for the RDMRecord class
+- 'versions': The versions for the RDMRecord instance
+- 'versions_model_cls': The SQLAlchemy model class providing the ORM for the versions record
+
+The `RDMRecord` class also has methods for operating on RDMRecord instance objects. These include:
+
+- 'create',
+- 'get_latest_by_parent',
+- 'get_latest_published_by_parent',
+- 'get_record',
+- 'get_records',
+- 'get_records_by_parent',
+
+The `RDMRecord` object also has methods that perform actions on the record. These include:
+
+- 'clear',
+- 'clear_none',
+- 'commit',
+- 'copy',
+- 'delete',
+- 'dumps',
+- 'has_draft',
+- 'loads',
+- 'parent',
+- 'parent_record_cls',
+- 'patch',
+- 'pop',
+- 'popitem',
+- 'publish',
+- 'register',
+- 'replace_refs',
+- 'revert',
+- 'send_signals',
+- 'setdefault',
+- 'undelete',
+- 'update',
+- 'validate',
+
+Since the `RDMRecord` object can present values as if it were a dictionary, it also has the following methods:
+- 'keys'
+- 'items'
+- 'values',
+- 'fromkeys',
+- 'get',
+
+#### `RDMParent` (`invenio_rdm_records.records.api.RDMParent`)
+
+The `RDMParent` object is the parent record for an `RDMRecord` instance. It is a subclass of the `Record` object (defined in `invenio_records.api.Record`). Note that parent records never exist without a child record. They do not represent any particular record state, but rather are used to link records together.
+
+The `RDMParent` object has the following properties containing record metadata that appears in the `parent` field of an `RDMRecord` or `RDMDraft` instance:
+
+| Property | Accessible by key | Description |
+|----------|-------------|
+| `access` | Yes | Access control settings. The value is a `ParentRecordAccess` object with `grants`, `links`, `owned_by`, `owner`, and `settings` properties (among others). |
+| `communities` | Yes | Associated communities. The value is a `invenio_communities.records.records.systemfields.communities.manager.CommunitiesRelationManager` object with `ids`, `default`, and `entries` properties. (No values are accessible by key.) |
+| `created` | No | Creation timestamp |
+| `id` | Yes | Record identifier |
+| `metadata` | No | Record metadata |
+| `pids` | Yes | Public-facing persistent identifiers, including the primary DOI |
+| `updated` | No | Last updated timestamp |
+
+The object instance also has the key `$schema` which is not accessible as a dot property. It provides the name of the schema used to validate the RDMRecord instance prior to publication. The actual schema object is stored in the `schema` property.
+
+The `RDMParent` object also has the following properties that are not part of the metadata and are not included in the `parent` field of an `RDMRecord` or `RDMDraft` instance:
+
+| `dumper` | Serialization dumper |
+| `format_checker` | Format validation checker |
+| `is_deleted` | Deletion status flag |
+| `is_verified` | Verification status flag |
+| `model` | Database model instance |
+| `model_cls` | Database model class |
+| `permission_flags` | Permission settings |
+| `pid` | Internal persistent identifier, a UUID for the parent record. |
+| `review` | Review information |
+| `revisions` | Revision history |
+| `schema` | JSON schema |
+| `validator` | Validation handler |
+
+The `RDMParent` object also has the following methods:
+
+| Property | Description |
+|----------|-------------|
+| `clear` | Method to clear record data |
+| `clear_none` | Method to clear None values |
+| `commit` | Method to commit changes |
+| `copy` | Method to copy record |
+| `create` | Method to create record |
+| `delete` | Method to delete record |
+| `dumps` | Method to serialize record |
+| `enable_jsonref` | JSON reference flag |
+| `fromkeys` | Dictionary method |
+| `get` | Dictionary get method |
+| `get_record` | Method to retrieve record |
+| `get_records` | Method to retrieve multiple records |
+| `items` | Dictionary items method |
+| `keys` | Dictionary keys method |
+| `loads` | Method to deserialize record |
+| `patch` | Method to patch record |
+| `pop` | Dictionary pop method |
+| `popitem` | Dictionary popitem method |
+| `replace_refs` | Method to replace references |
+| `revert` | Method to revert changes |
+| `revision_id` | Revision identifier |
+| `send_signals` | Method to send signals |
+| `setdefault` | Dictionary setdefault method |
+| `undelete` | Method to undelete record |
+| `update` | Method to update record |
+| `validate` | Method to validate record |
+| `values` | Dictionary values method |
+
 ### Service-level Response Objects
+
+#### `RecordItem` (`invenio_records_resources.services.records.results.RecordItem`)
+
+The `RecordItem` object is the service-level response object for a record, used for individual results from the RDMRecordService. It is returned by service methods like `current_rdm_records_service.read()` or `current_rdm_records_service.search()`.
+
+The `RecordItem` object has the following properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `_data` | `dict` | The `_data` property does *not* return the same dictionary as the `to_dict()` method. It appears to be None for published records. |
+| `_errors` | `list` | Any validation errors |
+| `_expand` | `dict` | The expand options for the record |
+| `_fields_resolver` | `dict` | The fields resolver for the record |
+| `_identity` | `dict` | The identity for the record |
+| `_links_tpl` | `dict` | The links template for the record |
+| `_nested_links_item` | `dict` | The nested links item for the record |
+| `_obj` | `dict` | The object for the record |
+| `_record` | `invenio_rdm_records.records.api.RDMRecord` | The underlying api-level `RDMRecord` record object |
+| `_schema` | `dict` | The schema for the record |
+| `_service` | `invenio_rdm_records.services.RDMRecordService` | The service for the record |
+| `data` | `dict` | The record data represented as a dictionary. This is the same dictionary returned by the `to_dict()` method. |
+| `errors` | `list` | Any validation errors |
+| `has_permissions_to` | `dict` | Permission checks |
+| `id` | `str` | The record identifier |
+| `links` | `dict` | Related URLs. The same as the `links` property of the `_record` object and the "links" value of the `data` dictionary. |
+
+
+The `RecordItem` object also has the `to_dict()` method, which returns a representation of the record as a dictionary. For a published record, the `to_dict()` method returns a dictionary with the following shape:
+
+```python
+{'access': {'embargo': {'active': False, 'reason': None},
+            'files': 'public',
+            'record': 'public',
+            'status': 'metadata-only'},
+ 'created': '2025-03-19T20:49:34.391191+00:00',
+ 'custom_fields': {},
+ 'deletion_status': {'is_deleted': False, 'status': 'P'},
+ 'files': {'count': 0,
+           'enabled': False,
+           'entries': {},
+           'order': [],
+           'total_bytes': 0},
+ 'id': 'q2cae-anf51',
+ 'is_draft': False,
+ 'is_published': True,
+ 'links': {'access': 'https://localhost/api/records/q2cae-anf51/access',
+           'access_grants': 'https://localhost/api/records/q2cae-anf51/access/grants',
+           'access_groups': 'https://localhost/api/records/q2cae-anf51/access/groups',
+           'access_links': 'https://localhost/api/records/q2cae-anf51/access/links',
+           'access_request': 'https://localhost/api/records/q2cae-anf51/access/request',
+           'access_users': 'https://localhost/api/records/q2cae-anf51/access/users',
+           'archive': 'https://localhost/api/records/q2cae-anf51/files-archive',
+           'archive_media': 'https://localhost/api/records/q2cae-anf51/media-files-archive',
+           'communities': 'https://localhost/api/records/q2cae-anf51/communities',
+           'communities-suggestions': 'https://localhost/api/records/q2cae-anf51/communities-suggestions',
+           'doi': 'https://handle.stage.datacite.org/10.17613/q2cae-anf51',
+           'draft': 'https://localhost/api/records/q2cae-anf51/draft',
+           'files': 'https://localhost/api/records/q2cae-anf51/files',
+           'latest': 'https://localhost/api/records/q2cae-anf51/versions/latest',
+           'latest_html': 'https://localhost/records/q2cae-anf51/latest',
+           'media_files': 'https://localhost/api/records/q2cae-anf51/media-files',
+           'parent': 'https://localhost/api/records/hkz47-g3q07',
+           'parent_doi': 'https://localhost/doi/10.17613/hkz47-g3q07',
+           'parent_html': 'https://localhost/records/hkz47-g3q07',
+           'requests': 'https://localhost/api/records/q2cae-anf51/requests',
+           'reserve_doi': 'https://localhost/api/records/q2cae-anf51/draft/pids/doi',
+           'self': 'https://localhost/api/records/q2cae-anf51',
+           'self_doi': 'https://localhost/doi/10.17613/q2cae-anf51',
+           'self_html': 'https://localhost/records/q2cae-anf51',
+           'self_iiif_manifest': 'https://localhost/api/iiif/record:q2cae-anf51/manifest',
+           'self_iiif_sequence': 'https://localhost/api/iiif/record:q2cae-anf51/sequence/default',
+           'versions': 'https://localhost/api/records/q2cae-anf51/versions'},
+ 'media_files': {'count': 0,
+                 'enabled': False,
+                 'entries': {},
+                 'order': [],
+                 'total_bytes': 0},
+ 'metadata': {'creators': [{'person_or_org': {'family_name': 'Brown',
+                                              'given_name': 'Troy',
+                                              'name': 'Brown, Troy',
+                                              'type': 'personal'}},
+                           {'person_or_org': {'name': 'Troy Inc.',
+                                              'type': 'organizational'}}],
+              'publication_date': '2020-06-01',
+              'publisher': 'Acme Inc',
+              'resource_type': {'id': 'image-photograph',
+                                'title': {'en': 'Photo'}},
+              'title': 'A Romans story'},
+ 'parent': {'access': {'grants': [],
+                       'links': [],
+                       'owned_by': {'user': '1'},
+                       'settings': {'accept_conditions_text': None,
+                                    'allow_guest_requests': False,
+                                    'allow_user_requests': False,
+                                    'secret_link_expiration': 0}},
+            'communities': {'default': '00c10e5a-cfb6-4c4d-ab7e-3894b5930181',
+                            'entries': [{'access': {'member_policy': 'open',
+                                                    'members_visibility': 'public',
+                                                    'record_policy': 'open',
+                                                    'review_policy': 'open',
+                                                    'visibility': 'public'},
+                                         'children': {'allow': False},
+                                         'created': '2025-03-19T20:49:33.284511+00:00',
+                                         'custom_fields': {},
+                                         'deletion_status': {'is_deleted': False,
+                                                             'status': 'P'},
+                                         'id': '00c10e5a-cfb6-4c4d-ab7e-3894b5930181',
+                                         'links': {},
+                                         'metadata': {'curation_policy': 'Curation '
+                                                                         'policy',
+                                                      'description': 'A '
+                                                                     'description',
+                                                      'organizations': [{'name': 'Organization '
+                                                                                 '1'}],
+                                                      'page': 'Information for '
+                                                              'my community',
+                                                      'title': 'My Community',
+                                                      'type': {'id': 'event'},
+                                                      'website': 'https://my-community.com'},
+                                         'revision_id': 2,
+                                         'slug': 'my-community',
+                                         'updated': '2025-03-19T20:49:33.452355+00:00'}],
+                            'ids': ['00c10e5a-cfb6-4c4d-ab7e-3894b5930181']},
+            'id': 'hkz47-g3q07',
+            'pids': {'doi': {'client': 'datacite',
+                             'identifier': '10.17613/hkz47-g3q07',
+                             'provider': 'datacite'}}},
+ 'pids': {'doi': {'client': 'datacite',
+                  'identifier': '10.17613/q2cae-anf51',
+                  'provider': 'datacite'},
+          'oai': {'identifier': 'oai:https://localhost:q2cae-anf51',
+                  'provider': 'oai'}},
+ 'revision_id': 3,
+ 'stats': {'all_versions': {'data_volume': 0.0,
+                            'downloads': 0,
+                            'unique_downloads': 0,
+                            'unique_views': 0,
+                            'views': 0},
+           'this_version': {'data_volume': 0.0,
+                            'downloads': 0,
+                            'unique_downloads': 0,
+                            'unique_views': 0,
+                            'views': 0}},
+ 'status': 'published',
+ 'updated': '2025-03-19T20:49:34.451290+00:00',
+ 'versions': {'index': 1, 'is_latest': True, 'is_latest_draft': True}}
+ ```
+
+#### `CommunityItem` (`invenio_communities.records.api.CommunityItem`)
+
+The `CommunityItem` object is the service-level response object for a community. It is returned by service methods like `current_communities.service.read()` or `current_communities.service.search()`.
+
+The `CommunityItem` object has the following properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `_record` | `invenio_communities.records.api.Community` | The underlying api-level `Community` record object |
+| `data` | `dict` | The record data as a dictionary |
+| `errors` | `list` | Any validation errors |
+| `has_permissions_to` | `dict` | Permission checks |
+| `id` | `str` | The record identifier |
+| `links` | `dict` | Related URLs. The same as the `links` property of the `_record` object and the "links" value of the `data` dictionary. |
+
+Its `data` property is a dictionary identical to the `to_dict()` method's return value. It has the following shape:
+
+```python
+{
+    'id': '6bcba8b1-f967-4175-9557-c71dea07c8e7',
+    'created': '2025-03-19T19:18:48.550894+00:00',
+    'updated': '2025-03-19T19:18:48.643023+00:00',
+    'links': {
+        'featured': 'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/featured',
+        'self': 'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7',
+        'self_html': 'https://localhost/collections/my-community',
+        'settings_html': 'https://localhost/collections/my-community/settings',
+        'logo': 'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/logo',
+        'rename': 'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/rename',
+        'members': 'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/members',
+        'public_members': 'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/members/public',
+        'invitations': 'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/invitations',
+        'requests': 'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/requests',
+        'records': 'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/records',
+        'membership_requests': 'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/membership-requests'
+    },
+    'revision_id': 2,
+    'slug': 'my-community',
+    'metadata': {
+        'title': 'My Community',
+        'description': 'A description',
+        'curation_policy': 'Curation policy',
+        'page': 'Information for my community',
+        'type': {
+            'id': 'event',
+            'title': {'en': 'Event'}
+        },
+        'website': 'https://my-community.com',
+        'organizations': [{'name': 'Organization 1'}]
+    },
+    'access': {
+        'visibility': 'public',
+        'members_visibility': 'public',
+        'member_policy': 'open',
+        'record_policy': 'open',
+        'review_policy': 'open'
+    },
+    'custom_fields': {},
+    'deletion_status': {
+        'is_deleted': False,
+        'status': 'P'
+    },
+    'children': {'allow': False}
+}
+```
+
+Its `to_dict()` method returns a dictionary with the same shape as the `data` property.
 
 ## How Tos: Creating and Modifying Records
 
@@ -613,7 +996,9 @@ The `create` method of a service component is called before the completion of th
 
 ##### `data`
 
-The `data` value is a simple `dict` holding the submitted data to be used to create the record. It has the general shape of the InvenioRDM record schema, although it lacks several of the top-level keys that are present in a record object:
+The `data` value is a simple `dict` holding the submitted data to be used to create the record. It is the first return value from service.schema.load().
+
+It has the shape of the InvenioRDM record schema, although it lacks several of the top-level keys that are present in a record object:
 
 ```python
 {
@@ -667,6 +1052,9 @@ The `record` value is a `invenio_rdm_records.records.api.RDMDraft` object that i
 
 For more information on the `RDMDraft` object, see the [InvenioRDM Record Objects](#invenio-rdm-record-objects) section.
 
+##### `errors`
+
+The `errors` value is a list of errors that occurred during the validation of the `data` value. Prior to running the service components. It is the second return value from self.schema.load(), which was run to produce the `data` dictionary.
 
 #### update_draft()
 
@@ -679,7 +1067,7 @@ The `update_draft` method of a service component is called before the completion
 
 ##### `record`
 
-The `record` value is a `invenio_rdm_records.records.api.RDMDraft` object that represents the draft in its previous state (before the update).
+The `record` value is a `invenio_rdm_records.records.api.RDMDraft` object. It begins passing through the service components in its previous state (before the update), but is modified by the service components in sequence.
 
 ##### `data`
 
