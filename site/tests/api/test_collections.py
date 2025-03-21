@@ -285,12 +285,16 @@ def test_group_collection_read_all(
         assert len(response.json["hits"]["hits"]) == 4
         assert response.json["sortBy"] == "updated-desc"
         assert response.json["links"] == {
-            "next": f"{app.config['SITE_API_URL']}/communities?"
-            "page=2&q=%2B_exists_%3Acustom_fields.kcr%5C%3Acommons_instance%20"
-            "&size=4&sort=updated-desc",
-            "self": f"{app.config['SITE_API_URL']}/communities?"
-            "page=1&q=%2B_exists_%3Acustom_fields.kcr%5C%3Acommons_instance%20"
-            "&size=4&sort=updated-desc",
+            "next": (
+                f"{app.config['SITE_API_URL']}/communities?"
+                "page=2&q=%2B_exists_%3Acustom_fields.kcr%5C%3Acommons_instance%20"
+                "&size=4&sort=updated-desc"
+            ),
+            "self": (
+                f"{app.config['SITE_API_URL']}/communities?"
+                "page=1&q=%2B_exists_%3Acustom_fields.kcr%5C%3Acommons_instance%20"
+                "&size=4&sort=updated-desc"
+            ),
         }
         for hit in response.json["hits"]["hits"]:
             assert re.match(

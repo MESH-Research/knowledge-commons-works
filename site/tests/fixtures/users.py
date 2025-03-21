@@ -1,10 +1,10 @@
 from typing import Callable, Optional, Union
-from flask import current_app
 from flask_login import login_user
 from flask_principal import Identity
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles, Role
-from invenio_access.permissions import superuser_access
+from invenio_access.permissions import any_user, authenticated_user
+from invenio_access.utils import get_identity
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
 from invenio_accounts.testutils import login_user_via_session
@@ -15,6 +15,14 @@ import os
 import pytest
 from pytest_invenio.fixtures import UserFixtureBase
 from requests_mock.adapter import _Matcher as Matcher
+
+
+def get_authenticated_identity(user: User):
+    """Return an authenticated identity for the given user."""
+    identity = get_identity(user)
+    identity.provides.add(any_user)
+    identity.provides.add(authenticated_user)
+    return identity
 
 
 @pytest.fixture(scope="function")

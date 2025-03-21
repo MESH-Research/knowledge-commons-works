@@ -8,6 +8,9 @@ from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
 )
+from kcworks.services.records.components.per_field_permissions_component import (
+    PerFieldEditPermissionsComponent,
+)
 
 
 class KCWorks(object):
@@ -48,5 +51,6 @@ class KCWorks(object):
         )
         components += [
             FirstRecordComponent,
+            PerFieldEditPermissionsComponent,
         ]
         app.config["RDM_RECORDS_SERVICE_COMPONENTS"] = components
