@@ -3,7 +3,7 @@ from flask_login import login_user
 from flask_principal import Identity
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles, Role
-from invenio_access.permissions import any_user, authenticated_user
+from invenio_access.permissions import any_user, authenticated_user, superuser_access
 from invenio_access.utils import get_identity
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
