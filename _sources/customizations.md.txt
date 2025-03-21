@@ -44,15 +44,20 @@ The permissions are configured in the `invenio.cfg` file using the `RDM_RECORDS_
 ```python
 RDM_RECORDS_PERMISSIONS_PER_FIELD = {
     "default": {
-        "policy": {
-            "custom_fields.kcr:commons_domain": "community_moderators",
-        },
+        "policy": [ "custom_fields.kcr:commons_domain" ],
         "notify_on_change": False,
         "grace_period": None,
     },
     "sample_community": {
         "policy": {
-            "custom_fields.kcr:commons_domain": "community_moderators",
+            "parent.communities.default": ["manager", "owner"],
+        },
+        "notify_on_change": True,
+        "grace_period": "1 day",
+    },
+    "sample_community_2": {
+        "policy": {
+            "custom_fields.kcr:commons_domain": [CommunityManagers, CommunityCurators, CommunityOwners],
         },
         "notify_on_change": True,
         "grace_period": "1 day",
@@ -66,21 +71,11 @@ This configuration would be for a community with the URL slug `sample_community`
 
 #### Defining the permissions
 
-The values for each key in the `RDM_RECORDS_PERMISSIONS_PER_FIELD` config variable can take one of two forms:
+The values for each key in the `RDM_RECORDS_PERMISSIONS_PER_FIELD` config variable can take one of three forms:
 
-1. a permission policy object or
-2. a dictionary mapping field names to a list of community role levels (one or more of `owner`, `manager`, `curator`, `admin`, `reader`).
-
-If a dictionary is provided, this will be used to generate a permission policy object with the following structure:
-
-```python
-from invenio_access.permissions import Permission, ActionNeed, ParameterizedActionNeed
-update_restricted_field_permission = Permission(ParameterizedActionNeed('update-restricted-field', field_name='custom_fields.kcr:commons_domain'))
-
-update_restricted_field_permission.allows(my_identity)
-```
-
-with policy
+1. a list of field names (strings) to restrict.
+2. a dictionary mapping field names to lists of community role levels (one or more of `owner`, `manager`, `curator`, `admin`, `reader`).
+3. a dictionary mapping field names to lists of invenio_records_permissions.generators.Generator objects.
 
 #### Enabling per-field permissions
 
