@@ -1,7 +1,52 @@
 import pytest
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
-from kcworks.utils import get_changed_fields, get_value_by_path
+from kcworks.utils import get_changed_fields, get_value_by_path, update_nested_dict
+
+
+@pytest.mark.parametrize(
+    "starting_dict,updates,expected",
+    [
+        # Simple update
+        ({"a": 1}, {"b": 2}, {"a": 1, "b": 2}),
+        # Nested update
+        ({"a": {"b": 1}}, {"a": {"c": 2}}, {"a": {"b": 1, "c": 2}}),
+        # Update existing value
+        ({"a": 1}, {"a": 2}, {"a": 2}),
+        # Deep nested update
+        (
+            {"a": {"b": {"c": 1}}},
+            {"a": {"b": {"d": 2}}},
+            {"a": {"b": {"c": 1, "d": 2}}},
+        ),
+        # Update with empty dict
+        ({"a": 1}, {}, {"a": 1}),
+        # Update empty dict
+        ({}, {"a": 1}, {"a": 1}),
+        # Multiple nested updates
+        (
+            {"a": {"b": 1}, "c": {"d": 2}},
+            {"a": {"e": 3}, "c": {"f": 4}},
+            {"a": {"b": 1, "e": 3}, "c": {"d": 2, "f": 4}},
+        ),
+        # Update nested list
+        (
+            {"a": {"list": [1, 2, 3]}},
+            {"a": {"list": [4, 5, 6]}},
+            {"a": {"list": [4, 5, 6]}},
+        ),
+        # Update nested list within deeper structure
+        (
+            {"a": {"b": {"items": [{"id": 1}, {"id": 2}]}}},
+            {"a": {"b": {"items": [{"id": 1}, {"id": 3}]}}},
+            {"a": {"b": {"items": [{"id": 1}, {"id": 3}]}}},
+        ),
+    ],
+)
+def test_utils_update_nested_dict(starting_dict, updates, expected):
+    """Test the update_nested_dict utility function."""
+    result = update_nested_dict(starting_dict, updates)
+    assert result == expected
 
 
 @pytest.mark.parametrize(

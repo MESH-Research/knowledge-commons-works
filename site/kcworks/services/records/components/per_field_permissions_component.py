@@ -1,11 +1,11 @@
 from pprint import pformat
 from flask import current_app
 from flask_principal import Identity
-from invenio_access.permissions import system_identity
+from invenio_administration.generators import Administration
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
+from invenio_records_permissions.generators import SystemProcess
 from invenio_records_resources.services.records.components.base import ServiceComponent
-from invenio_records_resources.services.uow import UnitOfWork
 from kcworks.services.records.permissions import per_field_edit_permission_factory
 from kcworks.utils import get_changed_fields, get_value_by_path
 import re
@@ -18,8 +18,8 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
     """
 
     @staticmethod
-    def _get_config_for_community(
-        record: Union[RDMDraft, RDMRecord],
+    def _get_permissions_config(
+        parent_communities,
     ) -> dict:
         """
         Get the configuration for a community.
@@ -29,12 +29,30 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
         Returns the per-field permissions configuration dictionary for the
         community if there is one. Otherwise, returns an empty dictionary.
         """
+        default_editors_fallback = ["manager", "owner", "curator"]
         community_config = {}
-        if record.parent:
-            record_communities = record.parent.communities  # type: ignore
-            community_config = current_app.config[
-                "RDM_RECORDS_PERMISSIONS_PER_FIELD"
-            ].get(record_communities.default.slug)
+        community_configs = current_app.config.get(
+            "RDM_RECORDS_PERMISSIONS_PER_FIELD", {}
+        )
+        if community_configs and parent_communities:
+            if parent_communities.default:  # type: ignore
+                community_config = community_configs.get(
+                    parent_communities.default.slug  # type: ignore
+                )
+
+        if not community_config:
+            community_config = community_configs.get("default", {})
+            default_editors_fallback = [Administration, SystemProcess]
+
+        if community_config:
+            policy = community_config.get("policy", {})
+            if isinstance(policy, list):
+                default_editors = community_config.get(
+                    "default_editors", default_editors_fallback
+                )
+                policy = {field: default_editors for field in policy}
+            community_config["policy"] = policy
+
         return community_config
 
     @staticmethod
@@ -101,9 +119,8 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
 
         # only apply if there is a previous published version
         if record.is_published and record.parent:
-
-            community_config = (
-                PerFieldEditPermissionsComponent._get_config_for_community(record)
+            community_config = PerFieldEditPermissionsComponent._get_permissions_config(
+                record.parent.communities  # type: ignore
             )
 
             if community_config:
@@ -123,48 +140,50 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
                         previous_published_data, data, community_config
                     )
                 )
+                current_app.logger.warning(
+                    f"Changed restricted fields: {changed_restricted_fields}"
+                )
 
-                if changed_restricted_fields:
-                    community_policy = per_field_edit_permission_factory(
+                for field in changed_restricted_fields:
+                    community_field_policy = per_field_edit_permission_factory(
                         community_id=record.parent.communities.default.id,
-                        roles=community_config.get("policy", {}).values(),
+                        roles=community_config.get("policy", {})
+                        .get(field, {})
+                        .values(),
                     )
-                    if not community_policy.allows(identity):
+                    if not community_field_policy.allows(identity):
                         current_app.logger.info(
                             f"Community policy disallows editing restricted fields"
                         )
-                        for field in changed_restricted_fields:
-                            errors.append(
-                                {
-                                    "field": field,
-                                    "messages": [
-                                        "You do not have permission to edit this field "
-                                        "because the record is included in the "
-                                        f"{record.parent.communities.default.slug}"
-                                        " community. "
-                                        "Please contact the community owner or manager "
-                                        "for assistance."
-                                    ],
-                                }
-                            )
+                        errors.append(
+                            {
+                                "field": field,
+                                "messages": [
+                                    "You do not have permission to edit this field "
+                                    "because the record is included in the "
+                                    f"{record.parent.communities.default.slug}"
+                                    " community. "
+                                    "Please contact the community owner or manager "
+                                    "for assistance."
+                                ],
+                            }
+                        )
 
-                            old_value = get_value_by_path(
-                                previous_published_data, field, separator="|"
-                            )
-                            current_app.logger.info(
-                                f"Old value for {field}: {old_value}"
-                            )
-                            replace_value_in_nested_dict(data, field, old_value)
-                        record.metadata = data["metadata"]
-                        current_app.logger.info(f"Metadata: {record.metadata}")
-                        if "custom_fields" in data.keys():
-                            record.custom_fields = data["custom_fields"]
-                            current_app.logger.info(
-                                f"Custom fields: {record.custom_fields}"
-                            )
-                        if "access" in data.keys():
-                            record.access = data["access"]
-                            current_app.logger.info(f"Access: {record.access}")
-                        if "pids" in data.keys():
-                            record.pids = data["pids"]
-                            current_app.logger.info(f"PIDs: {record.pids}")
+                        old_value = get_value_by_path(
+                            previous_published_data, field, separator="|"
+                        )
+                        current_app.logger.info(f"Old value for {field}: {old_value}")
+                        replace_value_in_nested_dict(data, field, old_value)
+                    record.metadata = data["metadata"]
+                    current_app.logger.info(f"Metadata: {record.metadata}")
+                    if "custom_fields" in data.keys():
+                        record.custom_fields = data["custom_fields"]
+                        current_app.logger.info(
+                            f"Custom fields: {record.custom_fields}"
+                        )
+                    if "access" in data.keys():
+                        record.access = data["access"]
+                        current_app.logger.info(f"Access: {record.access}")
+                    if "pids" in data.keys():
+                        record.pids = data["pids"]
+                        current_app.logger.info(f"PIDs: {record.pids}")

@@ -6,14 +6,35 @@ from typing import Optional, Union, Any
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 
 
-def update_nested_dict(starting_dict, updates):
-    """Update a nested dictionary with another dictionary."""
-    for key, value in updates.items():
-        if isinstance(value, dict):
-            starting_dict[key] = update_nested_dict(starting_dict.get(key, {}), value)
-        else:
-            starting_dict[key] = value
-    return starting_dict
+def update_nested_dict(starting_value: Any, updates: Any) -> Any:
+    """Update a nested dictionary with another dictionary.
+
+    This function is a recursive function that updates a nested dictionary with another
+    dictionary. It handles nested dictionaries and lists.
+
+    List items are updated by index. If there are more items in a list in the updates
+    than in the equivalent list in the starting_value, the remaining items are added
+    to the end of the list.
+
+    If there are more items in the starting_value than in the updates, the remaining
+    items are not removed from the list.
+
+    The two starting values must have lists and dictionaries in compatible locations
+    in the structure. If one has a list where the other has a dictionary, the function
+    will raise a TypeError.
+    """
+    if isinstance(updates, dict):
+        for key, value in updates.items():
+            starting_value[key] = update_nested_dict(starting_value.get(key, {}), value)
+    elif isinstance(updates, list):
+        for idx, item in enumerate(updates):
+            if idx < len(starting_value):
+                starting_value[idx] = update_nested_dict(starting_value[idx], item)
+            else:
+                starting_value.append(item)
+    else:
+        starting_value = updates
+    return starting_value
 
 
 def get_commons_user_from_contributor(contributor: dict) -> str:

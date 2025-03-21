@@ -285,16 +285,16 @@ def running_app(
 @pytest.fixture(scope="function")
 def search_clear(search_clear):
     """Clear search indices after test finishes (function scope)."""
-    #     #     # current_search_client.indices.delete(index="*")
-    #     #     # current_search_client.indices.delete_template("*")
-    #     #     # list(current_search.create())
-    #     #     # list(current_search.put_templates())
+    # below should be done in the search_clear fixture
+    # list(current_search.create())
+    # list(current_search.put_templates())
     yield search_clear
 
     # FIXME: Resource types are getting deleted from the index after
     # class finishes
 
     # Have to manually delete to catch stats indices
+    # otherwise they aren't cleared between tests
     current_search_client.indices.delete(index="*")
     current_search_client.indices.delete_template("*")
 

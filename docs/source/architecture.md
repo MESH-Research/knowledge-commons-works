@@ -628,6 +628,77 @@ The `RDMParent` object also has the following methods:
 | `validate` | Method to validate record |
 | `values` | Dictionary values method |
 
+#### `Community` (`invenio_communities.communities.records.api.Community`)
+
+The `Community` class is the api-level object for a community. It is a subclass of the `Record` object (defined in `invenio_records.api.Record`).
+
+Unlike some `Record` object types, the `Community` object does not expose most its values as dictionary keys. But it exposes several dot properties. Some of these provide the data that is included in the serialized and projected forms of the community's data (in the search index and service layer responses):
+
+- 'access'
+- 'children'
+- 'created'
+- 'custom_fields'
+- 'deletion_status'
+- 'files'
+- 'id'
+- 'is_deleted'
+- 'is_verified'
+- 'metadata'
+- 'parent'
+- 'pid'
+- 'slug'
+- 'theme'
+- 'updated'
+
+Other properties are provided for internal manipulation and management of the `Community` object:
+- 'bucket'
+- 'bucket_id'
+- 'dumper'
+- 'format_checker'
+- 'index'
+- 'model'
+- 'model_cls'
+- 'relations'
+- 'revision_id'
+- 'revisions'
+- 'schema'
+- 'tombstone'
+- 'validator'
+
+The `Community` object also provides the following methods:
+- 'clear'
+- 'clear_none'
+- 'commit'
+- 'copy'
+- 'create'
+- 'delete'
+- 'dumps'
+- 'enable_jsonref'
+- 'fromkeys'
+- 'get'
+- 'items'
+- 'keys'
+- 'loads'
+- 'patch'
+- 'pop'
+- 'popitem'
+- 'replace_refs'
+- 'revert'
+- 'send_signals'
+- 'setdefault'
+- 'undelete'
+- 'update'
+- 'validate'
+- 'values'
+
+#### `CommunitiesRelationManager` (`invenio_communities.records.records.systemfields.communities.manager.CommunitiesRelationManager`)
+
+The `CommunitiesRelationManager` object is the manager for the `communities` field of the `RDMParent` object. It exposes dot properties including:
+
+- `default`: The default community for the record (a `Community` object).
+- `entries`: A list of `Community` objects.
+- `ids`: A list of community IDs (string UUIDs, not slugs).
+
 ### Service-level Response Objects
 
 #### `RecordItem` (`invenio_records_resources.services.records.results.RecordItem`)

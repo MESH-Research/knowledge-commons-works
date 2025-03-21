@@ -45,6 +45,7 @@ The permissions are configured in the `invenio.cfg` file using the `RDM_RECORDS_
 RDM_RECORDS_PERMISSIONS_PER_FIELD = {
     "default": {
         "policy": [ "custom_fields.kcr:commons_domain" ],
+        "default_editors": [Administration, SystemProcess],
         "notify_on_change": False,
         "grace_period": None,
     },
@@ -67,15 +68,29 @@ RDM_RECORDS_PERMISSIONS_PER_FIELD = {
 
 The `default` key is used to configure the permissions for all records that do not have a specific community configuration. Other keys are the URL slugs for specific communities and are used to configure the permissions for records in specific communities. These community-specific configurations are optional but take precedence over the default configuration. If no community-specific configuration is found, the default configuration will be used. If no default configuration is found, per-field permissions will only be applied to records published to a community that has a community-specific configuration.
 
-This configuration would be for a community with the URL slug `sample_community`. The `kcr:commons_domain` field is being restricted to moderators for this community.
+The keys for each community or default configuration dictionary are:
+| Key | Type | Required | Description |
+|-----|------|----------|-------------|
+| `policy` | list[str] or dict[str, list[str]] or dict[str, list[Generator]] | Yes | A list of field names to restrict, a dictionary mapping field names to lists of community role levels, or a dictionary mapping field names to lists of invenio_records_permissions.generators.Generator objects |
+| `default_editors` | list[str] or list[Generator] | No | A list of community role levels (one or more of `owner`, `manager`, `curator`, `reader`) or invenio_records_permissions.generators.Generator objects. This list will define the users who can edit fields if no field-specific list is provided (i.e., if the `policy` is a simple list of field names). Default is [Administration, SystemProcess] for the "default" configuration, and ["owner", "manager", "curator"] for community-specific configurations. |
+| `notify_on_change` | bool | No | A boolean indicating whether to notify the record owners when the community's per-field permissions are changed |
+| `grace_period` | str | No | A string indicating the grace period for the community's per-field permissions |
+
+The configuration above would:
+- restrict any non-administrative user from editing the `custom_fields.kcr:commons_domain` field for any record that does not have a primary community with its own editing restrictions. The only users able to edit the field will be the ones defined by the either the Administration or SystemProcess generator,
+- restrict anyone (including record owners) from editing the `parent.communities.default` field for a record whose primary community is `sample_community`. Only users with the "manager" or "owner" role in `sample_community` will be able to edit this field.
+- restrict anyone (including record owners) from editing the `custom_fields.kcr:commons_domain` field for a record whose primary community is `sample_community_2`. Only users with the "manager", "owner", or "curator" role in `sample_community_2` will be able to edit this field. Owners of records in `sample_community_2` will be notified when the community's per-field permissions are changed, and they will have a grace period of 1 day to update their records before the new permissions are enforced.
+
+> [!Note]
+> The policy for `sample_community_2` affects the same field as the policy for `default`, but since `sample_community_2` has a community-specific configuration, it will take precedence. This means more the `sample_community_2` managers, owners, and curators can edit this field for their collection's records, where otherwise that field could only be edited by KCWorks administrators.
 
 #### Defining the permissions
 
 The values for each key in the `RDM_RECORDS_PERMISSIONS_PER_FIELD` config variable can take one of three forms:
 
-1. a list of field names (strings) to restrict.
-2. a dictionary mapping field names to lists of community role levels (one or more of `owner`, `manager`, `curator`, `admin`, `reader`).
-3. a dictionary mapping field names to lists of invenio_records_permissions.generators.Generator objects.
+1. a list of field names (strings) to restrict. In this case, all of the listed fields will be editable only by users with the "manager", "owner", or "curator" role in the community.
+2. a dictionary mapping field names to lists of community role levels (one or more of `owner`, `manager`, `curator`, `admin`, `reader`). In this case, the community roles required to make edits can be specified individually for each field.
+3. a dictionary mapping field names to lists of invenio_records_permissions.generators.Generator objects. In this case, different permissions can again be specified for each field. But the requirements can be more complex than simple community roles. For more details on available generators, or how to define custom generators, see the [invenio-records-permissions documentation](https://inveniordm.docs.cern.ch/reference/permissions/generators/) as well as the `generators.py` files in a number of the InvenioRDM packages.
 
 #### Enabling per-field permissions
 
