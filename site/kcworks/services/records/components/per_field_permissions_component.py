@@ -168,31 +168,3 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
                         if "pids" in data.keys():
                             record.pids = data["pids"]
                             current_app.logger.info(f"PIDs: {record.pids}")
-
-    def new_version(
-        self,
-        identity: Identity,
-        draft: RDMDraft,
-        record: RDMRecord,
-        uow: UnitOfWork,
-    ):
-        """
-        Create a new version of a record.
-
-        The `draft` argument is the *new* draft object for the new version.
-        """
-        # check against the previous published version, if any
-        pass
-
-    def delete_record(
-        self,
-        identity: Identity,
-        data: dict,
-        record: RDMRecord,
-        uow: UnitOfWork,
-    ):
-        """
-        Delete a record.
-        """
-        # check for per-field permissions
-        pass
