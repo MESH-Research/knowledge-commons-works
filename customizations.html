@@ -306,20 +306,15 @@
 <p>The permissions are configured in the <code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> file using the <code class="docutils literal notranslate"><span class="pre">RDM_RECORDS_PERMISSIONS_PER_FIELD</span></code> variable like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RDM_RECORDS_PERMISSIONS_PER_FIELD</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;custom_fields.kcr:commons_domain&quot;</span> <span class="p">],</span>
+        <span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;custom_fields.kcr:commons_domain&quot;</span><span class="p">:</span> <span class="s2">&quot;community_moderators&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
         <span class="s2">&quot;notify_on_change&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
         <span class="s2">&quot;grace_period&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">},</span>
     <span class="s2">&quot;sample_community&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;parent.communities.default&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;manager&quot;</span><span class="p">,</span> <span class="s2">&quot;owner&quot;</span><span class="p">],</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;notify_on_change&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;grace_period&quot;</span><span class="p">:</span> <span class="s2">&quot;1 day&quot;</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;sample_community_2&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;custom_fields.kcr:commons_domain&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">CommunityManagers</span><span class="p">,</span> <span class="n">CommunityCurators</span><span class="p">,</span> <span class="n">CommunityOwners</span><span class="p">],</span>
+            <span class="s2">&quot;custom_fields.kcr:commons_domain&quot;</span><span class="p">:</span> <span class="s2">&quot;community_moderators&quot;</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="s2">&quot;notify_on_change&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s2">&quot;grace_period&quot;</span><span class="p">:</span> <span class="s2">&quot;1 day&quot;</span><span class="p">,</span>
@@ -332,12 +327,19 @@
 </section>
 <section id="defining-the-permissions">
 <h4>Defining the permissions<a class="headerlink" href="#defining-the-permissions" title="Link to this heading">¶</a></h4>
-<p>The values for each key in the <code class="docutils literal notranslate"><span class="pre">RDM_RECORDS_PERMISSIONS_PER_FIELD</span></code> config variable can take one of three forms:</p>
+<p>The values for each key in the <code class="docutils literal notranslate"><span class="pre">RDM_RECORDS_PERMISSIONS_PER_FIELD</span></code> config variable can take one of two forms:</p>
 <ol class="arabic simple">
-<li><p>a list of field names (strings) to restrict.</p></li>
-<li><p>a dictionary mapping field names to lists of community role levels (one or more of <code class="docutils literal notranslate"><span class="pre">owner</span></code>, <code class="docutils literal notranslate"><span class="pre">manager</span></code>, <code class="docutils literal notranslate"><span class="pre">curator</span></code>, <code class="docutils literal notranslate"><span class="pre">admin</span></code>, <code class="docutils literal notranslate"><span class="pre">reader</span></code>).</p></li>
-<li><p>a dictionary mapping field names to lists of invenio_records_permissions.generators.Generator objects.</p></li>
+<li><p>a permission policy object or</p></li>
+<li><p>a dictionary mapping field names to a list of community role levels (one or more of <code class="docutils literal notranslate"><span class="pre">owner</span></code>, <code class="docutils literal notranslate"><span class="pre">manager</span></code>, <code class="docutils literal notranslate"><span class="pre">curator</span></code>, <code class="docutils literal notranslate"><span class="pre">admin</span></code>, <code class="docutils literal notranslate"><span class="pre">reader</span></code>).</p></li>
 </ol>
+<p>If a dictionary is provided, this will be used to generate a permission policy object with the following structure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_access.permissions</span> <span class="kn">import</span> <span class="n">Permission</span><span class="p">,</span> <span class="n">ActionNeed</span><span class="p">,</span> <span class="n">ParameterizedActionNeed</span>
+<span class="n">update_restricted_field_permission</span> <span class="o">=</span> <span class="n">Permission</span><span class="p">(</span><span class="n">ParameterizedActionNeed</span><span class="p">(</span><span class="s1">&#39;update-restricted-field&#39;</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="s1">&#39;custom_fields.kcr:commons_domain&#39;</span><span class="p">))</span>
+
+<span class="n">update_restricted_field_permission</span><span class="o">.</span><span class="n">allows</span><span class="p">(</span><span class="n">my_identity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>with policy</p>
 </section>
 <section id="enabling-per-field-permissions">
 <h4>Enabling per-field permissions<a class="headerlink" href="#enabling-per-field-permissions" title="Link to this heading">¶</a></h4>
