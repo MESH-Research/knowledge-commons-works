@@ -309,6 +309,52 @@
 <p>Note that in some cases there are inter-dependencies between these submodules. For example, the <code class="docutils literal notranslate"><span class="pre">invenio-record-importer-kcworks</span></code> submodule has its own dependency on the <code class="docutils literal notranslate"><span class="pre">invenio-group-collections-kcworks</span></code> submodule. When cloning the KCWorks repository, you <strong>should not use the <code class="docutils literal notranslate"><span class="pre">--recurse-submodules</span></code> option</strong> because this will clone redundant copies of these inter-dependent submodules. Instead, you should clone the KCWorks repository and then initialize the submodules in a separate step with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span></code>. Likewise, when updating the KCWorks submodules, you should use the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--remote</span></code> command <strong>without the <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> option</strong>.</p>
 </section>
 </section>
+<section id="development-standards">
+<h2>Development Standards<a class="headerlink" href="#development-standards" title="Link to this heading">¶</a></h2>
+<section id="upstream-inveniordm-standards">
+<h3>Upstream InvenioRDM standards<a class="headerlink" href="#upstream-inveniordm-standards" title="Link to this heading">¶</a></h3>
+<p>KCWorks is built on top of InvenioRDM, which has a number of standards for coding style and practices. These standards are documented at https://inveniordm.readthedocs.io/en/latest/development/best-practices. KCWorks developers should follow these standards to ensure that code can be contributed back to the wider InvenioRDM project where desirable.</p>
+</section>
+<section id="code-style">
+<h3>Code Style<a class="headerlink" href="#code-style" title="Link to this heading">¶</a></h3>
+<section id="python">
+<h4>Python<a class="headerlink" href="#python" title="Link to this heading">¶</a></h4>
+<p>Python code should be formatted using the <code class="docutils literal notranslate"><span class="pre">black</span></code> formatter.</p>
+</section>
+<section id="javascript">
+<h4>JavaScript<a class="headerlink" href="#javascript" title="Link to this heading">¶</a></h4>
+<p>JavaScript code should be formatted using the <code class="docutils literal notranslate"><span class="pre">prettier</span></code> formatter. Indentation should be 2 spaces.</p>
+</section>
+<section id="css">
+<h4>CSS<a class="headerlink" href="#css" title="Link to this heading">¶</a></h4>
+<p>CSS code should be formatted using the <code class="docutils literal notranslate"><span class="pre">prettier</span></code> formatter. Indentation should be 4 spaces.</p>
+</section>
+</section>
+<section id="accessibility">
+<h3>Accessibility<a class="headerlink" href="#accessibility" title="Link to this heading">¶</a></h3>
+<p>KCWorks should conform to WCAG 2.1 AA standards for web accessibility as well as to the InvenioRDM accessibility guidelines: https://inveniordm.docs.cern.ch/develop/best-practices/accessibility/.</p>
+</section>
+<section id="ui-ux">
+<h3>UI/UX<a class="headerlink" href="#ui-ux" title="Link to this heading">¶</a></h3>
+<p>KCWorks UI elements should adhere to the InvenioRDM UI/UX guidelines: https://inveniordm.docs.cern.ch/develop/best-practices/ui/.</p>
+<section id="css-and-theming">
+<h4>CSS and Theming<a class="headerlink" href="#css-and-theming" title="Link to this heading">¶</a></h4>
+<p>KCWorks uses a custom theme layer built on top of the InvenioRDM default theme, which employs the Semantic UI library (https://semantic-ui.com/) and its standard implementation in React (https://react.semantic-ui.com/). Development should follow the InvenioRDM theming guidelines: https://inveniordm.docs.cern.ch/develop/best-practices/theming/.</p>
+</section>
+<section id="react-components">
+<h4>React components<a class="headerlink" href="#react-components" title="Link to this heading">¶</a></h4>
+<p>KCWorks uses React as much as possible for the UI layer, wherever possible using the <code class="docutils literal notranslate"><span class="pre">semantic-ui-react</span></code> library to implement Semantic UI components.</p>
+<p>Generally we follow the InvenioRDM React component guidelines: https://inveniordm.docs.cern.ch/develop/best-practices/react/. Note, however, some points at which we diverge from the InvenioRDM guidelines (although not from the practice of some InvenioRDM developers):</p>
+<ul class="simple">
+<li><p><strong>DO</strong> always prefer functional components over class components.</p></li>
+<li><p><strong>DO</strong> employ React hooks (e.g., <code class="docutils literal notranslate"><span class="pre">useState</span></code>, <code class="docutils literal notranslate"><span class="pre">useEffect</span></code>, etc.) instead of class lifecycle methods.</p></li>
+</ul>
+<p>Whatever the relative merits of class components, they are now deprecated in React and should not be used in KCWorks.</p>
+<p>The InvenioRDM project also tends to use small React components embedded in static HTML generated by Jinja2 templates. This practice should be avoided in KCWorks. Instead, KCWorks should work towards implementing a true React-based UI layer that is used for all UI elements.</p>
+<p>Where possible, however, KCWorks should employ built-in InvenioRDM UI components, overriding them where necessary using the <code class="docutils literal notranslate"><span class="pre">react-overridable</span></code> library as described here: https://inveniordm.docs.cern.ch/develop/howtos/override_components/.</p>
+</section>
+</section>
+</section>
 <section id="updating-the-running-kcworks-instance-with-development-changes">
 <h2>Updating the running KCWorks instance with development changes<a class="headerlink" href="#updating-the-running-kcworks-instance-with-development-changes" title="Link to this heading">¶</a></h2>
 <section id="changes-to-html-template-files">
@@ -421,14 +467,6 @@ uwsgi<span class="w"> </span>--reload<span class="w"> </span>/tmp/uwsgi_ui.pid
 </div>
 </section>
 </section>
-<section id="digging-deeper">
-<h2>Digging deeper<a class="headerlink" href="#digging-deeper" title="Link to this heading">¶</a></h2>
-<p>What follows is a step-by-step walk through this process.</p>
-<blockquote>
-<div><p>[!Note]
-These instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.</p>
-</div></blockquote>
-</section>
 <section id="updating-an-instance-with-upstream-changes">
 <h2>Updating an Instance with Upstream Changes<a class="headerlink" href="#updating-an-instance-with-upstream-changes" title="Link to this heading">¶</a></h2>
 <p>If changes have been made to the upstream Knowledge Commons Works repository and the kcworks container, you will need to update your local instance to reflect those changes. This process involves pulling the changes from the upstream repository, pulling the latest version of the kcworks docker image, restarting the docker-compose project with recreated containers, and rebuilding the asset files.</p>
@@ -512,6 +550,10 @@ At present, Ghost Inspector tests are not run automatically when a pull request 
 </div></blockquote>
 </section>
 </section>
+<section id="contributing-back-to-inveniordm">
+<h2>Contributing back to InvenioRDM<a class="headerlink" href="#contributing-back-to-inveniordm" title="Link to this heading">¶</a></h2>
+<p>Where possible, KCWorks developers should try to contribute improvements back to InvenioRDM. The InvenioRDM guidelines for commits, pull requests, and reviews are here: https://inveniordm.docs.cern.ch/develop/best-practices/commits/.</p>
+</section>
 </section>
 
         </article>
@@ -581,6 +623,22 @@ At present, Ghost Inspector tests are not run automatically when a pull request 
 <li><a class="reference internal" href="#git-submodules">Git Submodules</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#development-standards">Development Standards</a><ul>
+<li><a class="reference internal" href="#upstream-inveniordm-standards">Upstream InvenioRDM standards</a></li>
+<li><a class="reference internal" href="#code-style">Code Style</a><ul>
+<li><a class="reference internal" href="#python">Python</a></li>
+<li><a class="reference internal" href="#javascript">JavaScript</a></li>
+<li><a class="reference internal" href="#css">CSS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#accessibility">Accessibility</a></li>
+<li><a class="reference internal" href="#ui-ux">UI/UX</a><ul>
+<li><a class="reference internal" href="#css-and-theming">CSS and Theming</a></li>
+<li><a class="reference internal" href="#react-components">React components</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#updating-the-running-kcworks-instance-with-development-changes">Updating the running KCWorks instance with development changes</a><ul>
 <li><a class="reference internal" href="#changes-to-html-template-files">Changes to html template files</a></li>
 <li><a class="reference internal" href="#changes-to-invenio-cfg">Changes to invenio.cfg</a></li>
@@ -598,7 +656,6 @@ At present, Ghost Inspector tests are not run automatically when a pull request 
 <li><a class="reference internal" href="#changes-to-external-python-modules-including-invenio-modules">Changes to external python modules (including Invenio modules)</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#digging-deeper">Digging deeper</a></li>
 <li><a class="reference internal" href="#updating-an-instance-with-upstream-changes">Updating an Instance with Upstream Changes</a></li>
 <li><a class="reference internal" href="#running-automated-tests">Running automated tests</a><ul>
 <li><a class="reference internal" href="#python-tests">Python tests</a></li>
@@ -606,6 +663,7 @@ At present, Ghost Inspector tests are not run automatically when a pull request 
 <li><a class="reference internal" href="#ghost-inspector-tests">Ghost Inspector tests</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#contributing-back-to-inveniordm">Contributing back to InvenioRDM</a></li>
 </ul>
 </li>
 </ul>
