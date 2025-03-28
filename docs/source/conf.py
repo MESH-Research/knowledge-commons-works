@@ -27,4 +27,16 @@ autosectionlabel_maxdepth = 4
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "furo"
+# html_theme = "pydata_sphinx_theme"
+# html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
+html_theme_options = {
+    # "show_nav_level": 2,
+    # "navbar_center": ["navbar-nav"],
+}
+# html_sidebars = {
+# "**": [
+#     "sidebar-nav-bs",
+#     "sidebar-ethical-ads",
+# ]
+# }
