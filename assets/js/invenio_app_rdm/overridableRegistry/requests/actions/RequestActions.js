@@ -12,7 +12,6 @@
 * you can redistribute and/or modify them under the terms of the
 * MIT License; see LICENSE file for more details.
 */
-
 import { RequestLinksExtractor } from "@js/invenio_requests/api";
 import React from "react";
 import Overridable from "react-overridable";

@@ -63,10 +63,23 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
         Find the changed restricted fields.
 
         Returns a list of field paths for values that have been changed and are
-        restricted in the per-field permissions configuration. The field paths
-        will include the list indices for the changed values, but the matching
-        to determine whether the field is restricted will be done without the
-        list indices.
+        restricted in the per-field permissions configuration.
+
+        Examples:
+            When "metadata|funding" is restricted:
+                - Will match "metadata|funding"
+                - Will match "metadata|funding|0|funder"
+                - Will match "metadata|funding|1|funder"
+
+            When "metadata|funding|0" is restricted:
+                - Will match "metadata|funding|0"
+                - Will match "metadata|funding|0|funder"
+                - Will NOT match "metadata|funding|1|funder"
+
+            When "metadata|funding|funder" is restricted:
+                - Will match "metadata|funding|0|funder"
+                - Will match "metadata|funding|1|funder"
+                - Will NOT match "metadata|funding|0|award"
         """
         restricted_fields = [
             k.replace(".", "|") for k in community_config.get("policy", {}).keys()
@@ -74,17 +87,41 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
         current_app.logger.info(f"Restricted fields: {restricted_fields}")
         changed_fields = get_changed_fields(record, data, separator="|")
         current_app.logger.info(f"Changed fields: {changed_fields}")
+        current_app.logger.info(f"Record: {pformat(data)}")
 
-        # When checking for matches, since the paths in restricted_field config
-        # won't have the list indices, we need to strip them from the changed fields
-        changed_restricted_fields = [
-            f
-            for f in changed_fields
-            if any(re.sub(r"\|\d+\|?", "|", f).startswith(p) for p in restricted_fields)
-            or any(p.startswith(re.sub(r"\|\d+\|?", "|", f)) for p in restricted_fields)
-            # second check for when the list index is the last part of the path
-            or any(p.startswith(re.sub(r"\|\d+$", "", f)) for p in restricted_fields)
-        ]
+        changed_restricted_fields = []
+        for changed_field in changed_fields:
+            # For each changed field, check if it matches any restricted field pattern
+            for restricted_field in restricted_fields:
+                # If the restricted field contains a specific index (e.g. metadata|funding|0)
+                if "|" + restricted_field.split("|")[-1].isdigit():
+                    # Must match exactly up to the index
+                    if changed_field.startswith(restricted_field + "|"):
+                        changed_restricted_fields.append(changed_field)
+                        break
+                else:
+                    # For non-indexed fields, match if:
+                    # 1. The changed field starts with the restricted field
+                    # 2. The changed field equals the restricted field
+                    # 3. The changed field matches the restricted field pattern ignoring indices
+                    changed_parts = changed_field.split("|")
+                    restricted_parts = restricted_field.split("|")
+
+                    if (
+                        changed_field.startswith(restricted_field + "|")
+                        or changed_field == restricted_field
+                        or (
+                            len(changed_parts) >= len(restricted_parts)
+                            and all(
+                                c == r
+                                for c, r in zip(changed_parts, restricted_parts)
+                                if not r.isdigit()
+                            )
+                        )
+                    ):
+                        changed_restricted_fields.append(changed_field)
+                        break
+
         current_app.logger.info(
             f"Changed restricted fields: {changed_restricted_fields}"
         )

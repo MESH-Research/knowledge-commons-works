@@ -213,6 +213,50 @@ class BasePerFieldPermissionsTest(abc.ABC):
         # Create a draft record using the current_rdm_records_service
         # and publish it to the community
         draft_data = record_metadata(owner_id=user_id).metadata_in
+        draft_data.update_metadata(
+            {
+                "metadata|funding": [
+                    {
+                        "funder": {
+                            "id": "00k4n6c32",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.zenodo.org/1",
+                                    "scheme": "url",
+                                }
+                            ],
+                            "number": "111023",
+                            "title": {
+                                "en": (
+                                    "Launching of the research program on meaning processing"
+                                )
+                            },
+                        },
+                    },
+                    {
+                        "funder": {
+                            "id": "00k4n6c33",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.zenodo.org/2",
+                                    "scheme": "url",
+                                }
+                            ],
+                            "number": "111024",
+                            "title": {
+                                "en": (
+                                    "Launching of the research program on meaning processing 2"
+                                )
+                            },
+                        },
+                    },
+                ]
+            }
+        )
         draft = current_rdm_records_service.create(identity, draft_data)
 
         if self.record_is_published:
@@ -241,7 +285,9 @@ class BasePerFieldPermissionsTest(abc.ABC):
         new_draft = current_rdm_records_service.edit(identity, draft.id)
         new_draft_data = copy.deepcopy(new_draft.data)
         # New data to update (attempting to change the restricted title field)
+        app.logger.info(f"Data to update: {pformat(self.data_to_update)}")
         new_draft_data = update_nested_dict(new_draft_data, self.data_to_update)
+        app.logger.info(f"New draft data after update: {pformat(new_draft_data)}")
 
         # now test the component in action
         updated_draft = current_rdm_records_service.update_draft(
@@ -313,7 +359,7 @@ class TestPerFieldEditPermissionsOwner2(BasePerFieldPermissionsTest):
     This test checks that the owner can update the record when the community policy
     allows their role. It also tests field-specific lists of allowed roles, checking
     that the owner can update the title field based on the "curator" role, but cannot
-    update the publication date field. Also tests that the owner can update the
+    update the creators field. Also tests that the owner can update the
     publication date field, which is unrestricted.
     """
 
@@ -354,6 +400,58 @@ class TestPerFieldEditPermissionsOwner2(BasePerFieldPermissionsTest):
         }
 
 
+class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
+    """Owner can update list field items if the item index is not restricted.
+
+    This test checks that the owner can update list field items if the item index is not restricted, but restricted indices for the list field are not updated.
+    """
+
+    @property
+    def permissions_config(self) -> dict:
+        return {
+            "default": {
+                "policy": {
+                    "metadata.funding.0.funder": ["owner", "manager"],
+                },
+            }
+        }
+
+    @property
+    def user_community_role(self) -> str:
+        return "curator"
+
+    @property
+    def data_to_update(self) -> dict:
+        return {
+            "metadata": {
+                "funding": [
+                    {"funder": "Updated Funder"},
+                    {"funder": "Updated Funder 2"},
+                ],
+            }
+        }
+
+    @property
+    def expected(self) -> dict:
+        return {
+            "unchanged": ["metadata.funding.0.funder"],
+            "changed": {
+                "metadata.funding.1.funder": "Updated Funder 2",
+            },
+            "errors": [
+                {
+                    "field": "metadata|funding|0|funder",
+                    "messages": [
+                        "You do not have permission to edit this field "
+                        "because the record is included in the test-community "
+                        "community. Please contact the community owner or "
+                        "manager for assistance."
+                    ],
+                }
+            ],
+        }
+
+
 def test_per_field_permissions_find_changed_restricted_fields(
     setup_component,
     running_app,
@@ -361,7 +459,10 @@ def test_per_field_permissions_find_changed_restricted_fields(
     user_factory,
     record_metadata,
 ):
-    """Test the _find_changed_restricted_fields static method of PerFieldEditPermissionsComponent."""
+    """Test the _find_changed_restricted_fields static method
+
+    A method of PerFieldEditPermissionsComponent that is used to find fields that are restricted and have changed.
+    """
     # Configure test community permissions
     community_config = {
         "policy": {

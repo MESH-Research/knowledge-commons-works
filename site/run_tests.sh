@@ -50,13 +50,13 @@ fi
 # python -m check_manifest --no-build-isolation
 # python -m setup extract_messages --output-file /dev/null
 # python -m sphinx.cmd.build -qnN docs docs/_build/html
-eval "$(PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run docker-services-cli up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
+eval "$(uv run --env-file tests/.env docker-services-cli up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
 # Note: expansion of pytest_args looks like below to not cause an unbound
 # variable error when 1) "nounset" and 2) the array is empty.
 if [ ${#pytest_args[@]} -eq 0 ]; then
-	PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest -vv --disable-warnings
+	uv run --env-file tests/.env python -m pytest -vv --disable-warnings
 else
-	PIPENV_DOTENV_LOCATION=/Users/ianscott/Development/knowledge-commons-works/site/tests/.env pipenv run python -m pytest ${pytest_args[@]} --disable-warnings
+	uv run --env-file tests/.env python -m pytest ${pytest_args[@]} --disable-warnings
 fi
 # python -m sphinx.cmd.build -qnN -b doctest docs docs/_build/doctest
 tests_exit_code=$?
