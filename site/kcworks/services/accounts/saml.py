@@ -195,6 +195,9 @@ def knowledgeCommons_account_info(attributes: dict, remote_app: str) -> dict:
     )
 
 
+# TODO: The change to the ACS handler is to allow for the custom user
+# lookup logic has been accepted into invenio-saml upstream. Remove
+# this custom logic once the change is available in a release we can use.
 def acs_handler_factory(
     remote_app,
     account_info=knowledgeCommons_account_info,
