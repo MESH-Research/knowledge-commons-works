@@ -36,6 +36,7 @@ static/xsl/
 .Python
 env/
 develop-eggs/
+dist/
 downloads/
 eggs/
 .eggs/
@@ -78,7 +79,8 @@ test.db
 .pytest_cache/
 
 # Environments
-# .venv/
+.venv
+.vscode
 
 # Logs
 logs/*
@@ -106,6 +108,7 @@ site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 # Docker private environment variables
 .env
 .env.private
+.env-tests
 
 # S3 default bucket location
 data/default/*

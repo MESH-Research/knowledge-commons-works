@@ -212,13 +212,13 @@ class BasePerFieldPermissionsTest(abc.ABC):
 
         # Create a draft record using the current_rdm_records_service
         # and publish it to the community
-        draft_data = record_metadata(owner_id=user_id).metadata_in
+        draft_data = record_metadata(owner_id=user_id)
         draft_data.update_metadata(
             {
                 "metadata|funding": [
                     {
                         "funder": {
-                            "id": "00k4n6c32",
+                            "id": "00k4n6c31",
                         },
                         "award": {
                             "identifiers": [
@@ -230,14 +230,15 @@ class BasePerFieldPermissionsTest(abc.ABC):
                             "number": "111023",
                             "title": {
                                 "en": (
-                                    "Launching of the research program on meaning processing"
+                                    "Launching of the research program on "
+                                    "meaning processing"
                                 )
                             },
                         },
                     },
                     {
                         "funder": {
-                            "id": "00k4n6c33",
+                            "id": "00k4n6c32",
                         },
                         "award": {
                             "identifiers": [
@@ -249,15 +250,42 @@ class BasePerFieldPermissionsTest(abc.ABC):
                             "number": "111024",
                             "title": {
                                 "en": (
-                                    "Launching of the research program on meaning processing 2"
+                                    "Launching of the research program on "
+                                    "meaning processing 2"
                                 )
                             },
+                        },
+                    },
+                    {
+                        "funder": {
+                            "id": "00k4n6c34",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.zenodo.org/3",
+                                    "scheme": "url",
+                                }
+                            ]
+                        },
+                    },
+                    {
+                        "funder": {
+                            "id": "00k4n6c35",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.zenodo.org/4",
+                                    "scheme": "url",
+                                }
+                            ]
                         },
                     },
                 ]
             }
         )
-        draft = current_rdm_records_service.create(identity, draft_data)
+        draft = current_rdm_records_service.create(identity, draft_data.metadata_in)
 
         if self.record_is_published:
             if self.record_is_in_community:
@@ -412,6 +440,8 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
             "default": {
                 "policy": {
                     "metadata.funding.0.funder": ["owner", "manager"],
+                    "metadata.funding[funder.id=00k4n6c34]": ["owner", "manager"],
+                    "metadata.funding.funder.id[00k4n6c35]": ["owner", "manager"],
                 },
             }
         }
@@ -425,8 +455,36 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
         return {
             "metadata": {
                 "funding": [
-                    {"funder": "Updated Funder"},
-                    {"funder": "Updated Funder 2"},
+                    {"funder": {"id": "Updated Funder 1"}},
+                    {"funder": {"id": "Updated Funder 2"}},
+                    {
+                        "funder": {
+                            "award": {
+                                "identifiers": [
+                                    {
+                                        "identifier": (
+                                            "https://new-sandbox.zenodo.org/3"
+                                        ),
+                                        "scheme": "url",
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "funder": {
+                            "award": {
+                                "identifiers": [
+                                    {
+                                        "identifier": (
+                                            "https://new-sandbox.zenodo.org/4"
+                                        ),
+                                        "scheme": "url",
+                                    }
+                                ]
+                            }
+                        }
+                    },
                 ],
             }
         }
@@ -436,18 +494,30 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
         return {
             "unchanged": ["metadata.funding.0.funder"],
             "changed": {
-                "metadata.funding.1.funder": "Updated Funder 2",
+                "metadata.funding.1.funder.id": "Updated Funder 2",
+                "metadata.funding.3.award.identifiers.0.identifier": (
+                    "https://new-sandbox.zenodo.org/4"
+                ),
             },
             "errors": [
                 {
-                    "field": "metadata|funding|0|funder",
+                    "field": "metadata|funding|0|funder|id",
                     "messages": [
                         "You do not have permission to edit this field "
                         "because the record is included in the test-community "
                         "community. Please contact the community owner or "
                         "manager for assistance."
                     ],
-                }
+                },
+                {
+                    "field": "metadata|funding|2|award|identifiers|0|identifier",
+                    "messages": [
+                        "You do not have permission to edit this field "
+                        "because the record is included in the test-community "
+                        "community. Please contact the community owner or "
+                        "manager for assistance."
+                    ],
+                },
             ],
         }
 
@@ -505,10 +575,11 @@ def test_per_field_permissions_find_changed_restricted_fields(
 
     # New data with changes
     new_data = {
+        "access": {"files": "open"},
         "metadata": {
             "title": "Updated Title",
             "description": "Updated Description",
-            "creators": [{"person_or_org": {"name": "Original Creator"}}],
+            "creators": [{"person_or_org": {"name": "Original Creator"}}],  # 1 dropped
             "publication_date": "2024-01-01",  # Changed but unrestricted
         },
         "custom_fields": {

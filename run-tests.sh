@@ -22,7 +22,7 @@ set -o nounset
 
 # Always bring down docker services
 function cleanup() {
-    eval "$(pipenv run docker-services-cli down --env)"
+    eval "$(uv run docker-services-cli down --env)"
 }
 
 # Check for arguments
@@ -49,8 +49,15 @@ fi
 
 # python -m check_manifest --no-build-isolation
 # python -m setup extract_messages --output-file /dev/null
-# python -m sphinx.cmd.build -qnN docs docs/_build/html
-eval "$(uv run --env-file tests/.env docker-services-cli up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
+uv run sphinx-build -b html docs/source/ docs/build/
+
+# Start the services and get their environment variables
+eval "$(uv run --env-file tests/.env docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
+
+# Unset the environment variables that docker-services-cli set so that the values from tests/.env are used instead of those defaults from docker-services.yml
+unset SQLALCHEMY_DATABASE_URI
+unset INVENIO_SQLALCHEMY_DATABASE_URI
+
 # Note: expansion of pytest_args looks like below to not cause an unbound
 # variable error when 1) "nounset" and 2) the array is empty.
 if [ ${#pytest_args[@]} -eq 0 ]; then
@@ -58,6 +65,6 @@ if [ ${#pytest_args[@]} -eq 0 ]; then
 else
 	uv run --env-file tests/.env python -m pytest ${pytest_args[@]} --disable-warnings
 fi
-# python -m sphinx.cmd.build -qnN -b doctest docs docs/_build/doctest
+
 tests_exit_code=$?
 exit "$tests_exit_code"

@@ -7,7 +7,7 @@ name = "kcworks"
 version = "0.3.8-beta11"
 requires-python = ">=3.12"
 dependencies = [
-    "aiohttp",
+    "aiohttp>=3.11.15",
     "async-timeout>=4.0.3",
     "flask-admin==1.6.1",
     "flask-babelex",
@@ -30,6 +30,7 @@ dependencies = [
     "invenio-utilities-tuw",
     "isbnlib",
     "langdetect",
+    "lxml==5.2.1",
     "numpy",
     "pip",
     "pluggy<1.0,>=0.10.0",
@@ -43,14 +44,12 @@ dependencies = [
     "titlecase",
     "tqdm",
     "unidecode",
-    "uwsgi>=2.0",
-    "uwsgi-tools>=1.1.1",
-    "uwsgitop>=0.11",
     "flask-iiif",
     "sentry-sdk",
     "pydantic",
     "xmlsec==1.3.14",
     "invenio-remote-user-data-kcworks",
+    "uwsgi>=2.0.23",
 ]
 
 [project.optional-dependencies]
@@ -127,12 +126,13 @@ kcworks-users = "kcworks.cli:kcworks_users"
 kcworks-index = "kcworks.cli:kcworks_index"
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "kcworks"]
-addopts = "--doctest-glob='*.rst' --doctest-modules --ignore=tests/helpers --ignore=kcworks/dependencies --ignore=kcworks/stats_dashboard"
+testpaths = ["tests", "site/kcworks"]
+addopts = "--doctest-glob='*.rst' --doctest-modules --ignore=tests/helpers --ignore=site/kcworks/dependencies --ignore=site/kcworks/stats_dashboard"
 plugins = [
   "tests.fixtures.communities",
   "tests.fixtures.custom_fields",
   "tests.fixtures.identifiers",
+  "tests.fixtures.mail",
   "tests.fixtures.metadata_fields",
   "tests.fixtures.records",
   "tests.fixtures.roles",
@@ -154,6 +154,5 @@ plugins = [
 [dependency-groups]
 dev = [
     "djlint>=1.36.4",
-    "pydata-sphinx-theme>=0.16.1",
-    "sphinx-rtd-theme>=3.0.2",
+    "psycopg2>=2.9.10",
 ]

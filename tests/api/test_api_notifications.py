@@ -42,6 +42,7 @@ def test_notify_for_request_acceptance(
     celery_worker,
     mocker,
     mock_send_remote_api_update_fixture,
+    enable_mail_sending,
 ):
     """
     Test that the user is notified when a collection submission is accepted.
@@ -59,7 +60,6 @@ def test_notify_for_request_acceptance(
     admin_id = admin.user.id
     community_rec = minimal_community_factory(owner=admin_id)
     community_meta = community_rec.to_dict()
-    app.logger.debug(f"community_meta: {pformat(community_meta)}")
     assert len(mailbox) == 0
 
     # Create a user with a community submission
@@ -255,6 +255,7 @@ def test_notify_for_request_decline(
     mocker,
     celery_worker,
     mock_send_remote_api_update_fixture,
+    enable_mail_sending,
 ):
     """
     Test that the user is notified when a request is declined.
@@ -466,6 +467,7 @@ def test_notify_for_request_cancellation(
     mailbox,
     celery_worker,
     mock_send_remote_api_update_fixture,
+    enable_mail_sending,
 ):
     """
     Test that the user is notified when a request is cancelled.
@@ -646,6 +648,7 @@ def test_notify_for_new_request_comment(
     mailbox,
     celery_worker,
     mock_send_remote_api_update_fixture,
+    enable_mail_sending,
 ):
     """
     Test that the user is notified when a new comment is added
@@ -922,6 +925,7 @@ def test_clear_unread_notifications_by_service(
     search_clear,
     admin,
     mailbox,
+    enable_mail_sending,
 ):
     """
     Test that the user's unread notifications are cleared by the api call.
@@ -1136,6 +1140,7 @@ def test_clear_unread_notifications_by_view(
     search_clear,
     admin,
     mailbox,
+    enable_mail_sending,
 ):
     """
     Test that the user's unread notifications are cleared by the api call.
@@ -1243,6 +1248,7 @@ def test_clear_one_unread_notification_by_view(
     search_clear,
     admin,
     mailbox,
+    enable_mail_sending,
 ):
     """
     Test that the user's unread notifications are cleared by the api call.
@@ -1406,6 +1412,7 @@ def test_notification_on_first_upload(
     mailbox,
     celery_worker,
     mock_send_remote_api_update_fixture,
+    enable_mail_sending,
 ):
     """
     Test that the admin account is notified on a user's first upload.

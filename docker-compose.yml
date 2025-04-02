@@ -96,16 +96,33 @@ services:
     # extra_hosts:
     #   - "host.docker.internal:host-gateway"
     volumes:
-      # - ./docker/startup_ui.sh:/opt/invenio/src/docker/startup_ui.sh
       - ./logs/invenio.log:/opt/invenio/src/logs/invenio.log
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
-      # - ${INVENIO_LOCAL_INSTANCE_PATH}/assets:/opt/invenio/var/instance/assets
       - ./static:/opt/invenio/var/instance/static
-      # FIXME: are the following two bind mounts needed?
       - ./templates:/opt/invenio/var/instance/templates
       - ./translations:/opt/invenio/var/instance/translations
-      - .:/opt/invenio/src
+      - ./assets:/opt/invenio/src/assets
+      - ./scripts:/opt/invenio/src/scripts
+      - ./site:/opt/invenio/src/site
+      - ./workflows:/opt/invenio/src/workflows
+      - ./docs:/opt/invenio/src/docs
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
+      - ./uv.lock:/opt/invenio/src/uv.lock
+      - ./requirements.txt:/opt/invenio/src/requirements.txt
+      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
+      - ./package.json:/opt/invenio/src/package.json
+      - ./package-lock.json:/opt/invenio/src/package-lock.json
+      - ./babel.config.js:/opt/invenio/src/babel.config.js
+      - ./README.md:/opt/invenio/src/README.md
+      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
+      - ./.env:/opt/invenio/src/.env
+      - ./.invenio:/opt/invenio/src/.invenio
+      - ./.invenio.private:/opt/invenio/src/.invenio.private
+      - ./.git:/opt/invenio/src/.git
+      - ./.gitmodules:/opt/invenio/src/.gitmodules
+      - ./.gitattributes:/opt/invenio/src/.gitattributes
+      - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}
@@ -140,8 +157,27 @@ services:
       - ./static:/opt/invenio/var/instance/static
       - ./templates:/opt/invenio/var/instance/templates
       - ./translations:/opt/invenio/var/instance/translations
-      - .:/opt/invenio/src
-      # - static_data:/opt/invenio/var/instance/static
+      - ./assets:/opt/invenio/src/assets
+      - ./scripts:/opt/invenio/src/scripts
+      - ./site:/opt/invenio/src/site
+      - ./workflows:/opt/invenio/src/workflows
+      - ./docs:/opt/invenio/src/docs
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
+      - ./uv.lock:/opt/invenio/src/uv.lock
+      - ./requirements.txt:/opt/invenio/src/requirements.txt
+      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
+      - ./package.json:/opt/invenio/src/package.json
+      - ./package-lock.json:/opt/invenio/src/package-lock.json
+      - ./babel.config.js:/opt/invenio/src/babel.config.js
+      - ./README.md:/opt/invenio/src/README.md
+      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
+      - ./.env:/opt/invenio/src/.env
+      - ./.invenio:/opt/invenio/src/.invenio
+      - ./.invenio.private:/opt/invenio/src/.invenio.private
+      - ./.git:/opt/invenio/src/.git
+      - ./.gitmodules:/opt/invenio/src/.gitmodules
+      - ./.gitattributes:/opt/invenio/src/.gitattributes
+      - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}
@@ -173,8 +209,27 @@ services:
       - ./static:/opt/invenio/var/instance/static
       - ./templates:/opt/invenio/var/instance/templates
       - ./translations:/opt/invenio/var/instance/translations
-      - .:/opt/invenio/src
-      # - static_data:/opt/invenio/var/instance/static
+      - ./assets:/opt/invenio/src/assets
+      - ./scripts:/opt/invenio/src/scripts
+      - ./site:/opt/invenio/src/site
+      - ./workflows:/opt/invenio/src/workflows
+      - ./docs:/opt/invenio/src/docs
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
+      - ./uv.lock:/opt/invenio/src/uv.lock
+      - ./requirements.txt:/opt/invenio/src/requirements.txt
+      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
+      - ./package.json:/opt/invenio/src/package.json
+      - ./package-lock.json:/opt/invenio/src/package-lock.json
+      - ./babel.config.js:/opt/invenio/src/babel.config.js
+      - ./README.md:/opt/invenio/src/README.md
+      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
+      - ./.env:/opt/invenio/src/.env
+      - ./.invenio:/opt/invenio/src/.invenio
+      - ./.invenio.private:/opt/invenio/src/.invenio.private
+      - ./.git:/opt/invenio/src/.git
+      - ./.gitmodules:/opt/invenio/src/.gitmodules
+      - ./.gitattributes:/opt/invenio/src/.gitattributes
+      - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}

@@ -9,94 +9,125 @@
 # Note: It is important to keep the commands in this file in sync with your
 # bootstrap script located in ./scripts/bootstrap.
 
-FROM ghcr.io/astral-sh/uv:python3.12-alpine
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm
 
-ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     INVENIO_SITE_UI_URL=https://localhost \
     INVENIO_SITE_API_URL=https://localhost \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
+    UV_PROJECT_ENVIRONMENT=/opt/invenio/src/.venv \
+    VIRTUAL_ENV=/opt/invenio/src/.venv \
     PATH="/opt/invenio/src/.venv/bin:${PATH}"
 
 # Create instance path and set working directory
-RUN mkdir -p ${INVENIO_INSTANCE_PATH}
-RUN mkdir -p /opt/invenio/src
+RUN mkdir -p ${INVENIO_INSTANCE_PATH} && \
+    mkdir -p /opt/invenio/src
 WORKDIR /opt/invenio/src
 
-# Install prerequisites for building xmlsec Python package
-# also adds ps command for debugging
-RUN apk update && apk add python3 py3-setuptools nodejs npm gcc musl-dev linux-headers python3-dev cairo git procps postgresql-dev bash curl && \
-    apk add --no-cache libxml2 libxml2-dev xmlsec xmlsec-dev libressl libltdl && \
-    ln -s /usr/bin/node /usr/local/bin/node && \
-    ln -s /usr/bin/npm /usr/local/bin/npm
+# Install prerequisites and set up locales
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3-dev \
+    nodejs \
+    npm \
+    git \
+    libxml2 \
+    libxml2-dev \
+    libxmlsec1 \
+    libxmlsec1-dev \
+    libxmlsec1-openssl \
+    libxmlsec1-gnutls \
+    xmlsec1 \
+    libssl-dev \
+    libltdl-dev \
+    libpq-dev \
+    libpcre3-dev \
+    locales \
+    libpcre3 \
+    libpcre3-dev \
+    libssl-dev \
+    libffi-dev \
+    wget \
+    && rm -rf /var/lib/apt/lists/* \
+    && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
+    && locale-gen
 
-# Copy over directory for kcr instance Python package
-COPY site ./site
+# Configure npm to install packages locally
+RUN npm config set prefix '/opt/invenio/src/node_modules' && \
+    npm config set global false
 
-# Install python dependencies system-wide
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen && \
+# Copy all source files needed for dependencies and webpack
+COPY . .
+
+# Install python dependencies in virtual environment
+RUN uv venv && \
+    . .venv/bin/activate && \
+    # First install lxml and xmlsec with system libxml2
+    # Then install the rest of the dependencies without reinstall
+    uv sync --frozen --compile-bytecode && \
+    export CFLAGS="-Wno-error=incompatible-pointer-types" && \
+    uv pip install --reinstall "xmlsec==1.3.13" "lxml==4.9.3" && \
+    # Debug system library versions
+    echo "System library versions:" && \
+    echo "libxml2 version:" && \
+    xml2-config --version && \
+    echo "libxmlsec1 version:" && \
+    xmlsec1 --version && \
+    echo "Python package versions:" && \
+    pip list | grep -E "xmlsec|lxml" && \
+    echo "Checking which libxml2 lxml is using:" && \
+    python -c "import lxml.etree; print('lxml.etree.__file__:', lxml.etree.__file__); print('lxml.etree.LIBXML_COMPILED_VERSION:', lxml.etree.LIBXML_COMPILED_VERSION)" && \
+    echo "Checking which libraries lxml is linked against:" && \
+    find /opt/invenio/src/.venv -name "lxml.etree*.so" -exec ldd {} \; | grep libxml && \
+    echo "Checking which libxmlsec1 xmlsec is using:" && \
+    python -c "import xmlsec; print('xmlsec.__file__:', xmlsec.__file__); print('xmlsec.__version__:', xmlsec.__version__); print('xmlsec.xmlsec_version:', xmlsec.xmlsec_version); print('xmlsec.xmlsec_version_info:', xmlsec.xmlsec_version_info)" && \
+    echo "Checking xmlsec module location:" && \
+    find /opt/invenio/src/.venv -name "xmlsec*.so" -exec ldd {} \; | grep libxml && \
+    echo "Checking system libxml2 location:" && \
+    ls -l /usr/lib/x86_64-linux-gnu/libxml2.so* && \
+    echo "Checking system libxmlsec1 location:" && \
+    ls -l /usr/lib/x86_64-linux-gnu/libxmlsec1.so* && \
     uv clean
 
 RUN echo "[cli]" >> .invenio.private && \
     echo "services_setup=False" >> .invenio.private && \
     echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
 
-# Copying whole app directory into /opt/invenio/src, the working directory
-COPY ./ .
-
 # Copy required files to instance path
-RUN mkdir -p ${INVENIO_INSTANCE_PATH} && \
-    cp ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini && \
+RUN cp ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini && \
     cp ./docker/uwsgi/uwsgi_ui.ini ${INVENIO_INSTANCE_PATH}/uwsgi_ui.ini && \
-    cp ./docker/startup_ui.sh ${INVENIO_INSTANCE_PATH}/startup_ui.sh && \
-    cp ./docker/startup_api.sh ${INVENIO_INSTANCE_PATH}/startup_api.sh && \
-    cp ./docker/startup_worker.sh ${INVENIO_INSTANCE_PATH}/startup_worker.sh && \
+    cp ./docker/startup_*.sh ${INVENIO_INSTANCE_PATH}/ && \
+    chmod +x ${INVENIO_INSTANCE_PATH}/startup_*.sh && \
     cp ./invenio.cfg ${INVENIO_INSTANCE_PATH}/invenio.cfg && \
     cp -r ./templates ${INVENIO_INSTANCE_PATH}/templates && \
-    cp -r ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data && \
-    chmod +x ${INVENIO_INSTANCE_PATH}/startup_ui.sh && \
-    chmod +x ${INVENIO_INSTANCE_PATH}/startup_api.sh && \
-    chmod +x ${INVENIO_INSTANCE_PATH}/startup_worker.sh && \
-    ls -l ${INVENIO_INSTANCE_PATH}/startup_*.sh && \
-    test -f ${INVENIO_INSTANCE_PATH}/startup_ui.sh && \
-    test -f ${INVENIO_INSTANCE_PATH}/startup_api.sh && \
-    test -x ${INVENIO_INSTANCE_PATH}/startup_ui.sh && \
-    test -x ${INVENIO_INSTANCE_PATH}/startup_api.sh
+    cp -r ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data
 
-# Install uwsgi from source for Alpine compatibility
-RUN apk add --no-cache build-base && \
-    cd /tmp && \
-    curl -O https://github.com/unbit/uwsgi/archive/refs/tags/2.0.23.tar.gz && \
-    tar xf 2.0.23.tar.gz && \
-    cd uwsgi-2.0.23 && \
-    python3 uwsgiconfig.py --build && \
-    python3 setup.py install && \
-    cd / && \
-    rm -rf /tmp/uwsgi-2.0.23 /tmp/2.0.23.tar.gz && \
-    apk del build-base
+# Install local dependencies
+RUN . .venv/bin/activate && \
+    uv pip install --editable . && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-modular-deposit-form && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-group-collections-kcworks && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-modular-detail-page && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-record-importer-kcworks && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-remote-api-provisioner && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-remote-user-data-kcworks && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-communities && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-rdm-records && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-records-resources
 
-RUN uv pip install --break-system-packages --editable . && \
-    uv pip install --break-system-packages --editable ./site/kcworks/dependencies/invenio-modular-deposit-form && \
-    uv pip install --break-system-packages --editable ./site/kcworks/dependencies/invenio-group-collections-kcworks && \
-    uv pip install --break-system-packages --editable ./site/kcworks/dependencies/invenio-modular-detail-page && \
-    uv pip install --break-system-packages --editable ./site/kcworks/dependencies/invenio-record-importer-kcworks && \
-    uv pip install --break-system-packages --editable ./site/kcworks/dependencies/invenio-remote-api-provisioner && \
-    uv pip install --break-system-packages --editable ./site/kcworks/dependencies/invenio-remote-user-data-kcworks
-
-RUN invenio collect --verbose && invenio webpack clean create && \
+# Build assets
+RUN . .venv/bin/activate && \
+    invenio collect --verbose && \
+    invenio webpack clean create && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less && \
-    cp ./assets/less/theme.config ${INVENIO_INSTANCE_PATH}/assets/less/theme.config && \
-    mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/custom_fields && \
-    mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/search && \
+    cp ./assets/less/theme.config ${INVENIO_INSTANCE_PATH}/assets/less/ && \
+    mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/{custom_fields,search} && \
     invenio webpack install && \
-    # symlinking of assets has to be run from src directory
-    cd /opt/invenio/src && \
     invenio shell /opt/invenio/src/scripts/symlink_assets.py && \
     invenio webpack build
-
-# Set working directory to instance path for startup scripts
-# WORKDIR ${INVENIO_INSTANCE_PATH}
 
 ENTRYPOINT ["/bin/bash", "-c"]

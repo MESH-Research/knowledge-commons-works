@@ -10,28 +10,42 @@ from invenio_queues import current_queues
 from invenio_search.proxies import current_search_client
 import jinja2
 import pytest
+import importlib.util
 
 from .fixtures.identifiers import test_config_identifiers
 from .fixtures.custom_fields import test_config_fields
 from .fixtures.stats import test_config_stats
 from .fixtures.saml import test_config_saml
 from .fixtures.frontend import MockManifestLoader
-from kcworks import invenio_config
 
-var = "invenio_config"
-package = importlib.import_module(var)
-# This code is not importing variables from ./invenio_config.py because:
-# 1. It's using importlib to dynamically import a module named "invenio_config"
-# 2. It's creating a dictionary from all attributes of that module
-# 3. The local ./invenio_config.py file is not being referenced
 
-# Or if we want to create a dictionary of all variables:
+def load_config():
+    """Load the invenio.cfg file and return a dictionary of its variables.
 
-config = {k: v for k, v in invenio_config.__dict__.items() if not k.startswith("_")}
+    This is needed because we can't import the invenio.cfg file directly
+    because it's not a Python module.
+    """
+    config_path = Path(__file__).parent.parent / "invenio.cfg"
+
+    spec = importlib.util.spec_from_loader("config", None)
+    if spec is None:
+        raise ValueError("Failed to load invenio.cfg")
+    config = importlib.util.module_from_spec(spec)
+
+    with open(config_path, "r") as f:
+        exec(f.read(), config.__dict__)
+
+    # Convert module attributes to a dictionary, excluding private attributes
+    return {k: v for k, v in config.__dict__.items() if not k.startswith("_")}
+
+
+config = load_config()
+print("Config loaded successfully")
 
 pytest_plugins = (
     "celery.contrib.pytest",
     "tests.fixtures.files",
+    "tests.fixtures.mail",
     "tests.fixtures.communities",
     "tests.fixtures.custom_fields",
     "tests.fixtures.records",
@@ -135,16 +149,16 @@ test_config["SITE_UI_URL"] = os.environ.get(
 )
 
 
-# @pytest.fixture(scope="module")
-# def extra_entry_points() -> dict:
-#     return {
-#         "invenio_base.api_blueprints": [
-#             "kcworks_templates = tests.fixtures.template_loader:template_blueprint_loader"
-#         ],
-#         "invenio_base.blueprints": [
-#             "kcworks_templates = tests.fixtures.template_loader:template_blueprint_loader"
-#         ],
-#     }
+@pytest.fixture(scope="module")
+def extra_entry_points() -> dict:
+    return {
+        "invenio_base.api_apps": ["kcworks = kcworks.ext:KCWorks"],
+        "invenio_base.apps": ["kcworks = kcworks.ext:KCWorks"],
+        "invenio_base.api_blueprints": [
+            "kcworks = kcworks.views.views:create_api_blueprint"
+        ],
+        "invenio_base.blueprints": ["kcworks = kcworks.views.views:create_blueprint"],
+    }
 
 
 @pytest.fixture(scope="session")
@@ -259,6 +273,8 @@ def running_app(
     All of these fixtures are often needed together, so collecting them
     under a semantic umbrella makes sense.
     """
+
+    print("DATABASE", os.getenv("SQLALCHEMY_DATABASE_URI"))
     return RunningApp(
         app,
         location,
@@ -305,9 +321,13 @@ def template_loader():
 
     def load_tempates(app):
         site_path = (
-            Path(__file__).parent.parent / "kcworks" / "templates" / "semantic-ui"
+            Path(__file__).parent.parent
+            / "site"
+            / "kcworks"
+            / "templates"
+            / "semantic-ui"
         )
-        root_path = Path(__file__).parent.parent.parent / "templates"
+        root_path = Path(__file__).parent.parent / "templates"
         for path in (
             site_path,
             root_path,
@@ -345,6 +365,10 @@ def app(
 def app_config(app_config) -> dict:
     for k, v in test_config.items():
         app_config[k] = v
+    print("CONFIG", app_config["ACCOUNTS_USER_PROFILE_SCHEMA"])
+    print()
+    print("DATABASE", os.getenv("SQLALCHEMY_DATABASE_URI"))
+
     return app_config
 
 
