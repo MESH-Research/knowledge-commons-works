@@ -4,9 +4,11 @@ KCWorks provides a robust REST API that allows clients to perform most operation
 
 ## The InvenioRDM REST API
 
-KCWorks is built on top of InvenioRDM, which provides a REST API for creating, managing, and querying records. This API is documented at https://inveniordm.docs.cern.ch/reference/rest_api_index/.
+KCWorks is built on top of InvenioRDM, which provides a REST API for creating, managing, and querying records. This API is documented at [https://inveniordm.docs.cern.ch/reference/rest_api_index/](https://inveniordm.docs.cern.ch/reference/rest_api_index/).
 
-> **Note:** "Collections" are referred to as "communities" in the InvenioRDM API and its documentation. To avoid confusion with the social groups that are part of the Knowledge Commons network, KCWorks uses the term "collections" in its documentation and user interface. But operations involving collections are handled via the "communities" endpoint in the InvenioRDM REST API.
+```{note}
+"Collections" are referred to as "communities" in the InvenioRDM API and its documentation. To avoid confusion with the social groups that are part of the Knowledge Commons network, KCWorks uses the term "collections" in its documentation and user interface. But operations involving collections are handled via the "communities" endpoint in the InvenioRDM REST API.
+```
 
 This REST API allows clients to retrieve and manage the following resources:
 
@@ -240,7 +242,11 @@ The following example shows a request to import a single work with two files and
 
 #### Metadata JSON object
 
-The metadata JSON string for a journal article with a PDF file and a Word file, with a single owner might look like the sample below. **Note that the metadata must be provided as an array of metadata objects, even if it contains only a single object.**
+The metadata JSON string for a journal article with a PDF file and a Word file, with a single owner might look like the sample below.
+
+```{note}
+The metadata must be provided as an array of metadata objects, even if it contains only a single object.
+```
 
 ```json
 [{
@@ -641,8 +647,9 @@ The `group_collections` REST API endpoint allows a client to create, read, modif
 
 This endpoint is not configured to receive all of the metadata required to create or modify group collections. Rather, the `group_collections` endpoint receives minimal signals from a Commons Instance and then obtains the full required metadata via an API callback to the Commons instance.
 
-> [!NOTE]
-> KCWorks uses the term "collection" in place of the default term "community" employed in other InvenioRDM installations. This is partly to accommodate exactly the integration with Knowledge Commons groups that is discussed here.
+```{note}
+KCWorks uses the term "collection" in place of the default term "community" employed in other InvenioRDM installations. This is partly to accommodate exactly the integration with Knowledge Commons groups that is discussed here.
+```
 
 
 ### Group collection owner
@@ -1268,8 +1275,9 @@ The resulting request body will be shaped like this:
 
 ### Changing the Group Ownership of a Collection (PATCH)
 
-[!WARNING]
+```{warning}
 PATCH requests to change group ownership of the collection are not yet implemented.
+```
 
 A PATCH request to this endpoint modifies an existing collection in Invenio by changing the Commons group to which it belongs. This is the *only* modification that can be made to a collection via this endpoint. Other modifications to Commons group metadata should be handled by signalling the Invenio webhook for commons group metadata updates. Modifications to internal metadata or settings for the Invenio collection should be made view the Invenio "communities" API or the collection settings UI.
 
@@ -1335,12 +1343,14 @@ If any of these is missing the request will fail with a `400 Bad Request` error.
 
 If the collection is successfully deleted, the response status code will be 204 No Content.
 
-[!NOTE]
+```{note}
 Once a group collection has been deleted, its former URL slug is still registered in Invenio's PID store and reserved for the (now deleted) collection. Subsequent requests to create a collection for the same group cannot re-use the same URL slug. Instead the new slug will have a numerical disambiguator added to the end, exactly as in cases of group name collision. E.g., if the group `panda-studies` were deleted earlier, a request to create a new collection for the "Panda Studies" group would be assigned the URL slug `panda-studies-1`.
+```
 
-[!NOTE]
+```{note}
 Group collections are soft deleted and can in principle be restored within a short period after the delete signal has been sent. Eventually, though, the soft deleted collection records will be
 automatically purged entirely from the database. There is also no API mechanism for restoring them. So delete operations should be regarded as permanent and irrevocable.
+```
 
 #### Request
 
@@ -1373,11 +1383,13 @@ Required request headers:
 https://works.hcommons.org/api/webhooks/user_data_update
 ```
 
-> [!WARNING]
-> This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.
+```{warning}
+This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.
+```
 
-> [!NOTE]
-> This API was implemented with a distributed network of independent Commons instances in mind. Currently, only the Knowledge Commons instance exists and is supported as a SAML IDP by KCWorks.
+```{note}
+This API was implemented with a distributed network of independent Commons instances in mind. Currently, only the Knowledge Commons instance exists and is supported as a SAML IDP by KCWorks.
+```
 
 The api endpoint `/api/webhooks/user_data_update` is provided for Knowledge Commons applications and instances to signal that user or group metadata has been changed. These endpoints do not receive the actual updated data. They only receive notices *that* the metadata for a user or group has changed. KCWorks will then query the Commons instance's endpoint to retrieve current metadata for the user or group.
 
@@ -1428,7 +1440,9 @@ Top level payload object properties:
 | `users`  | array | An array of objects each representing one metadata  change event for a single user. | N        |
 | `groups` | array | An array of objects each representing one metadata change for a single group.       | N        |
 
-NOTE: A valid payload *must* provide either a `users` array or a `groups` array with at least one member. Requests providing neither `users` nor `groups`, or providing only empty arrays, will result in an error response.
+```{note}
+A valid payload *must* provide either a `users` array or a `groups` array with at least one member. Requests providing neither `users` nor `groups`, or providing only empty arrays, will result in an error response.
+```
 
 `users` and `groups` object properties
 

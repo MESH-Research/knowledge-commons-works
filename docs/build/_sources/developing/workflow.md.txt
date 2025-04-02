@@ -42,13 +42,14 @@ invenio webpack run start
 
 The file watching will continue until you stop it with CTRL-C. It will continue to occupy the terminal window where you started it. This means that you can see it respond and begin integrating changed files when it finds them. You can also see there any error or warning output from the build process--very helpful for debugging.
 
-> [!Note]
-> The watch command will only pick up changes to files that already existed during the last Webpack build. If you add
-> - a new javascript file
-> - a new css (less) file
-> - a new node.js package requirement
-> then you need to again run the basic (slow) build script to include it in the build process.
-> After that you can run `invenio webpack run start` again to pick up changes on the fly.
+```{note}
+The watch command will only pick up changes to files that already existed during the last Webpack build. If you add
+- a new javascript file
+- a new css (less) file
+- a new node.js package requirement
+then you need to again run the basic (slow) build script to include it in the build process.
+After that you can run `invenio webpack run start` again to pick up changes on the fly.
+```
 
 ### Adding new node.js packages to be included
 
@@ -127,8 +128,9 @@ pip install <package-name>
 
 What follows is a step-by-step walk through this process.
 
-> [!Note]
-> These instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
+```{note}
+These instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.
+```
 
 ## Updating an Instance with Upstream Changes
 
@@ -159,8 +161,9 @@ docker-compose --file docker-compose.yml up -d --build --force-recreate
 docker system prune -a
 ```
 
-> [!Caution]
-> Make sure that you run this `prune` command *while the containers are running.* If you run it while the containers are stopped, you will delete the containers and images that you need to run the application, as well as volumes with stored data.
+```{caution}
+Make sure that you run this `prune` command *while the containers are running.* If you run it while the containers are stopped, you will delete the containers and images that you need to run the application, as well as volumes with stored data.
+```
 
 6. Rebuild the asset files with the following command:
 

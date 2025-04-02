@@ -198,8 +198,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
@@ -214,6 +213,7 @@
 <li class="toctree-l2"><a class="reference internal" href="developing/workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/infrastructure.html">KCWorks Infrastructure</a></li>
 </ul>
 </li>
@@ -381,10 +381,10 @@
 <li><p>restrict anyone (including record owners) from editing the <code class="docutils literal notranslate"><span class="pre">parent.communities.default</span></code> field for a record whose primary community is <code class="docutils literal notranslate"><span class="pre">sample_community</span></code>. Only users with the “manager” or “owner” role in <code class="docutils literal notranslate"><span class="pre">sample_community</span></code> will be able to edit this field.</p></li>
 <li><p>restrict anyone (including record owners) from editing the <code class="docutils literal notranslate"><span class="pre">custom_fields.kcr:commons_domain</span></code> field for a record whose primary community is <code class="docutils literal notranslate"><span class="pre">sample_community_2</span></code>. Only users with the “manager”, “owner”, or “curator” role in <code class="docutils literal notranslate"><span class="pre">sample_community_2</span></code> will be able to edit this field. Owners of records in <code class="docutils literal notranslate"><span class="pre">sample_community_2</span></code> will be notified when the community’s per-field permissions are changed, and they will have a grace period of 1 day to update their records before the new permissions are enforced.</p></li>
 </ul>
-<blockquote>
-<div><p>[!Note]
-The policy for <code class="docutils literal notranslate"><span class="pre">sample_community_2</span></code> affects the same field as the policy for <code class="docutils literal notranslate"><span class="pre">default</span></code>, but since <code class="docutils literal notranslate"><span class="pre">sample_community_2</span></code> has a community-specific configuration, it will take precedence. This means more the <code class="docutils literal notranslate"><span class="pre">sample_community_2</span></code> managers, owners, and curators can edit this field for their collection’s records, where otherwise that field could only be edited by KCWorks administrators.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The policy for <code class="docutils literal notranslate"><span class="pre">sample_community_2</span></code> affects the same field as the policy for <code class="docutils literal notranslate"><span class="pre">default</span></code>, but since <code class="docutils literal notranslate"><span class="pre">sample_community_2</span></code> has a community-specific configuration, it will take precedence. This means more the <code class="docutils literal notranslate"><span class="pre">sample_community_2</span></code> managers, owners, and curators can edit this field for their collection’s records, where otherwise that field could only be edited by KCWorks administrators.</p>
+</div>
 </section>
 <section id="defining-the-permissions">
 <h4>Defining the permissions<a class="headerlink" href="#defining-the-permissions" title="Link to this heading">¶</a></h4>
@@ -414,14 +414,14 @@ The policy for <code class="docutils literal notranslate"><span class="pre">samp
 </ol>
 <p>So if a record is included in the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community, and that community is set as the default community for the record, then the permissions applied will be those of the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community. If the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community has no per-field permissions configured, then the default permissions will be used. If no default permissions are configured, then the record will be unrestricted.</p>
 <p>If the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community’s per-field permissions restrict changing the <code class="docutils literal notranslate"><span class="pre">parent.communities.default</span></code> field, then the record owner will not be able to remove the record from the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community or change the default community for the record. The record can only be removed from the community, or its default community changed to another community, by an <code class="docutils literal notranslate"><span class="pre">owner</span></code>, <code class="docutils literal notranslate"><span class="pre">manager</span></code>, or <code class="docutils literal notranslate"><span class="pre">curator</span></code> of the <code class="docutils literal notranslate"><span class="pre">romantic_literature</span></code> community.</p>
-<blockquote>
-<div><p>[!Note]
-If a community has per-field permission restrictions configured, this will be displayed in the user interface when the record owner submits it to the community.</p>
-</div></blockquote>
-<blockquote>
-<div><p>[!Note]
-A one-time notification to all record owners if/when the community’s per-field permissions are changed. Depending on collection policy, record owners may be allowed a grace period to update their records before the permissions are enforced.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a community has per-field permission restrictions configured, this will be displayed in the user interface when the record owner submits it to the community.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A one-time notification to all record owners if/when the community’s per-field permissions are changed. Depending on collection policy, record owners may be allowed a grace period to update their records before the permissions are enforced.</p>
+</div>
 </section>
 </section>
 </section>
@@ -465,10 +465,10 @@ A one-time notification to all record owners if/when the community’s per-field
 </pre></div>
 </div>
 <p>This configuration would be for a community with the URL slug <code class="docutils literal notranslate"><span class="pre">sample_community</span></code>. The <code class="docutils literal notranslate"><span class="pre">email_subject_register</span></code> value sets the subject line for the email notification sent to the record owners. The <code class="docutils literal notranslate"><span class="pre">email_template_register</span></code> value sets the template to use for the email notification. The template must be located in the <code class="docutils literal notranslate"><span class="pre">templates/security/email</span></code> directory of the KCWorks instance directory.</p>
-<blockquote>
-<div><p>[!Note]
-These notifications will <em>only</em> be sent for records imported using the streamlined import API. They will <em>not</em> be sent for records imported using the old importer API.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These notifications will <em>only</em> be sent for records imported using the streamlined import API. They will <em>not</em> be sent for records imported using the old importer API.</p>
+</div>
 </section>
 </section>
 <section id="integrations-with-kc">
@@ -538,10 +538,10 @@ These notifications will <em>only</em> be sent for records imported using the st
 <h4>metadata.creators/metadata.contributors<a class="headerlink" href="#metadata-creators-metadata-contributors" title="Link to this heading">¶</a></h4>
 <p>Note that the KC username of a creator or contributor may be stored in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> array of the creator or contributor object with the scheme <code class="docutils literal notranslate"><span class="pre">kc_username</span></code>.</p>
 <p>Users are also strongly encouraged to include an ORCID identifier in the <code class="docutils literal notranslate"><span class="pre">person_or_org.identifiers</span></code> array with the scheme <code class="docutils literal notranslate"><span class="pre">orcid</span></code>.</p>
-<blockquote>
-<div><p>[!Note]
-The KC username is the primary link between a KCWorks record and a KC user. If you want a work to be associated with a KC user, you must include the KC username in creator or contributor object.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The KC username is the primary link between a KCWorks record and a KC user. If you want a work to be associated with a KC user, you must include the KC username in creator or contributor object.</p>
+</div>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;person_or_org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -764,10 +764,10 @@ The KC username is the primary link between a KCWorks record and a KC user. If y
 <h4>kcr:user_defined_tags<a class="headerlink" href="#kcr-user-defined-tags" title="Link to this heading">¶</a></h4>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">Array[string]</span></code></p>
 <p>This field stores a list of user-defined tags for the KCWorks record. Unlike the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> field, these tags are not constrained by any controlled vocabulary. Items should be free-form strings that describe the KCWorks record in a way that is not covered by the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> field.</p>
-<blockquote>
-<div><p>[!Note]
-The <code class="docutils literal notranslate"><span class="pre">kcr:user_defined_tags</span></code> field is intended to supplement the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> field, not as the primary means of describing the KCWorks record’s subject matter. Assigning proper <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> entries allows for much more effective search and discovery of the KCWorks record.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">kcr:user_defined_tags</span></code> field is intended to supplement the <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> field, not as the primary means of describing the KCWorks record’s subject matter. Assigning proper <code class="docutils literal notranslate"><span class="pre">metadata.subjects</span></code> entries allows for much more effective search and discovery of the KCWorks record.</p>
+</div>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;kcr:user_defined_tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Ukranian refugees&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Migrants in Europe&quot;</span><span class="p">]</span>
@@ -778,19 +778,19 @@ The <code class="docutils literal notranslate"><span class="pre">kcr:user_define
 <section id="kcr-commons-search-recid-system-field">
 <h4>kcr:commons_search_recid (system field)<a class="headerlink" href="#kcr-commons-search-recid-system-field" title="Link to this heading">¶</a></h4>
 <p>This field is used to store the persistent identifier for the KCWorks record in the KC central search index.</p>
-<blockquote>
-<div><p>[!Warning]
-This field is automatically generated by the <code class="docutils literal notranslate"><span class="pre">invenio-remote-api-provisioner</span></code> service when a KCWorks record is published. It <em>must not</em> be set by the user.</p>
-</div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This field is automatically generated by the <code class="docutils literal notranslate"><span class="pre">invenio-remote-api-provisioner</span></code> service when a KCWorks record is published. It <em>must not</em> be set by the user.</p>
+</div>
 </section>
 <section id="kcr-commons-search-updated-system-field">
 <h4>kcr:commons_search_updated (system field)<a class="headerlink" href="#kcr-commons-search-updated-system-field" title="Link to this heading">¶</a></h4>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code> (ISO 8601 datetime string)</p>
 <p>This field stores the date and time when the KCWorks record was last updated in the KC central search index.</p>
-<blockquote>
-<div><p>[!Warning]
-This field is automatically generated by the <code class="docutils literal notranslate"><span class="pre">invenio-remote-api-provisioner</span></code> service when a KCWorks record is published. It <em>must not</em> be set by the user.</p>
-</div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This field is automatically generated by the <code class="docutils literal notranslate"><span class="pre">invenio-remote-api-provisioner</span></code> service when a KCWorks record is published. It <em>must not</em> be set by the user.</p>
+</div>
 </section>
 </section>
 <section id="hc-legacy-custom-fields">

@@ -83,8 +83,9 @@ The configuration above would:
 - restrict anyone (including record owners) from editing the `parent.communities.default` field for a record whose primary community is `sample_community`. Only users with the "manager" or "owner" role in `sample_community` will be able to edit this field.
 - restrict anyone (including record owners) from editing the `custom_fields.kcr:commons_domain` field for a record whose primary community is `sample_community_2`. Only users with the "manager", "owner", or "curator" role in `sample_community_2` will be able to edit this field. Owners of records in `sample_community_2` will be notified when the community's per-field permissions are changed, and they will have a grace period of 1 day to update their records before the new permissions are enforced.
 
-> [!Note]
-> The policy for `sample_community_2` affects the same field as the policy for `default`, but since `sample_community_2` has a community-specific configuration, it will take precedence. This means more the `sample_community_2` managers, owners, and curators can edit this field for their collection's records, where otherwise that field could only be edited by KCWorks administrators.
+```{note}
+The policy for `sample_community_2` affects the same field as the policy for `default`, but since `sample_community_2` has a community-specific configuration, it will take precedence. This means more the `sample_community_2` managers, owners, and curators can edit this field for their collection's records, where otherwise that field could only be edited by KCWorks administrators.
+```
 
 #### Defining the permissions
 
@@ -116,11 +117,13 @@ So if a record is included in the `romantic_literature` community, and that comm
 
 If the `romantic_literature` community's per-field permissions restrict changing the `parent.communities.default` field, then the record owner will not be able to remove the record from the `romantic_literature` community or change the default community for the record. The record can only be removed from the community, or its default community changed to another community, by an `owner`, `manager`, or `curator` of the `romantic_literature` community.
 
-> [!Note]
-> If a community has per-field permission restrictions configured, this will be displayed in the user interface when the record owner submits it to the community.
+```{note}
+If a community has per-field permission restrictions configured, this will be displayed in the user interface when the record owner submits it to the community.
+```
 
-> [!Note]
-> A one-time notification to all record owners if/when the community's per-field permissions are changed. Depending on collection policy, record owners may be allowed a grace period to update their records before the permissions are enforced.
+```{note}
+A one-time notification to all record owners if/when the community's per-field permissions are changed. Depending on collection policy, record owners may be allowed a grace period to update their records before the permissions are enforced.
+```
 
 ## Notifications
 
@@ -156,8 +159,9 @@ RECORD_IMPORTER_COMMUNITIES = {
 
 This configuration would be for a community with the URL slug `sample_community`. The `email_subject_register` value sets the subject line for the email notification sent to the record owners. The `email_template_register` value sets the template to use for the email notification. The template must be located in the `templates/security/email` directory of the KCWorks instance directory.
 
-> [!Note]
-> These notifications will *only* be sent for records imported using the streamlined import API. They will *not* be sent for records imported using the old importer API.
+```{note}
+These notifications will *only* be sent for records imported using the streamlined import API. They will *not* be sent for records imported using the old importer API.
+```
 
 ## Integrations with KC
 
@@ -225,8 +229,9 @@ Note that the KC username of a creator or contributor may be stored in the `pers
 
 Users are also strongly encouraged to include an ORCID identifier in the `person_or_org.identifiers` array with the scheme `orcid`.
 
-> [!Note]
-> The KC username is the primary link between a KCWorks record and a KC user. If you want a work to be associated with a KC user, you must include the KC username in creator or contributor object.
+```{note}
+The KC username is the primary link between a KCWorks record and a KC user. If you want a work to be associated with a KC user, you must include the KC username in creator or contributor object.
+```
 
 Example:
 ```json
@@ -490,8 +495,9 @@ Type: `Array[string]`
 
 This field stores a list of user-defined tags for the KCWorks record. Unlike the `metadata.subjects` field, these tags are not constrained by any controlled vocabulary. Items should be free-form strings that describe the KCWorks record in a way that is not covered by the `metadata.subjects` field.
 
-> [!Note]
-> The `kcr:user_defined_tags` field is intended to supplement the `metadata.subjects` field, not as the primary means of describing the KCWorks record's subject matter. Assigning proper `metadata.subjects` entries allows for much more effective search and discovery of the KCWorks record.
+```{note}
+The `kcr:user_defined_tags` field is intended to supplement the `metadata.subjects` field, not as the primary means of describing the KCWorks record's subject matter. Assigning proper `metadata.subjects` entries allows for much more effective search and discovery of the KCWorks record.
+```
 
 Example:
 ```json
@@ -504,8 +510,9 @@ Example:
 
 This field is used to store the persistent identifier for the KCWorks record in the KC central search index.
 
-> [!Warning]
-> This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
+```{warning}
+This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
+```
 
 #### kcr:commons_search_updated (system field)
 
@@ -513,8 +520,9 @@ Type: `string` (ISO 8601 datetime string)
 
 This field stores the date and time when the KCWorks record was last updated in the KC central search index.
 
-> [!Warning]
-> This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
+```{warning}
+This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
+```
 
 ### HC Legacy Custom Fields
 

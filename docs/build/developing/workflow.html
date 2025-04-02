@@ -198,8 +198,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
@@ -214,6 +213,7 @@
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="infrastructure.html">KCWorks Infrastructure</a></li>
 </ul>
 </li>
@@ -303,9 +303,9 @@ uwsgi<span class="w"> </span>--reload<span class="w"> </span>/tmp/uwsgi_ui.pid
 </pre></div>
 </div>
 <p>The file watching will continue until you stop it with CTRL-C. It will continue to occupy the terminal window where you started it. This means that you can see it respond and begin integrating changed files when it finds them. You can also see there any error or warning output from the build process–very helpful for debugging.</p>
-<blockquote>
-<div><p>[!Note]
-The watch command will only pick up changes to files that already existed during the last Webpack build. If you add</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The watch command will only pick up changes to files that already existed during the last Webpack build. If you add</p>
 <ul class="simple">
 <li><p>a new javascript file</p></li>
 <li><p>a new css (less) file</p></li>
@@ -313,7 +313,7 @@ The watch command will only pick up changes to files that already existed during
 then you need to again run the basic (slow) build script to include it in the build process.
 After that you can run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">webpack</span> <span class="pre">run</span> <span class="pre">start</span></code> again to pick up changes on the fly.</p></li>
 </ul>
-</div></blockquote>
+</div>
 </section>
 </section>
 <section id="adding-new-node-js-packages-to-be-included">
@@ -382,10 +382,10 @@ uwsgi<span class="w"> </span>--reload<span class="w"> </span>/tmp/uwsgi_ui.pid
 <section id="digging-deeper">
 <h2>Digging deeper<a class="headerlink" href="#digging-deeper" title="Link to this heading">¶</a></h2>
 <p>What follows is a step-by-step walk through this process.</p>
-<blockquote>
-<div><p>[!Note]
-These instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These instructions do not support installation under Windows. Windows users should emulate a Linux environment using WSL2.</p>
+</div>
 </section>
 <section id="updating-an-instance-with-upstream-changes">
 <h2>Updating an Instance with Upstream Changes<a class="headerlink" href="#updating-an-instance-with-upstream-changes" title="Link to this heading">¶</a></h2>
@@ -415,10 +415,10 @@ docker-compose<span class="w"> </span>--file<span class="w"> </span>docker-compo
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>system<span class="w"> </span>prune<span class="w"> </span>-a
 </pre></div>
 </div>
-<blockquote>
-<div><p>[!Caution]
-Make sure that you run this <code class="docutils literal notranslate"><span class="pre">prune</span></code> command <em>while the containers are running.</em> If you run it while the containers are stopped, you will delete the containers and images that you need to run the application, as well as volumes with stored data.</p>
-</div></blockquote>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Make sure that you run this <code class="docutils literal notranslate"><span class="pre">prune</span></code> command <em>while the containers are running.</em> If you run it while the containers are stopped, you will delete the containers and images that you need to run the application, as well as volumes with stored data.</p>
+</div>
 <ol class="arabic simple" start="6">
 <li><p>Rebuild the asset files with the following command:</p></li>
 </ol>

@@ -198,8 +198,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
@@ -214,6 +213,7 @@
 <li class="toctree-l2"><a class="reference internal" href="workflow.html">Development Workflow</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="infrastructure.html">KCWorks Infrastructure</a></li>
 </ul>
 </li>
@@ -274,20 +274,60 @@
 (c) Ghost Inspector tests that run on the deployed site (staging or production).</p>
 <section id="python-tests">
 <h2>Python tests<a class="headerlink" href="#python-tests" title="Link to this heading">¶</a></h2>
-<p>The python test suite includes (a) unit tests for back end code, (b) tests of ui views and api requests run with a client fixture. To run the unit tests and view/request tests, navigate to the root <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works/site</span></code> folder and run</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run_tests.sh</span>
+<p>The python test suite includes (a) unit tests for back end code, (b) tests of ui views and api requests run with a client fixture. To run the unit tests and view/request tests, navigate to the root <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code> folder and run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run-tests.sh</span>
 </pre></div>
 </div>
 <p>Note that you will need to have your local docker service running for these tests to work, since they use the <code class="docutils literal notranslate"><span class="pre">docker-services-cli</span></code> tool to start the required services.</p>
-<blockquote>
-<div><p>[!Note]
-Ensure that you have stopped the docker-compose project for your local development instance before running the tests! Otherwise, you will get conflicts with the services that are started by the tests.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ensure that you have stopped the docker-compose project for your local development instance before running the tests! Otherwise, you will get conflicts with the services that are started by the tests.</p>
+</div>
+<section id="passing-pytest-arguments-to-the-test-runner">
+<h3>Passing pytest arguments to the test runner<a class="headerlink" href="#passing-pytest-arguments-to-the-test-runner" title="Link to this heading">¶</a></h3>
+<p>Any pytest arguments can be passed to the script, e.g., to run only tests whose names contain the word “view”, and to show verbose output:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run-tests.sh -k &quot;view&quot; -vv</span>
+</pre></div>
+</div>
+<p>To run the tests in a specific directory, use the <code class="docutils literal notranslate"><span class="pre">-d</span></code> flag:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run-tests.sh -d tests/api</span>
+</pre></div>
+</div>
+<p>To run the tests in a specific file, use the <code class="docutils literal notranslate"><span class="pre">-f</span></code> flag:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run-tests.sh -f tests/api/test_view.py</span>
+</pre></div>
+</div>
+<p>By default, the docker containers are stopped after the tests are run. To run the tests and leave the docker containers running, use the upper-case <code class="docutils literal notranslate"><span class="pre">-K</span></code> flag:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run-tests.sh -K</span>
+</pre></div>
+</div>
+</section>
+<section id="test-discovery-and-doctests">
+<h3>Test discovery and doctests<a class="headerlink" href="#test-discovery-and-doctests" title="Link to this heading">¶</a></h3>
+<p>The pytest configuration in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> tells pytest to look for tests in the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory as well as in the <code class="docutils literal notranslate"><span class="pre">site/kcworks</span></code> directory (excluding the <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> and <code class="docutils literal notranslate"><span class="pre">stats_dashboard</span></code> subdirectories). If you wish to expand this search, you can do so by adding additional directories to the <code class="docutils literal notranslate"><span class="pre">tool.pytest.ini_options.testpaths</span></code> list in the <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file.</p>
+<p>Pytest will also run any doctests that are found in these directories. This includes any files that end with <code class="docutils literal notranslate"><span class="pre">.rst</span></code> as well as any doctests that are embedded in the docstrings of python files.</p>
+</section>
+<section id="test-configuration">
+<h3>Test configuration<a class="headerlink" href="#test-configuration" title="Link to this heading">¶</a></h3>
+<p>The top-level <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> file is used to configure the test environment. Most of the tests use an invenio (Flask) app instance that receives all of the configuration variables from the <code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> file. Some of these variables are then overridden in the <code class="docutils literal notranslate"><span class="pre">test_config</span></code> dictionary that <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> passes to the app instance.</p>
+<p>The test environment does not use the top-level <code class="docutils literal notranslate"><span class="pre">.env</span></code> file that is used in the development environment. Where environment variables are needed, these are provided in a dedicated environment file <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code> that is used to configure the test environment in the test runner script <code class="docutils literal notranslate"><span class="pre">run-tests.sh</span></code>.</p>
+</section>
+<section id="pytest-fixtures">
+<h3>Pytest fixtures<a class="headerlink" href="#pytest-fixtures" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> file loads a number of custom fixture files from the <code class="docutils literal notranslate"><span class="pre">tests/fixtures</span></code> directory. Note that any additional custom fixture files must be added to this list. They cannot be loaded automatically based on the <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> pytest configuration because the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory is not inside the <code class="docutils literal notranslate"><span class="pre">site</span></code> directory, which is the package build context for <code class="docutils literal notranslate"><span class="pre">kcworks</span></code>.</p>
+</section>
+<section id="additional-actions-included-in-the-test-runner">
+<h3>Additional actions included in the test runner<a class="headerlink" href="#additional-actions-included-in-the-test-runner" title="Link to this heading">¶</a></h3>
+<p>The test runner includes additional actions that are not part of the pytest framework. These include:</p>
+<ul class="simple">
+<li><p>Building the documentation with Sphinx</p></li>
+</ul>
+</section>
 </section>
 <section id="javascript-tests">
 <h2>Javascript tests<a class="headerlink" href="#javascript-tests" title="Link to this heading">¶</a></h2>
-<p>Pytest does not directly test custom javascript files or React components. In order to test these, navigate to the root knowledge-commons-works folder and run</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">npm run test</span>
+<p>Pytest does not directly test custom javascript files or React components. In order to test these, navigate to the root <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code> folder and run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run-js-tests.sh</span>
 </pre></div>
 </div>
 <p>These tests are run using the jest test runner, configured in the packages.json file in the root knowledge-commons-works folder.</p>
@@ -299,10 +339,10 @@ Ensure that you have stopped the docker-compose project for your local developme
 <section id="ghost-inspector-tests">
 <h2>Ghost Inspector tests<a class="headerlink" href="#ghost-inspector-tests" title="Link to this heading">¶</a></h2>
 <p>The Ghost Inspector tests are run on the deployed site (staging or production). They run on a regular schedule and are used to ensure that the site is working as expected.</p>
-<blockquote>
-<div><p>[!Note]
-At present, Ghost Inspector tests are not run automatically when a pull request is merged into the <code class="docutils literal notranslate"><span class="pre">staging</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code> branches. This should be implemented in the future once deployment to the respective servers is fully automated.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>At present, Ghost Inspector tests are not run automatically when a pull request is merged into the <code class="docutils literal notranslate"><span class="pre">staging</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code> branches. This should be implemented in the future once deployment to the respective servers is fully automated.</p>
+</div>
 </section>
 </section>
 
@@ -362,7 +402,14 @@ At present, Ghost Inspector tests are not run automatically when a pull request 
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Automated Testing</a><ul>
-<li><a class="reference internal" href="#python-tests">Python tests</a></li>
+<li><a class="reference internal" href="#python-tests">Python tests</a><ul>
+<li><a class="reference internal" href="#passing-pytest-arguments-to-the-test-runner">Passing pytest arguments to the test runner</a></li>
+<li><a class="reference internal" href="#test-discovery-and-doctests">Test discovery and doctests</a></li>
+<li><a class="reference internal" href="#test-configuration">Test configuration</a></li>
+<li><a class="reference internal" href="#pytest-fixtures">Pytest fixtures</a></li>
+<li><a class="reference internal" href="#additional-actions-included-in-the-test-runner">Additional actions included in the test runner</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#javascript-tests">Javascript tests</a></li>
 <li><a class="reference internal" href="#ghost-inspector-tests">Ghost Inspector tests</a></li>
 </ul>

@@ -198,8 +198,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
@@ -214,6 +213,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../developing/workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/infrastructure.html">KCWorks Infrastructure</a></li>
 </ul>
 </li>
@@ -270,10 +270,11 @@
 <p>KCWorks provides a robust REST API that allows clients to perform most operations on KCWorks records and collections.</p>
 <section id="the-inveniordm-rest-api">
 <h2>The InvenioRDM REST API<a class="headerlink" href="#the-inveniordm-rest-api" title="Link to this heading">¶</a></h2>
-<p>KCWorks is built on top of InvenioRDM, which provides a REST API for creating, managing, and querying records. This API is documented at https://inveniordm.docs.cern.ch/reference/rest_api_index/.</p>
-<blockquote>
-<div><p><strong>Note:</strong> “Collections” are referred to as “communities” in the InvenioRDM API and its documentation. To avoid confusion with the social groups that are part of the Knowledge Commons network, KCWorks uses the term “collections” in its documentation and user interface. But operations involving collections are handled via the “communities” endpoint in the InvenioRDM REST API.</p>
-</div></blockquote>
+<p>KCWorks is built on top of InvenioRDM, which provides a REST API for creating, managing, and querying records. This API is documented at <a class="reference external" href="https://inveniordm.docs.cern.ch/reference/rest_api_index/">https://inveniordm.docs.cern.ch/reference/rest_api_index/</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>“Collections” are referred to as “communities” in the InvenioRDM API and its documentation. To avoid confusion with the social groups that are part of the Knowledge Commons network, KCWorks uses the term “collections” in its documentation and user interface. But operations involving collections are handled via the “communities” endpoint in the InvenioRDM REST API.</p>
+</div>
 <p>This REST API allows clients to retrieve and manage the following resources:</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
@@ -742,7 +743,11 @@ The import API places the works directly in a collection, without passing throug
 <p>The following example shows a request to import a single work with two files and a single owner.</p>
 <section id="metadata-json-object">
 <h4>Metadata JSON object<a class="headerlink" href="#metadata-json-object" title="Link to this heading">¶</a></h4>
-<p>The metadata JSON string for a journal article with a PDF file and a Word file, with a single owner might look like the sample below. <strong>Note that the metadata must be provided as an array of metadata objects, even if it contains only a single object.</strong></p>
+<p>The metadata JSON string for a journal article with a PDF file and a Word file, with a single owner might look like the sample below.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The metadata must be provided as an array of metadata objects, even if it contains only a single object.</p>
+</div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span>
 <span class="w">  </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;resource_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1160,10 +1165,10 @@ c. the <code class="docutils literal notranslate"><span class="pre">all_or_none<
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">group_collections</span></code> REST API endpoint allows a client to create, read, modify, or delete a collection in KCWorks owned and administered by a Knowledge Commons group. GET requests to retrieve information about group collections are open to all clients. POST, PUT, and DELETE requests are secured by an oauth token that must be obtained from the Knowledge Commons Works administrator.</p>
 <p>This endpoint is not configured to receive all of the metadata required to create or modify group collections. Rather, the <code class="docutils literal notranslate"><span class="pre">group_collections</span></code> endpoint receives minimal signals from a Commons Instance and then obtains the full required metadata via an API callback to the Commons instance.</p>
-<blockquote>
-<div><p>[!NOTE]
-KCWorks uses the term “collection” in place of the default term “community” employed in other InvenioRDM installations. This is partly to accommodate exactly the integration with Knowledge Commons groups that is discussed here.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>KCWorks uses the term “collection” in place of the default term “community” employed in other InvenioRDM installations. This is partly to accommodate exactly the integration with Knowledge Commons groups that is discussed here.</p>
+</div>
 <section id="group-collection-owner">
 <h3>Group collection owner<a class="headerlink" href="#group-collection-owner" title="Link to this heading">¶</a></h3>
 <p>InvenioRDM does not allow groups to be owners of a collection (community). When a collection is created for a group, though, we do not know which of the group’s administrators to assign as the individual owner. It is also awkward to change ownership of a collection later on if the group’s administrativer personnel change. So the collection is owned by an administrative user who is assigned the role <code class="docutils literal notranslate"><span class="pre">group-collections-owner</span></code>. The group’s administrators are then assigned privileges as “managers” of the group collection. This allows them to manage the collection’s settings and membership, but not to delete the collection or change its ownership.</p>
@@ -1901,8 +1906,10 @@ invalid data.</p></li>
 </section>
 <section id="changing-the-group-ownership-of-a-collection-patch">
 <h3>Changing the Group Ownership of a Collection (PATCH)<a class="headerlink" href="#changing-the-group-ownership-of-a-collection-patch" title="Link to this heading">¶</a></h3>
-<p>[!WARNING]
-PATCH requests to change group ownership of the collection are not yet implemented.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>PATCH requests to change group ownership of the collection are not yet implemented.</p>
+</div>
 <p>A PATCH request to this endpoint modifies an existing collection in Invenio by changing the Commons group to which it belongs. This is the <em>only</em> modification that can be made to a collection via this endpoint. Other modifications to Commons group metadata should be handled by signalling the Invenio webhook for commons group metadata updates. Modifications to internal metadata or settings for the Invenio collection should be made view the Invenio “communities” API or the collection settings UI.</p>
 <p>Note that the collection memberships in Invenio will be automatically transferred to the new Commons group. The corporate roles for the old Commons group will be removed from the collection and corporate roles for the new Commons group will be added to its membership with appropriate permissions. But any individual memberships that have been granted through the Invenio UI will be left unchanged. If the new collection administrators wish to change these individual memberships, they will need to do so through the Invenio UI.</p>
 <section id="id23">
@@ -1977,11 +1984,15 @@ Commons group.</p></li>
 </ul>
 <p>If any of these is missing the request will fail with a <code class="docutils literal notranslate"><span class="pre">400</span> <span class="pre">Bad</span> <span class="pre">Request</span></code> error. This is to ensure that collections are not deleted accidentally or by agents without authorization.</p>
 <p>If the collection is successfully deleted, the response status code will be 204 No Content.</p>
-<p>[!NOTE]
-Once a group collection has been deleted, its former URL slug is still registered in Invenio’s PID store and reserved for the (now deleted) collection. Subsequent requests to create a collection for the same group cannot re-use the same URL slug. Instead the new slug will have a numerical disambiguator added to the end, exactly as in cases of group name collision. E.g., if the group <code class="docutils literal notranslate"><span class="pre">panda-studies</span></code> were deleted earlier, a request to create a new collection for the “Panda Studies” group would be assigned the URL slug <code class="docutils literal notranslate"><span class="pre">panda-studies-1</span></code>.</p>
-<p>[!NOTE]
-Group collections are soft deleted and can in principle be restored within a short period after the delete signal has been sent. Eventually, though, the soft deleted collection records will be
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Once a group collection has been deleted, its former URL slug is still registered in Invenio’s PID store and reserved for the (now deleted) collection. Subsequent requests to create a collection for the same group cannot re-use the same URL slug. Instead the new slug will have a numerical disambiguator added to the end, exactly as in cases of group name collision. E.g., if the group <code class="docutils literal notranslate"><span class="pre">panda-studies</span></code> were deleted earlier, a request to create a new collection for the “Panda Studies” group would be assigned the URL slug <code class="docutils literal notranslate"><span class="pre">panda-studies-1</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Group collections are soft deleted and can in principle be restored within a short period after the delete signal has been sent. Eventually, though, the soft deleted collection records will be
 automatically purged entirely from the database. There is also no API mechanism for restoring them. So delete operations should be regarded as permanent and irrevocable.</p>
+</div>
 <section id="id28">
 <h4>Request<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h4>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">https://works.hcommons.org/api/group_collections/my-collection-slug?commons_instance=knowledgeCommons&amp;commons_group_id=12345</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -2026,14 +2037,14 @@ automatically purged entirely from the database. There is also no API mechanism 
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">works</span><span class="o">.</span><span class="n">hcommons</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">webhooks</span><span class="o">/</span><span class="n">user_data_update</span>
 </pre></div>
 </div>
-<blockquote>
-<div><p>[!WARNING]
-This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.</p>
-</div></blockquote>
-<blockquote>
-<div><p>[!NOTE]
-This API was implemented with a distributed network of independent Commons instances in mind. Currently, only the Knowledge Commons instance exists and is supported as a SAML IDP by KCWorks.</p>
-</div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This API was implemented with a distributed network of independent Commons instances in mind. Currently, only the Knowledge Commons instance exists and is supported as a SAML IDP by KCWorks.</p>
+</div>
 <p>The api endpoint <code class="docutils literal notranslate"><span class="pre">/api/webhooks/user_data_update</span></code> is provided for Knowledge Commons applications and instances to signal that user or group metadata has been changed. These endpoints do not receive the actual updated data. They only receive notices <em>that</em> the metadata for a user or group has changed. KCWorks will then query the Commons instance’s endpoint to retrieve current metadata for the user or group.</p>
 <section id="user-groups-metadata-updates-and-saml-authentication">
 <h3>User/Groups Metadata updates and SAML authentication<a class="headerlink" href="#user-groups-metadata-updates-and-saml-authentication" title="Link to this heading">¶</a></h3>
@@ -2114,7 +2125,10 @@ This API was implemented with a distributed network of independent Commons insta
 </tbody>
 </table>
 </div>
-<p>NOTE: A valid payload <em>must</em> provide either a <code class="docutils literal notranslate"><span class="pre">users</span></code> array or a <code class="docutils literal notranslate"><span class="pre">groups</span></code> array with at least one member. Requests providing neither <code class="docutils literal notranslate"><span class="pre">users</span></code> nor <code class="docutils literal notranslate"><span class="pre">groups</span></code>, or providing only empty arrays, will result in an error response.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A valid payload <em>must</em> provide either a <code class="docutils literal notranslate"><span class="pre">users</span></code> array or a <code class="docutils literal notranslate"><span class="pre">groups</span></code> array with at least one member. Requests providing neither <code class="docutils literal notranslate"><span class="pre">users</span></code> nor <code class="docutils literal notranslate"><span class="pre">groups</span></code>, or providing only empty arrays, will result in an error response.</p>
+</div>
 <p><code class="docutils literal notranslate"><span class="pre">users</span></code> and <code class="docutils literal notranslate"><span class="pre">groups</span></code> object properties</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">

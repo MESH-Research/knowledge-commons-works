@@ -266,7 +266,11 @@ You should now be able to access the following:
 
 ### Controlling the Application Services
 
-Once Knowledge Commons Works is installed, you can manage its services from the command line. **Note: Unless otherwise specified, the commands below must be run from the root knowledge-commons-works folder.**
+Once Knowledge Commons Works is installed, you can manage its services from the command line.
+
+```{note}
+Unless otherwise specified, the commands below must be run from the root knowledge-commons-works folder.
+```
 
 ### Startup and shutdown scripts
 

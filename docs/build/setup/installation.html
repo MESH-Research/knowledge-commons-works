@@ -270,7 +270,7 @@
 <section id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">¶</a></h2>
 <p>These instructions allow you to run Knowledge Commons Works for local development. The app source files are copied onto your system, but the Flask application and other services (database, search, etc.) are run in Docker containers. The application is served to your browser by an nginx web server running in a separate container.</p>
-<p>First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+) and Python (3.12.0+ with pipenv).</p>
+<p>First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+) and Python (3.12.0+). You will also need to have Python’s <code class="docutils literal notranslate"><span class="pre">uv</span></code> package manager installed (see <a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/">the uv docs</a> for details). If you are going to run frontend development tests you will also need to have Node.js (20+) and npm (10.9.0+) installed.</p>
 <p>From there, installation involves these steps. Each one is further explained below, but here is a quick reference:</p>
 <section id="clone-the-git-repository">
 <h3>1. Clone the git repository<a class="headerlink" href="#clone-the-git-repository" title="Link to this heading">¶</a></h3>
@@ -278,9 +278,10 @@
 <li><p>From your command line, navigate to the parent folder where you want the cloned repository code to live</p></li>
 <li><p>Clone the knowledge-commons-works repository with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:MESH-Research/knowledge-commons-works.git</span> <span class="pre">&amp;&amp;</span> <span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span></code></p></li>
 </ul>
-<blockquote>
-<div><p><strong>Note</strong>: Do not use the <code class="docutils literal notranslate"><span class="pre">--recurse-submodules</span></code> option when cloning the repository or the <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> option when initializing the submodules. This will clone redundant copies of the inter-dependent submodules.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not use the <code class="docutils literal notranslate"><span class="pre">--recurse-submodules</span></code> option when cloning the repository or the <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> option when initializing the submodules. This will clone redundant copies of the inter-dependent submodules.</p>
+</div>
 </section>
 <section id="create-your-configuration-files">
 <h3>2. Create your configuration files<a class="headerlink" href="#create-your-configuration-files" title="Link to this heading">¶</a></h3>
@@ -306,24 +307,27 @@
 <ul class="simple">
 <li><p>enter the <code class="docutils literal notranslate"><span class="pre">web-ui</span></code> container by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span> <span class="pre">-it</span> <span class="pre">kcworks-ui</span> <span class="pre">bash</span></code></p></li>
 </ul>
-<blockquote>
-<div><p><strong>Note</strong>: The container name may be different depending on your local docker setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The container name may be different depending on your local docker setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
+</div>
 <ul class="simple">
 <li><p>run the script to set up the instance services and build static assets <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./scripts/setup-services.sh</span></code></p></li>
 </ul>
-<blockquote>
-<div><p><strong>Note</strong>: Some of the commands in this script may take a while to run. Patience is required! The <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> command in particular may take up to an hour to complete during which time it provides no feedback. Don’t despair! It is working.</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some of the commands in this script may take a while to run. Patience is required! The <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> command in particular may take up to an hour to complete during which time it provides no feedback. Don’t despair! It is working.</p>
+</div>
 </section>
 <section id="create-your-own-admin-user">
 <h3>5. Create your own admin user<a class="headerlink" href="#create-your-own-admin-user" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>enter the <code class="docutils literal notranslate"><span class="pre">web-ui</span></code> container by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span> <span class="pre">-it</span> <span class="pre">kcworks-ui</span> <span class="pre">bash</span></code></p></li>
 </ul>
-<blockquote>
-<div><p><strong>Note</strong>: The container name may be different depending on your local docker setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The container name may be different depending on your local docker setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
+</div>
 <ul class="simple">
 <li><p>run the commands:</p></li>
 </ul>
@@ -374,7 +378,7 @@ local-working<span class="w"> </span>git@github.com:MESH-Research/invenio-vocabu
 <li><p>When you start up the docker compose project, add an additional project file to the command:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">--file</span> <span class="pre">docker-compose.yml</span> <span class="pre">--file</span> <span class="pre">docker-compose.dev.yml</span> <span class="pre">up</span> <span class="pre">-d</span></code>
-This will mount a variety of local package folders as bind mounts in your running containers. This will allow you to make changes to the python code in the cloned repositories and see those changes reflected in the running Knowledge Commons Works instance.</p></li>
+This will mount a variety of local package folders as bind mounts in your running containers. This will allow you to make changes to the python code, both in the cloned repositories and in the <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works/.venv</span></code> virtual environment, and see those changes reflected in the running Knowledge Commons Works instance.</p></li>
 </ul>
 </li>
 </ol>
@@ -388,10 +392,10 @@ This will mount a variety of local package folders as bind mounts in your runnin
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>--file<span class="w"> </span>docker-compose.yml<span class="w"> </span>stop
 </pre></div>
 </div>
-<blockquote>
-<div><p>[!Caution]
-Do not use the <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">down</span></code> command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indices. YOU DO NOT WANT TO DO THIS!</p>
-</div></blockquote>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Do not use the <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">down</span></code> command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indices. YOU DO NOT WANT TO DO THIS!</p>
+</div>
 <p>If you need to restart the main Flask application (e.g., after making configuration changes) you can do so either by stopping and restarting the docker-compose project or by running the following command inside the <code class="docutils literal notranslate"><span class="pre">kcworks-ui</span></code> container:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>uwsgi<span class="w"> </span>--reload<span class="w"> </span>/tmp/uwsgi_ui.pid
 </pre></div>
@@ -401,6 +405,64 @@ Do not use the <code class="docutils literal notranslate"><span class="pre">dock
 </pre></div>
 </div>
 <p>But these commands should not be necessary in normal operation.</p>
+</section>
+<section id="setting-up-configuration-files">
+<h2>Setting up configuration files<a class="headerlink" href="#setting-up-configuration-files" title="Link to this heading">¶</a></h2>
+<section id="configuring-your-env-file">
+<h3>Configuring your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file<a class="headerlink" href="#configuring-your-env-file" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">.env</span></code> file is used to configure the Knowledge Commons Works application. It is a standard python environment file that is used to set the environment variables for the application.</p>
+<p>These are the minimal variables that you need to set in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file to get the application running:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">INVENIO_INSTANCE_PATH</span><span class="o">=</span>/opt/invenio/var/instance
+<span class="nv">INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR</span><span class="o">=</span>/
+<span class="nv">INVENIO_RECORD_IMPORTER_DATA_DIR</span><span class="o">=</span>/opt/invenio/var/import_data
+<span class="nv">INVENIO_SEARCH_DOMAIN</span><span class="o">=</span><span class="s1">&#39;search:9200&#39;</span>
+<span class="nv">INVENIO_SITE_UI_URL</span><span class="o">=</span><span class="s2">&quot;https://localhost&quot;</span>
+<span class="nv">INVENIO_SITE_API_URL</span><span class="o">=</span><span class="s2">&quot;https://localhost/api&quot;</span>
+<span class="nv">REDIS_DOMAIN</span><span class="o">=</span><span class="s1">&#39;cache:6379&#39;</span>
+<span class="nv">INVENIO_SQLALCHEMY_DATABASE_URI</span><span class="o">=</span><span class="s2">&quot;postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks&quot;</span><span class="w"> </span><span class="c1"># DON&#39;T FORGET TO CHANGE THE PASSWORD HERE</span>
+<span class="nv">POSTGRES_USER</span><span class="o">=</span>kcworks
+<span class="nv">POSTGRES_DB</span><span class="o">=</span>kcworks
+<span class="nv">INVENIO_CSRF_SECRET_SALT</span><span class="o">=</span><span class="s1">&#39;GENERATE_IT_AS_PER_INSTRUCTIONS&#39;</span>
+<span class="nv">INVENIO_SECURITY_LOGIN_SALT</span><span class="o">=</span><span class="s1">&#39;GENERATE_IT_AS_PER_INSTRUCTIONS&#39;</span>
+<span class="nv">INVENIO_SECRET_KEY</span><span class="o">=</span><span class="s1">&#39;SECRET_KEY_VERY_SECRET&#39;</span>
+<span class="nv">COMMONS_API_TOKEN</span><span class="o">=</span>mytoken<span class="w">  </span><span class="c1"># this must be obtained from the Commons administrators - just leave as is</span>
+<span class="nv">COMMONS_SEARCH_API_TOKEN</span><span class="o">=</span>mytoken<span class="w">  </span><span class="c1"># this must be obtained from the Commons administrators - just leave as is</span>
+<span class="nv">INVENIO_DATACITE_PASSWORD</span><span class="o">=</span>myinveniodatacitepassword<span class="w">  </span><span class="c1"># this must be obtained from the Commons administrators - just leave as is</span>
+<span class="nv">API_TOKEN</span><span class="o">=</span>myapitoken<span class="w"> </span><span class="c1"># just leave as is</span>
+<span class="nv">PYTHON_LOCAL_GIT_PACKAGES_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/site/kcworks/dependencies<span class="w"> </span><span class="c1"># set this to site/kcworks/dependencies under the base directory of your cloned repository</span>
+<span class="nv">PYTHON_LOCAL_SITE_PACKAGES_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/.venv/lib/python3.12/site-packages<span class="w"> </span><span class="c1"># you need this for dev</span>
+<span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>PASSWORDHERE
+<span class="nv">PGADMIN_DEFAULT_EMAIL</span><span class="o">=</span>your.email@example.com
+<span class="nv">PGADMIN_DEFAULT_PASSWORD</span><span class="o">=</span>PASSWORDHERE
+<span class="nv">INVENIO_LOCAL_INSTANCE_PATH</span><span class="o">=</span>/opt/invenio/var/instance
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Don’t forget to change the <code class="docutils literal notranslate"><span class="pre">PASSWORDHERE</span></code> values to the actual passwords you use for your admin user and pgAdmin. This includes replacing <code class="docutils literal notranslate"><span class="pre">PASSWORDHERE</span></code> in the <code class="docutils literal notranslate"><span class="pre">INVENIO_SQLALCHEMY_DATABASE_URI</span></code> variable.</p>
+</div>
+<section id="generating-random-secrets">
+<h4>Generating random secrets<a class="headerlink" href="#generating-random-secrets" title="Link to this heading">¶</a></h4>
+<p>Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal by running</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import secrets; print(secrets.token_hex())&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="generating-an-api-token">
+<h4>Generating an API token<a class="headerlink" href="#generating-an-api-token" title="Link to this heading">¶</a></h4>
+<p>Once you are up and running, you will need to replace the dummy <code class="docutils literal notranslate"><span class="pre">API_TOKEN</span></code> variable in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file with a genuine oAuth token that identifies you when you make API requests from your local instance. You can generate a token for yourself in the KC Works admin ui and enter it as the value of the <code class="docutils literal notranslate"><span class="pre">API_TOKEN</span></code> variable.</p>
+</section>
+</section>
+<section id="configuring-your-invenio-private-file">
+<h3>Configuring your <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file<a class="headerlink" href="#configuring-your-invenio-private-file" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file is used to configure the Knowledge Commons Works application. It is a standard python environment file that is used to set the environment variables for the application.</p>
+<p>Here is a list of the variables that you need to set in your <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>cli<span class="o">]</span>
+<span class="nv">services_setup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>True
+<span class="nv">instance_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>/opt/invenio/var/instance
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 
@@ -471,6 +533,15 @@ Do not use the <code class="docutils literal notranslate"><span class="pre">dock
 </li>
 <li><a class="reference internal" href="#full-local-development-setup">Full local development setup</a></li>
 <li><a class="reference internal" href="#controlling-the-kcworks-flask-application">Controlling the KCWorks (Flask) application</a></li>
+<li><a class="reference internal" href="#setting-up-configuration-files">Setting up configuration files</a><ul>
+<li><a class="reference internal" href="#configuring-your-env-file">Configuring your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</a><ul>
+<li><a class="reference internal" href="#generating-random-secrets">Generating random secrets</a></li>
+<li><a class="reference internal" href="#generating-an-api-token">Generating an API token</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuring-your-invenio-private-file">Configuring your <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

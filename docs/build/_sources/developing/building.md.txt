@@ -12,8 +12,9 @@ sphinx-build -b html docs/source docs/build/html
 
 This will build the documentation and save it in the `docs/build/html` directory.
 
-> [!NOTE]
-> The documentation is built automatically and published to the `gh-pages` branch when a change is pushed or PR is merged into the `main` branch.
+```{note}
+The documentation is built automatically and published to the `gh-pages` branch when a change is pushed or PR is merged into the `main` branch.
+```
 
 ## Building JS, CSS, and Other Static Assets
 
@@ -25,8 +26,9 @@ The full build process is handled in KCWorks by the `scripts/build-assets.sh` sc
 
 From the KCWorks source directory, the script runs the following commands:
 
-> [!NOTE]
-> The `invenio webpack` commands are aliases for the `flask webpack` commands. These are defined by the `flask-webpackext` package. But InvenioRDM exposes all flask commands using the `invenio` prefix as an alias for the `flask` prefix.
+```{note}
+The `invenio webpack` commands are aliases for the `flask webpack` commands. These are defined by the `flask-webpackext` package. But InvenioRDM exposes all flask commands using the `invenio` prefix as an alias for the `flask` prefix.
+```
 
 #### 1. ``invenio webpack collect -v``
 
@@ -83,8 +85,9 @@ The BundleTracker plugin in `webpack.config.js` writes the manifest file into th
 
 The resulting `dist` folder, holding the compiled assets, is exposed at the `/static/dist/` URL.
 
-> [!NOTE]
-> In vanilla InvenioRDM, the ``flask webpack buildall`` command is used to run the `create`, `install`, and `build` commands in sequence. It does not run the `collect` command, and does not run the script to symlink the development assets.
+```{note}
+In vanilla InvenioRDM, the ``flask webpack buildall`` command is used to run the `create`, `install`, and `build` commands in sequence. It does not run the `collect` command, and does not run the script to symlink the development assets.
+```
 
 ### Watching files for changes
 
