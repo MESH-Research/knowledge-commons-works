@@ -1,3 +1,5 @@
+from pprint import pformat
+from flask import current_app
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from invenio_records_permissions.policies import BasePermissionPolicy
@@ -55,6 +57,8 @@ def per_field_edit_permission_factory(
         If a list of invenio_records_permissions.generators.Generator objects, the
         generators will be used directly.
 
+        # FIXME: What happens if an empty list of roles is passed in?
+
     Returns:
         A permission policy for the community's restricted fields.
     """
@@ -74,6 +78,10 @@ def per_field_edit_permission_factory(
         )
         role_generators = community_role_generators.copy()
     if roles and isinstance(list(roles)[0], str):
+        current_app.logger.debug(f"Roles: {list(roles)}")
+        current_app.logger.info(
+            f"Role generators: {pformat({r: g for r, g in role_generators.items() if r in roles})}"
+        )
         policy.can_edit_restricted_field = [
             SystemProcess(),
             *[g() for r, g in role_generators.items() if r in roles],
@@ -83,4 +91,7 @@ def per_field_edit_permission_factory(
             SystemProcess(),
             *roles,
         ]
+    current_app.logger.info(
+        f"Policy.can_edit_restricted_field: {pformat(policy.can_edit_restricted_field)}"
+    )
     return policy

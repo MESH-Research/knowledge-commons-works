@@ -223,17 +223,12 @@ class BasePerFieldPermissionsTest(abc.ABC):
                         "award": {
                             "identifiers": [
                                 {
-                                    "identifier": "https://sandbox.zenodo.org/1",
+                                    "identifier": "https://sandbox.kcworks.org/755021",
                                     "scheme": "url",
                                 }
                             ],
-                            "number": "111023",
-                            "title": {
-                                "en": (
-                                    "Launching of the research program on "
-                                    "meaning processing"
-                                )
-                            },
+                            "number": "755021",
+                            "title": {"en": "Award 755021"},
                         },
                     },
                     {
@@ -243,17 +238,27 @@ class BasePerFieldPermissionsTest(abc.ABC):
                         "award": {
                             "identifiers": [
                                 {
-                                    "identifier": "https://sandbox.zenodo.org/2",
+                                    "identifier": "https://sandbox.kcworks.org/755022",
                                     "scheme": "url",
                                 }
                             ],
-                            "number": "111024",
-                            "title": {
-                                "en": (
-                                    "Launching of the research program on "
-                                    "meaning processing 2"
-                                )
-                            },
+                            "number": "755022",
+                            "title": {"en": "Award 755022"},
+                        },
+                    },
+                    {
+                        "funder": {
+                            "id": "00k4n6c33",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755023",
+                                    "scheme": "url",
+                                }
+                            ],
+                            "number": "755023",
+                            "title": {"en": "Award 755023"},
                         },
                     },
                     {
@@ -263,23 +268,12 @@ class BasePerFieldPermissionsTest(abc.ABC):
                         "award": {
                             "identifiers": [
                                 {
-                                    "identifier": "https://sandbox.zenodo.org/3",
+                                    "identifier": "https://sandbox.kcworks.org/755024",
                                     "scheme": "url",
                                 }
-                            ]
-                        },
-                    },
-                    {
-                        "funder": {
-                            "id": "00k4n6c35",
-                        },
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.zenodo.org/4",
-                                    "scheme": "url",
-                                }
-                            ]
+                            ],
+                            "number": "755024",
+                            "title": {"en": "Award 755024"},
                         },
                     },
                 ]
@@ -440,50 +434,68 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
             "default": {
                 "policy": {
                     "metadata.funding.0.funder": ["owner", "manager"],
-                    "metadata.funding[funder.id=00k4n6c34]": ["owner", "manager"],
-                    "metadata.funding.funder.id[00k4n6c35]": ["owner", "manager"],
+                    "metadata.funding[funder.id=00k4n6c33]": ["owner", "manager"],
+                    "metadata.funding.funder.id[00k4n6c34]": ["owner", "manager"],
                 },
             }
         }
 
     @property
     def user_community_role(self) -> str:
-        return "curator"
+        return "reader"
 
     @property
     def data_to_update(self) -> dict:
         return {
             "metadata": {
                 "funding": [
-                    {"funder": {"id": "Updated Funder 1"}},
-                    {"funder": {"id": "Updated Funder 2"}},
                     {
-                        "funder": {
-                            "award": {
-                                "identifiers": [
-                                    {
-                                        "identifier": (
-                                            "https://new-sandbox.zenodo.org/3"
-                                        ),
-                                        "scheme": "url",
-                                    }
-                                ]
-                            }
-                        }
+                        "funder": {"id": "00k4n6c35"},
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755025",
+                                    "scheme": "url",
+                                }
+                            ]
+                        },
+                    },
+                    {
+                        "funder": {"id": "00k4n6c36"},
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755026",
+                                    "scheme": "url",
+                                }
+                            ]
+                        },
                     },
                     {
                         "funder": {
-                            "award": {
-                                "identifiers": [
-                                    {
-                                        "identifier": (
-                                            "https://new-sandbox.zenodo.org/4"
-                                        ),
-                                        "scheme": "url",
-                                    }
-                                ]
-                            }
-                        }
+                            "id": "00k4n6c33",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755023",
+                                    "scheme": "url",
+                                }
+                            ]
+                        },
+                    },
+                    {
+                        "funder": {
+                            "id": "00k4n6c34",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755024",
+                                    "scheme": "url",
+                                }
+                            ]
+                        },
                     },
                 ],
             }
@@ -494,9 +506,9 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
         return {
             "unchanged": ["metadata.funding.0.funder"],
             "changed": {
-                "metadata.funding.1.funder.id": "Updated Funder 2",
+                "metadata.funding.1.funder.id": "00k4n6c36",
                 "metadata.funding.3.award.identifiers.0.identifier": (
-                    "https://new-sandbox.zenodo.org/4"
+                    "https://sandbox.kcworks.org/755024"
                 ),
             },
             "errors": [
@@ -538,10 +550,12 @@ def test_per_field_permissions_find_changed_restricted_fields(
         "policy": {
             "access.files": ["owner", "manager"],
             "metadata.title": ["owner", "manager"],
+            "metadata.additional_titles.1.title": ["owner", "manager"],
             "metadata.description": ["owner"],
             "metadata.creators": ["owner", "manager", "curator"],
             "custom_fields.test_field.id": ["owner", "manager", "curator"],
             "custom_fields.test_field2.items.value": ["owner", "manager", "curator"],
+            "metadata.funding[funder.id=00k4n6c34]": ["owner", "manager", "curator"],
         }
     }
 
@@ -556,7 +570,35 @@ def test_per_field_permissions_find_changed_restricted_fields(
                     {"person_or_org": {"name": "Original Creator"}},
                     {"person_or_org": {"name": "Original Creator 2"}},
                 ],
+                "additional_titles": [
+                    {"title": "Original Additional Title"},
+                    {"title": "Original Additional Title 2"},
+                ],
                 "publication_date": "2023-01-01",  # Unrestricted field
+                "funding": [
+                    {
+                        "funder": {"id": "00k4n6c33"},
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755023",
+                                    "scheme": "url",
+                                },
+                            ]
+                        },
+                    },
+                    {
+                        "funder": {"id": "00k4n6c34"},
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755024",
+                                    "scheme": "url",
+                                },
+                            ]
+                        },
+                    },
+                ],
             },
             "custom_fields": {
                 "test_field": {
@@ -581,6 +623,34 @@ def test_per_field_permissions_find_changed_restricted_fields(
             "description": "Updated Description",
             "creators": [{"person_or_org": {"name": "Original Creator"}}],  # 1 dropped
             "publication_date": "2024-01-01",  # Changed but unrestricted
+            "additional_titles": [
+                {"title": "Updated Additional Title"},  # changed but unrestricted
+                {"title": "Updated Additional Title 2"},  # changed and restricted
+            ],
+            "funding": [
+                {
+                    "funder": {"id": "00k4n6c33"},
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755023",
+                                "scheme": "url",
+                            },
+                        ]
+                    },
+                },
+                {
+                    "funder": {"id": "00k4n6c31"},
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755021",
+                                "scheme": "url",
+                            },
+                        ]
+                    },
+                },
+            ],
         },
         "custom_fields": {
             "test_field": {
@@ -599,19 +669,48 @@ def test_per_field_permissions_find_changed_restricted_fields(
     }
 
     # Test finding changed restricted fields
-    changed_fields = PerFieldEditPermissionsComponent._find_changed_restricted_fields(
-        record, new_data, community_config
+    changed_restricted_fields = (
+        PerFieldEditPermissionsComponent._find_changed_restricted_fields(
+            record, new_data, community_config
+        )
     )
 
     # Assert that the correct fields are being returned
-    assert len(changed_fields) == 6
-    assert "access" in changed_fields
-    assert "metadata|title" in changed_fields
-    assert "metadata|description" in changed_fields
-    assert "metadata|creators|1" in changed_fields
-    assert "custom_fields|test_field|id" in changed_fields
-    assert "custom_fields|test_field2|items|1|value" in changed_fields
+    assert len(changed_restricted_fields) == 9
+    assert ("access|files", "access|files") in changed_restricted_fields
+    assert ("metadata|title", "metadata|title") in changed_restricted_fields
+    assert ("metadata|description", "metadata|description") in changed_restricted_fields
+    assert ("metadata|creators|1", "metadata|creators") in changed_restricted_fields
+    assert (
+        "metadata|additional_titles|1|title",
+        "metadata|additional_titles|1|title",
+    ) in changed_restricted_fields
+    assert (
+        "custom_fields|test_field|id",
+        "custom_fields|test_field|id",
+    ) in changed_restricted_fields
+    assert (
+        "custom_fields|test_field2|items|1|value",
+        "custom_fields|test_field2|items|value",
+    ) in changed_restricted_fields
+    assert (
+        "metadata|funding|1|funder|id",
+        "metadata|funding[funder|id=00k4n6c34]",
+    ) in changed_restricted_fields
+    assert (
+        "metadata|funding|1|award|identifiers|0|identifier",
+        "metadata|funding[funder|id=00k4n6c34]",
+    ) in changed_restricted_fields
 
     # Assert that the unrestricted fields are not being returned
-    assert "metadata|publication_date" not in changed_fields
-    assert "custom_fields|test_field|value" not in changed_fields
+    assert not any(
+        f for f in changed_restricted_fields if f[0] == "metadata|publication_date"
+    )
+    assert not any(
+        f for f in changed_restricted_fields if f[0] == "custom_fields|test_field|value"
+    )
+    assert not any(
+        f
+        for f in changed_restricted_fields
+        if f[0] == "metadata|additional_titles|0|title"
+    )

@@ -144,6 +144,7 @@ plugins = [
   "tests.fixtures.vocabularies.community_types",
   "tests.fixtures.vocabularies.date_types",
   "tests.fixtures.vocabularies.descriptions",
+  "tests.fixtures.vocabularies.funding_and_awards",
   "tests.fixtures.vocabularies.languages",
   "tests.fixtures.vocabularies.licenses",
   "tests.fixtures.vocabularies.resource_types",

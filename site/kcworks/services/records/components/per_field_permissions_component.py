@@ -1,20 +1,27 @@
 from pprint import pformat
 from flask import current_app
 from flask_principal import Identity
+from invenio_access.permissions import system_identity
 from invenio_administration.generators import Administration
+from invenio_rdm_records.proxies import current_rdm_records_service as record_service
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from invenio_records_permissions.generators import SystemProcess
 from invenio_records_resources.services.records.components.base import ServiceComponent
 from kcworks.services.records.permissions import per_field_edit_permission_factory
-from kcworks.utils import get_changed_fields, get_value_by_path
+from kcworks.utils import (
+    get_changed_fields,
+    get_value_by_path,
+    matching_list_parts_skip_digits,
+)
 import re
-from typing import Union
 
 
 class PerFieldEditPermissionsComponent(ServiceComponent):
     """
     A service component that applies per-field permissions to records.
+
+    Intended for use with the RDMRecordsService.
     """
 
     @staticmethod
@@ -57,13 +64,44 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
 
     @staticmethod
     def _find_changed_restricted_fields(
-        record: Union[RDMDraft, RDMRecord], data: dict, community_config: dict
-    ) -> list[str]:
+        published_data: dict, new_data: dict, community_config: dict
+    ) -> list[tuple[str, str]]:
         """
         Find the changed restricted fields.
 
         Returns a list of field paths for values that have been changed and are
         restricted in the per-field permissions configuration.
+
+        Args:
+            published_data (dict): The data of the previous published version of the
+                record.
+            new_data (dict): The data of the new draft version of the record.
+            community_config (dict): The per-field permissions configuration for the
+                community.
+
+        Expects the restricted fields to be in the format "metadata|funding" with
+        either a bar or a dot as the delimiter. Returned fields will always use a bar
+        as the delimiter.
+
+        With list fields, any member of the list is restricted if no specific index
+        is given (e.g., "metadata|funding"). If a specific index is given, only that
+        index is restricted (e.g., "metadata|funding|0") and other indices are not
+        restricted. This is to allow for the possibility of restricting specific
+        members of a list field while allowing other members to be edited.
+
+        If square brackets are placed following the final field name, the value
+        inside the brackets is used to determine whether the field is restricted,
+        based on the starting value of the field. If a simple value is provided,
+        without an equals sign, the field will be restricted if the starting value
+        matches the starting value for the field. For example,
+        "metadata|funding|funder[neh]" would match "metadata|funding|0|funder"
+        *only* if the starting value of "metadata|funding|0|funder" is "neh".
+
+        If the square brackets contain an equals sign, the field will be restricted
+        based on the value of a subfield. For example, "metadata|funding[funder|id=neh]"
+        would match any field path for "metadata|funding" ("metadata|funding|0|funder",
+        "metadata|funding|1|award", "metadata|funding", etc.) but will match *only* if
+        the starting value of "metadata|funding|0|funder|id" is "neh".
 
         Examples:
             When "metadata|funding" is restricted:
@@ -80,47 +118,150 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
                 - Will match "metadata|funding|0|funder"
                 - Will match "metadata|funding|1|funder"
                 - Will NOT match "metadata|funding|0|award"
+
+            When "metadata|funding|funder|id[neh]" is restricted:
+                - Will match "metadata|funding|0|funder" *only* if the starting value of
+                  "metadata|funding|0|funder" is "neh"
+                - Will NOT match "metadata|funding|0|award"
+
+            When "metadata|funding[funder|id=neh]" is restricted:
+                - Will match "metadata|funding" ONLY if the starting value of
+                  "metadata|funding|0|funder|id" is "neh"
+                - Will NOT match "metadata|funding|1|funder" if the starting value of
+                  "metadata|funding|1|funder|id" is "neh"
+                - Will match "metadata|funding|0|award" if the starting value of
+                  "metadata|funding|0|funder|id" is "neh"
+
+        Returns:
+            A list of tuples, each containing a field path that has changed and
+            the restricted field path that matches it. If no restricted fields
+            are found, or no changes appear in restricted fields, returns an empty
+            list.
         """
         restricted_fields = [
             k.replace(".", "|") for k in community_config.get("policy", {}).keys()
         ]
         current_app.logger.info(f"Restricted fields: {restricted_fields}")
-        changed_fields = get_changed_fields(record, data, separator="|")
+        changed_fields = get_changed_fields(published_data, new_data, separator="|")
         current_app.logger.info(f"Changed fields: {changed_fields}")
-        current_app.logger.info(f"Record: {pformat(data)}")
+        current_app.logger.info(f"New data: {pformat(new_data)}")
+
+        def check_condition(
+            path: str,
+            condition: str,
+        ) -> bool:
+            result = True
+            current_app.logger.info(f"Checking conditions: {condition}")
+
+            if condition and "=" in condition:
+                current_app.logger.info(f"Checking condition: {condition}")
+                subfield, value = condition.split("=")
+                full_check_path = path + "|" + subfield
+                actual_value = get_value_by_path(
+                    published_data, full_check_path, separator="|"
+                )
+                current_app.logger.info(f"Actual value: {actual_value}")
+                current_app.logger.info(f"Value: {value}")
+                if str(actual_value) != value:
+                    current_app.logger.info(f"Condition failed: {condition}")
+                    result = False
+                current_app.logger.info(f"Condition passed: {condition}")
+            elif condition:
+                # Handle direct value condition (e.g., "neh")
+                actual_value = get_value_by_path(published_data, path, separator="|")
+                if str(actual_value) != condition:
+                    current_app.logger.info(f"Condition failed: {condition}")
+                    result = False
+                current_app.logger.info(f"Condition passed: {condition}")
+
+            return result
+
+        def fields_match(
+            changed_field: str, restricted_field: str, matched_parts: list[str] = []
+        ) -> bool:
+            """
+            Check if the changed field matches the restricted field.
+
+            Returns True if the fields match, False otherwise.
+            """
+            if not matched_parts:
+                matched_parts = matching_list_parts_skip_digits(
+                    changed_field.split("|"), restricted_field.split("|")
+                )
+            return (
+                changed_field.startswith(restricted_field + "|")
+                or changed_field == restricted_field
+                or matched_parts != []
+            )
+
+        def separate_conditional_fields(
+            restricted_fields: list[str],
+        ) -> tuple[list[str], list[tuple[str, str, str]]]:
+            """
+            Separate the fields with bracketed conditions from those without.
+
+            Returns a tuple of two lists: the first is a list of path strings without
+            bracketed conditions, and the second is a list of tuples, each containing
+            the base part of the path, the conditions, and the full restricted path.
+            """
+            restricted_fields_with_conditions = []
+            simple_restricted_fields = []
+            for restricted_field in restricted_fields:
+                bracket_section_match = re.match(
+                    r"^(.*?)(?:\[(.*?)\])", restricted_field
+                )
+                current_app.logger.info(
+                    f"Bracket section match: {bracket_section_match}"
+                )
+                if bracket_section_match:
+                    base_part, conditions = bracket_section_match.groups()
+                    restricted_fields_with_conditions.append(
+                        (base_part, conditions, restricted_field)
+                    )
+                else:
+                    simple_restricted_fields.append(restricted_field)
+            current_app.logger.info(
+                f"Restricted fields with conditions: {restricted_fields_with_conditions}"
+            )
+            current_app.logger.info(
+                f"Simple restricted fields: {simple_restricted_fields}"
+            )
+            return simple_restricted_fields, restricted_fields_with_conditions
+
+        simple_restricted_fields, restricted_fields_with_conditions = (
+            separate_conditional_fields(restricted_fields)
+        )
 
         changed_restricted_fields = []
         for changed_field in changed_fields:
             # For each changed field, check if it matches any restricted field pattern
-            for restricted_field in restricted_fields:
-                # If the restricted field contains a specific index (e.g. metadata|funding|0)
-                if "|" + restricted_field.split("|")[-1].isdigit():
-                    # Must match exactly up to the index
-                    if changed_field.startswith(restricted_field + "|"):
-                        changed_restricted_fields.append(changed_field)
-                        break
-                else:
-                    # For non-indexed fields, match if:
-                    # 1. The changed field starts with the restricted field
-                    # 2. The changed field equals the restricted field
-                    # 3. The changed field matches the restricted field pattern ignoring indices
-                    changed_parts = changed_field.split("|")
-                    restricted_parts = restricted_field.split("|")
+            for restricted_field in simple_restricted_fields:
+                if fields_match(changed_field, restricted_field):
+                    changed_restricted_fields.append((changed_field, restricted_field))
+                    continue
+            for (
+                base_part,
+                condition,
+                restricted_field,
+            ) in restricted_fields_with_conditions:
+                changed_field_parts = changed_field.split("|")
+                matched_parts = matching_list_parts_skip_digits(
+                    changed_field_parts, base_part.split("|")
+                )
+                # Account for the situation where the endpoint of the matched parts
+                # is a list field, but the restricted field provided no digit index.
+                if (
+                    len(changed_field_parts) > len(matched_parts)
+                    and changed_field_parts[len(matched_parts)].isdigit()
+                ):
+                    matched_parts.append(changed_field_parts[len(matched_parts)])
 
-                    if (
-                        changed_field.startswith(restricted_field + "|")
-                        or changed_field == restricted_field
-                        or (
-                            len(changed_parts) >= len(restricted_parts)
-                            and all(
-                                c == r
-                                for c, r in zip(changed_parts, restricted_parts)
-                                if not r.isdigit()
-                            )
+                if fields_match(changed_field, base_part, matched_parts=matched_parts):
+                    if check_condition("|".join(matched_parts), condition):
+                        changed_restricted_fields.append(
+                            (changed_field, restricted_field)
                         )
-                    ):
-                        changed_restricted_fields.append(changed_field)
-                        break
+                        continue
 
         current_app.logger.info(
             f"Changed restricted fields: {changed_restricted_fields}"
@@ -164,12 +305,18 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
                 # have to get the previous published version to compare against,
                 # since the draft may already have been updated with the new values
 
-                previous_published_version = self.service.record_cls.get_record(
-                    record.versions.latest_id
+                # previous_published_version_rec = self.service.record_cls.get_record(
+                #     record.versions.latest_id
+                # )
+                previous_published_version_rec = (
+                    RDMRecord.get_latest_published_by_parent(record.parent)
+                )
+                previous_published_version = record_service.read(
+                    system_identity, id_=previous_published_version_rec.pid.pid_value
                 )
                 previous_published_data = {
                     k: v
-                    for k, v in previous_published_version.dumps().items()
+                    for k, v in previous_published_version.to_dict().items()
                     if k in ["access", "metadata", "custom_fields", "pids"]
                 }
                 changed_restricted_fields = (
@@ -181,12 +328,26 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
                     f"Changed restricted fields: {changed_restricted_fields}"
                 )
 
-                for field in changed_restricted_fields:
+                for field, key in changed_restricted_fields:
+                    current_app.logger.info(f"Checking field: {field}")
+                    policy = community_config.get("policy")
+                    current_app.logger.info(f"Policy: {pformat(policy)}")
+                    if isinstance(policy, dict):
+                        roles: list = policy.get(key, []) or policy.get(
+                            key.replace("|", "."), []
+                        )
+                    else:
+                        roles = policy
+                    current_app.logger.info(f"Allowed roles: {pformat(roles)}")
                     community_field_policy = per_field_edit_permission_factory(
                         community_id=record.parent.communities.default.id,
-                        roles=community_config.get("policy", {})
-                        .get(field, {})
-                        .values(),
+                        roles=roles,
+                    )
+                    current_app.logger.info(
+                        f"Community field policy allows: {community_field_policy.allows(identity)}"
+                    )
+                    current_app.logger.info(
+                        f"User roles: {pformat(list(identity.provides))}"
                     )
                     if not community_field_policy.allows(identity):
                         current_app.logger.info(

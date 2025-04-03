@@ -4,6 +4,7 @@ from flask import current_app
 from invenio_accounts.models import User
 from typing import Optional, Union, Any
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
+from invenio_rdm_records.records.systemfields.access.field.record import RecordAccess
 
 
 def update_nested_dict(starting_value: Any, updates: Any) -> Any:
@@ -112,7 +113,10 @@ def get_changed_fields(
         if hasattr(existing_data, "custom_fields"):
             existing_data_dict["custom_fields"] = existing_data.custom_fields
         if hasattr(existing_data, "access"):
-            existing_data_dict["access"] = existing_data.access
+            if isinstance(existing_data.access, RecordAccess):
+                existing_data_dict["access"] = existing_data.access.dump()
+            else:
+                existing_data_dict["access"] = existing_data.access
         current_app.logger.info(f"Existing data: {pformat(existing_data_dict)}")
         existing_data = existing_data_dict
 
@@ -127,7 +131,7 @@ def get_changed_fields(
 
     if not existing_data and current_field_path:
         return [current_field_path]
-    if isinstance(new_data, dict):
+    if isinstance(new_data, dict) and isinstance(existing_data, dict):
         if not current_field_path:
             existing_data = {
                 k: v
@@ -209,3 +213,38 @@ def get_value_by_path(data: dict, path: str, separator: str = ".") -> Any:
         path_segments,
         data,
     )
+
+
+def matching_list_parts_skip_digits(listA: list, listB: list) -> list:
+    """
+    Check if the lists begin with a matching set of elements, ignoring digits.
+
+    Assumes that listB may lack digit elements that listA has, as when listB
+    is a field path that omits indices for list fields. ListA is expected to
+    have the indices.
+
+    Returns the list of elements that match the restricted parts.
+    If the lists do not match, returns an empty list.
+    """
+    i = j = 0
+    while i < len(listA) and j < len(listB):
+        # If restricted part is a digit, it must match exactly
+        if listB[j].isdigit():
+            if not listA[i].isdigit() or listA[i] != listB[j]:
+                return []
+            i += 1
+            j += 1
+        # If changed part is a digit but restricted isn't, skip the digit
+        elif listA[i].isdigit():
+            i += 1
+        # Otherwise compare the parts normally
+        else:
+            if listA[i] != listB[j]:
+                return []
+            i += 1
+            j += 1
+    # Make sure we've used all restricted parts
+    if j == len(listB):
+        return listA[:i]
+    else:
+        return []

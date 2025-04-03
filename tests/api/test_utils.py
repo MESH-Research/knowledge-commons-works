@@ -191,6 +191,76 @@ def test_utils_update_nested_dict(starting_dict, updates, expected):
                     "description": "Original Description",
                     "creators": [{"person_or_org": {"name": "Original Creator"}}],
                     "publication_date": "2023-01-01",
+                    "funding": [
+                        {
+                            "funder": {
+                                "id": "00k4n6c31",
+                            },
+                            "award": {
+                                "identifiers": [
+                                    {
+                                        "identifier": (
+                                            "https://sandbox.kcworks.org/755021"
+                                        ),
+                                        "scheme": "url",
+                                    }
+                                ],
+                                "number": "755021",
+                                "title": {"en": "Award 755021"},
+                            },
+                        },
+                        {
+                            "funder": {
+                                "id": "00k4n6c32",
+                            },
+                            "award": {
+                                "identifiers": [
+                                    {
+                                        "identifier": (
+                                            "https://sandbox.kcworks.org/755022"
+                                        ),
+                                        "scheme": "url",
+                                    }
+                                ],
+                                "number": "755022",
+                                "title": {"en": "Award 755022"},
+                            },
+                        },
+                        {
+                            "funder": {
+                                "id": "00k4n6c33",
+                            },
+                            "award": {
+                                "identifiers": [
+                                    {
+                                        "identifier": (
+                                            "https://sandbox.kcworks.org/755023"
+                                        ),
+                                        "scheme": "url",
+                                    }
+                                ],
+                                "number": "755023",
+                                "title": {"en": "Award 755023"},
+                            },
+                        },
+                        {
+                            "funder": {
+                                "id": "00k4n6c34",
+                            },
+                            "award": {
+                                "identifiers": [
+                                    {
+                                        "identifier": (
+                                            "https://sandbox.kcworks.org/755024"
+                                        ),
+                                        "scheme": "url",
+                                    }
+                                ],
+                                "number": "755024",
+                                "title": {"en": "Award 755024"},
+                            },
+                        },
+                    ],
                 },
                 "custom_fields": {
                     "test_field": {
@@ -205,6 +275,71 @@ def test_utils_update_nested_dict(starting_dict, updates, expected):
                     "description": "Original Description",
                     "creators": [{"person_or_org": {"name": "New Creator"}}],
                     "publication_date": "2023-01-01",
+                    "funding": [
+                        {
+                            "award": {
+                                "identifiers": [
+                                    {
+                                        "identifier": (
+                                            "https://sandbox.kcworks.org/755025"
+                                        ),
+                                        "scheme": "url",
+                                    }
+                                ],
+                                "number": "755021",
+                                "title": {"en": "Award 755021"},
+                                "funder": {
+                                    "id": "00k4n6c35",
+                                    "name": "Funder 00k4n6c31",
+                                },
+                            },
+                        },
+                        {
+                            "award": {
+                                "identifiers": [
+                                    {
+                                        "identifier": (
+                                            "https://sandbox.kcworks.org/755026"
+                                        ),
+                                        "scheme": "url",
+                                    }
+                                ],
+                                "number": "755022",
+                                "title": {"en": "Award 755022"},
+                            },
+                            "funder": {"id": "00k4n6c36", "name": "Funder 00k4n6c32"},
+                        },
+                        {
+                            "award": {
+                                "identifiers": [
+                                    {
+                                        "identifier": (
+                                            "https://sandbox.kcworks.org/755023"
+                                        ),
+                                        "scheme": "url",
+                                    }
+                                ],
+                                "number": "755023",
+                                "title": {"en": "Award 755023"},
+                            },
+                            "funder": {"id": "00k4n6c33", "name": "Funder 00k4n6c33"},
+                        },
+                        {
+                            "award": {
+                                "identifiers": [
+                                    {
+                                        "identifier": (
+                                            "https://sandbox.kcworks.org/755024"
+                                        ),
+                                        "scheme": "url",
+                                    }
+                                ],
+                                "number": "755024",
+                                "title": {"en": "Award 755024"},
+                            },
+                            "funder": {"id": "00k4n6c34", "name": "Funder 00k4n6c34"},
+                        },
+                    ],
                 },
                 "custom_fields": {
                     "test_field": {
@@ -215,9 +350,18 @@ def test_utils_update_nested_dict(starting_dict, updates, expected):
             },
             "|",
             [
-                "metadata|title",
-                "metadata|creators|0|person_or_org|name",
+                "access",
                 "custom_fields|test_field|id",
+                "metadata|creators|0|person_or_org|name",
+                "metadata|funding|0|award|funder",
+                "metadata|funding|0|award|identifiers|0|identifier",
+                "metadata|funding|0|funder",
+                "metadata|funding|1|award|identifiers|0|identifier",
+                "metadata|funding|1|funder|id",
+                "metadata|funding|1|funder|name",
+                "metadata|funding|2|funder|name",
+                "metadata|funding|3|funder|name",
+                "metadata|title",
             ],
             True,
         ),
