@@ -198,8 +198,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
@@ -214,6 +213,8 @@
 <li class="toctree-l2"><a class="reference internal" href="workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="infrastructure.html">KCWorks Infrastructure</a></li>
 </ul>
 </li>
@@ -702,6 +703,17 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
 <h2>InvenioRDM Record Objects<a class="headerlink" href="#inveniordm-record-objects" title="Link to this heading">¶</a></h2>
 <section id="api-level-record-objects">
 <h3>API-level Record Objects<a class="headerlink" href="#api-level-record-objects" title="Link to this heading">¶</a></h3>
+<section id="persistentidentifier-invenio-records-api-persistentidentifier">
+<h4><code class="docutils literal notranslate"><span class="pre">PersistentIdentifier</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_records.api.PersistentIdentifier</span></code>)<a class="headerlink" href="#persistentidentifier-invenio-records-api-persistentidentifier" title="Link to this heading">¶</a></h4>
+<p>An object representing a persistent identifier for a record. It has the following properties:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pid_value</span></code>: The value of the persistent identifier.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pid_type</span></code>: The type of the persistent identifier.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">status</span></code>: The status of the persistent identifier.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">obj_type</span></code>: The type of the object the persistent identifier is for.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">object_uuid</span></code>: The UUID of the database object the persistent identifier is for.</p></li>
+</ul>
+</section>
 <section id="rdmdraft-invenio-rdm-records-records-api-rdmdraft">
 <h4><code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code>)<a class="headerlink" href="#rdmdraft-invenio-rdm-records-records-api-rdmdraft" title="Link to this heading">¶</a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> object is a subclass of the <code class="docutils literal notranslate"><span class="pre">Record</span></code> object (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records.api.Record</span></code>) and includes all of the submitted metadata values, along with the keys:</p>
@@ -857,7 +869,7 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
 <li><p>‘model_cls’: The SQLAlchemy model class providing the ORM for the RDMRecord class</p></li>
 <li><p>‘next_latest_published_record_by_parent’: The next latest published record (published version) that shares the same parent record</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">parent</span></code>: The parent record for the RDMRecord instance</p></li>
-<li><p>‘pid’: The PID for the RDMRecord instance. This is not the same as the record’s <code class="docutils literal notranslate"><span class="pre">id</span></code>, which is shared by all versions of the record (both draft and published). It is the unique UUID for the RDMRecord instance.</p></li>
+<li><p>‘pid’: The PIDs for the RDMRecord instance. This is a <code class="docutils literal notranslate"><span class="pre">PersistentIdentifier</span></code> object with a <code class="docutils literal notranslate"><span class="pre">pid_value</span></code> property which is shared by all versions of the record (both draft and published). It also has an <code class="docutils literal notranslate"><span class="pre">object_uuid</span></code> property which is the unique UUID for the database record behind this version of the record.</p></li>
 <li><p>‘relations’: The ORM relations for the RDMRecord instance</p></li>
 <li><p>‘revisions’: The revisions for the RDMRecord instance</p></li>
 <li><p>‘schema’: The schema used to validate the RDMRecord instance prior to publication</p></li>
@@ -1493,6 +1505,7 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
 </li>
 <li><a class="reference internal" href="#inveniordm-record-objects">InvenioRDM Record Objects</a><ul>
 <li><a class="reference internal" href="#api-level-record-objects">API-level Record Objects</a><ul>
+<li><a class="reference internal" href="#persistentidentifier-invenio-records-api-persistentidentifier"><code class="docutils literal notranslate"><span class="pre">PersistentIdentifier</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_records.api.PersistentIdentifier</span></code>)</a></li>
 <li><a class="reference internal" href="#rdmdraft-invenio-rdm-records-records-api-rdmdraft"><code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code>)</a><ul>
 <li><a class="reference internal" href="#creating-an-rdmdraft-object">Creating an RDMDraft object</a></li>
 </ul>

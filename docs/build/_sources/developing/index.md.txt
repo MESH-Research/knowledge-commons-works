@@ -9,5 +9,6 @@ workflow.md
 testing.md
 how_tos.md
 building.md
+stats.md
 infrastructure.md
 ```

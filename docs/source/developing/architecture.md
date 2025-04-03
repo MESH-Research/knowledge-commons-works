@@ -351,6 +351,16 @@ Note that the order of the components in the list is important, since the compon
 
 ### API-level Record Objects
 
+#### `PersistentIdentifier` (`invenio_records.api.PersistentIdentifier`)
+
+An object representing a persistent identifier for a record. It has the following properties:
+
+- `pid_value`: The value of the persistent identifier.
+- `pid_type`: The type of the persistent identifier.
+- `status`: The status of the persistent identifier.
+- `obj_type`: The type of the object the persistent identifier is for.
+- `object_uuid`: The UUID of the database object the persistent identifier is for.
+
 #### `RDMDraft` (`invenio_rdm_records.records.api.RDMDraft`)
 
 The `RDMDraft` object is a subclass of the `Record` object (defined in `invenio_records.api.Record`) and includes all of the submitted metadata values, along with the keys:
@@ -509,7 +519,7 @@ The object also has the following properties that are not part of the metadata a
 - 'model_cls': The SQLAlchemy model class providing the ORM for the RDMRecord class
 - 'next_latest_published_record_by_parent': The next latest published record (published version) that shares the same parent record
 - `parent`: The parent record for the RDMRecord instance
-- 'pid': The PID for the RDMRecord instance. This is not the same as the record's `id`, which is shared by all versions of the record (both draft and published). It is the unique UUID for the RDMRecord instance.
+- 'pid': The PIDs for the RDMRecord instance. This is a `PersistentIdentifier` object with a `pid_value` property which is shared by all versions of the record (both draft and published). It also has an `object_uuid` property which is the unique UUID for the database record behind this version of the record.
 - 'relations': The ORM relations for the RDMRecord instance
 - 'revisions': The revisions for the RDMRecord instance
 - 'schema': The schema used to validate the RDMRecord instance prior to publication
