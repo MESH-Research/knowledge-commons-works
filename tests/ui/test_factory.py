@@ -1,15 +1,20 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2023-2024, MESH Research
+#
+# Knowledge Commons Works is free software; you can redistribute it and/or
+# modify it under the terms of the MIT License; see LICENSE file for more
+# details.
+
+"""UI tests for Knowledge Commons Works."""
+
 from pprint import pprint
+
 import pytest
-
-
-def test_sample(running_app):
-    assert True
 
 
 @pytest.mark.skip(reason="Not implemented")
 def test_frontpage(running_app, client):
-    # pprint(dir(base_client))
-    # pprint(dir(base_app))
+    """Test the frontpage view."""
     response = client.get("/")
     pprint(response.response)
     assert response.status_code == 200

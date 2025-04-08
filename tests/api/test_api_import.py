@@ -1,4 +1,18 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Integration tests for the API record import."""
+
 import copy
+import json
+import re
+import sys
+from pathlib import Path
+from pprint import pformat
+
 from flask_login import login_user
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
@@ -9,34 +23,28 @@ from invenio_communities.utils import load_community_needs
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_record_importer_kcworks.proxies import current_record_importer_service
 from invenio_record_importer_kcworks.record_loader import RecordLoader
-from invenio_record_importer_kcworks.types import (
-    FileData,
-    LoaderResult,
-)
+from invenio_record_importer_kcworks.types import FileData, LoaderResult
 from invenio_vocabularies.proxies import current_service as current_vocabulary_service
 from invenio_vocabularies.records.api import Vocabulary
-import json
-from pathlib import Path
-from pprint import pformat
-import re
-import sys
-from typing import Optional
+
 from ..fixtures.communities import make_community_member
 from ..fixtures.files import file_md5
 from ..fixtures.records import TestRecordMetadata, TestRecordMetadataWithFiles
 from ..helpers.sample_records import (
-    sample_metadata_chapter_pdf,
     sample_metadata_chapter2_pdf,
-    # sample_metadata_chapter3_pdf,
-    # sample_metadata_chapter4_pdf,
-    # sample_metadata_chapter5_pdf,
-    # sample_metadata_conference_proceedings_pdf,
-    # sample_metadata_interview_transcript_pdf,
-    sample_metadata_journal_article_pdf,
+    sample_metadata_chapter_pdf,
     sample_metadata_journal_article2_pdf,
-    # sample_metadata_thesis_pdf,
-    # sample_metadata_white_paper_pdf,
+    sample_metadata_journal_article_pdf,
 )
+
+# TODO: Add tests for the other sample records
+# sample_metadata_chapter3_pdf,
+# sample_metadata_chapter4_pdf,
+# sample_metadata_chapter5_pdf,
+# sample_metadata_conference_proceedings_pdf,
+# sample_metadata_interview_transcript_pdf,
+# sample_metadata_thesis_pdf,
+# sample_metadata_white_paper_pdf,
 
 
 class BaseImportLoaderTest:
@@ -249,6 +257,7 @@ class BaseImportLoaderTest:
         celery_worker,
         mailbox,
     ):
+        """Test that a record can be imported via the API."""
         app = running_app.app
 
         # find the resource type id for "textDocument"
@@ -357,9 +366,10 @@ class BaseImportLoaderTest:
 
 
 class TestImportLoaderJArticle(BaseImportLoaderTest):
+    """Test importing a journal article."""
 
     @property
-    def metadata_source(self):
+    def metadata_source(self):  # noqa: D102
         return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
 
 
@@ -391,14 +401,13 @@ class TestImportLoaderJArticleErrorTitle(BaseImportLoaderErrorTest):
     """Test importing a journal article with an empty title."""
 
     @property
-    def metadata_source(self):
+    def metadata_source(self):  # noqa: D102
         return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
 
-    def modify_metadata(self, test_metadata: TestRecordMetadata):
+    def modify_metadata(self, test_metadata: TestRecordMetadata):  # noqa: D102
         test_metadata.update_metadata({"metadata|title": ""})
 
-    def check_result_errors(self, result: LoaderResult):
-        """Check the errors of the result."""
+    def check_result_errors(self, result: LoaderResult):  # noqa: D102
         assert result.errors == [
             {
                 "validation_error": {
@@ -412,10 +421,10 @@ class TestImportLoaderJArticleErrorIDScheme(BaseImportLoaderErrorTest):
     """Test importing a journal article with an empty title."""
 
     @property
-    def metadata_source(self):
+    def metadata_source(self):  # noqa: D102
         return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
 
-    def modify_metadata(self, test_metadata: TestRecordMetadata):
+    def modify_metadata(self, test_metadata: TestRecordMetadata):  # noqa: D102
         test_metadata.update_metadata(
             {
                 "metadata|identifiers": [
@@ -425,8 +434,7 @@ class TestImportLoaderJArticleErrorIDScheme(BaseImportLoaderErrorTest):
             }
         )
 
-    def check_result_errors(self, result: LoaderResult):
-        """Check the errors of the result."""
+    def check_result_errors(self, result: LoaderResult):  # noqa: D102
         assert result.errors == [
             {
                 "validation_error": {
@@ -466,6 +474,7 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
         celery_worker,
         mailbox,
     ):
+        """Test importing a record with files."""
         app = running_app.app
 
         # find the resource type id for "textDocument"
@@ -615,9 +624,7 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
         assert result.source_id
 
         # now check the record in the database/search
-        rdm_record = records_service.read(
-            system_identity, id_=record_created_id
-        ).to_dict()
+        records_service.read(system_identity, id_=record_created_id).to_dict()
         expected_record_files = copy.deepcopy(test_metadata.published["files"])
 
         # FIXME: There's an inconsistency in file metadata between test runs
@@ -685,8 +692,10 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
 
 
 class TestImportLoaderWithFilesJArticle(BaseImportLoaderWithFilesTest):
+    """Test importing a journal article with files."""
+
     @property
-    def metadata_source(self):
+    def metadata_source(self):  # noqa: D102
         return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
 
 
@@ -694,14 +703,14 @@ class BaseImportServiceTest:
     """Base class for testing record imports with the service."""
 
     @property
-    def by_api(self):
+    def by_api(self):  # noqa: D102
         return False
 
     @property
-    def community_access_override(self):
+    def community_access_override(self):  # noqa: D102
         return {}
 
-    def make_submitter(self, user_factory, community_id):
+    def make_submitter(self, user_factory, community_id):  # noqa: D102
         return None, None
 
     @property
@@ -715,7 +724,6 @@ class BaseImportServiceTest:
 
         The default defined here assumes two input records with two files each.
         """
-
         file_paths = [
             Path(__file__).parent.parent.parent
             / "tests/helpers/sample_files/sample.pdf",
@@ -809,7 +817,7 @@ class BaseImportServiceTest:
         return [[]] * len(self.metadata_sources)
 
     def check_result_status(
-        self, import_results: dict, status_code: Optional[int]
+        self, import_results: dict, status_code: int | None
     ) -> bool:
         """Check the status of the import results.
 
@@ -819,7 +827,7 @@ class BaseImportServiceTest:
         test execution if the status reflects a response that will lack
         a body with data or errors (e.g., 403).
         """
-        if not any([e for e in self.expected_errors if e]):
+        if not any(e for e in self.expected_errors if e):
             if self.by_api:
                 assert status_code == 201
             assert len(import_results["data"]) == len(self.metadata_sources)
@@ -858,7 +866,8 @@ class BaseImportServiceTest:
         }
 
     def check_result_errors(self, import_results: dict) -> None:
-        if not any([e for e in self.expected_errors if e]):
+        """Check the errors of the import results."""
+        if not any(e for e in self.expected_errors if e):
             assert import_results.get("errors") == []
             return
         error_item_indices = [
@@ -927,7 +936,9 @@ class BaseImportServiceTest:
                     "owned_by"
                 ][1:]
                 other_actual_owners = actual_metadata["parent"]["access"]["grants"]
-                for oe, oa in zip(other_expected_owners, other_actual_owners):
+                for oe, oa in zip(
+                    other_expected_owners, other_actual_owners, strict=False
+                ):
                     user = current_accounts.datastore.get_user_by_email(oe["email"])
                     assert oa["subject"]["id"] == str(user.id)
                     assert user.email == oe["email"]
@@ -1130,6 +1141,7 @@ class BaseImportServiceTest:
         mailbox,
         mocker,
     ) -> None:
+        """Check the data of the import results."""
         assert self.app
         expected_error_count = len([e for e in self.expected_errors if e])
         if expected_error_count > 0:
@@ -1167,7 +1179,7 @@ class BaseImportServiceTest:
         file_streams: list,
         token: str,
         metadata_source_objects: list[TestRecordMetadataWithFiles],
-    ) -> tuple[Optional[dict], int]:
+    ) -> tuple[dict | None, int]:
         assert self.app
         with self.app.test_client() as client:
             actual_response = client.post(
@@ -1203,6 +1215,7 @@ class BaseImportServiceTest:
         mailbox,
         mocker,
     ):
+        """Test importing a record via the service."""
         self.app = running_app.app
         u = user_factory(email="test@example.com", token=True, saml_id=None)
         user_id = u.user.id
@@ -1304,8 +1317,10 @@ class BaseImportServiceTest:
 
 
 class TestImportServiceJArticleSuccess(BaseImportServiceTest):
+    """Test importing two journal articles with no errors."""
+
     @property
-    def metadata_sources(self):
+    def metadata_sources(self):  # noqa: D102
         return [
             copy.deepcopy(sample_metadata_journal_article_pdf["input"]),
             copy.deepcopy(sample_metadata_journal_article2_pdf["input"]),
@@ -1313,15 +1328,17 @@ class TestImportServiceJArticleSuccess(BaseImportServiceTest):
 
 
 class TestImportServiceJArticleErrorTitle(BaseImportServiceTest):
+    """Test importing two journal articles with an error in the title."""
+
     @property
-    def metadata_sources(self):
+    def metadata_sources(self):  # noqa: D102
         meta1 = copy.deepcopy(sample_metadata_chapter_pdf["input"])
         meta1["metadata"]["title"] = ""
         meta2 = copy.deepcopy(sample_metadata_chapter2_pdf["input"])
         return [meta1, meta2]
 
     @property
-    def expected_errors(self):
+    def expected_errors(self):  # noqa: D102
         return [
             [
                 {
@@ -1335,8 +1352,10 @@ class TestImportServiceJArticleErrorTitle(BaseImportServiceTest):
 
 
 class TestImportServiceJArticleErrorMissingFile(BaseImportServiceTest):
+    """Test importing two journal articles with an error in the file."""
+
     @property
-    def metadata_sources(self):
+    def metadata_sources(self):  # noqa: D102
         meta1 = copy.deepcopy(sample_metadata_chapter_pdf["input"])
         meta1["metadata"]["title"] = ""
         meta2 = copy.deepcopy(sample_metadata_chapter2_pdf["input"])
@@ -1359,10 +1378,7 @@ class TestImportServiceJArticleErrorMissingFile(BaseImportServiceTest):
 
     @property
     def expected_errors(self):
-        """
-        The first record should fail because the file is missing.
-        The second record should fail because the metadata is invalid.
-        """
+        """The first file is missing, second has invalid metadata."""
         return [
             [
                 {
@@ -1381,11 +1397,11 @@ class TestImportAPIJArticleSuccess(BaseImportServiceTest):
     """Test importing two journal articles via the API with no errors."""
 
     @property
-    def by_api(self):
+    def by_api(self):  # noqa: D102
         return True
 
     @property
-    def metadata_sources(self):
+    def metadata_sources(self):  # noqa: D102
         return [
             copy.deepcopy(sample_metadata_journal_article_pdf["input"]),
             copy.deepcopy(sample_metadata_journal_article2_pdf["input"]),
@@ -1395,7 +1411,8 @@ class TestImportAPIJArticleSuccess(BaseImportServiceTest):
 class BaseInsufficientPermissionsTest(TestImportAPIJArticleSuccess):
     """Base class for tests that check the API with insufficient permissions."""
 
-    def check_result_status(self, import_results: dict, status_code: Optional[int]):
+    def check_result_status(self, import_results: dict, status_code: int | None):
+        """Check the status code of the import results."""
         if self.by_api:
             assert status_code == 403
         assert import_results.get("message") == (
@@ -1413,7 +1430,7 @@ class TestImportAPIInsufficientPermissionsReader(BaseInsufficientPermissionsTest
     """
 
     @property
-    def community_access_override(self):
+    def community_access_override(self):  # noqa: D102
         return {"review_policy": "open", "record_policy": "open"}
 
     def make_submitter(self, user_factory, community_id):
@@ -1431,7 +1448,7 @@ class TestImportAPIInsufficientPermissionsCurator(BaseInsufficientPermissionsTes
     """
 
     @property
-    def community_access_override(self):
+    def community_access_override(self):  # noqa: D102
         return {"review_policy": "closed", "record_policy": "closed"}
 
     def make_submitter(self, user_factory, community_id):
@@ -1449,7 +1466,7 @@ class TestImportAPIInsufficientPermissionsOwner(BaseInsufficientPermissionsTest)
     """
 
     @property
-    def community_access_override(self):
+    def community_access_override(self):  # noqa: D102
         return {"review_policy": "open", "record_policy": "open"}
 
     def make_submitter(self, user_factory, community_id):
@@ -1459,12 +1476,16 @@ class TestImportAPIInsufficientPermissionsOwner(BaseInsufficientPermissionsTest)
 
 
 class TestImportAPIJArticleErrorTitle(TestImportServiceJArticleErrorTitle):
+    """Test importing two journal articles with an error in the title via the API."""
+
     @property
-    def by_api(self):
+    def by_api(self):  # noqa: D102
         return True
 
 
 class TestImportAPIJArticleErrorMissingFile(TestImportServiceJArticleErrorMissingFile):
+    """Test importing two journal articles with an error in the file via the API."""
+
     @property
-    def by_api(self):
+    def by_api(self):  # noqa: D102
         return True

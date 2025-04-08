@@ -1,12 +1,19 @@
-import pytest
-import arrow
-from datetime import timedelta
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Integration tests for collections."""
+
 import json
+import re
+from datetime import timedelta
+
+import arrow
+import pytest
 from invenio_access.permissions import authenticated_user
 from invenio_access.utils import get_identity
-
-# from pprint import pformat
-import re
 
 
 def test_collection_submission_by_owner_open(
@@ -21,8 +28,7 @@ def test_collection_submission_by_owner_open(
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
-    """
-    Test collection submission by the owner when the collection does not require review.
+    """Test collection submission by the owner when the collection doesn't need review.
 
     FIXME: This should not be allowed for collection owners. It violates the
     review policy.
@@ -53,15 +59,6 @@ def test_collection_submission_by_owner_open(
     draft = minimal_draft_record_factory(identity=identity)
     draft_owner = draft.to_dict()["parent"]["access"]["owned_by"]
     app.logger.debug(draft_owner)
-
-    from invenio_rdm_records.services.permissions import RDMRecordPermissionPolicy
-
-    app.logger.debug("RDMPermissionPolicy allows?")
-    app.logger.debug(
-        RDMRecordPermissionPolicy(action="update_draft")
-        .generators[0]
-        .needs(record=draft._record)
-    )
 
     with app.test_client() as client:
         # client = client_with_login(client, admin_user)
@@ -169,8 +166,7 @@ def test_collection_submission_by_curator_closed(
     mock_send_remote_api_update_fixture,
     celery_worker,
 ):
-    """
-    Test the collection submission API by a curator when the collection requires review.
+    """Test the collection submission API by a curator when collection requires review.
 
     Intended to confirm that the review policy is enforced.
 
@@ -262,6 +258,7 @@ def test_group_collection_read_all(
     communities_links_factory,
     mock_send_remote_api_update_fixture,
 ):
+    """Test the group collections API read all."""
     app = running_app.app
     u = user_factory(token=True)
     token = u.allowed_token
@@ -336,4 +333,5 @@ def test_group_collection_read_all(
 def test_group_collections_read_one(
     running_app, db, search_clear, headers, user_factory
 ):
+    """Test the group collections API read one."""
     pass

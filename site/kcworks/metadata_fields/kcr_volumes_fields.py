@@ -1,4 +1,5 @@
-"""
+"""Volumes custom field.
+
 kcr:volumes     Information on the total number of volumes and the current
                 volume identifier for multi-volume works. This value is an
                 object with the keys "total_volumes" (for the total number of
@@ -9,18 +10,9 @@ kcr:volumes     Information on the total number of volumes and the current
 """
 
 from invenio_i18n import lazy_gettext as _
-from invenio_records_resources.services.custom_fields import (
-    BaseCF,
-    TextCF,
-    IntegerCF,
-)
-from marshmallow import fields, validate
-from marshmallow_utils.fields import (
-    SanitizedUnicode,
-    SanitizedHTML,
-    StrippedHTML,
-)
-from .kcr_metadata_fields import KCR_NAMESPACE
+from invenio_records_resources.services.custom_fields import BaseCF
+from marshmallow import fields
+from marshmallow_utils.fields import SanitizedUnicode
 
 
 class VolumesCF(BaseCF):

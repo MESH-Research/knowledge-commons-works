@@ -1,20 +1,33 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
+
+"""Fixtures for stats."""
+
 import pytest
 from flask import current_app
 from invenio_rdm_records.resources.stats.event_builders import (
     build_record_unique_id,
 )
-from invenio_rdm_records.services.stats import (
-    permissions_policy_lookup_factory,
+from invenio_rdm_records.services.stats import permissions_policy_lookup_factory
+from invenio_record_importer_kcworks.services.stats.aggregations import (
+    StatAggregatorOverridable,
 )
 from invenio_search.proxies import current_search, current_search_client
 from invenio_stats.contrib.event_builders import build_file_unique_id
 from invenio_stats.processors import EventsIndexer, anonymize_user, flag_robots
 from invenio_stats.queries import TermsQuery
-from invenio_record_importer_kcworks.services.stats.aggregations import (
-    StatAggregatorOverridable,
-)
-
-# from invenio_stats.queries import TermsQuery
 
 AllowAllPermission = type(
     "Allow",
@@ -24,6 +37,12 @@ AllowAllPermission = type(
 
 
 def AllowAllPermissionFactory(obj_id, action):
+    """Factory for the allow all permission.
+
+    Parameters:
+        obj_id: The object id.
+        action: The action.
+    """
     return AllowAllPermission
 
 
@@ -36,9 +55,7 @@ test_config_stats["STATS_REGISTER_INDEX_TEMPLATES"] = True
 
 test_config_stats["STATS_EVENTS"] = {
     "file-download": {
-        "templates": (
-            "kcworks.services.search.index_templates.stats.file_download"
-        ),
+        "templates": "kcworks.services.search.index_templates.stats.file_download",
         # "templates": "invenio_rdm_records.records.stats.templates."
         # "events.file_download",
         "event_builders": [
@@ -55,9 +72,7 @@ test_config_stats["STATS_EVENTS"] = {
         },
     },
     "record-view": {
-        "templates": (
-            "kcworks.services.search.index_templates.stats.record_view"
-        ),
+        "templates": "kcworks.services.search.index_templates.stats.record_view",
         # "templates": "invenio_rdm_records.records.stats.templates."
         # "events.record_view",
         "event_builders": [
@@ -78,9 +93,7 @@ test_config_stats["STATS_EVENTS"] = {
 
 test_config_stats["STATS_AGGREGATIONS"] = {
     "file-download-agg": {
-        "templates": (
-            "kcworks.services.search.index_templates.stats.aggr_file_download"
-        ),
+        "templates": "kcworks.services.search.index_templates.stats.aggr_file_download",
         # "templates": "invenio_rdm_records.records.stats.templates."
         # "aggregations.aggr_file_download",
         "cls": StatAggregatorOverridable,
@@ -107,9 +120,7 @@ test_config_stats["STATS_AGGREGATIONS"] = {
         },
     },
     "record-view-agg": {
-        "templates": (
-            "kcworks.services.search.index_templates.stats.aggr_record_view"
-        ),
+        "templates": "kcworks.services.search.index_templates.stats.aggr_record_view",
         # "templates": "invenio_rdm_records.records.stats.templates."
         # "aggregations.aggr_record_view",
         "cls": StatAggregatorOverridable,
@@ -130,9 +141,7 @@ test_config_stats["STATS_AGGREGATIONS"] = {
                     {"precision_threshold": 1000},
                 ),
             },
-            "query_modifiers": [
-                lambda query, **_: query.filter("term", via_api=False)
-            ],
+            "query_modifiers": [lambda query, **_: query.filter("term", via_api=False)],
         },
     },
 }
@@ -140,7 +149,11 @@ test_config_stats["STATS_AGGREGATIONS"] = {
 
 @pytest.fixture(scope="function")
 def create_stats_indices(app):
+    """Create stats indices.
 
+    Parameters:
+        app: The application.
+    """
     configs = {
         **test_config_stats["STATS_EVENTS"],
         **test_config_stats["STATS_AGGREGATIONS"],
@@ -162,9 +175,7 @@ def create_stats_indices(app):
                 ignore=None,
             )
     except Exception as e:
-        current_app.logger.error(
-            "An error occured while creating stats indices."
-        )
+        current_app.logger.error("An error occured while creating stats indices.")
         current_app.logger.error(e)
         print("An error occured while creating stats indices.")
         print(e)
@@ -259,6 +270,4 @@ AllowAllPermission = type(
     {"can": lambda self: True, "allows": lambda *args: True},
 )()
 
-test_config_stats["STATS_PERMISSION_FACTORY"] = (
-    permissions_policy_lookup_factory
-)
+test_config_stats["STATS_PERMISSION_FACTORY"] = permissions_policy_lookup_factory

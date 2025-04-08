@@ -1,17 +1,20 @@
-from invenio_i18n import lazy_gettext as _
-from invenio_records_resources.services.custom_fields import (
-    BaseCF,
-)
+"""Custom field for AI usage.
 
-# from marshmallow import validate
+Adds the kcr:ai_usage field that contains two sub-fields:
+- kcr:ai_used             Whether the record was created using AI (boolean).
+- kcr:ai_description      A description of the AI used to create the record
+                          (text).
+"""
+
+from invenio_i18n import lazy_gettext as _
+from invenio_records_resources.services.custom_fields import BaseCF
 from marshmallow.fields import Boolean, Nested
-from marshmallow_utils.fields import (
-    SanitizedUnicode,
-)
+from marshmallow_utils.fields import SanitizedUnicode
 
 
 class AiUsageCF(BaseCF):
-    #     """Nested custom field."""
+    """Custom field for AI usage."""
+
     def __init__(self, name, **kwargs):
         """Constructor."""
         super().__init__(
@@ -24,15 +27,13 @@ class AiUsageCF(BaseCF):
             #     )
             #   ),
             #   multiple=False,
-            **kwargs
+            **kwargs,
         )
 
     @property
     def field(self):
         """AiUsage fields definitions."""
-        return Nested(
-            {"ai_used": Boolean(), "ai_description": SanitizedUnicode()}
-        )
+        return Nested({"ai_used": Boolean(), "ai_description": SanitizedUnicode()})
 
     @property
     def mapping(self):

@@ -1,12 +1,12 @@
-# ### tests/api/confest.py ###
-# API tests goes in tests/api/ folder.
-# from pprint import pprint
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Pytest configuration for API tests."""
+
 import pytest
-
-from invenio_app.factory import create_api
-
-# from pytest_invenio.fixtures import UserFixture, database, db
-
 
 # @pytest.fixture(scope="module")
 # def create_app():

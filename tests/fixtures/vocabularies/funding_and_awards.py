@@ -1,13 +1,22 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2023-2024, MESH Research
+#
+# Knowledge Commons Works is free software; you can redistribute it and/or
+# modify it under the terms of the MIT License; see LICENSE file for more
+# details.
+
+"""Vocabulary pytest fixtures for funding and awards."""
+
 import pytest
 from invenio_access.permissions import system_identity
 from invenio_records_resources.proxies import current_service_registry
-from invenio_vocabularies.contrib.funders.api import Funder
 from invenio_vocabularies.contrib.awards.api import Award
+from invenio_vocabularies.contrib.funders.api import Funder
 
 
 @pytest.fixture(scope="module")
 def funders_v(app):
-    """Funder vocabulary record."""
+    """Fixture to create the funder vocabulary records."""
     funders_service = current_service_registry.get("funders")
     funders = [
         "00k4n6c31",

@@ -1,3 +1,11 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2023, 2024 MESH Research
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License
+
+"""Pytest fixtures for frontend."""
+
 from flask_webpackext.manifest import (
     JinjaManifest,
     JinjaManifestEntry,
@@ -5,11 +13,8 @@ from flask_webpackext.manifest import (
 )
 
 
-#
-# Mock the webpack manifest to avoid having to compile the full assets.
-#
 class MockJinjaManifest(JinjaManifest):
-    """Mock manifest."""
+    """Mock the webpack manifest to avoid having to compile the full assets."""
 
     def __getitem__(self, key):
         """Get a manifest entry."""

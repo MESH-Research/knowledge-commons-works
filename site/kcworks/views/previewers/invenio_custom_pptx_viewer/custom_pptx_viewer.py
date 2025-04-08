@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # This file is part of Knowledge Commons Works
 # Copyright (C) 2023-2024, MESH Research
 #
@@ -18,10 +16,7 @@
 
 """PPTX previewer."""
 
-from __future__ import absolute_import, print_function
-
 from flask import render_template
-
 from invenio_previewer.proxies import current_previewer
 
 previewable_extensions = [".pptx", ".ppt"]

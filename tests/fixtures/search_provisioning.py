@@ -1,33 +1,42 @@
+# Part of Knowledge Commons Works
+#
+# Copyright (C) 2025 MESH Research.
+#
+# Knowledge Commons Works is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
+
+"""Search provisioning related pytest fixtures for testing."""
+
 import pytest
 from celery import shared_task
-
-# from pprint import pformat
-from typing import Optional
 
 
 @shared_task(bind=True)
 def mock_send_remote_api_update(
     self,
     identity_id: str = "",
-    record: dict = {},
+    record: dict | None = None,
     is_published: bool = False,
     is_draft: bool = False,
     is_deleted: bool = False,
-    parent: Optional[dict] = None,
-    latest_version_index: Optional[int] = None,
-    latest_version_id: Optional[str] = None,
-    current_version_index: Optional[int] = None,
-    draft: Optional[dict] = None,
+    parent: dict | None = None,
+    latest_version_index: int | None = None,
+    latest_version_id: str | None = None,
+    current_version_index: int | None = None,
+    draft: dict | None = None,
     endpoint: str = "",
     service_type: str = "",
     service_method: str = "",
     **kwargs,
 ):
+    """Mock the send_remote_api_update task."""
+    record = record or {}
     pass
 
 
 @pytest.fixture
 def mock_send_remote_api_update_fixture(mocker):
+    """Mock the sending of remote API updates."""
     mocker.patch(
         "invenio_remote_api_provisioner.components.send_remote_api_update",  # noqa: E501
         mock_send_remote_api_update,
@@ -36,8 +45,15 @@ def mock_send_remote_api_update_fixture(mocker):
 
 @pytest.fixture
 def mock_search_api_request(requests_mock):
+    """Mock the sending of search API requests."""
 
-    def mock_request(http_method, draft_id, metadata, api_url):
+    def mock_request(
+        http_method: str,
+        draft_id: str,
+        metadata: dict,
+        api_url: str,
+    ):
+        """Mock the sending of search API requests."""
         mock_response = {
             "_internal_id": draft_id,
             "_id": "y-5ExZIBwjeO8JmmunDd",
@@ -46,8 +62,10 @@ def mock_search_api_request(requests_mock):
             "owner": {"url": "https://hcommons.org/profiles/myuser"},
             "contributors": [
                 {
-                    "name": f"{c['person_or_org'].get('family_name', '')}, "
-                    f"{c['person_or_org'].get('given_name', '')}",
+                    "name": (
+                        f"{c['person_or_org'].get('family_name', '')}, "
+                        f"{c['person_or_org'].get('given_name', '')}"
+                    ),
                     "username": "user1",
                     "url": "https://hcommons.org/profiles/user1",
                     "role": "author",

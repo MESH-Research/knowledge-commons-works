@@ -702,6 +702,26 @@ These are collectively aliased to</p></li>
 <h2>API endpoint permissions<a class="headerlink" href="#api-endpoint-permissions" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">STATS_PERMISSION_FACTORY</span> <span class="pre">=</span> <span class="pre">permissions_policy_lookup_factory</span></code></p>
 </section>
+<section id="other-kinds-of-stats">
+<h2>Other kinds of stats<a class="headerlink" href="#other-kinds-of-stats" title="Link to this heading">¶</a></h2>
+<section id="language-of-records">
+<h3>Language of records<a class="headerlink" href="#language-of-records" title="Link to this heading">¶</a></h3>
+<p>To retrieve the counts of records with each language code from OpenSearch, use the following query:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>GET<span class="w"> </span>kcworks-rdmrecords-records/_search?scroll<span class="o">=</span>1m
+</pre></div>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;aggs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;languages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;terms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metadata.languages.id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 
         </article>
@@ -791,6 +811,10 @@ These are collectively aliased to</p></li>
 <li><a class="reference internal" href="#stats-task-scheduling">Stats task scheduling</a></li>
 <li><a class="reference internal" href="#api-query-configuration">API query configuration</a></li>
 <li><a class="reference internal" href="#api-endpoint-permissions">API endpoint permissions</a></li>
+<li><a class="reference internal" href="#other-kinds-of-stats">Other kinds of stats</a><ul>
+<li><a class="reference internal" href="#language-of-records">Language of records</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

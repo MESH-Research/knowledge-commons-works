@@ -131,6 +131,47 @@ from invenio_rdm_records.proxies import current_rdm_records_service
 restored_record = current_rdm_records_service.restore_record(identity, record.id)
 ```
 
+### Add a record to a community
+
+```python
+from invenio_rdm_records.proxies import current_rdm_records
+from invenio_requests.proxies import current_requests_service
+from invenio_access.permissions import system_identity
+
+record_communities = current_rdm_records.record_communities_service
+
+# Try to create and submit a 'community-inclusion' request
+requests, errors = record_communities.add(
+    system_identity,  # in place of system_identity, use the identity of the user who is adding the record to the community
+    draft_id,
+    {"communities": [{"id": community_id}]},
+)
+```
+
+If the record is already in the community, the returned `errors` list will contain an error dictionary with a message including the words "already included".
+
+If the identity has permission to add the record without review, the request should be accepted without further action. Otherwise, the request can be accepted programmatically by calling the `include` method of the `CommunityInclusionService`.
+
+```python
+submitted_request = requests[0]  # from above
+request_id = (
+    submitted_request["id"]
+    if submitted_request.get("id")
+    else submitted_request["request"]["id"]
+)
+request_obj = current_requests_service.read(
+    system_identity, request_id
+)._record
+community = current_communities.service.record_cls.pid.resolve(
+    community_id
+)
+community_inclusion = (
+    current_rdm_records.community_inclusion_service
+)
+review_accepted = community_inclusion.include(
+    system_identity, community, request_obj, uow
+)
+```
 
 ## Custom Record Service Components
 

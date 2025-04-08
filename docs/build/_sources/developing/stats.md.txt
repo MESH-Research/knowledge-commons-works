@@ -430,3 +430,25 @@ STATS_QUERIES = {
 ## API endpoint permissions
 
 `STATS_PERMISSION_FACTORY = permissions_policy_lookup_factory`
+
+
+## Other kinds of stats
+
+### Language of records
+
+To retrieve the counts of records with each language code from OpenSearch, use the following query:
+
+```bash
+GET kcworks-rdmrecords-records/_search?scroll=1m
+```
+
+```json
+{
+  "size": 1,
+  "aggs": {
+    "languages": {
+      "terms": {"field": "metadata.languages.id", "size": 1000}
+    }
+  }
+}
+```

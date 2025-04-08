@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="KCWorks Infrastructure" href="infrastructure.html" /><link rel="prev" title="Automated Testing" href="testing.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Build Processes" href="building.html" /><link rel="prev" title="Automated Testing" href="testing.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
         <title>How Tos - Knowledge Commons Works 0.3.8 documentation</title>
@@ -198,8 +198,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
@@ -214,6 +213,8 @@
 <li class="toctree-l2"><a class="reference internal" href="workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Automated Testing</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="infrastructure.html">KCWorks Infrastructure</a></li>
 </ul>
 </li>
@@ -382,6 +383,45 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records_service</span>
 
 <span class="n">restored_record</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">restore_record</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="add-a-record-to-a-community">
+<h3>Add a record to a community<a class="headerlink" href="#add-a-record-to-a-community" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">invenio_requests.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_requests_service</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">invenio_access.permissions</span><span class="w"> </span><span class="kn">import</span> <span class="n">system_identity</span>
+
+<span class="n">record_communities</span> <span class="o">=</span> <span class="n">current_rdm_records</span><span class="o">.</span><span class="n">record_communities_service</span>
+
+<span class="c1"># Try to create and submit a &#39;community-inclusion&#39; request</span>
+<span class="n">requests</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">record_communities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">system_identity</span><span class="p">,</span>  <span class="c1"># in place of system_identity, use the identity of the user who is adding the record to the community</span>
+    <span class="n">draft_id</span><span class="p">,</span>
+    <span class="p">{</span><span class="s2">&quot;communities&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">community_id</span><span class="p">}]},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>If the record is already in the community, the returned <code class="docutils literal notranslate"><span class="pre">errors</span></code> list will contain an error dictionary with a message including the words “already included”.</p>
+<p>If the identity has permission to add the record without review, the request should be accepted without further action. Otherwise, the request can be accepted programmatically by calling the <code class="docutils literal notranslate"><span class="pre">include</span></code> method of the <code class="docutils literal notranslate"><span class="pre">CommunityInclusionService</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">submitted_request</span> <span class="o">=</span> <span class="n">requests</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># from above</span>
+<span class="n">request_id</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">submitted_request</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">submitted_request</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+    <span class="k">else</span> <span class="n">submitted_request</span><span class="p">[</span><span class="s2">&quot;request&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">request_obj</span> <span class="o">=</span> <span class="n">current_requests_service</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+    <span class="n">system_identity</span><span class="p">,</span> <span class="n">request_id</span>
+<span class="p">)</span><span class="o">.</span><span class="n">_record</span>
+<span class="n">community</span> <span class="o">=</span> <span class="n">current_communities</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">record_cls</span><span class="o">.</span><span class="n">pid</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span>
+    <span class="n">community_id</span>
+<span class="p">)</span>
+<span class="n">community_inclusion</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">current_rdm_records</span><span class="o">.</span><span class="n">community_inclusion_service</span>
+<span class="p">)</span>
+<span class="n">review_accepted</span> <span class="o">=</span> <span class="n">community_inclusion</span><span class="o">.</span><span class="n">include</span><span class="p">(</span>
+    <span class="n">system_identity</span><span class="p">,</span> <span class="n">community</span><span class="p">,</span> <span class="n">request_obj</span><span class="p">,</span> <span class="n">uow</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -663,12 +703,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="infrastructure.html">
+          <a class="next-page" href="building.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">KCWorks Infrastructure</div>
+                <div class="title">Build Processes</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -730,6 +770,7 @@
 <li><a class="reference internal" href="#create-a-new-version-of-a-published-record">Create a new version of a published record</a></li>
 <li><a class="reference internal" href="#soft-delete-a-published-record">Soft-delete a published record</a></li>
 <li><a class="reference internal" href="#restore-a-soft-deleted-record">Restore a soft-deleted record</a></li>
+<li><a class="reference internal" href="#add-a-record-to-a-community">Add a record to a community</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#custom-record-service-components">Custom Record Service Components</a><ul>

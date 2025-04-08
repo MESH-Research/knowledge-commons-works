@@ -1,10 +1,19 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2023, 2024 Knowledge Commons
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License
+
+"""Pytest fixtures for identifiers."""
+
 import idutils
-from invenio_rdm_records.services.pids import providers
 from invenio_rdm_records.config import (
-    always_valid,
     RDM_RECORDS_IDENTIFIERS_SCHEMES,
     RDM_RECORDS_PERSONORG_SCHEMES,
+    always_valid,
 )
+from invenio_rdm_records.services.pids import providers
+
 from ..helpers.fake_datacite_client import FakeDataCiteClient
 
 

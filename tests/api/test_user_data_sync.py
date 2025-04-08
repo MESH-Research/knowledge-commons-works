@@ -1,18 +1,29 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Integration tests for the user data sync.
+
+These tests are designed to test the user data sync between the KC IDP and
+the Invenio app.
+
+
+"""
+import json
+import os
+from collections.abc import Callable
+
+import pytest
+import requests
 from flask_login import login_user
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
 from invenio_remote_user_data_kcworks.tasks import do_user_data_update
-import json
-import os
-
-# from pprint import pprint
-import pytest
-import requests
-from requests_mock.adapter import _Matcher as Matcher
-from typing import Callable
-
-# from invenio_accounts.testutils import login_user_via_session
 from kcworks.services.accounts.saml import knowledgeCommons_account_setup
+from requests_mock.adapter import _Matcher as Matcher
+
 from ..fixtures.users import AugmentedUserFixture, user_data_set
 
 
@@ -48,7 +59,11 @@ def test_user_data_kc_endpoint():
 
 @pytest.mark.skip(reason="Not implemented")
 def test_group_data_kc_endpoint():
-    pass
+    """Test that the production kc endpoint returns the correct data.
+
+    The focus here is on the json schema being returned
+    """
+    raise NotImplementedError
 
 
 @pytest.mark.parametrize(
@@ -90,8 +105,7 @@ def test_do_user_data_update_task(
     celery_worker,
     search_clear,
 ):
-    """
-    Test that the do_user_data_update task does what it's supposed to do.
+    """Test that the do_user_data_update task does what it's supposed to do.
 
     - It should return the correct data
     - It should call the remote api if the user has an IDP
@@ -195,8 +209,7 @@ def test_user_data_sync_on_login(
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
-    """
-    Test that the user data is synced when a user logs in.
+    """Test that the user data is synced when a user logs in.
 
     The actual api call is mocked, so this tests that the api request is made
     and that the user data is updated in Invenio.
@@ -269,10 +282,17 @@ def test_user_data_sync_on_webhook(
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
+    """Test that the user data is synced when a user logs in.
+
+    The actual api call is mocked, so this tests that the api request is made
+    and that the user data is updated in Invenio.
+
+    Also tests that the api call does *not* happen for simple programmatic
+    user creation. It only happens when the user logs in.
+    """
     app = running_app.app
     # Create a user
     # The user is created with a saml auth record because saml_src
-    # and saml_id are supplied.
     u = user_factory(
         email=user1_data["email"],
         saml_src="knowledgeCommons",
@@ -369,6 +389,11 @@ def test_user_data_sync_on_webhook(
 def test_user_data_sync_on_account_setup(
     running_app, db, user_factory, requests_mock, search_clear
 ):
+    """Test that the user data is synced when a user is created.
+
+    The actual api call is mocked, so this tests that the api request is made
+    and that the user data is updated in Invenio.
+    """
     # Mock the remote API endpoint
     protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https")
     base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
@@ -432,14 +457,29 @@ def test_user_data_sync_on_account_setup(
 
 @pytest.mark.skip(reason="Not implemented")
 def test_user_data_sync_on_account_setup_already_linked(running_app, search_clear):
+    """Test that the user's data is synced when already linked to KC IDP.
+
+    The actual api call is mocked, so this tests that the api request is made
+    and that the user data is updated in Invenio.
+    """
     pass
 
 
 @pytest.mark.skip(reason="Not implemented")
 def test_user_data_sync_after_one_week(running_app, search_clear):
+    """Test that the user's data is synced after one week (stale).
+
+    The actual api call is mocked, so this tests that the api request is made
+    and that the user data is updated in Invenio.
+    """
     pass
 
 
 @pytest.mark.skip(reason="Not implemented")
 def test_group_data_sync_on_webhook(running_app, search_clear):
+    """Test that the group data is synced when a webhook is received.
+
+    The actual api call is mocked, so this tests that the api request is made
+    and that the group data is updated in Invenio.
+    """
     pass

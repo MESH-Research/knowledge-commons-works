@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # This file is part of Knowledge Commons Repository
 # Copyright (C) 2023, MESH Research
 #
@@ -23,17 +21,11 @@ This hidden login page is used by administrators to log in using a username and
 password. It is not linked to from any other page in the repository.
 """
 
-from flask import (
-    render_template,
-    current_app,
-    request,
-    redirect,
-    session,
-    after_this_request,
-)
+from flask import Response, after_this_request, current_app, redirect, request
 from flask.views import MethodView
 from flask_security.utils import get_post_login_redirect, login_user
 from werkzeug.local import LocalProxy
+from werkzeug.wrappers.response import Response as WerkzeugResponse
 
 _security = LocalProxy(lambda: current_app.extensions["security"])
 
@@ -45,17 +37,14 @@ def _ctx(endpoint):
 
 
 class AdminLogin(MethodView):
-    """
-    Class providing view class for administrative login.
-    """
+    """View class for administrative login."""
 
     def __init__(self):
+        """Initialize the AdminLogin view."""
         self.template = "kcworks/view_templates/admin_login.html"
 
-    def get(self):
-        """
-        Render the template for GET requests.
-        """
+    def get(self) -> Response | WerkzeugResponse:
+        """Render the template for GET requests."""
         form_class = _security.login_form
 
         form = form_class(request.form)
@@ -64,7 +53,7 @@ class AdminLogin(MethodView):
             login_user(form.user)
             after_this_request(_datastore.commit())
 
-            return redirect(get_post_login_redirect(form.next.data))
+            return redirect(get_post_login_redirect(form.next.data))  # type: ignore
 
         return _security.render_template(
             self.template, login_user_form=form, **_ctx("login")

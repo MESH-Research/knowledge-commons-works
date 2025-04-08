@@ -1,19 +1,25 @@
-import pytest
-import arrow
-from datetime import timedelta
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
 
-# import hashlib
-from invenio_access.permissions import authenticated_user, system_identity
-from invenio_access.utils import get_identity
+"""Integration tests for the API record operations."""
 
-# from invenio_files_rest.helpers import compute_checksum
-from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 import json
+import re
+from datetime import timedelta
 from pathlib import Path
 from pprint import pformat
-import re
-from ..fixtures.users import user_data_set
+
+import arrow
+import pytest
+from invenio_access.permissions import authenticated_user, system_identity
+from invenio_access.utils import get_identity
+from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+
 from ..fixtures.records import TestRecordMetadata, TestRecordMetadataWithFiles
+from ..fixtures.users import user_data_set
 
 
 def test_draft_creation_api(
@@ -208,6 +214,7 @@ def test_draft_creation_service(
     celery_worker,
     minimal_draft_record_factory,
 ):
+    """Test that a system user can create a draft record internally."""
     app = running_app.app
     metadata = TestRecordMetadata(app=app)
     result = minimal_draft_record_factory(metadata=metadata.metadata_in)
@@ -243,7 +250,6 @@ def test_draft_creation_service(
     assert actual_read["metadata"]["title"] == actual_draft["metadata"]["title"]
 
 
-# @pytest.mark.skip(reason="Not implemented")
 def test_record_publication_api(
     running_app,
     db,
@@ -254,6 +260,7 @@ def test_record_publication_api(
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
+    """Test that a user can publish a draft record via the API."""
     app = running_app.app
     metadata = TestRecordMetadata(app=app)
     u = user_factory(
@@ -264,8 +271,6 @@ def test_record_publication_api(
     )
     user = u.user
     token = u.allowed_token
-    # identity = u.identity
-    # print(identity)
 
     with app.test_client() as client:
         logged_in_client = client_with_login(client, user)
@@ -345,6 +350,7 @@ def test_record_draft_update_api(
     search_clear,
     mock_send_remote_api_update_fixture,
 ):
+    """Test that a user can update a draft record via the API."""
     app = running_app.app
     metadata = TestRecordMetadata(app=app)
 
@@ -412,6 +418,7 @@ def test_record_draft_update_service(
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
+    """Test that a system user can update a draft record internally."""
     app = running_app.app
     metadata = TestRecordMetadata(app=app)
     draft_result = minimal_draft_record_factory(metadata=metadata.metadata_in)
@@ -441,6 +448,7 @@ def test_record_published_update(
     search_clear,
     mock_send_remote_api_update_fixture,
 ):
+    """Test that a user can update a published record via the API."""
     pass
 
 
@@ -454,6 +462,7 @@ def test_record_versioning(
     search_clear,
     mock_send_remote_api_update_fixture,
 ):
+    """Test that a user can create a new version of a record."""
     pass
 
 
@@ -512,8 +521,7 @@ def test_record_file_upload_api(
     minimal_draft_record_factory,
     mock_send_remote_api_update_fixture,
 ):
-    """
-    Test the record file upload API.
+    """Test the record file upload API.
 
     Create a draft record, upload a file to it via the API, and confirm that
     the file is uploaded. Check the `files` property of the draft's retrieved
@@ -616,7 +624,7 @@ def test_record_file_upload_api(
             response.json["entries"][0]["updated"]
         ) < timedelta(seconds=1)
         assert response.json["links"] == {
-            "self": (f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files"),
+            "self": f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files",
             "archive": (
                 f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files-archive"
             ),
@@ -785,8 +793,7 @@ def test_record_view_api(
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
-    """
-    Test the record view API.
+    """Test the record view API.
 
     Create a published record and test that its metadata is returned from the
     records API endpoint.
@@ -814,10 +821,7 @@ def test_record_view_api(
 
 
 def test_records_api_endpoint_not_found(running_app):
-    """
-    Test that the records API endpoint returns a 404 error when the requested
-    record is not found.
-    """
+    """Test that the records API endpoint returns 404 when record is not found."""
     app = running_app.app
     with app.test_client() as client:
         response = client.get("/api/records/1234567890")
@@ -828,16 +832,15 @@ def test_records_api_endpoint_not_found(running_app):
 
 
 def test_records_api_bare_endpoint(running_app):
-    """
-    Test that the records API endpoint returns a 404 error when the requested
-    record is not found.
-    """
+    """Test that the records API returns 404 error when endpoint not found."""
     app = running_app.app
     with app.test_client() as client:
         response = client.get("/api/records/")
         assert response.json == {
-            "message": "The requested URL was not found on the server. If you "
-            "entered the URL manually please check your spelling and "
-            "try again.",
+            "message": (
+                "The requested URL was not found on the server. If you "
+                "entered the URL manually please check your spelling and "
+                "try again."
+            ),
             "status": 404,
         }

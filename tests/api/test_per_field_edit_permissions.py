@@ -1,33 +1,62 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Integration tests for per-field editing permission restrictions."""
+
+import abc
 import copy
+from collections.abc import Callable
 from pprint import pformat
+
 import pytest
+from flask.testing import FlaskClient
+from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import system_identity
 from invenio_access.utils import get_identity
 from invenio_administration.generators import Administration
+from invenio_communities.errors import SetDefaultCommunityError
 from invenio_communities.generators import CommunityRoleNeed
 from invenio_communities.utils import load_community_needs
-from invenio_rdm_records.proxies import current_rdm_records_service
-from invenio_rdm_records.records.api import RDMDraft
-from invenio_record_importer_kcworks.services.communities import (
-    CommunitiesHelper,
+from invenio_rdm_records.records.api import RDMRecord
+from invenio_rdm_records.proxies import (
+    current_rdm_records_service,
+    current_record_communities_service,
 )
+from invenio_rdm_records.records.api import RDMDraft
+from invenio_record_importer_kcworks.services.communities import CommunitiesHelper
 from invenio_records_permissions.generators import SystemProcess
+from invenio_records_resources.services.errors import PermissionDeniedError
 from kcworks.services.records.components.per_field_permissions_component import (
     PerFieldEditPermissionsComponent,
 )
-from kcworks.utils import update_nested_dict, get_value_by_path
+from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
+    CommunityChangePermissionsComponent,
+)
+from kcworks.utils import get_value_by_path, update_nested_dict
+
+from ..conftest import RunningApp
 from ..fixtures.communities import make_community_member
 from ..fixtures.users import get_authenticated_identity
-import abc
 
 
-@pytest.fixture
-def setup_component():
+@pytest.fixture  # type: ignore
+def per_field_component() -> PerFieldEditPermissionsComponent:
     """Fixture to set up the PerFieldEditPermissionsComponent."""
     return PerFieldEditPermissionsComponent(service=current_rdm_records_service)
 
 
-@pytest.mark.parametrize(
+@pytest.fixture  # type: ignore
+def community_change_permissions_component() -> CommunityChangePermissionsComponent:
+    """Fixture to set up the CommunityChangePermissionsComponent."""
+    return CommunityChangePermissionsComponent(
+        service=current_record_communities_service
+    )
+
+
+@pytest.mark.parametrize(  # type: ignore
     "config,record_has_community,expected",
     [
         # Test list policy
@@ -88,16 +117,16 @@ def setup_component():
     ],
 )
 def test_per_field_permissions_get_permissions_config(
-    setup_component,
-    running_app,
-    db,
-    minimal_draft_record_factory,
-    minimal_published_record_factory,
-    minimal_community_factory,
-    config,
-    record_has_community,
-    expected,
-):
+    per_field_component: PerFieldEditPermissionsComponent,
+    running_app: RunningApp,  # noqa: F821
+    db: SQLAlchemy,
+    minimal_draft_record_factory: Callable,
+    minimal_published_record_factory: Callable,
+    minimal_community_factory: Callable,
+    config: dict,
+    record_has_community: bool,
+    expected: dict,
+) -> None:
     """Test the _get_permissions_config method of PerFieldEditPermissionsComponent.
 
     Tests different permission policy configurations including:
@@ -122,7 +151,7 @@ def test_per_field_permissions_get_permissions_config(
                 system_identity, published.id
             )._record
 
-        result = setup_component._get_permissions_config(record.parent.communities)
+        result = per_field_component._get_permissions_config(record.parent.communities)
         assert result == expected
 
 
@@ -170,15 +199,15 @@ class BasePerFieldPermissionsTest(abc.ABC):
 
     def test_per_field_permissions_update_draft(
         self,
-        setup_component,
-        running_app,
-        db,
-        user_factory,
-        record_metadata,
-        minimal_community_factory,
-        mock_send_remote_api_update_fixture,
-        client,
-    ):
+        per_field_component: PerFieldEditPermissionsComponent,
+        running_app: RunningApp,
+        db: SQLAlchemy,
+        user_factory: Callable,
+        record_metadata: Callable,
+        minimal_community_factory: Callable,
+        mock_send_remote_api_update_fixture: Callable,
+        client: FlaskClient,
+    ) -> None:
         """Test the update_draft method of PerFieldEditPermissionsComponent."""
         # Create a user and get their identity
         u = user_factory(saml_id="")
@@ -324,16 +353,27 @@ class BasePerFieldPermissionsTest(abc.ABC):
             )
         for field, value in self.expected["changed"].items():
             assert get_value_by_path(updated_draft, field) == value
-        assert len(updated_draft["errors"]) == len(self.expected["errors"])
-        for idx, error in enumerate(self.expected["errors"]):
-            assert error == updated_draft["errors"][idx]
+        assert len(updated_draft.get("errors", [])) == len(
+            self.expected.get("errors", [])
+        )
+        for error in self.expected.get("errors", []):
+            match = next(
+                (
+                    e
+                    for e in updated_draft.get("errors", [])
+                    if e["field"] == error["field"]
+                ),
+                None,
+            )
+            assert match is not None
+            assert match == error
 
 
 class TestBasicPerFieldEditPermissionsOwnerFails(BasePerFieldPermissionsTest):
     """Owner can't update record when the community policy doesn't allow their role."""
 
     @property
-    def permissions_config(self):
+    def permissions_config(self) -> dict:  # noqa: D102
         return {
             "default": {
                 "policy": ["metadata.title", "metadata.description"],
@@ -342,7 +382,7 @@ class TestBasicPerFieldEditPermissionsOwnerFails(BasePerFieldPermissionsTest):
         }
 
     @property
-    def data_to_update(self):
+    def data_to_update(self) -> dict:  # noqa: D102
         return {
             "metadata": {
                 "title": "Updated Title",
@@ -351,11 +391,11 @@ class TestBasicPerFieldEditPermissionsOwnerFails(BasePerFieldPermissionsTest):
         }
 
     @property
-    def user_community_role(self):
+    def user_community_role(self) -> str:  # noqa: D102
         return "reader"
 
     @property
-    def expected(self):
+    def expected(self) -> dict:  # noqa: D102
         return {
             "unchanged": ["metadata.title"],
             "changed": {
@@ -386,7 +426,7 @@ class TestPerFieldEditPermissionsOwner2(BasePerFieldPermissionsTest):
     """
 
     @property
-    def permissions_config(self) -> dict:
+    def permissions_config(self) -> dict:  # noqa: D102
         return {
             "default": {
                 "policy": {
@@ -397,11 +437,11 @@ class TestPerFieldEditPermissionsOwner2(BasePerFieldPermissionsTest):
         }
 
     @property
-    def user_community_role(self) -> str:
+    def user_community_role(self) -> str:  # noqa: D102
         return "curator"
 
     @property
-    def data_to_update(self) -> dict:
+    def data_to_update(self) -> dict:  # noqa: D102
         return {
             "metadata": {
                 "title": "Updated Title",
@@ -411,7 +451,7 @@ class TestPerFieldEditPermissionsOwner2(BasePerFieldPermissionsTest):
         }
 
     @property
-    def expected(self) -> dict:
+    def expected(self) -> dict:  # noqa: D102
         return {
             "unchanged": ["metadata.creators.0.person_or_org.name"],
             "changed": {
@@ -425,11 +465,12 @@ class TestPerFieldEditPermissionsOwner2(BasePerFieldPermissionsTest):
 class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
     """Owner can update list field items if the item index is not restricted.
 
-    This test checks that the owner can update list field items if the item index is not restricted, but restricted indices for the list field are not updated.
+    This test checks that the owner can update list field items if the item index
+    is not restricted, but restricted indices for the list field are not updated.
     """
 
     @property
-    def permissions_config(self) -> dict:
+    def permissions_config(self) -> dict:  # noqa: D102
         return {
             "default": {
                 "policy": {
@@ -441,11 +482,11 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
         }
 
     @property
-    def user_community_role(self) -> str:
+    def user_community_role(self) -> str:  # noqa: D102
         return "reader"
 
     @property
-    def data_to_update(self) -> dict:
+    def data_to_update(self) -> dict:  # noqa: D102
         return {
             "metadata": {
                 "funding": [
@@ -478,7 +519,7 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
                         "award": {
                             "identifiers": [
                                 {
-                                    "identifier": "https://sandbox.kcworks.org/755023",
+                                    "identifier": "https://sandbox.kcworks.org/755021",
                                     "scheme": "url",
                                 }
                             ]
@@ -502,9 +543,12 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
         }
 
     @property
-    def expected(self) -> dict:
+    def expected(self) -> dict:  # noqa: D102
         return {
-            "unchanged": ["metadata.funding.0.funder"],
+            "unchanged": [
+                "metadata.funding.0.funder",
+                "metadata.funding.2.award.identifiers.0.identifier",
+            ],
             "changed": {
                 "metadata.funding.1.funder.id": "00k4n6c36",
                 "metadata.funding.3.award.identifiers.0.identifier": (
@@ -513,7 +557,7 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
             },
             "errors": [
                 {
-                    "field": "metadata|funding|0|funder|id",
+                    "field": "metadata|funding|2|award|identifiers|0|identifier",
                     "messages": [
                         "You do not have permission to edit this field "
                         "because the record is included in the test-community "
@@ -522,7 +566,7 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
                     ],
                 },
                 {
-                    "field": "metadata|funding|2|award|identifiers|0|identifier",
+                    "field": "metadata|funding|0|funder|id",
                     "messages": [
                         "You do not have permission to edit this field "
                         "because the record is included in the test-community "
@@ -535,15 +579,16 @@ class TestPerFieldEditPermissionsOwner3(BasePerFieldPermissionsTest):
 
 
 def test_per_field_permissions_find_changed_restricted_fields(
-    setup_component,
-    running_app,
-    db,
-    user_factory,
-    record_metadata,
-):
-    """Test the _find_changed_restricted_fields static method
+    per_field_component: PerFieldEditPermissionsComponent,
+    running_app: RunningApp,
+    db: SQLAlchemy,
+    user_factory: Callable,
+    record_metadata: Callable,
+) -> None:
+    """Test the _find_changed_restricted_fields static method.
 
-    A method of PerFieldEditPermissionsComponent that is used to find fields that are restricted and have changed.
+    A method of PerFieldEditPermissionsComponent that is used to find fields that
+    are restricted and have changed.
     """
     # Configure test community permissions
     community_config = {
@@ -714,3 +759,227 @@ def test_per_field_permissions_find_changed_restricted_fields(
         for f in changed_restricted_fields
         if f[0] == "metadata|additional_titles|0|title"
     )
+
+
+class TestCollectionRemoveRestricted:
+    """Test that a community is not removed if the field is restricted."""
+
+    @property
+    def permissions_config(self) -> dict:  # noqa: D102
+        return {
+            "policy": {
+                "parent.communities.default": ["owner", "manager"],
+            }
+        }
+
+    @property
+    def user_community_role(self) -> str | None:  # noqa: D102
+        return "reader"
+
+    @property
+    def expected(self) -> dict:  # noqa: D102
+        return {
+            "processed": [],
+            "errors": [
+                {
+                    "field": "parent.communities.default",
+                    "message": (
+                        "You do not have permission to remove this community: "
+                        "XXXX. Please contact the community owner or "
+                        "manager for assistance."
+                    ),
+                }
+            ],
+        }
+
+    def test_remove_from_community(
+        self,
+        running_app: RunningApp,
+        community_change_permissions_component: CommunityChangePermissionsComponent,
+        db: SQLAlchemy,
+        user_factory: Callable,
+        minimal_published_record_factory: Callable,
+        minimal_community_factory: Callable,
+        mock_send_remote_api_update_fixture: Callable,
+        client: FlaskClient,
+    ) -> None:
+        """Test that a community is not removed if the field is restricted."""
+        running_app.app.config["RDM_RECORDS_PERMISSIONS_PER_FIELD"] = {
+            "test-community": self.permissions_config
+        }
+        running_app.app.logger.info(
+            "service components: "
+            + str(running_app.app.config["RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS"])
+        )
+        community = minimal_community_factory(slug="test-community")
+        u = user_factory(email="test@example.com", saml_id="")
+        identity = get_authenticated_identity(u.user)
+
+        if self.user_community_role:
+            # add user1 to the community with the specified role
+            make_community_member(u.user.id, self.user_community_role, community.id)
+            # add the community needs to the user's identities
+            load_community_needs(identity)
+
+        record = minimal_published_record_factory(
+            identity=identity,
+            community_list=[community.id],
+            set_default=True,
+        )
+        assert str(record._record.parent.communities.default.id) == community.id
+
+        # Remove the community
+        processed, errors = current_record_communities_service.remove(
+            identity, id_=record.id, data={"communities": [{"id": community.id}]}
+        )
+        assert processed == [
+            {"community": p.replace("XXXX", community.id)}
+            for p in self.expected["processed"]
+        ]
+        assert len(errors) == len(self.expected["errors"])
+        if len(errors) > 0:
+            assert errors[0]["message"] == self.expected["errors"][0][
+                "message"
+            ].replace("XXXX", community.id)
+            assert errors[0]["field"] == self.expected["errors"][0]["field"]
+
+        # Update result object
+        new_result = current_rdm_records_service.read(identity, id_=record.id)
+        if new_result._record.parent.communities.default:
+            assert str(new_result._record.parent.communities.default.id) == community.id
+        assert len(new_result._record.parent.communities) == len(
+            self.expected["errors"]
+        )
+
+
+class TestCollectionRemoveRestrictedAllowed(TestCollectionRemoveRestricted):
+    """Test that a community is removed if the identity has the correct role."""
+
+    @property
+    def user_community_role(self) -> str | None:  # noqa: D102
+        return "manager"
+
+    @property
+    def expected(self) -> dict:  # noqa: D102
+        return {
+            "processed": ["XXXX"],
+            "errors": [],
+        }
+
+
+class TestCollectionRemoveUnRestricted(TestCollectionRemoveRestricted):
+    """Test that a community is removed if the field is not restricted."""
+
+    @property
+    def permissions_config(self) -> dict:  # noqa: D102
+        return {}
+
+    @property
+    def user_community_role(self) -> str | None:  # noqa: D102
+        return None
+
+    @property
+    def expected(self) -> dict:  # noqa: D102
+        return {
+            "processed": ["XXXX"],
+            "errors": [],
+        }
+
+
+class TestCollectionChangeDefaultRestricted:
+    """Test that a community is not changed from the default if the field is restricted."""
+
+    @property
+    def permissions_config(self) -> dict:  # noqa: D102
+        return {
+            "policy": {
+                "parent.communities.default": ["owner", "manager"],
+            }
+        }
+
+    @property
+    def user_community_role(self) -> str | None:  # noqa: D102
+        return "reader"
+
+    @property
+    def error_expected(self) -> bool:  # noqa: D102
+        return True
+
+    def test_change_default_community(
+        self,
+        running_app: RunningApp,
+        community_change_permissions_component: CommunityChangePermissionsComponent,
+        db: SQLAlchemy,
+        user_factory: Callable,
+        minimal_published_record_factory: Callable,
+        minimal_community_factory: Callable,
+        mock_send_remote_api_update_fixture: Callable,
+        client: FlaskClient,
+    ) -> None:
+        """Community is not changed from the default if the field is restricted."""
+        u = user_factory(email="test2@example.com", saml_id="")
+        identity = get_authenticated_identity(u.user)
+
+        community = minimal_community_factory(slug="test-community")
+        community2 = minimal_community_factory(slug="test-community2")
+
+        running_app.app.config["RDM_RECORDS_PERMISSIONS_PER_FIELD"] = {
+            "test-community": self.permissions_config
+        }
+
+        if self.user_community_role:
+            # add user1 to the community with the specified role
+            make_community_member(u.user.id, self.user_community_role, community.id)
+            # add the community needs to the user's identities
+            load_community_needs(identity)
+
+        record = minimal_published_record_factory(
+            identity=identity,
+            community_list=[community.id, community2.id],
+            set_default=True,
+        )
+        result = current_rdm_records_service.record_cls.pid.resolve(record.data["id"])
+        running_app.app.logger.info(
+            f"record default in test: {result.parent.communities.default}"
+        )
+        assert str(result.parent.communities.default.id) == community.id
+
+        # Change the default community
+        if self.error_expected:
+            with pytest.raises(SetDefaultCommunityError):
+                current_record_communities_service.set_default(
+                    identity, id_=record.id, data={"default": community2.id}
+                )
+        else:
+            parent_rec = current_record_communities_service.set_default(
+                identity, id_=record.id, data={"default": community2.id}
+            )
+            assert str(parent_rec.communities.default.id) == community2.id
+
+
+class TestCollectionChangeDefaultAllowed(TestCollectionChangeDefaultRestricted):
+    """Community is changed from the default if the user is allowed."""
+
+    @property
+    def user_community_role(self) -> str | None:  # noqa: D102
+        return "manager"
+
+    @property
+    def error_expected(self) -> bool:  # noqa: D102
+        return False
+
+
+class TestCollectionChangeDefaultUnRestricted(TestCollectionChangeDefaultRestricted):
+    """Community is changed from the default if the field is not restricted."""
+
+    @property
+    def permissions_config(self) -> dict:  # noqa: D102
+        return {}
+
+    @property
+    def user_community_role(self) -> str | None:  # noqa: D102
+        return "owner"
+
+    @property
+    def error_expected(self) -> bool:  # noqa: D102
+        return False

@@ -3,9 +3,9 @@
 #
 # Invenio-RDM-Records is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
-"""Journal custom fields.
+"""Journal custom fields UI configuration.
 
-Implements the following fields:
+Implements UI configuration for the following fields:
 - journal.issue
 - journal.pages
 - journal.title
@@ -13,7 +13,6 @@ Implements the following fields:
 """
 
 from invenio_i18n import lazy_gettext as _
-
 
 KCR_JOURNAL_CUSTOM_FIELDS_UI = {
     "section": _("Journal"),

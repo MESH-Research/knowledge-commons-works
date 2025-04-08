@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
+# Part of Knowledge Commons Works
+# Copyright (C) 2023-2025 MESH Research
 #
-# This file is part of Knowledge Commons Works
-# Copyright (C) 2023-2024, MESH Research
-#
-# Knowledge Commons Works is free software; you can redistribute it and/or
-# modify it under the terms of the MIT License; see LICENSE file for more
-# details.
+# KCWorks is free software; you can redistribute it and/or modify it under the
+# terms of the MIT License; see LICENSE file for more details.
 #
 # Knowledge Commons Works is an extended instance of InvenioRDM:
 # Copyright (C) 2019-2024 CERN.
@@ -16,16 +13,18 @@
 # under the terms of the MIT License. See the LICENSE file in the
 # invenio-app-rdm package for more details.
 
+"""KCWorks CLI."""
+
+import sys
+
 import click
 from flask.cli import with_appcontext
 from invenio_search.cli import abort_if_false, search_version_check
 from kcworks.services.search.indices import delete_index
-import sys
-
+from kcworks.services.users.cli import group_users as group_users_command
+from kcworks.services.users.cli import groups as groups_command
 from kcworks.services.users.cli import name_parts as name_parts_command
 from kcworks.services.users.cli import read as read_command
-from kcworks.services.users.cli import groups as groups_command
-from kcworks.services.users.cli import group_users as group_users_command
 from kcworks.services.users.cli import user_groups as user_groups_command
 
 UNMANAGED_INDICES = [
@@ -44,7 +43,7 @@ UNMANAGED_INDICES = [
 
 @click.group()
 def kcworks_users():
-    """Utility commands for Knowledge Commons Works."""
+    """CLI utility command group for Knowledge Commons Works."""
     pass
 
 
@@ -57,7 +56,7 @@ kcworks_users.add_command(user_groups_command)
 
 @click.group()
 def kcworks_index():
-    """KCWorks utility commands for search index management."""
+    """KCWorks CLI utility commands for search index management."""
     pass
 
 
@@ -73,7 +72,7 @@ def kcworks_index():
 @with_appcontext
 @search_version_check
 def destroy_indices(force):
-    """Destroy all indices that are not destroyed by invenio_search
+    """Destroy all indices that are not destroyed by invenio_search.
 
     THIS COMMAND WILL WIPE ALL DATA ON USAGE STATS. ONLY RUN THIS WHEN YOU KNOW
     WHAT YOU ARE DOING. Usage stats data is stored in Elasticsearch, and is not
@@ -105,5 +104,5 @@ def destroy_indices(force):
         delete_index(UNMANAGED_INDICES, ignore=[400, 404] if force else None),
         length=len(UNMANAGED_INDICES),
     ) as bar:
-        for name, response in bar:
+        for name, _response in bar:
             bar.label = name

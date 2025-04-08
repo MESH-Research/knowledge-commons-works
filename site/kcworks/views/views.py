@@ -1,22 +1,13 @@
 """Additional views."""
 
-from flask import Blueprint, make_response, jsonify
+from flask import Blueprint, jsonify, make_response
 from invenio_records_resources.services.errors import PermissionDeniedError
-from kcworks.views.task_results.task_results import TaskResults
 from kcworks.views.admin_login.admin_login import AdminLogin
 from kcworks.views.api.notifications import InternalNotifications
-from werkzeug.exceptions import (
-    # BadRequest,
-    Forbidden,
-    MethodNotAllowed,
-    # NotFound,
-    # Unauthorized,
-)
+from kcworks.views.task_results.task_results import TaskResults
+from werkzeug.exceptions import Forbidden, MethodNotAllowed
 
 
-#
-# Registration
-#
 def create_blueprint(app):
     """Register blueprint routes on app."""
     blueprint = Blueprint(
@@ -55,7 +46,6 @@ def create_blueprint(app):
 
 def create_api_blueprint(app):
     """Register API blueprint routes on app."""
-
     with app.app_context():
         blueprint = Blueprint(
             "kcworks_api",
@@ -75,9 +65,7 @@ def create_api_blueprint(app):
             lambda e: make_response(
                 jsonify(
                     {
-                        "message": (
-                            "You are not authorized to perform this action"
-                        ),
+                        "message": "You are not authorized to perform this action",
                         "status": 403,
                     }
                 ),
@@ -95,9 +83,7 @@ def create_api_blueprint(app):
             lambda e: make_response(
                 jsonify(
                     {
-                        "message": (
-                            "You are not authorized to perform this action"
-                        ),
+                        "message": "You are not authorized to perform this action",
                         "status": 403,
                     }
                 ),

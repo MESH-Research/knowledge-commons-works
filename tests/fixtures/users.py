@@ -1,4 +1,16 @@
-from typing import Callable, Optional, Union
+# Part of Knowledge Commons Works
+#
+# Copyright (C) 2025 MESH Research.
+#
+# Knowledge Commons Works is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
+
+"""User related pytest fixtures for testing."""
+
+import os
+from collections.abc import Callable
+
+import pytest
 from flask_login import login_user
 from flask_principal import Identity
 from flask_security.utils import hash_password
@@ -9,15 +21,13 @@ from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
 from invenio_accounts.testutils import login_user_via_session
 from invenio_administration.permissions import administration_access_action
-from invenio_oauthclient.models import UserIdentity
 from invenio_oauth2server.models import Token
-import os
-import pytest
+from invenio_oauthclient.models import UserIdentity
 from pytest_invenio.fixtures import UserFixtureBase
 from requests_mock.adapter import _Matcher as Matcher
 
 
-def get_authenticated_identity(user: User):
+def get_authenticated_identity(user: User) -> Identity:
     """Return an authenticated identity for the given user."""
     identity = get_identity(user)
     identity.provides.add(any_user)
@@ -46,10 +56,12 @@ def mock_user_data_api(requests_mock) -> Callable:
 
 @pytest.fixture(scope="function")
 def user_data_to_remote_data(requests_mock):
+    """Factory fixture providing function to convert user data format."""
 
     def convert_user_data_to_remote_data(
         saml_id: str, email: str, user_data: dict
-    ) -> dict[str, Union[str, list[dict[str, str]]]]:
+    ) -> dict[str, str | list[dict[str, str]]]:
+        """Convert user fixture data to format for remote data."""
         mock_remote_data = {
             "username": saml_id,
             "email": email,
@@ -71,9 +83,10 @@ class AugmentedUserFixture(UserFixtureBase):
     """Augmented UserFixtureBase class."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize the AugmentedUserFixture."""
         super().__init__(*args, **kwargs)
-        self.mock_adapter: Optional[Matcher] = None
-        self.allowed_token: Optional[str] = None
+        self.mock_adapter: Matcher | None = None
+        self.allowed_token: str | None = None
 
 
 @pytest.fixture(scope="function")
@@ -96,15 +109,15 @@ def user_factory(
         password: str = "password",
         token: bool = False,
         admin: bool = False,
-        saml_src: Optional[str] = "knowledgeCommons",
-        saml_id: Optional[str] = "myuser",
-        orcid: Optional[str] = "",
-        kc_username: Optional[str] = "",
-        new_remote_data: dict = {},
+        saml_src: str | None = "knowledgeCommons",
+        saml_id: str | None = "myuser",
+        orcid: str | None = "",
+        kc_username: str | None = "",
+        new_remote_data: dict | None = None,
     ) -> AugmentedUserFixture:
-        """Create a user.
+        """Create an augmented pytest-invenio user fixture.
 
-        Args:
+        Parameters:
             email: The email address of the user.
             password: The password of the user.
             token: Whether the user should have a token.
@@ -120,6 +133,7 @@ def user_factory(
             - identity: The identity of the user.
             - allowed_token: The API auth token of the user.
         """
+        new_remote_data = new_remote_data or {}
 
         # Mock remote data that's already in the user fixture.
         mock_remote_data = user_data_to_remote_data(
@@ -197,7 +211,6 @@ def admin_role_need(db):
 @pytest.fixture(scope="function")
 def admin(user_factory) -> AugmentedUserFixture:
     """Admin user for requests."""
-
     u: AugmentedUserFixture = user_factory(
         email="admin@inveniosoftware.org",
         password="password",
@@ -241,7 +254,6 @@ def superuser_identity(admin: AugmentedUserFixture, superuser_role_need) -> Iden
 @pytest.fixture(scope="module")
 def user1_data() -> dict:
     """Data for user1."""
-
     return {
         "saml_id": "user1",
         "email": "user1@inveniosoftware.org",
@@ -354,17 +366,18 @@ def client_with_login(requests_mock, app):
     """Log in a user to the client.
 
     Returns a factory function that returns a client with a logged in user.
-
-    Args:
-        user: The user to log in.
-        new_remote_data: Optional. Data absent from the user's initial data
-            that should be added in the mocked remote API call at login.
     """
 
     def log_in_user(
         client,
         user: User,
     ):
+        """Log in a user to the client.
+
+        Parameters:
+            client: The client to log in with.
+            user: The user to log in.
+        """
         login_user(user)
         login_user_via_session(client, email=user.email)
         return client

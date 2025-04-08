@@ -1,14 +1,31 @@
-from flask import current_app
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
+
+"""Notification backends."""
+
 from pathlib import Path
+
+import jinja2
+from flask import current_app
+from invenio_access.permissions import system_identity
+from invenio_i18n import force_locale, get_locale
+from invenio_i18n.proxies import current_i18n
 from invenio_mail.tasks import send_email
 from invenio_notifications.backends.base import NotificationBackend
-from marshmallow_utils.html import strip_html
-from invenio_i18n import get_locale, force_locale
-from invenio_i18n.proxies import current_i18n
-import jinja2
-from invenio_access.permissions import system_identity
 from kcworks.proxies import current_internal_notifications
-from pprint import pformat
+from marshmallow_utils.html import strip_html
 
 
 class CustomJinjaTemplateLoaderMixin:
@@ -69,16 +86,12 @@ class CustomJinjaTemplateLoaderMixin:
             list(template.root_render_func(ctx))
 
             return {
-                block: "".join(
-                    block_func(ctx)
-                )  # have to evaluate, as block_func is a generator
+                block: "".join(block_func(ctx))  # evaluate, block_func is a generator
                 for block, block_func in template.blocks.items()
             }
 
 
-class EmailNotificationBackend(
-    NotificationBackend, CustomJinjaTemplateLoaderMixin
-):
+class EmailNotificationBackend(NotificationBackend, CustomJinjaTemplateLoaderMixin):
     """Email specific notification backend."""
 
     id = "email"
@@ -93,8 +106,7 @@ class EmailNotificationBackend(
                 "html": content["html_body"],
                 "body": strip_html(content["plain_body"]),
                 "recipients": [
-                    recipient.data.get("email")
-                    or recipient.data.get("email_hidden")
+                    recipient.data.get("email") or recipient.data.get("email_hidden")
                 ],
                 "sender": current_app.config["MAIL_DEFAULT_SENDER"],
                 "reply_to": current_app.config["MAIL_DEFAULT_REPLY_TO"],
@@ -111,7 +123,6 @@ class InternalNotificationBackend(NotificationBackend):
 
     def send(self, notification, recipient):
         """Send the notification message to the user's in-app notifications."""
-
         updated = current_internal_notifications.update_unread(
             identity=system_identity,
             user_id=recipient.data["id"],

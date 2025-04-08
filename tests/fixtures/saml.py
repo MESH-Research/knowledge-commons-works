@@ -1,4 +1,14 @@
+# Part of Knowledge Commons Works
+#
+# Copyright (C) 2025 MESH Research.
+#
+# Knowledge Commons Works is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
+
+"""SAML related pytest fixtures for testing."""
+
 import datetime
+
 from invenio_saml.handlers import acs_handler_factory
 
 test_config_saml = {
@@ -54,7 +64,7 @@ test_config_saml = {
                     "singleSignOnService": {
                         # URL Target of the IdP where the Authentication
                         # Request Message will be sent.
-                        "url": ("https://proxy.hcommons-dev.org/Saml2/sso/redirect"),
+                        "url": "https://proxy.hcommons-dev.org/Saml2/sso/redirect",
                         # SAML protocol binding to be used when returning the
                         # <Response> message. OneLogin Toolkit supports
                         # the HTTP-Redirect binding
@@ -106,7 +116,7 @@ test_config_saml = {
                     "wantMessagesSigned": False,
                     "wantNameId": True,
                     "wantNameIdEncrypted": False,
-                    "digestAlgorithm": ("http://www.w3.org/2001/04/xmlenc#sha256"),
+                    "digestAlgorithm": "http://www.w3.org/2001/04/xmlenc#sha256",
                 },
             },
             # Account Mapping
@@ -115,7 +125,7 @@ test_config_saml = {
                 # "name": "urn:oid:2.5.4.3",  # "cn"
                 "name": "urn:oid:2.5.4.42",  # "givenName"
                 "surname": "urn:oid:2.5.4.4",  # "sn"
-                "external_id": ("urn:oid:2.16.840.1.113730.3.1.3"),  # "employeeNumber"
+                "external_id": "urn:oid:2.16.840.1.113730.3.1.3",  # "employeeNumber"
             },  # FIXME: new entity id url, assertion consumer service url,
             # certificate
             # "title", 'urn:oid:2.5.4.12': ['Hc Developer'],
@@ -175,7 +185,7 @@ idp_responses = {
             "external_method": "knowledgeCommons",
             "active": True,
             "confirmed_at": datetime.datetime(
-                2025, 1, 14, 4, 28, 58, 725756, tzinfo=datetime.timezone.utc
+                2025, 1, 14, 4, 28, 58, 725756, tzinfo=datetime.UTC
             ),
         },
     },
@@ -216,7 +226,7 @@ idp_responses = {
             "external_method": "knowledgeCommons",
             "active": True,
             "confirmed_at": datetime.datetime(
-                2025, 1, 15, 15, 27, 0, 60172, tzinfo=datetime.timezone.utc
+                2025, 1, 15, 15, 27, 0, 60172, tzinfo=datetime.UTC
             ),
         },
     },
@@ -252,7 +262,7 @@ idp_responses = {
             "external_method": "knowledgeCommons",
             "active": True,
             "confirmed_at": datetime.datetime(
-                2025, 1, 15, 15, 24, 45, 598091, tzinfo=datetime.timezone.utc
+                2025, 1, 15, 15, 24, 45, 598091, tzinfo=datetime.UTC
             ),
         },
     },
@@ -305,7 +315,7 @@ idp_responses = {
             "external_method": "knowledgeCommons",
             "active": True,
             "confirmed_at": datetime.datetime(
-                2025, 1, 15, 15, 24, 45, 598091, tzinfo=datetime.timezone.utc
+                2025, 1, 15, 15, 24, 45, 598091, tzinfo=datetime.UTC
             ),
         },
     },
@@ -343,7 +353,7 @@ idp_responses = {
             "external_method": "knowledgeCommons",
             "active": True,
             "confirmed_at": datetime.datetime(
-                2025, 1, 15, 15, 40, 18, 235822, tzinfo=datetime.timezone.utc
+                2025, 1, 15, 15, 40, 18, 235822, tzinfo=datetime.UTC
             ),
         },
     },

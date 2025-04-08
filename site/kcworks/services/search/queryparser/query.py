@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
 #
-# This file is part of Knowledge Commons Works
-# Copyright (C) 2023-2024, MESH Research
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
 #
-# Knowledge Commons Works is free software; you can redistribute it and/or
-# modify it under the terms of the MIT License; see LICENSE file for more
-# details.
-#
-# Knowledge Commons Works is an extended instance of InvenioRDM:
+# KCWorks is an extended instance of InvenioRDM:
 # Copyright (C) 2019-2024 CERN.
 # Copyright (C) 2019-2024 Northwestern University.
 # Copyright (C) 2021-2024 TU Wien.
@@ -16,28 +13,23 @@
 # under the terms of the MIT License. See the LICENSE file in the
 # invenio-app-rdm package for more details.
 
-from invenio_records_resources.services.records.queryparser.query import (
-    QueryParser,
-)
+"""Query parser for KCWorks."""
 
+from invenio_records_resources.services.errors import QuerystringValidationError
+from invenio_records_resources.services.records.queryparser.query import QueryParser
 from invenio_search.engine import dsl
 from luqum.auto_head_tail import auto_head_tail
 from luqum.exceptions import ParseError
 from luqum.parser import parser as luqum_parser
 
-from invenio_records_resources.services.errors import (
-    QuerystringValidationError,
-)
-
 
 class MemberQueryParser(QueryParser):
-    """
-    Query parser for members search.
+    """Query parser for members search.
 
     Adds a wildcard to the query string.
     """
 
-    def parse(self, query_str):
+    def parse(self, query_str: str):
         """Parse the query."""
         try:
             # We parse the Lucene query syntax in Python, so we know upfront
@@ -49,9 +41,7 @@ class MemberQueryParser(QueryParser):
                     mapping=self.mapping,
                     allow_list=self.allow_list,
                 )
-                new_tree = transformer.visit(
-                    tree, context={"identity": self.identity}
-                )
+                new_tree = transformer.visit(tree, context={"identity": self.identity})
                 new_tree = auto_head_tail(new_tree)
                 query_str = str(new_tree)
             return dsl.Q(

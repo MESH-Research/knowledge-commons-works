@@ -1,16 +1,32 @@
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
+
+"""Permission policies for record permissions."""
+
 from pprint import pformat
+
 from flask import current_app
 from invenio_access.permissions import system_identity
-from invenio_communities.proxies import current_communities
-from invenio_records_permissions.policies import BasePermissionPolicy
-from invenio_records_permissions.generators import SystemProcess, Generator
 from invenio_communities.generators import (
     CommunityCurators,
     CommunityManagers,
-    CommunityOwners,
     CommunityMembers,
+    CommunityOwners,
 )
-from typing import Union
+from invenio_communities.proxies import current_communities
+from invenio_records_permissions.generators import Generator, SystemProcess
+from invenio_records_permissions.policies import BasePermissionPolicy
 
 community_role_generators = {
     "member": CommunityMembers,
@@ -21,9 +37,7 @@ community_role_generators = {
 
 
 class PerFieldEditPermissionCommunityPolicy(BasePermissionPolicy):
-    """
-    A permission policy that allows community roles to edit restricted fields.
-    """
+    """Permission policy that allows community roles to edit restricted fields."""
 
     # By default, only system process, superusers, and community owners, managers,
     # and curators can edit restricted fields
@@ -34,9 +48,7 @@ class PerFieldEditPermissionCommunityPolicy(BasePermissionPolicy):
 
 
 class PerFieldEditPermissionDefaultPolicy(BasePermissionPolicy):
-    """
-    A permission policy that allows all users to edit restricted fields.
-    """
+    """Permission policy that allows all users to edit restricted fields."""
 
     # By default, only superusers and system process can edit restricted fields
     can_edit_restricted_field = [
@@ -44,11 +56,8 @@ class PerFieldEditPermissionDefaultPolicy(BasePermissionPolicy):
     ]
 
 
-def per_field_edit_permission_factory(
-    community_id: str, roles: list[Union[str, Generator]]
-):
-    """
-    Create a permission policy for a specific community's restricted fields.
+def per_field_edit_permission_factory(community_id: str, roles: list[str | Generator]):
+    """Create a permission policy for a specific community's restricted fields.
 
     Args:
         community_id: The ID of the community to create the permission policy for.
