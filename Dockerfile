@@ -12,7 +12,7 @@
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm
 
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
+    # PYTHONDONTWRITEBYTECODE=1 \
     INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     INVENIO_SITE_UI_URL=https://localhost \
     INVENIO_SITE_API_URL=https://localhost \
@@ -32,8 +32,6 @@ WORKDIR /opt/invenio/src
 RUN apt-get update && apt-get install -y \
     build-essential \
     python3-dev \
-    nodejs \
-    npm \
     git \
     libxml2 \
     libxml2-dev \
@@ -51,10 +49,16 @@ RUN apt-get update && apt-get install -y \
     libpcre3-dev \
     libssl-dev \
     libffi-dev \
+    uuid-dev \
     wget \
+    curl \
     && rm -rf /var/lib/apt/lists/* \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
-    && locale-gen
+    && locale-gen \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get update \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
 
 # Configure npm to install packages locally
 RUN npm config set prefix '/opt/invenio/src/node_modules' && \
@@ -70,7 +74,7 @@ RUN uv venv && \
     # Then install the rest of the dependencies without reinstall
     uv sync --frozen --compile-bytecode && \
     export CFLAGS="-Wno-error=incompatible-pointer-types" && \
-    uv pip install --reinstall "xmlsec==1.3.13" "lxml==4.9.3" && \
+    uv pip install --reinstall --no-binary=lxml --no-binary=xmlsec "lxml==5.2.1" "xmlsec==1.3.14" && \
     # Debug system library versions
     echo "System library versions:" && \
     echo "libxml2 version:" && \
@@ -81,12 +85,13 @@ RUN uv venv && \
     pip list | grep -E "xmlsec|lxml" && \
     echo "Checking which libxml2 lxml is using:" && \
     python -c "import lxml.etree; print('lxml.etree.__file__:', lxml.etree.__file__); print('lxml.etree.LIBXML_COMPILED_VERSION:', lxml.etree.LIBXML_COMPILED_VERSION)" && \
-    echo "Checking which libraries lxml is linked against:" && \
-    find /opt/invenio/src/.venv -name "lxml.etree*.so" -exec ldd {} \; | grep libxml && \
-    echo "Checking which libxmlsec1 xmlsec is using:" && \
-    python -c "import xmlsec; print('xmlsec.__file__:', xmlsec.__file__); print('xmlsec.__version__:', xmlsec.__version__); print('xmlsec.xmlsec_version:', xmlsec.xmlsec_version); print('xmlsec.xmlsec_version_info:', xmlsec.xmlsec_version_info)" && \
+    # echo "Checking which libraries lxml is linked against:" && \
+    # find /opt/invenio/src/.venv -name "lxml.etree*.so" -exec ldd {} \; | grep libxml && \
+    # echo "Checking which libxmlsec1 xmlsec is using:" && \
+    # python -c "import xmlsec; print('xmlsec.__file__:', xmlsec.__file__); print('xmlsec.__version__:', xmlsec.__version__); print('xmlsec.xmlsec_version:', xmlsec.xmlsec_version); print('xmlsec.xmlsec_version_info:', xmlsec.xmlsec_version_info)" && \
     echo "Checking xmlsec module location:" && \
-    find /opt/invenio/src/.venv -name "xmlsec*.so" -exec ldd {} \; | grep libxml && \
+    find /opt/invenio/src/.venv -name "xmlsec*.so" && \
+    find /opt/invenio/src/.venv -name "xmlsec*.so" -exec sh -c 'echo "Checking $1:"; ldd -v "$1"' sh {} \; && \
     echo "Checking system libxml2 location:" && \
     ls -l /usr/lib/x86_64-linux-gnu/libxml2.so* && \
     echo "Checking system libxmlsec1 location:" && \

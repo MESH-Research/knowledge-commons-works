@@ -99,11 +99,11 @@ jobs:
         with:
           submodules: recursive
 
-      # Set up Python 3.9 environment
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v1
+      # Set up Python 3.12 environment
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: "3.12.x"
 
       # Cache docker images so they don't rebuild every time
       # - name: Cache Local Images

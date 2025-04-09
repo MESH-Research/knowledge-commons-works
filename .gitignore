@@ -34,6 +34,7 @@ static/xsl/
 
 # Distribution / packaging
 .Python
+build/
 env/
 develop-eggs/
 dist/
@@ -83,6 +84,7 @@ test.db
 .vscode
 
 # Logs
+logs/
 logs/*
 *.log
 **/logs/*
