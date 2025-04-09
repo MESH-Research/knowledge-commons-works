@@ -1,4 +1,20 @@
-# -*- coding: utf-8 -*-
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# Based on invenio-rdm-records, Copyright (C) 2021-2024 TU Wien.
+#
+# invenio-rdm-records is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""UI configuration for the imprint section custom fields.
+
+These fields are included in invenio-rdm-records and simply need to be
+enabled, but we want to customize the UI configuration.
+"""
+
 from invenio_i18n import lazy_gettext as _
 
 KCR_IMPRINT_CUSTOM_FIELDS_UI = {

@@ -1,36 +1,32 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-kcr:notes           Notes related to the record. This value is an array of
-                    objects, each of which has the keys "note_text",
-                    "note_text_sanitized", and "note_description". The "note_text_sanitized" field contains the same string as "note_text" but with any allowed html tags stripped out.
+"""Series custom field.
+
+kcr:book_series     Information on the series of which the current item is a
+                    part. This value is an array of objects, each with the
+                    keys "series_title" and "series_volume".
 """
 
 from invenio_i18n import lazy_gettext as _
-from invenio_records_resources.services.custom_fields import (
-    BaseCF,
-    BaseListCF,
-    TextCF,
-    IntegerCF,
-)
-from marshmallow import fields, validate
-from marshmallow_utils.fields import SanitizedUnicode, SanitizedHTML, StrippedHTML
-from .kcr_metadata_fields import KCR_NAMESPACE
+from invenio_records_resources.services.custom_fields import BaseListCF
+from marshmallow import fields
+from marshmallow_utils.fields import SanitizedUnicode
 
 
 class BookSeriesCF(BaseListCF):
+    """Series custom field."""
+
     def __init__(self, name, **kwargs):
         """Constructor."""
         super().__init__(
             name,
             field_cls=fields.Nested,
-            field_args=dict(
-                nested=dict(
-                    series_title=SanitizedUnicode(), series_volume=SanitizedUnicode()
-                )
-            ),
+            field_args={
+                "nested": {
+                    "series_title": SanitizedUnicode(),
+                    "series_volume": SanitizedUnicode(),
+                },
+            },
             multiple=True,
-            **kwargs
+            **kwargs,
         )
 
     @property

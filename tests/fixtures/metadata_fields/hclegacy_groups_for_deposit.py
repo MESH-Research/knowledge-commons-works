@@ -1,10 +1,17 @@
+"""Metadata fields for legacy groups for deposit.
+
+hclegacy:groups_for_deposit       The groups that the user belongs to. This value
+                                  is an array of objects, each with the keys
+                                  "group_name" and "group_identifier".
+"""
+
 from invenio_records_resources.services.custom_fields import BaseListCF
 from marshmallow import fields
 from marshmallow_utils.fields import SanitizedUnicode
 
 
 class GroupsForDepositCF(BaseListCF):
-    """Nested custom field."""
+    """Custom field for groups for deposit."""
 
     def __init__(self, name, **kwargs):
         """Constructor."""
@@ -18,12 +25,12 @@ class GroupsForDepositCF(BaseListCF):
                 }
             },
             multiple=True,
-            **kwargs
+            **kwargs,
         )
 
     @property
     def mapping(self):
-        """groups_for_deposit search mappings."""
+        """Groups for deposit search mappings."""
         return {
             "type": "object",
             "properties": {

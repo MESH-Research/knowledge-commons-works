@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # This file is part of Knowledge Commons Works
 # Copyright (C) 2023-2024, MESH Research
 #
@@ -19,7 +17,6 @@
 """Default rendering returning a default web page."""
 
 from flask import render_template
-
 from invenio_previewer.proxies import current_previewer
 
 previewable_extensions = [".docx", ".doc", ".pptx", ".ppt", ".tex"]
@@ -36,6 +33,5 @@ def preview(file):
         "custom_previewers/invenio_custom_default_viewer/default_viewer.html",
         file=file,
         js_bundles=current_previewer.js_bundles,
-        css_bundles=current_previewer.css_bundles
-        + ["custom_default_viewer_css.css"],
+        css_bundles=current_previewer.css_bundles + ["custom_default_viewer_css.css"],
     )

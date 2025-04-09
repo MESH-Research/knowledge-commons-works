@@ -1,4 +1,12 @@
-# -*- coding: utf-8 -*-
+"""Metadata field UI configuration for KCR imprint.
+
+Implements UI configuration for the following fields:
+- imprint:imprint.title
+- imprint:imprint.place
+- imprint:imprint.isbn
+- imprint:imprint.pages
+"""
+
 from invenio_i18n import lazy_gettext as _
 
 KCR_IMPRINT_CUSTOM_FIELDS_UI = {

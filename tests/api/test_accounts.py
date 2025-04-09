@@ -1,24 +1,32 @@
-from pprint import pformat
-import pytest
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Integration tests for the accounts API."""
 import datetime
+import json
+from collections.abc import Callable
+from pprint import pformat
+from types import SimpleNamespace
+
+import pytest
+import pytz
 from flask import Flask
 from invenio_accounts import current_accounts
 from invenio_accounts.models import User
 from invenio_record_importer_kcworks.services.users import UsersHelper
-import json
 from kcworks.services.accounts.saml import (
+    acs_handler_factory,
+    knowledgeCommons_account_get_user,
     knowledgeCommons_account_info,
     knowledgeCommons_account_setup,
-    knowledgeCommons_account_get_user,
-    acs_handler_factory,
 )
-import pytz
 from requests_mock.adapter import _Matcher as Matcher
-from types import SimpleNamespace
-from typing import Callable, Optional
 
 from ..fixtures.saml import idp_responses
-from ..fixtures.users import user_data_set, AugmentedUserFixture
+from ..fixtures.users import AugmentedUserFixture, user_data_set
 
 
 @pytest.mark.parametrize(
@@ -61,10 +69,7 @@ def test_knowledgeCommons_account_info(
     mock_user_data_api: Callable,
     user_data_to_remote_data: Callable,
 ) -> None:
-    """
-    Test the custom handler
-    """
-
+    """Test the custom handler for the knowledgeCommons account info."""
     mock_adapter: Matcher = mock_user_data_api(
         user_data["saml_id"],
         user_data_to_remote_data(user_data["saml_id"], user_data["email"], user_data),
@@ -178,9 +183,7 @@ def test_knowledgeCommons_account_get_user(
     mock_user_data_api: Callable,
     user_data_to_remote_data: Callable,
 ) -> None:
-    """
-    Test the account get user function, which should match a SAML login based on
-    either email or ORCID.
+    """Test that account_get_user matches a SAML login based on either email or ORCID.
 
     case 1: The pre-existing KCWorks user has the same email as the IDP response
     case 2: The pre-existing KCWorks user has a different email as the IDP response
@@ -206,10 +209,8 @@ def test_knowledgeCommons_account_get_user(
             new_remote_data=user_data,
         )
     assert u.user is not None
-    app.logger.debug(f"user profile: {u.user.user_profile}")
 
-    matched_user: Optional[User] = knowledgeCommons_account_get_user(idp_data)
-    app.logger.debug(f"matched user: {pformat(matched_user)}")
+    matched_user: User | None = knowledgeCommons_account_get_user(idp_data)
 
     if user_expected:
         assert matched_user is not None
@@ -249,13 +250,11 @@ def test_knowledgeCommons_account_setup(
     idp_data: dict,
     search_clear: Callable,
 ) -> None:
-    """
-    Test the account setup function
+    """Test that account_setup links the user with the IDP.
 
     Test that the user is activated and the user data is updated in the db
     based on the data from the (mocked) remote service api call.
     """
-
     u: AugmentedUserFixture = user_factory(
         email=user_data["email"],
         password="password",
@@ -264,7 +263,7 @@ def test_knowledgeCommons_account_setup(
         new_remote_data=user_data,
     )
     assert isinstance(u.user, User)
-    mock_adapter: Optional[Matcher] = u.mock_adapter
+    mock_adapter: Matcher | None = u.mock_adapter
     assert isinstance(mock_adapter, Matcher)
     # Ensure that any group roles are being added by the setup function
     assert u.user.roles == []
@@ -335,8 +334,7 @@ def test_account_register_on_login(
     celery_worker,
     search_clear: Callable,
 ) -> None:
-    """
-    Test the registration function if a user is not already registered.
+    """Test that account_register_on_login creates a new user from SAML data.
 
     Tests that:
     - The new user is created from SAML data
@@ -401,8 +399,8 @@ def test_account_register_on_login(
         if "groups" in user_data.keys()
         else []
     )
-    assert all([r for r in user.roles if r.name in expected_roles])
-    assert not any([r for r in user.roles if r.name not in expected_roles])
+    assert all(r for r in user.roles if r.name in expected_roles)
+    assert not any(r for r in user.roles if r.name not in expected_roles)
 
     assert next_url == "https://localhost/next-url.com"
 
@@ -415,12 +413,10 @@ def test_create_user_via_importer(
     celery_worker,
     search_clear: Callable,
 ) -> None:
-    """
-    Test the creation of a user programmatically via the importer.
+    """Test the creation of a user programmatically via the importer.
 
     Among other things, test that the correct welcome email is sent to the user.
     """
-    app: Flask = running_app.app
     user = UsersHelper().create_invenio_user(
         user_email="test@example.com",
         full_name="Test User",

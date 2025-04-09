@@ -1,13 +1,30 @@
-import pytest
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
 
+"""Fixtures for subjects vocabulary."""
+
+import pytest
 from invenio_access.permissions import system_identity
 from invenio_pidstore.errors import PIDDoesNotExistError
-from invenio_vocabularies.contrib.subjects.api import Subject
 from invenio_records_resources.proxies import current_service_registry
+from invenio_vocabularies.contrib.subjects.api import Subject
 
 
 @pytest.fixture(scope="module")
 def subjects_service(app):
+    """Pytest fixture providing the current subjects service."""
     return current_service_registry.get("subjects")
 
 
@@ -227,8 +244,7 @@ subject_data = [
 
 @pytest.fixture(scope="module")
 def subject_v(app, subjects_service):
-    """Subject vocabulary record."""
-
+    """Fixture to create the subject vocabulary."""
     for subject in subject_data:
         try:
             subjects_service.read(system_identity, id_=subject["id"])
@@ -237,4 +253,4 @@ def subject_v(app, subjects_service):
                 system_identity,
                 subject,
             )
-    Subject.index.refresh()
+    Subject.index.refresh()  # type: ignore

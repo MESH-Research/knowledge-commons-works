@@ -1,19 +1,28 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Integration tests for usage stats operations."""
+import uuid
 from pprint import pformat
+
 import arrow
+import pytest
 from invenio_access.permissions import system_identity
-from invenio_search.proxies import current_search
-from invenio_stats.proxies import current_stats
-from invenio_stats.tasks import process_events, aggregate_events
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_rdm_records.records.stats.api import Statistics
-import pytest
-import uuid
+from invenio_search.proxies import current_search
+from invenio_stats.proxies import current_stats
+from invenio_stats.tasks import aggregate_events, process_events
 
 from ..fixtures.records import TestRecordMetadata
 
 
 @pytest.mark.skip("Not implemented")
 def test_stat_creation(running_app, db, search_clear):
+    """Test that stats events are emitted when a record is viewed and downloaded ."""
     app = running_app.app
     metadata = TestRecordMetadata(app=app)
     draft = current_rdm_records_service.create(system_identity, metadata.metadata_in)
@@ -30,6 +39,18 @@ def test_stats_backend_processing(
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
+    """Test that stats are processed by the backend.
+
+    This includes
+    - reception of signals from the stats queue
+    - creation of the search index documents for the received events
+    - aggregation of the individual events in aggregation index documents
+    - gathering of the stats from the aggregation index documents and injection
+        into record metadata
+
+    It does *not* include the creation and emission of the stats events,
+    which is tested in test_stats_events_creation.py
+    """
     app = running_app.app
     metadata = TestRecordMetadata(app=app)
     draft = current_rdm_records_service.create(system_identity, metadata.metadata_in)
@@ -40,8 +61,10 @@ def test_stats_backend_processing(
 
     # ensure that the stats queue is empty
     # before we add any events to it
-    old_view_events = [p for p in current_stats.consume("record-view")]
-    old_download_events = [p for p in current_stats.consume("file-download")]
+    old_view_events = [p for p in current_stats.consume("record-view")]  # noqa: C416
+    old_download_events = [  # noqa: C4
+        p for p in current_stats.consume("file-download")
+    ]
     app.logger.debug(f"pre-existing view events: {pformat(old_view_events)}")
     app.logger.debug(f"pre-existing download events: {pformat(old_download_events)}")
 

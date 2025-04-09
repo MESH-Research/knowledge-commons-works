@@ -1,6 +1,4 @@
-"""
-Custom fields to hold legacy metadata for records imported from the CORE
-repository.
+"""Metadata fields for legacy metadata for records imported from the CORE.
 
 Implements the following fields:
 
@@ -39,10 +37,15 @@ hclegacy:record_change_date     The last modification date for the original
 hclegacy:record_creation_date   The creation date for the original CORE
                                 deposit record.
 hclegacy:record_identifier      A number used in the original Solr indexing. It
-                                concatenates the site ID (id number for HC, MLA, etc.) and original item id number in the
-                                CORE database.
+                                concatenates the site ID (id number for HC, MLA,
+                                etc.) and original item id number in the CORE
+                                database.
 hclegacy:society            The HC societies to which the original uploader of
-                            the CORE deposit belonged. It should include the society from whose site the deposit was made, although this may not be the case for bulk uploads. Possible values are: arlisna, hc, msu, ajs, hastac, sah, aseees, caa, up.
+                            the CORE deposit belonged. It should include the
+                            society from whose site the deposit was made,
+                            although this may not be the case for bulk
+                            uploads. Possible values are: arlisna, hc, msu,
+                            ajs, hastac, sah, aseees, caa, up.
 hclegacy:submitter_org_memberships  The HC organizations to which the user
                                     who uploaded the deposit belonged.
 hclegacy:submitter_affiliation  The institutional affiliation of the user
@@ -52,19 +55,9 @@ hclegacy:submitter_id       The user id number (in the HC database) for the
 """
 
 from invenio_i18n import lazy_gettext as _
-from invenio_records_resources.services.custom_fields import BaseCF, TextCF
+from invenio_records_resources.services.custom_fields import TextCF
 from invenio_records_resources.services.custom_fields.number import IntegerCF
-from invenio_records_resources.services.custom_fields.date import (
-    ISODateStringCF,
-)
-from invenio_vocabularies.services.custom_fields import VocabularyCF
-from marshmallow import fields, validate
-from marshmallow_utils.fields import (
-    SanitizedUnicode,
-    SanitizedHTML,
-    StrippedHTML,
-    EDTFDateString,
-)
+from marshmallow_utils.fields import SanitizedUnicode
 
 HCLEGACY_NAMESPACE = {
     "hclegacy": "",
@@ -73,9 +66,12 @@ HCLEGACY_NAMESPACE = {
 HCLEGACY_CUSTOM_FIELDS = [
     # VocabularyCF(
     #     name="hclegacy:collection",
-    #     vocabulary_id="hcCollections",  # controlled vocabulary id defined in the vocabularies.yaml file
-    #     dump_options=True,  # True when the list of all possible values will be visible in the dropdown UI component, typically for small vocabularies
-    #     multiple=False, # if the field accepts a list of values (True) or single value (False)
+    #     vocabulary_id="hcCollections",  # controlled vocabulary id defined in the
+    # vocabularies.yaml file
+    #     dump_options=True,  # True when the list of all possible values will be
+    # visible in the dropdown UI component, typically for small vocabularies
+    #     multiple=False, # if the field accepts a list of values (True) or
+    # single value (False)
     #     field_cls=SanitizedUnicode,
     # ),
     TextCF(name="hclegacy:collection"),
@@ -97,7 +93,7 @@ HCLEGACY_CUSTOM_FIELDS = [
         field_cls=SanitizedUnicode,
     ),
     TextCF(name="hclegacy:record_change_date"),
-    TextCF(  # FIXME: This should be date formatted, but EDTFDateString doesn't accept time
+    TextCF(  # FIXME: This should be date format, but EDTFDateString doesn't accept time
         name="hclegacy:record_creation_date"
         # field_cls=EDTFDateString,
     ),

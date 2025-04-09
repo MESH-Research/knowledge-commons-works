@@ -1,30 +1,37 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Integration tests for notifications."""
+
+import json
+import time
+from pprint import pformat
+
 import pytest
 from flask_security import current_user
 from flask_security.utils import login_user, logout_user
-import json
-from invenio_access.permissions import system_identity, SystemRoleNeed
+from invenio_access.permissions import SystemRoleNeed, system_identity
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_accounts.testutils import login_user_via_session
+from regex import W
 from invenio_communities.utils import load_community_needs
-from invenio_requests.customizations.event_types import (
-    CommentEventType,
-)
-from invenio_requests.records.api import RequestEvent
-from invenio_requests.proxies import (
-    current_requests_service,
-    current_events_service,
-)
-from invenio_rdm_records.proxies import (
-    current_rdm_records_service as records_service,
-)
+from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_rdm_records.records.api import RDMDraft
 from invenio_records_resources.services.errors import PermissionDeniedError
+from invenio_requests.customizations.event_types import CommentEventType
+from invenio_requests.proxies import (
+    current_events_service,
+    current_requests_service,
+)
+from invenio_requests.records.api import RequestEvent
 from invenio_users_resources.records.api import UserAggregate
 from invenio_users_resources.services.users.tasks import reindex_users
 from kcworks.proxies import current_internal_notifications
-from pprint import pformat
-import time
+
 from ..fixtures.records import TestRecordMetadata
 
 
@@ -44,8 +51,7 @@ def test_notify_for_request_acceptance(
     mock_send_remote_api_update_fixture,
     enable_mail_sending,
 ):
-    """
-    Test that the user is notified when a collection submission is accepted.
+    """Test that the user is notified when a collection submission is accepted.
 
     This integration test uses actual requests and events, and uses a live
     asynchronous celery worker to send the notifications. Mail actually passes
@@ -257,8 +263,7 @@ def test_notify_for_request_decline(
     mock_send_remote_api_update_fixture,
     enable_mail_sending,
 ):
-    """
-    Test that the user is notified when a request is declined.
+    """Test that the user is notified when a request is declined.
 
     This integration test uses actual requests and events, and uses a live
     asynchronous celery worker to send the notifications. Mail actually passes
@@ -269,7 +274,6 @@ def test_notify_for_request_decline(
     We patch the `send_remote_api_update` method to avoid actually sending
     the search provisioning api message during record publication.
     """
-
     app = running_app.app
     admin_id = admin.user.id
     community_rec = minimal_community_factory(owner=admin_id)
@@ -469,9 +473,7 @@ def test_notify_for_request_cancellation(
     mock_send_remote_api_update_fixture,
     enable_mail_sending,
 ):
-    """
-    Test that the user is notified when a request is cancelled.
-    """
+    """Test that the user is notified when a request is cancelled."""
     app = running_app.app
     admin_id = admin.user.id
     community_rec = minimal_community_factory(owner=admin_id)
@@ -650,9 +652,7 @@ def test_notify_for_new_request_comment(
     mock_send_remote_api_update_fixture,
     enable_mail_sending,
 ):
-    """
-    Test that the user is notified when a new comment is added
-    """
+    """Test that the user is notified when a new comment is added."""
     app = running_app.app
     admin_id = admin.user.id
     community_rec = minimal_community_factory(owner=admin_id)
@@ -847,11 +847,7 @@ def test_read_unread_notifications_by_service(
     headers,
     search_clear,
 ):
-    """
-    Test that the user's unread notifications are read by the service.
-    """
-
-    # create a user with a community submission
+    """Test that the user's unread notifications are read by the service."""
     u = user_factory(
         email="test@example.com",
         password="test",
@@ -927,12 +923,9 @@ def test_clear_unread_notifications_by_service(
     mailbox,
     enable_mail_sending,
 ):
-    """
-    Test that the user's unread notifications are cleared by the api call.
-    """
+    """Test that the user's unread notifications are cleared by the api call."""
     admin_id = admin.user.id
 
-    # create a user with a community submission
     u = user_factory(
         email="test@example.com",
         password="test",
@@ -1043,9 +1036,7 @@ def test_read_unread_notifications_by_view(
     admin,
     search_clear,
 ):
-    """
-    Test that the user's unread notifications are read by the view.
-    """
+    """Test that the user's unread notifications are read by the view."""
     app = running_app.app
     admin_id = admin.user.id
     # create a user with a community submission
@@ -1142,9 +1133,7 @@ def test_clear_unread_notifications_by_view(
     mailbox,
     enable_mail_sending,
 ):
-    """
-    Test that the user's unread notifications are cleared by the api call.
-    """
+    """Test that the user's unread notifications are cleared by the view."""
     app = running_app.app
     admin_id = admin.user.id
 
@@ -1250,9 +1239,7 @@ def test_clear_one_unread_notification_by_view(
     mailbox,
     enable_mail_sending,
 ):
-    """
-    Test that the user's unread notifications are cleared by the api call.
-    """
+    """Test that the user's unread notifications are cleared by the api call."""
     app = running_app.app
 
     # create a user with a community submission
@@ -1333,9 +1320,7 @@ def test_clear_one_unread_notification_by_view(
 def test_unread_endpoint_bad_methods(
     running_app, db, client, admin, headers_same_origin
 ):
-    """
-    Test that the unread notifications endpoint does not allow bad methods.
-    """
+    """Test that the unread notifications endpoint does not allow bad methods."""
     app = running_app.app
     admin_id = admin.user.id
     admin_email = admin.user.email
@@ -1414,8 +1399,7 @@ def test_notification_on_first_upload(
     mock_send_remote_api_update_fixture,
     enable_mail_sending,
 ):
-    """
-    Test that the admin account is notified on a user's first upload.
+    """Test that the admin account is notified on a user's first upload.
 
     Ensure that a notification of the type "user-first-record.created"
     (built by kcworks.services.notifications.builders.
@@ -1496,8 +1480,8 @@ def test_notification_on_first_upload(
     )  # fmt: on
     assert f"Draft title: {metadata.draft['metadata']['title']}" in email.body
     assert (
-        f"<td><b>Draft title</b></td>\n        <td>{metadata.draft['metadata']['title']}</td>"
-        in email.html
+        f"<td><b>Draft title</b></td>\n        "
+        f"<td>{metadata.draft['metadata']['title']}</td>" in email.html
     )
     assert f"User ID: {user_id}" in email.body
     assert f"<td><b>User ID</b></td>\n        <td>{user_id}</td>" in email.html

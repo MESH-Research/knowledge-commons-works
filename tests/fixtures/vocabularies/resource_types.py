@@ -1,10 +1,18 @@
-import copy
-import pytest
+# Part of Knowledge Commons Works
+# Copyright (C) 2023-2024, MESH Research
+#
+# Knowledge Commons Works is free software; you can redistribute it and/or
+# modify it under the terms of the MIT License; see LICENSE file for more
+# details.
 
+"""Vocabulary pytest fixtures for resource types."""
+
+import copy
+
+import pytest
 from invenio_access.permissions import system_identity
-from invenio_pidstore.errors import PIDAlreadyExists
-from invenio_vocabularies.records.api import Vocabulary
 from invenio_vocabularies.proxies import current_service as vocabulary_service
+from invenio_vocabularies.records.api import Vocabulary
 
 
 @pytest.fixture(scope="module")
@@ -253,12 +261,13 @@ RESOURCE_TYPES = [
 
 @pytest.fixture(scope="module")
 def resource_types():
+    """Fixture to create the resource type vocabulary."""
     return copy.deepcopy(RESOURCE_TYPES)
 
 
 @pytest.fixture(scope="module")
 def resource_type_v(app, resource_type_type, resource_types):
-    """Resource type vocabulary record."""
+    """Fixture to create the resource type vocabulary records."""
     for resource_type in resource_types:
         vocabulary_service.create(system_identity, resource_type)
 

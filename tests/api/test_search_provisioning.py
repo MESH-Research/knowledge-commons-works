@@ -1,16 +1,33 @@
-# import pytest
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
+
+"""Integration tests for search provisioning."""
+
+import json
+import os
+import time
+from pprint import pformat
+
 import arrow
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_rdm_records
-import json
 from kcworks.api_helpers import (
-    format_commons_search_payload,
     format_commons_search_collection_payload,
+    format_commons_search_payload,
 )
-import os
-from pprint import pformat
-import time
 
 from ..fixtures.records import TestRecordMetadata
 
@@ -65,10 +82,7 @@ def test_trigger_search_provisioning(
     actual_edited = edited_draft.data.copy()
 
     assert actual_edited["metadata"]["title"] == "A Romans Story 2"
-    app.logger.debug("actual_edited['id']:")
-    app.logger.debug(pformat(actual_edited["id"]))
     assert mock_adapter.call_count == 0
-    app.logger.debug(f"actual_edited: {pformat(actual_edited)}")
 
     # Publish, now this should prompt a remote API operation
     record = service.publish(system_identity, actual_edited["id"])
@@ -78,7 +92,6 @@ def test_trigger_search_provisioning(
 
     # variable IS set by subscriber (so then reset to True)
     result = json.loads(os.getenv("MOCK_SIGNAL_SUBSCRIBER") or "")
-    app.logger.debug(pformat(result))
     assert result["service_type"] == "rdm_record"
     assert result["service_method"] == "publish"
     assert result["request_url"] == rec_url
@@ -662,6 +675,7 @@ def test_search_id_recording_callback(
     requests_mock,
     create_records_custom_fields,
 ):
+    """Test search ID recording callback."""
     app = running_app.app
 
     # from invenio_vocabularies.proxies import (
@@ -753,6 +767,7 @@ def test_community_id_recording_callback(
     requests_mock,
     create_communities_custom_fields,
 ):
+    """Test community ID recording callback."""
     app = running_app.app
 
     # Temporarily set flag to mock signal subscriber
