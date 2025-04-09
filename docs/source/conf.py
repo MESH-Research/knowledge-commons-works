@@ -14,7 +14,7 @@ release = "0.3.8"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["myst_parser", "sphinx.ext.autosectionlabel"]
+extensions = ["myst_parser", "sphinx_copybutton", "sphinx.ext.autosectionlabel"]
 
 templates_path = ["_templates"]
 exclude_patterns = []

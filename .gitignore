@@ -69,9 +69,6 @@ nosetests.xml
 coverage.xml
 *,cover
 
-# Sphinx documentation
-# docs/_build/
-
 # PyBuilder
 # target/
 

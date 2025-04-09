@@ -19,13 +19,13 @@ Additional email templates are added for KCWorks-specific email types.
 
 ### Modular Framework (invenio-modular-detail-page)
 
-### Overrides in the KCWorks Package (kcworks/site)
+### Detail Page Overrides in the KCWorks Package (knowledge-commons-works/site)
 
 ## Deposit Form Customizations
 
 ### Modular Framework (invenio-modular-deposit-form)
 
-### Overrides in the KCWorks Package (kcworks/site)
+### Deposit Form Overrides in the KCWorks Package (knowledge-commons-works/site)
 
 ## Collections
 
@@ -35,9 +35,28 @@ Additional email templates are added for KCWorks-specific email types.
 
 ### Per-field editing permissions
 
-KCWorks adds the ability to set per-field editing permissions for record owners. This is implemented by a custom service component (``kcworks.services.records.components.PerFieldPermissionsComponent`) that runs during record modification and selectively blocks edits to certain fields. Attempts to edit restricted fields will raise a ValidationError with a message indicating that the field is restricted.
+KCWorks adds the ability to set per-field editing permissions for record owners. This is implemented by two custom service components:
+- `kcworks.services.records.components.PerFieldPermissionsComponent` that runs when record metadata is modified by the RDMRecordService and selectively blocks edits to certain fields. Attempts to edit restricted fields will result in a validation error message being added to the result's list of errors. The field value will not be changed, although other fields may be updated successfully.
+- `kcworks.services.records.record_communities.CommunityChangePermissionsComponent` that runs when a record's communities are changed by the RecordCommunitiesService and prevents unauthorized changes to a record's default community. (It cannot presently block other changes to the record's communities. Communities other than the default community may be freely added and removed.)
 
-The component runs during the `update_draft`, `publish`, `new_version`, and `delete_record` record operations. It looks at which fields have been modified from the previous version of the record (the draft if the record is not yet published, or the published record if it is published) and checks to see if the current user has permission to edit the field in question. If not, it raises a ValidationError with a message indicating that the field is restricted.
+The PerFieldPermissionsComponent runs during the RDMRecordService's `update_draft` record operation. It only takes effect if the record has already been published and has a default community. The component looks at which fields have been modified from the last published version of the record and checks to see whether the current user has permission to edit the field in question. If not, it adds a message to the result's list of errors that looks like this:
+
+```json
+{
+    "field": "custom_fields.kcr:commons_domain",
+    "messages": ["You do not have permission to edit this field because the record is included in the sample_community community. Please contact the community owner or manager for assistance."]
+}
+```
+
+The CommunityChangePermissionsComponent runs during the RecordCommunitiesService's `remove` and `set_default` record operations. It too only takes effect if the record has already been published. The component checks whether the current user has permission to change the record's default community. The result if the user does not have permission varies depending on the operation:
+- `remove`: the community is not removed from the record, and a message is added to the result's list of errors that looks like this:
+```json
+{
+    "field": "parent.communities.default",
+    "messages": ["You do not have permission to edit this field because the record is included in the sample_community community. Please contact the community owner or manager for assistance."]
+}
+```
+- `set_default`: the default community is not changed, and a `invenio_communities.errors.SetDefaultCommunityError` is raised.
 
 #### Per-field permissions configuration
 
@@ -94,6 +113,8 @@ The values for each key in the `RDM_RECORDS_PERMISSIONS_PER_FIELD` config variab
 1. a list of field names (strings) to restrict. In this case, all of the listed fields will be editable only by users with the "manager", "owner", or "curator" role in the community.
 2. a dictionary mapping field names to lists of community role levels (one or more of `owner`, `manager`, `curator`, `admin`, `reader`). In this case, the community roles required to make edits can be specified individually for each field.
 3. a dictionary mapping field names to lists of invenio_records_permissions.generators.Generator objects. In this case, different permissions can again be specified for each field. But the requirements can be more complex than simple community roles. For more details on available generators, or how to define custom generators, see the [invenio-records-permissions documentation](https://inveniordm.docs.cern.ch/reference/permissions/generators/) as well as the `generators.py` files in a number of the InvenioRDM packages.
+
+In order to restrict changes to the community's default community, the `parent.communities.default` field must be included in the list of fields to restrict.
 
 #### Enabling per-field permissions
 
