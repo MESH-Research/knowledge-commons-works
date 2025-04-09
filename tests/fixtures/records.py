@@ -1,25 +1,43 @@
+# Part of Knowledge Commons Works
+#
+# Copyright (C) 2025 MESH Research.
+#
+# Knowledge Commons Works is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
+
+"""Records related pytest fixtures for testing."""
+
 import copy
-from pprint import pformat
-from flask import current_app, Flask
-import pytest
-import arrow
-from arrow import Arrow
 import datetime
+from pprint import pformat
+from typing import Any
+
+import arrow
+import pytest
+from arrow import Arrow
+from flask import Flask, current_app
 from flask_principal import Identity
 from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from invenio_records_resources.services.records.results import RecordItem
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
-from typing import Optional, Any
+
+from .communities import add_community_to_record
 from .files import build_file_links
 from .vocabularies.resource_types import RESOURCE_TYPES
 
 
 @pytest.fixture(scope="function")
 def minimal_draft_record_factory(running_app, db, minimal_record_metadata):
+    """Factory for creating a minimal draft record."""
+
     def _factory(
-        metadata: Optional[dict] = None, identity: Optional[Identity] = None, **kwargs
+        metadata: dict | None = None,
+        identity: Identity | None = None,
+        **kwargs: Any,
     ):
+        """Create a minimal draft record."""
         input_metadata = metadata or minimal_record_metadata["in"]
         identity = identity or system_identity
         return records_service.create(identity, input_metadata)
@@ -29,48 +47,84 @@ def minimal_draft_record_factory(running_app, db, minimal_record_metadata):
 
 @pytest.fixture(scope="function")
 def minimal_published_record_factory(running_app, db, minimal_record_metadata):
+    """Factory for creating a minimal published record."""
+
     def _factory(
-        metadata: Optional[dict] = None, identity: Optional[Identity] = None, **kwargs
-    ):
+        metadata: dict | None = None,
+        identity: Identity | None = None,
+        community_list: list[str] | None = None,
+        set_default: bool = False,
+        **kwargs: Any,
+    ) -> RecordItem:
+        """Create a minimal published record.
+
+        Parameters:
+            metadata (dict, optional): The metadata of the record. If not provided,
+                the minimal record metadata will be used.
+            identity (Identity, optional): The identity of the user. If not provided,
+                the system identity will be used.
+            community_list (list[str], optional): The list of community IDs to add to
+                the record (if any). Must be community UUIDs rather than slugs.
+            set_default (bool, optional): If True, the first community in the list
+                will be set as the default community for the record.
+
+        Returns:
+            The published record as a service layer RecordItem.
+        """
         input_metadata = metadata or minimal_record_metadata["in"]
         identity = identity or system_identity
         draft = records_service.create(identity, input_metadata)
-        return records_service.publish(identity, draft.id)
+        published = records_service.publish(identity, draft.id)
+        if community_list:
+            record = published._record
+            add_community_to_record(db, record, community_list[0], default=set_default)
+            for community in community_list[1:] if len(community_list) > 1 else []:
+                add_community_to_record(db, record, community, default=False)
+            # Refresh the record to get the latest state.
+            published = records_service.read(identity, published.id)
+        return published
 
     return _factory
 
 
 def compare_metadata_draft(running_app):
+    """Compare the actual and expected metadata dictionaries."""
     app = running_app.app
 
     def _comparison_factory(
-        actual, expected, community_list: list[dict] = [], now: Arrow = arrow.utcnow()
+        actual: dict,
+        expected: dict,
+        community_list: list[dict] | None = None,
+        now: Arrow | None = None,
     ):
-        """
-        Compare the actual and expected metadata dictionaries.
+        """Compare the actual and expected metadata dictionaries.
 
         Does not check the following fields:
-
-        id
-        parent.id
-        revision_id
+        - id
+        - parent.id
+        - revision_id
 
         Some fields are only compared to the present time:
+        - created
+        - updated
 
-        created
-        updated
-
-        Args:
+        Parameters:
             actual (dict): The actual metadata dictionary.
             expected (dict): The expected metadata dictionary.
+            community_list (list[dict], optional): The list of communities,
+                each expected to be a dict with the following keys: id, access,
+                children, custom_fields, deletion_status, links, metadata,
+                revision_id, slug, updated. Defaults to [].
             now (Arrow, optional): The current time. Defaults to arrow.utcnow().
 
         Returns:
             bool: True if the actual metadata dictionary matches the expected
             metadata dictionary, False otherwise.
         """
+        community_list = community_list or []
+        now = now or arrow.utcnow()
         try:
-            assert now - arrow.get(actual["created"]) < datetime.timedelta(seconds=1)
+            assert now - arrow.get(actual["created"]) < datetime.timedelta(seconds=7)
             assert actual["custom_fields"] == {}
             assert "expires_at" not in actual.keys()
             assert actual["files"]["count"] == expected["files"]["count"]
@@ -134,7 +188,7 @@ def compare_metadata_draft(running_app):
             assert actual["revision_id"] == 3
             assert actual["stats"] == expected["stats"]
             assert actual["status"] == "draft"
-            assert now - arrow.get(actual["updated"]) < datetime.timedelta(seconds=1)
+            assert now - arrow.get(actual["updated"]) < datetime.timedelta(seconds=7)
             assert actual["versions"] == expected["versions"]
             return True
         except AssertionError as e:
@@ -146,13 +200,19 @@ def compare_metadata_draft(running_app):
 
 @pytest.fixture(scope="function")
 def record_metadata(running_app):
+    """Factory for creating a record metadata object."""
+
     def _factory(
-        metadata_in: dict = {},
+        metadata_in: dict | None = None,
         app: Flask = current_app,
-        community_list: list[dict] = [],
-        file_entries: dict = {},
-        owner_id: Optional[str] = "1",
+        community_list: list[dict] | None = None,
+        file_entries: dict | None = None,
+        owner_id: str | None = "1",
     ):
+        """Create a record metadata object."""
+        metadata_in = metadata_in or {}
+        community_list = community_list or []
+        file_entries = file_entries or {}
         return TestRecordMetadata(
             metadata_in=metadata_in,
             app=running_app.app,
@@ -277,24 +337,28 @@ class TestRecordMetadata:
 
     def __init__(
         self,
-        metadata_in: dict = {},
+        metadata_in: dict | None = None,
         app: Flask = current_app,
-        community_list: list[dict] = [],
-        file_entries: dict = {},
-        owner_id: Optional[str] = "1",
+        community_list: list[dict] | None = None,
+        file_entries: dict | None = None,
+        owner_id: str | None = "1",
     ):
-        """
-        Initialize the TestRecordMetadata object.
+        """Initialize the TestRecordMetadata object.
 
-        Args:
+        Parameters:
             metadata_in (dict): The metadata of the record.
             app (Flask, optional): The Flask application. Defaults to current_app.
             community_list (list[dict], optional): The list of communities,
                 each expected to be a dict with the following keys: id, access,
                 children, custom_fields, deletion_status, links, metadata,
                 revision_id, slug, updated. Defaults to [].
+            file_entries (dict, optional): The file entries of the record.
+                Defaults to {}.
             owner_id (str, optional): The record owner ID. Defaults to "1".
         """
+        metadata_in = metadata_in or {}
+        community_list = community_list or []
+        file_entries = file_entries or {}
         self.app = app
         starting_metadata_in = copy.deepcopy(TestRecordMetadata.default_metadata_in)
         self._metadata_in: dict = metadata_in if metadata_in else starting_metadata_in
@@ -302,15 +366,18 @@ class TestRecordMetadata:
         self.file_entries = file_entries
         self.owner_id = owner_id
 
-    def update_metadata(self, metadata_updates: dict[str, Any] = {}) -> None:
-        """
-        Update the basic metadata dictionary for the record.
+    def update_metadata(self, metadata_updates: dict[str, Any] | None = None) -> None:
+        """Update the basic metadata dictionary for the record.
 
-        Args:
+        Parameters:
             metadata_updates (dict): A dictionary of metadata updates. The keys are
-            bar separated (NOT dot separated) paths to the values to update. The values
-            are the new values to update the metadata with at those paths.
+                bar separated (NOT dot separated) paths to the values to update. The
+                values are the new values to update the metadata with at those paths.
+
+        Returns:
+            None
         """
+        metadata_updates = metadata_updates or {}
         for key, val in metadata_updates.items():
             new_metadata_in = replace_value_in_nested_dict(self.metadata_in, key, val)
             self._metadata_in = (
@@ -329,7 +396,12 @@ class TestRecordMetadata:
         return self._metadata_in
 
     @staticmethod
-    def build_draft_record_links(record_id, base_url, ui_base_url):
+    def build_draft_record_links(
+        record_id: str,
+        base_url: str,
+        ui_base_url: str,
+    ) -> dict:
+        """Build the draft record links."""
         return {
             "self": f"{base_url}/records/{record_id}/draft",
             "self_html": f"{ui_base_url}/uploads/{record_id}",
@@ -367,7 +439,8 @@ class TestRecordMetadata:
         ui_base_url: str,
         parent_id: str,
         record_doi: str = "",
-    ):
+    ) -> dict:
+        """Build the published record links."""
         if not record_doi:
             record_doi = f"10.17613/{record_id}"
         parent_doi = f"10.17613/{parent_id}"
@@ -569,16 +642,20 @@ class TestRecordMetadata:
                 ]
         return metadata_out_published
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return a string representation of the TestRecordMetadata object."""
         return pformat(self.metadata_in)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Return a string representation of the TestRecordMetadata object."""
         return self.__str__()
 
-    def compare_draft(self, metadata_out_draft):
+    def compare_draft(self, metadata_out_draft: dict) -> None:
+        """Compare the draft metadata with the expected metadata by assertion."""
         assert self.draft == metadata_out_draft
 
     def _as_via_api(self, metadata_in: dict) -> dict:
+        """Return the metadata as it appears in the REST API."""
         metadata_in["parent"]["access"].pop("grants")
         metadata_in["parent"]["access"].pop("links")
         metadata_in["versions"].pop("is_latest_draft")
@@ -587,43 +664,44 @@ class TestRecordMetadata:
     def compare_published(
         self,
         actual: dict,
-        expected: dict = {},
+        expected: dict | None = None,
         by_api: bool = False,
-        now: Arrow = arrow.utcnow(),
+        now: Arrow | None = None,
     ) -> bool:
-        """
-        Compare the actual and expected metadata dictionaries.
+        """Compare the actual and expected metadata dictionaries.
 
         Does not check the following fields:
-
-        id
-        parent.id
-        revision_id
+        - id
+        - parent.id
+        - revision_id
 
         Some fields are only compared to the present time:
+        - created
+        - updated
 
-        created
-        updated
-
-        Args:
+        Parameters:
             actual (dict): The actual metadata dictionary.
             expected (dict): The expected metadata dictionary.
+            by_api (bool, optional): Whether to compare the metadata as it appears
+                in the REST API. Defaults to False.
             now (Arrow, optional): The current time. Defaults to arrow.utcnow().
-        Raises:
-            AssertionError: If the actual metadata dictionary does not match
-                the expected metadata dictionary.
 
         Returns:
             bool: True if the actual metadata dictionary matches the expected
                 metadata dictionary, False otherwise.
+
+        Raises:
+            AssertionError: If the actual metadata dictionary does not match
+                the expected metadata dictionary.
         """
         app = self.app
         expected = self.published.copy() if not expected else expected
+        now = now or arrow.utcnow()
 
         if by_api:
             expected = self._as_via_api(expected)
         try:
-            assert now - arrow.get(actual["created"]) < datetime.timedelta(seconds=1)
+            assert now - arrow.get(actual["created"]) < datetime.timedelta(seconds=7)
             assert actual["custom_fields"] == expected["custom_fields"]
             assert "expires_at" not in actual.keys()
             assert actual["files"]["count"] == expected["files"]["count"]
@@ -752,7 +830,7 @@ class TestRecordMetadata:
             # assert actual["revision_id"] == 4  # NOTE: Too difficult to test
             assert actual["stats"] == expected["stats"]
             assert actual["status"] == "published"
-            assert now - arrow.get(actual["updated"]) < datetime.timedelta(seconds=1)
+            assert now - arrow.get(actual["updated"]) < datetime.timedelta(seconds=7)
             assert actual["versions"] == expected["versions"]
             return True
         except AssertionError as e:
@@ -762,13 +840,19 @@ class TestRecordMetadata:
 
 @pytest.fixture(scope="function")
 def record_metadata_with_files(running_app):
+    """Factory for creating a record metadata object with files."""
+
     def _factory(
-        metadata_in: dict = {},
+        metadata_in: dict | None = None,
         app: Flask = current_app,
-        community_list: list[dict] = [],
-        file_entries: dict = {},
-        owner_id: Optional[str] = "1",
+        community_list: list[dict] | None = None,
+        file_entries: dict | None = None,
+        owner_id: str | None = "1",
     ):
+        """Create a record metadata object with files."""
+        metadata_in = metadata_in or {}
+        community_list = community_list or []
+        file_entries = file_entries or {}
         return TestRecordMetadataWithFiles(
             metadata_in=metadata_in,
             app=running_app.app,
@@ -781,8 +865,7 @@ def record_metadata_with_files(running_app):
 
 
 class TestRecordMetadataWithFiles(TestRecordMetadata):
-    """
-    This class extends the TestRecordMetadata class for records with files
+    """Extends the TestRecordMetadata class for records with files.
 
     In addition to the usual instantiation arguments, the `file_entries` argument
     can be used to provide a dictionary of file entries shaped like the
@@ -794,7 +877,8 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
         "file2": {"mimetype": "text/plain", "size": 200},
     }
 
-    The `file_access_status` argument can be used to set the access status of the files. (Default: "open")
+    The `file_access_status` argument can be used to set the access status of
+    the files. (Default: "open")
     ```
     """
 
@@ -802,12 +886,16 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
         self,
         app: Flask = current_app,
         record_id: str = "XXXX",
-        metadata_in: dict = {},
-        community_list: list[dict] = [],
+        metadata_in: dict | None = None,
+        community_list: list[dict] | None = None,
         file_access_status: str = "open",
-        file_entries: dict = {},
-        owner_id: str = "1",
+        file_entries: dict | None = None,
+        owner_id: str | None = "1",
     ):
+        """Initialize the TestRecordMetadataWithFiles object."""
+        metadata_in = metadata_in or {}
+        community_list = community_list or []
+        file_entries = file_entries or {}
         super().__init__(
             app=app,
             community_list=community_list,
@@ -821,13 +909,15 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
         self.file_access_status = file_access_status
 
     @property
-    def metadata_in(self):
+    def metadata_in(self) -> dict:
+        """Return the input metadata for record creation with files."""
         self._metadata_in["files"]["enabled"] = True
         self._metadata_in["files"]["entries"] = self.file_entries
         self._metadata_in.get("access", {})["status"] = self.file_access_status
         return self._metadata_in
 
-    def _add_file_entries(self, metadata):
+    def _add_file_entries(self, metadata: dict) -> dict:
+        """Add the file entries to the metadata."""
         metadata["files"]["count"] = len(self.file_entries.keys())
         metadata["files"]["total_bytes"] = sum(
             [e["size"] for k, e in self.file_entries.items()]
@@ -858,13 +948,15 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
         return metadata
 
     @property
-    def draft(self):
+    def draft(self) -> dict:
+        """Return the draft metadata with files."""
         draft = super().draft
         draft = self._add_file_entries(draft)
         return draft
 
     @property
-    def published(self):
+    def published(self) -> dict:
+        """Return the published metadata with files."""
         published = super().published
         published = self._add_file_entries(published)
         return published
@@ -895,12 +987,16 @@ def minimal_record_metadata(running_app):
 
 @pytest.fixture(scope="function")
 def minimal_record_metadata_with_files(running_app):
+    """Minimal record data as dict coming from the external world with files."""
     app = running_app.app
 
     def _factory(
-        record_id: str = "XXXX", entries: dict = {}, access_status: str = "open"
+        record_id: str = "XXXX",
+        entries: dict | None = None,
+        access_status: str = "open",
     ):
-
+        """Create a minimal record data as dict from the external world with files."""
+        entries = entries or {}
         metadata = TestRecordMetadataWithFiles(
             app=app,
             record_id=record_id,

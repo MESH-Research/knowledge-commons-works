@@ -1,19 +1,43 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2023, 2024 Knowledge Commons
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License
+
+"""Pytest fixtures for communities."""
+
+import traceback
+from collections.abc import Callable
+
 import pytest
-from invenio_access.permissions import system_identity, authenticated_user
+from flask import current_app
+from flask_sqlalchemy import SQLAlchemy
+import marshmallow as ma
+from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_communities.communities.records.api import Community
-from invenio_communities.members.records.api import Member
 from invenio_communities.proxies import current_communities
-import marshmallow as ma
-import traceback
-from typing import Callable, Optional
+from invenio_rdm_records.records.api import RDMRecord
+from invenio_rdm_records.proxies import (
+    current_record_communities_service,
+    current_rdm_records_service,
+)
+from invenio_rdm_records.utils import get_or_create_user
+
+
+def add_community_to_record(
+    db: SQLAlchemy, record: RDMRecord, community_id: str, default: bool = False
+) -> None:
+    """Add a community to a record."""
+    record.parent.communities.add(community_id, default=default)  # type: ignore
+    record.parent.commit()  # type: ignore
+    db.session.commit()  # type: ignore
+    current_rdm_records_service.indexer.index(record, arguments={"refresh": True})
 
 
 def make_community_member(user_id: int, role: str, community_id: str) -> None:
-    """
-    Make a member of a community.
-    """
+    """Make a member of a community."""
     current_communities.service.members.add(
         system_identity,
         community_id,
@@ -24,9 +48,7 @@ def make_community_member(user_id: int, role: str, community_id: str) -> None:
 
 @pytest.fixture(scope="function")
 def communities_links_factory():
-    """
-    Create links for communities for testing.
-    """
+    """Create links for communities for testing."""
 
     def assemble_links(community_id: str, slug: str):
         return {
@@ -55,11 +77,10 @@ def communities_links_factory():
 
 @pytest.fixture(scope="function")
 def group_communities_data_factory():
-    """
-    Create metadata for group collections for testing.
-    """
+    """Create metadata for group collections for testing."""
 
     def assemble_data() -> list[dict]:
+        """Create metadata for group collections for testing."""
         communities_data = []
         groups_data = {
             "knowledgeCommons": [
@@ -144,7 +165,7 @@ def group_communities_data_factory():
                         "kcr:commons_instance": instance,
                         "kcr:commons_group_id": c[0],
                         "kcr:commons_group_name": c[1],
-                        "kcr:commons_group_description": (f"{c[1]} description"),
+                        "kcr:commons_group_description": f"{c[1]} description",
                         "kcr:commons_group_visibility": "public",
                     },
                 }
@@ -158,30 +179,33 @@ def group_communities_data_factory():
 def minimal_community_factory(
     app, db, user_factory, create_communities_custom_fields, requests_mock, monkeypatch
 ):
-    """
-    Create a minimal community for testing.
+    """Create a minimal community for testing.
 
     Returns a function that can be called to create a minimal community
     for testing. That function returns the created community record.
     """
 
     def create_minimal_community(
-        owner: Optional[int] = None,
-        slug: Optional[str] = None,
-        metadata: dict = {},
-        access: dict = {},
-        custom_fields: dict = {},
-        members: dict = {"reader": [], "curator": [], "manager": [], "owner": []},
+        owner: int | None = None,
+        slug: str | None = None,
+        metadata: dict | None = None,
+        access: dict | None = None,
+        custom_fields: dict | None = None,
+        members: dict | None = None,
         mock_search_api: bool = True,
-    ):
-        """
-        Create a minimal community for testing.
+    ) -> Community:
+        """Create a minimal community for testing.
 
         Allows overriding of default metadata, access, and custom fields values.
         Also allows specifying the members of the community with their roles.
 
         If no owner is specified, a new user is created and used as the owner.
         """
+        metadata = metadata or {}
+        access = access or {}
+        custom_fields = custom_fields or {}
+        members = members or {"reader": [], "curator": [], "manager": [], "owner": []}
+
         # Mock the search API for the community
         if mock_search_api:
             # Set up mock subscriber and intercept message to callback
@@ -204,7 +228,12 @@ def minimal_community_factory(
             )  # noqa: E501
 
         if owner is None:
-            owner = user_factory().user.id
+            owner_user = get_or_create_user(
+                email="myuser@inveniosoftware.org",
+            )
+            if not owner_user:
+                owner_user = user_factory()
+            owner = owner_user.id
         slug = slug or "my-community"
 
         access_data = {
@@ -272,8 +301,7 @@ def minimal_community_factory(
 def sample_communities_factory(
     app, db, create_communities_custom_fields, group_communities_data_factory
 ) -> Callable:
-    """
-    Create communities for testing linked to commons groups.
+    """Create communities for testing linked to commons groups.
 
     Returns a function that can be called to create communities for testing
     with the extra metadata linking them to commons groups. If the function
@@ -281,21 +309,22 @@ def sample_communities_factory(
     it will use those instead of the default metadata. Otherwise, it will
     use the default list returned by the `group_communities_data_set` function.
 
-    Args:
-        app: The Flask application object fixture.
-        db: The database object fixture.
-        create_communities_custom_fields: A fixture that creates custom fields
-            for kcworks communities.
+    Parameters:
+        app (Flask): The Flask application object fixture.
+        db (SQLAlchemy): The database object fixture.
+        create_communities_custom_fields (Callable): A fixture that creates
+            custom fields for kcworks communities.
+        group_communities_data_factory (Callable): A fixture that creates
+            metadata for group collections for testing.
 
     Returns:
         Callable: A function that creates communities for testing linked
                   to commons groups.
     """
 
-    def create_communities(metadata: list[dict] = []) -> None:
-        """
-        Create communities for testing linked to commons groups.
-        """
+    def create_communities(metadata: list[dict] | None = None) -> None:
+        """Create communities for testing linked to commons groups."""
+        metadata = metadata or []
         communities = current_communities.service.read_all(
             identity=system_identity, fields=["slug"]
         )

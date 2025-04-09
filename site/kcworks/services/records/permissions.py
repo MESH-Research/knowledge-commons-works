@@ -1,97 +1,110 @@
-from pprint import pformat
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
+
+"""Permission policies for record permissions."""
+
+from functools import reduce
+from collections.abc import Sequence
+
 from flask import current_app
-from invenio_access.permissions import system_identity
-from invenio_communities.proxies import current_communities
-from invenio_records_permissions.policies import BasePermissionPolicy
-from invenio_records_permissions.generators import SystemProcess, Generator
+from invenio_access.permissions import Permission, system_identity
+from invenio_administration.generators import Administration
 from invenio_communities.generators import (
     CommunityCurators,
     CommunityManagers,
-    CommunityOwners,
     CommunityMembers,
+    CommunityOwners,
 )
-from typing import Union
+from invenio_communities.proxies import current_communities
+from invenio_records_permissions.generators import Generator, SystemProcess
 
 community_role_generators = {
-    "member": CommunityMembers,
+    "reader": CommunityMembers,
     "curator": CommunityCurators,
     "manager": CommunityManagers,
     "owner": CommunityOwners,
 }
 
 
-class PerFieldEditPermissionCommunityPolicy(BasePermissionPolicy):
-    """
-    A permission policy that allows community roles to edit restricted fields.
-    """
-
-    # By default, only system process, superusers, and community owners, managers,
-    # and curators can edit restricted fields
-    can_edit_restricted_field = [
-        SystemProcess(),
-        *[g() for r, g in community_role_generators.items() if r != "member"],
-    ]
-
-
-class PerFieldEditPermissionDefaultPolicy(BasePermissionPolicy):
-    """
-    A permission policy that allows all users to edit restricted fields.
-    """
-
-    # By default, only superusers and system process can edit restricted fields
-    can_edit_restricted_field = [
-        SystemProcess(),
-    ]
-
-
 def per_field_edit_permission_factory(
-    community_id: str, roles: list[Union[str, Generator]]
-):
-    """
-    Create a permission policy for a specific community's restricted fields.
+    community_id: str | None, roles: Sequence[str | Generator | type]
+) -> Permission:
+    """Create a permission policy for a specific community's restricted fields.
+
+    Creates a permission policy for editing restricted fields. The policy
+    furnishes just one action: "edit_restricted_field".
 
     Args:
         community_id: The ID of the community to create the permission policy for.
-        roles: A list of roles to create the permission policy for. If a list of
-        strings, the roles will be converted to the corresponding built-in generator.
-        If a list of invenio_records_permissions.generators.Generator objects, the
-        generators will be used directly.
+        roles: A list of roles to create the permission policy for.
 
-        # FIXME: What happens if an empty list of roles is passed in?
+    Note:
+        If the community ID is not provided or is "default", the system default policy
+        will be returned. This allows only system process and admins.
+
+        If the provided `roles` list is a list of strings, the roles will be
+        converted to the corresponding built-in generators. If the list is a
+        list of invenio_records_permissions.generators.Generator objects, the
+        generators will be used directly. If the list is empty, the default
+        policy will be returned.
+
+        If a community ID is provided, but the `roles` list is empty, the policy
+        will be a default community policy that allows owners, managers, and
+        curators to edit restricted fields.
 
     Returns:
         A permission policy for the community's restricted fields.
     """
-    community = current_communities.service.read(system_identity, community_id)._record
-    if not community_id or community_id == "default":
-        policy = PerFieldEditPermissionDefaultPolicy(
-            action="edit_restricted_field",
-            community_id=community_id,
-            record=community,
+    role_generators = [  # Default even if no community ID or roles
+        SystemProcess,
+        Administration,
+    ]
+    community_record = None
+
+    try:
+        # Handle roles first
+        if roles:
+            if isinstance(list(roles)[0], str):
+                assert all(r in community_role_generators.keys() for r in roles)
+                role_generators.extend(
+                    [g for r, g in community_role_generators.items() if r in roles]
+                )
+            else:
+                role_generators.extend(roles)
+
+        # Handle community ID
+        if community_id and community_id != "default":
+            community = current_communities.service.read(system_identity, community_id)
+            community_record = community._record
+            community_id = community.id
+            if not roles:  # Default policy if there's a community ID but no roles
+                role_generators.extend(
+                    [
+                        g
+                        for r, g in community_role_generators.items()
+                        if r not in ["reader", "curator"]
+                    ],
+                )
+
+        generated_needs = reduce(
+            lambda acc, g: acc
+            + g().needs(record=community_record, community_id=community_id),
+            role_generators,
+            [],
         )
-        role_generators = {}
-    else:
-        policy = PerFieldEditPermissionCommunityPolicy(
-            action="edit_restricted_field",
-            community_id=community_id,
-            record=community,
-        )
-        role_generators = community_role_generators.copy()
-    if roles and isinstance(list(roles)[0], str):
-        current_app.logger.debug(f"Roles: {list(roles)}")
-        current_app.logger.info(
-            f"Role generators: {pformat({r: g for r, g in role_generators.items() if r in roles})}"
-        )
-        policy.can_edit_restricted_field = [
-            SystemProcess(),
-            *[g() for r, g in role_generators.items() if r in roles],
-        ]
-    elif roles and isinstance(list(roles)[0], Generator):
-        policy.can_edit_restricted_field = [
-            SystemProcess(),
-            *roles,
-        ]
-    current_app.logger.info(
-        f"Policy.can_edit_restricted_field: {pformat(policy.can_edit_restricted_field)}"
-    )
+    except (KeyError, TypeError, AssertionError) as e:
+        msg = "Error generating needs for per-field edit permission"
+        raise PermissionError(msg) from e
+    policy = Permission(*generated_needs)
     return policy

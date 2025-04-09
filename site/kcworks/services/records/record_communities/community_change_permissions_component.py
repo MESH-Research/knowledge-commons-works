@@ -1,77 +1,93 @@
-from typing import Any, Dict, Optional
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
+
+"""Service component allowing fine-grained control of changing record communities."""
+
+from pprint import pformat
+from typing import Any
 
 from flask import current_app
+from flask_principal import Identity
+from invenio_access.permissions import system_identity
+from invenio_communities.errors import SetDefaultCommunityError
+from invenio_communities.proxies import current_communities
+from invenio_rdm_records.proxies import current_rdm_records_service
+from invenio_rdm_records.records.api import RDMRecord
+from invenio_records_resources.services.errors import PermissionDeniedError
 from invenio_records_resources.services.records.components.base import ServiceComponent
 from invenio_records_resources.services.uow import UnitOfWork
 from kcworks.services.records.permissions import per_field_edit_permission_factory
-from invenio_records_resources.services.errors import PermissionDeniedError
-from invenio_rdm_records.records.api import RDMRecord
+from kcworks.services.records.components.per_field_permissions_component import (
+    PerFieldEditPermissionsComponent,
+)
 
 
 class CommunityChangePermissionsComponent(ServiceComponent):
-    """
-    A service component that prevents unauthorized changes to the community of a record
+    """Service component that prevents unauthorized changes to a record's communities.
 
     Intended for use with the RecordCommunitiesService from invenio-rdm-records.
     """
 
     def _check_default_community_permission(
         self,
-        identity: Any,
+        identity: Identity,
         record: RDMRecord,
         action: str,
-    ) -> None:
-        """
-        Check if the identity has permission to modify the default community.
+        old_record: RDMRecord | None = None,
+    ) -> bool:
+        """Check if the identity has permission to modify the default community.
 
-        Args:
-            identity: The identity to check permissions for
-            record: The record containing the default community
-            action: The action being performed ("remove" or "change")
+        Parameters:
+            identity (Any): The identity to check permissions for
+            record (RDMRecord): The record containing the default community
+            action (str): The action being performed ("remove" or "change")
+            old_record (RDMRecord | None, optional): The previous version of the record
+                to check permissions for. Defaults to None.
+
+        Returns:
+            bool: True if the identity has permission, False otherwise
 
         Raises:
             PermissionDeniedError: If the identity doesn't have permission
+            SetDefaultCommunityError: If the identity doesn't have permission to change
+                the default community
         """
         if not (
             record.parent
-            and record.parent.communities
-            and record.parent.communities.default
+            and record.parent.communities  # type: ignore
+            and record.parent.communities.default  # type: ignore
         ):
-            return
+            return True
+
+        communities = (
+            old_record.parent.communities  # type: ignore
+            if old_record
+            else record.parent.communities  # type: ignore
+        )
 
         # Get the permissions configuration for the community
-        community_configs = current_app.config.get(
-            "RDM_RECORDS_PERMISSIONS_PER_FIELD", {}
+        community_config = PerFieldEditPermissionsComponent.get_permissions_config(
+            communities
         )
-        community_config = community_configs.get(
-            record.parent.communities.default.slug, {}
-        )
-
-        if not community_config:
-            community_config = community_configs.get("default", {})
 
         # Check if the field is restricted
         policy = community_config.get("policy", {})
-        if isinstance(policy, list):
-            if "parent.communities.default" in policy:
-                # Use default editors for the community
-                default_editors = community_config.get(
-                    "default_editors", ["manager", "owner", "curator"]
-                )
-                policy = {"parent.communities.default": default_editors}
-            else:
-                policy = {}
-
         # If the field is restricted, check permissions
-        if "parent.communities.default" in policy:
+        if "parent.communities.default" in policy.keys():
             community_field_policy = per_field_edit_permission_factory(
-                community_id=(
-                    record.parent.communities.default.id
-                    if record.parent
-                    and record.parent.communities
-                    and record.parent.communities.default
-                    else "default"
-                ),
+                community_id=communities.default.id,  # type: ignore
                 roles=policy["parent.communities.default"],
             )
             if not community_field_policy.allows(identity):
@@ -79,61 +95,111 @@ class CommunityChangePermissionsComponent(ServiceComponent):
                     f"You do not have permission to {action} this default community. "
                     f"Please contact the community owner or manager for assistance."
                 )
+        return True
 
     def remove(
         self,
-        identity: Any,
-        _id: str,
-        data: Dict[str, Any],
-        uow: Optional[UnitOfWork] = None,
+        identity: Identity,
+        record: RDMRecord,
+        communities: list[dict[str, Any]],
+        errors: list[dict[str, Any]],
+        uow: UnitOfWork | None = None,
         **kwargs: Any,
     ) -> None:
-        """
-        Prevent unauthorized removal of communities from a record.
+        """Prevent unauthorized removal of the default community from a record.
 
-        Args:
-            identity: The identity performing the action
-            _id: The record ID
-            data: The data containing the communities to remove
-            uow: The unit of work manager
-            **kwargs: Additional keyword arguments
-        """
-        # Resolve the record from the id using the service's record_cls
-        record = self.service.record_cls.pid.resolve(_id)
+        If the permissions are not granted, the default community is not removed.
+        An error is added to the errors list for the service operation.
 
-        # Check if any of the communities to be removed is the default community
-        communities_to_remove = [c["id"] for c in data.get("communities", [])]
+        Parameters:
+            identity (Any): The identity performing the action
+            _id (str): The record ID
+            data (dict[str, Any]): The data containing the communities to remove
+            errors (list[dict[str, Any]]): The errors to add to
+            uow (UnitOfWork | None, optional): The unit of work manager. Defaults
+                to None.
+            **kwargs (Any): Additional keyword arguments
+        """
+        communities_to_remove = [c["id"] for c in communities]
         if (
             record.parent
-            and record.parent.communities
-            and record.parent.communities.default
+            and record.parent.communities  # type: ignore
+            and record.parent.communities.default  # type: ignore
         ):
-            default_community_id = record.parent.communities.default.id
-            if default_community_id in communities_to_remove:
-                self._check_default_community_permission(identity, record, "remove")
+            default_community_id = record.parent.communities.default.id  # type: ignore
+            if str(default_community_id) in communities_to_remove:
+                try:
+                    self._check_default_community_permission(identity, record, "remove")
+                except PermissionDeniedError:
+                    communities.remove(
+                        next(
+                            c
+                            for c in communities
+                            if c["id"] == str(default_community_id)
+                        )
+                    )
+                    errors.append(
+                        {
+                            "field": "parent.communities.default",
+                            "message": (
+                                "You do not have permission to remove this community: "
+                                f"{default_community_id}. Please contact the community"
+                                " owner or manager for assistance."
+                            ),
+                        }
+                    )
 
     def set_default(
         self,
-        identity: Any,
-        _id: str,
-        data: Dict[str, Any],
-        uow: Optional[UnitOfWork] = None,
+        identity: Identity,
+        record: RDMRecord,
+        default_community_id: str | None,
+        valid_data: dict[str, Any],
+        uow: UnitOfWork | None = None,
         **kwargs: Any,
     ) -> None:
-        """
-        Prevent unauthorized changes to the default community.
+        """Prevent unauthorized changes to the default community.
 
-        Args:
-            identity: The identity performing the action
-            _id: The record ID
-            data: The data containing the new default community
-            uow: The unit of work manager
-            **kwargs: Additional keyword arguments
-        """
-        # Resolve the record from the id using the service's record_cls
-        record = self.service.record_cls.pid.resolve(_id)
+        If the permissions are not granted, the default community is not changed.
+        An error is raised.
 
-        # Get the new default community ID from the data
-        new_default_id = data.get("default", {}).get("id")
-        if new_default_id:
-            self._check_default_community_permission(identity, record, "change")
+        Parameters:
+            identity (Any): The identity performing the action
+            record (RDMRecord): The record containing the default community
+            default_community_id (str | None): The new default community ID
+            valid_data (dict[str, Any]): The data containing the new default community
+            uow (UnitOfWork | None, optional): The unit of work manager. Defaults
+                to None.
+            **kwargs (Any): Additional keyword arguments
+
+        Raises:
+            PermissionDeniedError: If the identity doesn't have permission
+        """
+        if record.is_published:
+            published_version_rec = RDMRecord.get_latest_published_by_parent(
+                record.parent
+            )
+            # NOTE: This is a hack to get the previous version of the record
+            #       via the search engine which has not yet been updated
+            #       with changes made during the current service operation.
+            published_version = current_rdm_records_service.read(
+                system_identity,
+                id_=published_version_rec.pid.pid_value,  # type: ignore
+            )
+            if published_version._record.parent.communities.default:  # type: ignore
+                previous_default_id = (
+                    published_version._record.parent.communities.default.id  # type: ignore
+                )
+            else:
+                previous_default_id = None
+
+            if previous_default_id != default_community_id:
+                try:
+                    self._check_default_community_permission(
+                        identity,
+                        record,
+                        "change",
+                        old_record=published_version._record,
+                    )
+                except PermissionDeniedError as e:
+                    raise SetDefaultCommunityError() from e

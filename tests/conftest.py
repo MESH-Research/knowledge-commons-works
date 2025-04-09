@@ -1,22 +1,29 @@
-from collections import namedtuple
-from pprint import pformat
-import os
-from pathlib import Path
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Top-level pytest configuration for KCWorks tests."""
+
 import importlib
+import os
 import shutil
 import tempfile
+from collections import namedtuple
+from pathlib import Path
+
+import jinja2
+import pytest
 from invenio_app.factory import create_app as _create_app
 from invenio_queues import current_queues
 from invenio_search.proxies import current_search_client
-import jinja2
-import pytest
-import importlib.util
 
-from .fixtures.identifiers import test_config_identifiers
 from .fixtures.custom_fields import test_config_fields
-from .fixtures.stats import test_config_stats
-from .fixtures.saml import test_config_saml
 from .fixtures.frontend import MockManifestLoader
+from .fixtures.identifiers import test_config_identifiers
+from .fixtures.saml import test_config_saml
+from .fixtures.stats import test_config_stats
 
 
 def load_config():
@@ -32,7 +39,7 @@ def load_config():
         raise ValueError("Failed to load invenio.cfg")
     config = importlib.util.module_from_spec(spec)
 
-    with open(config_path, "r") as f:
+    with open(config_path) as f:
         exec(f.read(), config.__dict__)
 
     # Convert module attributes to a dictionary, excluding private attributes
@@ -110,7 +117,6 @@ test_config = {
     "MAIL_DEFAULT_SENDER": os.getenv("INVENIO_ADMIN_EMAIL"),
     #  'OAUTH2_CACHE_TYPE': 'simple',
     #  'OAUTHLIB_INSECURE_TRANSPORT': True,
-    "RATELIMIT_ENABLED": False,
     "SECRET_KEY": "test-secret-key",
     "SECURITY_PASSWORD_SALT": "test-secret-key",
     "WEBPACKEXT_MANIFEST_LOADER": MockManifestLoader,
@@ -152,6 +158,7 @@ test_config["SITE_UI_URL"] = os.environ.get(
 
 @pytest.fixture(scope="module")
 def extra_entry_points() -> dict:
+    """Extra entry points fixture for KCWorks."""
     return {
         "invenio_base.api_apps": ["kcworks = kcworks.ext:KCWorks"],
         "invenio_base.apps": ["kcworks = kcworks.ext:KCWorks"],
@@ -164,6 +171,7 @@ def extra_entry_points() -> dict:
 
 @pytest.fixture(scope="session")
 def celery_config(celery_config):
+    """Celery config fixture for KCWorks."""
     celery_config["logfile"] = str(log_folder_path / "celery.log")
     celery_config["loglevel"] = "DEBUG"
     celery_config["task_always_eager"] = True
@@ -176,6 +184,7 @@ def celery_config(celery_config):
 
 @pytest.fixture(scope="session")
 def celery_enable_logging():
+    """Celery enable logging fixture for KCWorks."""
     return True
 
 
@@ -195,8 +204,6 @@ def celery_enable_logging():
 @pytest.yield_fixture(scope="module")
 def location(database):
     """Creates a simple default location for a test.
-
-    Scope: function
 
     Use this fixture if your test requires a `files location <https://invenio-
     files-rest.readthedocs.io/en/latest/api.html#invenio_files_rest.models.
@@ -245,8 +252,6 @@ RunningApp = namedtuple(
 )
 
 
-# This fixture allows us to pass each test a list of commonly used fixtures
-# with a single name.
 @pytest.fixture(scope="function")
 def running_app(
     app,
@@ -274,8 +279,6 @@ def running_app(
     All of these fixtures are often needed together, so collecting them
     under a semantic umbrella makes sense.
     """
-
-    print("DATABASE", os.getenv("SQLALCHEMY_DATABASE_URI"))
     return RunningApp(
         app,
         location,
@@ -301,17 +304,22 @@ def running_app(
 
 @pytest.fixture(scope="function")
 def search_clear(search_clear):
-    """Clear search indices after test finishes (function scope)."""
-    # below should be done in the search_clear fixture
-    # list(current_search.create())
-    # list(current_search.put_templates())
+    """Clear search indices after test finishes (function scope).
+
+    the search_clear fixture should each time start by running
+    ```python
+    current_search.create()
+    current_search.put_templates()
+    ```
+    and then clear the indices during the fixture teardown. But
+    this doesn't catch the stats indices, so we need to add an
+    additional step to delete the stats indices and template manually.
+    Otherwise, the stats indices aren't cleared between tests.
+    """
     yield search_clear
 
     # FIXME: Resource types are getting deleted from the index after
     # class finishes
-
-    # Have to manually delete to catch stats indices
-    # otherwise they aren't cleared between tests
     current_search_client.indices.delete(index="*")
     current_search_client.indices.delete_template("*")
 
@@ -321,6 +329,7 @@ def template_loader():
     """Fixture providing overloaded and custom templates to test app."""
 
     def load_tempates(app):
+        """Load templates for the test app."""
         site_path = (
             Path(__file__).parent.parent
             / "site"
@@ -346,7 +355,6 @@ def template_loader():
     return load_tempates
 
 
-# Here we're setting up the module-scoped app fixture.
 @pytest.fixture(scope="module")
 def app(
     app,
@@ -356,7 +364,14 @@ def app(
     template_loader,
     admin_roles,
 ):
-    """This fixture provides an app with the typically needed fixtures."""
+    """This fixture provides an app with the typically needed basic fixtures.
+
+    This fixture should be used in conjunction with the `running_app`
+    fixture to provide a complete app with all the typically needed
+    fixtures. This fixture sets up the basic functions like db, search,
+    and template loader once per modules. The `running_app` fixture is function
+    scoped and initializes all the fixtures that should be reset between tests.
+    """
     current_queues.declare()
     template_loader(app)
     yield app
@@ -364,15 +379,18 @@ def app(
 
 @pytest.fixture(scope="module")
 def app_config(app_config) -> dict:
+    """App config fixture for KCWorks."""
     for k, v in test_config.items():
         app_config[k] = v
-    print("CONFIG", app_config["ACCOUNTS_USER_PROFILE_SCHEMA"])
-    print()
-    print("DATABASE", os.getenv("SQLALCHEMY_DATABASE_URI"))
 
     return app_config
 
 
 @pytest.fixture(scope="module")
 def create_app(instance_path, entry_points):
+    """Create the app fixture for KCWorks.
+
+    This initializes the basic Flask app which will then be used
+    to set up the `app` fixture with initialized services.
+    """
     return _create_app
