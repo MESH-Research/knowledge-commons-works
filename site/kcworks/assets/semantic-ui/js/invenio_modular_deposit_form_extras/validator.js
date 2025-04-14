@@ -47,7 +47,7 @@ addMethod(yupString, "dateInSequence", function () {
   });
 });
 
-const validationSchema = yupObject().shape({
+const validationSchema2 = yupObject().shape({
   access: yupObject().shape({}),
   custom_fields: yupObject().shape({
     "kcr:ai_usage": yupObject().shape({
@@ -230,5 +230,7 @@ const validationSchema = yupObject().shape({
 //   }
 //   return errors;
 // };
+
+const validationSchema = yupObject().shape({});
 
 export { validationSchema };
