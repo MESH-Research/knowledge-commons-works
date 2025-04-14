@@ -53,6 +53,7 @@ const defaultLabels = {
   "metadata.subjects": i18next.t("Keywords and subjects"),
   "access.embargo.until": i18next.t("Embargo until"),
   "pids.doi": i18next.t("DOI"),
+  "pids": i18next.t("DOI"),
 };
 
 const ACTIONS = {
@@ -138,6 +139,165 @@ const ACTIONS = {
   },
 };
 
+/**
+ * Replace select error messages with more readable equivalents
+ * @param {string} error
+ * @returns {string}
+ */
+function makeErrorReadable(error) {
+  const readableEquivalents = {
+    "Missing data for required field.":
+      "Missing a value for a required field.",
+    "Field may not be null.":
+      "Field cannot be empty.",
+  };
+  console.log(
+    "errorMessages error:",
+    error,
+    Object.keys(readableEquivalents),
+    readableEquivalents[error]
+  );
+  if (readableEquivalents[error]) {
+    return readableEquivalents[error];
+  }
+  return error;
+};
+
+
+/**
+ * Convert each value in object to array of messages.
+ *
+ * Returns an object with field paths as keys and lists of messages
+ * for those fields as the values. The error message(s) might be deeply
+ * nested in each value in the initial object, since these represent
+ * sections of the original nested error object that weren't collapsed
+ * when the upper-level keys were collapsed to create the field path
+ * strings.
+ *
+ * errorObj = {
+ *   "metadata.creators": [
+ *      {
+ *        person_or_org: {
+ *            name: "Missing value"
+ *        }
+ *      }
+ *   ]
+ * };
+ *
+ * @param {object} errorObj
+ * @returns object
+ */
+function errorsToMessageArrays(errorObj) {
+
+  const messagesToArray = (errorValue) => {
+    let messages = [];
+    let store = (l) => {
+      messages.push(l);
+    };
+    leafTraverse(errorValue, store);
+    return messages;
+  };
+
+  const errors = Object.fromEntries(
+    Object.entries(errorObj).map(([key, value]) => {
+      return [key, messagesToArray(value)];
+    })
+  );
+
+  return errors
+}
+
+/**
+ * Convert error object with nested object structure to object with field names as keys.
+ *
+ * Create object with collapsed 1st and 2nd level keys
+ *   e.g., {metadata: {creators: ,,,}} => {"metadata.creators": ...}
+ * For now, only for metadata, files and access.embargo
+ *
+ * @param {Object} errors
+ * @returns Object
+ */
+function collapseKeysIntoFieldLabels( errors ) {
+  const metadata = Object.entries(errors.metadata || {}).map(([key, value]) => {
+    return ["metadata." + key, value];
+  });
+  const files = Object.entries(errors.files || {}).map(([key, value]) => {
+    return ["files." + key, value];
+  });
+  const access = Object.entries(errors?.access || {}).map(([key, value]) => {
+    return ["access.embargo." + key, value];
+  });
+  const pids = _isObject(errors.pids)
+    ? Object.entries(errors.pids || {}).map(([key, value]) => {
+        return ["pids." + key, value];
+      })
+    : [["pids", errors.pids || {}]];
+  const customFields = Object.entries(errors.customFields || {}).map(
+    ([key, value]) => {
+      return ["custom_fields." + key, value];
+    }
+  );
+  const collapsedErrors = Object.fromEntries(
+    metadata
+      .concat(files)
+      .concat(access)
+      .concat(pids)
+      .concat(customFields)
+  );
+  return collapsedErrors
+}
+
+
+/** Group error messages by label
+*
+* Different field paths (error object keys) can map to same label, e.g. title and
+* additional_titles for metadata.titles. This collapses these to use the same title.
+**/
+function groupMessagesByLabel(errors, labels) {
+  const groupedErrorMessages = {};
+  for (const key in errors) {
+    const label = labels[key] || "Unknown field";
+    let messages = groupedErrorMessages[label] || [];
+    groupedErrorMessages[label] = messages.concat(errors[key]);
+  }
+  return groupedErrorMessages
+};
+
+
+/**
+ * Return object with human readable labels as keys and error messages as
+ * values given an errors object.
+ *
+ * @param {object} errors
+ * @returns object
+ */
+function toLabelledErrorMessages(errors, labels) {
+  // Step 0 - Create object with collapsed 1st and 2nd level keys
+  //          e.g., {metadata: {creators: ,,,}} => {"metadata.creators": ...}
+  // For now, only for metadata, files and access.embargo
+  const pathsWithErrors = collapseKeysIntoFieldLabels(errors);
+  console.log("errorMessages pathsWithErrors:", pathsWithErrors);
+
+  // Step 1 - Transform each error value into array of error messages
+  const pathsWithMessageArrays = errorsToMessageArrays(pathsWithErrors);
+  console.log("errorMessages pathsWithMessageArrays:", pathsWithMessageArrays);
+
+  // Added step: Make error messages readable
+  // console.log("errorMessages step1:", step1);
+  const pathsWithReadableArrays = Object.fromEntries(
+    Object.entries(pathsWithMessageArrays).map(([key, value]) => {
+      return [key, value.map((v) => makeErrorReadable(v))];
+    })
+  );
+  console.log("errorMessages pathsWithReadableArrays:", pathsWithReadableArrays);
+
+  // Step 2 - Group error messages by label
+  const groupedErrorMessages = groupMessagesByLabel(pathsWithReadableArrays, labels);
+  console.log("errorMessages groupedErrorMessages:", groupedErrorMessages);
+
+  return groupedErrorMessages
+}
+
 class DisconnectedFormFeedback extends Component {
   constructor(props) {
     super(props);
@@ -168,129 +328,23 @@ class DisconnectedFormFeedback extends Component {
     }
   }
 
-  makeErrorReadable(field, error) {
-    const readableEquivalents = {
-      "Missing data for required field.":
-        "Missing a value for a required field.",
-    };
-    // console.log(
-    //   "errorMessages error:",
-    //   error,
-    //   Object.keys(readableEquivalents),
-    //   readableEquivalents[error]
-    // );
-    if (readableEquivalents[error]) {
-      return readableEquivalents[error];
-    }
-    return error;
-  }
-
-  /**
-   * Return array of error messages from errorValue object.
-   *
-   * The error message(s) might be deeply nested in the errorValue e.g.
-   *
-   * errorValue = [
-   *   {
-   *     title: "Missing value"
-   *   }
-   * ];
-   *
-   * @param {object} errorValue
-   * @returns array of Strings (error messages)
-   */
-  toErrorMessages(errorValue) {
-    let messages = [];
-    let store = (l) => {
-      messages.push(l);
-    };
-    leafTraverse(errorValue, store);
-    return messages;
-  }
-
-  /**
-   * Return object with human readbable labels as keys and error messages as
-   * values given an errors object.
-   *
-   * @param {object} errors
-   * @returns object
-   */
-  toLabelledErrorMessages(errors) {
-    // Step 0 - Create object with collapsed 1st and 2nd level keys
-    //          e.g., {metadata: {creators: ,,,}} => {"metadata.creators": ...}
-    // For now, only for metadata, files and access.embargo
-    const metadata = errors.metadata || {};
-    const step0Metadata = Object.entries(metadata).map(([key, value]) => {
-      return ["metadata." + key, value];
-    });
-    const files = errors.files || {};
-    const step0Files = Object.entries(files).map(([key, value]) => {
-      return ["files." + key, value];
-    });
-    const access = errors.access?.embargo || {};
-    const step0Access = Object.entries(access).map(([key, value]) => {
-      return ["access.embargo." + key, value];
-    });
-    const pids = errors.pids || {};
-    const step0Pids = _isObject(pids)
-      ? Object.entries(pids).map(([key, value]) => {
-          return ["pids." + key, value];
-        })
-      : [["pids", pids]];
-    const customFields = errors.custom_fields || {};
-    const step0CustomFields = Object.entries(customFields).map(
-      ([key, value]) => {
-        return ["custom_fields." + key, value];
-      }
-    );
-    const step0 = Object.fromEntries(
-      step0Metadata
-        .concat(step0Files)
-        .concat(step0Access)
-        .concat(step0Pids)
-        .concat(step0CustomFields)
-    );
-
-    // Step 1 - Transform each error value into array of error messages
-    let step1 = Object.fromEntries(
-      Object.entries(step0).map(([key, value]) => {
-        return [key, this.toErrorMessages(value)];
-      })
-    );
-
-    // Added step: Make error messages readable
-    // console.log("errorMessages step1:", step1);
-    step1 = Object.fromEntries(
-      Object.entries(step1).map(([key, value]) => {
-        return [key, value.map((v) => this.makeErrorReadable(key, v))];
-      })
-    );
-
-    // Step 2 - Group error messages by label
-    // (different error keys can map to same label e.g. title and
-    // additional_titles)
-    const labelledErrorMessages = {};
-    for (const key in step1) {
-      const label = this.labels[key] || "Unknown field";
-      let messages = labelledErrorMessages[label] || [];
-      labelledErrorMessages[label] = messages.concat(step1[key]);
-    }
-    // console.log("errorMessages:", labelledErrorMessages);
-
-    return labelledErrorMessages;
-  }
-
   render() {
-    const { errors: errorsProp, actionState, clientErrors } = this.props;
+    const { errors: errorsProp, actionState, clientErrors, clientInitialErrors, clientInitialValues, ...rest } = this.props;
 
     // Merge client-side validation errors with backend errors
     console.log("FormFeedback errorsProp:", errorsProp);
+    console.log("FormFeedback clientErrors:", clientErrors);
+    console.log("FormFeedback actionState:", actionState);
+    console.log("FormFeedback rest:", rest);
+    console.log("FormFeedback labels:", this.labels, this.props.labels, defaultLabels)
 
     const errors = errorsProp
       ? _merge(errorsProp, clientErrors)
       : clientErrors
       ? clientErrors
       : {};
+
+    console.log("FormFeedback errors:", errors);
 
     const combinedActionState =
       !_isEmpty(clientErrors) ? "CLIENT_VALIDATION_ERRORS" : actionState;
@@ -305,7 +359,7 @@ class DisconnectedFormFeedback extends Component {
       return null;
     }
 
-    const labelledMessages = this.toLabelledErrorMessages(errors);
+    const labelledMessages = toLabelledErrorMessages(errors, this.labels);
     const listErrors = Object.entries(labelledMessages).map(
       ([label, messages]) => (
         <Message.Item key={label}>
@@ -357,3 +411,5 @@ export const FormFeedback = connect(
   mapStateToProps,
   null
 )(DisconnectedFormFeedback);
+
+export { errorsToMessageArrays, toLabelledErrorMessages, collapseKeysIntoFieldLabels, groupMessagesByLabel };
