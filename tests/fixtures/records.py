@@ -5,12 +5,13 @@
 # Knowledge Commons Works is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
-"""Records related pytest fixtures for testing."""
+"""Test fixtures for records."""
 
 import copy
-import datetime
-from pprint import pformat
+from datetime import timedelta
+import re
 from typing import Any
+from pprint import pformat
 
 import arrow
 import pytest
@@ -26,10 +27,11 @@ from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_
 from .communities import add_community_to_record
 from .files import build_file_links
 from .vocabularies.resource_types import RESOURCE_TYPES
+from ..helpers.utils import remove_value_by_path
 
 
 @pytest.fixture(scope="function")
-def minimal_draft_record_factory(running_app, db, minimal_record_metadata):
+def minimal_draft_record_factory(running_app, db, record_metadata):
     """Factory for creating a minimal draft record."""
 
     def _factory(
@@ -38,7 +40,7 @@ def minimal_draft_record_factory(running_app, db, minimal_record_metadata):
         **kwargs: Any,
     ):
         """Create a minimal draft record."""
-        input_metadata = metadata or minimal_record_metadata["in"]
+        input_metadata = metadata or record_metadata().metadata_in
         identity = identity or system_identity
         return records_service.create(identity, input_metadata)
 
@@ -46,7 +48,7 @@ def minimal_draft_record_factory(running_app, db, minimal_record_metadata):
 
 
 @pytest.fixture(scope="function")
-def minimal_published_record_factory(running_app, db, minimal_record_metadata):
+def minimal_published_record_factory(running_app, db, record_metadata):
     """Factory for creating a minimal published record."""
 
     def _factory(
@@ -71,7 +73,7 @@ def minimal_published_record_factory(running_app, db, minimal_record_metadata):
         Returns:
             The published record as a service layer RecordItem.
         """
-        input_metadata = metadata or minimal_record_metadata["in"]
+        input_metadata = metadata or record_metadata().metadata_in
         identity = identity or system_identity
         draft = records_service.create(identity, input_metadata)
         published = records_service.publish(identity, draft.id)
@@ -85,117 +87,6 @@ def minimal_published_record_factory(running_app, db, minimal_record_metadata):
         return published
 
     return _factory
-
-
-def compare_metadata_draft(running_app):
-    """Compare the actual and expected metadata dictionaries."""
-    app = running_app.app
-
-    def _comparison_factory(
-        actual: dict,
-        expected: dict,
-        community_list: list[dict] | None = None,
-        now: Arrow | None = None,
-    ):
-        """Compare the actual and expected metadata dictionaries.
-
-        Does not check the following fields:
-        - id
-        - parent.id
-        - revision_id
-
-        Some fields are only compared to the present time:
-        - created
-        - updated
-
-        Parameters:
-            actual (dict): The actual metadata dictionary.
-            expected (dict): The expected metadata dictionary.
-            community_list (list[dict], optional): The list of communities,
-                each expected to be a dict with the following keys: id, access,
-                children, custom_fields, deletion_status, links, metadata,
-                revision_id, slug, updated. Defaults to [].
-            now (Arrow, optional): The current time. Defaults to arrow.utcnow().
-
-        Returns:
-            bool: True if the actual metadata dictionary matches the expected
-            metadata dictionary, False otherwise.
-        """
-        community_list = community_list or []
-        now = now or arrow.utcnow()
-        try:
-            assert now - arrow.get(actual["created"]) < datetime.timedelta(seconds=7)
-            assert actual["custom_fields"] == {}
-            assert "expires_at" not in actual.keys()
-            assert actual["files"]["count"] == expected["files"]["count"]
-            assert actual["files"]["enabled"] == expected["files"]["enabled"]
-            for k, v in actual["files"]["entries"].items():
-                assert v["access"] == expected["files"]["entries"][k]["access"]
-                # assert v["checksum"]  # FIXME: Add checksum
-                assert v["ext"] == expected["files"]["entries"][k]["ext"]
-                assert v["key"] == expected["files"]["entries"][k]["key"]
-                assert v["mimetype"] == expected["files"]["entries"][k]["mimetype"]
-                assert v["size"] == expected["files"]["entries"][k]["size"]
-                assert (
-                    v["storage_class"]
-                    == expected["files"]["entries"][k]["storage_class"]
-                )
-                assert v["metadata"] == expected["files"]["entries"][k]["metadata"]
-                assert v["links"] == build_file_links(
-                    actual["id"], app.config["SITE_API_URL"], k
-                )
-            assert actual["files"]["order"] == expected["files"]["order"]
-            assert actual["files"]["total_bytes"] == expected["files"]["total_bytes"]
-
-            assert actual["is_draft"]
-            assert not actual["is_published"]
-            assert actual["links"] == TestRecordMetadata.build_draft_record_links(
-                actual["id"], app.config["SITE_API_URL"], app.config["SITE_UI_URL"]
-            )
-            assert actual["media_files"] == {
-                "count": 0,
-                "enabled": False,
-                "entries": {},
-                "order": [],
-                "total_bytes": 0,
-            }
-            assert actual["metadata"]["creators"] == expected["metadata"]["creators"]
-            assert (
-                actual["metadata"]["publication_date"]
-                == expected["metadata"]["publication_date"]
-            )
-            assert actual["metadata"]["publisher"] == expected["metadata"]["publisher"]
-            assert (
-                actual["metadata"]["resource_type"]
-                == expected["metadata"]["resource_type"]
-            )
-            assert actual["metadata"]["title"] == expected["metadata"]["title"]
-            assert actual["parent"]["access"] == expected["parent"]["access"]
-            assert actual["parent"]["communities"]["ids"] == [
-                c["id"] for c in community_list
-            ]
-            assert actual["pids"] == {
-                "doi": {
-                    "client": "datacite",
-                    "identifier": f"10.17613/{actual['id']}",
-                    "provider": "datacite",
-                },
-                "oai": {
-                    "identifier": f"oai:{app.config['SITE_UI_URL']}:{actual['id']}",
-                    "provider": "oai",
-                },
-            }
-            assert actual["revision_id"] == 3
-            assert actual["stats"] == expected["stats"]
-            assert actual["status"] == "draft"
-            assert now - arrow.get(actual["updated"]) < datetime.timedelta(seconds=7)
-            assert actual["versions"] == expected["versions"]
-            return True
-        except AssertionError as e:
-            app.logger.error(f"Assertion failed: {e}")
-            raise e
-
-    return _comparison_factory
 
 
 @pytest.fixture(scope="function")
@@ -400,9 +291,10 @@ class TestRecordMetadata:
         record_id: str,
         base_url: str,
         ui_base_url: str,
+        doi: str | None = None,
     ) -> dict:
         """Build the draft record links."""
-        return {
+        links = {
             "self": f"{base_url}/records/{record_id}/draft",
             "self_html": f"{ui_base_url}/uploads/{record_id}",
             "self_iiif_manifest": f"{base_url}/iiif/draft:{record_id}/manifest",
@@ -431,6 +323,9 @@ class TestRecordMetadata:
             ),
             "requests": f"{base_url}/records/{record_id}/requests",
         }
+        if doi:
+            links["doi"] = f"https://handle.stage.datacite.org/{doi}"
+        return links
 
     @staticmethod
     def build_published_record_links(
@@ -479,23 +374,29 @@ class TestRecordMetadata:
         Fields that can't be set before record creation:
         """
         metadata_out_draft = copy.deepcopy(self.metadata_in)
-        metadata_out_draft.get("access", {})["embargo"] = {
+        if not metadata_out_draft.get("access", {}):
+            metadata_out_draft["access"] = {
+                "files": "public",
+                "record": "public",
+            }
+        metadata_out_draft["access"]["embargo"] = {
             "active": False,
             "reason": None,
         }
-        metadata_out_draft.get("access", {})["status"] = "metadata-only"
+        metadata_out_draft["access"]["status"] = "metadata-only"
         metadata_out_draft["deletion_status"] = {"is_deleted": False, "status": "P"}
         metadata_out_draft["custom_fields"] = self.metadata_in.get("custom_fields", {})
         metadata_out_draft["is_draft"] = True
         metadata_out_draft["is_published"] = False
-        current_resource_type = [
-            t
-            for t in copy.deepcopy(RESOURCE_TYPES)
-            if t["id"] == metadata_out_draft["metadata"]["resource_type"]["id"]
-        ][0]
-        metadata_out_draft["metadata"]["resource_type"]["title"] = (
-            current_resource_type["title"]
-        )
+        if metadata_out_draft["metadata"].get("resource_type", {}):
+            current_resource_type = [
+                t
+                for t in copy.deepcopy(RESOURCE_TYPES)
+                if t["id"] == metadata_out_draft["metadata"]["resource_type"].get("id")
+            ][0]
+            metadata_out_draft["metadata"]["resource_type"]["title"] = (
+                current_resource_type["title"]
+            )
         metadata_out_draft["versions"] = {
             "index": 1,
             "is_latest": False,
@@ -520,7 +421,7 @@ class TestRecordMetadata:
             "access": {
                 "grants": [],
                 "links": [],
-                "owned_by": {"user": "1"},
+                "owned_by": {"user": str(self.owner_id)},
                 "settings": {
                     "accept_conditions_text": None,
                     "allow_guest_requests": False,
@@ -603,6 +504,12 @@ class TestRecordMetadata:
         }
         metadata_out_draft["status"] = "draft"
         metadata_out_draft["updated"] = ""
+        if "rights" in metadata_out_draft["metadata"].keys():
+            for idx in range(len(metadata_out_draft["metadata"]["rights"])):
+                metadata_out_draft["metadata"]["rights"][idx].get("props", {})[
+                    "scheme"
+                ] = "spdx"
+                del metadata_out_draft["metadata"]["rights"][idx]["icon"]
         return metadata_out_draft
 
     @property
@@ -650,15 +557,183 @@ class TestRecordMetadata:
         """Return a string representation of the TestRecordMetadata object."""
         return self.__str__()
 
-    def compare_draft(self, metadata_out_draft: dict) -> None:
-        """Compare the draft metadata with the expected metadata by assertion."""
-        assert self.draft == metadata_out_draft
+    def compare_draft(
+        self,
+        actual: dict,
+        expected: dict | None = None,
+        skip_fields: list[str] | None = None,
+        by_api: bool = False,
+        now: Arrow | None = None,
+    ) -> bool:
+        """Compare the draft metadata with the expected metadata by assertion.
 
-    def _as_via_api(self, metadata_in: dict) -> dict:
+        Checks to see that the supplied metadata record is the same as should result
+        from creating a draft with the input metadata in self.metadata_in.
+
+        Can also be used with a provided `expected` metadata dictionary to simply check
+        for equality against an expected result.
+
+        If the actual metadata results from a record operation that included validation
+        errors, the `skip_fields` parameter can be used to skip the fields that are
+        expected to missing from the actual metadata due to the validation errors. This
+        should be a list of field paths (e.g. ["metadata.title",
+        "metadata.creators.0.name"]) that are expected to be missing from the actual
+        metadata, even though they were provided in the input metadata.
+
+        Parameters:
+            actual (dict): The actual metadata dictionary to be checked.
+            expected (dict): The expected metadata dictionary. If not provided,
+                the draft metadata in self.draft will be used.
+            by_api (bool, optional): Whether to compare the metadata as it appears
+                in the return value from the REST API. Otherwise the format expected
+                will be that returned from the RDMRecordService method. Defaults to
+                False.
+            now (Arrow, optional): The current time. Defaults to arrow.utcnow().
+            skip_fields (list[str], optional): A list of field paths that are expected
+                to be missing from the actual metadata due to validation errors.
+
+        Raises:
+            AssertionError: If the actual metadata dictionary does not match the
+                expected metadata dictionary.
+
+        Returns:
+            bool: True if the actual metadata dictionary matches the expected
+                metadata dictionary, otherwise raises an error.
+
+        Note:
+            Does not check the following fields:
+            - revision_id
+
+            Some fields are only checked for correct format:
+            - id
+            - parent.id
+
+            Some fields are only compared to the present time:
+            - created
+            - updated
+            - expires_at
+        """
+        app = self.app
+        expected = self.draft.copy() if not expected else expected
+        for skip_field in skip_fields or []:
+            print(f"skip_field: {skip_field}")
+            expected = remove_value_by_path(expected, skip_field)
+        now = now or arrow.utcnow()
+        app.logger.info(f"actual: {pformat(actual)}")
+        print(f"actual: {pformat(actual['pids'])}")
+        print(f"expected: {pformat(expected['pids'])}")
+
+        # ensure the id is in the correct format
+        assert re.match(r"^[a-z0-9]{5}-[a-z0-9]{5}$", actual["id"])
+
+        if by_api:
+            expected = self._as_via_api(expected, is_draft=True)
+        else:
+            expected["parent"]["access"]["owned_by"] = None  # TODO: Why?
+            expected["stats"] = None
+
+        # Check that timestamps are in the correct relative range
+        assert now - arrow.get(actual["created"]) < timedelta(seconds=7)
+        assert now - arrow.get(actual["updated"]) < timedelta(seconds=7)
+        assert "expires_at" in actual.keys()
+        assert (
+            arrow.get(actual["expires_at"]).format("YYYY-MM-DD HH:mm:ss.SSSSSS")
+            == actual["expires_at"]
+        )
+        assert now - arrow.get(actual["expires_at"]) < timedelta(hours=8)
+
+        assert actual["access"] == expected["access"]
+
+        assert actual["custom_fields"] == expected["custom_fields"]
+
+        # Check files including any entries
+        assert actual["files"]["count"] == expected["files"]["count"]
+        assert actual["files"]["enabled"] == expected["files"]["enabled"]
+        for k, v in actual["files"]["entries"].items():
+            assert v["access"] == expected["files"]["entries"][k]["access"]
+            if "checksum" in expected["files"]["entries"][k]:
+                assert v["checksum"] == expected["files"]["entries"][k]["checksum"]
+            assert v["ext"] == expected["files"]["entries"][k]["ext"]
+            assert v["key"] == expected["files"]["entries"][k]["key"]
+            assert v["mimetype"] == expected["files"]["entries"][k]["mimetype"]
+            assert v["size"] == expected["files"]["entries"][k]["size"]
+            assert (
+                v["storage_class"] == expected["files"]["entries"][k]["storage_class"]
+            )
+            if v["metadata"]:
+                if v["key"] == "sample.jpg":  # meta drawn from file
+                    expected["files"]["entries"][k]["metadata"] = {
+                        "height": 1672,
+                        "width": 1254,
+                    }
+                assert v["metadata"] == expected["files"]["entries"][k]["metadata"]
+            else:
+                assert not expected["files"]["entries"][k]["metadata"]
+            assert v["links"] == build_file_links(
+                actual["id"], app.config["SITE_API_URL"], k
+            )
+        assert actual["files"]["order"] == expected["files"]["order"]
+        assert actual["files"]["total_bytes"] == expected["files"]["total_bytes"]
+
+        # Check media files including any entries
+        # TODO: Add checks for media files
+        assert actual["media_files"] == expected["media_files"]
+
+        # Check links, with DOI if one was provided
+        links_kwargs = (
+            {"doi": actual["pids"]["doi"]["identifier"]}
+            if actual.get("pids", {}).get("doi", {}).get("identifier")
+            else {}
+        )
+        assert actual["links"] == TestRecordMetadata.build_draft_record_links(
+            actual["id"],
+            app.config["SITE_API_URL"],
+            app.config["SITE_UI_URL"],
+            **links_kwargs,
+        )
+
+        # Check metadata fields
+        assert set(actual["metadata"].keys()) == set(expected["metadata"].keys())
+        for field in actual["metadata"].keys():
+            assert actual["metadata"][field] == expected["metadata"][field]
+
+        # Check parent fields
+        actual_parent_id = actual["parent"]["id"]
+        assert re.match(r"^[a-z0-9]{5}-[a-z0-9]{5}$", actual_parent_id)
+        assert actual["parent"]["access"] == expected["parent"]["access"]
+        assert actual["parent"]["communities"] == {}
+        assert actual["parent"]["pids"] == {}
+        assert actual["versions"] == expected["versions"]
+
+        # Check status fields
+        assert not actual["is_published"]
+        assert actual["is_draft"]
+        assert actual["status"] == "draft"
+        # assert actual["revision_id"] == 4  # NOTE: Too difficult to test
+
+        if self.metadata_in.get("pids", {}).get("doi"):
+            assert actual["pids"] == {
+                "doi": {
+                    "client": "datacite",
+                    "identifier": actual["pids"]["doi"]["identifier"],
+                    "provider": "datacite",
+                },
+            }
+        else:
+            assert actual["pids"] == {}
+
+        assert actual.get("stats") == expected.get("stats")
+
+        return True
+
+    def _as_via_api(self, metadata_in: dict, is_draft: bool = False) -> dict:
         """Return the metadata as it appears in the REST API."""
-        metadata_in["parent"]["access"].pop("grants")
-        metadata_in["parent"]["access"].pop("links")
-        metadata_in["versions"].pop("is_latest_draft")
+        if not is_draft:
+            metadata_in["parent"]["access"].pop("grants")
+            metadata_in["parent"]["access"].pop("links")
+            metadata_in["versions"].pop("is_latest_draft")
+        else:
+            del metadata_in["stats"]
         return metadata_in
 
     def compare_published(
@@ -699,9 +774,9 @@ class TestRecordMetadata:
         now = now or arrow.utcnow()
 
         if by_api:
-            expected = self._as_via_api(expected)
+            expected = self._as_via_api(expected, is_draft=False)
         try:
-            assert now - arrow.get(actual["created"]) < datetime.timedelta(seconds=7)
+            assert now - arrow.get(actual["created"]) < timedelta(seconds=7)
             assert actual["custom_fields"] == expected["custom_fields"]
             assert "expires_at" not in actual.keys()
             assert actual["files"]["count"] == expected["files"]["count"]
@@ -830,7 +905,7 @@ class TestRecordMetadata:
             # assert actual["revision_id"] == 4  # NOTE: Too difficult to test
             assert actual["stats"] == expected["stats"]
             assert actual["status"] == "published"
-            assert now - arrow.get(actual["updated"]) < datetime.timedelta(seconds=7)
+            assert now - arrow.get(actual["updated"]) < timedelta(seconds=7)
             assert actual["versions"] == expected["versions"]
             return True
         except AssertionError as e:
@@ -963,58 +1038,7 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
 
 
 @pytest.fixture(scope="function")
-def minimal_record_metadata(running_app):
-    """Minimal record data as dict coming from the external world.
-
-    Fields that can't be set before record creation:
-
-    created
-    id
-    updated
-    pids
-    parent.pids
-    parent.id
-
-    """
-    app = running_app.app
-    metadata = TestRecordMetadata(app=app)
-    return {
-        "in": metadata.metadata_in,
-        "draft": metadata.draft,
-        "published": metadata.published,
-    }
-
-
-@pytest.fixture(scope="function")
-def minimal_record_metadata_with_files(running_app):
-    """Minimal record data as dict coming from the external world with files."""
-    app = running_app.app
-
-    def _factory(
-        record_id: str = "XXXX",
-        entries: dict | None = None,
-        access_status: str = "open",
-    ):
-        """Create a minimal record data as dict from the external world with files."""
-        entries = entries or {}
-        metadata = TestRecordMetadataWithFiles(
-            app=app,
-            record_id=record_id,
-            file_entries=entries,
-            file_access_status=access_status,
-        )
-
-        return {
-            "in": metadata.metadata_in,
-            "draft": metadata.draft,
-            "published": metadata.published,
-        }
-
-    return _factory
-
-
-@pytest.fixture(scope="function")
-def full_record_metadata(users):
+def full_sample_record_metadata(users):
     """Full record data as dict coming from the external world."""
     return {
         "pids": {

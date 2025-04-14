@@ -6,248 +6,230 @@
 
 """Integration tests for the API record operations."""
 
+import copy
 import json
 import re
 from datetime import timedelta
 from pathlib import Path
 from pprint import pformat
+from typing import Callable
 
 import arrow
 import pytest
+from flask_login import login_user
+from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
+from invenio_accounts.proxies import current_accounts
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from tests.conftest import RunningApp
 
 from ..fixtures.records import TestRecordMetadata, TestRecordMetadataWithFiles
 from ..fixtures.users import user_data_set
+from ..helpers.sample_records import (
+    sample_metadata_book_pdf,
+    sample_metadata_journal_article_pdf,
+)
 
 
-def test_draft_creation_api(
-    running_app,
-    db,
-    user_factory,
-    client_with_login,
-    headers,
-    search_clear,
-    celery_worker,
-):
+class TestDraftCreation:
     """Test that a user can create a draft record."""
-    app = running_app.app
 
-    u = user_factory(
-        email=user_data_set["user1"]["email"],
-        token=True,
-    )
-    user = u.user
-    token = u.allowed_token
+    @property
+    def metadata_source(self) -> dict:
+        """Input metadata to use to create the draft record.
 
-    metadata = TestRecordMetadata(app=app)
+        If this is an empty dictionary, default minimal metadata will be used.
+        """
+        return {}
 
-    with app.test_client() as client:
-        logged_in_client = client_with_login(client, user)
-        response = logged_in_client.post(
-            f"{app.config['SITE_API_URL']}/records",
-            data=json.dumps(metadata.metadata_in),
-            headers={**headers, "Authorization": f"Bearer {token}"},
+    @property
+    def errors(self) -> list[dict]:
+        """Errors to expect in the response metadata.
+
+        These errors are expected to be present in the actual metadata due to the
+        validation errors.
+        """
+        return []
+
+    @property
+    def skip_fields(self) -> list[str]:
+        """List of fields to skip when comparing the draft metadata.
+
+        These fields are expected to be missing from the actual metadata due to the
+        validation errors.
+        """
+        return []
+
+    def test_draft_creation_api(
+        self,
+        running_app: RunningApp,
+        db: SQLAlchemy,
+        user_factory: Callable,
+        client_with_login: Callable,
+        headers: dict,
+        record_metadata: Callable,
+        search_clear: Callable,
+        celery_worker: Callable,
+    ):
+        """Test that a user can create a draft record."""
+        app = running_app.app
+
+        u = user_factory(
+            email=user_data_set["user1"]["email"],
+            token=True,
         )
-        assert response.status_code == 201
+        user = u.user
+        token = u.allowed_token
 
-        actual_draft = response.json
-        app.logger.debug(f"actual_draft: {pformat(actual_draft)}")
-        actual_draft_id = actual_draft["id"]
+        metadata = record_metadata(
+            metadata_in=self.metadata_source,
+            owner_id=user.id,
+        )
 
-        # ensure the id is in the correct format
-        assert re.match(r"^[a-z0-9]{5}-[a-z0-9]{5}$", actual_draft_id)
-        # ensure the created and updated dates are valid ISO-8601
-        assert (
-            arrow.get(actual_draft["created"]).format(
-                "YYYY-MM-DDTHH:mm:ss.SSSSSS+00:00"
+        with app.test_client() as client:
+            logged_in_client = client_with_login(client, user)
+            response = logged_in_client.post(
+                f"{app.config['SITE_API_URL']}/records",
+                data=json.dumps(metadata.metadata_in),
+                headers={**headers, "Authorization": f"Bearer {token}"},
             )
-            == actual_draft["created"]
-        )
-        assert (
-            arrow.get(actual_draft["updated"]).format(
-                "YYYY-MM-DDTHH:mm:ss.SSSSSS+00:00"
+            assert response.status_code == 201
+
+            actual_draft = response.json
+            app.logger.debug(f"actual_draft: {pformat(actual_draft)}")
+
+            if self.errors or "errors" in actual_draft.keys():
+                assert actual_draft["errors"] == self.errors
+            assert metadata.compare_draft(
+                actual_draft, by_api=True, skip_fields=self.skip_fields
             )
-            == actual_draft["updated"]
+
+            # TODO: UI field only present in object sent to jinja template
+            # we need to test that the jinja template is working correctly
+            #
+            # assert actual_draft["ui"][
+            #     "publication_date_l10n_medium"
+            # ] == publication_date.format("MMM D, YYYY")
+            # assert actual_draft["ui"][
+            #     "publication_date_l10n_long"
+            # ] == publication_date.format("MMMM D, YYYY")
+            # created_date = arrow.get(actual_draft["created"])
+            # assert actual_draft["ui"]["created_date_l10n_long"] == created_date.format(
+            #     "MMMM D, YYYY"
+            # )
+            # updated_date = arrow.get(actual_draft["updated"])
+            # assert actual_draft["ui"]["updated_date_l10n_long"] == updated_date.format(
+            #     "MMMM D, YYYY"
+            # )
+            # assert actual_draft["ui"]["resource_type"] == {
+            #     "id": "image-photograph",
+            #     "title_l10n": "Photo",
+            # }
+            # assert actual_draft["ui"]["custom_fields"] == {}
+            # assert actual_draft["ui"]["access_status"] == {
+            #     "id": "metadata-only",
+            #     "title_l10n": "Metadata-only",
+            #     "description_l10n": "No files are available for this record.",
+            #     "icon": "tag",
+            #     "embargo_date_l10n": None,
+            #     "message_class": "",
+            # }
+            # assert actual_draft["ui"]["creators"] == {
+            #     "affiliations": [],
+            #     "creators": [
+            #         {
+            #             "person_or_org": {
+            #                 "type": "personal",
+            #                 "name": "Brown, Troy",
+            #                 "given_name": "Troy",
+            #                 "family_name": "Brown",
+            #             }
+            #         },
+            #         {
+            #             "person_or_org": {
+            #                 "type": "organizational",
+            #                 "name": "Troy Inc.",
+            #             }
+            #         },
+            #     ],
+            # }
+            # assert actual_draft["ui"]["version"] == "v1"
+            # assert actual_draft["ui"]["is_draft"]
+
+    def test_draft_creation_service(
+        self,
+        running_app: RunningApp,
+        db: SQLAlchemy,
+        client_with_login: Callable,
+        headers: dict,
+        user_factory: Callable,
+        record_metadata: Callable,
+        search_clear: Callable,
+        celery_worker: Callable,
+        minimal_draft_record_factory: Callable,
+    ):
+        """Test that a system user can create a draft record internally.
+
+        Checks that the created record metadata structure is correct for
+        the input metadata. Checks the same fields as the `test_draft_creation_api`
+        test.
+        """
+        u = user_factory(
+            email=user_data_set["user1"]["email"],
         )
+        user_id = u.user.id
+        login_user(u.user)
 
-        assert actual_draft["links"] == TestRecordMetadata.build_draft_record_links(
-            actual_draft_id, app.config["SITE_API_URL"], app.config["SITE_UI_URL"]
+        metadata = record_metadata(metadata_in=self.metadata_source, owner_id=user_id)
+        result = minimal_draft_record_factory(metadata=metadata.metadata_in)
+        actual_draft = result.to_dict()
+        running_app.app.logger.debug(f"actual_draft: {pformat(actual_draft)}")
+        running_app.app.logger.info(f"actual_draft: {pformat(actual_draft)}")
+        running_app.app.logger.warning(f"actual_draft: {pformat(actual_draft)}")
+        assert metadata.compare_draft(
+            actual_draft, by_api=False, skip_fields=self.skip_fields
         )
+        if "errors" in actual_draft.keys() or self.errors:
+            assert actual_draft["errors"] == self.errors
 
-        # assert actual_draft['revision_id'] == 5  # TODO: Why is this 5?
+        read_result = records_service.read_draft(system_identity, actual_draft["id"])
+        actual_read = read_result.to_dict()
+        assert actual_read["id"] == actual_draft["id"]
 
-        actual_parent_id = actual_draft["parent"]["id"]
-        assert re.match(r"^[a-z0-9]{5}-[a-z0-9]{5}$", actual_parent_id)
-        assert actual_draft["parent"]["access"] == {
-            "grants": [],
-            "owned_by": {"user": "1"},
-            "links": [],
-            "settings": {
-                "allow_user_requests": False,
-                "allow_guest_requests": False,
-                "accept_conditions_text": None,
-                "secret_link_expiration": 0,
-            },
-        }
-        assert actual_draft["parent"]["communities"] == {}
-        assert actual_draft["parent"]["pids"] == {}
-        assert actual_draft["versions"] == {
-            "is_latest": False,
-            "is_latest_draft": True,
-            "index": 1,
-        }
 
-        assert not actual_draft["is_published"]
-        assert actual_draft["is_draft"]
-        assert (
-            arrow.get(actual_draft["expires_at"]).format("YYYY-MM-DD HH:mm:ss.SSSSSS")
-            == actual_draft["expires_at"]
-        )
-        assert actual_draft["pids"] == {}
-        assert actual_draft["metadata"]["resource_type"] == {
-            "id": "image-photograph",
-            "title": {"en": "Photo"},
-        }
-        assert actual_draft["metadata"]["creators"] == [
+class TestDraftCreationError(TestDraftCreation):
+    """Test that creating a draft record with invalid metadata returns errors.
+
+    The errors are returned in the response metadata object's "errors" field.
+    """
+
+    @property
+    def metadata_source(self) -> dict:
+        metadata = copy.deepcopy(sample_metadata_book_pdf["input"])
+        metadata["metadata"]["title"] = ""
+        metadata["metadata"]["resource_type"] = None
+        del metadata["metadata"]["publication_date"]
+        return metadata
+
+    @property
+    def errors(self) -> list[dict]:
+        return [
+            {"field": "metadata.resource_type", "messages": ["Field may not be null."]},
             {
-                "person_or_org": {
-                    "type": "personal",
-                    "name": "Brown, Troy",
-                    "given_name": "Troy",
-                    "family_name": "Brown",
-                }
+                "field": "metadata.title",
+                "messages": ["Title cannot be a blank string."],
             },
-            {"person_or_org": {"type": "organizational", "name": "Troy Inc."}},
+            {
+                "field": "metadata.publication_date",
+                "messages": ["Missing data for required field."],
+            },
+            {"field": "metadata.rights.0.icon", "messages": ["Unknown field."]},
         ]
-        assert actual_draft["metadata"]["title"] == "A Romans story"
-        assert actual_draft["metadata"]["publisher"] == "Acme Inc"
-        assert (
-            arrow.get(actual_draft["metadata"]["publication_date"]).format("YYYY-MM-DD")
-            == "2020-06-01"
-        )
-        assert actual_draft["custom_fields"] == {}
-        assert actual_draft["access"] == {
-            "record": "public",
-            "files": "public",
-            "embargo": {"active": False, "reason": None},
-            "status": "metadata-only",
-        }
-        assert actual_draft["files"] == {
-            "enabled": False,
-            "order": [],
-            "count": 0,
-            "total_bytes": 0,
-            "entries": {},
-        }
-        assert actual_draft["media_files"] == {
-            "enabled": False,
-            "order": [],
-            "count": 0,
-            "total_bytes": 0,
-            "entries": {},
-        }
-        assert actual_draft["status"] == "draft"
-        # publication_date = arrow.get(actual_draft["metadata"]["publication_date"])
 
-        # TODO: UI field only present in object sent to jinja template
-        # we need to test that the jinja template is working correctly
-        #
-        # assert actual_draft["ui"][
-        #     "publication_date_l10n_medium"
-        # ] == publication_date.format("MMM D, YYYY")
-        # assert actual_draft["ui"][
-        #     "publication_date_l10n_long"
-        # ] == publication_date.format("MMMM D, YYYY")
-        # created_date = arrow.get(actual_draft["created"])
-        # assert actual_draft["ui"]["created_date_l10n_long"] == created_date.format(
-        #     "MMMM D, YYYY"
-        # )
-        # updated_date = arrow.get(actual_draft["updated"])
-        # assert actual_draft["ui"]["updated_date_l10n_long"] == updated_date.format(
-        #     "MMMM D, YYYY"
-        # )
-        # assert actual_draft["ui"]["resource_type"] == {
-        #     "id": "image-photograph",
-        #     "title_l10n": "Photo",
-        # }
-        # assert actual_draft["ui"]["custom_fields"] == {}
-        # assert actual_draft["ui"]["access_status"] == {
-        #     "id": "metadata-only",
-        #     "title_l10n": "Metadata-only",
-        #     "description_l10n": "No files are available for this record.",
-        #     "icon": "tag",
-        #     "embargo_date_l10n": None,
-        #     "message_class": "",
-        # }
-        # assert actual_draft["ui"]["creators"] == {
-        #     "affiliations": [],
-        #     "creators": [
-        #         {
-        #             "person_or_org": {
-        #                 "type": "personal",
-        #                 "name": "Brown, Troy",
-        #                 "given_name": "Troy",
-        #                 "family_name": "Brown",
-        #             }
-        #         },
-        #         {
-        #             "person_or_org": {
-        #                 "type": "organizational",
-        #                 "name": "Troy Inc.",
-        #             }
-        #         },
-        #     ],
-        # }
-        # assert actual_draft["ui"]["version"] == "v1"
-        # assert actual_draft["ui"]["is_draft"]
-
-
-def test_draft_creation_service(
-    running_app,
-    db,
-    client_with_login,
-    headers,
-    user_factory,
-    search_clear,
-    celery_worker,
-    minimal_draft_record_factory,
-):
-    """Test that a system user can create a draft record internally."""
-    app = running_app.app
-    metadata = TestRecordMetadata(app=app)
-    result = minimal_draft_record_factory(metadata=metadata.metadata_in)
-    actual_draft = result.to_dict()
-    app.logger.debug(f"actual_draft: {pformat(actual_draft)}")
-    assert actual_draft["is_draft"]
-    assert not actual_draft["is_published"]
-    assert not actual_draft["versions"]["is_latest"]  # TODO: Why is this False?
-    assert actual_draft["versions"]["is_latest_draft"] is True
-    assert actual_draft["versions"]["index"] == 1
-    assert actual_draft["status"] == "draft"
-    assert actual_draft["files"]["enabled"] is False
-    assert actual_draft["files"]["entries"] == {}
-    assert (
-        actual_draft["metadata"]["creators"] == metadata.draft["metadata"]["creators"]
-    )
-    assert (
-        actual_draft["metadata"]["publisher"] == metadata.draft["metadata"]["publisher"]
-    )
-    assert (
-        actual_draft["metadata"]["publication_date"]
-        == metadata.draft["metadata"]["publication_date"]
-    )
-    assert (
-        actual_draft["metadata"]["resource_type"]["id"]
-        == metadata.draft["metadata"]["resource_type"]["id"]
-    )
-    assert actual_draft["metadata"]["title"] == metadata.draft["metadata"]["title"]
-
-    read_result = records_service.read_draft(system_identity, actual_draft["id"])
-    actual_read = read_result.to_dict()
-    assert actual_read["id"] == actual_draft["id"]
-    assert actual_read["metadata"]["title"] == actual_draft["metadata"]["title"]
+    @property
+    def skip_fields(self) -> list[str]:
+        return ["metadata.title", "metadata.resource_type"]
 
 
 def test_record_publication_api(

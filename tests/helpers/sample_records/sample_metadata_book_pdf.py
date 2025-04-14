@@ -18,7 +18,7 @@ sample_metadata_book_pdf = {
                 },
                 {
                     "group_identifier": "1003089",
-                    "group_name": ("Foreign Language Teaching and the Environment"),
+                    "group_name": "Foreign Language Teaching and the Environment",
                 },
                 {
                     "group_identifier": "1003408",
@@ -205,18 +205,10 @@ sample_metadata_book_pdf = {
             ),
             "rights": [
                 {
-                    "description": {
-                        "en": (
-                            "Proprietary material. No permissions are "
-                            "granted for any kind of copyring or "
-                            "re-use. All rights reserved"
-                        )
-                    },
+                    "description": {"en": "All Rights Reserved"},
                     "id": "arr",
                     "icon": "copyright",
-                    "props": {
-                        "url": ("https://en.wikipedia.org/wiki/All_rights_reserved")
-                    },
+                    "props": {"url": "https://arr.org/licenses/all-rights-reserved"},
                     "title": {"en": "All Rights Reserved"},
                 }
             ],
@@ -267,7 +259,7 @@ sample_metadata_book_pdf = {
                 },
                 {
                     "group_identifier": "1003089",
-                    "group_name": ("Foreign Language Teaching and the Environment"),
+                    "group_name": "Foreign Language Teaching and the Environment",
                 },
                 {
                     "group_identifier": "1003408",
@@ -466,7 +458,7 @@ sample_metadata_book_pdf = {
                 },
                 {
                     "group_identifier": "1003089",
-                    "group_name": ("Foreign Language Teaching and the Environment"),
+                    "group_name": "Foreign Language Teaching and the Environment",
                 },
                 {
                     "group_identifier": "1003408",
