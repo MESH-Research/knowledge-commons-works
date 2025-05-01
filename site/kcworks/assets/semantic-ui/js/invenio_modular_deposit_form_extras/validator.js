@@ -195,8 +195,8 @@ const validationSchema = yupObject().shape({
         })
       ),
       publisher: yupString(),
-      // .matches(/(?!\s).+/, "Publisher cannot be blank")
-      // .required("A publisher is required. Enter 'none' if not applicable"),
+      // Publisher is not required in form validation because a default value is set
+      // in the form before submission.
       publication_date: yupString()
         .dateInSequence()
         .required("A publication date is required"),
@@ -220,15 +220,4 @@ const validationSchema = yupObject().shape({
     .required("Some metadata is required"),
 });
 
-// const validator = (values) => {
-//   const errors = {};
-//   if (!values.metadata.resource_type) {
-//     errors.metadata = { resource_type: "Required", ...errors.metadata };
-//   }
-//   if (!values.metadata.title || values.metadata.title === "") {
-//     errors.metadata = { title: "Required", ...errors.metadata };
-//   }
-//   return errors;
-// };
-
-export { validationSchema };
+export { validationSchema};

@@ -1,8 +1,16 @@
 #!/bin/bash
 
-rm -f /opt/invenio/var/instance/saml_cert.crt
-rm -f /opt/invenio/var/instance/saml_private_key.key
-echo "$SAML_CERT" > /opt/invenio/var/instance/saml_cert.crt
-echo "$SAML_KEY" > /opt/invenio/var/instance/saml_private_key.key
+# set -x  # Enable debug output
 
-uwsgi --ini /opt/invenio/var/instance/uwsgi_rest.ini
+# cd /opt/invenio/src
+# source /opt/invenio/src/.venv/bin/activate
+
+# Remove existing SAML certificate files
+rm -f /opt/invenio/var/instance/saml.crt /opt/invenio/var/instance/saml.key
+
+# Write SAML certificate files from environment variables
+echo "$SAML_CERT" > /opt/invenio/var/instance/saml.crt
+echo "$SAML_KEY" > /opt/invenio/var/instance/saml.key
+
+# Start uwsgi
+exec uwsgi --ini /opt/invenio/var/instance/uwsgi_rest.ini

@@ -17,7 +17,7 @@ import { Button, Form, Icon, List } from "semantic-ui-react";
 
 import { LicenseModal } from "./license_field_components/LicenseModal";
 import { LicenseFieldItem } from "./license_field_components/LicenseFieldItem";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 
 /**
  * The user-facing license.

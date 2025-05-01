@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { i18next } from "@translations/invenio_communities/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 import { Button, Segment, Header, Icon } from "semantic-ui-react";
 
 export const CommunitiesEmptySearchResults = (props) => {

@@ -19,7 +19,7 @@ import {
   Popup,
 } from "semantic-ui-react";
 import { humanReadableBytes } from "react-invenio-forms";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 

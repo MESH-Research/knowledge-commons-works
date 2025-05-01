@@ -3,7 +3,7 @@ import {
   SearchAppResultsPane,
   SearchBar,
 } from "@js/invenio_search_ui/components";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 import React, { useContext } from "react";
 import { Count, Sort, buildUID } from "react-searchkit";
 import { Button, Container, Grid } from "semantic-ui-react";
@@ -45,13 +45,23 @@ export const CommunityRecordsSearchAppLayout = ({ config, appName }) => {
                 )}
               />
             </Grid.Column>
-            <Grid.Column width={4} tablet={7} computer={8} mobile={6} textAlign="right">
+            <Grid.Column tablet={7} computer={8} mobile={6} textAlign="right">
               <Count
-                label={(cmp) => (
-                  <Trans key="communityRecordsSearch" count={cmp}>
-                    {cmp} <span className="tablet computer widescreen large-monitor only">&nbsp;works </span>found
-                  </Trans>
-                )}
+                label={(cmp) => {
+                  console.log("cmp", cmp.props.totalResults);
+                  return(
+                  <Trans
+                    i18n={i18next}
+                    key="communityRecordsSearch"
+                    count={cmp.props.totalResults}
+                    components={{
+                      countdiv: <div className="ui label" />,
+                      notmobile: <span className='tablet computer widescreen large-monitor only' />
+                    }}
+                    defaults="<countdiv>{{count}}</countdiv> <notmobile>&nbsp;works </notmobile>found"
+                  />
+                  )
+                }}
               />
             </Grid.Column>
             <Grid.Column width={4} className="computer widescreen large-monitor only">

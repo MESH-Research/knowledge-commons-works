@@ -10,7 +10,7 @@ import { Item, Header, Radio } from "semantic-ui-react";
 import { withState } from "react-searchkit";
 import _get from "lodash/get";
 import { FastField } from "formik";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 
 export const LicenseResults = withState(
   ({ currentResultsState: results, serializeLicenses }) => {

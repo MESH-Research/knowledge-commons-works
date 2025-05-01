@@ -13,7 +13,7 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 import { Image } from "react-invenio-forms";
 import { AccessStatusLabel } from "./labels/AccessStatusLabel";
 import Geopattern from "geopattern";

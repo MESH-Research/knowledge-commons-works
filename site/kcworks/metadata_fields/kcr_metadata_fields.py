@@ -1,11 +1,27 @@
-"""
-kcr:commons_domain      The commons domain from which the record was deposited.
+"""Custom fields for Knowledge Commons Works.
+
 kcr:chapter_label       The title or heading for a chapter. Used primarily
                         for bookSection resource type.
+kcr:commons_domain      The commons domain from which the record was deposited.
+kcr:commons_search_recid The record ID of the Commons search record.
+kcr:commons_search_updated The date and time the Commons search record was
+                        last updated.
+kcr:content_warning     A content warning for the record.
+kcr:course_title        The title of the course for which the record is
+                        being deposited.
+kcr:degree              The degree for which the record is being deposited.
+kcr:discipline          The discipline for which the record is being
+                        deposited.
 kcr:edition             The edition number (or other identifier) for the
                         current item.
+kcr:institution_department The department of the institution where the
+                        record was deposited.
 kcr:meeting_organization    The convening organization for a meeting or
                             conference.
+kcr:project_title       The title of the project for which the record is
+                        being deposited.
+kcr:publication_url     The URL of the publication for which the record is
+                        being deposited.
 kcr:sponsoring_institution      The institution responsible for the current
                                 item. Used primarily for resource types like
                                 whitePaper, and report.
@@ -14,15 +30,13 @@ kcr:submitter_email     The email address of the user who submitted the
                         user with the HC user account.
 kcr:submitter_username  The HC (Wordpress) username of the user who
                         submitted the original CORE deposit.
+
 """
 
 from invenio_i18n import lazy_gettext as _
-from invenio_records_resources.services.custom_fields import (
-    TextCF,
-    # EDTFDateStringCF,
-)
+from invenio_records_resources.services.custom_fields import TextCF
 from marshmallow import validate
-from marshmallow_utils.fields import SanitizedUnicode, TZDateTime
+from marshmallow_utils.fields import SanitizedUnicode
 
 KCR_NAMESPACE = {
     "kcr": "",
@@ -150,8 +164,9 @@ KCR_COMMONS_DOMAIN_FIELD_UI = {
     "ui_widget": "TextField",
     "props": {
         "label": _("Commons domain"),
-        "description": "The Knowledge Commons domain from which the "
-        "deposit is uploaded",
+        "description": (
+            "The Knowledge Commons domain from which the " "deposit is uploaded"
+        ),
     },
     "icon": "world",
 }
@@ -185,8 +200,7 @@ KCR_PROJECT_TITLE_FIELD_UI = {
         "label": "Project title",
         "placeholder": "",
         "icon": "briefcase",
-        "description": "Title for the larger project of which this work "
-        "is a part.",
+        "description": "Title for the larger project of which this work is a part.",
     },
 }
 
@@ -208,8 +222,9 @@ KCR_SUBMITTER_USERNAME_FIELD_UI = {
         "label": "Submitter user name",
         "placeholder": "",
         "icon": "user",
-        "description": "Knowledge Commons username for the person "
-        "submitting this deposit",
+        "description": (
+            "Knowledge Commons username for the person submitting this deposit"
+        ),
     },
 }
 
@@ -218,8 +233,7 @@ KCR_MEETING_ORGANIZATION_FIELD_UI = {
     "ui_widget": "TextField",
     "props": {
         "label": _("Meeting organization"),
-        "description": "The organization sponsoring the meeting or "
-        "conference",
+        "description": "The organization sponsoring the meeting or conference",
     },
     "icon": "group",
 }
@@ -241,8 +255,10 @@ KCR_CONTENT_WARNING_FIELD_UI = {
     "template": "kcworks/content_warning.html",
     "props": {
         "label": _("Content warning"),
-        "description": "Does this deposit contain any potentially "
-        "difficult content you would like to flag for viewers?",
+        "description": (
+            "Does this deposit contain any potentially "
+            "difficult content you would like to flag for viewers?"
+        ),
         "icon": "warning sign",
     },
     "icon": "warning sign",

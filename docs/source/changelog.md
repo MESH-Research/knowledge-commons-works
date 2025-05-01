@@ -1,8 +1,42 @@
-
 <!-- This file is part of Knowledge Commons Works. -->
 <!-- Copyright (C) 2024 Mesh Research. -->
 
 # Changes
+
+## Not yet released
+
+## 0.4.0-beta12 (2025-04-30)
+
+- Per-field editing permissions for collections, along with UI for managing them.
+    - Before publishing to a collection or adding a work to a collection:
+        - Alerts users when a collection has editing restrictions for some fields.
+        - Alerts users when a collection will restrict removal of a work from the collection once it is published.
+        - Confirms the user's acceptance of the collection's editing restrictions before publishing or submitting a request.
+    - After publishing or submitting a request:
+        - Displays appropriate reminders to users with the appropriate permissions to manage the collection.
+        - Displays error messages if the user attempts to edit restricted fields on the upload form.
+        - Displays a warning if the user attempts to remove a work from a collection that has restricted work removal.
+- Bug fixes
+    - Fixed a bug where an ORCID id was not accepted if it was formatted as a URL. These will not be accepted by the upload form.
+    - Style fixes for some upload form widgets.
+- Stability
+    - Major refactoring of the upload form error handling and error messages. This includes more reliable integration of client-side validation with server-side validation.
+    - Major refactoring of the detail page to make state management more robust and maintainable.
+    - Project reorganization to move main project files (pyproject.toml, etc.) to the root directory.
+- Documentation
+    - Restructured the documentation for better navigation.
+    - Added documentation for content moderation for admins.
+    - Added documentation of known issues.
+    - Added documentation of the new per-field editing permissions for collections.
+    - Added more developer documentation, including updated installation instructions for python3.12 and uv.
+    - Added sphinx-copybutton to make it easier to copy code blocks from the documentation.
+- Build
+    - Updated to use python3.12 and node 20.
+    - Updated the build system to use uv for dependency management.
+    - Added a mypy type-checking step to the test suite.
+    - Added a step to build the documentation and compile the translations to the test suite.
+- Testing
+    - Added the beginnings of a jest test suite for frontend code and added it to the test suite run on Github Actions.
 
 ## 0.3.8-beta11 (2025-03-14)
 

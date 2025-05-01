@@ -1,22 +1,37 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
+
+"""Handler classes for invenio-remote-api-provisioner."""
+import os
+import re
+import time
+from pprint import pformat
+
 import arrow
+import iso639
 from celery import shared_task
 from flask import current_app
 from flask_principal import Identity
 from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_accounts
-from invenio_communities.proxies import current_communities
 from invenio_communities.errors import CommunityDeletedError
+from invenio_communities.proxies import current_communities
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.proxies import current_rdm_records
-from invenio_rdm_records.services.errors import (
-    RecordDeletedException,
-)
+from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_remote_api_provisioner.utils import get_user_idp_info
-import iso639
-import os
-from pprint import pformat
-import re
-import time
 
 from .utils import (
     get_commons_user_from_contributor,
@@ -28,10 +43,11 @@ from .utils import (
 def get_user_profile_info(user_id: int = 0, email: str = "") -> dict:
     """Get the user's profile information.
 
-    params:
-        user_id: The user's InvenioRDM id.
+    Parameters:
+        user_id (int): The user's InvenioRDM id.
+        email (str): The user's email address.
 
-    returns:
+    Returns:
         A dict containing the user's profile information with
         the keys "name", "email", "affiliation", and "orcid".
         Or an empty dict if the user has no profile information.
@@ -59,13 +75,18 @@ def get_user_profile_info(user_id: int = 0, email: str = "") -> dict:
 
 def format_commons_search_payload(
     identity: Identity,
-    record: dict = {},
-    owner: dict = {},
-    data: dict = {},
-    draft: dict = {},
+    record: dict | None = None,
+    owner: dict | None = None,
+    data: dict | None = None,
+    draft: dict | None = None,
     **kwargs,
 ) -> dict:
     """Format payload for external service."""
+    record = record if record else {}
+    owner = owner if owner else {}
+    draft = draft if draft else {}
+    data = data if data else draft
+
     UI_URL_BASE = os.environ.get("INVENIO_SITE_UI_URL", "")
     if not UI_URL_BASE:
         UI_URL_BASE = current_app.config.get(
@@ -79,9 +100,6 @@ def format_commons_search_payload(
     PROFILES_URL_BASE = current_app.config.get(
         "KC_PROFILES_URL_BASE", "http://hcommons.org/profiles"
     )
-
-    if not data:
-        data = draft
 
     payload = {
         "_internal_id": record["id"],
@@ -174,27 +192,26 @@ def format_commons_search_payload(
 
 def format_commons_search_collection_payload(
     identity: Identity,
-    record: dict = {},
-    owner: dict = {},
-    data: dict = {},
-    draft: dict = {},
+    record: dict | None = None,
+    owner: dict | None = None,
+    data: dict | None = None,
+    draft: dict | None = None,
     **kwargs,
 ) -> dict:
-    """Format payload for external service."""
-    # FIXME: Handle multiple owners???
-    current_app.logger.debug("owner")
-    current_app.logger.debug(owner)
+    """Format payload for a collection to be sent to Commons Central Search."""
+    record = record if record else {}
+    owner = owner if owner else {}
+    draft = draft if draft else {}
+    data = data if data else draft
 
+    # FIXME: Handle multiple owners???
     UI_URL_BASE = os.environ.get("INVENIO_SITE_UI_URL", "http://works.kcommons.org")
-    API_URL_BASE = os.environ.get(
-        "INVENIO_SITE_API_URL", "http://works.kcommons.org/api"
-    )
+    # API_URL_BASE = os.environ.get(
+    #     "INVENIO_SITE_API_URL", "http://works.kcommons.org/api"
+    # )
     PROFILES_URL_BASE = current_app.config.get(
         "KC_PROFILES_URL_BASE", "http://hcommons.org/profiles"
     )
-
-    if not data:
-        data = draft
 
     try:
         type_string = "works-collection"
@@ -268,23 +285,29 @@ def record_commons_search_recid(
     service_type: str = "",
     service_method: str = "",
     request_url: str = "",
-    payload_object: dict = {},
-    record: dict = {},
-    draft: dict = {},
+    payload_object: dict | None = None,
+    record: dict | None = None,
+    draft: dict | None = None,
     **kwargs,
 ) -> None:
-    """Record the _id of the commons search record."""
+    """Record the _id of the commons search record.
+
+    This is a callback function that is called when a record is sent to
+    or updated on the Commons Central Search. We record the _id of the
+    commons search record in the KCWorks record's custom field
+    `kcr:commons_search_recid``. We also record the timestamp of the update
+    in the custom field `kcr:commons_search_updated``. This allows us to
+    - know whether a record has been sent to Commons Central Search
+      already, and if so when
+    - know which record to update on Commons Central Search when the KCWorks
+      record is updated again
+    """
+    draft = draft if draft else {}
+    record = record if record else draft
+    payload_object = payload_object if payload_object else {}
+
     record_changes = False
     service = current_rdm_records.records_service
-    current_app.logger.debug(
-        "Callback fired to record search recid for "
-        f"record {record.get('id')}, draft {draft.get('id')}"
-    )
-    current_app.logger.debug(f"json in callback: {response_json}")
-    current_app.logger.debug("payload in callback:")
-    current_app.logger.debug(pformat(payload_object))
-
-    record = record if record else draft
 
     editing_draft = service.edit(system_identity, id_=draft["id"])
     new_metadata = editing_draft.to_dict()
@@ -312,15 +335,14 @@ def record_commons_search_recid(
         try:
             del new_metadata["revision_id"]
 
-            updated = service.update_draft(
+            service.update_draft(
                 system_identity,
                 new_metadata["id"],
                 data=new_metadata,
             )
-
-            new_draft = service.read_draft(system_identity, draft["id"]).to_dict()
-
-            published = service.publish(system_identity, draft["id"])
+            # FIXME: This is a hack to get the draft to update
+            service.read_draft(system_identity, draft["id"]).to_dict()
+            service.publish(system_identity, draft["id"])
 
         except RecordDeletedException as e:
             current_app.logger.error(
@@ -349,32 +371,24 @@ def record_commons_search_collection_recid(
     service_type: str = "",
     service_method: str = "",
     request_url: str = "",
-    payload_object: dict = {},
+    payload_object: dict | None = None,
     record_id: str = "",
     draft_id: str = "",
     **kwargs,
 ) -> None:
     """Record the _id of the commons search record."""
+    payload_object = payload_object if payload_object else {}
 
     service = current_communities.service
-    current_app.logger.debug(
-        "Callback fired to record search collection recid for "
-        f"record {record_id}, draft {draft_id}"
-    )
-    current_app.logger.debug(f"json in callback: {response_json}")
-    current_app.logger.debug(f"payload in callback: {payload_object}")
     if response_json.get("_id"):  # No id is returned for updates
         try:
-            time.sleep(5)
-            current_app.logger.debug(f"Record ID: {record_id}, draft ID: {draft_id}")
+            time.sleep(5)  # FIXME: Remove this
             try:
                 record_data = service.read(system_identity, record_id).to_dict()
             except PIDDoesNotExistError:
                 records = service.search(
                     system_identity, q=f"slug:{payload_object['_internal_id']}"
                 ).to_dict()
-                current_app.logger.debug("records search")
-                current_app.logger.debug(pformat(records))
                 record_data = records["hits"]["hits"][0]
 
             service.update(
@@ -399,24 +413,31 @@ def record_commons_search_collection_recid(
 
 
 def choose_record_publish_method(
-    identity: Identity, record: dict = {}, draft: dict = {}, **kwargs
+    identity: Identity,
+    record: dict | None = None,
+    draft: dict | None = None,
+    **kwargs,
 ) -> str:
     """Choose the correct http method for publish RDMRecordService events."""
     http_method = "POST"
-    if record["is_published"] and record.get("custom_fields", {}).get(
-        "kcr:commons_search_recid"
+    if (
+        record
+        and record.get("is_published")
+        and record.get("custom_fields", {}).get("kcr:commons_search_recid")
     ):
         http_method = "PUT"
-    if draft.get("access", {}).get("record") != "public":
+    if draft and draft.get("access", {}).get("record") != "public":
         http_method = "DELETE"
     return http_method
 
 
 def record_publish_url_factory(
-    identity: Identity, record: dict = {}, draft: dict = {}, **kwargs
+    identity: Identity,
+    record: dict | None = None,
+    draft: dict | None = None,
+    **kwargs,
 ) -> str:
     """Create the correct url for publish RDMRecordService events."""
-
     protocol = current_app.config.get("COMMONS_API_REQUEST_PROTOCOL", "http")
     domain = current_app.config.get("KC_WORDPRESS_DOMAIN", "hcommons.org")
 
@@ -424,13 +445,16 @@ def record_publish_url_factory(
     # removal of records from the commons search index when they are
     # no longer publicly visible
     if (
-        record.get("is_published")
+        record
+        and record.get("is_published")
         and record.get("custom_fields", {}).get("kcr:commons_search_recid")
-        or draft.get("access", {}).get("record") != "public"
+        or draft
+        and record
+        and draft.get("access", {}).get("record") != "public"
     ):
         url = (
             f"{protocol}://search.{domain}/v1/documents/"
-            f"{record['custom_fields']['kcr:commons_search_recid']}"
+            f"{record.get('custom_fields', {}).get('kcr:commons_search_recid')}"
         )
     else:
         url = f"{protocol}://search.{domain}/v1/documents"

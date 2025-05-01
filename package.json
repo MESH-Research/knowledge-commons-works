@@ -1,28 +1,47 @@
 {
+  "config": {
+    "languages": ["en"]
+  },
   "devDependencies": {
+    "@artsy/fresnel": "^6.1.0",
+    "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-react": "^7.18.6",
+    "@reduxjs/toolkit": "^2.6.1",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^12.1.5",
     "babel-jest": "^29.5.0",
     "formik": "^2.2.9",
+    "i18next": "^20.6.1",
+    "i18next-browser-languagedetector": "^6.1.8",
+    "i18next-conv": "^15.1.1",
+    "i18next-scanner": "^4.6.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
+    "jest-environment-jsdom": "^27.5.1",
     "prop-types": "^15.8.1",
-    "react-scripts": "^5.0.1",
-    "react-test-renderer": "^18.2.0",
+    "react": "^16.13.0",
+    "react-dnd": "^11.1.3",
+    "react-dnd-html5-backend": "^11.1.3",
+    "react-dom": "^16.13.0",
+    "react-dropzone": "^11.7.1",
+    "react-i18next": "^11.18.6",
+    "react-invenio-forms": "^4.8.2",
+    "react-redux": "^7.2.9",
+    "react-scripts": "^4.0.3",
+    "react-searchkit": "^3.0.0",
+    "react-test-renderer": "^16.13.0",
+    "redux": "^4.2.1",
+    "redux-thunk": "^2.4.2",
     "semantic-ui-css": "^2.5.0",
     "semantic-ui-less": "^2.5.0",
     "semantic-ui-react": "^2.1.4"
   },
   "scripts": {
-    "test": "jest"
-  },
-  "jest": {
-    "verbose": true,
-    "roots": [
-      "<rootDir>/assets/",
-      "<rootDir>/site"
-    ],
-    "testEnvironment": "jsdom"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:update": "jest -u",
+    "test:file": "jest --testPathPattern"
   }
 }

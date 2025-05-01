@@ -7,7 +7,7 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { useFormikContext } from "formik";
 import _get from "lodash/get";
 import PropTypes from "prop-types";

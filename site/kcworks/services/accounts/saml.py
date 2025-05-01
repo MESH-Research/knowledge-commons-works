@@ -1,18 +1,31 @@
-from datetime import datetime, timezone
-from flask import current_app, abort
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
+
+"""SAML account handling."""
+
+from datetime import UTC, datetime
+
+from flask import abort, current_app
 from flask_login import current_user
 from invenio_access.permissions import system_identity
 from invenio_accounts.models import User, UserIdentity
 from invenio_accounts.proxies import current_accounts
 from invenio_db import db
 from invenio_oauthclient.errors import AlreadyLinkedError
-from invenio_oauthclient.utils import (
-    create_csrf_disabled_registrationform,
-    fill_form,
-)
-from invenio_remote_user_data_kcworks.proxies import (
-    current_remote_user_data_service,
-)
+from invenio_oauthclient.utils import create_csrf_disabled_registrationform, fill_form
+from invenio_remote_user_data_kcworks.proxies import current_remote_user_data_service
 from invenio_saml.invenio_accounts.utils import (
     _get_external_id,
     account_authenticate,
@@ -22,7 +35,7 @@ from invenio_saml.invenio_accounts.utils import (
 from invenio_saml.invenio_app import get_safe_redirect_target
 
 
-def knowledgeCommons_account_get_user(account_info=None):
+def knowledgeCommons_account_get_user(account_info: dict | None = None) -> User | None:
     """Retrieve user object for the given request.
 
     Extends invenio_saml.invenio_accounts.utils.account_get_user to allow for
@@ -31,12 +44,14 @@ def knowledgeCommons_account_get_user(account_info=None):
     Uses either the access token or extracted account information to retrieve
     the user object.
 
-    :param account_info: The dictionary with the account info.
-        (Default: ``None``)
-    :returns: A :class:`invenio_accounts.models.User` instance or ``None``.
+    Parameters:
+        account_info (dict | None): The dictionary with the account info.
+            (Default: ``None``)
+
+    Returns:
+        A :class:`invenio_accounts.models.User` instance or ``None``.
     """
     if account_info:
-        current_app.logger.debug(f"account_info: {account_info}")
         external_id = _get_external_id(account_info)
         if external_id:
             user = UserIdentity.get_user(external_id["method"], external_id["id"])
@@ -45,11 +60,9 @@ def knowledgeCommons_account_get_user(account_info=None):
 
         orcid = account_info.get("user", {}).get("profile", {}).get("identifier_orcid")
         if orcid:
-            current_app.logger.debug(f"orcid: {orcid}")
             orcid_match = User.query.filter(
                 User._user_profile.op("->>")("identifier_orcid") == orcid
             ).one_or_none()
-            current_app.logger.debug(f"orcid_match: {orcid_match}")
             if orcid_match:
                 return orcid_match
         kc_username = (
@@ -58,7 +71,6 @@ def knowledgeCommons_account_get_user(account_info=None):
             .get("identifier_kc_username")
         )
         if kc_username:
-            current_app.logger.debug(f"kc_username: {kc_username}")
             kc_username_match = User.query.filter_by(
                 username=f"{account_info['external_method']}-{kc_username}"
             ).one_or_none()
@@ -71,7 +83,6 @@ def knowledgeCommons_account_get_user(account_info=None):
                 return kc_username_match
         email = account_info.get("user", {}).get("email")
         if email:
-            current_app.logger.debug(f"email: {email}")
             email_match = User.query.filter_by(email=email).one_or_none()
             if email_match:
                 return email_match
@@ -88,10 +99,10 @@ def knowledgeCommons_account_setup(user: User, account_info: dict) -> bool:
     try:
         account_link_external_id(
             user,
-            dict(
-                id=account_info["external_id"],
-                method=account_info["external_method"],
-            ),
+            {
+                "id": account_info["external_id"],
+                "method": account_info["external_method"],
+            },
         )
         if not user.active:
             assert current_accounts.datastore.activate_user(user)
@@ -155,46 +166,46 @@ def knowledgeCommons_account_info(attributes: dict, remote_app: str) -> dict:
         remote_data: dict = current_remote_user_data_service.fetch_from_remote_api(
             remote_app, external_id
         )
-        print(f"Remote data: {remote_data}")
         orcid: str = remote_data.get("users", {}).get("orcid", None)
-        email: str = remote_data.get("users", {}).get("email", None)
+        email = remote_data.get("users", {}).get("email", None)
         assert email is not None
-    except KeyError:
+    except KeyError as err:
         raise ValueError(
             f"Missing required KC account username in SAML response from IDP: no "
             f"entity with key {mappings['external_id']}"
-        )
-    except AssertionError:
+        ) from err
+    except AssertionError as err:
         raise ValueError(
             f"Missing required KC account email in SAML response from IDP: no "
             f"entity with key {mappings['email']} and fetch from KC api failed"
-        )
+        ) from err
 
-    profile_dict = dict(
-        username=username,  # shifted from profile to user by register form
-        full_name=name + " " + surname,
-        affiliations=affiliations,
-        identifier_kc_username=external_id.lower(),
-    )
+    profile_dict = {
+        "username": username,  # shifted from profile to user by register form
+        "full_name": name + " " + surname,
+        "affiliations": affiliations,
+        "identifier_kc_username": external_id.lower(),
+    }
     if orcid:
         profile_dict["identifier_orcid"] = orcid
 
-    return dict(
-        user=dict(
-            email=email,
-            profile=profile_dict,
+    return {
+        "user": {
+            "email": email,
+            "profile": profile_dict,
+        },
+        "external_id": external_id,
+        "external_method": remote_app,
+        "active": True,
+        "confirmed_at": (
+            datetime.now(UTC) if remote_app_config.get("auto_confirm", True) else None
         ),
-        external_id=external_id,
-        external_method=remote_app,
-        active=True,
-        confirmed_at=(
-            datetime.now(timezone.utc)
-            if remote_app_config.get("auto_confirm", True)
-            else None
-        ),
-    )
+    }
 
 
+# TODO: The change to the ACS handler is to allow for the custom user
+# lookup logic has been accepted into invenio-saml upstream. Remove
+# this custom logic once the change is available in a release we can use.
 def acs_handler_factory(
     remote_app,
     account_info=knowledgeCommons_account_info,
@@ -251,23 +262,11 @@ def acs_handler_factory(
 
         :return: Next URL
         """
-        current_app.logger.debug("ACS handler called")
-        current_app.logger.debug(
-            "Current user is authenticated: %s", current_user.is_authenticated
-        )
         if not current_user.is_authenticated:
-            current_app.logger.debug(
-                "Metadata received from IdP %s", auth.get_attributes()
-            )
             _account_info = account_info(auth.get_attributes(), remote_app)
-            current_app.logger.debug("Metadata extracted from IdP %s", _account_info)
             # TODO: signals?
-            current_app.logger.debug(
-                f"OAUTHCLIENT_SIGNUP_FORM: {current_app.config['OAUTHCLIENT_SIGNUP_FORM']}"
-            )
 
             user = user_lookup(_account_info)
-            current_app.logger.debug(f"user: {user}")
 
             if user is None:
                 form = create_csrf_disabled_registrationform(remote_app)

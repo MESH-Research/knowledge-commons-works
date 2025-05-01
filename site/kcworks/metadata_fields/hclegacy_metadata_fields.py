@@ -1,6 +1,10 @@
-"""
-Custom fields to hold legacy metadata for records imported from the CORE
-repository.
+# Part of Knowledge Commons Works
+# Copyright (C) MESH Research, 2023
+#
+# KCWorks is free software; you can redistribute it and/or modify it under the
+# terms of the MIT License; see LICENSE file for more details.
+
+"""Custom fields for legacy metadata imported from the CORE repository.
 
 Implements the following fields:
 
@@ -20,10 +24,6 @@ hclegacy:file_location      The complete file path to the deposited file on
 hclegacy:file_pid           The pid of the deposited file in the CORE
                             repository. Each file had its own pid separate
                             from the pid of the metadata record.
-hclegacy:groups_for_deposit     The HC groups with which the CORE deposit was
-                                associated. This data is retained in a
-                                legacy field because groups will not be
-                                handled the same way in Invenio.
 hclegacy:previously_published   Indicated that the original CORE deposit had
                                 been published prior to upload.
 hclegacy:publication_type       There were multiple fields in the CORE data
@@ -39,44 +39,38 @@ hclegacy:record_change_date     The last modification date for the original
 hclegacy:record_creation_date   The creation date for the original CORE
                                 deposit record.
 hclegacy:record_identifier      A number used in the original Solr indexing. It
-                                concatenates the site ID (id number for HC, MLA, etc.) and original item id number in the
-                                CORE database.
+                                concatenates the site ID (id number for HC, MLA,
+                                etc.) and original item id number in the CORE
+                                database.
 hclegacy:society            The HC societies to which the original uploader of
-                            the CORE deposit belonged. It should include the society from whose site the deposit was made, although this may not be the case for bulk uploads. Possible values are: arlisna, hc, msu, ajs, hastac, sah, aseees, caa, up. (Deprecated and never used.)
-hclegacy:submitter_org_memberships  The HC organizations to which the user
-                                    who uploaded the deposit belonged.
+                            the CORE deposit belonged. It should include the
+                            society from whose site the deposit was made,
+                            although this may not be the case for bulk uploads.
+                            Possible values are: arlisna, hc, msu, ajs, hastac,
+                            sah, aseees, caa, up. (Deprecated and never used.)
 hclegacy:submitter_affiliation  The institutional affiliation of the user
                                 who uploaded the deposit.
 hclegacy:submitter_id       The user id number (in the HC database) for the
                             user who originally deposited the CORE upload.
+hclegacy:submitter_org_memberships  The HC organizations to which the user
+                                    who uploaded the deposit belonged.
+hclegacy:total_downloads    The total number of downloads for this record in
+                            the CORE repository before migration.
+hclegacy:total_views       The total number of views for this record in the
+                            CORE repository before migration.
 """
 
 from invenio_i18n import lazy_gettext as _
-from invenio_records_resources.services.custom_fields import BaseCF, TextCF
+from invenio_records_resources.services.custom_fields import TextCF
 from invenio_records_resources.services.custom_fields.number import IntegerCF
-from invenio_records_resources.services.custom_fields.date import (
-    ISODateStringCF,
-)
-from invenio_vocabularies.services.custom_fields import VocabularyCF
-from marshmallow import fields, validate
-from marshmallow_utils.fields import (
-    SanitizedUnicode,
-    SanitizedHTML,
-    StrippedHTML,
-    EDTFDateString,
-)
+from marshmallow_utils.fields import SanitizedUnicode
 
 HCLEGACY_NAMESPACE = {
     "hclegacy": "",
 }
 
 HCLEGACY_CUSTOM_FIELDS = [
-    # VocabularyCF(
-    #     name="hclegacy:collection",
-    #     vocabulary_id="hcCollections",  # controlled vocabulary id defined in the vocabularies.yaml file
-    #     dump_options=True,  # True when the list of all possible values will be visible in the dropdown UI component, typically for small vocabularies
-    #     multiple=False, # if the field accepts a list of values (True) or single value (False)
-    #     field_cls=SanitizedUnicode,
+    TextCF(name="hclegacy:collection"),
     # ),
     TextCF(name="hclegacy:collection"),
     IntegerCF(name="hclegacy:committee_deposit"),

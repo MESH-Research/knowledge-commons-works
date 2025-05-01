@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # This file is part of Knowledge Commons Works
 # Copyright (C) 2023-2024, MESH Research
 #
@@ -18,4 +16,4 @@
 
 """KCWorks customizations to InvenioRDM."""
 
-__version__ = "0.3.8-beta11"
+__version__ = "0.4.0-beta12"

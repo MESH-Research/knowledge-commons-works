@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # This file is part of Invenio.
 # Copyright (C) 2015-2019 CERN.
 #
@@ -8,10 +6,7 @@
 
 """PDF previewer based on pdf.js."""
 
-from __future__ import absolute_import, print_function
-
 from flask import render_template
-
 from invenio_previewer.proxies import current_previewer
 
 previewable_extensions = ["pdf", "pdfa"]

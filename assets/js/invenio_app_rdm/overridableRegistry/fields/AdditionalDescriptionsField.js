@@ -14,7 +14,7 @@ import { Button, Form, Icon } from "semantic-ui-react";
 import { SelectField } from "react-invenio-forms";
 // import { emptyAdditionalDescription } from "./initialValues";
 import { LanguagesField } from "@js/invenio_rdm_records";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 // import { sortOptions } from "../../../utils";
 import { FieldArray, useFormikContext } from "formik";
 import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/TextArea";

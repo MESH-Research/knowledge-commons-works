@@ -20,7 +20,7 @@ import { Button, Form, Grid, Icon, Segment } from "semantic-ui-react";
 
 // import { emptyRelatedWork } from "./initialValues";
 import { ResourceTypeField } from "@js/invenio_rdm_records";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { FieldArray, useFormikContext } from "formik";
 
 export const emptyRelatedWork = {

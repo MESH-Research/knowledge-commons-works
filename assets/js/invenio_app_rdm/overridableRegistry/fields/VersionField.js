@@ -10,7 +10,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { FieldLabel } from "react-invenio-forms";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { Trans } from "react-i18next";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 

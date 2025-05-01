@@ -18,7 +18,7 @@ import {
 } from "react-invenio-forms";
 // import { emptyAdditionalTitle } from "./initialValues";
 import { LanguagesField } from "@js/invenio_rdm_records";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { FieldArray, useFormikContext } from "formik";
 
 const emptyAlternateTitle = {

@@ -1,20 +1,25 @@
-// This file is part of InvenioRDM
-// Copyright (C) 2022 CERN.
+// This file is part of Knowledge Commons Works
+// Copyright (C) 2024-2025 Mesh Research
 //
-// Invenio App RDM is free software; you can redistribute it and/or modify it
-// under the terms of the MIT License; see LICENSE file for more details.
+// Knowledge Commons Works is based on InvenioRDM, and
+// this file is based on code from InvenioRDM. InvenioRDM is
+// Copyright (C) 2022-2024 CERN.
+//
+// Knowledge Commons Works and InvenioRDM are both free software;
+// you can redistribute and/or modify them under the terms of the
+// MIT License; see LICENSE file for more details.
 
-import { i18next } from "@translations/invenio_app_rdm/i18next";
-import { CommunityTypeLabel } from "../labels";
-import { RestrictedLabel } from "../labels";
+import { i18next } from "@translations/kcworks/i18next";
+import { CommunityTypeLabel, RestrictedLabel } from "../labels";
+// or from "@js/invenio_communities/community/labels";
 import _truncate from "lodash/truncate";
 import React from "react";
 import { Image, InvenioPopup } from "react-invenio-forms";
-import { Icon, Label } from "semantic-ui-react";
+import { Icon, Label, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import GeoPattern from "geopattern";
 
-export const CommunityCompactItemMobile = ({
+const CommunityCompactItemMobile = ({
   result,
   actions,
   extraLabels,
@@ -22,11 +27,14 @@ export const CommunityCompactItemMobile = ({
   showPermissionLabel,
   detailUrl,
   isCommunityDefault,
+  restrictionsMessage,
 }) => {
   const communityType = result.ui?.type?.title_l10n;
-  const { metadata, ui, links, access, id } = result;
+  const { metadata, ui, links, access, id, slug } = result;
 
-  const pattern = GeoPattern.generate(encodeURI(result.slug));
+  const makePattern = (slug) => {
+    return GeoPattern.generate(encodeURI(slug)).toDataUri();
+  };
 
   return (
     <div key={id} className={`community-item mobile only ${itemClassName}`}>
@@ -36,9 +44,13 @@ export const CommunityCompactItemMobile = ({
             wrapped
             size="mini"
             src={links.logo}
-            alt=""
+            alt={i18next.t("Community logo")}
             className="community-image rel-mr-1"
-            fallbackSrc={pattern.toDataUri()}
+            fallbackSrc={makePattern(slug)}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = makePattern(slug);
+            }}
           />
 
           <div className="flex align-items-center rel-mb-1">
@@ -94,9 +106,20 @@ export const CommunityCompactItemMobile = ({
           )}
           {isCommunityDefault && (
             <Label color="purple" size="tiny">
-              <Icon name="paint brush" />
-              {i18next.t("Branding")}
+              <Icon name="star" />
+              {i18next.t("Primary")}
             </Label>
+          )}
+          {restrictionsMessage && (
+            <Popup
+              content={restrictionsMessage}
+              trigger={
+                <Label color="red" size="tiny">
+                  <Icon name="lock" />
+                  {i18next.t("Editing restrictions")}
+                </Label>
+              }
+            />
           )}
         </div>
       </div>
@@ -112,6 +135,7 @@ CommunityCompactItemMobile.propTypes = {
   actions: PropTypes.node,
   detailUrl: PropTypes.string,
   isCommunityDefault: PropTypes.bool.isRequired,
+  restrictionsMessage: PropTypes.string,
 };
 
 CommunityCompactItemMobile.defaultProps = {
@@ -120,4 +144,7 @@ CommunityCompactItemMobile.defaultProps = {
   itemClassName: "",
   showPermissionLabel: false,
   detailUrl: undefined,
+  restrictionsMessage: undefined,
 };
+
+export { CommunityCompactItemMobile };

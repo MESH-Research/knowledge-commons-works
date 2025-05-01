@@ -144,6 +144,8 @@
   &.content_warning {
     .fields .invenio-field-label {
       font-weight: normal;
+      padding-top: 0.47rem;
+      margin-right: 1rem;
     }
   }
 
@@ -227,8 +229,10 @@
   }
 
   &.ai {
-    .fields .field .invenio-field-label {
+    .fields .field:first-of-type .invenio-field-label {
       font-weight: normal;
+      padding-top: 0.47rem;
+      margin-right: 1rem;
     }
   }
 

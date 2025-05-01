@@ -9,7 +9,7 @@ import React from "react";
 
 import { Dropdown } from "semantic-ui-react";
 import { withState } from "react-searchkit";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 
 export const FunderDropdown = withState(
   ({ currentResultsState: awardsList, updateQueryState, currentQueryState }) => {

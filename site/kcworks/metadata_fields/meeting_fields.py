@@ -15,9 +15,7 @@ Implements the following fields:
 - meeting:meeting.session_part
 
 """
-
 from invenio_i18n import lazy_gettext as _
-
 
 KCR_MEETING_CUSTOM_FIELDS_UI = {
     "section": _("Conference"),

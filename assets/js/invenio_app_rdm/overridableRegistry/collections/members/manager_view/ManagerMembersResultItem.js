@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { i18next } from "@translations/invenio_communities/i18next";
+import { i18next } from "@translations/i18next";
 import _upperFirst from "lodash/upperFirst";
 import { DateTime } from "luxon";
 import PropTypes from "prop-types";

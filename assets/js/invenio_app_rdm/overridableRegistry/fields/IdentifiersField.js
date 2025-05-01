@@ -16,7 +16,7 @@ import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import { FieldLabel } from "react-invenio-forms";
 import { Button, Form, Icon } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 // import { emptyIdentifier } from "./initialValues";
 import { FieldArray, useFormikContext } from "formik";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
@@ -139,7 +139,7 @@ export const IdentifiersField = ({
                 {/* <GroupField key={index} inline> */}
                 <TextField
                   fieldPath={`${fieldPathPrefix}.identifier`}
-                  label={i18next.t(!isUrl ? "Identifier" : "URL")}
+                  label={!isUrl ? i18next.t("Identifier") : i18next.t("URL")}
                   required={!isUrl && hasScheme}
                   id={`${fieldPathPrefix}.identifier`}
                   width={!!isUrl ? 14 : 9}

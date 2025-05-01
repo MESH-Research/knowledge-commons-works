@@ -146,7 +146,9 @@
 @red: #db6228;
 @redDark: #b54f1e;
 @yellow: @gold;
-@royalBlue: #005b9e;
+@infoBlue: #276F86;
+@infoBlueText: #0e576c; // #0e576c;
+@infoBlueText2: #205a8a; // #205a8a;
 
 /*-------------------
       Colors
