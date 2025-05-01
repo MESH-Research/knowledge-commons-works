@@ -2,10 +2,11 @@
 
 ![Tests](https://github.com/mesh-research/knowledge-commons-works/actions/workflows/tests.yml/badge.svg)
 ![Container build](https://github.com/mesh-research/knowledge-commons-works/actions/workflows/CI.yml/badge.svg)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ![KCWorks logo](../../static/images/kc_works_logos/SVG/kc_works_logo_wordmark.svg)
 
-Version 0.3.8-beta11
+Version 0.4.0-beta12
 
 Knowledge Commons Works is a collaborative platform for storing and sharing academic research. It is part of [Knowledge Commons](https://about.hcommons.org/) and is built on an instance of the [InvenioRDM](https://inveniordm.docs.cern.ch/) repository system.
 

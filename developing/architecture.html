@@ -1,0 +1,1552 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Development Standards" href="code_standards.html" /><link rel="prev" title="Developing KCWorks" href="index.html" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>KCWorks Architecture - Knowledge Commons Works 0.3.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.3.8 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.3.8 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feature_highlights.html">Feature Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../admin_guide/index.html">Administrator Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Administrator Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/moderation.html">Content Moderation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Setting up KCWorks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../setup/configuration.html">Configuration of KCWorks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup/installation.html">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Developing KCWorks</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Developing KCWorks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">KCWorks Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_standards.html">Development Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source_control.html">Source Control and Versioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Automated Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stats.html">Stats and Analytics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="i18n.html">I18n</a></li>
+<li class="toctree-l2"><a class="reference internal" href="infrastructure.html">KCWorks Infrastructure</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../customizations.html">Customizations to InvenioRDM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../in_depth.html">In-depth Installation Instructions (NEEDS UPDATING)</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/developing/architecture.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="kcworks-architecture">
+<h1>KCWorks Architecture<a class="headerlink" href="#kcworks-architecture" title="Link to this heading">¶</a></h1>
+<section id="inveniordm-s-layered-architecture">
+<h2>InvenioRDM’s Layered Architecture<a class="headerlink" href="#inveniordm-s-layered-architecture" title="Link to this heading">¶</a></h2>
+<p>InvenioRDM employs a layered architecture with:</p>
+<ol class="arabic simple">
+<li><p>Data layer</p>
+<ul class="simple">
+<li><p>Low-level data storage and retrieval.</p>
+<ul>
+<li><p>Primarily SQLAlchemy model classes.</p></li>
+</ul>
+</li>
+<li><p>High-level data API classes that provide a Pythonic interface to the data layer.</p>
+<ul>
+<li><p>Validate data before storing it.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Service layer</p>
+<ul class="simple">
+<li><p>Retrieves and modifies data from the data layer, either for a view or for another service.</p>
+<ul>
+<li><p>Providing abstract CRUD methods for operating on the data layer’s API classes.</p></li>
+<li><p>Providing abstracted “result items” and “result lists”</p></li>
+</ul>
+</li>
+<li><p>Enforces permission and access control policies.</p></li>
+</ul>
+</li>
+<li><p>View layer</p>
+<ul class="simple">
+<li><p>Consists of</p>
+<ul>
+<li><p>Flask views (registered as Blueprints)</p></li>
+<li><p>rendering either</p>
+<ul>
+<li><p>Jinja2 templates to produce HTML</p></li>
+<li><p>JSON to produce API responses</p></li>
+</ul>
+</li>
+<li><p>in some cases, React components embedded in the Jinja2 templates</p>
+<ul>
+<li><p>These are rendered on the client side</p></li>
+<li><p>Data is passed from the Jinja2 templates to the React components via HTML data attributes</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="inveniordm-services">
+<h2>InvenioRDM Services<a class="headerlink" href="#inveniordm-services" title="Link to this heading">¶</a></h2>
+<p>An InvenioRDM service is a class that provides methods for interacting with the data layer. The business logic of the service is usually delegated to one or more component classes, which are called during the service’s methods.</p>
+<section id="service-classes">
+<h3>Service Classes<a class="headerlink" href="#service-classes" title="Link to this heading">¶</a></h3>
+<section id="baseservice">
+<h4>BaseService<a class="headerlink" href="#baseservice" title="Link to this heading">¶</a></h4>
+<p>The base Service class is defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.base.Service</span></code>. It defines methods for:</p>
+<ul class="simple">
+<li><p>Getting the service ID</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">id(self)</span></code>: Return the id of the service from config.</p></li>
+</ul>
+</li>
+<li><p>Permissions checking</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">permission_policy(self,</span> <span class="pre">action_name,</span> <span class="pre">**kwargs)</span></code>: Factory for a permission policy instance.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_permission(self,</span> <span class="pre">identity,</span> <span class="pre">action_name,</span> <span class="pre">**kwargs)</span></code>: Check a permission against the identity.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">require_permission(self,</span> <span class="pre">identity,</span> <span class="pre">action_name,</span> <span class="pre">**kwargs)</span></code>: Require a specific permission from the permission policy.</p></li>
+</ul>
+</li>
+<li><p>Handling service components</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">components(self)</span></code>: Return initialized instances of the service’s component classes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_components(self,</span> <span class="pre">action,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>: Run components for a given action.</p></li>
+</ul>
+</li>
+<li><p>Producing result items and lists</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">result_item(self,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>: Create a new instance of the resource unit, i.e. whatever the service provides.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result_list(self,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>: Create a new list of resource units. In some cases this is a simple iterable of resource units, but in other cases it is a more complex object that includes additional data.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="recordservice">
+<h4>RecordService<a class="headerlink" href="#recordservice" title="Link to this heading">¶</a></h4>
+<p>Services dealing with InvenioRDM records of some kind (e.g. records, drafts, communities, etc.) inherit from the <code class="docutils literal notranslate"><span class="pre">RecordService</span></code> class defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.records.service</span></code>. This class adds:</p>
+<ul class="simple">
+<li><p>properties and methods related to the service’s related data-layer API class</p>
+<ul>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">schema</span></code> property that returns a <code class="docutils literal notranslate"><span class="pre">ServiceSchemaWrapper</span></code> instance.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">record_cls</span></code> property that returns the record class for the service.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">links_item_tpl</span></code> property that returns a <code class="docutils literal notranslate"><span class="pre">LinksTemplate</span></code> instance for constructing links to a resource unit.</p></li>
+<li><p>An <code class="docutils literal notranslate"><span class="pre">expandable_fields</span></code> property that returns a list of expandable fields for the service’s data-layer API class.</p></li>
+</ul>
+</li>
+<li><p>Methods for creating searches</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_search(self,</span> <span class="pre">identity,</span> <span class="pre">record_cls,</span> <span class="pre">search_opts,</span> <span class="pre">permission_action=&quot;read&quot;,</span> <span class="pre">preference=None,</span> <span class="pre">extra_filter=None,</span> <span class="pre">versioning=True)</span></code>: Instantiate a search class.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search_records(self,</span> <span class="pre">identity,</span> <span class="pre">params,</span> <span class="pre">**kwargs)</span></code>: A low-level method to create an OpenSearch DSL instance for searching records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search(self,</span> <span class="pre">identity,</span> <span class="pre">params=None,</span> <span class="pre">search_preference=None,</span> <span class="pre">expand=False,</span> <span class="pre">**kwargs)</span></code>: A high-level method to search for records matching the querystring.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scan(self,</span> <span class="pre">identity,</span> <span class="pre">params=None,</span> <span class="pre">search_preference=None,</span> <span class="pre">expand=False,</span> <span class="pre">**kwargs)</span></code>: A high-level method to perform a rolling “scroll” search for records matching the querystring. (This is used for searching through large numbers of records, since OpenSearch will not return more than 10,000 records at a time.)</p></li>
+</ul>
+</li>
+<li><p>Methods for indexing records</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">reindex(self,</span> <span class="pre">identity,</span> <span class="pre">params=None,</span> <span class="pre">search_preference=None,</span> <span class="pre">search_query=None,</span> <span class="pre">extra_filter=None,</span> <span class="pre">**kwargs)</span></code>: A high-level method to reindex records matching the query parameters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rebuild_index(self,</span> <span class="pre">identity,</span> <span class="pre">uow=None)</span></code>: A high-level method to reindex all records managed by this service.</p></li>
+</ul>
+</li>
+<li><p>CRUD methods</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">create(self,</span> <span class="pre">identity,</span> <span class="pre">data,</span> <span class="pre">uow=None,</span> <span class="pre">expand=False)</span></code>: Create a record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exists(self,</span> <span class="pre">identity,</span> <span class="pre">id_)</span></code>: Check if the record exists and user has permission. (Does <em>not</em> use the search index.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">expand=False,</span> <span class="pre">action=&quot;read&quot;)</span></code>: Retrieve a record. (Does <em>not</em> use the search index.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read_many(self,</span> <span class="pre">identity,</span> <span class="pre">ids,</span> <span class="pre">expand=False,</span> <span class="pre">action=&quot;read&quot;)</span></code>: Retrieve multiple records using the search index.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read_all(self,</span> <span class="pre">identity,</span> <span class="pre">params=None,</span> <span class="pre">search_preference=None,</span> <span class="pre">expand=False,</span> <span class="pre">**kwargs)</span></code>: Retrieve all records matching the query parameters using the search index.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">update(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">data,</span> <span class="pre">uow=None,</span> <span class="pre">expand=False)</span></code>: Update a record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">uow=None)</span></code>: Delete a record.</p></li>
+</ul>
+</li>
+<li><p>Helper methods for record management</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_revision_id(self,</span> <span class="pre">record,</span> <span class="pre">expected_revision_id)</span></code>: Validate the given revision_id with current record’s one.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_relation_update(self,</span> <span class="pre">identity,</span> <span class="pre">record_type,</span> <span class="pre">records_info,</span> <span class="pre">notif_time,</span> <span class="pre">limit=100)</span></code>: Handles the update of a related field record when the related field is updated.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="augmented-recordservice">
+<h4>Augmented RecordService<a class="headerlink" href="#augmented-recordservice" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">invenio_drafts_resources</span></code> package then overrides this with a <code class="docutils literal notranslate"><span class="pre">RecordService</span></code> class that adds (a) a distinction between published and draft records, (b) record versioning and a parent-child record relationship, and (c) file attachments to service records. This adds the following properties and methods to the <code class="docutils literal notranslate"><span class="pre">RecordService</span></code> class:</p>
+<ul class="simple">
+<li><p>Properties and methods for draft records</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">draft_cls(self)</span></code>: Return the record class for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">draft_files(self)</span></code>: Return the draft files service for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">draft_indexer(self)</span></code>: A factory for creating an indexer instance.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search_drafts(self,</span> <span class="pre">identity,</span> <span class="pre">params=None,</span> <span class="pre">search_preference=None,</span> <span class="pre">expand=False,</span> <span class="pre">extra_filter=None,</span> <span class="pre">**kwargs)</span></code>: Search for draft records matching the querystring.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read_draft(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">expand=False)</span></code>: Retrieve a draft record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">update_draft(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">data,</span> <span class="pre">revision_id=None,</span> <span class="pre">uow=None,</span> <span class="pre">expand=False)</span></code>: Replace a draft.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edit(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">uow=None,</span> <span class="pre">expand=False)</span></code>: Creates a new revision of a draft or a draft for an existing published record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">publish(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">uow=None,</span> <span class="pre">expand=False)</span></code>: Publishes a draft record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete_draft(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">revision_id=None,</span> <span class="pre">uow=None)</span></code>: Deletes a draft record. (Defaults to a soft delete, so the record is not actually deleted from the database or search index until a later cleanup operation.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_draft(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">ignore_field_permissions=False)</span></code>: Validate a draft.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cleanup_drafts(self,</span> <span class="pre">timedelta,</span> <span class="pre">uow=None,</span> <span class="pre">search_gc_deletes=60)</span></code>: Hard delete of soft deleted drafts.</p></li>
+</ul>
+</li>
+<li><p>Properties and methods for files</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">files(self)</span></code>: Return the files service for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">import_files(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">uow=None)</span></code>: Import files from previous record version.</p></li>
+</ul>
+</li>
+<li><p>Properties and methods for versions and parent records</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_parent(self)</span></code>: Return the parent schema for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search_versions(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">params=None,</span> <span class="pre">search_preference=None,</span> <span class="pre">expand=False,</span> <span class="pre">permission_action=&quot;read&quot;,</span> <span class="pre">**kwargs)</span></code>: Search for record’s versions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read_latest(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">expand=False)</span></code>: Retrieve the latest version of a record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">new_version(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">uow=None,</span> <span class="pre">expand=False)</span></code>: Creates a new version of a record.
+This overridden <code class="docutils literal notranslate"><span class="pre">RecordService</span></code> class also modifies the CRUD methods to enforce a workflow in which records are only modified via their draft records. This involves overriding:</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">update(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">data,</span> <span class="pre">uow=None,</span> <span class="pre">expand=False)</span></code>: Now raises a <code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> error.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create(self,</span> <span class="pre">identity,</span> <span class="pre">data,</span> <span class="pre">uow=None,</span> <span class="pre">expand=False)</span></code>: Now creates a draft record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rebuild_index(self,</span> <span class="pre">identity)</span></code>: Now reindexes all draft records (instances of draft API class) as well as all published records (instances of record API class) and skips soft-deleted records.</p></li>
+</ul>
+</section>
+<section id="rdmrecordservice">
+<h4>RDMRecordService<a class="headerlink" href="#rdmrecordservice" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records</span></code> package provides an <code class="docutils literal notranslate"><span class="pre">RDMRecordService</span></code> class that inherits from the <code class="docutils literal notranslate"><span class="pre">RecordService</span></code> class and adds:</p>
+<ul class="simple">
+<li><p>Additional properties for accessing subservices</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">access</span></code>: Return the access service for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pids</span></code>: Return the PIDs service for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">review</span></code>: Return the review service for the service.</p></li>
+</ul>
+</li>
+<li><p>Methods for embargo handling</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">lift_embargo(self,</span> <span class="pre">identity,</span> <span class="pre">_id,</span> <span class="pre">uow=None)</span></code>: Lifts an embargo from the record and draft (if exists).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scan_expired_embargos(self,</span> <span class="pre">identity)</span></code>: Scan for records with an expired embargo.</p></li>
+</ul>
+</li>
+<li><p>Properties and methods for file quota handling</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_quota</span></code>: Return the schema for quota information.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_quota(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">data,</span> <span class="pre">files_attr=&quot;files&quot;,</span> <span class="pre">uow=None)</span></code>: Set the quota values for a record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_user_quota(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">data,</span> <span class="pre">uow=None)</span></code>: Set the user files quota.</p></li>
+</ul>
+</li>
+<li><p>Properties and methods for deletion of published records</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_tombstone</span></code>: Return the schema for tombstone information.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete_record(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">data,</span> <span class="pre">expand=False,</span> <span class="pre">uow=None,</span> <span class="pre">revision_id=None)</span></code>: Re-introduces soft-deletion of published records (which were previously removed by the <code class="docutils literal notranslate"><span class="pre">RecordService</span></code> class).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">update_tombstone(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">data,</span> <span class="pre">expand=False,</span> <span class="pre">uow=None)</span></code>: Update the tombstone information for the (soft) deleted record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cleanup_record(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">uow=None)</span></code>: Clean up a (soft) deleted record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">restore_record(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">expand=False,</span> <span class="pre">uow=None)</span></code>: Restore a record that has been (soft) deleted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mark_record_for_purge(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">expand=False,</span> <span class="pre">uow=None)</span></code>: Mark a (soft) deleted record for purge.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unmark_record_for_purge(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">expand=False,</span> <span class="pre">uow=None)</span></code>: Remove the mark for deletion from a record, returning it to deleted state.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">purge_record(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">uow=None)</span></code>: Purge a record that has been marked.</p></li>
+</ul>
+</li>
+<li><p>Overridden methods to add deletion-related functionality</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">read(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">expand=False,</span> <span class="pre">action=&quot;read&quot;,</span> <span class="pre">include_deleted=False)</span></code>: Adds an <code class="docutils literal notranslate"><span class="pre">include_deleted</span></code> argument to the read method, and a check for the <code class="docutils literal notranslate"><span class="pre">read_deleted</span></code> permission if it is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read_draft(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">expand=False)</span></code>: Prevents reading a draft if there is a published deleted record. (410 response.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search(self,</span> <span class="pre">identity,</span> <span class="pre">params=None,</span> <span class="pre">search_preference=None,</span> <span class="pre">expand=False,</span> <span class="pre">extra_filter=None,</span> <span class="pre">**kwargs)</span></code>: Adds a “read_deleted” permission action to the search method.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search_drafts(self,</span> <span class="pre">identity,</span> <span class="pre">params=None,</span> <span class="pre">search_preference=None,</span> <span class="pre">expand=False,</span> <span class="pre">extra_filter=None,</span> <span class="pre">**kwargs)</span></code>: Adds a filter to exclude soft-deleted records from the search results.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search_versions(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">params=None,</span> <span class="pre">search_preference=None,</span> <span class="pre">expand=False,</span> <span class="pre">permission_action=&quot;read&quot;,</span> <span class="pre">**kwargs)</span></code>: Adds a “read_deleted” permission action to the search method.</p></li>
+</ul>
+</li>
+<li><p>Additional overridden methods for other functionality</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">publish(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">uow=None,</span> <span class="pre">expand=False)</span></code>: Adds a check prior to the original publish method to allow enforcement of a config setting that requires a community to be present on a record before it can be published.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">update_draft(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">data,</span> <span class="pre">revision_id=None,</span> <span class="pre">uow=None,</span> <span class="pre">expand=False)</span></code>: Adds a check prior to the original update_draft method to allow enforcement of a config setting that prevents a record from being restricted after the grace period.</p></li>
+</ul>
+</li>
+<li><p>Additional new methods for other functionality</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">expandable_fields</span></code>: Expands the <code class="docutils literal notranslate"><span class="pre">communities</span></code> field to return community details.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">oai_result_item(self,</span> <span class="pre">identity,</span> <span class="pre">oai_record_source)</span></code>: Get a result item from a record source in the OAI server.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scan_versions(self,</span> <span class="pre">identity,</span> <span class="pre">id_,</span> <span class="pre">params=None,</span> <span class="pre">search_preference=None,</span> <span class="pre">expand=False,</span> <span class="pre">permission_action=&quot;read_deleted&quot;,</span> <span class="pre">**kwargs)</span></code>: Search for record’s versions using a “scroll” search.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="service-configuration">
+<h3>Service Configuration<a class="headerlink" href="#service-configuration" title="Link to this heading">¶</a></h3>
+<p>A service configuration is an object that provides the service with its configuration. It is passed to the service’s constructor when it is instantiated during the Flask app initialization.</p>
+<p>The service configuration is defined in the service’s <code class="docutils literal notranslate"><span class="pre">config</span></code> attribute.</p>
+<p>All service configurations inherit from the <code class="docutils literal notranslate"><span class="pre">ServiceConfig</span></code> class, which is defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.base.config</span></code>. They include at least:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">service_id</span></code>: The ID of the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">permission_policy_cls</span></code>: The permission policy class to use for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result_item_cls</span></code>: The result item class to use for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result_list_cls</span></code>: The result list class to use for the service.</p></li>
+</ul>
+<p>This is expanded in a <code class="docutils literal notranslate"><span class="pre">RecordServiceConfig</span></code> class by the <code class="docutils literal notranslate"><span class="pre">invenio_records_resources</span></code> package to add:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">record_cls</span></code>: The record class to use for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">indexer_cls</span></code>: The indexer class to use for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">indexer_queue_name</span></code>: The name of the task queue to be used by the service’s indexer.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">index_dumper</span></code>: The dumper to be used for serializing records to be indexed by OpenSearch.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">relations</span></code>: The inverse relation mapping for the service, defining which fields relate to which record type.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search</span></code>: The search configuration for the service. (This is a <code class="docutils literal notranslate"><span class="pre">SearchOptions</span></code> instance.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema</span></code>: The schema to be used when validating the service’s records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">links_item</span></code>: The template for creating url links for the service’s result items.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">links_search</span></code>: The template for creating url links for the service’s search endpoints.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">components</span></code>: A list of components that will be used by the service.</p></li>
+</ul>
+<p>It is further expanded in an overridden <code class="docutils literal notranslate"><span class="pre">RecordServiceConfig</span></code> class by the <code class="docutils literal notranslate"><span class="pre">invenio_drafts_resources</span></code> package to add:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">draft_cls</span></code>: The draft record class to use for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">draft_indexer_cls</span></code>: The indexer class to use for the service’s draft records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">draft_indexer_queue_name</span></code>: The name of the task queue to be used by the service’s draft records indexer.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_parent</span></code>: The schema used to valid parent records for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search_drafts</span></code>: A search class for searching for draft records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search_versions</span></code>: A search class for searching for record versions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_files_enabled</span></code>: Whether files are enabled by default for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_media_files_enabled</span></code>: Whether media files are enabled by default for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lock_edit_published_files</span></code>: Whether to lock editing of published files for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">links_search_drafts</span></code>: The template for creating url links for the service’s search drafts endpoint.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">links_search_versions</span></code>: The template for creating url links for the service’s search versions endpoint.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMRecordServiceConfig</span></code> class adds the following additional configuration attributes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">max_files_count</span></code>: The maximum number of files that can be attached to a record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file_links_list</span></code>: The list of file links for the service.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_access_settings</span></code>: The schema for access settings.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_secret_link</span></code>: The schema for secret links.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_grant</span></code>: The schema for grants.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_grants</span></code>: The schema for grants.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_request_access</span></code>: The schema for request access.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_tombstone</span></code>: The schema for tombstone.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_quota</span></code>: The schema for quota.</p></li>
+</ul>
+<p>Additional common configration attributes are added by inheriting from additional mixin classes.</p>
+<section id="attaching-configuration-to-the-service">
+<h4>Attaching configuration to the service<a class="headerlink" href="#attaching-configuration-to-the-service" title="Link to this heading">¶</a></h4>
+<p>The service config class can be passed to the service’s constructor when it is instantiated during the Flask app initialization (i.e., in the <code class="docutils literal notranslate"><span class="pre">init_app()</span></code> method of the extension):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">MyService</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">MyServiceConfig</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, if the service config class inherits from the <code class="docutils literal notranslate"><span class="pre">ConfiguratorMixin</span></code> class, the service and its config class can be initialized like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">MyService</span><span class="p">(</span><span class="n">MyServiceConfig</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">app</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="file-service-configuration">
+<h4>File service configuration<a class="headerlink" href="#file-service-configuration" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">FileConfigMixin</span></code> class (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.records.components.files</span></code>) adds config class attributes for: ????</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_files_attr_key</span></code>: The attribute key for the files field.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_files_data_key</span></code>: The attribute key for the files data.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_files_bucket_attr_key</span></code>: The attribute key for the files bucket.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_files_bucket_id_attr_key</span></code>: The attribute key for the files bucket ID.</p></li>
+</ul>
+</section>
+<section id="search-configuration">
+<h4>Search configuration<a class="headerlink" href="#search-configuration" title="Link to this heading">¶</a></h4>
+<section id="searchoptionsmixin">
+<h5>SearchOptionsMixin<a class="headerlink" href="#searchoptionsmixin" title="Link to this heading">¶</a></h5>
+<p>This mixin class (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.base.config</span></code>) adds config class attributes for:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">facets</span></code>: The search facet definitions for searches on the service’s resource.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sort_options</span></code>: The sort options for searches on the service’s resource.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sort_default</span></code>: The default sort option for searches on the service’s resource.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sort_default_no_query</span></code>: The default sort option for searches on the service’s resource when no query is present.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">available_sort_options</span></code>: The available sort options for searches on the service’s resource.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">query_parser_cls</span></code>: The query parser class to use in constructing searches on the service’s resource.</p></li>
+</ul>
+</section>
+<section id="searchconfig">
+<h5>SearchConfig<a class="headerlink" href="#searchconfig" title="Link to this heading">¶</a></h5>
+<p>The SearchConfig class (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.base.config</span></code>) defines the search configuration that will be used to interface with OpenSearch.</p>
+</section>
+<section id="fromconfigsearchoptions">
+<h5>FromConfigSearchOptions<a class="headerlink" href="#fromconfigsearchoptions" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">FromConfigSearchOptions</span></code> class (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.base.config</span></code>) is used to load search configuration from app config variables. In the service’s config class, it is used like this:</p>
+</section>
+</section>
+<section id="loading-configuration-from-app-config-variables">
+<h4>Loading configuration from app config variables<a class="headerlink" href="#loading-configuration-from-app-config-variables" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">FromConfig</span></code> class (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.base.config</span></code>) is used to load configuration from app config variables. In the service’s config class, it is used like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyServiceConfig</span><span class="p">(</span><span class="n">ServiceConfig</span><span class="p">):</span>
+    <span class="n">foo</span> <span class="o">=</span> <span class="n">FromConfig</span><span class="p">(</span><span class="s2">&quot;FOO&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the app config, the config variable is defined like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FOO</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>When the service is instantiated, the <code class="docutils literal notranslate"><span class="pre">FromConfig</span></code> class will load the config variable from the app config and assign it to the <code class="docutils literal notranslate"><span class="pre">foo</span></code> attribute.</p>
+</section>
+</section>
+<section id="service-components">
+<h3>Service Components<a class="headerlink" href="#service-components" title="Link to this heading">¶</a></h3>
+<p>A service component is a class that provides methods that shadow the service’s methods. When a service method is called, it passes the call through each of the service’s components (using the <code class="docutils literal notranslate"><span class="pre">Service.run_components()</span></code> method), allowing each component to perform additional processing before the result is returned. If the service component includes a method with the same name as the service method that is being called, its matching method will be called. During this call, the component method is passed the service method’s arguments and keyword arguments, and the service method’s modified versions of these arguments are passed on to the next component. Once all the service’s components have been called, the result is returned to the service method, which returns the final result or performs the final action.</p>
+<section id="baseservicecomponent">
+<h4>BaseServiceComponent<a class="headerlink" href="#baseservicecomponent" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">BaseServiceComponent</span></code> class (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.base.components</span></code>) is the base class for all service components. It provides a <code class="docutils literal notranslate"><span class="pre">uow</span></code> property that returns the Unit of Work manager.</p>
+<p>This class is overridden by the <code class="docutils literal notranslate"><span class="pre">ServiceComponent</span></code> class (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.base.components.base</span></code>), which adds the following methods:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">create(self,</span> <span class="pre">identity,</span> <span class="pre">**kwargs)</span></code>: Perform additional processing while creating an item of the service’s resource.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read(self,</span> <span class="pre">identity,</span> <span class="pre">**kwargs)</span></code>: Perform additional processing while retrieving an item of the service’s resource.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">update(self,</span> <span class="pre">identity,</span> <span class="pre">**kwargs)</span></code>: Perform additional processing while updating an item of the service’s resource.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete(self,</span> <span class="pre">identity,</span> <span class="pre">**kwargs)</span></code>: Perform additional processing while deleting an item of the service’s resource.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search(self,</span> <span class="pre">identity,</span> <span class="pre">search,</span> <span class="pre">params,</span> <span class="pre">**kwargs)</span></code>: Perform additional processing while searching for items of the service’s resource.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">invenio_drafts_resources</span></code> package overrides the <code class="docutils literal notranslate"><span class="pre">ServiceComponent</span></code> class to add methods matching the overridden RecordService methods for draft records and versioning.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">read_draft(self,</span> <span class="pre">identity,</span> <span class="pre">draft=None)</span></code>: Retrieve a draft record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">update_draft(self,</span> <span class="pre">identity,</span> <span class="pre">data=None,</span> <span class="pre">record=None,</span> <span class="pre">errors=None)</span></code>: Update a draft record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete_draft(self,</span> <span class="pre">identity,</span> <span class="pre">draft=None,</span> <span class="pre">record=None,</span> <span class="pre">force=False)</span></code>: Delete a draft record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edit(self,</span> <span class="pre">identity,</span> <span class="pre">draft=None,</span> <span class="pre">record=None)</span></code>: Edit a record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">new_version(self,</span> <span class="pre">identity,</span> <span class="pre">draft=None,</span> <span class="pre">record=None)</span></code>: Create a new version of a record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">publish(self,</span> <span class="pre">identity,</span> <span class="pre">draft=None,</span> <span class="pre">record=None)</span></code>: Publish a draft record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">import_files(self,</span> <span class="pre">identity,</span> <span class="pre">draft=None,</span> <span class="pre">record=None)</span></code>: Import files from previous record version.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">post_publish(self,</span> <span class="pre">identity,</span> <span class="pre">record=None,</span> <span class="pre">is_published=False)</span></code>: Post publish handler.</p></li>
+</ul>
+</section>
+<section id="recordservice-components">
+<h4>RecordService Components<a class="headerlink" href="#recordservice-components" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">invenio_records_resources</span></code> package provides the following components for the <code class="docutils literal notranslate"><span class="pre">RecordService</span></code> class:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DataServiceComponent</span></code> (create, update): Adds data to the record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BaseRecordFilesComponent</span></code> (create, update):</p>
+<ul>
+<li><p>Handles enabling/disabling files for a record.</p></li>
+<li><p>Handles setting the default preview file for a record.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MetadataComponent</span></code> (create, update): Adds metadata to the new/updated record from the input data.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RelationsComponent</span></code> (read): Dereferences a record’s related fields in order to provide the data from the related records in a read result.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ChangeNotificationsComponent</span></code> (update): Emits a change notification for the updated record.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">invenio_drafts_resources</span></code> package provides additional components for the <code class="docutils literal notranslate"><span class="pre">RecordService</span></code> class:</p>
+<ul class="simple">
+<li><p>an overridden <code class="docutils literal notranslate"><span class="pre">BaseRecordFilesComponent</span></code> class that adds methods for ???</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DraftFilesComponent</span></code>: Handles files for draft records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DraftMediaFilesComponent</span></code>: Handles media files for draft records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DraftMetadataComponent</span></code>: Handles metadata for draft records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIDComponent</span></code> (create, delete_draft): Handles registration of PIDs for draft records.</p></li>
+<li><p>an overridden <code class="docutils literal notranslate"><span class="pre">RelationsComponent</span></code> class that adds a <code class="docutils literal notranslate"><span class="pre">read_drafts</span></code> method</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records</span></code> package provides additional components for the <code class="docutils literal notranslate"><span class="pre">RDMRecordService</span></code> class:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">AccessComponent</span></code>(create, update_draft, publish, edit, new_version): Handles access settings for records.</p></li>
+<li><p>an overridden <code class="docutils literal notranslate"><span class="pre">MetadataComponent</span></code> class (create, update_draft, publish, edit, new_version): Adds metadata to the new/updated record from the input data. (Removes the <code class="docutils literal notranslate"><span class="pre">update</span></code> method from the earlier <code class="docutils literal notranslate"><span class="pre">MetadataComponent</span></code> class.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CustomFieldsComponent</span></code>(create, update_draft, publish, edit, new_version): Adds custom fields to the metadata of a record.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIDsComponent</span></code>(create, update_draft, delete_draft, publish, edit, new_version, delete_record, restore_record): Handles PIDs for records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ParentPIDsComponent</span></code>(create, publish, delete_record, restore_record): Handles parent PIDs for records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RecordDeletionComponent</span></code>(delete_record, update_tombstone, restore_record, mark_record, unmark_record, purge_record): Handles deletion of records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RecordFilesProcessorComponent</span></code>(publish, lift_embargo): Handles file processing for records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ReviewComponent</span></code>(create, delete_draft, publish): Handles reviews for records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SignalComponent</span></code>(publish): Triggers signals on publish.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ContentModerationComponent</span></code>(publish): Creates a moderation request if the user is not verified.</p></li>
+</ul>
+</section>
+<section id="rdmrecordservice-components">
+<h4>RDMRecordService Components<a class="headerlink" href="#rdmrecordservice-components" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records</span></code> package draws its list of components from the <code class="docutils literal notranslate"><span class="pre">RDM_RECORDS_SERVICE_COMPONENTS</span></code> config variable. The default list is defined in the <code class="docutils literal notranslate"><span class="pre">DefaultRecordsComponents</span></code> class (defined in <code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.services.config</span></code>) and currently includes:.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="n">MetadataComponent</span><span class="p">,</span>
+    <span class="n">CustomFieldsComponent</span><span class="p">,</span>
+    <span class="n">AccessComponent</span><span class="p">,</span>
+    <span class="n">DraftFilesComponent</span><span class="p">,</span>
+    <span class="n">DraftMediaFilesComponent</span><span class="p">,</span>
+    <span class="n">RecordFilesProcessorComponent</span><span class="p">,</span>
+    <span class="n">RecordDeletionComponent</span><span class="p">,</span>
+    <span class="c1"># for the internal `pid` field</span>
+    <span class="n">PIDComponent</span><span class="p">,</span>
+    <span class="c1"># for the `pids` field (external PIDs)</span>
+    <span class="n">PIDsComponent</span><span class="p">,</span>
+    <span class="n">ParentPIDsComponent</span><span class="p">,</span>
+    <span class="n">RelationsComponent</span><span class="p">,</span>
+    <span class="n">ReviewComponent</span><span class="p">,</span>
+    <span class="n">ContentModerationComponent</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Note that the order of the components in the list is important, since the components are called in the order they are listed and some components depend on the results of previous components.</p>
+</section>
+</section>
+</section>
+<section id="inveniordm-record-objects">
+<h2>InvenioRDM Record Objects<a class="headerlink" href="#inveniordm-record-objects" title="Link to this heading">¶</a></h2>
+<section id="api-level-record-objects">
+<h3>API-level Record Objects<a class="headerlink" href="#api-level-record-objects" title="Link to this heading">¶</a></h3>
+<section id="persistentidentifier-invenio-records-api-persistentidentifier">
+<h4><code class="docutils literal notranslate"><span class="pre">PersistentIdentifier</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_records.api.PersistentIdentifier</span></code>)<a class="headerlink" href="#persistentidentifier-invenio-records-api-persistentidentifier" title="Link to this heading">¶</a></h4>
+<p>An object representing a persistent identifier for a record. It has the following properties:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pid_value</span></code>: The value of the persistent identifier.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pid_type</span></code>: The type of the persistent identifier.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">status</span></code>: The status of the persistent identifier.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">obj_type</span></code>: The type of the object the persistent identifier is for.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">object_uuid</span></code>: The UUID of the database object the persistent identifier is for.</p></li>
+</ul>
+</section>
+<section id="rdmdraft-invenio-rdm-records-records-api-rdmdraft">
+<h4><code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code>)<a class="headerlink" href="#rdmdraft-invenio-rdm-records-records-api-rdmdraft" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> object is a subclass of the <code class="docutils literal notranslate"><span class="pre">Record</span></code> object (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records.api.Record</span></code>) and includes all of the submitted metadata values, along with the keys:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">$schema</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">revision_id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">version_id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pid</span></code> (as opposed to <code class="docutils literal notranslate"><span class="pre">pids</span></code>, a separate field)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">media_files</span></code> (if not present in <code class="docutils literal notranslate"><span class="pre">data</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">custom_fields</span></code> (if not present in <code class="docutils literal notranslate"><span class="pre">data</span></code>)</p></li>
+</ul>
+<p>Its <strong>dict</strong> has the following shape (these values are available by key and <em>also</em> as dot properties):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="s1">&#39;$schema&#39;</span><span class="p">:</span> <span class="s1">&#39;local://records/record-v6.0.0.json&#39;</span><span class="p">,</span>
+<span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;pk&#39;</span><span class="p">:</span> <span class="mi">88</span><span class="p">,</span>
+    <span class="s1">&#39;pid_type&#39;</span><span class="p">:</span> <span class="s1">&#39;recid&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;obj_type&#39;</span><span class="p">:</span> <span class="s1">&#39;rec&#39;</span>
+<span class="p">},</span>
+<span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;9f06s-7d583&#39;</span><span class="p">,</span>
+<span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">},</span>
+<span class="s1">&#39;media_files&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">},</span>
+<span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;resource_type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;image-photograph&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;creators&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;personal&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;given_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;family_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown, Troy&#39;</span><span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;organizational&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy Inc.&#39;</span><span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;A Romans story&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;publisher&#39;</span><span class="p">:</span> <span class="s1">&#39;Acme Inc&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;publication_date&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-06-01&#39;</span>
+<span class="p">},</span>
+<span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
+<span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;record&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span>
+<span class="p">},</span>
+<span class="s1">&#39;pids&#39;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> also has the following properties:</p>
+<ul class="simple">
+<li><p>‘bucket’,</p></li>
+<li><p>‘bucket_id’,</p></li>
+<li><p>‘created’,</p></li>
+<li><p>‘dumper’,</p></li>
+<li><p>‘expires_at’,</p></li>
+<li><p>‘fork_version_id’,</p></li>
+<li><p>‘format_checker’,</p></li>
+<li><p>‘has_draft’,</p></li>
+<li><p>‘index’,</p></li>
+<li><p>‘is_deleted’,</p></li>
+<li><p>‘is_draft’,</p></li>
+<li><p>‘is_published’,</p></li>
+<li><p>‘media_bucket’,</p></li>
+<li><p>‘media_bucket_id’,</p></li>
+<li><p>‘model’,</p></li>
+<li><p>‘model_cls’,</p></li>
+<li><p>‘parent’,</p></li>
+<li><p>‘parent_record_cls’,</p></li>
+<li><p>‘revision_id’,</p></li>
+<li><p>‘revisions’,</p></li>
+<li><p>‘schema’,</p></li>
+<li><p>‘status’,</p></li>
+<li><p>‘updated’,</p></li>
+<li><p>‘validator’,</p></li>
+<li><p>‘versions’,</p></li>
+<li><p>‘versions_model_cls’</p></li>
+</ul>
+<p>And the following methods (among others, including standard <code class="docutils literal notranslate"><span class="pre">dict</span></code> methods)</p>
+<ul class="simple">
+<li><p>‘cleanup_drafts’,</p></li>
+<li><p>‘clear’,</p></li>
+<li><p>‘clear_none’,</p></li>
+<li><p>‘commit’,</p></li>
+<li><p>‘copy’,</p></li>
+<li><p>‘dumps’,</p></li>
+<li><p>‘get_latest_by_parent’,</p></li>
+<li><p>‘get_record’,</p></li>
+<li><p>‘get_records’,</p></li>
+<li><p>‘get_records_by_parent’,</p></li>
+<li><p>‘items’,</p></li>
+<li><p>‘keys’,</p></li>
+<li><p>‘loads’,</p></li>
+<li><p>‘new_version’,</p></li>
+<li><p>‘register’,</p></li>
+<li><p>‘relations’,</p></li>
+<li><p>‘revert’,</p></li>
+<li><p>‘send_signals’,</p></li>
+<li><p>‘undelete’,</p></li>
+<li><p>‘validate’,</p></li>
+</ul>
+<section id="creating-an-rdmdraft-object">
+<h5>Creating an RDMDraft object<a class="headerlink" href="#creating-an-rdmdraft-object" title="Link to this heading">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> object can be created by calling the <code class="docutils literal notranslate"><span class="pre">create</span></code> method on the <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> class. This method takes a dictionary of data to be used to create the record and returns an <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draft</span> <span class="o">=</span> <span class="n">RDMDraft</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
+    <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;My Title&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;My Description&quot;</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="rdmrecord-invenio-rdm-records-records-api-rdmrecord">
+<h4><code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code>)<a class="headerlink" href="#rdmrecord-invenio-rdm-records-records-api-rdmrecord" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> object is a subclass of the <code class="docutils literal notranslate"><span class="pre">Record</span></code> object (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records.api.Record</span></code>).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> object has the following metadata properties that are available as dot properties and by key.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">access</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">custom_fields</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deletion_status</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">errors</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">files</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">media_files</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pids</span></code></p></li>
+</ul>
+<p>One additional key, <code class="docutils literal notranslate"><span class="pre">$schema</span></code>, is not available as a dot property. It provides the name of the schema used to validate the RDMRecord instance prior to publication. The actual schema object is stored in the <code class="docutils literal notranslate"><span class="pre">schema</span></code> property.</p>
+<p>The object also has the following properties that are not part of the metadata and cannot be accessed by key:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bucket</span></code>: The bucket object used to store files for the RDMRecord instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bucket_id</span></code>: The ID for the bucket used to store files for the RDMRecord instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created</span></code>: The date and time the RDMRecord instance was created</p></li>
+<li><p>‘dumper’: The dumper class for serializing RDMRecord instances to JSON (e.g., for search indexing)</p></li>
+<li><p>‘enable_jsonref’: Whether to enable JSON references ????</p></li>
+<li><p>‘format_checker’: The format checker for the RDMRecord class</p></li>
+<li><p>‘index’: The OpenSearch index for the RDMRecord class</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is_deleted</span></code>: Whether the RDMRecord instance has been deleted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is_draft</span></code>: Whether the RDMRecord instance is a draft</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is_published</span></code>: Whether the RDMRecord instance has been published</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">media_bucket_id</span></code>: The ID for the bucket used to store media files for the RDMRecord instance</p></li>
+<li><p>‘model’: The SQLAlchemy model instance providing the ORM object for the RDMRecord instance</p></li>
+<li><p>‘model_cls’: The SQLAlchemy model class providing the ORM for the RDMRecord class</p></li>
+<li><p>‘next_latest_published_record_by_parent’: The next latest published record (published version) that shares the same parent record</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent</span></code>: The parent record for the RDMRecord instance</p></li>
+<li><p>‘pid’: The PIDs for the RDMRecord instance. This is a <code class="docutils literal notranslate"><span class="pre">PersistentIdentifier</span></code> object with a <code class="docutils literal notranslate"><span class="pre">pid_value</span></code> property which is shared by all versions of the record (both draft and published). It also has an <code class="docutils literal notranslate"><span class="pre">object_uuid</span></code> property which is the unique UUID for the database record behind this version of the record.</p></li>
+<li><p>‘relations’: The ORM relations for the RDMRecord instance</p></li>
+<li><p>‘revisions’: The revisions for the RDMRecord instance</p></li>
+<li><p>‘schema’: The schema used to validate the RDMRecord instance prior to publication</p></li>
+<li><p>‘revision_id’: The revision ID for the RDMRecord instance</p></li>
+<li><p>‘stats’: The stats for the RDMRecord instance</p></li>
+<li><p>‘status’: The status of the RDMRecord instance (“draft”, “published”, “deleted”, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tombstone</span></code></p></li>
+<li><p>‘updated’: The updated date for the RDMRecord instance</p></li>
+<li><p>‘validator’: The validator for the RDMRecord class</p></li>
+<li><p>‘versions’: The versions for the RDMRecord instance</p></li>
+<li><p>‘versions_model_cls’: The SQLAlchemy model class providing the ORM for the versions record</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> class also has methods for operating on RDMRecord instance objects. These include:</p>
+<ul class="simple">
+<li><p>‘create’,</p></li>
+<li><p>‘get_latest_by_parent’,</p></li>
+<li><p>‘get_latest_published_by_parent’,</p></li>
+<li><p>‘get_record’,</p></li>
+<li><p>‘get_records’,</p></li>
+<li><p>‘get_records_by_parent’,</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> object also has methods that perform actions on the record. These include:</p>
+<ul class="simple">
+<li><p>‘clear’,</p></li>
+<li><p>‘clear_none’,</p></li>
+<li><p>‘commit’,</p></li>
+<li><p>‘copy’,</p></li>
+<li><p>‘delete’,</p></li>
+<li><p>‘dumps’,</p></li>
+<li><p>‘has_draft’,</p></li>
+<li><p>‘loads’,</p></li>
+<li><p>‘parent’,</p></li>
+<li><p>‘parent_record_cls’,</p></li>
+<li><p>‘patch’,</p></li>
+<li><p>‘pop’,</p></li>
+<li><p>‘popitem’,</p></li>
+<li><p>‘publish’,</p></li>
+<li><p>‘register’,</p></li>
+<li><p>‘replace_refs’,</p></li>
+<li><p>‘revert’,</p></li>
+<li><p>‘send_signals’,</p></li>
+<li><p>‘setdefault’,</p></li>
+<li><p>‘undelete’,</p></li>
+<li><p>‘update’,</p></li>
+<li><p>‘validate’,</p></li>
+</ul>
+<p>Since the <code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> object can present values as if it were a dictionary, it also has the following methods:</p>
+<ul class="simple">
+<li><p>‘keys’</p></li>
+<li><p>‘items’</p></li>
+<li><p>‘values’,</p></li>
+<li><p>‘fromkeys’,</p></li>
+<li><p>‘get’,</p></li>
+</ul>
+</section>
+<section id="rdmparent-invenio-rdm-records-records-api-rdmparent">
+<h4><code class="docutils literal notranslate"><span class="pre">RDMParent</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMParent</span></code>)<a class="headerlink" href="#rdmparent-invenio-rdm-records-records-api-rdmparent" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMParent</span></code> object is the parent record for an <code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> instance. It is a subclass of the <code class="docutils literal notranslate"><span class="pre">Record</span></code> object (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records.api.Record</span></code>). Note that parent records never exist without a child record. They do not represent any particular record state, but rather are used to link records together.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMParent</span></code> object has the following properties containing record metadata that appears in the <code class="docutils literal notranslate"><span class="pre">parent</span></code> field of an <code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> or <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> instance:</p>
+<p>| Property | Accessible by key | Description |
+|———-|————-|
+| <code class="docutils literal notranslate"><span class="pre">access</span></code> | Yes | Access control settings. The value is a <code class="docutils literal notranslate"><span class="pre">ParentRecordAccess</span></code> object with <code class="docutils literal notranslate"><span class="pre">grants</span></code>, <code class="docutils literal notranslate"><span class="pre">links</span></code>, <code class="docutils literal notranslate"><span class="pre">owned_by</span></code>, <code class="docutils literal notranslate"><span class="pre">owner</span></code>, and <code class="docutils literal notranslate"><span class="pre">settings</span></code> properties (among others). |
+| <code class="docutils literal notranslate"><span class="pre">communities</span></code> | Yes | Associated communities. The value is a <code class="docutils literal notranslate"><span class="pre">invenio_communities.records.records.systemfields.communities.manager.CommunitiesRelationManager</span></code> object with <code class="docutils literal notranslate"><span class="pre">ids</span></code>, <code class="docutils literal notranslate"><span class="pre">default</span></code>, and <code class="docutils literal notranslate"><span class="pre">entries</span></code> properties. (No values are accessible by key.) |
+| <code class="docutils literal notranslate"><span class="pre">created</span></code> | No | Creation timestamp |
+| <code class="docutils literal notranslate"><span class="pre">id</span></code> | Yes | Record identifier |
+| <code class="docutils literal notranslate"><span class="pre">metadata</span></code> | No | Record metadata |
+| <code class="docutils literal notranslate"><span class="pre">pids</span></code> | Yes | Public-facing persistent identifiers, including the primary DOI |
+| <code class="docutils literal notranslate"><span class="pre">updated</span></code> | No | Last updated timestamp |</p>
+<p>The object instance also has the key <code class="docutils literal notranslate"><span class="pre">$schema</span></code> which is not accessible as a dot property. It provides the name of the schema used to validate the RDMRecord instance prior to publication. The actual schema object is stored in the <code class="docutils literal notranslate"><span class="pre">schema</span></code> property.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMParent</span></code> object also has the following properties that are not part of the metadata and are not included in the <code class="docutils literal notranslate"><span class="pre">parent</span></code> field of an <code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> or <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> instance:</p>
+<p>| <code class="docutils literal notranslate"><span class="pre">dumper</span></code> | Serialization dumper |
+| <code class="docutils literal notranslate"><span class="pre">format_checker</span></code> | Format validation checker |
+| <code class="docutils literal notranslate"><span class="pre">is_deleted</span></code> | Deletion status flag |
+| <code class="docutils literal notranslate"><span class="pre">is_verified</span></code> | Verification status flag |
+| <code class="docutils literal notranslate"><span class="pre">model</span></code> | Database model instance |
+| <code class="docutils literal notranslate"><span class="pre">model_cls</span></code> | Database model class |
+| <code class="docutils literal notranslate"><span class="pre">permission_flags</span></code> | Permission settings |
+| <code class="docutils literal notranslate"><span class="pre">pid</span></code> | Internal persistent identifier, a UUID for the parent record. |
+| <code class="docutils literal notranslate"><span class="pre">review</span></code> | Review information |
+| <code class="docutils literal notranslate"><span class="pre">revisions</span></code> | Revision history |
+| <code class="docutils literal notranslate"><span class="pre">schema</span></code> | JSON schema |
+| <code class="docutils literal notranslate"><span class="pre">validator</span></code> | Validation handler |</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">RDMParent</span></code> object also has the following methods:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">clear</span></code></p></td>
+<td><p>Method to clear record data</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">clear_none</span></code></p></td>
+<td><p>Method to clear None values</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">commit</span></code></p></td>
+<td><p>Method to commit changes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">copy</span></code></p></td>
+<td><p>Method to copy record</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">create</span></code></p></td>
+<td><p>Method to create record</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">delete</span></code></p></td>
+<td><p>Method to delete record</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dumps</span></code></p></td>
+<td><p>Method to serialize record</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">enable_jsonref</span></code></p></td>
+<td><p>JSON reference flag</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fromkeys</span></code></p></td>
+<td><p>Dictionary method</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get</span></code></p></td>
+<td><p>Dictionary get method</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">get_record</span></code></p></td>
+<td><p>Method to retrieve record</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get_records</span></code></p></td>
+<td><p>Method to retrieve multiple records</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">items</span></code></p></td>
+<td><p>Dictionary items method</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">keys</span></code></p></td>
+<td><p>Dictionary keys method</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">loads</span></code></p></td>
+<td><p>Method to deserialize record</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">patch</span></code></p></td>
+<td><p>Method to patch record</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pop</span></code></p></td>
+<td><p>Dictionary pop method</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">popitem</span></code></p></td>
+<td><p>Dictionary popitem method</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">replace_refs</span></code></p></td>
+<td><p>Method to replace references</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">revert</span></code></p></td>
+<td><p>Method to revert changes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">revision_id</span></code></p></td>
+<td><p>Revision identifier</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">send_signals</span></code></p></td>
+<td><p>Method to send signals</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">setdefault</span></code></p></td>
+<td><p>Dictionary setdefault method</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">undelete</span></code></p></td>
+<td><p>Method to undelete record</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">update</span></code></p></td>
+<td><p>Method to update record</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">validate</span></code></p></td>
+<td><p>Method to validate record</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">values</span></code></p></td>
+<td><p>Dictionary values method</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="community-invenio-communities-communities-records-api-community">
+<h4><code class="docutils literal notranslate"><span class="pre">Community</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_communities.communities.records.api.Community</span></code>)<a class="headerlink" href="#community-invenio-communities-communities-records-api-community" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">Community</span></code> class is the api-level object for a community. It is a subclass of the <code class="docutils literal notranslate"><span class="pre">Record</span></code> object (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records.api.Record</span></code>).</p>
+<p>Unlike some <code class="docutils literal notranslate"><span class="pre">Record</span></code> object types, the <code class="docutils literal notranslate"><span class="pre">Community</span></code> object does not expose most its values as dictionary keys. But it exposes several dot properties. Some of these provide the data that is included in the serialized and projected forms of the community’s data (in the search index and service layer responses):</p>
+<ul class="simple">
+<li><p>‘access’</p></li>
+<li><p>‘children’</p></li>
+<li><p>‘created’</p></li>
+<li><p>‘custom_fields’</p></li>
+<li><p>‘deletion_status’</p></li>
+<li><p>‘files’</p></li>
+<li><p>‘id’</p></li>
+<li><p>‘is_deleted’</p></li>
+<li><p>‘is_verified’</p></li>
+<li><p>‘metadata’</p></li>
+<li><p>‘parent’</p></li>
+<li><p>‘pid’</p></li>
+<li><p>‘slug’</p></li>
+<li><p>‘theme’</p></li>
+<li><p>‘updated’</p></li>
+</ul>
+<p>Other properties are provided for internal manipulation and management of the <code class="docutils literal notranslate"><span class="pre">Community</span></code> object:</p>
+<ul class="simple">
+<li><p>‘bucket’</p></li>
+<li><p>‘bucket_id’</p></li>
+<li><p>‘dumper’</p></li>
+<li><p>‘format_checker’</p></li>
+<li><p>‘index’</p></li>
+<li><p>‘model’</p></li>
+<li><p>‘model_cls’</p></li>
+<li><p>‘relations’</p></li>
+<li><p>‘revision_id’</p></li>
+<li><p>‘revisions’</p></li>
+<li><p>‘schema’</p></li>
+<li><p>‘tombstone’</p></li>
+<li><p>‘validator’</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">Community</span></code> object also provides the following methods:</p>
+<ul class="simple">
+<li><p>‘clear’</p></li>
+<li><p>‘clear_none’</p></li>
+<li><p>‘commit’</p></li>
+<li><p>‘copy’</p></li>
+<li><p>‘create’</p></li>
+<li><p>‘delete’</p></li>
+<li><p>‘dumps’</p></li>
+<li><p>‘enable_jsonref’</p></li>
+<li><p>‘fromkeys’</p></li>
+<li><p>‘get’</p></li>
+<li><p>‘items’</p></li>
+<li><p>‘keys’</p></li>
+<li><p>‘loads’</p></li>
+<li><p>‘patch’</p></li>
+<li><p>‘pop’</p></li>
+<li><p>‘popitem’</p></li>
+<li><p>‘replace_refs’</p></li>
+<li><p>‘revert’</p></li>
+<li><p>‘send_signals’</p></li>
+<li><p>‘setdefault’</p></li>
+<li><p>‘undelete’</p></li>
+<li><p>‘update’</p></li>
+<li><p>‘validate’</p></li>
+<li><p>‘values’</p></li>
+</ul>
+</section>
+<section id="communitiesrelationmanager-invenio-communities-records-records-systemfields-communities-manager-communitiesrelationmanager">
+<h4><code class="docutils literal notranslate"><span class="pre">CommunitiesRelationManager</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_communities.records.records.systemfields.communities.manager.CommunitiesRelationManager</span></code>)<a class="headerlink" href="#communitiesrelationmanager-invenio-communities-records-records-systemfields-communities-manager-communitiesrelationmanager" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">CommunitiesRelationManager</span></code> object is the manager for the <code class="docutils literal notranslate"><span class="pre">communities</span></code> field of the <code class="docutils literal notranslate"><span class="pre">RDMParent</span></code> object. It exposes dot properties including:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">default</span></code>: The default community for the record (a <code class="docutils literal notranslate"><span class="pre">Community</span></code> object).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">entries</span></code>: A list of <code class="docutils literal notranslate"><span class="pre">Community</span></code> objects.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ids</span></code>: A list of community IDs (string UUIDs, not slugs).</p></li>
+</ul>
+</section>
+</section>
+<section id="service-level-response-objects">
+<h3>Service-level Response Objects<a class="headerlink" href="#service-level-response-objects" title="Link to this heading">¶</a></h3>
+<section id="recorditem-invenio-records-resources-services-records-results-recorditem">
+<h4><code class="docutils literal notranslate"><span class="pre">RecordItem</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.records.results.RecordItem</span></code>)<a class="headerlink" href="#recorditem-invenio-records-resources-services-records-results-recorditem" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">RecordItem</span></code> object is the service-level response object for a record, used for individual results from the RDMRecordService. It is returned by service methods like <code class="docutils literal notranslate"><span class="pre">current_rdm_records_service.read()</span></code> or <code class="docutils literal notranslate"><span class="pre">current_rdm_records_service.search()</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">RecordItem</span></code> object has the following properties:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_data</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">_data</span></code> property does <em>not</em> return the same dictionary as the <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code> method. It appears to be None for published records.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_errors</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list</span></code></p></td>
+<td><p>Any validation errors</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_expand</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>The expand options for the record</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_fields_resolver</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>The fields resolver for the record</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_identity</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>The identity for the record</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_links_tpl</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>The links template for the record</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_nested_links_item</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>The nested links item for the record</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_obj</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>The object for the record</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_record</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code></p></td>
+<td><p>The underlying api-level <code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> record object</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_schema</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>The schema for the record</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_service</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.services.RDMRecordService</span></code></p></td>
+<td><p>The service for the record</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">data</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>The record data represented as a dictionary. This is the same dictionary returned by the <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code> method.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">errors</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list</span></code></p></td>
+<td><p>Any validation errors</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">has_permissions_to</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>Permission checks</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>The record identifier</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">links</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>Related URLs. The same as the <code class="docutils literal notranslate"><span class="pre">links</span></code> property of the <code class="docutils literal notranslate"><span class="pre">_record</span></code> object and the “links” value of the <code class="docutils literal notranslate"><span class="pre">data</span></code> dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">RecordItem</span></code> object also has the <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code> method, which returns a representation of the record as a dictionary. For a published record, the <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code> method returns a dictionary with the following shape:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;embargo&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;active&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+            <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;record&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;metadata-only&#39;</span><span class="p">},</span>
+ <span class="s1">&#39;created&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T20:49:34.391191+00:00&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
+ <span class="s1">&#39;deletion_status&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;is_deleted&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;P&#39;</span><span class="p">},</span>
+ <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+           <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+           <span class="s1">&#39;entries&#39;</span><span class="p">:</span> <span class="p">{},</span>
+           <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="p">[],</span>
+           <span class="s1">&#39;total_bytes&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+ <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;q2cae-anf51&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;is_draft&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+ <span class="s1">&#39;is_published&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+ <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;access_grants&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access/grants&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;access_groups&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access/groups&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;access_links&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access/links&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;access_request&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access/request&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;access_users&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access/users&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;archive&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/files-archive&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;archive_media&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/media-files-archive&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;communities&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/communities&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;communities-suggestions&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/communities-suggestions&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;doi&#39;</span><span class="p">:</span> <span class="s1">&#39;https://handle.stage.datacite.org/10.17613/q2cae-anf51&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;draft&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/draft&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/files&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;latest&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/versions/latest&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;latest_html&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/records/q2cae-anf51/latest&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;media_files&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/media-files&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/hkz47-g3q07&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;parent_doi&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/doi/10.17613/hkz47-g3q07&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;parent_html&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/records/hkz47-g3q07&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;requests&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/requests&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;reserve_doi&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/draft/pids/doi&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;self&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;self_doi&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/doi/10.17613/q2cae-anf51&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;self_html&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/records/q2cae-anf51&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;self_iiif_manifest&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/iiif/record:q2cae-anf51/manifest&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;self_iiif_sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/iiif/record:q2cae-anf51/sequence/default&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;versions&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/versions&#39;</span><span class="p">},</span>
+ <span class="s1">&#39;media_files&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                 <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="s1">&#39;entries&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                 <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                 <span class="s1">&#39;total_bytes&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+ <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;creators&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;family_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown&#39;</span><span class="p">,</span>
+                                              <span class="s1">&#39;given_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy&#39;</span><span class="p">,</span>
+                                              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown, Troy&#39;</span><span class="p">,</span>
+                                              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;personal&#39;</span><span class="p">}},</span>
+                           <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy Inc.&#39;</span><span class="p">,</span>
+                                              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;organizational&#39;</span><span class="p">}}],</span>
+              <span class="s1">&#39;publication_date&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-06-01&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;publisher&#39;</span><span class="p">:</span> <span class="s1">&#39;Acme Inc&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;resource_type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;image-photograph&#39;</span><span class="p">,</span>
+                                <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;en&#39;</span><span class="p">:</span> <span class="s1">&#39;Photo&#39;</span><span class="p">}},</span>
+              <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;A Romans story&#39;</span><span class="p">},</span>
+ <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;grants&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                       <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                       <span class="s1">&#39;owned_by&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">},</span>
+                       <span class="s1">&#39;settings&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;accept_conditions_text&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                    <span class="s1">&#39;allow_guest_requests&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                    <span class="s1">&#39;allow_user_requests&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                    <span class="s1">&#39;secret_link_expiration&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
+            <span class="s1">&#39;communities&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="s1">&#39;00c10e5a-cfb6-4c4d-ab7e-3894b5930181&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;entries&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;member_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
+                                                    <span class="s1">&#39;members_visibility&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
+                                                    <span class="s1">&#39;record_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
+                                                    <span class="s1">&#39;review_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
+                                                    <span class="s1">&#39;visibility&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">},</span>
+                                         <span class="s1">&#39;children&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;allow&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                                         <span class="s1">&#39;created&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T20:49:33.284511+00:00&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                                         <span class="s1">&#39;deletion_status&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;is_deleted&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                                             <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;P&#39;</span><span class="p">},</span>
+                                         <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;00c10e5a-cfb6-4c4d-ab7e-3894b5930181&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                                         <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;curation_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;Curation &#39;</span>
+                                                                         <span class="s1">&#39;policy&#39;</span><span class="p">,</span>
+                                                      <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;A &#39;</span>
+                                                                     <span class="s1">&#39;description&#39;</span><span class="p">,</span>
+                                                      <span class="s1">&#39;organizations&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Organization &#39;</span>
+                                                                                 <span class="s1">&#39;1&#39;</span><span class="p">}],</span>
+                                                      <span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="s1">&#39;Information for &#39;</span>
+                                                              <span class="s1">&#39;my community&#39;</span><span class="p">,</span>
+                                                      <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;My Community&#39;</span><span class="p">,</span>
+                                                      <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;event&#39;</span><span class="p">},</span>
+                                                      <span class="s1">&#39;website&#39;</span><span class="p">:</span> <span class="s1">&#39;https://my-community.com&#39;</span><span class="p">},</span>
+                                         <span class="s1">&#39;revision_id&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                                         <span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="s1">&#39;my-community&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;updated&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T20:49:33.452355+00:00&#39;</span><span class="p">}],</span>
+                            <span class="s1">&#39;ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;00c10e5a-cfb6-4c4d-ab7e-3894b5930181&#39;</span><span class="p">]},</span>
+            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;hkz47-g3q07&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;pids&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;doi&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;client&#39;</span><span class="p">:</span> <span class="s1">&#39;datacite&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="s1">&#39;10.17613/hkz47-g3q07&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;provider&#39;</span><span class="p">:</span> <span class="s1">&#39;datacite&#39;</span><span class="p">}}},</span>
+ <span class="s1">&#39;pids&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;doi&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;client&#39;</span><span class="p">:</span> <span class="s1">&#39;datacite&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="s1">&#39;10.17613/q2cae-anf51&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;provider&#39;</span><span class="p">:</span> <span class="s1">&#39;datacite&#39;</span><span class="p">},</span>
+          <span class="s1">&#39;oai&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="s1">&#39;oai:https://localhost:q2cae-anf51&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;provider&#39;</span><span class="p">:</span> <span class="s1">&#39;oai&#39;</span><span class="p">}},</span>
+ <span class="s1">&#39;revision_id&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+ <span class="s1">&#39;stats&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;all_versions&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;data_volume&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                            <span class="s1">&#39;downloads&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">&#39;unique_downloads&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">&#39;unique_views&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">&#39;views&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+           <span class="s1">&#39;this_version&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;data_volume&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                            <span class="s1">&#39;downloads&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">&#39;unique_downloads&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">&#39;unique_views&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">&#39;views&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
+ <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;published&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;updated&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T20:49:34.451290+00:00&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;versions&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;is_latest&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;is_latest_draft&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}}</span>
+</pre></div>
+</div>
+</section>
+<section id="communityitem-invenio-communities-records-api-communityitem">
+<h4><code class="docutils literal notranslate"><span class="pre">CommunityItem</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_communities.records.api.CommunityItem</span></code>)<a class="headerlink" href="#communityitem-invenio-communities-records-api-communityitem" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">CommunityItem</span></code> object is the service-level response object for a community. It is returned by service methods like <code class="docutils literal notranslate"><span class="pre">current_communities.service.read()</span></code> or <code class="docutils literal notranslate"><span class="pre">current_communities.service.search()</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">CommunityItem</span></code> object has the following properties:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_record</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">invenio_communities.records.api.Community</span></code></p></td>
+<td><p>The underlying api-level <code class="docutils literal notranslate"><span class="pre">Community</span></code> record object</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">data</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>The record data as a dictionary</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">errors</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list</span></code></p></td>
+<td><p>Any validation errors</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">has_permissions_to</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>Permission checks</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>The record identifier</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">links</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
+<td><p>Related URLs. The same as the <code class="docutils literal notranslate"><span class="pre">links</span></code> property of the <code class="docutils literal notranslate"><span class="pre">_record</span></code> object and the “links” value of the <code class="docutils literal notranslate"><span class="pre">data</span></code> dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Its <code class="docutils literal notranslate"><span class="pre">data</span></code> property is a dictionary identical to the <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code> method’s return value. It has the following shape:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;6bcba8b1-f967-4175-9557-c71dea07c8e7&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;created&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T19:18:48.550894+00:00&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;updated&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T19:18:48.643023+00:00&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;featured&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/featured&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;self&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;self_html&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/collections/my-community&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;settings_html&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/collections/my-community/settings&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;logo&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/logo&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;rename&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/rename&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/members&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;public_members&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/members/public&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;invitations&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/invitations&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;requests&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/requests&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;records&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/records&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;membership_requests&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/membership-requests&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;revision_id&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="s1">&#39;my-community&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;My Community&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;A description&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;curation_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;Curation policy&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="s1">&#39;Information for my community&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;event&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;en&#39;</span><span class="p">:</span> <span class="s1">&#39;Event&#39;</span><span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;website&#39;</span><span class="p">:</span> <span class="s1">&#39;https://my-community.com&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;organizations&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Organization 1&#39;</span><span class="p">}]</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;visibility&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;members_visibility&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;member_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;record_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;review_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s1">&#39;deletion_status&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;is_deleted&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;P&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;children&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;allow&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Its <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code> method returns a dictionary with the same shape as the <code class="docutils literal notranslate"><span class="pre">data</span></code> property.</p>
+</section>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="code_standards.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Development Standards</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Developing KCWorks</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Mesh Research
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">KCWorks Architecture</a><ul>
+<li><a class="reference internal" href="#inveniordm-s-layered-architecture">InvenioRDM’s Layered Architecture</a></li>
+<li><a class="reference internal" href="#inveniordm-services">InvenioRDM Services</a><ul>
+<li><a class="reference internal" href="#service-classes">Service Classes</a><ul>
+<li><a class="reference internal" href="#baseservice">BaseService</a></li>
+<li><a class="reference internal" href="#recordservice">RecordService</a></li>
+<li><a class="reference internal" href="#augmented-recordservice">Augmented RecordService</a></li>
+<li><a class="reference internal" href="#rdmrecordservice">RDMRecordService</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#service-configuration">Service Configuration</a><ul>
+<li><a class="reference internal" href="#attaching-configuration-to-the-service">Attaching configuration to the service</a></li>
+<li><a class="reference internal" href="#file-service-configuration">File service configuration</a></li>
+<li><a class="reference internal" href="#search-configuration">Search configuration</a><ul>
+<li><a class="reference internal" href="#searchoptionsmixin">SearchOptionsMixin</a></li>
+<li><a class="reference internal" href="#searchconfig">SearchConfig</a></li>
+<li><a class="reference internal" href="#fromconfigsearchoptions">FromConfigSearchOptions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#loading-configuration-from-app-config-variables">Loading configuration from app config variables</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#service-components">Service Components</a><ul>
+<li><a class="reference internal" href="#baseservicecomponent">BaseServiceComponent</a></li>
+<li><a class="reference internal" href="#recordservice-components">RecordService Components</a></li>
+<li><a class="reference internal" href="#rdmrecordservice-components">RDMRecordService Components</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#inveniordm-record-objects">InvenioRDM Record Objects</a><ul>
+<li><a class="reference internal" href="#api-level-record-objects">API-level Record Objects</a><ul>
+<li><a class="reference internal" href="#persistentidentifier-invenio-records-api-persistentidentifier"><code class="docutils literal notranslate"><span class="pre">PersistentIdentifier</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_records.api.PersistentIdentifier</span></code>)</a></li>
+<li><a class="reference internal" href="#rdmdraft-invenio-rdm-records-records-api-rdmdraft"><code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMDraft</span></code>)</a><ul>
+<li><a class="reference internal" href="#creating-an-rdmdraft-object">Creating an RDMDraft object</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rdmrecord-invenio-rdm-records-records-api-rdmrecord"><code class="docutils literal notranslate"><span class="pre">RDMRecord</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMRecord</span></code>)</a></li>
+<li><a class="reference internal" href="#rdmparent-invenio-rdm-records-records-api-rdmparent"><code class="docutils literal notranslate"><span class="pre">RDMParent</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_rdm_records.records.api.RDMParent</span></code>)</a></li>
+<li><a class="reference internal" href="#community-invenio-communities-communities-records-api-community"><code class="docutils literal notranslate"><span class="pre">Community</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_communities.communities.records.api.Community</span></code>)</a></li>
+<li><a class="reference internal" href="#communitiesrelationmanager-invenio-communities-records-records-systemfields-communities-manager-communitiesrelationmanager"><code class="docutils literal notranslate"><span class="pre">CommunitiesRelationManager</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_communities.records.records.systemfields.communities.manager.CommunitiesRelationManager</span></code>)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#service-level-response-objects">Service-level Response Objects</a><ul>
+<li><a class="reference internal" href="#recorditem-invenio-records-resources-services-records-results-recorditem"><code class="docutils literal notranslate"><span class="pre">RecordItem</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.records.results.RecordItem</span></code>)</a></li>
+<li><a class="reference internal" href="#communityitem-invenio-communities-records-api-communityitem"><code class="docutils literal notranslate"><span class="pre">CommunityItem</span></code> (<code class="docutils literal notranslate"><span class="pre">invenio_communities.records.api.CommunityItem</span></code>)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=c1cae59a"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>
