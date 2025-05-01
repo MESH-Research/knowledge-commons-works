@@ -13,7 +13,7 @@ import _map from "lodash/map";
 import { AffiliationsField } from "../AffiliationsField";
 import { CreatibutorsIdentifiers } from "./CreatibutorsIdentifiers";
 import { CREATIBUTOR_TYPE } from "../types";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { Trans } from "react-i18next";
 import { NamesAutocompleteOptions } from "./CreatibutorsItemForm";
 
@@ -175,10 +175,11 @@ const serializeSuggestions = (creatibutors, showManualEntry) => {
         <Header textAlign="center">
           <Header.Content>
             <p>
+              {/* eslint-disable jsx-a11y/anchor-is-valid*/}
               <Trans>
-                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
                 Couldn't find your person? You can <a>create a new entry</a>.
               </Trans>
+              {/* eslint-enable jsx-a11y/anchor-is-valid*/}
             </p>
           </Header.Content>
         </Header>

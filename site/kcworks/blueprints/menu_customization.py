@@ -1,4 +1,10 @@
-from flask_menu import register_menu
+# Copyright (C) MESH Research, 2023
+#
+# KCWorks is free software; you can redistribute it and/or modify it under the
+# terms of the MIT License; see LICENSE file for more details.
+
+"""Blueprint for customizing the InvenioRDM menu in KCWorks."""
+
 from flask import Blueprint
 
 
@@ -8,7 +14,6 @@ from flask import Blueprint
 def create_blueprint(app):
     """Register blueprint routes on app."""
 
-    # @register_menu(app, "main.kc_home", "Commons Home", order=1)
     def inner_create_blueprint(app):
         blueprint = Blueprint(
             "kcw_menu_customization",

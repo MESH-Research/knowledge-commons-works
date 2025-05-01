@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { FieldLabel, RemoteSelectField } from "react-invenio-forms";
 import { Field, getIn } from "formik";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 
 /**Affiliation input component */
 export class AffiliationsField extends Component {

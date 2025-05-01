@@ -1,0 +1,218 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
+
+msgid "Browse"
+msgstr "Browse"
+
+msgid "Contribute"
+msgstr "Contribute"
+
+msgid "Previous slide"
+msgstr "Previous slide"
+
+msgid "Next slide"
+msgstr "Next slide"
+
+msgid "opens in new tab"
+msgstr "opens in new tab"
+
+msgid "Branding"
+msgstr "Branding"
+
+msgid "Submission information"
+msgstr "Submission information"
+
+msgid "Submission to this community does not require review, and will be published immediately."
+msgstr "Submission to this community does not require review, and will be published immediately."
+
+msgid "profile"
+msgstr "profile"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "An error occurred."
+msgstr "An error occurred."
+
+msgid "Contribute a work"
+msgstr "Contribute a work"
+
+msgid "Manage collection"
+msgstr "Manage collection"
+
+msgid "Collection visibility"
+msgstr "Collection visibility"
+
+msgid "The collection is restricted to users with access."
+msgstr "The collection is restricted to users with access."
+
+msgid "Restricted"
+msgstr "Restricted"
+
+msgid "This is your collection's unique identifier, used as the last part of the collection URL. You will be able to access your collection at: "
+msgstr "This is your collection's unique identifier, used as the last part of the collection URL. You will be able to access your collection at: "
+
+msgid "URL Identifier"
+msgstr "URL Identifier"
+
+msgid "Your collection is publicly accessible and shows up in search results."
+msgstr "Your collection is publicly accessible and shows up in search results."
+
+msgid "Your collection is only accessible to users with access."
+msgstr "Your collection is only accessible to users with access."
+
+msgid "Start your new collection"
+msgstr "Start your new collection"
+
+msgid "Collection name"
+msgstr "Collection name"
+
+msgid "Create collection"
+msgstr "Create collection"
+
+msgid "No collections found!"
+msgstr "No collections found!"
+
+msgid "Reset search"
+msgstr "Reset search"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Search collections..."
+msgstr "Search collections..."
+
+msgid "Filter results"
+msgstr "Filter results"
+
+msgid "Sort by"
+msgstr "Sort by"
+
+msgid "Search filters"
+msgstr "Search filters"
+
+msgid "Search records in collection..."
+msgstr "Search records in collection..."
+
+msgid " <2> works </2>found"
+msgstr " <2> works </2>found"
+
+msgid " <2> works </2>found_plural"
+msgstr " <2> works </2>found"
+
+msgid "Search records..."
+msgstr "Search records..."
+
+msgid "Search collection works..."
+msgstr "Search collection works..."
+
+msgid "This collection does not yet include any works you can view"
+msgstr "This collection does not yet include any works you can view"
+
+msgid "Start over"
+msgstr "Start over"
+
+msgid "ProTip"
+msgstr "ProTip"
+
+msgid "Search guide"
+msgstr "Search guide"
+
+msgid "Views"
+msgstr "Views"
+
+msgid "Downloads"
+msgstr "Downloads"
+
+msgid "Copy to clipboard"
+msgstr "Copy to clipboard"
+
+msgid "Copied!"
+msgstr "Copied!"
+
+msgid "Uploaded on {{uploadDate}}"
+msgstr "Uploaded on {{uploadDate}}"
+
+msgid "Published in: {{publishInfo}}"
+msgstr "Published in: {{publishInfo}}"
+
+msgid "{{count}} more versions exist for this record"
+msgstr "{{count}} more versions exist for this record"
+
+msgid "{{count}} more versions exist for this record_plural"
+msgstr "{{count}} more versions exist for this record"
+
+msgid "We couldn't find any matches for {{- search}}"
+msgstr "We couldn't find any matches for {{- search}}"
+
+msgid "<0>For more tips, check out our <2>search guide</2> for defining advanced search queries.</0>"
+msgstr "<0>For more tips, check out our <2>search guide</2> for defining advanced search queries.</0>"
+
+msgid "Search in my collections..."
+msgstr "Search in my collections..."
+
+msgid "L"
+msgstr "L"
+
+msgid "O"
+msgstr "O"
+
+msgid "E"
+msgstr "E"
+
+msgid "N"
+msgstr "N"
+
+msgid "T"
+msgstr "T"
+
+msgid "P"
+msgstr "P"
+
+msgid "iterator"
+msgstr "iterator"
+
+msgid "toStringTag"
+msgstr "toStringTag"
+
+msgid "Chapter number/label"
+msgstr "Chapter number/label"
+
+msgid "Quick create"
+msgstr "Quick create"
+
+msgid "Add a work"
+msgstr "Add a work"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "My account"
+msgstr "My account"
+
+msgid "Log out"
+msgstr "Log out"
+
+msgid "Log in"
+msgstr "Log in"
+
+msgid "My KC profile"
+msgstr "My KC profile"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Help and support"
+msgstr "Help and support"
+
+msgid "KC Home"
+msgstr "KC Home"
+
+msgid "<0><0>metadata.publication_date:[2017-01-01 TO *]</0> will give you all the publications from 2017 until today.</0>"
+msgstr "<0><0>metadata.publication_date:[2017-01-01 TO *]</0> will give you all the publications from 2017 until today.</0>"
+

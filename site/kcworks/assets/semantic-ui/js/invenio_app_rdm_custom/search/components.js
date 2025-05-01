@@ -11,7 +11,7 @@ import {
   SearchBar,
   MultipleOptionsSearchBarRSK,
 } from "@js/invenio_search_ui/components";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 import _get from "lodash/get";
 import _truncate from "lodash/truncate";
 import React from "react";

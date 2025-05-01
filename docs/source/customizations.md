@@ -1,5 +1,7 @@
 # Customizations to InvenioRDM
 
+The Knowledge Commons Works is built as an instance of InvenioRDM. The InvenioRDM Documentation, including customization and development information, can be found at https://inveniordm.docs.cern.ch/.
+
 ## Template Customizations
 
 ### Page templates
@@ -17,13 +19,13 @@ Additional email templates are added for KCWorks-specific email types.
 
 ### Modular Framework (invenio-modular-detail-page)
 
-### Overrides in the KCWorks Package (kcworks/site)
+### Detail Page Overrides in the KCWorks Package (knowledge-commons-works/site)
 
 ## Deposit Form Customizations
 
 ### Modular Framework (invenio-modular-deposit-form)
 
-### Overrides in the KCWorks Package (kcworks/site)
+### Deposit Form Overrides in the KCWorks Package (knowledge-commons-works/site)
 
 ## Collections
 
@@ -33,9 +35,28 @@ Additional email templates are added for KCWorks-specific email types.
 
 ### Per-field editing permissions
 
-KCWorks adds the ability to set per-field editing permissions for record owners. This is implemented by a custom service component (``kcworks.services.records.components.PerFieldPermissionsComponent`) that runs during record modification and selectively blocks edits to certain fields. Attempts to edit restricted fields will raise a ValidationError with a message indicating that the field is restricted.
+KCWorks adds the ability to set per-field editing permissions for record owners. This is implemented by two custom service components:
+- `kcworks.services.records.components.PerFieldPermissionsComponent` that runs when record metadata is modified by the RDMRecordService and selectively blocks edits to certain fields. Attempts to edit restricted fields will result in a validation error message being added to the result's list of errors. The field value will not be changed, although other fields may be updated successfully.
+- `kcworks.services.records.record_communities.CommunityChangePermissionsComponent` that runs when a record's communities are changed by the RecordCommunitiesService and prevents unauthorized changes to a record's default community. (It cannot presently block other changes to the record's communities. Communities other than the default community may be freely added and removed.)
 
-The component runs during the `update_draft`, `publish`, `new_version`, and `delete_record` record operations. It looks at which fields have been modified from the previous version of the record (the draft if the record is not yet published, or the published record if it is published) and checks to see if the current user has permission to edit the field in question. If not, it raises a ValidationError with a message indicating that the field is restricted.
+The PerFieldPermissionsComponent runs during the RDMRecordService's `update_draft` record operation. It only takes effect if the record has already been published and has a default community. The component looks at which fields have been modified from the last published version of the record and checks to see whether the current user has permission to edit the field in question. If not, it adds a message to the result's list of errors that looks like this:
+
+```json
+{
+    "field": "custom_fields.kcr:commons_domain",
+    "messages": ["You do not have permission to edit this field because the record is included in the sample_community community. Please contact the community owner or manager for assistance."]
+}
+```
+
+The CommunityChangePermissionsComponent runs during the RecordCommunitiesService's `remove` and `set_default` record operations. It too only takes effect if the record has already been published. The component checks whether the current user has permission to change the record's default community. The result if the user does not have permission varies depending on the operation:
+- `remove`: the community is not removed from the record, and a message is added to the result's list of errors that looks like this:
+```json
+{
+    "field": "parent.communities.default",
+    "messages": ["You do not have permission to edit this field because the record is included in the sample_community community. Please contact the community owner or manager for assistance."]
+}
+```
+- `set_default`: the default community is not changed, and a `invenio_communities.errors.SetDefaultCommunityError` is raised.
 
 #### Per-field permissions configuration
 
@@ -44,15 +65,21 @@ The permissions are configured in the `invenio.cfg` file using the `RDM_RECORDS_
 ```python
 RDM_RECORDS_PERMISSIONS_PER_FIELD = {
     "default": {
-        "policy": {
-            "custom_fields.kcr:commons_domain": "community_moderators",
-        },
+        "policy": [ "custom_fields.kcr:commons_domain" ],
+        "default_editors": [Administration, SystemProcess],
         "notify_on_change": False,
         "grace_period": None,
     },
     "sample_community": {
         "policy": {
-            "custom_fields.kcr:commons_domain": "community_moderators",
+            "parent.communities.default": ["manager", "owner"],
+        },
+        "notify_on_change": True,
+        "grace_period": "1 day",
+    },
+    "sample_community_2": {
+        "policy": {
+            "custom_fields.kcr:commons_domain": [CommunityManagers, CommunityCurators, CommunityOwners],
         },
         "notify_on_change": True,
         "grace_period": "1 day",
@@ -62,25 +89,32 @@ RDM_RECORDS_PERMISSIONS_PER_FIELD = {
 
 The `default` key is used to configure the permissions for all records that do not have a specific community configuration. Other keys are the URL slugs for specific communities and are used to configure the permissions for records in specific communities. These community-specific configurations are optional but take precedence over the default configuration. If no community-specific configuration is found, the default configuration will be used. If no default configuration is found, per-field permissions will only be applied to records published to a community that has a community-specific configuration.
 
-This configuration would be for a community with the URL slug `sample_community`. The `kcr:commons_domain` field is being restricted to moderators for this community.
+The keys for each community or default configuration dictionary are:
+| Key | Type | Required | Description |
+|-----|------|----------|-------------|
+| `policy` | list[str] or dict[str, list[str]] or dict[str, list[Generator]] | Yes | A list of field names to restrict, a dictionary mapping field names to lists of community role levels, or a dictionary mapping field names to lists of invenio_records_permissions.generators.Generator objects |
+| `default_editors` | list[str] or list[Generator] | No | A list of community role levels (one or more of `owner`, `manager`, `curator`, `reader`) or invenio_records_permissions.generators.Generator objects. This list will define the users who can edit fields if no field-specific list is provided (i.e., if the `policy` is a simple list of field names). Default is [Administration, SystemProcess] for the "default" configuration, and ["owner", "manager", "curator"] for community-specific configurations. |
+| `notify_on_change` | bool | No | A boolean indicating whether to notify the record owners when the community's per-field permissions are changed |
+| `grace_period` | str | No | A string indicating the grace period for the community's per-field permissions |
+
+The configuration above would:
+- restrict any non-administrative user from editing the `custom_fields.kcr:commons_domain` field for any record that does not have a primary community with its own editing restrictions. The only users able to edit the field will be the ones defined by the either the Administration or SystemProcess generator,
+- restrict anyone (including record owners) from editing the `parent.communities.default` field for a record whose primary community is `sample_community`. Only users with the "manager" or "owner" role in `sample_community` will be able to edit this field.
+- restrict anyone (including record owners) from editing the `custom_fields.kcr:commons_domain` field for a record whose primary community is `sample_community_2`. Only users with the "manager", "owner", or "curator" role in `sample_community_2` will be able to edit this field. Owners of records in `sample_community_2` will be notified when the community's per-field permissions are changed, and they will have a grace period of 1 day to update their records before the new permissions are enforced.
+
+```{note}
+The policy for `sample_community_2` affects the same field as the policy for `default`, but since `sample_community_2` has a community-specific configuration, it will take precedence. This means more the `sample_community_2` managers, owners, and curators can edit this field for their collection's records, where otherwise that field could only be edited by KCWorks administrators.
+```
 
 #### Defining the permissions
 
-The values for each key in the `RDM_RECORDS_PERMISSIONS_PER_FIELD` config variable can take one of two forms:
+The values for each key in the `RDM_RECORDS_PERMISSIONS_PER_FIELD` config variable can take one of three forms:
 
-1. a permission policy object or
-2. a dictionary mapping field names to a list of community role levels (one or more of `owner`, `manager`, `curator`, `admin`, `reader`).
+1. a list of field names (strings) to restrict. In this case, all of the listed fields will be editable only by users with the "manager", "owner", or "curator" role in the community.
+2. a dictionary mapping field names to lists of community role levels (one or more of `owner`, `manager`, `curator`, `admin`, `reader`). In this case, the community roles required to make edits can be specified individually for each field.
+3. a dictionary mapping field names to lists of invenio_records_permissions.generators.Generator objects. In this case, different permissions can again be specified for each field. But the requirements can be more complex than simple community roles. For more details on available generators, or how to define custom generators, see the [invenio-records-permissions documentation](https://inveniordm.docs.cern.ch/reference/permissions/generators/) as well as the `generators.py` files in a number of the InvenioRDM packages.
 
-If a dictionary is provided, this will be used to generate a permission policy object with the following structure:
-
-```python
-from invenio_access.permissions import Permission, ActionNeed, ParameterizedActionNeed
-update_restricted_field_permission = Permission(ParameterizedActionNeed('update-restricted-field', field_name='custom_fields.kcr:commons_domain'))
-
-update_restricted_field_permission.allows(my_identity)
-```
-
-with policy
+In order to restrict changes to the community's default community, the `parent.communities.default` field must be included in the list of fields to restrict.
 
 #### Enabling per-field permissions
 
@@ -104,11 +138,13 @@ So if a record is included in the `romantic_literature` community, and that comm
 
 If the `romantic_literature` community's per-field permissions restrict changing the `parent.communities.default` field, then the record owner will not be able to remove the record from the `romantic_literature` community or change the default community for the record. The record can only be removed from the community, or its default community changed to another community, by an `owner`, `manager`, or `curator` of the `romantic_literature` community.
 
-> [!Note]
-> If a community has per-field permission restrictions configured, this will be displayed in the user interface when the record owner submits it to the community.
+```{note}
+If a community has per-field permission restrictions configured, this will be displayed in the user interface when the record owner submits it to the community.
+```
 
-> [!Note]
-> A one-time notification to all record owners if/when the community's per-field permissions are changed. Depending on collection policy, record owners may be allowed a grace period to update their records before the permissions are enforced.
+```{note}
+A one-time notification to all record owners if/when the community's per-field permissions are changed. Depending on collection policy, record owners may be allowed a grace period to update their records before the permissions are enforced.
+```
 
 ## Notifications
 
@@ -144,8 +180,9 @@ RECORD_IMPORTER_COMMUNITIES = {
 
 This configuration would be for a community with the URL slug `sample_community`. The `email_subject_register` value sets the subject line for the email notification sent to the record owners. The `email_template_register` value sets the template to use for the email notification. The template must be located in the `templates/security/email` directory of the KCWorks instance directory.
 
-> [!Note]
-> These notifications will *only* be sent for records imported using the streamlined import API. They will *not* be sent for records imported using the old importer API.
+```{note}
+These notifications will *only* be sent for records imported using the streamlined import API. They will *not* be sent for records imported using the old importer API.
+```
 
 ## Integrations with KC
 
@@ -213,8 +250,9 @@ Note that the KC username of a creator or contributor may be stored in the `pers
 
 Users are also strongly encouraged to include an ORCID identifier in the `person_or_org.identifiers` array with the scheme `orcid`.
 
-> [!Note]
-> The KC username is the primary link between a KCWorks record and a KC user. If you want a work to be associated with a KC user, you must include the KC username in creator or contributor object.
+```{note}
+The KC username is the primary link between a KCWorks record and a KC user. If you want a work to be associated with a KC user, you must include the KC username in creator or contributor object.
+```
 
 Example:
 ```json
@@ -478,8 +516,9 @@ Type: `Array[string]`
 
 This field stores a list of user-defined tags for the KCWorks record. Unlike the `metadata.subjects` field, these tags are not constrained by any controlled vocabulary. Items should be free-form strings that describe the KCWorks record in a way that is not covered by the `metadata.subjects` field.
 
-> [!Note]
-> The `kcr:user_defined_tags` field is intended to supplement the `metadata.subjects` field, not as the primary means of describing the KCWorks record's subject matter. Assigning proper `metadata.subjects` entries allows for much more effective search and discovery of the KCWorks record.
+```{note}
+The `kcr:user_defined_tags` field is intended to supplement the `metadata.subjects` field, not as the primary means of describing the KCWorks record's subject matter. Assigning proper `metadata.subjects` entries allows for much more effective search and discovery of the KCWorks record.
+```
 
 Example:
 ```json
@@ -492,8 +531,9 @@ Example:
 
 This field is used to store the persistent identifier for the KCWorks record in the KC central search index.
 
-> [!Warning]
-> This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
+```{warning}
+This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
+```
 
 #### kcr:commons_search_updated (system field)
 
@@ -501,8 +541,9 @@ Type: `string` (ISO 8601 datetime string)
 
 This field stores the date and time when the KCWorks record was last updated in the KC central search index.
 
-> [!Warning]
-> This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
+```{warning}
+This field is automatically generated by the `invenio-remote-api-provisioner` service when a KCWorks record is published. It *must not* be set by the user.
+```
 
 ### HC Legacy Custom Fields
 

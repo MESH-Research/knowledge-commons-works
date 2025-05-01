@@ -4,7 +4,7 @@ import { http } from "react-invenio-forms";
 import { Grid, Message, Container, Loader } from "semantic-ui-react";
 import FeaturedCommunity from "./FeaturedCommunity";
 import PropTypes from "prop-types";
-import { i18next } from "@translations/invenio_communities/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 
 export default class FeaturedCommunities extends Component {
   constructor(props) {

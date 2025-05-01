@@ -161,7 +161,8 @@ API_TOKEN=myapitoken
 The next variables refer to paths on your local file system that are used during local development to provide easy access to the source code of various python packages and KCWorks modules:
 
 ```
-PYTHON_LOCAL_GIT_PACKAGES_PATH=/path/to/local/git/packages
+INVENIO_LOCAL_SITE_PATH=/path/to/local/kcworks/site
+INVENIO_LOCAL_DEPENDENCIES_PATH=/path/to/local/git/packages
 PYTHON_LOCAL_SITE_PACKAGES_PATH=/path/to/local/virtual/environment/lib/python3.12/site-packages
 ```
 
@@ -266,7 +267,11 @@ You should now be able to access the following:
 
 ### Controlling the Application Services
 
-Once Knowledge Commons Works is installed, you can manage its services from the command line. **Note: Unless otherwise specified, the commands below must be run from the root knowledge-commons-works folder.**
+Once Knowledge Commons Works is installed, you can manage its services from the command line.
+
+```{note}
+Unless otherwise specified, the commands below must be run from the root knowledge-commons-works folder.
+```
 
 ### Startup and shutdown scripts
 

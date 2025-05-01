@@ -18,7 +18,7 @@
 import React from "react";
 import { ComputerTabletUploadsItem } from "../user_dashboard/uploads_items/ComputerTabletUploadsItem";
 import _get from "lodash/get";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/i18next";
 import { http } from "react-invenio-forms";
 import PropTypes from "prop-types";
 

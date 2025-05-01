@@ -12,7 +12,7 @@ import { Button, Icon, Label, List, Ref } from "semantic-ui-react";
 import { CreatibutorsItemForm } from "./CreatibutorsItemForm";
 import PropTypes from "prop-types";
 import _get from "lodash/get";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 
 const CreatibutorsFieldItem = ({
   addLabel,

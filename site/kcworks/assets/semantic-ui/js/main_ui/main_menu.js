@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 import { Button, Label, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
@@ -8,7 +8,7 @@ const MenuItem = ({ text, icon, url, tabIndex }) => {
   return (
     <a role="button" href={url} className="ui " tabIndex={tabIndex}>
       <i className={`${icon} icon fitted`}></i>
-      <span className="inline">{i18next.t(text)}</span>
+      <span className="inline">{text}</span>
     </a>
   );
 };
@@ -17,9 +17,9 @@ const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
   return (
     <>
       <Popup
-        content={i18next.t(text)}
+        content={text}
         trigger={
-          <a role="button" href={url} className="ui computer widescreen large-monitor only" tabIndex={tabIndex} aria-label={i18next.t(text)}>
+          <a role="button" href={url} className="ui computer widescreen large-monitor only" tabIndex={tabIndex} aria-label={text}>
             <i className={`${icon} icon fitted`}></i>
             {badge !== undefined && (
               <Label className="unread-notifications-badge" color="orange" floating>
@@ -30,9 +30,9 @@ const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
         }
       />
 
-      <a role="button" href={url} className="ui tablet mobile only" tabIndex={tabIndex} aria-label={i18next.t(text)}>
+      <a role="button" href={url} className="ui tablet mobile only" tabIndex={tabIndex} aria-label={text}>
         <i className={`${icon} icon fitted`}></i>
-        <span className="inline">{i18next.t(text)}</span>
+        <span className="inline">{text}</span>
       </a>
     </>
   );
@@ -42,7 +42,7 @@ const CollapsingMenuItem = ({ text, icon, url, tabIndex }) => {
   return (
     <>
       <Popup
-        content={i18next.t(text)}
+        content={text}
         trigger={
           <a role="button" href={url} className="ui computer only" tabIndex={tabIndex}>
             <i className={`${icon} icon fitted`}></i>
@@ -52,12 +52,12 @@ const CollapsingMenuItem = ({ text, icon, url, tabIndex }) => {
 
       <a role="button" href={url} className="ui widescreen large-monitor only" tabIndex={tabIndex}>
         <i className={`${icon} icon fitted`}></i>
-        <span className="inline">{i18next.t(text)}</span>
+        <span className="inline">{text}</span>
       </a>
 
       <a role="button" href={url} className="ui mobile only" tabIndex={tabIndex}>
         <i className={`${icon} icon fitted`}></i>
-        <span className="inline">{i18next.t(text)}</span>
+        <span className="inline">{text}</span>
       </a>
     </>
   );
@@ -299,7 +299,7 @@ const LoginMenu = ({
               className="widescreen only"
             /> */}
               <IconMenuItem
-                text="My KC profile"
+                text={i18next.t("My KC profile")}
                 url={profileURL}
                 icon="address card outline"
                 tabIndex={tabIndex}
@@ -317,11 +317,11 @@ const LoginMenu = ({
 const Brand = ({ themeLogoURL, themeSitename }) => {
   const siteNameOverride = "Works";
   return themeLogoURL !== "" ? (
-    <a className="logo-link" href="/" aria-label={i18next.t(siteNameOverride ? siteNameOverride : themeSitename)} tabIndex="0">
+    <a className="logo-link" href="/" aria-label={siteNameOverride ? siteNameOverride : themeSitename} tabIndex="0">
       <img
         className="ui image rdm-logo"
         src={`${themeLogoURL}`}
-        alt={i18next.t(siteNameOverride ? siteNameOverride : themeSitename)}
+        alt={siteNameOverride ? siteNameOverride : themeSitename}
       />
       {/* <span className="title-wrapper">
         <h1 className="ui header">
@@ -332,7 +332,7 @@ const Brand = ({ themeLogoURL, themeSitename }) => {
     </a>
   ) : (
     <a className="logo" href="/">
-      {i18next.t(themeSitename)}
+      {themeSitename}
     </a>
   );
 };
@@ -444,7 +444,7 @@ const MainMenu = ({
             )} */}
 
         <div className={`item`}>
-          <MenuItem text="Search" url={"/search"} icon="search" tabIndex="0" />
+          <MenuItem text={i18next.t("Search")} url={"/search"} icon="search" tabIndex="0" />
         </div>
 
         {/* "Main" menu, including collections */}
@@ -461,7 +461,7 @@ const MainMenu = ({
               <MenuItem
                 url={item.url}
                 text={`${
-                  item.text === "Communities" ? "Collections" : item.text
+                  item.text === "Communities" ? i18next.t("Collections") : item.text
                 }`}
                 icon={item.text === "Communities" ? "copy" : item.icon}
                 key={index}
@@ -532,7 +532,7 @@ const MainMenu = ({
             notificationsItems.map((item, index) => (
               <div className="item inbox" key={index}>
                 <IconMenuItem
-                  text={item.text === "requests" ? "My requests" : item.text}
+                  text={item.text === "requests" ? i18next.t("My requests") : item.text}
                   url={item.url}
                   icon={item.text === "requests" ? "inbox" : item.icon}
                   badge={unreadNotifications?.length > 0 ? unreadNotifications?.length : undefined}
@@ -543,7 +543,7 @@ const MainMenu = ({
 
           {!!accountsEnabled && !!userAuthenticated && (
             <div className="item">
-              <IconMenuItem text="Log out" url={logoutURL} icon="sign-out" tabIndex={0} />
+              <IconMenuItem text={i18next.t("Log out")} url={logoutURL} icon="sign-out" tabIndex={0} />
             </div>
           )}
         </div>

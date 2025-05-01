@@ -117,8 +117,7 @@ h2.ui.header {
   margin-top: 1rem !important;
 }
 
-.ui.form,
-.ui.modal {
+.ui.form {
   h2 {
     font-weight: normal;
   }

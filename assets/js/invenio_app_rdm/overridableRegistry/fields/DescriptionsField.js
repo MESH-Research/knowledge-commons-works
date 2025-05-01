@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
 
 import { FieldLabel } from "react-invenio-forms";
 import { AdditionalDescriptionsField } from "./AdditionalDescriptionsField";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/TextArea";
 
 const DescriptionsField = ({

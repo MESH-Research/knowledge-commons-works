@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Header, Icon, Segment } from "semantic-ui-react";
 import { withState } from "react-searchkit";
-import { i18next } from "@translations/invenio_communities/i18next";
+import { i18next } from "@translations/i18next";
 import PropTypes from "prop-types";
 
 const MembersEmptyResultsComponent = ({

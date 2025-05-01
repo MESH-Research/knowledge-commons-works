@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
 import { Field } from "formik";
 import { FieldLabel } from "react-invenio-forms";
 import { Card, Divider, Form, Grid, Header, Segment } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import {
   MetadataAccess,
   FilesAccess,

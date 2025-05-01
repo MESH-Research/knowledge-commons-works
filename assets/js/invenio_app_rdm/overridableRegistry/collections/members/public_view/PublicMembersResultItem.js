@@ -1,4 +1,4 @@
-import { i18next } from "@translations/invenio_communities/i18next";
+import { i18next } from "@translations/i18next";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Image } from "react-invenio-forms";

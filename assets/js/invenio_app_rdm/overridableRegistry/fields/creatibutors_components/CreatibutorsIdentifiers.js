@@ -12,7 +12,7 @@ import PropTypes, { array } from "prop-types";
 import { FieldLabel } from "react-invenio-forms";
 import _unickBy from "lodash/unionBy";
 import _get from "lodash/get";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { SelectField } from "@js/invenio_modular_deposit_form/replacement_components/SelectField";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 import { FieldArray, useFormikContext } from "formik";

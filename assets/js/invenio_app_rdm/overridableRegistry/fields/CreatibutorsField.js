@@ -17,7 +17,7 @@ import PropTypes from "prop-types";
 import { CreatibutorsFieldItem } from "./creatibutors_components/CreatibutorsFieldItem";
 import { CREATIBUTOR_TYPE } from "./types";
 import { FormUIStateContext } from "@js/invenio_modular_deposit_form/InnerDepositForm";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { getFamilyName, getGivenName } from "../../../kcworks/names";
 
 /**
@@ -195,6 +195,7 @@ const CreatibutorsField = ({
   const { currentUserprofile } = useContext(FormUIStateContext);
 
   const error = _get(errors, fieldPath, null);
+
   const initialError = getIn(initialErrors, fieldPath, null);
   const creatibutorsTouched = getIn(touched, fieldPath, null);
   const creatibutorsError =
@@ -308,7 +309,6 @@ const CreatibutorsField = ({
             {getIn(arrayHelpers.form.values, fieldPath, []).map((value, index) => {
               const fieldPathPrefix = `${fieldPath}.${index}`;
               const displayName = creatibutorNameDisplay(value);
-
               return (
                 <CreatibutorsFieldItem
                   {...otherProps}
@@ -331,7 +331,7 @@ const CreatibutorsField = ({
                     handleOpenForm,
                     index,
                     isNewItem: newItemIndex === index,
-                    itemError: creatibutorsError ? error[index] : null,
+                    itemError: creatibutorsError ? error?.[index] : null,
                     key: index,
                     moveCreatibutor: arrayHelpers.move,
                     removeCreatibutor: arrayHelpers.remove,

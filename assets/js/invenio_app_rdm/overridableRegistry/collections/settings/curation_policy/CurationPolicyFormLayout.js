@@ -17,7 +17,7 @@ import React from "react";
 import { Header } from "semantic-ui-react";
 import { useField } from "formik";
 import { RadioField } from "react-invenio-forms";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/i18next";
 import * as Yup from "yup";
 import _get from "lodash/get";
 import PropTypes from "prop-types";

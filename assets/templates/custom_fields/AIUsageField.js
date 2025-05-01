@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { getIn, useFormikContext } from "formik";
 import { Form } from "semantic-ui-react";
 import { BooleanCheckbox, FieldLabel } from "react-invenio-forms";
@@ -16,21 +16,19 @@ const AIUsageField = ({
   ai_description,
   ...restProps
 }) => {
-  const { values, setFieldValue } = useFormikContext();
+  const { values } = useFormikContext();
 
   return (
     <Form.Field id={fieldPath} name={fieldPath}>
       <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
       <BooleanCheckbox
         fieldPath={`${fieldPath}.ai_used`}
-        // label="Did generative AI contribute to the production of this work?"
         label={ai_used.description}
         trueLabel="Yes"
         falseLabel="No"
         // icon={ai_used.icon}
         required={false}
         description=""
-        // value={values.custom_fields?.["kcr:ai_usage"]?.ai_used}
         value={getIn(values, `${fieldPath}.ai_used`, false)}
         initialValue={getIn(values, `${fieldPath}.ai_used`, false)}
       />

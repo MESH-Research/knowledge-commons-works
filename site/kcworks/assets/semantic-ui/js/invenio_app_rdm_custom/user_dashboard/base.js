@@ -12,7 +12,7 @@ import {
   SearchAppResultsPane,
   InvenioSearchPagination,
 } from "@js/invenio_search_ui/components";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 import React from "react";
 import { ResultsList, SearchBar, Sort, buildUID } from "react-searchkit";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";

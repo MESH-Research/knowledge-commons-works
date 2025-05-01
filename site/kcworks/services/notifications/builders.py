@@ -1,71 +1,72 @@
-from flask import current_app
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
+#
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
+
+"""Notification builders.
+
+# FIXME: Add internal handling for these notifications
+# GrantUserAccessNotificationBuilder,
+# GuestAccessRequestAcceptNotificationBuilder,
+# GuestAccessRequestCancelNotificationBuilder,
+# GuestAccessRequestDeclineNotificationBuilder,
+# GuestAccessRequestSubmitNotificationBuilder,
+# GuestAccessRequestSubmittedNotificationBuilder,
+# GuestAccessRequestTokenCreateNotificationBuilder,
+# UserAccessRequestAcceptNotificationBuilder,
+# UserAccessRequestCancelNotificationBuilder,
+# UserAccessRequestDeclineNotificationBuilder,
+# UserAccessRequestSubmitNotificationBuilder,
+"""
+
 from invenio_accounts.models import User
 from invenio_communities.notifications.builders import (
-    CommunityInvitationNotificationBuilder,
     CommunityInvitationAcceptNotificationBuilder,
     CommunityInvitationCancelNotificationBuilder,
     CommunityInvitationDeclineNotificationBuilder,
     CommunityInvitationExpireNotificationBuilder,
+    CommunityInvitationNotificationBuilder,
     CommunityInvitationSubmittedNotificationBuilder,
 )
-from invenio_communities.notifications.generators import (
-    CommunityMembersRecipient,
-)
+from invenio_communities.notifications.generators import CommunityMembersRecipient
 from invenio_notifications.models import Notification
-from invenio_notifications.registry import EntityResolverRegistry
-from invenio_notifications.services.filters import KeyRecipientFilter
 from invenio_notifications.services.builders import NotificationBuilder
-from invenio_notifications.services.generators import (
-    EntityResolve,
-    # UserEmailBackend,
-)
-from kcworks.services.notifications.backends import (
-    InternalNotificationBackend,
-    # EmailNotificationBackend,
-)
-from kcworks.services.notifications.generators import (
-    CustomRequestParticipantsRecipient,
-    ModeratorRoleRecipient,
-)
 from invenio_notifications.services.generators import RecipientBackendGenerator
-from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 from invenio_rdm_records.notifications.builders import (
     CommunityInclusionAcceptNotificationBuilder,
     CommunityInclusionCancelNotificationBuilder,
     CommunityInclusionDeclineNotificationBuilder,
     CommunityInclusionExpireNotificationBuilder,
     CommunityInclusionSubmittedNotificationBuilder,
-    # FIXME: Add internal handling for these notifications
-    # GrantUserAccessNotificationBuilder,
-    # GuestAccessRequestAcceptNotificationBuilder,
-    # GuestAccessRequestCancelNotificationBuilder,
-    # GuestAccessRequestDeclineNotificationBuilder,
-    # GuestAccessRequestSubmitNotificationBuilder,
-    # GuestAccessRequestSubmittedNotificationBuilder,
-    # GuestAccessRequestTokenCreateNotificationBuilder,
-    # UserAccessRequestAcceptNotificationBuilder,
-    # UserAccessRequestCancelNotificationBuilder,
-    # UserAccessRequestDeclineNotificationBuilder,
-    # UserAccessRequestSubmitNotificationBuilder,
 )
+from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 from invenio_requests.notifications.builders import (
     CommentRequestEventCreateNotificationBuilder,
 )
-
-# from invenio_requests.notifications.filters import (
-# UserRecipientFilter,
-# )
-from invenio_users_resources.notifications.filters import (
-    UserPreferencesRecipientFilter,
-)
 from invenio_users_resources.notifications.generators import (
-    UserRecipient,
-    # IfUserRecipient,
     EmailRecipient,
     IfEmailRecipient,
+    UserRecipient,
 )
 from kcworks.services.accounts.api import UserAPI
-from kcworks.services.notifications.backends import EmailNotificationBackend
+from kcworks.services.notifications.backends import (
+    EmailNotificationBackend,
+    InternalNotificationBackend,
+)
+from kcworks.services.notifications.generators import (
+    CustomRequestParticipantsRecipient,
+    ModeratorRoleRecipient,
+)
 
 
 class UserInternalBackend(RecipientBackendGenerator):
@@ -93,12 +94,9 @@ class CustomCommunityInvitationNotificationBuilder(
 ):
     """Base notification builder for community invitation action."""
 
-    recipient_backends = (
-        CommunityInvitationNotificationBuilder.recipient_backends
-        + [
-            UserInternalBackend(),
-        ]
-    )
+    recipient_backends = CommunityInvitationNotificationBuilder.recipient_backends + [
+        UserInternalBackend()
+    ]
 
 
 class CustomCommunityInvitationSubmittedNotificationBuilder(
@@ -123,9 +121,7 @@ class CustomCommunityInvitationAcceptNotificationBuilder(
     type = "community-invitation.accept"
 
     recipients = [
-        CommunityMembersRecipient(
-            key="request.created_by", roles=["owner", "manager"]
-        ),
+        CommunityMembersRecipient(key="request.created_by", roles=["owner", "manager"]),
     ]
 
 
@@ -151,9 +147,7 @@ class CustomCommunityInvitationDeclineNotificationBuilder(
     type = "community-invitation.decline"
 
     recipients = [
-        CommunityMembersRecipient(
-            key="request.created_by", roles=["owner", "manager"]
-        ),
+        CommunityMembersRecipient(key="request.created_by", roles=["owner", "manager"]),
     ]
 
 
@@ -166,9 +160,7 @@ class CustomCommunityInvitationExpireNotificationBuilder(
     type = "community-invitation.expire"
 
     recipients = [
-        CommunityMembersRecipient(
-            key="request.created_by", roles=["owner", "manager"]
-        ),
+        CommunityMembersRecipient(key="request.created_by", roles=["owner", "manager"]),
         UserRecipient(key="request.receiver"),
     ]
 
@@ -176,6 +168,8 @@ class CustomCommunityInvitationExpireNotificationBuilder(
 class CustomCommunityInclusionAcceptNotificationBuilder(
     CommunityInclusionAcceptNotificationBuilder
 ):
+    """Notification builder for community inclusion accept action."""
+
     recipient_backends = (
         CommunityInclusionAcceptNotificationBuilder.recipient_backends
         + [
@@ -187,6 +181,8 @@ class CustomCommunityInclusionAcceptNotificationBuilder(
 class CustomCommunityInclusionCancelNotificationBuilder(
     CommunityInclusionCancelNotificationBuilder
 ):
+    """Notification builder for community inclusion cancel action."""
+
     recipient_backends = (
         CommunityInclusionCancelNotificationBuilder.recipient_backends
         + [
@@ -198,6 +194,7 @@ class CustomCommunityInclusionCancelNotificationBuilder(
 class CustomCommunityInclusionDeclineNotificationBuilder(
     CommunityInclusionDeclineNotificationBuilder
 ):
+    """Notification builder for community inclusion decline action."""
 
     recipients = CommunityInclusionDeclineNotificationBuilder.recipients
 
@@ -212,6 +209,8 @@ class CustomCommunityInclusionDeclineNotificationBuilder(
 class CustomCommunityInclusionExpireNotificationBuilder(
     CommunityInclusionExpireNotificationBuilder
 ):
+    """Notification builder for community inclusion expire action."""
+
     recipient_backends = (
         CommunityInclusionExpireNotificationBuilder.recipient_backends
         + [
@@ -223,6 +222,8 @@ class CustomCommunityInclusionExpireNotificationBuilder(
 class CustomCommunityInclusionSubmittedNotificationBuilder(
     CommunityInclusionSubmittedNotificationBuilder
 ):
+    """Notification builder for community inclusion submitted action."""
+
     recipient_backends = (
         CommunityInclusionSubmittedNotificationBuilder.recipient_backends
         + [
@@ -234,6 +235,8 @@ class CustomCommunityInclusionSubmittedNotificationBuilder(
 class CustomCommentRequestEventCreateNotificationBuilder(
     CommentRequestEventCreateNotificationBuilder
 ):
+    """Notification builder for comment request event create action."""
+
     recipients = (
         CustomRequestParticipantsRecipient(key="request"),
         IfEmailRecipient(
@@ -257,6 +260,7 @@ class CustomCommentRequestEventCreateNotificationBuilder(
 
 
 class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
+    """Notification builder for first record created action."""
 
     type = "user-first-record.create"
 
@@ -319,6 +323,7 @@ class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
 
 
 class FirstRecordPublishedNotificationBuilder(NotificationBuilder):
+    """Notification builder for first record published action."""
 
     type = "user-first-record.publish"
 

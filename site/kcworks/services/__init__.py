@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # This file is part of Knowledge Commons Works
 # Copyright (C) 2023-2024, MESH Research
 #

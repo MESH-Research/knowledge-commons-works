@@ -4,7 +4,7 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import { i18next } from "@translations/invenio_requests/i18next";
+import { i18next } from "@translations/i18next";
 import { default as RequestTypeIcon } from "@js/invenio_requests/components/RequestTypeIcon";
 import { Trans } from "react-i18next";
 import React, { useEffect, useState } from "react";
@@ -101,15 +101,10 @@ export const ComputerTabletRequestItem = ({
         </Item.Header>
         <Item.Meta>
           <small>
-            <Trans
-              defaults="Opened {{relativeTime}} by"
-              values={{
-                relativeTime: toRelativeTime(
-                  createdDate.toISOString(),
-                  i18next.language
-                ),
-              }}
-            />{" "}
+            {i18next.t("Opened {{relativeTime}} by", {
+              relativeTime: toRelativeTime(createdDate.toISOString(), i18next.language)
+            })}
+            {" "}
             {creatorName}
           </small>
           <small className="right floated">

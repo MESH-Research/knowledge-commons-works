@@ -8,7 +8,7 @@
 
 import React from "react";
 import { Input } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_communities/i18next";
+import { i18next } from "@translations/i18next";
 import { withState } from "react-searchkit";
 
 export const MembersSearchBarElement = withState(

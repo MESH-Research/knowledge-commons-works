@@ -8,7 +8,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { ProtectionButtons } from "./ProtectionButtons";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { Card, Form, Icon } from "semantic-ui-react";
 
 export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {

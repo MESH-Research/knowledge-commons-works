@@ -5,7 +5,7 @@ import _get from "lodash/get";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
 import _map from "lodash/map";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { Trans } from "react-i18next";
 import { ModalActions, NamesAutocompleteOptions } from "./CreatibutorsItemForm";
 

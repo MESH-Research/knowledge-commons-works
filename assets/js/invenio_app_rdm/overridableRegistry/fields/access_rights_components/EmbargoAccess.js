@@ -12,7 +12,7 @@ import React from "react";
 import { TextAreaField } from "react-invenio-forms";
 import { Button, Divider, Form, Icon, List } from "semantic-ui-react";
 import { EmbargoDateField } from "./EmbargoDateField";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { Trans } from "react-i18next";
 import { useFormikContext } from "formik";
 

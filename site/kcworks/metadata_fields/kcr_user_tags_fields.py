@@ -1,39 +1,27 @@
-"""
+"""User-defined tags custom field.
+
 kcr:user_defined_tags       Free user-defined tags associated with the current
                             item. This value is an array of objects, each with
                             the keys "tag_label" and "tag_identifier". The
-                            tag_identifier is an integer assigned automatically. The tag_label is the string entered
-                            by the user.
+                            tag_identifier is an integer assigned automatically.
+                            The tag_label is the string entered by the user.
 """
 
 from invenio_i18n import lazy_gettext as _
-from invenio_records_resources.services.custom_fields import (
-    BaseListCF,
-    TextCF,
-    IntegerCF,
-)
-from marshmallow import fields, Schema, validate
-from marshmallow_utils.fields import (
-    SanitizedUnicode,
-    SanitizedHTML,
-    StrippedHTML,
-)
-from .kcr_metadata_fields import KCR_NAMESPACE
+from invenio_records_resources.services.custom_fields import BaseListCF, TextCF
+from marshmallow_utils.fields import SanitizedUnicode
 
 
 class UserTagsCF(BaseListCF):
-    """Nested custom field.
+    """User-defined tags custom field.
+
     DEPRECATED
     """
 
     def __init__(self, name, **kwargs):
         """Constructor."""
         super().__init__(
-            name,
-            field_cls=SanitizedUnicode(),
-            field_args={},
-            multiple=True,
-            **kwargs
+            name, field_cls=SanitizedUnicode(), field_args={}, multiple=True, **kwargs
         )
 
     # @property
@@ -59,9 +47,7 @@ class UserTagsCF(BaseListCF):
 
 
 KCR_USER_TAGS_FIELDS = [
-    TextCF(
-        name="kcr:user_defined_tags", field_cls=SanitizedUnicode, multiple=True
-    ),
+    TextCF(name="kcr:user_defined_tags", field_cls=SanitizedUnicode, multiple=True),
 ]
 
 
@@ -78,7 +64,10 @@ KCR_USER_TAGS_SECTION_UI = {
                     "Type your keywords here (press 'enter' to add each one)"
                 ),
                 "icon": "tags",
-                "description": "Words describing this material that do not appear in the subject terms above.",
+                "description": (
+                    "Words describing this material that do not appear in the "
+                    "subject terms above."
+                ),
             },
         }
     ],

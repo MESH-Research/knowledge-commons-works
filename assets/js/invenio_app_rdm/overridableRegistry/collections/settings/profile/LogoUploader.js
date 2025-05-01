@@ -13,7 +13,7 @@
 * MIT License; see LICENSE file for more details.
 */
 
-import { i18next } from "@translations/invenio_communities/i18next";
+import { i18next } from "@translations/i18next";
 import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import { humanReadableBytes } from "react-invenio-forms";

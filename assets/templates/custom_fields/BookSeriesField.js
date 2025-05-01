@@ -8,7 +8,7 @@ import {
   TextField,
 } from "react-invenio-forms";
 import { Grid, Form, Button, Icon } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { FieldArray, useFormikContext } from "formik";
 
 const newSeries = {

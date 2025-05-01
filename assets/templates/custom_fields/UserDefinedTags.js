@@ -1,5 +1,5 @@
 import React from "react";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/i18next";
 import MultiInput from "@js/invenio_modular_deposit_form/replacement_components/MultiInput";
 
 const UserDefinedTags = ({

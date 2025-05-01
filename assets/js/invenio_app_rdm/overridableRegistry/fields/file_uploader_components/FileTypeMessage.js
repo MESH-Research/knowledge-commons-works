@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Accordion, Icon, Table, Message } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { FormUIStateContext } from "@js/invenio_modular_deposit_form/InnerDepositForm";
 import PropTypes from "prop-types";
 import { supportedExtensions, unsupportedExtensions } from "./index";
