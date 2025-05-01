@@ -5,7 +5,7 @@
 
 ## Not yet released
 
-## 0.4.0-beta12 (2025-03-14)
+## 0.4.0-beta12 (2025-04-30)
 
 - Per-field editing permissions for collections, along with UI for managing them.
     - Before publishing to a collection or adding a work to a collection:
