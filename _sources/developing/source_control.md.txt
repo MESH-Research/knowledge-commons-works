@@ -33,9 +33,17 @@ When a developer needs to make changes to the codebase, they should create a new
 
 Changes should be merged back into `main` as often as possible, and the temporary branches deleted. These merges should be performed when a developer is ready to deploy the changes to the staging server for testing. This should generally be done *after* the appropriate tests have been written and are passing. Merges should also represent a single completed change (feature or fix). Developers should, though, think in terms of small, incremental changes and merge often.
 
-Merging to `main` should be done via pull request, and the merge only accepted if the newly added tests are present and passing. This ensures that the `main` branch is always in a deployable state and ready for incoming merges by other developers. Merges should be performed using the squash merge strategy (the equivalent of `git merge --squash <branch>`). This combines all of the incoming changes into a single commit, making the commit history cleaner and easier to read.
+Merging to `main` should be done via pull request, and the merge only accepted if the newly added tests are present and passing. This ensures that the `main` branch is always in a deployable state and ready for incoming merges by other developers.
 
-No commits should be made directly to the `staging` or `production` branches. All changes should be made to the `main` branch and then merged into `staging` and `production` via pull requests. This is especially important because changes pushed to `staging` and `production` branches will automatically trigger rebuilding of the stanging or production containers and the deployment of the updated containers to the respective servers. Pull requests to staging and production should be merged using the fast-forward merge strategy, so that the commit history for these branches is kept clean and identical to the `main` branch.
+```{note}
+Merges into `main` should be performed using the `squash` merge strategy (the equivalent of `git merge --squash <branch>`). This combines all of the incoming changes into a single commit, making the commit history cleaner and easier to read.
+```
+
+No commits should be made directly to the `staging` or `production` branches. All changes should be made to the `main` branch and then merged into `staging` and `production` via pull requests. This is especially important because changes pushed to `staging` and `production` branches will automatically trigger rebuilding of the stanging or production containers and the deployment of the updated containers to the respective servers.
+
+```{note}
+Pull requests to staging and production should be merged using the `rebase` merge strategy, so that the commit history for these branches is kept clean and identical to the `main` branch.
+```
 
 ### Commit strategy
 
