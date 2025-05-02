@@ -49,7 +49,7 @@ echo -e "${yellow}Creating the database...${clear}"
 invenio db init create
 echo -e "${yellow}Setting up s3 storage...${clear}"
 invenio files location s3-default s3://$INVENIO_S3_BUCKET_NAME --default;
-echo -e "${yellow}Setting up admin user and role...${clear}"
+echo -e "${yellow}Setting up admin roles and permissions...${clear}"
 invenio roles create admin
 invenio roles create administration
 invenio roles create administration-moderation
@@ -68,7 +68,6 @@ echo -e "${yellow}Compiling translations...${clear}"
 pybabel compile -d /opt/invenio/src/translations
 echo -e "${yellow}Setting up task queues...${clear}"
 invenio queues declare
-echo -e "${yellow}Creating administrator role...${clear}"
 if [ $fixtures==1 ]
 then
     echo -e "${yellow}Setting up fixtures in two stages (this may take a long time!!)...${clear}"

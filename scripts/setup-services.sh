@@ -20,14 +20,25 @@ select yn in "s3" "local"; do
         local ) echo -e "${yellow}Setting up local storage...${clear}"; invenio files location create --default default-location /opt/invenio/var/instance/data; break;;
     esac
 done
-echo -e "${yellow}Setting up admin user and role...${clear}"
+echo -e "${yellow}Setting up admin roles and permissions...${clear}"
 invenio roles create admin
+invenio roles create administration
+invenio roles create administration-moderation
+invenio roles create admin-moderator
 invenio access allow superuser-access role admin
+invenio access allow superuser-access role administration
+invenio access allow superuser-access role administration-moderation
+invenio access allow administration-access role administration
+invenio access allow administration-moderation role administration-moderation
 echo -e "${yellow}Setting up OpenSearch index...${clear}"
 invenio index init
 echo -e "${yellow}Setting up custom metadata fields...${clear}"
 invenio rdm-records custom-fields init
 invenio communities custom-fields init
+echo -e "${yellow}Compiling translations...${clear}"
+pybabel compile -d /opt/invenio/src/translations
+echo -e "${yellow}Setting up task queues...${clear}"
+invenio queues declare
 echo -e "${yellow}Setting up fixtures in two stages (this may take a long time!!)...${clear}"
 invenio rdm fixtures
 invenio rdm-records fixtures & pid=$!
@@ -39,14 +50,7 @@ do
     printf "\b%c" "${sp:i++%4:1}"
     sleep 0.1
 done
-echo -e "${yellow}Compiling translations...${clear}"
-pybabel compile -d /opt/invenio/src/translations
-echo -e "${yellow}Setting up task queues...${clear}"
-invenio queues declare
-echo -e "${yellow}Creating administrator role...${clear}"
-invenio roles create administrator
 echo -e "${green}All done setting up services."
-echo -e "${yellow}Building assets for Knowledge Commons Works instance...${clear}"
-cd /opt/invenio/src/scripts
-bash ./build-assets.sh
+echo -e "${green}Building and symlinking assets..."
+bash ./scripts/build-assets.sh
 echo -e "${green}Your instance is now ready to use.${clear}"
