@@ -49,6 +49,7 @@ RUN apt-get update && apt-get install -y \
     libffi-dev \
     uuid-dev \
     wget \
+    vim \
     curl \
     && rm -rf /var/lib/apt/lists/* \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
