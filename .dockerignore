@@ -8,6 +8,7 @@ __pycache__/
 .Python
 *.so
 
+# Private files
 .env*
 **/.env*
 .invenio.private*
@@ -15,20 +16,36 @@ docker/nginx_local/samlPrivateKey.key
 docker/nginx_local/samlCertificate.key
 docker-compose*
 
+# Cache directories
+.mypy_cache/
+**/.mypy_cache/
+.pytest_cache/
+**/.pytest_cache/
+.ruff_cache/
+**/.ruff_cache/
+
+# Git and vscode directories
 .git/
 **/.git*
 .github/
 **/.github*
-.pytest_cache/
-**/.pytest_cache/
 .vscode/
+
+# Logs
 logs/*
 **/test_logs
 **/logs
+
+# Scripts
 scripts/experiments
 scripts/sample_files
+
+# Build artifacts
+build/
 site/build
 site/kcworks.egg-info
+
+# Static files
 static/admin
 static/dist
 static/bootstrap
