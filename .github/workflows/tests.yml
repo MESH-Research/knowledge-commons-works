@@ -108,24 +108,13 @@ jobs:
           chmod +x run-js-tests.sh
           bash run-js-tests.sh
 
-  ghost-inspector:
-    needs: test
-    runs-on: ubuntu-latest
-    if: (github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event_name == 'pull_request') && (github.ref == 'refs/heads/staging' || github.head_ref == 'staging')
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Run Ghost Inspector Tests
-        uses: ghost-inspector/ghost-inspector-github-action@v1
+      - name: execute Ghost Inspector test "collections logged in"
+        uses: docker://ghostinspector/cli
         with:
-          apiKey: ${{ secrets.GHOST_INSPECTOR_API_KEY }}
-          # Base Works suite
-          suiteId: "66a3a33b333cf823ad8fff8a"
-          startUrl: "https://works.hcommons-staging.org"
-          # environment: ${{ vars.GHOST_INSPECTOR_ENVIRONMENT }}
-          variables: |
-            {
-              "base-url": "https://works.hcommons-staging.org"
-            }
+          args: |
+            suite execute 66a3a33b333cf823ad8fff8a \
+            --apiKey ${{ secrets.GHOST_INSPECTOR_API_KEY }} \
+            --startUrl "https://works.hcommons-staging.org" \
+            --dataSource "works_collections_loggedIn_staging.csv" \
+            --errorOnFail \
+            --errorOnScreenshotFail
