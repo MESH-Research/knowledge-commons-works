@@ -70,6 +70,13 @@
   }
 }
 
+.communities-detail-body.ui.grid {
+  .communities-detail-about.column,
+  .communities-detail-curation.column {
+    padding-top: 1.5rem;
+  }
+}
+
 .ui.form {
   #rdm-deposit-form {
     .ui.grid {
