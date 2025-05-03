@@ -28,9 +28,9 @@ const RequestActions = ({ request, actions, size }) => {
 
   // FIXME: This is a temporary fix to hide the cancel action for
   // people other than the requester. This should be handled on the server side.
-  if ( !request.expanded.created_by.is_current_user ) {
-    actions = actions.filter(action => action !== "cancel");
-  }
+  // if ( !request.expanded.created_by.is_current_user ) {
+  //   actions = actions.filter(action => action !== "cancel");
+  // }
 
   return (
       <MediaContextProvider>
