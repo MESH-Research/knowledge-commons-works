@@ -80,7 +80,7 @@ export const CommunityCompactItemComputer = ({
               </>
             )}
             {isCommunityDefault && (
-              <Label color="purple" size="tiny">
+              <Label horizontal color="purple" size="small">
                 <Icon name="star" />
                 {i18next.t("Primary")}
               </Label>
@@ -89,7 +89,7 @@ export const CommunityCompactItemComputer = ({
               <Popup
                 content={restrictionsMessage}
                 trigger={
-                  <Label color="red" size="tiny">
+                  <Label horizontal color="red" size="small">
                     <Icon name="lock" />
                     {i18next.t("Editing restrictions")}
                   </Label>
