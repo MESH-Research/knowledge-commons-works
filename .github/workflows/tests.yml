@@ -107,22 +107,3 @@ jobs:
         run: |
           chmod +x run-js-tests.sh
           bash run-js-tests.sh
-
-      - name: Create test data directory
-        run: mkdir -p test-data
-
-      - name: Copy CSV file
-        run: cp tests/e2e/works_collections_loggedIn_staging.csv test-data/
-
-      - name: Execute Ghost Inspector tests
-        if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/production'
-        env:
-          GHOST_INSPECTOR_API_KEY: ${{ secrets.GHOST_INSPECTOR_API_KEY }}
-        uses: docker://ghostinspector/cli
-        with:
-          args: |
-            suite execute 66a3a33b333cf823ad8fff8a 6815258158d7ce73a10ca70b \
-            --startUrl "https://works.hcommons-staging.org" \
-            --dataFile "/github/workspace/test-data/works_collections_loggedIn_staging.csv" \
-            --errorOnFail \
-            --errorOnScreenshotFail

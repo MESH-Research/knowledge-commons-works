@@ -1,0 +1,58 @@
+name: Ghost Inspector Tests
+
+on:
+  push:
+    branches: [ staging, production ]
+  pull_request:
+    branches: [ staging, production ]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason"
+        required: false
+        default: "Manual trigger"
+
+jobs:
+  ghost-inspector:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Read CSV values
+        id: csv
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
+            CSV_FILE="tests/e2e/works_collections_loggedIn_production.csv"
+          else
+            CSV_FILE="tests/e2e/works_collections_loggedIn_staging.csv"
+          fi
+
+          # Read the first line (header) and second line (values)
+          IFS=, read -r header1 header2 header3 < "$CSV_FILE"
+          IFS=, read -r base_url collection_uuid member_email < "$CSV_FILE"
+
+          # Set outputs for use in subsequent steps
+          echo "base_url=$base_url" >> $GITHUB_OUTPUT
+          echo "collection_uuid=$collection_uuid" >> $GITHUB_OUTPUT
+          if [[ -n "$member_email" ]]; then
+            echo "member_email=$member_email" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Execute Ghost Inspector tests
+        env:
+          GHOST_INSPECTOR_API_KEY: ${{ secrets.GHOST_INSPECTOR_API_KEY }}
+          BASE_URL: ${{ steps.csv.outputs.base_url }}
+          COLLECTION_ITEM_UUID: ${{ steps.csv.outputs.collection_uuid }}
+          MEMBER_RESULT_EMAIL: ${{ steps.csv.outputs.member_email }}
+        uses: docker://ghostinspector/cli
+        with:
+          args: |
+            suite execute 66a3a33b333cf823ad8fff8a 6815258158d7ce73a10ca70b \
+            --startUrl "${{ env.BASE_URL }}" \
+            --variables "collection-item-uuid=${{ env.COLLECTION_ITEM_UUID }}${{ env.MEMBER_RESULT_EMAIL != '' && format(',member-result-email={0}', env.MEMBER_RESULT_EMAIL) || '' }}" \
+            --errorOnFail \
+            --errorOnScreenshotFail
