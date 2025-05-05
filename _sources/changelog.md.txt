@@ -5,6 +5,23 @@
 
 ## Not yet released
 
+## 0.5.0-beta13 (2025-05-05)
+
+- Dashboard
+    - Added a new "My Works" dashboard tab that links to a search for works the user has contributed to.
+    - Reworded other tabs to be clearer about what they contain.
+- Bug fixes
+    - Fixed missing "email" scheme for contributor identifiers.
+    - Fixed bug where users with permissions couldn't see the action buttons to manage collections with editing restrictions on the detail page.
+    - Addressed complaints about non-primary contributors being displayed in the creators list under
+      the detail page work title by truncating that list to the first three contributors. The full
+      list is still displayed on the "Contributors" tab. Work owners can adjust the creators order
+      on the upload form to determine which three contributors appear first.
+- Testing
+    - Added a new Github Actions workflow to run Ghost Inspector tests on the staging and production sites.
+- Documentation
+    - Minor documentation fixes.
+
 ## 0.4.0-beta12 (2025-04-30)
 
 - Per-field editing permissions for collections, along with UI for managing them.

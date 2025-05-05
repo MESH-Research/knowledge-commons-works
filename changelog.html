@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Known Issues" href="known_issues.html" /><link rel="prev" title="Feature Highlights" href="feature_highlights.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Changes - Knowledge Commons Works 0.4.0 documentation</title>
+        <title>Changes - Knowledge Commons Works 0.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Knowledge Commons Works 0.4.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Knowledge Commons Works 0.5.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.4.0 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.5.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -280,6 +280,37 @@
 <h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
 <section id="not-yet-released">
 <h2>Not yet released<a class="headerlink" href="#not-yet-released" title="Link to this heading">¶</a></h2>
+</section>
+<section id="beta13-2025-05-05">
+<h2>0.5.0-beta13 (2025-05-05)<a class="headerlink" href="#beta13-2025-05-05" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Dashboard</p>
+<ul>
+<li><p>Added a new “My Works” dashboard tab that links to a search for works the user has contributed to.</p></li>
+<li><p>Reworded other tabs to be clearer about what they contain.</p></li>
+</ul>
+</li>
+<li><p>Bug fixes</p>
+<ul>
+<li><p>Fixed missing “email” scheme for contributor identifiers.</p></li>
+<li><p>Fixed bug where users with permissions couldn’t see the action buttons to manage collections with editing restrictions on the detail page.</p></li>
+<li><p>Addressed complaints about non-primary contributors being displayed in the creators list under
+the detail page work title by truncating that list to the first three contributors. The full
+list is still displayed on the “Contributors” tab. Work owners can adjust the creators order
+on the upload form to determine which three contributors appear first.</p></li>
+</ul>
+</li>
+<li><p>Testing</p>
+<ul>
+<li><p>Added a new Github Actions workflow to run Ghost Inspector tests on the staging and production sites.</p></li>
+</ul>
+</li>
+<li><p>Documentation</p>
+<ul>
+<li><p>Minor documentation fixes.</p></li>
+</ul>
+</li>
+</ul>
 </section>
 <section id="beta12-2025-04-30">
 <h2>0.4.0-beta12 (2025-04-30)<a class="headerlink" href="#beta12-2025-04-30" title="Link to this heading">¶</a></h2>
@@ -667,6 +698,7 @@ or creating a new version</p>
             <ul>
 <li><a class="reference internal" href="#">Changes</a><ul>
 <li><a class="reference internal" href="#not-yet-released">Not yet released</a></li>
+<li><a class="reference internal" href="#beta13-2025-05-05">0.5.0-beta13 (2025-05-05)</a></li>
 <li><a class="reference internal" href="#beta12-2025-04-30">0.4.0-beta12 (2025-04-30)</a></li>
 <li><a class="reference internal" href="#beta11-2025-03-14">0.3.8-beta11 (2025-03-14)</a></li>
 <li><a class="reference internal" href="#beta10-2025-03-01">0.3.7-beta10 (2025-03-01)</a></li>
@@ -688,7 +720,7 @@ or creating a new version</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=6c02275b"></script>
+</div><script src="_static/documentation_options.js?v=1dd76d02"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
