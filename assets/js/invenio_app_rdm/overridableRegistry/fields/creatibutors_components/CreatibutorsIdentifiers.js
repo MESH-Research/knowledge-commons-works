@@ -24,14 +24,15 @@ const idTypeData = {
   isni: { text: "ISNI", value: "isni", key: "isni" },
   gnd: { text: "GND", value: "gnd", key: "gnd" },
   ror: { text: "ROR", value: "ror", key: "ror" },
-  kc_username: { text: "KC id", value: "kc_username", key: "kc_username" },
+  kc_username: { text: "KC username", value: "kc_username", key: "kc_username" },
+  email: { text: "email", value: "email", key: "email" },
 };
 
 const CreatibutorsIdentifiers = ({
   fieldPath,
   label = i18next.t("Name identifiers"),
   placeholder = "",
-  idTypes = ["orcid", "isni", "gnd", "ror", "kc_username"],
+  idTypes = ["orcid", "isni", "gnd", "ror", "kc_username", "email"],
 }) => {
 
   const [identifiersLength, setIdentifiersLength] = useState(-1);
