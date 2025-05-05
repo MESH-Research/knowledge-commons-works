@@ -20,7 +20,7 @@ Do not use the `--recurse-submodules` option when cloning the repository or the 
 ### 2. Create your configuration files
 
 - `cd knowledge-commons-works`
-- Create and configure the `.env` file in this folder as described {ref}`here <setting-up-configuration-files>`
+- Create and configure the `.env` file in this folder as described below (["Setting up configuration files"](#setting-up-configuration-files)).
 - Create the `.invenio.private` file with the following contents:
 
 ```shell

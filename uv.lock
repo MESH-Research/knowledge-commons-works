@@ -3211,7 +3211,7 @@ wheels = [
 
 [[package]]
 name = "kcworks"
-version = "0.3.8b11"
+version = "0.4.0b12"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
@@ -3271,16 +3271,17 @@ dev = [
     { name = "mypy" },
     { name = "myst-parser" },
     { name = "psycopg2-binary" },
-    { name = "pytest-black" },
-    { name = "pytest-isort" },
-    { name = "pytest-mock" },
     { name = "requests-mock" },
     { name = "ruff" },
     { name = "selenium" },
     { name = "sphinx" },
+    { name = "sphinx-copybutton" },
 ]
 tests = [
+    { name = "pytest-black" },
     { name = "pytest-invenio" },
+    { name = "pytest-isort" },
+    { name = "pytest-mock" },
     { name = "pytest-mypy" },
     { name = "pytest-ruff" },
 ]
@@ -3299,7 +3300,6 @@ dev = [
     { name = "requests-mock" },
     { name = "ruff" },
     { name = "selenium" },
-    { name = "sphinx-copybutton" },
 ]
 
 [package.metadata]
@@ -3344,11 +3344,11 @@ requires-dist = [
     { name = "pluggy", specifier = ">=0.10.0,<1.0" },
     { name = "psycopg2-binary", marker = "extra == 'dev'", specifier = ">=2.9.10" },
     { name = "pydantic" },
-    { name = "pytest-black", marker = "extra == 'dev'", specifier = ">=0.6.0" },
+    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
     { name = "pytest-invenio", specifier = "<3.0.0" },
     { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=2.1.0,<3.0.0" },
-    { name = "pytest-isort", marker = "extra == 'dev'", specifier = ">=4.0.0" },
-    { name = "pytest-mock", marker = "extra == 'dev'" },
+    { name = "pytest-isort", marker = "extra == 'tests'", specifier = ">=4.0.0" },
+    { name = "pytest-mock", marker = "extra == 'tests'" },
     { name = "pytest-mypy", marker = "extra == 'tests'", specifier = ">=0.10.0" },
     { name = "pytest-ruff", marker = "extra == 'tests'", specifier = ">=0.1.0" },
     { name = "python-dotenv" },
@@ -3360,6 +3360,7 @@ requires-dist = [
     { name = "selenium", marker = "extra == 'dev'" },
     { name = "sentry-sdk", extras = ["flask"], specifier = ">=1.0.0,<2.0.0" },
     { name = "sphinx", marker = "extra == 'dev'" },
+    { name = "sphinx-copybutton", marker = "extra == 'dev'", specifier = ">=0.5.2" },
     { name = "sqlalchemy", extras = ["asyncio"] },
     { name = "timefhuman" },
     { name = "titlecase" },
@@ -3383,7 +3384,6 @@ dev = [
     { name = "requests-mock" },
     { name = "ruff", specifier = ">=0.3.0" },
     { name = "selenium" },
-    { name = "sphinx-copybutton", specifier = ">=0.5.2" },
 ]
 
 [[package]]
