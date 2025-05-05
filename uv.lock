@@ -2827,7 +2827,7 @@ opensearch2 = [
 
 [[package]]
 name = "invenio-search-ui"
-version = "2.8.7"
+version = "2.8.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "babel" },
@@ -2835,9 +2835,9 @@ dependencies = [
     { name = "invenio-base" },
     { name = "invenio-i18n" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cd/29/5d37203f401f33ec0b058e0255c4d6de803d4d2d6e041372f528969e4ffa/invenio-search-ui-2.8.7.tar.gz", hash = "sha256:58710fbcfe06f8d146a48ca233671699c0f40ea87b5a5579e83017e7d3121b9a", size = 92967 }
+sdist = { url = "https://files.pythonhosted.org/packages/c0/a9/afd5d7e96cbb64b282d5cc1794e4214a9c6901ef0db08a862a98693d02de/invenio_search_ui-2.8.9.tar.gz", hash = "sha256:d9bb8c4408d68624123a1fb72d06df1e8eeb7a06dace80419d74be8e322187d5", size = 98576 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/44/8b/c4a177bc9de074fa7c6e0e1290ece66b2b788c9b8e9df897dd220dd7601b/invenio_search_ui-2.8.7-py2.py3-none-any.whl", hash = "sha256:67d21ef16c5c03c475edfbc3104237c4a2ea0dc22dbefb98fd2c2a997efad7ca", size = 216882 },
+    { url = "https://files.pythonhosted.org/packages/c1/75/d0e80c036fc4982a8cdafcf24b3eb0bb8a923152c4315f55e4d7a27769bf/invenio_search_ui-2.8.9-py2.py3-none-any.whl", hash = "sha256:e635ae183159714f8bab1217e6e00c0565f67559f3ca74546bc097a8be8251ae", size = 217015 },
 ]
 
 [[package]]
@@ -3211,7 +3211,7 @@ wheels = [
 
 [[package]]
 name = "kcworks"
-version = "0.4.0b12"
+version = "0.5.0b13"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
@@ -3235,6 +3235,7 @@ dependencies = [
     { name = "invenio-remote-user-data-kcworks" },
     { name = "invenio-s3" },
     { name = "invenio-saml" },
+    { name = "invenio-search-ui" },
     { name = "invenio-subjects-fast" },
     { name = "invenio-utilities-tuw" },
     { name = "isbnlib" },
@@ -3331,6 +3332,7 @@ requires-dist = [
     { name = "invenio-remote-user-data-kcworks", editable = "site/kcworks/dependencies/invenio-remote-user-data-kcworks" },
     { name = "invenio-s3" },
     { name = "invenio-saml" },
+    { name = "invenio-search-ui", specifier = "==2.8.9" },
     { name = "invenio-subjects-fast" },
     { name = "invenio-utilities-tuw" },
     { name = "isbnlib" },

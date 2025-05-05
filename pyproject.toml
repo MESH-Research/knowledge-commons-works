@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kcworks"
-version = "0.4.0-beta12"
+version = "0.5.0-beta13"
 requires-python = ">=3.12"
 dependencies = [
     "aiohttp>=3.11.15",
