@@ -1,11 +1,12 @@
-# Part of Knowledge Commons Works
-#
-# Copyright (C) 2025 Knowledge Commons.
-#
-# Knowledge Commons is free software; you can redistribute it and/or modify
-# it under the terms of the MIT License; see LICENSE file for more details.
-#
-# This file contains custom validators for various record fields.
+"""Validators for various record fields.
+
+Part of Knowledge Commons Works
+
+Copyright (C) 2025 Knowledge Commons.
+
+Knowledge Commons is free software; you can redistribute it and/or modify
+it under the terms of the MIT License; see LICENSE file for more details.
+"""
 
 import re
 
