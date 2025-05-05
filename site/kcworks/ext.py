@@ -25,6 +25,7 @@ from kcworks.services.records.components.per_field_permissions_component import 
 from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
     CommunityChangePermissionsComponent,
 )
+from kcworks.templates.template_filters import user_profile_dict
 
 
 class KCWorks:
@@ -50,6 +51,7 @@ class KCWorks:
         app.logger.debug("Initializing KCWorks extension")
         self.init_services(app)
         self.init_components(app)
+        self.init_template_filters(app)
         app.extensions["kcworks"] = self
 
     def init_services(self, app: Flask) -> None:
@@ -83,3 +85,11 @@ class KCWorks:
         app.config["RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS"] = list(
             set(record_communities_components)
         )
+
+    def init_template_filters(self, app: Flask) -> None:
+        """Initialize template filters.
+
+        Args:
+            app: Flask application
+        """
+        app.jinja_env.filters["user_profile_dict"] = user_profile_dict
