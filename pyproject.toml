@@ -26,6 +26,7 @@ dependencies = [
     "invenio-logging[sentry]==2.1.5",
     "invenio-s3",
     "invenio-saml",
+    "invenio-search-ui==2.8.9",
     "invenio-subjects-fast",
     "invenio-utilities-tuw",
     "isbnlib",
