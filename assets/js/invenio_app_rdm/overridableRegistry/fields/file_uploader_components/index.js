@@ -9,6 +9,27 @@ import { connect } from "react-redux";
 import { deleteFile, importParentFiles, uploadFiles } from "./files";
 import { FileUploaderComponent } from "./FileUploader";
 
+const supportedExtensions = {
+  text: ["txt", "pdf", "pdfa", "md"],
+  image: ["jpg", "jpeg", "png", "gif", "tif", "tiff", "jp2"],
+  video: ["mp4", "webm"],
+  audio: ["mp3", "wav", "flac", "aac"],
+  structuredData: ["json", "xml", "csv", "dsv"],
+  sourceCode: ["py", "js", "java", "cpp", "ipynb"],
+  archive: ["zip"],
+};
+
+const unsupportedExtensions = {
+  text: ["doc", "docx"],
+  image: [],
+  video: ["avi", "mov"],
+  audio: [],
+  structuredData: [],
+  sourceCode: [],
+  archive: ["tar", "gz"],
+  other: [],
+};
+
 // FIXME: Can we use this same redux context elsewhere?
 const mapStateToProps = (state) => {
   const { links, entries } = state.files;
@@ -39,3 +60,4 @@ export const FileUploader = connect(
 
 export { FileUploaderArea } from "./FileUploaderArea";
 export { FileUploaderToolbar } from "./FileUploaderToolbar";
+export { supportedExtensions, unsupportedExtensions };

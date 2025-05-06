@@ -7,11 +7,11 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { useFormikContext } from "formik";
 import _get from "lodash/get";
 import PropTypes from "prop-types";
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import {
   Button,
@@ -19,18 +19,20 @@ import {
   Grid,
   Header,
   Icon,
+  Label,
   Popup,
   Progress,
   Segment,
   Table,
 } from "semantic-ui-react";
 import { humanReadableBytes } from "react-invenio-forms";
+import { supportedExtensions } from "./index";
 
 const FileTableHeader = ({ isDraftRecord }) => (
   <Table.Header>
     <Table.Row>
       <Table.HeaderCell>
-        {i18next.t("Set as preview")}{" "}
+        {i18next.t("Main preview")}{" "}
         <Popup
           content="Choose the file to be previewed by default on the record detail page."
           trigger={<Icon fitted name="help circle" size="small" />}
@@ -63,10 +65,28 @@ const FileTableRow = ({
   defaultPreview,
   setDefaultPreview,
   decimalSizeDisplay,
+  noFilesUploading,
 }) => {
   const [isCancelling, setIsCancelling] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const isDefaultPreview = defaultPreview === file.name;
+  const fileExtension = file.name.split('.').pop().toLowerCase();
+  console.log("file", file);
+  console.log("fileExtension", fileExtension);
+  const isSupportedFile = Object.values(supportedExtensions).some(
+    extensions => extensions.includes(fileExtension)
+  );
+
+  // This is a workaround to prevent the pending label from flashing as "failed"
+  // when a new row first appears.
+  const [showPendingLabel, setShowPendingLabel] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowPendingLabel(true);
+      console.log("showPendingLabel", showPendingLabel);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleDelete = async (file) => {
     setIsDeleting(true);
@@ -87,7 +107,7 @@ const FileTableRow = ({
 
   return (
     <Table.Row key={file.name}>
-      <Table.Cell data-label={i18next.t("Default preview")} width={2}>
+      <Table.Cell data-label={i18next.t("Default preview")} width={1}>
         {/* TODO: Investigate if react-deposit-forms optimized Checkbox field
                   would be more performant */}
         <Checkbox
@@ -95,7 +115,7 @@ const FileTableRow = ({
           onChange={() => setDefaultPreview(isDefaultPreview ? "" : file.name)}
         />
       </Table.Cell>
-      <Table.Cell data-label={i18next.t("Filename")} width={10}>
+      <Table.Cell data-label={i18next.t("Filename")} width={7}>
         <div>
           {file.uploadState.isPending ? (
             file.name
@@ -104,15 +124,15 @@ const FileTableRow = ({
               href={_get(file, "links.content", "")}
               target="_blank"
               rel="noopener noreferrer"
-              className="mr-5"
+              className="mr-5 breakable-text"
             >
               {file.name}
             </a>
           )}
           <br />
           {file.checksum && (
-            <div className="ui text-muted">
-              <span style={{ fontSize: "10px" }}>{file.checksum}</span>{" "}
+            <div className="ui text-muted mt-5">
+              <small>{file.checksum}</small>{" "}
               <Popup
                 content={i18next.t(
                   "This is the file fingerprint (MD5 checksum), which can be used to verify the file integrity."
@@ -121,6 +141,12 @@ const FileTableRow = ({
                 position="top center"
               />
             </div>
+          )}
+          {!isSupportedFile && (
+            <Popup
+              content={i18next.t("Visitors will be able to download this file and view it with external applications, but will not be able to preview it in KCWorks.")}
+              trigger={(<Label icon="warning sign" size="small" content={<span>{i18next.t("File type not supported for previews")}</span>}/>)}
+            />
           )}
         </div>
       </Table.Cell>
@@ -131,25 +157,44 @@ const FileTableRow = ({
         <Table.Cell
           className="file-upload-pending"
           data-label={i18next.t("Progress")}
-          width={2}
+          width={6}
         >
           {!file.uploadState?.isPending && (
-            <Progress
-              className="file-upload-progress primary"
-              percent={file.progressPercentage}
-              error={file.uploadState.isFailed}
-              size="medium"
-              progress
-              autoSuccess
-              active
-            />
+            <>
+              {file.uploadState?.isFailed && (
+                <span className="ui warning text">
+                  <Icon name="warning sign" />
+                  {i18next.t("Failed")}
+                </span>
+              )}
+              <Progress
+                className="file-upload-progress primary"
+                percent={file.progressPercentage}
+                error={file.uploadState.isFailed}
+                size="medium"
+                progress
+                autoSuccess
+                active
+              />
+            </>
           )}
-          {file.uploadState?.isPending && <span>{i18next.t("Pending")}</span>}
+          {(file.uploadState?.isPending && showPendingLabel) && (
+            <>
+              {!file.uploadState?.isFailed && !noFilesUploading ? (
+                <span>{i18next.t("Pending")}</span>
+              ) : (
+                <span className="ui warning text">
+                  <Icon name="warning sign" />
+                  {i18next.t("Failed")}
+                </span>
+              )}
+            </>
+          )}
         </Table.Cell>
       )}
       {isDraftRecord && (
         <Table.Cell textAlign="right" width={2}>
-          {(file.uploadState?.isFinished || file.uploadState?.isFailed) &&
+          {(file.uploadState?.isFinished || file.uploadState?.isFailed || (file.uploadState?.isPending && !file.uploadState?.isUploading)) &&
             (isDeleting ? (
               <Icon loading name="spinner" />
             ) : (
@@ -271,6 +316,7 @@ const FilesListTable = ({
   filesList,
   deleteFile,
   decimalSizeDisplay,
+  noFilesUploading,
 }) => {
   const { setFieldValue, values: formikDraft } = useFormikContext();
   const defaultPreview = _get(formikDraft, "files.default_preview", "");
@@ -290,6 +336,7 @@ const FilesListTable = ({
                 setFieldValue("files.default_preview", filename)
               }
               decimalSizeDisplay={decimalSizeDisplay}
+              noFilesUploading={noFilesUploading}
             />
           );
         })}
@@ -312,10 +359,13 @@ FilesListTable.defaultProps = {
   decimalSizeDisplay: undefined,
 };
 
+
 export class FileUploaderArea extends Component {
   render() {
     const { filesEnabled, dropzoneParams, filesList, isDraftRecord } =
       this.props;
+    const noFilesUploading = filesList.every((file) => file.uploadState?.isUploading === false);
+
     return filesEnabled || isDraftRecord ? (
       <Dropzone {...dropzoneParams}>
         {({ getRootProps, getInputProps, open: openFileDialog }) => (
@@ -324,7 +374,7 @@ export class FileUploaderArea extends Component {
               <input {...getInputProps()} />
               {filesList.length !== 0 && (
                 <Grid.Column verticalAlign="middle">
-                  <FilesListTable {...this.props} />
+                  <FilesListTable {...this.props} noFilesUploading={noFilesUploading} />
                 </Grid.Column>
               )}
               <FileUploadBox {...this.props} openFileDialog={openFileDialog} />

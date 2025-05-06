@@ -9,7 +9,7 @@
 import React, { Component } from "react";
 import { Button } from "semantic-ui-react";
 import { FastField } from "formik";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import PropTypes from "prop-types";
 
 class ProtectionButtonsComponent extends Component {

@@ -1,5 +1,20 @@
 /* Checkbox theme overrides */
 
+// FIXME: Try to rationalize the positioning of the fitted checkbox labels
+// across all the different components that use this.
+.license-modal {
+  .ui.checkbox {
+    &.fitted {
+      label {
+        &::after {
+          top: 1px;
+          left: 0;
+        }
+      }
+    }
+  }
+}
+
 .ui.checkbox {
   &.fitted {
     label {

@@ -1,22 +1,30 @@
-# -*- coding: utf-8 -*-
+# Part of Knowledge Commons Works
+# Copyright (C) 2024-2025 MESH Research
 #
-# Copyright (C) 2023 Graz University of Technology.
+# KCWorks is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
 #
-# Invenio-Requests is free software; you can redistribute it and/or modify
-# it under the terms of the MIT License; see LICENSE file for more details.
+# KCWorks is an extended instance of InvenioRDM:
+# Copyright (C) 2019-2024 CERN.
+# Copyright (C) 2019-2024 Northwestern University.
+# Copyright (C) 2021-2024 TU Wien.
+# Copyright (C) 2023-2024 Graz University of Technology.
+# InvenioRDM is also free software; you can redistribute it and/or modify it
+# under the terms of the MIT License. See the LICENSE file in the
+# invenio-app-rdm package for more details.
 
-"""Notification generators."""
+"""Notification Need generators."""
 
 from flask import current_app
 from invenio_access.permissions import system_identity
+from invenio_accounts.proxies import current_accounts
 from invenio_notifications.models import Recipient
 from invenio_notifications.services.generators import RecipientGenerator
-from invenio_requests.proxies import current_events_service
 from invenio_records.dictutils import dict_lookup
 from invenio_records_resources.services.errors import PermissionDeniedError
+from invenio_requests.proxies import current_events_service
 from invenio_search.engine import dsl
 from invenio_users_resources.proxies import current_users_service
-from invenio_accounts.proxies import current_accounts
 
 
 class RoleRecipient(RecipientGenerator):
@@ -28,7 +36,6 @@ class RoleRecipient(RecipientGenerator):
 
     def __call__(self, notification, recipients: dict):
         """Fetch users with a specified role and add as recipients."""
-
         user_ids = set()
 
         role = current_accounts.datastore.find_role(self.key)
@@ -46,9 +53,7 @@ class RoleRecipient(RecipientGenerator):
         for uid in [u for u in user_ids if u != "system"]:
             try:
                 users.append(
-                    current_users_service.read(
-                        system_identity, id_=uid
-                    ).to_dict()
+                    current_users_service.read(system_identity, id_=uid).to_dict()
                 )
             except PermissionDeniedError as e:
                 current_app.logger.warning(f"Error fetching user {uid}: {e}")
@@ -68,7 +73,6 @@ class ModeratorRoleRecipient(RecipientGenerator):
 
     def __call__(self, notification, recipients: dict):
         """Fetch users with a specified role and add as recipients."""
-
         user_ids = set()
 
         rolename = current_app.config.get(
@@ -89,9 +93,7 @@ class ModeratorRoleRecipient(RecipientGenerator):
         for uid in [u for u in user_ids if u != "system"]:
             try:
                 users.append(
-                    current_users_service.read(
-                        system_identity, id_=uid
-                    ).to_dict()
+                    current_users_service.read(system_identity, id_=uid).to_dict()
                 )
             except PermissionDeniedError as e:
                 current_app.logger.warning(f"Error fetching user {uid}: {e}")
@@ -128,7 +130,6 @@ class CustomRequestParticipantsRecipient(RecipientGenerator):
     def __call__(self, notification, recipients: dict):
         """Fetch users involved in request and add as recipients."""
         request = dict_lookup(notification.context, self.key)
-        from flask import current_app
 
         # checking if entities are users. If not, we will not add them.
         # TODO: add support for other entities? (e.g. groups)
@@ -168,9 +169,7 @@ class CustomRequestParticipantsRecipient(RecipientGenerator):
         for uid in [u for u in user_ids if u != "system"]:
             try:
                 users.append(
-                    current_users_service.read(
-                        system_identity, id_=uid
-                    ).to_dict()
+                    current_users_service.read(system_identity, id_=uid).to_dict()
                 )
             except PermissionDeniedError as e:
                 current_app.logger.warning(f"Error fetching user {uid}: {e}")

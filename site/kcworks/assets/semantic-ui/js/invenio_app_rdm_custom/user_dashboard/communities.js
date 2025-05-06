@@ -8,7 +8,7 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import { createSearchAppInit } from "@js/invenio_search_ui";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 import {
   ResultsGridItemTemplate,
   CommunitiesEmptySearchResults,

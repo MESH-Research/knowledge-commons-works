@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
-"""
-Utilities for converting the OPF funders CSV file to a YAML vocabulary file.
+"""Utilities for converting the OPF funders CSV file to a YAML vocabulary file.
 
 (c) 2024 Mesh Research
 
@@ -25,6 +24,7 @@ output file is app_data/ofr.yaml.
 
 import csv
 from pathlib import Path
+
 import yaml
 
 
@@ -34,7 +34,6 @@ def opf_csv_to_yaml():
         Path(__file__).parent.parent.parent.parent.parent
         / "app_data"
         / "funderNames.csv",
-        "r",
         newline="",
         encoding="utf-8",
     ) as csv_file:
@@ -46,13 +45,13 @@ def opf_csv_to_yaml():
             data.append(
                 {
                     "id": row["uri"],
-                    "name": row["primary_name_display"]
-                    .replace("\n", " ")
-                    .replace("\r", " ")
-                    .replace("\x0d", ""),
-                    "identifiers": [
-                        {"identifier": row["uri"], "scheme": "ofr"}
-                    ],
+                    "name": (
+                        row["primary_name_display"]
+                        .replace("\n", " ")
+                        .replace("\r", " ")
+                        .replace("\x0d", "")
+                    ),
+                    "identifiers": [{"identifier": row["uri"], "scheme": "ofr"}],
                 }
             )
 

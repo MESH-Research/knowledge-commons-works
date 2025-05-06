@@ -8,7 +8,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { ProtectionButtons } from "./ProtectionButtons";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import Overridable from "react-overridable";
 import { Form, Icon } from "semantic-ui-react";
 

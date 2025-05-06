@@ -6,7 +6,7 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { Formik } from "formik";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -109,7 +109,7 @@ export class LicenseModal extends Component {
             closeOnDimmerClick={false}
             className="license-modal"
           >
-            <Modal.Header as="h6" className="pt-10 pb-10">
+            <Modal.Header className="pb-15 pt-25">
               <Grid>
                 <Grid.Column floated="left">
                   <Header as="h2">

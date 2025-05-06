@@ -1,1 +1,7 @@
 /* Progress theme overrides */
+
+.ui.progress {
+    .bar {
+        height: 2.45rem;
+    }
+}

@@ -5,16 +5,22 @@
 #
 #   $ docker-compose --file docker-compose.yml --file docker-compose.dev.yml up -d
 #
-# Following services are included:
-# - Frontend: Nginx (exposed ports: 80 and 443)
-# - Cache: Redis (exposed port: 6379)
-# - UI application: UWSGI (not exposed)
-# - API application: UWSGI (not exposed)
-# - Cache: Redis (exposed port: 6379)
-# - DB: (PostgresSQL) (exposed port: 5432 or 3306)
-# - Message queue: RabbitMQ (exposed ports: 5672, 15672)
-# - Search platform: (OpenSearch) (exposed ports: 9200, 9300)
-# - OpenSearch Dashboard (view OS indices) (exposed ports: 5601)
+# Extends the web-ui, web-api, and worker services to include bind mounts for
+# local copies of installed python files. The mounts are based on three environment
+# variables:
+#
+#   INVENIO_LOCAL_SITE_PATH: The path to the `site` directory in the cloned
+#     KCWorks repository.
+#   INVENIO_LOCAL_DEPENDENCIES_PATH: The path to the `dependencies` directory in
+#     the cloned KCWorks repository.
+#   PYTHON_LOCAL_SITE_PACKAGES_PATH: The path to the python 3.12 site-packages
+#     directory in the local virtual environment. If using uv, this will usually
+#     be `.venv/lib/python3.12/site-packages` under the path to the cloned
+#     KCWorks repository.
+#
+# The bind mounts are used to allow the container to access the local copies of
+# the installed python files. This allows for development of the KCWorks modules
+# without having to rebuild the container.
 #
 services:
   web-ui:
@@ -22,87 +28,96 @@ services:
       file: docker-compose.yml
       service: web-ui
     volumes:
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-record-importer-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/site/kcworks/dependencies/invenio-communities
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-group-collections-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/site/kcworks/dependencies/invenio-modular-deposit-form
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/site/kcworks/dependencies/invenio-modular-detail-page
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/site/kcworks/dependencies/invenio-rdm-records
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_drafts_resources:/usr/local/lib/python3.9/site-packages/invenio_drafts_resources
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_files_rest:/usr/local/lib/python3.9/site-packages/invenio_files_rest
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/usr/local/lib/python3.9/site-packages/invenio_indexer
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/usr/local/lib/python3.9/site-packages/invenio_requests
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/usr/local/lib/python3.9/site-packages/invenio_saml
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/usr/local/lib/python3.9/site-packages/invenio_users_resources
+      - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-record-importer-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-communities:/opt/invenio/site/kcworks/dependencies/invenio-communities
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-group-collections-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-group-collections-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-modular-deposit-form:/opt/invenio/site/kcworks/dependencies/invenio-modular-deposit-form
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-modular-detail-page:/opt/invenio/site/kcworks/dependencies/invenio-modular-detail-page
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-rdm-records:/opt/invenio/site/kcworks/dependencies/invenio-rdm-records
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/opt/invenio/src/.venv/lib/python3.12/site-packages/flask_security
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_app_rdm
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_accounts
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_base:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_base
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_config:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_config
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_drafts_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_drafts_resources
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_files_rest:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_files_rest
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_requests
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
 
   web-api:
     extends:
       file: docker-compose.yml
       service: web-api
     volumes:
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/site/kcworks/dependencies/invenio-communities
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-group-collections-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/site/kcworks/dependencies/invenio-modular-deposit-form
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/site/kcworks/dependencies/invenio-modular-detail-page
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/site/kcworks/dependencies/invenio-rdm-records
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-record-importer-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_drafts_resources:/usr/local/lib/python3.9/site-packages/invenio_drafts_resources
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_files_rest:/usr/local/lib/python3.9/site-packages/invenio_files_rest
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/usr/local/lib/python3.9/site-packages/invenio_indexer
+      - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-communities:/opt/invenio/site/kcworks/dependencies/invenio-communities
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-group-collections-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-group-collections-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-modular-deposit-form:/opt/invenio/site/kcworks/dependencies/invenio-modular-deposit-form
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-modular-detail-page:/opt/invenio/site/kcworks/dependencies/invenio-modular-detail-page
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-rdm-records:/opt/invenio/site/kcworks/dependencies/invenio-rdm-records
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-record-importer-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/opt/invenio/src/.venv/lib/python3.12/site-packages/flask_security
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_app_rdm
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_accounts
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_base:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_base
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_config:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_config
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_drafts_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_drafts_resources
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_files_rest:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_files_rest
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/usr/local/lib/python3.9/site-packages/invenio_requests
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/usr/local/lib/python3.9/site-packages/invenio_saml
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/usr/local/lib/python3.9/site-packages/invenio_users_resources
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_requests
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
 
   worker:
     extends:
       file: docker-compose.yml
       service: worker
     volumes:
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-communities:/opt/invenio/site/kcworks/dependencies/invenio-communities
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-group-collections-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-group-collections-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-deposit-form:/opt/invenio/site/kcworks/dependencies/invenio-modular-deposit-form
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-modular-detail-page:/opt/invenio/site/kcworks/dependencies/invenio-modular-detail-page
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/site/kcworks/dependencies/invenio-rdm-records
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-record-importer-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-record-importer-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
-      - ${PYTHON_LOCAL_GIT_PACKAGES_PATH}/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/usr/local/lib/python3.9/site-packages/flask_security
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/usr/local/lib/python3.9/site-packages/invenio_app_rdm
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/usr/local/lib/python3.9/site-packages/invenio_accounts
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_drafts_resources:/usr/local/lib/python3.9/site-packages/invenio_drafts_resources
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_files_rest:/usr/local/lib/python3.9/site-packages/invenio_files_rest
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/usr/local/lib/python3.9/site-packages/invenio_indexer
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/usr/local/lib/python3.9/site-packages/invenio_pidstore
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/usr/local/lib/python3.9/site-packages/invenio_requests
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/usr/local/lib/python3.9/site-packages/invenio_saml
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/usr/local/lib/python3.9/site-packages/invenio_search
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/usr/local/lib/python3.9/site-packages/invenio_search_ui
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/usr/local/lib/python3.9/site-packages/invenio_stats
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/usr/local/lib/python3.9/site-packages/invenio_users_resources
+      - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-communities:/opt/invenio/site/kcworks/dependencies/invenio-communities
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-group-collections-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-group-collections-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-modular-deposit-form:/opt/invenio/site/kcworks/dependencies/invenio-modular-deposit-form
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-modular-detail-page:/opt/invenio/site/kcworks/dependencies/invenio-modular-detail-page
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-rdm-records:/opt/invenio/site/kcworks/dependencies/invenio-rdm-records
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-record-importer-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/opt/invenio/src/.venv/lib/python3.12/site-packages/flask_security
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_app_rdm
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_accounts
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_base:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_base
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_config:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_config
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_drafts_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_drafts_resources
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_files_rest:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_files_rest
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_requests
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources

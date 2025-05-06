@@ -7,7 +7,7 @@
  * under the terms of the MIT License; see LICENSE file for more details.
  */
 
-import { i18next } from "@translations/invenio_communities/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 import { Formik, useFormikContext } from "formik";
 import _isEmpty from "lodash/isEmpty";
 import _get from "lodash/get";

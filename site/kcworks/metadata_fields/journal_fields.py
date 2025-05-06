@@ -1,11 +1,19 @@
 #
-# Copyright (C) 2023 CERN.
+# Part of Knowledge Commons Works
+# Copyright (C) MESH Research, 2023
 #
-# Invenio-RDM-Records is free software; you can redistribute it and/or modify
-# it under the terms of the MIT License; see LICENSE file for more details.
-"""Journal custom fields.
+# Based on Invenio-RDM-Records, Copyright (C) 2023 CERN.
+#
+# KCWorks and Invenio-RDM-Records are free software; you can redistribute them
+# and/or modify them under the terms of the MIT License; see LICENSE file for
+# more details.
 
-Implements the following fields:
+"""Journal custom fields UI configuration.
+
+These custom fields are provided optionally by invenio-rdm-records. We
+provide our own overridden UI configuration here.
+
+Implements UI for the following fields:
 - journal.issue
 - journal.pages
 - journal.title
@@ -13,7 +21,6 @@ Implements the following fields:
 """
 
 from invenio_i18n import lazy_gettext as _
-
 
 KCR_JOURNAL_CUSTOM_FIELDS_UI = {
     "section": _("Journal"),

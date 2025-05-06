@@ -7,7 +7,7 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { useFormikContext } from "formik";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -53,6 +53,8 @@ export const FileUploaderComponent = ({
   importButtonText,
   isFileImportInProgress,
   decimalSizeDisplay,
+  helpText,
+  description,
   ...uiProps
 }) => {
   // We extract the working copy of the draft stored as `values` in formik
@@ -195,6 +197,8 @@ export const FileUploaderComponent = ({
       dropzoneParams={dropzoneParams}
       warningMsg={warningMsg}
       setWarningMsg={setWarningMsg}
+      helpText={helpText}
+      description={description}
       {...uiProps}
     >
       <>
@@ -206,6 +210,13 @@ export const FileUploaderComponent = ({
           {label}
         </label>
         <Grid>
+
+          {description && description !== " " && (
+            <div className="helptext label top" id={`${fieldPath}.helptext`}>
+              {i18next.t(description)}
+            </div>
+          )}
+
           <Overridable
             id="ReactInvenioDeposit.FileUploader.ImportButton.container"
             importButtonIcon={importButtonIcon}
@@ -215,6 +226,7 @@ export const FileUploaderComponent = ({
             displayImportBtn={displayImportBtn}
             {...uiProps}
           >
+
             {displayImportBtn && (
               <Grid.Row className="">
                 <Grid.Column width={16}>
@@ -334,7 +346,14 @@ export const FileUploaderComponent = ({
                 </Grid.Column>
               </Grid.Row>
             )}
+
           </Overridable>
+
+          {helpText && helpText !== " " && (
+            <div className="helptext label bottom" id={`${fieldPath}.helptext`}>
+              {i18next.t(helpText)}
+            </div>
+          )}
         </Grid>
         <Overridable
           id="ReactInvenioDeposit.FileUploader.Modal.container"

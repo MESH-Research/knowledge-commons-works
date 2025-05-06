@@ -1,8 +1,8 @@
-# Byte-compiled / optimized / DLL files
+# Python bytecode and compiled files
 __pycache__/
 *.py[cod]
-
-# C extensions
+*$py.class
+.Python
 *.so
 
 # vi(m) swap files
@@ -34,8 +34,10 @@ static/xsl/
 
 # Distribution / packaging
 .Python
+build/
 env/
 develop-eggs/
+dist/
 downloads/
 eggs/
 .eggs/
@@ -68,7 +70,7 @@ coverage.xml
 *,cover
 
 # Sphinx documentation
-# docs/_build/
+docs/build/
 
 # PyBuilder
 # target/
@@ -76,11 +78,15 @@ coverage.xml
 # Testing
 test.db
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # Environments
-# .venv/
+.venv
+.vscode
 
 # Logs
+logs/
 logs/*
 *.log
 **/logs/*
@@ -106,6 +112,7 @@ site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 # Docker private environment variables
 .env
 .env.private
+.env-tests
 
 # S3 default bucket location
 data/default/*

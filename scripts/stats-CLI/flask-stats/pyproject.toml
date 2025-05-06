@@ -1,5 +1,5 @@
 [project]
-name = "flaskr-stats"
+name = "flaskr_stats"
 version = "1.0.0"
 description = "The basic blog app built in the Flask tutorial."
 readme = "README.rst"
@@ -20,7 +20,7 @@ requires = ["flit_core<4"]
 build-backend = "flit_core.buildapi"
 
 [tool.flit.module]
-name = "flaskr-stats"
+name = "flaskr_stats"
 
 [tool.flit.sdist]
 include = [

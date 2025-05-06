@@ -12,7 +12,24 @@
   Modifications for Knowledge Commons Works:
   - Collection instead of Community language
   - Keep menu from stacking on mobile
+  - Add "My Works" to the menu with link to search for works by the current user
 #}
+
+
+{% set cu = current_userprofile %}
+{% set cu_dict = current_userprofile | user_profile_dict %}
+
+{% set my_works_url = url_for('invenio_search_ui.search') + '?q=metadata.creators.person_or_org.name:%22' + cu_dict.get('full_name') + '%22' %}
+{% if cu_dict.get('identifier_orcid') %}
+  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.identifiers.identifier:%22' + cu_dict.get('identifier_orcid') + '%22' %}
+{% endif %}
+{% if cu_dict.get('identifier_kc_username') %}
+  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.identifiers.identifier:%22' + cu_dict.get('identifier_kc_username') + '%22' %}
+{% endif %}
+{% if cu_dict.get('identifier_email') %}
+  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.identifiers.identifier:%22' + cu_dict.get('identifier_email') + '%22' %}
+{% endif %}
+
 <div class="ui container fluid page-subheader-outer shadowless with-submenu ml-0-mobile mr-0-mobile mb-0 rel-pt-2"
      id="dashboard-user-header-container">
   <div class="ui container relaxed grid page-subheader dashboard-user-header mr-0-mobile ml-0-mobile">
@@ -56,8 +73,12 @@
           {# FIXME: This is a temporary fix to replace 'Communities' with 'Collections' and 'Uploads' with 'Works' in the dashboard menu #}
           {% for item in current_menu.submenu('dashboard').children %}
             <a class="item {{ 'active' if active_dashboard_menu_item == item.name }} {{ 'disabled' if not item.url }}"
-              href="{{ item.url | replace('communities', 'collections') }}">{{ item.text | replace('Communities', 'My Collections') | replace('Uploads', 'My Works') | replace('Requests', 'My Inbox') }}</a>
+              href="{{ item.url | replace('communities', 'collections') }}">{{ item.text | replace('Communities', 'My Collections') | replace('Uploads', 'My Uploads') | replace('Requests', 'My Requests') }}</a>
           {% endfor %}
+          <a class="item"
+            href="{{ my_works_url }}">
+            {% trans %}My Works{% endtrans %}
+          </a>
         </div>
       </div>
 

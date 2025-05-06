@@ -13,7 +13,7 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 import { Image } from "react-invenio-forms";
 import { AccessStatusLabel } from "./labels/AccessStatusLabel";
 import Geopattern from "geopattern";
@@ -160,7 +160,7 @@ const CommunityDetailsHeader = ({
             {visibility == "restricted" && (
               <div className="row">
                 <div className="column">
-                  <div className="rel-ml-1">
+                  <div className="rel-ml-0 rel-mb-1">
                     <AccessStatusLabel />
                   </div>
                   <div className="mobile only rel-mb-1">

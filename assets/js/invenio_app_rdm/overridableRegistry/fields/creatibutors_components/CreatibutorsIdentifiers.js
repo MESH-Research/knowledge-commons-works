@@ -12,7 +12,7 @@ import PropTypes, { array } from "prop-types";
 import { FieldLabel } from "react-invenio-forms";
 import _unickBy from "lodash/unionBy";
 import _get from "lodash/get";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { SelectField } from "@js/invenio_modular_deposit_form/replacement_components/SelectField";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
 import { FieldArray, useFormikContext } from "formik";
@@ -24,14 +24,15 @@ const idTypeData = {
   isni: { text: "ISNI", value: "isni", key: "isni" },
   gnd: { text: "GND", value: "gnd", key: "gnd" },
   ror: { text: "ROR", value: "ror", key: "ror" },
-  kc_username: { text: "KC id", value: "kc_username", key: "kc_username" },
+  kc_username: { text: "KC username", value: "kc_username", key: "kc_username" },
+  email: { text: "email", value: "email", key: "email" },
 };
 
 const CreatibutorsIdentifiers = ({
   fieldPath,
   label = i18next.t("Name identifiers"),
   placeholder = "",
-  idTypes = ["orcid", "isni", "gnd", "ror", "kc_username"],
+  idTypes = ["orcid", "isni", "gnd", "ror", "kc_username", "email"],
 }) => {
 
   const [identifiersLength, setIdentifiersLength] = useState(-1);

@@ -1,7 +1,7 @@
 import React from "react";
 import { PropTypes } from "prop-types";
 import { Grid, Header } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_communities/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 
 const CommunityRecordsSearchEmptyResults = ({ queryString, searchPath, resetQuery }) => {
   return (

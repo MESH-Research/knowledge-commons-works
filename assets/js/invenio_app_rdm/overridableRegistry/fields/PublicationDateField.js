@@ -12,7 +12,7 @@ import { Field, useFormikContext } from "formik";
 import { object } from "yup";
 
 import { FieldLabel } from "react-invenio-forms";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import {
   Checkbox,
   Dropdown,

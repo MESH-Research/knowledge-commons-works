@@ -1,0 +1,11 @@
+-r requirements.txt
+check-manifest>=0.25
+halo
+jsonlines
+requests-mock
+selenium
+docker-services-cli
+sphinx
+myst-parser
+furo
+pytest-mock

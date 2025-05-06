@@ -1,0 +1,109 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, dev, staging, production ]
+  pull_request:
+    branches: [ main, dev, staging, production ]
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron: "0 3 * * 6"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason"
+        required: false
+        default: "Manual trigger"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.x'
+
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libxml2-dev libxmlsec1-dev libxmlsec1-openssl
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Install python dependencies
+        run: |
+          uv sync --frozen --all-extras
+          export CFLAGS="-Wno-error=incompatible-pointer-types"
+          uv pip install --reinstall --no-binary=lxml --no-binary=xmlsec "lxml==5.2.1" "xmlsec==1.3.14"
+
+      - name: set up docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Create config files
+        run: |
+          echo "[cli]" >> .invenio.private && \
+          echo "services_setup=False" >> .invenio.private && \
+          echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
+          touch tests/.env
+
+      - name: Run tests
+        env:
+          COMMONS_API_TOKEN: ${{ secrets.TEST_COMMONS_API_TOKEN }}
+          COMMONS_API_TOKEN_PROD: ${{ secrets.TEST_COMMONS_API_TOKEN_PROD }}
+          COMMONS_SEARCH_API_TOKEN: ${{ secrets.TEST_COMMONS_SEARCH_API_TOKEN }}
+          INVENIO_SEARCH_DOMAIN: ${{ vars.INVENIO_SEARCH_DOMAIN }}
+          INVENIO_ADMIN_EMAIL: ${{ secrets.TEST_INVENIO_ADMIN_EMAIL }}
+          INVENIO_SITE_UI_URL: ${{ vars.INVENIO_SITE_UI_URL }}
+          INVENIO_SITE_API_URL: ${{ vars.INVENIO_SITE_API_URL }}
+          SQLALCHEMY_DATABASE_URI: ${{ vars.TEST_SQLALCHEMY_DATABASE_URI }}
+          INVENIO_SQLALCHEMY_DATABASE_URI: ${{ vars.TEST_SQLALCHEMY_DATABASE_URI }}
+          POSTGRESQL_USER: ${{ vars.POSTGRES_USER }}
+          POSTGRESQL_PASSWORD: ${{ vars.POSTGRES_DB }}
+          POSTGRESQL_DB: ${{ vars.POSTGRES_DB }}
+          INVENIO_COMMONS_API_REQUEST_PROTOCOL: https
+          INVENIO_MAIL_SUPPRESS_SEND: False
+          SPARKPOST_API_KEY: ${{ secrets.TEST_SPARKPOST_API_KEY }}
+          SPARKPOST_USERNAME: ${{ secrets.TEST_SPARKPOST_USERNAME }}
+        run: |
+          chmod +x run-tests.sh
+          bash run-tests.sh
+
+      # TODO: Add frontend tests
+      # - name: Run eslint test
+      #   run: ./run-js-linter.sh -i
+
+      # - name: Run translations test
+      #   run: ./run-i18n-tests.sh
+
+      - name: Install deps for frontend tests
+        working-directory: .
+        run: npm install
+
+      # - name: Install deps for frontend tests - translations
+      #   working-directory: ./translations/kcworks
+      #   run: npm install
+
+      - name: Run frontend tests
+        working-directory: .
+        run: |
+          chmod +x run-js-tests.sh
+          bash run-js-tests.sh

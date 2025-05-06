@@ -8,7 +8,7 @@
 import { DateTime } from "luxon";
 import React from "react";
 import PropTypes from "prop-types";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import { Trans } from "react-i18next";
 import { Icon, Message } from "semantic-ui-react";
 
@@ -50,11 +50,10 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
         <Icon name="lock" />
         <Message.Content>
           <Message.Header>{i18next.t("Embargoed (full record)")}</Message.Header>
-          <Trans i18nKey="access-message">
-            On <b>{fmtDate}</b> the record will automatically be made publicly
-            accessible. Until then, the record can <b>only</b> be accessed by{" "}
-            <b>users specified</b> in the permissions."
-          </Trans>
+          <Trans
+            defaults="On <b>{{fmtDate}}</b> the record will automatically be made publicly accessible. Until then, the record can <b>only</b> be accessed by <b>users specified</b> in the permissions."
+            values={{ fmtDate }}
+          />
         </Message.Content>
       </Message>
     );

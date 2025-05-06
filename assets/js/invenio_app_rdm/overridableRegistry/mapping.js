@@ -7,7 +7,7 @@
 import React from "react";
 import { parametrize } from "react-overridable";
 import { Button } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 
 import { AccessRightField } from "./fields/AccessRightField";
 import { CreatibutorsField } from "./fields/CreatibutorsField";
@@ -34,6 +34,7 @@ import { PublisherField } from "./fields/PublisherField";
 import { RDMRecordMultipleSearchBarElement } from "./search/RDMRecordMultipleSearchBarElement";
 import RecordsResultsListItem from "./search/RecordsResultsListItem";
 import { RecordResultsListItemDashboard } from "./search/RecordsResultsListItemDashboard";
+import { RecordSearchBarElement } from "./search/RecordSearchBarElement";
 import { RequestMetadata } from "./requests/RequestMetadata";
 import { RequestsResultsItemTemplateDashboard } from "./user_dashboard/RequestsResultsItemTemplateDashboard";
 import { RequestsResultsItemTemplateWithCommunity } from "./collections/members/requests/RequestsResultsItemTemplate";
@@ -53,6 +54,10 @@ const MobileActionMenu = () => {
     </div>
   );
 };
+
+const DashboardSearchBarElementWithConfig = parametrize(RecordSearchBarElement, {
+  placeholder: "Search my works...",
+});
 
 const SearchAppLayoutWithConfig = parametrize(SearchAppLayout, {
   appName: "InvenioAppRdm.Search",
@@ -89,6 +94,7 @@ export const overriddenComponents = {
   "InvenioAppRdm.DashboardRequests.SearchApp.layout": DashboardRequestsSearchLayoutWithApp,
   "InvenioAppRdm.DashboardRequests.ResultsList.item": RequestsResultsItemTemplateDashboard,
   "InvenioAppRdm.DashboardUploads.SearchApp.layout": DashboardUploadsSearchLayout,
+  "InvenioAppRdm.DashboardUploads.SearchBar.element": DashboardSearchBarElementWithConfig,
   "InvenioAppRdm.DashboardUploads.ResultsList.item": RecordResultsListItemDashboard,
   "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
   "InvenioAppRdm.Deposit.CreatorsField.container": CreatibutorsField,
@@ -133,7 +139,7 @@ export const overriddenComponents = {
   "InvenioModularDetailPage.MobileActionMenu.container": MobileActionMenu,
   // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
   // InvenioCommunities.Search.SearchApp.layout: CommunityRecordsSearchAppLayout,
-  "InvenioRequests.RequestActions": RequestActions,
+  "InvenioRequests.RequestActions.layout": RequestActions,
   "InvenioRequest.RequestMetadata.Layout": RequestMetadata,
   "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
 };

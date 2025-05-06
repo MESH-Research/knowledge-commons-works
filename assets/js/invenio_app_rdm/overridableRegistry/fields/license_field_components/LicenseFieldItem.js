@@ -11,7 +11,7 @@ import { useDrag, useDrop } from "react-dnd";
 import { Button, List, Ref } from "semantic-ui-react";
 import _truncate from "lodash/truncate";
 import { LicenseModal } from "./LicenseModal";
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/i18next";
 import PropTypes from "prop-types";
 
 export const LicenseFieldItem = ({

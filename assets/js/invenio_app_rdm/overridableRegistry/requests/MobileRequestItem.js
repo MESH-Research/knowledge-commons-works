@@ -4,14 +4,14 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import { i18next } from "@translations/invenio_requests/i18next";
+import { i18next } from "@translations/i18next";
 import React, { useState, useEffect } from "react";
 import RequestTypeLabel from "@js/invenio_requests/request/RequestTypeLabel";
 import RequestStatusLabel from "@js/invenio_requests/request/RequestStatusLabel";
 import { RequestActionController } from "@js/invenio_requests/request/actions/RequestActionController";
 import { Icon, Item, Label } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { Trans } from "react-i18next";
+import { Trans, i18n } from "react-i18next";
 import { toRelativeTime } from "react-invenio-forms";
 import { DateTime } from "luxon";
 
@@ -94,15 +94,10 @@ export const MobileRequestItem = ({
         </Item.Header>
         <Item.Meta>
           <small>
-            <Trans
-              defaults="Opened {{relativeTime}} by"
-              values={{
-                relativeTime: toRelativeTime(
-                  createdDate.toISOString(),
-                  i18next.language
-                ),
-              }}
-            />{" "}
+            {i18next.t("Opened {{relativeTime}} by", {
+              relativeTime: toRelativeTime(createdDate.toISOString(), i18next.language)
+            })}
+            {" "}
             {creatorName}
           </small>
           <small className="block rel-mt-1">

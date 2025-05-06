@@ -1,3 +1,9 @@
+.ui.button.icon {
+  &.fluid.labeled.centered {
+    padding-right: 3.25em !important;
+  }
+}
+
 .ui.buttons.basic {
   border-color: transparent;
   .ui.button {
@@ -133,6 +139,10 @@
       color: @white;
       border-color: @redDark;
       box-shadow: 0px 0px 0px 1px #b54f1e inset, 0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+
+      &:not(:has(+ label)) {
+        margin-top: 1.7rem;
+      }
 
       &:hover,
       &:active,

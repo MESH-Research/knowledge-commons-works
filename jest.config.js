@@ -1,0 +1,41 @@
+module.exports = {
+  verbose: true,
+  testEnvironment: 'jsdom',
+  roots: ['<rootDir>/assets/', '<rootDir>/site'],
+  moduleFileExtensions: ['js', 'jsx', 'json'],
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+      '<rootDir>/__mocks__/fileMock.js',
+    '^@(translations|js)/invenio_rdm_records/(.*)$': '<rootDir>/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/assets/semantic-ui/$1/invenio_rdm_records/$2',
+    '^@(translations|js)/invenio_communities/(.*)$': '<rootDir>/site/kcworks/dependencies/invenio-communities/invenio_communities/assets/semantic-ui/$1/invenio_communities/$2',
+    '^@(translations|js)/invenio_app_rdm/(.*)$': '<rootDir>/.venv/lib/python3.12/site-packages/invenio_app_rdm/theme/assets/semantic-ui/$1/invenio_app_rdm/$2',
+    '^@(translations|js)/(invenio_search_ui|invenio_theme)/(.*)$': '<rootDir>/.venv/lib/python3.12/site-packages/$2/assets/semantic-ui/$1/$2/$3',
+    '^@js/invenio_rdm_records$': '<rootDir>/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/assets/semantic-ui/js/invenio_rdm_records',
+    '^@js/invenio_communities$': '<rootDir>/site/kcworks/dependencies/invenio-communities/invenio_communities/assets/semantic-ui/js/invenio_communities',
+    '^@translations/invenio_rdm_records/i18next$': '<rootDir>/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/assets/semantic-ui/translations/invenio_rdm_records/i18next.js',
+    '^@custom-test-utils/(.*)$': '<rootDir>/tests/js/$1',
+    '^@js/invenio_modular_deposit_form/(.*)$': '<rootDir>/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/assets/semantic-ui/js/invenio_modular_deposit_form/$1',
+    '^@translations/(.*)$': '<rootDir>/assets/translations/$1',
+  },
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  transform: {
+    '^.+\\.(js|jsx)$': 'babel-jest',
+  },
+  transformIgnorePatterns: [
+    '/node_modules/(?!(react-invenio-forms|react-searchkit|axios|semantic-ui-react|@babel|@inveniosoftware)/)',
+  ],
+  testMatch: ['**/*.test.js?(x)', '**/*.spec.js?(x)'],
+  collectCoverageFrom: [
+    'assets/**/*.{js,jsx}',
+    'site/**/*.{js,jsx}',
+    '!**/node_modules/**',
+    '!**/vendor/**',
+    '!**/*.test.{js,jsx}',
+    '!**/*.spec.{js,jsx}',
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov'],
+  resetMocks: true,
+  restoreMocks: true,
+};
