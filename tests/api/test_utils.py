@@ -15,445 +15,445 @@
 
 """Unit tests for the kcworks.utils module."""
 
+import json
+
 import pytest
-from invenio_rdm_records.records.api import RDMDraft, RDMRecord
-from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
-from kcworks.utils import get_changed_fields, get_value_by_path, update_nested_dict
+from kcworks.utils.names import (
+    get_family_name,
+    get_full_name,
+    get_full_name_inverted,
+    get_given_name,
+)
 
 
 @pytest.mark.parametrize(
-    "starting_dict,updates,expected",
+    "name_parts,expected",
     [
-        # Simple update
-        ({"a": 1}, {"b": 2}, {"a": 1, "b": 2}),
-        # Nested update
-        ({"a": {"b": 1}}, {"a": {"c": 2}}, {"a": {"b": 1, "c": 2}}),
-        # Update existing value
-        ({"a": 1}, {"a": 2}, {"a": 2}),
-        # Deep nested update
+        # Basic name
         (
-            {"a": {"b": {"c": 1}}},
-            {"a": {"b": {"d": 2}}},
-            {"a": {"b": {"c": 1, "d": 2}}},
+            {
+                "given": "John",
+                "family": "Smith",
+            },
+            "John Smith",
         ),
-        # Update with empty dict
-        ({"a": 1}, {}, {"a": 1}),
-        # Update empty dict
-        ({}, {"a": 1}, {"a": 1}),
-        # Multiple nested updates
+        # Name with middle name
         (
-            {"a": {"b": 1}, "c": {"d": 2}},
-            {"a": {"e": 3}, "c": {"f": 4}},
-            {"a": {"b": 1, "e": 3}, "c": {"d": 2, "f": 4}},
+            {
+                "given": "John",
+                "middle": "Robert",
+                "family": "Smith",
+            },
+            "John Robert Smith",
         ),
-        # Update nested list
+        # Name with suffix
         (
-            {"a": {"list": [1, 2, 3]}},
-            {"a": {"list": [4, 5, 6]}},
-            {"a": {"list": [4, 5, 6]}},
+            {
+                "given": "John",
+                "family": "Smith",
+                "suffix": "Jr.",
+            },
+            "John Smith, Jr.",
         ),
-        # Update nested list within deeper structure
+        # Name with fixed prefix
         (
-            {"a": {"b": {"items": [{"id": 1}, {"id": 2}]}}},
-            {"a": {"b": {"items": [{"id": 1}, {"id": 3}]}}},
-            {"a": {"b": {"items": [{"id": 1}, {"id": 3}]}}},
+            {
+                "given": "Jan",
+                "family_prefix_fixed": "van",
+                "family": "Helsing",
+            },
+            "Jan van Helsing",
+        ),
+        # Name with ibn prefix (as fixed prefix)
+        (
+            {
+                "given": "Sina",
+                "family_prefix_fixed": "ibn",
+                "family": "Ali",
+            },
+            "Sina ibn Ali",
+        ),
+        # Complex name with all components
+        (
+            {
+                "given": "John",
+                "middle": "Robert",
+                "family_prefix_fixed": "van",
+                "family": "Helsing",
+                "suffix": "III",
+            },
+            "John Robert van Helsing, III",
+        ),
+        # Name with nickname
+        (
+            {
+                "given": "John",
+                "nickname": "Jack",
+                "family": "Smith",
+            },
+            "John Jack Smith",
+        ),
+        # Name with O'Connor prefix
+        (
+            {
+                "given": "John",
+                "family_prefix_fixed": "O'",
+                "family": "Connor",
+            },
+            "John O'Connor",
+        ),
+        # Name with spousal name
+        (
+            {
+                "given": "Mary",
+                "spousal": "Jones",
+                "family": "Smith",
+            },
+            "Mary Jones Smith",
+        ),
+        # Chinese name (family name first)
+        (
+            {
+                "family": "Li",
+                "given": "Wei",
+                "middle": "Ming",
+            },
+            "Wei Ming Li",
+        ),
+        # Japanese name (family name first)
+        (
+            {
+                "family": "Tanaka",
+                "given": "Hiroshi",
+                "middle": "Yuki",
+            },
+            "Hiroshi Yuki Tanaka",
+        ),
+        # Russian name with patronymic
+        (
+            {
+                "family": "Ivanov",
+                "given": "Ivan",
+                "parental": "Petrovich",
+            },
+            "Ivan Petrovich Ivanov",
         ),
     ],
 )
-def test_utils_update_nested_dict(starting_dict, updates, expected):
-    """Test the update_nested_dict utility function."""
-    result = update_nested_dict(starting_dict, updates)
-    assert result == expected
+def test_get_full_name(name_parts, expected):
+    """Test the get_full_name function."""
+    assert get_full_name(name_parts) == expected
 
 
 @pytest.mark.parametrize(
-    "existing_data,new_data,separator,expected,as_objects",
+    "name_parts,expected",
     [
-        # Completely unchanged
-        (
-            {"a": 1, "b": 2, "unchanged": "same"},
-            {"a": 1, "b": 2, "unchanged": "same"},
-            ".",
-            [],
-            False,
-        ),
-        # Simple dict changes with unchanged fields
-        (
-            {"a": 1, "b": 2, "unchanged": "same"},
-            {"a": 1, "b": 3, "unchanged": "same"},
-            ".",
-            ["b"],
-            False,
-        ),
-        # Nested dict changes with unchanged nested fields
+        # Basic inverted name
         (
             {
-                "a": {"b": 1, "c": 2, "stable": "same"},
-                "d": 3,
-                "unchanged": {"nested": "same"},
+                "given": "John",
+                "family": "Smith",
             },
-            {
-                "a": {"b": 1, "c": 4, "stable": "same"},
-                "d": 3,
-                "unchanged": {"nested": "same"},
-                "extra": "unchanged",
-            },
-            ".",
-            ["a.c", "extra"],
-            False,
+            "Smith, John",
         ),
-        # List changes with unchanged elements
-        (
-            {"a": [1, 2, 3, 4], "static": [4, 5, 6], "extra": "unchanged"},
-            {"a": [1, 4, 3], "static": [4, 5, 6]},
-            ".",
-            ["a.1", "a.3", "extra"],
-            False,
-        ),
-        # New field with unchanged existing fields
-        (
-            {"a": 1, "unchanged": "same"},
-            {"a": 1, "b": 2, "unchanged": "same"},
-            ".",
-            ["b"],
-            False,
-        ),
-        # Different types with unchanged fields
-        (
-            {"a": "string", "stable": 42, "nested": {"unchanged": True}},
-            {"a": 123, "stable": 42, "nested": {"unchanged": True}},
-            ".",
-            ["a"],
-            False,
-        ),
-        # None to value with unchanged fields
-        (
-            {"a": None, "unchanged": "same", "nested": {"static": True}},
-            {"a": "value", "unchanged": "same", "nested": {"static": True}},
-            ".",
-            ["a"],
-            False,
-        ),
-        # Using pipe separator with unchanged nested fields
+        # Inverted name with middle name
         (
             {
-                "a": {"b": {"c": 1, "unchanged": "same"}},
-                "static": {"nested": "unchanged"},
+                "given": "John",
+                "middle": "Robert",
+                "family": "Smith",
             },
-            {
-                "a": {"b": {"c": 2, "unchanged": "same"}},
-                "static": {"nested": "unchanged"},
-            },
-            "|",
-            ["a|b|c"],
-            False,
+            "Smith, John Robert",
         ),
-        # Deep nesting with arrays of dicts and unchanged elements
+        # Inverted name with suffix
         (
             {
-                "metadata": {
-                    "creators": [
-                        {"name": "Smith", "id": 1},
-                        {"name": "Jones", "id": 2},
-                    ],
-                    "title": "Original",
-                    "unchanged": {"deep": {"nested": "same"}},
-                },
-                "static": {"field": "unchanged"},
+                "given": "John",
+                "family": "Smith",
+                "suffix": "Jr.",
             },
-            {
-                "metadata": {
-                    "creators": [
-                        {"name": "Smith", "id": 1},
-                        {"name": "Jones", "id": 3},
-                    ],
-                    "title": "Changed",
-                    "unchanged": {"deep": {"nested": "same"}},
-                },
-                "static": {"field": "unchanged"},
-            },
-            "|",
-            ["metadata|creators|1|id", "metadata|title"],
-            False,
+            "Smith, John, Jr.",
         ),
-        # Multiple nested changes with pipe separator and unchanged fields
+        # Name with fixed prefix
         (
             {
-                "a": {
-                    "b": {"c": 1, "d": 2, "unchanged": "same"},
-                    "e": 3,
-                    "static": "unchanged",
-                },
-                "f": [{"g": 1}, {"g": 2}],
-                "unchanged": {"deeply": {"nested": "same"}},
+                "given": "Jan",
+                "family_prefix_fixed": "van",
+                "family": "Helsing",
             },
-            {
-                "a": {
-                    "b": {"c": 1, "d": 4, "unchanged": "same"},
-                    "e": 5,
-                    "static": "unchanged",
-                },
-                "f": [{"g": 1}, {"g": 3}],
-                "unchanged": {"deeply": {"nested": "same"}},
-            },
-            "|",
-            ["a|b|d", "a|e", "f|1|g"],
-            False,
+            "van Helsing, Jan",
         ),
-        # Test with RDMDraft and RDMRecord objects
+        # Name with ibn prefix (as fixed prefix)
         (
             {
-                "metadata": {
-                    "title": "Original Title",
-                    "description": "Original Description",
-                    "creators": [{"person_or_org": {"name": "Original Creator"}}],
-                    "publication_date": "2023-01-01",
-                    "funding": [
-                        {
-                            "funder": {
-                                "id": "00k4n6c31",
-                            },
-                            "award": {
-                                "identifiers": [
-                                    {
-                                        "identifier": (
-                                            "https://sandbox.kcworks.org/755021"
-                                        ),
-                                        "scheme": "url",
-                                    }
-                                ],
-                                "number": "755021",
-                                "title": {"en": "Award 755021"},
-                            },
-                        },
-                        {
-                            "funder": {
-                                "id": "00k4n6c32",
-                            },
-                            "award": {
-                                "identifiers": [
-                                    {
-                                        "identifier": (
-                                            "https://sandbox.kcworks.org/755022"
-                                        ),
-                                        "scheme": "url",
-                                    }
-                                ],
-                                "number": "755022",
-                                "title": {"en": "Award 755022"},
-                            },
-                        },
-                        {
-                            "funder": {
-                                "id": "00k4n6c33",
-                            },
-                            "award": {
-                                "identifiers": [
-                                    {
-                                        "identifier": (
-                                            "https://sandbox.kcworks.org/755023"
-                                        ),
-                                        "scheme": "url",
-                                    }
-                                ],
-                                "number": "755023",
-                                "title": {"en": "Award 755023"},
-                            },
-                        },
-                        {
-                            "funder": {
-                                "id": "00k4n6c34",
-                            },
-                            "award": {
-                                "identifiers": [
-                                    {
-                                        "identifier": (
-                                            "https://sandbox.kcworks.org/755024"
-                                        ),
-                                        "scheme": "url",
-                                    }
-                                ],
-                                "number": "755024",
-                                "title": {"en": "Award 755024"},
-                            },
-                        },
-                    ],
-                },
-                "custom_fields": {
-                    "test_field": {
-                        "id": "test_field",
-                        "value": "Original Value",
-                    }
-                },
+                "given": "Sina",
+                "family_prefix_fixed": "ibn",
+                "family": "Ali",
             },
+            "ibn Ali, Sina",
+        ),
+        # Complex name with fixed prefix
+        (
             {
-                "metadata": {
-                    "title": "Updated Title",
-                    "description": "Original Description",
-                    "creators": [
-                        {
-                            "person_or_org": {
-                                "name": "New Creator",
-                                "identifiers": [
-                                    {
-                                        "identifier": "0000-0002-1825-0097",
-                                        "scheme": "orcid",
-                                    }
-                                ],
-                            }
-                        }
-                    ],
-                    "publication_date": "2023-01-01",
-                    "funding": [
-                        {
-                            "award": {
-                                "identifiers": [
-                                    {
-                                        "identifier": (
-                                            "https://sandbox.kcworks.org/755025"
-                                        ),
-                                        "scheme": "url",
-                                    }
-                                ],
-                                "number": "755021",
-                                "title": {"en": "Award 755021"},
-                                "funder": {
-                                    "id": "00k4n6c35",
-                                    "name": "Funder 00k4n6c31",
-                                },
-                            },
-                        },
-                        {
-                            "award": {
-                                "identifiers": [
-                                    {
-                                        "identifier": (
-                                            "https://sandbox.kcworks.org/755026"
-                                        ),
-                                        "scheme": "url",
-                                    }
-                                ],
-                                "number": "755022",
-                                "title": {"en": "Award 755022"},
-                            },
-                            "funder": {"id": "00k4n6c36", "name": "Funder 00k4n6c32"},
-                        },
-                        {
-                            "award": {
-                                "identifiers": [
-                                    {
-                                        "identifier": (
-                                            "https://sandbox.kcworks.org/755023"
-                                        ),
-                                        "scheme": "url",
-                                    }
-                                ],
-                                "number": "755023",
-                                "title": {"en": "Award 755023"},
-                            },
-                            "funder": {"id": "00k4n6c33", "name": "Funder 00k4n6c33"},
-                        },
-                        {
-                            "award": {
-                                "identifiers": [
-                                    {
-                                        "identifier": (
-                                            "https://sandbox.kcworks.org/755024"
-                                        ),
-                                        "scheme": "url",
-                                    }
-                                ],
-                                "number": "755024",
-                                "title": {"en": "Award 755024"},
-                            },
-                            "funder": {"id": "00k4n6c34", "name": "Funder 00k4n6c34"},
-                        },
-                    ],
-                },
-                "custom_fields": {
-                    "test_field": {
-                        "id": "test_field_changed",
-                        "value": "Original Value",
-                    }
-                },
+                "given": "Wolfgang",
+                "middle": "Amadeus",
+                "family_prefix": "von",
+                "family": "Mozart",
+                "suffix": "Jr.",
             },
-            "|",
-            [
-                "access",
-                "custom_fields|test_field|id",
-                "metadata|creators|0|person_or_org|name",
-                "metadata|creators|0|person_or_org|identifiers",
-                "metadata|funding|0|award|funder",
-                "metadata|funding|0|award|identifiers|0|identifier",
-                "metadata|funding|0|funder",
-                "metadata|funding|1|award|identifiers|0|identifier",
-                "metadata|funding|1|funder|id",
-                "metadata|funding|1|funder|name",
-                "metadata|funding|2|funder|name",
-                "metadata|funding|3|funder|name",
-                "metadata|title",
-            ],
+            "Mozart, Wolfgang Amadeus von, Jr.",
+        ),
+        # Complex name with ibn prefix (as fixed prefix)
+        (
+            {
+                "given": "Rushd",
+                "middle": "Averroes",
+                "family_prefix_fixed": "ibn",
+                "family": "Ahmad",
+                "suffix": "al-Andalusi",
+            },
+            "ibn Ahmad, Rushd Averroes, al-Andalusi",
+        ),
+        # Name with O'Connor prefix
+        (
+            {
+                "given": "John",
+                "family_prefix_fixed": "O'",
+                "family": "Connor",
+            },
+            "O'Connor, John",
+        ),
+        # Chinese name inverted
+        (
+            {
+                "family": "Li",
+                "given": "Wei",
+                "middle": "Ming",
+            },
+            "Li, Wei Ming",
+        ),
+        # Japanese name inverted
+        (
+            {
+                "family": "Tanaka",
+                "given": "Hiroshi",
+                "middle": "Yuki",
+            },
+            "Tanaka, Hiroshi Yuki",
+        ),
+        # Russian name with patronymic inverted
+        (
+            {
+                "family": "Ivanov",
+                "given": "Ivan",
+                "parental": "Petrovich",
+            },
+            "Ivanov, Ivan Petrovich",
+        ),
+    ],
+)
+def test_get_full_name_inverted(name_parts, expected):
+    """Test the get_full_name_inverted function."""
+    assert get_full_name_inverted(name_parts) == expected
+
+
+@pytest.mark.parametrize(
+    "name_parts,expected",
+    [
+        # Basic family name
+        (
+            {
+                "family": "Smith",
+            },
+            "Smith",
+        ),
+        # Family name with fixed prefix
+        (
+            {
+                "family_prefix_fixed": "van",
+                "family": "Helsing",
+            },
+            "van Helsing",
+        ),
+        # Family name with fixed prefix
+        (
+            {
+                "family_prefix_fixed": "de la",
+                "family": "Cruz",
+            },
+            "de la Cruz",
+        ),
+        # Family name with O'Connor prefix
+        (
+            {
+                "family_prefix_fixed": "O'",
+                "family": "Connor",
+            },
+            "O'Connor",
+        ),
+        # Family name with spousal name
+        (
+            {
+                "spousal": "Jones",
+                "family": "Smith",
+            },
+            "Jones Smith",
+        ),
+        # Complex family name
+        (
+            {
+                "family_prefix_fixed": "de",
+                "spousal": "Jones",
+                "family": "Smith",
+                "last": "III",
+            },
+            "de Jones Smith III",
+        ),
+        # Chinese family name
+        (
+            {
+                "family": "Li",
+            },
+            "Li",
+        ),
+        # Japanese family name
+        (
+            {
+                "family": "Tanaka",
+            },
+            "Tanaka",
+        ),
+        # Russian family name
+        (
+            {
+                "family": "Ivanov",
+            },
+            "Ivanov",
+        ),
+    ],
+)
+def test_get_family_name(name_parts, expected):
+    """Test the get_family_name function."""
+    assert get_family_name(name_parts) == expected
+
+
+@pytest.mark.parametrize(
+    "name_parts,expected",
+    [
+        # Basic given name
+        (
+            {
+                "given": "John",
+            },
+            "John",
+        ),
+        # Given name with middle name
+        (
+            {
+                "given": "John",
+                "middle": "Robert",
+            },
+            "John Robert",
+        ),
+        # Given name with nickname
+        (
+            {
+                "given": "John",
+                "nickname": "Jack",
+            },
+            "John Jack",
+        ),
+        # Given name with first and middle
+        (
+            {
+                "first": "John",
+                "middle": "Robert",
+            },
+            "John Robert",
+        ),
+        # Complex given name
+        (
+            {
+                "first": "Johnny",
+                "given": "John",
+                "middle": "Robert",
+                "nickname": "Jack",
+            },
+            "Johnny John Robert Jack",
+        ),
+        # Chinese given name
+        (
+            {
+                "given": "Wei",
+                "middle": "Ming",
+            },
+            "Wei Ming",
+        ),
+        # Japanese given name
+        (
+            {
+                "given": "Hiroshi",
+                "middle": "Yuki",
+            },
+            "Hiroshi Yuki",
+        ),
+        # Russian given name with patronymic
+        (
+            {
+                "given": "Ivan",
+                "parental": "Petrovich",
+            },
+            "Ivan Petrovich",
+        ),
+    ],
+)
+def test_get_given_name(name_parts, expected):
+    """Test the get_given_name function."""
+    assert get_given_name(name_parts) == expected
+
+
+@pytest.mark.parametrize(
+    "name_parts,json_input,expected",
+    [
+        # Test with JSON string input
+        (
+            '{"given": "John", "family": "Smith"}',
             True,
+            "John Smith",
+        ),
+        # Test with invalid JSON string
+        pytest.param(
+            '{"given": "John", "family": "Smith"',
+            True,
+            None,
+            marks=pytest.mark.xfail(raises=json.JSONDecodeError),
         ),
     ],
 )
-def test_utils_get_changed_fields(
-    running_app, db, existing_data, new_data, separator, expected, as_objects
-):
-    """Test get_changed_fields function with various input scenarios."""
-    existing_data_object = existing_data
-    new_data_object = new_data
-    if as_objects:
-        new_data_object = RDMDraft.create({})
-        new_data_object.metadata = new_data["metadata"]
-        new_data_object.custom_fields = new_data["custom_fields"]
-        existing_data_object = RDMRecord.create({})
-        existing_data_object.metadata = existing_data["metadata"]
-        existing_data_object.custom_fields = existing_data["custom_fields"]
-    result = get_changed_fields(
-        existing_data_object, new_data_object, separator=separator
-    )
-    assert sorted(result) == sorted(expected)
+def test_get_full_name_json_input(name_parts, json_input, expected):
+    """Test the get_full_name function with JSON input."""
+    if expected is None:
+        with pytest.raises(json.JSONDecodeError):
+            get_full_name(name_parts, json_input=True)
+    else:
+        assert get_full_name(name_parts, json_input=True) == expected
 
 
 @pytest.mark.parametrize(
-    "input_dict,path,new_value,expected",
+    "name_parts",
     [
-        # Simple nested dict update
-        ({"a": {"b": {"c": 1}}}, "a|b|c", 2, {"a": {"b": {"c": 2}}}),
-        # Update in nested list
-        (
-            {"a": {"b": [{"c": 1}, {"d": 2}]}},
-            "a|b|1|c",
-            3,
-            {"a": {"b": [{"c": 1}, {"d": 2, "c": 3}]}},
-        ),
-        # Replace entire nested value
-        ({"a": {"b": [{"c": 1}, {"d": 2}]}}, "a|b", {"e": 3}, {"a": {"b": {"e": 3}}}),
+        None,
+        {},
+        {"family": "Smith"},
     ],
 )
-def test_utils_replace_value_in_nested_dict(input_dict, path, new_value, expected):
-    """Test replace_value_in_nested_dict function with various input scenarios."""
-    result = replace_value_in_nested_dict(input_dict, path, new_value)
-    assert result == expected
-
-
-@pytest.mark.parametrize(
-    "input_dict,path,separator,expected",
-    [
-        # Simple nested dict lookup
-        ({"a": {"b": {"c": 1}}}, "a.b.c", ".", 1),
-        # Lookup in nested list
-        ({"a": {"b": [{"c": 1}, {"d": 2}]}}, "a.b.1.d", ".", 2),
-        # Lookup with custom separator
-        ({"a": {"b": {"c": "test"}}}, "a|b|c", "|", "test"),
-        # Lookup deeply nested value
-        ({"a": {"b": {"c": {"d": {"e": "found"}}}}}, "a.b.c.d.e", ".", "found"),
-        # Lookup in list with multiple indices
-        ({"a": [1, 2, [3, 4, 5]]}, "a.2.1", ".", 4),
-    ],
-)
-def test_utils_get_value_by_path(input_dict, path, separator, expected):
-    """Test get_value_by_path function with various input scenarios."""
-    result = get_value_by_path(input_dict, path, separator=separator)
-    assert result == expected
+def test_edge_cases(name_parts):
+    """Test edge cases for name functions."""
+    if name_parts is None:
+        with pytest.raises(ValueError):
+            get_full_name(name_parts)
+        with pytest.raises(ValueError):
+            get_full_name_inverted(name_parts)
+    else:
+        assert get_full_name(name_parts) == name_parts.get("family", "")
+        assert get_full_name_inverted(name_parts) == name_parts.get("family", "")

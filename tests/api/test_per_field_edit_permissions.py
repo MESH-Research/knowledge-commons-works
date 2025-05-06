@@ -38,7 +38,7 @@ from kcworks.services.records.components.per_field_permissions_component import 
 from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
     CommunityChangePermissionsComponent,
 )
-from kcworks.utils import get_value_by_path, update_nested_dict
+from kcworks.utils.utils import get_value_by_path, update_nested_dict
 
 from ..conftest import RunningApp
 from ..fixtures.communities import make_community_member

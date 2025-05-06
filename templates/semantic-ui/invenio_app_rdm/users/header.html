@@ -20,6 +20,12 @@
 {% set cu_dict = current_userprofile | user_profile_dict %}
 
 {% set my_works_url = url_for('invenio_search_ui.search') + '?q=metadata.creators.person_or_org.name:%22' + cu_dict.get('full_name') + '%22' %}
+{% if cu_dict.get('full_name_alt') %}
+  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.name:%22' + cu_dict.get('full_name_alt') + '%22' %}
+{% endif %}
+{% if cu_dict.get('full_name_alt_b') %}
+  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.name:%22' + cu_dict.get('full_name_alt_b') + '%22' %}
+{% endif %}
 {% if cu_dict.get('identifier_orcid') %}
   {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.identifiers.identifier:%22' + cu_dict.get('identifier_orcid') + '%22' %}
 {% endif %}
