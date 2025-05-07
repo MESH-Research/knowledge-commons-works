@@ -12,8 +12,7 @@ import json
 
 
 def get_full_name(name_parts: dict | str, json_input: bool = False) -> str:
-    """
-    Get the full name from name parts.
+    """Get the full name from name parts.
 
     Args:
         name_parts (str): JSON string containing name components
@@ -47,8 +46,7 @@ def get_full_name(name_parts: dict | str, json_input: bool = False) -> str:
 
 
 def get_full_name_inverted(name_parts: dict | str, json_input: bool = False) -> str:
-    """
-    Get the full name in inverted format (family name first).
+    """Get the full name in inverted format (family name first).
 
     Args:
         name_parts (str): JSON string containing name components
@@ -91,8 +89,7 @@ def get_full_name_inverted(name_parts: dict | str, json_input: bool = False) -> 
 
 
 def get_family_name(name_parts: dict) -> str:
-    """
-    Get the family name components.
+    """Get the family name components.
 
     Args:
         name_parts (dict): Dictionary containing name components
@@ -132,8 +129,7 @@ def get_family_name(name_parts: dict) -> str:
 
 
 def get_given_name(name_parts: dict) -> str:
-    """
-    Get the given name components.
+    """Get the given name components.
 
     Args:
         name_parts (dict): Dictionary containing name components
