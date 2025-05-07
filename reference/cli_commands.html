@@ -305,9 +305,9 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 <section id="kcworks-custom-cli-commands">
 <h2>KCWorks Custom CLI Commands<a class="headerlink" href="#kcworks-custom-cli-commands" title="Link to this heading">¶</a></h2>
 <p>KCWorks includes a number of custom CLI commands that are not part of the core InvenioRDM system. Further documentation can be found by running any command with the <code class="docutils literal notranslate"><span class="pre">--help</span></code> option.</p>
+<section id="invenio-importer">
+<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">importer</span></code><a class="headerlink" href="#invenio-importer" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">importer</span></code></p>
-<ul>
 <li><p><strong>provided by the <code class="docutils literal notranslate"><span class="pre">invenio-record-importer-kcworks</span></code> package</strong></p></li>
 <li><p>bulk imports records into the KCWorks instance.</p></li>
 <li><p>this provides the sub-commands:</p>
@@ -323,28 +323,87 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 </ul>
 </li>
 </ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-index</span> <span class="pre">destroy</span></code></p>
-<ul>
+</section>
+<section id="invenio-kcworks-index-destroy">
+<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-index</span> <span class="pre">destroy</span></code><a class="headerlink" href="#invenio-kcworks-index-destroy" title="Link to this heading">¶</a></h3>
+<ul class="simple">
 <li><p><strong>provided by the main KCWorks package</strong> (kcworks/site/cli.py)</p></li>
 <li><p>destroys search indices for the KCWorks instance that are <em>not</em> destroyed by the main KCWorks index destroy command. These are primarily the indices for storing usage events and aggregated usage data.</p></li>
 <li><p><strong>WARNING:</strong> This data <em>only</em> exists in the OpenSearch indices. It is not backed up by the database and will be lost if the indices are destroyed. Use this command with extreme caution.</p></li>
 </ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code></p>
-<ul>
+</section>
+<section id="invenio-kcworks-users">
+<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span></code><a class="headerlink" href="#invenio-kcworks-users" title="Link to this heading">¶</a></h3>
+<ul class="simple">
 <li><p><strong>provided by the main KCWorks package</strong> (kcworks/site/cli.py)</p></li>
-<li><p>either reads or updates how KCWorks will divide a user’s name into parts (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata.</p></li>
 </ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">update</span></code></p>
-<ul>
+<section id="invenio-kcworks-users-name-parts">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code><a class="headerlink" href="#invenio-kcworks-users-name-parts" title="Link to this heading">¶</a></h4>
+<p>Either reads or updates the dictionary of name parts that KCWorks will use to construct the full name of a user (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata.</p>
+<p>Positional arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code>: the ID of the user to read or update.</p></li>
+</ul>
+<p>Named arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--given</span></code> (-g): the first or given name of the user.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--family</span></code> (-f): the last or family name of the user.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--middle</span></code> (-m): one or more middle names, separated by spaces.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--suffix</span></code> (-s): a suffix that follows the last name (e.g. ‘Jr., III’). This is moved behind the first name when names are listed with the last name first.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--family-prefix</span></code> (-r): a prefix introducing the family name (like ‘von’, etc.) that is not kept in front of the family name for last-name-first display.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--family-prefix-fixed</span></code> (-x): a prefix introducing the family name (like ‘ibn’, ‘van der’, ‘de la’, ‘de’, ‘von’, etc.) that is kept in front of the family name for last-name-first display.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--spousal</span></code> (-u): a spousal family name that is kept in front of the family name for last-name-first display (e.g. ‘Garcia’ + ‘Martinez’ -&gt; ‘Garcia Martinez’).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--parental</span></code> (-p): a parental name, like a patronymic or matronymic, that comes between the first and last names but is not included with the last names for last-name-first display.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--undivided</span></code> (-n): a name string that should not be divided into parts, but should be kept the same in any alphabetical list.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--nickname</span></code> (-k): the nickname of the user.</p></li>
+</ul>
+</section>
+<section id="invenio-kcworks-users-read">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code><a class="headerlink" href="#invenio-kcworks-users-read" title="Link to this heading">¶</a></h4>
+<p>Reads a KCWorks user’s data from the database, including associated KC account and collection memberships.</p>
+<p>Named arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--email</span></code> (-e): the email address of the user to read.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--user-id</span></code> (-u): the ID of the user to read.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--kc-id</span></code> (-k): the username of the KC user to read.</p></li>
+</ul>
+</section>
+<section id="invenio-kcworks-users-groups">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">groups</span></code><a class="headerlink" href="#invenio-kcworks-users-groups" title="Link to this heading">¶</a></h4>
+<p>Lists the groups that a KCWorks user belongs to.</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--email</span></code> (-e): the email address of the user to list groups for.</p></li>
+</ul>
+</section>
+<section id="invenio-kcworks-users-group-users">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">group-users</span></code><a class="headerlink" href="#invenio-kcworks-users-group-users" title="Link to this heading">¶</a></h4>
+<p>Lists the users that belong to a KCWorks group (flask-security role).</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">group_name</span></code>: the name of the group to list users for.</p></li>
+</ul>
+</section>
+<section id="invenio-kcworks-users-user-groups">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">user-groups</span></code><a class="headerlink" href="#invenio-kcworks-users-user-groups" title="Link to this heading">¶</a></h4>
+<p>Lists the groups (flask-security roles) that a KCWorks user belongs to.</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--email</span></code> (-e): the email address of the user to list groups for.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--user-id</span></code> (-u): the ID of the user to list groups for.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--kc-id</span></code> (-k): the username of the KC user to list groups for.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--collection-role</span></code> (-r): the name of the collection role to list groups for.</p></li>
+</ul>
+</section>
+</section>
+<section id="invenio-user-data-update">
+<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">update</span></code><a class="headerlink" href="#invenio-user-data-update" title="Link to this heading">¶</a></h3>
+<ul class="simple">
 <li><p><strong>provided by the <code class="docutils literal notranslate"><span class="pre">invenio-remote-user-data-kcworks</span></code> package</strong></p></li>
 <li><p>updates a single user’s data from the remote KC user data service.</p></li>
 <li><p>with the <code class="docutils literal notranslate"><span class="pre">--groups</span></code> option, updates a group collection’s metadata from the remote KC group data service.</p></li>
 </ul>
-</li>
-</ul>
+</section>
 </section>
 </section>
 
@@ -406,7 +465,20 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 <li><a class="reference internal" href="#">CLI Commands</a><ul>
 <li><a class="reference internal" href="#running-invenio-cli-commands">Running Invenio CLI Commands</a></li>
 <li><a class="reference internal" href="#running-cli-commands-in-the-kcworks-container">Running CLI Commands in the KCWorks Container</a></li>
-<li><a class="reference internal" href="#kcworks-custom-cli-commands">KCWorks Custom CLI Commands</a></li>
+<li><a class="reference internal" href="#kcworks-custom-cli-commands">KCWorks Custom CLI Commands</a><ul>
+<li><a class="reference internal" href="#invenio-importer"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">importer</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-index-destroy"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-index</span> <span class="pre">destroy</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-users"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span></code></a><ul>
+<li><a class="reference internal" href="#invenio-kcworks-users-name-parts"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-users-read"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-users-groups"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">groups</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-users-group-users"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">group-users</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-users-user-groups"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">user-groups</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#invenio-user-data-update"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">update</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
