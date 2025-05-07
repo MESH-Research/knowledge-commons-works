@@ -10,6 +10,29 @@ cyan='\033[0;36m'
 # Clear the color after that
 clear='\033[0m'
 
+local fixtures=0
+local destroy=0
+
+while getopts 'fd' flag
+do
+    case "${flag}" in
+        f) fixtures=1 ;;
+        d) destroy=1 ;;
+        *) echo 'Error in command line parsing' >&2
+           exit 1
+    esac
+done
+
+if [ $destroy==1 ]
+then
+    echo -e "${yellow}Destroying the database...${clear}"
+    invenio db destroy --yes-i-know
+    echo -e "${yellow}Destroying the OpenSearch index...${clear}"
+    invenio index destroy --force --yes-i-know
+    echo -e "${yellow}Clearing the search indexing task queues...${clear}"
+    invenio index queue init purge
+fi
+
 echo -e "${yellow}Setting up services for Knowledge Commons Works instance...${clear}"
 echo -e "${yellow}Creating the database...${clear}"
 invenio db init create
@@ -20,6 +43,7 @@ select yn in "s3" "local"; do
         local ) echo -e "${yellow}Setting up local storage...${clear}"; invenio files location create --default default-location /opt/invenio/var/instance/data; break;;
     esac
 done
+
 echo -e "${yellow}Setting up admin roles and permissions...${clear}"
 invenio roles create admin
 invenio roles create administration
@@ -39,17 +63,23 @@ echo -e "${yellow}Compiling translations...${clear}"
 pybabel compile -d /opt/invenio/src/translations
 echo -e "${yellow}Setting up task queues...${clear}"
 invenio queues declare
-echo -e "${yellow}Setting up fixtures in two stages (this may take a long time!!)...${clear}"
-invenio rdm fixtures
-invenio rdm-records fixtures & pid=$!
-# spinner during fixture setup
-i=1
-sp="\|/-"
-while ps -p $pid > /dev/null
-do
-    printf "\b%c" "${sp:i++%4:1}"
-    sleep 0.1
-done
+
+if [ $fixtures==1 ]
+then
+    echo -e "${yellow}Setting up fixtures in two stages (this may take a long time!!)...${clear}"
+    invenio rdm fixtures
+    invenio rdm-records fixtures & pid=$!
+    # spinner during fixture setup
+    i=1
+    sp="\|/-"
+    while ps -p $pid > /dev/null
+    do
+        printf "\b%c" "${sp:i++%4:1}"
+        sleep 0.1
+    done
+else
+    echo -e "${yellow}Skipping setting up fixtures (-f flag was not passed)...${clear}"
+fi
 echo -e "${green}All done setting up services."
 echo -e "${green}Building and symlinking assets..."
 bash ./scripts/build-assets.sh
