@@ -11,12 +11,9 @@ from pprint import pprint
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
-from invenio_accounts.models import UserIdentity
+from invenio_accounts.models import Role, UserIdentity
 from invenio_accounts.proxies import current_accounts
-from invenio_users_resources.proxies import (
-    current_groups_service,
-    current_users_service,
-)
+from invenio_users_resources.proxies import current_users_service
 from kcworks.services.users.service import UserProfileService
 
 
@@ -198,7 +195,7 @@ def read(user_id: str | None, email: str | None, kc_id: str | None) -> None:
 @with_appcontext
 def groups() -> None:
     """CLI command to list all groups (roles)."""
-    groups = current_groups_service.list(system_identity)
+    groups = Role.query.all()
     pprint([g.name for g in groups])
 
 
