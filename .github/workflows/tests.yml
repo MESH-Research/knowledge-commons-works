@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [ main, dev, staging, production ]
+    branches: [ main, staging, production ]
   pull_request:
-    branches: [ main, dev, staging, production ]
+    branches: [ main, staging, production ]
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron: "0 3 * * 6"

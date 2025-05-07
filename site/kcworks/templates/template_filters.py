@@ -4,10 +4,13 @@ This module contains custom Jinja2 template filters for KCWorks.
 """
 
 from flask import current_app
+from kcworks.utils.names import get_full_name, get_full_name_inverted
 
 
 def user_profile_dict(user_profile):
     """Convert a user profile object to a dictionary with all profile fields.
+
+    Include all possible name variants in the dictionary.
 
     Args:
         user_profile: The user profile object to convert
@@ -29,5 +32,22 @@ def user_profile_dict(user_profile):
     # Add all profile fields
     for field in profile_fields:
         profile_dict[field] = user_profile.user_profile.get(field, "")
+
+    name_parts = user_profile.user_profile.get(
+        "name_parts_local"
+    ) or user_profile.user_profile.get("name_parts")
+
+    if name_parts:
+        full_name = get_full_name(name_parts, json_input=True)
+        full_name_inverted = get_full_name_inverted(name_parts, json_input=True)
+        profile_dict["full_name_alt"] = full_name_inverted
+
+        if user_profile.user_profile.get("full_name"):
+            if user_profile.user_profile.get("full_name") == full_name_inverted:
+                profile_dict["full_name_alt"] = full_name
+            elif user_profile.user_profile.get("full_name") != full_name:
+                profile_dict["full_name_alt_b"] = full_name
+        else:
+            profile_dict["full_name"] = full_name
 
     return profile_dict

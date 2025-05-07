@@ -30,7 +30,7 @@ from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_
 from invenio_records_permissions.generators import SystemProcess
 from invenio_records_resources.services.records.components.base import ServiceComponent
 from kcworks.services.records.permissions import per_field_edit_permission_factory
-from kcworks.utils import (
+from kcworks.utils.utils import (
     get_changed_fields,
     get_value_by_path,
     matching_list_parts_skip_digits,

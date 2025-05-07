@@ -33,7 +33,7 @@ from invenio_rdm_records.proxies import current_rdm_records
 from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_remote_api_provisioner.utils import get_user_idp_info
 
-from .utils import (
+from .utils.utils import (
     get_commons_user_from_contributor,
     get_kcworks_user_from_contributor,
     update_nested_dict,
