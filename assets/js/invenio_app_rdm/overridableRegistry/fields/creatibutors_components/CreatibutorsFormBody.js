@@ -337,7 +337,7 @@ const CreatibutorsFormBody = ({
                   fieldPath={identifiersFieldPath}
                   // ref={identifiersRef}
                   label={"Personal identifiers (ORCID, KC member id, ISNI, or GND)"}
-                  idTypes={["orcid", "isni", "gnd", "kc_username"]}
+                  idTypes={["orcid", "isni", "gnd", "kc_username", "email"]}
                 />
             </>
           )}
