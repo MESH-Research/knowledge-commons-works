@@ -38,3 +38,6 @@
 	path = site/kcworks/dependencies/invenio-record-importer-kcworks
 	url = https://github.com/MESH-Research/invenio-record-importer-kcworks.git
 	branch = main
+[submodule "site/kcworks/dependencies/invenio-stats-dashboard"]
+	path = site/kcworks/dependencies/invenio-stats-dashboard
+	url = git@github.com:MESH-Research/invenio-stats-dashboard.git
