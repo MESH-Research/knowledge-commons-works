@@ -61,6 +61,9 @@ The container name may be different depending on your local docker setup. You ca
 invenio users create <email> --password <password>
 invenio users activate <email>
 invenio access allow administration-access user <email>
+invenio access allow administration-moderation user <email>
+invenio roles add <email> administration
+invenio roles add <email> administration-moderation
 ```
 
 ### 6. View the application
