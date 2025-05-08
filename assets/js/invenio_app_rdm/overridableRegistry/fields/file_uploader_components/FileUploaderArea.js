@@ -200,7 +200,7 @@ const FileTableRow = ({
             ) : (
               <Button
                 className="close-btn"
-                name="trash alternate outline"
+                name="trash alternate outline mt-0"
                 disabled={isDeleting}
                 negative
                 onClick={() => handleDelete(file)}
