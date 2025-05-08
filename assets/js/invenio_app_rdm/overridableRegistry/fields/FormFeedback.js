@@ -335,12 +335,12 @@ const DisconnectedFormFeedback = ({
   // Set the touched state for all error fields
   // This is to ensure that the error fields are flagged when the form is submitted
   useEffect(() => {
-    const flattenedErrors = errors ? flattenKeysDotJoined(errors) : [];
+    const flattenedErrors = clientErrors ? flattenKeysDotJoined(clientErrors) : [];
     console.log("FormFeedback rendering flattenedErrors:", flattenedErrors);
     flattenedErrors.forEach((errorField) => {
       setFieldTouched(errorField, true);
     });
-  }, [errors]);
+  }, [clientErrors]);
 
   /**
    * Render error messages inline (if 1) or as list (if multiple).
