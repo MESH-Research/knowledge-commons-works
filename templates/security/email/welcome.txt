@@ -6,7 +6,7 @@
 - Contribute to collections of similar works
 - Control the metadata you’d like to share about a work, and hide works that are outdated
 
-KCWorks is currently in public beta, which means the repository is fully functional, but we’re still tweaking things behind the scenes. Use this form to provide us with feedback: {{ config.get("KC_CONTACT_FORM_URL") }}
+We are constantly working to make KCWorks better. Use this form to help with your feedback and suggestions: {{ config.get("KC_CONTACT_FORM_URL") }}
 
 Need additional assistance with KCWorks? Visit {{ config.get("KC_HELP_URL") }} to view our full help guides.
 

@@ -5,6 +5,13 @@
 
 ## Not yet released
 
+- Removed BETA status from the site.
+    - Also changed the welcome email templates to remove the BETA status.
+- Bug fixes
+    - Improved the search used by the "My Works" dashboard tab.
+    - Fixed bugs in upload form error handling.
+    - Fixed minor layout issues in the upload form.
+
 ## 0.5.0-beta13 (2025-05-05)
 
 - Dashboard
