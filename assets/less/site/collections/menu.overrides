@@ -179,22 +179,22 @@
       display: flex;
       align-items: center;
 
-      &::after {
-        content: "BETA";
-        position: absolute;
-        top: 4px;
-        right: 12px;
-        color: @white;
-        font-size: 0.8rem;
-        font-weight: bold;
-        background-color: @orange;
-        padding: 0.1rem 0.4rem;
-        letter-spacing: 0.05rem;
-        @media screen and (max-width: @largestMobileScreen) {
-          right: unset;
-          left: 9rem;
-        }
-      }
+      // &::after {
+      //   content: "BETA";
+      //   position: absolute;
+      //   top: 4px;
+      //   right: 12px;
+      //   color: @white;
+      //   font-size: 0.8rem;
+      //   font-weight: bold;
+      //   background-color: @orange;
+      //   padding: 0.1rem 0.4rem;
+      //   letter-spacing: 0.05rem;
+      //   @media screen and (max-width: @largestMobileScreen) {
+      //     right: unset;
+      //     left: 9rem;
+      //   }
+      // }
       .rdm-logo {
         width: auto;
         max-height: 4rem;
