@@ -98,6 +98,7 @@ const validationSchema = yupObject().shape({
                     "A scheme is required for each identifier"
                   ),
                   identifier: yupString()
+                    .required("A value is required for each identifier")
                     .when("scheme", {
                       is: "url",
                       then: yupString()
@@ -153,8 +154,7 @@ const validationSchema = yupObject().shape({
                     .matches(/(?!\s).+/, {
                       disallowEmptyString: true,
                       message: "Identifier cannot be blank",
-                    })
-                    .required("A value is required for each identifier"),
+                    }),
                 })
               ),
             }),

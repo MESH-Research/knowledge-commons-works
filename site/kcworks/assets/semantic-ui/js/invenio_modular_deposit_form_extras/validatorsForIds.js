@@ -33,15 +33,17 @@ function rorValidator(message) {
   return this.test("ror", message, function (val) {
     const { path, createError } = this;
 
+    if (typeof val !== "string") {
+      return createError({ path, message: "ROR identifier cannot be empty" });
+    }
+
     const rorRegexp = new RegExp(
-      "(?:https?://)?(?:ror\\.org/)?(0\\w{6}\\d{2})$",
+      "^(?:(?:https?://)?ror.org/)?(0\\w{6}\\d{2})$",
       "i"
     );
     // See https://ror.org/facts/#core-components.
 
-    if (typeof val !== "string") {
-      return createError({ path, message: "ROR must be a string" });
-    } else if (!rorRegexp.test(val)) {
+    if (!rorRegexp.test(val)) {
       return createError({
         path,
         message: message ?? "Invalid ROR identifier",
@@ -158,25 +160,31 @@ function gndValidator(message) {
   return this.test("gnd", message, function (val) {
     const { path, createError } = this;
 
-    const gndResolverUrl = "http://d-nb.info/gnd/";
+    if (typeof val !== "string") {
+      return createError({ path, message: "GND identifier cannot be empty" });
+    }
 
-    const gndRegexp = new RegExp(
-      "(gnd:|GND:)?(" +
-        "(1|10)\\d{7}[0-9X]|" +
-        "[47]\\d{6}-\\d|" +
-        "[1-9]\\d{0,7}-[0-9X]|" +
-        "3\\d{7}[0-9X]" +
-        ")"
-    );
-    // See https://www.wikidata.org/wiki/Property:P227.
+    const gndResolverUrl = "http://d-nb.info/gnd/";
 
     if (val.startsWith(gndResolverUrl)) {
       val = val.slice(gndResolverUrl.length);
     }
 
-    if (typeof val !== "string") {
-      return createError({ path, message: "GND must be a string" });
-    } else if (!gndRegexp.test(val)) {
+    // GND must match one of these patterns:
+    // 1. Start with 1 or 10 followed by 7 digits and a check digit (X or number)
+    // 2. Start with 4 or 7 followed by 6 digits and a hyphen and a digit
+    // 3. Start with 1-9 followed by 0-7 digits and a hyphen and a check digit (X or number)
+    // 4. Start with 3 followed by 7 digits and a check digit (X or number)
+    const gndRegexp = new RegExp(
+      "^(?:(?:gnd:|GND:)?)?(" +
+        "(?:1|10)\\d{7}[0-9X]|" +
+        "(?:4|7)\\d{6}-\\d|" +
+        "(?:[1-9])\\d{0,7}-[0-9X]|" +
+        "(?:3)\\d{7}[0-9X]" +
+        ")$"
+    );
+
+    if (!gndRegexp.test(val)) {
       return createError({ path, message: message ?? "Invalid GND" });
     }
 
@@ -285,9 +293,33 @@ function kcUsernameValidator(message) {
   return this.test("kc_username", message, function (val) {
     const { path, createError } = this;
 
-    const sanitizedUsername = sanitizeWPUsername(val);
+    if (typeof val !== "string") {
+      return createError({ path, message: "KC username cannot be empty" });
+    }
 
-    if (val !== sanitizedUsername) {
+    // Check minimum length first
+    if (val.length < 3) {
+      return createError({
+        path,
+        message: message ?? "Username must be at least 3 characters long",
+      });
+    }
+
+    // Sanitize the username
+    const sanitizedUsername = sanitizeWPUsername(val, true);
+
+    // Check if the sanitized username matches the original
+    if (sanitizedUsername !== val) {
+      return createError({
+        path,
+        message: message ?? "Username contains invalid characters",
+      });
+    }
+
+    // Only allow alphanumeric characters, dots, underscores, hyphens, and @ for email addresses
+    const usernameRegex = /^[a-zA-Z0-9._@-]+$/;
+
+    if (!usernameRegex.test(val)) {
       return createError({
         path,
         message: message ?? "Invalid Knowledge Commons username",

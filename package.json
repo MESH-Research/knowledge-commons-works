@@ -1,6 +1,8 @@
 {
   "config": {
-    "languages": ["en"]
+    "languages": [
+      "en"
+    ]
   },
   "devDependencies": {
     "@artsy/fresnel": "^6.1.0",
@@ -43,5 +45,8 @@
     "test:coverage": "jest --coverage",
     "test:update": "jest -u",
     "test:file": "jest --testPathPattern"
+  },
+  "dependencies": {
+    "orcid-utils": "^1.2.2"
   }
 }
