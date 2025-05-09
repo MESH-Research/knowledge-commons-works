@@ -336,7 +336,6 @@ const DisconnectedFormFeedback = ({
   // This is to ensure that the error fields are flagged when the form is submitted
   useEffect(() => {
     const flattenedErrors = clientErrors ? flattenKeysDotJoined(clientErrors) : [];
-    console.log("FormFeedback rendering flattenedErrors:", flattenedErrors);
     flattenedErrors.forEach((errorField) => {
       setFieldTouched(errorField, true);
     });
@@ -363,10 +362,10 @@ const DisconnectedFormFeedback = ({
     }
   };
 
-  console.log("FormFeedback rendering errors:", errors);
-  console.log("FormFeedback rendering clientErrors:", clientErrors);
-  console.log("FormFeedback rendering nonValidationErrors:", nonValidationErrors);
-  console.log("FormFeedback rendering rest:", rest);
+  // console.log("FormFeedback rendering errors:", errors);
+  // console.log("FormFeedback rendering clientErrors:", clientErrors);
+  // console.log("FormFeedback rendering nonValidationErrors:", nonValidationErrors);
+  // console.log("FormFeedback rendering rest:", rest);
 
   const combinedActionState = !_isEmpty(clientErrors)
     ? "CLIENT_VALIDATION_ERRORS"
@@ -377,20 +376,19 @@ const DisconnectedFormFeedback = ({
     )
     ? "ERRORS_CLEARED"
     : actionState;
-  console.log("FormFeedback rendering combinedActionState:", combinedActionState);
 
   const { feedback, message } = _get(ACTIONS, combinedActionState, {
     feedback: undefined,
     message: undefined,
   });
-  console.log("FormFeedback rendering feedback:", feedback);
-  console.log("FormFeedback rendering message:", message);
+  // console.log("FormFeedback rendering feedback:", feedback);
+  // console.log("FormFeedback rendering message:", message);
 
   const labelledMessages = ErrorMessageHandler.toLabelledErrorMessages(
     clientErrors,
     mergedLabels
   );
-  console.log("FormFeedback rendering labelledMessages:", labelledMessages);
+  // console.log("FormFeedback rendering labelledMessages:", labelledMessages);
   const listErrors = Object.entries(labelledMessages).map(([label, messages]) => (
     <Message.Item key={label}>
       <b>{label}</b>: {renderErrorMessages(messages)}
