@@ -2860,6 +2860,31 @@ wheels = [
 ]
 
 [[package]]
+name = "invenio-stats-dashboard"
+version = "0.1.0"
+source = { editable = "site/kcworks/dependencies/invenio-stats-dashboard" }
+dependencies = [
+    { name = "invenio-assets" },
+    { name = "invenio-base" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "black", marker = "extra == 'dev'", specifier = ">=25.1.0" },
+    { name = "invenio-assets", specifier = ">=1.2.0" },
+    { name = "invenio-base", specifier = ">=1.2.3" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.8.0" },
+    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=1.4.0" },
+    { name = "pytest-isort", marker = "extra == 'tests'", specifier = ">=4.0.0" },
+    { name = "pytest-mock", marker = "extra == 'tests'" },
+    { name = "pytest-mypy", marker = "extra == 'tests'", specifier = ">=0.10.0" },
+    { name = "pytest-ruff", marker = "extra == 'tests'", specifier = ">=0.1.0" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.3.0" },
+    { name = "sphinx", marker = "extra == 'docs'", specifier = ">=3,<4" },
+]
+
+[[package]]
 name = "invenio-subjects-fast"
 version = "2023.7.5"
 source = { registry = "https://pypi.org/simple" }
@@ -3236,6 +3261,7 @@ dependencies = [
     { name = "invenio-s3" },
     { name = "invenio-saml" },
     { name = "invenio-search-ui" },
+    { name = "invenio-stats-dashboard" },
     { name = "invenio-subjects-fast" },
     { name = "invenio-utilities-tuw" },
     { name = "isbnlib" },
@@ -3333,6 +3359,7 @@ requires-dist = [
     { name = "invenio-s3" },
     { name = "invenio-saml" },
     { name = "invenio-search-ui", specifier = "==2.8.9" },
+    { name = "invenio-stats-dashboard", editable = "site/kcworks/dependencies/invenio-stats-dashboard" },
     { name = "invenio-subjects-fast" },
     { name = "invenio-utilities-tuw" },
     { name = "isbnlib" },
