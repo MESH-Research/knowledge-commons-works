@@ -11,15 +11,12 @@ import PropTypes from "prop-types";
 import { Button, Form, Icon } from "semantic-ui-react";
 
 import {
-  ArrayField,
-  GroupField,
   SelectField,
   TextField,
 } from "react-invenio-forms";
-// import { emptyAdditionalTitle } from "./initialValues";
-import { LanguagesField } from "@js/invenio_rdm_records";
 import { i18next } from "@translations/i18next";
 import { FieldArray, useFormikContext } from "formik";
+import { SingleLanguageSelector } from "./shared_components/SingleLanguageSelector";
 
 const emptyAlternateTitle = {
   lang: "",
@@ -33,6 +30,27 @@ const emptyTranslatedTitle = {
   type: "translated-title",
 };
 
+/**
+ * Form field component for additional titles for the RDM deposit form.
+ *
+ * NOTE: The language subfield uses a custom implementation of the LanguagesField
+ * component. It does not use a simple string value for the language, but an object
+ * with the following shape:
+ *
+ * {
+ *   id: string,
+ *   title_l10n: string,
+ * }
+ *
+ * This is necessary in order to preserve the readable language name in the dropdown
+ * menu when the component re-renders from the client-side form values.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.fieldPath - The path to the field in the form values.
+ * @param {Object} props.options - The options for the field.
+ * @param {Object} props.recordUI - The record.ui property from the redux store.
+ * @returns {React.ReactNode} The component.
+ */
 const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
   const { values } = useFormikContext();
   const [titlesLength, setTitlesLength] = useState(-1);
@@ -92,29 +110,12 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
                   required
                   width={4}
                 />
-                <LanguagesField
-                  serializeSuggestions={(suggestions) =>
-                    suggestions.map((item) => ({
-                      text: item.title_l10n,
-                      value: item.id,
-                      fieldPathPrefix: item.id,
-                    }))
-                  }
-                  initialOptions={
-                    recordUI?.additional_titles &&
-                    recordUI.additional_titles[index]?.lang
-                      ? [recordUI.additional_titles[index].lang]
-                      : []
-                  }
-                  fieldPath={`${fieldPathPrefix}.lang`}
-                  id={`${fieldPathPrefix}.lang`}
-                  label="Language"
-                  multiple={false}
-                  placeholder=""
-                  icon={null}
-                  clearable
-                  selectOnBlur={true}
-                  width={4}
+                <SingleLanguageSelector
+                  fieldPath={fieldPathPrefix}
+                  value={value}
+                  index={index}
+                  recordUI={recordUI}
+                  fieldName="additional_titles"
                 />
                 <Form.Field>
                   <Button

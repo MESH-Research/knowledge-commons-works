@@ -11,7 +11,9 @@
     - Improved the search used by the "My Works" dashboard tab.
     - Fixed bugs in upload form error handling.
     - Fixed minor layout issues in the upload form.
-    - Fixed a bug where the languages field was not being populated correctly from the formik state.
+    - Fixed a bug where the languages field was not being populated correctly from the client-side form state.
+    - Updated the language subfield of AdditionalTitlesField and AdditionalDescriptionsField to use a new SingleLanguageSelector component
+      that also populates and preserves the value properly from the client-side form state.
 - Testing
     - Added new jest tests for upload form validation and the languages field.
 

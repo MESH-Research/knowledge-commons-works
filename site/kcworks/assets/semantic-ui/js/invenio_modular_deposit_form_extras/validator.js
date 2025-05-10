@@ -2,6 +2,7 @@ import {
   addMethod,
   array as yupArray,
   boolean as yupBoolean,
+  mixed,
   object as yupObject,
   string as yupString,
   date as yupDate,
@@ -204,7 +205,22 @@ const validationSchema = yupObject().shape({
         .matches(/(?!\s).+/, "Title cannot be blank")
         .min(3, "Title must be at least 3 characters")
         .required("A title is required"),
+      additional_titles: yupArray().of(
+        yupObject().shape({
+          title: yupString().required("A title is required"),
+          type: yupString().required("A type is required"),
+          lang: mixed().oneOf([
+            yupString(),
+            yupObject().shape({
+              id: yupString(),
+              title: yupString(),
+              title_l10n: yupString(),
+            })
+          ]),
+        })
+      ),
       resource_type: yupString().required("A resource type is required"),
+      description: yupString(),
       additional_descriptions: yupArray().of(
         yupObject().shape({
           description: yupString()
@@ -213,7 +229,14 @@ const validationSchema = yupObject().shape({
           type: yupString().required(
             "A type is required for each additional description"
           ),
-          lang: yupString(),
+          lang: mixed().oneOf([
+            yupString(),
+            yupObject().shape({
+              id: yupString(),
+              title: yupString(),
+              title_l10n: yupString(),
+            })
+          ]),
         })
       ),
     })
