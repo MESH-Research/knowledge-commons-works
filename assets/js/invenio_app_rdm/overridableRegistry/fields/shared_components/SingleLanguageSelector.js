@@ -17,7 +17,7 @@ import { useFormikContext } from "formik";
  * @param {string} props.fieldName - The name of the field in recordUI (e.g. 'additional_titles' or 'additional_descriptions').
  * @returns {React.ReactNode} The component.
  */
-const SingleLanguageSelector = ({ fieldPath, value, index, recordUI, fieldName }) => {
+const SingleLanguageSelector = ({ fieldPath, value, index, recordUI, fieldName, ...extraProps }) => {
   const { setFieldValue } = useFormikContext();
 
   // Get language object from value and recordUI
@@ -63,7 +63,6 @@ const SingleLanguageSelector = ({ fieldPath, value, index, recordUI, fieldName }
   return (
     <LanguagesField
       serializeSuggestions={(suggestions) => {
-        console.log("SingleLanguageSelector: suggestions", suggestions)
         return (suggestions?.map((suggestion) => ({
           text: suggestion?.title_l10n,
           value: suggestion.id,
@@ -73,7 +72,7 @@ const SingleLanguageSelector = ({ fieldPath, value, index, recordUI, fieldName }
       }}
       initialOptions={getInitialOptions(value, index)}
       onValueChange={({event, data, formikProps}, selectedSuggestions) => {
-        setFieldValue(`${fieldPath}.lang`, {
+        setFieldValue(`${fieldPath}.lang`, !selectedSuggestions.length ? null : {
           title_l10n: selectedSuggestions[0].text,
           id: selectedSuggestions[0].value,
         });
@@ -89,6 +88,7 @@ const SingleLanguageSelector = ({ fieldPath, value, index, recordUI, fieldName }
       clearable={false}
       selectOnBlur={true}
       width={4}
+      {...extraProps}
     />
   );
 };

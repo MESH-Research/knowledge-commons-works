@@ -209,14 +209,12 @@ const validationSchema = yupObject().shape({
         yupObject().shape({
           title: yupString().required("A title is required"),
           type: yupString().required("A type is required"),
-          lang: mixed().oneOf([
-            yupString(),
-            yupObject().shape({
-              id: yupString(),
-              title: yupString(),
-              title_l10n: yupString(),
-            })
-          ]),
+          lang: mixed().test('lang-format', 'Invalid language format', function(value) {
+            if (!value) return true;
+            if (typeof value === 'string') return true;
+            if (typeof value === 'object' && value.id && value.title_l10n) return true;
+            return false;
+          }),
         })
       ),
       resource_type: yupString().required("A resource type is required"),
@@ -229,14 +227,12 @@ const validationSchema = yupObject().shape({
           type: yupString().required(
             "A type is required for each additional description"
           ),
-          lang: mixed().oneOf([
-            yupString(),
-            yupObject().shape({
-              id: yupString(),
-              title: yupString(),
-              title_l10n: yupString(),
-            })
-          ]),
+          lang: mixed().test('lang-format', 'Invalid language format', function(value) {
+            if (!value) return true;
+            if (typeof value === 'string') return true;
+            if (typeof value === 'object' && value.id && value.title_l10n) return true;
+            return false;
+          }),
         })
       ),
     })

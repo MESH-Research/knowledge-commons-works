@@ -116,6 +116,7 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
                   index={index}
                   recordUI={recordUI}
                   fieldName="additional_titles"
+                  clearable={true}
                 />
                 <Form.Field>
                   <Button

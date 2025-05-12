@@ -113,7 +113,7 @@ const AdditionalDescriptionsField = ({ fieldPath, options, recordUI = {}, editor
                     editorConfig={editorConfig}
                     optimized
                     required
-                    classnames={`fourteen wide tablet sixteen wide mobile twelve wide computer ${fieldPathPrefixSanitized}-description`}
+                    classnames={`fourteen wide tablet sixteen wide mobile twelve wide computer ${fieldPathPrefixSanitized}-description rel-pr-0`}
                     ref={textFieldRef}
                   />
                   <Form.Field className="mobile hidden two wide">
@@ -128,7 +128,7 @@ const AdditionalDescriptionsField = ({ fieldPath, options, recordUI = {}, editor
                     </Button>
                   </Form.Field>
                 </Form.Group>
-                <Form.Group className="sixteen wide equal widths">
+                <Form.Group className="sixteen wide">
                   <SelectField
                     fieldPath={`${fieldPathPrefix}.type`}
                     id={`${fieldPathPrefix}.type`}
@@ -137,6 +137,7 @@ const AdditionalDescriptionsField = ({ fieldPath, options, recordUI = {}, editor
                     required
                     optimized
                     search={true}
+                    width={10}
                   />
                   <SingleLanguageSelector
                     fieldPath={fieldPathPrefix}
@@ -144,6 +145,9 @@ const AdditionalDescriptionsField = ({ fieldPath, options, recordUI = {}, editor
                     index={index}
                     recordUI={recordUI}
                     fieldName="additional_descriptions"
+                    width={6}
+                    className="rel-pr-0"
+                    clearable={true}
                   />
                   <Form.Field
                     tablet={2}
