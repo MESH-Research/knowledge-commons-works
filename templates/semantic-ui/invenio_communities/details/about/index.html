@@ -9,9 +9,9 @@
 #}
 
 {% extends "invenio_communities/details/base.html" %}
-{%- import "invenio_stats_dashboard/stats_dashboard.html" as stats_dashboard %}
 {% from "invenio_communities/details/macros/custom_fields.html" import
 list_vocabulary_values, list_string_values, show_custom_field %}
+{%- from "invenio_stats_dashboard/stats_dashboard.html" import stats_dashboard %}
 
 {% set active_community_header_menu_item= 'about' %}
 
@@ -32,7 +32,7 @@ list_vocabulary_values, list_string_values, show_custom_field %}
     {{ community.metadata.page | safe }}
     </div>
 
-    {{ stats_dashboard.stats_dashboard() }}
+    {{ stats_dashboard() }}
 
     {% if community.ui.funding|length %}
     <div class="communities-detail-about-awards communities-detail-about-section">
