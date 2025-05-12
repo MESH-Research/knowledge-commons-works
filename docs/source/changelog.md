@@ -20,6 +20,8 @@
     - Minor tweaks to the alignment in AdditionalDescriptionsField
 - Testing
     - Added new jest tests for upload form validation and the languages field.
+- Documentation
+    - Added documentation of the new custom extension workflow for KCWorks developers.
 
 ## 0.5.0-beta13 (2025-05-05)
 
