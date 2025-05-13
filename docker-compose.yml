@@ -78,7 +78,7 @@ services:
       service: app
     container_name: kcworks-ui
     command: ["/opt/invenio/var/instance/startup_ui_dev.sh"]
-    image: monotasker/kcworks:latest
+    image: monotasker/kcworks:${IMAGE_TAG:-latest}
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
@@ -128,7 +128,7 @@ services:
       service: app
     container_name: kcworks-api
     command: ["/opt/invenio/var/instance/startup_api_dev.sh"]
-    image: monotasker/kcworks:latest
+    image: monotasker/kcworks:${IMAGE_TAG:-latest}
     ports:
       - "5001"
     environment:
@@ -176,7 +176,7 @@ services:
       service: app
     container_name: kcworks-worker
     command: ["/opt/invenio/var/instance/startup_worker_dev.sh"]
-    image: monotasker/kcworks:latest
+    image: monotasker/kcworks:${IMAGE_TAG:-latest}
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
