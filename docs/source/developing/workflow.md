@@ -1,5 +1,27 @@
 # Development Workflow
 
+## Starting the KCWorks instance
+
+The KCWorks instance can be started by running the following command, run from the root of the knowledge-commons-works repository:
+
+```shell
+docker compose up -d
+```
+
+If you wish your local code changes to be reflected in the running instance, you need to specify two compose files in the command:
+
+```shell
+docker compose --file docker-compose.yml --file docker-compose.dev.yml up -d
+```
+
+The `docker-compose.dev.yml` file is a local development configuration that mounts the local code into the containers at startup.
+
+By default, the `docker-compose.dev.yml` file will use the `latest` tag from Docker Hub. If you are using a dev branch and need to use a different tag, you can specify the tag with the `IMAGE_TAG` environment variable. E.g., to use the container for the `dev/my-feature` git branch, which will be tagged "dev-my-feature", you would run the following command:
+
+```shell
+docker compose --file docker-compose.yml --file docker-compose.dev.yml -e IMAGE_TAG=dev-my-feature up -d
+```
+
 ## Updating the running KCWorks instance with development changes
 
 ### Changes to html template files

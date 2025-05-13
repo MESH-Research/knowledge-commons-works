@@ -1,5 +1,19 @@
 # Build Processes
 
+## Building the KCWorks Container
+
+The KCWorks and KCWorks-frontend containers are built automatically on every push to Github or a PR is submitted to the `main`, `staging`, or `production` branches. The build is triggered by the `build.yml` workflow.
+
+```yaml
+.github/workflows/build.yml
+```
+
+If the push is to the `staging` or `production` branch, the build will be tagged with the branch name and pushed to AWS Elastic Container Registry (ECR) as well as to the "monotasker/kcworks" Docker Hub repository. If the push is to the `main` branch, the build will be tagged with `latest` and pushed just to the "monotasker/kcworks" Docker Hub repository. If the build is triggered by a push to a branch with a name that starts with `dev/`, the build will be given a tag starting with `dev-` and pushed just to the "monotasker/kcworks" Docker Hub repository. E.g., a push to the `dev/my-feature` branch will be tagged with `dev-my-feature` and pushed to the "monotasker/kcworks" Docker Hub repository.
+
+```{note}
+The local docker-compose.yml file is configured to use the "latest" container from Docker Hub by default. If you need to use a container build from a dev branch you can specify the image tag with the `IMAGE_TAG` environment variable. E.g., `docker compose -e IMAGE_TAG=dev-my-feature up -d` will use the container tagged "dev-my-feature".
+```
+
 ## Building the Documentation
 
 The documentation is built using Sphinx. The documentation source files are located in the `docs/source` directory.
