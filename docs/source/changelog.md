@@ -3,17 +3,25 @@
 
 # Changes
 
-## Not yet released
+## 0.5.1 (2025-05-13)
 
 - Removed BETA status from the site.
     - Also changed the welcome email templates to remove the BETA status.
+- Upload form
+    - Improved validation of the AdditionalTitlesField and AdditionalDescriptionsField.
 - Bug fixes
     - Improved the search used by the "My Works" dashboard tab.
     - Fixed bugs in upload form error handling.
     - Fixed minor layout issues in the upload form.
-    - Fixed a bug where the languages field was not being populated correctly from the formik state.
+    - Fixed a bug where the languages field was not being populated correctly from the client-side form state.
+    - Updated the language subfield of AdditionalTitlesField and AdditionalDescriptionsField to use a new SingleLanguageSelector component
+      that also populates and preserves the value properly from the client-side form state.
+- Themeing
+    - Minor tweaks to the alignment in AdditionalDescriptionsField
 - Testing
-    - Added new jest tests for upload form validation and the languages field.
+    - Added new jest tests for upload form validation, the languages field, the access rights field, and the additional descriptions and additional titles fields.
+- Documentation
+    - Added developer documentation of workflow for adding a new custom extension to KCWorks.
 
 ## 0.5.0-beta13 (2025-05-05)
 

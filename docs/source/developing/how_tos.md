@@ -1,5 +1,25 @@
 # How Tos
 
+## Adding a new custom extension to the KCWorks InvenioRDM instance
+
+While the normal KCWorks development workflow works for everyday changes, it can be a bit tricky to add a new custom extension to the KCWorks InvenioRDM instance. Here are the steps to do so:
+
+- Create the extension in a subdirectory of the `site/kcworks/dependencies` directory
+- Add bind mounts for the extension to the `docker-compose.dev.yml` file in the `volumes` section of the `web-ui`, `web-api`, and `worker` services
+- Add the new extension to the `dependencies` section of the main KCWorks `pyproject.toml` file
+- Be sure to add the required entry points to the new extension's `pyproject.toml` file
+    - `invenio_base.apps`  to register the extension's root class on the UI instance
+    - `invenio_base.api_apps` to register the extension's root class on the API instance
+    - `invenio_base.blueprints` to register the extension's blueprints
+    - `invenio_assets.webpack` to register the extension's webpack assets
+- Rebuild the main KCWorks docker image
+    - Otherwise the new extension's entry points will not be registered, even if you install it in the local virtual environment
+- Restart the KCWorks docker-compose project
+
+```{note}
+Remember to restart the KCWorks docker-compose project with both the `docker-compose.yml` and `docker-compose.dev.yml` files! Otherwise your local changes will not be reflected in the running KCWorks instance.
+```
+
 ## Creating and Modifying Records in General
 
 All InvenioRDM record services inherit the same core methods from the `RecordService` class. In the examples below, the `service` variable represents an instance of a record service. The `identity` variable represents an identity object.

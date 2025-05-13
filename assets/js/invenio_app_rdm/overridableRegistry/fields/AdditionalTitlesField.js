@@ -9,17 +9,13 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, Icon } from "semantic-ui-react";
-
 import {
-  ArrayField,
-  GroupField,
   SelectField,
   TextField,
-} from "react-invenio-forms";
-// import { emptyAdditionalTitle } from "./initialValues";
-import { LanguagesField } from "@js/invenio_rdm_records";
+} from "@js/invenio_modular_deposit_form/replacement_components";
 import { i18next } from "@translations/i18next";
 import { FieldArray, useFormikContext } from "formik";
+import { SingleLanguageSelector } from "./shared_components/SingleLanguageSelector";
 
 const emptyAlternateTitle = {
   lang: "",
@@ -33,6 +29,27 @@ const emptyTranslatedTitle = {
   type: "translated-title",
 };
 
+/**
+ * Form field component for additional titles for the RDM deposit form.
+ *
+ * NOTE: The language subfield uses a custom implementation of the LanguagesField
+ * component. It does not use a simple string value for the language, but an object
+ * with the following shape:
+ *
+ * {
+ *   id: string,
+ *   title_l10n: string,
+ * }
+ *
+ * This is necessary in order to preserve the readable language name in the dropdown
+ * menu when the component re-renders from the client-side form values.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.fieldPath - The path to the field in the form values.
+ * @param {Object} props.options - The options for the field.
+ * @param {Object} props.recordUI - The record.ui property from the redux store.
+ * @returns {React.ReactNode} The component.
+ */
 const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
   const { values } = useFormikContext();
   const [titlesLength, setTitlesLength] = useState(-1);
@@ -78,43 +95,27 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
               <Form.Group key={index} className="additional-titles-item-row">
                 <TextField
                   fieldPath={`${fieldPathPrefix}.title`}
-                  label={`${titleWord} title`}
+                  label={i18next.t(`${titleWord} title`)}
                   id={`${fieldPathPrefix}.title`}
                   required
                   width={7}
                 />
                 <SelectField
                   fieldPath={`${fieldPathPrefix}.type`}
-                  label="Type"
+                  label={i18next.t("Type")}
                   id={`${fieldPathPrefix}.type`}
                   optimized
                   options={options.type}
                   required
                   width={4}
                 />
-                <LanguagesField
-                  serializeSuggestions={(suggestions) =>
-                    suggestions.map((item) => ({
-                      text: item.title_l10n,
-                      value: item.id,
-                      fieldPathPrefix: item.id,
-                    }))
-                  }
-                  initialOptions={
-                    recordUI?.additional_titles &&
-                    recordUI.additional_titles[index]?.lang
-                      ? [recordUI.additional_titles[index].lang]
-                      : []
-                  }
-                  fieldPath={`${fieldPathPrefix}.lang`}
-                  id={`${fieldPathPrefix}.lang`}
-                  label="Language"
-                  multiple={false}
-                  placeholder=""
-                  icon={null}
-                  clearable
-                  selectOnBlur={true}
-                  width={4}
+                <SingleLanguageSelector
+                  fieldPath={fieldPathPrefix}
+                  value={value}
+                  index={index}
+                  recordUI={recordUI}
+                  fieldName="additional_titles"
+                  clearable={true}
                 />
                 <Form.Field>
                   <Button
@@ -138,7 +139,7 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
             id={`${fieldPath}.add-translated-button`}
           >
             <Icon name="add" />
-            Add translated title
+            {i18next.t("Add translated title")}
           </Button>
           <Button
             type="button"
@@ -149,7 +150,7 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
             id={`${fieldPath}.add-alternate-button`}
           >
             <Icon name="add" />
-            Add alternative title
+            {i18next.t("Add alternative title")}
           </Button>
         </>
       )}

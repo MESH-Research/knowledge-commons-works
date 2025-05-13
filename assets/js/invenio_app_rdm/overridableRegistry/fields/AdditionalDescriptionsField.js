@@ -7,17 +7,15 @@
 // Invenio-RDM-Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { useState, useLayoutEffect, Fragment } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, Icon } from "semantic-ui-react";
-
-import { SelectField } from "react-invenio-forms";
-// import { emptyAdditionalDescription } from "./initialValues";
-import { LanguagesField } from "@js/invenio_rdm_records";
 import { i18next } from "@translations/i18next";
 // import { sortOptions } from "../../../utils";
 import { FieldArray, useFormikContext } from "formik";
 import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/TextArea";
+import { SelectField } from "@js/invenio_modular_deposit_form/replacement_components/SelectField";
+import { SingleLanguageSelector } from "./shared_components/SingleLanguageSelector";
 
 const emptyAdditionalDescription = {
   lang: "",
@@ -34,18 +32,36 @@ function sortOptions(options) {
   return options.sort((o1, o2) => o1.text.localeCompare(o2.text));
 }
 
-const AdditionalDescriptionsField = ({
-  fieldPath,
-  options,
-  recordUI = {},
-  editorConfig = undefined,
-}) => {
+/**
+ * Form field component for additional descriptions for the RDM deposit form.
+ *
+ * NOTE: The language subfield uses a custom implementation of the LanguagesField
+ * component. It does not use a simple string value for the language, but an object
+ * with the following shape:
+ *
+ * {
+ *   id: string,
+ *   title_l10n: string,
+ * }
+ *
+ * This is necessary in order to preserve the readable language name in the dropdown
+ * menu when the component re-renders from the client-side form values.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.fieldPath - The path to the field in the form values.
+ * @param {Object} props.options - The options for the field.
+ * @param {Object} props.recordUI - The record.ui property from the redux store.
+ * @returns {React.ReactNode} The component.
+ */
+const AdditionalDescriptionsField = ({ fieldPath, options, recordUI = {}, editorConfig = undefined }) => {
   const { values } = useFormikContext();
   const [descriptionsLength, setDescriptionsLength] = useState(-1);
   const [haveChangedNumber, setHaveChangedNumber] = useState(false);
   const fieldPathSanitized = fieldPath.replace(/\./g, "-");
   const textFieldRef = React.createRef();
 
+  // Timeout is necessary to ensure that the textarea is focused after the new row
+  // is added
   useLayoutEffect(() => {
     if (!!haveChangedNumber) {
       if (descriptionsLength < 0) {
@@ -56,7 +72,7 @@ const AdditionalDescriptionsField = ({
             ".additional-description-item-row textarea"
           );
           nodes[nodes.length - 1].focus();
-        }, 100);
+        }, 200);
       }
     }
   }, [descriptionsLength]);
@@ -73,9 +89,11 @@ const AdditionalDescriptionsField = ({
     setDescriptionsLength(descriptionsLength - 1);
   };
 
+  const addButtonLabel = i18next.t("Add another description");
+
   return (
     <FieldArray
-      addButtonLabel={i18next.t("Add another description")}
+      addButtonLabel={addButtonLabel}
       defaultNewValue={emptyAdditionalDescription}
       name={fieldPath}
       className="additional-descriptions"
@@ -95,7 +113,7 @@ const AdditionalDescriptionsField = ({
                     editorConfig={editorConfig}
                     optimized
                     required
-                    classnames={`fourteen wide tablet sixteen wide mobile twelve wide computer ${fieldPathPrefixSanitized}-description`}
+                    classnames={`fourteen wide tablet sixteen wide mobile twelve wide computer ${fieldPathPrefixSanitized}-description rel-pr-0`}
                     ref={textFieldRef}
                   />
                   <Form.Field className="mobile hidden two wide">
@@ -110,7 +128,7 @@ const AdditionalDescriptionsField = ({
                     </Button>
                   </Form.Field>
                 </Form.Group>
-                <Form.Group className="sixteen wide equal widths">
+                <Form.Group className="sixteen wide">
                   <SelectField
                     fieldPath={`${fieldPathPrefix}.type`}
                     id={`${fieldPathPrefix}.type`}
@@ -119,29 +137,17 @@ const AdditionalDescriptionsField = ({
                     required
                     optimized
                     search={true}
+                    width={10}
                   />
-                  <LanguagesField
-                    serializeSuggestions={(suggestions) =>
-                      suggestions.map((item) => ({
-                        text: item.title_l10n,
-                        value: item.id,
-                        fieldPathPrefix: item.id,
-                      }))
-                    }
-                    initialOptions={
-                      recordUI?.additional_descriptions &&
-                      recordUI.additional_descriptions[index]?.lang
-                        ? [recordUI.additional_descriptions[index].lang]
-                        : []
-                    }
-                    fieldPath={`${fieldPathPrefix}.lang`}
-                    id={`${fieldPathPrefix}.lang`}
-                    label={i18next.t("Language")}
-                    multiple={false}
-                    placeholder={i18next.t("select language")}
-                    icon=""
-                    clearable
-                    selectOnBlur={false}
+                  <SingleLanguageSelector
+                    fieldPath={fieldPathPrefix}
+                    value={value}
+                    index={index}
+                    recordUI={recordUI}
+                    fieldName="additional_descriptions"
+                    width={6}
+                    className="rel-pr-0"
+                    clearable={true}
                   />
                   <Form.Field
                     tablet={2}
@@ -180,7 +186,7 @@ const AdditionalDescriptionsField = ({
             id={`${fieldPath}.add-button`}
           >
             <Icon name="add" />
-            Add another description
+            {addButtonLabel}
           </Button>
         </>
       )}

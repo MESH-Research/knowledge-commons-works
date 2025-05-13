@@ -20,7 +20,7 @@ export const MetadataAccess = (props) => {
   return (
     <Overridable id="ReactInvenioDeposit.MetadataAccess.layout" {...props}>
       <Form.Field>
-        <label htmlFor="access.record" className="invenio-field-label">
+        <label htmlFor="access.record" className="invenio-field-label" id="access.record.label">
           <Icon name="lock" />
           {i18next.t("Record access")}
         </label>
@@ -28,6 +28,7 @@ export const MetadataAccess = (props) => {
           active={publicMetadata && publicCommunity}
           disabled={!publicCommunity}
           fieldPath="access.record"
+          aria-labelledby="access.record.label"
         />
       </Form.Field>
     </Overridable>
