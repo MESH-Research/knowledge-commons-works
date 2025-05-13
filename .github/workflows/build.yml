@@ -7,16 +7,17 @@ on:
   push:
     branches:
       - "dev"
+      - "dev/**"
       - "main"
       - "production"
       - "staging"
     tags:
       - release*
-  # pull_request:
-  #   branches:
-  #     - main
-  #     - production
-  #     - staging
+  pull_request:
+    branches:
+      - main
+      - production
+      - staging
 
 env:
   DOCKER_BUILDKIT: 1
@@ -56,9 +57,12 @@ jobs:
         run: |
           echo "RELEASE_VERSION=latest" >> $GITHUB_ENV
       - name: Label dev
-        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || contains(github.ref, 'refs/heads/dev/'))
         run: |
-          echo "RELEASE_VERSION=dev" >> $GITHUB_ENV
+          # Convert branch name to valid Docker tag format
+          branch_name=${GITHUB_REF#refs/heads/}
+          tag_name=${branch_name//\//-}
+          echo "RELEASE_VERSION=$tag_name" >> $GITHUB_ENV
       - name: Label production
         if: github.event_name == 'push' && github.ref == 'refs/heads/production'
         run: |
@@ -114,7 +118,7 @@ jobs:
       #     key: local-docker-directory
 
       - name: Build AMD Image for production or main
-        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest' || env.RELEASE_VERSION == 'dev' || env.RELEASE_VERSION == 'staging'
+        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest' || env.RELEASE_VERSION == 'staging' || startsWith(env.RELEASE_VERSION, 'dev')
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -131,7 +135,7 @@ jobs:
           docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend --all-tags
 
       - name: Push production or staging image to Amazon ECR
-        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging' || env.RELEASE_VERSION == 'dev'
+        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
