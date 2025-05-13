@@ -33,7 +33,7 @@ export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
     <>
       {filesButtonsDisplayed && (
         <Form.Field>
-          <label htmlFor="access.files" className="invenio-field-label">
+          <label htmlFor="access.files" className="invenio-field-label" id="access.files.label">
             <Icon name="lock" />
             {i18next.t("Files access")}
           </label>
@@ -41,6 +41,7 @@ export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
             active={publicFiles}
             disable={!publicCommunity}
             fieldPath="access.files"
+            aria-labelledby="access.files.label"
           />
         </Form.Field>
       )}

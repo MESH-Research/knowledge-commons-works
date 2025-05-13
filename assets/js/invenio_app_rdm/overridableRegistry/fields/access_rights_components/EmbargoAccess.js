@@ -54,11 +54,11 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
   return (
     <>
     <Form.Field>
-      <label htmlFor="access.embargo.active" className="invenio-field-label">
+      <label htmlFor="access.embargo.active" className="invenio-field-label" id="access.embargo.active.label">
         <Icon name="clock outline" />
         {i18next.t("Apply an embargo")}
       </label>
-      <Button.Group widths="2">
+      <Button.Group widths="2" aria-labelledby="access.embargo.active.label">
         <Button
           className={`${publicColor} ${!embargoEnabled ? "disabled" : ""} ${!embargoActive ? "active" : "basic"}`}
           disabled={!embargoEnabled}
@@ -76,7 +76,7 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
           {i18next.t("Embargoed")}
         </Button>
       </Button.Group>
-          </Form.Field>
+    </Form.Field>
 
     <List divided relaxed>
         <List.Content>

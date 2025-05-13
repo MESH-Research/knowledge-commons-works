@@ -1,5 +1,14 @@
+// This file is part of Invenio-RDM-Records
+// Copyright (C) 2020-2023 CERN.
+// Copyright (C) 2020-2022 Northwestern University.
+// Copyright (C) 2021      Graz University of Technology.
+// Copyright (C) 2022      TU Wien.
+//
+// Invenio-RDM-Records is free software; you can redistribute it and/or modify it
+// under the terms of the MIT License; see LICENSE file for more details.
+
 import React from 'react';
-import { screen, waitFor, act } from '@testing-library/react';
+import { screen, waitFor, act, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupStore } from '@custom-test-utils/redux_store';
 import { renderWithProviders } from '@custom-test-utils/redux_test_utils';
@@ -8,9 +17,70 @@ import { FormUIStateContext } from '@js/invenio_modular_deposit_form/InnerDeposi
 import { renderWithFormik, setupFormMocks } from '@custom-test-utils/formik_test_utils';
 import axios from 'axios';
 import { Provider } from 'react-redux';
+import { useFormikContext } from 'formik';
 
 // Mock axios for API calls
 jest.mock('axios');
+
+const descriptionTypes = {
+  type: [
+    {
+      "text": "Abstract",
+      "value": "abstract"
+    },
+    {
+      "text": "Methods",
+      "value": "methods"
+    },
+    {
+      "text": "Other",
+      "value": "other"
+    },
+    {
+      "text": "Primary description, html stripped",
+      "value": "primary-stripped"
+    },
+    {
+      "text": "Series information",
+      "value": "series-information"
+    },
+    {
+      "text": "Table of contents",
+      "value": "table-of-contents"
+    },
+    {
+      "text": "Technical info",
+      "value": "technical-info"
+    }
+  ]
+}
+
+const uiConfig = {
+  additional_descriptions: [
+    {
+      "description": "Test description",
+      "type": {
+        "id": "methods",
+        "title_l10n": "Methods"
+      }
+    }
+  ]
+}
+
+const editorConfig = {
+  "removePlugins": [
+    "Image",
+    "ImageCaption",
+    "ImageStyle",
+    "ImageToolbar",
+    "ImageUpload",
+    "MediaEmbed",
+    "Table",
+    "TableToolbar",
+    "TableProperties",
+    "TableCellProperties"
+  ]
+}
 
 describe('AdditionalDescriptionsField', () => {
   let store;
@@ -40,6 +110,13 @@ describe('AdditionalDescriptionsField', () => {
   });
 
   const renderComponent = (recordOptions = [], formOptions = []) => {
+    const formikValuesRef = { current: null };
+    const TestComponent = () => {
+      const { values } = useFormikContext();
+      formikValuesRef.current = values;
+      return null;
+    };
+
     const preloadedState = {
       deposit: {
         record: {
@@ -58,7 +135,7 @@ describe('AdditionalDescriptionsField', () => {
 
     store = setupStore(preloadedState);
 
-    return renderWithFormik(
+    const result = renderWithFormik(
       <Provider store={store}>
         <FormUIStateContext.Provider
           value={{
@@ -83,29 +160,19 @@ describe('AdditionalDescriptionsField', () => {
         >
           <AdditionalDescriptionsField
             fieldPath="metadata.additional_descriptions"
-            options={{
-              description: {
-                label: "Description",
-                placeholder: "Enter description",
-              },
-              type: {
-                label: "Type",
-                placeholder: "Select type",
-                options: [
-                  { text: "Abstract", value: "abstract" },
-                  { text: "Methods", value: "methods" },
-                  { text: "Technical Info", value: "technical_info" },
-                ],
-              },
-            }}
+            options={descriptionTypes}
             recordUI={store.getState().deposit.record.ui}
+            editorConfig={editorConfig}
           />
+          <TestComponent />
         </FormUIStateContext.Provider>
       </Provider>,
       {
         initialValues: formMocks.values,
       }
     );
+
+    return { ...result, formikValues: formikValuesRef };
   };
 
   it('renders empty state correctly', () => {
@@ -116,57 +183,70 @@ describe('AdditionalDescriptionsField', () => {
     expect(addButton).toBeInTheDocument();
 
     // Check that no description fields are rendered initially
-    expect(screen.queryByPlaceholderText('Enter description')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Additional description')).not.toBeInTheDocument();
   });
 
-  it('adds a new description when clicking add button', async () => {
-    renderComponent();
+  it('adds a new description when clicking add button and updates Formik values', async () => {
+    const { formikValues } = renderComponent();
 
     // Click add button
     const addButton = screen.getByText('Add another description');
-    await act(async () => {
-      await userEvent.click(addButton);
-    });
+    userEvent.click(addButton);
 
     // Check that description field is rendered
-    const descriptionInput = await screen.findByPlaceholderText('Enter description');
+    const descriptionInput = await screen.findByLabelText('Additional description');
     expect(descriptionInput).toBeInTheDocument();
 
     // Check that type dropdown is rendered
-    const typeDropdown = screen.getByText('Select type');
+    const typeDropdown = screen.getByLabelText('Type of description');
     expect(typeDropdown).toBeInTheDocument();
 
     // Check that language selector is rendered
-    const languageSelector = screen.getByText('Language');
+    const languageSelector = screen.getByLabelText('Language');
     expect(languageSelector).toBeInTheDocument();
+
+    // Type description text
+    userEvent.type(descriptionInput, 'My test description');
+
+    // Select description type
+    const methodsOption = screen.getByRole('option', { name: 'Methods' });
+    userEvent.click(methodsOption);
+
+    // Wait for formik values to update
+    await waitFor(() => {
+      expect(formikValues.current.metadata.additional_descriptions).toHaveLength(1);
+      expect(formikValues.current.metadata.additional_descriptions[0]).toEqual({
+        description: 'My test description',
+        type: 'methods',
+        lang: ''
+      });
+    });
   });
 
-  it('removes a description when clicking remove button', async () => {
-    renderComponent();
+  it('removes a description when clicking remove button and updates Formik values', async () => {
+    const { formikValues } = renderComponent();
 
     // Add a description
     const addButton = screen.getByText('Add another description');
-    await act(async () => {
-      await userEvent.click(addButton);
-    });
+    userEvent.click(addButton);
 
     // Check that description field is rendered
-    const descriptionInput = await screen.findByPlaceholderText('Enter description');
+    const descriptionInput = await screen.findByLabelText('Additional description');
     expect(descriptionInput).toBeInTheDocument();
 
-    // Click remove button
-    const removeButton = screen.getByRole('button', { name: /remove/i });
-    await act(async () => {
-      await userEvent.click(removeButton);
-    });
+    // Click remove button (one mobile, one desktop)
+    const removeButtons = screen.getAllByRole('button', { name: /remove/i });
+    expect(removeButtons).toHaveLength(2);
+    userEvent.click(removeButtons[0]);
 
-    // Check that description field is removed
+    // Check that description field is removed and Formik values are updated
     await waitFor(() => {
-      expect(screen.queryByPlaceholderText('Enter description')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('Additional description')).not.toBeInTheDocument();
+      expect(formikValues.current.metadata.additional_descriptions).toHaveLength(0);
     });
   });
 
-  it('handles language selection correctly', async () => {
+  it('handles language selection correctly and updates Formik values', async () => {
     // Mock the API response for searching "english"
     axios.get.mockResolvedValueOnce({
       data: {
@@ -178,18 +258,18 @@ describe('AdditionalDescriptionsField', () => {
       }
     });
 
-    renderComponent();
+    const { formikValues } = renderComponent();
 
     // Add a description
     const addButton = screen.getByText('Add another description');
-    await userEvent.click(addButton);
+    userEvent.click(addButton);
 
     // Get the language selector
-    const languageSelector = screen.getByRole('combobox');
+    const languageSelector = screen.getByLabelText('Language');
     expect(languageSelector).toBeInTheDocument();
 
     // Type "english" in the search field
-    await userEvent.type(languageSelector, 'english');
+    userEvent.type(languageSelector, 'english');
 
     // Wait for the API call to resolve and the dropdown to update
     await waitFor(() => {
@@ -207,14 +287,17 @@ describe('AdditionalDescriptionsField', () => {
       );
     });
 
-    // Click the "English" option in the dropdown
-    const englishOption = await screen.findByText('English');
-    await userEvent.click(englishOption);
+    // Select English from the dropdown
+    const englishOption = await screen.findByRole('option', { name: 'English' });
+    userEvent.click(englishOption);
 
-    // Verify the selection was made
-    const selectedLabel = screen.getByText('English').closest('a');
-    expect(selectedLabel).toHaveClass('label');
-    expect(selectedLabel).toHaveAttribute('value', 'eng');
+    // Check that Formik values are updated with the selected language
+    await waitFor(() => {
+      expect(formikValues.current.metadata.additional_descriptions[0].lang).toEqual({
+        id: 'eng',
+        title_l10n: 'English'
+      });
+    });
   });
 
   it('handles type selection correctly', async () => {
@@ -222,18 +305,26 @@ describe('AdditionalDescriptionsField', () => {
 
     // Add a description
     const addButton = screen.getByText('Add another description');
-    await userEvent.click(addButton);
+    userEvent.click(addButton);
 
     // Get the type dropdown
-    const typeDropdown = screen.getByText('Select type');
-    await userEvent.click(typeDropdown);
+    const typeDropdown = screen.getByLabelText('Type of description');
+    userEvent.click(typeDropdown);
 
     // Select "Abstract"
-    const abstractOption = screen.getByText('Abstract');
-    await userEvent.click(abstractOption);
+    const abstractOption = screen.getByRole('option', { name: 'Abstract' });
+    userEvent.click(abstractOption);
 
     // Verify the selection was made
-    expect(screen.getByText('Abstract')).toBeInTheDocument();
+    const withinDropdown = within(typeDropdown);
+    const selectedLabel = withinDropdown.getByRole("alert");
+    expect(selectedLabel).toHaveTextContent('Abstract');
+
+    expect(abstractOption).toHaveClass('selected');
+    // Verify that the type dropdown is closed
+    await waitFor(() => {
+      expect(typeDropdown).toHaveAttribute('aria-expanded', 'false');
+    });
   });
 
   it('handles description text input correctly', async () => {
@@ -241,13 +332,13 @@ describe('AdditionalDescriptionsField', () => {
 
     // Add a description
     const addButton = screen.getByText('Add another description');
-    await userEvent.click(addButton);
+    userEvent.click(addButton);
 
     // Get the description input
-    const descriptionInput = screen.getByPlaceholderText('Enter description');
+    const descriptionInput = screen.getByLabelText('Additional description');
 
     // Type some text
-    await userEvent.type(descriptionInput, 'This is a test description');
+    userEvent.type(descriptionInput, 'This is a test description');
 
     // Verify the text was entered
     expect(descriptionInput).toHaveValue('This is a test description');

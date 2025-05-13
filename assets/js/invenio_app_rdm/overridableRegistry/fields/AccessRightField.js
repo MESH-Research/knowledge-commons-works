@@ -20,67 +20,62 @@ import {
   AccessMessage,
 } from "./access_rights_components";
 
-export class AccessRightFieldCmp extends Component {
+const AccessRightFieldCmp = ({
+  fieldPath,
+  formik, // this is our access to the shared current draft
+  label = i18next.t("Access Permissions"),
+  icon,
+  showMetadataAccess,
+  community,
+}) => {
   /** Top-level Access Right Component */
+  const isGhostCommunity = community?.is_ghost === true;
+  const communityAccess =
+    (community && !isGhostCommunity && community.access.visibility) ||
+    "public";
+  const isMetadataOnly = !formik.form.values.files.enabled;
 
-  render() {
-    const {
-      fieldPath,
-      formik, // this is our access to the shared current draft
-      label = i18next.t("Access Permissions"),
-      icon,
-      showMetadataAccess,
-      community,
-    } = this.props;
-
-    const isGhostCommunity = community?.is_ghost === true;
-    const communityAccess =
-      (community && !isGhostCommunity && community.access.visibility) ||
-      "public";
-    const isMetadataOnly = !formik.form.values.files.enabled;
-
-    return (
-      <>
-        <label
-          htmlFor={fieldPath}
-          className="field-label-class invenio-field-label"
-        >
-          {icon && <i className={`${icon} icon`} />}
-          {label}
-        </label>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column width="8">
-              {showMetadataAccess && (
-                <MetadataAccess
-                  recordAccess={formik.field.value.record}
-                  communityAccess={communityAccess}
-                />
-              )}
-              <FilesAccess
-                access={formik.field.value}
-                accessCommunity={communityAccess}
-                metadataOnly={isMetadataOnly}
+  return (
+    <>
+      <label
+        htmlFor={fieldPath}
+        className="field-label-class invenio-field-label"
+      >
+        {icon && <i className={`${icon} icon`} />}
+        {label}
+      </label>
+      <Grid>
+        <Grid.Row>
+          <Grid.Column width="8">
+            {showMetadataAccess && (
+              <MetadataAccess
+                recordAccess={formik.field.value.record}
+                communityAccess={communityAccess}
               />
-              <EmbargoAccess
-                access={formik.field.value}
-                accessCommunity={communityAccess}
-                metadataOnly={isMetadataOnly}
-              />
-            </Grid.Column>
+            )}
+            <FilesAccess
+              access={formik.field.value}
+              accessCommunity={communityAccess}
+              metadataOnly={isMetadataOnly}
+            />
+            <EmbargoAccess
+              access={formik.field.value}
+              accessCommunity={communityAccess}
+              metadataOnly={isMetadataOnly}
+            />
+          </Grid.Column>
 
-            <Grid.Column width="8">
-              <AccessMessage
-                access={formik.field.value}
-                accessCommunity={communityAccess}
-                metadataOnly={isMetadataOnly}
-              />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </>
-    );
-  }
+          <Grid.Column width="8">
+            <AccessMessage
+              access={formik.field.value}
+              accessCommunity={communityAccess}
+              metadataOnly={isMetadataOnly}
+            />
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </>
+  );
 }
 
 AccessRightFieldCmp.propTypes = {
@@ -101,24 +96,20 @@ const mapStateToPropsAccessRightFieldCmp = (state) => ({
   community: state.deposit.editorState.selectedCommunity,
 });
 
-export const AccessRightFieldComponent = connect(
+const AccessRightFieldComponent = connect(
   mapStateToPropsAccessRightFieldCmp,
   null
 )(AccessRightFieldCmp);
 
-export class AccessRightField extends Component {
-  render() {
-    const { fieldPath } = this.props;
-
-    return (
-      <Field name={fieldPath}>
-        {(formik) => (
-          <AccessRightFieldComponent formik={formik} {...this.props} />
-        )}
-      </Field>
-    );
-  }
-}
+const AccessRightField = ({ fieldPath, ...props }) => {
+  return (
+    <Field name={fieldPath}>
+      {(formik) => (
+        <AccessRightFieldComponent formik={formik} {...props} />
+      )}
+    </Field>
+  );
+};
 
 AccessRightField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
@@ -131,3 +122,5 @@ AccessRightField.defaultProps = {
   icon: undefined,
   isMetadataOnly: undefined,
 };
+
+export { AccessRightField, AccessRightFieldComponent, AccessRightFieldCmp };

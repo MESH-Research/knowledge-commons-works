@@ -10,11 +10,11 @@
 import React, { useState, useLayoutEffect } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, Icon } from "semantic-ui-react";
-import { SelectField } from "react-invenio-forms";
 import { i18next } from "@translations/i18next";
 // import { sortOptions } from "../../../utils";
 import { FieldArray, useFormikContext } from "formik";
 import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/TextArea";
+import { SelectField } from "@js/invenio_modular_deposit_form/replacement_components/SelectField";
 import { SingleLanguageSelector } from "./shared_components/SingleLanguageSelector";
 
 const emptyAdditionalDescription = {
@@ -72,7 +72,7 @@ const AdditionalDescriptionsField = ({ fieldPath, options, recordUI = {}, editor
             ".additional-description-item-row textarea"
           );
           nodes[nodes.length - 1].focus();
-        }, 100);
+        }, 200);
       }
     }
   }, [descriptionsLength]);

@@ -45,7 +45,7 @@ class ProtectionButtonsComponent extends Component {
     const restrictedColor = "negative";
 
     return (
-      <Button.Group widths="2">
+      <Button.Group widths="2" role="group" aria-labelledby={this.props.ariaLabelledby}>
         <Button
           className={`${publicColor} ${!active ? "basic" : ""}`}
           data-testid="protection-buttons-component-public"

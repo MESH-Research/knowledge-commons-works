@@ -9,11 +9,10 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, Icon } from "semantic-ui-react";
-
 import {
   SelectField,
   TextField,
-} from "react-invenio-forms";
+} from "@js/invenio_modular_deposit_form/replacement_components";
 import { i18next } from "@translations/i18next";
 import { FieldArray, useFormikContext } from "formik";
 import { SingleLanguageSelector } from "./shared_components/SingleLanguageSelector";
@@ -96,14 +95,14 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
               <Form.Group key={index} className="additional-titles-item-row">
                 <TextField
                   fieldPath={`${fieldPathPrefix}.title`}
-                  label={`${titleWord} title`}
+                  label={i18next.t(`${titleWord} title`)}
                   id={`${fieldPathPrefix}.title`}
                   required
                   width={7}
                 />
                 <SelectField
                   fieldPath={`${fieldPathPrefix}.type`}
-                  label="Type"
+                  label={i18next.t("Type")}
                   id={`${fieldPathPrefix}.type`}
                   optimized
                   options={options.type}
@@ -140,7 +139,7 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
             id={`${fieldPath}.add-translated-button`}
           >
             <Icon name="add" />
-            Add translated title
+            {i18next.t("Add translated title")}
           </Button>
           <Button
             type="button"
@@ -151,7 +150,7 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
             id={`${fieldPath}.add-alternate-button`}
           >
             <Icon name="add" />
-            Add alternative title
+            {i18next.t("Add alternative title")}
           </Button>
         </>
       )}
