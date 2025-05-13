@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Known Issues" href="known_issues.html" /><link rel="prev" title="Feature Highlights" href="feature_highlights.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Changes - Knowledge Commons Works 0.5.0 documentation</title>
+        <title>Changes - Knowledge Commons Works 0.5.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Knowledge Commons Works 0.5.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Knowledge Commons Works 0.5.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.5.0 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.5.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -278,12 +278,17 @@
 <!-- Copyright (C) 2024 Mesh Research. -->
 <section id="changes">
 <h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
-<section id="not-yet-released">
-<h2>Not yet released<a class="headerlink" href="#not-yet-released" title="Link to this heading">¶</a></h2>
+<section id="id1">
+<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Removed BETA status from the site.</p>
 <ul>
 <li><p>Also changed the welcome email templates to remove the BETA status.</p></li>
+</ul>
+</li>
+<li><p>Upload form</p>
+<ul>
+<li><p>Improved validation of the AdditionalTitlesField and AdditionalDescriptionsField.</p></li>
 </ul>
 </li>
 <li><p>Bug fixes</p>
@@ -291,12 +296,24 @@
 <li><p>Improved the search used by the “My Works” dashboard tab.</p></li>
 <li><p>Fixed bugs in upload form error handling.</p></li>
 <li><p>Fixed minor layout issues in the upload form.</p></li>
-<li><p>Fixed a bug where the languages field was not being populated correctly from the formik state.</p></li>
+<li><p>Fixed a bug where the languages field was not being populated correctly from the client-side form state.</p></li>
+<li><p>Updated the language subfield of AdditionalTitlesField and AdditionalDescriptionsField to use a new SingleLanguageSelector component
+that also populates and preserves the value properly from the client-side form state.</p></li>
+</ul>
+</li>
+<li><p>Themeing</p>
+<ul>
+<li><p>Minor tweaks to the alignment in AdditionalDescriptionsField</p></li>
 </ul>
 </li>
 <li><p>Testing</p>
 <ul>
-<li><p>Added new jest tests for upload form validation and the languages field.</p></li>
+<li><p>Added new jest tests for upload form validation, the languages field, the access rights field, and the additional descriptions and additional titles fields.</p></li>
+</ul>
+</li>
+<li><p>Documentation</p>
+<ul>
+<li><p>Added developer documentation of workflow for adding a new custom extension to KCWorks.</p></li>
 </ul>
 </li>
 </ul>
@@ -717,7 +734,7 @@ or creating a new version</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changes</a><ul>
-<li><a class="reference internal" href="#not-yet-released">Not yet released</a></li>
+<li><a class="reference internal" href="#id1">0.5.1 (2025-05-13)</a></li>
 <li><a class="reference internal" href="#beta13-2025-05-05">0.5.0-beta13 (2025-05-05)</a></li>
 <li><a class="reference internal" href="#beta12-2025-04-30">0.4.0-beta12 (2025-04-30)</a></li>
 <li><a class="reference internal" href="#beta11-2025-03-14">0.3.8-beta11 (2025-03-14)</a></li>
@@ -740,7 +757,7 @@ or creating a new version</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=1dd76d02"></script>
+</div><script src="_static/documentation_options.js?v=b9afe91b"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
