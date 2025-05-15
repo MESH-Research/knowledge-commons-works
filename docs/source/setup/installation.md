@@ -198,3 +198,13 @@ Here is a list of the variables that you need to set in your `.invenio.private` 
 services_setup = True
 instance_path = /opt/invenio/var/instance
 ```
+
+## Importing test data
+
+To import test data into your local instance, you can use the `import_test_data` command. This command will import records from the production API and create a Knowledge Commons community if it doesn't exist. The new records will be added to the Knowledge Commons community. From inside the `kcworks-ui` container, run the following command:
+
+```shell
+invenio kcworks_records import-test-records <email> <number-of-records>
+```
+
+This will import the specified number of records from the production API and add them to the Knowledge Commons community, owned by the user with the specified email address. (The email address must be an existing user in the local instance and must have the "owner" role for the Knowledge Commons community.)

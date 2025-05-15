@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2025-05-29 00:04-0400\n"
+"POT-Creation-Date: 2025-05-15 14:14-0400\n"
 "PO-Revision-Date: 2025-04-24 10:38-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -821,7 +821,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/ext.py:178
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/ext.py:178
-#: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/details/about/index.html:24
+#: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/details/about/index.html:26
 msgid "About"
 msgstr ""
 
@@ -1218,19 +1218,19 @@ msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/templates/semantic-ui/invenio_communities/details/about/index.html:19
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/about/index.html:19
-#: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/details/about/index.html:35
+#: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/details/about/index.html:39
 msgid "Awards"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/templates/semantic-ui/invenio_communities/details/about/index.html:35
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/about/index.html:35
-#: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/details/about/index.html:51
+#: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/details/about/index.html:55
 msgid "Visit external website"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/templates/semantic-ui/invenio_communities/details/about/index.html:36
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/about/index.html:36
-#: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/details/about/index.html:52
+#: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/details/about/index.html:56
 msgid "Opens in new tab"
 msgstr ""
 
