@@ -6,6 +6,7 @@ from pprint import pformat
 import click
 from flask.cli import with_appcontext
 from kcworks.services.records.bulk_operations import update_community_records_metadata
+from kcworks.services.records.test_data import import_test_records
 
 
 @click.command("bulk-update")
@@ -19,9 +20,9 @@ def bulk_update(community_id: str, metadata_field: str, new_value: str) -> None:
     Parameters:
         community_id (str): The ID of the community whose records should be updated
         metadata_field (str): The metadata field to update (e.g. 'metadata.title')
-        new_value (str): The new value to set for the field. If it's a valid Python literal
-            (e.g. '"string"', '123', '["list", "of", "items"]'), it will be parsed as such.
-            Otherwise, it will be treated as a string.
+        new_value (str): The new value to set for the field. If it's a valid Python
+            literal (e.g. '"string"', '123', '["list", "of", "items"]'), it will be
+            parsed as such. Otherwise, it will be treated as a string.
     """
     try:
         # First try to parse as a Python literal
@@ -55,3 +56,27 @@ def bulk_update(community_id: str, metadata_field: str, new_value: str) -> None:
         print("\nErrors:")
         for error in results["errors"]:
             print(f"- {error}")
+
+
+@click.command("import-test-records")
+@click.argument("email", type=str, required=True)
+@click.argument("count", type=int, default=10)
+@with_appcontext
+def import_test_records_command(email: str, count: int) -> None:
+    """Import test records from production.
+
+    Parameters:
+        email (str): Email address of the user who will be importing the records.
+        count (int): Number of records to import (default: 10).
+    """
+    click.secho(f"Starting import of {count} records as {email}...", fg="blue")
+
+    try:
+        import_test_records(
+            count=count,
+            importer_email=email,
+        )
+        click.secho("Successfully completed record import!", fg="green")
+    except Exception as e:
+        click.secho(f"Failed to import records: {str(e)}", fg="red", err=True)
+        raise click.Abort()

@@ -6,18 +6,23 @@
 
 """Integration tests for the test data import functionality."""
 
-import pytest
-from invenio_access.permissions import system_identity
-from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from collections.abc import Callable
 from unittest.mock import patch
 
-from invenio_stats_dashboard.services.records.test_data import (
+from flask_sqlalchemy import SQLAlchemy
+from invenio_access.permissions import authenticated_user, system_identity
+from invenio_access.utils import get_identity
+from invenio_communities.utils import load_community_needs
+from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from kcworks.services.records.test_data import (
     fetch_production_records,
     import_test_records,
 )
 
+from tests.conftest import RunningApp
 
-def test_fetch_production_records(running_app):
+
+def test_fetch_production_records(running_app: RunningApp):
     """Test fetching records from production."""
     records = fetch_production_records(count=5)
     assert len(records) == 5
@@ -59,19 +64,34 @@ MOCK_RECORD = {
 }
 
 
-@patch("invenio_stats_dashboard.services.records.test_data.fetch_production_records")
+@patch("kcworks.services.records.test_data.fetch_production_records")
 def test_import_test_records(
-    mock_fetch,
-    running_app,
-    search_clear,
-    db,
+    mock_fetch: Callable,
+    running_app: RunningApp,
+    search_clear: Callable,
+    db: SQLAlchemy,
+    celery_worker: Callable,
+    mock_send_remote_api_update_fixture: Callable,
+    mailbox: Callable,
+    user_factory: Callable,
 ):
     """Test importing records from production."""
     # Mock the fetch_production_records function
     mock_fetch.return_value = [MOCK_RECORD] * 3
 
+    # Create a user to import the records
+    submitter = user_factory(
+        email="test@example.com",
+        password="test",
+        saml_src="",
+        saml_id="",
+    )
+    identity = get_identity(submitter.user)
+    identity.provides.add(authenticated_user)
+    load_community_needs(identity)
+
     # Import 3 records
-    import_test_records(count=3)
+    import_test_records(count=3, importer_email="test@example.com")
 
     # Verify records were imported
     result = records_service.search(system_identity, params={"size": 10})
@@ -86,58 +106,16 @@ def test_import_test_records(
         )
         assert record.data["is_published"]
 
-
-@patch("invenio_stats_dashboard.services.records.test_data.fetch_production_records")
-def test_import_test_records_with_review(
-    mock_fetch,
-    running_app,
-    search_clear,
-    db,
-):
-    """Test importing records with review required."""
-    # Mock the fetch_production_records function
-    mock_fetch.return_value = [MOCK_RECORD] * 2
-
-    # Import 2 records with review required
-    import_test_records(count=2, review_required=True)
-
-    # Verify records were imported
-    result = records_service.search(system_identity, params={"size": 10})
-    assert result.total == 2
-
-    # Check each record
-    for hit in result.hits:
-        record = records_service.read(system_identity, hit["id"])
-        assert record.data["metadata"]["title"] == "Test Record Title"
-        assert (
-            record.data["metadata"]["resource_type"]["id"] == "textDocument-bookSection"
-        )
-        assert not record.data["is_published"]  # Should be in review state
-
-
-@patch("invenio_stats_dashboard.services.records.test_data.fetch_production_records")
-def test_import_test_records_with_strict_validation(
-    mock_fetch,
-    running_app,
-    search_clear,
-    db,
-):
-    """Test importing records with strict validation."""
-    # Mock the fetch_production_records function
-    mock_fetch.return_value = [MOCK_RECORD] * 2
-
-    # Import 2 records with strict validation
-    import_test_records(count=2, strict_validation=True)
-
-    # Verify records were imported
-    result = records_service.search(system_identity, params={"size": 10})
-    assert result.total == 2
-
-    # Check each record
-    for hit in result.hits:
-        record = records_service.read(system_identity, hit["id"])
-        assert record.data["metadata"]["title"] == "Test Record Title"
-        assert (
-            record.data["metadata"]["resource_type"]["id"] == "textDocument-bookSection"
-        )
-        assert record.data["is_published"]
+        # Verify files were uploaded correctly
+        assert record.data["files"]["enabled"]
+        assert "test.pdf" in record.data["files"]["entries"]
+        file_entry = record.data["files"]["entries"]["test.pdf"]
+        assert file_entry["key"] == "test.pdf"
+        assert file_entry["mimetype"] == "application/pdf"
+        assert file_entry["size"] == 1024
+        assert file_entry["status"] == "completed"
+        assert "checksum" in file_entry
+        assert "file_id" in file_entry
+        assert "version_id" in file_entry
+        assert "bucket_id" in file_entry
+        assert "storage_class" in file_entry
