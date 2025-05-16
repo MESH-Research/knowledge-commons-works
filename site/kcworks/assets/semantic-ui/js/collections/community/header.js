@@ -76,6 +76,13 @@ const CommunityDetailsHeader = ({
       url: `/collections/${slug}/members`,
     },
     {
+      name: "stats",
+      text: "Stats",
+      icon: "chart line",
+      permissions: canRead,
+      url: `/collections/${slug}/stats`,
+    },
+    {
       name: "requests",
       text: "Requests",
       icon: "inbox",
