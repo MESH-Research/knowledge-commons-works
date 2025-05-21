@@ -250,7 +250,7 @@
   }
 }
 
-
+.communities-stats,
 .communities-settings,
 .communities-members {
   .ui.vertical.menu {
@@ -259,6 +259,7 @@
     box-shadow: none;
 
     .item {
+      border-left: 2px solid @sidebarBorderColor;
       &.active {
         background-color: transparent;
         border-left: 2px solid @primaryColor;
@@ -274,6 +275,11 @@
       }
       &:before {
         background-color: transparent;
+      }
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: @sidebarBackgroundColor;
       }
     }
   }
