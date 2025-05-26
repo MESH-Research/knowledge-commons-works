@@ -1,7 +1,35 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from datetime import datetime
-from invenio_stats_dashboard.aggregations import get_record_counts_for_periods
+from invenio_stats.proxies import current_stats
+from invenio_stats_dashboard.aggregations import get_records_created_for_periods
+
+
+def test_aggregations_registered(running_app):
+    """Test that the aggregations are registered."""
+    app = running_app.app
+    # check that the community stats aggregations are in the config
+    assert "community-records-snapshot-agg" in app.config["STATS_AGGREGATIONS"].keys()
+    assert "community-records-delta-agg" in app.config["STATS_AGGREGATIONS"].keys()
+    assert (
+        "community-records-usage-snapshot-agg"
+        in app.config["STATS_AGGREGATIONS"].keys()
+    )
+    assert (
+        "community-records-usage-delta-agg" in app.config["STATS_AGGREGATIONS"].keys()
+    )
+    # check that the aggregations are registered by invenio-stats
+    assert current_stats.aggregations["community-records-snapshot-agg"]
+    assert current_stats.aggregations["community-records-delta-agg"]
+    assert current_stats.aggregations["community-records-usage-snapshot-agg"]
+    assert current_stats.aggregations["community-records-usage-delta-agg"]
+    # ensure that the default aggregations are still registered
+    assert "file-download-agg" in app.config["STATS_AGGREGATIONS"]
+    assert "record-view-agg" in app.config["STATS_AGGREGATIONS"]
+
+
+def test_index_templates_registered(running_app):
+    """Test that the index templates have been put to the search index."""
+    pass
 
 
 @pytest.fixture
@@ -83,7 +111,7 @@ def test_get_record_counts_for_periods_default_client(
     with patch(
         "invenio_stats_dashboard.aggregations.current_search_client", mock_client
     ):
-        result = get_record_counts_for_periods("2024-01-01", "2024-12-31")
+        result = get_records_created_for_periods("2024-01-01", "2024-12-31")
 
         # Verify the structure of the result
         assert "by_year" in result
@@ -117,7 +145,7 @@ def test_get_record_counts_for_periods_custom_client(
     with patch(
         "invenio_stats_dashboard.aggregations.OpenSearch", return_value=mock_client
     ):
-        result = get_record_counts_for_periods(
+        result = get_records_created_for_periods(
             "2024-01-01", "2024-12-31", search_domain="https://custom-search-domain.com"
         )
 
@@ -158,7 +186,7 @@ def test_get_record_counts_for_periods_multiple_scrolls(
     with patch(
         "invenio_stats_dashboard.aggregations.current_search_client", mock_client
     ):
-        result = get_record_counts_for_periods("2024-01-01", "2024-12-31")
+        result = get_records_created_for_periods("2024-01-01", "2024-12-31")
 
         # Verify the structure of the result
         assert "by_year" in result
