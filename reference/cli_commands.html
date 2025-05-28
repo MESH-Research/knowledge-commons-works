@@ -332,38 +332,10 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 <li><p><strong>WARNING:</strong> This data <em>only</em> exists in the OpenSearch indices. It is not backed up by the database and will be lost if the indices are destroyed. Use this command with extreme caution.</p></li>
 </ul>
 </section>
-<section id="invenio-kcworks-records">
-<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span></code><a class="headerlink" href="#invenio-kcworks-records" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>provided by the main KCWorks package</strong> (kcworks/site/cli.py and kcworks/services/records/cli.py)</p></li>
-</ul>
-<section id="invenio-kcworks-records-bulk-update">
-<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">bulk-update</span></code><a class="headerlink" href="#invenio-kcworks-records-bulk-update" title="Link to this heading">¶</a></h4>
-<p>Updates a single metadata field to a single new fixed value for <strong>every</strong> record in a community.</p>
-<p>Arguments:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">community_id</span></code>: the ID (the UUID) of the collection to update.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">metadata_field</span></code>: the field to update.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">new_value</span></code>: the new value to set for the field.</p></li>
-</ul>
-<p>Example:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>bulk-update<span class="w"> </span><span class="m">1234567890</span><span class="w"> </span>metadata.title<span class="w"> </span><span class="s2">&quot;New Title&quot;</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Note that the <code class="docutils literal notranslate"><span class="pre">new_value</span></code> argument may be either a python literal or a plain string. Anything that cannot be parsed as a python literal will be treated as a plain string.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Also note that the <code class="docutils literal notranslate"><span class="pre">community_id</span></code> argument is the ID (the UUID) of the collection, not the collection name or its url slug. If you’re not sure what the collection ID is, you can find it by looking at the api response for the collection.</p>
-</div>
-</section>
-</section>
 <section id="invenio-kcworks-users">
 <h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span></code><a class="headerlink" href="#invenio-kcworks-users" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p><strong>provided by the main KCWorks package</strong> (kcworks/site/cli.py and kcworks/services/users/cli.py)</p></li>
+<li><p><strong>provided by the main KCWorks package</strong> (kcworks/site/cli.py)</p></li>
 </ul>
 <section id="invenio-kcworks-users-name-parts">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code><a class="headerlink" href="#invenio-kcworks-users-name-parts" title="Link to this heading">¶</a></h4>
@@ -496,10 +468,6 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 <li><a class="reference internal" href="#kcworks-custom-cli-commands">KCWorks Custom CLI Commands</a><ul>
 <li><a class="reference internal" href="#invenio-importer"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">importer</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-index-destroy"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-index</span> <span class="pre">destroy</span></code></a></li>
-<li><a class="reference internal" href="#invenio-kcworks-records"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span></code></a><ul>
-<li><a class="reference internal" href="#invenio-kcworks-records-bulk-update"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">bulk-update</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#invenio-kcworks-users"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span></code></a><ul>
 <li><a class="reference internal" href="#invenio-kcworks-users-name-parts"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-users-read"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code></a></li>
