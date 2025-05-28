@@ -26,6 +26,9 @@ from invenio_record_importer_kcworks.services.stats.aggregations import (
 )
 from invenio_search.proxies import current_search, current_search_client
 from invenio_stats.contrib.event_builders import build_file_unique_id
+from invenio_stats_dashboard.aggregations import (
+    register_aggregations as register_community_aggregations,
+)
 from invenio_stats.processors import EventsIndexer, anonymize_user, flag_robots
 from invenio_stats.queries import TermsQuery
 
@@ -144,6 +147,7 @@ test_config_stats["STATS_AGGREGATIONS"] = {
             "query_modifiers": [lambda query, **_: query.filter("term", via_api=False)],
         },
     },
+    **register_community_aggregations(),
 }
 
 
@@ -163,11 +167,15 @@ def create_stats_indices(app):
     try:
         results = []
         for template_path in template_paths:
+            current_app.logger.info(f"Registering template from path: {template_path}")
             results.append(current_search.register_templates(template_path))
         for result in results:
             for index_name, index_template in result.items():
+                current_app.logger.info(f"Registering template for index: {index_name}")
+                current_app.logger.info(f"Template content: {index_template}")
                 templates[index_name] = index_template
         for index_name, index_template in templates.items():
+            current_app.logger.info(f"Putting template for index: {index_name}")
             current_search._put_template(
                 index_name,
                 index_template,
@@ -175,9 +183,9 @@ def create_stats_indices(app):
                 ignore=None,
             )
     except Exception as e:
-        current_app.logger.error("An error occured while creating stats indices.")
+        current_app.logger.error("An error occurred while creating stats indices.")
         current_app.logger.error(e)
-        print("An error occured while creating stats indices.")
+        print("An error occurred while creating stats indices.")
         print(e)
 
 
