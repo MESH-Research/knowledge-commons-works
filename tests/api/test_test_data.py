@@ -6,6 +6,8 @@
 
 """Integration tests for the test data import functionality."""
 
+from copy import deepcopy
+from pathlib import Path
 from collections.abc import Callable
 from unittest.mock import patch
 
@@ -14,6 +16,7 @@ from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_communities.utils import load_community_needs
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from invenio_record_importer_kcworks.types import FileData
 from kcworks.services.records.test_data import (
     fetch_production_records,
     import_test_records,
@@ -58,15 +61,20 @@ MOCK_RECORD = {
     "files": {
         "enabled": True,
         "entries": {
-            "test.pdf": {"key": "test.pdf", "mimetype": "application/pdf", "size": 1024}
+            "sample.pdf": {
+                "key": "sample.pdf",
+                "mimetype": "application/pdf",
+                "size": 13264,
+                "links": {
+                    "self": "https://example.com/sample.pdf",
+                },
+            }
         },
     },
 }
 
 
-@patch("kcworks.services.records.test_data.fetch_production_records")
 def test_import_test_records(
-    mock_fetch: Callable,
     running_app: RunningApp,
     search_clear: Callable,
     db: SQLAlchemy,
@@ -76,46 +84,81 @@ def test_import_test_records(
     user_factory: Callable,
 ):
     """Test importing records from production."""
-    # Mock the fetch_production_records function
-    mock_fetch.return_value = [MOCK_RECORD] * 3
+    app = running_app.app
+    mock_records = [
+        MOCK_RECORD,
+        {**deepcopy(MOCK_RECORD), "id": "gmj0c-9y496-2"},
+        {**deepcopy(MOCK_RECORD), "id": "gmj0c-9y496-3"},
+    ]
 
-    # Create a user to import the records
-    submitter = user_factory(
-        email="test@example.com",
-        password="test",
-        saml_src="",
-        saml_id="",
-    )
-    identity = get_identity(submitter.user)
-    identity.provides.add(authenticated_user)
-    load_community_needs(identity)
-
-    # Import 3 records
-    import_test_records(count=3, importer_email="test@example.com")
-
-    # Verify records were imported
-    result = records_service.search(system_identity, params={"size": 10})
-    assert result.total == 3
-
-    # Check each record
-    for hit in result.hits:
-        record = records_service.read(system_identity, hit["id"])
-        assert record.data["metadata"]["title"] == "Test Record Title"
-        assert (
-            record.data["metadata"]["resource_type"]["id"] == "textDocument-bookSection"
+    with patch(
+        "kcworks.services.records.test_data.fetch_production_records"
+    ) as mock_fetch:
+        mock_fetch.return_value = mock_records
+        app.logger.error(f"MOCK_RECORD type: {type(MOCK_RECORD)}")
+        app.logger.error(f"First record type: {type(mock_records[0])}")
+        app.logger.error(f"Second record type: {type(mock_records[1])}")
+        app.logger.error(f"Third record type: {type(mock_records[2])}")
+        app.logger.error(
+            f"mock_fetch return value type: {type(mock_fetch.return_value)}"
         )
-        assert record.data["is_published"]
+        app.logger.error(f"mock_fetch return value: {mock_fetch.return_value}")
 
-        # Verify files were uploaded correctly
-        assert record.data["files"]["enabled"]
-        assert "test.pdf" in record.data["files"]["entries"]
-        file_entry = record.data["files"]["entries"]["test.pdf"]
-        assert file_entry["key"] == "test.pdf"
-        assert file_entry["mimetype"] == "application/pdf"
-        assert file_entry["size"] == 1024
-        assert file_entry["status"] == "completed"
-        assert "checksum" in file_entry
-        assert "file_id" in file_entry
-        assert "version_id" in file_entry
-        assert "bucket_id" in file_entry
-        assert "storage_class" in file_entry
+        myfile = (
+            Path(__file__).parent.parent / "helpers" / "sample_files" / "sample.pdf"
+        )
+        with myfile.open("rb") as file_bytes:
+            myfile_response = FileData(
+                filename=next(iter(MOCK_RECORD["files"]["entries"].keys())),
+                content_type="application/pdf",
+                mimetype="application/pdf",
+                mimetype_params={},
+                stream=file_bytes,
+            )
+
+            with patch(
+                "kcworks.services.records.test_data.download_file"
+            ) as mock_download:
+                mock_download.side_effect = deepcopy(myfile_response)
+
+                # Create a user to import the records
+                submitter = user_factory(
+                    email="test@example.com",
+                    password="test",
+                    saml_src="",
+                    saml_id="",
+                )
+                identity = get_identity(submitter.user)
+                identity.provides.add(authenticated_user)
+                load_community_needs(identity)
+
+                # Import 3 records
+                import_test_records(count=3, importer_email="test@example.com")
+
+                # Verify records were imported
+                result = records_service.search(system_identity, params={"size": 10})
+                assert result.total == 3
+
+                # Check each record
+                for hit in result.hits:
+                    record = records_service.read(system_identity, hit["id"])
+                    assert record.data["metadata"]["title"] == "Test Record Title"
+                    assert (
+                        record.data["metadata"]["resource_type"]["id"]
+                        == "textDocument-bookSection"
+                    )
+                    assert record.data["is_published"]
+
+                    # Verify files were uploaded correctly
+                    assert record.data["files"]["enabled"]
+                    assert "sample.pdf" in record.data["files"]["entries"]
+                    file_entry = record.data["files"]["entries"]["sample.pdf"]
+                    assert file_entry["key"] == "sample.pdf"
+                    assert file_entry["mimetype"] == "application/pdf"
+                    assert file_entry["size"] == 13264
+                    assert file_entry["status"] == "completed"
+                    assert "checksum" in file_entry
+                    assert "file_id" in file_entry
+                    assert "version_id" in file_entry
+                    assert "bucket_id" in file_entry
+                    assert "storage_class" in file_entry

@@ -153,6 +153,10 @@ def import_test_records(
 
     # Fetch records from production
     records = fetch_production_records(count)
+    app.logger.error(f"Records type: {type(records)}")
+    app.logger.error(
+        f"First record type: {type(records[0]) if records else 'No records'}"
+    )
 
     # This is usually run from a CLI command, so we need to add user needs
     load_community_needs(importing_identity)
@@ -160,13 +164,13 @@ def import_test_records(
 
     # Process each record
     for record in records:
-
         # Download files if present
         file_data = []
-        if "files" in record["metadata"] and record["metadata"]["files"].get(
-            "enabled", False
-        ):
-            for file_entry in record["metadata"]["files"].get("entries", {}).values():
+        app.logger.error(f"Record: {record}")
+        if "files" in record.keys() and record["files"].get("enabled", False):
+            app.logger.error(f"Downloading files for record {record['id']}")
+            # Files are in record['files']['entries'], not record['metadata']['files']
+            for file_entry in record["files"]["entries"].values():
                 if "links" in file_entry and "self" in file_entry["links"]:
                     file_url = file_entry["links"]["self"]
                     filename = file_entry.get("key", "file")
