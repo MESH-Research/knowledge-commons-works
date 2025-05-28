@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2025-05-06 17:40-0400\n"
+"POT-Creation-Date: 2025-05-28 19:13-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -321,6 +321,7 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:797
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-detail-page/build/lib/invenio_modular_detail_page/config.py:134
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:134
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:61
 msgid "Content"
 msgstr ""
 
@@ -1342,7 +1343,7 @@ msgstr ""
 
 #. NOTE: This is a note to a translator.
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-deposit-form/build/lib/invenio_modular_deposit_form/ext.py:39
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/ext.py:39
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/ext.py:38
 msgid "A translation string"
 msgstr ""
 
@@ -3057,6 +3058,49 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-records-resources/invenio_records_resources/services/records/queryparser/transformer.py:67
 #, python-brace-format
 msgid "Invalid search field: {field_name}."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:31
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:39
+msgid "Statistics"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:32
+msgid "This is the global stats dashboard."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:40
+msgid "This is the community stats dashboard."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:63
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:204
+msgid "Cumulative totals as of"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:159
+msgid "Contributions"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:161
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:293
+msgid "Activity during"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:203
+msgid "Traffic"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:291
+msgid "Usage"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/ext.py:48
+msgid "Stats"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/templates/semantic-ui/invenio_stats_dashboard/stats_dashboard.html:8
+msgid "Stats Dashboard"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/awards/config.py:49

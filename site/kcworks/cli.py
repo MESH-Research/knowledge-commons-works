@@ -26,6 +26,7 @@ from kcworks.services.users.cli import groups as groups_command
 from kcworks.services.users.cli import name_parts as name_parts_command
 from kcworks.services.users.cli import read as read_command
 from kcworks.services.users.cli import user_groups as user_groups_command
+from kcworks.services.records.cli import kcworks_records as records_command
 
 UNMANAGED_INDICES = [
     "kcworks-stats-record-view",
@@ -106,3 +107,7 @@ def destroy_indices(force):
     ) as bar:
         for name, _response in bar:
             bar.label = name
+
+
+# Register the records command group
+kcworks_users.add_command(records_command)

@@ -8,9 +8,12 @@
 """Test fixtures for records."""
 
 import copy
+import mimetypes
 import re
 from datetime import timedelta
+from pathlib import Path
 from pprint import pformat
+from tempfile import SpooledTemporaryFile
 from typing import Any
 
 import arrow
@@ -21,6 +24,8 @@ from flask_principal import Identity
 from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from invenio_record_importer_kcworks.services.files import FilesHelper
+from invenio_record_importer_kcworks.types import FileData
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from invenio_records_resources.services.records.results import RecordItem
 
@@ -56,6 +61,7 @@ def minimal_published_record_factory(running_app, db, record_metadata):
         identity: Identity | None = None,
         community_list: list[str] | None = None,
         set_default: bool = False,
+        file_paths: list[str] | None = None,
         **kwargs: Any,
     ) -> RecordItem:
         """Create a minimal published record.
@@ -69,6 +75,8 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                 the record (if any). Must be community UUIDs rather than slugs.
             set_default (bool, optional): If True, the first community in the list
                 will be set as the default community for the record.
+            file_paths (list[str], optional): A list of strings representing the paths
+                to the files to add to the record.
 
         Returns:
             The published record as a service layer RecordItem.
@@ -76,6 +84,44 @@ def minimal_published_record_factory(running_app, db, record_metadata):
         input_metadata = metadata or record_metadata().metadata_in
         identity = identity or system_identity
         draft = records_service.create(identity, input_metadata)
+
+        if file_paths:
+            current_app.logger.error(f"Adding files to record {draft.id}")
+            files_helper = FilesHelper(is_draft=True)
+            file_objects = []
+            for file_path in file_paths:
+                current_app.logger.error(
+                    f"Adding file {file_path} to record {draft.id}"
+                )
+                with open(file_path, "rb") as f:
+                    file_content = f.read()
+                    # Create a SpooledTemporaryFile and write the file content to it
+                    spooled_file = SpooledTemporaryFile()
+                    with open(file_path, "rb") as f:
+                        spooled_file.write(file_content)
+                    spooled_file.seek(0)  # Reset file pointer to beginning
+
+                    current_app.logger.error(f"Opening file {file_path}")
+                    mimetype = mimetypes.guess_type(file_path)[0] or "application/pdf"
+                    current_app.logger.error(f"Mimetype: {mimetype}")
+                    file_object = FileData(
+                        filename=Path(file_path).name,
+                        content_type=mimetype,
+                        mimetype=mimetype,
+                        mimetype_params={},
+                        stream=spooled_file,
+                    )
+                    current_app.logger.error(f"File object: {file_object}")
+                    file_objects.append(file_object)
+
+            file_result = files_helper.handle_record_files(
+                metadata=draft.to_dict(),
+                file_data=input_metadata.get("files", {}).get("entries", {}),
+                existing_record=None,
+                files=file_objects,
+            )
+            current_app.logger.error(f"File result: {pformat(file_result)}")
+
         published = records_service.publish(identity, draft.id)
         if community_list:
             record = published._record

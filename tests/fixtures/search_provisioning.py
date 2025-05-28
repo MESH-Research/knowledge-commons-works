@@ -9,6 +9,7 @@
 
 import pytest
 from celery import shared_task
+import arrow
 
 
 @shared_task(bind=True)
@@ -31,7 +32,15 @@ def mock_send_remote_api_update(
 ):
     """Mock the send_remote_api_update task."""
     record = record or {}
-    pass
+    if service_type == "rdm_record" and service_method == "publish":
+        # Simulate a successful remote API update
+        record["custom_fields"] = record.get("custom_fields", {})
+        record["custom_fields"]["kcr:commons_search_recid"] = "2E9SqY0Bdd2QL-HGeUuA"
+        record["custom_fields"]["kcr:commons_search_updated"] = arrow.utcnow().format(
+            "YYYY-MM-DDTHH:mm:ssZ"
+        )
+    # Return a tuple of (response_text, callback_result) to match the real function
+    return "OK", None
 
 
 @pytest.fixture
