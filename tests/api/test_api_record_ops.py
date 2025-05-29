@@ -12,7 +12,6 @@ import re
 from collections.abc import Callable
 from datetime import timedelta
 from pathlib import Path
-from pprint import pformat
 
 import arrow
 import pytest
@@ -436,7 +435,6 @@ def test_record_published_update_service(
     mock_send_remote_api_update_fixture: Callable,
 ):
     """Test that a user can update a published record via the API."""
-    app = running_app.app
     u = user_factory(
         email=user_data_set["user1"]["email"],
         password="test",
