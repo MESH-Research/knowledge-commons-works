@@ -6,6 +6,7 @@
 README.md
 feature_highlights.md
 changelog.md
+roadmap.md
 known_issues.md
 admin_guide/index.md
 setup/index.md
