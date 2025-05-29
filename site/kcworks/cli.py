@@ -20,6 +20,7 @@ import sys
 import click
 from flask.cli import with_appcontext
 from invenio_search.cli import abort_if_false, search_version_check
+from kcworks.services.records.cli import kcworks_records as records_command
 from kcworks.services.search.indices import delete_index
 from kcworks.services.users.cli import group_users as group_users_command
 from kcworks.services.users.cli import groups as groups_command
@@ -106,3 +107,7 @@ def destroy_indices(force):
     ) as bar:
         for name, _response in bar:
             bar.label = name
+
+
+# Register the records command group
+kcworks_users.add_command(records_command)

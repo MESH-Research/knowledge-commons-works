@@ -21,6 +21,7 @@ from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 
 from tests.conftest import RunningApp
 
@@ -96,7 +97,6 @@ class TestDraftCreation:
             assert response.status_code == 201
 
             actual_draft = response.json
-            app.logger.debug(f"actual_draft: {pformat(actual_draft)}")
 
             if self.errors or "errors" in actual_draft.keys():
                 assert actual_draft["errors"] == self.errors
@@ -183,9 +183,6 @@ class TestDraftCreation:
         metadata = record_metadata(metadata_in=self.metadata_source, owner_id=user_id)
         result = minimal_draft_record_factory(metadata=metadata.metadata_in)
         actual_draft = result.to_dict()
-        running_app.app.logger.debug(f"actual_draft: {pformat(actual_draft)}")
-        running_app.app.logger.info(f"actual_draft: {pformat(actual_draft)}")
-        running_app.app.logger.warning(f"actual_draft: {pformat(actual_draft)}")
         assert metadata.compare_draft(
             actual_draft, by_api=False, skip_fields=self.skip_fields
         )
@@ -231,6 +228,12 @@ class TestDraftCreationError(TestDraftCreation):
         return ["metadata.title", "metadata.resource_type"]
 
 
+@pytest.fixture
+def db_session_options():
+    """Configure database session options."""
+    return {"expire_on_commit": False}
+
+
 def test_record_publication_api(
     running_app: RunningApp,
     db: SQLAlchemy,
@@ -240,19 +243,22 @@ def test_record_publication_api(
     search_clear: Callable,
     celery_worker: Callable,
     mock_send_remote_api_update_fixture: Callable,
+    db_session_options: dict,
 ):
     """Test that a user can publish a draft record via the API."""
     app = running_app.app
-    metadata = TestRecordMetadata(app=app)
     u = user_factory(
         email=user_data_set["user1"]["email"],
         password="test",
+        admin=False,
         token=True,
-        admin=True,
+        saml_src=None,
+        saml_id=None,
     )
     user = u.user
     token = u.allowed_token
 
+    metadata = TestRecordMetadata(app=app, owner_id=user.id)
     with app.test_client() as client:
         logged_in_client = client_with_login(client, user)
         response = logged_in_client.post(
@@ -281,12 +287,13 @@ def test_record_publication_api(
         assert actual_published["versions"]["index"] == 1
         assert actual_published["status"] == "published"
 
+        # Compare the published metadata with the expected metadata
+        metadata.compare_published(actual_published, by_api=True, method="publish")
+
 
 def test_record_publication_service(
     running_app: RunningApp,
     db: SQLAlchemy,
-    client_with_login: Callable,
-    headers: dict,
     user_factory: Callable,
     search_clear: Callable,
     celery_worker: Callable,
@@ -355,7 +362,6 @@ def test_record_draft_update_api(
         actual_draft_id = actual_draft["id"]
 
         metadata.update_metadata({"metadata|title": "A Romans Story 2"})
-        app.logger.debug(f"metadata.metadata_in: {pformat(metadata.metadata_in)}")
         update_response = logged_in_client.put(
             f"{app.config['SITE_API_URL']}/records/{actual_draft_id}/draft",
             data=json.dumps(metadata.metadata_in),
@@ -419,18 +425,49 @@ def test_record_draft_update_service(
     assert actual_edited["revision_id"] == 7  # TODO: Why is this 7?
 
 
-@pytest.mark.skip(reason="Not implemented")
-def test_record_published_update(
+def test_record_published_update_service(
     running_app: RunningApp,
     db: SQLAlchemy,
-    client_with_login: Callable,
-    headers: dict,
+    record_metadata: Callable,
+    minimal_published_record_factory: Callable,
     user_factory: Callable,
     search_clear: Callable,
+    celery_worker: Callable,
     mock_send_remote_api_update_fixture: Callable,
 ):
     """Test that a user can update a published record via the API."""
-    pass
+    app = running_app.app
+    u = user_factory(
+        email=user_data_set["user1"]["email"],
+        password="test",
+        token=True,
+        admin=True,
+    )
+    user = u.user
+    identity = get_identity(user)
+    identity.provides.add(authenticated_user)
+
+    metadata = record_metadata(owner_id=user.id)
+
+    record = minimal_published_record_factory(
+        metadata=metadata.metadata_in, identity=identity
+    )
+    record_id = record.id
+
+    new_draft = records_service.edit(identity, record_id)
+    new_draft_data = copy.deepcopy(new_draft.data)
+    new_draft_data = replace_value_in_nested_dict(
+        new_draft_data, "metadata|title", "A Romans Story 2"
+    )
+
+    records_service.update_draft(identity, record_id, new_draft_data)
+
+    published_record = records_service.publish(identity, record_id)
+
+    assert published_record.to_dict()["metadata"]["title"] == "A Romans Story 2"
+
+    updated_record = records_service.read(system_identity, record_id)
+    assert updated_record.to_dict()["metadata"]["title"] == "A Romans Story 2"
 
 
 @pytest.mark.skip(reason="Not implemented")
@@ -574,8 +611,8 @@ def test_record_file_upload_api(
                     "files/sample.pdf"
                 ),
                 "commit": (
-                    f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/"
-                    "files/sample.pdf/commit"
+                    f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files/"
+                    "sample.pdf/commit"
                 ),
                 "iiif_api": (
                     f"{app.config['SITE_API_URL']}/iiif/draft:{draft_id}:sample.pdf"
@@ -792,7 +829,6 @@ def test_record_view_api(
                 },
             }
         )
-        app.logger.debug(f"metadata.metadata_in: {pformat(metadata.metadata_in)}")
         metadata.compare_published(actual=record, by_api=True)
         assert record["revision_id"] == 3
 
