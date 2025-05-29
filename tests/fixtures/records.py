@@ -107,13 +107,6 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                     )
                     file_objects.append(file_object)
 
-            file_result = files_helper.handle_record_files(
-                metadata=draft.to_dict(),
-                file_data=input_metadata.get("files", {}).get("entries", {}),
-                existing_record=None,
-                files=file_objects,
-            )
-
         published = records_service.publish(identity, draft.id)
         if community_list:
             record = published._record
