@@ -7,9 +7,9 @@
 
 """Search provisioning related pytest fixtures for testing."""
 
+import arrow
 import pytest
 from celery import shared_task
-import arrow
 
 
 @shared_task(bind=True)

@@ -97,7 +97,6 @@ class TestDraftCreation:
             assert response.status_code == 201
 
             actual_draft = response.json
-            app.logger.debug(f"actual_draft: {pformat(actual_draft)}")
 
             if self.errors or "errors" in actual_draft.keys():
                 assert actual_draft["errors"] == self.errors
@@ -184,9 +183,6 @@ class TestDraftCreation:
         metadata = record_metadata(metadata_in=self.metadata_source, owner_id=user_id)
         result = minimal_draft_record_factory(metadata=metadata.metadata_in)
         actual_draft = result.to_dict()
-        running_app.app.logger.debug(f"actual_draft: {pformat(actual_draft)}")
-        running_app.app.logger.info(f"actual_draft: {pformat(actual_draft)}")
-        running_app.app.logger.warning(f"actual_draft: {pformat(actual_draft)}")
         assert metadata.compare_draft(
             actual_draft, by_api=False, skip_fields=self.skip_fields
         )
@@ -251,7 +247,6 @@ def test_record_publication_api(
 ):
     """Test that a user can publish a draft record via the API."""
     app = running_app.app
-    metadata = TestRecordMetadata(app=app)
     u = user_factory(
         email=user_data_set["user1"]["email"],
         password="test",
@@ -263,35 +258,27 @@ def test_record_publication_api(
     user = u.user
     token = u.allowed_token
 
+    metadata = TestRecordMetadata(app=app, owner_id=user.id)
     with app.test_client() as client:
         logged_in_client = client_with_login(client, user)
-        app.logger.error("Creating draft record...")
         response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records",
             data=json.dumps(metadata.metadata_in),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
-        app.logger.error(f"Draft creation response: {pformat(response.json)}")
         assert response.status_code == 201
 
         actual_draft = response.json
         actual_draft_id = actual_draft["id"]
-        app.logger.error(f"Draft ID: {actual_draft_id}")
 
         publish_response = logged_in_client.post(
             f"{app.config['SITE_API_URL']}/records/{actual_draft_id}/draft"
             "/actions/publish",
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
-        app.logger.error(f"Publish response status: {publish_response.status_code}")
-        if publish_response.status_code != 202:
-            app.logger.error(
-                f"Publish response error: {pformat(publish_response.json)}"
-            )
         assert publish_response.status_code == 202
 
         actual_published = publish_response.json
-        app.logger.error(f"Published record: {pformat(actual_published)}")
         assert actual_published["id"] == actual_draft_id
         assert actual_published["is_published"]
         assert not actual_published["is_draft"]
@@ -301,7 +288,7 @@ def test_record_publication_api(
         assert actual_published["status"] == "published"
 
         # Compare the published metadata with the expected metadata
-        metadata.compare_published(actual_published, by_api=True)
+        metadata.compare_published(actual_published, by_api=True, method="publish")
 
 
 def test_record_publication_service(
@@ -375,7 +362,6 @@ def test_record_draft_update_api(
         actual_draft_id = actual_draft["id"]
 
         metadata.update_metadata({"metadata|title": "A Romans Story 2"})
-        app.logger.debug(f"metadata.metadata_in: {pformat(metadata.metadata_in)}")
         update_response = logged_in_client.put(
             f"{app.config['SITE_API_URL']}/records/{actual_draft_id}/draft",
             data=json.dumps(metadata.metadata_in),
@@ -459,7 +445,6 @@ def test_record_published_update_service(
     )
     user = u.user
     identity = get_identity(user)
-    app.logger.error(f"identity: {pformat(identity)}")
     identity.provides.add(authenticated_user)
 
     metadata = record_metadata(owner_id=user.id)
@@ -467,7 +452,6 @@ def test_record_published_update_service(
     record = minimal_published_record_factory(
         metadata=metadata.metadata_in, identity=identity
     )
-    running_app.app.logger.error(f"record: {pformat(record.to_dict())}")
     record_id = record.id
 
     new_draft = records_service.edit(identity, record_id)
@@ -845,7 +829,6 @@ def test_record_view_api(
                 },
             }
         )
-        app.logger.debug(f"metadata.metadata_in: {pformat(metadata.metadata_in)}")
         metadata.compare_published(actual=record, by_api=True)
         assert record["revision_id"] == 3
 

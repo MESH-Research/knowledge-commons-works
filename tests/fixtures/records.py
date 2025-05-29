@@ -7,9 +7,9 @@
 
 """Test fixtures for records."""
 
-import copy
 import mimetypes
 import re
+from copy import deepcopy
 from datetime import timedelta
 from pathlib import Path
 from pprint import pformat
@@ -86,13 +86,9 @@ def minimal_published_record_factory(running_app, db, record_metadata):
         draft = records_service.create(identity, input_metadata)
 
         if file_paths:
-            current_app.logger.error(f"Adding files to record {draft.id}")
             files_helper = FilesHelper(is_draft=True)
             file_objects = []
             for file_path in file_paths:
-                current_app.logger.error(
-                    f"Adding file {file_path} to record {draft.id}"
-                )
                 with open(file_path, "rb") as f:
                     file_content = f.read()
                     # Create a SpooledTemporaryFile and write the file content to it
@@ -101,9 +97,7 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                         spooled_file.write(file_content)
                     spooled_file.seek(0)  # Reset file pointer to beginning
 
-                    current_app.logger.error(f"Opening file {file_path}")
                     mimetype = mimetypes.guess_type(file_path)[0] or "application/pdf"
-                    current_app.logger.error(f"Mimetype: {mimetype}")
                     file_object = FileData(
                         filename=Path(file_path).name,
                         content_type=mimetype,
@@ -111,7 +105,6 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                         mimetype_params={},
                         stream=spooled_file,
                     )
-                    current_app.logger.error(f"File object: {file_object}")
                     file_objects.append(file_object)
 
             file_result = files_helper.handle_record_files(
@@ -120,7 +113,6 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                 existing_record=None,
                 files=file_objects,
             )
-            current_app.logger.error(f"File result: {pformat(file_result)}")
 
         published = records_service.publish(identity, draft.id)
         if community_list:
@@ -217,8 +209,8 @@ class TestRecordMetadata:
 
         # Compare actual metadata dictionaries with expected metadata dictionaries
         # with variations seen in REST API results.
-        test_metadata.compare_draft_via_api(my_draft_dict_to_test, by_api=True)
-        test_metadata.compare_published_via_api(my_published_dict_to_test, by_api=True)
+        test_metadata.compare_draft_via_api(my_draft_dict_to_test, by_api=True, method="publish")
+        test_metadata.compare_published_via_api(my_published_dict_to_test, by_api=True, method="publish")
     ```
 
     The input metadata dictionary can include the distinctive content used in the
@@ -297,7 +289,7 @@ class TestRecordMetadata:
         community_list = community_list or []
         file_entries = file_entries or {}
         self.app = app
-        starting_metadata_in = copy.deepcopy(TestRecordMetadata.default_metadata_in)
+        starting_metadata_in = deepcopy(TestRecordMetadata.default_metadata_in)
         self._metadata_in: dict = metadata_in if metadata_in else starting_metadata_in
         self.community_list = community_list
         self.file_entries = file_entries
@@ -419,7 +411,7 @@ class TestRecordMetadata:
 
         Fields that can't be set before record creation:
         """
-        metadata_out_draft = copy.deepcopy(self.metadata_in)
+        metadata_out_draft = deepcopy(self.metadata_in)
         if not metadata_out_draft.get("access", {}):
             metadata_out_draft["access"] = {
                 "files": "public",
@@ -437,7 +429,7 @@ class TestRecordMetadata:
         if metadata_out_draft["metadata"].get("resource_type", {}):
             current_resource_type = [
                 t
-                for t in copy.deepcopy(RESOURCE_TYPES)
+                for t in deepcopy(RESOURCE_TYPES)
                 if t["id"] == metadata_out_draft["metadata"]["resource_type"].get("id")
             ][0]
             metadata_out_draft["metadata"]["resource_type"]["title"] = (
@@ -467,7 +459,7 @@ class TestRecordMetadata:
             "access": {
                 "grants": [],
                 "links": [],
-                "owned_by": {"user": str(self.owner_id)},
+                "owned_by": {"user": str(self.owner_id)} if self.owner_id else None,
                 "settings": {
                     "accept_conditions_text": None,
                     "allow_guest_requests": False,
@@ -567,7 +559,8 @@ class TestRecordMetadata:
 
         Fields that can't be set before record creation:
         """
-        metadata_out_published = copy.deepcopy(self.draft)
+        metadata_out_published = deepcopy(self.draft)
+        metadata_out_published["status"] = "published"
         metadata_out_published["is_draft"] = False
         metadata_out_published["is_published"] = True
         metadata_out_published["versions"] = {
@@ -581,9 +574,12 @@ class TestRecordMetadata:
                 current_accounts.datastore.get_user_by_email(owner["email"])
                 for owner in owners_in
             ]
-            metadata_out_published["parent"]["access"]["owned_by"] = (
-                {"user": str(owner_users[0].id)} if owner_users else None
-            )
+            if owner_users:
+                metadata_out_published["parent"]["access"]["owned_by"] = {
+                    "user": str(owner_users[0].id)
+                }
+            else:
+                metadata_out_published["parent"]["access"]["owned_by"] = None
             if len(owner_users) > 1:
                 metadata_out_published["parent"]["access"]["grants"] = [
                     {
@@ -612,6 +608,7 @@ class TestRecordMetadata:
         expected: dict | None = None,
         skip_fields: list[str] | None = None,
         by_api: bool = False,
+        method: str = "read",
         now: Arrow | None = None,
     ) -> bool:
         """Compare the draft metadata with the expected metadata by assertion.
@@ -637,6 +634,9 @@ class TestRecordMetadata:
                 in the return value from the REST API. Otherwise the format expected
                 will be that returned from the RDMRecordService method. Defaults to
                 False.
+            method (str, optional): The method used to get the metadata, since some
+                fields are only present in the REST API in response to certain methods.
+                Defaults to read.
             now (Arrow, optional): The current time. Defaults to arrow.utcnow().
             skip_fields (list[str], optional): A list of field paths that are expected
                 to be missing from the actual metadata due to validation errors.
@@ -663,20 +663,17 @@ class TestRecordMetadata:
             - expires_at
         """
         app = self.app
-        expected = self.draft.copy() if not expected else expected
+        expected = deepcopy(self.draft) if not expected else expected
         for skip_field in skip_fields or []:
             print(f"skip_field: {skip_field}")
             expected = remove_value_by_path(expected, skip_field)
         now = now or arrow.utcnow()
-        app.logger.info(f"actual: {pformat(actual)}")
-        print(f"actual: {pformat(actual['pids'])}")
-        print(f"expected: {pformat(expected['pids'])}")
 
         # ensure the id is in the correct format
         assert re.match(r"^[a-z0-9]{5}-[a-z0-9]{5}$", actual["id"])
 
         if by_api:
-            expected = self._as_via_api(expected, is_draft=True)
+            expected = self._as_via_api(expected, is_draft=True, method=method)
         else:
             expected["parent"]["access"]["owned_by"] = None  # TODO: Why?
             expected["stats"] = None
@@ -775,13 +772,15 @@ class TestRecordMetadata:
 
         return True
 
-    def _as_via_api(self, metadata_in: dict, is_draft: bool = False) -> dict:
+    def _as_via_api(
+        self, metadata_in: dict, is_draft: bool = False, method: str = "read"
+    ) -> dict:
         """Return the metadata as it appears in the REST API."""
-        if not is_draft:
+        if not is_draft and method != "publish":
             metadata_in["parent"]["access"].pop("grants")
             metadata_in["parent"]["access"].pop("links")
             metadata_in["versions"].pop("is_latest_draft")
-        else:
+        elif is_draft:
             del metadata_in["stats"]
         return metadata_in
 
@@ -790,6 +789,7 @@ class TestRecordMetadata:
         actual: dict,
         expected: dict | None = None,
         by_api: bool = False,
+        method: str = "read",
         now: Arrow | None = None,
     ) -> bool:
         """Compare the actual and expected metadata dictionaries.
@@ -808,6 +808,9 @@ class TestRecordMetadata:
             expected (dict): The expected metadata dictionary.
             by_api (bool, optional): Whether to compare the metadata as it appears
                 in the REST API. Defaults to False.
+            method (str, optional): The method used to get the metadata, since some
+                fields are only present in the REST API in response to certain methods.
+                Defaults to read.
             now (Arrow, optional): The current time. Defaults to arrow.utcnow().
 
         Returns:
@@ -819,11 +822,11 @@ class TestRecordMetadata:
                 the expected metadata dictionary.
         """
         app = self.app
-        expected = self.published.copy() if not expected else expected
+        expected = deepcopy(self.published) if not expected else expected
         now = now or arrow.utcnow()
 
         if by_api:
-            expected = self._as_via_api(expected, is_draft=False)
+            expected = self._as_via_api(expected, is_draft=False, method=method)
         try:
             assert now - arrow.get(actual["created"]) < timedelta(seconds=7)
             assert actual["custom_fields"] == expected["custom_fields"]
@@ -885,9 +888,9 @@ class TestRecordMetadata:
             )
             assert actual["metadata"]["title"] == expected["metadata"]["title"]
 
-            expected["parent"]["access"]["owned_by"] = (
-                {"user": str(self.owner_id)} if self.owner_id else None
-            )
+            # expected["parent"]["access"]["owned_by"] = (
+            #     {"user": str(self.owner_id)} if self.owner_id else None
+            # )
 
             assert actual["parent"]["access"] == expected["parent"]["access"]
             if self.community_list:
@@ -1026,7 +1029,7 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
             file_entries=file_entries,
             owner_id=owner_id,
         )
-        starting_metadata_in = TestRecordMetadata.default_metadata_in.copy()
+        starting_metadata_in = deepcopy(TestRecordMetadata.default_metadata_in)
         self._metadata_in = metadata_in if metadata_in else starting_metadata_in
         self.record_id = record_id
         self.file_entries = file_entries

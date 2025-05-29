@@ -15,6 +15,8 @@ from opensearchpy.helpers.search import Search
 
 
 class UpdateResult(TypedDict):
+    """Result report after updating a record during a bulk operation."""
+
     total_record_count: int
     updated_record_count: int
     failed_record_count: int
@@ -55,8 +57,8 @@ def update_community_records_metadata(
 
     try:
         current_communities.service.read(system_identity, community_id)
-    except PIDDoesNotExistError:
-        raise ValueError(f"Community {community_id} not found")
+    except PIDDoesNotExistError as e:
+        raise ValueError(f"Community {community_id} not found") from e
 
     prefix = current_app.config.get("SEARCH_INDEX_PREFIX", "")
     search = Search(using=current_search_client, index=f"{prefix}rdmrecords-records")

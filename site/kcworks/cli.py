@@ -20,13 +20,13 @@ import sys
 import click
 from flask.cli import with_appcontext
 from invenio_search.cli import abort_if_false, search_version_check
+from kcworks.services.records.cli import kcworks_records as records_command
 from kcworks.services.search.indices import delete_index
 from kcworks.services.users.cli import group_users as group_users_command
 from kcworks.services.users.cli import groups as groups_command
 from kcworks.services.users.cli import name_parts as name_parts_command
 from kcworks.services.users.cli import read as read_command
 from kcworks.services.users.cli import user_groups as user_groups_command
-from kcworks.services.records.cli import kcworks_records as records_command
 
 UNMANAGED_INDICES = [
     "kcworks-stats-record-view",

@@ -5,7 +5,6 @@ from pprint import pformat
 
 import click
 from flask.cli import with_appcontext
-
 from kcworks.services.records.bulk_operations import update_community_records_metadata
 
 
