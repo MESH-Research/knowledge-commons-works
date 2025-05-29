@@ -3211,7 +3211,7 @@ wheels = [
 
 [[package]]
 name = "kcworks"
-version = "0.5.0b13"
+version = "0.5.1"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },

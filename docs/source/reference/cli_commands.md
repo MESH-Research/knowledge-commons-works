@@ -55,9 +55,37 @@ KCWorks includes a number of custom CLI commands that are not part of the core I
 - destroys search indices for the KCWorks instance that are *not* destroyed by the main KCWorks index destroy command. These are primarily the indices for storing usage events and aggregated usage data.
 - **WARNING:** This data *only* exists in the OpenSearch indices. It is not backed up by the database and will be lost if the indices are destroyed. Use this command with extreme caution.
 
+### `invenio kcworks-records`
+
+- **provided by the main KCWorks package** (kcworks/site/cli.py and kcworks/services/records/cli.py)
+
+
+#### `invenio kcworks-records bulk-update`
+
+Updates a single metadata field to a single new fixed value for **every** record in a community.
+
+Arguments:
+- `community_id`: the ID (the UUID) of the collection to update.
+- `metadata_field`: the field to update.
+- `new_value`: the new value to set for the field.
+
+Example:
+```shell
+invenio kcworks-records bulk-update 1234567890 metadata.title "New Title"
+```
+
+```{note}
+Note that the `new_value` argument may be either a python literal or a plain string. Anything that cannot be parsed as a python literal will be treated as a plain string.
+```
+
+```{note}
+Also note that the `community_id` argument is the ID (the UUID) of the collection, not the collection name or its url slug. If you're not sure what the collection ID is, you can find it by looking at the api response for the collection.
+```
+
+
 ### `invenio kcworks-users`
 
-- **provided by the main KCWorks package** (kcworks/site/cli.py)
+- **provided by the main KCWorks package** (kcworks/site/cli.py and kcworks/services/users/cli.py)
 
 #### `invenio kcworks-users name-parts`
 Either reads or updates the dictionary of name parts that KCWorks will use to construct the full name of a user (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata.
