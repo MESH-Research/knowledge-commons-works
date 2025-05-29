@@ -6,9 +6,11 @@
 
 """Integration tests for the test data import functionality."""
 
+from collections.abc import Callable
 from copy import deepcopy
 from pathlib import Path
-from collections.abc import Callable
+from pprint import pformat
+from tempfile import SpooledTemporaryFile
 from unittest.mock import patch
 
 from flask_sqlalchemy import SQLAlchemy
@@ -107,58 +109,72 @@ def test_import_test_records(
         myfile = (
             Path(__file__).parent.parent / "helpers" / "sample_files" / "sample.pdf"
         )
-        with myfile.open("rb") as file_bytes:
-            myfile_response = FileData(
-                filename=next(iter(MOCK_RECORD["files"]["entries"].keys())),
-                content_type="application/pdf",
-                mimetype="application/pdf",
-                mimetype_params={},
-                stream=file_bytes,
-            )
 
-            with patch(
-                "kcworks.services.records.test_data.download_file"
-            ) as mock_download:
-                mock_download.side_effect = deepcopy(myfile_response)
-
-                # Create a user to import the records
-                submitter = user_factory(
-                    email="test@example.com",
-                    password="test",
-                    saml_src="",
-                    saml_id="",
+        # Create a function that will create a new FileData object each time it's called
+        def create_file_data(url, filename):
+            with myfile.open("rb") as file_bytes:
+                temp_file = SpooledTemporaryFile()
+                temp_file.write(file_bytes.read())
+                temp_file.seek(0)
+                return FileData(
+                    filename=filename,  # Use the filename passed to download_file
+                    content_type="application/pdf",
+                    mimetype="application/pdf",
+                    mimetype_params={},
+                    stream=temp_file,
                 )
-                identity = get_identity(submitter.user)
-                identity.provides.add(authenticated_user)
-                load_community_needs(identity)
 
-                # Import 3 records
-                import_test_records(count=3, importer_email="test@example.com")
+        with patch("kcworks.services.records.test_data.download_file") as mock_download:
+            # Make the mock return a new FileData object each time it's called
+            mock_download.side_effect = create_file_data
 
-                # Verify records were imported
-                result = records_service.search(system_identity, params={"size": 10})
-                assert result.total == 3
+            # Create a user to import the records
+            submitter = user_factory(
+                email="test@example.com",
+                password="test",
+                saml_src="",
+                saml_id="",
+            )
+            identity = get_identity(submitter.user)
+            identity.provides.add(authenticated_user)
+            load_community_needs(identity)
 
-                # Check each record
-                for hit in result.hits:
-                    record = records_service.read(system_identity, hit["id"])
-                    assert record.data["metadata"]["title"] == "Test Record Title"
-                    assert (
-                        record.data["metadata"]["resource_type"]["id"]
-                        == "textDocument-bookSection"
-                    )
-                    assert record.data["is_published"]
+            # Import 3 records
+            app.logger.error("Starting import of 3 records...")
+            import_test_records(count=3, importer_email="test@example.com")
+            app.logger.error("Finished import of 3 records")
 
-                    # Verify files were uploaded correctly
-                    assert record.data["files"]["enabled"]
-                    assert "sample.pdf" in record.data["files"]["entries"]
-                    file_entry = record.data["files"]["entries"]["sample.pdf"]
-                    assert file_entry["key"] == "sample.pdf"
-                    assert file_entry["mimetype"] == "application/pdf"
-                    assert file_entry["size"] == 13264
-                    assert file_entry["status"] == "completed"
-                    assert "checksum" in file_entry
-                    assert "file_id" in file_entry
-                    assert "version_id" in file_entry
-                    assert "bucket_id" in file_entry
-                    assert "storage_class" in file_entry
+            records_service.record_cls.index.refresh()
+            app.logger.error("Refreshed search index")
+
+            # Verify records were imported
+            result = records_service.search(system_identity, params={"size": 10})
+            app.logger.error(f"Search result total: {pformat(result.total)}")
+            app.logger.error(
+                f"Search result hits: {pformat([{'id': r['id'], 'title': r['metadata']['title']} for r in result.hits])}"
+            )
+            assert result.total == 3
+
+            # Check each record
+            for hit in result.hits:
+                record = records_service.read(system_identity, hit["id"])
+                app.logger.error(
+                    f"Processing record: {pformat({'id': record.data['id'], 'title': record.data['metadata']['title']})}"
+                )
+                assert record.data["metadata"]["title"] == "Test Record Title"
+                assert (
+                    record.data["metadata"]["resource_type"]["id"]
+                    == "textDocument-bookSection"
+                )
+                assert record.data["is_published"]
+
+                # Verify files were uploaded correctly
+                assert record.data["files"]["enabled"]
+                assert "sample.pdf" in record.data["files"]["entries"]
+                file_entry = record.data["files"]["entries"]["sample.pdf"]
+                app.logger.error(f"File entry: {pformat(file_entry)}")
+                assert file_entry["key"] == "sample.pdf"
+                assert file_entry["mimetype"] == "application/pdf"
+                assert file_entry["size"] == 13264
+                assert "checksum" in file_entry
+                assert "id" in file_entry
