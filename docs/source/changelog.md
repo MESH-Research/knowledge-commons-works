@@ -6,6 +6,7 @@
 ## 0.5.2 (2025-05-29)
 
 - Added a new CLI command to allow admins to bulk update a single metadata field to a single new fixed value for every record in a collection.
+- Added public roadmap to the documentation.
 
 ## 0.5.1 (2025-05-13)
 

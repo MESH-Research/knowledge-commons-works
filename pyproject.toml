@@ -134,10 +134,12 @@ kcworks = "kcworks.services.search.index_templates.templates:get_index_templates
 [project.entry-points."flask.commands"]
 kcworks-users = "kcworks.cli:kcworks_users"
 kcworks-index = "kcworks.cli:kcworks_index"
+kcworks-records = "kcworks.cli:kcworks_records"
 
 [project.scripts]
 kcworks-users = "kcworks.cli:kcworks_users"
 kcworks-index = "kcworks.cli:kcworks_index"
+kcworks-records = "kcworks.cli:kcworks_records"
 
 [tool.ruff]
 line-length = 88

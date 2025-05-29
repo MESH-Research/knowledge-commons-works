@@ -2,7 +2,7 @@
 
 ![Tests](https://github.com/mesh-research/knowledge-commons-works/actions/workflows/tests.yml/badge.svg)
 ![Container build](https://github.com/mesh-research/knowledge-commons-works/actions/workflows/CI.yml/badge.svg)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
 
 ![KCWorks logo](../../static/images/kc_works_logos/SVG/kc_works_logo_wordmark.svg)
 

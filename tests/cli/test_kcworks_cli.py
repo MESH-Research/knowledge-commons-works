@@ -3,7 +3,7 @@
 import pytest
 from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_rdm_records_service
-from kcworks.services.records.cli import kcworks_records
+from kcworks.cli import kcworks_records
 
 
 @pytest.fixture(scope="module")

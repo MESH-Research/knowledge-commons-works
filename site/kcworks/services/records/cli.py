@@ -8,13 +8,7 @@ from flask.cli import with_appcontext
 from kcworks.services.records.bulk_operations import update_community_records_metadata
 
 
-@click.group()
-def kcworks_records():
-    """CLI utility command group for record operations."""
-    pass
-
-
-@kcworks_records.command("bulk-update")
+@click.command("bulk-update")
 @click.argument("community_id", type=str, required=True)
 @click.argument("metadata_field", type=str, required=True)
 @click.argument("new_value", type=str, required=True)
