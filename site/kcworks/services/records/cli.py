@@ -5,6 +5,7 @@ from pprint import pformat
 
 import click
 from flask.cli import with_appcontext
+from invenio_record_importer_kcworks.types import APIResponsePayload
 from kcworks.services.records.bulk_operations import update_community_records_metadata
 from kcworks.services.records.test_data import import_test_records
 
@@ -61,22 +62,71 @@ def bulk_update(community_id: str, metadata_field: str, new_value: str) -> None:
 @click.command("import-test-records")
 @click.argument("email", type=str, required=True)
 @click.argument("count", type=int, default=10)
+@click.option("--offset", type=int, default=0)
+@click.option("--start-date", type=str, default=None)
+@click.option("--end-date", type=str, default=None)
+@click.option("--spread-dates", is_flag=True, default=False)
+@click.option("--review-required", is_flag=True, default=False)
+@click.option("--strict-validation", is_flag=True, default=False)
 @with_appcontext
-def import_test_records_command(email: str, count: int) -> None:
-    """Import test records from production.
+def import_test_records_command(
+    email: str,
+    count: int,
+    offset: int,
+    start_date: str,
+    end_date: str,
+    spread_dates: bool,
+    review_required: bool,
+    strict_validation: bool,
+) -> None:
+    """Import test records from production to a local KCWorks instance.
 
-    Parameters:
-        email (str): Email address of the user who will be importing the records.
-        count (int): Number of records to import (default: 10).
+    EMAIL is the email address of the user who will be importing the records.
+    COUNT is the number of records to import (default: 10).
+
+    Options:
+        --offset INTEGER     Number of records to skip (default: 0)
+        --start-date TEXT    Start date for the records to import
+        --end-date TEXT      End date for the records to import
+        --spread-dates       Whether to spread the records over a range of dates
     """
-    click.secho(f"Starting import of {count} records as {email}...", fg="blue")
+    click.secho(
+        f"Starting import of {count} production records as {email}...", fg="blue"
+    )
 
-    try:
-        import_test_records(
-            count=count,
-            importer_email=email,
+    results: dict = import_test_records(
+        count=count,
+        importer_email=email,
+        offset=offset,
+        start_date=start_date,
+        end_date=end_date,
+        spread_dates=spread_dates,
+    )
+    if results["status"] == "failure":
+        click.secho(
+            f"Failed to import all {count} records: {results['errors'][0]['error']}",
+            fg="red",
+            err=True,
         )
-        click.secho("Successfully completed record import!", fg="green")
-    except Exception as e:
-        click.secho(f"Failed to import records: {str(e)}", fg="red", err=True)
         raise click.Abort()
+    else:
+        click.secho(
+            f"{results['message']}",
+            fg="green",
+        )
+        successes = [
+            r["metadata"]["id"]
+            for r in results["data"]
+            if r["metadata"] and "id" in r["metadata"]
+        ]
+        if len(successes) > 0:
+            click.secho(f"Successfully imported {len(successes)} records: ", fg="green")
+            click.secho(pformat(successes), fg="green")
+            failures = [
+                f"{r['metadata']['id']}: {r['errors']}"
+                for r in results["errors"]
+                if r["metadata"] and "id" in r["metadata"]
+            ]
+        if len(failures) > 0:
+            click.secho(f"Failed to import {len(failures)} records: ", fg="red")
+            click.secho(pformat(failures), fg="red")

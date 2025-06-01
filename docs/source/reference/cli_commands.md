@@ -60,6 +60,28 @@ KCWorks includes a number of custom CLI commands that are not part of the core I
 - **provided by the main KCWorks package** (kcworks/site/cli.py and kcworks/services/records/cli.py)
 
 
+#### `invenio kcworks-records import-test-data`
+
+Imports test data into the KCWorks instance.
+
+By default the import query is ordered by `newest`, a descending sort based on the `created` field. If a date range is provided, the records within that range will still be ordered by `newest`.
+
+The `count` argument gives the number of results from that query that will actually be imported. The `offset` argument gives the number of results to skip before starting to import.
+
+Sometimes it is useful to import a subset of the production data with a wider range of dates than would result from a simple `newest` query. The `spread_dates` argument can be used to spread the records as evenly as possible over a range of dates.
+
+Arguments:
+- `community_id` (required): the ID (the UUID) of the collection to import the test data into.
+- `count` (optional): the number of records to import. Defaults to 10.
+- `offset` (optional): the offset from the start of the query results to start importing from. Defaults to 0.
+- `start_date` (optional): the start date to import records from. Defaults to None.
+- `end_date` (optional): the end date to import records to. Defaults to None.
+- `spread_dates` (optional): whether to spread the records over a range of dates. Defaults to False.
+
+```{note}
+The `import-test-data` command is idempotent, meaning that if a result has already been imported it will not be imported again. (It may, however, be updated if changes have been made to the production record.) The command output will treat these as successful imports, although the detailed import counts presented in the command line output (before the final summary) will specify how many records were new, updated, already existed, etc.
+```
+
 #### `invenio kcworks-records bulk-update`
 
 Updates a single metadata field to a single new fixed value for **every** record in a community.

@@ -76,6 +76,22 @@ MOCK_RECORD = {
 }
 
 
+def create_file_data(filename: str = "sample.pdf") -> FileData:
+    """Create a FileData object for testing."""
+    myfile = Path(__file__).parent.parent / "helpers" / "sample_files" / filename
+    with myfile.open("rb") as file_bytes:
+        temp_file = SpooledTemporaryFile()
+        temp_file.write(file_bytes.read())
+        temp_file.seek(0)
+        return FileData(
+            filename=filename,
+            content_type="application/pdf",
+            mimetype="application/pdf",
+            mimetype_params={},
+            stream=temp_file,
+        )
+
+
 def test_import_test_records(
     running_app: RunningApp,
     search_clear: Callable,
@@ -86,7 +102,6 @@ def test_import_test_records(
     user_factory: Callable,
 ):
     """Test importing records from production."""
-    app = running_app.app
     mock_records = [
         MOCK_RECORD,
         {**deepcopy(MOCK_RECORD), "id": "gmj0c-9y496-2"},
@@ -97,36 +112,22 @@ def test_import_test_records(
         "kcworks.services.records.test_data.fetch_production_records"
     ) as mock_fetch:
         mock_fetch.return_value = mock_records
-        app.logger.error(f"MOCK_RECORD type: {type(MOCK_RECORD)}")
-        app.logger.error(f"First record type: {type(mock_records[0])}")
-        app.logger.error(f"Second record type: {type(mock_records[1])}")
-        app.logger.error(f"Third record type: {type(mock_records[2])}")
-        app.logger.error(
-            f"mock_fetch return value type: {type(mock_fetch.return_value)}"
-        )
-        app.logger.error(f"mock_fetch return value: {mock_fetch.return_value}")
 
-        myfile = (
-            Path(__file__).parent.parent / "helpers" / "sample_files" / "sample.pdf"
-        )
-
-        # Create a function that will create a new FileData object each time it's called
-        def create_file_data(url, filename):
-            with myfile.open("rb") as file_bytes:
-                temp_file = SpooledTemporaryFile()
-                temp_file.write(file_bytes.read())
-                temp_file.seek(0)
-                return FileData(
-                    filename=filename,  # Use the filename passed to download_file
-                    content_type="application/pdf",
-                    mimetype="application/pdf",
-                    mimetype_params={},
-                    stream=temp_file,
-                )
-
-        with patch("kcworks.services.records.test_data.download_file") as mock_download:
+        with (
+            patch("kcworks.services.records.test_data.download_file") as mock_download,
+            patch(
+                "kcworks.services.records.test_data.get_test_record_files"
+            ) as mock_get_files,
+        ):
             # Make the mock return a new FileData object each time it's called
             mock_download.side_effect = create_file_data
+
+            file_data_objects = [
+                create_file_data(),
+                create_file_data(),
+                create_file_data(),
+            ]
+            mock_get_files.return_value = file_data_objects
 
             # Create a user to import the records
             submitter = user_factory(
@@ -140,27 +141,16 @@ def test_import_test_records(
             load_community_needs(identity)
 
             # Import 3 records
-            app.logger.error("Starting import of 3 records...")
             import_test_records(count=3, importer_email="test@example.com")
-            app.logger.error("Finished import of 3 records")
-
             records_service.record_cls.index.refresh()
-            app.logger.error("Refreshed search index")
 
             # Verify records were imported
             result = records_service.search(system_identity, params={"size": 10})
-            app.logger.error(f"Search result total: {pformat(result.total)}")
-            app.logger.error(
-                f"Search result hits: {pformat([{'id': r['id'], 'title': r['metadata']['title']} for r in result.hits])}"
-            )
             assert result.total == 3
 
             # Check each record
             for hit in result.hits:
                 record = records_service.read(system_identity, hit["id"])
-                app.logger.error(
-                    f"Processing record: {pformat({'id': record.data['id'], 'title': record.data['metadata']['title']})}"
-                )
                 assert record.data["metadata"]["title"] == "Test Record Title"
                 assert (
                     record.data["metadata"]["resource_type"]["id"]
@@ -172,7 +162,6 @@ def test_import_test_records(
                 assert record.data["files"]["enabled"]
                 assert "sample.pdf" in record.data["files"]["entries"]
                 file_entry = record.data["files"]["entries"]["sample.pdf"]
-                app.logger.error(f"File entry: {pformat(file_entry)}")
                 assert file_entry["key"] == "sample.pdf"
                 assert file_entry["mimetype"] == "application/pdf"
                 assert file_entry["size"] == 13264
