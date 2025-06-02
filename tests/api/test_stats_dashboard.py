@@ -1,11 +1,15 @@
+from pprint import pformat
 from unittest.mock import MagicMock, patch
 
+import arrow
 import pytest
-from invenio_search import current_search_client, current_search
+from invenio_search import current_search_client
 from invenio_search.engine import search
 from invenio_search.utils import prefix_index
 from invenio_stats.proxies import current_stats
 from invenio_stats_dashboard.aggregations import get_records_created_for_periods
+from invenio_stats_dashboard.queries import daily_record_cumulative_counts_query
+from kcworks.services.records.test_data import import_test_records
 
 SAMPLE_RECORDS_SNAPSHOT_AGG = {
     "timestamp": "2024-01-01T00:00:00",
@@ -173,6 +177,55 @@ def test_index_templates_registered(running_app, create_stats_indices, search_cl
     # Check the search results
     assert result_record["hits"]["total"]["value"] == 1
     assert result_record["hits"]["hits"][0]["_source"] == SAMPLE_RECORDS_SNAPSHOT_AGG
+
+
+def test_daily_record_cumulative_counts_query(
+    running_app,
+    db,
+    minimal_community_factory,
+    user_factory,
+    create_stats_indices,
+    mock_send_remote_api_update_fixture,
+    celery_worker,
+    requests_mock,
+    search_clear,
+):
+    """Test the daily_record_cumulative_counts_query function."""
+    app = running_app.app
+    client = current_search_client
+    today_date = arrow.now().strftime("%Y-%m-%d")
+
+    # Allow all requests to go through to the real server
+    requests_mock.real_http = True
+
+    u = user_factory(email="test@example.com")
+    user_id = u.user.id
+    user_email = u.user.email
+
+    community = minimal_community_factory(
+        slug="knowledge-commons",
+        owner=user_id,
+    )
+    community_id = community.id
+    client.indices.refresh(index="*communities*")
+    client.indices.refresh(index="*")
+
+    # Import test records
+    import_test_records(
+        count=10,
+        start_date=today_date,
+        end_date=today_date,
+        importer_email=user_email,
+    )
+
+    query = daily_record_cumulative_counts_query(community_id, today_date, today_date)
+    result = client.search(
+        index="rdmrecords",
+        body=query,
+    )
+    app.logger.debug(f"Query: {pformat(query)}")
+    app.logger.debug(f"Result: {pformat(result)}")
+    assert result["hits"]["total"]["value"] == 100
 
 
 @pytest.fixture
