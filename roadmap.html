@@ -179,7 +179,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -269,7 +269,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -279,98 +279,95 @@
 <h1>Development Roadmap<a class="headerlink" href="#development-roadmap" title="Link to this heading">¶</a></h1>
 <p>This is a list of features and improvements that we are planning for the coming months, based on our users’ needs and feedback from our community. These priorities and timelines are <strong>tentative and subject to change</strong>, but this is our current working plan.</p>
 <p>Is there something you’d like to see in a future release? Let us know at <a class="reference external" href="https://support.hcommons.org/contact-us/">https://support.hcommons.org/contact-us/</a> or by emailing <a class="reference external" href="mailto:hello&#37;&#52;&#48;hcommons&#46;org">hello<span>&#64;</span>hcommons<span>&#46;</span>org</a>.</p>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Quarter</p></th>
-<th class="head"><p>New Features</p></th>
-<th class="head"><p>Maintenance and Infrastructure</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Q2 2025</p></td>
-<td><p><strong>Statistics dashboards</strong> for collections and for KCWorks as a whole</p></td>
-<td><p>Improvements to search results when looking up users, languages, and subjects</p></td>
-</tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p><strong>Mixed-access collections</strong> (where some records are restricted-access and some are open)</p></td>
-<td><p>Expanding automated test suite</p></td>
-</tr>
-<tr class="row-even"><td><p>Q3 2025</p></td>
-<td><p><strong>“White label” collection pages</strong> for member organizations (using organization-specific branding and theme).</p></td>
-<td><p>Clean up implementation of less common resource types and metadata fields</p></td>
-</tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p>Integration with <strong>new authentication and identity management</strong> system to support single sign-on for member organizations.</p></td>
-<td><p>Further expand automated test suite</p></td>
-</tr>
-<tr class="row-even"><td><p></p></td>
-<td><p><strong>Child collections</strong> (hierarchical sub-collections)</p></td>
-<td><p>Fully automate deployment of new releases</p></td>
-</tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p><strong>Globus integration</strong> for very large datasets stored in external data stores.</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p></p></td>
-<td><p>Enable <strong>Google Scholar indexing</strong> for works</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p><strong>Bepress migration tool</strong> for institutions that are migrating from Bepress to KCWorks</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p>Q4 2025</p></td>
-<td><p><strong>On-campus access restrictions</strong> for member organizations.</p></td>
-<td><p>Upgrade to new version of InvenioRDM (the underlying platform for KCWorks)</p></td>
-</tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p><strong>Notification improvements</strong> for collection curators (collected curator inbox, digest email notifications, etc.)</p></td>
-<td><p>Further expand automated test suite</p></td>
-</tr>
-<tr class="row-even"><td><p></p></td>
-<td><p><strong>Typeahead search</strong> for users in the upload form’s creator field</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p><strong>Automatically place org members’ uploaded works</strong> in their org’s collection</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p></p></td>
-<td><p>Self-serve <strong>OAuth token management</strong> for API access</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p>Q1 2026</p></td>
-<td><p><strong>Short upload-form path</strong> and <strong>back-end autosave</strong> for draft works</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p></p></td>
-<td><p><strong>Malware scanning</strong> of uploaded files</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p><strong>Github integration</strong> for works</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p></p></td>
-<td><p><strong>Mobile version</strong> of upload form</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p>Q2 2026</p></td>
-<td><p>Improved <strong>year/volume/issue navigation</strong> for journal collections</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p></p></td>
-<td><p>Improved <strong>content flagging and moderation</strong></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p><strong>COAR Notify</strong> support</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<section id="quarter-2">
+<h2>2025 Quarter 2<a class="headerlink" href="#quarter-2" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>New Features</p>
+<ul>
+<li><p><strong>Statistics dashboards</strong> for collections and for KCWorks as a whole</p></li>
+<li><p><strong>Mixed-access collections</strong> (where some records are restricted-access and some are open)
+<br/>
+<br/></p></li>
+</ul>
+</li>
+<li><p>Maintenance and Infrastructure</p>
+<ul>
+<li><p>Improvements to search results when looking up users, languages, and subjects</p></li>
+<li><p>Expanding automated test suite</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="quarter-3">
+<h2>2025 Quarter 3<a class="headerlink" href="#quarter-3" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>New Features</p>
+<ul>
+<li><p><strong>“White label” collection pages</strong> for member organizations (using organization-specific branding and theme).</p></li>
+<li><p>Integration with <strong>new authentication and identity management</strong> system to support single sign-on for member organizations.</p></li>
+<li><p><strong>Child collections</strong> (hierarchical sub-collections)</p></li>
+<li><p><strong>Globus integration</strong> for very large datasets stored in external data stores</p></li>
+<li><p>Enable <strong>Google Scholar indexing</strong> for works</p></li>
+<li><p><strong>Bepress migration tool</strong> for institutions that are migrating from Bepress to KCWorks
+<br/>
+<br/></p></li>
+</ul>
+</li>
+<li><p>Maintenance and Infrastructure</p>
+<ul>
+<li><p>Clean up implementation of less common resource types and metadata fields</p></li>
+<li><p>Further expand automated test suite</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="quarter-4">
+<h2>2025 Quarter 4<a class="headerlink" href="#quarter-4" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>New Features</p>
+<ul>
+<li><p><strong>On-campus access restrictions</strong> for member organizations.</p></li>
+<li><p><strong>Notification improvements</strong> for collection curators (collected curator inbox, digest email notifications, etc.)</p></li>
+<li><p><strong>Typeahead search</strong> for users in the upload form’s creator field</p></li>
+<li><p><strong>Automatically place org members’ uploaded works</strong> in their org’s collection</p></li>
+<li><p>Self-serve <strong>OAuth token management</strong> for API access
+<br/>
+<br/></p></li>
+</ul>
+</li>
+<li><p>Maintenance and Infrastructure</p>
+<ul>
+<li><p>Upgrade to new version of InvenioRDM (the underlying platform for KCWorks)</p></li>
+<li><p>Further expand automated test suite</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="quarter-1">
+<h2>2026 Quarter 1<a class="headerlink" href="#quarter-1" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>New Features</p>
+<ul>
+<li><p><strong>Short upload-form path</strong> and <strong>back-end autosave</strong> for draft works</p></li>
+<li><p><strong>Malware scanning</strong> of uploaded files</p></li>
+<li><p><strong>Github integration</strong> for works</p></li>
+<li><p><strong>Mobile version</strong> of upload form</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id1">
+<h2>2026 Quarter 2<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>New Features</p>
+<ul>
+<li><p>Improved <strong>year/volume/issue navigation</strong> for journal collections</p></li>
+<li><p>Improved <strong>content flagging and moderation</strong></p></li>
+<li><p><strong>COAR Notify</strong> support</p></li>
+</ul>
+</li>
+</ul>
+</section>
 </section>
 
         </article>
@@ -416,8 +413,31 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Development Roadmap</a><ul>
+<li><a class="reference internal" href="#quarter-2">2025 Quarter 2</a></li>
+<li><a class="reference internal" href="#quarter-3">2025 Quarter 3</a></li>
+<li><a class="reference internal" href="#quarter-4">2025 Quarter 4</a></li>
+<li><a class="reference internal" href="#quarter-1">2026 Quarter 1</a></li>
+<li><a class="reference internal" href="#id1">2026 Quarter 2</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
