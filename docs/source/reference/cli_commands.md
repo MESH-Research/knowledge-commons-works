@@ -71,16 +71,27 @@ The `count` argument gives the number of results from that query that will actua
 Sometimes it is useful to import a subset of the production data with a wider range of dates than would result from a simple `newest` query. The `spread_dates` argument can be used to spread the records as evenly as possible over a range of dates.
 
 Arguments:
-- `community_id` (required): the ID (the UUID) of the collection to import the test data into.
 - `count` (optional): the number of records to import. Defaults to 10.
 - `offset` (optional): the offset from the start of the query results to start importing from. Defaults to 0.
 - `start_date` (optional): the start date to import records from. Defaults to None.
 - `end_date` (optional): the end date to import records to. Defaults to None.
 - `spread_dates` (optional): whether to spread the records over a range of dates. Defaults to False.
+- `record_ids` (optional): a comma-separated list of record IDs to import. Defaults to None.
 
 ```{note}
 The `import-test-data` command is idempotent, meaning that if a result has already been imported it will not be imported again. (It may, however, be updated if changes have been made to the production record.) The command output will treat these as successful imports, although the detailed import counts presented in the command line output (before the final summary) will specify how many records were new, updated, already existed, etc.
 ```
+
+Example of importing 10 records with evenly spread dates over the year 2024:
+```shell
+invenio kcworks-records import-test-data --count 10 --start-date 2024-01-01 --end-date 2024-12-31 --spread-dates
+```
+
+Example of importing 2 records with specific record IDs:
+```shell
+invenio kcworks-records import-test-data --count 2 --record-ids "1234567890,1234567891"
+```
+
 
 #### `invenio kcworks-records bulk-update`
 

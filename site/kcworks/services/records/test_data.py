@@ -1,6 +1,7 @@
 import os
 from pprint import pformat
 import time
+from typing import Optional
 
 import requests
 from flask import current_app as app
@@ -70,11 +71,12 @@ def get_test_record_files(records: list[dict]) -> list[FileData]:
 
 
 def fetch_production_records(
-    count=10,
-    offset=0,
-    start_date=None,
-    end_date=None,
-    spread_dates=False,
+    count: int = 10,
+    offset: int = 0,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    spread_dates: bool = False,
+    record_ids: Optional[list[str]] = None,
 ):
     """Fetch records from the production API.
 
@@ -87,6 +89,7 @@ def fetch_production_records(
         spread_dates (bool): Whether to spread the records over a range of dates.
             If True, will fetch records evenly distributed across the date range.
             Defaults to False.
+        record_ids (list[str]): List of record IDs to fetch. Defaults to None.
 
     Returns:
         list: List of record metadata dictionaries, containing exactly count records
@@ -97,6 +100,9 @@ def fetch_production_records(
 
     # Build query parts
     query_parts = ["is_published:true"]
+
+    if record_ids:
+        query_parts.append(" ".join([f"id:{id}" for id in record_ids]))
 
     # Add date range if provided
     if start_date and end_date:
@@ -323,14 +329,15 @@ def set_up_community(importing_user: User) -> dict:
 
 
 def import_test_records(
-    count=10,
-    offset=0,
-    start_date=None,
-    end_date=None,
-    spread_dates=False,
-    review_required=False,
-    strict_validation=False,
-    importer_email="test@example.com",
+    count: int = 10,
+    offset: int = 0,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    spread_dates: bool = False,
+    review_required: bool = False,
+    strict_validation: bool = False,
+    record_ids: Optional[list[str]] = None,
+    importer_email: str = "test@example.com",
 ):
     """Import test records from production into the local instance.
 
@@ -349,6 +356,7 @@ def import_test_records(
             Defaults to False.
         strict_validation (bool): Whether to strictly validate records. Defaults to
             False.
+        record_ids (list[str]): List of record IDs to import. Defaults to None.
         importer_email (str): Email of the user importing the records. Defaults to
             "test@example.com".
 
@@ -368,6 +376,7 @@ def import_test_records(
         start_date=start_date,
         end_date=end_date,
         spread_dates=spread_dates,
+        record_ids=record_ids,
     )
     app.logger.error(f"Records type: {type(records)}")
     app.logger.error(

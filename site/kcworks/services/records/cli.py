@@ -65,6 +65,7 @@ def bulk_update(community_id: str, metadata_field: str, new_value: str) -> None:
 @click.option("--offset", type=int, default=0)
 @click.option("--start-date", type=str, default=None)
 @click.option("--end-date", type=str, default=None)
+@click.option("--record-ids", type=str, default=None)
 @click.option("--spread-dates", is_flag=True, default=False)
 @click.option("--review-required", is_flag=True, default=False)
 @click.option("--strict-validation", is_flag=True, default=False)
@@ -78,6 +79,7 @@ def import_test_records_command(
     spread_dates: bool,
     review_required: bool,
     strict_validation: bool,
+    record_ids: str,
 ) -> None:
     """Import test records from production to a local KCWorks instance.
 
@@ -88,11 +90,14 @@ def import_test_records_command(
         --offset INTEGER     Number of records to skip (default: 0)
         --start-date TEXT    Start date for the records to import
         --end-date TEXT      End date for the records to import
+        --record-ids TEXT    Comma-separated list of record IDs to import
         --spread-dates       Whether to spread the records over a range of dates
     """
     click.secho(
         f"Starting import of {count} production records as {email}...", fg="blue"
     )
+    if record_ids:
+        record_id_list = [id.strip() for id in record_ids.split(",")]
 
     results: dict = import_test_records(
         count=count,
@@ -101,6 +106,7 @@ def import_test_records_command(
         start_date=start_date,
         end_date=end_date,
         spread_dates=spread_dates,
+        record_ids=record_id_list,
     )
     if results["status"] == "failure":
         click.secho(
