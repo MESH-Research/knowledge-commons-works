@@ -9,7 +9,6 @@
 from collections.abc import Callable
 from copy import deepcopy
 from pathlib import Path
-from pprint import pformat
 from tempfile import SpooledTemporaryFile
 from unittest.mock import patch
 
@@ -39,6 +38,8 @@ def test_fetch_production_records(running_app: RunningApp):
 # Mock data based on real production record but using test fixture values
 MOCK_RECORD = {
     "id": "gmj0c-9y496",
+    "created": "2025-06-02T17:06:51.994958+00:00",
+    "updated": "2025-06-02T17:06:51.994958+00:00",
     "metadata": {
         "resource_type": {
             "id": "textDocument-bookSection",  # Using value from test fixtures
@@ -150,6 +151,8 @@ def test_import_test_records(
 
             # Check each record
             for hit in result.hits:
+                assert hit["created"] == "2025-06-02T17:06:51.994958+00:00"
+                assert hit["updated"] != "2025-06-02T17:06:51.994958+00:00"
                 record = records_service.read(system_identity, hit["id"])
                 assert record.data["metadata"]["title"] == "Test Record Title"
                 assert (
