@@ -35,7 +35,7 @@ subject_data = [
         "subject": "Digital humanities",
     },
     {
-        "id": "http://id.worldcat.org/fast/863509",
+        "id": "http://id.worldcat.org/fast/963509",
         "scheme": "FAST-topical",
         "subject": "Human-machine systems--Planning",
     },
@@ -75,7 +75,7 @@ subject_data = [
         "subject": "Science--Study and teaching",
     },
     {
-        "id": "http://id.worldcat.org/fast/863509",
+        "id": "http://id.worldcat.org/fast/904058",
         "scheme": "FAST-topical",
         "subject": "Eighteenth century",
     },
@@ -143,11 +143,6 @@ subject_data = [
         "id": "http://id.worldcat.org/fast/863509",
         "scheme": "FAST-topical",
         "subject": "Classical literature",
-    },
-    {
-        "id": "http://id.worldcat.org/fast/904058",
-        "scheme": "FAST-topical",
-        "subject": "Eighteenth century",
     },
     {
         "id": "http://id.worldcat.org/fast/1031646",
@@ -238,6 +233,91 @@ subject_data = [
         "id": "http://id.worldcat.org/fast/913799",
         "scheme": "FAST-topical",
         "subject": "Epic poetry",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/911979",
+        "subject": "English language--Written English--History",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/911660",
+        "subject": "English language--Spoken English--Research",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/845111",
+        "subject": "Canadian literature",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/845142",
+        "subject": "Canadian literature--Periodicals",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/845184",
+        "subject": "Canadian prose literature",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/1424786",
+        "subject": "Canadian literature--Bibliography",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/934875",
+        "subject": "French-Canadian literature",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/817954",
+        "subject": "Arts, Canadian",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/821870",
+        "subject": "Authors, Canadian",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/845170",
+        "subject": "Canadian periodicals",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/911328",
+        "subject": "English language--Lexicography--History",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/997916",
+        "subject": "Library science",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/2060143",
+        "subject": "Mass incarceration",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/997987",
+        "subject": "Library science literature",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/997974",
+        "subject": "Library science--Standards",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/855500",
+        "subject": "Children of prisoners--Services for",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/995415",
+        "subject": "Legal assistance to prisoners--U.S. states",
+        "scheme": "FAST-topical",
     },
 ]
 

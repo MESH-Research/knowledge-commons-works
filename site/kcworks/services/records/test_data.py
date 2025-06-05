@@ -99,37 +99,44 @@ def fetch_production_records(
     url = "https://works.hcommons.org/api/records"
 
     # Build query parts
-    query_parts = ["is_published:true"]
+    query_parts: list[str] = []
 
     if record_ids:
-        query_parts.append(" ".join([f"id:{id}" for id in record_ids]))
+        query_parts = [" ".join([f"id:{id}" for id in record_ids])]
 
     # Add date range if provided
-    if start_date and end_date:
-        query_parts.append(f"created:[{start_date} TO {end_date}]")
-    elif start_date:
-        query_parts.append(f"created:>={start_date}")
-    elif end_date:
-        query_parts.append(f"created:<={end_date}")
+    if not record_ids:
+        query_parts = ["is_published:true"]
+        if start_date and end_date:
+            query_parts.append(f"created:[{start_date} TO {end_date}]")
+        elif start_date:
+            query_parts.append(f"created:>={start_date}")
+        elif end_date:
+            query_parts.append(f"created:<={end_date}")
 
     if not spread_dates:
         # Simple case - just request offset + count records
-        params = {
+        params: dict[str, str | int] = {
             "size": offset + count,
             "sort": "newest",
             "q": " AND ".join(query_parts),
         }
+        app.logger.error(f"Making request to {url} with params: {pformat(params)}")
         request_start = time.time()
         response = requests.get(url, params=params)
         request_time = time.time() - request_start
-        app.logger.info(f"Single request took {request_time:.2f} seconds")
+        app.logger.error(f"Single request took {request_time:.2f} seconds")
+        app.logger.error(f"Response status: {response.status_code}")
+        app.logger.error(f"Response headers: {pformat(response.headers)}")
+        app.logger.error(f"Response content: {pformat(response.text)}")
 
         response.raise_for_status()
 
         # Get all hits and slice to get exactly count records starting from offset
         hits = response.json()["hits"]["hits"]
         total_time = time.time() - start_time
-        app.logger.info(f"Total fetch time: {total_time:.2f} seconds")
+        app.logger.error(f"Total fetch time: {total_time:.2f} seconds")
+        app.logger.error(f"Number of hits: {len(hits)}")
         return hits[offset : offset + count]  # noqa: E203
 
     # For spread_dates=True, we need to get records distributed across the date range
@@ -401,7 +408,7 @@ def import_test_records(
 
     # Assemble file data for all records
     file_data = get_test_record_files(records)
-    app.logger.debug(f"File data: {file_data}")
+    app.logger.error(f"File data: {file_data}")
 
     # Bulk import records
     try:

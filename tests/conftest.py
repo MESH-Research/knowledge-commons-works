@@ -71,6 +71,7 @@ pytest_plugins = (
     "tests.fixtures.vocabularies.resource_types",
     "tests.fixtures.vocabularies.roles",
     "tests.fixtures.vocabularies.subjects",
+    "tests.fixtures.vocabularies.title_types",
 )
 
 
@@ -247,7 +248,7 @@ RunningApp = namedtuple(
         # "relation_type_v",
         "resource_type_v",
         "subject_v",
-        # "title_type_v",
+        "title_type_v",
         "create_communities_custom_fields",
         "create_records_custom_fields",
     ],
@@ -272,7 +273,7 @@ def running_app(
     # relation_type_v,
     resource_type_v,
     subject_v,
-    # title_type_v,
+    title_type_v,
     create_communities_custom_fields,
     create_records_custom_fields,
 ):
@@ -298,7 +299,7 @@ def running_app(
         # relation_type_v,
         resource_type_v,
         subject_v,
-        # title_type_v,
+        title_type_v,
         create_communities_custom_fields,
         create_records_custom_fields,
     )

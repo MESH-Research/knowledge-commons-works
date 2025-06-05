@@ -96,8 +96,9 @@ def import_test_records_command(
     click.secho(
         f"Starting import of {count} production records as {email}...", fg="blue"
     )
-    if record_ids:
-        record_id_list = [id.strip() for id in record_ids.split(",")]
+    record_id_list = (
+        [id.strip() for id in record_ids.split(",")] if record_ids else None
+    )
 
     results: dict = import_test_records(
         count=count,
