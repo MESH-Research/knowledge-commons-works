@@ -61,7 +61,7 @@ def bulk_update(community_id: str, metadata_field: str, new_value: str) -> None:
 
 @click.command("import-test-records")
 @click.argument("email", type=str, required=True)
-@click.argument("count", type=int, default=10)
+@click.argument("count", type=int, default=0)
 @click.option("--offset", type=int, default=0)
 @click.option("--start-date", type=str, default=None)
 @click.option("--end-date", type=str, default=None)
@@ -84,7 +84,8 @@ def import_test_records_command(
     """Import test records from production to a local KCWorks instance.
 
     EMAIL is the email address of the user who will be importing the records.
-    COUNT is the number of records to import (default: 10).
+    COUNT is the number of records to import (default: 10 or the number of record IDs
+    if provided).
 
     Options:
         --offset INTEGER     Number of records to skip (default: 0)
@@ -99,6 +100,8 @@ def import_test_records_command(
     record_id_list = (
         [id.strip() for id in record_ids.split(",")] if record_ids else None
     )
+    if count == 0:
+        count = len(record_id_list) if record_id_list else 10
 
     results: dict = import_test_records(
         count=count,

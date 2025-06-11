@@ -1,40 +1,36 @@
 from pprint import pformat
-from unittest.mock import MagicMock, patch
 
 import arrow
-import pytest
+from invenio_access.permissions import system_identity
+from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_search import current_search_client
 from invenio_search.engine import search
 from invenio_search.utils import prefix_index
 from invenio_stats.proxies import current_stats
-from invenio_stats_dashboard.aggregations import CommunityRecordsDeltaAggregator
-from invenio_stats_dashboard.queries import (
-    daily_record_delta_query,
-    daily_record_cumulative_counts_query,
+from invenio_stats_dashboard.aggregations import (
+    CommunityRecordsDeltaAggregator,
+    CommunityRecordsSnapshotAggregator,
 )
+from invenio_stats_dashboard.queries import (
+    daily_record_cumulative_counts_query,
+    daily_record_delta_query,
+)
+from invenio_stats_dashboard.service import CommunityStatsService
 from kcworks.services.records.test_data import import_test_records
-import os
-import tempfile
-from pathlib import Path
 
 SAMPLE_RECORDS_SNAPSHOT_AGG = {
     "timestamp": "2024-01-01T00:00:00",
     "community_id": "abcd",
-    "community_parent_id": "",
     "snapshot_date": "2024-01-01",
-    "record_count": {
+    "total_records": {
         "metadata_only": 100,
         "with_files": 200,
     },
-    "parent_count": {
+    "total_parents": {
         "metadata_only": 100,
         "with_files": 200,
     },
-    "files": {
-        "file_count": 100,
-        "data_volume": 200,
-    },
-    "parent_files": {
+    "total_files": {
         "file_count": 100,
         "data_volume": 200,
     },
@@ -56,11 +52,6 @@ SAMPLE_RECORDS_SNAPSHOT_AGG = {
                     "file_count": 100,
                     "data_volume": 200,
                 },
-                "parent_files": {
-                    "file_count": 100,
-                    "data_volume": 200,
-                },
-                "uploaders": 100,
             },
         ],
         "all_access_rights": [
@@ -79,11 +70,6 @@ SAMPLE_RECORDS_SNAPSHOT_AGG = {
                     "file_count": 100,
                     "data_volume": 200,
                 },
-                "parent_files": {
-                    "file_count": 100,
-                    "data_volume": 200,
-                },
-                "uploaders": 100,
             },
         ],
         "all_languages": [],
@@ -199,9 +185,7 @@ def test_daily_record_delta_query(
     """Test the daily_record_cumulative_counts_query function."""
     app = running_app.app
     client = current_search_client
-    today_date = arrow.now().strftime("%Y-%m-%d")
 
-    # Allow all requests to go through to the real server
     requests_mock.real_http = True
 
     u = user_factory(email="test@example.com")
@@ -216,25 +200,14 @@ def test_daily_record_delta_query(
     client.indices.refresh(index="*communities*")
     client.indices.refresh(index="*")
 
-    # Mock the record importer service to skip file writing
-    # with patch(
-    #     "invenio_record_importer_kcworks.proxies.current_record_importer_service"
-    # ) as mock_service:
-    #     mock_service.import_records.return_value = {
-    #         "status": "success",
-    #         "message": "Successfully imported records",
-    #         "records": [],
-    #     }
-
     import_test_records(
         count=3,
-        start_date="2025-05-30",
-        end_date="2025-06-03",
         importer_email=user_email,
         record_ids=[
             "jthhs-g4b38",
             "0dtmf-ph235",
             "5ryf5-bfn20",
+            "r4w2d-5tg11",
         ],
     )
     client.indices.refresh(index="*rdmrecords-records*")
@@ -246,7 +219,11 @@ def test_daily_record_delta_query(
     )
     app.logger.error(f"Confirm record import: {pformat(confirm_record_import)}")
 
-    query = daily_record_delta_query(community_id, "2025-05-30", "2025-06-03")
+    query = daily_record_delta_query(
+        start_date="2025-05-30",
+        end_date="2025-06-03",
+        community_id=community_id,
+    )
     result = client.search(
         index="rdmrecords-records",
         body=query,
@@ -284,7 +261,16 @@ def test_daily_record_delta_query(
         }
     ]
     assert days[0]["by_affiliation_contributor"]["buckets"] == []
-    assert days[0]["by_affiliation_creator"]["buckets"] == []
+    assert days[0]["by_affiliation_creator"]["buckets"] == [
+        {
+            "doc_count": 1,
+            "file_count": {"value": 1},
+            "key": "013v4ng57",
+            "total_bytes": {"value": 458036.0},
+            "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+            "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+        }
+    ]
     assert days[0]["by_file_type"]["buckets"] == [
         {
             "doc_count": 1,
@@ -446,7 +432,17 @@ def test_daily_record_delta_query(
         },
     ]
     assert days[4]["by_affiliation_contributor"]["buckets"] == []
-    assert days[4]["by_affiliation_creator"]["buckets"] == []
+    assert days[4]["by_affiliation_creator"]["buckets"] == [
+        {
+            "doc_count": 1,
+            "file_count": {"value": 0},
+            "key": "03rmrcq20",
+            "total_bytes": {"value": 0.0},
+            "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+            "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+        },
+    ]
+
     assert days[4]["by_file_type"]["buckets"] == [
         {
             "doc_count": 1,
@@ -2517,27 +2513,46 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
         "_source": {
             "community_id": "5733deff-2f76-4f8c-bb99-8df48bdd725f",
             "files": {
-                "added": {"data_volume": 458036.0, "file_count": 1},
+                "added": {"data_volume": 59117831.0, "file_count": 2},
                 "removed": {"data_volume": 0, "file_count": 0},
             },
             "parents": {
-                "added": {"metadata_only": 0, "with_files": 1},
+                "added": {"metadata_only": 0, "with_files": 2},
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "period_end": "2025-05-30",
             "period_start": "2025-05-30",
             "records": {
-                "added": {"metadata_only": 0, "with_files": 1},
+                "added": {"metadata_only": 0, "with_files": 2},
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
                 "by_access_rights": [
                     {
                         "files": {
-                            "added": {"data_volume": 458036.0, "file_count": 1},
+                            "added": {"data_volume": 59117831.0, "file_count": 2},
                             "removed": {"data_volume": 0, "file_count": 0},
                         },
                         "id": "open",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 2},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 2},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                    }
+                ],
+                "by_affiliation_contributor": [],
+                "by_affiliation_creator": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 458036.0, "file_count": 1},
+                            "removed": {"data_volume": 0, "file_count": 0},
+                        },
+                        "id": "013v4ng57",
                         "label": {},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
@@ -2549,15 +2564,13 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_affiliation_contributor": [],
-                "by_affiliation_creator": [],
                 "by_file_type": [
                     {
                         "added": {
-                            "data_volume": 0,
-                            "files": 1,
-                            "parents": 1,
-                            "records": 1,
+                            "data_volume": 59117831.0,
+                            "files": 2,
+                            "parents": 2,
+                            "records": 2,
                         },
                         "id": "pdf",
                         "label": {},
@@ -2572,7 +2585,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "by_funder": [],
                 "by_language": [
                     {
-                        "files": {"added": {"data_volume": 458036.0, "file_count": 1}},
+                        "files": {
+                            "added": {"data_volume": 458036.0, "file_count": 1},
+                            "removed": {"data_volume": 0, "file_count": 0},
+                        },
                         "id": "eng",
                         "label": {},
                         "parents": {
@@ -2590,10 +2606,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "by_publisher": [
                     {
                         "files": {
-                            "added": {"data_volume": 458036.0, "file_count": 1},
+                            "added": {"data_volume": 58659795.0, "file_count": 1},
                             "removed": {"data_volume": 0, "file_count": 0},
                         },
-                        "id": "Knowledge " "Commons",
+                        "id": "Apocryphile Press",
                         "label": {},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
@@ -2603,9 +2619,41 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
                         },
-                    }
+                    },
+                    {
+                        "files": {
+                            "added": {"data_volume": 458036.0, "file_count": 1},
+                            "removed": {"data_volume": 0, "file_count": 0},
+                        },
+                        "id": "Knowledge Commons",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 1},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 1},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                    },
                 ],
                 "by_resource_type": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 58659795.0, "file_count": 1},
+                            "removed": {"data_volume": 0, "file_count": 0},
+                        },
+                        "id": "textDocument-bookSection",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 1},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 1},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                    },
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
@@ -2621,15 +2669,15 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
                         },
-                    }
+                    },
                 ],
                 "by_subject": [
                     {
                         "files": {
-                            "added": {"data_volume": 458036.0, "file_count": 1},
+                            "added": {"data_volume": 58659795.0, "file_count": 1},
                             "removed": {"data_volume": 0, "file_count": 0},
                         },
-                        "id": "http://id.worldcat.org/fast/2060143",
+                        "id": "http://id.worldcat.org/fast/973589",
                         "label": {},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
@@ -2661,7 +2709,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "added": {"data_volume": 458036.0, "file_count": 1},
                             "removed": {"data_volume": 0, "file_count": 0},
                         },
-                        "id": "http://id.worldcat.org/fast/995415",
+                        "id": "http://id.worldcat.org/fast/997916",
                         "label": {},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
@@ -2677,7 +2725,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "added": {"data_volume": 458036.0, "file_count": 1},
                             "removed": {"data_volume": 0, "file_count": 0},
                         },
-                        "id": "http://id.worldcat.org/fast/997916",
+                        "id": "http://id.worldcat.org/fast/2060143",
                         "label": {},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
@@ -2710,6 +2758,22 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/997987",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 1},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 1},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                    },
+                    {
+                        "files": {
+                            "added": {"data_volume": 458036.0, "file_count": 1},
+                            "removed": {"data_volume": 0, "file_count": 0},
+                        },
+                        "id": "http://id.worldcat.org/fast/995415",
                         "label": {},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
@@ -2897,11 +2961,28 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     },
                 ],
                 "by_affiliation_contributor": [],
-                "by_affiliation_creator": [],
+                "by_affiliation_creator": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 0.0, "file_count": 0},
+                            "removed": {"data_volume": 0, "file_count": 0},
+                        },
+                        "id": "03rmrcq20",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 1, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 1, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                    }
+                ],
                 "by_file_type": [
                     {
                         "added": {
-                            "data_volume": 0,
+                            "data_volume": 1984949.0,
                             "files": 1,
                             "parents": 1,
                             "records": 1,
@@ -2919,7 +3000,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "by_funder": [],
                 "by_language": [
                     {
-                        "files": {"added": {"data_volume": 1984949.0, "file_count": 1}},
+                        "files": {
+                            "added": {"data_volume": 1984949.0, "file_count": 1},
+                            "removed": {"data_volume": 0, "file_count": 0},
+                        },
                         "id": "eng",
                         "label": {},
                         "parents": {
@@ -2939,6 +3023,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 0, "file_count": 0},
                         },
                         "id": "cc-by-sa-4.0",
+                        "label": {},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -3203,6 +3288,163 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
             "uploaders": 1,
         },
     },
+    {
+        "_id": "5733deff-2f76-4f8c-bb99-8df48bdd725f-2025-06-03",
+        "_index": "stats-community-records-delta-2025",
+        "_score": 1.0,
+        "_source": {
+            "community_id": "5733deff-2f76-4f8c-bb99-8df48bdd725f",
+            "files": {
+                "added": {"data_volume": 0, "file_count": 0},
+                "removed": {"data_volume": 1984949.0, "file_count": 1},
+            },
+            "parents": {
+                "added": {"metadata_only": 0, "with_files": 0},
+                "removed": {"metadata_only": 0, "with_files": 1},
+            },
+            "period_end": "2025-06-10",
+            "period_start": "2025-06-10",
+            "records": {
+                "added": {"metadata_only": 0, "with_files": 0},
+                "removed": {"metadata_only": 0, "with_files": 1},
+            },
+            "subcounts": {
+                "by_access_rights": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 1984949.0, "file_count": 1},
+                        },
+                        "id": "open",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                    }
+                ],
+                "by_affiliation_contributor": [],
+                "by_affiliation_creator": [],
+                "by_file_type": [
+                    {
+                        "added": {
+                            "data_volume": 0,
+                            "files": 0,
+                            "parents": 0,
+                            "records": 0,
+                        },
+                        "id": "pdf",
+                        "label": {},
+                        "removed": {
+                            "data_volume": 1984949.0,
+                            "files": 1,
+                            "parents": 1,
+                            "records": 1,
+                        },
+                    }
+                ],
+                "by_funder": [],
+                "by_language": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 1984949.0, "file_count": 1},
+                        },
+                        "id": "eng",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                    }
+                ],
+                "by_license": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 1984949.0, "file_count": 1},
+                        },
+                        "id": "cc-by-sa-4.0",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                    }
+                ],
+                "by_periodical": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 1984949.0, "file_count": 1},
+                        },
+                        "id": "N/A",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                    }
+                ],
+                "by_publisher": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 1984949.0, "file_count": 1},
+                        },
+                        "id": "Knowledge " "Commons",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                    }
+                ],
+                "by_resource_type": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 1984949.0, "file_count": 1},
+                        },
+                        "id": "textDocument-journalArticle",
+                        "label": {},
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                    }
+                ],
+                "by_subject": [],
+            },
+            "timestamp": "2025-06-10T00:45:10",
+            "updated_timestamp": "2025-06-10T00:45:10",
+            "uploaders": 0,
+        },
+    },
 ]
 
 
@@ -3226,35 +3468,40 @@ def test_community_records_delta_agg(
     user_email = u.user.email
 
     import_test_records(
-        count=3,
-        start_date="2025-05-30",
-        end_date="2025-06-03",
         importer_email=user_email,
         record_ids=[
             "jthhs-g4b38",
             "0dtmf-ph235",
             "5ryf5-bfn20",
+            "r4w2d-5tg11",
         ],
     )
     current_search_client.indices.refresh(index="*rdmrecords-records*")
 
-    # with patch(
-    #     "invenio_stats_dashboard.aggregations.Search.scan",
-    #     return_value=MOCK_RECORD_DELTA_QUERY_RESPONSE,
-    # ) as mock_scan:
+    current_records = records_service.search(
+        identity=system_identity,
+        q="",
+    )
+    app.logger.error(f"Current records: {pformat(current_records.to_dict())}")
+    delete_record_id = list(current_records.to_dict()["hits"]["hits"])[0]["id"]
+    deleted_record = records_service.delete_record(
+        identity=system_identity,
+        id_=delete_record_id,
+        data={"is_visible": False, "note": "no specific reason, tbh"},
+    )
+    app.logger.error(f"Deleted record: {pformat(deleted_record)}")
+    current_search_client.indices.refresh(index="*rdmrecords-records*")
 
     aggregator = CommunityRecordsDeltaAggregator(
         name="community-records-delta-agg",
     )
     aggregator.run(
         start_date=arrow.get("2025-05-30").datetime,
-        end_date=arrow.get("2025-06-03").isoformat(),
+        end_date=arrow.utcnow().isoformat(),
         update_bookmark=True,
         ignore_bookmark=False,
     )
 
-    # Verify client calls
-    # mock_scan.assert_called_once()
     current_search_client.indices.refresh(index="*stats-community-records-delta*")
 
     agg_documents = current_search_client.search(
@@ -3264,21 +3511,3717 @@ def test_community_records_delta_agg(
                 "match_all": {},
             },
         },
+        size=1000,
     )
     app.logger.error(f"Agg documents: {pformat(agg_documents)}")
-    assert agg_documents["hits"]["total"]["value"] == 5
+    assert (
+        agg_documents["hits"]["total"]["value"]
+        == (arrow.utcnow() - arrow.get("2025-05-30")).days + 1
+    )
     for idx, actual_doc in enumerate(agg_documents["hits"]["hits"]):
         del actual_doc["_source"]["timestamp"]
         del actual_doc["_source"]["updated_timestamp"]
-        expected_doc = MOCK_RECORD_DELTA_AGGREGATION_DOCS[idx]
-        expected_doc["_id"] = expected_doc["_id"].replace(
-            "5733deff-2f76-4f8c-bb99-8df48bdd725f",
-            community_id,
-        )
-        expected_doc["_source"]["community_id"] = community_id
-        del expected_doc["_source"]["timestamp"]
-        del expected_doc["_source"]["updated_timestamp"]
-        assert actual_doc == expected_doc
+
+        # only check first 5 docs and last doc (for deleted record)
+        if idx < 5 or idx == len(agg_documents["hits"]["hits"]) - 1:
+            if idx > 4:
+                idx = -1
+                app.logger.error(f"actual doc: {pformat(actual_doc)}")
+            expected_doc = MOCK_RECORD_DELTA_AGGREGATION_DOCS[idx]
+            expected_doc["_id"] = expected_doc["_id"].replace(
+                "5733deff-2f76-4f8c-bb99-8df48bdd725f",
+                community_id,
+            )
+            expected_doc["_source"]["community_id"] = community_id
+            del expected_doc["_source"]["timestamp"]
+            del expected_doc["_source"]["updated_timestamp"]
+            assert {
+                k: v for k, v in actual_doc["_source"].items() if k != "subcounts"
+            } == {k: v for k, v in expected_doc["_source"].items() if k != "subcounts"}
+            for k, subcount_items in actual_doc["_source"]["subcounts"].items():
+                # order indeterminate
+                for subcount_item in subcount_items:
+                    matching_doc = next(
+                        (
+                            doc
+                            for doc in expected_doc["_source"]["subcounts"][k]
+                            if doc["id"] == subcount_item["id"]
+                        ),
+                        None,
+                    )
+                    assert matching_doc is not None
+                    assert subcount_item == matching_doc
+
+
+MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
+    "2025-05-30": {
+        "by_access_rights": {
+            "buckets": [
+                {
+                    "doc_count": 2,
+                    "file_count": {"value": 2},
+                    "key": "open",
+                    "total_bytes": {"value": 59117831.0},
+                    "with_files": {"doc_count": 2, "unique_parents": {"value": 2}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliation_contributor": {
+            "after_key": {"id": None, "label": None},
+            "buckets": [
+                {
+                    "doc_count": 2,
+                    "file_count": {"value": 2},
+                    "key": {"id": None, "label": None},
+                    "total_bytes": {"value": 59117831.0},
+                    "with_files": {"doc_count": 2, "unique_parents": {"value": 2}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                }
+            ],
+            "meta": {},
+        },
+        "by_affiliation_creator": {
+            "after_key": {"id": "013v4ng57", "label": None},
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": {"id": None, "label": None},
+                    "total_bytes": {"value": 58659795.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": {"id": "013v4ng57", "label": None},
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+            ],
+            "meta": {},
+        },
+        "by_file_type": {
+            "buckets": [
+                {
+                    "doc_count": 2,
+                    "key": "pdf",
+                    "total_bytes": {"value": 59117831.0},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_funder": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_language": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "eng",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "86856332-b1d1-4f60-81f6-801442b9fea2",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749585565"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "languages": [{"title": {"en": "English"}}]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_license": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_periodical": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_publisher": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "Apocryphile Press",
+                    "total_bytes": {"value": 58659795.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "Knowledge Commons",
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_resource_type": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "textDocument-bookSection",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "8c11a8b2-17fa-43b4-952c-d0756852ec7f",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749585565"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "resource_type": {
+                                                "title": {"en": "Book " "Section"}
+                                            }
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 58659795.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "textDocument-journalArticle",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "86856332-b1d1-4f60-81f6-801442b9fea2",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749585565"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "resource_type": {
+                                                "title": {"en": "Journal " "Article"}
+                                            }
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_subject": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/2060143",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "86856332-b1d1-4f60-81f6-801442b9fea2",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749585565"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "8b79f179-aa1b-4a41-bed4-12c60c2c5c18::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "febbebcb-e794-458c-8022-086ad58f086f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "bf6efa0a-7a15-452c-a9d3-250601beb4c6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "beb9e9ac-1793-45f4-abc0-d9982eed0e4b::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "347bceb2-19d7-4d38-b76b-c6ba6b44a3dc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "4d0dcfd5-dfad-417b-847a-90c8326b3e1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/855500",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "86856332-b1d1-4f60-81f6-801442b9fea2",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749585565"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "8b79f179-aa1b-4a41-bed4-12c60c2c5c18::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "febbebcb-e794-458c-8022-086ad58f086f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "bf6efa0a-7a15-452c-a9d3-250601beb4c6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "beb9e9ac-1793-45f4-abc0-d9982eed0e4b::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "347bceb2-19d7-4d38-b76b-c6ba6b44a3dc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "4d0dcfd5-dfad-417b-847a-90c8326b3e1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/973589",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "8c11a8b2-17fa-43b4-952c-d0756852ec7f",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749585565"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "c490b6d8-1a1a-4f3d-b4a4-a2b93b02813f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/973589"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Inklings "
+                                                        "(Group "
+                                                        "of "
+                                                        "writers)"
+                                                    ),
+                                                }
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 58659795.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/995415",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "86856332-b1d1-4f60-81f6-801442b9fea2",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749585565"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "8b79f179-aa1b-4a41-bed4-12c60c2c5c18::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "febbebcb-e794-458c-8022-086ad58f086f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "bf6efa0a-7a15-452c-a9d3-250601beb4c6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "beb9e9ac-1793-45f4-abc0-d9982eed0e4b::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "347bceb2-19d7-4d38-b76b-c6ba6b44a3dc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "4d0dcfd5-dfad-417b-847a-90c8326b3e1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/997916",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "86856332-b1d1-4f60-81f6-801442b9fea2",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749585565"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "8b79f179-aa1b-4a41-bed4-12c60c2c5c18::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "febbebcb-e794-458c-8022-086ad58f086f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "bf6efa0a-7a15-452c-a9d3-250601beb4c6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "beb9e9ac-1793-45f4-abc0-d9982eed0e4b::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "347bceb2-19d7-4d38-b76b-c6ba6b44a3dc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "4d0dcfd5-dfad-417b-847a-90c8326b3e1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/997974",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "86856332-b1d1-4f60-81f6-801442b9fea2",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749585565"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "8b79f179-aa1b-4a41-bed4-12c60c2c5c18::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "febbebcb-e794-458c-8022-086ad58f086f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "bf6efa0a-7a15-452c-a9d3-250601beb4c6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "beb9e9ac-1793-45f4-abc0-d9982eed0e4b::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "347bceb2-19d7-4d38-b76b-c6ba6b44a3dc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "4d0dcfd5-dfad-417b-847a-90c8326b3e1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/997987",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "86856332-b1d1-4f60-81f6-801442b9fea2",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749585565"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "8b79f179-aa1b-4a41-bed4-12c60c2c5c18::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "febbebcb-e794-458c-8022-086ad58f086f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "bf6efa0a-7a15-452c-a9d3-250601beb4c6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "beb9e9ac-1793-45f4-abc0-d9982eed0e4b::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "347bceb2-19d7-4d38-b76b-c6ba6b44a3dc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "4d0dcfd5-dfad-417b-847a-90c8326b3e1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "date_field_max": {
+            "value": 1748649184686.0,
+            "value_as_string": "2025-05-30T23:53:04",
+        },
+        "date_field_min": {
+            "value": 1748572641721.0,
+            "value_as_string": "2025-05-30T02:37:21",
+        },
+        "file_count": {"value": 2},
+        "total_bytes": {"value": 59117831.0},
+        "total_records": {"value": 2},
+        "uploaders": {"value": 1},
+        "with_files": {"doc_count": 2, "meta": {}, "unique_parents": {"value": 2}},
+        "without_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
+    },
+    "2025-05-31": {
+        "by_access_rights": {
+            "buckets": [
+                {
+                    "doc_count": 2,
+                    "file_count": {"value": 2},
+                    "key": "open",
+                    "total_bytes": {"value": 59117831.0},
+                    "with_files": {"doc_count": 2, "unique_parents": {"value": 2}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliation_contributor": {
+            "after_key": {"id": None, "label": None},
+            "buckets": [
+                {
+                    "doc_count": 2,
+                    "file_count": {"value": 2},
+                    "key": {"id": None, "label": None},
+                    "total_bytes": {"value": 59117831.0},
+                    "with_files": {"doc_count": 2, "unique_parents": {"value": 2}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                }
+            ],
+            "meta": {},
+        },
+        "by_affiliation_creator": {
+            "after_key": {"id": "013v4ng57", "label": None},
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": {"id": None, "label": None},
+                    "total_bytes": {"value": 58659795.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": {"id": "013v4ng57", "label": None},
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+            ],
+            "meta": {},
+        },
+        "by_file_type": {
+            "buckets": [
+                {
+                    "doc_count": 2,
+                    "key": "pdf",
+                    "total_bytes": {"value": 59117831.0},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_funder": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_language": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "eng",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "30aa398d-fa27-4cd2-b011-81bb35916d2a",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749590345"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "languages": [{"title": {"en": "English"}}]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_license": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_periodical": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_publisher": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "Apocryphile Press",
+                    "total_bytes": {"value": 58659795.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "Knowledge Commons",
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_resource_type": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "textDocument-bookSection",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "085bd97d-040a-462f-a8ac-b30ec9e490a5",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749590345"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "resource_type": {
+                                                "title": {"en": "Book " "Section"}
+                                            }
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 58659795.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "textDocument-journalArticle",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "30aa398d-fa27-4cd2-b011-81bb35916d2a",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749590345"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "resource_type": {
+                                                "title": {"en": "Journal " "Article"}
+                                            }
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_subject": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/2060143",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "30aa398d-fa27-4cd2-b011-81bb35916d2a",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749590345"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "0442a8f9-9312-4bd9-aacc-9155b069d932::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "f963536a-6d3a-4cd3-bdc8-145c5ae5e919::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7eab4fa0-9742-447c-8b9d-674eac660835::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "99e2f870-3381-4a64-8dc1-2dc105f99c1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "0e06228f-4951-4617-97b5-702bd87fd27c::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "37217d57-c4d9-49b2-88fc-31b2b8e3f72e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/855500",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "30aa398d-fa27-4cd2-b011-81bb35916d2a",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749590345"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "0442a8f9-9312-4bd9-aacc-9155b069d932::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "f963536a-6d3a-4cd3-bdc8-145c5ae5e919::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7eab4fa0-9742-447c-8b9d-674eac660835::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "99e2f870-3381-4a64-8dc1-2dc105f99c1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "0e06228f-4951-4617-97b5-702bd87fd27c::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "37217d57-c4d9-49b2-88fc-31b2b8e3f72e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/973589",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "085bd97d-040a-462f-a8ac-b30ec9e490a5",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749590345"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "3a5ac7f4-49d1-4360-9798-35fed68b4b7c::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/973589"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Inklings "
+                                                        "(Group "
+                                                        "of "
+                                                        "writers)"
+                                                    ),
+                                                }
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 58659795.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/995415",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "30aa398d-fa27-4cd2-b011-81bb35916d2a",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749590345"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "0442a8f9-9312-4bd9-aacc-9155b069d932::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "f963536a-6d3a-4cd3-bdc8-145c5ae5e919::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7eab4fa0-9742-447c-8b9d-674eac660835::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "99e2f870-3381-4a64-8dc1-2dc105f99c1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "0e06228f-4951-4617-97b5-702bd87fd27c::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "37217d57-c4d9-49b2-88fc-31b2b8e3f72e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/997916",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "30aa398d-fa27-4cd2-b011-81bb35916d2a",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749590345"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "0442a8f9-9312-4bd9-aacc-9155b069d932::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "f963536a-6d3a-4cd3-bdc8-145c5ae5e919::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7eab4fa0-9742-447c-8b9d-674eac660835::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "99e2f870-3381-4a64-8dc1-2dc105f99c1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "0e06228f-4951-4617-97b5-702bd87fd27c::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "37217d57-c4d9-49b2-88fc-31b2b8e3f72e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/997974",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "30aa398d-fa27-4cd2-b011-81bb35916d2a",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749590345"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "0442a8f9-9312-4bd9-aacc-9155b069d932::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "f963536a-6d3a-4cd3-bdc8-145c5ae5e919::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7eab4fa0-9742-447c-8b9d-674eac660835::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "99e2f870-3381-4a64-8dc1-2dc105f99c1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "0e06228f-4951-4617-97b5-702bd87fd27c::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "37217d57-c4d9-49b2-88fc-31b2b8e3f72e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/997987",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "30aa398d-fa27-4cd2-b011-81bb35916d2a",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749590345"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "0442a8f9-9312-4bd9-aacc-9155b069d932::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "f963536a-6d3a-4cd3-bdc8-145c5ae5e919::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7eab4fa0-9742-447c-8b9d-674eac660835::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "99e2f870-3381-4a64-8dc1-2dc105f99c1e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "0e06228f-4951-4617-97b5-702bd87fd27c::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "37217d57-c4d9-49b2-88fc-31b2b8e3f72e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "date_field_max": {
+            "value": 1748649184686.0,
+            "value_as_string": "2025-05-30T23:53:04",
+        },
+        "date_field_min": {
+            "value": 1748572641721.0,
+            "value_as_string": "2025-05-30T02:37:21",
+        },
+        "file_count": {"value": 2},
+        "total_bytes": {"value": 59117831.0},
+        "total_records": {"value": 2},
+        "uploaders": {"value": 1},
+        "with_files": {"doc_count": 2, "meta": {}, "unique_parents": {"value": 2}},
+        "without_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
+    },
+    "2025-06-03": {
+        "by_access_rights": {
+            "buckets": [
+                {
+                    "doc_count": 3,
+                    "file_count": {"value": 3},
+                    "key": "open",
+                    "total_bytes": {"value": 61102780.0},
+                    "with_files": {"doc_count": 3, "unique_parents": {"value": 3}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "metadata-only",
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliation_contributor": {
+            "after_key": {"id": None, "label": None},
+            "buckets": [
+                {
+                    "doc_count": 4,
+                    "file_count": {"value": 3},
+                    "key": {"id": None, "label": None},
+                    "total_bytes": {"value": 61102780.0},
+                    "with_files": {"doc_count": 3, "unique_parents": {"value": 3}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                }
+            ],
+            "meta": {},
+        },
+        "by_affiliation_creator": {
+            "after_key": {"id": "03rmrcq20", "label": None},
+            "buckets": [
+                {
+                    "doc_count": 2,
+                    "file_count": {"value": 2},
+                    "key": {"id": None, "label": None},
+                    "total_bytes": {"value": 60644744.0},
+                    "with_files": {"doc_count": 2, "unique_parents": {"value": 2}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": {"id": "013v4ng57", "label": None},
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": {"id": "03rmrcq20", "label": None},
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+            ],
+            "meta": {},
+        },
+        "by_file_type": {
+            "buckets": [
+                {
+                    "doc_count": 3,
+                    "key": "pdf",
+                    "total_bytes": {"value": 61102780.0},
+                    "unique_parents": {"value": 3},
+                    "unique_records": {"value": 3},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_funder": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_language": {
+            "buckets": [
+                {
+                    "doc_count": 2,
+                    "file_count": {"value": 2},
+                    "key": "eng",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "ed8412b3-a495-464c-8c9e-b84ed38e5be0",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "languages": [{"title": {"en": "English"}}]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 2},
+                        }
+                    },
+                    "total_bytes": {"value": 2442985.0},
+                    "with_files": {"doc_count": 2, "unique_parents": {"value": 2}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_license": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "cc-by-sa-4.0",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "ed8412b3-a495-464c-8c9e-b84ed38e5be0",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "rights": [
+                                                {
+                                                    "title": {
+                                                        "en": (
+                                                            "Creative "
+                                                            "Commons "
+                                                            "Attribution-ShareAlike "
+                                                            "4.0 "
+                                                            "International"
+                                                        )
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 1984949.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_periodical": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "N/A",
+                    "total_bytes": {"value": 1984949.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_publisher": {
+            "buckets": [
+                {
+                    "doc_count": 2,
+                    "file_count": {"value": 2},
+                    "key": "Knowledge Commons",
+                    "total_bytes": {"value": 2442985.0},
+                    "with_files": {"doc_count": 2, "unique_parents": {"value": 2}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "Apocryphile Press",
+                    "total_bytes": {"value": 58659795.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "UBC",
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_resource_type": {
+            "buckets": [
+                {
+                    "doc_count": 2,
+                    "file_count": {"value": 2},
+                    "key": "textDocument-journalArticle",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "ed8412b3-a495-464c-8c9e-b84ed38e5be0",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "resource_type": {
+                                                "title": {"en": "Journal " "Article"}
+                                            }
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 2},
+                        }
+                    },
+                    "total_bytes": {"value": 2442985.0},
+                    "with_files": {"doc_count": 2, "unique_parents": {"value": 2}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "textDocument-book",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "22b6fe82-7195-4218-9af7-9619786e822e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "resource_type": {"title": {"en": "Book"}}
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "textDocument-bookSection",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "7ee160e5-547d-4f21-9ca5-95a93df8d8b7",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "resource_type": {
+                                                "title": {"en": "Book " "Section"}
+                                            }
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 58659795.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_subject": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "http://id.worldcat.org/fast/1424786",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "22b6fe82-7195-4218-9af7-9619786e822e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "cb7f5fa0-93da-41a6-868b-9db610c38d6f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911979"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Written "
+                                                        "English--History"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "676a9b6c-f15d-4d37-bb4b-e9fbd1fa1fc8::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911660"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Spoken "
+                                                        "English--Research"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "9dd254a5-f436-4d3d-b385-ea56195931f7::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845111"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Canadian " "literature",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "637bba5a-1cd9-4f51-b57b-29f466f74a4d::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845142"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7605afd5-6412-47c6-a144-6a32ae83652f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845184"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "prose "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "d99a6371-1b8c-408e-8339-001e9e0a4c7f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1424786"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Bibliography"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a47638b8-267e-4288-8f46-6df53357b092::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/934875"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "French-Canadian " "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "01cd29ef-368a-4d1c-8d1f-797c854950e6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/817954"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Arts, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "531262ce-12b5-44dd-9b4c-b684a64d8857::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/821870"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Authors, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "be2998f7-163e-4735-af9f-8ef06dcc38bc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845170"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian " "periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a047af4e-9710-431a-8b7c-2e0b8346fb5e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911328"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Lexicography--History"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/2060143",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "3a1c0854-2036-418e-938f-c5af3b33794e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "2485b574-4ba7-4413-8ff6-56947e72236b::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "03e6600f-9d63-402b-8e6d-f5ef735d8c6e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "d39e6657-4122-458b-ac86-eecec2ad11d4::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "c77355ed-5d54-47d9-b6d9-d70f83529893::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "92d2fad8-75ec-4ca0-b25a-e9e99f31915c::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "c613000a-7373-42d8-9c04-c42af94d85df::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "http://id.worldcat.org/fast/817954",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "22b6fe82-7195-4218-9af7-9619786e822e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "cb7f5fa0-93da-41a6-868b-9db610c38d6f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911979"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Written "
+                                                        "English--History"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "676a9b6c-f15d-4d37-bb4b-e9fbd1fa1fc8::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911660"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Spoken "
+                                                        "English--Research"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "9dd254a5-f436-4d3d-b385-ea56195931f7::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845111"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Canadian " "literature",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "637bba5a-1cd9-4f51-b57b-29f466f74a4d::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845142"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7605afd5-6412-47c6-a144-6a32ae83652f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845184"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "prose "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "d99a6371-1b8c-408e-8339-001e9e0a4c7f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1424786"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Bibliography"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a47638b8-267e-4288-8f46-6df53357b092::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/934875"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "French-Canadian " "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "01cd29ef-368a-4d1c-8d1f-797c854950e6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/817954"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Arts, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "531262ce-12b5-44dd-9b4c-b684a64d8857::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/821870"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Authors, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "be2998f7-163e-4735-af9f-8ef06dcc38bc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845170"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian " "periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a047af4e-9710-431a-8b7c-2e0b8346fb5e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911328"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Lexicography--History"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "http://id.worldcat.org/fast/821870",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "22b6fe82-7195-4218-9af7-9619786e822e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "cb7f5fa0-93da-41a6-868b-9db610c38d6f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911979"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Written "
+                                                        "English--History"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "676a9b6c-f15d-4d37-bb4b-e9fbd1fa1fc8::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911660"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Spoken "
+                                                        "English--Research"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "9dd254a5-f436-4d3d-b385-ea56195931f7::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845111"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Canadian " "literature",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "637bba5a-1cd9-4f51-b57b-29f466f74a4d::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845142"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7605afd5-6412-47c6-a144-6a32ae83652f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845184"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "prose "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "d99a6371-1b8c-408e-8339-001e9e0a4c7f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1424786"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Bibliography"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a47638b8-267e-4288-8f46-6df53357b092::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/934875"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "French-Canadian " "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "01cd29ef-368a-4d1c-8d1f-797c854950e6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/817954"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Arts, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "531262ce-12b5-44dd-9b4c-b684a64d8857::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/821870"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Authors, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "be2998f7-163e-4735-af9f-8ef06dcc38bc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845170"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian " "periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a047af4e-9710-431a-8b7c-2e0b8346fb5e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911328"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Lexicography--History"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "http://id.worldcat.org/fast/845111",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "22b6fe82-7195-4218-9af7-9619786e822e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "cb7f5fa0-93da-41a6-868b-9db610c38d6f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911979"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Written "
+                                                        "English--History"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "676a9b6c-f15d-4d37-bb4b-e9fbd1fa1fc8::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911660"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Spoken "
+                                                        "English--Research"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "9dd254a5-f436-4d3d-b385-ea56195931f7::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845111"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Canadian " "literature",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "637bba5a-1cd9-4f51-b57b-29f466f74a4d::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845142"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7605afd5-6412-47c6-a144-6a32ae83652f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845184"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "prose "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "d99a6371-1b8c-408e-8339-001e9e0a4c7f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1424786"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Bibliography"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a47638b8-267e-4288-8f46-6df53357b092::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/934875"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "French-Canadian " "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "01cd29ef-368a-4d1c-8d1f-797c854950e6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/817954"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Arts, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "531262ce-12b5-44dd-9b4c-b684a64d8857::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/821870"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Authors, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "be2998f7-163e-4735-af9f-8ef06dcc38bc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845170"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian " "periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a047af4e-9710-431a-8b7c-2e0b8346fb5e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911328"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Lexicography--History"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "http://id.worldcat.org/fast/845142",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "22b6fe82-7195-4218-9af7-9619786e822e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "cb7f5fa0-93da-41a6-868b-9db610c38d6f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911979"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Written "
+                                                        "English--History"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "676a9b6c-f15d-4d37-bb4b-e9fbd1fa1fc8::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911660"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Spoken "
+                                                        "English--Research"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "9dd254a5-f436-4d3d-b385-ea56195931f7::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845111"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Canadian " "literature",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "637bba5a-1cd9-4f51-b57b-29f466f74a4d::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845142"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7605afd5-6412-47c6-a144-6a32ae83652f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845184"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "prose "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "d99a6371-1b8c-408e-8339-001e9e0a4c7f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1424786"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Bibliography"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a47638b8-267e-4288-8f46-6df53357b092::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/934875"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "French-Canadian " "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "01cd29ef-368a-4d1c-8d1f-797c854950e6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/817954"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Arts, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "531262ce-12b5-44dd-9b4c-b684a64d8857::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/821870"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Authors, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "be2998f7-163e-4735-af9f-8ef06dcc38bc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845170"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian " "periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a047af4e-9710-431a-8b7c-2e0b8346fb5e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911328"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Lexicography--History"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "http://id.worldcat.org/fast/845170",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "22b6fe82-7195-4218-9af7-9619786e822e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "cb7f5fa0-93da-41a6-868b-9db610c38d6f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911979"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Written "
+                                                        "English--History"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "676a9b6c-f15d-4d37-bb4b-e9fbd1fa1fc8::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911660"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Spoken "
+                                                        "English--Research"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "9dd254a5-f436-4d3d-b385-ea56195931f7::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845111"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Canadian " "literature",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "637bba5a-1cd9-4f51-b57b-29f466f74a4d::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845142"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7605afd5-6412-47c6-a144-6a32ae83652f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845184"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "prose "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "d99a6371-1b8c-408e-8339-001e9e0a4c7f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1424786"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Bibliography"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a47638b8-267e-4288-8f46-6df53357b092::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/934875"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "French-Canadian " "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "01cd29ef-368a-4d1c-8d1f-797c854950e6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/817954"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Arts, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "531262ce-12b5-44dd-9b4c-b684a64d8857::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/821870"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Authors, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "be2998f7-163e-4735-af9f-8ef06dcc38bc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845170"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian " "periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a047af4e-9710-431a-8b7c-2e0b8346fb5e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911328"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Lexicography--History"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "http://id.worldcat.org/fast/845184",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "22b6fe82-7195-4218-9af7-9619786e822e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "cb7f5fa0-93da-41a6-868b-9db610c38d6f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911979"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Written "
+                                                        "English--History"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "676a9b6c-f15d-4d37-bb4b-e9fbd1fa1fc8::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911660"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Spoken "
+                                                        "English--Research"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "9dd254a5-f436-4d3d-b385-ea56195931f7::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845111"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Canadian " "literature",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "637bba5a-1cd9-4f51-b57b-29f466f74a4d::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845142"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7605afd5-6412-47c6-a144-6a32ae83652f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845184"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "prose "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "d99a6371-1b8c-408e-8339-001e9e0a4c7f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1424786"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Bibliography"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a47638b8-267e-4288-8f46-6df53357b092::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/934875"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "French-Canadian " "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "01cd29ef-368a-4d1c-8d1f-797c854950e6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/817954"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Arts, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "531262ce-12b5-44dd-9b4c-b684a64d8857::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/821870"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Authors, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "be2998f7-163e-4735-af9f-8ef06dcc38bc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845170"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian " "periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a047af4e-9710-431a-8b7c-2e0b8346fb5e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911328"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Lexicography--History"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 1},
+                    "key": "http://id.worldcat.org/fast/855500",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "3a1c0854-2036-418e-938f-c5af3b33794e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "2485b574-4ba7-4413-8ff6-56947e72236b::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997916"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Library " "science",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "03e6600f-9d63-402b-8e6d-f5ef735d8c6e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/2060143"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Mass " "incarceration",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "d39e6657-4122-458b-ac86-eecec2ad11d4::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997987"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library "
+                                                        "science "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "c77355ed-5d54-47d9-b6d9-d70f83529893::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/997974"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Library " "science--Standards"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "92d2fad8-75ec-4ca0-b25a-e9e99f31915c::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/855500"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Children "
+                                                        "of "
+                                                        "prisoners--Services "
+                                                        "for"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "c613000a-7373-42d8-9c04-c42af94d85df::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/995415"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Legal "
+                                                        "assistance "
+                                                        "to "
+                                                        "prisoners--U.S. "
+                                                        "states"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 458036.0},
+                    "with_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "http://id.worldcat.org/fast/911328",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "22b6fe82-7195-4218-9af7-9619786e822e",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1749594127"
+                                    ),
+                                    "_score": 1.0571585,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "@v": (
+                                                        "cb7f5fa0-93da-41a6-868b-9db610c38d6f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911979"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Written "
+                                                        "English--History"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "676a9b6c-f15d-4d37-bb4b-e9fbd1fa1fc8::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911660"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Spoken "
+                                                        "English--Research"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "9dd254a5-f436-4d3d-b385-ea56195931f7::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845111"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Canadian " "literature",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "637bba5a-1cd9-4f51-b57b-29f466f74a4d::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845142"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "7605afd5-6412-47c6-a144-6a32ae83652f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845184"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "prose "
+                                                        "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "d99a6371-1b8c-408e-8339-001e9e0a4c7f::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1424786"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian "
+                                                        "literature--Bibliography"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a47638b8-267e-4288-8f46-6df53357b092::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/934875"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "French-Canadian " "literature"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "01cd29ef-368a-4d1c-8d1f-797c854950e6::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/817954"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Arts, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "531262ce-12b5-44dd-9b4c-b684a64d8857::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/821870"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": "Authors, " "Canadian",
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "be2998f7-163e-4735-af9f-8ef06dcc38bc::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/845170"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Canadian " "periodicals"
+                                                    ),
+                                                },
+                                                {
+                                                    "@v": (
+                                                        "a047af4e-9710-431a-8b7c-2e0b8346fb5e::1"
+                                                    ),
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/911328"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "English "
+                                                        "language--Lexicography--History"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0571585,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 8,
+        },
+        "date_field_max": {
+            "value": 1748983872325.0,
+            "value_as_string": "2025-06-03T20:51:12",
+        },
+        "date_field_min": {
+            "value": 1748572641721.0,
+            "value_as_string": "2025-05-30T02:37:21",
+        },
+        "file_count": {"value": 3},
+        "total_bytes": {"value": 61102780.0},
+        "total_records": {"value": 4},
+        "uploaders": {"value": 1},
+        "with_files": {"doc_count": 3, "meta": {}, "unique_parents": {"value": 3}},
+        "without_files": {"doc_count": 1, "meta": {}, "unique_parents": {"value": 1}},
+    },
+}
 
 
 def test_daily_record_cumulative_counts_query(
@@ -3292,25 +7235,229 @@ def test_daily_record_cumulative_counts_query(
     requests_mock,
     search_clear,
 ):
+    """Test daily_record_cumulative_counts_query."""
     app = running_app.app
-    for doc in MOCK_RECORD_DELTA_AGGREGATION_DOCS:
-        current_search_client.index(
-            index="stats-community-records-delta-2025",
-            id=doc["_id"],
-            body=doc["_source"],
-            refresh=True,
-        )
-    current_search_client.indices.refresh(index="*stats-community-records-delta*")
+    u = user_factory(email="test@example.com", saml_id="")
+    community = minimal_community_factory(slug="knowledge-commons")
+    community_id = community.id
+    user_email = u.user.email
 
-    cumulative_query = daily_record_cumulative_counts_query(
-        start_date="2025-05-30",
-        end_date="2025-06-03",
-        community_id="5733deff-2f76-4f8c-bb99-8df48bdd725f",
+    # import test records
+    requests_mock.real_http = True
+    import_test_records(
+        importer_email=user_email,
+        record_ids=[
+            "jthhs-g4b38",
+            "0dtmf-ph235",
+            "5ryf5-bfn20",
+            "r4w2d-5tg11",
+        ],
     )
-    app.logger.error(f"Cumulative query: {pformat(cumulative_query)}")
-    cumulative_results = current_search_client.search(
-        index="stats-community-records-delta",
-        body=cumulative_query,
+    current_search_client.indices.refresh(index="*rdmrecords-records*")
+
+    all_results = []
+    earliest_date = arrow.get("1900-01-01").floor("day")
+    start_date = arrow.get("2025-05-30")
+    target_date = arrow.get("2025-05-30")
+    final_date = arrow.utcnow()
+    while target_date <= final_date:
+        day = target_date.format("YYYY-MM-DD")
+        cumulative_query = daily_record_cumulative_counts_query(
+            start_date=earliest_date.format("YYYY-MM-DD"),
+            end_date=day,
+            community_id=community_id,
+        )
+        app.logger.error(f"Cumulative query: {pformat(cumulative_query)}")
+        cumulative_results = current_search_client.search(
+            index="rdmrecords-records",
+            body=cumulative_query,
+        )
+        app.logger.error(f"start date: {target_date.format('YYYY-MM-DD')}")
+        app.logger.error(f"Cumulative results: {pformat(cumulative_results)}")
+        all_results.append(cumulative_results)
+
+        # only check a few sample days
+        if day.format("YYYY-MM-DD") in ["2025-05-30", "2025-05-31", "2025-06-03"]:
+            expected_results = MOCK_CUMULATIVE_TOTALS_AGGREGATIONS[day]
+            app.logger.error(f"Expected results: {pformat(expected_results)}")
+
+            for key, value in cumulative_results["aggregations"].items():
+                if key[:3] == "by_":
+                    for bucket in value["buckets"]:
+                        matching_expected_bucket = next(
+                            (
+                                expected_bucket
+                                for expected_bucket in expected_results[key]["buckets"]
+                                if expected_bucket["key"] == bucket["key"]
+                            ),
+                            None,
+                        )
+                        for k, v in bucket.items():
+                            assert matching_expected_bucket
+                            if k == "label":
+                                if key == "by_subject":
+                                    app.logger.error(
+                                        f"v: {pformat(sorted(v['hits']['hits'][0]['_source']['metadata']['subjects'], key=lambda x: x['subject']))}"
+                                    )
+                                    app.logger.error(
+                                        f"matching_expected_bucket: {pformat(sorted(matching_expected_bucket[k]['hits']['hits'][0]['_source']['metadata']['subjects'], key=lambda x: x['subject']))}"
+                                    )
+                                    for idx, s in enumerate(
+                                        sorted(
+                                            v["hits"]["hits"][0]["_source"]["metadata"][
+                                                "subjects"
+                                            ],
+                                            key=lambda x: x["subject"],
+                                        )
+                                    ):
+                                        expected = sorted(
+                                            matching_expected_bucket[k]["hits"]["hits"][
+                                                0
+                                            ]["_source"]["metadata"]["subjects"],
+                                            key=lambda x: x["subject"],
+                                        )[idx]
+                                        assert s["id"] == expected["id"]
+                                        assert s["subject"] == expected["subject"]
+                                        assert s["scheme"] == expected["scheme"]
+
+                                else:
+                                    assert sorted(
+                                        [i["_source"] for i in v["hits"]["hits"]]
+                                    ) == sorted(
+                                        [
+                                            j["_source"]
+                                            for j in matching_expected_bucket[k][
+                                                "hits"
+                                            ]["hits"]
+                                        ]
+                                    )
+                            else:
+                                assert v == matching_expected_bucket[k]
+                else:
+                    assert value == expected_results[key]
+        else:
+            pass
+
+        target_date = target_date.shift(days=1)
+
+    assert len(all_results) == (final_date - start_date).days + 1
+
+
+def test_community_record_snapshot_agg(
+    running_app,
+    db,
+    minimal_community_factory,
+    user_factory,
+    create_stats_indices,
+    mock_send_remote_api_update_fixture,
+    celery_worker,
+    requests_mock,
+):
+    """Test community_record_snapshot_agg."""
+    app = running_app.app
+    requests_mock.real_http = True
+    u = user_factory(email="test@example.com", saml_id="")
+    community = minimal_community_factory(slug="knowledge-commons")
+    community_id = community.id
+    user_email = u.user.email
+
+    import_test_records(
+        importer_email=user_email,
+        record_ids=[
+            "jthhs-g4b38",
+            "0dtmf-ph235",
+            "5ryf5-bfn20",
+            "r4w2d-5tg11",
+        ],
     )
-    app.logger.error(f"Cumulative results: {pformat(cumulative_results)}")
-    assert cumulative_results["hits"]["total"]["value"] == 5
+    current_search_client.indices.refresh(index="*rdmrecords-records*")
+
+    current_records = records_service.search(
+        identity=system_identity,
+        q="",
+    )
+    app.logger.error(f"Current records: {pformat(current_records.to_dict())}")
+    delete_record_id = list(current_records.to_dict()["hits"]["hits"])[0]["id"]
+    deleted_record = records_service.delete_record(
+        identity=system_identity,
+        id_=delete_record_id,
+        data={"is_visible": False, "note": "no specific reason, tbh"},
+    )
+    app.logger.error(f"Deleted record: {pformat(deleted_record)}")
+    current_search_client.indices.refresh(index="*rdmrecords-records*")
+
+    aggregator = CommunityRecordsSnapshotAggregator(
+        name="community-records-snapshot-agg",
+    )
+    aggregator.run(
+        start_date=arrow.get("2025-05-30").datetime,
+        end_date=arrow.utcnow().isoformat(),
+        update_bookmark=True,
+        ignore_bookmark=False,
+    )
+
+    current_search_client.indices.refresh(index="*stats-community-records-snapshot*")
+
+    agg_documents = current_search_client.search(
+        index="stats-community-records-snapshot",
+        body={
+            "query": {
+                "match_all": {},
+            },
+        },
+        size=1000,
+    )
+    app.logger.error(f"Agg documents: {pformat(agg_documents)}")
+    assert (
+        agg_documents["hits"]["total"]["value"]
+        == (arrow.utcnow() - arrow.get("2025-05-30")).days + 1
+    )
+    for idx, actual_doc in enumerate(agg_documents["hits"]["hits"]):
+        del actual_doc["_source"]["timestamp"]
+        del actual_doc["_source"]["updated_timestamp"]
+        assert False
+
+
+def test_generate_record_community_events(
+    running_app,
+    db,
+    minimal_community_factory,
+    user_factory,
+    create_stats_indices,
+    mock_send_remote_api_update_fixture,
+    celery_worker,
+    requests_mock,
+):
+    """Test generate_record_community_events."""
+    app = running_app.app
+    u = user_factory(email="test@example.com", saml_id="")
+    community = minimal_community_factory(slug="knowledge-commons")
+    community_id = community.id
+    user_email = u.user.email
+
+    # import test records
+    requests_mock.real_http = True
+
+    import_test_records(
+        importer_email=user_email,
+        record_ids=[
+            "jthhs-g4b38",
+            "0dtmf-ph235",
+            "5ryf5-bfn20",
+            "r4w2d-5tg11",
+        ],
+    )
+
+    service = CommunityStatsService(client=current_search_client)
+    service.generate_record_community_events(community_ids=[community_id])
+
+    updated_records = records_service.search(
+        identity=system_identity,
+        q="",
+    )
+    app.logger.error(f"Updated records: {pformat(updated_records.to_dict())}")
+    assert updated_records.to_dict()["hits"]["total"]["value"] == 4
+    for record in updated_records.to_dict()["hits"]["hits"]:
+        assert record["_source"]["custom_fields"]["stats:community_events"] == [
+            {"community_id": community_id, "added": record["created"]}
+        ]

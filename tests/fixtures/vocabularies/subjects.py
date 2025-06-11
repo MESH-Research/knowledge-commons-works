@@ -319,6 +319,11 @@ subject_data = [
         "subject": "Legal assistance to prisoners--U.S. states",
         "scheme": "FAST-topical",
     },
+    {
+        "id": "http://id.worldcat.org/fast/973589",
+        "subject": "Inklings (Group of writers)",
+        "scheme": "FAST-topical",
+    },
 ]
 
 
