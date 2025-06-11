@@ -31,6 +31,7 @@ Is there something you'd like to see in a future release? Let us know at [https:
 
 - Maintenance and Infrastructure
     - Clean up implementation of less common resource types and metadata fields
+    - Mirror stats data from search indices to the database for more secure backup
     - Further expand automated test suite
 
 ## 2025 Quarter 4
