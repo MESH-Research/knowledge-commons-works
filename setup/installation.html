@@ -424,7 +424,7 @@ This will mount a variety of local package folders as bind mounts in your runnin
 <section id="configuring-your-env-file">
 <h3>Configuring your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file<a class="headerlink" href="#configuring-your-env-file" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">.env</span></code> file is used to configure the Knowledge Commons Works application. It is a standard python environment file that is used to set the environment variables for the application.</p>
-<p>These are the minimal variables that you need to set in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file to get the application running:</p>
+<p>These are the minimal variables that you need to set in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file to get the application running. For local development you should use the default values for all variables except the ones with comments:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">FLASK_DEBUG</span><span class="o">=</span><span class="m">1</span>
 <span class="nv">INVENIO_INSTANCE_PATH</span><span class="o">=</span>/opt/invenio/var/instance
 <span class="nv">INVENIO_LOGGING_CONSOLE</span><span class="o">=</span>True
@@ -435,9 +435,10 @@ This will mount a variety of local package folders as bind mounts in your runnin
 <span class="nv">INVENIO_SITE_UI_URL</span><span class="o">=</span><span class="s2">&quot;https://localhost&quot;</span>
 <span class="nv">INVENIO_SITE_API_URL</span><span class="o">=</span><span class="s2">&quot;https://localhost/api&quot;</span>
 <span class="nv">REDIS_DOMAIN</span><span class="o">=</span><span class="s1">&#39;cache:6379&#39;</span>
-<span class="nv">INVENIO_SQLALCHEMY_DATABASE_URI</span><span class="o">=</span><span class="s2">&quot;postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks&quot;</span><span class="w"> </span><span class="c1"># DON&#39;T FORGET TO CHANGE THE PASSWORD HERE</span>
+<span class="nv">INVENIO_SQLALCHEMY_DATABASE_URI</span><span class="o">=</span><span class="s2">&quot;postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks&quot;</span><span class="w"> </span><span class="c1"># THE PASSWORD HERE MUST MATCH THE POSTGRES_PASSWORD BELOW</span>
 <span class="nv">POSTGRES_USER</span><span class="o">=</span>kcworks
 <span class="nv">POSTGRES_DB</span><span class="o">=</span>kcworks
+<span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>PASSWORDHERE
 <span class="nv">INVENIO_CSRF_SECRET_SALT</span><span class="o">=</span><span class="s1">&#39;GENERATE_IT_AS_PER_INSTRUCTIONS&#39;</span>
 <span class="nv">INVENIO_SECURITY_LOGIN_SALT</span><span class="o">=</span><span class="s1">&#39;GENERATE_IT_AS_PER_INSTRUCTIONS&#39;</span>
 <span class="nv">INVENIO_SECRET_KEY</span><span class="o">=</span><span class="s1">&#39;SECRET_KEY_VERY_SECRET&#39;</span>
@@ -448,8 +449,7 @@ This will mount a variety of local package folders as bind mounts in your runnin
 <span class="nv">INVENIO_LOCAL_SITE_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/site<span class="w"> </span><span class="c1"># set this to `site` under the base directory of your cloned repository</span>
 <span class="nv">INVENIO_LOCAL_DEPENDENCIES_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/site/kcworks/dependencies<span class="w"> </span><span class="c1"># set this to `site/kcworks/dependencies` under the base directory of your cloned repository</span>
 <span class="nv">PYTHON_LOCAL_SITE_PACKAGES_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/.venv/lib/python3.12/site-packages<span class="w"> </span><span class="c1"># you need this for dev</span>
-<span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>PASSWORDHERE
-<span class="nv">PGADMIN_DEFAULT_EMAIL</span><span class="o">=</span>your.email@example.com
+<span class="nv">PGADMIN_DEFAULT_EMAIL</span><span class="o">=</span>your.email@example.com<span class="w">  </span><span class="c1"># change this to your email address</span>
 <span class="nv">PGADMIN_DEFAULT_PASSWORD</span><span class="o">=</span>PASSWORDHERE
 <span class="nv">INVENIO_LOCAL_INSTANCE_PATH</span><span class="o">=</span>/opt/invenio/var/instance
 </pre></div>
