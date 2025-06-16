@@ -7,6 +7,7 @@ import click
 from flask.cli import with_appcontext
 from invenio_record_importer_kcworks.types import APIResponsePayload
 from kcworks.services.records.bulk_operations import update_community_records_metadata
+from kcworks.services.records.export import KCWorksRecordsExporter
 from kcworks.services.records.test_data import import_test_records
 
 
@@ -140,3 +141,156 @@ def import_test_records_command(
         if len(failures) > 0:
             click.secho(f"Failed to import {len(failures)} records: ", fg="red")
             click.secho(pformat(failures), fg="red")
+
+
+@click.command("export-records")
+@click.option("--owner-id", type=str, default="", help="Filter by owner's ID")
+@click.option("--owner-email", type=str, default="", help="Filter by owner's email")
+@click.option(
+    "--contributor-id", type=str, default="", help="Filter by contributor's ID"
+)
+@click.option(
+    "--contributor-email", type=str, default="", help="Filter by contributor's email"
+)
+@click.option(
+    "--contributor-orcid", type=str, default="", help="Filter by contributor's ORCID"
+)
+@click.option(
+    "--contributor-kc-username",
+    type=str,
+    default="",
+    help="Filter by contributor's KCWorks username",
+)
+@click.option("--community-id", type=str, default="", help="Filter by community ID")
+@click.option("--search-string", type=str, default="", help="Filter by search term")
+@click.option("--count", type=int, default=1000, help="Number of records to export")
+@click.option(
+    "--start-date", type=str, default="", help="Start date for filtering records"
+)
+@click.option("--end-date", type=str, default="", help="End date for filtering records")
+@click.option("--sort", type=str, default="newest", help="Sort order for records")
+@click.option(
+    "--archive-format",
+    type=str,
+    default="zip",
+    help="Archive format (zip, tar, gztar, bztar, xztar)",
+)
+@click.option("--output-path", type=str, default="", help="Path to export the records")
+@click.option(
+    "--api-token", type=str, default="", help="API token for the KCWorks REST API"
+)
+@click.option(
+    "--api-url", type=str, default="", help="API URL for the KCWorks REST API"
+)
+@click.option(
+    "--archive-name",
+    type=str,
+    default="",
+    help="Name for the exported archive. (The actual archive will have a timestamp "
+    "and extension appended)",
+)
+@with_appcontext
+def export_records(
+    owner_id: str,
+    owner_email: str,
+    contributor_id: str,
+    contributor_email: str,
+    contributor_orcid: str,
+    contributor_kc_username: str,
+    community_id: str,
+    search_string: str,
+    count: int,
+    start_date: str,
+    end_date: str,
+    sort: str,
+    archive_format: str,
+    output_path: str,
+    api_token: str,
+    api_url: str,
+    archive_name: str,
+) -> None:
+    """Export records from a community to a file.
+
+    This command exports records based on various filtering criteria. Records can be
+    filtered by owner, contributor, community, date range, and search terms. The
+    exported records will be saved in the specified archive format.
+
+    Note that the filtering options are mutually exclusive. If you provide more than
+    one, only one will be used. The order of precedence is:
+        - owner_id
+        - owner_email
+        - contributor_id
+        - contributor_email
+        - contributor_orcid
+        - contributor_kc_username
+        - community_id
+        - search_string
+
+    NOTE: The filtering options by contributor are not currently supported for
+    remote KCWorks instances. In other words, these options will only work if the
+    CLI command is exporting from the same KCWorks instance as the one being exported
+    from.
+
+    The start and end dates are inclusive and may be combined with the search string.
+    They may be formatted as YYYY-MM-DD.
+
+    The sort order must be one of the options available for the KCWorks search API.
+    The default is "newest" and is a descending sort by creation date.
+
+    The output path is the directory where the exported file archive will be saved.
+    If not provided, the archive will be saved in the directory specified by the
+    RECORD_EXPORTER_DATA_DIR configuration variable.
+
+    Examples:
+        # Export all records from a community
+        flask export-records --community-id abc123
+
+        # Export records with specific filters
+        flask export-records --owner-email user@example.com --count 100
+
+        # Export records within a date range
+        flask export-records --start-date 2024-01-01 --end-date 2024-12-31
+    """
+    click.secho(
+        f"Exporting records from community {community_id}",
+        fg="blue",
+    )
+    search_args = {
+        "owner_id": owner_id,
+        "owner_email": owner_email,
+        "contributor_id": contributor_id,
+        "contributor_email": contributor_email,
+        "contributor_orcid": contributor_orcid,
+        "contributor_kc_username": contributor_kc_username,
+        "community_id": community_id,
+        "search_string": search_string,
+        "count": count,
+        "start_date": start_date,
+        "end_date": end_date,
+        "sort": sort,
+        "archive_format": archive_format,
+        "output_path": output_path,
+        "archive_name": archive_name,
+    }
+    for k, v in search_args.items():
+        if v:
+            click.secho(f"{k}: {v}", fg="blue")
+
+    exporter = KCWorksRecordsExporter(api_token=api_token, api_url=api_url)
+    try:
+        export_info = exporter.export(**search_args)
+        click.secho(f"Records exported to {export_info['archive_path']}", fg="green")
+        click.secho(
+            f"Successfully exported {len(export_info['record_ids'])} records",
+            fg="green",
+        )
+        click.secho(
+            f"Failed to export {len(export_info['failed_ids'])} records", fg="red"
+        )
+        if export_info["failed_ids"]:
+            click.secho(
+                f"Failed to export records: {export_info['failed_ids']}", fg="red"
+            )
+    except Exception as e:
+        click.secho(f"Error exporting records: {e}", fg="red")
+        raise click.Abort()
