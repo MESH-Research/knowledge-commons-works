@@ -154,7 +154,7 @@ class UserSearchHelper:
                     == contributor_kc_username
                 ).one_or_none()
             if kc_username_match:
-                return kc_username_match
+                user_object = kc_username_match
 
         if not user_object:
             raise ValueError(

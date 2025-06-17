@@ -33,7 +33,7 @@ class KCWorksRecordsExporter:
         contributor_kc_username: str = "",
         community_id: str = "",
         search_string: str = "",
-        count: int = 1000,
+        count: str = "1000",
         start_date: str = "",
         end_date: str = "",
         sort: str = "newest",
@@ -117,7 +117,7 @@ class KCWorksRecordsExporter:
 
         records = self.api_helper.fetch_records(
             search_string=search_string,
-            count=count,
+            count=int(count),
             start_date=start_date,
             end_date=end_date,
             sort=sort,

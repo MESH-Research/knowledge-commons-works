@@ -163,7 +163,7 @@ def import_test_records_command(
 )
 @click.option("--community-id", type=str, default="", help="Filter by community ID")
 @click.option("--search-string", type=str, default="", help="Filter by search term")
-@click.option("--count", type=int, default=1000, help="Number of records to export")
+@click.option("--count", type=str, default="1000", help="Number of records to export")
 @click.option(
     "--start-date", type=str, default="", help="Start date for filtering records"
 )
@@ -199,7 +199,7 @@ def export_records(
     contributor_kc_username: str,
     community_id: str,
     search_string: str,
-    count: int,
+    count: str,
     start_date: str,
     end_date: str,
     sort: str,
@@ -255,7 +255,7 @@ def export_records(
         f"Exporting records from community {community_id}",
         fg="blue",
     )
-    search_args = {
+    search_args: dict[str, str] = {
         "owner_id": owner_id,
         "owner_email": owner_email,
         "contributor_id": contributor_id,
