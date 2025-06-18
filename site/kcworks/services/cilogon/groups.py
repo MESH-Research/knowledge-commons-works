@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+"""Functions for working with group roles."""
+
 #
 # This file is part of the invenio-remote-user-data-kcworks package.
 # Copyright (C) 2023, MESH Research.
@@ -17,7 +18,6 @@ from invenio_records_resources.services.records.components.base import (
     ServiceComponent,
 )
 from pprint import pformat
-from typing import Union, Optional
 
 
 # TODO: Most of these operations use the invenio_accounts datastore
@@ -29,6 +29,7 @@ class GroupRolesComponent(ServiceComponent):
     """Service component for groups."""
 
     def __init__(self, service, *args, **kwargs):
+        """Initialize the component if a service is given."""
         if service is not None:
             super().__init__(service, *args, **kwargs)
 
@@ -48,13 +49,13 @@ class GroupRolesComponent(ServiceComponent):
 
     @staticmethod
     def get_current_members_of_group(group_name: str) -> list[User]:
-        """fetch a list of the users assigned the given group role"""
+        """Fetch a list of the users assigned the given group role."""
         my_group_role = current_accounts.datastore.find_role(group_name)
         # app.logger.debug(f"got group role {my_group_role}")
         return [user for user in my_group_role.users]
 
-    def get_current_user_roles(self, user: Union[str, User]) -> list:
-        """_summary_
+    def get_current_user_roles(self, user: str | User) -> list:
+        """Get the current roles for a user.
 
         Args:
             user (Union[str, User]): _description_
@@ -69,11 +70,8 @@ class GroupRolesComponent(ServiceComponent):
             raise RuntimeError(f'User "{user}" not found.')
         return return_user.roles
 
-    def find_or_create_group(
-        self, group_name: str, **kwargs
-    ) -> Optional[Role]:
-        """Search for a group with a given name and create it if it
-        doesn't exist."""
+    def find_or_create_group(self, group_name: str, **kwargs) -> Role | None:
+        """Search for a group with a given name and create it."""
         my_group_role = current_accounts.datastore.find_or_create_role(
             name=group_name, **kwargs
         )
@@ -88,7 +86,7 @@ class GroupRolesComponent(ServiceComponent):
             )
         return my_group_role
 
-    def create_new_group(self, group_name: str, **kwargs) -> Optional[Role]:
+    def create_new_group(self, group_name: str, **kwargs) -> Role | None:
         """Create a new group with the given name (and optional parameters)."""
         my_group_role = current_accounts.datastore.create_role(
             name=group_name, **kwargs
@@ -103,7 +101,7 @@ class GroupRolesComponent(ServiceComponent):
     def delete_group(self, group_name: str, **kwargs) -> bool:
         """Delete a group role with the given name.
 
-        returns:
+        Returns:
             bool: True if the group was deleted successfully, otherwise False.
         """
         deleted = False
@@ -123,9 +121,8 @@ class GroupRolesComponent(ServiceComponent):
                 app.logger.error(a)
                 deleted = True
             except Exception as e:
-                raise RuntimeError(
-                    f'Role "{group_name}" not deleted. {pformat(e)}'
-                )
+                message = f'Role "{group_name}" not deleted. {pformat(e)}'
+                raise RuntimeError(message) from e
         return deleted
 
     def add_user_to_group(self, group_name: str, user: User, **kwargs) -> bool:
@@ -144,7 +141,7 @@ class GroupRolesComponent(ServiceComponent):
             )
         return user_added
 
-    def find_group(self, group_name: str) -> Optional[Role]:
+    def find_group(self, group_name: str) -> Role | None:
         """Find a group role with the given name."""
         my_group_role = current_accounts.datastore.find_role(group_name)
         if my_group_role is None:
@@ -154,15 +151,16 @@ class GroupRolesComponent(ServiceComponent):
         return my_group_role
 
     def remove_user_from_group(
-        self, group_name: Union[str, Role], user: Union[str, User], **kwargs
+        self, group_name: str | Role, user: str | User, **kwargs
     ) -> bool:
         """Remove a group role from a user.
 
-        args:
+        Args:
             group_name: The name of the group to remove the user from,
                 or the Role object for the group.
             user: The user object to remove from the group, or the user's email
                 address.
+            **kwargs: unused
         """
         user = (
             user
