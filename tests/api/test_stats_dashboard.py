@@ -11,6 +11,7 @@ from invenio_stats_dashboard.aggregations import (
     CommunityRecordsDeltaAggregator,
     CommunityRecordsSnapshotAggregator,
     CommunityUsageDeltaAggregator,
+    CommunityUsageSnapshotAggregator,
 )
 from invenio_stats_dashboard.queries import (
     daily_record_cumulative_counts_query,
@@ -18,6 +19,7 @@ from invenio_stats_dashboard.queries import (
 )
 from invenio_stats_dashboard.service import CommunityStatsService
 from kcworks.services.records.test_data import import_test_records
+from opensearchpy.helpers.search import Search
 from tests.helpers.sample_stats_test_data import (
     SAMPLE_RECORDS_SNAPSHOT_AGG,
     MOCK_CUMULATIVE_TOTALS_AGGREGATIONS,
@@ -890,7 +892,7 @@ def test_generate_record_community_events(
         ]
 
 
-def test_community_usage_delta_agg(
+def test_community_usage_aggs(
     running_app,
     db,
     minimal_community_factory,
@@ -928,12 +930,13 @@ def test_community_usage_delta_agg(
     )
     current_search_client.indices.refresh(index="*rdmrecords-records*")
 
-    # Get the first record for creating test events
+    # Get the records for creating test events
     records = records_service.search(
         identity=system_identity,
         q="",
     )
     record_ids = [hit["id"] for hit in records.to_dict()["hits"]["hits"]]
+    assert len(record_ids) == 4, "Expected 4 records, got " + str(len(record_ids))
 
     # Create test usage events
     events = []
@@ -1058,18 +1061,52 @@ def test_community_usage_delta_agg(
     start_date = arrow.get("2025-05-30").floor("day")
     end_date = arrow.get("2025-06-11").ceil("day")
 
-    results = list(aggregator.agg_iter(community_id, start_date, end_date))
+    results = aggregator.run(
+        start_date=start_date,
+        end_date=end_date,
+        update_bookmark=True,
+        ignore_bookmark=False,
+        return_results=True,
+    )
+    current_search_client.indices.refresh(index="*stats-community-usage-delta*")
 
     # Check that a bookmark was set to mark most recent aggregation
-    assert aggregator.bookmark_api.get_bookmark() is not None
+    # for both the community and the global stats
+    current_search_client.indices.refresh(index="*stats-bookmarks*")
+    for cid in [community_id, "global"]:
+        assert aggregator.bookmark_api.get_bookmark(cid) is not None
+        assert (
+            arrow.get(aggregator.bookmark_api.get_bookmark(cid)) - arrow.utcnow()
+        ).total_seconds() < 30
 
-    # Verify the results
-    assert len(results) == total_days  # Should have one result per day
-    # Sort results by date
-    results.sort(key=lambda x: x["_source"]["period_start"])
+    # Verify the bulk aggregation result
+    app.logger.error(f"Results 0: {pformat(results)}")
+    assert results[0][0] == total_days  # Should have one result per day
+    assert results[1][0] == total_days  # Results for global stats
+    result_records = (
+        Search(
+            using=current_search_client,
+            index=prefix_index("stats-community-usage-delta"),
+        )
+        .query("term", community_id=community_id)
+        .filter(
+            "range",
+            period_start={
+                "gte": start_date.format("YYYY-MM-DDTHH:mm:ss"),
+                "lte": end_date.format("YYYY-MM-DDTHH:mm:ss"),
+            },
+        )
+        .execute()
+    )
+    app.logger.error(f"Result records: {pformat(result_records)}")
+    app.logger.error(
+        f"Aliases: {pformat(current_search_client.indices.get_alias(index=prefix_index('stats-community-usage-delta*')))}"
+    )
+    result_records = result_records.to_dict()["hits"]["hits"]
+    result_records.sort(key=lambda x: x["_source"]["period_start"])
 
     # Check first day's results
-    first_day = results[0]["_source"]
+    first_day = result_records[0]["_source"]
     app.logger.error(
         f"in test_community_usage_delta_agg, first day: {pformat(first_day)}"
     )
@@ -1078,7 +1115,7 @@ def test_community_usage_delta_agg(
     assert first_day["period_end"] == "2025-05-30T23:59:59"
 
     # Check last day's results
-    last_day = results[-1]["_source"]
+    last_day = result_records[-1]["_source"]
     app.logger.error(
         f"in test_community_usage_delta_agg, last day: {pformat(last_day)}"
     )
@@ -1087,9 +1124,11 @@ def test_community_usage_delta_agg(
     assert last_day["period_end"] == "2025-06-11T23:59:59"
 
     # Sum up all the totals across days
-    total_views = sum(day["_source"]["totals"]["views"]["total"] for day in results)
+    total_views = sum(
+        day["_source"]["totals"]["views"]["total"] for day in result_records
+    )
     total_downloads = sum(
-        day["_source"]["totals"]["downloads"]["total"] for day in results
+        day["_source"]["totals"]["downloads"]["total"] for day in result_records
     )
 
     # Check that we have the expected total number of events
@@ -1097,26 +1136,26 @@ def test_community_usage_delta_agg(
     assert total_downloads == 60  # 20 downloads per record * 3 records
 
     # Check that each day has at least some events
-    for day in results:
+    for day in result_records:
         day_totals = day["_source"]["totals"]
         assert day_totals["views"]["total"] > 0 or day_totals["downloads"]["total"] > 0
 
     total_visitors = sum(
         day["_source"]["totals"]["views"]["unique_visitors"]
         + day["_source"]["totals"]["downloads"]["unique_visitors"]
-        for day in results
+        for day in result_records
     )
     assert total_visitors == 140
 
     # Check cumulative totals for specific fields
     total_volume = sum(
-        day["_source"]["totals"]["downloads"]["total_volume"] for day in results
+        day["_source"]["totals"]["downloads"]["total_volume"] for day in result_records
     )
     assert total_volume == 0  # 61440.0
 
     # Check document structure and cumulative totals for each day
     current_day = start_date
-    for day in results:
+    for day in result_records:
         doc = day["_source"]
 
         # Check required fields exist
@@ -1186,11 +1225,100 @@ def test_community_usage_delta_agg(
 
     # Check cumulative totals for specific fields
     total_volume = sum(
-        day["_source"]["totals"]["downloads"]["total_volume"] for day in results
+        day["_source"]["totals"]["downloads"]["total_volume"] for day in result_records
     )
     assert total_volume == 0  # Should have some download volume
 
     # Check that the temporary index is deleted
     assert not client.indices.exists(
         index=f"temp-usage-stats-{community_id}-{arrow.utcnow().format('YYYY-MM-DD')}"
+    )
+
+    # create snapshot aggregations
+    snapshot_aggregator = CommunityUsageSnapshotAggregator(
+        "community-usage-snapshot-agg"
+    )
+    start_date = arrow.get("2025-05-30").floor("day")
+    end_date = arrow.get("2025-06-11").ceil("day")
+
+    snapshot_results = snapshot_aggregator.run(
+        start_date=start_date,
+        end_date=end_date,
+        update_bookmark=True,
+        ignore_bookmark=False,
+        return_results=True,
+    )
+
+    # Check that a bookmark was set to mark most recent aggregation
+    assert len(snapshot_results) == total_days
+    assert snapshot_aggregator.bookmark_api.get_bookmark() is not None
+
+    snap_result_docs = (
+        Search(using=current_search_client, index="stats-community-usage-snapshot")
+        .query("term", community_id=community_id)
+        .filter("range", period_start={"gte": start_date.format("YYYY-MM-DDTHH:mm:ss")})
+        .execute()
+    )
+    snap_result_docs = snap_result_docs.to_dict()["hits"]["hits"]
+
+    assert len(snap_result_docs) == total_days
+
+    # Check that first day's numbers are the same as the first delta
+    # record's numbers
+    first_day = result_records[0]["_source"]
+    first_day_snap = snap_result_docs[0]["_source"]
+    app.logger.error(f"First day: {pformat(first_day_snap)}")
+    assert first_day["community_id"] == community_id
+    assert first_day["period_start"] == "2025-05-30T00:00:00"
+    assert first_day["period_end"] == "2025-05-30T23:59:59"
+    assert (
+        first_day_snap["totals"]["views"]["total"]
+        == first_day["totals"]["views"]["total"]
+    )
+    assert (
+        first_day_snap["totals"]["views"]["unique_visitors"]
+        == first_day["totals"]["views"]["unique_visitors"]
+    )
+    assert (
+        first_day_snap["totals"]["views"]["unique_records"]
+        == first_day["totals"]["views"]["unique_records"]
+    )
+    assert (
+        first_day_snap["totals"]["downloads"]["total"]
+        == first_day["totals"]["downloads"]["total"]
+    )
+    assert (
+        first_day_snap["totals"]["downloads"]["unique_visitors"]
+        == first_day["totals"]["downloads"]["unique_visitors"]
+    )
+    assert (
+        first_day_snap["totals"]["downloads"]["unique_records"]
+        == first_day["totals"]["downloads"]["unique_records"]
+    )
+    assert (
+        first_day_snap["totals"]["downloads"]["unique_files"]
+        == first_day["totals"]["downloads"]["unique_files"]
+    )
+    assert (
+        first_day_snap["totals"]["downloads"]["total_volume"]
+        == first_day["totals"]["downloads"]["total_volume"]
+    )
+
+    # Check that last day's numbers are the same as all the delta records
+    # added up
+    last_day = result_records[-1]["_source"]
+    last_day_snap = snap_result_docs[-1]["_source"]
+    app.logger.error(f"Last day: {pformat(last_day_snap)}")
+    assert last_day["community_id"] == community_id
+    assert last_day["period_start"] == "2025-05-30T00:00:00"
+    assert last_day["period_end"] == "2025-06-11T23:59:59"
+
+    assert last_day_snap["totals"]["views"]["total"] == sum(
+        day["_source"]["totals"]["views"]["total"] for day in result_records
+    )
+    assert last_day_snap["totals"]["views"]["unique_visitors"] == sum(
+        day["_source"]["totals"]["views"]["unique_visitors"] for day in result_records
+    )
+    assert last_day_snap["totals"]["views"]["unique_records"] == sum(
+        day["_source"]["totals"]["views"]["unique_records"] for day in result_records
     )

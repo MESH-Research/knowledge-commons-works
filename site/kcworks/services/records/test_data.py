@@ -140,7 +140,11 @@ def import_test_records(
     )
 
     # Fetch records from production
-    records = KCWorksRecordsAPIHelper().fetch_records(
+    api_url = "https://works.hcommons.org/api"
+    api_token = os.getenv("API_TOKEN_PRODUCTION")
+    records = KCWorksRecordsAPIHelper(
+        api_url=api_url, api_token=api_token
+    ).fetch_records(
         count=count,
         offset=offset,
         start_date=start_date,
