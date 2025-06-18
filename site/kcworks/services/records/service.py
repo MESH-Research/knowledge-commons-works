@@ -60,7 +60,8 @@ class KCWorksRecordsAPIHelper:
             query_parts.append(search_string)
 
         if record_ids:
-            query_parts = [" ".join([f"id:{id}" for id in record_ids])]
+            query_parts = ["(" + " OR ".join([f"id:{id}" for id in record_ids]) + ")"]
+            count = len(record_ids)
 
         # Add date range if provided
         if not include_drafts:
@@ -76,6 +77,14 @@ class KCWorksRecordsAPIHelper:
 
         if not spread_dates:
             # Simple case - just request offset + count records
+            app.logger.error(f"Fetching {offset + count} records")
+            app.logger.error(f"Query parts: {query_parts}")
+            app.logger.error(f"Sort: {sort}")
+            app.logger.error(f"Offset: {offset}")
+            app.logger.error(f"Count: {count}")
+            app.logger.error(f"Headers: {headers}")
+            app.logger.error(f"URL: {url}")
+
             params: dict[str, str | int] = {
                 "size": offset + count,
                 "sort": sort,
