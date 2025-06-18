@@ -304,6 +304,198 @@
 <p>Remember to restart the KCWorks docker-compose project with both the <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose.dev.yml</span></code> files! Otherwise your local changes will not be reflected in the running KCWorks instance.</p>
 </div>
 </section>
+<section id="working-with-user-data-and-profiles">
+<h2>Working with User Data and Profiles<a class="headerlink" href="#working-with-user-data-and-profiles" title="Link to this heading">¶</a></h2>
+<p>Operations to read, write, or modify user data in KCWorks can be performed via the <code class="docutils literal notranslate"><span class="pre">User</span></code> API object and the <code class="docutils literal notranslate"><span class="pre">invenio_accounts.datastore</span></code> service object. There is also a higher-level <code class="docutils literal notranslate"><span class="pre">UsersService</span></code> class provided by <code class="docutils literal notranslate"><span class="pre">invenio_users_resources</span></code> that aggregates this user information together with some additional data and offers some convenient methods, but it is used primarily for read operations and not modification.</p>
+<p>There is also a <code class="docutils literal notranslate"><span class="pre">kcworks-users</span></code> CLI command that provides some convenient methods for working with user profile data.</p>
+<section id="the-user-api-object">
+<h3>The User API object<a class="headerlink" href="#the-user-api-object" title="Link to this heading">¶</a></h3>
+<p>The user’s data is stored primarily in the <code class="docutils literal notranslate"><span class="pre">accounts_user</span></code> db table, but also in <code class="docutils literal notranslate"><span class="pre">accounts_useridentity</span></code>, <code class="docutils literal notranslate"><span class="pre">accounts_userrole</span></code>, <code class="docutils literal notranslate"><span class="pre">accounts_user_session_activity</span></code> and <code class="docutils literal notranslate"><span class="pre">accounts_user_login_information</span></code>. This data is available via the <code class="docutils literal notranslate"><span class="pre">User</span></code> API object (in <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code>).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">User</span></code> object has the following properties:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">domain</span></code> (str)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">email</span></code> (str)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">external_identifiers</span></code> (list)</p>
+<ul>
+<li><p>a list of external auth methods for the user</p></li>
+<li><p>each item has properties:</p>
+<ul>
+<li><p>id: the identifier from the external auth source</p></li>
+<li><p>method: the external auth source (IDP) id</p></li>
+<li><p>id_user: the Invenio user id</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is_authenticated</span></code> (bool)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">active</span></code> (bool)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">username</span></code> (str)</p>
+<ul>
+<li><p>system generates “displayname” with case preserved and makes username lowercase to enforce uniqueness</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">user_profile</span></code> (UserProfileDict)</p>
+<ul>
+<li><p>a dictionary with keys</p>
+<ul>
+<li><p>full_name</p></li>
+<li><p>affiliations</p></li>
+</ul>
+</li>
+<li><p>not regular dict: this is a UserProfileDict from <code class="docutils literal notranslate"><span class="pre">invenio_accounts.profiles</span></code></p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">roles</span></code> (list)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">preferences</span></code> (PreferencesDict)</p>
+<ul>
+<li><p>not regular dict: this is a PreferencesDict from <code class="docutils literal notranslate"><span class="pre">invenio_accounts.profiles</span></code></p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remote_accounts</span></code> (list)</p></li>
+</ul>
+<p>Most of this data can be obtained by calling <code class="docutils literal notranslate"><span class="pre">User.__dict__</span></code></p>
+<p>The User object also has some helper methods and properties:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">active_sessions</span></code> (list)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">confirmed_at</span></code> (datetime)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created</span></code> (datetime)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">current_login_at</span></code> (datetime)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">current_login_ip</span></code> (str)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_id</span></code> (int)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">has_role</span></code> (bool)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is_active</span></code> (bool)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is_anonymous</span></code> (bool)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is_authenticated</span></code> (bool)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_login_at</span></code> (datetime)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_login_ip</span></code> (str)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">login_count</span></code> (int)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">login_info</span></code> (LoginInformation)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code> (dict)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">oauth2clients</span></code> (list)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">oauth2tokens</span></code> (list)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">password</span></code> (str)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">query</span></code> (Query)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">query_class</span></code> (QueryClass)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">registry</span></code> (Registry)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated</span></code> (datetime)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">version_id</span></code> (int)</p></li>
+</ul>
+</section>
+<section id="common-user-data-operations">
+<h3>Common User Data Operations<a class="headerlink" href="#common-user-data-operations" title="Link to this heading">¶</a></h3>
+<section id="updating-user">
+<h4>updating user<a class="headerlink" href="#updating-user" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">get_user_by_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;myusername&quot;</span>
+<span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The datastore validates input automatically against marshmallow schemas (including subschemas for user_profile and preferences)</p>
+<p>The method returns the User object after the update.</p>
+</section>
+<section id="creating-user">
+<h4>creating user<a class="headerlink" href="#creating-user" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts</span> <span class="kn">import</span> <span class="n">current_accounts</span>
+<span class="n">new_user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>This returns the User object</p>
+</section>
+<section id="activating-user">
+<h4>activating user<a class="headerlink" href="#activating-user" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">user_is_active</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">activate_user</span><span class="p">(</span><span class="n">new_user</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="accessing-user-by-id">
+<h4>accessing user by id<a class="headerlink" href="#accessing-user-by-id" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts</span> <span class="kn">import</span> <span class="n">current_accounts</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">identity</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="accessing-user-by-email">
+<h4>accessing user by email<a class="headerlink" href="#accessing-user-by-email" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts</span> <span class="kn">import</span> <span class="n">current_accounts</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">get_user_by_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="accessing-user-based-on-external-auth-info">
+<h4>accessing user based on external auth info<a class="headerlink" href="#accessing-user-based-on-external-auth-info" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts.models</span> <span class="kn">import</span> <span class="n">UserIdentity</span>
+<span class="c1"># OR from invenio_oauthclient.models import UserIdentity</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">UserIdentity</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">external_id</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">],</span> <span class="n">external_id</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="accessing-current-user">
+<h4>accessing current user<a class="headerlink" href="#accessing-current-user" title="Link to this heading">¶</a></h4>
+<p>Programmatically, the current user can be accessed via the <code class="docutils literal notranslate"><span class="pre">current_user</span></code> object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_security</span> <span class="kn">import</span> <span class="n">current_user</span>
+<span class="c1"># OR</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span>
+</pre></div>
+</div>
+<p>In jinja templates, the current user can be accessed via the <code class="docutils literal notranslate"><span class="pre">current_user</span></code> object
+which is available in the template environment.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{{</span><span class="n">current_user</span><span class="o">.</span><span class="n">email</span> <span class="o">|</span> <span class="n">pprint</span><span class="p">}}</span>
+<span class="p">{{</span><span class="n">current_user</span><span class="o">.</span><span class="n">username</span> <span class="o">|</span> <span class="n">pprint</span><span class="p">}}</span>
+</pre></div>
+</div>
+</section>
+<section id="accessing-current-user-profile">
+<h4>accessing current user profile<a class="headerlink" href="#accessing-current-user-profile" title="Link to this heading">¶</a></h4>
+<p>If you need to access the current user’s profile information, that is not available via the <code class="docutils literal notranslate"><span class="pre">current_user</span></code>
+object. You can do so via the <code class="docutils literal notranslate"><span class="pre">current_userprofile</span></code> object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_userprofiles.api</span> <span class="kn">import</span> <span class="n">current_userprofile</span>
+<span class="n">my_user_name</span> <span class="o">=</span> <span class="n">current_userprofile</span><span class="o">.</span><span class="n">full_name</span>
+<span class="n">my_user_affiliations</span> <span class="o">=</span> <span class="n">current_userprofile</span><span class="o">.</span><span class="n">affiliations</span>
+</pre></div>
+</div>
+<p>In jinja templates, the current user profile can be accessed via the <code class="docutils literal notranslate"><span class="pre">current_userprofile</span></code> object
+which is available in the template environment.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{{</span><span class="n">current_userprofile</span><span class="o">.</span><span class="n">full_name</span> <span class="o">|</span> <span class="n">pprint</span><span class="p">}}</span>
+<span class="p">{{</span><span class="n">current_userprofile</span><span class="o">.</span><span class="n">affiliations</span> <span class="o">|</span> <span class="n">pprint</span><span class="p">}}</span>
+</pre></div>
+</div>
+</section>
+<section id="accessing-a-user-s-external-authentication-methods">
+<h4>accessing a user’s external authentication methods<a class="headerlink" href="#accessing-a-user-s-external-authentication-methods" title="Link to this heading">¶</a></h4>
+<p>If you need to access a user’s external authentication methods, you can look up the user’s UserIdentity objects
+which represent the correlation of user ids with external auth sources and identifiers from the <code class="docutils literal notranslate"><span class="pre">accounts_useridentity</span></code> db table.  The <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object is defined in <code class="docutils literal notranslate"><span class="pre">invenio_accounts</span></code> as model, but also defined in <code class="docutils literal notranslate"><span class="pre">invenio_oauthclient.models</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_access.utils</span> <span class="kn">import</span> <span class="n">get_identity</span>
+<span class="n">my_identity</span> <span class="o">=</span> <span class="n">get_identity</span><span class="p">(</span><span class="n">myuser</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also access the <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object by using the class’s query method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts.models</span> <span class="kn">import</span> <span class="n">UserIdentity</span>
+<span class="n">my_user_identity</span> <span class="o">=</span> <span class="n">UserIdentity</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span>
+    <span class="n">id_user</span><span class="o">=</span><span class="n">identity</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;myIDP&quot;</span><span class="p">,</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;myuser&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">one_or_none</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object has the following properties:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (str): the identifier from the external auth source</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code> (str): the external auth source (IDP) id</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id_user</span></code> (int): the Invenio user id</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">User</span></code> object also has an <code class="docutils literal notranslate"><span class="pre">external_identifiers</span></code> property that is a list of objects with the same properties as the <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object.</p>
+</section>
+<section id="link-a-user-with-an-external-auth-method">
+<h4>link a user with an external auth method<a class="headerlink" href="#link-a-user-with-an-external-auth-method" title="Link to this heading">¶</a></h4>
+<p>This can be done directly via the <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts.models</span> <span class="kn">import</span> <span class="n">UserIdentity</span>
+<span class="c1"># OR from invenio_oauthclient.models import UserIdentity</span>
+<span class="n">UserIdentity</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">myuser</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">idp</span> <span class="n">label</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="nb">id</span> <span class="n">on</span> <span class="n">idp</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
 <section id="creating-and-modifying-records-in-general">
 <h2>Creating and Modifying Records in General<a class="headerlink" href="#creating-and-modifying-records-in-general" title="Link to this heading">¶</a></h2>
 <p>All InvenioRDM record services inherit the same core methods from the <code class="docutils literal notranslate"><span class="pre">RecordService</span></code> class. In the examples below, the <code class="docutils literal notranslate"><span class="pre">service</span></code> variable represents an instance of a record service. The <code class="docutils literal notranslate"><span class="pre">identity</span></code> variable represents an identity object.</p>
@@ -825,6 +1017,23 @@
             <ul>
 <li><a class="reference internal" href="#">How Tos</a><ul>
 <li><a class="reference internal" href="#adding-a-new-custom-extension-to-the-kcworks-inveniordm-instance">Adding a new custom extension to the KCWorks InvenioRDM instance</a></li>
+<li><a class="reference internal" href="#working-with-user-data-and-profiles">Working with User Data and Profiles</a><ul>
+<li><a class="reference internal" href="#the-user-api-object">The User API object</a></li>
+<li><a class="reference internal" href="#common-user-data-operations">Common User Data Operations</a><ul>
+<li><a class="reference internal" href="#updating-user">updating user</a></li>
+<li><a class="reference internal" href="#creating-user">creating user</a></li>
+<li><a class="reference internal" href="#activating-user">activating user</a></li>
+<li><a class="reference internal" href="#accessing-user-by-id">accessing user by id</a></li>
+<li><a class="reference internal" href="#accessing-user-by-email">accessing user by email</a></li>
+<li><a class="reference internal" href="#accessing-user-based-on-external-auth-info">accessing user based on external auth info</a></li>
+<li><a class="reference internal" href="#accessing-current-user">accessing current user</a></li>
+<li><a class="reference internal" href="#accessing-current-user-profile">accessing current user profile</a></li>
+<li><a class="reference internal" href="#accessing-a-user-s-external-authentication-methods">accessing a user’s external authentication methods</a></li>
+<li><a class="reference internal" href="#link-a-user-with-an-external-auth-method">link a user with an external auth method</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#creating-and-modifying-records-in-general">Creating and Modifying Records in General</a><ul>
 <li><a class="reference internal" href="#update-a-record">Update a record</a></li>
 <li><a class="reference internal" href="#delete-a-record">Delete a record</a></li>
