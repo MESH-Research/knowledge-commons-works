@@ -15,7 +15,7 @@ from flask import Flask
 from invenio_rdm_records.services.components import DefaultRecordsComponents
 from werkzeug.routing import Rule
 
-from kcworks.services.cilogon import cilogon_service
+from kcworks.services.cilogon import views as cilogon_views
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -35,8 +35,8 @@ _first_request_done = False
 _setup_lock = Lock()
 
 ROUTE_REWRITES = {
-    "/oauth/login/<remote_app>/": cilogon_service.login,
-    "/oauth/authorized/<remote_app>/": cilogon_service.authorized,
+    "/oauth/login/<remote_app>/": cilogon_views.login,
+    "/oauth/authorized/<remote_app>/": cilogon_views.authorized,
 }
 
 

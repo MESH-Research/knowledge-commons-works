@@ -1,3 +1,5 @@
+"""This module provides functions and classes for interacting with the IDMS API."""
+
 import requests
 from flask import current_app, request
 from pydantic import BaseModel, HttpUrl
@@ -8,9 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class AcademicInterest(BaseModel):
-    """AcademicInterest is a Pydantic model that represents the academic interest
-    data associated with a user.
-    """
+    """AcademicInterest is a Pydantic model of data associated with a user."""
 
     id: int
     text: str
@@ -26,9 +26,7 @@ class Group(BaseModel):
 
 
 class Profile(BaseModel):
-    """Profile is a Pydantic model that represents the profile data associated
-    with a user.
-    """
+    """Profile is a Pydantic model of a user."""
 
     username: str
     name: str
@@ -43,26 +41,20 @@ class Profile(BaseModel):
 
 
 class SubData(BaseModel):
-    """SubData is a Pydantic model that represents the data associated with a
-    user profile.
-    """
+    """SubData is a Pydantic model for the user profile."""
 
     sub: str
     profile: Profile
 
 
 class Meta(BaseModel):
-    """Meta is a Pydantic model that represents the metadata associated with the
-    API response.
-    """
+    """Meta is a Pydantic model that represents the metadata of the response."""
 
     authorized: bool
 
 
 class APIResponse(BaseModel):
-    """APIResponse is a Pydantic model that represents the response from the
-    API endpoint.
-    """
+    """APIResponse is a Pydantic model that represents the API endpoint."""
 
     data: list[SubData]
     meta: Meta
