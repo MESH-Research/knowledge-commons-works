@@ -20,6 +20,193 @@ While the normal KCWorks development workflow works for everyday changes, it can
 Remember to restart the KCWorks docker-compose project with both the `docker-compose.yml` and `docker-compose.dev.yml` files! Otherwise your local changes will not be reflected in the running KCWorks instance.
 ```
 
+## Working with User Data and Profiles
+
+Operations to read, write, or modify user data in KCWorks can be performed via the `User` API object and the `invenio_accounts.datastore` service object. There is also a higher-level `UsersService` class provided by `invenio_users_resources` that aggregates this user information together with some additional data and offers some convenient methods, but it is used primarily for read operations and not modification.
+
+There is also a `kcworks-users` CLI command that provides some convenient methods for working with user profile data.
+
+### The User API object
+
+The user's data is stored primarily in the `accounts_user` db table, but also in `accounts_useridentity`, `accounts_userrole`, `accounts_user_session_activity` and `accounts_user_login_information`. This data is available via the `User` API object (in `invenio_accounts.models.User`).
+
+The `User` object has the following properties:
+- `id` (int)
+- `domain` (str)
+- `email` (str)
+- `external_identifiers` (list)
+    - a list of external auth methods for the user
+    - each item has properties:
+        - id: the identifier from the external auth source
+        - method: the external auth source (IDP) id
+        - id_user: the Invenio user id
+- `is_authenticated` (bool)
+- `active` (bool)
+- `username` (str)
+    - system generates "displayname" with case preserved and makes username lowercase to enforce uniqueness
+- `user_profile` (UserProfileDict)
+    - a dictionary with keys
+        - full_name
+        - affiliations
+    - not regular dict: this is a UserProfileDict from `invenio_accounts.profiles`
+- `roles` (list)
+- `preferences` (PreferencesDict)
+    - not regular dict: this is a PreferencesDict from `invenio_accounts.profiles`
+- `remote_accounts` (list)
+
+Most of this data can be obtained by calling `User.__dict__`
+
+The User object also has some helper methods and properties:
+- `active_sessions` (list)
+- `confirmed_at` (datetime)
+- `created` (datetime)
+- `current_login_at` (datetime)
+- `current_login_ip` (str)
+- `get_id` (int)
+- `has_role` (bool)
+- `is_active` (bool)
+- `is_anonymous` (bool)
+- `is_authenticated` (bool)
+- `last_login_at` (datetime)
+- `last_login_ip` (str)
+- `login_count` (int)
+- `login_info` (LoginInformation)
+- `metadata` (dict)
+- `oauth2clients` (list)
+- `oauth2tokens` (list)
+- `password` (str)
+- `query` (Query)
+- `query_class` (QueryClass)
+- `registry` (Registry)
+- `updated` (datetime)
+- `version_id` (int)
+
+### Common User Data Operations
+
+#### updating user
+
+```python
+user = current_accounts.datastore.get_user_by_id(1)
+user.username = "myusername"
+current_accounts.datastore.commit()
+```
+
+The datastore validates input automatically against marshmallow schemas (including subschemas for user_profile and preferences)
+
+The method returns the User object after the update.
+
+#### creating user
+
+```python
+from invenio_accounts import current_accounts
+new_user = current_accounts.datastore.create_user(email="email", password="password", active=True, )
+```
+This returns the User object
+
+#### activating user
+
+```python
+user_is_active = current_accounts.datastore.activate_user(new_user)
+```
+
+#### accessing user by id
+
+```python
+from invenio_accounts import current_accounts
+user = current_accounts.datastore.get_user(identity.id)
+```
+
+#### accessing user by email
+
+```python
+from invenio_accounts import current_accounts
+user = current_accounts.datastore.get_user_by_email(email)
+```
+
+#### accessing user based on external auth info
+
+```python
+from invenio_accounts.models import UserIdentity
+# OR from invenio_oauthclient.models import UserIdentity
+user = UserIdentity.get_user(external_id["method"], external_id["id"])
+```
+
+#### accessing current user
+
+Programmatically, the current user can be accessed via the `current_user` object.
+
+```python
+from flask_security import current_user
+# OR
+from flask_login import current_user
+```
+
+In jinja templates, the current user can be accessed via the `current_user` object
+which is available in the template environment.
+
+```python
+{{current_user.email | pprint}}
+{{current_user.username | pprint}}
+```
+
+#### accessing current user profile
+
+If you need to access the current user's profile information, that is not available via the `current_user`
+object. You can do so via the `current_userprofile` object.
+
+```python
+from invenio_userprofiles.api import current_userprofile
+my_user_name = current_userprofile.full_name
+my_user_affiliations = current_userprofile.affiliations
+```
+
+In jinja templates, the current user profile can be accessed via the `current_userprofile` object
+which is available in the template environment.
+
+```python
+{{current_userprofile.full_name | pprint}}
+{{current_userprofile.affiliations | pprint}}
+```
+
+#### accessing a user's external authentication methods
+
+If you need to access a user's external authentication methods, you can look up the user's UserIdentity objects
+which represent the correlation of user ids with external auth sources and identifiers from the `accounts_useridentity` db table.  The `UserIdentity` object is defined in `invenio_accounts` as model, but also defined in `invenio_oauthclient.models`.
+
+```python
+from invenio_access.utils import get_identity
+my_identity = get_identity(myuser)
+```
+
+You can also access the `UserIdentity` object by using the class's query method:
+
+```python
+from invenio_accounts.models import UserIdentity
+my_user_identity = UserIdentity.query.filter_by(
+    id_user=identity.id,
+    method="myIDP",
+    id="myuser").one_or_none()
+```
+
+This `UserIdentity` object has the following properties:
+- `id` (str): the identifier from the external auth source
+- `method` (str): the external auth source (IDP) id
+- `id_user` (int): the Invenio user id
+
+
+The `User` object also has an `external_identifiers` property that is a list of objects with the same properties as the `UserIdentity` object.
+
+
+#### link a user with an external auth method
+
+This can be done directly via the `UserIdentity` object.
+
+```python
+from invenio_accounts.models import UserIdentity
+# OR from invenio_oauthclient.models import UserIdentity
+UserIdentity.create(myuser, <idp label>, <id on idp>)
+```
+
 ## Creating and Modifying Records in General
 
 All InvenioRDM record services inherit the same core methods from the `RecordService` class. In the examples below, the `service` variable represents an instance of a record service. The `identity` variable represents an identity object.
