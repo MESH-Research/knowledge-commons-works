@@ -206,10 +206,7 @@ Named arguments:
 - `--kc-id` (-k): the username of the KC user to read.
 
 #### `invenio kcworks-users groups`
-Lists the groups that a KCWorks user belongs to.
-
-Arguments:
-- `--email` (-e): the email address of the user to list groups for.
+Lists all the groups (flask-security roles) available in the KCWorks instance.
 
 #### `invenio kcworks-users group-users`
 Lists the users that belong to a KCWorks group (flask-security role).
