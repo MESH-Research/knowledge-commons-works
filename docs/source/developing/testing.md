@@ -19,6 +19,35 @@ Note that you will need to have your local docker service running for these test
 Ensure that you have **stopped** the docker-compose project for your local development instance before running the tests! Otherwise, you will get conflicts with the services that are started by the tests.
 ```
 
+### Running specific tests
+
+To run a specific test file, simply add the relative file path to the command, e.g.,
+```console
+bash run-tests.sh -vv tests/api/test_user_data_sync.py
+```
+
+And to run a specific test function, add the function name to the command, e.g.,
+```console
+bash run-tests.sh -vv tests/api/test_user_data_sync.py::test_user_data_sync
+```
+Or use the `-k` flag to run tests whose names contain the specified string, e.g.,
+```console
+bash run-tests.sh -vv -k "test_user_data_sync"
+```
+
+### Options for running tests
+
+In addition to the options listed above, the test runner script provides the following options:
+
+| Option | Short form | Description |
+|--------|------------|-------------|
+| `--skip-translations` | `-S` | Skip the translation extraction, update, and compilation steps. |
+| `--keep-services` | `-K` | Keep the docker-services-cli containers running after the tests are run. |
+
+```{note}
+Any pytest flags and options can be added to the test runner command and will be passed to pytest. E.g., the `-vv` flag in the examples above is equivalent to running `pytest -vv` and specifies verbose output.
+```
+
 ### Passing pytest arguments to the test runner
 
 Any pytest arguments can be passed to the script, e.g., to run only tests whose names contain the word "view", and to show verbose output:
