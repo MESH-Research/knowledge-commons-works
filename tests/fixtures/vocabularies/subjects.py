@@ -324,6 +324,66 @@ subject_data = [
         "subject": "Inklings (Group of writers)",
         "scheme": "FAST-topical",
     },
+    {
+        "id": "http://id.worldcat.org/fast/810189",
+        "subject": "Anthropologists--History",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/810219",
+        "subject": "Anthropology--Methodology--History",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/810245",
+        "subject": "Anthropology in popular culture",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/810208",
+        "subject": "Anthropology--Field work--History",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/969615",
+        "subject": "Indians of Mexico--Religion",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/970071",
+        "subject": "Indians of South America--Religion",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/795128",
+        "subject": "Acadians--Religion",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/810226",
+        "subject": "Anthropology--Religious aspects",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/810234",
+        "subject": "Anthropology--Societies, etc.",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/904000",
+        "subject": "Egyptology",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/1015007",
+        "subject": "Medicine--Philosophy",
+        "scheme": "FAST-topical",
+    },
+    {
+        "id": "http://id.worldcat.org/fast/1014893",
+        "subject": "Medicine",
+        "scheme": "FAST-topical",
+    },
 ]
 
 

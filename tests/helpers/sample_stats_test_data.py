@@ -12,25 +12,25 @@ SAMPLE_RECORDS_SNAPSHOT_AGG = {
     },
     "total_files": {
         "file_count": 100,
-        "data_volume": 200,
+        "data_volume": 200.0,
     },
-    "uploaders": 100,
+    "total_uploaders": 100,
     "subcounts": {
         "all_resource_types": [
             {
                 "id": "123",
                 "label": {"lang": "en", "value": "Resource Type 1"},
-                "record_count": {
+                "records": {
                     "metadata_only": 100,
                     "with_files": 200,
                 },
-                "parent_count": {
+                "parents": {
                     "metadata_only": 100,
                     "with_files": 200,
                 },
                 "files": {
                     "file_count": 100,
-                    "data_volume": 200,
+                    "data_volume": 200.0,
                 },
             },
         ],
@@ -38,23 +38,24 @@ SAMPLE_RECORDS_SNAPSHOT_AGG = {
             {
                 "id": "123",
                 "label": {"lang": "en", "value": "Access Right 1"},
-                "record_count": {
+                "records": {
                     "metadata_only": 100,
                     "with_files": 200,
                 },
-                "parent_count": {
+                "parents": {
                     "metadata_only": 100,
                     "with_files": 200,
                 },
                 "files": {
                     "file_count": 100,
-                    "data_volume": 200,
+                    "data_volume": 200.0,
                 },
             },
         ],
         "all_languages": [],
         "all_licenses": [],
-        "top_affiliations": [],
+        "top_affiliations_creator": [],
+        "top_affiliations_contributor": [],
         "top_funders": [],
         "top_subjects": [],
         "top_publishers": [],
@@ -349,14 +350,14 @@ MOCK_RECORD_SEARCH_RESPONSE = {
                     },
                     "stats": {
                         "all_versions": {
-                            "data_volume": 0,
+                            "data_volume": 0.0,
                             "downloads": 0,
                             "unique_downloads": 0,
                             "unique_views": 0,
                             "views": 0,
                         },
                         "this_version": {
-                            "data_volume": 0,
+                            "data_volume": 0.0,
                             "downloads": 0,
                             "unique_downloads": 0,
                             "unique_views": 0,
@@ -731,14 +732,14 @@ MOCK_RECORD_SEARCH_RESPONSE = {
                     },
                     "stats": {
                         "all_versions": {
-                            "data_volume": 0,
+                            "data_volume": 0.0,
                             "downloads": 0,
                             "unique_downloads": 0,
                             "unique_views": 0,
                             "views": 0,
                         },
                         "this_version": {
-                            "data_volume": 0,
+                            "data_volume": 0.0,
                             "downloads": 0,
                             "unique_downloads": 0,
                             "unique_views": 0,
@@ -1098,14 +1099,14 @@ MOCK_RECORD_SEARCH_RESPONSE = {
                     },
                     "stats": {
                         "all_versions": {
-                            "data_volume": 0,
+                            "data_volume": 0.0,
                             "downloads": 0,
                             "unique_downloads": 0,
                             "unique_views": 0,
                             "views": 0,
                         },
                         "this_version": {
-                            "data_volume": 0,
+                            "data_volume": 0.0,
                             "downloads": 0,
                             "unique_downloads": 0,
                             "unique_views": 0,
@@ -1975,14 +1976,14 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
             "community_id": "5733deff-2f76-4f8c-bb99-8df48bdd725f",
             "files": {
                 "added": {"data_volume": 59117831.0, "file_count": 2},
-                "removed": {"data_volume": 0, "file_count": 0},
+                "removed": {"data_volume": 0.0, "file_count": 0},
             },
             "parents": {
                 "added": {"metadata_only": 0, "with_files": 2},
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
-            "period_end": "2025-05-30",
-            "period_start": "2025-05-30",
+            "period_end": "2025-05-30T23:59:59",
+            "period_start": "2025-05-30T00:00:00",
             "records": {
                 "added": {"metadata_only": 0, "with_files": 2},
                 "removed": {"metadata_only": 0, "with_files": 0},
@@ -1992,10 +1993,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 59117831.0, "file_count": 2},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "open",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 2},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2011,10 +2012,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "013v4ng57",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2034,9 +2035,9 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "records": 2,
                         },
                         "id": "pdf",
-                        "label": {},
+                        "label": "",
                         "removed": {
-                            "data_volume": 0,
+                            "data_volume": 0.0,
                             "files": 0,
                             "parents": 0,
                             "records": 0,
@@ -2048,10 +2049,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "eng",
-                        "label": {},
+                        "label": "English",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2068,10 +2069,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 58659795.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "Apocryphile Press",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2084,10 +2085,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "Knowledge Commons",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2102,10 +2103,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 58659795.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "textDocument-bookSection",
-                        "label": {},
+                        "label": "Book Section",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2118,10 +2119,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "textDocument-journalArticle",
-                        "label": {},
+                        "label": "Journal Article",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2136,10 +2137,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 58659795.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/973589",
-                        "label": {},
+                        "label": "Inklings (Group of writers)",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2152,10 +2153,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/855500",
-                        "label": {},
+                        "label": "Children of prisoners--Services for",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2168,10 +2169,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/997916",
-                        "label": {},
+                        "label": "Library science",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2184,10 +2185,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/2060143",
-                        "label": {},
+                        "label": "Mass incarceration",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2200,10 +2201,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/997974",
-                        "label": {},
+                        "label": "Library science--Standards",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2216,10 +2217,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/997987",
-                        "label": {},
+                        "label": "Library science literature",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2232,10 +2233,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/995415",
-                        "label": {},
+                        "label": "Legal assistance to prisoners--U.S. states",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2260,14 +2261,14 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
             "community_id": "5733deff-2f76-4f8c-bb99-8df48bdd725f",
             "files": {
                 "added": {"data_volume": 0.0, "file_count": 0},
-                "removed": {"data_volume": 0, "file_count": 0},
+                "removed": {"data_volume": 0.0, "file_count": 0},
             },
             "parents": {
                 "added": {"metadata_only": 0, "with_files": 0},
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
-            "period_end": "2025-05-31",
-            "period_start": "2025-05-31",
+            "period_end": "2025-05-31T23:59:59",
+            "period_start": "2025-05-31T00:00:00",
             "records": {
                 "added": {"metadata_only": 0, "with_files": 0},
                 "removed": {"metadata_only": 0, "with_files": 0},
@@ -2298,14 +2299,14 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
             "community_id": "5733deff-2f76-4f8c-bb99-8df48bdd725f",
             "files": {
                 "added": {"data_volume": 0.0, "file_count": 0},
-                "removed": {"data_volume": 0, "file_count": 0},
+                "removed": {"data_volume": 0.0, "file_count": 0},
             },
             "parents": {
                 "added": {"metadata_only": 0, "with_files": 0},
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
-            "period_end": "2025-06-01",
-            "period_start": "2025-06-01",
+            "period_end": "2025-06-01T23:59:59",
+            "period_start": "2025-06-01T00:00:00",
             "records": {
                 "added": {"metadata_only": 0, "with_files": 0},
                 "removed": {"metadata_only": 0, "with_files": 0},
@@ -2336,14 +2337,14 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
             "community_id": "5733deff-2f76-4f8c-bb99-8df48bdd725f",
             "files": {
                 "added": {"data_volume": 0.0, "file_count": 0},
-                "removed": {"data_volume": 0, "file_count": 0},
+                "removed": {"data_volume": 0.0, "file_count": 0},
             },
             "parents": {
                 "added": {"metadata_only": 0, "with_files": 0},
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
-            "period_end": "2025-06-02",
-            "period_start": "2025-06-02",
+            "period_end": "2025-06-02T23:59:59",
+            "period_start": "2025-06-02T00:00:00",
             "records": {
                 "added": {"metadata_only": 0, "with_files": 0},
                 "removed": {"metadata_only": 0, "with_files": 0},
@@ -2374,14 +2375,14 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
             "community_id": "5733deff-2f76-4f8c-bb99-8df48bdd725f",
             "files": {
                 "added": {"data_volume": 1984949.0, "file_count": 1},
-                "removed": {"data_volume": 0, "file_count": 0},
+                "removed": {"data_volume": 0.0, "file_count": 0},
             },
             "parents": {
                 "added": {"metadata_only": 1, "with_files": 1},
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
-            "period_end": "2025-06-03",
-            "period_start": "2025-06-03",
+            "period_end": "2025-06-03T23:59:59",
+            "period_start": "2025-06-03T00:00:00",
             "records": {
                 "added": {"metadata_only": 1, "with_files": 1},
                 "removed": {"metadata_only": 0, "with_files": 0},
@@ -2391,10 +2392,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "metadata-only",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2407,10 +2408,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "open",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2426,10 +2427,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "03rmrcq20",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2449,9 +2450,9 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "records": 1,
                         },
                         "id": "pdf",
-                        "label": {},
+                        "label": "",
                         "removed": {
-                            "data_volume": 0,
+                            "data_volume": 0.0,
                             "files": 0,
                             "parents": 0,
                             "records": 0,
@@ -2463,10 +2464,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "eng",
-                        "label": {},
+                        "label": "English",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2481,10 +2482,12 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "cc-by-sa-4.0",
-                        "label": {},
+                        "label": (
+                            "Creative Commons Attribution-ShareAlike 4.0 International"
+                        ),
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2499,10 +2502,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "N/A",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2517,10 +2520,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "Knowledge " "Commons",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2533,10 +2536,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "UBC",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2551,10 +2554,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "textDocument-book",
-                        "label": {},
+                        "label": "Book",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2567,10 +2570,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "textDocument-journalArticle",
-                        "label": {},
+                        "label": "Journal Article",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2585,10 +2588,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/1424786",
-                        "label": {},
+                        "label": "Canadian literature--Bibliography",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2601,10 +2604,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/817954",
-                        "label": {},
+                        "label": "Arts, Canadian",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2617,10 +2620,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/821870",
-                        "label": {},
+                        "label": "Authors, Canadian",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2633,10 +2636,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/845111",
-                        "label": {},
+                        "label": "Canadian literature",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2649,10 +2652,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/845142",
-                        "label": {},
+                        "label": "Canadian literature--Periodicals",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2665,10 +2668,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/845170",
-                        "label": {},
+                        "label": "Canadian periodicals",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2681,10 +2684,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/845184",
-                        "label": {},
+                        "label": "Canadian prose literature",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2697,10 +2700,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/911328",
-                        "label": {},
+                        "label": "English language--Lexicography--History",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2713,10 +2716,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/911660",
-                        "label": {},
+                        "label": "English language--Spoken English--Research",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2729,10 +2732,10 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "http://id.worldcat.org/fast/911979",
-                        "label": {},
+                        "label": "English language--Written English--History",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2756,15 +2759,15 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
         "_source": {
             "community_id": "5733deff-2f76-4f8c-bb99-8df48bdd725f",
             "files": {
-                "added": {"data_volume": 0, "file_count": 0},
+                "added": {"data_volume": 0.0, "file_count": 0},
                 "removed": {"data_volume": 1984949.0, "file_count": 1},
             },
             "parents": {
                 "added": {"metadata_only": 0, "with_files": 0},
                 "removed": {"metadata_only": 0, "with_files": 1},
             },
-            "period_end": "2025-06-10",
-            "period_start": "2025-06-10",
+            "period_end": "2025-06-10T23:59:59",
+            "period_start": "2025-06-10T00:00:00",
             "records": {
                 "added": {"metadata_only": 0, "with_files": 0},
                 "removed": {"metadata_only": 0, "with_files": 1},
@@ -2773,11 +2776,11 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "by_access_rights": [
                     {
                         "files": {
-                            "added": {"data_volume": 0, "file_count": 0},
+                            "added": {"data_volume": 0.0, "file_count": 0},
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "open",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 1},
@@ -2793,13 +2796,13 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "by_file_type": [
                     {
                         "added": {
-                            "data_volume": 0,
+                            "data_volume": 0.0,
                             "files": 0,
                             "parents": 0,
                             "records": 0,
                         },
                         "id": "pdf",
-                        "label": {},
+                        "label": "",
                         "removed": {
                             "data_volume": 1984949.0,
                             "files": 1,
@@ -2812,11 +2815,11 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "by_language": [
                     {
                         "files": {
-                            "added": {"data_volume": 0, "file_count": 0},
+                            "added": {"data_volume": 0.0, "file_count": 0},
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "eng",
-                        "label": {},
+                        "label": "English",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 1},
@@ -2830,11 +2833,13 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "by_license": [
                     {
                         "files": {
-                            "added": {"data_volume": 0, "file_count": 0},
+                            "added": {"data_volume": 0.0, "file_count": 0},
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "cc-by-sa-4.0",
-                        "label": {},
+                        "label": (
+                            "Creative Commons Attribution-ShareAlike 4.0 International"
+                        ),
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 1},
@@ -2848,11 +2853,11 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "by_periodical": [
                     {
                         "files": {
-                            "added": {"data_volume": 0, "file_count": 0},
+                            "added": {"data_volume": 0.0, "file_count": 0},
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "N/A",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 1},
@@ -2866,11 +2871,11 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "by_publisher": [
                     {
                         "files": {
-                            "added": {"data_volume": 0, "file_count": 0},
+                            "added": {"data_volume": 0.0, "file_count": 0},
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "Knowledge " "Commons",
-                        "label": {},
+                        "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 1},
@@ -2884,11 +2889,11 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "by_resource_type": [
                     {
                         "files": {
-                            "added": {"data_volume": 0, "file_count": 0},
+                            "added": {"data_volume": 0.0, "file_count": 0},
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "textDocument-journalArticle",
-                        "label": {},
+                        "label": "Journal Article",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 1},
@@ -6891,14 +6896,14 @@ SAMPLE_RDMRECORDS_RECORDS_HIT = {
                 "unique_views": 62,
                 "downloads": 32,
                 "unique_downloads": 32,
-                "data_volume": 1767744,
+                "data_volume": 1767744.0,
             },
             "all_versions": {
                 "views": 63,
                 "unique_views": 62,
                 "downloads": 32,
                 "unique_downloads": 32,
-                "data_volume": 1767744,
+                "data_volume": 1767744.0,
             },
         },
     },

@@ -149,6 +149,24 @@ RESOURCE_TYPES = [
         "type": "resourcetypes",
     },
     {
+        "id": "textDocument-review",
+        "icon": "thumbs up outline",
+        "props": {
+            "coar": "review",
+            "coar_type": "c_efa0",
+            "csl": "review",
+            "datacite_general": "Journal Article",
+            "datacite_type": "Review",
+            "eurepo": "info:eu-repo/semantics/review",
+            "schema.org": "https://schema.org/Review",
+            "subtype": "textDocument-review",
+            "type": "textDocument",
+        },
+        "title": {"en": "Review"},
+        "tags": ["depositable", "linkable"],
+        "type": "resourcetypes",
+    },
+    {
         "id": "dataset",
         "icon": "table",
         "props": {

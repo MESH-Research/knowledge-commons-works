@@ -40,6 +40,11 @@ language_data = [
         "title": {"en": "Hebrew"},
         "type": "languages",
     },
+    {
+        "id": "por",
+        "title": {"en": "Portuguese"},
+        "type": "languages",
+    },
 ]
 
 

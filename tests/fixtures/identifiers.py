@@ -13,6 +13,7 @@ from invenio_rdm_records.config import (
     always_valid,
 )
 from invenio_rdm_records.services.pids import providers
+from kcworks.services.records.validators import is_email
 
 from ..helpers.fake_datacite_client import FakeDataCiteClient
 
@@ -200,6 +201,11 @@ test_config_identifiers = {
         "import_user_id": {
             "label": _("Import user ID"),
             "validator": always_valid,
+            "datacite": "Other",
+        },
+        "email": {
+            "label": _("Email"),
+            "validator": is_email,
             "datacite": "Other",
         },
     },

@@ -91,6 +91,7 @@ The `conftest.py` file loads a number of custom fixture files from the `tests/fi
 The test runner includes additional actions that are not part of the pytest framework. These include:
 
 - Building the documentation with Sphinx
+- Extracting translations from python files
 
 
 ## Javascript tests

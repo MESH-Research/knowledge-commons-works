@@ -107,6 +107,7 @@ def import_test_records(
     review_required: bool = False,
     strict_validation: bool = False,
     record_ids: Optional[list[str]] = None,
+    community_id: Optional[str] = None,
     importer_email: str = "test@example.com",
 ):
     """Import test records from production into the local instance.
@@ -129,6 +130,8 @@ def import_test_records(
         record_ids (list[str]): List of record IDs to import. Defaults to None.
         importer_email (str): Email of the user importing the records. Defaults to
             "test@example.com".
+        community_id (str): ID of the community to import the records to. If not
+            provided, the records will be imported to the Knowledge Commons community.
 
     Returns:
         list: List of record metadata dictionaries.
@@ -157,7 +160,12 @@ def import_test_records(
         f"First record type: {type(records[0]) if records else 'No records'}"
     )
 
-    knowledge_commons_community: dict = set_up_community(importing_user)
+    if community_id is None:
+        target_community = set_up_community(importing_user)
+    else:
+        target_community = current_communities.service.read(
+            system_identity, id_=community_id
+        ).to_dict()
 
     # This is usually run from a CLI command, so we need to add user needs
     # Get community memberships directly without using session
@@ -183,7 +191,7 @@ def import_test_records(
             identity=importing_identity,
             file_data=file_data,
             metadata=records,
-            community_id=knowledge_commons_community["id"],
+            community_id=target_community["id"],
             review_required=review_required,
             strict_validation=strict_validation,
             all_or_none=True,

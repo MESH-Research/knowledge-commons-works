@@ -29,6 +29,7 @@ from invenio_stats.contrib.event_builders import build_file_unique_id
 from invenio_stats_dashboard.aggregations import (
     register_aggregations as register_community_aggregations,
 )
+from invenio_stats_dashboard.config import COMMUNITY_STATS_QUERIES
 from invenio_stats.processors import EventsIndexer, anonymize_user, flag_robots
 from invenio_stats.queries import TermsQuery
 
@@ -270,6 +271,7 @@ test_config_stats["STATS_QUERIES"] = {
             },
         },
     },
+    **COMMUNITY_STATS_QUERIES,
 }
 
 AllowAllPermission = type(
