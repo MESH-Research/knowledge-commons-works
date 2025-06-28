@@ -385,11 +385,14 @@ def test_import_test_records_command(
 
     with (
         patch(
-            "kcworks.services.records.test_data.fetch_production_records"
+            "kcworks.services.records.test_data.KCWorksRecordsAPIHelper.fetch_records"
         ) as mock_fetch,
-        patch("kcworks.services.records.test_data.download_file") as mock_download,
         patch(
-            "kcworks.services.records.test_data.get_test_record_files"
+            "kcworks.services.records.service.KCWorksRecordsAPIHelper.download_file"
+        ) as mock_download,
+        patch(
+            "kcworks.services.records.test_data."
+            "KCWorksRecordsAPIHelper.fetch_record_files"
         ) as mock_get_files,
     ):
         mock_fetch.return_value = MOCK_RECORDS[:3]  # Use first 3 records
@@ -456,11 +459,14 @@ def test_import_test_records_with_options(
 
     with (
         patch(
-            "kcworks.services.records.test_data.fetch_production_records"
+            "kcworks.services.records.test_data.KCWorksRecordsAPIHelper.fetch_records"
         ) as mock_fetch,
-        patch("kcworks.services.records.test_data.download_file") as mock_download,
         patch(
-            "kcworks.services.records.test_data.get_test_record_files"
+            "kcworks.services.records.service.KCWorksRecordsAPIHelper.download_file"
+        ) as mock_download,
+        patch(
+            "kcworks.services.records.test_data."
+            "KCWorksRecordsAPIHelper.fetch_record_files"
         ) as mock_get_files,
     ):
         mock_fetch.return_value = MOCK_RECORDS[:2]  # Use first 2 records

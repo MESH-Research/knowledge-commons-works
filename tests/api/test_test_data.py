@@ -6,6 +6,7 @@
 
 """Integration tests for the test data import functionality."""
 
+import os
 from collections.abc import Callable
 from copy import deepcopy
 from pathlib import Path
@@ -18,17 +19,19 @@ from invenio_access.utils import get_identity
 from invenio_communities.utils import load_community_needs
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_record_importer_kcworks.types import FileData
-from kcworks.services.records.test_data import (
-    fetch_production_records,
-    import_test_records,
-)
+from kcworks.services.records.service import KCWorksRecordsAPIHelper
+from kcworks.services.records.test_data import import_test_records
 
 from tests.conftest import RunningApp
 
 
-def test_fetch_production_records(running_app: RunningApp):
+def test_fetch_records(running_app: RunningApp):
     """Test fetching records from production."""
-    records = fetch_production_records(count=5)
+    api_url = "https://works.hcommons.org/api"
+    api_token = os.getenv("API_TOKEN_PRODUCTION")
+    records = KCWorksRecordsAPIHelper(
+        api_url=api_url, api_token=api_token
+    ).fetch_records(count=5)
     assert len(records) == 5
     for record in records:
         assert "metadata" in record
@@ -110,14 +113,17 @@ def test_import_test_records(
     ]
 
     with patch(
-        "kcworks.services.records.test_data.fetch_production_records"
+        "kcworks.services.records.test_data.KCWorksRecordsAPIHelper.fetch_records"
     ) as mock_fetch:
         mock_fetch.return_value = mock_records
 
         with (
-            patch("kcworks.services.records.test_data.download_file") as mock_download,
             patch(
-                "kcworks.services.records.test_data.get_test_record_files"
+                "kcworks.services.records.service.KCWorksRecordsAPIHelper.download_file"
+            ) as mock_download,
+            patch(
+                "kcworks.services.records.test_data."
+                "KCWorksRecordsAPIHelper.fetch_record_files"
             ) as mock_get_files,
         ):
             # Make the mock return a new FileData object each time it's called
