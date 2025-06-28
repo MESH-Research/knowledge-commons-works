@@ -24,6 +24,7 @@ dependencies = [
     "invenio-record-importer-kcworks",
     "invenio-records-resources==5.10.0",
     "invenio-remote-api-provisioner",
+    "invenio-requests==2.1.0",
     "invenio-s3",
     "invenio-saml",
     "invenio-search-ui==2.8.9",
@@ -92,6 +93,7 @@ invenio-records-resources = {path = "./site/kcworks/dependencies/invenio-records
 invenio-remote-api-provisioner = {path = "./site/kcworks/dependencies/invenio-remote-api-provisioner", editable = true}
 invenio-record-importer-kcworks = {path = "./site/kcworks/dependencies/invenio-record-importer-kcworks", editable = true}
 invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
+invenio-requests = {path = "./site/kcworks/dependencies/invenio-requests", editable = true}
 invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
 
 [tool.setuptools]

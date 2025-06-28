@@ -38,6 +38,7 @@ services:
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-requests:/opt/invenio/site/kcworks/dependencies/invenio-requests
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-stats-dashboard:/opt/invenio/site/kcworks/dependencies/invenio-stats-dashboard
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/opt/invenio/src/.venv/lib/python3.12/site-packages/flask_security
@@ -50,7 +51,6 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_requests
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
@@ -72,6 +72,7 @@ services:
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-record-importer-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-requests:/opt/invenio/site/kcworks/dependencies/invenio-requests
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-stats-dashboard:/opt/invenio/site/kcworks/dependencies/invenio-stats-dashboard
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/opt/invenio/src/.venv/lib/python3.12/site-packages/flask_security
@@ -84,7 +85,6 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/usr/local/lib/python3.9/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_requests
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
@@ -106,6 +106,7 @@ services:
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-records-resources:/opt/invenio/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-api-provisioner:/opt/invenio/site/kcworks/dependencies/invenio-remote-api-provisioner
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-remote-user-data-kcworks:/opt/invenio/site/kcworks/dependencies/invenio-remote-user-data-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-requests:/opt/invenio/site/kcworks/dependencies/invenio-requests
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-stats-dashboard:/opt/invenio/site/kcworks/dependencies/invenio-stats-dashboard
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks/dependencies/invenio-vocabularies:/opt/invenio/site/kcworks/dependencies/invenio-vocabularies
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/opt/invenio/src/.venv/lib/python3.12/site-packages/flask_security
@@ -118,7 +119,6 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
-      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_requests:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_requests
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
