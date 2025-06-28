@@ -6,9 +6,11 @@
 
 """Pytest fixtures for communities."""
 
+from pprint import pformat
 import traceback
 from collections.abc import Callable
 
+from flask import current_app
 import marshmallow as ma
 import pytest
 from flask_sqlalchemy import SQLAlchemy
@@ -17,20 +19,30 @@ from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_communities.communities.records.api import Community
 from invenio_communities.proxies import current_communities
-from invenio_rdm_records.proxies import (
-    current_rdm_records_service,
-)
+from invenio_rdm_records.proxies import current_rdm_records_service, current_rdm_records
 from invenio_rdm_records.records.api import RDMRecord
 from invenio_rdm_records.utils import get_or_create_user
+from invenio_records_resources.services.uow import UnitOfWork
+from invenio_search.proxies import current_search_client
 
 
 def add_community_to_record(
     db: SQLAlchemy, record: RDMRecord, community_id: str, default: bool = False
 ) -> None:
     """Add a community to a record."""
-    record.parent.communities.add(community_id, default=default)  # type: ignore
-    record.parent.commit()  # type: ignore
-    db.session.commit()  # type: ignore
+    current_app.logger.error(
+        f"in add_community_to_record, record: {pformat(record.metadata)}"
+    )
+    current_search_client.indices.refresh(index="*rdmrecords-records*")
+    current_rdm_records.record_communities_service.add(
+        system_identity,
+        record.pid.pid_value,  # type: ignore
+        data={"communities": [{"id": str(community_id)}]},
+        uow=UnitOfWork(db.session),
+    )
+    # record.parent.communities.add(community_id, default=default)  # type: ignore
+    # record.parent.commit()  # type: ignore
+    # db.session.commit()  # type: ignore
     current_rdm_records_service.indexer.index(record, arguments={"refresh": True})
 
 

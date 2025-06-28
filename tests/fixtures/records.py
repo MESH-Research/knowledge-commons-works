@@ -45,7 +45,7 @@ def minimal_draft_record_factory(running_app, db, record_metadata):
         **kwargs: Any,
     ):
         """Create a minimal draft record."""
-        input_metadata = metadata or record_metadata().metadata_in
+        input_metadata = metadata or deepcopy(record_metadata().metadata_in)
         identity = identity or system_identity
         return records_service.create(identity, input_metadata)
 
@@ -81,7 +81,7 @@ def minimal_published_record_factory(running_app, db, record_metadata):
         Returns:
             The published record as a service layer RecordItem.
         """
-        input_metadata = metadata or record_metadata().metadata_in
+        input_metadata = metadata or deepcopy(record_metadata().metadata_in)
         identity = identity or system_identity
         draft = records_service.create(identity, input_metadata)
 
@@ -114,14 +114,18 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                 files=file_objects,
             )
 
-        published = records_service.publish(identity, draft.id)
+        current_app.logger.error(
+            f"in published record factory, draft: {pformat(draft.to_dict())}"
+        )
+
+        published = records_service.publish(system_identity, draft.id)
         if community_list:
             record = published._record
             add_community_to_record(db, record, community_list[0], default=set_default)
             for community in community_list[1:] if len(community_list) > 1 else []:
                 add_community_to_record(db, record, community, default=False)
             # Refresh the record to get the latest state.
-            published = records_service.read(identity, published.id)
+            published = records_service.read(system_identity, published.id)
         return published
 
     return _factory
@@ -290,7 +294,11 @@ class TestRecordMetadata:
         file_entries = file_entries or {}
         self.app = app
         starting_metadata_in = deepcopy(TestRecordMetadata.default_metadata_in)
-        self._metadata_in: dict = metadata_in if metadata_in else starting_metadata_in
+        # Always make a deep copy to prevent shared references and mutations
+        # across tests.
+        self._metadata_in: dict = (
+            deepcopy(metadata_in) if metadata_in else starting_metadata_in
+        )
         self.community_list = community_list
         self.file_entries = file_entries
         self.owner_id = owner_id
@@ -321,8 +329,10 @@ class TestRecordMetadata:
 
         Fields that can't be set before record creation:
         """
-        self._metadata_in["files"] = {"enabled": False}
-        return self._metadata_in
+        # Return a copy to avoid mutating the original dictionary
+        result = deepcopy(self._metadata_in)
+        result["files"] = {"enabled": False}
+        return result
 
     @staticmethod
     def build_draft_record_links(

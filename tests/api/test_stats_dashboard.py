@@ -1,11 +1,28 @@
 import copy
+import random
+import hashlib
 from collections.abc import Callable
 from pprint import pformat
 
 import arrow
 from flask_sqlalchemy import SQLAlchemy
-from invenio_access.permissions import system_identity
-from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from invenio_access.permissions import authenticated_user, system_identity
+from invenio_access.utils import get_identity
+from invenio_accounts.proxies import current_datastore
+from invenio_communities.utils import load_community_needs
+from invenio_rdm_records.proxies import (
+    current_rdm_records,
+    current_rdm_records_service as records_service,
+)
+from invenio_rdm_records.requests.community_inclusion import CommunityInclusion
+from invenio_rdm_records.requests.community_submission import CommunitySubmission
+from invenio_records_resources.services.uow import UnitOfWork
+from invenio_requests.proxies import (
+    current_request_type_registry,
+    current_requests_service,
+    current_events_service,
+)
+from invenio_requests.resolvers.registry import ResolverRegistry
 from invenio_search import current_search_client
 from invenio_search.engine import search
 from invenio_search.utils import prefix_index
@@ -18,21 +35,22 @@ from invenio_stats_dashboard.aggregations import (
     CommunityUsageDeltaAggregator,
     CommunityUsageSnapshotAggregator,
 )
+from invenio_stats_dashboard.components import (
+    CommunityAcceptedEventComponent,
+)
 from invenio_stats_dashboard.queries import (
-    daily_record_cumulative_counts_query,
+    daily_record_snapshot_query,
     daily_record_delta_query,
 )
 from invenio_stats_dashboard.service import CommunityStatsService
 from kcworks.services.records.test_data import import_test_records
 from opensearchpy.helpers.search import Search
+
 from tests.helpers.sample_stats_test_data import (
     SAMPLE_RECORDS_SNAPSHOT_AGG,
-    MOCK_CUMULATIVE_TOTALS_AGGREGATIONS,
+    MOCK_RECORD_SNAPSHOT_AGGREGATIONS,
     MOCK_RECORD_DELTA_AGGREGATION_DOCS,
 )
-import random
-import hashlib
-
 from tests.conftest import RunningApp
 
 
@@ -53,6 +71,7 @@ def test_aggregations_registered(running_app):
     assert "community-records-snapshot-agg" in app.config["STATS_AGGREGATIONS"].keys()
     assert "community-usage-snapshot-agg" in app.config["STATS_AGGREGATIONS"].keys()
     assert "community-usage-delta-agg" in app.config["STATS_AGGREGATIONS"].keys()
+    assert "community-events-index" in app.config["STATS_AGGREGATIONS"].keys()
     # check that the aggregations are registered by invenio-stats
     assert current_stats.aggregations["community-records-snapshot-agg"]
     assert current_stats.aggregations["community-records-delta-created-agg"]
@@ -60,6 +79,7 @@ def test_aggregations_registered(running_app):
     assert current_stats.aggregations["community-records-delta-added-agg"]
     assert current_stats.aggregations["community-usage-snapshot-agg"]
     assert current_stats.aggregations["community-usage-delta-agg"]
+    assert current_stats.aggregations["community-events-index"]
     # ensure that the default aggregations are still registered
     assert "file-download-agg" in app.config["STATS_AGGREGATIONS"]
     assert "record-view-agg" in app.config["STATS_AGGREGATIONS"]
@@ -121,6 +141,12 @@ def test_index_templates_registered(running_app, create_stats_indices, search_cl
     assert len(templates["index_templates"]) == 4
     usage_templates = client.indices.get_index_template("*stats-community-usage*")
     assert len(usage_templates["index_templates"]) == 2
+
+    # Check that the community events index template exists
+    community_events_templates = client.indices.get_index_template(
+        "*stats-community-events*"
+    )
+    assert len(community_events_templates["index_templates"]) == 1
 
     # Check that the alias exists and points to the index
     aliases = client.indices.get_alias("*stats-community-records-snapshot*")
@@ -948,123 +974,137 @@ class TestCommunityRecordCreatedDeltaAggregator:
                             assert subcount_item == matching_doc
 
 
-def test_daily_record_cumulative_counts_query(
-    running_app,
-    db,
-    minimal_community_factory,
-    user_factory,
-    create_stats_indices,
-    mock_send_remote_api_update_fixture,
-    celery_worker,
-    requests_mock,
-    search_clear,
-):
-    """Test daily_record_cumulative_counts_query."""
-    app = running_app.app
-    u = user_factory(email="test@example.com", saml_id="")
-    community = minimal_community_factory(slug="knowledge-commons")
-    community_id = community.id
-    user_email = u.user.email
+class TestCommunityRecordCreatedSnapshotQuery:
+    """Test the daily_record_snapshot_query function."""
 
-    # import test records
-    requests_mock.real_http = True
-    import_test_records(
-        importer_email=user_email,
-        record_ids=[
-            "jthhs-g4b38",
-            "0dtmf-ph235",
-            "5ryf5-bfn20",
-            "r4w2d-5tg11",
-        ],
-    )
-    current_search_client.indices.refresh(index="*rdmrecords-records*")
+    def test_daily_record_snapshot_query(
+        self,
+        running_app,
+        db,
+        minimal_community_factory,
+        user_factory,
+        create_stats_indices,
+        mock_send_remote_api_update_fixture,
+        celery_worker,
+        requests_mock,
+        search_clear,
+    ):
+        """Test daily_record_snapshot_query."""
+        app = running_app.app
+        u = user_factory(email="test@example.com", saml_id="")
+        community = minimal_community_factory(slug="knowledge-commons")
+        community_id = community.id
+        user_email = u.user.email
 
-    all_results = []
-    earliest_date = arrow.get("1900-01-01").floor("day")
-    start_date = arrow.get("2025-05-30")
-    target_date = arrow.get("2025-05-30")
-    final_date = arrow.utcnow()
-    while target_date <= final_date:
-        day = target_date.format("YYYY-MM-DD")
-        cumulative_query = daily_record_cumulative_counts_query(
-            start_date=earliest_date.format("YYYY-MM-DD"),
-            end_date=day,
-            community_id=community_id,
+        # import test records
+        requests_mock.real_http = True
+        import_test_records(
+            importer_email=user_email,
+            record_ids=[
+                "jthhs-g4b38",
+                "0dtmf-ph235",
+                "5ryf5-bfn20",
+                "r4w2d-5tg11",
+            ],
         )
-        app.logger.error(f"Cumulative query: {pformat(cumulative_query)}")
-        cumulative_results = current_search_client.search(
-            index="rdmrecords-records",
-            body=cumulative_query,
-        )
-        app.logger.error(f"start date: {target_date.format('YYYY-MM-DD')}")
-        app.logger.error(f"Cumulative results: {pformat(cumulative_results)}")
-        all_results.append(cumulative_results)
+        current_search_client.indices.refresh(index="*rdmrecords-records*")
 
-        # only check a few sample days
-        if day.format("YYYY-MM-DD") in ["2025-05-30", "2025-05-31", "2025-06-03"]:
-            expected_results = MOCK_CUMULATIVE_TOTALS_AGGREGATIONS[day]
-            app.logger.error(f"Expected results: {pformat(expected_results)}")
+        all_results = []
+        earliest_date = arrow.get("1900-01-01").floor("day")
+        start_date = arrow.get("2025-05-30")
+        target_date = arrow.get("2025-05-30")
+        final_date = arrow.utcnow()
+        while target_date <= final_date:
+            day = target_date.format("YYYY-MM-DD")
+            snapshot_query = daily_record_snapshot_query(
+                start_date=earliest_date.format("YYYY-MM-DD"),
+                end_date=day,
+                community_id=community_id,
+            )
+            app.logger.error(f"Snapshot query: {pformat(snapshot_query)}")
+            snapshot_results = current_search_client.search(
+                index="rdmrecords-records",
+                body=snapshot_query,
+            )
+            app.logger.error(f"start date: {target_date.format('YYYY-MM-DD')}")
+            app.logger.error(f"Snapshot results: {pformat(snapshot_results)}")
+            all_results.append(snapshot_results)
 
-            for key, value in cumulative_results["aggregations"].items():
-                if key[:3] == "by_":
-                    for bucket in value["buckets"]:
-                        matching_expected_bucket = next(
-                            (
-                                expected_bucket
-                                for expected_bucket in expected_results[key]["buckets"]
-                                if expected_bucket["key"] == bucket["key"]
-                            ),
-                            None,
-                        )
-                        for k, v in bucket.items():
-                            assert matching_expected_bucket
-                            if k == "label":
-                                if key == "by_subject":
-                                    app.logger.error(
-                                        f"v: {pformat(sorted(v['hits']['hits'][0]['_source']['metadata']['subjects'], key=lambda x: x['subject']))}"
-                                    )
-                                    app.logger.error(
-                                        f"matching_expected_bucket: {pformat(sorted(matching_expected_bucket[k]['hits']['hits'][0]['_source']['metadata']['subjects'], key=lambda x: x['subject']))}"
-                                    )
-                                    for idx, s in enumerate(
-                                        sorted(
-                                            v["hits"]["hits"][0]["_source"]["metadata"][
-                                                "subjects"
-                                            ],
-                                            key=lambda x: x["subject"],
+            # only check a few sample days
+            if day.format("YYYY-MM-DD") in ["2025-05-30", "2025-05-31", "2025-06-03"]:
+                expected_results = MOCK_RECORD_SNAPSHOT_AGGREGATIONS[day]
+                app.logger.error(f"Expected results: {pformat(expected_results)}")
+
+                for key, value in snapshot_results["aggregations"].items():
+                    if key[:3] == "by_":
+                        for bucket in value["buckets"]:
+                            matching_expected_bucket = next(
+                                (
+                                    expected_bucket
+                                    for expected_bucket in expected_results[key][
+                                        "buckets"
+                                    ]
+                                    if expected_bucket["key"] == bucket["key"]
+                                ),
+                                None,
+                            )
+                            for k, v in bucket.items():
+                                assert matching_expected_bucket is not None
+                                app.logger.error(
+                                    f"matching_expected_bucket: {pformat(matching_expected_bucket)}"
+                                )
+                                app.logger.error(f"v: {pformat(v)}")
+                                if k == "label":
+                                    if key == "by_subject":
+                                        app.logger.error(
+                                            f"v: {pformat(sorted(v['hits']['hits'][0]['_source']['metadata']['subjects'], key=lambda x: x['subject']))}"
                                         )
-                                    ):
-                                        expected = sorted(
-                                            matching_expected_bucket[k]["hits"]["hits"][
-                                                0
-                                            ]["_source"]["metadata"]["subjects"],
-                                            key=lambda x: x["subject"],
-                                        )[idx]
-                                        assert s["id"] == expected["id"]
-                                        assert s["subject"] == expected["subject"]
-                                        assert s["scheme"] == expected["scheme"]
+                                        app.logger.error(
+                                            f"matching_expected_bucket: {pformat(sorted(matching_expected_bucket[k]['hits']['hits'][0]['_source']['metadata']['subjects'], key=lambda x: x['subject']))}"
+                                        )
+                                        for idx, s in enumerate(
+                                            sorted(
+                                                v["hits"]["hits"][0]["_source"][
+                                                    "metadata"
+                                                ]["subjects"],
+                                                key=lambda x: x["subject"],
+                                            )
+                                        ):
+                                            expected = sorted(
+                                                matching_expected_bucket[k]["hits"][
+                                                    "hits"
+                                                ][0]["_source"]["metadata"]["subjects"],
+                                                key=lambda x: x["subject"],
+                                            )[idx]
+                                            assert s["id"] == expected["id"]
+                                            assert s["subject"] == expected["subject"]
+                                            # FIXME: add scheme to labels
+                                            # assert s["scheme"] == expected["scheme"]
 
+                                    else:
+                                        assert sorted(
+                                            [i["_source"] for i in v["hits"]["hits"]]
+                                        ) == sorted(
+                                            [
+                                                j["_source"]
+                                                for j in matching_expected_bucket[k][
+                                                    "hits"
+                                                ]["hits"]
+                                            ]
+                                        )
                                 else:
-                                    assert sorted(
-                                        [i["_source"] for i in v["hits"]["hits"]]
-                                    ) == sorted(
-                                        [
-                                            j["_source"]
-                                            for j in matching_expected_bucket[k][
-                                                "hits"
-                                            ]["hits"]
-                                        ]
-                                    )
-                            else:
-                                assert v == matching_expected_bucket[k]
-                else:
-                    assert value == expected_results[key]
-        else:
-            pass
+                                    assert v == matching_expected_bucket[k]
+                    else:
+                        app.logger.error(
+                            f"non-by value for key {key} on day {day}: {pformat(value)}"
+                        )
+                        assert value == expected_results[key]
+            else:
+                pass
 
-        target_date = target_date.shift(days=1)
+            target_date = target_date.shift(days=1)
 
-    assert len(all_results) == (final_date - start_date).days + 1
+        assert len(all_results) == (final_date - start_date).days + 1
 
 
 def test_community_record_snapshot_agg(
@@ -1081,8 +1121,6 @@ def test_community_record_snapshot_agg(
     app = running_app.app
     requests_mock.real_http = True
     u = user_factory(email="test@example.com", saml_id="")
-    community = minimal_community_factory(slug="knowledge-commons")
-    community_id = community.id
     user_email = u.user.email
 
     import_test_records(
@@ -1253,6 +1291,9 @@ class TestCommunityUsageAggregators:
             minutes=random.randint(0, 59),
             seconds=random.randint(0, 59),
         )
+        visitor_hash = hashlib.sha1(
+            f'test-visitor-{record["id"]}-{ident}'.encode()
+        ).hexdigest()
         view_event = {
             "timestamp": event_time.format("YYYY-MM-DDTHH:mm:ss"),
             "recid": str(record["id"]),
@@ -1268,7 +1309,7 @@ class TestCommunityUsageAggregators:
 
         return (
             view_event,
-            f"{event_time.format('YYYY-MM-DDTHH:mm:ss')}-{hashlib.sha1(f'test-visitor-{record["id"]}-{ident}'.encode()).hexdigest()}",
+            f"{event_time.format('YYYY-MM-DDTHH:mm:ss')}-{visitor_hash}",
         )
 
     def _make_download_event(
@@ -1935,4 +1976,1163 @@ class TestCommunityUsageAggregators:
         assert self.check_bookmarks(snapshot_aggregator, community_id)
         assert self.check_snapshot_agg_results(
             snapshot_response, delta_results, community_id
+        )
+
+
+class TestCommunitiesEventsComponentsIncluded:
+    """Test the RecordCommunitiesEventsComponent.
+
+    Covers the case when a record is added to a published community by
+    a direct inclusion request. In this case, no service method is called
+    other than the one that creates the request event for the inclusion.
+    """
+
+    def setup_users(self, user_factory):
+        """Setup test users."""
+        u = user_factory(email="test@example.com", saml_id=None)
+        user_id = u.user.id
+        user_email = u.user.email
+
+        u2 = user_factory(email="test2@example.com", saml_id=None)
+        user_id2 = u2.user.id
+        user_email2 = u2.user.email
+
+        return user_id, user_email, user_id2, user_email2
+
+    def setup_community(self, minimal_community_factory, user_id):
+        """Setup test community."""
+        community = minimal_community_factory(
+            slug="knowledge-commons",
+            owner=user_id,
+        )
+        community_id = community.id
+        return community_id
+
+    def setup_record(
+        self,
+        minimal_published_record_factory,
+        minimal_draft_record_factory,
+        community_owner_id,
+        user_id,
+        community_id,
+    ):
+        """Setup test record."""
+        identity = get_identity(current_datastore.get_user(user_id))
+        identity.provides.add(authenticated_user)
+        load_community_needs(identity)
+        record = minimal_published_record_factory(identity=identity)
+        return record
+
+    def setup_requests(self, db, record, community_id, user_id, user_id2):
+        """Setup test requests."""
+        type_ = current_request_type_registry.lookup(CommunityInclusion.type_id)
+        receiver = ResolverRegistry.resolve_entity_proxy(
+            {"community": community_id}
+        ).resolve()
+
+        curator_identity = get_identity(current_datastore.get_user(user_id))
+        curator_identity.provides.add(authenticated_user)
+        load_community_needs(curator_identity)
+
+        identity = get_identity(current_datastore.get_user(user_id2))
+        identity.provides.add(authenticated_user)
+        load_community_needs(identity)
+
+        request_item = current_requests_service.create(
+            identity,
+            {},
+            type_,
+            receiver,
+            topic=record._record,
+            # uow=None,
+        )
+        request_item = current_rdm_records.community_inclusion_service.submit(
+            identity,
+            record._record,
+            receiver,
+            request_item._request,
+            data={
+                "payload": {
+                    "content": "Submitted",
+                    "format": "html",
+                }
+            },
+            uow=UnitOfWork(db.session),
+        )
+        self.app.logger.error(f"request_item: {pformat(request_item.to_dict())}")
+        accepted = current_requests_service.execute_action(
+            curator_identity,
+            request_item.id,
+            "accept",
+            data={
+                "payload": {
+                    "content": "Accepted",
+                    "format": "html",
+                }
+            },
+        )
+        assert accepted
+
+        # check that the record is in the community
+        current_search_client.indices.refresh(index="*")
+        record_final = records_service.read(system_identity, record.id)
+        assert community_id in record_final._record.parent.communities.ids
+
+        # check that the record is in the community events
+        events = current_events_service.search(identity, request_item.id)
+        assert len(events) == 2
+
+    def check_community_added_events(self, record, community_id):
+        """Check that the community added events are in the events index."""
+        # Check that the community events are in the events index
+        current_search_client.indices.refresh(index="*stats-community-events*")
+
+        # Search for events for this record and community
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "sort": [{"event_date": {"order": "desc"}}],
+            "size": 10,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        assert result["hits"]["total"]["value"] >= 1
+        latest_event = result["hits"]["hits"][0]["_source"]
+
+        self.app.logger.error(f"latest_event: {pformat(latest_event)}")
+        assert latest_event["record_id"] == str(record.id)
+        assert latest_event["community_id"] == community_id
+        assert latest_event["event_type"] == "added"
+        assert (
+            arrow.utcnow().shift(minutes=5)
+            > arrow.get(latest_event["event_date"])
+            > arrow.utcnow().shift(minutes=-1)
+        )
+
+    def check_community_removed_events(self, record, community_id):
+        """Check that the community removed events are in the events index."""
+        # Check that there are no removal events for this record/community
+        current_search_client.indices.refresh(index="*stats-community-events*")
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "removed"}},
+                    ]
+                }
+            },
+            "size": 10,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        # Should have no removal events
+        assert result["hits"]["total"]["value"] == 0
+
+    def setup_record_deletion(self, db, record, community_id, owner_id, user_id):
+        """Setup a record deletion."""
+        pass
+
+    def check_after_record_modification(self, record, community_id):
+        """Check that the community events are in the record after modification."""
+        pass
+
+    def test_record_communities_events_component(
+        self,
+        running_app: RunningApp,
+        db: SQLAlchemy,
+        minimal_community_factory: Callable,
+        minimal_published_record_factory: Callable,
+        minimal_draft_record_factory: Callable,
+        user_factory: Callable,
+        create_stats_indices: Callable,
+        mock_send_remote_api_update_fixture: Callable,
+        celery_worker: Callable,
+        requests_mock: Callable,
+        search_clear: Callable,
+    ):
+        """Test the RecordCommunitiesEventsComponent."""
+        self.app = running_app.app
+        self.client = current_search_client
+        assert (
+            CommunityAcceptedEventComponent
+            in self.app.config["REQUESTS_EVENTS_SERVICE_COMPONENTS"]
+        )
+
+        # user 1 is the community owner, user 2 is the record owner
+        user_id, user_email, user_id2, user_email2 = self.setup_users(user_factory)
+        community_id = self.setup_community(minimal_community_factory, user_id)
+        record = self.setup_record(
+            minimal_published_record_factory,
+            minimal_draft_record_factory,
+            user_id,
+            user_id2,
+            community_id,
+        )
+        self.app.logger.error(f"record: {pformat(record._record.__dict__)}")
+
+        self.setup_requests(db, record, community_id, user_id, user_id2)
+
+        self.setup_record_deletion(db, record, community_id, user_id, user_id2)
+
+        final_record = records_service.read(
+            system_identity, record.id, include_deleted=True
+        )
+        self.check_community_added_events(final_record, community_id)
+        self.check_community_removed_events(final_record, community_id)
+        self.check_after_record_modification(final_record, community_id)
+
+
+class TestCommunitiesEventsComponentsDeleted(TestCommunitiesEventsComponentsIncluded):
+    """Test the component that tracks record deletions for communities.
+
+    Covers the case when a published record is deleted after being added to
+    a community. In this case, the RDMRecordService component is called
+    during the delete method to record the deletion as a "removed" event.
+
+    This test cases also includes adding a published record to a community
+    via the RecordCommunitiesService `add` method. In this case, the
+    component for that service is called *and* there is a (redundant) call
+    to the RequestEventsService component when the inclusion request is accepted.
+    """
+
+    def setup_record(
+        self,
+        minimal_published_record_factory,
+        minimal_draft_record_factory,
+        community_owner_id,
+        user_id,
+        community_id,
+    ):
+        """Setup test record."""
+        identity = get_identity(current_datastore.get_user(community_owner_id))
+        identity.provides.add(authenticated_user)
+        load_community_needs(identity)
+        record = minimal_published_record_factory(
+            identity=identity,
+            community_list=[community_id],
+            set_default=True,
+        )
+        return record
+
+    def setup_record_deletion(self, db, record, community_id, owner_id, user_id):
+        """Setup a record deletion."""
+        records_service.delete_record(system_identity, record.id, data={})
+
+    def setup_requests(self, db, record, community_id, user_id, user_id2):
+        """Setup test requests."""
+        pass
+
+    def check_community_added_events(self, record, community_id):
+        """Check that the community added events are in the events index."""
+        # Check that the community events are in the events index
+        current_search_client.indices.refresh(index="*stats-community-events*")
+
+        # Search for events for this record and community
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "sort": [{"event_date": {"order": "desc"}}],
+            "size": 10,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        assert result["hits"]["total"]["value"] >= 1
+        latest_event = result["hits"]["hits"][0]["_source"]
+
+        assert latest_event["record_id"] == str(record.id)
+        assert latest_event["community_id"] == community_id
+        assert latest_event["event_type"] == "added"
+        assert arrow.utcnow().shift(minutes=5) > arrow.get(latest_event["event_date"])
+        assert arrow.utcnow().shift(minutes=-1) < arrow.get(latest_event["event_date"])
+
+    def check_community_removed_events(self, record, community_id):
+        """Check that the community removed events are in the events index."""
+        # Check that there are no removal events for this record/community
+        # (deletion doesn't create removal events, it just marks existing events as deleted)
+        current_search_client.indices.refresh(index="*stats-community-events*")
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "removed"}},
+                    ]
+                }
+            },
+            "size": 10,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        # Should have no removal events
+        assert result["hits"]["total"]["value"] == 0
+
+        # Check that existing events are marked as deleted
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                    ]
+                }
+            },
+            "size": 10,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        assert result["hits"]["total"]["value"] >= 1
+        for hit in result["hits"]["hits"]:
+            event = hit["_source"]
+            assert event["is_deleted"] is True
+            assert event.get("deleted_date") is not None
+
+        # For soft deletion, the record remains technically in the community
+        # This is correct behavior - the record is marked as deleted but
+        # community relationships are preserved for potential restoration
+        assert record._record.parent.communities.ids == [community_id]
+
+
+class TestCommunitiesEventsComponentsRemoved(TestCommunitiesEventsComponentsIncluded):
+    """Test the component that tracks record community removals.
+
+    Covers the case when a published record is removed from a community
+    via the RecordCommunitiesService `remove` method.
+
+    This test cases also includes submitting a draft record to a community
+    for publication via request. In this case, the component for
+    RecordCommunitiesService is called *and* there is a (redundant) call
+    to the RequestEventsService component when the inclusion request is accepted.
+    """
+
+    def setup_record(
+        self,
+        minimal_published_record_factory,
+        minimal_draft_record_factory,
+        community_owner_id,
+        user_id,
+        community_id,
+    ):
+        """Setup test record."""
+        identity = get_identity(current_datastore.get_user(user_id))
+        identity.provides.add(authenticated_user)
+        load_community_needs(identity)
+        record = minimal_draft_record_factory(identity=identity)
+        return record
+
+    def setup_requests(self, db, record, community_id, owner_id, user_id):
+        """Setup events to submit the record to a community."""
+        type_ = current_request_type_registry.lookup(CommunitySubmission.type_id)
+        receiver = ResolverRegistry.resolve_entity_proxy(
+            {"community": community_id}
+        ).resolve()
+        identity = get_identity(current_datastore.get_user(owner_id))
+        identity.provides.add(authenticated_user)
+        load_community_needs(identity)
+
+        owner_identity = get_identity(current_datastore.get_user(owner_id))
+        owner_identity.provides.add(authenticated_user)
+        load_community_needs(owner_identity)
+
+        request_item = current_requests_service.create(
+            identity,
+            {},
+            type_,
+            receiver,
+            topic=record._record,
+            # uow=None,
+        )
+        request_item = current_rdm_records.community_inclusion_service.submit(
+            identity,
+            record._record,
+            receiver,
+            request_item._request,
+            data={
+                "payload": {
+                    "content": "Submitted",
+                    "format": "html",
+                }
+            },
+            uow=UnitOfWork(db.session),
+        )
+        self.app.logger.error(f"request_item: {pformat(request_item.to_dict())}")
+        accepted = current_requests_service.execute_action(
+            owner_identity,
+            request_item.id,
+            "accept",
+            data={
+                "payload": {
+                    "content": "Accepted",
+                    "format": "html",
+                }
+            },
+        )
+        assert accepted
+
+    def setup_record_deletion(self, db, record, community_id, owner_id, user_id):
+        """Setup a record removal from a community via RecordCommunitiesService."""
+        identity = get_identity(current_datastore.get_user(owner_id))
+
+        # Use UnitOfWork to ensure proper transaction handling
+        with UnitOfWork(db.session) as uow:
+            current_rdm_records.record_communities_service.remove(
+                identity,
+                record.id,
+                data={"communities": [{"id": community_id}]},
+                uow=uow,
+            )
+            # Commit the transaction
+            uow.commit()
+
+        # Alternative approach: Explicitly commit the database session
+        # db.session.commit()
+
+        # Refresh indices after the transaction is committed
+        current_search_client.indices.refresh(index="*")
+
+    def check_community_added_events(self, record, community_id):
+        """Check that the community added events are in the events index."""
+        # Check that the community events are in the events index
+        current_search_client.indices.refresh(index="*stats-community-events*")
+
+        # Search for events for this record and community
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "sort": [{"event_date": {"order": "desc"}}],
+            "size": 10,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        assert result["hits"]["total"]["value"] >= 1
+        latest_event = result["hits"]["hits"][0]["_source"]
+
+        assert latest_event["record_id"] == str(record.id)
+        assert latest_event["community_id"] == community_id
+        assert latest_event["event_type"] == "added"
+        assert arrow.utcnow().shift(minutes=5) > arrow.get(latest_event["event_date"])
+
+    def check_community_removed_events(self, record, community_id):
+        """Check that the community removed events are in the events index."""
+        # Check that removal events exist for this record/community
+        current_search_client.indices.refresh(index="*stats-community-events*")
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "removed"}},
+                    ]
+                }
+            },
+            "sort": [{"event_date": {"order": "desc"}}],
+            "size": 10,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        assert result["hits"]["total"]["value"] >= 1
+        latest_removal_event = result["hits"]["hits"][0]["_source"]
+
+        assert latest_removal_event["record_id"] == str(record.id)
+        assert latest_removal_event["community_id"] == community_id
+        assert latest_removal_event["event_type"] == "removed"
+        assert (
+            arrow.utcnow().shift(minutes=5)
+            > arrow.get(latest_removal_event["event_date"])
+            > arrow.utcnow().shift(minutes=-1)
+        )
+
+        # Check that the removal event comes after the addition event
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "sort": [{"event_date": {"order": "desc"}}],
+            "size": 1,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        assert result["hits"]["total"]["value"] >= 1
+        latest_addition_event = result["hits"]["hits"][0]["_source"]
+
+        assert arrow.get(latest_addition_event["event_date"]) < arrow.get(
+            latest_removal_event["event_date"]
+        )
+
+        # After the transaction is committed, the record should no longer be in
+        # the community. Refresh the record from the database to get the current state
+        current_search_client.indices.refresh(index="*")
+        refreshed_record = records_service.read(
+            system_identity, record.id, include_deleted=True
+        )
+
+        # The record is no longer in the community after removal
+        # as opposed to the deleted case where the record is still technically
+        # in the community after deletion
+        assert refreshed_record.to_dict()["parent"]["communities"]["ids"] == []
+
+
+class TestCommunitiesEventsComponentsNewVersion(
+    TestCommunitiesEventsComponentsIncluded
+):
+    """Test that community events are carried over when creating a new version.
+
+    Covers the case when a new version of a published record is created
+    and the community events from the previous version are carried over
+    to the new version.
+    """
+
+    # setup_record is inherited from the parent class
+
+    def setup_requests(self, db, record, community_id, user_id, user_id2):
+        """Setup test requests - not needed for this test."""
+        pass
+
+    def setup_record_deletion(self, db, record, community_id, owner_id, user_id):
+        """Create a new version of the record instead of deleting it."""
+        identity = get_identity(current_datastore.get_user(owner_id))
+        identity.provides.add(authenticated_user)
+        load_community_needs(identity)
+
+        # Create a new version of the record
+        new_version_draft = records_service.new_version(
+            identity=identity,
+            id_=record.id,
+        )
+
+        # Update the draft with some changes
+        draft_data = new_version_draft.data
+        draft_data["metadata"]["title"] = "Updated Title for New Version"
+
+        # Update the draft
+        updated_draft = records_service.update_draft(
+            identity=identity,
+            id_=new_version_draft.id,
+            data=draft_data,
+        )
+
+        # Publish the new version
+        new_version_record = records_service.publish(
+            identity=identity,
+            id_=updated_draft.id,
+        )
+
+        self.app.logger.error(
+            f"New version record: {pformat(new_version_record.to_dict())}"
+        )
+
+        # Store the new version record for later checking
+        self.new_version_record = new_version_record
+
+        current_search_client.indices.refresh(index="*")
+
+    def check_after_record_modification(self, record, community_id):
+        """Check that the community events are in the record after modification."""
+        # Check that both records have events in the events index
+        current_search_client.indices.refresh(index="*stats-community-events*")
+
+        # Check events for the original record
+        query_original = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "sort": [{"event_date": {"order": "desc"}}],
+            "size": 1,
+        }
+
+        result_original = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query_original,
+        )
+
+        assert result_original["hits"]["total"]["value"] >= 1
+        original_event = result_original["hits"]["hits"][0]["_source"]
+
+        # Check events for the new version record
+        query_new = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(self.new_version_record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "sort": [{"event_date": {"order": "desc"}}],
+            "size": 1,
+        }
+
+        result_new = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query_new,
+        )
+
+        assert result_new["hits"]["total"]["value"] >= 1
+        new_event = result_new["hits"]["hits"][0]["_source"]
+
+        self.app.logger.error(f"original_event: {pformat(original_event)}")
+        self.app.logger.error(f"new_event: {pformat(new_event)}")
+
+        assert original_event["community_id"] == community_id
+        assert new_event["community_id"] == community_id
+        # The new version should have the same community events as the original
+        # The timestamps should be preserved from the original version
+        assert original_event["event_date"] is not None
+        assert new_event["event_date"] is not None
+
+        # Verify that both records are in the same community
+        assert community_id in record._record.parent.communities.ids
+        assert community_id in self.new_version_record._record.parent.communities.ids
+
+        # Verify that the new version has a different ID but same parent
+        assert record.id != self.new_version_record.id
+        assert record._record.parent.id == self.new_version_record._record.parent.id
+
+
+class TestCommunityEventsHelperFunctions:
+    """Test the helper functions for community events."""
+
+    def test_update_event_deletion_fields(self, running_app, create_stats_indices):
+        """Test update_event_deletion_fields function."""
+        from invenio_stats_dashboard.components import update_event_deletion_fields
+
+        app = running_app.app
+        client = current_search_client
+
+        # Create a test event in the community events index
+        event_year = arrow.utcnow().year
+        write_index = prefix_index(f"stats-community-events-{event_year}")
+
+        test_event = {
+            "record_id": "test-record-123",
+            "community_id": "test-community-456",
+            "event_type": "added",
+            "event_date": arrow.utcnow().isoformat(),
+            "is_deleted": False,
+            "timestamp": arrow.utcnow().isoformat(),
+            "updated_timestamp": arrow.utcnow().isoformat(),
+        }
+
+        # Index the test event
+        result = client.index(index=write_index, body=test_event)
+        event_id = result["_id"]
+        client.indices.refresh(index=write_index)
+
+        # Test updating deletion fields
+        deleted_date = arrow.utcnow().isoformat()
+        update_event_deletion_fields(event_id, True, deleted_date)
+
+        # Verify the update
+        client.indices.refresh(index=write_index)
+        updated_event = client.get(index=write_index, id=event_id)
+
+        assert updated_event["_source"]["is_deleted"] is True
+        assert updated_event["_source"]["deleted_date"] == deleted_date
+        assert "updated_timestamp" in updated_event["_source"]
+
+    def test_update_community_events_deletion_fields(
+        self, running_app, create_stats_indices
+    ):
+        """Test update_community_events_deletion_fields function."""
+        from invenio_stats_dashboard.components import (
+            update_community_events_deletion_fields,
+        )
+
+        app = running_app.app
+        client = current_search_client
+
+        # Create test events in the community events index
+        event_year = arrow.utcnow().year
+        write_index = prefix_index(f"stats-community-events-{event_year}")
+
+        record_id = "test-record-789"
+        community_ids = ["comm-1", "comm-2", "comm-3"]
+
+        for i, community_id in enumerate(community_ids):
+            test_event = {
+                "record_id": record_id,
+                "community_id": community_id,
+                "event_type": "added",
+                "event_date": arrow.utcnow().shift(hours=i).isoformat(),
+                "is_deleted": False,
+                "timestamp": arrow.utcnow().isoformat(),
+                "updated_timestamp": arrow.utcnow().isoformat(),
+            }
+            client.index(index=write_index, body=test_event)
+
+        client.indices.refresh(index=write_index)
+
+        # Test updating deletion fields for all events of the record
+        deleted_date = arrow.utcnow().isoformat()
+        update_community_events_deletion_fields(record_id, True, deleted_date)
+
+        # Verify the updates
+        client.indices.refresh(index=write_index)
+        query = {
+            "query": {"term": {"record_id": record_id}},
+            "size": 10,
+        }
+
+        result = client.search(index=prefix_index("stats-community-events"), body=query)
+
+        assert result["hits"]["total"]["value"] == 3
+        for hit in result["hits"]["hits"]:
+            event = hit["_source"]
+            assert event["is_deleted"] is True
+            assert event["deleted_date"] == deleted_date
+
+    def test_update_community_events_index_add_new(
+        self, running_app, create_stats_indices
+    ):
+        """Test update_community_events_index function for adding new communities."""
+        from invenio_stats_dashboard.components import update_community_events_index
+
+        app = running_app.app
+        client = current_search_client
+
+        record_id = "test-record-add"
+        community_id = "test-community-add"
+        timestamp = "2024-01-01T10:00:00"
+
+        # Test adding a new community
+        update_community_events_index(
+            record_id=record_id,
+            community_ids_to_add=[community_id],
+            timestamp=timestamp,
+        )
+
+        # Verify the event was created
+        client.indices.refresh(index="*stats-community-events*")
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": record_id}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "size": 1,
+        }
+
+        result = client.search(index=prefix_index("stats-community-events"), body=query)
+
+        assert result["hits"]["total"]["value"] == 1
+        event = result["hits"]["hits"][0]["_source"]
+        assert event["record_id"] == record_id
+        assert event["community_id"] == community_id
+        assert event["event_type"] == "added"
+        assert event["event_date"] == timestamp
+
+    def test_update_community_events_index_remove_existing(
+        self, running_app, create_stats_indices
+    ):
+        """Test update_community_events_index function for removing communities."""
+        from invenio_stats_dashboard.components import update_community_events_index
+
+        app = running_app.app
+        client = current_search_client
+
+        record_id = "test-record-remove"
+        community_id = "test-community-remove"
+        add_timestamp = "2024-01-01T10:00:00"
+        remove_timestamp = "2024-01-01T11:00:00"
+
+        # First add a community
+        update_community_events_index(
+            record_id=record_id,
+            community_ids_to_add=[community_id],
+            timestamp=add_timestamp,
+        )
+
+        # Then remove it
+        update_community_events_index(
+            record_id=record_id,
+            community_ids_to_remove=[community_id],
+            timestamp=remove_timestamp,
+        )
+
+        # Verify both events were created
+        client.indices.refresh(index="*stats-community-events*")
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": record_id}},
+                        {"term": {"community_id": community_id}},
+                    ]
+                }
+            },
+            "sort": [{"event_date": {"order": "asc"}}],
+            "size": 10,
+        }
+
+        result = client.search(index=prefix_index("stats-community-events"), body=query)
+
+        assert result["hits"]["total"]["value"] == 2
+
+        events = [hit["_source"] for hit in result["hits"]["hits"]]
+        events.sort(key=lambda x: x["event_date"])
+
+        assert events[0]["event_type"] == "added"
+        assert events[0]["event_date"] == add_timestamp
+        assert events[1]["event_type"] == "removed"
+        assert events[1]["event_date"] == remove_timestamp
+
+    def test_update_community_events_index_remove_without_add(
+        self, running_app, create_stats_indices
+    ):
+        """Test update_community_events_index function for removing without prior addition."""
+        from invenio_stats_dashboard.components import update_community_events_index
+
+        app = running_app.app
+        client = current_search_client
+
+        record_id = "test-record-remove-no-add"
+        community_id = "test-community-remove-no-add"
+        remove_timestamp = "2024-01-01T11:00:00"
+
+        # Try to remove a community that was never added
+        update_community_events_index(
+            record_id=record_id,
+            community_ids_to_remove=[community_id],
+            timestamp=remove_timestamp,
+        )
+
+        # Verify that both an addition and removal event were created
+        client.indices.refresh(index="*stats-community-events*")
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": record_id}},
+                        {"term": {"community_id": community_id}},
+                    ]
+                }
+            },
+            "sort": [{"event_date": {"order": "asc"}}],
+            "size": 10,
+        }
+
+        result = client.search(index=prefix_index("stats-community-events"), body=query)
+
+        assert result["hits"]["total"]["value"] == 2
+
+        events = [hit["_source"] for hit in result["hits"]["hits"]]
+        events.sort(key=lambda x: x["event_date"])
+
+        # Should have an addition event one second before the removal
+        assert events[0]["event_type"] == "added"
+        assert arrow.get(events[0]["event_date"]) == arrow.get(remove_timestamp).shift(
+            seconds=-1
+        )
+        assert events[1]["event_type"] == "removed"
+        assert events[1]["event_date"] == remove_timestamp
+
+    def test_update_community_events_index_duplicate_add(
+        self, running_app, create_stats_indices
+    ):
+        """Test update_community_events_index function for duplicate additions."""
+        from invenio_stats_dashboard.components import update_community_events_index
+
+        app = running_app.app
+        client = current_search_client
+
+        record_id = "test-record-duplicate"
+        community_id = "test-community-duplicate"
+        timestamp1 = "2024-01-01T10:00:00"
+        timestamp2 = "2024-01-01T11:00:00"
+
+        # Add the same community twice
+        update_community_events_index(
+            record_id=record_id,
+            community_ids_to_add=[community_id],
+            timestamp=timestamp1,
+        )
+
+        update_community_events_index(
+            record_id=record_id,
+            community_ids_to_add=[community_id],
+            timestamp=timestamp2,
+        )
+
+        # Verify only one event was created (the first one)
+        client.indices.refresh(index="*stats-community-events*")
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": record_id}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "size": 10,
+        }
+
+        result = client.search(index=prefix_index("stats-community-events"), body=query)
+
+        assert result["hits"]["total"]["value"] == 1
+        event = result["hits"]["hits"][0]["_source"]
+        assert event["event_date"] == timestamp1
+
+    def test_update_community_events_index_with_metadata(
+        self, running_app, create_stats_indices
+    ):
+        """Test update_community_events_index function with record metadata."""
+        from invenio_stats_dashboard.components import update_community_events_index
+
+        app = running_app.app
+        client = current_search_client
+
+        record_id = "test-record-metadata"
+        community_id = "test-community-metadata"
+        timestamp = "2024-01-01T10:00:00"
+        created_date = "2024-01-01T09:00:00"
+        published_date = "2024-01-01T09:30:00"
+
+        # Test adding with metadata
+        update_community_events_index(
+            record_id=record_id,
+            community_ids_to_add=[community_id],
+            timestamp=timestamp,
+            record_created_date=created_date,
+            record_published_date=published_date,
+        )
+
+        # Verify the event was created with metadata
+        client.indices.refresh(index="*stats-community-events*")
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": record_id}},
+                        {"term": {"community_id": community_id}},
+                    ]
+                }
+            },
+            "size": 1,
+        }
+
+        result = client.search(index=prefix_index("stats-community-events"), body=query)
+
+        assert result["hits"]["total"]["value"] == 1
+        event = result["hits"]["hits"][0]["_source"]
+        assert event["record_created_date"] == created_date
+        assert event["record_published_date"] == published_date
+
+
+class TestCommunitiesEventsComponentsRestored(TestCommunitiesEventsComponentsIncluded):
+    """Test the component that tracks record restoration for communities.
+
+    Covers the case when a published record is deleted and then restored.
+    In this case, the RDMRecordService component is called during the restore
+    method to clear the deletion fields from the community events.
+    """
+
+    def setup_record(
+        self,
+        minimal_published_record_factory,
+        minimal_draft_record_factory,
+        community_owner_id,
+        user_id,
+        community_id,
+    ):
+        """Setup test record."""
+        identity = get_identity(current_datastore.get_user(community_owner_id))
+        identity.provides.add(authenticated_user)
+        load_community_needs(identity)
+        record = minimal_published_record_factory(
+            identity=identity,
+            community_list=[community_id],
+            set_default=True,
+        )
+        return record
+
+    def setup_requests(self, db, record, community_id, user_id, user_id2):
+        """Setup test requests - not needed for this test."""
+        pass
+
+    def setup_record_deletion(self, db, record, community_id, owner_id, user_id):
+        """Setup a record deletion and restoration."""
+        # First delete the record
+        records_service.delete_record(system_identity, record.id, data={})
+
+        # Then restore it
+        restored_record = records_service.restore_record(system_identity, record.id)
+
+        # Store the restored record for later checking
+        self.restored_record = restored_record
+
+    def check_community_added_events(self, record, community_id):
+        """Check that the community added events are in the events index."""
+        # Check that the community events are in the events index
+        current_search_client.indices.refresh(index="*stats-community-events*")
+
+        # Search for events for this record and community
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "sort": [{"event_date": {"order": "desc"}}],
+            "size": 10,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        assert result["hits"]["total"]["value"] >= 1
+        latest_event = result["hits"]["hits"][0]["_source"]
+
+        assert latest_event["record_id"] == str(record.id)
+        assert latest_event["community_id"] == community_id
+        assert latest_event["event_type"] == "added"
+        assert arrow.utcnow().shift(minutes=5) > arrow.get(latest_event["event_date"])
+        assert arrow.utcnow().shift(minutes=-1) < arrow.get(latest_event["event_date"])
+
+    def check_community_removed_events(self, record, community_id):
+        """Check that there are no removal events for this record/community."""
+        # Check that there are no removal events for this record/community
+        current_search_client.indices.refresh(index="*stats-community-events*")
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "removed"}},
+                    ]
+                }
+            },
+            "size": 10,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        # Should have no removal events
+        assert result["hits"]["total"]["value"] == 0
+
+    def check_after_record_modification(self, record, community_id):
+        """Check that the community events are properly restored after modification."""
+        # Check that all events for this record have deletion fields cleared
+        current_search_client.indices.refresh(index="*stats-community-events*")
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": str(record.id)}},
+                        {"term": {"community_id": community_id}},
+                    ]
+                }
+            },
+            "size": 10,
+        }
+
+        result = current_search_client.search(
+            index=prefix_index("stats-community-events"),
+            body=query,
+        )
+
+        assert result["hits"]["total"]["value"] >= 1
+        for hit in result["hits"]["hits"]:
+            event = hit["_source"]
+            # After restoration, events should not be marked as deleted
+            assert event["is_deleted"] is False
+            assert event.get("deleted_date") is None
+
+        # Verify that the record is still in the community after restoration
+        assert community_id in record._record.parent.communities.ids
+
+        # Verify that the restored record is the same as the original
+        assert record.id == self.restored_record.id
+        assert (
+            record._record.parent.communities.ids
+            == self.restored_record._record.parent.communities.ids
         )

@@ -2913,7 +2913,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
     },
 ]
 
-MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
+MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
     "2025-05-30": {
         "by_access_rights": {
             "buckets": [
@@ -3001,7 +3001,12 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                     "_score": 1.0571585,
                                     "_source": {
                                         "metadata": {
-                                            "languages": [{"title": {"en": "English"}}]
+                                            "languages": [
+                                                {
+                                                    "id": "eng",
+                                                    "title": {"en": "English"},
+                                                }
+                                            ]
                                         }
                                     },
                                 }
@@ -3070,7 +3075,8 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                     "_source": {
                                         "metadata": {
                                             "resource_type": {
-                                                "title": {"en": "Book " "Section"}
+                                                "id": "textDocument-bookSection",
+                                                "title": {"en": "Book " "Section"},
                                             }
                                         }
                                     },
@@ -3100,7 +3106,8 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                     "_source": {
                                         "metadata": {
                                             "resource_type": {
-                                                "title": {"en": "Journal " "Article"}
+                                                "id": "textDocument-journalArticle",
+                                                "title": {"en": "Journal " "Article"},
                                             }
                                         }
                                     },
@@ -3908,7 +3915,12 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                     "_score": 1.0571585,
                                     "_source": {
                                         "metadata": {
-                                            "languages": [{"title": {"en": "English"}}]
+                                            "languages": [
+                                                {
+                                                    "id": "eng",
+                                                    "title": {"en": "English"},
+                                                }
+                                            ]
                                         }
                                     },
                                 }
@@ -3977,7 +3989,8 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                     "_source": {
                                         "metadata": {
                                             "resource_type": {
-                                                "title": {"en": "Book " "Section"}
+                                                "id": "textDocument-bookSection",
+                                                "title": {"en": "Book " "Section"},
                                             }
                                         }
                                     },
@@ -4007,7 +4020,8 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                     "_source": {
                                         "metadata": {
                                             "resource_type": {
-                                                "title": {"en": "Journal " "Article"}
+                                                "id": "textDocument-journalArticle",
+                                                "title": {"en": "Journal " "Article"},
                                             }
                                         }
                                     },
@@ -4881,7 +4895,12 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                     "_score": 1.0571585,
                                     "_source": {
                                         "metadata": {
-                                            "languages": [{"title": {"en": "English"}}]
+                                            "languages": [
+                                                {
+                                                    "id": "eng",
+                                                    "title": {"en": "English"},
+                                                }
+                                            ]
                                         }
                                     },
                                 }
@@ -4918,6 +4937,7 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                         "metadata": {
                                             "rights": [
                                                 {
+                                                    "id": "cc-by-sa-4.0",
                                                     "title": {
                                                         "en": (
                                                             "Creative "
@@ -4926,7 +4946,7 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                                             "4.0 "
                                                             "International"
                                                         )
-                                                    }
+                                                    },
                                                 }
                                             ]
                                         }
@@ -5008,7 +5028,8 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                     "_source": {
                                         "metadata": {
                                             "resource_type": {
-                                                "title": {"en": "Journal " "Article"}
+                                                "id": "textDocument-journalArticle",
+                                                "title": {"en": "Journal " "Article"},
                                             }
                                         }
                                     },
@@ -5037,7 +5058,10 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                     "_score": 1.0571585,
                                     "_source": {
                                         "metadata": {
-                                            "resource_type": {"title": {"en": "Book"}}
+                                            "resource_type": {
+                                                "id": "textDocument-book",
+                                                "title": {"en": "Book"},
+                                            }
                                         }
                                     },
                                 }
@@ -5066,7 +5090,8 @@ MOCK_CUMULATIVE_TOTALS_AGGREGATIONS = {
                                     "_source": {
                                         "metadata": {
                                             "resource_type": {
-                                                "title": {"en": "Book " "Section"}
+                                                "id": "textDocument-bookSection",
+                                                "title": {"en": "Book " "Section"},
                                             }
                                         }
                                     },
