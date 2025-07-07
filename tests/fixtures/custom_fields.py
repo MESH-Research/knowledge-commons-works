@@ -43,10 +43,6 @@ from invenio_search import current_search_client
 from invenio_search.engine import dsl
 from invenio_search.engine import search as search_engine
 from invenio_search.utils import build_alias_name
-from invenio_stats_dashboard.custom_fields.community_events_field import (
-    COMMUNITY_EVENTS_FIELDS,
-    STATS_NAMESPACE,
-)
 from marshmallow_utils.fields import SanitizedUnicode
 
 from .metadata_fields.hclegacy_groups_for_deposit import (
@@ -94,7 +90,6 @@ test_config_fields["RDM_NAMESPACES"] = {
     **CODEMETA_NAMESPACE,
     **KCR_NAMESPACE,
     **HCLEGACY_NAMESPACE,
-    **STATS_NAMESPACE,
 }
 
 test_config_fields["RDM_CUSTOM_FIELDS"] = [
@@ -112,7 +107,6 @@ test_config_fields["RDM_CUSTOM_FIELDS"] = [
     *HCLEGACY_GROUPS_FOR_DEPOSIT_FIELD,
     *KCR_AI_USAGE_FIELDS,
     *KCR_SERIES_FIELDS,
-    *COMMUNITY_EVENTS_FIELDS,
     TextCF(
         name="kcr:commons_search_recid",
         field_cls=SanitizedUnicode,

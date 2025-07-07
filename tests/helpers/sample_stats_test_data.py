@@ -2913,6 +2913,319 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
     },
 ]
 
+MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
+    "aggregations": {
+        "by_access_rights": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "metadata-only",
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliation_contributor_id": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliation_contributor_name": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliation_creator_id": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliation_creator_name": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_file_type": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_funder": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_language": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "spa",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "35bbacf7-e4ce-4d68-a6c2-ba2ef9fc4484",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1751462920"
+                                    ),
+                                    "_score": 1.074108,
+                                    "_source": {
+                                        "metadata": {
+                                            "languages": [
+                                                {
+                                                    "id": "spa",
+                                                    "title": {"en": "Spanish"},
+                                                }
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.074108,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_license": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "arr",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "35bbacf7-e4ce-4d68-a6c2-ba2ef9fc4484",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1751462920"
+                                    ),
+                                    "_score": 1.074108,
+                                    "_source": {
+                                        "metadata": {
+                                            "rights": [
+                                                {
+                                                    "id": "arr",
+                                                    "title": {
+                                                        "en": (
+                                                            "All " "Rights " "Reserved"
+                                                        )
+                                                    },
+                                                }
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.074108,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_periodical": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_publisher": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": (
+                        "Editorial ACRIBIA, S. A., Apartado 466, "
+                        "50080, Zaragoza, Espana."
+                    ),
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_resource_type": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "textDocument-book",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "35bbacf7-e4ce-4d68-a6c2-ba2ef9fc4484",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1751462920"
+                                    ),
+                                    "_score": 1.074108,
+                                    "_source": {
+                                        "metadata": {
+                                            "resource_type": {
+                                                "id": "textDocument-book",
+                                                "title": {"en": "Book"},
+                                            }
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.074108,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "by_subject": {
+            "buckets": [
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "http://id.worldcat.org/fast/1108387",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "35bbacf7-e4ce-4d68-a6c2-ba2ef9fc4484",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1751462920"
+                                    ),
+                                    "_score": 1.074108,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1108387"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Science--Study "
+                                                        "and "
+                                                        "teaching"
+                                                    ),
+                                                },
+                                                {
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1145221"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Technology--Study "
+                                                        "and "
+                                                        "teaching"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.074108,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+                {
+                    "doc_count": 1,
+                    "file_count": {"value": 0},
+                    "key": "http://id.worldcat.org/fast/1145221",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": "35bbacf7-e4ce-4d68-a6c2-ba2ef9fc4484",
+                                    "_index": (
+                                        "rdmrecords-records-record-v6.0.0-1751462920"
+                                    ),
+                                    "_score": 1.074108,
+                                    "_source": {
+                                        "metadata": {
+                                            "subjects": [
+                                                {
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1108387"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Science--Study "
+                                                        "and "
+                                                        "teaching"
+                                                    ),
+                                                },
+                                                {
+                                                    "id": (
+                                                        "http://id.worldcat.org/fast/1145221"
+                                                    ),
+                                                    "scheme": "FAST-topical",
+                                                    "subject": (
+                                                        "Technology--Study "
+                                                        "and "
+                                                        "teaching"
+                                                    ),
+                                                },
+                                            ]
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.074108,
+                            "total": {"relation": "eq", "value": 1},
+                        }
+                    },
+                    "total_bytes": {"value": 0.0},
+                    "with_files": {"doc_count": 0, "unique_parents": {"value": 0}},
+                    "without_files": {"doc_count": 1, "unique_parents": {"value": 1}},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "meta": {},
+            "sum_other_doc_count": 0,
+        },
+        "file_count": {"value": 0},
+        "total_bytes": {"value": 0.0},
+        "total_records": {"value": 1},
+        "uploaders": {"value": 0},
+        "with_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
+        "without_files": {"doc_count": 1, "meta": {}, "unique_parents": {"value": 1}},
+    }
+}
+
 MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
     "2025-05-30": {
         "by_access_rights": {
@@ -6679,6 +6992,1826 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
         "with_files": {"doc_count": 3, "meta": {}, "unique_parents": {"value": 3}},
         "without_files": {"doc_count": 1, "meta": {}, "unique_parents": {"value": 1}},
     },
+}
+
+MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
+    {
+        "community_id": "e64dee43-6bd2-4380-b4e8-2813315cb74e",
+        "snapshot_date": "2025-01-15",
+        "subcounts": {
+            "all_access_rights": [
+                {
+                    "files": {"data_volume": 0.0, "file_count": 0},
+                    "id": "metadata-only",
+                    "label": "",
+                    "parents": {"metadata_only": 1, "with_files": 0},
+                    "records": {"metadata_only": 1, "with_files": 0},
+                }
+            ],
+            "all_file_types": [],
+            "all_languages": [],
+            "all_licenses": [],
+            "all_resource_types": [],
+            "top_affiliations_contributor": [],
+            "top_affiliations_creator": [],
+            "top_funders": [],
+            "top_periodicals": [],
+            "top_publishers": [],
+            "top_subjects": [],
+        },
+        "timestamp": "2025-07-02T14:37:33",
+        "total_files": {"data_volume": 0.0, "file_count": 0},
+        "total_parents": {"metadata_only": 1, "with_files": 0},
+        "total_records": {"metadata_only": 1, "with_files": 0},
+        "total_uploaders": 0,
+        "updated_timestamp": "2025-07-02T14:37:33",
+    },
+    {
+        "community_id": "e64dee43-6bd2-4380-b4e8-2813315cb74e",
+        "snapshot_date": "2025-01-16",
+        "subcounts": {
+            "all_access_rights": [
+                {
+                    "files": {"data_volume": 0.0, "file_count": 0},
+                    "id": "metadata-only",
+                    "label": "",
+                    "parents": {"metadata_only": 2, "with_files": 0},
+                    "records": {"metadata_only": 2, "with_files": 0},
+                }
+            ],
+            "all_file_types": [],
+            "all_languages": [],
+            "all_licenses": [],
+            "all_resource_types": [],
+            "top_affiliations_contributor": [],
+            "top_affiliations_creator": [],
+            "top_funders": [],
+            "top_periodicals": [],
+            "top_publishers": [],
+            "top_subjects": [],
+        },
+        "timestamp": "2025-07-02T14:37:33",
+        "total_files": {"data_volume": 0.0, "file_count": 0},
+        "total_parents": {"metadata_only": 2, "with_files": 0},
+        "total_records": {"metadata_only": 2, "with_files": 0},
+        "total_uploaders": 0,
+        "updated_timestamp": "2025-07-02T14:37:33",
+    },
+    {
+        "community_id": "e64dee43-6bd2-4380-b4e8-2813315cb74e",
+        "snapshot_date": "2025-01-17",
+        "subcounts": {
+            "all_access_rights": [
+                {
+                    "files": {"data_volume": 0.0, "file_count": 0},
+                    "id": "metadata-only",
+                    "label": "",
+                    "parents": {"metadata_only": 3, "with_files": 0},
+                    "records": {"metadata_only": 3, "with_files": 0},
+                }
+            ],
+            "all_file_types": [],
+            "all_languages": [],
+            "all_licenses": [],
+            "all_resource_types": [],
+            "top_affiliations_contributor": [],
+            "top_affiliations_creator": [],
+            "top_funders": [],
+            "top_periodicals": [],
+            "top_publishers": [],
+            "top_subjects": [],
+        },
+        "timestamp": "2025-07-02T14:37:33",
+        "total_files": {"data_volume": 0.0, "file_count": 0},
+        "total_parents": {"metadata_only": 3, "with_files": 0},
+        "total_records": {"metadata_only": 3, "with_files": 0},
+        "total_uploaders": 0,
+        "updated_timestamp": "2025-07-02T14:37:33",
+    },
+]
+
+MOCK_USAGE_DELTA_API_RESPONSE = {
+    "community-stats": [
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-05-30T23:59:59",
+            "period_start": "2025-05-30T00:00:00",
+            "subcounts": {
+                "by_access_rights": [],
+                "by_affiliations": [],
+                "by_countries": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_licenses": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_referrers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
+            },
+            "timestamp": "2025-07-03T19:37:10",
+            "totals": {
+                "download": {
+                    "total_events": 0,
+                    "total_volume": 0.0,
+                    "unique_files": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+                "view": {
+                    "total_events": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-05-31T23:59:59",
+            "period_start": "2025-05-31T00:00:00",
+            "subcounts": {
+                "by_access_rights": [],
+                "by_affiliations": [],
+                "by_countries": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_licenses": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_referrers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
+            },
+            "timestamp": "2025-07-03T19:37:10",
+            "totals": {
+                "download": {
+                    "total_events": 0,
+                    "total_volume": 0.0,
+                    "unique_files": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+                "view": {
+                    "total_events": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-01T23:59:59",
+            "period_start": "2025-06-01T00:00:00",
+            "subcounts": {
+                "by_access_rights": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "metadata-only",
+                        "label": "",
+                        "view": {
+                            "total_events": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                    }
+                ],
+                "by_affiliations": [],
+                "by_countries": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "US",
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    }
+                ],
+                "by_file_types": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "pdf",
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    }
+                ],
+                "by_funders": [],
+                "by_languages": [
+                    {
+                        "download": {
+                            "total_events": 2,
+                            "total_volume": 2048.0,
+                            "unique_files": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                        "id": "spa",
+                        "label": "Spanish",
+                        "view": {
+                            "total_events": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "eng",
+                        "label": "English",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+                "by_licenses": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "arr",
+                        "label": "All Rights " "Reserved",
+                        "view": {
+                            "total_events": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                    }
+                ],
+                "by_periodicals": [],
+                "by_publishers": [
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "Brill",
+                        "label": "",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "Editorial "
+                            "ACRIBIA, S. A., "
+                            "Apartado 466, "
+                            "50080, Zaragoza, "
+                            "Espana."
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "Universidad " "Nacional " "Autónoma de " "Mexico (UNAM)",
+                        "label": "",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+                "by_referrers": [
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "https://works.hcommons.org/records/9qsr6-v4k38/preview/test.pdf"
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "https://works.hcommons.org/records/rhk6r-p5d15/preview/test.pdf"
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "https://works.hcommons.org/records/t8hjs-dzx03/preview/test.pdf"
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    },
+                ],
+                "by_resource_types": [
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "textDocument-book",
+                        "label": "Book",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "textDocument-journalArticle",
+                        "label": "Journal " "Article",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "textDocument-thesis",
+                        "label": "Thesis",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+                "by_subjects": [
+                    {
+                        "download": {
+                            "total_events": 2,
+                            "total_volume": 2048.0,
+                            "unique_files": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                        "id": "http://id.worldcat.org/fast/1012163",
+                        "label": "Mathematics",
+                        "view": {
+                            "total_events": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 2,
+                            "total_volume": 2048.0,
+                            "unique_files": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                        "id": "http://id.worldcat.org/fast/958235",
+                        "label": "History",
+                        "view": {
+                            "total_events": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1012213",
+                        "label": "Mathematics--Philosophy",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1108176",
+                        "label": "Science",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1108387",
+                        "label": "Science--Study " "and teaching",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1145221",
+                        "label": "Technology--Study " "and teaching",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/902116",
+                        "label": "Economics",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+            },
+            "timestamp": "2025-07-03T19:37:10",
+            "totals": {
+                "download": {
+                    "total_events": 3,
+                    "total_volume": 3072.0,
+                    "unique_files": 3,
+                    "unique_parents": 3,
+                    "unique_records": 3,
+                    "unique_visitors": 3,
+                },
+                "view": {
+                    "total_events": 3,
+                    "unique_parents": 3,
+                    "unique_records": 3,
+                    "unique_visitors": 3,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-02T23:59:59",
+            "period_start": "2025-06-02T00:00:00",
+            "subcounts": {
+                "by_access_rights": [],
+                "by_affiliations": [],
+                "by_countries": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_licenses": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_referrers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
+            },
+            "timestamp": "2025-07-03T19:37:10",
+            "totals": {
+                "download": {
+                    "total_events": 0,
+                    "total_volume": 0.0,
+                    "unique_files": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+                "view": {
+                    "total_events": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-03T23:59:59",
+            "period_start": "2025-06-03T00:00:00",
+            "subcounts": {
+                "by_access_rights": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "metadata-only",
+                        "label": "",
+                        "view": {
+                            "total_events": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                    }
+                ],
+                "by_affiliations": [],
+                "by_countries": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "US",
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    }
+                ],
+                "by_file_types": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "pdf",
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    }
+                ],
+                "by_funders": [],
+                "by_languages": [
+                    {
+                        "download": {
+                            "total_events": 2,
+                            "total_volume": 2048.0,
+                            "unique_files": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                        "id": "spa",
+                        "label": "Spanish",
+                        "view": {
+                            "total_events": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "eng",
+                        "label": "English",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+                "by_licenses": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "arr",
+                        "label": "All Rights " "Reserved",
+                        "view": {
+                            "total_events": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                    }
+                ],
+                "by_periodicals": [],
+                "by_publishers": [
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "Brill",
+                        "label": "",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "Editorial "
+                            "ACRIBIA, S. A., "
+                            "Apartado 466, "
+                            "50080, Zaragoza, "
+                            "Espana."
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "Universidad " "Nacional " "Autónoma de " "Mexico (UNAM)",
+                        "label": "",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+                "by_referrers": [
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "https://works.hcommons.org/records/9qsr6-v4k38/preview/test.pdf"
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "https://works.hcommons.org/records/rhk6r-p5d15/preview/test.pdf"
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "https://works.hcommons.org/records/t8hjs-dzx03/preview/test.pdf"
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    },
+                ],
+                "by_resource_types": [
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "textDocument-book",
+                        "label": "Book",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "textDocument-journalArticle",
+                        "label": "Journal " "Article",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "textDocument-thesis",
+                        "label": "Thesis",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+                "by_subjects": [
+                    {
+                        "download": {
+                            "total_events": 2,
+                            "total_volume": 2048.0,
+                            "unique_files": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                        "id": "http://id.worldcat.org/fast/1012163",
+                        "label": "Mathematics",
+                        "view": {
+                            "total_events": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 2,
+                            "total_volume": 2048.0,
+                            "unique_files": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                        "id": "http://id.worldcat.org/fast/958235",
+                        "label": "History",
+                        "view": {
+                            "total_events": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1012213",
+                        "label": "Mathematics--Philosophy",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1108176",
+                        "label": "Science",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1108387",
+                        "label": "Science--Study " "and teaching",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1145221",
+                        "label": "Technology--Study " "and teaching",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/902116",
+                        "label": "Economics",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+            },
+            "timestamp": "2025-07-03T19:37:10",
+            "totals": {
+                "download": {
+                    "total_events": 3,
+                    "total_volume": 3072.0,
+                    "unique_files": 3,
+                    "unique_parents": 3,
+                    "unique_records": 3,
+                    "unique_visitors": 3,
+                },
+                "view": {
+                    "total_events": 3,
+                    "unique_parents": 3,
+                    "unique_records": 3,
+                    "unique_visitors": 3,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-04T23:59:59",
+            "period_start": "2025-06-04T00:00:00",
+            "subcounts": {
+                "by_access_rights": [],
+                "by_affiliations": [],
+                "by_countries": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_licenses": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_referrers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
+            },
+            "timestamp": "2025-07-03T19:37:11",
+            "totals": {
+                "download": {
+                    "total_events": 0,
+                    "total_volume": 0.0,
+                    "unique_files": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+                "view": {
+                    "total_events": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-05T23:59:59",
+            "period_start": "2025-06-05T00:00:00",
+            "subcounts": {
+                "by_access_rights": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "metadata-only",
+                        "label": "",
+                        "view": {
+                            "total_events": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                    }
+                ],
+                "by_affiliations": [],
+                "by_countries": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "US",
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    }
+                ],
+                "by_file_types": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "pdf",
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    }
+                ],
+                "by_funders": [],
+                "by_languages": [
+                    {
+                        "download": {
+                            "total_events": 2,
+                            "total_volume": 2048.0,
+                            "unique_files": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                        "id": "spa",
+                        "label": "Spanish",
+                        "view": {
+                            "total_events": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "eng",
+                        "label": "English",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+                "by_licenses": [
+                    {
+                        "download": {
+                            "total_events": 3,
+                            "total_volume": 3072.0,
+                            "unique_files": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                        "id": "arr",
+                        "label": "All Rights " "Reserved",
+                        "view": {
+                            "total_events": 3,
+                            "unique_parents": 3,
+                            "unique_records": 3,
+                            "unique_visitors": 3,
+                        },
+                    }
+                ],
+                "by_periodicals": [],
+                "by_publishers": [
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "Brill",
+                        "label": "",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "Editorial "
+                            "ACRIBIA, S. A., "
+                            "Apartado 466, "
+                            "50080, Zaragoza, "
+                            "Espana."
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "Universidad " "Nacional " "Autónoma de " "Mexico (UNAM)",
+                        "label": "",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+                "by_referrers": [
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "https://works.hcommons.org/records/9qsr6-v4k38/preview/test.pdf"
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "https://works.hcommons.org/records/rhk6r-p5d15/preview/test.pdf"
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": (
+                            "https://works.hcommons.org/records/t8hjs-dzx03/preview/test.pdf"
+                        ),
+                        "label": "",
+                        "view": {
+                            "total_events": 0,
+                            "unique_parents": 0,
+                            "unique_records": 0,
+                            "unique_visitors": 0,
+                        },
+                    },
+                ],
+                "by_resource_types": [
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "textDocument-book",
+                        "label": "Book",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "textDocument-journalArticle",
+                        "label": "Journal " "Article",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "textDocument-thesis",
+                        "label": "Thesis",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+                "by_subjects": [
+                    {
+                        "download": {
+                            "total_events": 2,
+                            "total_volume": 2048.0,
+                            "unique_files": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                        "id": "http://id.worldcat.org/fast/1012163",
+                        "label": "Mathematics",
+                        "view": {
+                            "total_events": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 2,
+                            "total_volume": 2048.0,
+                            "unique_files": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                        "id": "http://id.worldcat.org/fast/958235",
+                        "label": "History",
+                        "view": {
+                            "total_events": 2,
+                            "unique_parents": 2,
+                            "unique_records": 2,
+                            "unique_visitors": 2,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1012213",
+                        "label": "Mathematics--Philosophy",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1108176",
+                        "label": "Science",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1108387",
+                        "label": "Science--Study " "and teaching",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/1145221",
+                        "label": "Technology--Study " "and teaching",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                    {
+                        "download": {
+                            "total_events": 1,
+                            "total_volume": 1024.0,
+                            "unique_files": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                        "id": "http://id.worldcat.org/fast/902116",
+                        "label": "Economics",
+                        "view": {
+                            "total_events": 1,
+                            "unique_parents": 1,
+                            "unique_records": 1,
+                            "unique_visitors": 1,
+                        },
+                    },
+                ],
+            },
+            "timestamp": "2025-07-03T19:37:11",
+            "totals": {
+                "download": {
+                    "total_events": 3,
+                    "total_volume": 3072.0,
+                    "unique_files": 3,
+                    "unique_parents": 3,
+                    "unique_records": 3,
+                    "unique_visitors": 3,
+                },
+                "view": {
+                    "total_events": 3,
+                    "unique_parents": 3,
+                    "unique_records": 3,
+                    "unique_visitors": 3,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-06T23:59:59",
+            "period_start": "2025-06-06T00:00:00",
+            "subcounts": {
+                "by_access_rights": [],
+                "by_affiliations": [],
+                "by_countries": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_licenses": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_referrers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
+            },
+            "timestamp": "2025-07-03T19:37:11",
+            "totals": {
+                "download": {
+                    "total_events": 0,
+                    "total_volume": 0.0,
+                    "unique_files": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+                "view": {
+                    "total_events": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-07T23:59:59",
+            "period_start": "2025-06-07T00:00:00",
+            "subcounts": {
+                "by_access_rights": [],
+                "by_affiliations": [],
+                "by_countries": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_licenses": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_referrers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
+            },
+            "timestamp": "2025-07-03T19:37:11",
+            "totals": {
+                "download": {
+                    "total_events": 0,
+                    "total_volume": 0.0,
+                    "unique_files": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+                "view": {
+                    "total_events": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-08T23:59:59",
+            "period_start": "2025-06-08T00:00:00",
+            "subcounts": {
+                "by_access_rights": [],
+                "by_affiliations": [],
+                "by_countries": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_licenses": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_referrers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
+            },
+            "timestamp": "2025-07-03T19:37:11",
+            "totals": {
+                "download": {
+                    "total_events": 0,
+                    "total_volume": 0.0,
+                    "unique_files": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+                "view": {
+                    "total_events": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-09T23:59:59",
+            "period_start": "2025-06-09T00:00:00",
+            "subcounts": {
+                "by_access_rights": [],
+                "by_affiliations": [],
+                "by_countries": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_licenses": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_referrers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
+            },
+            "timestamp": "2025-07-03T19:37:11",
+            "totals": {
+                "download": {
+                    "total_events": 0,
+                    "total_volume": 0.0,
+                    "unique_files": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+                "view": {
+                    "total_events": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-10T23:59:59",
+            "period_start": "2025-06-10T00:00:00",
+            "subcounts": {
+                "by_access_rights": [],
+                "by_affiliations": [],
+                "by_countries": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_licenses": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_referrers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
+            },
+            "timestamp": "2025-07-03T19:37:11",
+            "totals": {
+                "download": {
+                    "total_events": 0,
+                    "total_volume": 0.0,
+                    "unique_files": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+                "view": {
+                    "total_events": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+            },
+        },
+        {
+            "community_id": "59e77d51-3758-409a-813f-efc0d2db1a5e",
+            "period_end": "2025-06-11T23:59:59",
+            "period_start": "2025-06-11T00:00:00",
+            "subcounts": {
+                "by_access_rights": [],
+                "by_affiliations": [],
+                "by_countries": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_licenses": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_referrers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
+            },
+            "timestamp": "2025-07-03T19:37:11",
+            "totals": {
+                "download": {
+                    "total_events": 0,
+                    "total_volume": 0.0,
+                    "unique_files": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+                "view": {
+                    "total_events": 0,
+                    "unique_parents": 0,
+                    "unique_records": 0,
+                    "unique_visitors": 0,
+                },
+            },
+        },
+    ]
 }
 
 SAMPLE_RDMRECORDS_RECORDS_HIT = {

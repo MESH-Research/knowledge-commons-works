@@ -134,7 +134,9 @@ def import_test_records(
             provided, the records will be imported to the Knowledge Commons community.
 
     Returns:
-        list: List of record metadata dictionaries.
+        list: List of record metadata dictionaries. Each one is a APIResponsePayload
+        object (from the invenio-record-importer-kcworks package) dumped to a
+        dictionary.
     """
     importing_user = current_accounts.datastore.get_user_by_email(importer_email)
     importing_identity = get_identity(importing_user)
