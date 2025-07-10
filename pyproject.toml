@@ -14,7 +14,7 @@ dependencies = [
     "flask-breadcrumbs",
     "flask-principal",
     "halo",
-    "invenio-app-rdm>=12.0.0,<13.0.0",
+    "invenio-app-rdm[opensearch2]==12.1.0",
     "invenio-communities==13.0.3",
     "invenio-group-collections-kcworks",
     "invenio-logging[sentry]==2.1.5",
