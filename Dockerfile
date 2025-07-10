@@ -101,7 +101,7 @@ RUN . .venv/bin/activate && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-stats-dashboard && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-communities && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-rdm-records && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-records-resources
+    uv pip install --editable ./site/kcworks/dependencies/invenio-records-resources && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-requests
 
 # Build assets
