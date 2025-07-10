@@ -63,9 +63,11 @@ from invenio_stats_dashboard.tasks import (
 )
 from kcworks.services.records.test_data import import_test_records
 from opensearchpy.helpers.search import Search
+from pytest import MonkeyPatch
 
 from tests.conftest import RunningApp
 from tests.helpers.sample_stats_test_data import (
+    MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE,
     SAMPLE_RECORDS_SNAPSHOT_AGG,
     MOCK_RECORD_SNAPSHOT_AGGREGATIONS,
     MOCK_RECORD_DELTA_AGGREGATION_DOCS,
@@ -79,7 +81,6 @@ from tests.helpers.sample_records import (
     sample_metadata_journal_article6_pdf,
     sample_metadata_journal_article7_pdf,
     sample_metadata_thesis_pdf,
-    sample_metadata_chapter_pdf,
 )
 
 
@@ -111,7 +112,7 @@ def test_aggregations_registered(running_app):
     )
     assert "community-usage-snapshot-agg" in app.config["STATS_AGGREGATIONS"].keys()
     assert "community-usage-delta-agg" in app.config["STATS_AGGREGATIONS"].keys()
-    assert "community-events-index" in app.config["STATS_AGGREGATIONS"].keys()
+    assert "community-events-agg" in app.config["STATS_AGGREGATIONS"].keys()
     # check that the aggregations are registered by invenio-stats
     assert current_stats.aggregations["community-records-snapshot-created-agg"]
     assert current_stats.aggregations["community-records-snapshot-added-agg"]
@@ -121,7 +122,7 @@ def test_aggregations_registered(running_app):
     assert current_stats.aggregations["community-records-delta-added-agg"]
     assert current_stats.aggregations["community-usage-snapshot-agg"]
     assert current_stats.aggregations["community-usage-delta-agg"]
-    assert current_stats.aggregations["community-events-index"]
+    assert current_stats.aggregations["community-events-agg"]
     # ensure that the default aggregations are still registered
     assert "file-download-agg" in app.config["STATS_AGGREGATIONS"]
     assert "record-view-agg" in app.config["STATS_AGGREGATIONS"]
@@ -338,6 +339,7 @@ class TestCommunityRecordCreatedDeltaQuery:
         self, user_email, community_id, minimal_published_record_factory
     ):
         """Setup the records."""
+        user_identity = get_identity(current_datastore.get_user_by_email(user_email))
         for idx, rec in enumerate(
             [
                 sample_metadata_journal_article4_pdf,
@@ -347,17 +349,18 @@ class TestCommunityRecordCreatedDeltaQuery:
             ]
         ):
             rec_args = {
+                "identity": user_identity,
                 "metadata": rec["input"],
                 "community_list": [community_id],
                 "set_default": True,
             }
-            if idx != 2:
-                file_path = [
+            if idx != 1:
+                file_path = (
                     Path(__file__).parent.parent
                     / "helpers"
                     / "sample_files"
-                    / list(rec["files"].keys())[0]
-                ]
+                    / list(rec["input"]["files"]["entries"].keys())[0]
+                )
                 rec_args["file_paths"] = [file_path]
             rec = minimal_published_record_factory(**rec_args)
 
@@ -1223,17 +1226,20 @@ class TestCommunityRecordCreatedDeltaAggregator:
             ]
         ):
             rec_args = {
+                "identity": get_identity(
+                    current_datastore.get_user_by_email(user_email)
+                ),
                 "metadata": rec["input"],
                 "community_list": [community_id],
                 "set_default": True,
             }
-            if idx != 2:
-                file_path = [
+            if idx != 1:
+                file_path = (
                     Path(__file__).parent.parent
                     / "helpers"
                     / "sample_files"
-                    / list(rec["files"].keys())[0]
-                ]
+                    / list(rec["input"]["files"]["entries"].keys())[0]
+                )
                 rec_args["file_paths"] = [file_path]
             rec = minimal_published_record_factory(**rec_args)
 
@@ -1669,6 +1675,7 @@ class TestCommunityRecordCreatedSnapshotQuery:
         running_app,
         db,
         minimal_community_factory,
+        minimal_published_record_factory,
         user_factory,
         create_stats_indices,
         mock_send_remote_api_update_fixture,
@@ -1685,15 +1692,30 @@ class TestCommunityRecordCreatedSnapshotQuery:
 
         # import test records
         requests_mock.real_http = True
-        import_test_records(
-            importer_email=user_email,
-            record_ids=[
-                "jthhs-g4b38",
-                "0dtmf-ph235",
-                "5ryf5-bfn20",
-                "r4w2d-5tg11",
-            ],
-        )
+        for idx, rec in enumerate(
+            [
+                sample_metadata_journal_article4_pdf,
+                sample_metadata_journal_article5_pdf,
+                sample_metadata_journal_article6_pdf,
+                sample_metadata_journal_article7_pdf,
+            ]
+        ):
+            args = {
+                "identity": get_identity(
+                    current_datastore.get_user_by_email(user_email)
+                ),
+                "metadata": rec["input"],
+                "community_list": [community_id],
+                "set_default": True,
+            }
+            if idx != 1:
+                args["file_paths"] = [
+                    Path(__file__).parent.parent
+                    / "helpers"
+                    / "sample_files"
+                    / list(rec["input"]["files"]["entries"].keys())[0]
+                ]
+            minimal_published_record_factory(**args)
         current_search_client.indices.refresh(index="*rdmrecords-records*")
 
         all_results = []
@@ -1709,19 +1731,19 @@ class TestCommunityRecordCreatedSnapshotQuery:
                 community_id=community_id,
                 client=current_search_client,
             )
-            app.logger.error(f"Snapshot query: {pformat(snapshot_query)}")
+            # app.logger.error(f"Snapshot query: {pformat(snapshot_query)}")
             snapshot_results = current_search_client.search(
                 index="rdmrecords-records",
                 body=snapshot_query,
             )
-            app.logger.error(f"start date: {target_date.format('YYYY-MM-DD')}")
+            app.logger.error(f"target date: {target_date.format('YYYY-MM-DD')}")
             app.logger.error(f"Snapshot results: {pformat(snapshot_results)}")
             all_results.append(snapshot_results)
 
             # only check a few sample days
             if day.format("YYYY-MM-DD") in ["2025-05-30", "2025-05-31", "2025-06-03"]:
-                expected_results = MOCK_RECORD_SNAPSHOT_AGGREGATIONS[day]
-                app.logger.error(f"Expected results: {pformat(expected_results)}")
+                expected_results = MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE[day]
+                # app.logger.error(f"Expected results: {pformat(expected_results)}")
 
                 for key, value in snapshot_results["aggregations"].items():
                     if key[:3] == "by_":
@@ -1800,6 +1822,7 @@ def test_community_record_snapshot_created_agg(
     running_app,
     db,
     minimal_community_factory,
+    minimal_published_record_factory,
     user_factory,
     create_stats_indices,
     mock_send_remote_api_update_fixture,
@@ -1811,30 +1834,44 @@ def test_community_record_snapshot_created_agg(
     requests_mock.real_http = True
     u = user_factory(email="test@example.com", saml_id="")
     user_email = u.user.email
+    community = minimal_community_factory(slug="knowledge-commons")
+    community_id = community.id
 
-    import_test_records(
-        importer_email=user_email,
-        record_ids=[
-            "jthhs-g4b38",
-            "0dtmf-ph235",
-            "5ryf5-bfn20",
-            "r4w2d-5tg11",
-        ],
-    )
+    for idx, rec in enumerate(
+        [
+            sample_metadata_journal_article4_pdf,
+            sample_metadata_journal_article5_pdf,
+            sample_metadata_journal_article6_pdf,
+            sample_metadata_journal_article7_pdf,
+        ]
+    ):
+        args = {
+            "identity": get_identity(current_datastore.get_user_by_email(user_email)),
+            "metadata": rec["input"],
+            "community_list": [community_id],
+            "set_default": True,
+        }
+        if idx != 1:
+            args["file_paths"] = [
+                Path(__file__).parent.parent
+                / "helpers"
+                / "sample_files"
+                / list(rec["input"]["files"]["entries"].keys())[0]
+            ]
+        minimal_published_record_factory(**args)
+
     current_search_client.indices.refresh(index="*rdmrecords-records*")
 
     current_records = records_service.search(
         identity=system_identity,
         q="",
     )
-    app.logger.error(f"Current records: {pformat(current_records.to_dict())}")
     delete_record_id = list(current_records.to_dict()["hits"]["hits"])[0]["id"]
-    deleted_record = records_service.delete_record(
+    records_service.delete_record(
         identity=system_identity,
         id_=delete_record_id,
         data={"is_visible": False, "note": "no specific reason, tbh"},
     )
-    app.logger.error(f"Deleted record: {pformat(deleted_record)}")
     current_search_client.indices.refresh(index="*rdmrecords-records*")
     # Also refresh the stats-community-events index to ensure deletion is reflected
     current_search_client.indices.refresh(index="*stats-community-events*")
@@ -1862,14 +1899,18 @@ def test_community_record_snapshot_created_agg(
         },
         size=1000,
     )
-    app.logger.error(f"Agg documents: {pformat(agg_documents)}")
+    # app.logger.error(f"Agg documents: {pformat(agg_documents)}")
     assert (
         agg_documents["hits"]["total"]["value"]
-        == (arrow.utcnow() - arrow.get("2025-05-30")).days + 1
+        == ((arrow.utcnow() - arrow.get("2025-05-30")).days + 1) * 2
     )
     for idx, actual_doc in enumerate(agg_documents["hits"]["hits"]):
-        assert actual_doc["_source"]["timestamp"] < arrow.utcnow().shift(minutes=5)
-        assert actual_doc["_source"]["timestamp"] > arrow.utcnow().shift(minutes=-5)
+        assert arrow.get(actual_doc["_source"]["timestamp"]) < arrow.utcnow().shift(
+            minutes=5
+        )
+        assert arrow.get(actual_doc["_source"]["timestamp"]) > arrow.utcnow().shift(
+            minutes=-5
+        )
 
 
 class TestCommunityStatsService:
@@ -1923,7 +1964,7 @@ class TestCommunityStatsService:
         client.indices.refresh(index="*rdmrecords-records*")
 
         # Create service instance
-        service = CommunityStatsService(client=client)
+        service = CommunityStatsService(app=app)
 
         # Test aggregate_stats with eager=True
         start_date = arrow.utcnow().shift(days=-10).format("YYYY-MM-DD")
@@ -1941,6 +1982,8 @@ class TestCommunityStatsService:
 
             # The results should be a dictionary (from the task)
             assert isinstance(results, dict)
+            app.logger.error(f"Aggregate stat eager results: {pformat(results)}")
+            # FIXME: Add proper assertions
 
         except Exception as e:
             # If the task fails (e.g., due to missing dependencies), that's okay
@@ -1995,7 +2038,7 @@ class TestCommunityStatsService:
         client.indices.refresh(index="*rdmrecords-records*")
 
         # Create service instance
-        service = CommunityStatsService(client=client)
+        service = CommunityStatsService(app=app)
 
         # Test aggregate_stats with eager=False
         start_date = arrow.utcnow().shift(days=-10).format("YYYY-MM-DD")
@@ -2013,6 +2056,8 @@ class TestCommunityStatsService:
 
             # The results should be a dictionary (from the task)
             assert isinstance(results, dict)
+            app.logger.error(f"Aggregate stat async results: {pformat(results)}")
+            # FIXME: Add proper assertions
 
         except Exception as e:
             # If the task fails (e.g., due to missing dependencies), that's okay
@@ -2067,7 +2112,7 @@ class TestCommunityStatsService:
         client.indices.refresh(index="*rdmrecords-records*")
 
         # Create service instance
-        service = CommunityStatsService(client=client)
+        service = CommunityStatsService(app=app)
 
         # Test read_stats
         start_date = arrow.utcnow().shift(days=-10).format("YYYY-MM-DD")
@@ -2082,318 +2127,102 @@ class TestCommunityStatsService:
 
             # The stats should be a dictionary
             assert isinstance(stats, dict)
+            app.logger.error(f"Read stats results: {pformat(stats)}")
+            # FIXME: Add proper assertions
 
         except Exception as e:
             # If the query fails (e.g., due to missing stats data), that's okay
             # The test is mainly checking that the method calls the query correctly
             app.logger.info(f"Read stats query failed (expected in test): {e}")
 
-    def test_generate_record_community_events_with_recids(
-        self,
-        running_app,
-        db,
-        minimal_community_factory,
-        minimal_published_record_factory,
-        user_factory,
-        create_stats_indices,
-        mock_send_remote_api_update_fixture,
-        celery_worker,
-        requests_mock,
-    ):
-        """Test generate_record_community_events with specific recids."""
-        app = running_app.app
-        client = current_search_client
 
-        # Create a user and community
-        u = user_factory(email="test@example.com")
-        user_id = u.user.id
-        community = minimal_community_factory(slug="test-community", owner=user_id)
-        community_id = community.id
+def test_generate_record_community_events_with_recids(
+    running_app,
+    db,
+    minimal_community_factory,
+    minimal_published_record_factory,
+    user_factory,
+    create_stats_indices,
+    mock_send_remote_api_update_fixture,
+    celery_worker,
+    requests_mock,
+    search_clear,
+):
+    """Test generate_record_community_events with specific recids."""
+    app = running_app.app
+    client = current_search_client
 
-        # Create synthetic records
-        synthetic_records = []
-        sample_records = [
-            sample_metadata_book_pdf["input"],
-            sample_metadata_journal_article_pdf["input"],
-            sample_metadata_thesis_pdf["input"],
-        ]
+    # Create a user and community
+    u = user_factory(email="test@example.com")
+    user_id = u.user.id
+    community = minimal_community_factory(slug="test-community", owner=user_id)
+    community_id = community.id
 
-        for i, sample_data in enumerate(sample_records):
-            metadata = copy.deepcopy(sample_data)
-            metadata["files"] = {"enabled": False}
-            metadata["created"] = (
-                arrow.utcnow().shift(days=-i).format("YYYY-MM-DDTHH:mm:ssZZ")
-            )
+    # Create synthetic records
+    synthetic_records = []
+    sample_records = [
+        sample_metadata_book_pdf["input"],
+        sample_metadata_journal_article_pdf["input"],
+        sample_metadata_thesis_pdf["input"],
+    ]
 
-            record = minimal_published_record_factory(
-                metadata=metadata,
-                identity=system_identity,
-                community_list=[community_id],
-                set_default=True,
-            )
-            synthetic_records.append(record)
+    for i, sample_data in enumerate(sample_records):
+        metadata = copy.deepcopy(sample_data)
+        metadata["files"] = {"enabled": False}
+        metadata["created"] = (
+            arrow.utcnow().shift(days=-i).format("YYYY-MM-DDTHH:mm:ssZZ")
+        )
 
-        # Refresh indices
-        client.indices.refresh(index="*rdmrecords-records*")
+        record = minimal_published_record_factory(
+            metadata=metadata,
+            identity=system_identity,
+            community_list=[community_id],
+            set_default=True,
+            update_community_event_dates=True,
+        )
+        synthetic_records.append(record)
 
-        # Clear the community events index
-        events_index = prefix_index("stats-community-events")
-        try:
-            client.indices.delete(index=events_index)
-            app.logger.info(f"Deleted events index: {events_index}")
-        except Exception as e:
-            app.logger.info(
-                f"Events index {events_index} did not exist or could not be deleted: "
-                f"{e}"
-            )
+    # Refresh indices
+    client.indices.refresh(index="*rdmrecords-records*")
 
-        # Create service instance
-        service = CommunityStatsService(client=client)
+    # Clear the community events index
+    current_search_client.indices.delete(index="*stats-community-events*")
+    events_index = prefix_index("stats-community-events")
+    try:
+        client.indices.delete(index=events_index)
+        app.logger.info(f"Deleted events index: {events_index}")
+    except Exception as e:
+        app.logger.info(
+            f"Events index {events_index} did not exist or could not be deleted: "
+            f"{e}"
+        )
 
-        # Test with specific recids (only first two records)
-        specific_recids = [synthetic_records[0]["id"], synthetic_records[1]["id"]]
-        records_processed = service.generate_record_community_events(
+    # Create service instance
+    service = CommunityStatsService(app=app)
+
+    # Test with specific recids (only first two records)
+    specific_recids = [synthetic_records[0]["id"], synthetic_records[1]["id"]]
+    records_processed, new_events_created, old_events_found = (
+        service.generate_record_community_events(
             recids=specific_recids,
             community_ids=[community_id],
         )
+    )
+    app.logger.error(f"Generate events records processed: {records_processed}")
 
-        # Should have processed 2 records
-        assert records_processed == 2
+    # Should have processed 2 records
+    assert records_processed == 2
+    assert new_events_created == 4
+    assert old_events_found == 0
 
-        # Check that events were created only for the specified records
-        for record in synthetic_records[:2]:  # First two records
-            record_id = record["id"]
+    # Check that events were created only for the specified records
+    for record in synthetic_records[:2]:  # First two records
+        record_id = record["id"]
 
-            # Check community event exists
-            community_events = client.search(
-                index=events_index,
-                body={
-                    "query": {
-                        "bool": {
-                            "must": [
-                                {"term": {"record_id": record_id}},
-                                {"term": {"community_id": community_id}},
-                                {"term": {"event_type": "added"}},
-                            ]
-                        }
-                    }
-                },
-            )
-            assert community_events["hits"]["total"]["value"] == 1
-
-            # Check global event exists
-            global_events = client.search(
-                index=events_index,
-                body={
-                    "query": {
-                        "bool": {
-                            "must": [
-                                {"term": {"record_id": record_id}},
-                                {"term": {"community_id": "global"}},
-                                {"term": {"event_type": "added"}},
-                            ]
-                        }
-                    }
-                },
-            )
-            assert global_events["hits"]["total"]["value"] == 1
-
-        # Check that the third record has no events
-        third_record_id = synthetic_records[2]["id"]
-        all_events = client.search(
+        # Check community event exists
+        community_events = client.search(
             index=events_index,
-            body={"query": {"term": {"record_id": third_record_id}}},
-        )
-        assert all_events["hits"]["total"]["value"] == 0
-
-    def test_generate_record_community_events_all_records(
-        self,
-        running_app,
-        db,
-        minimal_community_factory,
-        minimal_published_record_factory,
-        user_factory,
-        create_stats_indices,
-        mock_send_remote_api_update_fixture,
-        celery_worker,
-        requests_mock,
-    ):
-        """Test generate_record_community_events with all records (no recids)."""
-        app = running_app.app
-        client = current_search_client
-
-        # Create a user and community
-        u = user_factory(email="test@example.com")
-        user_id = u.user.id
-        community = minimal_community_factory(slug="test-community", owner=user_id)
-        community_id = community.id
-
-        # Create synthetic records
-        synthetic_records = []
-        sample_records = [
-            sample_metadata_book_pdf["input"],
-            sample_metadata_journal_article_pdf["input"],
-        ]
-
-        for i, sample_data in enumerate(sample_records):
-            metadata = copy.deepcopy(sample_data)
-            metadata["files"] = {"enabled": False}
-            metadata["created"] = (
-                arrow.utcnow().shift(days=-i).format("YYYY-MM-DDTHH:mm:ssZZ")
-            )
-
-            record = minimal_published_record_factory(
-                metadata=metadata,
-                identity=system_identity,
-                community_list=[community_id],
-                set_default=True,
-            )
-            synthetic_records.append(record)
-
-        # Refresh indices
-        client.indices.refresh(index="*rdmrecords-records*")
-
-        # Clear the community events index
-        events_index = prefix_index("stats-community-events")
-        try:
-            client.indices.delete(index=events_index)
-            app.logger.info(f"Deleted events index: {events_index}")
-        except Exception as e:
-            app.logger.info(
-                f"Events index {events_index} did not exist or could not be deleted: "
-                f"{e}"
-            )
-
-        # Create service instance
-        service = CommunityStatsService(client=client)
-
-        # Test with all records (no recids specified)
-        records_processed = service.generate_record_community_events(
-            community_ids=[community_id],
-        )
-
-        # Should have processed all records (at least our synthetic ones)
-        assert records_processed >= 2
-
-        # Check that events were created for all synthetic records
-        for record in synthetic_records:
-            record_id = record["id"]
-
-            # Check community event exists
-            community_events = client.search(
-                index=events_index,
-                body={
-                    "query": {
-                        "bool": {
-                            "must": [
-                                {"term": {"record_id": record_id}},
-                                {"term": {"community_id": community_id}},
-                                {"term": {"event_type": "added"}},
-                            ]
-                        }
-                    }
-                },
-            )
-            assert community_events["hits"]["total"]["value"] == 1
-
-            # Check global event exists
-            global_events = client.search(
-                index=events_index,
-                body={
-                    "query": {
-                        "bool": {
-                            "must": [
-                                {"term": {"record_id": record_id}},
-                                {"term": {"community_id": "global"}},
-                                {"term": {"event_type": "added"}},
-                            ]
-                        }
-                    }
-                },
-            )
-            assert global_events["hits"]["total"]["value"] == 1
-
-    def test_generate_record_community_events_basic(
-        self,
-        running_app,
-        db,
-        minimal_community_factory,
-        minimal_published_record_factory,
-        user_factory,
-        create_stats_indices,
-        mock_send_remote_api_update_fixture,
-        celery_worker,
-        requests_mock,
-    ):
-        """Test generate_record_community_events with synthetic records."""
-        app = running_app.app
-        client = current_search_client
-
-        # Create a user and community
-        u = user_factory(email="test@example.com")
-        user_id = u.user.id
-        community = minimal_community_factory(slug="test-community", owner=user_id)
-        community_id = community.id
-
-        # Create synthetic records using sample metadata
-        synthetic_records = []
-        sample_records = [
-            sample_metadata_book_pdf["input"],
-            sample_metadata_journal_article_pdf["input"],
-            sample_metadata_thesis_pdf["input"],
-        ]
-
-        for i, sample_data in enumerate(sample_records):
-            # Create a copy of the sample data and modify files to be disabled
-            metadata = copy.deepcopy(sample_data)
-            metadata["files"] = {"enabled": False}
-            # Use different creation dates for testing
-            metadata["created"] = (
-                arrow.utcnow().shift(days=-i).format("YYYY-MM-DDTHH:mm:ssZZ")
-            )
-
-            # Create the record and add it to the community
-            record = minimal_published_record_factory(
-                metadata=metadata,
-                identity=system_identity,
-                community_list=[community_id],
-                set_default=True,
-            )
-            synthetic_records.append(record)
-
-        # Refresh indices to ensure records are indexed
-        client.indices.refresh(index="*rdmrecords-records*")
-
-        # Clear the community events index to remove auto-generated events
-        events_index = prefix_index("stats-community-events")
-        try:
-            client.indices.delete(index=events_index)
-            app.logger.info(f"Deleted events index: {events_index}")
-        except Exception as e:
-            app.logger.info(
-                f"Events index {events_index} did not exist or could not be deleted: "
-                f"{e}"
-            )
-
-        # Run the event generation
-        service = CommunityStatsService(client=client)
-        service.generate_record_community_events(community_ids=[community_id])
-
-        # Query the records to get their created dates
-        records = records_service.search(identity=system_identity, q="")
-        records = {r["id"]: r for r in records.to_dict()["hits"]["hits"]}
-
-        # Get the synthetic record IDs
-        synthetic_record_ids = [r["id"] for r in synthetic_records]
-        assert all(rid in records for rid in synthetic_record_ids)
-
-        # For each synthetic record, check for community and global events
-        for record in synthetic_records:
-            record_id = record["id"]
-            created_date = record["created"]
-
-            # Check community event
-            query = {
+            body={
                 "query": {
                     "bool": {
                         "must": [
@@ -2402,37 +2231,15 @@ class TestCommunityStatsService:
                             {"term": {"event_type": "added"}},
                         ]
                     }
-                },
-                "size": 10,
-            }
-            result = client.search(
-                index=prefix_index("stats-community-events"), body=query
-            )
-            app.logger.error(
-                f"Community event search result for {record_id}: {pformat(result)}"
-            )
-            assert result["hits"]["total"]["value"] == 1
-            event = result["hits"]["hits"][0]["_source"]
-            assert event["record_id"] == record_id
-            assert event["community_id"] == community_id
-            assert event["event_type"] == "added"
-            assert arrow.get(event["event_date"]).format(
-                "YYYY-MM-DDTHH:mm"
-            ) == arrow.get(created_date).format("YYYY-MM-DDTHH:mm")
-            assert arrow.get(event["record_created_date"]).format(
-                "YYYY-MM-DDTHH:mm"
-            ) == arrow.get(created_date).format("YYYY-MM-DDTHH:mm")
-            assert arrow.get(event["record_published_date"]).format(
-                "YYYY-MM-DDTHH:mm"
-            ) == arrow.get(record["metadata"]["publication_date"]).format(
-                "YYYY-MM-DDTHH:mm"
-            )
-            assert "timestamp" in event
-            assert "updated_timestamp" in event
-            assert event["is_deleted"] is False
+                }
+            },
+        )
+        assert community_events["hits"]["total"]["value"] == 1
 
-            # Check global event
-            query_global = {
+        # Check global event exists
+        global_events = client.search(
+            index=events_index,
+            body={
                 "query": {
                     "bool": {
                         "must": [
@@ -2441,38 +2248,433 @@ class TestCommunityStatsService:
                             {"term": {"event_type": "added"}},
                         ]
                     }
-                },
-                "size": 10,
-            }
-            result_global = client.search(
-                index=prefix_index("stats-community-events"), body=query_global
-            )
-            app.logger.error(
-                f"Global event search result for {record_id}: {pformat(result_global)}"
-            )
-            assert result_global["hits"]["total"]["value"] == 1
-            event_global = result_global["hits"]["hits"][0]["_source"]
-            assert event_global["record_id"] == record_id
-            assert event_global["community_id"] == "global"
-            assert event_global["event_type"] == "added"
-            assert arrow.get(event_global["event_date"]).format(
-                "YYYY-MM-DDTHH:mm"
-            ) == arrow.get(created_date).format("YYYY-MM-DDTHH:mm")
-            assert arrow.get(event_global["record_published_date"]).format(
-                "YYYY-MM-DDTHH:mm"
-            ) == arrow.get(record["metadata"]["publication_date"]).format(
-                "YYYY-MM-DDTHH:mm"
-            )
-            assert arrow.get(event_global["record_created_date"]).format(
-                "YYYY-MM-DDTHH:mm"
-            ) == arrow.get(created_date).format("YYYY-MM-DDTHH:mm")
-            assert "timestamp" in event_global
-            assert "updated_timestamp" in event_global
-            assert event_global["is_deleted"] is False
+                }
+            },
+        )
+        assert global_events["hits"]["total"]["value"] == 1
+
+    # Check that the third record has no events
+    third_record_id = synthetic_records[2]["id"]
+    all_events = client.search(
+        index=events_index,
+        body={"query": {"term": {"record_id": third_record_id}}},
+    )
+    assert all_events["hits"]["total"]["value"] == 0
+
+
+def test_generate_record_community_events_all_records(
+    running_app,
+    db,
+    minimal_community_factory,
+    minimal_published_record_factory,
+    user_factory,
+    create_stats_indices,
+    mock_send_remote_api_update_fixture,
+    celery_worker,
+    requests_mock,
+    search_clear,
+):
+    """Test generate_record_community_events with all records (no recids)."""
+    app = running_app.app
+    client = current_search_client
+
+    # Create a user and community
+    u = user_factory(email="test@example.com")
+    user_id = u.user.id
+    community = minimal_community_factory(slug="test-community", owner=user_id)
+    community_id = community.id
+
+    # Create synthetic records
+    synthetic_records = []
+    sample_records = [
+        sample_metadata_book_pdf["input"],
+        sample_metadata_journal_article_pdf["input"],
+    ]
+
+    for i, sample_data in enumerate(sample_records):
+        metadata = copy.deepcopy(sample_data)
+        metadata["files"] = {"enabled": False}
+        metadata["created"] = (
+            arrow.utcnow().shift(days=-i).format("YYYY-MM-DDTHH:mm:ssZZ")
+        )
+
+        record = minimal_published_record_factory(
+            metadata=metadata,
+            identity=system_identity,
+            community_list=[community_id],
+            set_default=True,
+            update_community_event_dates=True,
+        )
+        synthetic_records.append(record)
+
+    client.indices.refresh(index="*rdmrecords-records*")
+
+    events_index = prefix_index("stats-community-events")
+    client.indices.delete(index="*stats-community-events*")
+
+    service = CommunityStatsService(app=app)
+
+    # Test with all records (no recids specified)
+    records_processed, new_events_created, old_events_found = (
+        service.generate_record_community_events(
+            community_ids=[community_id],
+        )
+    )
+    app.logger.error(f"Generate events records processed: {records_processed}")
+
+    # Should have processed all records (at least our synthetic ones)
+    assert records_processed == 2
+    assert new_events_created == 4
+    assert old_events_found == 0
+
+    # Check that events were created for all synthetic records
+    for record in synthetic_records:
+        record_id = record["id"]
+
+        # Check community event exists
+        community_events = client.search(
+            index=events_index,
+            body={
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"term": {"record_id": record_id}},
+                            {"term": {"community_id": community_id}},
+                            {"term": {"event_type": "added"}},
+                        ]
+                    }
+                }
+            },
+        )
+        assert community_events["hits"]["total"]["value"] == 1
+
+        # Check global event exists
+        global_events = client.search(
+            index=events_index,
+            body={
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"term": {"record_id": record_id}},
+                            {"term": {"community_id": "global"}},
+                            {"term": {"event_type": "added"}},
+                        ]
+                    }
+                }
+            },
+        )
+        assert global_events["hits"]["total"]["value"] == 1
+
+
+def test_generate_record_community_events_with_dates(
+    running_app,
+    db,
+    minimal_community_factory,
+    minimal_published_record_factory,
+    user_factory,
+    create_stats_indices,
+    mock_send_remote_api_update_fixture,
+    celery_worker,
+    requests_mock,
+    search_clear,
+):
+    """Test generate_record_community_events with synthetic records."""
+    app = running_app.app
+    client = current_search_client
+
+    # Create a user and community
+    u = user_factory(email="test@example.com")
+    user_id = u.user.id
+    community = minimal_community_factory(slug="test-community", owner=user_id)
+    community_id = community.id
+
+    synthetic_records = []
+    sample_records = [
+        sample_metadata_book_pdf["input"],
+        sample_metadata_journal_article_pdf["input"],
+        sample_metadata_thesis_pdf["input"],
+    ]
+
+    for i, sample_data in enumerate(sample_records):
+        metadata = copy.deepcopy(sample_data)
+        metadata["files"] = {"enabled": False}
+        metadata["created"] = (
+            arrow.utcnow().shift(days=-i).format("YYYY-MM-DDTHH:mm:ssZZ")
+        )
+
+        record = minimal_published_record_factory(
+            metadata=metadata,
+            identity=system_identity,
+            community_list=[community_id],
+            set_default=True,
+            update_community_event_dates=True,
+        )
+        synthetic_records.append(record)
+
+    client.indices.refresh(index="*rdmrecords-records*")
+
+    # Clear the community events index to remove auto-generated events
+    current_search_client.indices.refresh("*stats-community-events*")
+    current_search_client.delete_by_query(
+        index="*stats-community-events*",
+        body={"query": {"match_all": {}}},
+        conflicts="proceed",  # Ignore version conflicts
+    )
+    current_search_client.indices.refresh("*stats-community-events*")
+
+    service = CommunityStatsService(app=app)
+    start_date = arrow.get(synthetic_records[-1]["created"]).floor("day")
+    end_date = arrow.get(synthetic_records[-2]["created"]).ceil("day")
+    processed, new_events_created, old_events_found = (
+        service.generate_record_community_events(
+            start_date=start_date, end_date=end_date
+        )
+    )
+
+    assert processed == 2  # not all 3 records were processed
+    assert new_events_created == 4
+    assert old_events_found == 0
+
+    for record in synthetic_records[1:]:
+        record_id = record["id"]
+        created_date = record["created"]
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": record_id}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "size": 10,
+        }
+        result = client.search(index=prefix_index("stats-community-events"), body=query)
+        app.logger.error(
+            f"Community event search result for {record_id}: {pformat(result)}"
+        )
+        assert result["hits"]["total"]["value"] == 1
+        event = result["hits"]["hits"][0]["_source"]
+        assert event["record_id"] == record_id
+        assert event["community_id"] == community_id
+        assert event["event_type"] == "added"
+        assert arrow.get(event["event_date"]).format("YYYY-MM-DDTHH:mm") == arrow.get(
+            created_date
+        ).format("YYYY-MM-DDTHH:mm")
+        assert arrow.get(event["record_created_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        ) == arrow.get(created_date).format("YYYY-MM-DDTHH:mm")
+        assert arrow.get(event["record_published_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        ) == arrow.get(record["metadata"]["publication_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        )
+        assert "timestamp" in event
+        assert "updated_timestamp" in event
+        assert event["is_deleted"] is False
+
+        # Check global event
+        query_global = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": record_id}},
+                        {"term": {"community_id": "global"}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "size": 10,
+        }
+        result_global = client.search(
+            index=prefix_index("stats-community-events"), body=query_global
+        )
+        app.logger.error(
+            f"Global event search result for {record_id}: {pformat(result_global)}"
+        )
+        assert result_global["hits"]["total"]["value"] == 1
+        event_global = result_global["hits"]["hits"][0]["_source"]
+        assert event_global["record_id"] == record_id
+        assert event_global["community_id"] == "global"
+        assert event_global["event_type"] == "added"
+        assert arrow.get(event_global["event_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        ) == arrow.get(created_date).format("YYYY-MM-DDTHH:mm")
+        assert arrow.get(event_global["record_published_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        ) == arrow.get(record["metadata"]["publication_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        )
+        assert arrow.get(event_global["record_created_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        ) == arrow.get(created_date).format("YYYY-MM-DDTHH:mm")
+        assert "timestamp" in event_global
+        assert "updated_timestamp" in event_global
+        assert event_global["is_deleted"] is False
+
+
+def test_generate_record_community_events_basic(
+    running_app,
+    db,
+    minimal_community_factory,
+    minimal_published_record_factory,
+    user_factory,
+    create_stats_indices,
+    mock_send_remote_api_update_fixture,
+    celery_worker,
+    requests_mock,
+    search_clear,
+):
+    """Test generate_record_community_events with synthetic records."""
+    app = running_app.app
+    client = current_search_client
+
+    # Create a user and community
+    u = user_factory(email="test@example.com")
+    user_id = u.user.id
+    community = minimal_community_factory(slug="test-community", owner=user_id)
+    community_id = community.id
+
+    # Create synthetic records using sample metadata
+    synthetic_records = []
+    sample_records = [
+        sample_metadata_book_pdf["input"],
+        sample_metadata_journal_article_pdf["input"],
+        sample_metadata_thesis_pdf["input"],
+    ]
+
+    for i, sample_data in enumerate(sample_records):
+        # Create a copy of the sample data and modify files to be disabled
+        metadata = copy.deepcopy(sample_data)
+        metadata["files"] = {"enabled": False}
+        # Use different creation dates for testing
+        metadata["created"] = (
+            arrow.utcnow().shift(days=-i).format("YYYY-MM-DDTHH:mm:ssZZ")
+        )
+
+        # Create the record and add it to the community
+        record = minimal_published_record_factory(
+            metadata=metadata,
+            identity=system_identity,
+            community_list=[community_id],
+            set_default=True,
+            update_community_event_dates=True,
+        )
+        synthetic_records.append(record)
+
+    # Refresh indices to ensure records are indexed
+    client.indices.refresh(index="*rdmrecords-records*")
+
+    # Clear the community events index to remove auto-generated events
+    client.indices.refresh(index="*stats-community-events*")
+    current_search_client.delete_by_query(
+        index="*stats-community-events*",
+        body={"query": {"match_all": {}}},
+        conflicts="proceed",  # Ignore version conflicts
+    )
+    client.indices.refresh(index="*stats-community-events*")
+
+    # Run the event generation
+    service = CommunityStatsService(app=app)
+    records_processed, new_events_created, old_events_found = (
+        service.generate_record_community_events(community_ids=[community_id])
+    )
+
+    assert records_processed == 3
+    assert new_events_created == 6
+    assert old_events_found == 0
+
+    # For each synthetic record, check for community and global events
+    for record in synthetic_records:
+        record_id = record["id"]
+        created_date = record["created"]
+
+        # Check community event
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": record_id}},
+                        {"term": {"community_id": community_id}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "size": 10,
+        }
+        result = client.search(index=prefix_index("stats-community-events"), body=query)
+        app.logger.error(
+            f"Community event search result for {record_id}: {pformat(result)}"
+        )
+        assert result["hits"]["total"]["value"] == 1
+        event = result["hits"]["hits"][0]["_source"]
+        assert event["record_id"] == record_id
+        assert event["community_id"] == community_id
+        assert event["event_type"] == "added"
+        assert arrow.get(event["event_date"]).format("YYYY-MM-DDTHH:mm") == arrow.get(
+            created_date
+        ).format("YYYY-MM-DDTHH:mm")
+        assert arrow.get(event["record_created_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        ) == arrow.get(created_date).format("YYYY-MM-DDTHH:mm")
+        assert arrow.get(event["record_published_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        ) == arrow.get(record["metadata"]["publication_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        )
+        assert "timestamp" in event
+        assert "updated_timestamp" in event
+        assert event["is_deleted"] is False
+
+        # Check global event
+        query_global = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"record_id": record_id}},
+                        {"term": {"community_id": "global"}},
+                        {"term": {"event_type": "added"}},
+                    ]
+                }
+            },
+            "size": 10,
+        }
+        result_global = client.search(
+            index=prefix_index("stats-community-events"), body=query_global
+        )
+        app.logger.error(
+            f"Global event search result for {record_id}: {pformat(result_global)}"
+        )
+        assert result_global["hits"]["total"]["value"] == 1
+        event_global = result_global["hits"]["hits"][0]["_source"]
+        assert event_global["record_id"] == record_id
+        assert event_global["community_id"] == "global"
+        assert event_global["event_type"] == "added"
+        assert arrow.get(event_global["event_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        ) == arrow.get(created_date).format("YYYY-MM-DDTHH:mm")
+        assert arrow.get(event_global["record_published_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        ) == arrow.get(record["metadata"]["publication_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        )
+        assert arrow.get(event_global["record_created_date"]).format(
+            "YYYY-MM-DDTHH:mm"
+        ) == arrow.get(created_date).format("YYYY-MM-DDTHH:mm")
+        assert "timestamp" in event_global
+        assert "updated_timestamp" in event_global
+        assert event_global["is_deleted"] is False
 
 
 class TestCommunityUsageAggregators:
     """Test the CommunityUsageDeltaAggregator class."""
+
+    @property
+    def catchup_interval(self):
+        """Return the catchup interval."""
+        return 365
 
     @property
     def event_date_range(self):
@@ -2533,6 +2735,7 @@ class TestCommunityUsageAggregators:
                 "metadata": rec,
                 "community_list": [community_id],
                 "set_default": True,
+                "update_community_event_dates": True,
             }
             if idx != 1:
                 filename = list(rec["files"]["entries"].keys())[0]
@@ -2541,29 +2744,17 @@ class TestCommunityUsageAggregators:
                 ]
             _ = minimal_published_record_factory(**record_args)
 
-        # import_test_records(
-        #     importer_email=user_email,
-        #     record_ids=[
-        #         "jthhs-g4b38",
-        #         "0dtmf-ph235",
-        #         "5ryf5-bfn20",
-        #         "r4w2d-5tg11",
-        #     ],
-        # )
-        # current_search_client.indices.refresh(index="*rdmrecords-records*")
-
-        # Get the records for creating test events
         records = records_service.search(
             identity=system_identity,
             q="",
         )
         record_dicts = records.to_dict()["hits"]["hits"]
-        for record_dict in record_dicts:
-            update_community_events_created_date(
-                record_id=record_dict["id"],
-                new_created_date=record_dict["created"],
-            )
-        current_search_client.indices.refresh(index="*stats-community-events*")
+        # for record_dict in record_dicts:
+        #     update_community_events_created_date(
+        #         record_id=record_dict["id"],
+        #         new_created_date=record_dict["created"],
+        #     )
+        # current_search_client.indices.refresh(index="*stats-community-events*")
 
         assert len(record_dicts) == 4, f"Expected 4 records, got {len(record_dicts)}"
         return records
@@ -2632,16 +2823,11 @@ class TestCommunityUsageAggregators:
         _, end_date = self.event_date_range
         self.client.indices.refresh(index=prefix_index("stats-bookmarks*"))
         for cid in [community_id, "global"]:
-            try:
-                bookmark = aggregator.bookmark_api.get_bookmark(cid)
-                assert bookmark is not None
-                assert arrow.get(bookmark).format("YYYY-MM-DDTHH:mm:ss") == arrow.get(
-                    end_date
-                ).ceil("day").format("YYYY-MM-DDTHH:mm:ss")
-            except AssertionError:
-                return False
-
-        return True
+            bookmark = aggregator.bookmark_api.get_bookmark(cid)
+            assert bookmark is not None
+            assert arrow.get(bookmark).format("YYYY-MM-DDTHH:mm:ss") == arrow.get(
+                end_date
+            ).ceil("day").format("YYYY-MM-DDTHH:mm:ss")
 
     def _validate_agg_results(self, community_id, start_date, end_date):
         """Validate the results of the delta aggregator."""
@@ -3272,6 +3458,15 @@ class TestCommunityUsageAggregators:
             return_results=True,
         )
         self.app.logger.error(f"Earlier results: {pformat(earlier_results)}")
+        search = Search(
+            using=self.client, index=prefix_index("stats-community-usage-delta")
+        )
+        search = search.query(
+            "range",
+            period_start={"gte": "2025-06-03T00:00:00", "lte": "2025-06-03T23:59:59"},
+        )
+        for hit in search.scan():
+            print(hit.to_dict())
 
         return earlier_results
 
@@ -3288,6 +3483,7 @@ class TestCommunityUsageAggregators:
         requests_mock: Callable,
         search_clear: Callable,
         usage_event_factory,
+        monkeypatch: MonkeyPatch,
     ):
         """Test the CommunityUsageDeltaAggregator class.
 
@@ -3321,6 +3517,11 @@ class TestCommunityUsageAggregators:
         """
         self.app = running_app.app
         self.client = current_search_client
+        monkeypatch.setitem(
+            self.app.config,
+            "COMMUNITY_STATS_CATCHUP_INTERVAL",
+            self.catchup_interval,
+        )
 
         user_id, user_email = self.setup_users(user_factory)
         community_id = self.setup_community(minimal_community_factory, user_id)
@@ -3347,7 +3548,7 @@ class TestCommunityUsageAggregators:
         delta_response = aggregator.run(**self.run_args)
         self.client.indices.refresh(index="*stats-community-usage-delta*")
 
-        assert self.check_bookmarks(aggregator, community_id)
+        self.check_bookmarks(aggregator, community_id)
         delta_results = self.check_delta_agg_results(delta_response, community_id)
         # have to make sure that the events we added before the start date
         # get aggregated before we run snapshot aggregator
@@ -3367,14 +3568,44 @@ class TestCommunityUsageAggregators:
         snapshot_response = snapshot_aggregator.run(**self.run_args)
 
         # Check that a bookmark was set to mark most recent aggregation
-        assert self.check_bookmarks(snapshot_aggregator, community_id)
+        self.check_bookmarks(snapshot_aggregator, community_id)
         assert self.check_snapshot_agg_results(
             snapshot_response, delta_results, community_id
         )
 
 
 class TestCommunityUsageAggregatorsBookmarked(TestCommunityUsageAggregators):
-    """Test community usage aggregators with bookmarking."""
+    """Test community usage aggregators with bookmarking.
+
+    This test is a subclass of TestCommunityUsageAggregators.
+    It sets the bookmark to the second-last day of the event date range
+    to test that the aggregators observe the bookmark but also fill in the
+    intervening days to ensure accurate cumulative totals.
+
+    ## Delta aggregator behaviour
+
+    The delta aggregator first runs based on the bookmark, which is set to the second-last day of the event date range. It also limits the number of processed
+    days to the catchup interval: 5 days. So it generates delta records for 2025-06-15 through 2025-06-20.
+
+    We then run the delta aggregator again (without updating the bookmark) for
+    2025-06-03 to capture earlier events, but we don't fill in the intervening days.
+
+    ## Snapshot aggregator behaviour
+
+    Since the bookmark is set to the second-last day of the event date range,
+    the snapshot aggregator tries to jump forward to 2025-06-15. But it doesn't
+    find any earlier snapshot records to use as a starting point, so it starts
+    from the last delta record prior to the start date. It finds one for 2025-06-03,
+    and then observes the catchup interval to set a new end date of 2025-06-08. For
+    2025-06-03 it aggregates a snapshot based on that day's delta record. For the
+    subsequent days, since there are no delta records for those days, it simply
+    copies the snapshot numbers from the previous day.
+    """
+
+    @property
+    def catchup_interval(self):
+        """Return the catchup interval."""
+        return 5
 
     @property
     def run_args(self):
@@ -3389,6 +3620,125 @@ class TestCommunityUsageAggregatorsBookmarked(TestCommunityUsageAggregators):
             "ignore_bookmark": False,
             "return_results": True,
         }
+
+    def set_bookmarks(self, aggregator, community_id):
+        """Set the initial bookmarks for the delta and snapshot aggregators.
+
+        This test sets the bookmark to the second-last day of the event date range
+        to test that the aggregators observe the bookmark but also fill in the
+        intervening days to ensure accurate cumulative totals.
+        """
+        start_date, end_date = self.event_date_range
+        for cid in [community_id, "global"]:
+            aggregator.bookmark_api.set_bookmark(
+                cid,
+                arrow.get(end_date).shift(days=-1).format("YYYY-MM-DDTHH:mm:ss"),
+            )
+        self.client.indices.refresh(index=prefix_index("stats-bookmarks*"))
+        for cid in [community_id, "global"]:
+            assert (
+                arrow.get(aggregator.bookmark_api.get_bookmark(cid))
+                - arrow.get(end_date).shift(days=-1)
+            ).total_seconds() < 1
+
+    def check_bookmarks(self, aggregator, community_id):
+        """Check that the bookmark was set to the correct date.
+
+        The bookmark is set to the second-last day of the event date range
+        to test that the aggregators observe the bookmark but also fill in the
+        intervening days to ensure accurate cumulative totals. So we check that
+        the final bookmark is five days (self.catchup_interval) after the
+        second-last day of the event date range.
+        """
+        _, end_date = self.event_date_range
+        self.client.indices.refresh(index=prefix_index("stats-bookmarks*"))
+        for cid in [community_id, "global"]:
+            bookmark = aggregator.bookmark_api.get_bookmark(cid)
+            assert bookmark is not None
+            assert (
+                arrow.get(bookmark)
+                - arrow.get(end_date).shift(days=self.catchup_interval - 1)
+            ).total_seconds() < 1
+
+    def check_delta_agg_results(self, results, community_id):
+        """Check that the delta aggregator results are correct."""
+        self.app.logger.error(f"Results 0: {pformat(results)}")
+        total_days = self.catchup_interval + 1  # interval added to start date (day 1)
+        assert results[0][0] == total_days  # Should have one result per day
+        assert results[1][0] == total_days  # Results for global stats
+
+        # community_results = self._validate_agg_results(
+        #     community_id, start_date, end_date
+        # )
+        # global_results = self._validate_agg_results("global", start_date, end_date)
+        # return community_results, global_results
+
+    def check_snapshot_agg_results(self, snap_response, delta_results, community_id):
+        """Check that the snapshot aggregator results are correct."""
+        start_date, end_date = self.event_date_range  # start date is 2025-06-04
+        # but we're ignoring it and using the bookmark, set for 2025-06-15.
+        # Since there aren't snapshots for 2025-06-03 onward, though, the
+        # aggregator is starting at 2025-06-03 and filling in days up to
+        # the catchup interval.
+        total_days = self.catchup_interval + 1
+
+        assert snap_response[0][0] == total_days
+        assert snap_response[1][0] == total_days
+        assert snap_response[2][0] == total_days
+
+        # Get the snapshot results
+        self.client.indices.refresh(index="*stats-community-usage-snapshot*")
+        snap_result_docs = (
+            Search(
+                using=self.client, index=prefix_index("stats-community-usage-snapshot")
+            )
+            .query("term", community_id=community_id)
+            .filter(
+                "range",
+                snapshot_date={
+                    "gte": start_date.shift(days=-1).format("YYYY-MM-DDTHH:mm:ss")
+                },
+            )
+            .extra(size=1000)
+            .execute()
+        )
+        snap_result_docs = snap_result_docs.to_dict()["hits"]["hits"]
+
+        assert (
+            len(snap_result_docs) == total_days
+        )  # all the created snapshots are catching up catchup_interval missing
+        # days from the first delta record (since there are no existing snapshots),
+        # so we have total_days results (catchup_interval + 1)
+
+        first_day_snap = snap_result_docs[0]["_source"]
+        self.app.logger.error(f"First day snapshot: {pformat(first_day_snap)}")
+        assert first_day_snap["totals"]["view"]["total_events"] == 4
+        # 4 extra view events on 2025-06-03
+
+        last_day_snap = snap_result_docs[-1]["_source"]
+        self.app.logger.error(f"Last day snapshot: {pformat(last_day_snap)}")
+        assert last_day_snap["totals"]["view"]["total_events"] == 4
+        # Still 4 because intervening days are filled in with zero values
+        # (we didn't fill in the delta records for 2025-06-04 through 2025-06-06)
+
+        global_snap_result_docs = (
+            Search(
+                using=self.client, index=prefix_index("stats-community-usage-snapshot")
+            )
+            .query("term", community_id="global")
+            .filter(
+                "range",
+                snapshot_date={
+                    "gte": start_date.shift(days=-1).format("YYYY-MM-DDTHH:mm:ss")
+                },
+            )
+            .extra(size=1000)
+            .execute()
+        )
+        global_snap_result_docs = global_snap_result_docs.to_dict()["hits"]["hits"]
+        assert len(global_snap_result_docs) == total_days
+
+        return True
 
 
 class TestCommunitiesEventsComponentsIncluded:
@@ -5955,9 +6305,9 @@ class TestAPIRequestCommunityStats:
     def sample_records(self) -> list:
         """Return sample record metadata."""
         return [
-            sample_metadata_book_pdf["input"],
-            sample_metadata_journal_article_pdf["input"],
-            sample_metadata_chapter_pdf["input"],
+            sample_metadata_journal_article4_pdf["input"],
+            sample_metadata_journal_article5_pdf["input"],
+            sample_metadata_journal_article6_pdf["input"],
         ]
 
     def setup_community_and_records(
@@ -5980,7 +6330,19 @@ class TestAPIRequestCommunityStats:
         for i, sample_data in enumerate(self.sample_records):
             for day_idx, day in enumerate(self.expected_positive_dates):
                 metadata = copy.deepcopy(sample_data)
-                metadata["files"] = {"enabled": False}
+                # Enable files for some records to ensure download events are created
+                if i != 1:
+                    filename = list(metadata["files"]["entries"].keys())[0]
+                    file_paths = [
+                        Path(__file__).parent.parent
+                        / "helpers"
+                        / "sample_files"
+                        / filename
+                    ]
+                else:
+                    metadata["files"] = {"enabled": False}
+                    file_paths = []
+
                 metadata["created"] = day.format("YYYY-MM-DDTHH:mm:ssZZ")
                 metadata["pids"] = {}
 
@@ -5989,6 +6351,7 @@ class TestAPIRequestCommunityStats:
                     identity=system_identity,
                     community_list=[community_id],
                     set_default=True,
+                    file_paths=file_paths,
                 )
                 synthetic_records.append(record)
 
@@ -6000,20 +6363,24 @@ class TestAPIRequestCommunityStats:
     def setup_usage_events(self, synthetic_records, usage_event_factory):
         """Set up usage events for the synthetic records."""
         client = current_search_client
-        # for record in synthetic_records:
-        #     for day_idx, day in enumerate(self.expected_positive_dates):
-        #         # Create view events
-        #         for _ in range(self.per_day_usage_events):
-        #             usage_event_factory.g(
-        #                 event_type="view",
-        #                 recid=record["id"],
-        #                 timestamp=day.shift(hours=12).format("YYYY-MM-DDTHH:mm:ss"),
-        #                 user_id=None,
-        #                 session_id=f"session_{day_idx}_{record['id']}",
-        #             )
-        usage_event_factory.generate_repository_events(self.per_day_usage_events)
 
+        # Generate and index usage events for all published records in one call
+        usage_event_factory.generate_and_index_repository_events(
+            self.per_day_usage_events
+        )
+
+        # Refresh all relevant indices to ensure events are available
         client.indices.refresh(index="*stats-record-view*")
+        client.indices.refresh(index="*stats-file-download*")
+        client.indices.refresh(index="*stats-community-events*")
+
+        # Debug: check what community events exist
+        community_events = client.search(
+            index="*stats-community-events*", body={"query": {"match_all": {}}}
+        )
+        self.app.logger.error(
+            f"Community events after usage setup: {pformat(community_events)}"
+        )
 
     def run_all_aggregators(self):
         """Run all the aggregators needed for comprehensive stats.
@@ -6022,12 +6389,39 @@ class TestAPIRequestCommunityStats:
         """
         task_config = CommunityStatsAggregationTask
         task_aggs = task_config["args"]
+
+        # Debug: check what aggregators are being run
+        self.app.logger.error(f"Running aggregators: {task_aggs}")
+
         results = aggregate_community_record_stats(
             task_aggs,
             start_date=self.date_range[0].format("YYYY-MM-DD"),
             end_date=self.date_range[-1].format("YYYY-MM-DD"),
         )
         self.app.logger.error(f"Aggregation results: {pformat(results)}")
+
+        # Refresh all stats indices to ensure they're available for queries
+        client = current_search_client
+        client.indices.refresh(index="*stats-community-*")
+
+        # Debug: check what indices exist
+        indices = client.cat.indices(format="json")
+        stats_indices = [
+            idx["index"] for idx in indices if "stats-community" in idx["index"]
+        ]
+        self.app.logger.error(f"Available stats indices: {stats_indices}")
+
+        # Debug: check usage event indices
+        usage_indices = [
+            idx
+            for idx in indices
+            if "stats-record-view" in idx["index"]
+            or "stats-file-download" in idx["index"]
+        ]
+        self.app.logger.error(
+            f"Available usage indices: {[idx['index'] for idx in usage_indices]}"
+        )
+
         return results
 
     def make_api_request(
@@ -6061,6 +6455,10 @@ class TestAPIRequestCommunityStats:
         assert response_data.status_code == 200
 
         response_json = response_data.get_json()
+        if "community-stats" in response_json.keys():
+            response_json = response_json["community-stats"]
+        else:
+            response_json = response_json["global-stats"]
 
         # The response should be a dictionary with stat types as keys
         assert isinstance(response_json, dict)
@@ -6167,7 +6565,7 @@ class TestAPIRequestCommunityStats:
             assert "community_id" in snapshot
             assert snapshot["community_id"] == community_id
 
-    def test_community_stats_api_request(
+    def test_stats_api_request(
         self,
         running_app,
         db,
@@ -6206,7 +6604,11 @@ class TestAPIRequestCommunityStats:
         stats_data = self.validate_response_structure(response)
         self.validate_comprehensive_stats(stats_data, community_id)
 
-    def test_global_stats_api_request(
+
+class TestAPIRequestGlobalStats(TestAPIRequestCommunityStats):
+    """Test the global-stats API request."""
+
+    def test_stats_api_request(
         self,
         running_app,
         db,

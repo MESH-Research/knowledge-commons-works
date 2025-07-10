@@ -436,11 +436,14 @@ class UsageEventFactory:
                     events.append((view_event, view_event_id))
 
                 # Generate per_day_count download events for this day
-                for i in range(per_day_count):
-                    download_event, download_event_id = (
-                        UsageEventFactory.make_download_event(record, current_date, i)
-                    )
-                    events.append((download_event, download_event_id))
+                if record.get("files").get("enabled", False):
+                    for i in range(per_day_count):
+                        download_event, download_event_id = (
+                            UsageEventFactory.make_download_event(
+                                record, current_date, i
+                            )
+                        )
+                        events.append((download_event, download_event_id))
 
                 # Move to next day
                 current_date = current_date.shift(days=1)

@@ -34,6 +34,7 @@ from invenio_stats_dashboard.components import update_community_events_created_d
 from ..helpers.utils import remove_value_by_path
 from .communities import add_community_to_record
 from .files import build_file_links
+from .users import get_authenticated_identity
 from .vocabularies.resource_types import RESOURCE_TYPES
 
 
@@ -77,6 +78,7 @@ def minimal_published_record_factory(running_app, db, record_metadata):
         community_list: list[str] | None = None,
         set_default: bool = False,
         file_paths: list[str] | None = None,
+        update_community_event_dates: bool = False,
         **kwargs: Any,
     ) -> RecordItem:
         """Create a minimal published record.
@@ -92,12 +94,17 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                 will be set as the default community for the record.
             file_paths (list[str], optional): A list of strings representing the paths
                 to the files to add to the record.
+            update_community_event_dates (bool, optional): If True, the community
+                events created date will be updated to the record created date.
 
         Returns:
             The published record as a service layer RecordItem.
         """
         input_metadata = metadata or deepcopy(record_metadata().metadata_in)
-        identity = identity or system_identity
+        if identity:
+            identity = get_authenticated_identity(identity)
+        else:
+            identity = system_identity
         draft = records_service.create(identity, input_metadata)
 
         if file_paths:
@@ -150,7 +157,7 @@ def minimal_published_record_factory(running_app, db, record_metadata):
             # Refresh the record to get the latest state.
             published = records_service.read(system_identity, published.id)
 
-        if input_metadata.get("created"):
+        if input_metadata.get("created") and update_community_event_dates:
             try:
                 update_community_events_created_date(
                     record_id=str(published.id),

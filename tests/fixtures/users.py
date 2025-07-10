@@ -27,9 +27,13 @@ from pytest_invenio.fixtures import UserFixtureBase
 from requests_mock.adapter import _Matcher as Matcher
 
 
-def get_authenticated_identity(user: User) -> Identity:
-    """Return an authenticated identity for the given user."""
-    identity = get_identity(user)
+def get_authenticated_identity(user: User | Identity) -> Identity:
+    """Return an authenticated identity for the given user.
+
+    If an Identity is provided, it is returned with the any_user and authenticated_user
+    needs added.
+    """
+    identity = get_identity(user) if isinstance(user, User) else user
     identity.provides.add(any_user)
     identity.provides.add(authenticated_user)
     return identity
