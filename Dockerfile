@@ -107,9 +107,14 @@ RUN . .venv/bin/activate && \
 
 # FIXME: Temporary fix for axios requirement in invenio-administration package.json
 # Remove axios requirement before webpack build to prevent merge conflicts
-RUN find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec sed -i '/"axios":/d' {} \; && \
-    echo "=== Checking for axios in invenio_administration package.json files ===" && \
-    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec grep -l "axios" {} \; || echo "No axios found in package.json files"
+RUN echo "=== Files found ===" && \
+    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" && \
+    echo "=== Before sed - checking for axios ===" && \
+    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec grep -H "axios" {} \; || echo "No axios found before sed" && \
+    echo "=== Running sed command ===" && \
+    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec sed -i '/"axios":/d' {} \; && \
+    echo "=== After sed - checking for axios ===" && \
+    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec grep -H "axios" {} \; || echo "No axios found after sed"
 
 # Build assets
 RUN . .venv/bin/activate && \
