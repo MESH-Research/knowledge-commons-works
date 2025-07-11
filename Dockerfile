@@ -112,9 +112,11 @@ RUN echo "=== Files found ===" && \
     echo "=== Before sed - checking for axios ===" && \
     find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec grep -H "axios" {} \; || echo "No axios found before sed" && \
     echo "=== Running sed command ===" && \
-    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec sed -i '/"axios":/d' {} \; && \
+    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec sed -i '/[[:space:]]*"axios":[[:space:]]*"[^"]*",/d' {} \; && \
     echo "=== After sed - checking for axios ===" && \
-    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec grep -H "axios" {} \; || echo "No axios found after sed"
+    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec grep -H "axios" {} \; || echo "No axios found after sed" && \
+    echo "=== Checking file contents after sed ===" && \
+    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec cat {} \;
 
 # Build assets
 RUN . .venv/bin/activate && \
