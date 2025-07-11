@@ -104,6 +104,9 @@ RUN . .venv/bin/activate && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-records-resources && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-requests
 
+# Remove axios requirement from invenio-administration package.json
+RUN find /opt/invenio/src/.venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec sed -i '/"axios":/d' {} \;
+
 # Build assets
 RUN . .venv/bin/activate && \
     invenio collect --verbose && \
