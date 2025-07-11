@@ -2433,7 +2433,7 @@ wheels = [
 
 [[package]]
 name = "invenio-rdm-records"
-version = "10.9.1"
+version = "10.9.2"
 source = { editable = "site/kcworks/dependencies/invenio-rdm-records" }
 dependencies = [
     { name = "arrow" },
