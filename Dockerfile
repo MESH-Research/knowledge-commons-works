@@ -98,13 +98,14 @@ RUN . .venv/bin/activate && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-record-importer-kcworks && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-remote-api-provisioner && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-remote-user-data-kcworks && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-stats-dashboard && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-communities && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-rdm-records && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-records-resources && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-requests
+    uv pip install --editable ./site/kcworks/dependencies/invenio-requests && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-stats-dashboard && \
+    uv pip install --editable ./site/kcworks/dependencies/invenio-vocabularies
 
-# Remove axios requirement from invenio-administration package.json
+# FIXME: Temporary fix for axios requirement in invenio-administration package.json
 RUN find /opt/invenio/src/.venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec sed -i '/"axios":/d' {} \;
 
 # Build assets
