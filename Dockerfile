@@ -105,9 +105,10 @@ RUN . .venv/bin/activate && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-stats-dashboard && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-vocabularies
 
-# FIXME: Temporary fix for axios requirement in invenio_search_ui/webpack.py
+# FIXME: Temporary fix for axios requirement in invenio_search_ui/webpack.py and invenio_communities/webpack.py
 # Remove axios requirement before webpack build to prevent merge conflicts
-RUN find .venv/lib/python*/site-packages -name "webpack.py" -exec sed -i '/"axios": "^0.21.0"/d' {} \;
+RUN find .venv/lib/python*/site-packages -name "webpack.py" -exec sed -i '/"axios": "^0.21.0"/d' {} \; && \
+    find site/kcworks/dependencies -name "webpack.py" -exec sed -i '/"axios": "^0.21.0"/d' {} \;
 
 # Build assets
 RUN . .venv/bin/activate && \
