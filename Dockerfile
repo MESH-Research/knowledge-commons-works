@@ -106,7 +106,10 @@ RUN . .venv/bin/activate && \
     uv pip install --editable ./site/kcworks/dependencies/invenio-vocabularies
 
 # FIXME: Temporary fix for axios requirement in invenio-administration package.json
-RUN find /opt/invenio/src/.venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec sed -i '/"axios":/d' {} \;
+# Remove axios requirement before webpack build to prevent merge conflicts
+RUN find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec sed -i '/"axios":/d' {} \; && \
+    echo "=== Checking for axios in invenio_administration package.json files ===" && \
+    find .venv/lib/python*/site-packages/invenio_administration -name "package.json" -exec grep -l "axios" {} \; || echo "No axios found in package.json files"
 
 # Build assets
 RUN . .venv/bin/activate && \
