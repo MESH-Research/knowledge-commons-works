@@ -24,7 +24,7 @@ dependencies = [
     "invenio-record-importer-kcworks",
     "invenio-records-resources==5.10.0",
     "invenio-remote-api-provisioner",
-    "invenio-requests==2.1.0",
+    "invenio-requests==4.1.4",
     "invenio-s3",
     "invenio-saml",
     "invenio-search-ui==2.8.9",
