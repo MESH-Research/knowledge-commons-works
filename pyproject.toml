@@ -20,7 +20,7 @@ dependencies = [
     "invenio-logging[sentry]==2.1.5",
     "invenio-modular-deposit-form",
     "invenio-modular-detail-page",
-    "invenio-rdm-records==10.9.1",
+    "invenio-rdm-records==10.9.2",
     "invenio-record-importer-kcworks",
     "invenio-records-resources==5.10.0",
     "invenio-remote-api-provisioner",
