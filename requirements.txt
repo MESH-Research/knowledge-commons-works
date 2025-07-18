@@ -89,7 +89,7 @@ flask-kvsession-invenio==0.6.4
 flask-limiter==2.9.2
 flask-login==0.6.3
 flask-mail==0.9.1
-flask-menu==1.0.1
+flask-menu==2.0.0
 flask-oauthlib==0.9.6
 flask-principal==0.4.0
 flask-resources==1.2.0

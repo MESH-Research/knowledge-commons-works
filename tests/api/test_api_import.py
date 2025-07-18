@@ -1376,11 +1376,13 @@ class TestImportServiceJArticleErrorMissingFile(BaseImportServiceTest):
         return [
             [
                 {
-                    "file upload failures": {
-                        "sample.pdf": [
-                            "failed",
-                            ["File sample.pdf not found in list of files."],
-                        ]
+                    "file_upload_error": {
+                        "file upload failures": {
+                            "sample.pdf": [
+                                "failed",
+                                ["File sample.pdf not found in list of files."],
+                            ]
+                        },
                     },
                 },
             ],

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kcworks"
-version = "0.5.2"
+version = "0.5.3"
 requires-python = ">=3.12"
 dependencies = [
     "aiohttp>=3.11.15",
@@ -140,11 +140,13 @@ kcworks = "kcworks.services.search.index_templates.templates:get_index_templates
 kcworks-users = "kcworks.cli:kcworks_users"
 kcworks-index = "kcworks.cli:kcworks_index"
 kcworks-records = "kcworks.cli:kcworks_records"
+group-collections = "kcworks.cli:group_collections"
 
 [project.scripts]
 kcworks-users = "kcworks.cli:kcworks_users"
 kcworks-index = "kcworks.cli:kcworks_index"
 kcworks-records = "kcworks.cli:kcworks_records"
+group-collections = "kcworks.cli:group_collections"
 
 [tool.ruff]
 line-length = 88

@@ -139,7 +139,7 @@ But these commands should not be necessary in normal operation.
 
 The `.env` file is used to configure the Knowledge Commons Works application. It is a standard python environment file that is used to set the environment variables for the application.
 
-These are the minimal variables that you need to set in your `.env` file to get the application running:
+These are the minimal variables that you need to set in your `.env` file to get the application running. For local development you should use the default values for all variables except the ones with comments:
 
 ```shell
 FLASK_DEBUG=1
@@ -152,9 +152,10 @@ INVENIO_SEARCH_DOMAIN='search:9200'
 INVENIO_SITE_UI_URL="https://localhost"
 INVENIO_SITE_API_URL="https://localhost/api"
 REDIS_DOMAIN='cache:6379'
-INVENIO_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks" # DON'T FORGET TO CHANGE THE PASSWORD HERE
+INVENIO_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks" # THE PASSWORD HERE MUST MATCH THE POSTGRES_PASSWORD BELOW
 POSTGRES_USER=kcworks
 POSTGRES_DB=kcworks
+POSTGRES_PASSWORD=PASSWORDHERE
 INVENIO_CSRF_SECRET_SALT='GENERATE_IT_AS_PER_INSTRUCTIONS'
 INVENIO_SECURITY_LOGIN_SALT='GENERATE_IT_AS_PER_INSTRUCTIONS'
 INVENIO_SECRET_KEY='SECRET_KEY_VERY_SECRET'
@@ -166,8 +167,7 @@ API_TOKEN_PRODUCTION=myapitokenproduction # for importing test data in local dev
 INVENIO_LOCAL_SITE_PATH=/local/path/to/cloned/repository/knowledge-commons-works/site # set this to `site` under the base directory of your cloned repository
 INVENIO_LOCAL_DEPENDENCIES_PATH=/local/path/to/cloned/repository/knowledge-commons-works/site/kcworks/dependencies # set this to `site/kcworks/dependencies` under the base directory of your cloned repository
 PYTHON_LOCAL_SITE_PACKAGES_PATH=/local/path/to/cloned/repository/knowledge-commons-works/.venv/lib/python3.12/site-packages # you need this for dev
-POSTGRES_PASSWORD=PASSWORDHERE
-PGADMIN_DEFAULT_EMAIL=your.email@example.com
+PGADMIN_DEFAULT_EMAIL=your.email@example.com  # change this to your email address
 PGADMIN_DEFAULT_PASSWORD=PASSWORDHERE
 INVENIO_LOCAL_INSTANCE_PATH=/opt/invenio/var/instance
 ```

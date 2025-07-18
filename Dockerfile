@@ -89,26 +89,11 @@ RUN cp ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini && 
     cp -r ./templates ${INVENIO_INSTANCE_PATH}/templates && \
     cp -r ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data
 
-# Install local dependencies
-RUN . .venv/bin/activate && \
-    uv pip install --editable . && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-modular-deposit-form && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-group-collections-kcworks && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-modular-detail-page && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-record-importer-kcworks && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-remote-api-provisioner && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-remote-user-data-kcworks && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-communities && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-rdm-records && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-records-resources && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-requests && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-stats-dashboard && \
-    uv pip install --editable ./site/kcworks/dependencies/invenio-vocabularies
 
-# FIXME: Temporary fix for axios requirement in invenio_search_ui/webpack.py and invenio_communities/webpack.py
+
+# FIXME: Temporary fix for axios requirement in invenio_search_ui/webpack.py
 # Remove axios requirement before webpack build to prevent merge conflicts
-RUN find .venv/lib/python*/site-packages -name "webpack.py" -exec sed -i '/"axios": "^0.21.0"/d' {} \; && \
-    find site/kcworks/dependencies -name "webpack.py" -exec sed -i '/"axios": "^0.21.0"/d' {} \;
+RUN sed -i '/"axios": "^0.21.0"/d' .venv/lib/python*/site-packages/invenio_search_ui/webpack.py
 
 # Build assets
 RUN . .venv/bin/activate && \
