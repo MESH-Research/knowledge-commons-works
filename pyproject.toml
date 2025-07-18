@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kcworks"
-version = "0.5.2"
+version = "0.5.3"
 requires-python = ">=3.12"
 dependencies = [
     "aiohttp>=3.11.15",
@@ -14,15 +14,16 @@ dependencies = [
     "flask-breadcrumbs",
     "flask-principal",
     "halo",
-    "invenio-app-rdm>=12.0.0,<13.0.0",
+    "invenio-app-rdm[opensearch2]==12.1.0",
     "invenio-communities==13.0.3",
     "invenio-group-collections-kcworks",
     "invenio-modular-deposit-form",
     "invenio-modular-detail-page",
-    "invenio-rdm-records==10.9.1",
+    "invenio-rdm-records==10.9.2",
     "invenio-record-importer-kcworks",
     "invenio-records-resources==5.10.0",
     "invenio-remote-api-provisioner",
+    "invenio-requests==4.1.4",
     "invenio-logging[sentry]==2.1.5",
     "invenio-s3",
     "invenio-saml",
@@ -91,6 +92,8 @@ invenio-records-resources = {path = "./site/kcworks/dependencies/invenio-records
 invenio-remote-api-provisioner = {path = "./site/kcworks/dependencies/invenio-remote-api-provisioner", editable = true}
 invenio-record-importer-kcworks = {path = "./site/kcworks/dependencies/invenio-record-importer-kcworks", editable = true}
 invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
+invenio-requests = {path = "./site/kcworks/dependencies/invenio-requests", editable = true}
+invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
 
 [tool.setuptools]
 package-dir = {"" = "site"}

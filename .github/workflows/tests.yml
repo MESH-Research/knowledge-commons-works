@@ -83,6 +83,7 @@ jobs:
           INVENIO_MAIL_SUPPRESS_SEND: False
           SPARKPOST_API_KEY: ${{ secrets.TEST_SPARKPOST_API_KEY }}
           SPARKPOST_USERNAME: ${{ secrets.TEST_SPARKPOST_USERNAME }}
+          PYTHONWARNINGS: "ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::UserWarning"
         run: |
           chmod +x run-tests.sh
           bash run-tests.sh

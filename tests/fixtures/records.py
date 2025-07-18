@@ -828,7 +828,12 @@ class TestRecordMetadata:
         if by_api:
             expected = self._as_via_api(expected, is_draft=False, method=method)
         try:
-            assert now - arrow.get(actual["created"]) < timedelta(seconds=7)
+            if self.metadata_in.get("created"):
+                assert arrow.get(actual["created"]) == arrow.get(
+                    self.metadata_in["created"]
+                )
+            else:
+                assert now - arrow.get(actual["created"]) < timedelta(seconds=7)
             assert actual["custom_fields"] == expected["custom_fields"]
             assert "expires_at" not in actual.keys()
             assert actual["files"]["count"] == expected["files"]["count"]
