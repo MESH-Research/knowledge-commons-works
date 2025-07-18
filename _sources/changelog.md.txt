@@ -1,7 +1,31 @@
 <!-- This file is part of Knowledge Commons Works. -->
-<!-- Copyright (C) 2024 Mesh Research. -->
+<!-- Copyright (C) 2024-2025 Mesh Research. -->
 
 # Changes
+
+## 0.5.3 (2025-07-17)
+
+- Group collections
+    - Fixed a bug where the groups that facilitate proper permissions for group-based collections were not being assigned correctly as members of the collections.
+    - Added a new CLI command and service class to allow admins to check the group memberships of all communities and fix them if necessary.
+- Remote user data service
+    - Centralized the creation of roles related to KC groups in invenio-group-collections-kcworks.
+    - Regularized the owner role name for linked group collections to use "administrator" where previously we had duplicated "admin" and "administrator" roles (because of API response inconsistency).
+- Importer
+    - Fixed a bug where the importer was not correctly handling the case where a record was already published in a collection and the user was trying to add it to the same collection again.
+    - Added ability to override the auto-generated created date of a record when importing it.
+    - Added handling of community addition events for imported records (to support upcoming stats dashboard).
+- Documentation
+    - Added developer documentation of the new group collections checking CLI command.
+    - Added developer documentation about working with user data.
+    - Minor updates to installation instructions.
+- Testing
+    - Added new integration tests for the new group collections checker.
+    - Updated tests related to group collection roles and permissions.
+    - Miscellaneous test fixture updates and test fixes.
+- Build
+    - Updated versions of forked Invenio dependencies: invenio-communities, invenio-rdm-records, invenio-vocabularies.
+- Public roadmap updates
 
 ## 0.5.2 (2025-05-29)
 

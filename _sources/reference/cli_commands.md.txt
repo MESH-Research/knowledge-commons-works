@@ -135,6 +135,34 @@ Arguments:
 - `--collection-role` (-r): the name of the collection role to list groups for.
 
 
+### `invenio group-collections`
+
+- **provided by the main KCWorks package** (kcworks/site/cli.py and kcworks/services/communities/cli.py)
+
+#### `invenio group-collections check-group-memberships`
+
+Checks and fixes community group memberships for all communities that have group IDs configured.
+
+This command will:
+1. Find all communities with group IDs
+2. Check if the expected group roles exist
+3. Create missing roles if needed
+4. Add missing role memberships to communities
+5. Fix incorrect role permissions
+6. Report the results
+
+The command will create three types of roles for each group collection:
+- `{commons_instance}---{group_id}|administrator` (owner permission)
+- `{commons_instance}---{group_id}|moderator` (curator permission)
+- `{commons_instance}---{group_id}|member` (reader permission)
+
+Example:
+```shell
+invenio group-collections check-group-memberships
+```
+
+The command will output a summary showing how many communities were unchanged, fixed, or had errors. If any communities had errors, the command will exit with a non-zero status code.
+
 ### `invenio user-data update`
 
 - **provided by the `invenio-remote-user-data-kcworks` package**

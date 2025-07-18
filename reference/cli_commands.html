@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Customizations to InvenioRDM" href="../customizations.html" /><link rel="prev" title="API" href="api.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>CLI Commands - Knowledge Commons Works 0.5.2 documentation</title>
+        <title>CLI Commands - Knowledge Commons Works 0.5.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.5.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.5.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.5.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.5.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -425,6 +425,36 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 </ul>
 </section>
 </section>
+<section id="invenio-group-collections">
+<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">group-collections</span></code><a class="headerlink" href="#invenio-group-collections" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>provided by the main KCWorks package</strong> (kcworks/site/cli.py and kcworks/services/communities/cli.py)</p></li>
+</ul>
+<section id="invenio-group-collections-check-group-memberships">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">group-collections</span> <span class="pre">check-group-memberships</span></code><a class="headerlink" href="#invenio-group-collections-check-group-memberships" title="Link to this heading">¶</a></h4>
+<p>Checks and fixes community group memberships for all communities that have group IDs configured.</p>
+<p>This command will:</p>
+<ol class="arabic simple">
+<li><p>Find all communities with group IDs</p></li>
+<li><p>Check if the expected group roles exist</p></li>
+<li><p>Create missing roles if needed</p></li>
+<li><p>Add missing role memberships to communities</p></li>
+<li><p>Fix incorrect role permissions</p></li>
+<li><p>Report the results</p></li>
+</ol>
+<p>The command will create three types of roles for each group collection:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">{commons_instance}---{group_id}|administrator</span></code> (owner permission)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{commons_instance}---{group_id}|moderator</span></code> (curator permission)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{commons_instance}---{group_id}|member</span></code> (reader permission)</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>group-collections<span class="w"> </span>check-group-memberships
+</pre></div>
+</div>
+<p>The command will output a summary showing how many communities were unchanged, fixed, or had errors. If any communities had errors, the command will exit with a non-zero status code.</p>
+</section>
+</section>
 <section id="invenio-user-data-update">
 <h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">update</span></code><a class="headerlink" href="#invenio-user-data-update" title="Link to this heading">¶</a></h3>
 <ul class="simple">
@@ -509,6 +539,10 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 <li><a class="reference internal" href="#invenio-kcworks-users-user-groups"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">user-groups</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#invenio-group-collections"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">group-collections</span></code></a><ul>
+<li><a class="reference internal" href="#invenio-group-collections-check-group-memberships"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">group-collections</span> <span class="pre">check-group-memberships</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#invenio-user-data-update"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">update</span></code></a></li>
 </ul>
 </li>
@@ -523,7 +557,7 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=8e576371"></script>
+</div><script src="../_static/documentation_options.js?v=2a2fe768"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
