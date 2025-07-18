@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2025-05-29 00:04-0400\n"
+"POT-Creation-Date: 2025-07-17 22:03-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,10 +69,11 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/config.py:47
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/config.py:90
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/config.py:121
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:213
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:213
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-records-resources/build/lib/invenio_records_resources/services/records/config.py:36
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-records-resources/invenio_records_resources/services/records/config.py:36
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/config.py:47
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/config.py:96
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/affiliations/config.py:38
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/funders/config.py:45
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/names/config.py:45
@@ -92,10 +93,11 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:194
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/config.py:98
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/config.py:129
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:217
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:217
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-records-resources/build/lib/invenio_records_resources/services/records/config.py:40
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-records-resources/invenio_records_resources/services/records/config.py:40
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/config.py:51
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/config.py:100
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/affiliations/config.py:46
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/funders/config.py:53
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/names/config.py:53
@@ -115,10 +117,11 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:198
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/config.py:102
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/config.py:133
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:221
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:221
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-records-resources/build/lib/invenio_records_resources/services/records/config.py:44
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-records-resources/invenio_records_resources/services/records/config.py:44
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/config.py:55
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/config.py:104
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/affiliations/config.py:50
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/funders/config.py:57
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/names/config.py:57
@@ -138,7 +141,6 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:577
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/config.py:68
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:68
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:225
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:225
 msgid "Version"
 msgstr ""
@@ -146,7 +148,6 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:581
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/config.py:72
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:72
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:229
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:229
 msgid "Recently updated"
 msgstr ""
@@ -154,19 +155,16 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:585
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/config.py:76
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:76
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:233
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:233
 msgid "Least recently updated"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:589
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:237
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:237
 msgid "Most viewed"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:592
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:240
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:240
 msgid "Most downloaded"
 msgstr ""
@@ -300,11 +298,6 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:785
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-detail-page/build/lib/invenio_modular_detail_page/config.py:112
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:112
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:82
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:88
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/imprint.html:22
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/journal.html:3
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/meeting.html:4
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:82
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:88
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/imprint.html:22
@@ -321,6 +314,7 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:797
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-detail-page/build/lib/invenio_modular_detail_page/config.py:134
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:134
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:106
 msgid "Content"
 msgstr ""
 
@@ -417,9 +411,6 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:952
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-detail-page/build/lib/invenio_modular_detail_page/config.py:313
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:313
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:82
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:92
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:108
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:82
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:92
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:108
@@ -437,18 +428,12 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1045
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1061
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1175
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:75
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:336
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:343
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:366
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/tests/conftest.py:268
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/tests/conftest.py:275
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:75
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:336
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:343
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:366
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:268
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:275
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:273
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:280
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:21
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:57
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:66
@@ -471,10 +456,8 @@ msgid "DOI"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1050
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:348
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/tests/conftest.py:280
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:348
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:280
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:285
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:71
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:93
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-remote-api-provisioner/tests/conftest.py:310
@@ -484,7 +467,6 @@ msgid "OAI ID"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1069
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:374
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:374
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:30
 #: /Users/ianscott/Development/knowledge-commons-works/tests/fixtures/identifiers.py:39
@@ -492,12 +474,9 @@ msgid "OAI"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1081
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:394
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:404
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/tests/conftest.py:289
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:394
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:404
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:289
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:294
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:42
 #: /Users/ianscott/Development/knowledge-commons-works/tests/fixtures/identifiers.py:50
 msgid "Concept DOI"
@@ -567,7 +546,6 @@ msgid "Email"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1166
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:78
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:78
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:183
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:37
@@ -576,7 +554,6 @@ msgid "GRID"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1167
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:58
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:58
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:184
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:38
@@ -586,8 +563,6 @@ msgid "GND"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1168
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:57
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:86
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:57
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:86
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:139
@@ -600,7 +575,6 @@ msgid "ISNI"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1169
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:59
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:59
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:186
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:40
@@ -731,7 +705,6 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/config.py:51
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/config.py:94
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/config.py:125
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/config.py:47
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/config.py:47
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/affiliations/config.py:42
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/funders/config.py:49
@@ -865,8 +838,6 @@ msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/communities/resources/ui_schema.py:40
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/resources/ui_schema.py:40
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/schema.py:104
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/github/release.py:60
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/schema.py:104
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/github/release.py:60
 msgid "Unknown"
@@ -874,14 +845,12 @@ msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/communities/resources/ui_schema.py:47
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/resources/ui_schema.py:47
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/schema.py:111
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/schema.py:111
 msgid "System (automatic)"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/communities/resources/ui_schema.py:49
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/resources/ui_schema.py:49
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/schema.py:113
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/schema.py:113
 msgid "Admin"
 msgstr ""
@@ -913,6 +882,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/communities/services/facets.py:16
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:16
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:16
 msgid "Type"
 msgstr ""
 
@@ -964,8 +934,6 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:30
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:50
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/macros/access-status-label.html:9
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:37
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:34
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:37
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:34
 #: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/details/macros/access-status-label.html:22
@@ -988,47 +956,53 @@ msgstr ""
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/members/services/facets.py:42
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:24
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:42
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:42
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:42
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:30
 msgid "Status"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/members/services/facets.py:26
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:26
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:32
 msgid "Submitted"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/members/services/facets.py:27
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:27
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:33
 msgid "Expired"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/members/services/facets.py:28
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:28
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:34
 msgid "Accepted"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/members/services/facets.py:29
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:29
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:35
 msgid "Declined"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/members/services/facets.py:30
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:30
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:36
 msgid "Cancelled"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/members/services/facets.py:43
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:43
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:35
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:32
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:35
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:32
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:43
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:45
 msgid "Open"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/members/services/facets.py:43
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:43
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:46
 msgid "Closed"
 msgstr ""
 
@@ -1153,12 +1127,14 @@ msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/templates/semantic-ui/invenio_communities/tombstone.html:10
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/tombstone.html:10
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/templates/semantic-ui/invenio_requests/tombstone.html:9
 #: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/tombstone.html:17
 msgid "Tombstone"
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/templates/semantic-ui/invenio_communities/tombstone.html:20
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/tombstone.html:20
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/templates/semantic-ui/invenio_requests/tombstone.html:12
 #: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/tombstone.html:27
 msgid "Gone"
 msgstr ""
@@ -1175,6 +1151,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/templates/semantic-ui/invenio_communities/tombstone.html:34
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/tombstone.html:34
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/templates/semantic-ui/invenio_requests/tombstone.html:21
 #: /Users/ianscott/Development/knowledge-commons-works/templates/semantic-ui/invenio_communities/tombstone.html:41
 msgid "Reason for removal:"
 msgstr ""
@@ -1286,8 +1263,6 @@ msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/build/lib/invenio_communities/templates/semantic-ui/invenio_communities/details/settings/base.html:22
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/settings/base.html:22
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/imprint.html:17
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/journal.html:18
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/imprint.html:17
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/journal.html:18
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/imprint_fields.py:44
@@ -1359,57 +1334,45 @@ msgstr ""
 msgid "Edit upload"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:56
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:56
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:99
 msgid "ORCID"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:63
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:63
 msgid "ARK"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:64
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:64
 msgid "arXiv"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:66
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:66
 msgid "Bibcode"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:71
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:71
 msgid "Crossref Funder ID"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:76
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:76
 msgid "EAN13"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:77
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:77
 msgid "EISSN"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:80
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:80
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:129
 #: /Users/ianscott/Development/knowledge-commons-works/tests/fixtures/identifiers.py:133
 msgid "Handle"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:84
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:84
 msgid "IGSN"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:85
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:83
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/imprint.html:12
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:85
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:83
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/imprint.html:12
@@ -1421,9 +1384,6 @@ msgstr ""
 msgid "ISBN"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:87
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:104
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/journal.html:23
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:87
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:104
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/journal.html:23
@@ -1435,37 +1395,30 @@ msgstr ""
 msgid "ISSN"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:88
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:88
 msgid "ISTC"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:89
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:89
 msgid "LISSN"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:90
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:90
 msgid "LSID"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:91
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:91
 msgid "PMID"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:92
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:92
 msgid "PURL"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:93
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:93
 msgid "UPC"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:94
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:94
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:149
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:59
@@ -1473,38 +1426,28 @@ msgstr ""
 msgid "URL"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:95
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:95
 msgid "URN"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:96
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:96
 msgid "W3ID"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:97
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:97
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:154
 #: /Users/ianscott/Development/knowledge-commons-works/tests/fixtures/identifiers.py:158
 msgid "Other"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:102
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:102
 msgid "Wikidata"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:103
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:103
 msgid "GeoNames"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:40
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:69
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:109
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:149
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:304
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:40
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:69
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:109
@@ -1513,11 +1456,6 @@ msgstr ""
 msgid "Set name"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:39
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:74
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:114
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:150
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:308
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:39
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:74
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:114
@@ -1526,10 +1464,6 @@ msgstr ""
 msgid "Set spec"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:42
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:152
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:312
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/config.py:55
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:42
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:152
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:312
@@ -1537,10 +1471,6 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:43
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:153
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/config.py:316
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/config.py:59
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:43
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:153
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:316
@@ -1548,25 +1478,18 @@ msgstr ""
 msgid "Updated"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/utils.py:117
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/utils.py:117
 msgid "Your shared link has expired."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:28
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:28
 msgid "OAI-PMH Sets"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:29
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:29
 msgid "Site management"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:41
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:82
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:122
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:151
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:41
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:82
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:122
@@ -1574,29 +1497,21 @@ msgstr ""
 msgid "Search query"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:62
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:62
 msgid "Edit OAI-PMH set"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:64
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:104
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:145
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:64
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:104
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:145
 msgid "OAI-PMH"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:70
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:110
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:70
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:110
 msgid "A short human-readable string naming the set."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:76
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:116
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:76
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:116
 msgid ""
@@ -1604,8 +1519,6 @@ msgid ""
 "created."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:84
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:124
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:84
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:124
 msgid ""
@@ -1613,24 +1526,19 @@ msgid ""
 "Guide</a>."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:102
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:102
 msgid "Create OAI-PMH set"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/administration/views/oai.py:139
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/administration/views/oai.py:139
 msgid "OAI-PMH Details"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:36
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:44
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:36
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:44
 msgid "You must provide a valid URL."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:54
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:54
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/codemeta_fields.py:5
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/codemeta_fields.py:23
@@ -1638,59 +1546,47 @@ msgstr ""
 msgid "Software"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:61
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:61
 msgid "Repository URL"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:63
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:63
 msgid "URL or link where the code repository is hosted."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:70
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:111
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:70
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:111
 msgid "Programming language"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:72
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:72
 msgid "Repository's programming language."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:73
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:73
 msgid "e.g. Python ..."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:85
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:85
 msgid "Development Status"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:86
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:86
 msgid "Repository status"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:88
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:88
 msgid "Repository current status."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/codemeta/custom_fields.py:101
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/codemeta/custom_fields.py:101
 msgid "Development status"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:35
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:35
 msgid "Please provide a valid ISBN."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:69
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:69
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/imprint_fields.py:5
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/imprint_fields.py:21
@@ -1698,15 +1594,10 @@ msgstr ""
 msgid "Book / Report / Chapter"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:76
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:76
 msgid "Imprint (Book, Chapter, or Report)"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:78
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:103
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/imprint.html:7
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/meeting.html:19
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:78
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:103
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/imprint.html:7
@@ -1717,7 +1608,6 @@ msgstr ""
 msgid "Place"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:79
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:79
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/imprint_fields.py:25
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/imprint_fields.py:41
@@ -1725,12 +1615,10 @@ msgstr ""
 msgid "e.g. city, country"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:80
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:80
 msgid "Place where the book or report was published"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:84
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:84
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/imprint_fields.py:35
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/imprint_fields.py:51
@@ -1738,7 +1626,6 @@ msgstr ""
 msgid "e.g. 0-06-251587-X"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:85
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:85
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/imprint_fields.py:36
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/imprint_fields.py:52
@@ -1746,33 +1633,26 @@ msgstr ""
 msgid "International Standard Book Number"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:88
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:88
 msgid "Book or report title"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:91
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:91
 msgid "Title of the book or report which this upload is part of"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:95
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:95
 msgid "Pagination"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/imprint/custom_fields.py:96
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:96
 msgid "e.g. 15-23 or 158"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:38
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:38
 msgid "Please provide a valid ISSN."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:73
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:80
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:73
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:80
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/journal_fields.py:19
@@ -1781,13 +1661,10 @@ msgstr ""
 msgid "Journal"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:85
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:85
 msgid "Title of the journal in which the article was published"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:89
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/journal.html:8
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:89
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/journal.html:8
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/journal_fields.py:38
@@ -1803,13 +1680,10 @@ msgstr ""
 msgid "Volume"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:90
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:90
 msgid "e.g. 645"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:94
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/journal.html:13
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:94
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/journal.html:13
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/journal_fields.py:48
@@ -1818,27 +1692,22 @@ msgstr ""
 msgid "Issue"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:95
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:95
 msgid "e.g. 7"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:99
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:99
 msgid "Page range or article number"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:100
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:100
 msgid "e.g. 15-23 or A29"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:105
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:105
 msgid "e.g. 2077-9550"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/custom_fields.py:106
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/custom_fields.py:106
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/journal_fields.py:70
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/journal_fields.py:77
@@ -1846,12 +1715,10 @@ msgstr ""
 msgid "International Standard Serial Number"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/journal/sort.py:14
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/journal/sort.py:14
 msgid "Journal [Newest]"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:80
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:80
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/meeting_fields.py:23
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/meeting_fields.py:21
@@ -1859,8 +1726,6 @@ msgstr ""
 msgid "Conference"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:93
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/meeting.html:9
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:93
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/meeting.html:9
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/meeting_fields.py:40
@@ -1869,8 +1734,6 @@ msgstr ""
 msgid "Acronym"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:98
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/meeting.html:14
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:98
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/meeting.html:14
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/meeting_fields.py:50
@@ -1879,7 +1742,6 @@ msgstr ""
 msgid "Dates"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:99
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:99
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/meeting_fields.py:51
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/meeting_fields.py:49
@@ -1887,20 +1749,15 @@ msgstr ""
 msgid "e.g. 21-22 November 2022."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:105
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:105
 msgid "Location where the conference took place."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:108
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/meeting.html:24
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:108
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/meeting.html:24
 msgid "Website"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:113
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/meeting.html:29
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:113
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/meeting.html:29
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/meeting_fields.py:83
@@ -1909,7 +1766,6 @@ msgstr ""
 msgid "Session"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:114
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:114
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/meeting_fields.py:84
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/meeting_fields.py:82
@@ -1917,17 +1773,14 @@ msgstr ""
 msgid "e.g. VI"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:115
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:115
 msgid "Session within the conference."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:118
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:118
 msgid "Part"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:119
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:119
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/meeting_fields.py:94
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/meeting_fields.py:92
@@ -1935,569 +1788,454 @@ msgstr ""
 msgid "e.g. 1"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/custom_fields.py:120
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/custom_fields.py:120
 msgid "Part within the session."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/meeting/sort.py:14
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/meeting/sort.py:14
 msgid "Conference session [Newest]"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/thesis/custom_fields.py:26
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/thesis/custom_fields.py:32
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/thesis/custom_fields.py:26
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/thesis/custom_fields.py:32
 msgid "Thesis"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/contrib/thesis/custom_fields.py:35
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/thesis/custom_fields.py:35
 msgid "Awarding university"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/config.py:36
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/config.py:36
 msgid "Ascending"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/config.py:40
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/config.py:40
 msgid "Descending"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/config.py:51
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/config.py:51
 msgid "Spec"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/errors.py:30
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/errors.py:30
 #, python-brace-format
 msgid "A set where {query_arguments} does not exist."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/errors.py:43
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/errors.py:43
 #, python-brace-format
 msgid "A set with id {id} does not exist."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/errors.py:53
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/errors.py:53
 #, python-brace-format
 msgid "A set with spec '{spec}' already exists."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/errors.py:63
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/errors.py:63
 #, python-brace-format
 msgid "The set with id {id} is not editable."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/schema.py:30
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/schema.py:30
 msgid "Search pattern"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/services.py:81
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/services.py:81
 #, python-brace-format
 msgid "The spec must not start with any of the following list '{prefix}'."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/oaiserver/services/services.py:93
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/oaiserver/services/services.py:93
 #, python-brace-format
 msgid "The spec must only consist of letters, numbers or {marks}."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/records/systemfields/draft_status.py:83
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/records/systemfields/draft_status.py:83
 #, python-brace-format
 msgid "Unknown draft status for review: {reviewstatus}."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/records/systemfields/draft_status.py:89
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/records/systemfields/draft_status.py:89
 msgid "Unknown draft status."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/requests/community_inclusion.py:99
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/requests/community_inclusion.py:99
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:19
 msgid "Community inclusion"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/requests/community_submission.py:179
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/requests/community_submission.py:179
 msgid "Community submission"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/requests/community_transfer.py:26
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/requests/community_transfer.py:26
 msgid "Community transfer"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/requests/access/requests.py:189
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/requests/access/requests.py:189
 #, python-format
 msgid "Click <a href=\"%(url)s\">here</a> to access the record."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/requests/access/requests.py:249
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/requests/access/requests.py:281
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/requests/access/requests.py:249
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/requests/access/requests.py:281
 msgid "Access request"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/requests/access/requests.py:318
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/requests/access/requests.py:323
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/requests/access/requests.py:318
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/requests/access/requests.py:323
 msgid "Not a valid number of days."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:199
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:199
 msgid "Citation string style not found."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:205
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:205
 msgid "Review for draft not found"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:243
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:276
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:318
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:243
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:276
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:318
 msgid "Record not found"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:247
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:280
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:322
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:247
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:280
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:322
 msgid "Record deleted"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:255
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:255
 msgid "Cannot publish without selecting a community."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:357
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:357
 msgid "No secret link found with the given ID."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:365
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:365
 msgid "No grant found with the given ID."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:378
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:378
 msgid "No grant found by given user id."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/config.py:385
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/config.py:385
 msgid "No grant found by given group id."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/iiif.py:99
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/iiif.py:99
 msgid "Image size limit exceeded"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/iiif.py:106
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/iiif.py:106
 msgid ""
 "The record associated with this file has been deleted. See deletion "
 "notice."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/deserializers/rocrate/__init__.py:31
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/deserializers/rocrate/__init__.py:31
 msgid "Invalid RO-Crate metadata format, missing '@graph' key."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/deserializers/rocrate/schema.py:32
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:365
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/deserializers/rocrate/schema.py:32
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:365
 msgid "Missing data for required field."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/deserializers/rocrate/schema.py:102
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/deserializers/rocrate/schema.py:102
 msgid "'@type' must be 'Person' or 'Organization'"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/deserializers/rocrate/schema.py:138
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/deserializers/rocrate/schema.py:138
 msgid "Format must be a list of strings."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/utils.py:37
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/utils.py:37
 #, python-format
 msgid "The '%(vocabulary)s' vocabulary item '%(id_)s' was not found."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/cff/schema.py:29
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/cff/schema.py:29
 msgid "One of 'family-names' or 'given-names' is required."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/datacite/schema.py:281
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/datacite/schema.py:281
 msgid "Invalid publication date value."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/iiif/schema.py:167
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/iiif/schema.py:167
 msgid "Current Page Order"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/iiif/schema.py:194
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/iiif/schema.py:194
 msgid "Manifest generated by InvenioRDM"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/iiif/schema.py:213
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/iiif/schema.py:213
 msgid "Publication Date"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/schemaorg/schema.py:122
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/schemaorg/schema.py:122
 msgid "Affiliation failed to serialize: one of 'id' or 'name' must be provided."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/schemaorg/schema.py:363
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/schemaorg/schema.py:363
 msgid ""
 "Funding serialization failed on award: one of 'id' or ('number' and "
 "'title') are required."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:36
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:33
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:36
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:33
 msgid "Embargoed"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:38
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:35
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:38
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:35
 msgid "Metadata-only"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:65
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:65
 msgid "The record and files are publicly accessible."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:67
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:67
 msgid "No files are available for this record."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:76
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:76
 #, python-format
 msgid "The record and files will be made publicly available on %(date)s."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:81
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:81
 msgid "The record and files are restricted to users with access."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:90
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:90
 #, python-format
 msgid "The record will be made publicly available on %(date)s."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:94
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:94
 msgid "The record is restricted to users with access."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:102
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:102
 #, python-format
 msgid "The files will be made publicly available on %(date)s."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/resources/serializers/ui/fields.py:106
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/resources/serializers/ui/fields.py:106
 msgid ""
 "The record is publicly accessible, but files are restricted to users with"
 " access."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:21
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:21
 msgid "Grant for this user/role already exists within this record."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:53
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:53
 #, python-format
 msgid "Embargo could not be lifted for record: %(record_id)s"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:65
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:65
 msgid "Review not found."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:83
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:83
 msgid "The record is already included in this community."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:93
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:93
 msgid "A public record cannot be included in a restricted community."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:106
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:106
 msgid "There is already an open inclusion request for this community."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:162
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:162
 #, python-format
 msgid "The record %(rec_id)s in not included in the community %(com_id)s."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:178
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:178
 #, python-format
 msgid "Cannot modify community visibility: %(reason)s"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:197
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:197
 #, python-format
 msgid "Identical access requests already exist: %(request_id)s"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:201
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:201
 msgid "The access request is a duplicate"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:207
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:207
 msgid "Cannot publish without a community."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/errors.py:213
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/errors.py:213
 msgid "A record should be part of at least 1 community."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:30
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:30
 msgid "Access status"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:43
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:43
 msgid "Published"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:43
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:43
 msgid "Unpublished"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:49
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:49
 msgid "File type"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:56
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:56
 msgid "Languages"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/facets.py:65
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:65
 msgid "Resource types"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/services.py:635
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/services.py:634
 msgid ""
 "Record visibility can not be changed to restricted anymore. Please "
 "contact support if you still need to make these changes."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/access/service.py:128
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/access/service.py:162
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/access/service.py:128
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/access/service.py:162
 msgid "Expiration date must be set to the future"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/access/service.py:156
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/access/service.py:156
 msgid "Cannot postpone expiration of links"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/access/service.py:183
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/access/service.py:183
 msgid "An access permission level is required"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/access/service.py:198
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/access/service.py:198
 msgid "Invalid access permission level."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/access/service.py:408
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/access/service.py:513
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/access/service.py:938
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/access/service.py:408
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/access/service.py:513
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/access/service.py:938
 msgid "Could not find the specified subject."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/access/service.py:733
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/access/service.py:733
 msgid "Verification link sent out, please check your e-mail inbox"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/communities/components.py:53
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/communities/components.py:53
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/communities/components.py:55
 msgid "Cannot restrict a community with public records."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/communities/service.py:179
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/communities/service.py:179
 msgid "Community not found."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/communities/service.py:449
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/communities/service.py:449
 msgid "Community already included."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/community_inclusion/service.py:46
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/community_inclusion/service.py:60
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/community_inclusion/service.py:46
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/community_inclusion/service.py:60
 msgid "Invalid request type."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/community_records/service.py:131
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/community_records/service.py:131
 msgid "The record does not exist."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/community_records/service.py:138
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/community_records/service.py:138
 msgid "Permission denied."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/components/access.py:39
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/components/access.py:39
 msgid "You don't have permissions to manage record access."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/components/review.py:38
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/components/review.py:38
 msgid ""
 "You cannot delete a draft with an open review. Please cancel the review "
 "first."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/github/metadata.py:58
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/github/metadata.py:58
 msgid "No description provided."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/github/metadata.py:167
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/github/metadata.py:167
 msgid "Citation schema is needed to load citation metadata."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/errors.py:23
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/errors.py:23
 #, python-brace-format
 msgid "No configuration defined for PIDs {schemes}"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/errors.py:34
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/errors.py:34
 #, python-format
 msgid "Unknown PID provider %(provider)s for %(scheme)s"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/manager.py:87
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/manager.py:87
 #, python-brace-format
 msgid "Invalid {scheme}"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/manager.py:166
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/manager.py:166
 #, python-brace-format
 msgid "A PID already exists for type {scheme}"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/manager.py:173
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/manager.py:173
 msgid "External identifier value is required."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/manager.py:211
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/manager.py:241
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/manager.py:211
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/manager.py:241
 #, python-brace-format
 msgid "PID not found for type {scheme}"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/manager.py:268
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/manager.py:268
 msgid "Cannot discard a reserved or registered persistent identifier."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/providers/base.py:85
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/providers/base.py:85
 msgid "You must provide a pid value."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/providers/base.py:176
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/providers/base.py:176
 #, python-brace-format
 msgid "{pid_type}:{identifier} already exists."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/providers/datacite.py:281
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/providers/datacite.py:281
 msgid "Missing publisher field required for DOI registration."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/providers/external.py:45
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/providers/external.py:45
 #, python-brace-format
 msgid ""
@@ -2505,175 +2243,142 @@ msgid ""
 " DOI or select 'No' to have a DOI generated for you."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/pids/providers/external.py:91
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/pids/providers/external.py:91
 #, python-brace-format
 msgid "Missing {scheme} for required field."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/review/service.py:52
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/review/service.py:52
 msgid "Invalid review type."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/review/service.py:59
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/review/service.py:59
 msgid "A review already exists for this record"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/review/service.py:63
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/review/service.py:63
 msgid "You cannot create a review for an already published record."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/review/service.py:132
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/review/service.py:132
 msgid "You cannot delete a review for a draft that has already been published."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/review/service.py:138
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/review/service.py:138
 msgid "An open review cannot be deleted."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/review/service.py:157
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/review/service.py:157
 msgid "Must be a boolean, true or false"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/access.py:39
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/access.py:39
 msgid "Embargo end date must be set to a future date."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/access.py:48
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/access.py:48
 msgid "Embargo end date must be unset or in the past."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/access.py:65
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/access.py:65
 #, python-brace-format
 msgid "'{field_name}' must be either 'public' or 'restricted'"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/community_records.py:34
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/community_records.py:34
 #, python-brace-format
 msgid "Too many records passed, {max_number} max allowed."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/community_records.py:51
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/community_records.py:51
 #, python-brace-format
 msgid "Duplicated records {rec_ids}."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:75
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:75
 msgid "Only one value is accepted."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:77
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:77
 msgid "Not a valid locale."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:89
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:93
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:89
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:93
 #, python-brace-format
 msgid "Invalid value. Choose one of {NAMES}."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:116
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:116
 msgid "Family name cannot be blank."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:121
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:121
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/funders/schema.py:36
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/funders/schema.py:44
 msgid "Name cannot be blank."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:157
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:157
 msgid "Duplicated affiliations: "
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:216
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:228
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:216
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:228
 msgid "Not a valid URL."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:248
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:248
 msgid "An existing id or a free text title must be present"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:254
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:254
 msgid ""
 "Only an existing id or free text title/description/link is accepted, but "
 "not both cases at the same time"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:344
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:344
 msgid ""
 "At least one of ['geometry', 'place',                 identifiers', "
 "'description'] must be present."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:368
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:368
 msgid "Title cannot be a blank string."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:385
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:385
 msgid "Size cannot be a blank string."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/metadata.py:388
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/metadata.py:388
 msgid "Format cannot be a blank string."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/record.py:36
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/record.py:36
 msgid "Invalid persistent identifier scheme."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/record_communities.py:37
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/record_communities.py:37
 #, python-brace-format
 msgid "Too many communities passed, {max_number} max allowed."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/record_communities.py:54
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/record_communities.py:54
 #, python-brace-format
 msgid "Duplicated communities {com_ids}."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/services/schemas/parent/__init__.py:28
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/schemas/parent/__init__.py:28
 #, python-brace-format
 msgid "Invalid persistent identifier scheme {scheme}."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/imprint.html:2
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/imprint.html:2
 msgid "Publisher"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/templates/semantic-ui/meeting.html:34
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/templates/semantic-ui/meeting.html:34
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/metadata_fields/meeting_fields.py:93
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/metadata_fields/meeting_fields.py:91
@@ -2681,46 +2386,38 @@ msgstr ""
 msgid "Session part"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/tokens/errors.py:23
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/tokens/errors.py:23
 msgid ""
 "Missing \"kid\" key with personal access token ID in JWT header of "
 "resource access token."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/tokens/errors.py:32
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/tokens/errors.py:32
 msgid ""
 "\"kid\" JWT header value of resource access token not a valid personal "
 "access token ID."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/tokens/errors.py:40
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/tokens/errors.py:40
 msgid "Failed to decode resource access token."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/tokens/errors.py:46
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/tokens/errors.py:46
 msgid "The resource access token is invalid."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/tokens/errors.py:52
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/tokens/errors.py:52
 msgid "The resource access token subject is invalid."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/tokens/errors.py:58
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/tokens/errors.py:58
 msgid "The resource access token is expired."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/tokens/errors.py:64
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/tokens/errors.py:64
 msgid "Resource Access Tokens feature is currently disabled."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/build/lib/invenio_rdm_records/tokens/scopes.py:16
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/tokens/scopes.py:16
 msgid "Allow generation of granular access JWT tokens."
 msgstr ""
@@ -3059,6 +2756,112 @@ msgstr ""
 msgid "Invalid search field: {field_name}."
 msgstr ""
 
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/customizations/user_moderation/user_moderation.py:48
+msgid "User moderation"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/resources/requests/fields.py:24
+msgid "Not a valid reference."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/events/service.py:197
+msgid "deleted a comment"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:18
+msgid "Draft review"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:20
+msgid "Member invitation"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:21
+msgid "Guest access"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:22
+msgid "User access"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:23
+msgid "Community manage record"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/requests/facets.py:24
+msgid "Membership request"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/user_moderation/errors.py:14
+msgid "Invalid creator for user moderation request."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/user_moderation/errors.py:20
+msgid "There is already an open moderation request for this user."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/services/user_moderation/service.py:82
+msgid "Moderation role must exist to enable user moderation requests."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/templates/semantic-ui/invenio_requests/tombstone.html:14
+#, python-format
+msgid ""
+"\n"
+"    The record  you are trying to access was removed from %(sitename)s. "
+"The\n"
+"    metadata of the record is kept for archival purposes.\n"
+"  "
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-requests/invenio_requests/templates/semantic-ui/invenio_requests/details/index.html:19
+msgid "Request "
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:59
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:67
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:88
+msgid "Statistics"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:60
+msgid "This is the global stats dashboard."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:68
+msgid "This is the community stats dashboard."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:108
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:249
+msgid "Cumulative totals as of"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:204
+msgid "Contributions"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:206
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:338
+msgid "Activity during"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:248
+msgid "Traffic"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config.py:336
+msgid "Usage"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/ext.py:197
+msgid "Stats"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/templates/semantic-ui/invenio_stats_dashboard/stats_dashboard.html:8
+msgid "Stats Dashboard"
+msgstr ""
+
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/awards/config.py:49
 msgid "Funders"
 msgstr ""
@@ -3099,7 +2902,7 @@ msgid "Name with type ror_display not found in ROR entry."
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/funders/schema.py:73
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/schema.py:111
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/schema.py:120
 msgid "Missing PID."
 msgstr ""
 
@@ -3111,13 +2914,34 @@ msgstr ""
 msgid "Duplicated affiliations."
 msgstr ""
 
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/records/models.py:84
+#, python-format
+msgid "No '%(banned_char)s' allowed in VocabularyScheme.id"
+msgstr ""
+
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/components.py:29
 msgid "The vocabulary type does not exists."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/schema.py:79
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/schema.py:85
 #, python-brace-format
 msgid "An existing id or a free text {ftf_name} must be present."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/custom_fields/subject.py:56
+msgid "Keywords and subjects"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/custom_fields/subject.py:58
+msgid "The subjects related to the community"
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/custom_fields/subject.py:59
+msgid "Search for a subject by name e.g. Psychology ..."
+msgstr ""
+
+#: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/custom_fields/subject.py:61
+msgid "Search for subjects..."
 msgstr ""
 
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/templates/semantic-ui/invenio_vocabularies/subjects.html:16

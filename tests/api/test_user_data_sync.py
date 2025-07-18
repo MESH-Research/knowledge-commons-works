@@ -74,7 +74,7 @@ def test_group_data_kc_endpoint():
             user_data_set["user1"],
             {
                 "added_groups": [
-                    "knowledgeCommons---12345|admin",
+                    "knowledgeCommons---12345|administrator",
                     "knowledgeCommons---67891|member",
                 ],
                 "dropped_groups": [],
@@ -252,7 +252,7 @@ def test_user_data_sync_on_login(
     # Check that the user is a member of the linked communities
     assert sorted([r.name for r in u.user.roles]) == sorted(
         [
-            "knowledgeCommons---12345|admin",
+            "knowledgeCommons---12345|administrator",
             "knowledgeCommons---67891|member",
         ]
     )
@@ -375,7 +375,7 @@ def test_user_data_sync_on_webhook(
     }
     assert [r.name for r in user.roles] == [
         "administration-access",
-        "knowledgeCommons---12345|admin",
+        "knowledgeCommons---12345|administrator",
         "knowledgeCommons---67891|member",
     ]
     assert (
