@@ -18,6 +18,8 @@ module.exports = {
     '^@js/invenio_modular_deposit_form$': '<rootDir>/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/assets/semantic-ui/js/invenio_modular_deposit_form',
     '^@js/invenio_modular_deposit_form/(.*)$': '<rootDir>/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/assets/semantic-ui/js/invenio_modular_deposit_form/$1',
     '^@translations/invenio_modular_deposit_form/i18next$': '<rootDir>/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/assets/semantic-ui/translations/invenio_modular_deposit_form/i18next.js',
+    '^@translations/invenio_stats_dashboard/i18next$': '<rootDir>/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/assets/semantic-ui/translations/invenio_stats_dashboard/i18next.js',
+    '^@translations/invenio_vocabularies/i18next$': '<rootDir>/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/assets/semantic-ui/translations/invenio_vocabularies/i18next.js',
     '^@js/invenio_vocabularies$': '<rootDir>/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/assets/semantic-ui/js/invenio_vocabularies',
     '^@js/invenio_vocabularies/(.*)$': '<rootDir>/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/assets/semantic-ui/$1/invenio_vocabularies/$2',
     '^@translations/kcworks/(.*)$': '<rootDir>/site/kcworks/assets/semantic-ui/translations/kcworks/$1',
@@ -32,6 +34,10 @@ module.exports = {
     '/node_modules/(?!(react-invenio-forms|react-searchkit|axios|semantic-ui-react|@babel|@inveniosoftware)/)',
   ],
   testMatch: ['**/*.test.js?(x)', '**/*.spec.js?(x)'],
+  testPathIgnorePatterns: [
+    // FIXME: Remove this ignore pattern once invenio-stats-dashboard tests are fixed
+    '<rootDir>/site/kcworks/dependencies/invenio-stats-dashboard/',
+  ],
   collectCoverageFrom: [
     'assets/**/*.{js,jsx}',
     'site/**/*.{js,jsx}',

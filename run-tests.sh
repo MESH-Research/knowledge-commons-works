@@ -25,9 +25,35 @@ function cleanup() {
     eval "$(uv run docker-services-cli down --env)"
 }
 
+# Check if any docker-compose projects are running
+function check_docker_compose_running() {
+    echo "Checking for running docker-compose projects..."
+
+    # Get list of running containers that might be from docker-compose
+    running_containers=$(docker ps --format "table {{.Names}}\t{{.Image}}" | grep -E "(postgres|redis|opensearch|rabbitmq|elasticsearch)" || true)
+
+    if [ -n "$running_containers" ]; then
+        echo "Warning: Found potentially conflicting containers running:"
+        echo "$running_containers"
+        echo ""
+        echo "This might cause port conflicts with docker-services-cli."
+        echo "Consider stopping any running docker-compose projects before continuing."
+        echo ""
+        read -p "Do you want to continue anyway? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Aborting. Please stop conflicting containers and try again."
+            exit 1
+        fi
+    else
+        echo "No conflicting containers detected."
+    fi
+}
+
 # Check for arguments
 # Note: "-k" would clash with "pytest"
 keep_services=0
+skip_translations=0
 pytest_args=()
 for arg in $@; do
 	# from the CLI args, filter out some known values and forward the rest to "pytest"
@@ -36,6 +62,9 @@ for arg in $@; do
 	case ${arg} in
 		-K|--keep-services)
 			keep_services=1
+			;;
+		-S|--skip-translations)
+			skip_translations=1
 			;;
 		*)
 			pytest_args+=( ${arg} )
@@ -48,16 +77,23 @@ if [[ ${keep_services} -eq 0 ]]; then
 fi
 
 # Extract and compile translations from python files
-echo "Extracting translations from python files"
-uv run invenio-cli translations extract
-echo "Updating translations"
-uv run invenio-cli translations update
-echo "Compiling translations"
-uv run invenio-cli translations compile
+if [[ ${skip_translations} -eq 0 ]]; then
+	echo "Extracting translations from python files"
+	uv run invenio-cli translations extract
+	echo "Updating translations"
+	uv run invenio-cli translations update
+	echo "Compiling translations"
+	uv run invenio-cli translations compile
+else
+	echo "Skipping translations compilation"
+fi
 
 # Build the documentation
 echo "Building the documentation"
 uv run sphinx-build -b html docs/source/ docs/build/
+
+# Check for running docker-compose projects before starting services
+check_docker_compose_running
 
 # Start the services and get their environment variables
 echo "Starting the services"

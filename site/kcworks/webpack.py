@@ -52,8 +52,6 @@ theme = WebpackThemeBundle(
             "dependencies": {
                 "geopattern": "^1.2.3",
                 "orcid-utils": "^1.2.2",
-                "react-invenio-forms": "3.5.2",
-                "react-searchkit": "2.3.0",
             },
             "aliases": {
                 "@js/invenio_modular_deposit_form_extras": (
