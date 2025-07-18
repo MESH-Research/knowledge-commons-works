@@ -296,10 +296,10 @@ def test_knowledgeCommons_account_setup(
     assert user.external_identifiers[0].id == user_data["saml_id"]
     assert user.external_identifiers[0].id_user == user.id
     assert user.external_identifiers[0].method == "knowledgeCommons"
-    assert [r.name for r in user.roles] == (
-        [f"knowledgeCommons---{g['id']}|{g['role']}" for g in user_data["groups"]]
+    assert set([r.name for r in user.roles]) == (
+        set([f"knowledgeCommons---{g['id']}|{g['role']}" for g in user_data["groups"]])
         if "groups" in user_data.keys()
-        else []
+        else set()
     )
 
 

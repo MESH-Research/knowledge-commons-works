@@ -1,4 +1,4 @@
-"""Group collections service classes
+"""Group collections service classes.
 
 This module provides helper classes for checking and fixing group role
 memberships in communities with linked KC groups, ensuring that remote
@@ -6,7 +6,6 @@ group roles are properly mapped to KCWorks community permissions.
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
 
 from flask import Flask
 from invenio_access.permissions import system_identity
@@ -26,12 +25,13 @@ class CheckResult:
     commons_group_id: str
     status: str  # 'ok', 'fixed', 'error'
     message: str
-    roles_created: List[str]
-    roles_added: List[str]
-    users_found: List[str]
-    errors: List[str]
+    roles_created: list[str]
+    roles_added: list[str]
+    users_found: list[str]
+    errors: list[str]
 
     def __post_init__(self):
+        """Initialize default values for list fields."""
         if self.roles_created is None:
             self.roles_created = []
         if self.roles_added is None:
@@ -49,9 +49,9 @@ class CommunityGroupMembershipChecker:
         """Initialize the checker."""
         self.app = app
         self.communities_service = current_communities
-        self.results: List[CheckResult] = []
+        self.results: list[CheckResult] = []
 
-    def run_checks(self) -> List[CheckResult]:
+    def run_checks(self) -> list[CheckResult]:
         """Run checks on all communities with group IDs."""
         print("Finding communities with group IDs...")
         communities = self._find_communities_with_group_id()
@@ -65,7 +65,7 @@ class CommunityGroupMembershipChecker:
 
         return self.results
 
-    def _find_communities_with_group_id(self) -> List[Dict]:
+    def _find_communities_with_group_id(self) -> list[dict]:
         """Find all communities that have a group ID in their custom fields."""
         try:
             # Search for communities with group ID in custom fields
@@ -109,11 +109,10 @@ class CommunityGroupMembershipChecker:
             print(f"Error finding communities: {e}")
             return []
 
-    def _check_community(self, community: Dict) -> CheckResult:
+    def _check_community(self, community: dict) -> CheckResult:
         """Check a single community's group memberships."""
         community_id = community["id"]
         community_slug = community["slug"]
-        group_id = community["group_id"]
         commons_instance = community["commons_instance"]
         commons_group_id = community["commons_group_id"]
 
@@ -177,17 +176,16 @@ class CommunityGroupMembershipChecker:
 
     def _get_expected_roles(
         self, commons_instance: str, commons_group_id: str
-    ) -> Dict[str, List[str]]:
+    ) -> dict[str, list[str]]:
+        """Get the expected roles for a group.
+
+        We may want to fetch from the remote API and config. For now, we'll
+        create the standard role structure.
         """
-        Get the expected roles for a group using the same logic as
-        GroupCollectionsService.
-        """
-        # This is a simplified version - in practice you'd need to fetch from the
-        # remote API. For now, we'll create the standard role structure.
         slug = f"{commons_instance}---{commons_group_id}"
 
         # Create roles with remote role names based on permission levels.
-        # This matches the logic in convert_remote_roles:
+        # This matches the logic in GroupCollectionsService:
         # - moderate_roles (highest level) -> "owner" permissions
         # - upload_roles (moderate level) -> "curator" permissions
         # - other_roles (basic level) -> "reader" permissions
@@ -200,8 +198,8 @@ class CommunityGroupMembershipChecker:
         return expected_roles
 
     def _check_existing_roles_and_memberships(
-        self, community_id: str, expected_roles: Dict[str, List[str]]
-    ) -> Tuple[List[str], List[str]]:
+        self, community_id: str, expected_roles: dict[str, list[str]]
+    ) -> tuple[list[str], list[str]]:
         """Check which roles exist and which are members of the community."""
         existing_roles = []
         member_roles = []
@@ -236,8 +234,8 @@ class CommunityGroupMembershipChecker:
         return existing_roles, member_roles
 
     def _create_missing_roles(
-        self, expected_roles: Dict[str, List[str]], existing_roles: List[str]
-    ) -> List[str]:
+        self, expected_roles: dict[str, list[str]], existing_roles: list[str]
+    ) -> list[str]:
         """Create missing roles."""
         created_roles = []
         all_expected_roles = []
@@ -260,9 +258,9 @@ class CommunityGroupMembershipChecker:
     def _add_missing_role_memberships(
         self,
         community_id: str,
-        expected_roles: Dict[str, List[str]],
-        member_roles: List[str],
-    ) -> List[str]:
+        expected_roles: dict[str, list[str]],
+        member_roles: list[str],
+    ) -> list[str]:
         """Add missing roles as members of the community, and fix wrong permissions."""
         added_roles = []
 
@@ -328,7 +326,7 @@ class CommunityGroupMembershipChecker:
         return added_roles
 
     def _verify_role_memberships(
-        self, community_id: str, expected_roles: Dict[str, List[str]]
+        self, community_id: str, expected_roles: dict[str, list[str]]
     ) -> bool:
         """Verify that all expected roles are members of the community."""
         try:
@@ -379,8 +377,8 @@ class CommunityGroupMembershipChecker:
             return False
 
     def _check_user_assignments(
-        self, expected_roles: Dict[str, List[str]]
-    ) -> List[str]:
+        self, expected_roles: dict[str, list[str]]
+    ) -> list[str]:
         """Check which users are assigned to the expected roles."""
         users_found = []
         all_expected_roles = []
@@ -434,7 +432,8 @@ class CommunityGroupMembershipChecker:
 
         if all_users:
             print(
-                f"\nEXISTING USER ASSIGNMENTS: {len(all_users)} total users assigned to group roles"
+                f"\nEXISTING USER ASSIGNMENTS: {len(all_users)} total users "
+                f"assigned to group roles"
             )
             # Only show first 10 user assignments to avoid spam
             for user_assignment in all_users[:10]:
