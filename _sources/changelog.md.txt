@@ -20,6 +20,9 @@
     - Added developer documentation about working with user data.
     - Minor updates to installation instructions.
 - Testing
+    - Added new -S flag to run-tests.sh to skip the translation build step.
+    - Silenced deprecation warnings during GH tests workflow.
+    - Test runner script now checks for running docker-compose projects and warns if they are found.
     - Added new integration tests for the new group collections checker.
     - Updated tests related to group collection roles and permissions.
     - Miscellaneous test fixture updates and test fixes.
