@@ -20,6 +20,7 @@ import sys
 import click
 from flask.cli import with_appcontext
 from invenio_search.cli import abort_if_false, search_version_check
+from kcworks.services.communities.cli import check_group_memberships
 from kcworks.services.records.cli import bulk_update as bulk_update_command
 from kcworks.services.search.indices import delete_index
 from kcworks.services.users.cli import group_users as group_users_command
@@ -117,3 +118,13 @@ def kcworks_records():
 
 # Register the records command group
 kcworks_records.add_command(bulk_update_command)
+
+
+@click.group()
+def group_collections():
+    """KCWorks CLI utility commands for group collections management."""
+    pass
+
+
+# Register the group collections command group
+group_collections.add_command(check_group_memberships)
