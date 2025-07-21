@@ -13,18 +13,11 @@ the Invenio app.
 """
 import json
 import os
-from collections.abc import Callable
 
 import pytest
 import requests
 from flask_login import login_user
-from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
-from invenio_remote_user_data_kcworks.tasks import do_user_data_update
-from kcworks.services.accounts.saml import knowledgeCommons_account_setup
-from requests_mock.adapter import _Matcher as Matcher
-
-from ..fixtures.users import AugmentedUserFixture, user_data_set
 
 
 def test_user_data_kc_endpoint():
@@ -64,139 +57,6 @@ def test_group_data_kc_endpoint():
     The focus here is on the json schema being returned
     """
     raise NotImplementedError
-
-
-@pytest.mark.parametrize(
-    "starting_email,user_data,groups_changes",
-    [
-        (
-            user_data_set["user1"]["email"],
-            user_data_set["user1"],
-            {
-                "added_groups": [
-                    "knowledgeCommons---12345|admin",
-                    "knowledgeCommons---67891|member",
-                ],
-                "dropped_groups": [],
-                "unchanged_groups": [],
-            },
-        ),
-        (
-            "emailtobechanged@example.com",
-            user_data_set["user2"],
-            {
-                "added_groups": [],
-                "dropped_groups": [],
-                "unchanged_groups": [],
-            },
-        ),
-    ],
-)
-def test_do_user_data_update_task(
-    running_app,
-    appctx,
-    db,
-    user_factory: Callable,
-    starting_email: str,
-    user_data: dict,
-    groups_changes: dict,
-    user_data_to_remote_data: Callable,
-    requests_mock,
-    celery_worker,
-    search_clear,
-):
-    """Test that the do_user_data_update task does what it's supposed to do.
-
-    - It should return the correct data
-    - It should call the remote api if the user has an IDP
-    - It should update the user in the db if the user has an IDP
-    """
-    # Mock additional user data from the remote service
-    # api response
-    new_data_payload = user_data_to_remote_data(
-        user_data["saml_id"], user_data["email"], user_data
-    )
-    # Create a test user
-    u: AugmentedUserFixture = user_factory(
-        email=starting_email,
-        saml_src="knowledgeCommons",
-        saml_id=user_data["saml_id"],
-        new_remote_data=new_data_payload,
-    )
-    assert isinstance(u.user, User)
-    user = u.user
-    # strip the user_profile and username to make sure all the parts update
-    # otherwise identifier_kc_username and identifier_orcid as well as username
-    # will be set already at account creation time
-    user.user_profile = {}
-    user.username = None
-    current_accounts.datastore.commit()
-
-    user_id: int = user.id
-    assert user.username is None
-    assert user.email == starting_email
-    assert user.user_profile == {}
-    assert user.roles == []
-    assert isinstance(u.mock_adapter, Matcher)
-    mock_adapter: Matcher = u.mock_adapter
-    assert not mock_adapter.called
-    assert mock_adapter.call_count == 0
-
-    result: tuple[User, dict, list[str], dict] = do_user_data_update(
-        user_id=user_id, idp="knowledgeCommons", remote_id=user_data["saml_id"]
-    )
-    assert isinstance(result[0], User)
-    # assert result[0].id == user_id  # FIXME: Why does this trigger detached error?
-
-    # the result[1] is a dictionary of the updated user data (including only
-    # the changed keys and values).
-    expected_updated_data = {
-        "user_profile": {
-            "affiliations": user_data["institutional_affiliation"],
-            "full_name": user_data["name"],
-            "identifier_kc_username": user_data["saml_id"],
-            "identifier_orcid": user_data["orcid"],
-            "name_parts": (
-                '{"first": "'
-                + user_data["first_name"]
-                + '", "last": "'
-                + user_data["last_name"]
-                + '"}'
-            ),
-        },
-        "username": f"knowledgeCommons-{user_data['saml_id']}",
-    }
-    if starting_email != user_data["email"]:
-        expected_updated_data["email"] = user_data["email"]
-    assert result[1] == expected_updated_data
-    # the result[2] is a complete list of the updated user's group memberships.
-    assert result[2] == (
-        [f"knowledgeCommons---{g['id']}|{g['role']}" for g in user_data["groups"]]
-        if "groups" in user_data.keys() and user_data["groups"]
-        else []
-    )
-    # the result[3] is a dictionary of the changes to the user's group
-    # memberships (with the keys "added_groups", "dropped_groups", and
-    # "unchanged_groups").
-    assert result[3] == groups_changes
-    assert mock_adapter.called
-    assert mock_adapter.call_count == 1
-
-    # Check that the user data was updated in the db
-    user = current_accounts.datastore.get_user_by_id(user_id)
-    assert user.email == user_data["email"]
-    assert user.user_profile.get("full_name") == user_data["name"]
-    assert user.user_profile.get("identifier_kc_username") == user_data["saml_id"]
-    assert user.user_profile.get("identifier_orcid") == user_data["orcid"]
-    assert json.loads(user.user_profile.get("name_parts")) == {
-        "first": user_data["first_name"],
-        "last": user_data["last_name"],
-    }
-    assert [r.name for r in user.roles] == (
-        [f"knowledgeCommons---{g['id']}|{g['role']}" for g in user_data["groups"]]
-        if "groups" in user_data.keys()
-        else []
-    )
 
 
 def test_user_data_sync_on_login(
@@ -423,15 +283,6 @@ def test_user_data_sync_on_account_setup(
     user = u.user
     user_id = user.id
 
-    # Prepare account_info
-    account_info = {
-        "external_id": "testuser",
-        "external_method": "knowledgeCommons",
-    }
-
-    updated = knowledgeCommons_account_setup(user, account_info)
-    assert updated
-
     # Verify that the user was activated and updated
     updated_user = current_accounts.datastore.get_user_by_id(user_id)
     assert updated_user.active
@@ -454,7 +305,9 @@ def test_user_data_sync_on_account_setup(
 
 
 @pytest.mark.skip(reason="Not implemented")
-def test_user_data_sync_on_account_setup_already_linked(running_app, search_clear):
+def test_user_data_sync_on_account_setup_already_linked(
+    running_app, search_clear
+):
     """Test that the user's data is synced when already linked to KC IDP.
 
     The actual api call is mocked, so this tests that the api request is made

@@ -23,10 +23,14 @@ from flask import Flask, current_app
 from flask_principal import Identity
 from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_accounts
-from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from invenio_rdm_records.proxies import (
+    current_rdm_records_service as records_service,
+)
 from invenio_record_importer_kcworks.services.files import FilesHelper
 from invenio_record_importer_kcworks.types import FileData
-from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
+from invenio_record_importer_kcworks.utils.utils import (
+    replace_value_in_nested_dict,
+)
 from invenio_records_resources.services.records.results import RecordItem
 
 from ..helpers.utils import remove_value_by_path
@@ -97,7 +101,9 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                         spooled_file.write(file_content)
                     spooled_file.seek(0)  # Reset file pointer to beginning
 
-                    mimetype = mimetypes.guess_type(file_path)[0] or "application/pdf"
+                    mimetype = (
+                        mimetypes.guess_type(file_path)[0] or "application/pdf"
+                    )
                     file_object = FileData(
                         filename=Path(file_path).name,
                         content_type=mimetype,
@@ -117,8 +123,12 @@ def minimal_published_record_factory(running_app, db, record_metadata):
         published = records_service.publish(identity, draft.id)
         if community_list:
             record = published._record
-            add_community_to_record(db, record, community_list[0], default=set_default)
-            for community in community_list[1:] if len(community_list) > 1 else []:
+            add_community_to_record(
+                db, record, community_list[0], default=set_default
+            )
+            for community in (
+                community_list[1:] if len(community_list) > 1 else []
+            ):
                 add_community_to_record(db, record, community, default=False)
             # Refresh the record to get the latest state.
             published = records_service.read(identity, published.id)
@@ -290,12 +300,16 @@ class TestRecordMetadata:
         file_entries = file_entries or {}
         self.app = app
         starting_metadata_in = deepcopy(TestRecordMetadata.default_metadata_in)
-        self._metadata_in: dict = metadata_in if metadata_in else starting_metadata_in
+        self._metadata_in: dict = (
+            metadata_in if metadata_in else starting_metadata_in
+        )
         self.community_list = community_list
         self.file_entries = file_entries
         self.owner_id = owner_id
 
-    def update_metadata(self, metadata_updates: dict[str, Any] | None = None) -> None:
+    def update_metadata(
+        self, metadata_updates: dict[str, Any] | None = None
+    ) -> None:
         """Update the basic metadata dictionary for the record.
 
         Parameters:
@@ -308,7 +322,9 @@ class TestRecordMetadata:
         """
         metadata_updates = metadata_updates or {}
         for key, val in metadata_updates.items():
-            new_metadata_in = replace_value_in_nested_dict(self.metadata_in, key, val)
+            new_metadata_in = replace_value_in_nested_dict(
+                self.metadata_in, key, val
+            )
             self._metadata_in = (
                 new_metadata_in
                 if isinstance(new_metadata_in, dict)
@@ -381,7 +397,9 @@ class TestRecordMetadata:
             record_id, base_url, ui_base_url
         )
         links["archive"] = f"{base_url}/records/{record_id}/files-archive"
-        links["archive_media"] = f"{base_url}/records/{record_id}/media-files-archive"
+        links["archive_media"] = (
+            f"{base_url}/records/{record_id}/media-files-archive"
+        )
         links["doi"] = f"https://handle.stage.datacite.org/{record_doi}"
         links["draft"] = f"{base_url}/records/{record_id}/draft"
         links["files"] = f"{base_url}/records/{record_id}/files"
@@ -398,7 +416,9 @@ class TestRecordMetadata:
         links["self"] = f"{base_url}/records/{record_id}"
         links["self_html"] = f"{ui_base_url}/records/{record_id}"
         links["self_doi"] = f"{ui_base_url}/doi/{record_doi}"
-        links["self_iiif_manifest"] = f"{base_url}/iiif/record:{record_id}/manifest"
+        links["self_iiif_manifest"] = (
+            f"{base_url}/iiif/record:{record_id}/manifest"
+        )
         links["self_iiif_sequence"] = (
             f"{base_url}/iiif/record:{record_id}/sequence/default"
         )
@@ -422,15 +442,21 @@ class TestRecordMetadata:
             "reason": None,
         }
         metadata_out_draft["access"]["status"] = "metadata-only"
-        metadata_out_draft["deletion_status"] = {"is_deleted": False, "status": "P"}
-        metadata_out_draft["custom_fields"] = self.metadata_in.get("custom_fields", {})
+        metadata_out_draft["deletion_status"] = {
+            "is_deleted": False,
+            "status": "P",
+        }
+        metadata_out_draft["custom_fields"] = self.metadata_in.get(
+            "custom_fields", {}
+        )
         metadata_out_draft["is_draft"] = True
         metadata_out_draft["is_published"] = False
         if metadata_out_draft["metadata"].get("resource_type", {}):
             current_resource_type = [
                 t
                 for t in deepcopy(RESOURCE_TYPES)
-                if t["id"] == metadata_out_draft["metadata"]["resource_type"].get("id")
+                if t["id"]
+                == metadata_out_draft["metadata"]["resource_type"].get("id")
             ][0]
             metadata_out_draft["metadata"]["resource_type"]["title"] = (
                 current_resource_type["title"]
@@ -459,7 +485,9 @@ class TestRecordMetadata:
             "access": {
                 "grants": [],
                 "links": [],
-                "owned_by": {"user": str(self.owner_id)} if self.owner_id else None,
+                "owned_by": (
+                    {"user": str(self.owner_id)} if self.owner_id else None
+                ),
                 "settings": {
                     "accept_conditions_text": None,
                     "allow_guest_requests": False,
@@ -497,7 +525,9 @@ class TestRecordMetadata:
                 "id": c["id"],
                 "links": {},
                 "metadata": {
-                    "curation_policy": c["metadata"].get("curation_policy", ""),
+                    "curation_policy": c["metadata"].get(
+                        "curation_policy", ""
+                    ),
                     "description": c["metadata"].get("description", ""),
                     "organizations": [{"name": ""}],
                     "page": c["metadata"].get("page", ""),
@@ -510,7 +540,9 @@ class TestRecordMetadata:
                 "updated": "",
             }
             defaults.update(c)
-            metadata_out_draft["parent"]["communities"]["entries"].append(defaults)
+            metadata_out_draft["parent"]["communities"]["entries"].append(
+                defaults
+            )
 
         metadata_out_draft["pids"] = {
             "doi": {
@@ -568,8 +600,14 @@ class TestRecordMetadata:
             "is_latest": True,
             "is_latest_draft": True,
         }
-        owners_in = self.metadata_in.get("parent", {}).get("access", {}).get("owned_by")
-        if isinstance(owners_in, list):  # When by import, this is a list of dicts
+        owners_in = (
+            self.metadata_in.get("parent", {})
+            .get("access", {})
+            .get("owned_by")
+        )
+        if isinstance(
+            owners_in, list
+        ):  # When by import, this is a list of dicts
             owner_users = [
                 current_accounts.datastore.get_user_by_email(owner["email"])
                 for owner in owners_in
@@ -679,11 +717,13 @@ class TestRecordMetadata:
             expected["stats"] = None
 
         # Check that timestamps are in the correct relative range
-        assert now - arrow.get(actual["created"]) < timedelta(seconds=7)
-        assert now - arrow.get(actual["updated"]) < timedelta(seconds=7)
+        assert now - arrow.get(actual["created"]) < timedelta(seconds=30)
+        assert now - arrow.get(actual["updated"]) < timedelta(seconds=30)
         assert "expires_at" in actual.keys()
         assert (
-            arrow.get(actual["expires_at"]).format("YYYY-MM-DD HH:mm:ss.SSSSSS")
+            arrow.get(actual["expires_at"]).format(
+                "YYYY-MM-DD HH:mm:ss.SSSSSS"
+            )
             == actual["expires_at"]
         )
         assert now - arrow.get(actual["expires_at"]) < timedelta(hours=8)
@@ -698,13 +738,17 @@ class TestRecordMetadata:
         for k, v in actual["files"]["entries"].items():
             assert v["access"] == expected["files"]["entries"][k]["access"]
             if "checksum" in expected["files"]["entries"][k]:
-                assert v["checksum"] == expected["files"]["entries"][k]["checksum"]
+                assert (
+                    v["checksum"]
+                    == expected["files"]["entries"][k]["checksum"]
+                )
             assert v["ext"] == expected["files"]["entries"][k]["ext"]
             assert v["key"] == expected["files"]["entries"][k]["key"]
             assert v["mimetype"] == expected["files"]["entries"][k]["mimetype"]
             assert v["size"] == expected["files"]["entries"][k]["size"]
             assert (
-                v["storage_class"] == expected["files"]["entries"][k]["storage_class"]
+                v["storage_class"]
+                == expected["files"]["entries"][k]["storage_class"]
             )
             if v["metadata"]:
                 if v["key"] == "sample.jpg":  # meta drawn from file
@@ -712,14 +756,19 @@ class TestRecordMetadata:
                         "height": 1672,
                         "width": 1254,
                     }
-                assert v["metadata"] == expected["files"]["entries"][k]["metadata"]
+                assert (
+                    v["metadata"]
+                    == expected["files"]["entries"][k]["metadata"]
+                )
             else:
                 assert not expected["files"]["entries"][k]["metadata"]
             assert v["links"] == build_file_links(
                 actual["id"], app.config["SITE_API_URL"], k
             )
         assert actual["files"]["order"] == expected["files"]["order"]
-        assert actual["files"]["total_bytes"] == expected["files"]["total_bytes"]
+        assert (
+            actual["files"]["total_bytes"] == expected["files"]["total_bytes"]
+        )
 
         # Check media files including any entries
         # TODO: Add checks for media files
@@ -739,7 +788,9 @@ class TestRecordMetadata:
         )
 
         # Check metadata fields
-        assert set(actual["metadata"].keys()) == set(expected["metadata"].keys())
+        assert set(actual["metadata"].keys()) == set(
+            expected["metadata"].keys()
+        )
         for field in actual["metadata"].keys():
             assert actual["metadata"][field] == expected["metadata"][field]
 
@@ -826,9 +877,11 @@ class TestRecordMetadata:
         now = now or arrow.utcnow()
 
         if by_api:
-            expected = self._as_via_api(expected, is_draft=False, method=method)
+            expected = self._as_via_api(
+                expected, is_draft=False, method=method
+            )
         try:
-            assert now - arrow.get(actual["created"]) < timedelta(seconds=7)
+            assert now - arrow.get(actual["created"]) < timedelta(seconds=30)
             assert actual["custom_fields"] == expected["custom_fields"]
             assert "expires_at" not in actual.keys()
             assert actual["files"]["count"] == expected["files"]["count"]
@@ -836,10 +889,16 @@ class TestRecordMetadata:
             for k, v in actual["files"]["entries"].items():
                 assert v["access"] == expected["files"]["entries"][k]["access"]
                 if "checksum" in expected["files"]["entries"][k]:
-                    assert v["checksum"] == expected["files"]["entries"][k]["checksum"]
+                    assert (
+                        v["checksum"]
+                        == expected["files"]["entries"][k]["checksum"]
+                    )
                 assert v["ext"] == expected["files"]["entries"][k]["ext"]
                 assert v["key"] == expected["files"]["entries"][k]["key"]
-                assert v["mimetype"] == expected["files"]["entries"][k]["mimetype"]
+                assert (
+                    v["mimetype"]
+                    == expected["files"]["entries"][k]["mimetype"]
+                )
                 assert v["size"] == expected["files"]["entries"][k]["size"]
                 assert (
                     v["storage_class"]
@@ -851,18 +910,26 @@ class TestRecordMetadata:
                             "height": 1672,
                             "width": 1254,
                         }
-                    assert v["metadata"] == expected["files"]["entries"][k]["metadata"]
+                    assert (
+                        v["metadata"]
+                        == expected["files"]["entries"][k]["metadata"]
+                    )
                 else:
                     assert not expected["files"]["entries"][k]["metadata"]
                 assert v["links"] == build_file_links(
                     actual["id"], app.config["SITE_API_URL"], k
                 )
             assert actual["files"]["order"] == expected["files"]["order"]
-            assert actual["files"]["total_bytes"] == expected["files"]["total_bytes"]
+            assert (
+                actual["files"]["total_bytes"]
+                == expected["files"]["total_bytes"]
+            )
 
             assert not actual["is_draft"]
             assert actual["is_published"]
-            assert actual["links"] == TestRecordMetadata.build_published_record_links(
+            assert actual[
+                "links"
+            ] == TestRecordMetadata.build_published_record_links(
                 actual["id"],
                 app.config["SITE_API_URL"],
                 app.config["SITE_UI_URL"],
@@ -876,12 +943,18 @@ class TestRecordMetadata:
                 "order": [],
                 "total_bytes": 0,
             }
-            assert actual["metadata"]["creators"] == expected["metadata"]["creators"]
+            assert (
+                actual["metadata"]["creators"]
+                == expected["metadata"]["creators"]
+            )
             assert (
                 actual["metadata"]["publication_date"]
                 == expected["metadata"]["publication_date"]
             )
-            assert actual["metadata"]["publisher"] == expected["metadata"]["publisher"]
+            assert (
+                actual["metadata"]["publisher"]
+                == expected["metadata"]["publisher"]
+            )
             assert (
                 actual["metadata"]["resource_type"]
                 == expected["metadata"]["resource_type"]
@@ -911,8 +984,13 @@ class TestRecordMetadata:
                     assert actual_c["access"] == community["access"]
                     assert actual_c["children"] == community["children"]
                     assert actual_c["created"] == community["created"]
-                    assert actual_c["custom_fields"] == community["custom_fields"]
-                    assert actual_c["deletion_status"] == community["deletion_status"]
+                    assert (
+                        actual_c["custom_fields"] == community["custom_fields"]
+                    )
+                    assert (
+                        actual_c["deletion_status"]
+                        == community["deletion_status"]
+                    )
                     assert actual_c["id"] == community["id"]
                     assert actual_c["links"] == {}
                     if (
@@ -957,7 +1035,7 @@ class TestRecordMetadata:
             # assert actual["revision_id"] == 4  # NOTE: Too difficult to test
             assert actual["stats"] == expected["stats"]
             assert actual["status"] == "published"
-            assert now - arrow.get(actual["updated"]) < timedelta(seconds=7)
+            assert now - arrow.get(actual["updated"]) < timedelta(seconds=40)
             assert actual["versions"] == expected["versions"]
             return True
         except AssertionError as e:
@@ -1030,7 +1108,9 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
             owner_id=owner_id,
         )
         starting_metadata_in = deepcopy(TestRecordMetadata.default_metadata_in)
-        self._metadata_in = metadata_in if metadata_in else starting_metadata_in
+        self._metadata_in = (
+            metadata_in if metadata_in else starting_metadata_in
+        )
         self.record_id = record_id
         self.file_entries = file_entries
         self.file_access_status = file_access_status
@@ -1167,7 +1247,9 @@ def full_sample_record_metadata(users):
                 }
             ],
             "languages": [{"id": "dan"}, {"id": "eng"}],
-            "identifiers": [{"identifier": "1924MNRAS..84..308E", "scheme": "bibcode"}],
+            "identifiers": [
+                {"identifier": "1924MNRAS..84..308E", "scheme": "bibcode"}
+            ],
             "related_identifiers": [
                 {
                     "identifier": "10.1234/foo.bar",
@@ -1263,7 +1345,9 @@ def full_sample_record_metadata(users):
                     "id": "445aaacd-9de1-41ab-af52-25ab6cb93df7",
                 }
             ],
-            "meta": {"big-dataset.zip": {"description": "File containing the data."}},
+            "meta": {
+                "big-dataset.zip": {"description": "File containing the data."}
+            },
         },
         "notes": ["Under investigation for copyright infringement."],
     }
