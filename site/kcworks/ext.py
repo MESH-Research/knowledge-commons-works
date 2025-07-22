@@ -9,9 +9,13 @@
 Initialize the main KCWorks extension object along with its services, blueprints,
 and components.
 """
+from threading import Lock
 
-from flask import Flask
+from flask import Flask, current_app
 from invenio_rdm_records.services.components import DefaultRecordsComponents
+from werkzeug.routing import Rule
+
+
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
