@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2025-07-18 09:24+0100\n"
+"POT-Creation-Date: 2025-07-22 12:53+0100\n"
 "PO-Revision-Date: 2025-04-24 10:38-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -375,8 +375,8 @@ msgstr ""
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:336
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:343
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:366
-#: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:268
-#: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:275
+#: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:273
+#: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:280
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:21
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:57
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:66
@@ -400,7 +400,7 @@ msgstr ""
 
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/invenio.cfg:1044
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:348
-#: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:280
+#: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:285
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:71
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:93
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-remote-api-provisioner/tests/conftest.py:310
@@ -419,7 +419,7 @@ msgstr ""
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/invenio.cfg:1075
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:394
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:404
-#: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:289
+#: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/tests/conftest.py:294
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-record-importer-kcworks/tests/fixtures/identifiers.py:42
 #: /home/martin/Documents/Programming/MESH/knowledge-commons-works/tests/fixtures/identifiers.py:50
 msgid "Concept DOI"
@@ -1941,7 +1941,7 @@ msgstr ""
 msgid "Verification link sent out, please check your e-mail inbox"
 msgstr ""
 
-#: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/communities/components.py:53
+#: /home/martin/Documents/Programming/MESH/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/communities/components.py:55
 msgid "Cannot restrict a community with public records."
 msgstr ""
 

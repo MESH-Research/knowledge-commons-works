@@ -17,6 +17,7 @@ import os
 import pytest
 import requests
 from flask_login import login_user
+from invenio_accounts.profiles import UserProfileDict
 from invenio_accounts.proxies import current_accounts
 
 
@@ -90,6 +91,7 @@ def test_user_data_sync_on_login(
         saml_id=user1_data["saml_id"],
         new_remote_data=new_data_payload,
     )
+
     assert not u.mock_adapter.called
     assert u.mock_adapter.call_count == 0
     login_user(u.user)
@@ -97,7 +99,7 @@ def test_user_data_sync_on_login(
     assert u.mock_adapter.call_count == 1
 
     assert u.user.email == user1_data["email"]
-    profile = u.user.user_profile
+    profile: UserProfileDict = u.user.user_profile
     assert profile.get("full_name") == user1_data["name"]
     assert (
         profile.get("affiliations") == user1_data["institutional_affiliation"]
@@ -109,8 +111,10 @@ def test_user_data_sync_on_login(
         "last": user1_data["last_name"],
     }
 
+    merged_user = db.session.merge(u.user)
+
     # Check that the user is a member of the linked communities
-    assert sorted([r.name for r in u.user.roles]) == sorted(
+    assert sorted([r.name for r in merged_user.roles]) == sorted(
         [
             "knowledgeCommons---12345|admin",
             "knowledgeCommons---67891|member",
@@ -217,6 +221,7 @@ def test_user_data_sync_on_webhook(
             ],
         },
     }
+
     assert mock_adapter.called
     assert mock_adapter.call_count == 1  # only one call to the remote api
 

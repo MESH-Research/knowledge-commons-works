@@ -15,7 +15,11 @@ from flask_login import login_user
 from flask_principal import Identity
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles, Role
-from invenio_access.permissions import any_user, authenticated_user, superuser_access
+from invenio_access.permissions import (
+    any_user,
+    authenticated_user,
+    superuser_access,
+)
 from invenio_access.utils import get_identity
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
@@ -40,11 +44,7 @@ def mock_user_data_api(requests_mock) -> Callable:
     """Mock the user data api."""
 
     def mock_api_call(saml_id: str, mock_remote_data: dict) -> Matcher:
-        protocol = os.environ.get(
-            "INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https"
-        )  # noqa: E501
-        base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
-        remote_url = f"{base_url}/{saml_id}"
+        remote_url = f"https://profile.hcommons.org/api/v1/subs/?sub={saml_id}"
         mock_adapter = requests_mock.get(
             remote_url,
             json=mock_remote_data,
@@ -63,16 +63,30 @@ def user_data_to_remote_data(requests_mock):
     ) -> dict[str, str | list[dict[str, str]]]:
         """Convert user fixture data to format for remote data."""
         mock_remote_data = {
-            "username": saml_id,
-            "email": email,
-            "name": user_data.get("name", ""),
-            "first_name": user_data.get("first_name", ""),
-            "last_name": user_data.get("last_name", ""),
-            "institutional_affiliation": user_data.get("institutional_affiliation", ""),
-            "orcid": user_data.get("orcid", ""),
-            "preferred_language": user_data.get("preferred_language", ""),
-            "time_zone": user_data.get("time_zone", ""),
-            "groups": user_data.get("groups", ""),
+            "data": [
+                {
+                    "sub": "user1",
+                    "profile": {
+                        "username": saml_id,
+                        "email": email,
+                        "name": user_data.get("name", ""),
+                        "first_name": user_data.get("first_name", ""),
+                        "last_name": user_data.get("last_name", ""),
+                        "institutional_affiliation": user_data.get(
+                            "institutional_affiliation", ""
+                        ),
+                        "orcid": user_data.get("orcid", ""),
+                        "preferred_language": user_data.get(
+                            "preferred_language", ""
+                        ),
+                        "time_zone": user_data.get("time_zone", ""),
+                        "groups": user_data.get("groups", ""),
+                    },
+                }
+            ],
+            "next": None,
+            "previous": None,
+            "meta": {"authorized": True},
         }
         return mock_remote_data
 
@@ -181,6 +195,8 @@ def user_factory(
             UserIdentity.create(u.user, saml_src, saml_id)
             u.mock_adapter = mock_adapter
 
+        u.user.mock = True
+
         current_accounts.datastore.commit()
         db.session.commit()
 
@@ -201,7 +217,9 @@ def admin_role_need(db):
     role = Role(name="administration-access")
     db.session.add(role)
 
-    action_role = ActionRoles.create(action=administration_access_action, role=role)
+    action_role = ActionRoles.create(
+        action=administration_access_action, role=role
+    )
     db.session.add(action_role)
 
     db.session.commit()
@@ -244,7 +262,9 @@ def superuser_role_need(db):
 
 
 @pytest.fixture(scope="function")
-def superuser_identity(admin: AugmentedUserFixture, superuser_role_need) -> Identity:
+def superuser_identity(
+    admin: AugmentedUserFixture, superuser_role_need
+) -> Identity:
     """Superuser identity fixture."""
     identity = admin.identity
     identity.provides.add(superuser_role_need)
@@ -317,35 +337,111 @@ user_data_set = {
         "last_name": "Hc",
         "groups": [
             {"id": 1004089, "name": "Teaching and Learning", "role": "member"},
-            {"id": 1004090, "name": "Humanities, Arts, and Media", "role": "member"},
+            {
+                "id": 1004090,
+                "name": "Humanities, Arts, and Media",
+                "role": "member",
+            },
             {
                 "id": 1004091,
                 "name": "Technology, Networks, and Sciences",
                 "role": "member",
             },
-            {"id": 1004092, "name": "Social and Political Issues", "role": "member"},
+            {
+                "id": 1004092,
+                "name": "Social and Political Issues",
+                "role": "member",
+            },
             {
                 "id": 1004093,
                 "name": "Educational and Cultural Institutions",
                 "role": "member",
             },
-            {"id": 1004094, "name": "Publishing and Archives", "role": "member"},
-            {"id": 1004651, "name": "Hidden Testing Group New Name", "role": "admin"},
-            {"id": 1004939, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004940, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004941, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004942, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004943, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004944, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004945, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004946, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004947, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004948, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004949, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004950, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004951, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004952, "name": "GI Hidden Group for testing", "role": "admin"},
-            {"id": 1004953, "name": "GI Hidden Group for testing", "role": "admin"},
+            {
+                "id": 1004094,
+                "name": "Publishing and Archives",
+                "role": "member",
+            },
+            {
+                "id": 1004651,
+                "name": "Hidden Testing Group New Name",
+                "role": "admin",
+            },
+            {
+                "id": 1004939,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004940,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004941,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004942,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004943,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004944,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004945,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004946,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004947,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004948,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004949,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004950,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004951,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004952,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
+            {
+                "id": 1004953,
+                "name": "GI Hidden Group for testing",
+                "role": "admin",
+            },
         ],
     },
     "user4": {
