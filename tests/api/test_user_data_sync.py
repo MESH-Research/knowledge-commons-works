@@ -310,9 +310,7 @@ def test_user_data_sync_on_account_setup(
 
 
 @pytest.mark.skip(reason="Not implemented")
-def test_user_data_sync_on_account_setup_already_linked(
-    running_app, search_clear
-):
+def test_user_data_sync_on_account_setup_already_linked(running_app, search_clear):
     """Test that the user's data is synced when already linked to KC IDP.
 
     The actual api call is mocked, so this tests that the api request is made

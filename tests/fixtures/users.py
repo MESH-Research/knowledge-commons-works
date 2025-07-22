@@ -7,7 +7,6 @@
 
 """User related pytest fixtures for testing."""
 
-import os
 from collections.abc import Callable
 
 import pytest
@@ -76,9 +75,7 @@ def user_data_to_remote_data(requests_mock):
                             "institutional_affiliation", ""
                         ),
                         "orcid": user_data.get("orcid", ""),
-                        "preferred_language": user_data.get(
-                            "preferred_language", ""
-                        ),
+                        "preferred_language": user_data.get("preferred_language", ""),
                         "time_zone": user_data.get("time_zone", ""),
                         "groups": user_data.get("groups", ""),
                     },
@@ -217,9 +214,7 @@ def admin_role_need(db):
     role = Role(name="administration-access")
     db.session.add(role)
 
-    action_role = ActionRoles.create(
-        action=administration_access_action, role=role
-    )
+    action_role = ActionRoles.create(action=administration_access_action, role=role)
     db.session.add(action_role)
 
     db.session.commit()
@@ -262,9 +257,7 @@ def superuser_role_need(db):
 
 
 @pytest.fixture(scope="function")
-def superuser_identity(
-    admin: AugmentedUserFixture, superuser_role_need
-) -> Identity:
+def superuser_identity(admin: AugmentedUserFixture, superuser_role_need) -> Identity:
     """Superuser identity fixture."""
     identity = admin.identity
     identity.provides.add(superuser_role_need)
