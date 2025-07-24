@@ -61,30 +61,63 @@ def user_data_to_remote_data(requests_mock):
         saml_id: str, email: str, user_data: dict
     ) -> dict[str, str | list[dict[str, str]]]:
         """Convert user fixture data to format for remote data."""
-        mock_remote_data = {
-            "data": [
-                {
-                    "sub": "user1",
-                    "profile": {
-                        "username": saml_id,
-                        "email": email,
-                        "name": user_data.get("name", ""),
-                        "first_name": user_data.get("first_name", ""),
-                        "last_name": user_data.get("last_name", ""),
-                        "institutional_affiliation": user_data.get(
-                            "institutional_affiliation", ""
-                        ),
-                        "orcid": user_data.get("orcid", ""),
-                        "preferred_language": user_data.get("preferred_language", ""),
-                        "time_zone": user_data.get("time_zone", ""),
-                        "groups": user_data.get("groups", ""),
-                    },
-                }
-            ],
-            "next": None,
-            "previous": None,
-            "meta": {"authorized": True},
-        }
+        if user_data.get("first_name", "") != "":
+            mock_remote_data = {
+                "data": [
+                    {
+                        "sub": "user1",
+                        "profile": {
+                            "username": saml_id,
+                            "email": email,
+                            "name": user_data.get("name", ""),
+                            "first_name": user_data.get("first_name", ""),
+                            "last_name": user_data.get("last_name", ""),
+                            "institutional_affiliation": user_data.get(
+                                "institutional_affiliation", ""
+                            ),
+                            "orcid": user_data.get("orcid", ""),
+                            "preferred_language": user_data.get(
+                                "preferred_language", ""
+                            ),
+                            "time_zone": user_data.get("time_zone", ""),
+                            "groups": user_data.get("groups", ""),
+                        },
+                    }
+                ],
+                "next": None,
+                "previous": None,
+                "meta": {"authorized": True},
+            }
+        else:
+            try:
+                profile = user_data.get("data", [])[0].get("profile", {})
+            except IndexError:
+                profile = {}
+
+            mock_remote_data = {
+                "data": [
+                    {
+                        "sub": "user1",
+                        "profile": {
+                            "username": saml_id,
+                            "email": email,
+                            "name": profile.get("name", ""),
+                            "first_name": profile.get("first_name", ""),
+                            "last_name": profile.get("last_name", ""),
+                            "institutional_affiliation": profile.get(
+                                "institutional_affiliation", ""
+                            ),
+                            "orcid": profile.get("orcid", ""),
+                            "preferred_language": profile.get("preferred_language", ""),
+                            "time_zone": profile.get("time_zone", ""),
+                            "groups": profile.get("groups", []),
+                        },
+                    }
+                ],
+                "next": None,
+                "previous": None,
+                "meta": {"authorized": True},
+            }
         return mock_remote_data
 
     return convert_user_data_to_remote_data
@@ -268,19 +301,29 @@ def superuser_identity(admin: AugmentedUserFixture, superuser_role_need) -> Iden
 def user1_data() -> dict:
     """Data for user1."""
     return {
-        "saml_id": "user1",
-        "email": "user1@inveniosoftware.org",
-        "name": "User Number One",
-        "first_name": "User Number",
-        "last_name": "One",
-        "institutional_affiliation": "Michigan State University",
-        "orcid": "0000-0002-1825-0097",  # official dummy orcid
-        "preferred_language": "en",
-        "time_zone": "UTC",
-        "groups": [
-            {"id": 12345, "name": "awesome-mock", "role": "admin"},
-            {"id": 67891, "name": "admin", "role": "member"},
+        "data": [
+            {
+                "sub": "user1",
+                "profile": {
+                    "saml_id": "user1",
+                    "email": "user1@inveniosoftware.org",
+                    "name": "User Number One",
+                    "first_name": "User Number",
+                    "last_name": "One",
+                    "institutional_affiliation": "Michigan State University",
+                    "orcid": "0000-0002-1825-0097",  # official dummy orcid
+                    "preferred_language": "en",
+                    "time_zone": "UTC",
+                    "groups": [
+                        {"id": 12345, "name": "awesome-mock", "role": "admin"},
+                        {"id": 67891, "name": "admin", "role": "member"},
+                    ],
+                },
+            }
         ],
+        "next": None,
+        "previous": None,
+        "meta": {"authorized": True},
     }
 
 
