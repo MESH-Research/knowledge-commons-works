@@ -5,7 +5,7 @@
 # it under the terms of the MIT License
 
 """Pytest fixtures for communities."""
-
+import os
 import traceback
 from collections.abc import Callable
 
@@ -49,25 +49,21 @@ def communities_links_factory():
     """Create links for communities for testing."""
 
     def assemble_links(community_id: str, slug: str):
+        base_url = os.getenv("TEST_BASE_URL", "https://localhost")
+
         return {
-            "featured": f"https://localhost/api/communities/{community_id}/featured",
-            "invitations": (
-                f"https://localhost/api/communities/{community_id}/invitations"
-            ),
-            "logo": f"https://localhost/api/communities/{community_id}/logo",
-            "members": f"https://localhost/api/communities/{community_id}/members",
-            "membership_requests": (
-                f"https://localhost/api/communities/{community_id}/membership-requests"
-            ),
-            "public_members": (
-                f"https://localhost/api/communities/{community_id}/members/public"
-            ),
-            "records": f"https://localhost/api/communities/{community_id}/records",
-            "rename": f"https://localhost/api/communities/{community_id}/rename",
-            "requests": f"https://localhost/api/communities/{community_id}/requests",
-            "self": f"https://localhost/api/communities/{community_id}",
-            "self_html": f"https://localhost/collections/{slug}",
-            "settings_html": f"https://localhost/collections/{slug}/settings",
+            "featured": f"{base_url}/api/communities/{community_id}/featured",
+            "invitations": f"{base_url}/api/communities/{community_id}/invitations",
+            "logo": f"{base_url}/api/communities/{community_id}/logo",
+            "members": f"{base_url}/api/communities/{community_id}/members",
+            "membership_requests": f"{base_url}/api/communities/{community_id}/membership-requests",
+            "public_members": f"{base_url}/api/communities/{community_id}/members/public",
+            "records": f"{base_url}/api/communities/{community_id}/records",
+            "rename": f"{base_url}/api/communities/{community_id}/rename",
+            "requests": f"{base_url}/api/communities/{community_id}/requests",
+            "self": f"{base_url}/api/communities/{community_id}",
+            "self_html": f"{base_url}/collections/{slug}",
+            "settings_html": f"{base_url}/collections/{slug}/settings",
         }
 
     return assemble_links
@@ -175,7 +171,12 @@ def group_communities_data_factory():
 
 @pytest.fixture(scope="function")
 def minimal_community_factory(
-    app, db, user_factory, create_communities_custom_fields, requests_mock, monkeypatch
+    app,
+    db,
+    user_factory,
+    create_communities_custom_fields,
+    requests_mock,
+    monkeypatch,
 ):
     """Create a minimal community for testing.
 
@@ -202,7 +203,12 @@ def minimal_community_factory(
         metadata = metadata or {}
         access = access or {}
         custom_fields = custom_fields or {}
-        members = members or {"reader": [], "curator": [], "manager": [], "owner": []}
+        members = members or {
+            "reader": [],
+            "curator": [],
+            "manager": [],
+            "owner": [],
+        }
 
         # Mock the search API for the community
         if mock_search_api:
