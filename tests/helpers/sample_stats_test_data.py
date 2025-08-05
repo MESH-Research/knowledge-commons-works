@@ -34,7 +34,7 @@ SAMPLE_RECORDS_SNAPSHOT_AGG = {
                 },
             },
         ],
-        "all_access_rights": [
+        "all_access_status": [
             {
                 "id": "123",
                 "label": "Access Right 1",
@@ -1141,7 +1141,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
         "by_day": {
             "buckets": [
                 {
-                    "by_access_rights": {
+                    "by_access_status": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1360,7 +1360,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                     "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
                 },
                 {
-                    "by_access_rights": {
+                    "by_access_status": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
@@ -1444,7 +1444,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                     },
                 },
                 {
-                    "by_access_rights": {
+                    "by_access_status": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
@@ -1528,7 +1528,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                     },
                 },
                 {
-                    "by_access_rights": {
+                    "by_access_status": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
@@ -1612,7 +1612,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                     },
                 },
                 {
-                    "by_access_rights": {
+                    "by_access_status": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1989,7 +1989,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_rights": [
+                "by_access_status": [
                     {
                         "files": {
                             "added": {"data_volume": 59117831.0, "file_count": 2},
@@ -2274,7 +2274,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliation_contributor": [],
                 "by_affiliation_creator": [],
                 "by_file_type": [],
@@ -2312,7 +2312,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliation_contributor": [],
                 "by_affiliation_creator": [],
                 "by_file_type": [],
@@ -2350,7 +2350,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliation_contributor": [],
                 "by_affiliation_creator": [],
                 "by_file_type": [],
@@ -2388,7 +2388,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_rights": [
+                "by_access_status": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2773,7 +2773,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 1},
             },
             "subcounts": {
-                "by_access_rights": [
+                "by_access_status": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2915,7 +2915,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
 
 MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
     "2025-05-30": {
-        "by_access_rights": {
+        "by_access_status": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -3707,7 +3707,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
         "without_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
     },
     "2025-05-31": {
-        "by_access_rights": {
+        "by_access_status": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -4499,7 +4499,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
         "without_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
     },
     "2025-06-03": {
-        "by_access_rights": {
+        "by_access_status": {
             "buckets": [
                 {
                     "doc_count": 3,
@@ -6055,7 +6055,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
 
 MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
     "2025-05-30": {
-        "by_access_rights": {
+        "by_access_status": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -6969,7 +6969,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
         "without_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
     },
     "2025-05-31": {
-        "by_access_rights": {
+        "by_access_status": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -7933,7 +7933,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
         "without_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
     },
     "2025-06-03": {
-        "by_access_rights": {
+        "by_access_status": {
             "buckets": [
                 {
                     "doc_count": 3,
@@ -9826,7 +9826,7 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
         "community_id": "e64dee43-6bd2-4380-b4e8-2813315cb74e",
         "snapshot_date": "2025-01-15",
         "subcounts": {
-            "all_access_rights": [
+            "all_access_status": [
                 {
                     "files": {"data_volume": 0.0, "file_count": 0},
                     "id": "metadata-only",
@@ -9857,7 +9857,7 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
         "community_id": "e64dee43-6bd2-4380-b4e8-2813315cb74e",
         "snapshot_date": "2025-01-16",
         "subcounts": {
-            "all_access_rights": [
+            "all_access_status": [
                 {
                     "files": {"data_volume": 0.0, "file_count": 0},
                     "id": "metadata-only",
@@ -9888,7 +9888,7 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
         "community_id": "e64dee43-6bd2-4380-b4e8-2813315cb74e",
         "snapshot_date": "2025-01-17",
         "subcounts": {
-            "all_access_rights": [
+            "all_access_status": [
                 {
                     "files": {"data_volume": 0.0, "file_count": 0},
                     "id": "metadata-only",
@@ -9924,7 +9924,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-05-30T23:59:59",
             "period_start": "2025-05-30T00:00:00",
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
@@ -9960,7 +9960,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-05-31T23:59:59",
             "period_start": "2025-05-31T00:00:00",
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
@@ -9996,7 +9996,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-01T23:59:59",
             "period_start": "2025-06-01T00:00:00",
             "subcounts": {
-                "by_access_rights": [
+                "by_access_status": [
                     {
                         "download": {
                             "total_events": 3,
@@ -10449,7 +10449,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-02T23:59:59",
             "period_start": "2025-06-02T00:00:00",
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
@@ -10485,7 +10485,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-03T23:59:59",
             "period_start": "2025-06-03T00:00:00",
             "subcounts": {
-                "by_access_rights": [
+                "by_access_status": [
                     {
                         "download": {
                             "total_events": 3,
@@ -10938,7 +10938,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-04T23:59:59",
             "period_start": "2025-06-04T00:00:00",
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
@@ -10974,7 +10974,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-05T23:59:59",
             "period_start": "2025-06-05T00:00:00",
             "subcounts": {
-                "by_access_rights": [
+                "by_access_status": [
                     {
                         "download": {
                             "total_events": 3,
@@ -11427,7 +11427,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-06T23:59:59",
             "period_start": "2025-06-06T00:00:00",
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
@@ -11463,7 +11463,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-07T23:59:59",
             "period_start": "2025-06-07T00:00:00",
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
@@ -11499,7 +11499,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-08T23:59:59",
             "period_start": "2025-06-08T00:00:00",
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
@@ -11535,7 +11535,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-09T23:59:59",
             "period_start": "2025-06-09T00:00:00",
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
@@ -11571,7 +11571,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-10T23:59:59",
             "period_start": "2025-06-10T00:00:00",
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
@@ -11607,7 +11607,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-11T23:59:59",
             "period_start": "2025-06-11T00:00:00",
             "subcounts": {
-                "by_access_rights": [],
+                "by_access_status": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],

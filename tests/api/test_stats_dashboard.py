@@ -212,7 +212,7 @@ class TestCommunityRecordCreatedDeltaQuery:
     """
 
     SUB_AGGS = [
-        "by_access_rights",
+        "by_access_status",
         "by_affiliation_contributor",
         "by_affiliation_creator",
         "by_file_type",
@@ -401,7 +401,7 @@ class TestCommunityRecordCreatedDeltaQuery:
         }
         assert result["uploaders"]["value"] == 1
         self._check_query_subcount_results(
-            result["by_access_rights"]["buckets"][0],
+            result["by_access_status"]["buckets"][0],
             expected_key="open",
             count_with_files=2,
             count_without_files=0,
@@ -604,14 +604,14 @@ class TestCommunityRecordCreatedDeltaQuery:
             "unique_parents": {"value": 1},
         }
         self._check_query_subcount_results(
-            result["by_access_rights"]["buckets"][0],
+            result["by_access_status"]["buckets"][0],
             expected_key="metadata-only",
             count_with_files=0,
             count_without_files=1,
             expected_bytes=0.0,
         )
         self._check_query_subcount_results(
-            result["by_access_rights"]["buckets"][1],
+            result["by_access_status"]["buckets"][1],
             expected_key="open",
             expected_bytes=1984949.0,
         )
@@ -1536,7 +1536,7 @@ class TestCommunityRecordAddedDeltaAggregator(
                     assert doc["records"]["removed"]["metadata_only"] == 0
                     a = [
                         i
-                        for i in doc["subcounts"]["by_access_rights"]
+                        for i in doc["subcounts"]["by_access_status"]
                         if i["id"] == "metadata-only"
                     ][0]
                     assert a["id"] == "metadata-only"
@@ -2946,7 +2946,7 @@ class TestCommunityUsageAggregators:
             subcounts = doc["subcounts"]
             expected_subcounts = [
                 "by_resource_types",
-                "by_access_rights",
+                "by_access_status",
                 "by_languages",
                 "by_subjects",
                 "by_licenses",
@@ -3113,7 +3113,7 @@ class TestCommunityUsageAggregators:
 
         for all_subcount_type in [
             "all_file_types",
-            "all_access_rights",
+            "all_access_status",
             "all_languages",
             "all_resource_types",
         ]:
@@ -6016,7 +6016,7 @@ class TestAPIRequestUsageDelta:
         assert "unique_visitors" in day_data["totals"]["view"]
 
         assert "subcounts" in day_data
-        assert "by_access_rights" in day_data["subcounts"]
+        assert "by_access_status" in day_data["subcounts"]
         assert "by_affiliations" in day_data["subcounts"]
         assert "by_countries" in day_data["subcounts"]
         assert "by_file_types" in day_data["subcounts"]
@@ -6164,7 +6164,7 @@ class TestAPIRequestUsageSnapshot(TestAPIRequestUsageDelta):
         assert "unique_visitors" in day_data["totals"]["view"]
 
         assert "subcounts" in day_data
-        assert "all_access_rights" in day_data["subcounts"]
+        assert "all_access_status" in day_data["subcounts"]
         assert "top_affiliations" in day_data["subcounts"]
         assert "top_countries" in day_data["subcounts"]
         assert "all_file_types" in day_data["subcounts"]
