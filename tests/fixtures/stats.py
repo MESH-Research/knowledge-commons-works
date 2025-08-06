@@ -15,8 +15,11 @@
 
 """Fixtures for stats."""
 
+from typing import Callable
+
 import pytest
 from flask import current_app
+from flask_sqlalchemy import SQLAlchemy
 from invenio_rdm_records.resources.stats.event_builders import (
     build_record_unique_id,
 )
@@ -33,6 +36,8 @@ from invenio_stats_dashboard.config import COMMUNITY_STATS_QUERIES
 from invenio_stats_dashboard.utils.usage_events import UsageEventFactory
 from invenio_stats.processors import EventsIndexer, anonymize_user, flag_robots
 from invenio_stats.queries import TermsQuery
+
+from tests.conftest import RunningApp
 
 AllowAllPermission = type(
     "Allow",
@@ -282,6 +287,82 @@ AllowAllPermission = type(
 )()
 
 test_config_stats["STATS_PERMISSION_FACTORY"] = permissions_policy_lookup_factory
+
+
+@pytest.fixture(scope="function")
+def put_old_stats_templates(
+    running_app: RunningApp,
+    db: SQLAlchemy,
+    create_stats_indices: Callable,
+    search_clear: Callable,
+):
+    """Put old stats templates from invenio-rdm-records for testing migration scenarios.
+
+    This fixture is used to simulate the migration scenario where old templates
+    exist and need to be migrated to new enriched templates. It deletes any
+    existing enriched templates and puts the old templates from invenio-rdm-records.
+
+    Parameters:
+        running_app: The running application fixture.
+    """
+    client = current_search_client
+
+    # Delete the new enriched templates first if they exist
+    try:
+        client.indices.delete_index_template("events-stats-record-view-v2.0.0")
+    except Exception:
+        pass  # Template might not exist
+    try:
+        client.indices.delete_index_template("events-stats-file-download-v2.0.0")
+    except Exception:
+        pass  # Template might not exist
+
+    # Put the old templates from invenio-rdm-records
+    old_templates = {
+        "events-stats-record-view-v1.0.0": (
+            "invenio_rdm_records.records.stats.templates.events.record_view"
+        ),
+        "events-stats-file-download-v1.0.0": (
+            "invenio_rdm_records.records.stats.templates.events.file_download"
+        ),
+    }
+
+    templates_put = False
+    for template_name, template_path in old_templates.items():
+        try:
+            # Register the old template
+            template_result = current_search.register_templates(template_path)
+            for index_name, index_template in template_result.items():
+                # Put the old template
+                current_search._put_template(
+                    index_name,
+                    index_template,
+                    current_search_client.indices.put_index_template,
+                    ignore=None,
+                )
+                current_app.logger.info(f"Put old template: {index_name}")
+                templates_put = True
+        except Exception as e:
+            current_app.logger.warning(
+                f"Failed to put old template {template_name}: {e}"
+            )
+
+    if not templates_put:
+        current_app.logger.warning(
+            "Could not put old templates - migration test may not work correctly"
+        )
+
+    yield
+
+    # Clean up: delete the old templates after the test
+    try:
+        client.indices.delete_index_template("events-stats-record-view-v1.0.0")
+    except Exception:
+        pass
+    try:
+        client.indices.delete_index_template("events-stats-file-download-v1.0.0")
+    except Exception:
+        pass
 
 
 @pytest.fixture

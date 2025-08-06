@@ -11,6 +11,8 @@ from invenio_search import current_search_client
 from invenio_search.utils import prefix_index
 from opensearchpy.helpers.search import Search
 
+from invenio_stats_dashboard.proxies import current_event_reindexing_service
+
 
 def test_event_reindexing_service_monthly_indices(
     running_app,
@@ -18,7 +20,7 @@ def test_event_reindexing_service_monthly_indices(
     minimal_community_factory,
     minimal_published_record_factory,
     user_factory,
-    create_stats_indices,
+    put_old_stats_templates,
     mock_send_remote_api_update_fixture,
     celery_worker,
     requests_mock,
@@ -26,7 +28,6 @@ def test_event_reindexing_service_monthly_indices(
     usage_event_factory,
 ):
     """Test the enhanced EventReindexingService with monthly indices."""
-    from invenio_stats_dashboard.service import EventReindexingService
 
     app = running_app.app
     client = current_search_client
@@ -36,111 +37,110 @@ def test_event_reindexing_service_monthly_indices(
     user_email = u.user.email
     user_id = u.user.id
 
-    # Create community
     community = minimal_community_factory(user_id)
     community_id = community["id"]
 
-    # Create records
     records = []
     for i in range(3):
         record = minimal_published_record_factory(user_email, community_id)
         records.append(record)
 
     # Create usage events in different months
-    events = []
-    for i, record in enumerate(records):
-        # Create events for different months
-        if i == 0:
-            # June 2025
-            event_date = arrow.get("2025-06-15")
-        elif i == 1:
-            # July 2025
-            event_date = arrow.get("2025-07-15")
-        else:
-            # August 2025 (current month)
-            event_date = arrow.get("2025-08-15")
+    current_month = arrow.utcnow().format("YYYY-MM")
+    previous_month = arrow.get(current_month).shift(months=-1).format("YYYY-MM")
+    previous_month_2 = arrow.get(current_month).shift(months=-2).format("YYYY-MM")
 
-        # Create view and download events
-        events.append(usage_event_factory.make_view_event(record, event_date, i))
-        if record.get("files", {}).get("enabled"):
-            events.append(
-                usage_event_factory.make_download_event(record, event_date, i)
-            )
+    months = [previous_month, previous_month_2, current_month]
 
-    # Index events
-    usage_event_factory.index_usage_events(events)
+    usage_event_factory.generate_and_index_repository_events(
+        start_date=f"{previous_month_2}-01",
+        end_date=arrow.utcnow().format("YYYY-MM-DD"),
+        events_per_record=100,
+    )
 
-    # Verify events are in correct monthly indices
-    june_view_index = f"{prefix_index('events-stats-record-view')}-2025-06"
-    june_download_index = f"{prefix_index('events-stats-file-download')}-2025-06"
-    july_view_index = f"{prefix_index('events-stats-record-view')}-2025-07"
-    july_download_index = f"{prefix_index('events-stats-file-download')}-2025-07"
-    august_view_index = f"{prefix_index('events-stats-record-view')}-2025-08"
-    august_download_index = f"{prefix_index('events-stats-file-download')}-2025-08"
-
-    # Check that events are distributed across months
-    june_view_count = client.count(index=june_view_index)["count"]
-    june_download_count = client.count(index=june_download_index)["count"]
-    july_view_count = client.count(index=july_view_index)["count"]
-    july_download_count = client.count(index=july_download_index)["count"]
-    august_view_count = client.count(index=august_view_index)["count"]
-    august_download_count = client.count(index=august_download_index)["count"]
-
-    assert june_view_count > 0, "No view events found in June index"
-    assert june_download_count > 0, "No download events found in June index"
-    assert july_view_count > 0, "No view events found in July index"
-    assert july_download_count > 0, "No download events found in July index"
-    assert august_view_count > 0, "No view events found in August index"
-    assert august_download_count > 0, "No download events found in August index"
-
-    # Test the enhanced EventReindexingService
-    service = EventReindexingService(app)
+    # Verify events are created in correct monthly indices
+    event_count = 0
+    for month in months:
+        view_index = f"{prefix_index('events-stats-record-view')}-{month}"
+        download_index = f"{prefix_index('events-stats-file-download')}-{month}"
+        view_count = client.count(index=view_index)["count"]
+        download_count = client.count(index=download_index)["count"]
+        assert view_count > 0, f"No view events found in {month} index"
+        assert download_count > 0, f"No download events found in {month} index"
+        event_count += view_count + download_count
+    assert event_count == 300, "Should have 300 events"
 
     # Test getting monthly indices
-    view_indices = service.get_monthly_indices("view")
-    download_indices = service.get_monthly_indices("download")
+    view_indices = current_event_reindexing_service.get_monthly_indices("view")
+    download_indices = current_event_reindexing_service.get_monthly_indices("download")
 
-    assert len(view_indices) >= 3, "Should find at least 3 monthly view indices"
-    assert len(download_indices) >= 3, "Should find at least 3 monthly download indices"
+    assert len(view_indices) == 3, "Should find 3 monthly view indices"
+    assert len(download_indices) == 3, "Should find 3 monthly download indices"
 
     # Test current month detection
-    current_month = service.get_current_month()
-    assert current_month in [
-        "2025-08"
-    ], f"Current month should be 2025-08, got {current_month}"
+    fetched_current_month = current_event_reindexing_service.get_current_month()
+    assert (
+        fetched_current_month == current_month
+    ), f"Current month should be {current_month}"
 
     # Test monthly index migration (test with a small batch)
-    results = service.reindex_events(event_types=["view"], max_batches=1)
+    results = current_event_reindexing_service.reindex_events(
+        event_types=["view", "download"], max_batches=100
+    )
 
+    # Check basic result counts
     assert "view" in results["event_types"], "Should have view results"
+    assert "download" in results["event_types"], "Should have download results"
     assert (
-        results["event_types"]["view"]["processed"] > 0
-    ), "Should have processed some events"
+        results["event_types"]["view"]["processed"] == 300
+    ), "Should have processed 300 view events"
+    assert (
+        results["event_types"]["download"]["processed"] == 300
+    ), "Should have processed 300 download events"
+    assert results["event_types"]["view"]["errors"] == 0, "Should have no view errors"
+    assert (
+        results["event_types"]["download"]["errors"] == 0
+    ), "Should have no download errors"
+    assert (
+        len(results["event_types"]["view"]["months"].keys()) == 3
+    ), "Should have 3 months"
+    assert (
+        len(results["event_types"]["download"]["months"].keys()) == 3
+    ), "Should have 3 months"
 
     # Verify that enriched indices were created
-    enriched_indices = client.indices.get(
-        index=f"{prefix_index('events-stats-record-view-enriched')}-*"
+    enriched_view_indices = client.indices.get(
+        index=f"{prefix_index('events-stats-record-view-v2.0.0')}-*"
     )
-    assert len(enriched_indices) > 0, "Should have created enriched indices"
-
-    # Check that enriched events have the required fields
-    enriched_search = Search(
-        using=client, index=f"{prefix_index('events-stats-record-view-enriched')}-*"
+    assert (
+        len(enriched_view_indices) == 3
+    ), "Should have created 3 enriched view indices"
+    enriched_download_indices = client.indices.get(
+        index=f"{prefix_index('events-stats-file-download-v2.0.0')}-*"
     )
-    enriched_search = enriched_search.extra(size=10)
-    enriched_results = enriched_search.execute()
+    assert (
+        len(enriched_download_indices) == 3
+    ), "Should have created enriched download indices"
 
-    if enriched_results.hits.hits:
-        enriched_event = enriched_results.hits.hits[0]["_source"]
-        assert (
-            "community_ids" in enriched_event
-        ), "Enriched events should have community_ids"
-        assert (
-            "resource_type" in enriched_event
-        ), "Enriched events should have resource_type"
-        assert (
-            "access_status" in enriched_event
-        ), "Enriched events should have access_status"
+    # Check that all enriched events have the required fields
+    # and are accessible via the default aliases
+    for index in ["record-view", "file-download"]:
+        enriched_search = Search(
+            using=client, index=f"{prefix_index(f'events-stats-{index}')}"
+        )
+        enriched_search = enriched_search.extra(size=400)
+        enriched_results = enriched_search.execute()
+
+        for enriched_event in enriched_results.hits.hits:
+            assert (
+                "community_ids" in enriched_event
+            ), "Enriched events should have community_ids"
+            assert (
+                "resource_type" in enriched_event
+            ), "Enriched events should have resource_type"
+            assert (
+                "access_status" in enriched_event
+            ), "Enriched events should have access_status"
 
 
 def test_event_reindexing_service_community_membership_fallback(
