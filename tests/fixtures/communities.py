@@ -6,20 +6,20 @@
 
 """Pytest fixtures for communities."""
 
-from pprint import pformat
 import traceback
 from collections.abc import Callable
+from pprint import pformat
 
-from flask import current_app
 import marshmallow as ma
 import pytest
+from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_communities.communities.records.api import Community
 from invenio_communities.proxies import current_communities
-from invenio_rdm_records.proxies import current_rdm_records_service, current_rdm_records
+from invenio_rdm_records.proxies import current_rdm_records, current_rdm_records_service
 from invenio_rdm_records.records.api import RDMRecord
 from invenio_rdm_records.utils import get_or_create_user
 from invenio_records_resources.services.uow import UnitOfWork

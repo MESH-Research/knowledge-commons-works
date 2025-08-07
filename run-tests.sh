@@ -107,6 +107,10 @@ unset INVENIO_SQLALCHEMY_DATABASE_URI
 echo "Running mypy on the site directory"
 uv run mypy --config-file pyproject.toml site/
 
+# Run isort on default paths
+echo "Running isort on site/kcworks, tests, and scripts directories"
+uv run isort site/kcworks tests scripts
+
 # Note: expansion of pytest_args looks like below to not cause an unbound
 # variable error when 1) "nounset" and 2) the array is empty.
 if [ ${#pytest_args[@]} -eq 0 ]; then

@@ -1,7 +1,8 @@
-import click
 import json
-from APIclient import APIclient
 import os
+
+import click
+from APIclient import APIclient
 
 token = os.environ['CLI_TOKEN']
 

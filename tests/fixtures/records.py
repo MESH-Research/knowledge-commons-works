@@ -27,8 +27,8 @@ from invenio_rdm_records.proxies import current_rdm_records_service as records_s
 from invenio_record_importer_kcworks.services.files import FilesHelper
 from invenio_record_importer_kcworks.types import FileData
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
-from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
 from invenio_records_resources.services.records.results import RecordItem
+from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
 from invenio_stats_dashboard.components import update_community_events_created_date
 
 from ..helpers.utils import remove_value_by_path

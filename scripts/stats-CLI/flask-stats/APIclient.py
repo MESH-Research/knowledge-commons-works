@@ -1,9 +1,10 @@
-import requests
-import numpy as np
-import json
 import calendar
 import datetime
+import json
 from datetime import date
+
+import numpy as np
+import requests
 
 # create class for managing stats queried from Invenio API response
 

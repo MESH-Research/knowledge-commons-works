@@ -2,9 +2,8 @@
 
 from unittest.mock import patch
 
-import pytest
 import arrow
-
+import pytest
 from invenio_stats_dashboard.cli import cli
 
 

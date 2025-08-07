@@ -1,6 +1,6 @@
 import os
-from pprint import pformat
 import time
+from pprint import pformat
 from typing import Optional
 
 import requests
@@ -9,9 +9,9 @@ from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
+from invenio_communities.generators import CommunityRoleNeed
 from invenio_communities.members.errors import AlreadyMemberError
 from invenio_communities.proxies import current_communities
-from invenio_communities.generators import CommunityRoleNeed
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_record_importer_kcworks.proxies import current_record_importer_service
 from invenio_record_importer_kcworks.types import APIResponsePayload, FileData

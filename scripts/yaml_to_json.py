@@ -2,7 +2,9 @@
 
 import json
 from pathlib import Path
+
 import yaml
+
 
 def main():
     with open(Path(__file__).parent / "field_config.yaml", 'rb') as configfile:

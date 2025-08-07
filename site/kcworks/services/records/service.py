@@ -1,12 +1,12 @@
 import os
 import tempfile
 import time
+from pprint import pformat
 from typing import Optional
 
+import requests
 from flask import current_app as app
 from invenio_record_importer_kcworks.types import FileData
-from pprint import pformat
-import requests
 
 
 class KCWorksRecordsAPIHelper:

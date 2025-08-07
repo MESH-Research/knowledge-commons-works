@@ -36,8 +36,7 @@ dependencies = [
     "lxml==5.2.1",
     "numpy",
     "pip",
-    "pluggy<1.0,>=0.10.0",
-    "pytest-invenio<3.0.0",
+    "pluggy>=0.12,<2.0",
     "python-dotenv",
     "python-iso639",
     "python-stdnum",
@@ -57,10 +56,11 @@ dependencies = [
 
 [project.optional-dependencies]
 tests = [
-    "pytest-invenio>=2.1.0,<3.0.0",
+    "pytest-invenio>=2.2.2,<3.0.0",
     "pytest-ruff>=0.1.0",
     "pytest-mypy>=0.10.0",
     "pytest-black>=0.6.0",
+    "pytest-cov>=6.2.1",
     "pytest-isort>=4.0.0",
     "pytest-mock",
 ]
@@ -215,10 +215,22 @@ force_grid_wrap = 0
 use_parentheses = true
 ensure_newline_before_comments = true
 split_on_trailing_comma = true
+skip = [
+    "site/kcworks/dependencies/invenio-rdm-records",
+    "site/kcworks/dependencies/invenio-records-resources",
+    "site/kcworks/dependencies/invenio-requests",
+    "site/kcworks/dependencies/invenio-vocabularies",
+    "site/kcworks/dependencies/invenio-communities",
+    "site/kcworks/stats_dashboard",
+    "__pycache__",  # Skip cache directories
+    # ".venv",  # Skip virtual environment
+    # "node_modules",  # Skip node modules
+]
 
 [tool.pytest.ini_options]
 addopts = """
 --black --ruff --isort --doctest-modules
+--log-cli-level=DEBUG
 --ignore=app_data
 --ignore=docs
 --ignore=node_modules
@@ -228,6 +240,7 @@ addopts = """
 --ignore=site/kcworks/stats_dashboard
 --ignore=site/kcworks/services/search/index_templates
 --cov=kcworks --cov-report=term-missing
+--capture=no
 """
 norecursedirs = ["site/kcworks/services/search/index_templates/records/os-v2"]
 log_cli_level = "DEBUG"

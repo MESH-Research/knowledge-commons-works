@@ -3198,15 +3198,15 @@ wheels = [
 
 [[package]]
 name = "jsonresolver"
-version = "0.3.2"
+version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pluggy" },
     { name = "werkzeug" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e4/39/3d36138e85dbf9d5faaa56cba1b6c1a4c291e44d4778baf49cb781d6ac48/jsonresolver-0.3.2.tar.gz", hash = "sha256:66d70fd43d0b961a18aa09917bd1a49400f0adb7ed70fb2611188f319f306ed9", size = 20665 }
+sdist = { url = "https://files.pythonhosted.org/packages/db/f8/6ccdf5c18fe42d544bcbc64c3b98d185951a191020d445fabb3253d07fe7/jsonresolver-0.4.1.tar.gz", hash = "sha256:e357b9228dd788be2ca7c9a6ee58235b267657845583113080c0aaa75d467208", size = 22368 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b2/b7/8250850dc0ef4ed46ec0cd84b473d677be3bb9787ff8bc81e69d889c7a29/jsonresolver-0.3.2-py2.py3-none-any.whl", hash = "sha256:33ed39dc582db4b011a1356ebb76c43317f069f01f98f357da9a4cdb6a6539d5", size = 9902 },
+    { url = "https://files.pythonhosted.org/packages/35/60/1fd299b40220cabd8de96e10fc4c932e493d2a2d182997d4874be5ddb890/jsonresolver-0.4.1-py2.py3-none-any.whl", hash = "sha256:f7f6809d4ca2e449c88b14c3e8cbdb13a2a9b372815a051ae2a3a0a97f997e95", size = 10082 },
 ]
 
 [[package]]
@@ -3313,7 +3313,6 @@ dependencies = [
     { name = "pip" },
     { name = "pluggy" },
     { name = "pydantic" },
-    { name = "pytest-invenio" },
     { name = "python-dotenv" },
     { name = "python-iso639" },
     { name = "python-stdnum" },
@@ -3348,6 +3347,7 @@ dev = [
 ]
 tests = [
     { name = "pytest-black" },
+    { name = "pytest-cov" },
     { name = "pytest-invenio" },
     { name = "pytest-isort" },
     { name = "pytest-mock" },
@@ -3413,12 +3413,12 @@ requires-dist = [
     { name = "myst-parser", marker = "extra == 'dev'" },
     { name = "numpy" },
     { name = "pip" },
-    { name = "pluggy", specifier = ">=0.10.0,<1.0" },
+    { name = "pluggy", specifier = ">=0.12,<2.0" },
     { name = "psycopg2-binary", marker = "extra == 'dev'", specifier = ">=2.9.10" },
     { name = "pydantic" },
     { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
-    { name = "pytest-invenio", specifier = "<3.0.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=2.1.0,<3.0.0" },
+    { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=6.2.1" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=2.2.2,<3.0.0" },
     { name = "pytest-isort", marker = "extra == 'tests'", specifier = ">=4.0.0" },
     { name = "pytest-mock", marker = "extra == 'tests'" },
     { name = "pytest-mypy", marker = "extra == 'tests'", specifier = ">=0.10.0" },
@@ -4345,11 +4345,11 @@ wheels = [
 
 [[package]]
 name = "pluggy"
-version = "0.13.1"
+version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f8/04/7a8542bed4b16a65c2714bf76cf5a0b026157da7f75e87cc88774aa10b14/pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0", size = 57962 }
+sdist = { url = "https://files.pythonhosted.org/packages/f9/e2/3e91f31a7d2b083fe6ef3fa267035b518369d9511ffab804f839851d2779/pluggy-1.6.0.tar.gz", hash = "sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3", size = 69412 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/28/85c7aa31b80d150b772fbe4a229487bc6644da9ccb7e427dd8cc60cb8a62/pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d", size = 18077 },
+    { url = "https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl", hash = "sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746", size = 20538 },
 ]
 
 [[package]]
@@ -4714,15 +4714,16 @@ wheels = [
 
 [[package]]
 name = "pytest-cov"
-version = "6.2.0"
+version = "6.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "coverage" },
+    { name = "pluggy" },
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/88/17/139b134cb36e496a62780b2ff19ea47fd834f2d180a32e6dd9210f4a8a77/pytest_cov-6.2.0.tar.gz", hash = "sha256:9a4331e087a0f5074dc1e19fe0485a07a462b346cbb91e2ac903ec5504abce10", size = 68872 }
+sdist = { url = "https://files.pythonhosted.org/packages/18/99/668cade231f434aaa59bbfbf49469068d2ddd945000621d3d165d2e7dd7b/pytest_cov-6.2.1.tar.gz", hash = "sha256:25cc6cc0a5358204b8108ecedc51a9b57b34cc6b8c967cc2c01a4e00d8a67da2", size = 69432 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/aa/66/a38138fbf711b2b93592dfd7303bba561f6bc05f85361a0388c105ceb727/pytest_cov-6.2.0-py3-none-any.whl", hash = "sha256:bd19301caf600ead1169db089ed0ad7b8f2b962214330a696b8c85a0b497b2ff", size = 24448 },
+    { url = "https://files.pythonhosted.org/packages/bc/16/4ea354101abb1287856baa4af2732be351c7bee728065aed451b678153fd/pytest_cov-6.2.1-py3-none-any.whl", hash = "sha256:f5bc4c23f42f1cdd23c70b1dab1bbaef4fc505ba950d53e0081d0730dd7e86d5", size = 24644 },
 ]
 
 [[package]]
