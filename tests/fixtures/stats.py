@@ -15,7 +15,7 @@
 
 """Fixtures for stats."""
 
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
 import pytest
 from flask import current_app
@@ -28,16 +28,19 @@ from invenio_record_importer_kcworks.services.stats.aggregations import (
     StatAggregatorOverridable,
 )
 from invenio_search.proxies import current_search, current_search_client
+from invenio_search.utils import prefix_index
 from invenio_stats.contrib.event_builders import build_file_unique_id
+from invenio_stats.processors import EventsIndexer, anonymize_user, flag_robots
+from invenio_stats.queries import TermsQuery
 from invenio_stats_dashboard.aggregations import (
     register_aggregations as register_community_aggregations,
 )
 from invenio_stats_dashboard.config import COMMUNITY_STATS_QUERIES
 from invenio_stats_dashboard.utils.usage_events import UsageEventFactory
-from invenio_stats.processors import EventsIndexer, anonymize_user, flag_robots
-from invenio_stats.queries import TermsQuery
 
-from tests.conftest import RunningApp
+# RunningApp type is defined in conftest.py but imported here to avoid circular imports
+if TYPE_CHECKING:
+    from tests.conftest import RunningApp
 
 AllowAllPermission = type(
     "Allow",
@@ -290,12 +293,7 @@ test_config_stats["STATS_PERMISSION_FACTORY"] = permissions_policy_lookup_factor
 
 
 @pytest.fixture(scope="function")
-def put_old_stats_templates(
-    running_app: RunningApp,
-    db: SQLAlchemy,
-    create_stats_indices: Callable,
-    search_clear: Callable,
-):
+def put_old_stats_templates():
     """Put old stats templates from invenio-rdm-records for testing migration scenarios.
 
     This fixture is used to simulate the migration scenario where old templates
@@ -309,11 +307,15 @@ def put_old_stats_templates(
 
     # Delete the new enriched templates first if they exist
     try:
-        client.indices.delete_index_template("events-stats-record-view-v2.0.0")
+        client.indices.delete_index_template(
+            prefix_index("events-stats-record-view-v2.0.0")
+        )
     except Exception:
         pass  # Template might not exist
     try:
-        client.indices.delete_index_template("events-stats-file-download-v2.0.0")
+        client.indices.delete_index_template(
+            prefix_index("events-stats-file-download-v2.0.0")
+        )
     except Exception:
         pass  # Template might not exist
 
@@ -332,12 +334,15 @@ def put_old_stats_templates(
         try:
             # Register the old template
             template_result = current_search.register_templates(template_path)
+            current_app.logger.info(
+                f"Template result for {template_name}: {template_result}"
+            )
             for index_name, index_template in template_result.items():
-                # Put the old template
+                # Put the old template using the legacy template API
                 current_search._put_template(
                     index_name,
                     index_template,
-                    current_search_client.indices.put_index_template,
+                    current_search_client.indices.put_template,
                     ignore=None,
                 )
                 current_app.logger.info(f"Put old template: {index_name}")
