@@ -77,7 +77,7 @@ const CommunityDetailsHeader = ({
     },
     {
       name: "stats",
-      text: "Stats",
+      text: "Insights",
       icon: "chart line",
       permissions: canRead,
       url: `/collections/${slug}/stats`,
