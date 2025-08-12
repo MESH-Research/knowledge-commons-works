@@ -3,8 +3,8 @@ from invenio_search import current_search_client
 from invenio_search.utils import prefix_index
 from invenio_stats_dashboard.components import (
     update_community_events_deletion_fields,
-    update_event_deletion_fields,
     update_community_events_index,
+    update_event_deletion_fields,
 )
 from kcworks.services.records.test_data import import_test_records
 

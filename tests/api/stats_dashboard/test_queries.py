@@ -1,3 +1,6 @@
+from pathlib import Path
+from pprint import pformat
+
 import arrow
 from invenio_access.permissions import system_identity
 from invenio_access.utils import get_identity
@@ -10,8 +13,6 @@ from invenio_stats_dashboard.queries import (
     daily_record_snapshot_query_with_events,
     get_relevant_record_ids_from_events,
 )
-from pathlib import Path
-from pprint import pformat
 
 from tests.api.stats_dashboard.test_stats_dashboard import (
     sample_metadata_journal_article4_pdf,

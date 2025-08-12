@@ -1,14 +1,12 @@
+from collections.abc import Callable
+from pprint import pformat
+
+import arrow
+from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_datastore
 from invenio_communities.utils import load_community_needs
-from invenio_search import current_search_client
-from invenio_search.utils import prefix_index
-from pprint import pformat
-
-import arrow
-from collections.abc import Callable
-from flask_sqlalchemy import SQLAlchemy
 from invenio_rdm_records.proxies import (
     current_rdm_records,
 )
@@ -22,11 +20,13 @@ from invenio_requests.proxies import (
     current_requests_service,
 )
 from invenio_requests.resolvers.registry import ResolverRegistry
-from tests.conftest import RunningApp
-
+from invenio_search import current_search_client
+from invenio_search.utils import prefix_index
 from invenio_stats_dashboard.components import (
     CommunityAcceptedEventComponent,
 )
+
+from tests.conftest import RunningApp
 
 
 class TestCommunitiesEventsComponentsIncluded:

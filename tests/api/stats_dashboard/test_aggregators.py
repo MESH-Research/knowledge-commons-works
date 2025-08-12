@@ -1,3 +1,5 @@
+from pathlib import Path
+from pprint import pformat
 from typing import Callable
 
 import arrow
@@ -20,8 +22,6 @@ from invenio_stats_dashboard.aggregations import (
 )
 from invenio_stats_dashboard.components import update_community_events_created_date
 from opensearchpy.helpers.search import Search
-from pathlib import Path
-from pprint import pformat
 from pytest import MonkeyPatch
 
 from tests.api.stats_dashboard.test_stats_dashboard import (
