@@ -240,7 +240,6 @@ addopts = """
 --ignore=site/kcworks/stats_dashboard
 --ignore=site/kcworks/services/search/index_templates
 --cov=kcworks --cov-report=term-missing
---capture=no
 """
 norecursedirs = ["site/kcworks/services/search/index_templates/records/os-v2"]
 log_cli_level = "DEBUG"
