@@ -1,3 +1,6 @@
+"""Test the queries used by the stats dashboard."""
+
+from copy import deepcopy
 from pathlib import Path
 from pprint import pformat
 
@@ -8,7 +11,9 @@ from invenio_accounts.proxies import current_datastore
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_search import current_search_client
 from invenio_search.utils import prefix_index
+from invenio_stats_dashboard.proxies import current_event_reindexing_service
 from invenio_stats_dashboard.queries import (
+    CommunityUsageDeltaQuery,
     daily_record_delta_query_with_events,
     daily_record_snapshot_query_with_events,
     get_relevant_record_ids_from_events,
@@ -21,8 +26,6 @@ from tests.api.stats_dashboard.test_stats_dashboard import (
     sample_metadata_journal_article7_pdf,
 )
 from tests.helpers.sample_stats_test_data import (
-    MOCK_RECORD_DELTA_AGGREGATION_DOCS,
-    MOCK_RECORD_SNAPSHOT_AGGREGATIONS,
     MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE,
 )
 
@@ -56,8 +59,7 @@ class TestCommunityRecordCreatedDeltaQuery:
 
     @property
     def use_included_dates(self):
-        """Whether to use the dates when the record was added to the community
-        instead of the created date."""
+        """Whether to use community addition date as start point."""
         return False
 
     @property
@@ -180,7 +182,7 @@ class TestCommunityRecordCreatedDeltaQuery:
             }
             if idx != 1:
                 file_path = (
-                    Path(__file__).parent.parent
+                    Path(__file__).parent.parent.parent
                     / "helpers"
                     / "sample_files"
                     / list(rec["input"]["files"]["entries"].keys())[0]
@@ -209,7 +211,6 @@ class TestCommunityRecordCreatedDeltaQuery:
 
     def _check_result_day1(self, result):
         """Check the results for day 1."""
-
         assert result["total_records"]["value"] == 2
         assert result["file_count"]["value"] == 2
         assert result["total_bytes"]["value"] == 59117831.0
@@ -788,8 +789,9 @@ class TestCommunityRecordDeltaQueryDeleted(TestCommunityRecordCreatedDeltaQuery)
         current_records = records_service.search(
             identity=system_identity,
             q="",
+            expand=True,
         )
-        record_hits = list(current_records.to_dict()["hits"]["hits"])
+        record_hits = list(current_records.hits)
 
         # Delete one record (soft deletion)
         delete_record_id = record_hits[0]["id"]
@@ -1077,7 +1079,7 @@ class TestCommunityRecordCreatedSnapshotQuery:
             }
             if idx != 1:
                 args["file_paths"] = [
-                    Path(__file__).parent.parent
+                    Path(__file__).parent.parent.parent
                     / "helpers"
                     / "sample_files"
                     / list(rec["input"]["files"]["entries"].keys())[0]
@@ -1183,3 +1185,120 @@ class TestCommunityRecordCreatedSnapshotQuery:
             target_date = target_date.shift(days=1)
 
         assert len(all_results) == (final_date - start_date).days + 1
+
+
+class TestCommunityUsageDeltaQuery:
+    """Test the community usage snapshot query."""
+
+    def test_community_usage_delta_query(
+        self,
+        running_app,
+        db,
+        user_factory,
+        minimal_community_factory,
+        minimal_published_record_factory,
+        usage_event_factory,
+        create_stats_indices,
+        mock_send_remote_api_update_fixture,
+        celery_worker,
+        requests_mock,
+        search_clear,
+    ):
+        """Test the community usage snapshot query."""
+        app = running_app.app
+        u = user_factory(email="test@example.com", saml_id="")
+        user_email = u.user.email
+        community = minimal_community_factory(slug="knowledge-commons")
+        community_id = community.id
+
+        # Ensure the enriched stats dashboard templates are created
+        # This is needed for the enriched events to be accepted by OpenSearch
+        if current_event_reindexing_service:
+            success = current_event_reindexing_service.update_and_verify_templates()
+            if success:
+                app.logger.error(
+                    "Successfully updated and verified enriched event templates"
+                )
+                app.logger.error(
+                    f"Successfully updated and verified enriched event templates: {success}"
+                )
+            else:
+                app.logger.error("Failed to update and verify enriched event templates")
+        else:
+            app.logger.warning(
+                "EventReindexingService not available, templates may not be enriched"
+            )
+
+        # import test records
+        requests_mock.real_http = True
+        for idx, rec in enumerate(
+            [
+                sample_metadata_journal_article4_pdf,
+                sample_metadata_journal_article5_pdf,
+                sample_metadata_journal_article6_pdf,
+                sample_metadata_journal_article7_pdf,
+            ]
+        ):
+            metadata = deepcopy(rec["input"])
+            metadata["created"] = "2025-06-01T00:00:00+00:00"
+            args = {
+                "identity": get_identity(
+                    current_datastore.get_user_by_email(user_email)
+                ),
+                "metadata": metadata,
+                "community_list": [community_id],
+                "set_default": True,
+                "update_community_event_dates": True,
+            }
+            if idx != 1:
+                args["file_paths"] = [
+                    Path(__file__).parent.parent.parent
+                    / "helpers"
+                    / "sample_files"
+                    / list(rec["input"]["files"]["entries"].keys())[0]
+                ]
+            minimal_published_record_factory(**args)
+        current_search_client.indices.refresh(index="*rdmrecords-records*")
+
+        # create usage events
+        actual_events = usage_event_factory.generate_and_index_repository_events(
+            start_date="2025-06-01",
+            end_date="2025-06-03",
+            events_per_record=20,
+            enrich_events=True,
+            event_start_date="2025-07-03",
+            event_end_date="2025-07-03",
+        )
+        app.logger.error(f"Actual events: {pformat(actual_events)}")
+        app.logger.error(f"View index: {current_search_client.indices.get_alias('*')}")
+
+        # build the queries
+        query_factory = CommunityUsageDeltaQuery()
+        view_query = query_factory.build_view_query(
+            start_date="2025-07-03",
+            end_date=arrow.get("2025-07-03"),
+            community_id=community_id,
+        )
+        app.logger.debug(f"View query: {pformat(view_query.to_dict())}")
+        # assert view_query.to_dict()["index"] == "events-stats-record-view"
+        # assert view_query.to_dict() == {}
+
+        download_query = query_factory.build_download_query(
+            start_date="2025-07-03",
+            end_date=arrow.get("2025-07-03"),
+            community_id=community_id,
+        )
+        app.logger.debug(f"Download query: {pformat(download_query.to_dict())}")
+        # assert download_query.to_dict()["index"] == "events-stats-file-download"
+        # assert download_query.to_dict() == {}
+
+        # run the queries
+        view_results = view_query.execute()
+        app.logger.debug(f"View results: {pformat(view_results)}")
+        assert view_results.to_dict()["index"] == "events-stats-record-view"
+        assert view_results.to_dict()["hits"]["hits"] == []
+
+        download_results = download_query.execute()
+        app.logger.debug(f"Download results: {pformat(download_results)}")
+        assert download_results.to_dict()["index"] == "events-stats-file-download"
+        assert download_results.to_dict()["hits"]["hits"] == []

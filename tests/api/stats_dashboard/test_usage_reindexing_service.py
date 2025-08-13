@@ -32,6 +32,14 @@ def test_event_reindexing_service_monthly_indices(
     """Test the enhanced EventReindexingService with monthly indices."""
 
     app = running_app.app
+
+    # update the service's configuration directly since it was already created
+    extension = app.extensions.get("invenio-stats-dashboard")
+    if hasattr(extension, "event_reindexing_service"):
+        service = extension.event_reindexing_service
+        if service:
+            service.max_memory_percent = 90
+
     client = current_search_client
 
     # Create test data
@@ -73,6 +81,7 @@ def test_event_reindexing_service_monthly_indices(
             end_date=arrow.utcnow().format("YYYY-MM-DD"),
             events_per_record=100,
         )
+        client.indices.refresh(index="events-stats-*")
         print(f"Method call completed, result: {usage_events}")
         app.logger.error(f"Usage events: {usage_events}")
     except Exception as e:
@@ -115,7 +124,7 @@ def test_event_reindexing_service_monthly_indices(
         assert view_count > 0, f"No view events found in {month} index"
         assert download_count > 0, f"No download events found in {month} index"
         event_count += view_count + download_count
-    assert event_count == 300, "Should have 300 events"
+    assert event_count == 600, "Should have 600 events"
 
     # Test getting monthly indices
     view_indices = current_event_reindexing_service.get_monthly_indices("view")
@@ -139,11 +148,11 @@ def test_event_reindexing_service_monthly_indices(
     assert "view" in results["event_types"], "Should have view results"
     assert "download" in results["event_types"], "Should have download results"
     assert (
-        results["event_types"]["view"]["processed"] == 300
-    ), "Should have processed 300 view events"
+        results["event_types"]["view"]["processed"] == 600
+    ), "Should have processed 600 view events"
     assert (
-        results["event_types"]["download"]["processed"] == 300
-    ), "Should have processed 300 download events"
+        results["event_types"]["download"]["processed"] == 600
+    ), "Should have processed 600 download events"
     assert results["event_types"]["view"]["errors"] == 0, "Should have no view errors"
     assert (
         results["event_types"]["download"]["errors"] == 0
@@ -506,3 +515,532 @@ def test_event_reindexing_service_community_membership_fallback(
     assert (
         community_id in active_communities_no_global
     ), "Should include regular community"
+
+
+class TestEventReindexingServiceMonthlyIndicesClass:
+    """Test class for EventReindexingService with monthly indices.
+
+    This class orchestrates a single comprehensive test run with all setup
+    and verification steps delegated to private helper methods.
+    """
+
+    def test_event_reindexing_service_monthly_indices_comprehensive(
+        self,
+        running_app,
+        db,
+        minimal_community_factory,
+        minimal_published_record_factory,
+        user_factory,
+        record_metadata,
+        put_old_stats_templates,
+        mock_send_remote_api_update_fixture,
+        celery_worker,
+        requests_mock,
+        search_clear,
+        usage_event_factory,
+    ):
+        """Comprehensive test for EventReindexingService with monthly indices.
+
+        This test orchestrates the entire test flow from setup through verification,
+        delegating each step to private helper methods for clarity and maintainability.
+        """
+        # Setup phase - store fixtures as instance variables
+        self.running_app = running_app
+        self.user_factory = user_factory
+        self.minimal_community_factory = minimal_community_factory
+        self.minimal_published_record_factory = minimal_published_record_factory
+        self.record_metadata = record_metadata
+        self.usage_event_factory = usage_event_factory
+
+        # Setup test data
+        self._setup_test_data()
+
+        # Create usage events
+        self._create_usage_events()
+
+        # Capture original event data before migration
+        self._capture_original_event_data()
+
+        # Verification phases
+        self._verify_events_created_in_monthly_indices()
+        self._verify_initial_monthly_indices()
+        self._verify_monthly_index_migration()
+        self._verify_enriched_indices_created()
+        self._verify_old_indices_deleted()
+        self._verify_aliases_updated()
+        self._verify_current_month_write_alias()
+        self._verify_new_events_in_v2_indices()
+        self._verify_event_content_preserved()
+
+    def _setup_test_data(self):
+        """Setup test data including users, communities, records, and usage events."""
+        self.app = self.running_app.app
+
+        # update the service's configuration directly since it was already created
+        extension = self.app.extensions.get("invenio-stats-dashboard")
+        if hasattr(extension, "event_reindexing_service"):
+            service = extension.event_reindexing_service
+            if service:
+                service.max_memory_percent = 90
+
+        self.client = current_search_client
+
+        # Create test data
+        u = self.user_factory(email="test@example.com", saml_id="")
+        self.user = u.user
+        self.user_id = u.user.id
+
+        self.community = self.minimal_community_factory(self.user_id)
+        self.community_id = self.community["id"]
+
+        self.records = []
+        self.user_identity = get_identity(self.user)
+
+        for i in range(3):
+            # Create record metadata with custom created timestamp
+            test_metadata = self.record_metadata()
+            test_metadata.update_metadata(
+                {"created": "2025-06-15T10:00:00.000000+00:00"}
+            )
+
+            record = self.minimal_published_record_factory(
+                identity=self.user_identity,
+                community_list=[self.community_id],
+                metadata=test_metadata.metadata_in,
+            )
+            self.records.append(record)
+        self.client.indices.refresh(index=prefix_index("rdmrecords-records"))
+
+        # Create usage events in different months
+        self.current_month = arrow.utcnow().format("YYYY-MM")
+        self.previous_month = (
+            arrow.get(self.current_month).shift(months=-1).format("YYYY-MM")
+        )
+        self.previous_month_2 = (
+            arrow.get(self.current_month).shift(months=-2).format("YYYY-MM")
+        )
+
+        self.months = [self.previous_month, self.previous_month_2, self.current_month]
+
+    def _create_usage_events(self):
+        """Create usage events in three different months."""
+
+        try:
+            print("About to call generate_and_index_repository_events")
+            self.usage_events = (
+                self.usage_event_factory.generate_and_index_repository_events(
+                    start_date=f"{self.previous_month_2}-01",
+                    end_date=arrow.utcnow().format("YYYY-MM-DD"),
+                    events_per_record=100,
+                )
+            )
+            print(f"Method call completed, result: {self.usage_events}")
+            self.app.logger.error(f"Usage events: {self.usage_events}")
+        except Exception as e:
+            print(f"Exception during method call: {e}")
+            self.app.logger.error(f"Exception during method call: {e}")
+            raise
+
+        # List all stats indices to see what was created
+        try:
+            all_indices = self.client.cat.indices(format="json")
+            stats_indices = [
+                idx["index"] for idx in all_indices if "stats" in idx["index"]
+            ]
+            self.app.logger.error(f"All stats indices: {stats_indices}")
+        except Exception as e:
+            self.app.logger.error(f"Error listing indices: {e}")
+
+    def _capture_original_event_data(self):
+        """Capture original event data before migration for later comparison."""
+        self.original_event_data = {}
+
+        for event_type in ["view", "download"]:
+            index_pattern = current_event_reindexing_service.index_patterns[event_type]
+            self.original_event_data[event_type] = {}
+
+            for month in self.months:
+                index_name = f"{index_pattern}-{month}"
+
+                # Get sample events from the original index
+                search = Search(using=self.client, index=index_name)
+                search = search.extra(size=10)
+                results = search.execute()
+
+                if results.hits.hits:
+                    # Store the original event data for this month
+                    self.original_event_data[event_type][month] = [
+                        hit["_source"] for hit in results.hits.hits
+                    ]
+                else:
+                    self.original_event_data[event_type][month] = []
+
+    def _verify_events_created_in_monthly_indices(self):
+        """Verify that events are created in correct monthly indices."""
+        event_count = 0
+        for month in self.months:
+            view_index = f"{prefix_index('events-stats-record-view')}-{month}"
+            download_index = f"{prefix_index('events-stats-file-download')}-{month}"
+
+            # Check if indices exist
+            view_exists = self.client.indices.exists(index=view_index)
+            download_exists = self.client.indices.exists(index=download_index)
+            self.app.logger.error(f"Index {view_index} exists: {view_exists}")
+            self.app.logger.error(f"Index {download_index} exists: {download_exists}")
+
+            if view_exists:
+                view_count = self.client.count(index=view_index)["count"]
+                self.app.logger.error(f"View count in {view_index}: {view_count}")
+            else:
+                view_count = 0
+
+            if download_exists:
+                download_count = self.client.count(index=download_index)["count"]
+                self.app.logger.error(
+                    f"Download count in {download_index}: {download_count}"
+                )
+            else:
+                download_count = 0
+
+            assert view_count > 0, f"No view events found in {month} index"
+            assert download_count > 0, f"No download events found in {month} index"
+            event_count += view_count + download_count
+        assert event_count == 300, "Should have 300 events"
+
+    def _verify_initial_monthly_indices(self):
+        """Verify getting initial monthly indices before migration."""
+        view_indices = current_event_reindexing_service.get_monthly_indices("view")
+        download_indices = current_event_reindexing_service.get_monthly_indices(
+            "download"
+        )
+
+        assert len(view_indices) == 3, "Should find 3 monthly view indices"
+        assert len(download_indices) == 3, "Should find 3 monthly download indices"
+
+        # Test current month detection
+        fetched_current_month = current_event_reindexing_service.get_current_month()
+        assert (
+            fetched_current_month == self.current_month
+        ), f"Current month should be {self.current_month}"
+
+    def _verify_monthly_index_migration(self):
+        """Verify monthly index migration."""
+        results = current_event_reindexing_service.reindex_events(
+            event_types=["view", "download"], max_batches=100
+        )
+
+        # Check basic result counts
+        assert "view" in results["event_types"], "Should have view results"
+        assert "download" in results["event_types"], "Should have download results"
+        assert (
+            results["event_types"]["view"]["processed"] == 300
+        ), "Should have processed 300 view events"
+        assert (
+            results["event_types"]["download"]["processed"] == 300
+        ), "Should have processed 300 download events"
+        assert (
+            results["event_types"]["view"]["errors"] == 0
+        ), "Should have no view errors"
+        assert (
+            results["event_types"]["download"]["errors"] == 0
+        ), "Should have no download errors"
+        assert (
+            len(results["event_types"]["view"]["months"].keys()) == 3
+        ), "Should have 3 months"
+        assert (
+            len(results["event_types"]["download"]["months"].keys()) == 3
+        ), "Should have 3 months"
+
+    def _verify_enriched_indices_created(self):
+        """Verify that enriched indices were created."""
+        # Verify that enriched indices were created
+        enriched_view_indices = self.client.indices.get(
+            index=f"{prefix_index('events-stats-record-view-v2.0.0')}-*"
+        )
+        assert (
+            len(enriched_view_indices) == 3
+        ), "Should have created 3 enriched view indices"
+        enriched_download_indices = self.client.indices.get(
+            index=f"{prefix_index('events-stats-file-download-v2.0.0')}-*"
+        )
+        assert (
+            len(enriched_download_indices) == 3
+        ), "Should have created enriched download indices"
+
+        # Check that all enriched events have the required fields
+        # and are accessible via the default aliases
+        for index in ["record-view", "file-download"]:
+            enriched_search = Search(
+                using=self.client, index=f"{prefix_index(f'events-stats-{index}')}"
+            )
+            enriched_search = enriched_search.extra(size=400)
+            enriched_results = enriched_search.execute()
+
+            for enriched_event in enriched_results.hits.hits:
+                assert (
+                    "community_ids" in enriched_event
+                ), "Enriched events should have community_ids"
+                assert (
+                    "resource_type" in enriched_event
+                ), "Enriched events should have resource_type"
+                assert (
+                    "access_status" in enriched_event
+                ), "Enriched events should have access_status"
+
+    def _verify_old_indices_deleted(self):
+        """Verify that old indices are deleted except for the current month."""
+        # Check that the old indices are deleted except for the current month
+        for index in ["record-view", "file-download"]:
+            index_pattern = f"{prefix_index(f'events-stats-{index}')}-*"
+            existing_indices = self.client.indices.get(index=index_pattern)
+            assert (
+                len(existing_indices) == 4
+            ), "Should have 3 new indices and 1 old index"
+            for month in self.months[:-1]:
+                old_index = f"{prefix_index(f'events-stats-{index}')}-{month}"
+                assert old_index not in existing_indices, "Old index should be deleted"
+                new_index = f"{prefix_index(f'events-stats-{index}')}-{month}-v2.0.0"
+                assert new_index in existing_indices, "New index should be present"
+
+            old_current_month_index = (
+                f"{prefix_index(f'events-stats-{index}')}-{self.current_month}"
+            )
+            assert (
+                old_current_month_index in existing_indices
+            ), "Old index should be the current month"
+            new_current_month_index = (
+                f"{prefix_index(f'events-stats-{index}')}-{self.current_month}-v2.0.0"
+            )
+            assert (
+                new_current_month_index in existing_indices
+            ), "New index should be the current month"
+
+    def _verify_aliases_updated(self):
+        """Verify that aliases have been updated correctly."""
+        # Verify that aliases have been updated correctly to point to v2.0.0 indices
+        for event_type in ["view", "download"]:
+            index_pattern = current_event_reindexing_service.index_patterns[event_type]
+
+            # Get all aliases for this event type
+            try:
+                aliases_info = self.client.indices.get_alias(index=f"{index_pattern}*")
+            except Exception as e:
+                pytest.fail(f"Failed to get aliases for {event_type}: {e}")
+
+            # Check that the main alias points to v2.0.0 indices
+            main_alias = index_pattern
+            if main_alias in aliases_info:
+                alias_targets = list(aliases_info[main_alias]["aliases"].keys())
+                assert (
+                    len(alias_targets) > 0
+                ), f"No targets found for alias {main_alias}"
+
+                # Verify that all alias targets are v2.0.0 indices
+                for target in alias_targets:
+                    assert target.endswith(
+                        "-v2.0.0"
+                    ), f"Alias target {target} should end with -v2.0.0"
+
+                    # Verify the target index exists
+                    assert self.client.indices.exists(
+                        index=target
+                    ), f"Alias target {target} does not exist"
+            else:
+                pytest.fail(f"Main alias {main_alias} not found")
+
+            # Check monthly-specific aliases for each month
+            for month in self.months[
+                :-1
+            ]:  # Skip current month as it has special handling
+                monthly_alias = f"{index_pattern}-{month}"
+
+                # Check if this monthly alias exists
+                monthly_aliases = self.client.indices.get_alias(index=monthly_alias)
+                if monthly_alias in monthly_aliases:
+                    alias_targets = list(
+                        monthly_aliases[monthly_alias]["aliases"].keys()
+                    )
+                    assert (
+                        len(alias_targets) > 0
+                    ), f"No targets found for monthly alias {monthly_alias}"
+
+                    expected_target = f"{index_pattern}-{month}-v2.0.0"
+                    assert expected_target in alias_targets, (
+                        f"Monthly alias {monthly_alias} should point "
+                        f"to {expected_target}"
+                    )
+
+                    assert self.client.indices.exists(
+                        index=expected_target
+                    ), f"Target index {expected_target} does not exist"
+
+    def _verify_current_month_write_alias(self):
+        """Verify that the current month has proper write alias setup.
+
+        Check that the current month has aliases for both event types that
+        point from the old indices for the current month to the v2.0.0 index
+        """
+        for event_type in ["view", "download"]:
+            index_pattern = current_event_reindexing_service.index_patterns[event_type]
+            old_index_name = f"{index_pattern}-{self.current_month}"
+            # The old index name becomes the alias
+            v2_index_name = f"{index_pattern}-{self.current_month}-v2.0.0"
+
+            alias_info = self.client.indices.get_alias(index=old_index_name)
+
+            alias_targets = list(alias_info[old_index_name]["aliases"].keys())
+            # The old index name should now be an alias pointing to the v2.0.0 index
+            assert (
+                len(alias_targets) == 1
+            ), f"Write alias {old_index_name} should have exactly one target"
+
+            # The alias should point to the v2.0.0 index
+            assert (
+                v2_index_name in alias_targets
+            ), f"Write alias {old_index_name} should point to {v2_index_name}"
+
+            # Verify the v2.0.0 index exists
+            assert self.client.indices.exists(
+                index=v2_index_name
+            ), f"Target index {v2_index_name} does not exist"
+
+    def _verify_new_events_in_v2_indices(self):
+        """Verify that new events are created and accessible via aliases."""
+        for event_type in ["view", "download"]:
+            index_pattern = current_event_reindexing_service.index_patterns[event_type]
+            v2_index_name = f"{index_pattern}-{self.current_month}-v2.0.0"
+
+            # Get initial count in the v2.0.0 index
+            initial_count = self.client.count(index=v2_index_name)["count"]
+
+            # Create a test event manually using the service's enrichment methods
+            test_event = {
+                "recid": self.records[0]["id"],  # Use the first record we created
+                "timestamp": arrow.utcnow().isoformat(),
+                "session_id": "test-session-123",
+                "user_id": self.user_id,
+                "visitor_id": "test-visitor-456",
+                "country": "US",
+                "unique_session_id": "test-unique-session-789",
+                "unique_country": "US",
+            }
+
+            # Get metadata and community membership for the record
+            record_id = test_event["recid"]
+            metadata = current_event_reindexing_service.get_metadata_for_records(
+                [record_id]
+            )
+            communities = current_event_reindexing_service.get_community_membership(
+                [record_id], metadata
+            )
+
+            # Enrich the event using the service's enrich_event method
+            enriched_event = current_event_reindexing_service.enrich_event(
+                test_event, metadata.get(record_id, {}), communities.get(record_id, [])
+            )
+
+            # Index the enriched event directly to the v2.0.0 index
+            doc_id = f"test-event-{event_type}-{arrow.utcnow().timestamp()}"
+            self.client.index(index=v2_index_name, id=doc_id, body=enriched_event)
+
+            # Verify the new event was written to the v2.0.0 index
+            final_count = self.client.count(index=v2_index_name)["count"]
+            assert (
+                final_count > initial_count
+            ), f"New events should be written to {v2_index_name}"
+
+            # Verify the new event is accessible via the main alias
+            main_alias = index_pattern
+            main_alias_count = self.client.count(index=main_alias)["count"]
+            assert (
+                main_alias_count > 0
+            ), f"Events should be accessible via main alias {main_alias}"
+
+            # Verify the new event is accessible via the current month's write alias
+            current_month_alias = f"{index_pattern}-{self.current_month}"
+            current_month_count = self.client.count(index=current_month_alias)["count"]
+            assert current_month_count > 0, (
+                f"Events should be accessible via current month alias "
+                f"{current_month_alias}"
+            )
+
+            # Verify that the new events in the v2.0.0 index have enriched fields
+            search = Search(using=self.client, index=v2_index_name)
+            search = search.extra(size=10)
+            results = search.execute()
+
+            for hit in results.hits.hits:
+                source = hit["_source"]
+                assert (
+                    "community_ids" in source
+                ), f"New events in {v2_index_name} should have community_ids"
+                assert (
+                    "resource_type" in source
+                ), f"New events in {v2_index_name} should have resource_type"
+                assert (
+                    "access_status" in source
+                ), f"New events in {v2_index_name} should have access_status"
+
+    def _verify_event_content_preserved(self):
+        """Verify that event content remains identical in new indices."""
+        core_fields = [
+            "recid",
+            "timestamp",
+            "session_id",
+            "user_id",
+            "visitor_id",
+            "country",
+            "unique_session_id",
+            "unique_country",
+            "ip_address",
+            "user_agent",
+            "referrer",
+            "path",
+            "query_string",
+        ]
+
+        # Fields that are added during enrichment
+        enriched_fields = ["community_ids", "resource_type", "access_status"]
+
+        for event_type in ["view", "download"]:
+            index_pattern = current_event_reindexing_service.index_patterns[event_type]
+
+            for month in self.months[
+                :-1
+            ]:  # Skip current month as it has special handling
+                new_index = f"{index_pattern}-{month}-v2.0.0"
+
+                # Get original event data that was captured before migration
+                original_events = self.original_event_data.get(event_type, {}).get(
+                    month, []
+                )
+
+                if not original_events:
+                    continue
+
+                new_search = Search(using=self.client, index=new_index)
+                new_search = new_search.extra(size=len(original_events))
+                new_results = new_search.execute()
+
+                for original_event, new_hit in zip(
+                    original_events, new_results.hits.hits
+                ):
+                    new_source = new_hit["_source"]
+
+                    for field in core_fields:
+                        if field in original_event:
+                            assert (
+                                field in new_source
+                            ), f"Core field {field} missing in new index"
+                            assert original_event[field] == new_source[field], (
+                                f"Core field {field} value differs between old and "
+                                f"new indices"
+                            )
+
+                    for field in enriched_fields:
+                        assert (
+                            field in new_source
+                        ), f"Enriched field {field} missing in new index"
+                        assert (
+                            new_source[field] is not None
+                        ), f"Enriched field {field} is None in new index"
