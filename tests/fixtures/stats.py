@@ -334,15 +334,12 @@ def put_old_stats_templates():
         try:
             # Register the old template
             template_result = current_search.register_templates(template_path)
-            current_app.logger.info(
-                f"Template result for {template_name}: {template_result}"
-            )
             for index_name, index_template in template_result.items():
-                # Put the old template using the legacy template API
+                # Put the old template
                 current_search._put_template(
                     index_name,
                     index_template,
-                    current_search_client.indices.put_template,
+                    current_search_client.indices.put_index_template,
                     ignore=None,
                 )
                 current_app.logger.info(f"Put old template: {index_name}")
