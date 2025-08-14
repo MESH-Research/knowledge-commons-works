@@ -13,7 +13,7 @@
 * MIT License; see LICENSE file for more details.
 */
 
-import { i18next } from "@translations/i18next";
+import { i18next } from "@translations/kcworks/i18next";
 import React from "react";
 import PropTypes from "prop-types";
 import _truncate from "lodash/truncate";
@@ -22,6 +22,8 @@ import { Button, Grid, Icon, Item, Label } from "semantic-ui-react";
 import { SearchItemCreators } from "@js/invenio_app_rdm/utils";
 import { CompactStats } from "../../search/records_list_item_components/CompactStats";
 import { DisplayPartOfCommunities } from "../../search/records_list_item_components/DisplayPartOfCommunities";
+
+i18next.options.interpolation.escapeValue = false;
 
 const ComputerTabletUploadsItem = ({
   result,
@@ -56,7 +58,9 @@ const ComputerTabletUploadsItem = ({
   );
   const uniqueViews = _get(result, "stats.all_versions.unique_views", 0);
   const uniqueDownloads = _get(result, "stats.all_versions.unique_downloads", 0);
-
+  console.log('i18next instance:', i18next);
+  console.log('i18next options:', i18next.options);
+  console.log('i18next version:', i18next.version);
   return (
     <Item key={result.id} className="search-result flex">
       {/* <div className="status-icon mr-10">
@@ -122,9 +126,7 @@ const ComputerTabletUploadsItem = ({
 
                 {publishingInformation && (
                   <p>
-                    {i18next.t("Published in: {{publishInfo}}", {
-                      publishInfo: publishingInformation,
-                    })}
+                    {i18next.t("Published in:")} {publishingInformation}
                   </p>
                 )}
 
