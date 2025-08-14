@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2025-08-08 09:51-0400\n"
+"POT-Creation-Date: 2025-07-18 12:42-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Collaborate"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:570
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:557
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:56
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:144
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:186
@@ -78,7 +78,7 @@ msgstr ""
 msgid "Best match"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:574
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:561
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:60
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:152
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:194
@@ -99,7 +99,7 @@ msgstr ""
 msgid "Newest"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:578
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:565
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:64
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:156
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:198
@@ -128,19 +128,19 @@ msgstr ""
 msgid "Earliest published"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:590
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:577
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:68
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:225
 msgid "Version"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:594
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:581
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:72
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:229
 msgid "Recently updated"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:598
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:585
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:76
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:233
 msgid "Least recently updated"
@@ -580,53 +580,53 @@ msgstr ""
 msgid "Welcome to KCWorks!"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1731
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1716
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:39
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:86
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests/conftest.py:108
 msgid "Reader"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1732
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1717
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:87
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests/conftest.py:109
 msgid "Can view restricted records."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1737
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1722
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:41
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:92
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests/conftest.py:114
 msgid "Curator"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1738
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1723
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:93
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests/conftest.py:115
 msgid "Can curate records and view restricted records."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1744
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1729
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:40
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:99
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests/conftest.py:121
 msgid "Manager"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1746
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1731
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:101
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests/conftest.py:123
 msgid "Can manage members, curate records and view restricted records."
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1755
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1740
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:38
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:110
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests/conftest.py:142
 msgid "Owner"
 msgstr ""
 
-#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1756
+#: /Users/ianscott/Development/knowledge-commons-works/invenio.cfg:1741
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:111
 #: /Users/ianscott/Development/knowledge-commons-works/site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests/conftest.py:143
 msgid "Full administrative access to the entire community."

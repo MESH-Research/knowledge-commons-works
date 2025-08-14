@@ -34,6 +34,10 @@ module.exports = {
     '/node_modules/(?!(react-invenio-forms|react-searchkit|axios|semantic-ui-react|@babel|@inveniosoftware)/)',
   ],
   testMatch: ['**/*.test.js?(x)', '**/*.spec.js?(x)'],
+  testPathIgnorePatterns: [
+    // FIXME: Remove this ignore pattern once invenio-stats-dashboard tests are fixed
+    '<rootDir>/site/kcworks/dependencies/invenio-stats-dashboard/',
+  ],
   collectCoverageFrom: [
     'assets/**/*.{js,jsx}',
     'site/**/*.{js,jsx}',

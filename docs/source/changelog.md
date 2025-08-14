@@ -3,6 +3,15 @@
 
 # Changes
 
+## 0.5.4 (2025-08-14)
+
+- Bug fixes
+    - Fixed a bug where a collection inclusion request's detail page weren't displaying properly when viewed from the collection page.
+    - Allowed proper display of special characters (slash, ampersand, etc.) in the publication information line of search result items.
+- Footer
+    - Added NSF grant statement
+    - Improved text contrast for accessibility
+
 ## 0.5.3 (2025-07-17)
 
 - Group collections

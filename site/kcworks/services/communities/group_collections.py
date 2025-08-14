@@ -177,7 +177,7 @@ class CommunityGroupMembershipChecker:
     def _get_expected_roles(
         self, commons_instance: str, commons_group_id: str
     ) -> dict[str, list[str]]:
-        """Get the expected roles for a group
+        """Get the expected roles for a group.
 
         We may want to fetch from the remote API and config. For now, we'll
         create the standard role structure.
