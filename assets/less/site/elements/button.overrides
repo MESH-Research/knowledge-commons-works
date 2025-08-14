@@ -367,6 +367,10 @@
     }
   .ui.icon.primary.button {
     outline: 3px solid @verdigrisDark;
+    @media all and (max-width: 1260px) {
+      padding-left: 3.6rem !important;
+      padding-right: 1.5rem !important;
+    }
   }
 }
 

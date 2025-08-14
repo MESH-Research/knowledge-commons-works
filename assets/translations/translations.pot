@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-04-28T18:10:53.022Z\n"
-"PO-Revision-Date: 2025-04-28T18:10:53.023Z\n"
+"POT-Creation-Date: 2025-08-14T00:26:15.906Z\n"
+"PO-Revision-Date: 2025-08-14T00:26:15.907Z\n"
 "Language: en\n"
 
 msgid "Status"
@@ -233,12 +233,6 @@ msgstr "remove field"
 
 msgid "Type of description"
 msgstr "Type of description"
-
-msgid "Language"
-msgstr "Language"
-
-msgid "select language"
-msgstr "select language"
 
 msgid "Add other titles"
 msgstr "Add other titles"
@@ -948,3 +942,18 @@ msgstr ""
 
 msgid "Couldn't find your person? You can <1>create a new entry</1>."
 msgstr "Couldn't find your person? You can <1>create a new entry</1>."
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Add translated title"
+msgstr "Add translated title"
+
+msgid "Add alternative title"
+msgstr "Add alternative title"
+
+msgid "Search languages"
+msgstr "Search languages"
+
+msgid "No languages found"
+msgstr "No languages found"

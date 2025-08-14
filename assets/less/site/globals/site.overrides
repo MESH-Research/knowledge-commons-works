@@ -1029,6 +1029,13 @@ html.cover-page {
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
+        margin-top: 0.5rem;
+        @media all and (max-width: @largestMobileScreen) {
+          margin-top: 1rem;
+        }
+        @media all and (min-width: @largestMobileScreen) and (max-width: 1260px) {
+          margin-top: 0;
+        }
         .supporter-image-link {
           img {
             height: 4rem;
@@ -1114,15 +1121,34 @@ html.cover-page {
       &.sponsors-column {
         padding: 0;
       }
+      .sponsors-grants-text-wide {
+        display: block;
+        color: @verdigris30;
+        @media all and (max-width: 1260px) {
+          display: none;
+        }
+      }
+    }
+    @media all and (max-width: 1260px) {
+      padding-bottom: 1rem;
+    }
+  }
+  .sponsors-grants-text-narrow {
+    display: none;
+    text-align: center;
+    background-color: darken(@verdigrisDark, 5%);
+    color: @white;
+    @media all and (max-width: 1260px) {
+      display: block;
     }
   }
   .footer-bottom {
-    background-color: @subFooterColor;
+    background-color: @ivy80; // @subFooterColor;
     background-size: cover;
     background-image: url("../../../../static/images/textured_bgs/KCommons_assets_Ivy_800.png");
     color: @footerTextDarkColor;
     a {
-      color: @verdigris60;
+      color: @verdigris30;
     }
   }
 }

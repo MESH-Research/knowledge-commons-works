@@ -66,8 +66,6 @@
   "Additional description": "Additional description",
   "remove field": "remove field",
   "Type of description": "Type of description",
-  "Language": "Language",
-  "select language": "select language",
   "Add other titles": "Add other titles",
   "Remove item": "Remove item",
   "Search or enter an organization": "Search or enter an organization",
@@ -280,5 +278,10 @@
   "Search filters": "Search filters",
   "Help": "Help",
   "On <b>{{fmtDate}}</b> the record will automatically be made publicly accessible. Until then, the record can <b>only</b> be accessed by <b>users specified</b> in the permissions.": "On <b>{{fmtDate}}</b> the record will automatically be made publicly accessible. Until then, the record can <b>only</b> be accessed by <b>users specified</b> in the permissions.",
-  "Couldn't find your person? You can <1>create a new entry</1>.": "Couldn't find your person? You can <1>create a new entry</1>."
+  "Couldn't find your person? You can <1>create a new entry</1>.": "Couldn't find your person? You can <1>create a new entry</1>.",
+  "Type": "Type",
+  "Add translated title": "Add translated title",
+  "Add alternative title": "Add alternative title",
+  "Search languages": "Search languages",
+  "No languages found": "No languages found"
 }
