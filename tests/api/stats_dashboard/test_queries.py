@@ -27,6 +27,8 @@ from tests.api.stats_dashboard.test_stats_dashboard import (
 )
 from tests.helpers.sample_stats_test_data import (
     MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE,
+    MOCK_USAGE_QUERY_RESPONSE_VIEWS,
+    MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS,
 )
 
 
@@ -1190,46 +1192,61 @@ class TestCommunityRecordCreatedSnapshotQuery:
 class TestCommunityUsageDeltaQuery:
     """Test the community usage snapshot query."""
 
-    def test_community_usage_delta_query(
+    def _enhance_metadata_with_funding_and_affiliations(self, metadata, record_index):
+        """Enhance metadata with funder and enhanced affiliation data for testing.
+
+        Args:
+            metadata: The base metadata to enhance
+            record_index: Index of the record (0-3) to determine what data to add
+        """
+        # Only enhance the first record with affiliations
+        if record_index == 0:
+            for idx, creator in enumerate(metadata["metadata"]["creators"]):
+                if not creator.get("affiliations"):
+                    metadata["metadata"]["creators"][idx]["affiliations"] = [
+                        {
+                            "id": "01ggx4157",  # CERN from affiliations fixture
+                            "name": "CERN",
+                            "type": {
+                                "id": "institution",
+                                "title": {"en": "Institution"},
+                            },
+                        }
+                    ]
+
+        # Add funding information to the first two records only
+        if record_index < 2:
+            metadata["metadata"]["funding"] = [
+                {
+                    "funder": {
+                        "id": "00k4n6c31",  # From funders fixture
+                        "name": "Funder 00k4n6c31",
+                        "type": {"id": "funder", "title": {"en": "Funder"}},
+                    },
+                    "award": {
+                        "id": "00k4n6c31::755021",  # From awards fixture
+                        "title": "Award 755021",
+                        "number": "755021",
+                        "identifiers": [
+                            {
+                                "identifier": (
+                                    "https://sandbox.kcworks.org/00k4n6c31::755021"
+                                ),
+                                "scheme": "url",
+                            }
+                        ],
+                    },
+                }
+            ]
+
+    def _setup_records(
         self,
-        running_app,
-        db,
-        user_factory,
-        minimal_community_factory,
         minimal_published_record_factory,
-        usage_event_factory,
-        create_stats_indices,
-        mock_send_remote_api_update_fixture,
-        celery_worker,
+        user_email,
+        community_id,
         requests_mock,
-        search_clear,
     ):
-        """Test the community usage snapshot query."""
-        app = running_app.app
-        u = user_factory(email="test@example.com", saml_id="")
-        user_email = u.user.email
-        community = minimal_community_factory(slug="knowledge-commons")
-        community_id = community.id
-
-        # Ensure the enriched stats dashboard templates are created
-        # This is needed for the enriched events to be accepted by OpenSearch
-        if current_event_reindexing_service:
-            success = current_event_reindexing_service.update_and_verify_templates()
-            if success:
-                app.logger.error(
-                    "Successfully updated and verified enriched event templates"
-                )
-                app.logger.error(
-                    f"Successfully updated and verified enriched event templates: {success}"
-                )
-            else:
-                app.logger.error("Failed to update and verify enriched event templates")
-        else:
-            app.logger.warning(
-                "EventReindexingService not available, templates may not be enriched"
-            )
-
-        # import test records
+        """Setup the records for the test."""
         requests_mock.real_http = True
         for idx, rec in enumerate(
             [
@@ -1241,6 +1258,10 @@ class TestCommunityUsageDeltaQuery:
         ):
             metadata = deepcopy(rec["input"])
             metadata["created"] = "2025-06-01T00:00:00+00:00"
+
+            # Enhance metadata with funding and affiliation data
+            self._enhance_metadata_with_funding_and_affiliations(metadata, idx)
+
             args = {
                 "identity": get_identity(
                     current_datastore.get_user_by_email(user_email)
@@ -1260,7 +1281,16 @@ class TestCommunityUsageDeltaQuery:
             minimal_published_record_factory(**args)
         current_search_client.indices.refresh(index="*rdmrecords-records*")
 
-        # create usage events
+    def _create_usage_events(self, usage_event_factory):
+        """Create the usage events for the test."""
+        # ensure the enriched event templates are registered
+        if current_event_reindexing_service:
+            success = current_event_reindexing_service.update_and_verify_templates()
+            if not success:
+                self.app.logger.error(
+                    "Failed to update and verify enriched event templates"
+                )
+
         actual_events = usage_event_factory.generate_and_index_repository_events(
             start_date="2025-06-01",
             end_date="2025-06-03",
@@ -1269,36 +1299,317 @@ class TestCommunityUsageDeltaQuery:
             event_start_date="2025-07-03",
             event_end_date="2025-07-03",
         )
-        app.logger.error(f"Actual events: {pformat(actual_events)}")
-        app.logger.error(f"View index: {current_search_client.indices.get_alias('*')}")
+        self.app.logger.error(f"Actual events: {pformat(actual_events)}")
+        self.app.logger.error(
+            f"View index: {current_search_client.indices.get_alias('*')}"
+        )
+        actual_events_count = actual_events["indexed"]
+        assert (
+            actual_events_count == 140
+        ), f"Expected 140 events, got {actual_events_count}"
+        assert actual_events["errors"] == 0
+
+        current_search_client.indices.refresh(index="events-stats-*")
+
+        view_count = current_search_client.count(index="events-stats-record-view")
+        download_count = current_search_client.count(index="events-stats-file-download")
+        assert view_count["count"] == 80
+        assert download_count["count"] == 60
+
+        # Debug: Check a sample document from the view index to see its structure
+        try:
+            sample_view_docs = current_search_client.search(
+                index="events-stats-record-view",
+                body={"query": {"match_all": {}}, "size": 2},
+            )
+            self.app.logger.error(f"Sample view documents: {pformat(sample_view_docs)}")
+        except Exception as e:
+            self.app.logger.error(f"Could not get sample view documents: {e}")
+
+        # Debug: Check a sample document from the download index to see its structure
+        try:
+            sample_download_docs = current_search_client.search(
+                index="events-stats-file-download",
+                body={"query": {"match_all": {}}, "size": 2},
+            )
+            self.app.logger.error(
+                f"Sample download documents: {pformat(sample_download_docs)}"
+            )
+        except Exception as e:
+            self.app.logger.error(f"Could not get sample download documents: {e}")
+
+    def _compare_aggregation_ignoring_ids(self, actual_agg, expected_agg):
+        """Compare aggregations while ignoring dynamic _id fields in label.hits.hits."""
+        # Deep copy to avoid modifying the original
+        actual_copy = deepcopy(actual_agg)
+        expected_copy = deepcopy(expected_agg)
+
+        # Remove _id fields from label.hits.hits if they exist
+        if "buckets" in actual_copy and "buckets" in expected_copy:
+            for bucket in actual_copy["buckets"]:
+                if (
+                    "label" in bucket
+                    and "hits" in bucket["label"]
+                    and "hits" in bucket["label"]["hits"]
+                ):
+                    for hit in bucket["label"]["hits"]["hits"]:
+                        if "_id" in hit:
+                            del hit["_id"]
+
+            for bucket in expected_copy["buckets"]:
+                if (
+                    "label" in bucket
+                    and "hits" in bucket["label"]
+                    and "hits" in bucket["label"]["hits"]
+                ):
+                    for hit in bucket["label"]["hits"]["hits"]:
+                        if "_id" in hit:
+                            del hit["_id"]
+
+        return actual_copy == expected_copy
+
+    def _check_countries(self, view_aggs):
+        """Check the countries.
+
+        These need more flexible assertions since IP addresses are generated dynamically
+        """
+        by_countries_agg = view_aggs["by_countries"]
+        expected_countries = MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"][
+            "by_countries"
+        ]
+
+        # Check that the structure matches but allow for dynamic IP-based counts
+        assert len(by_countries_agg["buckets"]) == len(expected_countries["buckets"])
+        assert (
+            by_countries_agg["doc_count_error_upper_bound"]
+            == expected_countries["doc_count_error_upper_bound"]
+        )
+        assert (
+            by_countries_agg["sum_other_doc_count"]
+            == expected_countries["sum_other_doc_count"]
+        )
+
+        # Check that all expected countries are present with correct structure
+        for expected_bucket in expected_countries["buckets"]:
+            country_key = expected_bucket["key"]
+            matching_bucket = next(
+                (b for b in by_countries_agg["buckets"] if b["key"] == country_key),
+                None,
+            )
+            assert (
+                matching_bucket is not None
+            ), f"Country {country_key} not found in results"
+            assert (
+                matching_bucket["unique_parents"]["value"]
+                == expected_bucket["unique_parents"]["value"]
+            )
+            assert (
+                matching_bucket["unique_records"]["value"]
+                == expected_bucket["unique_records"]["value"]
+            )
+            # Allow for dynamic visitor counts due to IP generation
+            assert (
+                matching_bucket["unique_visitors"]["value"] >= 1
+            )  # At least 1 visitor
+
+    def _check_view_results(self, view_results):
+        """Check the view results."""
+        view_aggs = view_results.to_dict()["aggregations"]
+        assert view_aggs["total_events"]["value"] == 80
+        assert view_aggs["unique_parents"]["value"] == 4
+        assert view_aggs["unique_records"]["value"] == 4
+        assert 80 >= view_aggs["unique_visitors"]["value"] >= 40
+        assert (
+            view_aggs["by_access_status"]
+            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_access_status"]
+        )
+        assert (
+            view_aggs["by_file_types"]
+            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_file_types"]
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            view_aggs["by_subjects"],
+            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_subjects"],
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            view_aggs["by_affiliation_id"],
+            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_affiliation_id"],
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            view_aggs["by_affiliation_name"],
+            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_affiliation_name"],
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            view_aggs["by_funder_id"],
+            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_funder_id"],
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            view_aggs["by_funder_name"],
+            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_funder_name"],
+        )
+        assert (
+            view_aggs["by_resource_types"]
+            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_resource_types"]
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            view_aggs["by_languages"],
+            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_languages"],
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            view_aggs["by_licenses"],
+            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_licenses"],
+        )
+        assert (
+            view_aggs["by_periodicals"]
+            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_periodicals"]
+        )
+        assert (
+            view_aggs["by_publishers"]
+            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_publishers"]
+        )
+        assert (
+            view_aggs["by_referrers"]
+            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_referrers"]
+        )
+
+        self._check_countries(view_aggs)
+
+    def _check_download_results(self, download_results):
+        """Check the download results."""
+        download_aggs = download_results.to_dict()["aggregations"]
+        assert download_aggs["total_events"]["value"] == 60
+        assert download_aggs["unique_parents"]["value"] == 3
+        assert download_aggs["unique_records"]["value"] == 3
+        assert 60 >= download_aggs["unique_visitors"]["value"] >= 30
+        assert download_aggs["unique_files"]["value"] == 3
+        assert download_aggs["total_volume"]["value"] == 8192.0
+        assert (
+            download_aggs["by_access_status"]
+            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_access_status"]
+        )
+        assert (
+            download_aggs["by_file_types"]
+            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_file_types"]
+        )
+        assert (
+            download_aggs["by_subjects"]
+            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_subjects"]
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            download_aggs["by_affiliation_id"],
+            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_affiliation_id"],
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            download_aggs["by_affiliation_name"],
+            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_affiliation_name"],
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            download_aggs["by_funder_id"],
+            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_funder_id"],
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            download_aggs["by_funder_name"],
+            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_funder_name"],
+        )
+        assert (
+            download_aggs["by_resource_types"]
+            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_resource_types"]
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            download_aggs["by_languages"],
+            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_languages"],
+        )
+        assert self._compare_aggregation_ignoring_ids(
+            download_aggs["by_licenses"],
+            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_licenses"],
+        )
+        assert (
+            download_aggs["by_periodicals"]
+            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_periodicals"]
+        )
+        assert (
+            download_aggs["by_publishers"]
+            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_publishers"]
+        )
+        assert (
+            download_aggs["by_referrers"]
+            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_referrers"]
+        )
+        self._check_countries(download_aggs)
+
+    def test_community_usage_delta_query(
+        self,
+        running_app,
+        db,
+        user_factory,
+        minimal_community_factory,
+        minimal_published_record_factory,
+        usage_event_factory,
+        create_stats_indices,
+        mock_send_remote_api_update_fixture,
+        celery_worker,
+        requests_mock,
+        search_clear,
+    ):
+        """Test the community usage snapshot query."""
+        self.app = running_app.app
+        u = user_factory(email="test@example.com", saml_id="")
+        user_email = u.user.email
+        community = minimal_community_factory(slug="knowledge-commons")
+        community_id = community.id
+
+        self._setup_records(
+            minimal_published_record_factory,
+            user_email,
+            community_id,
+            requests_mock,
+        )
+
+        self._create_usage_events(usage_event_factory)
 
         # build the queries
         query_factory = CommunityUsageDeltaQuery()
         view_query = query_factory.build_view_query(
+            community_id=community_id,
             start_date="2025-07-03",
             end_date=arrow.get("2025-07-03"),
-            community_id=community_id,
         )
-        app.logger.debug(f"View query: {pformat(view_query.to_dict())}")
-        # assert view_query.to_dict()["index"] == "events-stats-record-view"
-        # assert view_query.to_dict() == {}
+        self.app.logger.error(f"View query: {pformat(view_query.to_dict())}")
 
         download_query = query_factory.build_download_query(
+            community_id=community_id,
             start_date="2025-07-03",
             end_date=arrow.get("2025-07-03"),
-            community_id=community_id,
         )
-        app.logger.debug(f"Download query: {pformat(download_query.to_dict())}")
-        # assert download_query.to_dict()["index"] == "events-stats-file-download"
-        # assert download_query.to_dict() == {}
+        self.app.logger.error(f"Download query: {pformat(download_query.to_dict())}")
 
         # run the queries
         view_results = view_query.execute()
-        app.logger.debug(f"View results: {pformat(view_results)}")
-        assert view_results.to_dict()["index"] == "events-stats-record-view"
-        assert view_results.to_dict()["hits"]["hits"] == []
+        self.app.logger.error(f"View results: {pformat(view_results.to_dict())}")
+
+        view_hits = view_results.to_dict()["hits"]["hits"]
+        assert len(view_hits) == 1
+        assert view_hits[0]["_index"] == "events-stats-record-view-2025-07"
+        assert view_hits[0]["_source"]["community_ids"] == [community_id]
+        assert (
+            arrow.get(view_hits[0]["_source"]["timestamp"]).format("YYYY-MM-DD")
+            == "2025-07-03"
+        )
+
+        self._check_view_results(view_results)
 
         download_results = download_query.execute()
-        app.logger.debug(f"Download results: {pformat(download_results)}")
-        assert download_results.to_dict()["index"] == "events-stats-file-download"
-        assert download_results.to_dict()["hits"]["hits"] == []
+        self.app.logger.error(
+            f"Download results: {pformat(download_results.to_dict())}"
+        )
+
+        download_hits = download_results.to_dict()["hits"]["hits"]
+        assert len(download_hits) == 1
+        assert download_hits[0]["_index"] == "events-stats-file-download-2025-07"
+        assert download_hits[0]["_source"]["community_ids"] == [community_id]
+        assert (
+            arrow.get(download_hits[0]["_source"]["timestamp"]).format("YYYY-MM-DD")
+            == "2025-07-03"
+        )
+
+        self._check_download_results(download_results)

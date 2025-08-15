@@ -9917,6 +9917,1670 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
     },
 ]
 
+MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
+    "aggregations": {
+        "by_access_status": {
+            "buckets": [
+                {
+                    "doc_count": 60,
+                    "key": "open",
+                    "total_events": {"value": 60},
+                    "unique_parents": {"value": 3},
+                    "unique_records": {"value": 3},
+                    "unique_visitors": {"value": 60},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "metadata-only",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliation_id": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliation_name": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_countries": {
+            "buckets": [
+                {
+                    "doc_count": 44,
+                    "key": "NL",
+                    "total_events": {"value": 44},
+                    "unique_parents": {"value": 4},
+                    "unique_records": {"value": 4},
+                    "unique_visitors": {"value": 44},
+                },
+                {
+                    "doc_count": 19,
+                    "key": "US",
+                    "total_events": {"value": 19},
+                    "unique_parents": {"value": 4},
+                    "unique_records": {"value": 4},
+                    "unique_visitors": {"value": 19},
+                },
+                {
+                    "doc_count": 14,
+                    "key": "CN",
+                    "total_events": {"value": 14},
+                    "unique_parents": {"value": 4},
+                    "unique_records": {"value": 4},
+                    "unique_visitors": {"value": 14},
+                },
+                {
+                    "doc_count": 2,
+                    "key": "AU",
+                    "total_events": {"value": 2},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                    "unique_visitors": {"value": 2},
+                },
+                {
+                    "doc_count": 1,
+                    "key": "JP",
+                    "total_events": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 1},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_file_types": {
+            "buckets": [
+                {
+                    "doc_count": 60,
+                    "key": "pdf",
+                    "total_events": {"value": 60},
+                    "unique_parents": {"value": 3},
+                    "unique_records": {"value": 3},
+                    "unique_visitors": {"value": 60},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_funder_id": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "1234567890",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_funder_name": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "Funder Name",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_languages": {
+            "buckets": [
+                {
+                    "doc_count": 40,
+                    "key": "eng",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T00:29:39-de2e0837d9e40a79b63bfeaba263a26e22d1e2a1"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "languages": [
+                                            {"id": "eng", "title": {"en": "English"}}
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 40},
+                        }
+                    },
+                    "total_events": {"value": 40},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                    "unique_visitors": {"value": 40},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_licenses": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "cc-by-sa-4.0",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T09:43:46-76c601bc7425aeced6b541686656ecd178104670"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "rights": [
+                                            {
+                                                "id": "cc-by-sa-4.0",
+                                                "title": {
+                                                    "en": (
+                                                        "Creative "
+                                                        "Commons "
+                                                        "Attribution-ShareAlike "
+                                                        "4.0 "
+                                                        "International"
+                                                    )
+                                                },
+                                            }
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_periodicals": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "N/A",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_publishers": {
+            "buckets": [
+                {
+                    "doc_count": 40,
+                    "key": "Knowledge Commons",
+                    "total_events": {"value": 40},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                    "unique_visitors": {"value": 40},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "Apocryphile Press",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "UBC",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_referrers": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "https://example.com/records/cj7gk-ddv34",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "https://example.com/records/d2ve0-44c44",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "https://example.com/records/jc533-w3929",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "https://example.com/records/p25dc-48t61",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_resource_types": {
+            "buckets": [
+                {
+                    "doc_count": 40,
+                    "key": "textDocument-journalArticle",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T01:54:45-285f9a47a60e50b8f0fe4e96c5e16c98be4faab6"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "resource_type": {
+                                            "id": "textDocument-journalArticle",
+                                            "title": {"en": "Journal " "Article"},
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 40},
+                        }
+                    },
+                    "total_events": {"value": 40},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                    "unique_visitors": {"value": 40},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "textDocument-book",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T06:58:37-813dbf5c74958287c46ef05b5ca31b23d72d9987"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "resource_type": {
+                                            "id": "textDocument-book",
+                                            "title": {"en": "Book"},
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "textDocument-bookSection",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T05:33:46-d0103c26fc80ee4dd1f6c71991e2fc0891f2016f"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "resource_type": {
+                                            "id": "textDocument-bookSection",
+                                            "title": {"en": "Book " "Section"},
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_subjects": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/1424786",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/2060143",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T00:29:39-de2e0837d9e40a79b63bfeaba263a26e22d1e2a1"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/817954",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/821870",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/845111",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/845142",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/845170",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/845184",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/855500",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T00:29:39-de2e0837d9e40a79b63bfeaba263a26e22d1e2a1"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/911328",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/911660",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/911979",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/934875",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T13:02:55-2e451e41b611b7eba881d07bfa380cb6d68cf760"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911979"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911660"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845111"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845142"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845184"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/1424786"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/934875"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/817954"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/821870"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/845170"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/911328"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/973589",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T00:08:07-a69e246cfaa3036c877052b6bee1325a218663cb"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {"id": "http://id.worldcat.org/fast/973589"}
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/995415",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T00:29:39-de2e0837d9e40a79b63bfeaba263a26e22d1e2a1"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/997916",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T00:29:39-de2e0837d9e40a79b63bfeaba263a26e22d1e2a1"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/997974",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T00:29:39-de2e0837d9e40a79b63bfeaba263a26e22d1e2a1"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/997987",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T00:29:39-de2e0837d9e40a79b63bfeaba263a26e22d1e2a1"
+                                    ),
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                )
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                )
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "total_events": {"value": 80},
+        "unique_parents": {"value": 4},
+        "unique_records": {"value": 4},
+        "unique_visitors": {"value": 80},
+    },
+    "hits": {"hits": [], "max_score": None, "total": {"relation": "eq", "value": 0}},
+}
+
+MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {}
+
 MOCK_USAGE_DELTA_API_RESPONSE = {
     "community-stats": [
         {
