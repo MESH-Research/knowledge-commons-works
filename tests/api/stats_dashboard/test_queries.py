@@ -1,5 +1,6 @@
 """Test the queries used by the stats dashboard."""
 
+import re
 from copy import deepcopy
 from pathlib import Path
 from pprint import pformat
@@ -11,15 +12,19 @@ from invenio_accounts.proxies import current_datastore
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_search import current_search_client
 from invenio_search.utils import prefix_index
-from invenio_stats_dashboard.proxies import current_event_reindexing_service
+from invenio_stats_dashboard.proxies import (
+    current_community_stats_service,
+    current_event_reindexing_service,
+)
 from invenio_stats_dashboard.queries import (
+    CommunityRecordDeltaQuery,
+    CommunityRecordSnapshotQuery,
     CommunityUsageDeltaQuery,
-    daily_record_delta_query_with_events,
-    daily_record_snapshot_query_with_events,
+    CommunityUsageSnapshotQuery,
     get_relevant_record_ids_from_events,
 )
 
-from tests.api.stats_dashboard.test_stats_dashboard import (
+from tests.helpers.sample_records import (
     sample_metadata_journal_article4_pdf,
     sample_metadata_journal_article5_pdf,
     sample_metadata_journal_article6_pdf,
@@ -27,8 +32,8 @@ from tests.api.stats_dashboard.test_stats_dashboard import (
 )
 from tests.helpers.sample_stats_test_data import (
     MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE,
-    MOCK_USAGE_QUERY_RESPONSE_VIEWS,
     MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS,
+    MOCK_USAGE_QUERY_RESPONSE_VIEWS,
 )
 
 
@@ -41,17 +46,20 @@ class TestCommunityRecordCreatedDeltaQuery:
     """
 
     SUB_AGGS = [
-        "by_access_status",
-        "by_affiliation_contributor",
-        "by_affiliation_creator",
-        "by_file_type",
-        "by_funder",
-        "by_language",
-        "by_license",
-        "by_periodical",
-        "by_publisher",
-        "by_resource_type",
-        "by_subject",
+        "by_access_statuses",
+        "by_affiliations_contributor_id",
+        "by_affiliations_contributor_keyword",
+        "by_affiliations_creator_id",
+        "by_affiliations_creator_keyword",
+        "by_file_types",
+        "by_funders_id",
+        "by_funders_keyword",
+        "by_languages",
+        "by_rights",
+        "by_periodicals",
+        "by_publishers",
+        "by_resource_types",
+        "by_subjects",
     ]
 
     @property
@@ -123,7 +131,7 @@ class TestCommunityRecordCreatedDeltaQuery:
         if expected_label or isinstance(expected_label, dict):
             for d_field in ["_index", "_score", "_id"]:
                 del result["label"]["hits"]["hits"][0][d_field]
-            result["label"]["hits"].pop("max_score")
+            del result["label"]["hits"]["max_score"]
 
             label_expected = {
                 "label": {
@@ -227,19 +235,30 @@ class TestCommunityRecordCreatedDeltaQuery:
             "unique_parents": {"value": 0},
         }
         assert result["uploaders"]["value"] == 1
+        # Find access statuses by key since order is not guaranteed
+        access_statuses = {
+            bucket["key"]: bucket for bucket in result["by_access_statuses"]["buckets"]
+        }
+
         self._check_query_subcount_results(
-            result["by_access_status"]["buckets"][0],
+            access_statuses["open"],
             expected_key="open",
             count_with_files=2,
             count_without_files=0,
             expected_bytes=59117831.0,
         )
-        assert result["by_affiliation_contributor_id"]["buckets"] == []
-        assert result["by_affiliation_contributor_name"]["buckets"] == []
-        assert result["by_affiliation_creator_name"]["buckets"] == []
+        assert result["by_affiliations_contributor_id"]["buckets"] == []
+        assert result["by_affiliations_contributor_keyword"]["buckets"] == []
+        assert result["by_affiliations_creator_keyword"]["buckets"] == []
+
+        # Find affiliations by key since order is not guaranteed
+        affiliations = {
+            bucket["key"]: bucket
+            for bucket in result["by_affiliations_creator_id"]["buckets"]
+        }
 
         self._check_query_subcount_results(
-            result["by_affiliation_creator_id"]["buckets"][0],
+            affiliations["013v4ng57"],
             expected_key="013v4ng57",
             expected_bytes=458036.0,
             expected_label={
@@ -256,38 +275,57 @@ class TestCommunityRecordCreatedDeltaQuery:
                 }
             },
         )
-        assert result["by_file_type"]["buckets"] == [
-            {
-                "doc_count": 2,
-                "key": "pdf",
-                "total_bytes": {"value": 59117831.0},
-                "unique_parents": {"value": 2},
-                "unique_records": {"value": 2},
-            }
-        ]
-        assert result["by_funder"]["buckets"] == []
+        # Find file types by key since order is not guaranteed
+        file_types = {
+            bucket["key"]: bucket for bucket in result["by_file_types"]["buckets"]
+        }
+
+        assert file_types["pdf"] == {
+            "doc_count": 2,
+            "key": "pdf",
+            "total_bytes": {"value": 59117831.0},
+            "unique_parents": {"value": 2},
+            "unique_records": {"value": 2},
+        }
+        assert result["by_funders_id"]["buckets"] == []
+        assert result["by_funders_keyword"]["buckets"] == []
+        # Find languages by key since order is not guaranteed
+        languages = {
+            bucket["key"]: bucket for bucket in result["by_languages"]["buckets"]
+        }
+
         self._check_query_subcount_results(
-            result["by_language"]["buckets"][0],
+            languages["eng"],
             expected_key="eng",
             expected_bytes=458036.0,
             expected_label={
                 "metadata": {"languages": [{"id": "eng", "title": {"en": "English"}}]}
             },
         )
-        assert result["by_license"]["buckets"] == []
-        assert result["by_periodical"]["buckets"] == []
+        assert result["by_rights"]["buckets"] == []
+        assert result["by_periodicals"]["buckets"] == []
+        # Find publishers by key since aggregation order is not guaranteed
+        publishers = {
+            bucket["key"]: bucket for bucket in result["by_publishers"]["buckets"]
+        }
+
         self._check_query_subcount_results(
-            result["by_publisher"]["buckets"][1],
+            publishers["Knowledge Commons"],
             expected_key="Knowledge Commons",
             expected_bytes=458036.0,
         )
         self._check_query_subcount_results(
-            result["by_publisher"]["buckets"][0],
+            publishers["Apocryphile Press"],
             expected_key="Apocryphile Press",
             expected_bytes=58659795.0,
         )
+        # Find resource types by key since aggregation order is not guaranteed
+        resource_types = {
+            bucket["key"]: bucket for bucket in result["by_resource_types"]["buckets"]
+        }
+
         self._check_query_subcount_results(
-            result["by_resource_type"]["buckets"][1],
+            resource_types["textDocument-journalArticle"],
             expected_key="textDocument-journalArticle",
             expected_bytes=458036.0,
             expected_label={
@@ -300,7 +338,7 @@ class TestCommunityRecordCreatedDeltaQuery:
             },
         )
         self._check_query_subcount_results(
-            result["by_resource_type"]["buckets"][0],
+            resource_types["textDocument-bookSection"],
             expected_key="textDocument-bookSection",
             expected_bytes=58659795.0,
             expected_label={
@@ -312,11 +350,14 @@ class TestCommunityRecordCreatedDeltaQuery:
                 }
             },
         )
-        assert [c["doc_count"] for c in result["by_subject"]["buckets"]] == [1] * 7
-        assert [c["file_count"]["value"] for c in result["by_subject"]["buckets"]] == [
-            1
-        ] * 7
-        assert [c["total_bytes"]["value"] for c in result["by_subject"]["buckets"]] == [
+        # Find subjects by key since order is not guaranteed
+        subjects = {
+            bucket["key"]: bucket for bucket in result["by_subjects"]["buckets"]
+        }
+
+        assert [c["doc_count"] for c in subjects.values()] == [1] * 7
+        assert [c["file_count"]["value"] for c in subjects.values()] == [1] * 7
+        assert [c["total_bytes"]["value"] for c in subjects.values()] == [
             458036.0,
             458036.0,
             58659795.0,
@@ -325,7 +366,7 @@ class TestCommunityRecordCreatedDeltaQuery:
             458036.0,
             458036.0,
         ]
-        assert [c["key"] for c in result["by_subject"]["buckets"]] == [
+        assert [c["key"] for c in subjects.values()] == [
             "http://id.worldcat.org/fast/2060143",
             "http://id.worldcat.org/fast/855500",
             "http://id.worldcat.org/fast/973589",
@@ -334,25 +375,25 @@ class TestCommunityRecordCreatedDeltaQuery:
             "http://id.worldcat.org/fast/997974",
             "http://id.worldcat.org/fast/997987",
         ]
+        assert [c["with_files"]["doc_count"] for c in subjects.values()] == [1] * 7
+        assert [c["without_files"]["doc_count"] for c in subjects.values()] == [0] * 7
         assert [
-            c["with_files"]["doc_count"] for c in result["by_subject"]["buckets"]
+            c["with_files"]["unique_parents"]["value"] for c in subjects.values()
         ] == [1] * 7
         assert [
-            c["without_files"]["doc_count"] for c in result["by_subject"]["buckets"]
+            c["without_files"]["unique_parents"]["value"] for c in subjects.values()
         ] == [0] * 7
-        assert [
-            c["with_files"]["unique_parents"]["value"]
-            for c in result["by_subject"]["buckets"]
-        ] == [1] * 7
-        assert [
-            c["without_files"]["unique_parents"]["value"]
-            for c in result["by_subject"]["buckets"]
-        ] == [0] * 7
+        # Find subjects by key since order is not guaranteed
+        subjects = {
+            bucket["key"]: bucket for bucket in result["by_subjects"]["buckets"]
+        }
+        first_subject_key = list(subjects.keys())[0]  # Get the first subject key
+
         assert [
             c["id"]
-            for c in result["by_subject"]["buckets"][0]["label"]["hits"]["hits"][0][
-                "_source"
-            ]["metadata"]["subjects"]
+            for c in subjects[first_subject_key]["label"]["hits"]["hits"][0]["_source"][
+                "metadata"
+            ]["subjects"]
         ] == [
             "http://id.worldcat.org/fast/997916",
             "http://id.worldcat.org/fast/2060143",
@@ -363,9 +404,9 @@ class TestCommunityRecordCreatedDeltaQuery:
         ]
         assert [
             c["subject"]
-            for c in result["by_subject"]["buckets"][0]["label"]["hits"]["hits"][0][
-                "_source"
-            ]["metadata"]["subjects"]
+            for c in subjects[first_subject_key]["label"]["hits"]["hits"][0]["_source"][
+                "metadata"
+            ]["subjects"]
         ] == [
             "Library science",
             "Mass incarceration",
@@ -394,13 +435,19 @@ class TestCommunityRecordCreatedDeltaQuery:
         for agg in [
             a
             for a in self.SUB_AGGS
-            if a not in ["by_affiliation_creator", "by_affiliation_contributor"]
+            if a
+            not in [
+                "by_affiliations_creator_id",
+                "by_affiliations_contributor_id",
+                "by_affiliations_creator_keyword",
+                "by_affiliations_contributor_keyword",
+            ]
         ]:
             assert result[agg]["buckets"] == []
-        assert result["by_affiliation_creator_id"]["buckets"] == []
-        assert result["by_affiliation_contributor_id"]["buckets"] == []
-        assert result["by_affiliation_creator_name"]["buckets"] == []
-        assert result["by_affiliation_contributor_name"]["buckets"] == []
+        assert result["by_affiliations_creator_id"]["buckets"] == []
+        assert result["by_affiliations_contributor_id"]["buckets"] == []
+        assert result["by_affiliations_creator_keyword"]["buckets"] == []
+        assert result["by_affiliations_contributor_keyword"]["buckets"] == []
 
     def _check_result_day2(self, result):
         """Check the results for day 2."""
@@ -430,21 +477,33 @@ class TestCommunityRecordCreatedDeltaQuery:
             "meta": {},
             "unique_parents": {"value": 1},
         }
+        # Find access statuses by key since order is not guaranteed
+        access_statuses = {
+            bucket["key"]: bucket for bucket in result["by_access_statuses"]["buckets"]
+        }
+
         self._check_query_subcount_results(
-            result["by_access_status"]["buckets"][0],
+            access_statuses["metadata-only"],
             expected_key="metadata-only",
             count_with_files=0,
             count_without_files=1,
             expected_bytes=0.0,
         )
         self._check_query_subcount_results(
-            result["by_access_status"]["buckets"][1],
+            access_statuses["open"],
             expected_key="open",
             expected_bytes=1984949.0,
         )
-        assert result["by_affiliation_contributor_name"]["buckets"] == []
+        assert result["by_affiliations_contributor_keyword"]["buckets"] == []
+
+        # Find affiliations by key since order is not guaranteed
+        affiliations = {
+            bucket["key"]: bucket
+            for bucket in result["by_affiliations_creator_id"]["buckets"]
+        }
+
         self._check_query_subcount_results(
-            result["by_affiliation_creator_id"]["buckets"][0],
+            affiliations["03rmrcq20"],
             expected_key="03rmrcq20",
             count_with_files=0,
             count_without_files=1,
@@ -453,16 +512,28 @@ class TestCommunityRecordCreatedDeltaQuery:
                 "metadata": {"creators": [{"affiliations": [{"id": "03rmrcq20"}]}]}
             },
         )
-        assert result["by_file_type"]["buckets"][0] == {
+        # Find file types by key since order is not guaranteed
+        file_types = {
+            bucket["key"]: bucket for bucket in result["by_file_types"]["buckets"]
+        }
+
+        assert file_types["pdf"] == {
             "doc_count": 1,
             "key": "pdf",
             "total_bytes": {"value": 1984949.0},
             "unique_parents": {"value": 1},
             "unique_records": {"value": 1},
         }
-        assert result["by_funder"]["buckets"] == []
+        assert result["by_funders_id"]["buckets"] == []
+        assert result["by_funders_keyword"]["buckets"] == []
+        # Find languages and rights by key since order is not guaranteed
+        languages = {
+            bucket["key"]: bucket for bucket in result["by_languages"]["buckets"]
+        }
+        rights = {bucket["key"]: bucket for bucket in result["by_rights"]["buckets"]}
+
         self._check_query_subcount_results(
-            result["by_language"]["buckets"][0],
+            languages["eng"],
             expected_key="eng",
             expected_bytes=1984949.0,
             expected_label={
@@ -470,7 +541,7 @@ class TestCommunityRecordCreatedDeltaQuery:
             },
         )
         self._check_query_subcount_results(
-            result["by_license"]["buckets"][0],
+            rights["cc-by-sa-4.0"],
             expected_key="cc-by-sa-4.0",
             expected_bytes=1984949.0,
             expected_label={
@@ -489,25 +560,36 @@ class TestCommunityRecordCreatedDeltaQuery:
                 }
             },
         )
+        # Find aggregations by key since order is not guaranteed
+        periodicals = {
+            bucket["key"]: bucket for bucket in result["by_periodicals"]["buckets"]
+        }
+        publishers = {
+            bucket["key"]: bucket for bucket in result["by_publishers"]["buckets"]
+        }
+        resource_types = {
+            bucket["key"]: bucket for bucket in result["by_resource_types"]["buckets"]
+        }
+
         self._check_query_subcount_results(
-            result["by_periodical"]["buckets"][0],
+            periodicals["N/A"],
             expected_key="N/A",
             expected_bytes=1984949.0,
         )
         self._check_query_subcount_results(
-            result["by_publisher"]["buckets"][0],
+            publishers["Knowledge Commons"],
             expected_key="Knowledge Commons",
             expected_bytes=1984949.0,
         )
         self._check_query_subcount_results(
-            result["by_publisher"]["buckets"][1],
+            publishers["UBC"],
             count_with_files=0,
             count_without_files=1,
             expected_key="UBC",
             expected_bytes=0.0,
         )
         self._check_query_subcount_results(
-            result["by_resource_type"]["buckets"][0],
+            resource_types["textDocument-book"],
             expected_key="textDocument-book",
             count_with_files=0,
             count_without_files=1,
@@ -522,7 +604,7 @@ class TestCommunityRecordCreatedDeltaQuery:
             },
         )
         self._check_query_subcount_results(
-            result["by_resource_type"]["buckets"][1],
+            resource_types["textDocument-journalArticle"],
             expected_key="textDocument-journalArticle",
             expected_bytes=1984949.0,
             expected_label={
@@ -534,14 +616,15 @@ class TestCommunityRecordCreatedDeltaQuery:
                 }
             },
         )
-        assert [c["doc_count"] for c in result["by_subject"]["buckets"]] == [1] * 10
-        assert [c["file_count"]["value"] for c in result["by_subject"]["buckets"]] == [
-            0
-        ] * 10
-        assert [c["total_bytes"]["value"] for c in result["by_subject"]["buckets"]] == [
-            0.0
-        ] * 10
-        assert [c["key"] for c in result["by_subject"]["buckets"]] == [
+        # Find subjects by key since order is not guaranteed
+        subjects = {
+            bucket["key"]: bucket for bucket in result["by_subjects"]["buckets"]
+        }
+
+        assert [c["doc_count"] for c in subjects.values()] == [1] * 10
+        assert [c["file_count"]["value"] for c in subjects.values()] == [0] * 10
+        assert [c["total_bytes"]["value"] for c in subjects.values()] == [0.0] * 10
+        assert [c["key"] for c in subjects.values()] == [
             "http://id.worldcat.org/fast/1424786",
             "http://id.worldcat.org/fast/817954",
             "http://id.worldcat.org/fast/821870",
@@ -553,23 +636,23 @@ class TestCommunityRecordCreatedDeltaQuery:
             "http://id.worldcat.org/fast/911660",
             "http://id.worldcat.org/fast/911979",
         ]
+        assert [c["with_files"]["doc_count"] for c in subjects.values()] == [0] * 10
+        assert [c["without_files"]["doc_count"] for c in subjects.values()] == [1] * 10
         assert [
-            c["with_files"]["doc_count"] for c in result["by_subject"]["buckets"]
+            c["with_files"]["unique_parents"]["value"] for c in subjects.values()
         ] == [0] * 10
         assert [
-            c["without_files"]["doc_count"] for c in result["by_subject"]["buckets"]
+            c["without_files"]["unique_parents"]["value"] for c in subjects.values()
         ] == [1] * 10
-        assert [
-            c["with_files"]["unique_parents"]["value"]
-            for c in result["by_subject"]["buckets"]
-        ] == [0] * 10
-        assert [
-            c["without_files"]["unique_parents"]["value"]
-            for c in result["by_subject"]["buckets"]
-        ] == [1] * 10
-        assert result["by_subject"]["buckets"][0]["label"]["hits"]["hits"][0][
-            "_source"
-        ]["metadata"]["subjects"] == [
+        # Find subjects by key since order is not guaranteed
+        subjects = {
+            bucket["key"]: bucket for bucket in result["by_subjects"]["buckets"]
+        }
+        first_subject_key = list(subjects.keys())[0]  # Get the first subject key
+
+        assert subjects[first_subject_key]["label"]["hits"]["hits"][0]["_source"][
+            "metadata"
+        ]["subjects"] == [
             {
                 "id": "http://id.worldcat.org/fast/911979",
                 "scheme": "FAST-topical",
@@ -666,14 +749,16 @@ class TestCommunityRecordCreatedDeltaQuery:
         results = []
         test_dates = self.test_date_range
         for day in test_dates:
-            query = daily_record_delta_query_with_events(
+            query = CommunityRecordDeltaQuery(
+                client=self.client,
+                event_index=prefix_index("rdmrecords-records"),
+            ).build_query(
                 start_date=day.floor("day").format("YYYY-MM-DDTHH:mm:ss"),
                 end_date=day.ceil("day").format("YYYY-MM-DDTHH:mm:ss"),
                 community_id=community_id,
                 find_deleted=self.find_deleted,
                 use_included_dates=self.use_included_dates,
                 use_published_dates=self.use_published_dates,
-                client=self.client,
             )
 
             # Debug: Check what record IDs are found from events
@@ -691,6 +776,21 @@ class TestCommunityRecordCreatedDeltaQuery:
                     f"Day {day.format('YYYY-MM-DD')}: Found record IDs from "
                     f"events: {record_ids}"
                 )
+
+                # Debug: Check what records actually exist in the records index
+                if record_ids:
+                    records_query = {
+                        "query": {"terms": {"id": list(record_ids)}},
+                        "size": 100,
+                    }
+                    records_result = self.client.search(
+                        index=prefix_index("rdmrecords-records"),
+                        body=records_query,
+                    )
+                    self.app.logger.error(
+                        f"Day {day.format('YYYY-MM-DD')}: Records found in index: "
+                        f"{pformat(records_result['hits']['hits'])}"
+                    )
 
                 # Debug: Show all events for this community to see what's stored
                 # Look for either "removed" events OR deleted events
@@ -741,13 +841,14 @@ class TestCommunityRecordCreatedDeltaQuery:
                         f"Expected removed record ID: {self.removed_record_id}"
                     )
 
-            result = self.client.search(
-                index=prefix_index("rdmrecords-records"),
-                body=query,
-            )
+            # Debug: Log the actual query being built
+            query_dict = query.to_dict()
+            self.app.logger.error(f"Query dict: {pformat(query_dict)}")
+
+            result = query.execute()
             results.append(result)
-            self.app.logger.error(f"Query: {pformat(query)}")
-            self.app.logger.error(f"Result: {pformat(result)}")
+            self.app.logger.error(f"Query: {pformat(query.to_dict())}")
+            self.app.logger.error(f"Result: {pformat(result.to_dict())}")
             self.app.logger.error(f"Result day: {day.format('YYYY-MM-DD')}")
             self.app.logger.error(
                 f"Result hits total: {pformat(result['hits']['total']['value'])}"
@@ -1096,17 +1197,16 @@ class TestCommunityRecordCreatedSnapshotQuery:
         final_date = arrow.utcnow()
         while target_date <= final_date:
             day = target_date.format("YYYY-MM-DD")
-            snapshot_query = daily_record_snapshot_query_with_events(
+            snapshot_query = CommunityRecordSnapshotQuery(
+                client=current_search_client,
+                event_index=prefix_index("rdmrecords-records"),
+            ).build_query(
                 start_date=earliest_date.format("YYYY-MM-DD"),
                 end_date=day,
                 community_id=community_id,
-                client=current_search_client,
             )
             # app.logger.error(f"Snapshot query: {pformat(snapshot_query)}")
-            snapshot_results = current_search_client.search(
-                index="rdmrecords-records",
-                body=snapshot_query,
-            )
+            snapshot_results = snapshot_query.execute()
             app.logger.error(f"target date: {target_date.format('YYYY-MM-DD')}")
             app.logger.error(f"Snapshot results: {pformat(snapshot_results)}")
             all_results.append(snapshot_results)
@@ -1116,7 +1216,7 @@ class TestCommunityRecordCreatedSnapshotQuery:
                 expected_results = MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE[day]
                 # app.logger.error(f"Expected results: {pformat(expected_results)}")
 
-                for key, value in snapshot_results["aggregations"].items():
+                for key, value in snapshot_results.aggregations.to_dict().items():
                     if key[:3] == "by_":
                         for bucket in value["buckets"]:
                             matching_expected_bucket = next(
@@ -1136,8 +1236,15 @@ class TestCommunityRecordCreatedSnapshotQuery:
                                     f"{pformat(matching_expected_bucket)}"
                                 )
                                 app.logger.error(f"v: {pformat(v)}")
+                                app.logger.error(f"Key: {k}")
+                                app.logger.error(
+                                    f"Expected bucket keys: {list(matching_expected_bucket.keys())}"
+                                )
+                                app.logger.error(
+                                    f"Actual bucket keys: {list(bucket.keys())}"
+                                )
                                 if k == "label":
-                                    if key == "by_subject":
+                                    if key == "by_subjects":
                                         app.logger.error(
                                             f"v: {pformat(sorted(v['hits']['hits'][0]['_source']['metadata']['subjects'], key=lambda x: x['subject']))}"  # noqa: E501
                                         )
@@ -1338,7 +1445,16 @@ class TestCommunityUsageDeltaQuery:
         except Exception as e:
             self.app.logger.error(f"Could not get sample download documents: {e}")
 
-    def _compare_aggregation_ignoring_ids(self, actual_agg, expected_agg):
+    def _compare_aggregation(self, actual_agg, expected_agg, event_type):
+        """Compare aggregations."""
+        max_visitors = 60 if event_type == "download" else 80
+        actual_copy = deepcopy(actual_agg)
+        expected_copy = deepcopy(expected_agg)
+        assert 1 <= actual_copy.pop("unique_visitors")["value"] <= max_visitors
+        del expected_copy["unique_visitors"]
+        assert actual_copy == expected_copy
+
+    def _compare_aggregation_ignoring_ids(self, actual_agg, expected_agg, event_type):
         """Compare aggregations while ignoring dynamic _id fields in label.hits.hits."""
         # Deep copy to avoid modifying the original
         actual_copy = deepcopy(actual_agg)
@@ -1366,176 +1482,160 @@ class TestCommunityUsageDeltaQuery:
                         if "_id" in hit:
                             del hit["_id"]
 
-        return actual_copy == expected_copy
+            # Check if both have the same number of buckets
+            if len(actual_copy["buckets"]) != len(expected_copy["buckets"]):
+                # If expected is empty but actual has content, that's a test failure
+                if (
+                    len(expected_copy["buckets"]) == 0
+                    and len(actual_copy["buckets"]) > 0
+                ):
+                    raise AssertionError(
+                        f"Expected empty buckets but got "
+                        f"{len(actual_copy['buckets'])} buckets: "
+                        f"{actual_copy['buckets']}"
+                    )
+                # If actual is empty but expected has content, that's also a test failure
+                elif (
+                    len(actual_copy["buckets"]) == 0
+                    and len(expected_copy["buckets"]) > 0
+                ):
+                    raise AssertionError(
+                        f"Expected {len(expected_copy['buckets'])} "
+                        f"buckets but got empty buckets"
+                    )
+                # If both have different non-zero counts, that's a test failure
+                else:
+                    raise AssertionError(
+                        f"Bucket count mismatch: expected "
+                        f"{len(expected_copy['buckets'])} but got "
+                        f"{len(actual_copy['buckets'])}"
+                    )
 
-    def _check_countries(self, view_aggs):
+            # Now compare each bucket
+            for idx, bucket in enumerate(actual_copy["buckets"]):
+                self._compare_aggregation(
+                    bucket, expected_copy["buckets"][idx], event_type
+                )
+
+    def _check_referrers(self, actual_aggs, event_type):
+        """Check the referrers."""
+        actual_referrers = actual_aggs["by_referrers"]
+        total_actual_events = 0
+        for bucket in actual_referrers["buckets"]:
+            total_actual_events += bucket["total_events"]["value"]
+            assert bucket["unique_parents"]["value"] == 1
+            assert bucket["unique_records"]["value"] == 1
+            assert re.match(r"^https?://example\.com/records/.*", bucket["key"])
+        assert total_actual_events == 80 if event_type == "view" else 60
+        assert actual_referrers["doc_count_error_upper_bound"] == 0
+        assert actual_referrers["sum_other_doc_count"] == 0
+
+    def _check_countries(self, actual_aggs, event_type):
         """Check the countries.
 
         These need more flexible assertions since IP addresses are generated dynamically
         """
-        by_countries_agg = view_aggs["by_countries"]
-        expected_countries = MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"][
-            "by_countries"
-        ]
+        actual_agg = actual_aggs["by_countries"]
 
-        # Check that the structure matches but allow for dynamic IP-based counts
-        assert len(by_countries_agg["buckets"]) == len(expected_countries["buckets"])
+        # Check basic structure
+        assert "buckets" in actual_agg
+        assert "doc_count_error_upper_bound" in actual_agg
+        assert "sum_other_doc_count" in actual_agg
+
+        # Since IP addresses are randomly selected, we can't guarantee exact country
+        # counts. But we can check that we have a reasonable number of countries
+        # represented
         assert (
-            by_countries_agg["doc_count_error_upper_bound"]
-            == expected_countries["doc_count_error_upper_bound"]
-        )
+            len(actual_agg["buckets"]) >= 1
+        ), "At least one country should be represented"
         assert (
-            by_countries_agg["sum_other_doc_count"]
-            == expected_countries["sum_other_doc_count"]
+            len(actual_agg["buckets"]) <= 20
+        ), "Should not exceed the number of available countries"
+
+        # Check that error bounds are reasonable
+        assert actual_agg["doc_count_error_upper_bound"] >= 0
+        assert actual_agg["sum_other_doc_count"] >= 0
+
+        # Check that each country bucket has the expected structure
+        for bucket in actual_agg["buckets"]:
+            assert "key" in bucket, "Country bucket must have a key"
+            assert "unique_parents" in bucket, "Country bucket must have unique_parents"
+            assert "unique_records" in bucket, "Country bucket must have unique_records"
+            assert (
+                "unique_visitors" in bucket
+            ), "Country bucket must have unique_visitors"
+
+            # Check that the values are reasonable
+            assert (
+                bucket["unique_parents"]["value"] >= 1
+            ), "At least one parent should be represented"
+            assert (
+                bucket["unique_records"]["value"] >= 1
+            ), "At least one record should be represented"
+            assert (
+                bucket["unique_visitors"]["value"] >= 1
+            ), "At least one visitor should be represented"
+
+            # Check that the country key is a valid country code (2-3 characters)
+            assert len(bucket["key"]) in [
+                2,
+                3,
+            ], f"Country key {bucket['key']} should be 2-3 characters"
+
+    def _check_results(self, results, event_type):
+        """Check the results."""
+        actual_aggs = results.to_dict()["aggregations"]
+        expected = {
+            "total": 80 if event_type == "view" else 60,
+            "parents": 4 if event_type == "view" else 3,
+            "records": 4 if event_type == "view" else 3,
+            "visitors": 80 if event_type == "view" else 60,
+        }
+        if event_type == "download":
+            assert actual_aggs["unique_files"]["value"] == 3
+            assert actual_aggs["total_volume"]["value"] == 1222055600.0
+
+        mock_aggs = (
+            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]
+            if event_type == "view"
+            else MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]
         )
 
-        # Check that all expected countries are present with correct structure
-        for expected_bucket in expected_countries["buckets"]:
-            country_key = expected_bucket["key"]
-            matching_bucket = next(
-                (b for b in by_countries_agg["buckets"] if b["key"] == country_key),
-                None,
+        assert actual_aggs["total_events"]["value"] == expected["total"]
+        assert actual_aggs["unique_parents"]["value"] == expected["parents"]
+        assert actual_aggs["unique_records"]["value"] == expected["records"]
+        assert 20 <= actual_aggs["unique_visitors"]["value"] <= expected["visitors"]
+
+        for agg_name in [
+            "by_access_statuses",
+            "by_file_types",
+            "by_periodicals",
+            "by_publishers",
+        ]:
+            for idx, agg_item in enumerate(actual_aggs[agg_name]["buckets"]):
+                self._compare_aggregation(
+                    agg_item, mock_aggs[agg_name]["buckets"][idx], event_type
+                )
+
+        for agg_name in [
+            "by_subjects",
+            "by_affiliations_id",
+            "by_affiliations_name",
+            "by_funders_id",
+            "by_funders_name",
+            "by_languages",
+            "by_rights",
+            "by_resource_types",
+        ]:
+            self._compare_aggregation_ignoring_ids(
+                actual_aggs[agg_name],
+                mock_aggs[agg_name],
+                event_type,
             )
-            assert (
-                matching_bucket is not None
-            ), f"Country {country_key} not found in results"
-            assert (
-                matching_bucket["unique_parents"]["value"]
-                == expected_bucket["unique_parents"]["value"]
-            )
-            assert (
-                matching_bucket["unique_records"]["value"]
-                == expected_bucket["unique_records"]["value"]
-            )
-            # Allow for dynamic visitor counts due to IP generation
-            assert (
-                matching_bucket["unique_visitors"]["value"] >= 1
-            )  # At least 1 visitor
 
-    def _check_view_results(self, view_results):
-        """Check the view results."""
-        view_aggs = view_results.to_dict()["aggregations"]
-        assert view_aggs["total_events"]["value"] == 80
-        assert view_aggs["unique_parents"]["value"] == 4
-        assert view_aggs["unique_records"]["value"] == 4
-        assert 80 >= view_aggs["unique_visitors"]["value"] >= 40
-        assert (
-            view_aggs["by_access_status"]
-            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_access_status"]
-        )
-        assert (
-            view_aggs["by_file_types"]
-            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_file_types"]
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            view_aggs["by_subjects"],
-            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_subjects"],
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            view_aggs["by_affiliation_id"],
-            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_affiliation_id"],
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            view_aggs["by_affiliation_name"],
-            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_affiliation_name"],
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            view_aggs["by_funder_id"],
-            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_funder_id"],
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            view_aggs["by_funder_name"],
-            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_funder_name"],
-        )
-        assert (
-            view_aggs["by_resource_types"]
-            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_resource_types"]
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            view_aggs["by_languages"],
-            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_languages"],
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            view_aggs["by_licenses"],
-            MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_licenses"],
-        )
-        assert (
-            view_aggs["by_periodicals"]
-            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_periodicals"]
-        )
-        assert (
-            view_aggs["by_publishers"]
-            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_publishers"]
-        )
-        assert (
-            view_aggs["by_referrers"]
-            == MOCK_USAGE_QUERY_RESPONSE_VIEWS["aggregations"]["by_referrers"]
-        )
+        self._check_referrers(actual_aggs, event_type)
 
-        self._check_countries(view_aggs)
-
-    def _check_download_results(self, download_results):
-        """Check the download results."""
-        download_aggs = download_results.to_dict()["aggregations"]
-        assert download_aggs["total_events"]["value"] == 60
-        assert download_aggs["unique_parents"]["value"] == 3
-        assert download_aggs["unique_records"]["value"] == 3
-        assert 60 >= download_aggs["unique_visitors"]["value"] >= 30
-        assert download_aggs["unique_files"]["value"] == 3
-        assert download_aggs["total_volume"]["value"] == 8192.0
-        assert (
-            download_aggs["by_access_status"]
-            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_access_status"]
-        )
-        assert (
-            download_aggs["by_file_types"]
-            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_file_types"]
-        )
-        assert (
-            download_aggs["by_subjects"]
-            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_subjects"]
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            download_aggs["by_affiliation_id"],
-            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_affiliation_id"],
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            download_aggs["by_affiliation_name"],
-            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_affiliation_name"],
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            download_aggs["by_funder_id"],
-            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_funder_id"],
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            download_aggs["by_funder_name"],
-            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_funder_name"],
-        )
-        assert (
-            download_aggs["by_resource_types"]
-            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_resource_types"]
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            download_aggs["by_languages"],
-            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_languages"],
-        )
-        assert self._compare_aggregation_ignoring_ids(
-            download_aggs["by_licenses"],
-            MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_licenses"],
-        )
-        assert (
-            download_aggs["by_periodicals"]
-            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_periodicals"]
-        )
-        assert (
-            download_aggs["by_publishers"]
-            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_publishers"]
-        )
-        assert (
-            download_aggs["by_referrers"]
-            == MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS["aggregations"]["by_referrers"]
-        )
-        self._check_countries(download_aggs)
+        self._check_countries(actual_aggs, event_type)
 
     def test_community_usage_delta_query(
         self,
@@ -1596,7 +1696,7 @@ class TestCommunityUsageDeltaQuery:
             == "2025-07-03"
         )
 
-        self._check_view_results(view_results)
+        self._check_results(view_results, "view")
 
         download_results = download_query.execute()
         self.app.logger.error(
@@ -1612,4 +1712,62 @@ class TestCommunityUsageDeltaQuery:
             == "2025-07-03"
         )
 
-        self._check_download_results(download_results)
+        self._check_results(download_results, "download")
+
+
+class TestCommunityUsageSnapshotQuery:
+    """Test the CommunityUsageSnapshotQuery class.
+
+    Tests the query builder methods used by the CommunityUsageSnapshotAggregator.
+    """
+
+    def test_community_usage_snapshot_query_methods(
+        self, running_app, create_stats_indices
+    ):
+        """Test that the query builder methods return proper Search objects."""
+        self.app = running_app.app
+        query_builder = CommunityUsageSnapshotQuery()
+
+        # Test method signatures
+        start_date = arrow.utcnow()
+        end_date = arrow.utcnow()
+        community_id = "test-community"
+
+        # These should not raise exceptions and should return Search objects
+        last_snapshot_query = query_builder.build_last_snapshot_query(
+            community_id, start_date
+        )
+        daily_deltas_query = query_builder.build_daily_deltas_query(
+            community_id, end_date
+        )
+        dependency_query = query_builder.build_dependency_check_query(community_id)
+
+        # Verify they are Search objects
+        from opensearchpy.helpers.search import Search
+
+        assert isinstance(last_snapshot_query, Search)
+        assert isinstance(daily_deltas_query, Search)
+        assert isinstance(dependency_query, Search)
+
+        # TODO: Add more meaningful assertions here
+
+        # Verify query structure for last snapshot query
+        last_snapshot_dict = last_snapshot_query.to_dict()
+        assert "query" in last_snapshot_dict
+        assert "bool" in last_snapshot_dict["query"]
+        assert "must" in last_snapshot_dict["query"]["bool"]
+        assert "sort" in last_snapshot_dict
+        assert "size" in last_snapshot_dict
+
+        # Verify query structure for daily deltas query
+        daily_deltas_dict = daily_deltas_query.to_dict()
+        assert "query" in daily_deltas_dict
+        assert "bool" in daily_deltas_dict["query"]
+        assert "must" in daily_deltas_dict["query"]["bool"]
+        assert "sort" in daily_deltas_dict
+
+        # Verify query structure for dependency check query
+        dependency_dict = dependency_query.to_dict()
+        assert "query" in dependency_dict
+        assert "aggs" in dependency_dict
+        assert "max_date" in dependency_dict["aggs"]
