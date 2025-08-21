@@ -35,8 +35,7 @@ module.exports = {
   ],
   testMatch: ['**/*.test.js?(x)', '**/*.spec.js?(x)'],
   testPathIgnorePatterns: [
-    // FIXME: Remove this ignore pattern once invenio-stats-dashboard tests are fixed
-    '<rootDir>/site/kcworks/dependencies/invenio-stats-dashboard/',
+    // '<rootDir>/site/kcworks/dependencies/invenio-stats-dashboard/',
   ],
   collectCoverageFrom: [
     'assets/**/*.{js,jsx}',

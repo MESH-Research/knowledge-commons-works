@@ -1,3 +1,4 @@
+from copy import deepcopy
 from pathlib import Path
 from pprint import pformat
 from typing import Callable
@@ -21,6 +22,7 @@ from invenio_stats_dashboard.aggregations import (
     CommunityUsageSnapshotAggregator,
 )
 from invenio_stats_dashboard.components import update_community_events_created_date
+from invenio_stats_dashboard.proxies import current_event_reindexing_service
 from opensearchpy.helpers.search import Search
 from pytest import MonkeyPatch
 
@@ -365,7 +367,7 @@ class TestCommunityRecordAddedDeltaAggregator(
                     assert doc["records"]["removed"]["metadata_only"] == 0
                     a = [
                         i
-                        for i in doc["subcounts"]["by_access_status"]
+                        for i in doc["subcounts"]["by_access_statuses"]
                         if i["id"] == "metadata-only"
                     ][0]
                     assert a["id"] == "metadata-only"
@@ -382,7 +384,7 @@ class TestCommunityRecordAddedDeltaAggregator(
                     assert a["records"]["added"]["metadata_only"] == 1
                     assert a["records"]["removed"]["with_files"] == 0
                     assert a["records"]["removed"]["metadata_only"] == 0
-                    f = doc["subcounts"]["by_file_type"][0]
+                    f = doc["subcounts"]["by_file_types"][0]
                     assert f["id"] == "pdf"
                     assert f["label"] == ""
                     assert f["added"]["files"] == 3
@@ -626,14 +628,14 @@ class TestCommunityUsageAggregators:
             "return_results": True,
         }
 
-    def setup_users(self, user_factory):
+    def _setup_users(self, user_factory):
         """Setup test users."""
         u = user_factory(email="test@example.com")
         user_id = u.user.id
         user_email = u.user.email
         return user_id, user_email
 
-    def setup_community(self, minimal_community_factory, user_id):
+    def _setup_community(self, minimal_community_factory, user_id):
         """Setup test community."""
         community = minimal_community_factory(
             slug="knowledge-commons",
@@ -642,9 +644,57 @@ class TestCommunityUsageAggregators:
         community_id = community.id
         return community_id
 
-    def setup_records(self, user_email, community_id, minimal_published_record_factory):
-        """Setup test records."""
+    def _enhance_metadata_with_funding_and_affiliations(self, metadata, record_index):
+        """Enhance metadata with funder and enhanced affiliation data for testing.
 
+        Args:
+            metadata: The base metadata to enhance
+            record_index: Index of the record (0-3) to determine what data to add
+        """
+        # Only enhance the first record with affiliations
+        if record_index == 0:
+            for idx, creator in enumerate(metadata["metadata"]["creators"]):
+                if not creator.get("affiliations"):
+                    metadata["metadata"]["creators"][idx]["affiliations"] = [
+                        {
+                            "id": "01ggx4157",  # CERN from affiliations fixture
+                            "name": "CERN",
+                            "type": {
+                                "id": "institution",
+                                "title": {"en": "Institution"},
+                            },
+                        }
+                    ]
+
+        # Add funding information to the first two records only
+        if record_index < 2:
+            metadata["metadata"]["funding"] = [
+                {
+                    "funder": {
+                        "id": "00k4n6c31",  # From funders fixture
+                        "name": "Funder 00k4n6c31",
+                        "type": {"id": "funder", "title": {"en": "Funder"}},
+                    },
+                    "award": {
+                        "id": "00k4n6c31::755021",  # From awards fixture
+                        "title": "Award 755021",
+                        "number": "755021",
+                        "identifiers": [
+                            {
+                                "identifier": (
+                                    "https://sandbox.kcworks.org/00k4n6c31::755021"
+                                ),
+                                "scheme": "url",
+                            }
+                        ],
+                    },
+                }
+            ]
+
+    def _setup_records(
+        self, user_email, community_id, minimal_published_record_factory
+    ):
+        """Setup test records."""
         for idx, rec in enumerate(
             [
                 sample_metadata_journal_article4_pdf["input"],
@@ -659,74 +709,62 @@ class TestCommunityUsageAggregators:
                 "set_default": True,
                 "update_community_event_dates": True,
             }
+
+            metadata = deepcopy(rec)
+            metadata["created"] = "2025-06-01T00:00:00+00:00"
+
+            # Enhance metadata with funding and affiliation data
+            self._enhance_metadata_with_funding_and_affiliations(metadata, idx)
+
+            args = {
+                "identity": get_identity(
+                    current_datastore.get_user_by_email(user_email)
+                ),
+                "metadata": metadata,
+                "community_list": [community_id],
+                "set_default": True,
+                "update_community_event_dates": True,
+            }
             if idx != 1:
                 filename = list(rec["files"]["entries"].keys())[0]
                 record_args["file_paths"] = [
                     Path(__file__).parent.parent / "helpers" / "sample_files" / filename
                 ]
-            _ = minimal_published_record_factory(**record_args)
+            _ = minimal_published_record_factory(**args)
 
-        records = records_service.search(
-            identity=system_identity,
-            q="",
-        )
-        record_dicts = records.to_dict()["hits"]["hits"]
-        # for record_dict in record_dicts:
-        #     update_community_events_created_date(
-        #         record_id=record_dict["id"],
-        #         new_created_date=record_dict["created"],
-        #     )
-        # current_search_client.indices.refresh(index="*stats-community-events*")
-
-        assert len(record_dicts) == 4, f"Expected 4 records, got {len(record_dicts)}"
-        return records
-
-    def setup_events(self, test_records, usage_event_factory):
+    def _create_usage_events(self, usage_event_factory):
         """Setup test usage events."""
-        events = []
-
-        start_date, end_date = self.event_date_range
-        total_days = (end_date - start_date).days + 1
-
-        for record in test_records.to_dict()["hits"]["hits"]:
-            # Create 20 view events with different visitors, spread across days
-            for i in range(20):
-                # Calculate which day this event should be on
-                day_offset = (i * total_days) // 20
-                event_date = start_date.shift(days=day_offset)
-                events.append(
-                    usage_event_factory.make_view_event(record, event_date, i)
+        # ensure the enriched event templates are registered
+        if current_event_reindexing_service:
+            success = current_event_reindexing_service.update_and_verify_templates()
+            if not success:
+                self.app.logger.error(
+                    "Failed to update and verify enriched event templates"
                 )
 
-            # Create 20 download events with different visitors, spread across days
-            if record.get("files", {}).get("enabled"):
-                for i in range(20):
-                    # Calculate which day this event should be on
-                    day_offset = (i * total_days) // 20
-                    event_date = start_date.shift(days=day_offset)
-                    events.append(
-                        usage_event_factory.make_download_event(record, event_date, i)
-                    )
+        start_date, end_date = self.event_date_range
+        actual_events = usage_event_factory.generate_and_index_repository_events(
+            start_date="2025-06-01",
+            end_date="2025-06-03",
+            events_per_record=20,
+            enrich_events=True,
+            event_start_date=start_date.format("YYYY-MM-DD"),
+            event_end_date=end_date.format("YYYY-MM-DD"),
+        )
+        actual_events_count = actual_events["indexed"]
+        assert (
+            actual_events_count == 140
+        ), f"Expected 140 events, got {actual_events_count}"
+        assert actual_events["errors"] == 0
 
-        usage_event_factory.index_usage_events(events)
+        current_search_client.indices.refresh(index="events-stats-*")
 
-        # Verify events are in correct monthly indices
-        june_view_index = f"{prefix_index('events-stats-record-view')}-2025-06"
-        june_download_index = f"{prefix_index('events-stats-file-download')}-2025-06"
+        view_count = current_search_client.count(index="events-stats-record-view")
+        download_count = current_search_client.count(index="events-stats-file-download")
+        assert view_count["count"] == 80
+        assert download_count["count"] == 60
 
-        # Check June indices
-        june_view_count = self.client.count(index=june_view_index)["count"]
-        june_download_count = self.client.count(index=june_download_index)["count"]
-        assert june_view_count > 0, "No view events found in June index"
-        assert june_download_count > 0, "No download events found in June index"
-
-        # Verify total counts match expected
-        total_june_events = june_view_count + june_download_count
-        assert total_june_events == 140, "Total event count doesn't match expected"
-
-        return events
-
-    def set_bookmarks(self, aggregator, community_id):
+    def _set_bookmarks(self, aggregator, community_id):
         """Set the initial bookmarks for the delta and snapshot aggregators."""
         start_date, _ = self.event_date_range
         for cid in [community_id, "global"]:
@@ -738,7 +776,7 @@ class TestCommunityUsageAggregators:
         for cid in [community_id, "global"]:
             assert aggregator.bookmark_api.get_bookmark(cid) == arrow.get(start_date)
 
-    def check_bookmarks(self, aggregator, community_id):
+    def _check_bookmarks(self, aggregator, community_id):
         """Check that a bookmark was set to mark most recent aggregations
         for both the community and the global stats.
         """
@@ -868,10 +906,10 @@ class TestCommunityUsageAggregators:
             subcounts = doc["subcounts"]
             expected_subcounts = [
                 "by_resource_types",
-                "by_access_status",
+                "by_access_statuses",
                 "by_languages",
                 "by_subjects",
-                "by_licenses",
+                "by_rights",
                 "by_funders",
                 "by_periodicals",
                 "by_publishers",
@@ -909,7 +947,7 @@ class TestCommunityUsageAggregators:
 
         return result_records
 
-    def check_delta_agg_results(self, results, community_id):
+    def _check_delta_agg_results(self, results, community_id):
         """Check that the delta aggregator results are correct."""
         self.app.logger.error(f"Results 0: {pformat(results)}")
         start_date, end_date = self.event_date_range
@@ -923,7 +961,7 @@ class TestCommunityUsageAggregators:
         global_results = self._validate_agg_results("global", start_date, end_date)
         return community_results, global_results
 
-    def check_snapshot_agg_results(self, snap_response, delta_results, community_id):
+    def _check_snapshot_agg_results(self, snap_response, delta_results, community_id):
         """Check that the snapshot aggregator results are correct."""
         start_date, end_date = self.event_date_range
         total_days = (end_date - start_date).days + 1
@@ -1111,7 +1149,7 @@ class TestCommunityUsageAggregators:
             "top_countries",
             "top_referrers",
             # "top_user_agents",
-            "top_licenses",
+            "top_rights",
         ]:
             for angle in ["by_view", "by_download"]:
                 for item in last_day_snap["subcounts"][top_subcount_type][angle]:
@@ -1287,7 +1325,7 @@ class TestCommunityUsageAggregators:
         )
         return True
 
-    def setup_extra_records(
+    def _setup_extra_records(
         self,
         user_id,
         user_email,
@@ -1344,7 +1382,7 @@ class TestCommunityUsageAggregators:
 
         return records.to_dict()["hits"]["hits"]
 
-    def setup_extra_events(self, test_records, extra_records, usage_event_factory):
+    def _setup_extra_events(self, test_records, extra_records, usage_event_factory):
         """Setup extra events to test date filtering and bookmarking.
 
         One extra view and download event is created for each record in the
@@ -1461,33 +1499,33 @@ class TestCommunityUsageAggregators:
             self.catchup_interval,
         )
 
-        user_id, user_email = self.setup_users(user_factory)
-        community_id = self.setup_community(minimal_community_factory, user_id)
+        user_id, user_email = self._setup_users(user_factory)
+        community_id = self._setup_community(minimal_community_factory, user_id)
 
         requests_mock.real_http = True
-        test_records = self.setup_records(
+        test_records = self._setup_records(
             user_email, community_id, minimal_published_record_factory
         )
         # extra records to test filtering
-        extra_records = self.setup_extra_records(
+        extra_records = self._setup_extra_records(
             user_id,
             user_email,
             minimal_community_factory,
             minimal_published_record_factory,
         )
-        self.setup_events(test_records, usage_event_factory)
+        self._create_usage_events(usage_event_factory)
         # extra events to test date filtering and bookmarking
-        self.setup_extra_events(test_records, extra_records, usage_event_factory)
+        self._setup_extra_events(test_records, extra_records, usage_event_factory)
 
         # Run the delta aggregator
         aggregator = CommunityUsageDeltaAggregator(name="community-usage-delta-agg")
-        self.set_bookmarks(aggregator, community_id)
+        self._set_bookmarks(aggregator, community_id)
 
         delta_response = aggregator.run(**self.run_args)
         self.client.indices.refresh(index="*stats-community-usage-delta*")
 
-        self.check_bookmarks(aggregator, community_id)
-        delta_results = self.check_delta_agg_results(delta_response, community_id)
+        self._check_bookmarks(aggregator, community_id)
+        delta_results = self._check_delta_agg_results(delta_response, community_id)
         # have to make sure that the events we added before the start date
         # get aggregated before we run snapshot aggregator
         self._prepare_earlier_results()
@@ -1502,12 +1540,12 @@ class TestCommunityUsageAggregators:
         snapshot_aggregator = CommunityUsageSnapshotAggregator(
             name="community-usage-snapshot-agg"
         )
-        self.set_bookmarks(snapshot_aggregator, community_id)
+        self._set_bookmarks(snapshot_aggregator, community_id)
         snapshot_response = snapshot_aggregator.run(**self.run_args)
 
         # Check that a bookmark was set to mark most recent aggregation
-        self.check_bookmarks(snapshot_aggregator, community_id)
-        assert self.check_snapshot_agg_results(
+        self._check_bookmarks(snapshot_aggregator, community_id)
+        assert self._check_snapshot_agg_results(
             snapshot_response, delta_results, community_id
         )
 
@@ -1561,7 +1599,7 @@ class TestCommunityUsageAggregatorsBookmarked(TestCommunityUsageAggregators):
             "return_results": True,
         }
 
-    def set_bookmarks(self, aggregator, community_id):
+    def _set_bookmarks(self, aggregator, community_id):
         """Set the initial bookmarks for the delta and snapshot aggregators.
 
         This test sets the bookmark to the second-last day of the event date range
@@ -1581,7 +1619,7 @@ class TestCommunityUsageAggregatorsBookmarked(TestCommunityUsageAggregators):
                 - arrow.get(end_date).shift(days=-1)
             ).total_seconds() < 1
 
-    def check_bookmarks(self, aggregator, community_id):
+    def _check_bookmarks(self, aggregator, community_id):
         """Check that the bookmark was set to the correct date.
 
         The bookmark is set to the second-last day of the event date range
@@ -1600,7 +1638,7 @@ class TestCommunityUsageAggregatorsBookmarked(TestCommunityUsageAggregators):
                 - arrow.get(end_date).shift(days=self.catchup_interval - 1)
             ).total_seconds() < 1
 
-    def check_delta_agg_results(self, results, community_id):
+    def _check_delta_agg_results(self, results, community_id):
         """Check that the delta aggregator results are correct."""
         self.app.logger.error(f"Results 0: {pformat(results)}")
         total_days = self.catchup_interval + 1  # interval added to start date (day 1)
@@ -1613,7 +1651,7 @@ class TestCommunityUsageAggregatorsBookmarked(TestCommunityUsageAggregators):
         # global_results = self._validate_agg_results("global", start_date, end_date)
         # return community_results, global_results
 
-    def check_snapshot_agg_results(self, snap_response, delta_results, community_id):
+    def _check_snapshot_agg_results(self, snap_response, delta_results, community_id):
         """Check that the snapshot aggregator results are correct."""
         start_date, end_date = self.event_date_range  # start date is 2025-06-04
         # but we're ignoring it and using the bookmark, set for 2025-06-15.

@@ -15,6 +15,8 @@
 
 """Fixtures for stats."""
 
+import json
+import os
 from typing import TYPE_CHECKING, Callable
 
 import pytest
@@ -332,18 +334,58 @@ def put_old_stats_templates():
     templates_put = False
     for template_name, template_path in old_templates.items():
         try:
-            # Register the old template
             template_result = current_search.register_templates(template_path)
-            for index_name, index_template in template_result.items():
-                # Put the old template
-                current_search._put_template(
-                    index_name,
-                    index_template,
-                    current_search_client.indices.put_index_template,
-                    ignore=None,
+
+            if isinstance(template_result, dict):
+                for index_name, template_file_path in template_result.items():
+                    if os.path.exists(template_file_path):
+                        with open(template_file_path, "r") as f:
+                            template_content = json.load(f)
+
+                        prefix = current_app.config.get("SEARCH_INDEX_PREFIX", "")
+                        template_str = json.dumps(template_content)
+                        template_str = template_str.replace(
+                            "__SEARCH_INDEX_PREFIX__", prefix
+                        )
+                        template_content = json.loads(template_str)
+
+                        # Convert old template format to new index template format
+                        if (
+                            "settings" in template_content
+                            and "template" not in template_content
+                        ):
+                            converted_template = {
+                                "index_patterns": template_content.get(
+                                    "index_patterns", []
+                                ),
+                                "template": {
+                                    "settings": template_content.get("settings", {}),
+                                    "mappings": template_content.get("mappings", {}),
+                                    "aliases": template_content.get("aliases", {}),
+                                },
+                                "priority": 100,
+                                "version": 1,
+                            }
+
+                            current_search_client.indices.put_index_template(
+                                name=index_name,
+                                body=converted_template,
+                            )
+                        else:
+                            # Template is already in new format, use as-is
+                            current_search_client.indices.put_index_template(
+                                name=index_name,
+                                body=template_content,
+                            )
+                        templates_put = True
+                    else:
+                        current_app.logger.warning(
+                            f"Template file not found: {template_file_path}"
+                        )
+            else:
+                current_app.logger.warning(
+                    f"Unexpected result from register_templates: {template_result}"
                 )
-                current_app.logger.info(f"Put old template: {index_name}")
-                templates_put = True
         except Exception as e:
             current_app.logger.warning(
                 f"Failed to put old template {template_name}: {e}"

@@ -101,10 +101,12 @@ def minimal_published_record_factory(running_app, db, record_metadata):
             The published record as a service layer RecordItem.
         """
         input_metadata = metadata or deepcopy(record_metadata().metadata_in)
+
         if identity:
             identity = get_authenticated_identity(identity)
         else:
             identity = system_identity
+
         draft = records_service.create(identity, input_metadata)
 
         if file_paths:
