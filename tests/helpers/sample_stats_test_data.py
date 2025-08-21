@@ -53,7 +53,7 @@ SAMPLE_RECORDS_SNAPSHOT_AGG = {
             },
         ],
         "all_languages": [],
-        "all_licenses": [],
+        "all_rights": [],
         "top_affiliations_creator": [],
         "top_affiliations_contributor": [],
         "top_funders": [],
@@ -398,12 +398,12 @@ MOCK_RECORD_SEARCH_RESPONSE = {
                         "kcr:ai_usage": {"ai_used": False},
                         "kcr:edition": "3rd",
                         "kcr:user_defined_tags": [
-                            "Canadian " "English",
-                            "Canadian " "Studies",
-                            "Language " "and " "Identity",
-                            "Historical " "Lexicography",
-                            "Canadian " "English " "Lexicography",
-                            "Anglphone " "Canada",
+                            "Canadian English",
+                            "Canadian Studies",
+                            "Language and Identity",
+                            "Historical Lexicography",
+                            "Canadian English Lexicography",
+                            "Anglphone Canada",
                             "Dialectology",
                             "Sociolinguistics",
                         ],
@@ -1141,7 +1141,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
         "by_day": {
             "buckets": [
                 {
-                    "by_access_status": {
+                    "by_access_statuses": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1161,35 +1161,47 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_affiliation_contributor": {
+                    "by_affiliations_contributor_id": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_affiliation_creator": {
+                    "by_affiliations_contributor_keyword": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_file_type": {
+                    "by_affiliations_creator_id": {
+                        "buckets": [],
+                        "doc_count_error_upper_bound": 0,
+                        "sum_other_doc_count": 0,
+                    },
+                    "by_affiliations_creator_keyword": {
+                        "buckets": [],
+                        "doc_count_error_upper_bound": 0,
+                        "sum_other_doc_count": 0,
+                    },
+                    "by_file_types": {
                         "buckets": [
                             {
                                 "doc_count": 1,
                                 "key": "pdf",
+                                "with_files": {
+                                    "doc_count": 1,
+                                    "unique_parents": {"value": 1},
+                                },
                                 "total_bytes": {"value": 458036.0},
-                                "unique_parents": {"value": 1},
-                                "unique_records": {"value": 1},
                             }
                         ],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_funder": {
+                    "by_funders": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_language": {
+                    "by_languages": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1209,17 +1221,17 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_license": {
+                    "by_rights": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_periodical": {
+                    "by_periodicals": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_publisher": {
+                    "by_publishers": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1239,7 +1251,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_resource_type": {
+                    "by_resource_types": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1259,7 +1271,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_subject": {
+                    "by_subjects": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1360,66 +1372,66 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                     "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
                 },
                 {
-                    "by_access_status": {
+                    "by_access_statuses": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_affiliation_contributor": {
+                    "by_affiliations_contributor": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_affiliation_creator": {
+                    "by_affiliations_creator": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_file_type": {
+                    "by_file_types": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_funder": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "meta": {},
-                        "sum_other_doc_count": 0,
-                    },
-                    "by_language": {
+                    "by_funders": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_license": {
+                    "by_languages": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_periodical": {
+                    "by_rights": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_publisher": {
+                    "by_periodicals": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_resource_type": {
+                    "by_publishers": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_subject": {
+                    "by_resource_types": {
+                        "buckets": [],
+                        "doc_count_error_upper_bound": 0,
+                        "meta": {},
+                        "sum_other_doc_count": 0,
+                    },
+                    "by_subjects": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
@@ -1444,66 +1456,66 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                     },
                 },
                 {
-                    "by_access_status": {
+                    "by_access_statuses": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_affiliation_contributor": {
+                    "by_affiliations_contributor": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_affiliation_creator": {
+                    "by_affiliations_creator": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_file_type": {
+                    "by_file_types": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_funder": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "meta": {},
-                        "sum_other_doc_count": 0,
-                    },
-                    "by_language": {
+                    "by_funders": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_license": {
+                    "by_languages": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_periodical": {
+                    "by_rights": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_publisher": {
+                    "by_periodicals": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_resource_type": {
+                    "by_publishers": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_subject": {
+                    "by_resource_types": {
+                        "buckets": [],
+                        "doc_count_error_upper_bound": 0,
+                        "meta": {},
+                        "sum_other_doc_count": 0,
+                    },
+                    "by_subjects": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
@@ -1528,66 +1540,66 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                     },
                 },
                 {
-                    "by_access_status": {
+                    "by_access_statuses": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_affiliation_contributor": {
+                    "by_affiliations_contributor": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_affiliation_creator": {
+                    "by_affiliations_creator": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_file_type": {
+                    "by_file_types": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_funder": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "meta": {},
-                        "sum_other_doc_count": 0,
-                    },
-                    "by_language": {
+                    "by_funders": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_license": {
+                    "by_languages": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_periodical": {
+                    "by_rights": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_publisher": {
+                    "by_periodicals": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_resource_type": {
+                    "by_publishers": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "by_subject": {
+                    "by_resource_types": {
+                        "buckets": [],
+                        "doc_count_error_upper_bound": 0,
+                        "meta": {},
+                        "sum_other_doc_count": 0,
+                    },
+                    "by_subjects": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
@@ -1612,7 +1624,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                     },
                 },
                 {
-                    "by_access_status": {
+                    "by_access_statuses": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1646,17 +1658,17 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_affiliation_contributor": {
+                    "by_affiliations_contributor": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_affiliation_creator": {
+                    "by_affiliations_creator": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_file_type": {
+                    "by_file_types": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1669,12 +1681,12 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_funder": {
+                    "by_funders": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_language": {
+                    "by_languages": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1694,7 +1706,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_license": {
+                    "by_rights": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1714,7 +1726,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_periodical": {
+                    "by_periodicals": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1734,7 +1746,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_publisher": {
+                    "by_publishers": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1768,7 +1780,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_resource_type": {
+                    "by_resource_types": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1802,7 +1814,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "by_subject": {
+                    "by_subjects": {
                         "buckets": [
                             {
                                 "doc_count": 1,
@@ -1989,7 +2001,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_status": [
+                "by_access_statuses": [
                     {
                         "files": {
                             "added": {"data_volume": 59117831.0, "file_count": 2},
@@ -2007,8 +2019,8 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_affiliation_contributor": [],
-                "by_affiliation_creator": [
+                "by_affiliations_contributor": [],
+                "by_affiliations_creator": [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
@@ -2026,26 +2038,26 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_file_type": [
+                "by_file_types": [
                     {
-                        "added": {
-                            "data_volume": 59117831.0,
-                            "files": 2,
-                            "parents": 2,
-                            "records": 2,
+                        "files": {
+                            "added": {"data_volume": 59117831.0, "file_count": 2},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "pdf",
                         "label": "",
-                        "removed": {
-                            "data_volume": 0.0,
-                            "files": 0,
-                            "parents": 0,
-                            "records": 0,
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 2},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 2},
+                            "removed": {"metadata_only": 0, "with_files": 0},
                         },
                     }
                 ],
-                "by_funder": [],
-                "by_language": [
+                "by_funders": [],
+                "by_languages": [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
@@ -2063,9 +2075,9 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_license": [],
-                "by_periodical": [],
-                "by_publisher": [
+                "by_rights": [],
+                "by_periodicals": [],
+                "by_publishers": [
                     {
                         "files": {
                             "added": {"data_volume": 58659795.0, "file_count": 1},
@@ -2099,7 +2111,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     },
                 ],
-                "by_resource_type": [
+                "by_resource_types": [
                     {
                         "files": {
                             "added": {"data_volume": 58659795.0, "file_count": 1},
@@ -2133,7 +2145,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     },
                 ],
-                "by_subject": [
+                "by_subjects": [
                     {
                         "files": {
                             "added": {"data_volume": 58659795.0, "file_count": 1},
@@ -2274,17 +2286,17 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_status": [],
-                "by_affiliation_contributor": [],
-                "by_affiliation_creator": [],
-                "by_file_type": [],
-                "by_funder": [],
-                "by_language": [],
-                "by_license": [],
-                "by_periodical": [],
-                "by_publisher": [],
-                "by_resource_type": [],
-                "by_subject": [],
+                "by_access_statuses": [],
+                "by_affiliations_contributor": [],
+                "by_affiliations_creator": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_rights": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
             },
             "timestamp": "2025-06-05T18:45:58",
             "updated_timestamp": "2025-06-05T18:45:58",
@@ -2312,17 +2324,17 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_status": [],
-                "by_affiliation_contributor": [],
-                "by_affiliation_creator": [],
-                "by_file_type": [],
-                "by_funder": [],
-                "by_language": [],
-                "by_license": [],
-                "by_periodical": [],
-                "by_publisher": [],
-                "by_resource_type": [],
-                "by_subject": [],
+                "by_access_statuses": [],
+                "by_affiliations_contributor": [],
+                "by_affiliations_creator": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_rights": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
             },
             "timestamp": "2025-06-05T18:45:58",
             "updated_timestamp": "2025-06-05T18:45:58",
@@ -2350,17 +2362,17 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_status": [],
-                "by_affiliation_contributor": [],
-                "by_affiliation_creator": [],
-                "by_file_type": [],
-                "by_funder": [],
-                "by_language": [],
-                "by_license": [],
-                "by_periodical": [],
-                "by_publisher": [],
-                "by_resource_type": [],
-                "by_subject": [],
+                "by_access_statuses": [],
+                "by_affiliations_contributor": [],
+                "by_affiliations_creator": [],
+                "by_file_types": [],
+                "by_funders": [],
+                "by_languages": [],
+                "by_rights": [],
+                "by_periodicals": [],
+                "by_publishers": [],
+                "by_resource_types": [],
+                "by_subjects": [],
             },
             "timestamp": "2025-06-05T18:45:58",
             "updated_timestamp": "2025-06-05T18:45:58",
@@ -2388,7 +2400,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_status": [
+                "by_access_statuses": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2422,8 +2434,8 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     },
                 ],
-                "by_affiliation_contributor": [],
-                "by_affiliation_creator": [
+                "by_affiliations_contributor": [],
+                "by_affiliations_creator": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2441,26 +2453,26 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_file_type": [
+                "by_file_types": [
                     {
-                        "added": {
-                            "data_volume": 1984949.0,
-                            "files": 1,
-                            "parents": 1,
-                            "records": 1,
+                        "files": {
+                            "added": {"data_volume": 1984949.0, "file_count": 1},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "pdf",
                         "label": "",
-                        "removed": {
-                            "data_volume": 0.0,
-                            "files": 0,
-                            "parents": 0,
-                            "records": 0,
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 1},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 1},
+                            "removed": {"metadata_only": 0, "with_files": 0},
                         },
                     }
                 ],
-                "by_funder": [],
-                "by_language": [
+                "by_funders": [],
+                "by_languages": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
@@ -2478,7 +2490,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_license": [
+                "by_rights": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
@@ -2498,7 +2510,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_periodical": [
+                "by_periodicals": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
@@ -2516,7 +2528,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_publisher": [
+                "by_publishers": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
@@ -2550,7 +2562,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     },
                 ],
-                "by_resource_type": [
+                "by_resource_types": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2584,7 +2596,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     },
                 ],
-                "by_subject": [
+                "by_subjects": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2773,7 +2785,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 1},
             },
             "subcounts": {
-                "by_access_status": [
+                "by_access_statuses": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2791,28 +2803,28 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_affiliation_contributor": [],
-                "by_affiliation_creator": [],
-                "by_file_type": [
+                "by_affiliations_contributor": [],
+                "by_affiliations_creator": [],
+                "by_file_types": [
                     {
-                        "added": {
-                            "data_volume": 0.0,
-                            "files": 0,
-                            "parents": 0,
-                            "records": 0,
+                        "files": {
+                            "added": {"data_volume": 0.0, "file_count": 0},
+                            "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "pdf",
                         "label": "",
-                        "removed": {
-                            "data_volume": 1984949.0,
-                            "files": 1,
-                            "parents": 1,
-                            "records": 1,
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
                         },
                     }
                 ],
-                "by_funder": [],
-                "by_language": [
+                "by_funders": [],
+                "by_languages": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2830,7 +2842,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_license": [
+                "by_rights": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2850,7 +2862,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_periodical": [
+                "by_periodicals": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2868,7 +2880,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_publisher": [
+                "by_publishers": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2886,7 +2898,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_resource_type": [
+                "by_resource_types": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -2904,7 +2916,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                         },
                     }
                 ],
-                "by_subject": [],
+                "by_subjects": [],
             },
             "timestamp": "2025-06-10T00:45:10",
             "updated_timestamp": "2025-06-10T00:45:10",
@@ -2915,7 +2927,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
 
 MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
     "2025-05-30": {
-        "by_access_status": {
+        "by_access_statuses": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -2930,19 +2942,19 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_contributor_id": {
+        "by_affiliations_contributor_id": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_contributor_name": {
+        "by_affiliations_contributor_keyword": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_creator_id": {
+        "by_affiliations_creator_id": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -2957,31 +2969,32 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_creator_name": {
+        "by_affiliations_creator_keyword": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_file_type": {
+        "by_file_types": {
             "buckets": [
                 {
                     "doc_count": 2,
+                    "file_count": {"value": 2},
                     "key": "pdf",
                     "total_bytes": {"value": 59117831.0},
-                    "unique_parents": {"value": 2},
-                    "unique_records": {"value": 2},
+                    "with_files": {"doc_count": 2, "unique_parents": {"value": 2}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
                 }
             ],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funder": {
+        "by_funders": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_language": {
+        "by_languages": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -3021,18 +3034,18 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_license": {
+        "by_rights": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_periodical": {
+        "by_periodicals": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_publisher": {
+        "by_publishers": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -3054,7 +3067,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_resource_type": {
+        "by_resource_types": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -3123,7 +3136,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_subject": {
+        "by_subjects": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -3707,7 +3720,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
         "without_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
     },
     "2025-05-31": {
-        "by_access_status": {
+        "by_access_statuses": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -3722,19 +3735,19 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_contributor_id": {
+        "by_affiliations_contributor_id": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_contributor_name": {
+        "by_affiliations_contributor_keyword": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_creator_id": {
+        "by_affiliations_creator_id": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -3749,31 +3762,32 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_creator_name": {
+        "by_affiliations_creator_keyword": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_file_type": {
+        "by_file_types": {
             "buckets": [
                 {
                     "doc_count": 2,
+                    "file_count": {"value": 2},
                     "key": "pdf",
                     "total_bytes": {"value": 59117831.0},
-                    "unique_parents": {"value": 2},
-                    "unique_records": {"value": 2},
+                    "with_files": {"doc_count": 2, "unique_parents": {"value": 2}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
                 }
             ],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funder": {
+        "by_funders": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_language": {
+        "by_languages": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -3813,18 +3827,18 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_license": {
+        "by_rights": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_periodical": {
+        "by_periodicals": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_publisher": {
+        "by_publishers": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -3846,7 +3860,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_resource_type": {
+        "by_resource_types": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -3915,7 +3929,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_subject": {
+        "by_subjects": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -4499,7 +4513,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
         "without_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
     },
     "2025-06-03": {
-        "by_access_status": {
+        "by_access_statuses": {
             "buckets": [
                 {
                     "doc_count": 3,
@@ -4522,19 +4536,19 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_contributor_id": {
+        "by_affiliations_contributor_id": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_contributor_name": {
+        "by_affiliations_contributor_keyword": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_creator_id": {
+        "by_affiliations_creator_id": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -4557,31 +4571,32 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_creator_name": {
+        "by_affiliations_creator_keyword": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_file_type": {
+        "by_file_types": {
             "buckets": [
                 {
                     "doc_count": 3,
+                    "file_count": {"value": 3},
                     "key": "pdf",
                     "total_bytes": {"value": 61102780.0},
-                    "unique_parents": {"value": 3},
-                    "unique_records": {"value": 3},
+                    "with_files": {"doc_count": 3, "unique_parents": {"value": 3}},
+                    "without_files": {"doc_count": 0, "unique_parents": {"value": 0}},
                 }
             ],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funder": {
+        "by_funders": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_language": {
+        "by_languages": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -4621,7 +4636,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_license": {
+        "by_rights": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -4669,7 +4684,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_periodical": {
+        "by_periodicals": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -4683,7 +4698,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_publisher": {
+        "by_publishers": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -4713,7 +4728,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_resource_type": {
+        "by_resource_types": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -4813,7 +4828,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_subject": {
+        "by_subjects": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -6055,7 +6070,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
 
 MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
     "2025-05-30": {
-        "by_access_status": {
+        "by_access_statuses": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -6070,7 +6085,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_contributor": {
+        "by_affiliations_contributor": {
             "after_key": {"id": None, "label": None},
             "buckets": [
                 {
@@ -6084,7 +6099,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             ],
             "meta": {},
         },
-        "by_affiliation_creator": {
+        "by_affiliations_creator": {
             "after_key": {"id": "013v4ng57", "label": None},
             "buckets": [
                 {
@@ -6106,7 +6121,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             ],
             "meta": {},
         },
-        "by_file_type": {
+        "by_file_types": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -6119,12 +6134,12 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funder": {
+        "by_funders": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_language": {
+        "by_languages": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -6164,18 +6179,18 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_license": {
+        "by_rights": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_periodical": {
+        "by_periodicals": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_publisher": {
+        "by_publishers": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -6197,7 +6212,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_resource_type": {
+        "by_resource_types": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -6266,7 +6281,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_subject": {
+        "by_subjects": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -6969,7 +6984,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
         "without_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
     },
     "2025-05-31": {
-        "by_access_status": {
+        "by_access_statuses": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -6984,7 +6999,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_contributor": {
+        "by_affiliations_contributor": {
             "after_key": {"id": None, "label": None},
             "buckets": [
                 {
@@ -6998,7 +7013,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             ],
             "meta": {},
         },
-        "by_affiliation_creator": {
+        "by_affiliations_creator": {
             "after_key": {"id": "013v4ng57", "label": None},
             "buckets": [
                 {
@@ -7020,7 +7035,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             ],
             "meta": {},
         },
-        "by_file_type": {
+        "by_file_types": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -7033,12 +7048,12 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funder": {
+        "by_funders": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_language": {
+        "by_languages": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -7078,18 +7093,18 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_license": {
+        "by_rights": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_periodical": {
+        "by_periodicals": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_publisher": {
+        "by_publishers": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -7111,7 +7126,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_resource_type": {
+        "by_resource_types": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -7180,7 +7195,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_subject": {
+        "by_subjects": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -7933,7 +7948,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
         "without_files": {"doc_count": 0, "meta": {}, "unique_parents": {"value": 0}},
     },
     "2025-06-03": {
-        "by_access_status": {
+        "by_access_statuses": {
             "buckets": [
                 {
                     "doc_count": 3,
@@ -7956,7 +7971,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_contributor": {
+        "by_affiliations_contributor": {
             "after_key": {"id": None, "label": None},
             "buckets": [
                 {
@@ -7970,7 +7985,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             ],
             "meta": {},
         },
-        "by_affiliation_creator": {
+        "by_affiliations_creator": {
             "after_key": {"id": "03rmrcq20", "label": None},
             "buckets": [
                 {
@@ -8000,7 +8015,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             ],
             "meta": {},
         },
-        "by_file_type": {
+        "by_file_types": {
             "buckets": [
                 {
                     "doc_count": 3,
@@ -8013,12 +8028,12 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funder": {
+        "by_funders": {
             "buckets": [],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_language": {
+        "by_languages": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -8058,7 +8073,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_license": {
+        "by_rights": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -8106,7 +8121,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_periodical": {
+        "by_periodicals": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -8120,7 +8135,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_publisher": {
+        "by_publishers": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -8150,7 +8165,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_resource_type": {
+        "by_resource_types": {
             "buckets": [
                 {
                     "doc_count": 2,
@@ -8250,7 +8265,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
             "meta": {},
             "sum_other_doc_count": 0,
         },
-        "by_subject": {
+        "by_subjects": {
             "buckets": [
                 {
                     "doc_count": 1,
@@ -9837,7 +9852,7 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
             ],
             "all_file_types": [],
             "all_languages": [],
-            "all_licenses": [],
+            "all_rights": [],
             "all_resource_types": [],
             "top_affiliations_contributor": [],
             "top_affiliations_creator": [],
@@ -9868,7 +9883,7 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
             ],
             "all_file_types": [],
             "all_languages": [],
-            "all_licenses": [],
+            "all_rights": [],
             "all_resource_types": [],
             "top_affiliations_contributor": [],
             "top_affiliations_creator": [],
@@ -9899,7 +9914,7 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
             ],
             "all_file_types": [],
             "all_languages": [],
-            "all_licenses": [],
+            "all_rights": [],
             "all_resource_types": [],
             "top_affiliations_contributor": [],
             "top_affiliations_creator": [],
@@ -9919,7 +9934,7 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
 
 MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
     "aggregations": {
-        "by_access_status": {
+        "by_access_statuses": {
             "buckets": [
                 {
                     "doc_count": 60,
@@ -9941,13 +9956,258 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_id": {
-            "buckets": [],
+        "by_affiliations_id": {
+            "buckets": [
+                {
+                    "key": "013v4ng57",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.006192,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "affiliations": [
+                                            [{"name": "San Francisco Public Library"}],
+                                            [{"name": "San Francisco Public Library"}],
+                                            [
+                                                {
+                                                    "name": (
+                                                        "San Francisco Public Library"
+                                                    ),
+                                                    "id": "013v4ng57",
+                                                }
+                                            ],
+                                            [{"name": "San Francisco Public Library"}],
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                },
+                {
+                    "key": "03rmrcq20",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.006192,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "affiliations": [
+                                            [
+                                                {
+                                                    "name": (
+                                                        "University Of British Columbia"
+                                                    )
+                                                }
+                                            ],
+                                            [
+                                                {
+                                                    "name": (
+                                                        "University of British Columbia"
+                                                    ),
+                                                    "id": "03rmrcq20",
+                                                }
+                                            ],
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                },
+            ],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_affiliation_name": {
-            "buckets": [],
+        "by_affiliations_name": {
+            "buckets": [
+                {
+                    "key": "Henry Ford College",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.006192,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "affiliations": [
+                                            [{"name": "Henry Ford College"}]
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                },
+                {
+                    "key": "San Francisco Public Library",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.006192,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "affiliations": [
+                                            [{"name": "San Francisco Public Library"}],
+                                            [{"name": "San Francisco Public Library"}],
+                                            [
+                                                {
+                                                    "name": (
+                                                        "San Francisco Public Library"
+                                                    ),
+                                                    "id": "013v4ng57",
+                                                }
+                                            ],
+                                            [{"name": "San Francisco Public Library"}],
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                },
+                {
+                    "key": "University Of British Columbia",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.006192,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "affiliations": [
+                                            [
+                                                {
+                                                    "name": (
+                                                        "University Of British Columbia"
+                                                    )
+                                                }
+                                            ],
+                                            [
+                                                {
+                                                    "name": (
+                                                        "University of British Columbia"
+                                                    ),
+                                                    "id": "03rmrcq20",
+                                                }
+                                            ],
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                },
+                {
+                    "key": "University of British Columbia",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.006192,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "affiliations": [
+                                            [
+                                                {
+                                                    "name": (
+                                                        "University Of British Columbia"
+                                                    )
+                                                }
+                                            ],
+                                            [
+                                                {
+                                                    "name": (
+                                                        "University of British Columbia"
+                                                    ),
+                                                    "id": "03rmrcq20",
+                                                }
+                                            ],
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                },
+                {
+                    "key": "University of Missouri - St. Louis",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.006192,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "affiliations": [
+                                            [
+                                                {
+                                                    "name": (
+                                                        "University of Missouri - St. Louis"
+                                                    )
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                },
+            ],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
@@ -10011,29 +10271,69 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funder_id": {
+        "by_funders_id": {
             "buckets": [
                 {
-                    "doc_count": 20,
-                    "key": "1234567890",
-                    "total_events": {"value": 20},
-                    "unique_parents": {"value": 1},
-                    "unique_records": {"value": 1},
-                    "unique_visitors": {"value": 20},
+                    "doc_count": 40,
+                    "key": "00k4n6c31",
+                    "total_events": {"value": 40},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                    "unique_visitors": {"value": 40},
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "funders": [
+                                            {
+                                                "id": "00k4n6c31",
+                                                "name": "Funder 00k4n6c31",
+                                            }
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 40},
+                        }
+                    },
                 },
             ],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funder_name": {
+        "by_funders_name": {
             "buckets": [
                 {
-                    "doc_count": 20,
-                    "key": "Funder Name",
-                    "total_events": {"value": 20},
-                    "unique_parents": {"value": 1},
-                    "unique_records": {"value": 1},
-                    "unique_visitors": {"value": 20},
+                    "doc_count": 40,
+                    "key": "Funder 00k4n6c31",
+                    "total_events": {"value": 40},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                    "unique_visitors": {"value": 40},
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_index": "events-stats-record-view-2025-07",
+                                    "_score": 1.006192,
+                                    "_source": {
+                                        "funders": [
+                                            {
+                                                "id": "00k4n6c31",
+                                                "name": "Funder 00k4n6c31",
+                                            }
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.006192,
+                            "total": {"relation": "eq", "value": 40},
+                        }
+                    },
                 },
             ],
             "doc_count_error_upper_bound": 0,
@@ -10073,7 +10373,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_licenses": {
+        "by_rights": {
             "buckets": [
                 {
                     "doc_count": 20,
@@ -10312,57 +10612,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -10394,32 +10715,42 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
-                                                )
+                                                ),
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
-                                                )
+                                                ),
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
-                                                )
+                                                ),
+                                                "subject": "Library science literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997974"
-                                                )
+                                                ),
+                                                "subject": "Library science--Standards",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/855500"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Children of prisoners--Services for"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/995415"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Legal assistance to prisoners--U.S. states"
+                                                ),
                                             },
                                         ]
                                     },
@@ -10451,57 +10782,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -10533,57 +10885,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -10615,57 +10988,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -10697,57 +11091,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -10779,57 +11194,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -10861,57 +11297,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -10943,32 +11400,42 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
-                                                )
+                                                ),
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
-                                                )
+                                                ),
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
-                                                )
+                                                ),
+                                                "subject": "Library science literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997974"
-                                                )
+                                                ),
+                                                "subject": "Library science--Standards",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/855500"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Children of prisoners--Services for"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/995415"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Legal assistance to prisoners--U.S. states"
+                                                ),
                                             },
                                         ]
                                     },
@@ -11000,57 +11467,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -11082,57 +11570,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -11164,57 +11673,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -11246,57 +11776,78 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911979"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Written English--History"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911660"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Spoken English--Research"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845111"
-                                                )
+                                                ),
+                                                "subject": "Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845142"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Periodicals"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845184"
-                                                )
+                                                ),
+                                                "subject": "Canadian prose literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/1424786"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Canadian literature--Bibliography"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/934875"
-                                                )
+                                                ),
+                                                "subject": "French-Canadian literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/817954"
-                                                )
+                                                ),
+                                                "subject": "Arts, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/821870"
-                                                )
+                                                ),
+                                                "subject": "Authors, Canadian",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/845170"
-                                                )
+                                                ),
+                                                "subject": "Canadian periodicals",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/911328"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "English language--Lexicography--History"
+                                                ),
                                             },
                                         ]
                                     },
@@ -11325,7 +11876,14 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                     "_score": 1.006192,
                                     "_source": {
                                         "subjects": [
-                                            {"id": "http://id.worldcat.org/fast/973589"}
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/973589"
+                                                ),
+                                                "subject": (
+                                                    "Inklings (Group of writers)"
+                                                ),
+                                            }
                                         ]
                                     },
                                 }
@@ -11356,32 +11914,42 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
-                                                )
+                                                ),
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
-                                                )
+                                                ),
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
-                                                )
+                                                ),
+                                                "subject": "Library science literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997974"
-                                                )
+                                                ),
+                                                "subject": "Library science--Standards",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/855500"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Children of prisoners--Services for"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/995415"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Legal assistance to prisoners--U.S. states"
+                                                ),
                                             },
                                         ]
                                     },
@@ -11413,32 +11981,42 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
-                                                )
+                                                ),
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
-                                                )
+                                                ),
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
-                                                )
+                                                ),
+                                                "subject": "Library science literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997974"
-                                                )
+                                                ),
+                                                "subject": "Library science--Standards",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/855500"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Children of prisoners--Services for"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/995415"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Legal assistance to prisoners--U.S. states"
+                                                ),
                                             },
                                         ]
                                     },
@@ -11470,32 +12048,42 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
-                                                )
+                                                ),
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
-                                                )
+                                                ),
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
-                                                )
+                                                ),
+                                                "subject": "Library science literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997974"
-                                                )
+                                                ),
+                                                "subject": "Library science--Standards",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/855500"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Children of prisoners--Services for"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/995415"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Legal assistance to prisoners--U.S. states"
+                                                ),
                                             },
                                         ]
                                     },
@@ -11527,32 +12115,42 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
-                                                )
+                                                ),
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
-                                                )
+                                                ),
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
-                                                )
+                                                ),
+                                                "subject": "Library science literature",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997974"
-                                                )
+                                                ),
+                                                "subject": "Library science--Standards",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/855500"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Children of prisoners--Services for"
+                                                ),
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/995415"
-                                                )
+                                                ),
+                                                "subject": (
+                                                    "Legal assistance to prisoners--U.S. states"
+                                                ),
                                             },
                                         ]
                                     },
@@ -11579,7 +12177,1078 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
     "hits": {"hits": [], "max_score": None, "total": {"relation": "eq", "value": 0}},
 }
 
-MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {}
+MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
+    "aggregations": {
+        "by_access_statuses": {
+            "buckets": [
+                {
+                    "doc_count": 60,
+                    "key": "open",
+                    "total_events": {"value": 60},
+                    "total_volume": {"value": 1222055600.0},
+                    "unique_files": {"value": 3},
+                    "unique_parents": {"value": 3},
+                    "unique_records": {"value": 3},
+                    "unique_visitors": {"value": 60},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliations_id": {
+            "buckets": [
+                {
+                    "key": "013v4ng57",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 9160720.0},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "unique_files": {"value": 1},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.0082304,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "affiliations": [
+                                            [{"name": "San Francisco Public Library"}],
+                                            [{"name": "San Francisco Public Library"}],
+                                            [
+                                                {
+                                                    "name": (
+                                                        "San Francisco Public Library"
+                                                    ),
+                                                    "id": "013v4ng57",
+                                                }
+                                            ],
+                                            [{"name": "San Francisco Public Library"}],
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_affiliations_name": {
+            "buckets": [
+                {
+                    "key": "Henry Ford College",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 39698980.0},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "unique_files": {"value": 1},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.0082304,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "affiliations": [
+                                            [{"name": "Henry Ford College"}]
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                },
+                {
+                    "key": "San Francisco Public Library",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 9160720.0},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "unique_files": {"value": 1},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.0082304,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "affiliations": [
+                                            [{"name": "San Francisco Public Library"}],
+                                            [{"name": "San Francisco Public Library"}],
+                                            [
+                                                {
+                                                    "name": (
+                                                        "San Francisco Public Library"
+                                                    ),
+                                                    "id": "013v4ng57",
+                                                }
+                                            ],
+                                            [{"name": "San Francisco Public Library"}],
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                },
+                {
+                    "key": "University of Missouri - St. Louis",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 1173195900.0},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "unique_files": {"value": 1},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.0082304,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "affiliations": [
+                                            [
+                                                {
+                                                    "name": (
+                                                        "University of Missouri - St. Louis"
+                                                    )
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_countries": {
+            "buckets": [
+                {
+                    "doc_count": 35,
+                    "key": "NL",
+                    "total_events": {"value": 35},
+                    "total_volume": {"value": 97423133.0},
+                    "unique_files": {"value": 3},
+                    "unique_parents": {"value": 3},
+                    "unique_records": {"value": 3},
+                    "unique_visitors": {"value": 35},
+                },
+                {
+                    "doc_count": 12,
+                    "key": "US",
+                    "total_events": {"value": 12},
+                    "total_volume": {"value": 25424717.0},
+                    "unique_files": {"value": 3},
+                    "unique_parents": {"value": 3},
+                    "unique_records": {"value": 3},
+                    "unique_visitors": {"value": 12},
+                },
+                {
+                    "doc_count": 9,
+                    "key": "CN",
+                    "total_events": {"value": 9},
+                    "total_volume": {"value": 18361498.0},
+                    "unique_files": {"value": 3},
+                    "unique_parents": {"value": 3},
+                    "unique_records": {"value": 3},
+                    "unique_visitors": {"value": 9},
+                },
+                {
+                    "doc_count": 2,
+                    "key": "AU",
+                    "total_events": {"value": 2},
+                    "total_volume": {"value": 2791887.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 2},
+                },
+                {
+                    "doc_count": 2,
+                    "key": "JP",
+                    "total_events": {"value": 2},
+                    "total_volume": {"value": 1984949.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 2},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_file_types": {
+            "buckets": [
+                {
+                    "doc_count": 60,
+                    "key": "pdf",
+                    "total_events": {"value": 60},
+                    "total_volume": {"value": 1222055600.0},
+                    "unique_files": {"value": 3},
+                    "unique_parents": {"value": 3},
+                    "unique_records": {"value": 3},
+                    "unique_visitors": {"value": 60},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_funders_id": {
+            "buckets": [
+                {
+                    "key": "00k4n6c31",
+                    "doc_count": 20,
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 39698980.0},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "unique_files": {"value": 1},
+                    "label": {
+                        "hits": {
+                            "total": {"value": 20, "relation": "eq"},
+                            "max_score": 1.0082304,
+                            "hits": [
+                                {
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "funders": [
+                                            {
+                                                "name": "Funder 00k4n6c31",
+                                                "id": "00k4n6c31",
+                                            }
+                                        ]
+                                    },
+                                }
+                            ],
+                        }
+                    },
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_funders_name": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "Funder 00k4n6c31",
+                    "total_events": {"value": 20},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "funders": [
+                                            {
+                                                "id": "00k4n6c31",
+                                                "name": "Funder 00k4n6c31",
+                                            }
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_volume": {"value": 39698980.0},
+                    "unique_files": {"value": 1},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_languages": {
+            "buckets": [
+                {
+                    "doc_count": 40,
+                    "key": "eng",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T22:22:03-84b1e4e885f0f768ad5b6c53995733c20ed4d8e8"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "languages": [
+                                            {"id": "eng", "title": {"en": "English"}}
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 40},
+                        }
+                    },
+                    "total_events": {"value": 40},
+                    "total_volume": {"value": 48859700.0},
+                    "unique_files": {"value": 2},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                    "unique_visitors": {"value": 40},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_rights": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "cc-by-sa-4.0",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T22:22:03-84b1e4e885f0f768ad5b6c53995733c20ed4d8e8"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "rights": [
+                                            {
+                                                "id": "cc-by-sa-4.0",
+                                                "title": {
+                                                    "en": (
+                                                        "Creative "
+                                                        "Commons "
+                                                        "Attribution-ShareAlike "
+                                                        "4.0 "
+                                                        "International"
+                                                    )
+                                                },
+                                            }
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 39698980.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_periodicals": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "N/A",
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 39698980.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                }
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_publishers": {
+            "buckets": [
+                {
+                    "doc_count": 40,
+                    "key": "Knowledge Commons",
+                    "total_events": {"value": 40},
+                    "total_volume": {"value": 48859700.0},
+                    "unique_files": {"value": 2},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                    "unique_visitors": {"value": 40},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "Apocryphile Press",
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 1173195900.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_referrers": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "https://example.com/records/4x8hh-e0g68",
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 9160720.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "https://example.com/records/exhns-k5m92",
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 39698980.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "https://example.com/records/sjyew-71w43",
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 1173195900.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_resource_types": {
+            "buckets": [
+                {
+                    "doc_count": 40,
+                    "key": "textDocument-journalArticle",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T22:22:03-84b1e4e885f0f768ad5b6c53995733c20ed4d8e8"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "resource_type": {
+                                            "id": "textDocument-journalArticle",
+                                            "title": {"en": "Journal " "Article"},
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 40},
+                        }
+                    },
+                    "total_events": {"value": 40},
+                    "total_volume": {"value": 48859700.0},
+                    "unique_files": {"value": 2},
+                    "unique_parents": {"value": 2},
+                    "unique_records": {"value": 2},
+                    "unique_visitors": {"value": 40},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "textDocument-bookSection",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T03:34:59-56efb173eaf90a51112c5574d29a905536b39878"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "resource_type": {
+                                            "id": "textDocument-bookSection",
+                                            "title": {"en": "Book " "Section"},
+                                        }
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 1173195900.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "by_subjects": {
+            "buckets": [
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/2060143",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T08:14:55-9deb53f7a85851587f5d527760049042cbf7ccc2"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                ),
+                                                "subject": "Library " "science",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                ),
+                                                "subject": "Mass " "incarceration",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science " "literature"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science--Standards"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                ),
+                                                "subject": (
+                                                    "Children "
+                                                    "of "
+                                                    "prisoners--Services "
+                                                    "for"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                ),
+                                                "subject": (
+                                                    "Legal "
+                                                    "assistance "
+                                                    "to "
+                                                    "prisoners--U.S. "
+                                                    "states"
+                                                ),
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 9160720.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/855500",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T08:14:55-9deb53f7a85851587f5d527760049042cbf7ccc2"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                ),
+                                                "subject": "Library " "science",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                ),
+                                                "subject": "Mass " "incarceration",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science " "literature"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science--Standards"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                ),
+                                                "subject": (
+                                                    "Children "
+                                                    "of "
+                                                    "prisoners--Services "
+                                                    "for"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                ),
+                                                "subject": (
+                                                    "Legal "
+                                                    "assistance "
+                                                    "to "
+                                                    "prisoners--U.S. "
+                                                    "states"
+                                                ),
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 9160720.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/973589",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T03:34:59-56efb173eaf90a51112c5574d29a905536b39878"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/973589"
+                                                ),
+                                                "subject": (
+                                                    "Inklings "
+                                                    "(Group "
+                                                    "of "
+                                                    "writers)"
+                                                ),
+                                            }
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 1173195900.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/995415",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T08:14:55-9deb53f7a85851587f5d527760049042cbf7ccc2"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                ),
+                                                "subject": "Library " "science",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                ),
+                                                "subject": "Mass " "incarceration",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science " "literature"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science--Standards"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                ),
+                                                "subject": (
+                                                    "Children "
+                                                    "of "
+                                                    "prisoners--Services "
+                                                    "for"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                ),
+                                                "subject": (
+                                                    "Legal "
+                                                    "assistance "
+                                                    "to "
+                                                    "prisoners--U.S. "
+                                                    "states"
+                                                ),
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 9160720.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/997916",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T08:14:55-9deb53f7a85851587f5d527760049042cbf7ccc2"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                ),
+                                                "subject": "Library " "science",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                ),
+                                                "subject": "Mass " "incarceration",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science " "literature"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science--Standards"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                ),
+                                                "subject": (
+                                                    "Children "
+                                                    "of "
+                                                    "prisoners--Services "
+                                                    "for"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                ),
+                                                "subject": (
+                                                    "Legal "
+                                                    "assistance "
+                                                    "to "
+                                                    "prisoners--U.S. "
+                                                    "states"
+                                                ),
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 9160720.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/997974",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T08:14:55-9deb53f7a85851587f5d527760049042cbf7ccc2"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                ),
+                                                "subject": "Library " "science",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                ),
+                                                "subject": "Mass " "incarceration",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science " "literature"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science--Standards"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                ),
+                                                "subject": (
+                                                    "Children "
+                                                    "of "
+                                                    "prisoners--Services "
+                                                    "for"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                ),
+                                                "subject": (
+                                                    "Legal "
+                                                    "assistance "
+                                                    "to "
+                                                    "prisoners--U.S. "
+                                                    "states"
+                                                ),
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 9160720.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+                {
+                    "doc_count": 20,
+                    "key": "http://id.worldcat.org/fast/997987",
+                    "label": {
+                        "hits": {
+                            "hits": [
+                                {
+                                    "_id": (
+                                        "2025-07-03T08:14:55-9deb53f7a85851587f5d527760049042cbf7ccc2"
+                                    ),
+                                    "_index": "events-stats-file-download-2025-07",
+                                    "_score": 1.0082304,
+                                    "_source": {
+                                        "subjects": [
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997916"
+                                                ),
+                                                "subject": "Library " "science",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/2060143"
+                                                ),
+                                                "subject": "Mass " "incarceration",
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997987"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science " "literature"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/997974"
+                                                ),
+                                                "subject": (
+                                                    "Library " "science--Standards"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/855500"
+                                                ),
+                                                "subject": (
+                                                    "Children "
+                                                    "of "
+                                                    "prisoners--Services "
+                                                    "for"
+                                                ),
+                                            },
+                                            {
+                                                "id": (
+                                                    "http://id.worldcat.org/fast/995415"
+                                                ),
+                                                "subject": (
+                                                    "Legal "
+                                                    "assistance "
+                                                    "to "
+                                                    "prisoners--U.S. "
+                                                    "states"
+                                                ),
+                                            },
+                                        ]
+                                    },
+                                }
+                            ],
+                            "max_score": 1.0082304,
+                            "total": {"relation": "eq", "value": 20},
+                        }
+                    },
+                    "total_events": {"value": 20},
+                    "total_volume": {"value": 9160720.0},
+                    "unique_files": {"value": 1},
+                    "unique_parents": {"value": 1},
+                    "unique_records": {"value": 1},
+                    "unique_visitors": {"value": 20},
+                },
+            ],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "total_events": {"value": 60},
+        "total_volume": {"value": 1222055600.0},
+        "unique_files": {"value": 3},
+        "unique_parents": {"value": 3},
+        "unique_records": {"value": 3},
+        "unique_visitors": {"value": 60},
+    },
+    "hits": {"hits": [], "max_score": None, "total": {"relation": "eq", "value": 0}},
+}
 
 MOCK_USAGE_DELTA_API_RESPONSE = {
     "community-stats": [
@@ -11588,13 +13257,13 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-05-30T23:59:59",
             "period_start": "2025-05-30T00:00:00",
             "subcounts": {
-                "by_access_status": [],
+                "by_access_statuses": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
                 "by_funders": [],
                 "by_languages": [],
-                "by_licenses": [],
+                "by_rights": [],
                 "by_periodicals": [],
                 "by_publishers": [],
                 "by_referrers": [],
@@ -11624,13 +13293,13 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-05-31T23:59:59",
             "period_start": "2025-05-31T00:00:00",
             "subcounts": {
-                "by_access_status": [],
+                "by_access_statuses": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
                 "by_funders": [],
                 "by_languages": [],
-                "by_licenses": [],
+                "by_rights": [],
                 "by_periodicals": [],
                 "by_publishers": [],
                 "by_referrers": [],
@@ -11660,7 +13329,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-01T23:59:59",
             "period_start": "2025-06-01T00:00:00",
             "subcounts": {
-                "by_access_status": [
+                "by_access_statuses": [
                     {
                         "download": {
                             "total_events": 3,
@@ -11760,7 +13429,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_licenses": [
+                "by_rights": [
                     {
                         "download": {
                             "total_events": 3,
@@ -12113,13 +13782,13 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-02T23:59:59",
             "period_start": "2025-06-02T00:00:00",
             "subcounts": {
-                "by_access_status": [],
+                "by_access_statuses": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
                 "by_funders": [],
                 "by_languages": [],
-                "by_licenses": [],
+                "by_rights": [],
                 "by_periodicals": [],
                 "by_publishers": [],
                 "by_referrers": [],
@@ -12149,7 +13818,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-03T23:59:59",
             "period_start": "2025-06-03T00:00:00",
             "subcounts": {
-                "by_access_status": [
+                "by_access_statuses": [
                     {
                         "download": {
                             "total_events": 3,
@@ -12249,7 +13918,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_licenses": [
+                "by_rights": [
                     {
                         "download": {
                             "total_events": 3,
@@ -12602,13 +14271,13 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-04T23:59:59",
             "period_start": "2025-06-04T00:00:00",
             "subcounts": {
-                "by_access_status": [],
+                "by_access_statuses": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
                 "by_funders": [],
                 "by_languages": [],
-                "by_licenses": [],
+                "by_rights": [],
                 "by_periodicals": [],
                 "by_publishers": [],
                 "by_referrers": [],
@@ -12638,7 +14307,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-05T23:59:59",
             "period_start": "2025-06-05T00:00:00",
             "subcounts": {
-                "by_access_status": [
+                "by_access_statuses": [
                     {
                         "download": {
                             "total_events": 3,
@@ -12738,7 +14407,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_licenses": [
+                "by_rights": [
                     {
                         "download": {
                             "total_events": 3,
@@ -13091,13 +14760,13 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-06T23:59:59",
             "period_start": "2025-06-06T00:00:00",
             "subcounts": {
-                "by_access_status": [],
+                "by_access_statuses": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
                 "by_funders": [],
                 "by_languages": [],
-                "by_licenses": [],
+                "by_rights": [],
                 "by_periodicals": [],
                 "by_publishers": [],
                 "by_referrers": [],
@@ -13127,13 +14796,13 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-07T23:59:59",
             "period_start": "2025-06-07T00:00:00",
             "subcounts": {
-                "by_access_status": [],
+                "by_access_statuses": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
                 "by_funders": [],
                 "by_languages": [],
-                "by_licenses": [],
+                "by_rights": [],
                 "by_periodicals": [],
                 "by_publishers": [],
                 "by_referrers": [],
@@ -13163,13 +14832,13 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-08T23:59:59",
             "period_start": "2025-06-08T00:00:00",
             "subcounts": {
-                "by_access_status": [],
+                "by_access_statuses": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
                 "by_funders": [],
                 "by_languages": [],
-                "by_licenses": [],
+                "by_rights": [],
                 "by_periodicals": [],
                 "by_publishers": [],
                 "by_referrers": [],
@@ -13199,13 +14868,13 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-09T23:59:59",
             "period_start": "2025-06-09T00:00:00",
             "subcounts": {
-                "by_access_status": [],
+                "by_access_statuses": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
                 "by_funders": [],
                 "by_languages": [],
-                "by_licenses": [],
+                "by_rights": [],
                 "by_periodicals": [],
                 "by_publishers": [],
                 "by_referrers": [],
@@ -13235,13 +14904,13 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-10T23:59:59",
             "period_start": "2025-06-10T00:00:00",
             "subcounts": {
-                "by_access_status": [],
+                "by_access_statuses": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
                 "by_funders": [],
                 "by_languages": [],
-                "by_licenses": [],
+                "by_rights": [],
                 "by_periodicals": [],
                 "by_publishers": [],
                 "by_referrers": [],
@@ -13271,13 +14940,13 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-11T23:59:59",
             "period_start": "2025-06-11T00:00:00",
             "subcounts": {
-                "by_access_status": [],
+                "by_access_statuses": [],
                 "by_affiliations": [],
                 "by_countries": [],
                 "by_file_types": [],
                 "by_funders": [],
                 "by_languages": [],
-                "by_licenses": [],
+                "by_rights": [],
                 "by_periodicals": [],
                 "by_publishers": [],
                 "by_referrers": [],

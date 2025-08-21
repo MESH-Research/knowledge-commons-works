@@ -6,79 +6,12 @@
 
 """Tests for the stats dashboard functionality."""
 
-import copy
-import json
-import time
-from collections.abc import Callable
-from pathlib import Path
-from pprint import pformat
-
-import arrow
-from flask_sqlalchemy import SQLAlchemy
-from invenio_access.permissions import authenticated_user, system_identity
-from invenio_access.utils import get_identity
-from invenio_accounts.proxies import current_datastore
-from invenio_communities.utils import load_community_needs
-from invenio_rdm_records.proxies import (
-    current_rdm_records,
-)
-from invenio_rdm_records.proxies import current_rdm_records_service as records_service
-from invenio_rdm_records.requests.community_inclusion import CommunityInclusion
-from invenio_rdm_records.requests.community_submission import CommunitySubmission
-from invenio_records_resources.services.uow import UnitOfWork
-from invenio_requests.proxies import (
-    current_events_service,
-    current_request_type_registry,
-    current_requests_service,
-)
-from invenio_requests.resolvers.registry import ResolverRegistry
 from invenio_search import current_search_client
 from invenio_search.engine import search
 from invenio_search.utils import prefix_index
 from invenio_stats.proxies import current_stats
-from invenio_stats_dashboard.aggregations import (
-    CommunityRecordsDeltaAddedAggregator,
-    CommunityRecordsDeltaCreatedAggregator,
-    CommunityRecordsDeltaPublishedAggregator,
-    CommunityRecordsSnapshotAddedAggregator,
-    CommunityRecordsSnapshotCreatedAggregator,
-    CommunityRecordsSnapshotPublishedAggregator,
-    CommunityUsageDeltaAggregator,
-    CommunityUsageSnapshotAggregator,
-)
-from invenio_stats_dashboard.components import (
-    CommunityAcceptedEventComponent,
-    update_community_events_created_date,
-    update_event_deletion_fields,
-)
-from invenio_stats_dashboard.queries import (
-    daily_record_delta_query_with_events,
-    daily_record_snapshot_query_with_events,
-    get_relevant_record_ids_from_events,
-)
-from invenio_stats_dashboard.service import CommunityStatsService
-from invenio_stats_dashboard.tasks import (
-    CommunityStatsAggregationTask,
-    aggregate_community_record_stats,
-)
-from kcworks.services.records.test_data import import_test_records
-from opensearchpy.helpers.search import Search
 
-from tests.conftest import RunningApp
-from tests.helpers.sample_records import (
-    sample_metadata_book_pdf,
-    sample_metadata_journal_article3_pdf,
-    sample_metadata_journal_article4_pdf,
-    sample_metadata_journal_article5_pdf,
-    sample_metadata_journal_article6_pdf,
-    sample_metadata_journal_article7_pdf,
-    sample_metadata_journal_article_pdf,
-    sample_metadata_thesis_pdf,
-)
 from tests.helpers.sample_stats_test_data import (
-    MOCK_RECORD_DELTA_AGGREGATION_DOCS,
-    MOCK_RECORD_SNAPSHOT_AGGREGATIONS,
-    MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE,
     SAMPLE_RECORDS_SNAPSHOT_AGG,
 )
 
