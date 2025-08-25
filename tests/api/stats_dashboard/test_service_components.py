@@ -1,7 +1,9 @@
+"""Test the service components for invenio-stats-dashboard."""
+
 from collections.abc import Callable
-from pprint import pformat
 
 import arrow
+import pytest
 from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
@@ -22,13 +24,26 @@ from invenio_requests.proxies import (
 from invenio_requests.resolvers.registry import ResolverRegistry
 from invenio_search import current_search_client
 from invenio_search.utils import prefix_index
-from invenio_stats_dashboard.components import (
+from invenio_stats_dashboard.services.components import (
     CommunityAcceptedEventComponent,
 )
 
 from tests.conftest import RunningApp
 
 
+@pytest.mark.usefixtures(
+    "running_app",
+    "db",
+    "minimal_community_factory",
+    "minimal_published_record_factory",
+    "minimal_draft_record_factory",
+    "user_factory",
+    "create_stats_indices",
+    "mock_send_remote_api_update_fixture",
+    "celery_worker",
+    "requests_mock",
+    "search_clear",
+)
 class TestCommunitiesEventsComponentsIncluded:
     """Test the RecordCommunitiesEventsComponent.
 
@@ -73,18 +88,20 @@ class TestCommunitiesEventsComponentsIncluded:
         record = minimal_published_record_factory(identity=identity)
         return record
 
-    def setup_requests(self, db, record, community_id, user_id, user_id2):
+    def setup_requests(self, db, record, community_id, owner_id, user_id):
         """Setup test requests."""
         type_ = current_request_type_registry.lookup(CommunityInclusion.type_id)
-        receiver = ResolverRegistry.resolve_entity_proxy(
+        receiver_proxy = ResolverRegistry.resolve_entity_proxy(
             {"community": community_id}
-        ).resolve()
+        )
+        assert receiver_proxy is not None
+        receiver = receiver_proxy.resolve()
 
-        curator_identity = get_identity(current_datastore.get_user(user_id))
+        curator_identity = get_identity(current_datastore.get_user(owner_id))
         curator_identity.provides.add(authenticated_user)
         load_community_needs(curator_identity)
 
-        identity = get_identity(current_datastore.get_user(user_id2))
+        identity = get_identity(current_datastore.get_user(user_id))
         identity.provides.add(authenticated_user)
         load_community_needs(identity)
 
@@ -109,7 +126,6 @@ class TestCommunitiesEventsComponentsIncluded:
             },
             uow=UnitOfWork(db.session),
         )
-        self.app.logger.error(f"request_item: {pformat(request_item.to_dict())}")
         accepted = current_requests_service.execute_action(
             curator_identity,
             request_item.id,
@@ -160,7 +176,6 @@ class TestCommunitiesEventsComponentsIncluded:
         assert result["hits"]["total"]["value"] >= 1
         latest_event = result["hits"]["hits"][0]["_source"]
 
-        self.app.logger.error(f"latest_event: {pformat(latest_event)}")
         assert latest_event["record_id"] == str(record.id)
         assert latest_event["community_id"] == community_id
         assert latest_event["event_type"] == "added"
@@ -236,7 +251,6 @@ class TestCommunitiesEventsComponentsIncluded:
             user_id2,
             community_id,
         )
-        self.app.logger.error(f"record: {pformat(record._record.__dict__)}")
 
         self.setup_requests(db, record, community_id, user_id, user_id2)
 
@@ -250,6 +264,19 @@ class TestCommunitiesEventsComponentsIncluded:
         self.check_after_record_modification(final_record, community_id)
 
 
+@pytest.mark.usefixtures(
+    "running_app",
+    "db",
+    "minimal_community_factory",
+    "minimal_published_record_factory",
+    "minimal_draft_record_factory",
+    "user_factory",
+    "create_stats_indices",
+    "mock_send_remote_api_update_fixture",
+    "celery_worker",
+    "requests_mock",
+    "search_clear",
+)
 class TestCommunitiesEventsComponentsDeleted(TestCommunitiesEventsComponentsIncluded):
     """Test the component that tracks record deletions for communities.
 
@@ -286,7 +313,7 @@ class TestCommunitiesEventsComponentsDeleted(TestCommunitiesEventsComponentsIncl
         """Setup a record deletion."""
         records_service.delete_record(system_identity, record.id, data={})
 
-    def setup_requests(self, db, record, community_id, user_id, user_id2):
+    def setup_requests(self, db, record, community_id, owner_id, user_id):
         """Setup test requests - not needed for this test."""
         pass
 
@@ -327,7 +354,8 @@ class TestCommunitiesEventsComponentsDeleted(TestCommunitiesEventsComponentsIncl
     def check_community_removed_events(self, record, community_id):
         """Check that the community removed events are in the events index."""
         # Check that there are no removal events for this record/community
-        # (deletion doesn't create removal events, it just marks existing events as deleted)
+        # (deletion doesn't create removal events, it just marks existing
+        # events as deleted)
         current_search_client.indices.refresh(index="*stats-community-events*")
 
         query = {
@@ -381,6 +409,19 @@ class TestCommunitiesEventsComponentsDeleted(TestCommunitiesEventsComponentsIncl
         assert record._record.parent.communities.ids == [community_id]
 
 
+@pytest.mark.usefixtures(
+    "running_app",
+    "db",
+    "minimal_community_factory",
+    "minimal_published_record_factory",
+    "minimal_draft_record_factory",
+    "user_factory",
+    "create_stats_indices",
+    "mock_send_remote_api_update_fixture",
+    "celery_worker",
+    "requests_mock",
+    "search_clear",
+)
 class TestCommunitiesEventsComponentsRemoved(TestCommunitiesEventsComponentsIncluded):
     """Test the component that tracks record community removals.
 
@@ -411,9 +452,11 @@ class TestCommunitiesEventsComponentsRemoved(TestCommunitiesEventsComponentsIncl
     def setup_requests(self, db, record, community_id, owner_id, user_id):
         """Setup events to submit the record to a community."""
         type_ = current_request_type_registry.lookup(CommunitySubmission.type_id)
-        receiver = ResolverRegistry.resolve_entity_proxy(
+        receiver_proxy = ResolverRegistry.resolve_entity_proxy(
             {"community": community_id}
-        ).resolve()
+        )
+        assert receiver_proxy is not None
+        receiver = receiver_proxy.resolve()
         identity = get_identity(current_datastore.get_user(owner_id))
         identity.provides.add(authenticated_user)
         load_community_needs(identity)
@@ -443,7 +486,6 @@ class TestCommunitiesEventsComponentsRemoved(TestCommunitiesEventsComponentsIncl
             },
             uow=UnitOfWork(db.session),
         )
-        self.app.logger.error(f"request_item: {pformat(request_item.to_dict())}")
         accepted = current_requests_service.execute_action(
             owner_identity,
             request_item.id,
@@ -460,8 +502,8 @@ class TestCommunitiesEventsComponentsRemoved(TestCommunitiesEventsComponentsIncl
     def setup_record_deletion(self, db, record, community_id, owner_id, user_id):
         """Setup a record removal from a community via RecordCommunitiesService."""
         identity = get_identity(current_datastore.get_user(owner_id))
+        load_community_needs(identity)
 
-        # Use UnitOfWork to ensure proper transaction handling
         with UnitOfWork(db.session) as uow:
             current_rdm_records.record_communities_service.remove(
                 identity,
@@ -469,13 +511,9 @@ class TestCommunitiesEventsComponentsRemoved(TestCommunitiesEventsComponentsIncl
                 data={"communities": [{"id": community_id}]},
                 uow=uow,
             )
-            # Commit the transaction
+
             uow.commit()
 
-        # Alternative approach: Explicitly commit the database session
-        # db.session.commit()
-
-        # Refresh indices after the transaction is committed
         current_search_client.indices.refresh(index="*")
 
     def check_community_added_events(self, record, community_id):
@@ -584,9 +622,22 @@ class TestCommunitiesEventsComponentsRemoved(TestCommunitiesEventsComponentsIncl
         # The record is no longer in the community after removal
         # as opposed to the deleted case where the record is still technically
         # in the community after deletion
-        assert refreshed_record.to_dict()["parent"]["communities"]["ids"] == []
+        assert refreshed_record._record.parent.communities.ids == []
 
 
+@pytest.mark.usefixtures(
+    "running_app",
+    "db",
+    "minimal_community_factory",
+    "minimal_published_record_factory",
+    "minimal_draft_record_factory",
+    "user_factory",
+    "create_stats_indices",
+    "mock_send_remote_api_update_fixture",
+    "celery_worker",
+    "requests_mock",
+    "search_clear",
+)
 class TestCommunitiesEventsComponentsNewVersion(
     TestCommunitiesEventsComponentsIncluded
 ):
@@ -616,7 +667,7 @@ class TestCommunitiesEventsComponentsNewVersion(
         )
         return record
 
-    def setup_requests(self, db, record, community_id, user_id, user_id2):
+    def setup_requests(self, db, record, community_id, owner_id, user_id):
         """Setup test requests - not needed for this test."""
         pass
 
@@ -630,12 +681,8 @@ class TestCommunitiesEventsComponentsNewVersion(
             identity=identity,
             id_=record.id,
         )
-        self.app.logger.error(
-            f"new_version_draft: {pformat(new_version_draft.to_dict())}"
-        )
 
         draft_data = new_version_draft.data
-        self.app.logger.error(f"draft_data: {pformat(draft_data)}")
         draft_data["metadata"]["title"] = "Updated Title for New Version"
         draft_data["metadata"]["publication_date"] = "2025-06-01"
 
@@ -648,10 +695,6 @@ class TestCommunitiesEventsComponentsNewVersion(
         new_version_record = records_service.publish(
             identity=identity,
             id_=updated_draft.id,
-        )
-
-        self.app.logger.error(
-            f"New version record: {pformat(new_version_record.to_dict())}"
         )
 
         # Store the new version record for later checking
@@ -710,9 +753,6 @@ class TestCommunitiesEventsComponentsNewVersion(
         assert result_new["hits"]["total"]["value"] >= 1
         new_event = result_new["hits"]["hits"][0]["_source"]
 
-        self.app.logger.error(f"original_event: {pformat(original_event)}")
-        self.app.logger.error(f"new_event: {pformat(new_event)}")
-
         assert original_event["community_id"] == community_id
         assert new_event["community_id"] == community_id
         # The new version should have the same community events as the original
@@ -729,6 +769,19 @@ class TestCommunitiesEventsComponentsNewVersion(
         assert record._record.parent.id == self.new_version_record._record.parent.id
 
 
+@pytest.mark.usefixtures(
+    "running_app",
+    "db",
+    "minimal_community_factory",
+    "minimal_published_record_factory",
+    "minimal_draft_record_factory",
+    "user_factory",
+    "create_stats_indices",
+    "mock_send_remote_api_update_fixture",
+    "celery_worker",
+    "requests_mock",
+    "search_clear",
+)
 class TestCommunitiesEventsComponentsRestored(TestCommunitiesEventsComponentsIncluded):
     """Test the component that tracks record restoration for communities.
 
@@ -757,7 +810,7 @@ class TestCommunitiesEventsComponentsRestored(TestCommunitiesEventsComponentsInc
         )
         return record
 
-    def setup_requests(self, db, record, community_id, user_id, user_id2):
+    def setup_requests(self, db, record, community_id, owner_id, user_id):
         """Setup test requests - not needed for this test."""
         pass
 
@@ -780,7 +833,13 @@ class TestCommunitiesEventsComponentsRestored(TestCommunitiesEventsComponentsInc
             index=prefix_index("stats-community-events"),
             body=query_before,
         )
-        self.app.logger.error(f"Events before deletion: {pformat(result_before)}")
+
+        # Verify events are not marked as deleted before deletion
+        assert result_before["hits"]["total"]["value"] >= 1
+        for hit in result_before["hits"]["hits"]:
+            event = hit["_source"]
+            assert event["is_deleted"] is False
+            assert event.get("deleted_date") is None
 
         # First delete the record
         records_service.delete_record(system_identity, record.id, data={})
@@ -791,15 +850,17 @@ class TestCommunitiesEventsComponentsRestored(TestCommunitiesEventsComponentsInc
             index=prefix_index("stats-community-events"),
             body=query_before,
         )
-        self.app.logger.error(f"Events after deletion: {pformat(result_after_delete)}")
+
+        assert result_after_delete["hits"]["total"]["value"] >= 1
+        for hit in result_after_delete["hits"]["hits"]:
+            event = hit["_source"]
+            assert event["is_deleted"] is True
+            assert event.get("deleted_date") is not None
 
         # Add a brief wait to give the index time to update
         import time
 
         time.sleep(1)
-
-        # Force another refresh before restore
-        # current_search_client.indices.refresh(index="*stats-community-events*")
 
         # Then restore it
         restored_record = records_service.restore_record(system_identity, record.id)
@@ -810,9 +871,12 @@ class TestCommunitiesEventsComponentsRestored(TestCommunitiesEventsComponentsInc
             index=prefix_index("stats-community-events"),
             body=query_before,
         )
-        self.app.logger.error(
-            f"Events after restoration: {pformat(result_after_restore)}"
-        )
+
+        assert result_after_restore["hits"]["total"]["value"] >= 1
+        for hit in result_after_restore["hits"]["hits"]:
+            event = hit["_source"]
+            assert event["is_deleted"] is False
+            assert event.get("deleted_date") is None
 
         # Store the restored record for later checking
         self.restored_record = restored_record
@@ -899,13 +963,8 @@ class TestCommunitiesEventsComponentsRestored(TestCommunitiesEventsComponentsInc
             body=query,
         )
 
-        self.app.logger.error(
-            f"Found {result['hits']['total']['value']} events for record {record.id}"
-        )
-
         assert result["hits"]["total"]["value"] >= 1
         for hit in result["hits"]["hits"]:
-            self.app.logger.error(f"hit: {pformat(hit)}")
             event = hit["_source"]
             # After restoration, events should not be marked as deleted
             assert event["is_deleted"] is False

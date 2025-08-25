@@ -21,19 +21,22 @@ from invenio_stats_dashboard.aggregations import (
     CommunityUsageDeltaAggregator,
     CommunityUsageSnapshotAggregator,
 )
-from invenio_stats_dashboard.components import update_community_events_created_date
 from invenio_stats_dashboard.proxies import current_event_reindexing_service
+from invenio_stats_dashboard.services.components import (
+    update_community_events_created_date,
+)
 from opensearchpy.helpers.search import Search
 from pytest import MonkeyPatch
 
-from tests.api.stats_dashboard.test_stats_dashboard import (
+from tests.conftest import RunningApp
+from tests.fixtures.records import enhance_metadata_with_funding_and_affiliations
+from tests.helpers.sample_records import (
     sample_metadata_journal_article3_pdf,
     sample_metadata_journal_article4_pdf,
     sample_metadata_journal_article5_pdf,
     sample_metadata_journal_article6_pdf,
     sample_metadata_journal_article7_pdf,
 )
-from tests.conftest import RunningApp
 from tests.helpers.sample_stats_test_data import (
     MOCK_RECORD_DELTA_AGGREGATION_DOCS,
     MOCK_RECORD_SNAPSHOT_AGGREGATIONS,
@@ -41,13 +44,29 @@ from tests.helpers.sample_stats_test_data import (
 )
 
 
-class TestCommunityRecordCreatedDeltaAggregator:
+class TestCommunityRecordDeltaCreatedAggregator:
     """Test the CommunityRecordsDeltaCreatedAggregator."""
+
+    @property
+    def creation_dates(self):
+        """Get the creation dates for the records."""
+        date1 = arrow.utcnow().shift(days=-10)
+        date2 = arrow.utcnow().shift(days=-6)
+        dates = [date2, date2, date1, date1]
+
+        return dates
 
     def _setup_records(
         self, user_email, community_id, minimal_published_record_factory
     ):
-        """Setup the records."""
+        """Setup the records.
+
+        We want to ensure that the three different ways of counting record "starts"
+        (record creation, publication, and addition to community) give different aggregation results. So we manually edit the created and metadata.publication_date fields in the metadata so that they're different but within
+        our aggregation target period. We also *don't* update the community event
+        addition dates so that record addition to community is on a different day
+        from record creation and publication.
+        """
         for idx, rec in enumerate(
             [
                 sample_metadata_journal_article4_pdf,
@@ -56,17 +75,23 @@ class TestCommunityRecordCreatedDeltaAggregator:
                 sample_metadata_journal_article7_pdf,
             ]
         ):
+            meta = deepcopy(rec["input"])
+            meta["created"] = self.creation_dates[idx].format("YYYY-MM-DDTHH:mm:ss")
+            meta["metadata"]["publication_date"] = min(self.creation_dates).format(
+                "YYYY-MM-DD"
+            )
             rec_args = {
                 "identity": get_identity(
                     current_datastore.get_user_by_email(user_email)
                 ),
-                "metadata": rec["input"],
+                "metadata": meta,
                 "community_list": [community_id],
                 "set_default": True,
+                "update_community_event_dates": False,
             }
             if idx != 1:
                 file_path = (
-                    Path(__file__).parent.parent
+                    Path(__file__).parent.parent.parent
                     / "helpers"
                     / "sample_files"
                     / list(rec["input"]["files"]["entries"].keys())[0]
@@ -78,7 +103,7 @@ class TestCommunityRecordCreatedDeltaAggregator:
 
         current_records = records_service.search(
             identity=system_identity,
-            q="",
+            q="files.entries.key:1955 in 1947.pdf",
         )
         delete_record_id = list(current_records.to_dict()["hits"]["hits"])[0]["id"]
         self.app.logger.error(f"Delete record id: {delete_record_id}")
@@ -154,11 +179,22 @@ class TestCommunityRecordCreatedDeltaAggregator:
                 del actual_doc["_source"]["updated_timestamp"]
 
                 # only check first 5 docs and last doc (for deleted record)
+                # With relative dates, these positions correspond to:
+                # - Days 0-4: Days from the earliest record creation date
+                #   to the latest record creation date (inclusive)
+                # - Last day: Today (when the record was deleted)
+                # The mock data expects two records on each of days 0 and 4,
+                # with one record removed on the last day.
                 if idx < 5 or idx == len(community_agg_docs) - 1:
                     if idx > 4:
                         idx = -1
                         self.app.logger.error(f"actual doc: {pformat(actual_doc)}")
-                    expected_doc = MOCK_RECORD_DELTA_AGGREGATION_DOCS[idx]
+
+                    # Get the mock document and create a copy to avoid modifying
+                    # the original
+                    expected_doc = deepcopy(MOCK_RECORD_DELTA_AGGREGATION_DOCS[idx])
+
+                    # Update community ID and ID
                     if set_idx == 0:
                         expected_doc["_id"] = expected_doc["_id"].replace(
                             "5733deff-2f76-4f8c-bb99-8df48bdd725f",
@@ -171,9 +207,12 @@ class TestCommunityRecordCreatedDeltaAggregator:
                             community_id,
                         )
                         expected_doc["_source"]["community_id"] = community_id
-                    if set_idx == 0:
-                        del expected_doc["_source"]["timestamp"]
-                        del expected_doc["_source"]["updated_timestamp"]
+
+                    # Remove timestamps from all docs since we're using our own dates
+                    del expected_doc["_source"]["timestamp"]
+                    del expected_doc["_source"]["updated_timestamp"]
+
+                    # Handle date updates based on position
                     if idx == -1:  # last doc is for record just deleted
                         expected_doc["_source"]["period_start"] = (
                             arrow.utcnow().floor("day").format("YYYY-MM-DDTHH:mm:ss")
@@ -181,6 +220,30 @@ class TestCommunityRecordCreatedDeltaAggregator:
                         expected_doc["_source"]["period_end"] = (
                             arrow.utcnow().ceil("day").format("YYYY-MM-DDTHH:mm:ss")
                         )
+                    else:
+                        # For days 0-4, map to our creation dates
+                        # Day 0: earliest creation date (10 days ago)
+                        # Day 4: latest creation date (6 days ago)
+                        if idx == 0:
+                            # First day: earliest creation date
+                            day_date = min(self.creation_dates).floor("day")
+                        elif idx == 4:
+                            # Fifth day: latest creation date
+                            day_date = max(self.creation_dates).floor("day")
+                        else:
+                            # Days 1-3: interpolate between creation dates
+                            earliest = min(self.creation_dates)
+                            latest = max(self.creation_dates)
+                            days_between = (latest - earliest).days
+                            day_offset = int((idx / 4.0) * days_between)
+                            day_date = earliest.shift(days=day_offset).floor("day")
+
+                        expected_doc["_source"]["period_start"] = day_date.format(
+                            "YYYY-MM-DDTHH:mm:ss"
+                        )
+                        expected_doc["_source"]["period_end"] = day_date.ceil(
+                            "day"
+                        ).format("YYYY-MM-DDTHH:mm:ss")
                     assert {
                         k: v
                         for k, v in actual_doc["_source"].items()
@@ -237,7 +300,7 @@ class TestCommunityRecordCreatedDeltaAggregator:
 
         aggregator = self.aggregator_instance
         aggregator.run(
-            start_date=arrow.get("2025-05-30").datetime,
+            start_date=min(self.creation_dates),
             end_date=arrow.utcnow().isoformat(),
             update_bookmark=True,
             ignore_bookmark=False,
@@ -255,10 +318,13 @@ class TestCommunityRecordCreatedDeltaAggregator:
             size=1000,
         )
         self.app.logger.error(f"Agg documents: {pformat(agg_documents)}")
+        expected_days = (
+            arrow.utcnow().floor("day") - min(self.creation_dates).floor("day")
+        ).days + 1
         assert (
             agg_documents["hits"]["total"]["value"]
-            == ((arrow.utcnow() - arrow.get("2025-05-30")).days + 1) * 2
-        )  # both community and global records
+            == expected_days * 2  # both community and global records
+        )
 
         global_agg_docs, community_agg_docs = [], []
         for doc in agg_documents["hits"]["hits"]:
@@ -272,8 +338,8 @@ class TestCommunityRecordCreatedDeltaAggregator:
         self._check_agg_documents(global_agg_docs, community_agg_docs, community_id)
 
 
-class TestCommunityRecordAddedDeltaAggregator(
-    TestCommunityRecordCreatedDeltaAggregator
+class TestCommunityRecordDeltaAddedAggregator(
+    TestCommunityRecordDeltaCreatedAggregator
 ):
     """Test the CommunityRecordsDeltaAddedAggregator.
 
@@ -325,14 +391,14 @@ class TestCommunityRecordAddedDeltaAggregator(
                     assert doc["files"]["added"]["data_volume"] == 0.0
                     assert doc["files"]["removed"]["file_count"] == 1
                     assert doc["files"]["removed"]["data_volume"] == 1984949.0
-                if doc["period_start"] == "2025-05-30T00:00:00":
+                if doc["period_start"] == min(self.creation_dates):
                     assert doc["records"]["added"]["with_files"] == 2
                     assert doc["records"]["added"]["metadata_only"] == 0
                     assert doc["records"]["removed"]["with_files"] == 0
                     assert doc["records"]["removed"]["metadata_only"] == 0
                     assert doc["files"]["added"]["file_count"] == 2
                     assert doc["files"]["added"]["data_volume"] == 1000000000.0
-                if doc["period_start"] == "2025-06-03T00:00:00":
+                if doc["period_start"] == max(self.creation_dates):
                     assert doc["records"]["added"]["with_files"] == 1
                     assert doc["records"]["added"]["metadata_only"] == 1
                     assert doc["records"]["removed"]["with_files"] == 0
@@ -387,18 +453,22 @@ class TestCommunityRecordAddedDeltaAggregator(
                     f = doc["subcounts"]["by_file_types"][0]
                     assert f["id"] == "pdf"
                     assert f["label"] == ""
-                    assert f["added"]["files"] == 3
-                    assert f["added"]["parents"] == 3
-                    assert f["added"]["records"] == 3
-                    assert f["added"]["data_volume"] == 61102780.0
-                    assert f["removed"]["files"] == 1
-                    assert f["removed"]["parents"] == 1
-                    assert f["removed"]["records"] == 1
-                    assert f["removed"]["data_volume"] == 1984949.0
+                    assert f["files"]["added"]["file_count"] == 3
+                    assert f["files"]["added"]["data_volume"] == 61102780.0
+                    assert f["files"]["removed"]["file_count"] == 1
+                    assert f["files"]["removed"]["data_volume"] == 1984949.0
+                    assert f["parents"]["added"]["with_files"] == 3
+                    assert f["parents"]["added"]["metadata_only"] == 0
+                    assert f["parents"]["removed"]["with_files"] == 1
+                    assert f["parents"]["removed"]["metadata_only"] == 0
+                    assert f["records"]["added"]["with_files"] == 3
+                    assert f["records"]["added"]["metadata_only"] == 0
+                    assert f["records"]["removed"]["with_files"] == 1
+                    assert f["records"]["removed"]["metadata_only"] == 0
 
 
-class TestCommunityRecordPublishedDeltaAggregator(
-    TestCommunityRecordCreatedDeltaAggregator
+class TestCommunityRecordDeltaPublishedAggregator(
+    TestCommunityRecordDeltaCreatedAggregator
 ):
     """Test the CommunityRecordsDeltaPublishedAggregator.
 
@@ -411,7 +481,7 @@ class TestCommunityRecordPublishedDeltaAggregator(
     @property
     def event_date_range(self):
         """Return the date range for test events."""
-        start_date = arrow.get("2025-05-30").floor("day")
+        start_date = arrow.get(self.creation_dates[0]).floor("day")
         end_date = arrow.get("2025-06-03").ceil("day")
         range_dates = [a for a in arrow.Arrow.range("day", start_date, end_date)]
         range_dates.extend(
@@ -445,49 +515,41 @@ class TestCommunityRecordPublishedDeltaAggregator(
         This time deltas for both global and community aggregations should show
         additions on the day the record was published and removals on the current
         day (which is when the test deletes the record).
+
+        Since all publication dates are set to the earliest creation date
+        (today-10), we expect to see 4 records added on that day, and 1 record
+        removed on the current day.
         """
         assert len(global_agg_docs) == len(community_agg_docs)
+        earliest_date = min(self.creation_dates)
+        earliest_date_str = earliest_date.format("YYYY-MM-DDT00:00:00")
+        current_date_str = arrow.utcnow().floor("day").format("YYYY-MM-DDT00:00:00")
+
         for set_idx, set in enumerate([global_agg_docs, community_agg_docs]):
             for idx, actual_doc in enumerate(set):
                 doc = actual_doc["_source"]
                 del doc["timestamp"]
                 del doc["updated_timestamp"]
 
-            if doc["period_start"] == "2017-01-01T00:00:00":
-                assert doc["records"]["added"]["with_files"] == 1
-                assert doc["records"]["added"]["metadata_only"] == 0
-                assert doc["records"]["removed"]["with_files"] == 0
-                assert doc["records"]["removed"]["metadata_only"] == 0
-                assert doc["files"]["added"]["file_count"] == 1
-                assert doc["files"]["added"]["data_volume"] == 0.0
-            if doc["period_start"] == "2023-11-01T00:00:00":
-                assert doc["records"]["added"]["with_files"] == 1
-                assert doc["records"]["added"]["metadata_only"] == 0
-                assert doc["records"]["removed"]["with_files"] == 1
-                assert doc["records"]["removed"]["metadata_only"] == 0
-                assert doc["files"]["added"]["file_count"] == 1
-                assert doc["files"]["added"]["data_volume"] == 0.0
-
-            if doc["period_start"] == "2025-05-30T00:00:00":
-                self._check_empty_day(actual_doc, idx, set_idx, community_id)
-            if doc["period_start"] == "2025-06-02T00:00:00":
-                assert doc["records"]["added"]["with_files"] == 1
-                assert doc["records"]["added"]["metadata_only"] == 0
-                assert doc["records"]["removed"]["with_files"] == 0
-                assert doc["records"]["removed"]["metadata_only"] == 0
-                assert doc["files"]["added"]["file_count"] == 1
-                assert doc["files"]["added"]["data_volume"] == 1984949.0
-            if doc["period_start"] == "2025-06-03T00:00:00":
-                assert doc["records"]["added"]["with_files"] == 1
+            # Check for records added on the earliest date (publication date)
+            if doc["period_start"] == earliest_date_str:
+                # All 4 records should be added on this day since they all have
+                # the same publication date
+                assert doc["parents"]["added"]["with_files"] == 3
+                assert doc["parents"]["added"]["metadata_only"] == 1
+                assert doc["parents"]["removed"]["with_files"] == 0
+                assert doc["parents"]["removed"]["metadata_only"] == 0
+                assert doc["records"]["added"]["with_files"] == 3
                 assert doc["records"]["added"]["metadata_only"] == 1
                 assert doc["records"]["removed"]["with_files"] == 0
                 assert doc["records"]["removed"]["metadata_only"] == 0
-                assert doc["files"]["added"]["file_count"] == 1
-                assert doc["files"]["added"]["data_volume"] == 1984949.0
+                assert doc["files"]["added"]["file_count"] == 3
+                assert doc["files"]["added"]["data_volume"] == 1984949.0 * 3
+                assert doc["files"]["removed"]["file_count"] == 0
+                assert doc["files"]["removed"]["data_volume"] == 0.0
 
-            if doc["period_start"] == arrow.utcnow().floor("day").format(
-                "YYYY-MM-DDT00:00:00"
-            ):
+            # Check for record removed on the current day
+            if doc["period_start"] == current_date_str:
                 assert doc["records"]["added"]["with_files"] == 0
                 assert doc["records"]["added"]["metadata_only"] == 0
                 assert doc["records"]["removed"]["with_files"] == 1
@@ -498,98 +560,115 @@ class TestCommunityRecordPublishedDeltaAggregator(
                 assert doc["files"]["removed"]["data_volume"] == 1984949.0
 
 
-def test_community_record_snapshot_created_agg(
-    running_app,
-    db,
-    minimal_community_factory,
-    minimal_published_record_factory,
-    user_factory,
-    create_stats_indices,
-    mock_send_remote_api_update_fixture,
-    celery_worker,
-    requests_mock,
-):
-    """Test community_record_snapshot_agg."""
-    requests_mock.real_http = True
-    u = user_factory(email="test@example.com", saml_id="")
-    user_email = u.user.email
-    community = minimal_community_factory(slug="knowledge-commons")
-    community_id = community.id
+class TestCommunityRecordSnapshotCreatedAggregator:
+    """Test the CommunityRecordsSnapshotCreatedAggregator.
 
-    for idx, rec in enumerate(
-        [
-            sample_metadata_journal_article4_pdf,
-            sample_metadata_journal_article5_pdf,
-            sample_metadata_journal_article6_pdf,
-            sample_metadata_journal_article7_pdf,
-        ]
+    This test class inherits from TestCommunityRecordCreatedDeltaAggregator
+    and overrides the aggregator to use the snapshot created aggregator instead.
+    """
+
+    def test_community_record_snapshot_created_agg(
+        self,
+        running_app,
+        db,
+        minimal_community_factory,
+        minimal_published_record_factory,
+        user_factory,
+        create_stats_indices,
+        mock_send_remote_api_update_fixture,
+        celery_worker,
+        requests_mock,
     ):
-        args = {
-            "identity": get_identity(current_datastore.get_user_by_email(user_email)),
-            "metadata": rec["input"],
-            "community_list": [community_id],
-            "set_default": True,
-        }
-        if idx != 1:
-            args["file_paths"] = [
-                Path(__file__).parent.parent
-                / "helpers"
-                / "sample_files"
-                / list(rec["input"]["files"]["entries"].keys())[0]
+        """Test community_record_snapshot_agg."""
+        requests_mock.real_http = True
+        u = user_factory(email="test@example.com", saml_id="")
+        user_email = u.user.email
+        community = minimal_community_factory(slug="knowledge-commons")
+        community_id = community.id
+
+        creation_dates = [
+            arrow.utcnow().shift(days=-5).format("YYYY-MM-DDTHH:mm:ss"),
+            arrow.utcnow().shift(days=-5).format("YYYY-MM-DDTHH:mm:ss"),
+            arrow.utcnow().shift(days=-2).format("YYYY-MM-DDTHH:mm:ss"),
+            arrow.utcnow().shift(days=-2).format("YYYY-MM-DDTHH:mm:ss"),
+        ]
+
+        for idx, rec in enumerate(
+            [
+                sample_metadata_journal_article4_pdf,
+                sample_metadata_journal_article5_pdf,
+                sample_metadata_journal_article6_pdf,
+                sample_metadata_journal_article7_pdf,
             ]
-        minimal_published_record_factory(**args)
+        ):
+            metadata = deepcopy(rec["input"])
+            metadata["created"] = creation_dates[idx]
+            args = {
+                "identity": get_identity(
+                    current_datastore.get_user_by_email(user_email)
+                ),
+                "metadata": metadata,
+                "community_list": [community_id],
+                "set_default": True,
+            }
+            if idx != 1:
+                args["file_paths"] = [
+                    Path(__file__).parent.parent.parent
+                    / "helpers"
+                    / "sample_files"
+                    / list(rec["input"]["files"]["entries"].keys())[0]
+                ]
+            minimal_published_record_factory(**args)
 
-    current_search_client.indices.refresh(index="*rdmrecords-records*")
+        current_search_client.indices.refresh(index="*rdmrecords-records*")
 
-    current_records = records_service.search(
-        identity=system_identity,
-        q="",
-    )
-    delete_record_id = list(current_records.to_dict()["hits"]["hits"])[0]["id"]
-    records_service.delete_record(
-        identity=system_identity,
-        id_=delete_record_id,
-        data={"is_visible": False, "note": "no specific reason, tbh"},
-    )
-    current_search_client.indices.refresh(index="*rdmrecords-records*")
-    # Also refresh the stats-community-events index to ensure deletion is reflected
-    current_search_client.indices.refresh(index="*stats-community-events*")
+        current_records = records_service.search(
+            identity=system_identity,
+            q="",
+        )
+        delete_record_id = list(current_records.to_dict()["hits"]["hits"])[0]["id"]
+        records_service.delete_record(
+            identity=system_identity,
+            id_=delete_record_id,
+            data={"is_visible": False, "note": "no specific reason, tbh"},
+        )
+        current_search_client.indices.refresh(index="*rdmrecords-records*")
+        # Also refresh the stats-community-events index to ensure deletion is reflected
+        current_search_client.indices.refresh(index="*stats-community-events*")
 
-    aggregator = CommunityRecordsSnapshotCreatedAggregator(
-        name="community-records-snapshot-created-agg",
-    )
-    aggregator.run(
-        start_date=arrow.get("2025-05-30").datetime,
-        end_date=arrow.utcnow().isoformat(),
-        update_bookmark=True,
-        ignore_bookmark=False,
-    )
+        aggregator = CommunityRecordsSnapshotCreatedAggregator(
+            name="community-records-snapshot-created-agg",
+        )
+        aggregator.run(
+            start_date=creation_dates[0],
+            end_date=arrow.utcnow().isoformat(),
+            update_bookmark=True,
+            ignore_bookmark=False,
+        )
 
-    current_search_client.indices.refresh(
-        index="*stats-community-records-snapshot-created*"
-    )
+        current_search_client.indices.refresh(
+            index="*stats-community-records-snapshot-created*"
+        )
 
-    agg_documents = current_search_client.search(
-        index="stats-community-records-snapshot-created",
-        body={
-            "query": {
-                "match_all": {},
+        agg_documents = current_search_client.search(
+            index="stats-community-records-snapshot-created",
+            body={
+                "query": {
+                    "match_all": {},
+                },
             },
-        },
-        size=1000,
-    )
-    # app.logger.error(f"Agg documents: {pformat(agg_documents)}")
-    assert (
-        agg_documents["hits"]["total"]["value"]
-        == ((arrow.utcnow() - arrow.get("2025-05-30")).days + 1) * 2
-    )
-    for idx, actual_doc in enumerate(agg_documents["hits"]["hits"]):
-        assert arrow.get(actual_doc["_source"]["timestamp"]) < arrow.utcnow().shift(
-            minutes=5
+            size=1000,
         )
-        assert arrow.get(actual_doc["_source"]["timestamp"]) > arrow.utcnow().shift(
-            minutes=-5
-        )
+        # app.logger.error(f"Agg documents: {pformat(agg_documents)}")
+        expected_days = (arrow.utcnow() - arrow.get(creation_dates[0])).days + 1
+        assert agg_documents["hits"]["total"]["value"] == expected_days * 2
+        for idx, actual_doc in enumerate(agg_documents["hits"]["hits"]):
+            assert arrow.get(actual_doc["_source"]["timestamp"]) < arrow.utcnow().shift(
+                minutes=5
+            )
+            assert arrow.get(actual_doc["_source"]["timestamp"]) > arrow.utcnow().shift(
+                minutes=-5
+            )
 
 
 class TestCommunityUsageAggregators:
@@ -644,53 +723,6 @@ class TestCommunityUsageAggregators:
         community_id = community.id
         return community_id
 
-    def _enhance_metadata_with_funding_and_affiliations(self, metadata, record_index):
-        """Enhance metadata with funder and enhanced affiliation data for testing.
-
-        Args:
-            metadata: The base metadata to enhance
-            record_index: Index of the record (0-3) to determine what data to add
-        """
-        # Only enhance the first record with affiliations
-        if record_index == 0:
-            for idx, creator in enumerate(metadata["metadata"]["creators"]):
-                if not creator.get("affiliations"):
-                    metadata["metadata"]["creators"][idx]["affiliations"] = [
-                        {
-                            "id": "01ggx4157",  # CERN from affiliations fixture
-                            "name": "CERN",
-                            "type": {
-                                "id": "institution",
-                                "title": {"en": "Institution"},
-                            },
-                        }
-                    ]
-
-        # Add funding information to the first two records only
-        if record_index < 2:
-            metadata["metadata"]["funding"] = [
-                {
-                    "funder": {
-                        "id": "00k4n6c31",  # From funders fixture
-                        "name": "Funder 00k4n6c31",
-                        "type": {"id": "funder", "title": {"en": "Funder"}},
-                    },
-                    "award": {
-                        "id": "00k4n6c31::755021",  # From awards fixture
-                        "title": "Award 755021",
-                        "number": "755021",
-                        "identifiers": [
-                            {
-                                "identifier": (
-                                    "https://sandbox.kcworks.org/00k4n6c31::755021"
-                                ),
-                                "scheme": "url",
-                            }
-                        ],
-                    },
-                }
-            ]
-
     def _setup_records(
         self, user_email, community_id, minimal_published_record_factory
     ):
@@ -712,9 +744,7 @@ class TestCommunityUsageAggregators:
 
             metadata = deepcopy(rec)
             metadata["created"] = "2025-06-01T00:00:00+00:00"
-
-            # Enhance metadata with funding and affiliation data
-            self._enhance_metadata_with_funding_and_affiliations(metadata, idx)
+            enhance_metadata_with_funding_and_affiliations(metadata, idx)
 
             args = {
                 "identity": get_identity(
@@ -728,7 +758,10 @@ class TestCommunityUsageAggregators:
             if idx != 1:
                 filename = list(rec["files"]["entries"].keys())[0]
                 record_args["file_paths"] = [
-                    Path(__file__).parent.parent / "helpers" / "sample_files" / filename
+                    Path(__file__).parent.parent.parent
+                    / "helpers"
+                    / "sample_files"
+                    / filename
                 ]
             _ = minimal_published_record_factory(**args)
 
@@ -1074,7 +1107,7 @@ class TestCommunityUsageAggregators:
         for all_subcount_type in [
             "all_file_types",
             "all_access_status",
-            "all_languages",
+            "top_languages",
             "all_resource_types",
         ]:
             for item in last_day_snap["subcounts"][all_subcount_type]:
@@ -1348,7 +1381,10 @@ class TestCommunityUsageAggregators:
         # ensure created date is before we need events
         metadata["created"] = "2025-06-01T18:43:57.051364+00:00"
         file_paths = [
-            Path(__file__).parent.parent / "helpers" / "sample_files" / "1305.pdf",
+            Path(__file__).parent.parent.parent
+            / "helpers"
+            / "sample_files"
+            / "1305.pdf",
         ]
         newrec = minimal_published_record_factory(
             metadata=metadata,

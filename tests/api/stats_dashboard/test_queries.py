@@ -13,7 +13,6 @@ from invenio_rdm_records.proxies import current_rdm_records_service as records_s
 from invenio_search import current_search_client
 from invenio_search.utils import prefix_index
 from invenio_stats_dashboard.proxies import (
-    current_community_stats_service,
     current_event_reindexing_service,
 )
 from invenio_stats_dashboard.queries import (
@@ -24,6 +23,7 @@ from invenio_stats_dashboard.queries import (
     get_relevant_record_ids_from_events,
 )
 
+from tests.fixtures.vocabularies.resource_types import reindex_resource_types
 from tests.helpers.sample_records import (
     sample_metadata_journal_article4_pdf,
     sample_metadata_journal_article5_pdf,
@@ -44,6 +44,28 @@ class TestCommunityRecordCreatedDeltaQuery:
     Also indirectly tests the service components that generate the events
     in the stats-community-events index.
     """
+
+    def setup_method(self):
+        """Setup method called before each test method."""
+        if hasattr(self, "app") and hasattr(self.app, "logger"):
+            self.app.logger.error("=== SETUP_METHOD CALLED ===")
+            self.app.logger.error(f"Test class: {self.__class__.__name__}")
+            self.app.logger.error("Method: setup_method")
+        else:
+            print("=== SETUP_METHOD CALLED ===")
+            print(f"Test class: {self.__class__.__name__}")
+            print("Method: setup_method")
+
+    def teardown_method(self):
+        """Teardown method called after each test method."""
+        if hasattr(self, "app") and hasattr(self.app, "logger"):
+            self.app.logger.error("=== TEARDOWN_METHOD CALLED ===")
+            self.app.logger.error(f"Test class: {self.__class__.__name__}")
+            self.app.logger.error("Method: teardown_method")
+        else:
+            print("=== TEARDOWN_METHOD CALLED ===")
+            print(f"Test class: {self.__class__.__name__}")
+            print("Method: teardown_method")
 
     SUB_AGGS = [
         "by_access_statuses",
@@ -175,6 +197,12 @@ class TestCommunityRecordCreatedDeltaQuery:
         self, user_email, community_id, minimal_published_record_factory
     ):
         """Setup the records."""
+        # Log when this method is called
+        if hasattr(self, "app") and hasattr(self.app, "logger"):
+            self.app.logger.error("=== SETUP_RECORDS CALLED ===")
+            self.app.logger.error(f"Test class: {self.__class__.__name__}")
+            self.app.logger.error("Method: _setup_records")
+
         user_identity = get_identity(current_datastore.get_user_by_email(user_email))
         for idx, rec in enumerate(
             [
@@ -735,6 +763,20 @@ class TestCommunityRecordCreatedDeltaQuery:
         self.app = running_app.app
         self.client = current_search_client
 
+        # Log when this test method is called
+        self.app.logger.error("=== TEST METHOD CALLED ===")
+        self.app.logger.error(f"Test class: {self.__class__.__name__}")
+        self.app.logger.error("Method: test_daily_record_delta_query")
+        self.app.logger.error(
+            f"Find deleted: {getattr(self, 'find_deleted', 'Not set')}"
+        )
+        self.app.logger.error(
+            f"Use included dates: {getattr(self, 'use_included_dates', 'Not set')}"
+        )
+        self.app.logger.error(
+            f"Use published dates: {getattr(self, 'use_published_dates', 'Not set')}"
+        )
+
         requests_mock.real_http = True
 
         u = user_factory(email="test@example.com")
@@ -872,6 +914,11 @@ class TestCommunityRecordCreatedDeltaQuery:
 
         self._check_day_results(days)
 
+        # Log completion of test method
+        self.app.logger.error("=== TEST METHOD COMPLETED ===")
+        self.app.logger.error(f"Test class: {self.__class__.__name__}")
+        self.app.logger.error("Method: test_daily_record_delta_query")
+
 
 class TestCommunityRecordDeltaQueryDeleted(TestCommunityRecordCreatedDeltaQuery):
     """Test the CommunityRecordCreatedDeltaQuery finding deleted records."""
@@ -885,9 +932,18 @@ class TestCommunityRecordDeltaQueryDeleted(TestCommunityRecordCreatedDeltaQuery)
         self, user_email, community_id, minimal_published_record_factory
     ):
         """Setup the records."""
+        # Log when this method is called
+        if hasattr(self, "app") and hasattr(self.app, "logger"):
+            self.app.logger.error("=== SETUP_RECORDS CALLED ===")
+            self.app.logger.error(f"Test class: {self.__class__.__name__}")
+            self.app.logger.error("Method: _setup_records")
+
         super()._setup_records(
             user_email, community_id, minimal_published_record_factory
         )
+
+        # Ensure vocabulary indices are properly set up before proceeding
+        reindex_resource_types(self.app)
 
         current_records = records_service.search(
             identity=system_identity,
@@ -898,6 +954,12 @@ class TestCommunityRecordDeltaQueryDeleted(TestCommunityRecordCreatedDeltaQuery)
 
         # Delete one record (soft deletion)
         delete_record_id = record_hits[0]["id"]
+
+        # Log the state right before deletion
+        self.app.logger.error("=== BEFORE RECORD DELETION ===")
+        self.app.logger.error(f"About to delete record: {delete_record_id}")
+        self.app.logger.error(f"Test class: {self.__class__.__name__}")
+
         records_service.delete_record(
             identity=system_identity,
             id_=delete_record_id,
@@ -924,6 +986,12 @@ class TestCommunityRecordDeltaQueryDeleted(TestCommunityRecordCreatedDeltaQuery)
         # Store the record IDs for later verification
         self.deleted_record_id = delete_record_id
         self.removed_record_id = remove_record_id
+
+        # Log completion of setup
+        self.app.logger.error("=== SETUP_RECORDS COMPLETED ===")
+        self.app.logger.error(f"Test class: {self.__class__.__name__}")
+        self.app.logger.error(f"Deleted record ID: {delete_record_id}")
+        self.app.logger.error(f"Removed record ID: {remove_record_id}")
 
     def _check_result_day5(self, result):
         """Check the results for day 5 - should find both deleted and removed."""
@@ -1238,7 +1306,8 @@ class TestCommunityRecordCreatedSnapshotQuery:
                                 app.logger.error(f"v: {pformat(v)}")
                                 app.logger.error(f"Key: {k}")
                                 app.logger.error(
-                                    f"Expected bucket keys: {list(matching_expected_bucket.keys())}"
+                                    f"Expected bucket keys: "
+                                    f"{list(matching_expected_bucket.keys())}"
                                 )
                                 app.logger.error(
                                     f"Actual bucket keys: {list(bucket.keys())}"
@@ -1494,7 +1563,7 @@ class TestCommunityUsageDeltaQuery:
                         f"{len(actual_copy['buckets'])} buckets: "
                         f"{actual_copy['buckets']}"
                     )
-                # If actual is empty but expected has content, that's also a test failure
+                # If actual is empty but expected has content, also test failure
                 elif (
                     len(actual_copy["buckets"]) == 0
                     and len(expected_copy["buckets"]) > 0

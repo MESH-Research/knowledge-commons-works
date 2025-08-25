@@ -1,5 +1,8 @@
 """Test synthetic usage event creation and indexing."""
 
+import copy
+from pathlib import Path
+
 import arrow
 from invenio_access.utils import get_identity
 from invenio_search import current_search_client
@@ -38,13 +41,26 @@ def test_synthetic_usage_event_creation(
     end_date = "2025-08-07"
 
     for test_date in test_dates:
-        test_metadata = record_metadata()
-        test_metadata.update_metadata({"created": test_date})
+        test_metadata = copy.deepcopy(record_metadata().metadata_in)
+        test_metadata["created"] = test_date
+        test_metadata["files"] = {
+            "enabled": True,
+            "entries": {"sample.pdf": {"key": "sample.pdf", "ext": "pdf"}},
+        }
+
+        file_path = (
+            Path(__file__).parent.parent.parent
+            / "helpers"
+            / "sample_files"
+            / "sample.pdf"
+        )
 
         record = minimal_published_record_factory(
             identity=user_identity,
             community_list=[community_id],
-            metadata=test_metadata.metadata_in,
+            metadata=test_metadata,
+            file_paths=[file_path],
+            update_community_event_dates=True,
         )
         records.append(record)
 
