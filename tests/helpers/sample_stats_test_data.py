@@ -52,7 +52,7 @@ SAMPLE_RECORDS_SNAPSHOT_AGG = {
                 },
             },
         ],
-        "all_languages": [],
+        "top_languages": [],
         "all_rights": [],
         "top_affiliations_creator": [],
         "top_affiliations_contributor": [],
@@ -209,7 +209,7 @@ MOCK_RECORD_SEARCH_RESPONSE = {
                                 "subtype": "textDocument-journalArticle",
                                 "type": "textDocument",
                             },
-                            "title": {"en": "Journal " "Article"},
+                            "title": {"en": "Journal Article"},
                         },
                         "rights": [
                             {
@@ -966,7 +966,7 @@ MOCK_RECORD_SEARCH_RESPONSE = {
                                 "subtype": "textDocument-journalArticle",
                                 "type": "textDocument",
                             },
-                            "title": {"en": "Journal " "Article"},
+                            "title": {"en": "Journal Article"},
                         },
                         "subjects": [
                             {
@@ -2064,7 +2064,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "eng",
-                        "label": "English",
+                        "label": {"en": "English"},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2118,7 +2118,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "textDocument-bookSection",
-                        "label": "Book Section",
+                        "label": {"en": "Book Section"},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2134,7 +2134,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "textDocument-journalArticle",
-                        "label": "Journal Article",
+                        "label": {"en": "Journal Article"},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2479,7 +2479,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "eng",
-                        "label": "English",
+                        "label": {"en": "English"},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2497,9 +2497,11 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "cc-by-sa-4.0",
-                        "label": (
-                            "Creative Commons Attribution-ShareAlike 4.0 International"
-                        ),
+                        "label": {
+                            "en": (
+                                "Creative Commons Attribution-ShareAlike 4.0 International"
+                            )
+                        },
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2569,7 +2571,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "textDocument-book",
-                        "label": "Book",
+                        "label": {"en": "Book"},
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2585,7 +2587,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "textDocument-journalArticle",
-                        "label": "Journal Article",
+                        "label": {"en": "Journal Article"},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -2831,7 +2833,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "eng",
-                        "label": "English",
+                        "label": {"en": "English"},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 1},
@@ -2849,9 +2851,11 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "cc-by-sa-4.0",
-                        "label": (
-                            "Creative Commons Attribution-ShareAlike 4.0 International"
-                        ),
+                        "label": {
+                            "en": (
+                                "Creative Commons Attribution-ShareAlike 4.0 International"
+                            )
+                        },
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 1},
@@ -2905,7 +2909,7 @@ MOCK_RECORD_DELTA_AGGREGATION_DOCS = [
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "textDocument-journalArticle",
-                        "label": "Journal Article",
+                        "label": {"en": "Journal Article"},
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 1},
@@ -3086,7 +3090,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-bookSection",
-                                                "title": {"en": "Book " "Section"},
+                                                "title": {"en": "Book Section"},
                                             }
                                         }
                                     },
@@ -3117,7 +3121,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-journalArticle",
-                                                "title": {"en": "Journal " "Article"},
+                                                "title": {"en": "Journal Article"},
                                             }
                                         }
                                     },
@@ -3879,7 +3883,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-bookSection",
-                                                "title": {"en": "Book " "Section"},
+                                                "title": {"en": "Book Section"},
                                             }
                                         }
                                     },
@@ -3910,7 +3914,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-journalArticle",
-                                                "title": {"en": "Journal " "Article"},
+                                                "title": {"en": "Journal Article"},
                                             }
                                         }
                                     },
@@ -4747,7 +4751,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-journalArticle",
-                                                "title": {"en": "Journal " "Article"},
+                                                "title": {"en": "Journal Article"},
                                             }
                                         }
                                     },
@@ -4809,7 +4813,7 @@ MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-bookSection",
-                                                "title": {"en": "Book " "Section"},
+                                                "title": {"en": "Book Section"},
                                             }
                                         }
                                     },
@@ -6231,7 +6235,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-bookSection",
-                                                "title": {"en": "Book " "Section"},
+                                                "title": {"en": "Book Section"},
                                             }
                                         }
                                     },
@@ -6262,7 +6266,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-journalArticle",
-                                                "title": {"en": "Journal " "Article"},
+                                                "title": {"en": "Journal Article"},
                                             }
                                         }
                                     },
@@ -7145,7 +7149,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-bookSection",
-                                                "title": {"en": "Book " "Section"},
+                                                "title": {"en": "Book Section"},
                                             }
                                         }
                                     },
@@ -7176,7 +7180,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-journalArticle",
-                                                "title": {"en": "Journal " "Article"},
+                                                "title": {"en": "Journal Article"},
                                             }
                                         }
                                     },
@@ -8184,7 +8188,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-journalArticle",
-                                                "title": {"en": "Journal " "Article"},
+                                                "title": {"en": "Journal Article"},
                                             }
                                         }
                                     },
@@ -8246,7 +8250,7 @@ MOCK_RECORD_SNAPSHOT_AGGREGATIONS = {
                                         "metadata": {
                                             "resource_type": {
                                                 "id": "textDocument-bookSection",
-                                                "title": {"en": "Book " "Section"},
+                                                "title": {"en": "Book Section"},
                                             }
                                         }
                                     },
@@ -9851,7 +9855,7 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
                 }
             ],
             "all_file_types": [],
-            "all_languages": [],
+            "top_languages": [],
             "all_rights": [],
             "all_resource_types": [],
             "top_affiliations_contributor": [],
@@ -9882,7 +9886,7 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
                 }
             ],
             "all_file_types": [],
-            "all_languages": [],
+            "top_languages": [],
             "all_rights": [],
             "all_resource_types": [],
             "top_affiliations_contributor": [],
@@ -9913,7 +9917,7 @@ MOCK_RECORD_SNAPSHOT_API_RESPONSE = [
                 }
             ],
             "all_file_types": [],
-            "all_languages": [],
+            "top_languages": [],
             "all_rights": [],
             "all_resource_types": [],
             "top_affiliations_contributor": [],
@@ -10517,7 +10521,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                     "_source": {
                                         "resource_type": {
                                             "id": "textDocument-journalArticle",
-                                            "title": {"en": "Journal " "Article"},
+                                            "title": {"en": "Journal Article"},
                                         }
                                     },
                                 }
@@ -10575,7 +10579,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                     "_source": {
                                         "resource_type": {
                                             "id": "textDocument-bookSection",
-                                            "title": {"en": "Book " "Section"},
+                                            "title": {"en": "Book Section"},
                                         }
                                     },
                                 }
@@ -12663,7 +12667,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                     "_source": {
                                         "resource_type": {
                                             "id": "textDocument-journalArticle",
-                                            "title": {"en": "Journal " "Article"},
+                                            "title": {"en": "Journal Article"},
                                         }
                                     },
                                 }
@@ -12694,7 +12698,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                     "_source": {
                                         "resource_type": {
                                             "id": "textDocument-bookSection",
-                                            "title": {"en": "Book " "Section"},
+                                            "title": {"en": "Book Section"},
                                         }
                                     },
                                 }
@@ -13402,7 +13406,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 2,
                         },
                         "id": "spa",
-                        "label": "Spanish",
+                        "label": {"en": "Spanish"},
                         "view": {
                             "total_events": 2,
                             "unique_parents": 2,
@@ -13420,7 +13424,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "eng",
-                        "label": "English",
+                        "label": {"en": "English"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -13440,7 +13444,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 3,
                         },
                         "id": "arr",
-                        "label": "All Rights " "Reserved",
+                        "label": {"en": "All Rights Reserved"},
                         "view": {
                             "total_events": 3,
                             "unique_parents": 3,
@@ -13585,7 +13589,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "textDocument-book",
-                        "label": "Book",
+                        "label": {"en": "Book"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -13603,7 +13607,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "textDocument-journalArticle",
-                        "label": "Journal " "Article",
+                        "label": {"en": "Journal Article"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -13621,7 +13625,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "textDocument-thesis",
-                        "label": "Thesis",
+                        "label": {"en": "Thesis"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -13891,7 +13895,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 2,
                         },
                         "id": "spa",
-                        "label": "Spanish",
+                        "label": {"en": "Spanish"},
                         "view": {
                             "total_events": 2,
                             "unique_parents": 2,
@@ -13909,7 +13913,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "eng",
-                        "label": "English",
+                        "label": {"en": "English"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -13929,7 +13933,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 3,
                         },
                         "id": "arr",
-                        "label": "All Rights " "Reserved",
+                        "label": {"en": "All Rights Reserved"},
                         "view": {
                             "total_events": 3,
                             "unique_parents": 3,
@@ -14074,7 +14078,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "textDocument-book",
-                        "label": "Book",
+                        "label": {"en": "Book"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -14092,7 +14096,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "textDocument-journalArticle",
-                        "label": "Journal " "Article",
+                        "label": {"en": "Journal Article"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -14110,7 +14114,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "textDocument-thesis",
-                        "label": "Thesis",
+                        "label": {"en": "Thesis"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -14380,7 +14384,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 2,
                         },
                         "id": "spa",
-                        "label": "Spanish",
+                        "label": {"en": "Spanish"},
                         "view": {
                             "total_events": 2,
                             "unique_parents": 2,
@@ -14398,7 +14402,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "eng",
-                        "label": "English",
+                        "label": {"en": "English"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -14418,7 +14422,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 3,
                         },
                         "id": "arr",
-                        "label": "All Rights " "Reserved",
+                        "label": {"en": "All Rights Reserved"},
                         "view": {
                             "total_events": 3,
                             "unique_parents": 3,
@@ -14563,7 +14567,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "textDocument-book",
-                        "label": "Book",
+                        "label": {"en": "Book"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -14581,7 +14585,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "textDocument-journalArticle",
-                        "label": "Journal " "Article",
+                        "label": {"en": "Journal Article"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -14599,7 +14603,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "textDocument-thesis",
-                        "label": "Thesis",
+                        "label": {"en": "Thesis"},
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -15167,7 +15171,7 @@ SAMPLE_RDMRECORDS_RECORDS_HIT = {
             ],
             "resource_type": {
                 "id": "textDocument-journalArticle",
-                "title": {"de": "Zeitschriftenartikel", "en": "Journal article"},
+                "title": {"de": "Zeitschriftenartikel", "en": "Journal Article"},
                 "props": {
                     "type": "textDocument",
                     "subtype": "textDocument-journalArticle",

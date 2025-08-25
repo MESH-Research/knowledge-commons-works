@@ -4,7 +4,7 @@ from pprint import pformat
 import arrow
 from invenio_access.permissions import system_identity
 from invenio_search import current_search_client
-from invenio_stats_dashboard.service import CommunityStatsService
+from invenio_stats_dashboard.services.service import CommunityStatsService
 
 from tests.helpers.sample_records import (
     sample_metadata_book_pdf,

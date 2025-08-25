@@ -1128,7 +1128,7 @@ class TestAPIRequestUsageSnapshot(TestAPIRequestUsageDelta):
         assert "top_countries" in day_data["subcounts"]
         assert "all_file_types" in day_data["subcounts"]
         assert "top_funders" in day_data["subcounts"]
-        assert "all_languages" in day_data["subcounts"]
+        assert "top_languages" in day_data["subcounts"]
         assert "all_rights" in day_data["subcounts"]
         assert "top_periodicals" in day_data["subcounts"]
         assert "top_publishers" in day_data["subcounts"]
