@@ -29,7 +29,9 @@ from invenio_record_importer_kcworks.types import FileData
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from invenio_records_resources.services.records.results import RecordItem
 from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
-from invenio_stats_dashboard.components import update_community_events_created_date
+from invenio_stats_dashboard.services.components.components import (
+    update_community_events_created_date,
+)
 
 from ..helpers.utils import remove_value_by_path
 from .communities import add_community_to_record
@@ -94,8 +96,10 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                 will be set as the default community for the record.
             file_paths (list[str], optional): A list of strings representing the paths
                 to the files to add to the record.
-            update_community_event_dates (bool, optional): If True, the community
-                events created date will be updated to the record created date.
+            update_community_event_dates (bool, optional): If True, both the community
+                events created date and event date will be updated to the record created
+                date. If False, only the record_created_date will be updated, leaving
+                event_date unchanged.
 
         Returns:
             The published record as a service layer RecordItem.
@@ -159,11 +163,14 @@ def minimal_published_record_factory(running_app, db, record_metadata):
             # Refresh the record to get the latest state.
             published = records_service.read(system_identity, published.id)
 
-        if input_metadata.get("created") and update_community_event_dates:
+        if input_metadata.get("created"):
             try:
+                # Always update record_created_date, optionally update event_date
+                # based on the flag
                 update_community_events_created_date(
                     record_id=str(published.id),
                     new_created_date=input_metadata.get("created"),
+                    update_event_date=update_community_event_dates,
                 )
             except Exception as e:
                 current_app.logger.error(
@@ -1331,3 +1338,57 @@ def full_sample_record_metadata(users):
         },
         "notes": ["Under investigation for copyright infringement."],
     }
+
+
+def enhance_metadata_with_funding_and_affiliations(metadata, record_index):
+    """Enhance metadata with funder and enhanced affiliation data for testing.
+
+    This helper function can be imported and used in test classes to enrich
+    metadata with realistic funding and affiliation information.
+
+    Args:
+        metadata: The base metadata to enhance (will be modified in-place)
+        record_index: Index of the record (0-3) to determine what data to add
+
+    Returns:
+        None (modifies metadata in-place)
+    """
+    # Only enhance the first record with affiliations
+    if record_index == 0:
+        for idx, creator in enumerate(metadata["metadata"]["creators"]):
+            if not creator.get("affiliations"):
+                metadata["metadata"]["creators"][idx]["affiliations"] = [
+                    {
+                        "id": "01ggx4157",  # CERN from affiliations fixture
+                        "name": "CERN",
+                        "type": {
+                            "id": "institution",
+                            "title": {"en": "Institution"},
+                        },
+                    }
+                ]
+
+    # Add funding information to the first two records only
+    if record_index < 2:
+        metadata["metadata"]["funding"] = [
+            {
+                "funder": {
+                    "id": "00k4n6c31",  # From funders fixture
+                    "name": "Funder 00k4n6c31",
+                    "type": {"id": "funder", "title": {"en": "Funder"}},
+                },
+                "award": {
+                    "id": "00k4n6c31::755021",  # From awards fixture
+                    "title": "Award 755021",
+                    "number": "755021",
+                    "identifiers": [
+                        {
+                            "identifier": (
+                                "https://sandbox.kcworks.org/00k4n6c31::755021"
+                            ),
+                            "scheme": "url",
+                        }
+                    ],
+                },
+            }
+        ]

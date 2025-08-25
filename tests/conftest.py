@@ -124,6 +124,7 @@ test_config = {
     "WEBPACKEXT_MANIFEST_LOADER": MockManifestLoader,
     "TESTING": True,
     "DEBUG": True,
+    "COMMUNITY_STATS_SCHEDULED_TASKS_ENABLED": True,
 }
 
 parent_path = Path(__file__).parent
@@ -321,10 +322,8 @@ def search_clear(search_clear):
     """
     yield search_clear
 
-    # FIXME: Resource types are getting deleted from the index after
-    # class finishes
-    current_search_client.indices.delete(index="*")
-    current_search_client.indices.delete_template("*")
+    # Delete stats templates if they exist
+    current_search_client.indices.delete_template("*stats*", ignore=[404])
 
 
 @pytest.fixture(scope="module")
