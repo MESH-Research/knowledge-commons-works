@@ -20,3 +20,7 @@ from .sample_metadata_journal_article_pdf import sample_metadata_journal_article
 from .sample_metadata_presentation_pdf import sample_metadata_presentation_pdf
 from .sample_metadata_thesis_pdf import sample_metadata_thesis_pdf
 from .sample_metadata_white_paper_pdf import sample_metadata_white_paper_pdf
+from .sample_metadata_journal_article_with_contributors import (
+    sample_metadata_journal_article_with_contributors,
+)
+from .sample_record_view import sample_record_view
