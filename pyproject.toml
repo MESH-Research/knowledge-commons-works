@@ -121,7 +121,6 @@ kcworks_api = "kcworks.views.views:create_api_blueprint"
 [project.entry-points."invenio_base.blueprints"]
 kcworks_views = "kcworks.views.views:create_blueprint"
 knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
-kcworks_stats_dashboard_view = "kcworks.stats_dashboard.views:create_blueprint"
 
 [project.entry-points."invenio_assets.webpack"]
 kcworks_theme = "kcworks.webpack:theme"
@@ -195,7 +194,6 @@ allow_untyped_globals = true
 exclude = [
     '^tests/',
     '^site/kcworks/dependencies/',
-    '^site/kcworks/stats_dashboard/',
     '^site/kcworks/services/search/index_templates/',
 ]
 
@@ -221,7 +219,6 @@ skip = [
     "site/kcworks/dependencies/invenio-requests",
     "site/kcworks/dependencies/invenio-vocabularies",
     "site/kcworks/dependencies/invenio-communities",
-    "site/kcworks/stats_dashboard",
     "__pycache__",  # Skip cache directories
     # ".venv",  # Skip virtual environment
     # "node_modules",  # Skip node modules
@@ -237,7 +234,6 @@ addopts = """
 --ignore=scripts
 --ignore=tests/helpers
 --ignore=site/kcworks/dependencies
---ignore=site/kcworks/stats_dashboard
 --ignore=site/kcworks/services/search/index_templates
 --cov=kcworks --cov-report=term-missing
 """
@@ -289,7 +285,6 @@ dev = [
 omit = [
     "site/kcworks/dependencies/*",
     "site/kcworks/views/task_results/*",
-    "site/kcworks/stats_dashboard/*",
     "site/kcworks/services/search/index_templates/*",
 ]
 
