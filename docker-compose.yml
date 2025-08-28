@@ -103,8 +103,6 @@ services:
       - ./docs:/opt/invenio/src/docs
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml
       - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./requirements.txt:/opt/invenio/src/requirements.txt
-      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
       - ./package.json:/opt/invenio/src/package.json
       - ./package-lock.json:/opt/invenio/src/package-lock.json
       - ./babel.config.js:/opt/invenio/src/babel.config.js
@@ -152,8 +150,6 @@ services:
       - ./docs:/opt/invenio/src/docs
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml
       - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./requirements.txt:/opt/invenio/src/requirements.txt
-      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
       - ./package.json:/opt/invenio/src/package.json
       - ./package-lock.json:/opt/invenio/src/package-lock.json
       - ./babel.config.js:/opt/invenio/src/babel.config.js
@@ -201,8 +197,6 @@ services:
       - ./docs:/opt/invenio/src/docs
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml
       - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./requirements.txt:/opt/invenio/src/requirements.txt
-      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
       - ./package.json:/opt/invenio/src/package.json
       - ./package-lock.json:/opt/invenio/src/package-lock.json
       - ./babel.config.js:/opt/invenio/src/babel.config.js
