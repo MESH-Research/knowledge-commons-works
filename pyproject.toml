@@ -35,8 +35,6 @@ dependencies = [
     "isbnlib",
     "langdetect",
     "lxml==5.2.1",
-    "numpy",
-    "pandas>=2.2.0",
     "pip",
     "pluggy>=0.12,<2.0",
     "python-dotenv",
