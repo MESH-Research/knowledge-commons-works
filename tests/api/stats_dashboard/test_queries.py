@@ -17,7 +17,6 @@ from invenio_stats_dashboard.proxies import (
 )
 from invenio_stats_dashboard.queries import (
     CommunityRecordDeltaQuery,
-    CommunityRecordSnapshotQuery,
     CommunityUsageDeltaQuery,
     CommunityUsageSnapshotQuery,
     get_relevant_record_ids_from_events,
@@ -30,8 +29,7 @@ from tests.helpers.sample_records import (
     sample_metadata_journal_article6_pdf,
     sample_metadata_journal_article7_pdf,
 )
-from tests.helpers.sample_stats_test_data import (
-    MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE,
+from tests.helpers.sample_stats_data.sample_usage_query_responses import (
     MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS,
     MOCK_USAGE_QUERY_RESPONSE_VIEWS,
 )
@@ -1205,164 +1203,6 @@ class TestCommunityRecordPublishedDeltaQuery(TestCommunityRecordCreatedDeltaQuer
         for i, day in enumerate(days):
             if i not in non_empty_days:
                 self._check_empty_day(day, i)
-
-
-class TestCommunityRecordCreatedSnapshotQuery:
-    """Test the daily_record_snapshot_query function."""
-
-    def test_daily_record_snapshot_query(
-        self,
-        running_app,
-        db,
-        minimal_community_factory,
-        minimal_published_record_factory,
-        user_factory,
-        create_stats_indices,
-        mock_send_remote_api_update_fixture,
-        celery_worker,
-        requests_mock,
-        search_clear,
-    ):
-        """Test daily_record_snapshot_query."""
-        app = running_app.app
-        u = user_factory(email="test@example.com", saml_id="")
-        community = minimal_community_factory(slug="knowledge-commons")
-        community_id = community.id
-        user_email = u.user.email
-
-        # import test records
-        requests_mock.real_http = True
-        for idx, rec in enumerate(
-            [
-                sample_metadata_journal_article4_pdf,
-                sample_metadata_journal_article5_pdf,
-                sample_metadata_journal_article6_pdf,
-                sample_metadata_journal_article7_pdf,
-            ]
-        ):
-            args = {
-                "identity": get_identity(
-                    current_datastore.get_user_by_email(user_email)
-                ),
-                "metadata": rec["input"],
-                "community_list": [community_id],
-                "set_default": True,
-            }
-            if idx != 1:
-                args["file_paths"] = [
-                    Path(__file__).parent.parent.parent
-                    / "helpers"
-                    / "sample_files"
-                    / list(rec["input"]["files"]["entries"].keys())[0]
-                ]
-            minimal_published_record_factory(**args)
-        current_search_client.indices.refresh(index="*rdmrecords-records*")
-
-        all_results = []
-        earliest_date = arrow.get("1900-01-01").floor("day")
-        start_date = arrow.get("2025-05-30")
-        target_date = arrow.get("2025-05-30")
-        final_date = arrow.utcnow()
-        while target_date <= final_date:
-            day = target_date.format("YYYY-MM-DD")
-            snapshot_query = CommunityRecordSnapshotQuery(
-                client=current_search_client,
-                event_index=prefix_index("rdmrecords-records"),
-            ).build_query(
-                start_date=earliest_date.format("YYYY-MM-DD"),
-                end_date=day,
-                community_id=community_id,
-            )
-            # app.logger.error(f"Snapshot query: {pformat(snapshot_query)}")
-            snapshot_results = snapshot_query.execute()
-            app.logger.error(f"target date: {target_date.format('YYYY-MM-DD')}")
-            app.logger.error(f"Snapshot results: {pformat(snapshot_results)}")
-            all_results.append(snapshot_results)
-
-            # only check a few sample days
-            if day.format("YYYY-MM-DD") in ["2025-05-30", "2025-05-31", "2025-06-03"]:
-                expected_results = MOCK_RECORD_SNAPSHOT_QUERY_RESPONSE[day]
-                # app.logger.error(f"Expected results: {pformat(expected_results)}")
-
-                for key, value in snapshot_results.aggregations.to_dict().items():
-                    if key[:3] == "by_":
-                        for bucket in value["buckets"]:
-                            matching_expected_bucket = next(
-                                (
-                                    expected_bucket
-                                    for expected_bucket in expected_results[key][
-                                        "buckets"
-                                    ]
-                                    if expected_bucket["key"] == bucket["key"]
-                                ),
-                                None,
-                            )
-                            for k, v in bucket.items():
-                                assert matching_expected_bucket is not None
-                                app.logger.error(
-                                    f"matching_expected_bucket: "
-                                    f"{pformat(matching_expected_bucket)}"
-                                )
-                                app.logger.error(f"v: {pformat(v)}")
-                                app.logger.error(f"Key: {k}")
-                                app.logger.error(
-                                    f"Expected bucket keys: "
-                                    f"{list(matching_expected_bucket.keys())}"
-                                )
-                                app.logger.error(
-                                    f"Actual bucket keys: {list(bucket.keys())}"
-                                )
-                                if k == "label":
-                                    if key == "by_subjects":
-                                        app.logger.error(
-                                            f"v: {pformat(sorted(v['hits']['hits'][0]['_source']['metadata']['subjects'], key=lambda x: x['subject']))}"  # noqa: E501
-                                        )
-                                        app.logger.error(
-                                            f"matching_expected_bucket: {pformat(sorted(matching_expected_bucket[k]['hits']['hits'][0]['_source']['metadata']['subjects'], key=lambda x: x['subject']))}"  # noqa: E501
-                                        )
-                                        for idx, s in enumerate(
-                                            sorted(
-                                                v["hits"]["hits"][0]["_source"][
-                                                    "metadata"
-                                                ]["subjects"],
-                                                key=lambda x: x["subject"],
-                                            )
-                                        ):
-                                            expected = sorted(
-                                                matching_expected_bucket[k]["hits"][
-                                                    "hits"
-                                                ][0]["_source"]["metadata"]["subjects"],
-                                                key=lambda x: x["subject"],
-                                            )[idx]
-                                            assert s["id"] == expected["id"]
-                                            assert s["subject"] == expected["subject"]
-                                            # FIXME: add scheme to labels
-                                            # assert s["scheme"] == expected["scheme"]
-
-                                    else:
-                                        assert sorted(
-                                            [i["_source"] for i in v["hits"]["hits"]]
-                                        ) == sorted(
-                                            [
-                                                j["_source"]
-                                                for j in matching_expected_bucket[k][
-                                                    "hits"
-                                                ]["hits"]
-                                            ]
-                                        )
-                                else:
-                                    assert v == matching_expected_bucket[k]
-                    else:
-                        app.logger.error(
-                            f"non-by value for key {key} on day {day}: {pformat(value)}"
-                        )
-                        assert value == expected_results[key]
-            else:
-                pass
-
-            target_date = target_date.shift(days=1)
-
-        assert len(all_results) == (final_date - start_date).days + 1
 
 
 class TestCommunityUsageDeltaQuery:

@@ -1368,6 +1368,35 @@ def enhance_metadata_with_funding_and_affiliations(metadata, record_index):
                     }
                 ]
 
+        # Add contributor affiliations to the same record
+        if "contributors" not in metadata["metadata"]:
+            metadata["metadata"]["contributors"] = []
+
+        metadata["metadata"]["contributors"].append(
+            {
+                "person_or_org": {
+                    "type": "personal",
+                    "name": "Test Contributor",
+                    "given_name": "Test",
+                    "family_name": "Contributor",
+                },
+                "role": {
+                    "id": "other",
+                    "title": {"en": "Other"},
+                },
+                "affiliations": [
+                    {
+                        "id": "03rmrcq20",  # Different affiliation ID for contributors
+                        "name": "Contributor Institution",
+                        "type": {
+                            "id": "institution",
+                            "title": {"en": "Institution"},
+                        },
+                    }
+                ],
+            }
+        )
+
     # Add funding information to the first two records only
     if record_index < 2:
         metadata["metadata"]["funding"] = [

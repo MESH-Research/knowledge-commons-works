@@ -1123,7 +1123,7 @@ class TestAPIRequestUsageSnapshot(TestAPIRequestUsageDelta):
         assert "unique_visitors" in day_data["totals"]["view"]
 
         assert "subcounts" in day_data
-        assert "all_access_status" in day_data["subcounts"]
+        assert "all_access_statuses" in day_data["subcounts"]
         assert "top_affiliations" in day_data["subcounts"]
         assert "top_countries" in day_data["subcounts"]
         assert "all_file_types" in day_data["subcounts"]
