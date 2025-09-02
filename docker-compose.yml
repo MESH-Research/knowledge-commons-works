@@ -78,7 +78,7 @@ services:
       service: app
     container_name: kcworks-ui
     command: ["/opt/invenio/var/instance/startup_ui_dev.sh"]
-    image: monotasker/kcworks:latest
+    image: monotasker/kcworks:${IMAGE_TAG:-latest}
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
@@ -103,8 +103,6 @@ services:
       - ./docs:/opt/invenio/src/docs
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml
       - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./requirements.txt:/opt/invenio/src/requirements.txt
-      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
       - ./package.json:/opt/invenio/src/package.json
       - ./package-lock.json:/opt/invenio/src/package-lock.json
       - ./babel.config.js:/opt/invenio/src/babel.config.js
@@ -128,7 +126,7 @@ services:
       service: app
     container_name: kcworks-api
     command: ["/opt/invenio/var/instance/startup_api_dev.sh"]
-    image: monotasker/kcworks:latest
+    image: monotasker/kcworks:${IMAGE_TAG:-latest}
     ports:
       - "5001"
     environment:
@@ -152,8 +150,6 @@ services:
       - ./docs:/opt/invenio/src/docs
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml
       - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./requirements.txt:/opt/invenio/src/requirements.txt
-      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
       - ./package.json:/opt/invenio/src/package.json
       - ./package-lock.json:/opt/invenio/src/package-lock.json
       - ./babel.config.js:/opt/invenio/src/babel.config.js
@@ -176,7 +172,7 @@ services:
       service: app
     container_name: kcworks-worker
     command: ["/opt/invenio/var/instance/startup_worker_dev.sh"]
-    image: monotasker/kcworks:latest
+    image: monotasker/kcworks:${IMAGE_TAG:-latest}
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
@@ -201,8 +197,6 @@ services:
       - ./docs:/opt/invenio/src/docs
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml
       - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./requirements.txt:/opt/invenio/src/requirements.txt
-      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
       - ./package.json:/opt/invenio/src/package.json
       - ./package-lock.json:/opt/invenio/src/package-lock.json
       - ./babel.config.js:/opt/invenio/src/babel.config.js

@@ -71,6 +71,7 @@ pytest_plugins = (
     "tests.fixtures.vocabularies.resource_types",
     "tests.fixtures.vocabularies.roles",
     "tests.fixtures.vocabularies.subjects",
+    "tests.fixtures.vocabularies.title_types",
 )
 
 
@@ -123,6 +124,7 @@ test_config = {
     "WEBPACKEXT_MANIFEST_LOADER": MockManifestLoader,
     "TESTING": True,
     "DEBUG": True,
+    "COMMUNITY_STATS_SCHEDULED_TASKS_ENABLED": True,
 }
 
 parent_path = Path(__file__).parent
@@ -247,7 +249,7 @@ RunningApp = namedtuple(
         # "relation_type_v",
         "resource_type_v",
         "subject_v",
-        # "title_type_v",
+        "title_type_v",
         "create_communities_custom_fields",
         "create_records_custom_fields",
     ],
@@ -272,7 +274,7 @@ def running_app(
     # relation_type_v,
     resource_type_v,
     subject_v,
-    # title_type_v,
+    title_type_v,
     create_communities_custom_fields,
     create_records_custom_fields,
 ):
@@ -298,7 +300,7 @@ def running_app(
         # relation_type_v,
         resource_type_v,
         subject_v,
-        # title_type_v,
+        title_type_v,
         create_communities_custom_fields,
         create_records_custom_fields,
     )
@@ -320,10 +322,8 @@ def search_clear(search_clear):
     """
     yield search_clear
 
-    # FIXME: Resource types are getting deleted from the index after
-    # class finishes
-    current_search_client.indices.delete(index="*")
-    current_search_client.indices.delete_template("*")
+    # Delete stats templates if they exist
+    current_search_client.indices.delete_template("*stats*", ignore=[404])
 
 
 @pytest.fixture(scope="module")

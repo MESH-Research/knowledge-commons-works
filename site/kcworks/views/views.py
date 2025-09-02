@@ -10,8 +10,6 @@ from werkzeug.exceptions import Forbidden, MethodNotAllowed
 
 def create_blueprint(app):
     """Register blueprint routes on app."""
-    app.logger.debug("create_blueprint")
-
     blueprint = Blueprint(
         "kcworks",
         __name__,

@@ -17,6 +17,7 @@ dependencies = [
     "invenio-app-rdm[opensearch2]==12.1.0",
     "invenio-communities==13.0.3",
     "invenio-group-collections-kcworks",
+    "invenio-logging[sentry]==2.1.5",
     "invenio-modular-deposit-form",
     "invenio-modular-detail-page",
     "invenio-rdm-records==10.9.2",
@@ -28,15 +29,14 @@ dependencies = [
     "invenio-s3",
     "invenio-saml",
     "invenio-search-ui==2.8.9",
+    "invenio-stats-dashboard",
     "invenio-subjects-fast",
     "invenio-utilities-tuw",
     "isbnlib",
     "langdetect",
     "lxml==5.2.1",
-    "numpy",
     "pip",
-    "pluggy<1.0,>=0.10.0",
-    "pytest-invenio<3.0.0",
+    "pluggy>=0.12,<2.0",
     "python-dotenv",
     "python-iso639",
     "python-stdnum",
@@ -56,10 +56,11 @@ dependencies = [
 
 [project.optional-dependencies]
 tests = [
-    "pytest-invenio>=2.1.0,<3.0.0",
+    "pytest-invenio>=2.2.2,<3.0.0",
     "pytest-ruff>=0.1.0",
     "pytest-mypy>=0.10.0",
     "pytest-black>=0.6.0",
+    "pytest-cov>=6.2.1",
     "pytest-isort>=4.0.0",
     "pytest-mock",
 ]
@@ -93,6 +94,7 @@ invenio-remote-api-provisioner = {path = "./site/kcworks/dependencies/invenio-re
 invenio-record-importer-kcworks = {path = "./site/kcworks/dependencies/invenio-record-importer-kcworks", editable = true}
 invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
 invenio-requests = {path = "./site/kcworks/dependencies/invenio-requests", editable = true}
+invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
 invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
 
 [tool.setuptools]
@@ -119,7 +121,6 @@ kcworks_api = "kcworks.views.views:create_api_blueprint"
 [project.entry-points."invenio_base.blueprints"]
 kcworks_views = "kcworks.views.views:create_blueprint"
 knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
-kcworks_stats_dashboard_view = "kcworks.stats_dashboard.views:create_blueprint"
 
 [project.entry-points."invenio_assets.webpack"]
 kcworks_theme = "kcworks.webpack:theme"
@@ -193,7 +194,6 @@ allow_untyped_globals = true
 exclude = [
     '^tests/',
     '^site/kcworks/dependencies/',
-    '^site/kcworks/stats_dashboard/',
     '^site/kcworks/services/search/index_templates/',
 ]
 
@@ -213,17 +213,27 @@ force_grid_wrap = 0
 use_parentheses = true
 ensure_newline_before_comments = true
 split_on_trailing_comma = true
+skip = [
+    "site/kcworks/dependencies/invenio-rdm-records",
+    "site/kcworks/dependencies/invenio-records-resources",
+    "site/kcworks/dependencies/invenio-requests",
+    "site/kcworks/dependencies/invenio-vocabularies",
+    "site/kcworks/dependencies/invenio-communities",
+    "__pycache__",  # Skip cache directories
+    # ".venv",  # Skip virtual environment
+    # "node_modules",  # Skip node modules
+]
 
 [tool.pytest.ini_options]
 addopts = """
 --black --ruff --isort --doctest-modules
+--log-cli-level=DEBUG
 --ignore=app_data
 --ignore=docs
 --ignore=node_modules
 --ignore=scripts
 --ignore=tests/helpers
 --ignore=site/kcworks/dependencies
---ignore=site/kcworks/stats_dashboard
 --ignore=site/kcworks/services/search/index_templates
 --cov=kcworks --cov-report=term-missing
 """
@@ -252,6 +262,7 @@ plugins = [
     "tests.fixtures.vocabularies.resource_types",
     "tests.fixtures.vocabularies.roles",
     "tests.fixtures.vocabularies.subjects",
+    "tests.fixtures.vocabularies.title_types",
 ]
 
 [dependency-groups]
@@ -274,7 +285,6 @@ dev = [
 omit = [
     "site/kcworks/dependencies/*",
     "site/kcworks/views/task_results/*",
-    "site/kcworks/stats_dashboard/*",
     "site/kcworks/services/search/index_templates/*",
 ]
 

@@ -15,8 +15,13 @@
 
 """Fixtures for stats."""
 
+import json
+import os
+from typing import TYPE_CHECKING, Callable
+
 import pytest
 from flask import current_app
+from flask_sqlalchemy import SQLAlchemy
 from invenio_rdm_records.resources.stats.event_builders import (
     build_record_unique_id,
 )
@@ -25,9 +30,19 @@ from invenio_record_importer_kcworks.services.stats.aggregations import (
     StatAggregatorOverridable,
 )
 from invenio_search.proxies import current_search, current_search_client
+from invenio_search.utils import prefix_index
 from invenio_stats.contrib.event_builders import build_file_unique_id
 from invenio_stats.processors import EventsIndexer, anonymize_user, flag_robots
 from invenio_stats.queries import TermsQuery
+from invenio_stats_dashboard.aggregations import (
+    register_aggregations as register_community_aggregations,
+)
+from invenio_stats_dashboard.config import COMMUNITY_STATS_QUERIES
+from invenio_stats_dashboard.utils.usage_events import UsageEventFactory
+
+# RunningApp type is defined in conftest.py but imported here to avoid circular imports
+if TYPE_CHECKING:
+    from tests.conftest import RunningApp
 
 AllowAllPermission = type(
     "Allow",
@@ -144,6 +159,7 @@ test_config_stats["STATS_AGGREGATIONS"] = {
             "query_modifiers": [lambda query, **_: query.filter("term", via_api=False)],
         },
     },
+    **register_community_aggregations(),
 }
 
 
@@ -163,11 +179,15 @@ def create_stats_indices(app):
     try:
         results = []
         for template_path in template_paths:
+            current_app.logger.info(f"Registering template from path: {template_path}")
             results.append(current_search.register_templates(template_path))
         for result in results:
             for index_name, index_template in result.items():
+                current_app.logger.info(f"Registering template for index: {index_name}")
+                current_app.logger.info(f"Template content: {index_template}")
                 templates[index_name] = index_template
         for index_name, index_template in templates.items():
+            current_app.logger.info(f"Putting template for index: {index_name}")
             current_search._put_template(
                 index_name,
                 index_template,
@@ -175,9 +195,9 @@ def create_stats_indices(app):
                 ignore=None,
             )
     except Exception as e:
-        current_app.logger.error("An error occured while creating stats indices.")
+        current_app.logger.error("An error occurred while creating stats indices.")
         current_app.logger.error(e)
-        print("An error occured while creating stats indices.")
+        print("An error occurred while creating stats indices.")
         print(e)
 
 
@@ -262,6 +282,7 @@ test_config_stats["STATS_QUERIES"] = {
             },
         },
     },
+    **COMMUNITY_STATS_QUERIES,
 }
 
 AllowAllPermission = type(
@@ -271,3 +292,128 @@ AllowAllPermission = type(
 )()
 
 test_config_stats["STATS_PERMISSION_FACTORY"] = permissions_policy_lookup_factory
+
+
+@pytest.fixture(scope="function")
+def put_old_stats_templates():
+    """Put old stats templates from invenio-rdm-records for testing migration scenarios.
+
+    This fixture is used to simulate the migration scenario where old templates
+    exist and need to be migrated to new enriched templates. It deletes any
+    existing enriched templates and puts the old templates from invenio-rdm-records.
+
+    Parameters:
+        running_app: The running application fixture.
+    """
+    client = current_search_client
+
+    # Delete the new enriched templates first if they exist
+    try:
+        client.indices.delete_index_template(
+            prefix_index("events-stats-record-view-v2.0.0")
+        )
+    except Exception:
+        pass  # Template might not exist
+    try:
+        client.indices.delete_index_template(
+            prefix_index("events-stats-file-download-v2.0.0")
+        )
+    except Exception:
+        pass  # Template might not exist
+
+    # Put the old templates from invenio-rdm-records
+    old_templates = {
+        "events-stats-record-view-v1.0.0": (
+            "invenio_rdm_records.records.stats.templates.events.record_view"
+        ),
+        "events-stats-file-download-v1.0.0": (
+            "invenio_rdm_records.records.stats.templates.events.file_download"
+        ),
+    }
+
+    templates_put = False
+    for template_name, template_path in old_templates.items():
+        try:
+            template_result = current_search.register_templates(template_path)
+
+            if isinstance(template_result, dict):
+                for index_name, template_file_path in template_result.items():
+                    if os.path.exists(template_file_path):
+                        with open(template_file_path, "r") as f:
+                            template_content = json.load(f)
+
+                        prefix = current_app.config.get("SEARCH_INDEX_PREFIX", "")
+                        template_str = json.dumps(template_content)
+                        template_str = template_str.replace(
+                            "__SEARCH_INDEX_PREFIX__", prefix
+                        )
+                        template_content = json.loads(template_str)
+
+                        # Convert old template format to new index template format
+                        if (
+                            "settings" in template_content
+                            and "template" not in template_content
+                        ):
+                            converted_template = {
+                                "index_patterns": template_content.get(
+                                    "index_patterns", []
+                                ),
+                                "template": {
+                                    "settings": template_content.get("settings", {}),
+                                    "mappings": template_content.get("mappings", {}),
+                                    "aliases": template_content.get("aliases", {}),
+                                },
+                                "priority": 100,
+                                "version": 1,
+                            }
+
+                            current_search_client.indices.put_index_template(
+                                name=index_name,
+                                body=converted_template,
+                            )
+                        else:
+                            # Template is already in new format, use as-is
+                            current_search_client.indices.put_index_template(
+                                name=index_name,
+                                body=template_content,
+                            )
+                        templates_put = True
+                    else:
+                        current_app.logger.warning(
+                            f"Template file not found: {template_file_path}"
+                        )
+            else:
+                current_app.logger.warning(
+                    f"Unexpected result from register_templates: {template_result}"
+                )
+        except Exception as e:
+            current_app.logger.warning(
+                f"Failed to put old template {template_name}: {e}"
+            )
+
+    if not templates_put:
+        current_app.logger.warning(
+            "Could not put old templates - migration test may not work correctly"
+        )
+
+    yield
+
+    # Clean up: delete the old templates after the test
+    try:
+        client.indices.delete_index_template("events-stats-record-view-v1.0.0")
+    except Exception:
+        pass
+    try:
+        client.indices.delete_index_template("events-stats-file-download-v1.0.0")
+    except Exception:
+        pass
+
+
+@pytest.fixture
+def usage_event_factory():
+    """Factory for creating usage stats events for testing.
+
+    Returns a factory function that can create view and download events
+    for testing usage statistics.
+    """
+    return UsageEventFactory()

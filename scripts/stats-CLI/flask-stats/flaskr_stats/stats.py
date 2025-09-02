@@ -1,9 +1,17 @@
 import functools
 import subprocess
-import stats_CLI
 from pprint import pprint
+
+import stats_CLI
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint,
+    flash,
+    g,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
 )
 
 bp = Blueprint('stats', __name__, url_prefix='/')

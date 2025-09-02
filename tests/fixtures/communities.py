@@ -8,30 +8,48 @@
 
 import traceback
 from collections.abc import Callable
+from pprint import pformat
 
 import marshmallow as ma
 import pytest
+from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_communities.communities.records.api import Community
 from invenio_communities.proxies import current_communities
-from invenio_rdm_records.proxies import (
-    current_rdm_records_service,
-)
+from invenio_rdm_records.proxies import current_rdm_records, current_rdm_records_service
 from invenio_rdm_records.records.api import RDMRecord
 from invenio_rdm_records.utils import get_or_create_user
+from invenio_records_resources.services.uow import UnitOfWork
+from invenio_search.proxies import current_search_client
 
 
 def add_community_to_record(
     db: SQLAlchemy, record: RDMRecord, community_id: str, default: bool = False
 ) -> None:
     """Add a community to a record."""
-    record.parent.communities.add(community_id, default=default)  # type: ignore
-    record.parent.commit()  # type: ignore
-    db.session.commit()  # type: ignore
-    current_rdm_records_service.indexer.index(record, arguments={"refresh": True})
+    current_search_client.indices.refresh(index="*rdmrecords-records*")
+
+    # Use UnitOfWork to ensure proper transaction handling
+    with UnitOfWork(db.session) as uow:
+        current_rdm_records.record_communities_service.add(
+            system_identity,
+            record.pid.pid_value,  # type: ignore
+            data={"communities": [{"id": str(community_id)}]},
+            uow=uow,
+        )
+        # Commit the transaction
+        uow.commit()
+
+    # Get the updated record from the database
+    updated_record = current_rdm_records_service.record_cls.get_record(record.id)
+
+    # Now index the updated record
+    current_rdm_records_service.indexer.index(
+        updated_record, arguments={"refresh": True}
+    )
 
 
 def make_community_member(user_id: int, role: str, community_id: str) -> None:

@@ -162,7 +162,8 @@ INVENIO_SECRET_KEY='SECRET_KEY_VERY_SECRET'
 COMMONS_API_TOKEN=mytoken  # this must be obtained from the Commons administrators - just leave as is
 COMMONS_SEARCH_API_TOKEN=mytoken  # this must be obtained from the Commons administrators - just leave as is
 INVENIO_DATACITE_PASSWORD=myinveniodatacitepassword  # this must be obtained from the Commons administrators - just leave as is
-API_TOKEN=myapitoken # just leave as is
+API_TOKEN=myapitoken # this can be generated after the instance is running, just leave as is
+API_TOKEN_PRODUCTION=myapitokenproduction # for importing test data in local development, this must be obtained from the KCWorks administrators - just leave as is for now
 INVENIO_LOCAL_SITE_PATH=/local/path/to/cloned/repository/knowledge-commons-works/site # set this to `site` under the base directory of your cloned repository
 INVENIO_LOCAL_DEPENDENCIES_PATH=/local/path/to/cloned/repository/knowledge-commons-works/site/kcworks/dependencies # set this to `site/kcworks/dependencies` under the base directory of your cloned repository
 PYTHON_LOCAL_SITE_PACKAGES_PATH=/local/path/to/cloned/repository/knowledge-commons-works/.venv/lib/python3.12/site-packages # you need this for dev
@@ -198,3 +199,13 @@ Here is a list of the variables that you need to set in your `.invenio.private` 
 services_setup = True
 instance_path = /opt/invenio/var/instance
 ```
+
+## Importing test data
+
+To import test data into your local instance, you can use the `import_test_data` command. This command will import records from the production API and create a Knowledge Commons community if it doesn't exist. The new records will be added to the Knowledge Commons community. From inside the `kcworks-ui` container, run the following command:
+
+```shell
+invenio kcworks_records import-test-records <email> <number-of-records>
+```
+
+This will import the specified number of records from the production API and add them to the Knowledge Commons community, owned by the user with the specified email address. (The email address must be an existing user in the local instance and must have the "owner" role for the Knowledge Commons community.)

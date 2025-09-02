@@ -63,3 +63,4 @@ Is there something you'd like to see in a future release? Let us know at [https:
     - Improved **year/volume/issue navigation** for journal collections
     - Improved **content flagging and moderation**
     - **COAR Notify** support
+    - **Individual user statistics**

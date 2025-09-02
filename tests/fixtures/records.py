@@ -28,10 +28,15 @@ from invenio_record_importer_kcworks.services.files import FilesHelper
 from invenio_record_importer_kcworks.types import FileData
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from invenio_records_resources.services.records.results import RecordItem
+from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
+from invenio_stats_dashboard.services.components.components import (
+    update_community_events_created_date,
+)
 
 from ..helpers.utils import remove_value_by_path
 from .communities import add_community_to_record
 from .files import build_file_links
+from .users import get_authenticated_identity
 from .vocabularies.resource_types import RESOURCE_TYPES
 
 
@@ -45,9 +50,22 @@ def minimal_draft_record_factory(running_app, db, record_metadata):
         **kwargs: Any,
     ):
         """Create a minimal draft record."""
-        input_metadata = metadata or record_metadata().metadata_in
+        current_app.logger.error(
+            f"Creating draft record with metadata: {pformat(metadata)}"
+        )
+        input_metadata = metadata or deepcopy(record_metadata().metadata_in)
+        current_app.logger.error(f"Input metadata: {pformat(input_metadata)}")
         identity = identity or system_identity
-        return records_service.create(identity, input_metadata)
+        draft = records_service.create(identity, input_metadata)
+
+        if input_metadata.get("created"):
+            record = records_service.read(system_identity, id_=draft.id)._record
+            record.model.created = input_metadata.get("created")
+            uow = UnitOfWork(db.session)
+            uow.register(RecordCommitOp(record))
+            uow.commit()
+
+        return draft
 
     return _factory
 
@@ -62,6 +80,7 @@ def minimal_published_record_factory(running_app, db, record_metadata):
         community_list: list[str] | None = None,
         set_default: bool = False,
         file_paths: list[str] | None = None,
+        update_community_event_dates: bool = False,
         **kwargs: Any,
     ) -> RecordItem:
         """Create a minimal published record.
@@ -77,12 +96,21 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                 will be set as the default community for the record.
             file_paths (list[str], optional): A list of strings representing the paths
                 to the files to add to the record.
+            update_community_event_dates (bool, optional): If True, both the community
+                events created date and event date will be updated to the record created
+                date. If False, only the record_created_date will be updated, leaving
+                event_date unchanged.
 
         Returns:
             The published record as a service layer RecordItem.
         """
-        input_metadata = metadata or record_metadata().metadata_in
-        identity = identity or system_identity
+        input_metadata = metadata or deepcopy(record_metadata().metadata_in)
+
+        if identity:
+            identity = get_authenticated_identity(identity)
+        else:
+            identity = system_identity
+
         draft = records_service.create(identity, input_metadata)
 
         if file_paths:
@@ -114,14 +142,42 @@ def minimal_published_record_factory(running_app, db, record_metadata):
                 files=file_objects,
             )
 
-        published = records_service.publish(identity, draft.id)
+        current_app.logger.error(
+            f"in published record factory, draft: {pformat(draft.to_dict())}"
+        )
+
+        published = records_service.publish(system_identity, draft.id)
+
+        if input_metadata.get("created"):
+            record = records_service.read(system_identity, id_=published.id)._record
+            record.model.created = input_metadata.get("created")
+            uow = UnitOfWork(db.session)
+            uow.register(RecordCommitOp(record))
+            uow.commit()
+
         if community_list:
             record = published._record
             add_community_to_record(db, record, community_list[0], default=set_default)
             for community in community_list[1:] if len(community_list) > 1 else []:
                 add_community_to_record(db, record, community, default=False)
             # Refresh the record to get the latest state.
-            published = records_service.read(identity, published.id)
+            published = records_service.read(system_identity, published.id)
+
+        if input_metadata.get("created"):
+            try:
+                # Always update record_created_date, optionally update event_date
+                # based on the flag
+                update_community_events_created_date(
+                    record_id=str(published.id),
+                    new_created_date=input_metadata.get("created"),
+                    update_event_date=update_community_event_dates,
+                )
+            except Exception as e:
+                current_app.logger.error(
+                    f"Failed to update community events created date for record "
+                    f"{published.id}: {e}"
+                )
+
         return published
 
     return _factory
@@ -209,8 +265,12 @@ class TestRecordMetadata:
 
         # Compare actual metadata dictionaries with expected metadata dictionaries
         # with variations seen in REST API results.
-        test_metadata.compare_draft_via_api(my_draft_dict_to_test, by_api=True, method="publish")
-        test_metadata.compare_published_via_api(my_published_dict_to_test, by_api=True, method="publish")
+        test_metadata.compare_draft_via_api(
+            my_draft_dict_to_test, by_api=True, method="publish"
+        )
+        test_metadata.compare_published_via_api(
+            my_published_dict_to_test, by_api=True, method="publish"
+        )
     ```
 
     The input metadata dictionary can include the distinctive content used in the
@@ -290,7 +350,11 @@ class TestRecordMetadata:
         file_entries = file_entries or {}
         self.app = app
         starting_metadata_in = deepcopy(TestRecordMetadata.default_metadata_in)
-        self._metadata_in: dict = metadata_in if metadata_in else starting_metadata_in
+        # Always make a deep copy to prevent shared references and mutations
+        # across tests.
+        self._metadata_in: dict = (
+            deepcopy(metadata_in) if metadata_in else starting_metadata_in
+        )
         self.community_list = community_list
         self.file_entries = file_entries
         self.owner_id = owner_id
@@ -321,8 +385,10 @@ class TestRecordMetadata:
 
         Fields that can't be set before record creation:
         """
-        self._metadata_in["files"] = {"enabled": False}
-        return self._metadata_in
+        # Return a copy to avoid mutating the original dictionary
+        result = deepcopy(self._metadata_in)
+        result["files"] = {"enabled": False}
+        return result
 
     @staticmethod
     def build_draft_record_links(
@@ -1272,3 +1338,86 @@ def full_sample_record_metadata(users):
         },
         "notes": ["Under investigation for copyright infringement."],
     }
+
+
+def enhance_metadata_with_funding_and_affiliations(metadata, record_index):
+    """Enhance metadata with funder and enhanced affiliation data for testing.
+
+    This helper function can be imported and used in test classes to enrich
+    metadata with realistic funding and affiliation information.
+
+    Args:
+        metadata: The base metadata to enhance (will be modified in-place)
+        record_index: Index of the record (0-3) to determine what data to add
+
+    Returns:
+        None (modifies metadata in-place)
+    """
+    # Only enhance the first record with affiliations
+    if record_index == 0:
+        for idx, creator in enumerate(metadata["metadata"]["creators"]):
+            if not creator.get("affiliations"):
+                metadata["metadata"]["creators"][idx]["affiliations"] = [
+                    {
+                        "id": "01ggx4157",  # CERN from affiliations fixture
+                        "name": "CERN",
+                        "type": {
+                            "id": "institution",
+                            "title": {"en": "Institution"},
+                        },
+                    }
+                ]
+
+        # Add contributor affiliations to the same record
+        if "contributors" not in metadata["metadata"]:
+            metadata["metadata"]["contributors"] = []
+
+        metadata["metadata"]["contributors"].append(
+            {
+                "person_or_org": {
+                    "type": "personal",
+                    "name": "Test Contributor",
+                    "given_name": "Test",
+                    "family_name": "Contributor",
+                },
+                "role": {
+                    "id": "other",
+                    "title": {"en": "Other"},
+                },
+                "affiliations": [
+                    {
+                        "id": "03rmrcq20",  # Different affiliation ID for contributors
+                        "name": "Contributor Institution",
+                        "type": {
+                            "id": "institution",
+                            "title": {"en": "Institution"},
+                        },
+                    }
+                ],
+            }
+        )
+
+    # Add funding information to the first two records only
+    if record_index < 2:
+        metadata["metadata"]["funding"] = [
+            {
+                "funder": {
+                    "id": "00k4n6c31",  # From funders fixture
+                    "name": "Funder 00k4n6c31",
+                    "type": {"id": "funder", "title": {"en": "Funder"}},
+                },
+                "award": {
+                    "id": "00k4n6c31::755021",  # From awards fixture
+                    "title": "Award 755021",
+                    "number": "755021",
+                    "identifiers": [
+                        {
+                            "identifier": (
+                                "https://sandbox.kcworks.org/00k4n6c31::755021"
+                            ),
+                            "scheme": "url",
+                        }
+                    ],
+                },
+            }
+        ]

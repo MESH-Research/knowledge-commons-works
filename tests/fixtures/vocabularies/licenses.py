@@ -85,6 +85,22 @@ LICENSE_DATA = [
             )
         },
     },
+    {
+        "id": "cc-by-sa-4.0",
+        "props": {
+            "url": "https://creativecommons.org/licenses/by-sa/4.0/legalcode",
+            "scheme": "spdx",
+            "osi_approved": "",
+        },
+        "title": {"en": "Creative Commons Attribution-ShareAlike 4.0 International"},
+        "description": {
+            "en": (
+                "The Creative Commons Attribution-ShareAlike license allows"
+                " re-distribution and re-use of a licensed work on"
+                " the condition that the creator is appropriately credited."
+            )
+        },
+    },
 ]
 
 

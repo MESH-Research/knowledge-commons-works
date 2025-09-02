@@ -10,7 +10,6 @@
 from unittest.mock import Mock
 
 from idutils import normalize_doi
-
 from invenio_rdm_records.services.pids import providers
 
 

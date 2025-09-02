@@ -11,6 +11,19 @@ cyan='\033[0;36m'
 clear='\033[0m'
 
 echo -e "${yellow}Building assets for Knowledge Commons Works instance...${clear}"
+
+# Fix axios version conflict in invenio_search_ui
+echo -e "${yellow}Fixing axios version conflict in invenio_search_ui...${clear}"
+if [ -f "/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui/webpack.py" ]; then
+    sed -i '/"axios": "^0.21.0"/d' /opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui/webpack.py
+    echo -e "${green}Fixed axios version conflict in invenio_search_ui${clear}"
+elif [ -f "/opt/invenio/src/.venv/lib/python3.9/site-packages/invenio_search_ui/webpack.py" ]; then
+    sed -i '/"axios": "^0.21.0"/d' /opt/invenio/src/.venv/lib/python3.9/site-packages/invenio_search_ui/webpack.py
+    echo -e "${green}Fixed axios version conflict in invenio_search_ui${clear}"
+else
+    echo -e "${red}Warning: Could not find invenio_search_ui/webpack.py to fix axios conflict${clear}"
+fi
+
 echo -e "${yellow}Collecting static files...${clear}"
 invenio collect -v
 echo -e "${yellow}Building assets...${clear}"
