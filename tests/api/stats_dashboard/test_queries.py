@@ -1,5 +1,6 @@
 """Test the queries used by the stats dashboard."""
 
+import pytest
 import re
 from copy import deepcopy
 from pathlib import Path
@@ -22,7 +23,6 @@ from invenio_stats_dashboard.queries import (
     get_relevant_record_ids_from_events,
 )
 
-from tests.fixtures.vocabularies.resource_types import reindex_resource_types
 from tests.helpers.sample_records import (
     sample_metadata_journal_article4_pdf,
     sample_metadata_journal_article5_pdf,
@@ -918,6 +918,7 @@ class TestCommunityRecordCreatedDeltaQuery:
         self.app.logger.error("Method: test_daily_record_delta_query")
 
 
+@pytest.mark.usefixtures("reindex_resource_types")
 class TestCommunityRecordDeltaQueryDeleted(TestCommunityRecordCreatedDeltaQuery):
     """Test the CommunityRecordCreatedDeltaQuery finding deleted records."""
 
@@ -939,9 +940,6 @@ class TestCommunityRecordDeltaQueryDeleted(TestCommunityRecordCreatedDeltaQuery)
         super()._setup_records(
             user_email, community_id, minimal_published_record_factory
         )
-
-        # Ensure vocabulary indices are properly set up before proceeding
-        reindex_resource_types(self.app)
 
         current_records = records_service.search(
             identity=system_identity,

@@ -287,7 +287,8 @@ def resource_type_v(app, resource_type_type, resource_types):
     Vocabulary.index.refresh()
 
 
-def reindex_resource_types(app):
+@pytest.fixture(scope="function")
+def reindex_resource_types(running_app):
     """Ensure vocabulary search indices exist and are populated.
 
     This method checks if vocabulary indices are missing or empty and
