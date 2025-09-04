@@ -276,6 +276,7 @@ class TestCommunitiesEventsComponentsIncluded:
     "celery_worker",
     "requests_mock",
     "search_clear",
+    "reindex_resource_types",
 )
 class TestCommunitiesEventsComponentsDeleted(TestCommunitiesEventsComponentsIncluded):
     """Test the component that tracks record deletions for communities.
@@ -421,6 +422,7 @@ class TestCommunitiesEventsComponentsDeleted(TestCommunitiesEventsComponentsIncl
     "celery_worker",
     "requests_mock",
     "search_clear",
+    "reindex_resource_types",
 )
 class TestCommunitiesEventsComponentsRemoved(TestCommunitiesEventsComponentsIncluded):
     """Test the component that tracks record community removals.

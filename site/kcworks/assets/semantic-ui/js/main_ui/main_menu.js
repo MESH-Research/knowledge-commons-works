@@ -488,6 +488,15 @@ const MainMenu = ({
 
         <div className={`item`} role="menuitem">
           <IconMenuItem
+            text={i18next.t("Insights")}
+            url={"/stats"}
+            icon="chart line"
+            tabIndex={0}
+          />
+        </div>
+
+        <div className={`item`} role="menuitem">
+          <IconMenuItem
             text={i18next.t("KC Home")}
             url={`https://${kcWordpressDomain}`}
             icon="home"
