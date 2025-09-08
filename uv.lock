@@ -2935,7 +2935,7 @@ wheels = [
 
 [[package]]
 name = "invenio-stats-dashboard"
-version = "0.1.0"
+version = "0.1.0a1"
 source = { editable = "site/kcworks/dependencies/invenio-stats-dashboard" }
 dependencies = [
     { name = "glom" },
