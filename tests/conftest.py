@@ -322,7 +322,8 @@ def search_clear(search_clear):
     """
     yield search_clear
 
-    # Delete stats templates if they exist
+    # Delete stats indices and templates if they exist
+    current_search_client.indices.delete("*stats*", ignore=[404])
     current_search_client.indices.delete_template("*stats*", ignore=[404])
 
 

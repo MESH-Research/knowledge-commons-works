@@ -880,10 +880,10 @@ class TestAPIRequestUsageDelta:
         for record in synthetic_records:
             for i, date in enumerate(self.expected_positive_dates):
                 usage_events.append(
-                    usage_event_factory.make_view_event(record, date, i)
+                    usage_event_factory.make_view_event(record.to_dict(), date, i)
                 )
                 usage_events.append(
-                    usage_event_factory.make_download_event(record, date, i)
+                    usage_event_factory.make_download_event(record.to_dict(), date, i)
                 )
 
         usage_event_factory.index_usage_events(usage_events)
@@ -976,7 +976,8 @@ class TestAPIRequestUsageDelta:
 
         assert "subcounts" in day_data
         assert "by_access_statuses" in day_data["subcounts"]
-        assert "by_affiliations" in day_data["subcounts"]
+        assert "by_affiliations_contributor" in day_data["subcounts"]
+        assert "by_affiliations_creator" in day_data["subcounts"]
         assert "by_countries" in day_data["subcounts"]
         assert "by_file_types" in day_data["subcounts"]
         assert "by_funders" in day_data["subcounts"]

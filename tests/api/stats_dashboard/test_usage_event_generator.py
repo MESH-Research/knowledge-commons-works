@@ -216,3 +216,122 @@ def test_synthetic_usage_event_creation(
                 )
 
     assert total_events == 200, "Should have found 200 events in monthly indices"
+
+
+def test_usage_event_community_ids_with_same_day_community_added(
+    running_app,
+    db,
+    minimal_community_factory,
+    minimal_published_record_factory,
+    user_factory,
+    record_metadata,
+    mock_send_remote_api_update_fixture,
+    create_stats_indices,
+    search_clear,
+):
+    """Test usage events include community IDs when community added on same day."""
+    client = current_search_client
+
+    u = user_factory(email="test@example.com", saml_id="")
+    user = u.user
+    user_identity = get_identity(user)
+
+    community = minimal_community_factory(user.id)
+    community_id = community["id"]
+
+    # Create a record with a specific creation date
+    test_date = "2025-06-15T10:00:00.000000+00:00"
+    test_metadata = copy.deepcopy(record_metadata().metadata_in)
+    test_metadata["created"] = test_date
+    test_metadata["files"] = {
+        "enabled": True,
+        "entries": {"sample.pdf": {"key": "sample.pdf", "ext": "pdf"}},
+    }
+
+    file_path = (
+        Path(__file__).parent.parent.parent / "helpers" / "sample_files" / "sample.pdf"
+    )
+
+    # Create record with community, but don't update community event dates
+    # This simulates the scenario where community was added on the same day
+    record = minimal_published_record_factory(
+        identity=user_identity,
+        community_list=[community_id],
+        metadata=test_metadata,
+        file_paths=[file_path],
+        update_community_event_dates=False,  # Don't update community event dates
+    )
+
+    # Manually create a community "added" event for the same day
+    from invenio_stats_dashboard.services.components import (
+        update_community_events_index,
+    )
+
+    update_community_events_index(
+        record_id=str(record["id"]),
+        community_ids_to_add=[community_id],
+        timestamp=test_date,  # Same timestamp as record creation
+        record_created_date=test_date,
+        record_published_date=test_metadata.get("publication_date"),
+    )
+
+    client.indices.refresh(index=prefix_index("rdmrecords-records"))
+    client.indices.refresh(index=prefix_index("stats-community-events"))
+
+    # Generate usage events for the same day (without enrichment initially)
+    usage_events = UsageEventFactory().generate_and_index_repository_events(
+        start_date="2025-06-15",
+        end_date="2025-06-15",
+        events_per_record=5,
+        enrich_events=False,  # Don't enrich initially
+    )
+
+    assert usage_events["indexed"] > 0, "Should have indexed some events"
+    assert usage_events["errors"] == 0, "Should have no indexing errors"
+
+    client.indices.refresh(index="events-stats-*")
+
+    # Now test the migration service to enrich the events
+    from invenio_stats_dashboard.services.usage_reindexing import (
+        EventReindexingService,
+    )
+
+    service = EventReindexingService(app=running_app)
+
+    # Reindex events for June 2025 to add community_ids
+    results = service.reindex_events(
+        event_types=["view"],
+        month_filter=["2025-06"],
+    )
+
+    # Check that events were processed
+    june_results = results.get("2025-06", {})
+    view_results = june_results.get("view", {})
+    assert (
+        view_results.get("total_processed", 0) > 0
+    ), "Should have processed some events"
+
+    client.indices.refresh(index="events-stats-*")
+
+    # Check that the events have community_ids populated
+    view_index = f"{prefix_index('events-stats-record-view')}-2025-06"
+    view_search = Search(using=client, index=view_index)
+    view_search = view_search.query("match_all")
+    view_results = view_search.execute()
+
+    events_with_community_ids = 0
+    for hit in view_results:
+        event_data = hit.to_dict()
+        if "community_ids" in event_data and event_data["community_ids"]:
+            events_with_community_ids += 1
+            # Verify the community ID is correct
+            assert community_id in event_data["community_ids"], (
+                f"Event should include community ID {community_id}, "
+                f"but got {event_data['community_ids']}"
+            )
+
+    assert events_with_community_ids > 0, (
+        f"Expected some events to have community_ids, but found "
+        f"{events_with_community_ids} events with community_ids out of "
+        f"{len(view_results)} total events"
+    )

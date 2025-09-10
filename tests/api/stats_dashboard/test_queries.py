@@ -1,12 +1,12 @@
 """Test the queries used by the stats dashboard."""
 
-import pytest
 import re
 from copy import deepcopy
 from pathlib import Path
 from pprint import pformat
 
 import arrow
+import pytest
 from invenio_access.permissions import system_identity
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_datastore

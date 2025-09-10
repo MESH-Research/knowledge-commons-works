@@ -36,7 +36,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                         "records": {
                             "added": {"metadata_only": 0, "with_files": 2},
-                            "removed": {"data_volume": 0.0, "file_count": 0},
+                            "removed": {"metadata_only": 0, "with_files": 0},
                         },
                     }
                 ],
@@ -472,7 +472,24 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     },
                 ],
-                "by_affiliations_contributor": [],
+                "by_affiliations_contributor": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 1984949.0, "file_count": 1},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
+                        },
+                        "id": "03rmrcq20",
+                        "label": "",
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 1},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 1},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                    }
+                ],
                 "by_affiliations_creator": [
                     {
                         "files": {
@@ -814,6 +831,22 @@ MOCK_RECORD_DELTA_DOCS = [
                             "removed": {"metadata_only": 0, "with_files": 0},
                         },
                     },
+                    {
+                        "files": {
+                            "added": {"data_volume": 0.0, "file_count": 0},
+                            "removed": {"data_volume": 0.0, "file_count": 0},
+                        },
+                        "id": "http://id.worldcat.org/fast/934875",
+                        "label": "French-Canadian literature",
+                        "parents": {
+                            "added": {"metadata_only": 1, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 1, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 0},
+                        },
+                    },
                 ],
             },
             "timestamp": "2025-06-05T18:45:58",
@@ -860,7 +893,24 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_affiliations_contributor": [],
+                "by_affiliations_contributor": [
+                    {
+                        "files": {
+                            "added": {"data_volume": 0.0, "file_count": 0},
+                            "removed": {"data_volume": 1984949.0, "file_count": 1},
+                        },
+                        "id": "03rmrcq20",
+                        "label": "",
+                        "parents": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                        "records": {
+                            "added": {"metadata_only": 0, "with_files": 0},
+                            "removed": {"metadata_only": 0, "with_files": 1},
+                        },
+                    }
+                ],
                 "by_affiliations_creator": [],
                 "by_file_types": [
                     {
