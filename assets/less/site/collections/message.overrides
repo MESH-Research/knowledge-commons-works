@@ -100,3 +100,30 @@
     border-top: none;
   }
 }
+
+.ui.form {
+  .warning.message {
+    &.deposit-publication-review-warning {
+      display: flex;
+      align-items: flex-start;
+      margin-top: -1rem;
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-top:1px solid @ivy20;
+      border-radius: 0 0 @borderRadius @borderRadius;
+
+      .icon {
+        flex-shrink: 0;
+        margin-right: 1.5rem;
+      }
+
+      .content {
+        flex: 1;
+
+        .header {
+          margin-bottom: 1rem;
+        }
+      }
+    }
+  }
+}

@@ -3,6 +3,11 @@
 
 # Changes
 
+## 0.5.5 (2025-09-10)
+
+- Upload form
+    - Added explainer message to upload form collection field about delays for publication submissions.
+
 ## 0.5.4 (2025-08-14)
 
 - Bug fixes

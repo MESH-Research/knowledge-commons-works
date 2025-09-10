@@ -2220,7 +2220,7 @@ wheels = [
 
 [[package]]
 name = "invenio-modular-deposit-form"
-version = "0.3.3.dev1"
+version = "0.3.4.dev0"
 source = { editable = "site/kcworks/dependencies/invenio-modular-deposit-form" }
 dependencies = [
     { name = "invenio-app-rdm" },
@@ -3222,7 +3222,7 @@ wheels = [
 
 [[package]]
 name = "kcworks"
-version = "0.5.4"
+version = "0.5.5"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
