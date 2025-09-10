@@ -52,6 +52,7 @@
     "test:file": "jest --testPathPattern"
   },
   "dependencies": {
-    "orcid-utils": "^1.2.2"
+    "orcid-utils": "^1.2.2",
+    "pako": "^2.1.0"
   }
 }
