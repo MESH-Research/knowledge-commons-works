@@ -2282,7 +2282,7 @@ wheels = [
 
 [[package]]
 name = "invenio-modular-deposit-form"
-version = "0.3.3.dev1"
+version = "0.3.4.dev0"
 source = { editable = "site/kcworks/dependencies/invenio-modular-deposit-form" }
 dependencies = [
     { name = "invenio-app-rdm" },
@@ -2938,29 +2938,71 @@ name = "invenio-stats-dashboard"
 version = "0.1.0a1"
 source = { editable = "site/kcworks/dependencies/invenio-stats-dashboard" }
 dependencies = [
+    { name = "arrow" },
+    { name = "flask-sqlalchemy" },
     { name = "glom" },
+    { name = "idutils" },
+    { name = "invenio-access" },
+    { name = "invenio-accounts" },
+    { name = "invenio-app" },
+    { name = "invenio-app-rdm", extra = ["opensearch2"] },
     { name = "invenio-assets" },
     { name = "invenio-base" },
+    { name = "invenio-communities" },
+    { name = "invenio-pidstore" },
+    { name = "invenio-queues" },
+    { name = "invenio-rdm-records" },
+    { name = "invenio-records-resources" },
+    { name = "invenio-requests" },
+    { name = "invenio-search" },
+    { name = "invenio-stats" },
+    { name = "invenio-vocabularies" },
+    { name = "jinja2" },
+    { name = "marshmallow" },
+    { name = "opensearch-py" },
     { name = "psutil" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "arrow", specifier = ">=1.3.0" },
+    { name = "arrow", marker = "extra == 'tests'" },
     { name = "black", marker = "extra == 'dev'", specifier = ">=25.1.0" },
+    { name = "docker-services-cli", marker = "extra == 'tests'" },
+    { name = "flask-sqlalchemy" },
     { name = "furo", marker = "extra == 'docs'", specifier = ">=2023.0.0" },
     { name = "glom", specifier = ">=23.0.0" },
-    { name = "invenio-assets", specifier = ">=1.2.0" },
-    { name = "invenio-base", specifier = ">=1.2.3" },
+    { name = "idutils", specifier = ">=1.4.0" },
+    { name = "invenio-access", specifier = "==2.1.0" },
+    { name = "invenio-accounts", specifier = "==5.2.2" },
+    { name = "invenio-app", specifier = "==1.5.1" },
+    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "==12.1.0" },
+    { name = "invenio-assets", specifier = "==3.2.0" },
+    { name = "invenio-base", specifier = "==1.4.0" },
+    { name = "invenio-communities", specifier = "==13.0.3" },
+    { name = "invenio-pidstore", specifier = ">=1.3.0" },
+    { name = "invenio-queues", specifier = "==1.0.1" },
+    { name = "invenio-rdm-records", editable = "site/kcworks/dependencies/invenio-rdm-records" },
+    { name = "invenio-records-resources", specifier = "==5.10.0" },
+    { name = "invenio-requests", specifier = "==4.1.4" },
+    { name = "invenio-search", specifier = "==2.4.1" },
+    { name = "invenio-stats", specifier = "==4.4.0" },
+    { name = "invenio-vocabularies", specifier = "==3.5.0" },
+    { name = "jinja2", specifier = ">=3.0.0" },
     { name = "linkify-it-py", marker = "extra == 'docs'", specifier = ">=0.2.0" },
+    { name = "marshmallow", specifier = ">=3.0.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.8.0" },
     { name = "myst-parser", marker = "extra == 'docs'", specifier = ">=2.0.0" },
+    { name = "opensearch-py", specifier = ">=2.8.0" },
     { name = "psutil", specifier = ">=6.0.0" },
     { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=1.4.0" },
+    { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=6.2.1" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=2.2.2,<3.0.0" },
     { name = "pytest-isort", marker = "extra == 'tests'", specifier = ">=4.0.0" },
     { name = "pytest-mock", marker = "extra == 'tests'" },
     { name = "pytest-mypy", marker = "extra == 'tests'", specifier = ">=0.10.0" },
     { name = "pytest-ruff", marker = "extra == 'tests'", specifier = ">=0.1.0" },
+    { name = "requests-mock", marker = "extra == 'tests'" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.3.0" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=7.0.0" },
     { name = "sphinx-copybutton", marker = "extra == 'docs'", specifier = ">=0.5.0" },
