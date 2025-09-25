@@ -54,7 +54,6 @@ function check_docker_compose_running() {
 # Note: "-k" would clash with "pytest"
 keep_services=0
 skip_translations=0
-isort=0
 pytest_args=()
 for arg in $@; do
 	# from the CLI args, filter out some known values and forward the rest to "pytest"
@@ -66,9 +65,6 @@ for arg in $@; do
 			;;
 		-S|--skip-translations)
 			skip_translations=1
-			;;
-		-I|--isort)
-			isort=1
 			;;
 		*)
 			pytest_args+=( ${arg} )
@@ -111,11 +107,6 @@ unset INVENIO_SQLALCHEMY_DATABASE_URI
 echo "Running mypy on the site directory"
 uv run mypy --config-file pyproject.toml site/
 
-# Run isort on default paths
-if [[ ${isort} -eq 1 ]]; then
-	echo "Running isort on site/kcworks, tests, and scripts directories"
-	uv run isort site/kcworks tests scripts
-fi
 
 # Note: expansion of pytest_args looks like below to not cause an unbound
 # variable error when 1) "nounset" and 2) the array is empty.

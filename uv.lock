@@ -1041,6 +1041,15 @@ wheels = [
 ]
 
 [[package]]
+name = "et-xmlfile"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/38/af70d7ab1ae9d4da450eeec1fa3918940a5fafb9055e934af8d6eb0c2313/et_xmlfile-2.0.0.tar.gz", hash = "sha256:dab3f4764309081ce75662649be815c4c9081e88f0837825f90fd28317d4da54", size = 17234 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/8b/5fe2cc11fee489817272089c4203e679c63b570a5aaeb18d852ae3cbba6a/et_xmlfile-2.0.0-py3-none-any.whl", hash = "sha256:7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa", size = 18059 },
+]
+
+[[package]]
 name = "events"
 version = "0.5"
 source = { registry = "https://pypi.org/simple" }
@@ -2941,26 +2950,10 @@ dependencies = [
     { name = "arrow" },
     { name = "flask-sqlalchemy" },
     { name = "glom" },
-    { name = "idutils" },
-    { name = "invenio-access" },
-    { name = "invenio-accounts" },
-    { name = "invenio-app" },
-    { name = "invenio-app-rdm", extra = ["opensearch2"] },
-    { name = "invenio-assets" },
-    { name = "invenio-base" },
-    { name = "invenio-communities" },
-    { name = "invenio-pidstore" },
-    { name = "invenio-queues" },
-    { name = "invenio-rdm-records" },
-    { name = "invenio-records-resources" },
-    { name = "invenio-requests" },
-    { name = "invenio-search" },
-    { name = "invenio-stats" },
-    { name = "invenio-vocabularies" },
-    { name = "jinja2" },
-    { name = "marshmallow" },
-    { name = "opensearch-py" },
+    { name = "halo" },
+    { name = "openpyxl" },
     { name = "psutil" },
+    { name = "pydantic" },
 ]
 
 [package.metadata]
@@ -2972,32 +2965,18 @@ requires-dist = [
     { name = "flask-sqlalchemy" },
     { name = "furo", marker = "extra == 'docs'", specifier = ">=2023.0.0" },
     { name = "glom", specifier = ">=23.0.0" },
-    { name = "idutils", specifier = ">=1.4.0" },
-    { name = "invenio-access", specifier = "==2.1.0" },
-    { name = "invenio-accounts", specifier = "==5.2.2" },
-    { name = "invenio-app", specifier = "==1.5.1" },
-    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "==12.1.0" },
-    { name = "invenio-assets", specifier = "==3.2.0" },
-    { name = "invenio-base", specifier = "==1.4.0" },
-    { name = "invenio-communities", specifier = "==13.0.3" },
-    { name = "invenio-pidstore", specifier = ">=1.3.0" },
-    { name = "invenio-queues", specifier = "==1.0.1" },
-    { name = "invenio-rdm-records", editable = "site/kcworks/dependencies/invenio-rdm-records" },
-    { name = "invenio-records-resources", specifier = "==5.10.0" },
-    { name = "invenio-requests", specifier = "==4.1.4" },
-    { name = "invenio-search", specifier = "==2.4.1" },
-    { name = "invenio-stats", specifier = "==4.4.0" },
-    { name = "invenio-vocabularies", specifier = "==3.5.0" },
-    { name = "jinja2", specifier = ">=3.0.0" },
+    { name = "halo", specifier = ">=0.0.31" },
+    { name = "invenio-app-rdm", extras = ["opensearch2"], marker = "extra == 'tests'", specifier = "~=13.0.0" },
+    { name = "invenio-cli", marker = "extra == 'tests'" },
     { name = "linkify-it-py", marker = "extra == 'docs'", specifier = ">=0.2.0" },
-    { name = "marshmallow", specifier = ">=3.0.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.8.0" },
     { name = "myst-parser", marker = "extra == 'docs'", specifier = ">=2.0.0" },
-    { name = "opensearch-py", specifier = ">=2.8.0" },
+    { name = "openpyxl", specifier = ">=3.1.0" },
     { name = "psutil", specifier = ">=6.0.0" },
+    { name = "pydantic", specifier = ">=2.11.7" },
     { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
     { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=6.2.1" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=2.2.2,<3.0.0" },
+    { name = "pytest-invenio", marker = "extra == 'tests'" },
     { name = "pytest-isort", marker = "extra == 'tests'", specifier = ">=4.0.0" },
     { name = "pytest-mock", marker = "extra == 'tests'" },
     { name = "pytest-mypy", marker = "extra == 'tests'", specifier = ">=0.10.0" },
@@ -4184,6 +4163,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/df/5f/3f4aae7b28db87ddef18afed3b71921e531ca288dc604eb981e9ec9f8853/oauthlib-2.1.0.tar.gz", hash = "sha256:ac35665a61c1685c56336bda97d5eefa246f1202618a1d6f34fccb1bdd404162", size = 128807 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e6/d1/ddd9cfea3e736399b97ded5c2dd62d1322adef4a72d816f1ed1049d6a179/oauthlib-2.1.0-py2.py3-none-any.whl", hash = "sha256:d883b36b21a6ad813953803edfa563b1b579d79ca758fe950d1bc9e8b326025b", size = 121792 },
+]
+
+[[package]]
+name = "openpyxl"
+version = "3.1.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "et-xmlfile" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3d/f9/88d94a75de065ea32619465d2f77b29a0469500e99012523b91cc4141cd1/openpyxl-3.1.5.tar.gz", hash = "sha256:cf0e3cf56142039133628b5acffe8ef0c12bc902d2aadd3e0fe5878dc08d1050", size = 186464 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c0/da/977ded879c29cbd04de313843e76868e6e13408a94ed6b987245dc7c8506/openpyxl-3.1.5-py2.py3-none-any.whl", hash = "sha256:5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2", size = 250910 },
 ]
 
 [[package]]

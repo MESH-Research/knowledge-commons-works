@@ -159,19 +159,12 @@ target-version = "py312"
 [tool.ruff.lint]
 # temporarily removed C for complexity checks
 select = ["E", "F", "I", "B", "UP", "D", "DOC"]
-# Ignore formatting-related rules (let black handle these)
+# Now Ruff handles formatting, so enable formatting rules
 ignore = [
-    "E501", # Line too long
-    "I001", # Import sorting
-    "E1",   # Indentation
-    # "E2",   # Whitespace
-    # "E3",   # Blank lines
+    # Keep some warnings disabled
     "W1",   # Indentation warnings
     "W2",   # Whitespace warnings
     "W3",   # Blank line warnings
-    # "COM",  # Trailing comma rules
-    # "ISC",  # Implicit string concatenation
-    # "Q",    # Quotes
 ]
 
 [tool.ruff.lint.pydocstyle]
@@ -227,7 +220,7 @@ skip = [
 
 [tool.pytest.ini_options]
 addopts = """
---black --ruff --isort --doctest-modules
+--ruff --doctest-modules
 --log-cli-level=DEBUG
 --ignore=app_data
 --ignore=docs
