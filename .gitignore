@@ -156,3 +156,5 @@ scripts/core-migrate/record_importer/logs/record_importer_failed_records.jsonl
 site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log
 site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*
 .ropeproject/autoimport.db
+.editorconfig
+biome.json
