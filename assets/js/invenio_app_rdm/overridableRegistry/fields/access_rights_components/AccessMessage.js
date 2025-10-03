@@ -2,8 +2,12 @@
 // Copyright (C) 2020-2023 CERN.
 // Copyright (C) 2020-2022 Northwestern University.
 //
-// Invenio-RDM-Records is free software; you can redistribute it and/or modify it
-// under the terms of the MIT License; see LICENSE file for more details.
+// Modified for Knowledge Commons Works
+// Copyright (C) 2024-2025 Mesh Research
+//
+// Invenio-RDM-Records and Knowledge-Commons-Works are free software;
+// you can redistribute and/or modify them under the terms of the MIT
+// License; see LICENSE file for more details.
 
 import { DateTime } from "luxon";
 import React from "react";
@@ -20,7 +24,8 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   // restriction logic
   const fullyRestricted = !communityPublic || (!recordPublic && !embargoActive);
-  const fullyPublic = communityPublic && recordPublic && (metadataOnly || filesPublic);
+  const fullyPublic =
+    communityPublic && recordPublic && (metadataOnly || filesPublic);
 
   const embargoedFiles = embargoActive && !filesPublic && recordPublic;
   const restrictedFiles = !embargoActive && !filesPublic && recordPublic;
@@ -28,7 +33,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   const fmtDate = access.embargo?.until
     ? DateTime.fromISO(access.embargo.until).toLocaleString(DateTime.DATE_FULL)
-    : "???";
+    : "[date not yet set]";
 
   if (fullyPublic) {
     return (
@@ -49,10 +54,13 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
       <Message icon warning visible data-testid="access-message">
         <Icon name="lock" />
         <Message.Content>
-          <Message.Header>{i18next.t("Embargoed (full record)")}</Message.Header>
+          <Message.Header>
+            {i18next.t("Embargoed (full record)")}
+          </Message.Header>
           <Trans
-            defaults="On <b>{{fmtDate}}</b> the record will automatically be made publicly accessible. Until then, the record can <b>only</b> be accessed by <b>users specified</b> in the permissions."
+            defaults="On <bold>{{fmtDate}}</bold> the record will automatically be made publicly accessible. Until then, the record can <bold>only</bold> be accessed by <bold>users specified</bold> in the permissions."
             values={{ fmtDate }}
+            components={{ bold: <b /> }}
           />
         </Message.Content>
       </Message>
@@ -66,8 +74,8 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
         <Message.Content>
           <Message.Header>{i18next.t("Restricted")}</Message.Header>
           <Trans>
-            The record can <b>only</b> be accessed by <b>users specified</b> in the
-            permissions.
+            The record can <b>only</b> be accessed by <b>users specified</b> in
+            the permissions.
           </Trans>
         </Message.Content>
       </Message>
@@ -79,10 +87,12 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
       <Message icon warning visible data-testid="access-message">
         <Icon name="lock" />
         <Message.Content>
-          <Message.Header>{i18next.t("Public with restricted files")}</Message.Header>
+          <Message.Header>
+            {i18next.t("Public with restricted files")}
+          </Message.Header>
           <Trans>
-            The record is publicly accessible. The files can <b>only</b> be accessed by{" "}
-            <b>users specified</b> in the permissions.
+            The record is publicly accessible. The files can <b>only</b> be
+            accessed by <b>users specified</b> in the permissions.
           </Trans>
         </Message.Content>
       </Message>

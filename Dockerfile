@@ -97,6 +97,8 @@ RUN sed -i '/"axios": "^0.21.0"/d' .venv/lib/python*/site-packages/invenio_searc
 
 # Build assets
 RUN . .venv/bin/activate && \
+    # Ensure invenio-stats-dashboard is properly installed before webpack build
+    uv pip install -e ./site/kcworks/dependencies/invenio-stats-dashboard && \
     invenio collect --verbose && \
     invenio webpack clean create && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less && \

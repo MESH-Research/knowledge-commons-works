@@ -173,7 +173,7 @@
       Semantic state colors
 ------------------------------- */
 @warningColor: @gold;
-@warningTextColor: #8d7313; // @darkGold;
+@warningTextColor: darken(#8d7313, 10%); // @darkGold;
 @warningBackgroundColor: @gold10;
 @warningBorderColor: @gold40;
 @warningColorDown: darken(@gold, 10%);

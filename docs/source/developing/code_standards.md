@@ -8,7 +8,7 @@ KCWorks is built on top of InvenioRDM, which has a number of standards for codin
 
 ### Python
 
-Python code should be formatted using the `black` formatter.
+Python code should be formatted using the `ruff` formatter. This is almost entirely compatible with the `black` formatter, so most `black` configuration options should work with `ruff` as well.
 
 ### JavaScript
 
