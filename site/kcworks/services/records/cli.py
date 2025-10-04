@@ -68,8 +68,6 @@ def bulk_update(community_id: str, metadata_field: str, new_value: str) -> None:
 @click.option("--end-date", type=str, default=None)
 @click.option("--record-ids", type=str, default=None)
 @click.option("--spread-dates", is_flag=True, default=False)
-@click.option("--review-required", is_flag=True, default=False)
-@click.option("--strict-validation", is_flag=True, default=False)
 @with_appcontext
 def import_test_records_command(
     email: str,
@@ -78,22 +76,22 @@ def import_test_records_command(
     start_date: str,
     end_date: str,
     spread_dates: bool,
-    review_required: bool,
-    strict_validation: bool,
     record_ids: str,
 ) -> None:
-    """Import test records from production to a local KCWorks instance.
+    r"""Import test records from production to a local KCWorks instance.
 
     EMAIL is the email address of the user who will be importing the records.
     COUNT is the number of records to import (default: 10 or the number of record IDs
     if provided).
 
     Options:
-        --offset INTEGER     Number of records to skip (default: 0)
-        --start-date TEXT    Start date for the records to import
-        --end-date TEXT      End date for the records to import
-        --record-ids TEXT    Comma-separated list of record IDs to import
-        --spread-dates       Whether to spread the records over a range of dates
+
+    \b
+    --offset INTEGER     Number of records to skip (default: 0)
+    --start-date TEXT    Start date for the records to import
+    --end-date TEXT      End date for the records to import
+    --record-ids TEXT    Comma-separated list of record IDs to import
+    --spread-dates       Whether to spread the records over a range of dates
     """
     click.secho(
         f"Starting import of {count} production records as {email}...", fg="blue"
