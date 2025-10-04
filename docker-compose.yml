@@ -114,7 +114,7 @@ services:
       - ./.git:/opt/invenio/src/.git
       - ./.gitmodules:/opt/invenio/src/.gitmodules
       - ./.gitattributes:/opt/invenio/src/.gitattributes
-      - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
+      # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}
@@ -161,7 +161,7 @@ services:
       - ./.git:/opt/invenio/src/.git
       - ./.gitmodules:/opt/invenio/src/.gitmodules
       - ./.gitattributes:/opt/invenio/src/.gitattributes
-      - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
+      # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}
@@ -208,7 +208,7 @@ services:
       - ./.git:/opt/invenio/src/.git
       - ./.gitmodules:/opt/invenio/src/.gitmodules
       - ./.gitattributes:/opt/invenio/src/.gitattributes
-      - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
+      # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}
