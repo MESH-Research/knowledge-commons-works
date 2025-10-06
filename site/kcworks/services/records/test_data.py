@@ -1,9 +1,5 @@
 import os
-import time
-from pprint import pformat
 from typing import Optional
-
-import requests
 from flask import current_app as app
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
@@ -14,7 +10,7 @@ from invenio_communities.members.errors import AlreadyMemberError
 from invenio_communities.proxies import current_communities
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_record_importer_kcworks.proxies import current_record_importer_service
-from invenio_record_importer_kcworks.types import APIResponsePayload, FileData
+from invenio_record_importer_kcworks.types import APIResponsePayload
 from invenio_search.proxies import current_search_client
 from kcworks.services.records.service import KCWorksRecordsAPIHelper
 
@@ -157,10 +153,6 @@ def import_test_records(
         spread_dates=spread_dates,
         record_ids=record_ids,
     )
-    app.logger.error(f"Records type: {type(records)}")
-    app.logger.error(
-        f"First record type: {type(records[0]) if records else 'No records'}"
-    )
 
     if community_id is None:
         target_community = set_up_community(importing_user)
@@ -185,7 +177,6 @@ def import_test_records(
 
     # Assemble file data for all records
     file_data, file_errors = KCWorksRecordsAPIHelper().fetch_record_files(records)
-    app.logger.error(f"File data: {file_data}")
 
     # Collect all errors from fetching
     all_errors = []

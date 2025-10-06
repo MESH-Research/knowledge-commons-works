@@ -66,7 +66,6 @@ def update_community_records_metadata(
 
     # Use scan (scroll) to allow for more than 10k records
     for hit in search.scan():
-        current_app.logger.error(f"Processing page {pformat(hit)}")
         results["total_record_count"] += 1
 
         try:

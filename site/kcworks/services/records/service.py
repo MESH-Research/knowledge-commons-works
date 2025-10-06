@@ -76,13 +76,6 @@ class KCWorksRecordsAPIHelper:
 
         if not spread_dates:
             # Simple case - just request offset + count records
-            app.logger.error(f"Fetching {offset + count} records")
-            app.logger.error(f"Query parts: {query_parts}")
-            app.logger.error(f"Sort: {sort}")
-            app.logger.error(f"Offset: {offset}")
-            app.logger.error(f"Count: {count}")
-            app.logger.error(f"Headers: {headers}")
-            app.logger.error(f"URL: {url}")
 
             params: dict[str, str | int] = {
                 "size": offset + count,
@@ -227,7 +220,6 @@ class KCWorksRecordsAPIHelper:
         Returns:
             FileData: Object containing the file data and metadata.
         """
-        app.logger.debug(f"Starting download from URL: {url}")
         headers = {}
         if self.api_token:
             headers["Authorization"] = f"Bearer {self.api_token}"
@@ -243,9 +235,6 @@ class KCWorksRecordsAPIHelper:
 
         # If we got a Location header but no redirect, follow it manually
         if response.status_code == 200 and "Location" in response.headers:
-            app.logger.debug(
-                f"Following Location header to: {response.headers['Location']}"
-            )
             response = requests.get(response.headers["Location"], stream=True)
             if response.status_code == 403:
                 raise ValueError(f"Access forbidden (403) when downloading file {filename} from redirect location.")
