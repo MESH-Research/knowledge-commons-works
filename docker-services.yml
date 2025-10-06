@@ -29,6 +29,7 @@ services:
       - "INVENIO_WSGI_PROXIES=2"
     env_file:
       - ./.env
+    # cpus: ${APP_CPUS:-2.0}  # Commented out to avoid GitHub build CPU limit issues (4-CPU environment)
   frontend:
     container_name: kcworks-frontend:local
     build: ./docker/nginx_local/
@@ -86,18 +87,30 @@ services:
       # settings only for development. DO NOT use in production!
       # TODO: Fix for production
       - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "DISABLE_INSTALL_DEMO_CONFIG=true"
-      - "DISABLE_SECURITY_PLUGIN=true"
-      - "discovery.type=single-node"
+      # Memory settings optimized for GitHub Actions (7GB RAM) and local development
+      # Default heap: 512m (original conservative setting, works well with 2g container limit)
+      # For GitHub Actions: heap should be ~50% of container memory limit
+      - OPENSEARCH_JAVA_OPTS=-Xms${OPENSEARCH_HEAP_SIZE:-512m} -Xmx${OPENSEARCH_HEAP_SIZE:-512m}
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - DISABLE_SECURITY_PLUGIN=true
+      - discovery.type=single-node
+      # Optimize for bulk indexing
+      - indices.memory.index_buffer_size=25%
+      # Prevent disk saturation during recovery
+      - indices.recovery.max_bytes_per_sec=100mb
     ulimits:
+      # Memory locking settings - may not work in all container environments (e.g., GitHub Actions)
+      # If you get permission errors, these can be commented out
       memlock:
         soft: -1
         hard: -1
       nofile:
         soft: 65536
         hard: 65536
-    mem_limit: 2g
+    # Memory limit: 2GB (original conservative setting) works well for GitHub Actions (7GB RAM)
+    # This leaves ~5GB for other containers and the host system
+    mem_limit: ${OPENSEARCH_MEMORY_LIMIT:-2g}
+    # cpus: ${OPENSEARCH_CPUS:-1.5}  # Commented out to avoid GitHub build CPU limit issues (4-CPU environment)
     ports:
       - "9200:9200"
       - "9600:9600"

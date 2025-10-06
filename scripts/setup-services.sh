@@ -67,8 +67,11 @@ invenio queues declare
 if [ $fixtures==1 ]
 then
     echo -e "${yellow}Setting up fixtures in two stages (this may take a long time!!)...${clear}"
-    invenio rdm fixtures
-    invenio rdm-records fixtures & pid=$!
+    # Run fixtures with Celery eager mode to avoid flooding the broker
+    INVENIO_CELERY_TASK_ALWAYS_EAGER=True INVENIO_CELERY_TASK_EAGER_PROPAGATES=True \
+        invenio rdm fixtures
+    INVENIO_CELERY_TASK_ALWAYS_EAGER=True INVENIO_CELERY_TASK_EAGER_PROPAGATES=True \
+        invenio rdm-records fixtures & pid=$!
     # spinner during fixture setup
     i=1
     sp="\|/-"
