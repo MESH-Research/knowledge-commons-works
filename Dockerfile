@@ -19,7 +19,10 @@ ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     LC_ALL=en_US.UTF-8 \
     UV_PROJECT_ENVIRONMENT=/opt/invenio/src/.venv \
     VIRTUAL_ENV=/opt/invenio/src/.venv \
-    PATH="/opt/invenio/src/.venv/bin:${PATH}"
+    PATH="/opt/invenio/src/.venv/bin:${PATH}" \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONNODONTWRITEBYTECODE=1 \
+    PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning
 
 # Create instance path and set working directory
 RUN mkdir -p ${INVENIO_INSTANCE_PATH} && \
