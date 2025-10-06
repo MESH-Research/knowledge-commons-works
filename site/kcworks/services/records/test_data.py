@@ -147,7 +147,7 @@ def import_test_records(
     # Fetch records from production
     api_url = "https://works.hcommons.org/api"
     api_token = os.getenv("API_TOKEN_PRODUCTION")
-    records = KCWorksRecordsAPIHelper(
+    records, fetch_errors = KCWorksRecordsAPIHelper(
         api_url=api_url, api_token=api_token
     ).fetch_records(
         count=count,
@@ -184,8 +184,15 @@ def import_test_records(
     importing_identity.provides.add(authenticated_user)
 
     # Assemble file data for all records
-    file_data = KCWorksRecordsAPIHelper().fetch_record_files(records)
+    file_data, file_errors = KCWorksRecordsAPIHelper().fetch_record_files(records)
     app.logger.error(f"File data: {file_data}")
+
+    # Collect all errors from fetching
+    all_errors = []
+    if fetch_errors:
+        all_errors.extend(fetch_errors)
+    if file_errors:
+        all_errors.extend(file_errors)
 
     # Bulk import records
     try:
@@ -196,13 +203,22 @@ def import_test_records(
             community_id=target_community["id"],
             review_required=review_required,
             strict_validation=strict_validation,
-            all_or_none=True,
+            all_or_none=False,  # Allow partial success - don't rollback entire batch on individual failures
             notify_record_owners=False,
             no_updates=False,
         )
+        
+        # Add fetch/file errors to the result
+        if all_errors:
+            if "warnings" not in result:
+                result["warnings"] = []
+            result["warnings"].extend(all_errors)
+            
     except Exception as e:
         app.logger.error(f"Failed to import records: {str(e)}")
         result = {"status": "failure", "errors": [{"error": str(e)}]}
+        if all_errors:
+            result["warnings"] = all_errors
     finally:
         # Clean up temporary files
         for file in file_data:

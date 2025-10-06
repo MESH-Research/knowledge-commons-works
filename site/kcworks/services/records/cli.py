@@ -61,7 +61,7 @@ def bulk_update(community_id: str, metadata_field: str, new_value: str) -> None:
 
 
 @click.command("import-test-records")
-@click.argument("email", type=str, required=True)
+@click.argument("email", type=str, required=False)
 @click.argument("count", type=int, default=0)
 @click.option("--offset", type=int, default=0)
 @click.option("--start-date", type=str, default=None)
@@ -93,6 +93,12 @@ def import_test_records_command(
     --record-ids TEXT    Comma-separated list of record IDs to import
     --spread-dates       Whether to spread the records over a range of dates
     """
+    if not email:
+        click.secho("Error: Email address is required!", fg="red", err=True)
+        click.secho("Usage: invenio kcworks-users import-test-records <EMAIL> [COUNT]", fg="yellow")
+        click.secho("Example: invenio kcworks-users import-test-records user@example.com 10", fg="yellow")
+        raise click.Abort()
+    
     click.secho(
         f"Starting import of {count} production records as {email}...", fg="blue"
     )
@@ -128,17 +134,25 @@ def import_test_records_command(
             for r in results["data"]
             if r["metadata"] and "id" in r["metadata"]
         ]
+        failures = [
+            f"{r['metadata']['id']}: {r['errors']}"
+            for r in results["errors"]
+            if r["metadata"] and "id" in r["metadata"]
+        ]
+        
         if len(successes) > 0:
             click.secho(f"Successfully imported {len(successes)} records: ", fg="green")
             click.secho(pformat(successes), fg="green")
-            failures = [
-                f"{r['metadata']['id']}: {r['errors']}"
-                for r in results["errors"]
-                if r["metadata"] and "id" in r["metadata"]
-            ]
+            
         if len(failures) > 0:
             click.secho(f"Failed to import {len(failures)} records: ", fg="red")
             click.secho(pformat(failures), fg="red")
+            
+        # Report warnings about restricted records
+        if "warnings" in results and results["warnings"]:
+            click.secho(f"\nWarnings (restricted records/files skipped):", fg="yellow")
+            for warning in results["warnings"]:
+                click.secho(f"  • {warning}", fg="yellow")
 
 
 @click.command("export-records")
