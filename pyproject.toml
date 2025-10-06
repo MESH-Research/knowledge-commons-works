@@ -165,6 +165,7 @@ ignore = [
     "W1",   # Indentation warnings
     "W2",   # Whitespace warnings
     "W3",   # Blank line warnings
+    "D412", # Missing blank line before closing docstring
 ]
 
 [tool.ruff.lint.pydocstyle]
