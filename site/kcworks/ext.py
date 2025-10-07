@@ -10,8 +10,11 @@ Initialize the main KCWorks extension object along with its services, blueprints
 and components.
 """
 
+import warnings
+
 from flask import Flask
 from invenio_rdm_records.services.components import DefaultRecordsComponents
+
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -48,6 +51,12 @@ class KCWorks:
             app (Flask): The Flask application object on which to initialize
                 the extension
         """
+        warnings.filterwarnings(
+            "ignore",
+            message="pkg_resources is deprecated as an API.*",
+            category=UserWarning,
+        )
+
         app.logger.debug("Initializing KCWorks extension")
         self.init_services(app)
         self.init_components(app)
