@@ -57,7 +57,6 @@ class KCWorks:
             category=UserWarning,
         )
 
-        app.logger.debug("Initializing KCWorks extension")
         self.init_services(app)
         self.init_components(app)
         self.init_template_filters(app)
