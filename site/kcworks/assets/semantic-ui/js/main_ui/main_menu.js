@@ -486,6 +486,7 @@ const MainMenu = ({
           />
         </div>
 
+        {/* Commented out hardcoded Insights menu item - can be re-enabled if needed
         <div className={`item`} role="menuitem">
           <IconMenuItem
             text={i18next.t("Insights")}
@@ -494,6 +495,7 @@ const MainMenu = ({
             tabIndex={0}
           />
         </div>
+        */}
 
         <div className={`item`} role="menuitem">
           <IconMenuItem

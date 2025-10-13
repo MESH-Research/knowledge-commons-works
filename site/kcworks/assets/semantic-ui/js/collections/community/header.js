@@ -75,13 +75,14 @@ const CommunityDetailsHeader = ({
       permissions: canRead,
       url: `/collections/${slug}/members`,
     },
-    {
-      name: "stats",
-      text: "Insights",
-      icon: "chart line",
-      permissions: canRead,
-      url: `/collections/${slug}/stats`,
-    },
+    // Commented out Insights tab - can be re-enabled if needed
+    // {
+    //   name: "stats",
+    //   text: "Insights",
+    //   icon: "chart line",
+    //   permissions: canRead,
+    //   url: `/collections/${slug}/stats`,
+    // },
     {
       name: "requests",
       text: "Requests",
