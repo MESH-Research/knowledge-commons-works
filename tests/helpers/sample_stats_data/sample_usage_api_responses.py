@@ -1,3 +1,9 @@
+# Part of the Invenio-Stats-Dashboard extension for InvenioRDM
+# Copyright (C) 2025 Mesh Research
+#
+# Invenio-Stats-Dashboard is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
+
 """Sample usage delta API response."""
 
 MOCK_USAGE_DELTA_API_RESPONSE = {
@@ -7,18 +13,18 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-05-30T23:59:59",
             "period_start": "2025-05-30T00:00:00",
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations": [],
-                "by_countries": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_referrers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "countries": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "referrers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-07-03T19:37:10",
             "totals": {
@@ -43,18 +49,18 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-05-31T23:59:59",
             "period_start": "2025-05-31T00:00:00",
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations": [],
-                "by_countries": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_referrers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "countries": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "referrers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-07-03T19:37:10",
             "totals": {
@@ -79,7 +85,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-01T23:59:59",
             "period_start": "2025-06-01T00:00:00",
             "subcounts": {
-                "by_access_statuses": [
+                "access_statuses": [
                     {
                         "download": {
                             "total_events": 3,
@@ -99,8 +105,8 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_affiliations": [],
-                "by_countries": [
+                "affiliations": [],
+                "countries": [
                     {
                         "download": {
                             "total_events": 3,
@@ -120,7 +126,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_file_types": [
+                "file_types": [
                     {
                         "download": {
                             "total_events": 3,
@@ -140,8 +146,8 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_funders": [],
-                "by_languages": [
+                "funders": [],
+                "languages": [
                     {
                         "download": {
                             "total_events": 2,
@@ -179,7 +185,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_rights": [
+                "rights": [
                     {
                         "download": {
                             "total_events": 3,
@@ -199,8 +205,8 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_periodicals": [],
-                "by_publishers": [
+                "periodicals": [],
+                "publishers": [
                     {
                         "download": {
                             "total_events": 1,
@@ -252,7 +258,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_records": 1,
                             "unique_visitors": 1,
                         },
-                        "id": "Universidad " "Nacional " "Autónoma de " "Mexico (UNAM)",
+                        "id": "Universidad Nacional Autónoma de Mexico (UNAM)",
                         "label": "",
                         "view": {
                             "total_events": 1,
@@ -262,7 +268,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_referrers": [
+                "referrers": [
                     {
                         "download": {
                             "total_events": 1,
@@ -324,7 +330,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_resource_types": [
+                "resource_types": [
                     {
                         "download": {
                             "total_events": 1,
@@ -380,7 +386,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_subjects": [
+                "subjects": [
                     {
                         "download": {
                             "total_events": 2,
@@ -463,7 +469,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "http://id.worldcat.org/fast/1108387",
-                        "label": "Science--Study " "and teaching",
+                        "label": "Science--Study and teaching",
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -481,7 +487,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "http://id.worldcat.org/fast/1145221",
-                        "label": "Technology--Study " "and teaching",
+                        "label": "Technology--Study and teaching",
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -532,18 +538,18 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-02T23:59:59",
             "period_start": "2025-06-02T00:00:00",
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations": [],
-                "by_countries": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_referrers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "countries": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "referrers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-07-03T19:37:10",
             "totals": {
@@ -568,7 +574,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-03T23:59:59",
             "period_start": "2025-06-03T00:00:00",
             "subcounts": {
-                "by_access_statuses": [
+                "access_statuses": [
                     {
                         "download": {
                             "total_events": 3,
@@ -588,8 +594,8 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_affiliations": [],
-                "by_countries": [
+                "affiliations": [],
+                "countries": [
                     {
                         "download": {
                             "total_events": 3,
@@ -609,7 +615,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_file_types": [
+                "file_types": [
                     {
                         "download": {
                             "total_events": 3,
@@ -629,8 +635,8 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_funders": [],
-                "by_languages": [
+                "funders": [],
+                "languages": [
                     {
                         "download": {
                             "total_events": 2,
@@ -668,7 +674,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_rights": [
+                "rights": [
                     {
                         "download": {
                             "total_events": 3,
@@ -688,8 +694,8 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_periodicals": [],
-                "by_publishers": [
+                "periodicals": [],
+                "publishers": [
                     {
                         "download": {
                             "total_events": 1,
@@ -741,7 +747,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_records": 1,
                             "unique_visitors": 1,
                         },
-                        "id": "Universidad " "Nacional " "Autónoma de " "Mexico (UNAM)",
+                        "id": "Universidad Nacional Autónoma de Mexico (UNAM)",
                         "label": "",
                         "view": {
                             "total_events": 1,
@@ -751,7 +757,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_referrers": [
+                "referrers": [
                     {
                         "download": {
                             "total_events": 1,
@@ -813,7 +819,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_resource_types": [
+                "resource_types": [
                     {
                         "download": {
                             "total_events": 1,
@@ -869,7 +875,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_subjects": [
+                "subjects": [
                     {
                         "download": {
                             "total_events": 2,
@@ -952,7 +958,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "http://id.worldcat.org/fast/1108387",
-                        "label": "Science--Study " "and teaching",
+                        "label": "Science--Study and teaching",
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -970,7 +976,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "http://id.worldcat.org/fast/1145221",
-                        "label": "Technology--Study " "and teaching",
+                        "label": "Technology--Study and teaching",
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -1021,18 +1027,18 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-04T23:59:59",
             "period_start": "2025-06-04T00:00:00",
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations": [],
-                "by_countries": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_referrers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "countries": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "referrers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-07-03T19:37:11",
             "totals": {
@@ -1057,7 +1063,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-05T23:59:59",
             "period_start": "2025-06-05T00:00:00",
             "subcounts": {
-                "by_access_statuses": [
+                "access_statuses": [
                     {
                         "download": {
                             "total_events": 3,
@@ -1077,8 +1083,8 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_affiliations": [],
-                "by_countries": [
+                "affiliations": [],
+                "countries": [
                     {
                         "download": {
                             "total_events": 3,
@@ -1098,7 +1104,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_file_types": [
+                "file_types": [
                     {
                         "download": {
                             "total_events": 3,
@@ -1118,8 +1124,8 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_funders": [],
-                "by_languages": [
+                "funders": [],
+                "languages": [
                     {
                         "download": {
                             "total_events": 2,
@@ -1157,7 +1163,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_rights": [
+                "rights": [
                     {
                         "download": {
                             "total_events": 3,
@@ -1177,8 +1183,8 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     }
                 ],
-                "by_periodicals": [],
-                "by_publishers": [
+                "periodicals": [],
+                "publishers": [
                     {
                         "download": {
                             "total_events": 1,
@@ -1230,7 +1236,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_records": 1,
                             "unique_visitors": 1,
                         },
-                        "id": "Universidad " "Nacional " "Autónoma de " "Mexico (UNAM)",
+                        "id": "Universidad Nacional Autónoma de Mexico (UNAM)",
                         "label": "",
                         "view": {
                             "total_events": 1,
@@ -1240,7 +1246,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_referrers": [
+                "referrers": [
                     {
                         "download": {
                             "total_events": 1,
@@ -1302,7 +1308,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_resource_types": [
+                "resource_types": [
                     {
                         "download": {
                             "total_events": 1,
@@ -1358,7 +1364,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                         },
                     },
                 ],
-                "by_subjects": [
+                "subjects": [
                     {
                         "download": {
                             "total_events": 2,
@@ -1441,7 +1447,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "http://id.worldcat.org/fast/1108387",
-                        "label": "Science--Study " "and teaching",
+                        "label": "Science--Study and teaching",
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -1459,7 +1465,7 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
                             "unique_visitors": 1,
                         },
                         "id": "http://id.worldcat.org/fast/1145221",
-                        "label": "Technology--Study " "and teaching",
+                        "label": "Technology--Study and teaching",
                         "view": {
                             "total_events": 1,
                             "unique_parents": 1,
@@ -1510,18 +1516,18 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-06T23:59:59",
             "period_start": "2025-06-06T00:00:00",
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations": [],
-                "by_countries": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_referrers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "countries": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "referrers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-07-03T19:37:11",
             "totals": {
@@ -1546,18 +1552,18 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-07T23:59:59",
             "period_start": "2025-06-07T00:00:00",
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations": [],
-                "by_countries": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_referrers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "countries": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "referrers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-07-03T19:37:11",
             "totals": {
@@ -1582,18 +1588,18 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-08T23:59:59",
             "period_start": "2025-06-08T00:00:00",
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations": [],
-                "by_countries": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_referrers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "countries": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "referrers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-07-03T19:37:11",
             "totals": {
@@ -1618,18 +1624,18 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-09T23:59:59",
             "period_start": "2025-06-09T00:00:00",
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations": [],
-                "by_countries": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_referrers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "countries": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "referrers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-07-03T19:37:11",
             "totals": {
@@ -1654,18 +1660,18 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-10T23:59:59",
             "period_start": "2025-06-10T00:00:00",
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations": [],
-                "by_countries": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_referrers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "countries": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "referrers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-07-03T19:37:11",
             "totals": {
@@ -1690,18 +1696,18 @@ MOCK_USAGE_DELTA_API_RESPONSE = {
             "period_end": "2025-06-11T23:59:59",
             "period_start": "2025-06-11T00:00:00",
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations": [],
-                "by_countries": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_referrers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "countries": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "referrers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-07-03T19:37:11",
             "totals": {
