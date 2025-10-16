@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 from pathlib import Path
+from typing import Any
 
 import arrow
 from flask import current_app
@@ -115,7 +116,8 @@ class KCWorksRecordsExporter:
             ]
             search_string = "%20AND%20".join(search_strings)
 
-        records = self.api_helper.fetch_records(
+        records: list[dict[str, Any]]
+        records, _fetch_errors = self.api_helper.fetch_records(
             search_string=search_string,
             count=int(count),
             start_date=start_date,
@@ -133,30 +135,43 @@ class KCWorksRecordsExporter:
         export_path = data_dir / export_label
         export_path.mkdir(parents=True, exist_ok=True)
 
-        successful_records = []
-        failed_records = []
+        successful_records: list[str] = []
+        failed_records: list[str] = []
         for r in records:
-            if r["files"]["enabled"] and len(r["files"].get("entries", [])) > 0:
-                current_app.logger.info(f"Fetching files for record {r['id']}")
-                try:
-                    record_id = r["id"]
-                    record_files = self.api_helper.fetch_record_files([r])
+            record_data: dict[str, Any] = r
+            files_data: dict[str, Any] = record_data["files"]
+            entries_data: dict[str, Any] = files_data.get("entries", {})
 
-                    created_date = arrow.get(r["created"])
+            if files_data["enabled"] and len(entries_data) > 0:
+                current_app.logger.info(
+                    f"Fetching files for record {record_data['id']}"
+                )
+                try:
+                    record_id: str = record_data["id"]
+                    record_files, file_errors = self.api_helper.fetch_record_files(
+                        [record_data]
+                    )
+
+                    if file_errors:
+                        current_app.logger.warning(
+                            f"File errors for record {record_id}: {file_errors}"
+                        )
+
+                    created_date = arrow.get(record_data["created"])
                     year = created_date.year
                     month = created_date.month
                     record_dir = export_path / str(year) / str(month) / record_id
                     record_dir.mkdir(parents=True, exist_ok=True)
 
-                    actual_saved_files = []
+                    actual_saved_files: list[int] = []
                     for filedata in record_files:
                         actual_checksum = compute_md5_checksum(filedata.stream)
-                        expected_checksum = r["files"]["entries"][filedata.filename][
-                            "checksum"
-                        ]
+                        file_entry: dict[str, Any] = entries_data[filedata.filename]
+                        expected_checksum = file_entry["checksum"]
                         assert expected_checksum == actual_checksum, (
-                            f"File {filedata.filename} has checksum {actual_checksum} but "
-                            f"expected checksum {expected_checksum}"
+                            f"File {filedata.filename} has checksum "
+                            f"{actual_checksum} but expected checksum "
+                            f"{expected_checksum}"
                         )
 
                         file_path = record_dir / filedata.filename
@@ -165,25 +180,26 @@ class KCWorksRecordsExporter:
                             shutil.copyfileobj(filedata.stream, f)
                         assert file_path.exists(), f"File {file_path} does not exist"
                         actual_size = file_path.stat().st_size
-                        expected_size = r["files"]["entries"][filedata.filename]["size"]
+                        expected_size = file_entry["size"]
                         assert actual_size == expected_size, (
                             f"File {file_path} has size {actual_size} but "
                             f"expected size {expected_size}"
                         )
                         actual_saved_files.append(file_path.stat().st_size)
 
-                    assert len(r["files"]["entries"].keys()) == len(actual_saved_files)
-                    successful_records.append(r["id"])
+                    assert len(entries_data.keys()) == len(actual_saved_files)
+                    successful_records.append(record_data["id"])
                 except Exception as e:
-                    failed_records.append(r["id"])
+                    failed_records.append(record_data["id"])
                     current_app.logger.error(
-                        f"Error exporting record {r['id']}: {e}", exc_info=True
+                        f"Error exporting record {record_data['id']}: {e}",
+                        exc_info=True
                     )
             else:
                 current_app.logger.info(
-                    f"Skipping record {r['id']} because it has no files"
+                    f"Skipping record {record_data['id']} because it has no files"
                 )
-                successful_records.append(r["id"])
+                successful_records.append(record_data["id"])
 
         metadata_path = export_path / "records_metadata.json"
         current_app.logger.info(f"Saving metadata to {metadata_path.as_posix()}")
