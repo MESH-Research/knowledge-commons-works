@@ -228,7 +228,17 @@ addopts = """
 --ignore=node_modules
 --ignore=scripts
 --ignore=tests/helpers
---ignore=site/kcworks/dependencies
+--ignore=site/kcworks/dependencies/invenio-communities
+--ignore=site/kcworks/dependencies/invenio-group-collections-kcworks
+--ignore=site/kcworks/dependencies/invenio-modular-deposit-form
+--ignore=site/kcworks/dependencies/invenio-modular-detail-page
+--ignore=site/kcworks/dependencies/invenio-rdm-records
+--ignore=site/kcworks/dependencies/invenio-record-importer-kcworks
+--ignore=site/kcworks/dependencies/invenio-records-resources
+--ignore=site/kcworks/dependencies/invenio-remote-api-provisioner
+--ignore=site/kcworks/dependencies/invenio-remote-user-data-kcworks
+--ignore=site/kcworks/dependencies/invenio-requests
+--ignore=site/kcworks/dependencies/invenio-vocabularies
 --ignore=site/kcworks/services/search/index_templates
 --cov=kcworks --cov-report=term-missing
 """
@@ -278,7 +288,17 @@ dev = [
 
 [tool.coverage.run]
 omit = [
-    "site/kcworks/dependencies/*",
+    "site/kcworks/dependencies/invenio-communities/*",
+    "site/kcworks/dependencies/invenio-group-collections-kcworks/*",
+    "site/kcworks/dependencies/invenio-modular-deposit-form/*",
+    "site/kcworks/dependencies/invenio-modular-detail-page/*",
+    "site/kcworks/dependencies/invenio-rdm-records/*",
+    "site/kcworks/dependencies/invenio-record-importer-kcworks/*",
+    "site/kcworks/dependencies/invenio-records-resources/*",
+    "site/kcworks/dependencies/invenio-remote-api-provisioner/*",
+    "site/kcworks/dependencies/invenio-remote-user-data-kcworks/*",
+    "site/kcworks/dependencies/invenio-requests/*",
+    "site/kcworks/dependencies/invenio-vocabularies/*",
     "site/kcworks/views/task_results/*",
     "site/kcworks/services/search/index_templates/*",
 ]
