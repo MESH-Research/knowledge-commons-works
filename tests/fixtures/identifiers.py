@@ -1,8 +1,8 @@
-# Part of Knowledge Commons Works
-# Copyright (C) 2023, 2024 Knowledge Commons
+# Part of the Invenio-Stats-Dashboard extension for InvenioRDM
+# Copyright (C) 2025 MESH Research
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the MIT License
+# Invenio-Stats-Dashboard is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
 
 """Pytest fixtures for identifiers."""
 
@@ -13,9 +13,16 @@ from invenio_rdm_records.config import (
     always_valid,
 )
 from invenio_rdm_records.services.pids import providers
-from kcworks.services.records.validators import is_email
 
-from ..helpers.fake_datacite_client import FakeDataCiteClient
+from tests.helpers.fake_datacite_client import FakeDataCiteClient
+
+
+def is_email(value):
+    """Simple email validation function."""
+    import re
+
+    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    return bool(re.match(pattern, value))
 
 
 def _(x):
@@ -100,26 +107,6 @@ test_config_identifiers = {
     ],
     "RDM_RECORDS_IDENTIFIERS_SCHEMES": {
         **RDM_RECORDS_IDENTIFIERS_SCHEMES,
-        "kc_username": {
-            "label": _("Knowledge Commons Username"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
-        "hc_username": {
-            "label": _("Humanities Commons Username"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
-        "hclegacy-pid": {
-            "label": _("Humanities Commons Legacy PID"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
-        "hclegacy-record-id": {
-            "label": _("Humanities Commons Legacy Record ID"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
         "doi:": {
             "label": _("DOI"),
             "validator": idutils.is_doi,
@@ -160,48 +147,13 @@ test_config_identifiers = {
             "validator": always_valid,
             "datacite": "Other",
         },
-        "import-recid": {
-            "label": _("Import Record ID"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
-        "neh-recid": {
-            "label": _("NEH Record ID"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
     },
     "RDM_RECORDS_PERSONORG_SCHEMES": {
         **RDM_RECORDS_PERSONORG_SCHEMES,
-        "hcid": {
-            "label": _("hcid"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
-        "kcid": {
-            "label": _("kcid"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
-        "hc_username": {
-            "label": _("KC member"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
-        "kc_username": {
-            "label": _("KC member"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
-        "neh_user_id": {
-            "label": _("NEH user ID"),
-            "validator": always_valid,
-            "datacite": "Other",
-        },
-        "import_user_id": {
-            "label": _("Import user ID"),
-            "validator": always_valid,
-            "datacite": "Other",
+        "orcid": {
+            "label": _("ORCID"),
+            "validator": idutils.is_orcid,
+            "datacite": "ORCID",
         },
         "email": {
             "label": _("Email"),

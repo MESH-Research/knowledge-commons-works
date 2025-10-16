@@ -51,11 +51,13 @@ config = load_config()
 print("Config loaded successfully")
 
 pytest_plugins = (
-    "celery.contrib.pytest",
-    "tests.fixtures.files",
-    "tests.fixtures.mail",
     "tests.fixtures.communities",
     "tests.fixtures.custom_fields",
+    "tests.fixtures.files",
+    "tests.fixtures.frontend",
+    "tests.fixtures.identifiers",
+    "tests.fixtures.mail",
+    "celery.contrib.pytest",
     "tests.fixtures.records",
     "tests.fixtures.roles",
     "tests.fixtures.search_provisioning",

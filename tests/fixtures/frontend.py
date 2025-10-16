@@ -1,8 +1,8 @@
-# Part of Knowledge Commons Works
-# Copyright (C) 2023, 2024 MESH Research
+# Part of the Invenio-Stats-Dashboard extension for InvenioRDM
+# Copyright (C) 2025 MESH Research
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the MIT License
+# Invenio-Stats-Dashboard is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
 
 """Pytest fixtures for frontend."""
 
