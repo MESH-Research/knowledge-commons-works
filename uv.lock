@@ -2590,7 +2590,7 @@ requires-dist = [
 
 [[package]]
 name = "invenio-record-importer-kcworks"
-version = "0.3.0a1"
+version = "0.4.0"
 source = { editable = "site/kcworks/dependencies/invenio-record-importer-kcworks" }
 dependencies = [
     { name = "click" },
@@ -2606,6 +2606,7 @@ dependencies = [
     { name = "isbnlib" },
     { name = "jsonlines" },
     { name = "langdetect" },
+    { name = "pydantic" },
     { name = "pytest" },
     { name = "python-dateutil" },
     { name = "python-iso639" },
@@ -2628,11 +2629,11 @@ requires-dist = [
     { name = "docker-services-cli", marker = "extra == 'dev'" },
     { name = "halo" },
     { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "<13.0.0" },
-    { name = "invenio-communities", editable = "site/kcworks/dependencies/invenio-communities" },
-    { name = "invenio-group-collections-kcworks", editable = "site/kcworks/dependencies/invenio-group-collections-kcworks" },
+    { name = "invenio-communities" },
+    { name = "invenio-group-collections-kcworks" },
     { name = "invenio-rdm-records" },
     { name = "invenio-records-resources" },
-    { name = "invenio-remote-user-data-kcworks", editable = "site/kcworks/dependencies/invenio-remote-user-data-kcworks" },
+    { name = "invenio-remote-user-data-kcworks" },
     { name = "invenio-saml" },
     { name = "invenio-utilities-tuw" },
     { name = "ipykernel", marker = "extra == 'dev'" },
@@ -2640,18 +2641,22 @@ requires-dist = [
     { name = "jsonlines" },
     { name = "langdetect" },
     { name = "pip-tools", marker = "extra == 'dev'" },
+    { name = "pydantic" },
     { name = "pytest" },
-    { name = "pytest-invenio", marker = "extra == 'dev'" },
+    { name = "pytest-invenio", marker = "extra == 'dev'", specifier = "==2.2.2" },
     { name = "python-dateutil" },
     { name = "python-iso639" },
     { name = "python-stdnum" },
     { name = "pytz" },
     { name = "requests" },
+    { name = "requests-mock", marker = "extra == 'dev'" },
+    { name = "requests-mock", marker = "extra == 'test'" },
     { name = "selenium", marker = "extra == 'dev'" },
     { name = "timefhuman" },
     { name = "titlecase" },
     { name = "unidecode" },
     { name = "validators" },
+    { name = "wheel", marker = "extra == 'dev'" },
 ]
 
 [[package]]
