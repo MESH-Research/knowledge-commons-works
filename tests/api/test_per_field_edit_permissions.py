@@ -250,72 +250,70 @@ class BasePerFieldPermissionsTest(abc.ABC):
         # Create a draft record using the current_rdm_records_service
         # and publish it to the community
         draft_data = record_metadata(owner_id=user_id)
-        draft_data.update_metadata(
-            {
-                "metadata|funding": [
-                    {
-                        "funder": {
-                            "id": "00k4n6c31",
-                        },
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755021",
-                                    "scheme": "url",
-                                }
-                            ],
-                            "number": "755021",
-                            "title": {"en": "Award 755021"},
-                        },
+        draft_data.update_metadata({
+            "metadata|funding": [
+                {
+                    "funder": {
+                        "id": "00k4n6c31",
                     },
-                    {
-                        "funder": {
-                            "id": "00k4n6c32",
-                        },
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755022",
-                                    "scheme": "url",
-                                }
-                            ],
-                            "number": "755022",
-                            "title": {"en": "Award 755022"},
-                        },
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755021",
+                                "scheme": "url",
+                            }
+                        ],
+                        "number": "755021",
+                        "title": {"en": "Award 755021"},
                     },
-                    {
-                        "funder": {
-                            "id": "00k4n6c33",
-                        },
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755023",
-                                    "scheme": "url",
-                                }
-                            ],
-                            "number": "755023",
-                            "title": {"en": "Award 755023"},
-                        },
+                },
+                {
+                    "funder": {
+                        "id": "00k4n6c32",
                     },
-                    {
-                        "funder": {
-                            "id": "00k4n6c34",
-                        },
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755024",
-                                    "scheme": "url",
-                                }
-                            ],
-                            "number": "755024",
-                            "title": {"en": "Award 755024"},
-                        },
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755022",
+                                "scheme": "url",
+                            }
+                        ],
+                        "number": "755022",
+                        "title": {"en": "Award 755022"},
                     },
-                ]
-            }
-        )
+                },
+                {
+                    "funder": {
+                        "id": "00k4n6c33",
+                    },
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755023",
+                                "scheme": "url",
+                            }
+                        ],
+                        "number": "755023",
+                        "title": {"en": "Award 755023"},
+                    },
+                },
+                {
+                    "funder": {
+                        "id": "00k4n6c34",
+                    },
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755024",
+                                "scheme": "url",
+                            }
+                        ],
+                        "number": "755024",
+                        "title": {"en": "Award 755024"},
+                    },
+                },
+            ]
+        })
         draft = current_rdm_records_service.create(identity, draft_data.metadata_in)
 
         if self.record_is_published:
@@ -733,60 +731,58 @@ def test_per_field_permissions_find_changed_restricted_fields(
     }
 
     # Create a mock record with some data
-    record = RDMDraft.create(
-        {
-            "access": {"files": "restricted"},
-            "metadata": {
-                "title": "Original Title",
-                "description": "Original Description",
-                "creators": [
-                    {"person_or_org": {"name": "Original Creator"}},
-                    {"person_or_org": {"name": "Original Creator 2"}},
-                ],
-                "additional_titles": [
-                    {"title": "Original Additional Title"},
-                    {"title": "Original Additional Title 2"},
-                ],
-                "publication_date": "2023-01-01",  # Unrestricted field
-                "funding": [
-                    {
-                        "funder": {"id": "00k4n6c33"},
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755023",
-                                    "scheme": "url",
-                                },
-                            ]
-                        },
+    record = RDMDraft.create({
+        "access": {"files": "restricted"},
+        "metadata": {
+            "title": "Original Title",
+            "description": "Original Description",
+            "creators": [
+                {"person_or_org": {"name": "Original Creator"}},
+                {"person_or_org": {"name": "Original Creator 2"}},
+            ],
+            "additional_titles": [
+                {"title": "Original Additional Title"},
+                {"title": "Original Additional Title 2"},
+            ],
+            "publication_date": "2023-01-01",  # Unrestricted field
+            "funding": [
+                {
+                    "funder": {"id": "00k4n6c33"},
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755023",
+                                "scheme": "url",
+                            },
+                        ]
                     },
-                    {
-                        "funder": {"id": "00k4n6c34"},
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755024",
-                                    "scheme": "url",
-                                },
-                            ]
-                        },
+                },
+                {
+                    "funder": {"id": "00k4n6c34"},
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755024",
+                                "scheme": "url",
+                            },
+                        ]
                     },
-                ],
-            },
-            "custom_fields": {
-                "test_field": {
-                    "id": "test_field",
-                    "value": "Original Value",
                 },
-                "test_field2": {
-                    "items": [
-                        {"value": "Original Value"},
-                        {"value": "Original Value 2"},
-                    ]
-                },
+            ],
+        },
+        "custom_fields": {
+            "test_field": {
+                "id": "test_field",
+                "value": "Original Value",
             },
-        }
-    )
+            "test_field2": {
+                "items": [
+                    {"value": "Original Value"},
+                    {"value": "Original Value 2"},
+                ]
+            },
+        },
+    })
 
     # New data with changes
     new_data = {
@@ -916,7 +912,11 @@ class TestCollectionRemoveRestricted:
                         "XXXX. Please contact the collection owner or "
                         "manager for assistance."
                     ),
-                }
+                },
+                {
+                    "community": "9c59aaee-2ce0-4719-ad2d-ba036b88fb3a",
+                    "message": "Permission denied.",
+                },
             ],
         }
 
@@ -971,9 +971,10 @@ class TestCollectionRemoveRestricted:
         new_result = current_rdm_records_service.read(identity, id_=record.id)
         if new_result._record.parent.communities.default:
             assert str(new_result._record.parent.communities.default.id) == community.id
-        assert len(new_result._record.parent.communities) == len(
-            self.expected["errors"]
-        )
+        assert (
+            len(new_result._record.parent.communities.ids)
+            == len(self.expected["errors"]) / 2
+        )  # because now 2 errors per permission failure
 
 
 class TestCollectionRemoveRestrictedAllowed(TestCollectionRemoveRestricted):
@@ -1011,7 +1012,7 @@ class TestCollectionRemoveUnRestricted(TestCollectionRemoveRestricted):
 
 
 class TestCollectionChangeDefaultRestricted:
-    """Test that a community is not changed from the default if the field is restricted."""
+    """Test that a community is not changed from default if the field is restricted."""
 
     @property
     def permissions_config(self) -> dict:  # noqa: D102
@@ -1066,6 +1067,7 @@ class TestCollectionChangeDefaultRestricted:
         )
         result = current_rdm_records_service.record_cls.pid.resolve(record.data["id"])
         assert str(result.parent.communities.default.id) == community.id
+        running_app.app.logger.error(f"test-community id: {community.id}")
 
         # Change the default community
         if self.error_expected:
