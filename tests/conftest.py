@@ -84,7 +84,12 @@ def _(x):
 
 test_config = {
     **config,
-    **test_config_identifiers,
+    "RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS": test_config_identifiers[
+        "RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS"
+    ],
+    "RDM_PERSISTENT_IDENTIFIER_PROVIDERS": test_config_identifiers[
+        "RDM_PERSISTENT_IDENTIFIER_PROVIDERS"
+    ],
     **test_config_fields,
     **test_config_stats,
     **test_config_saml,
@@ -322,6 +327,11 @@ def search_clear(search_clear):
     additional step to delete the stats indices and template manually.
     Otherwise, the stats indices aren't cleared between tests.
     """
+    # Clear identity cache before each test to prevent stale community role data
+    from invenio_communities.proxies import current_identities_cache
+
+    current_identities_cache.flush()
+
     yield search_clear
 
     # Delete stats indices and templates if they exist
@@ -348,12 +358,10 @@ def template_loader():
             root_path,
         ):
             assert path.exists()
-        custom_loader = jinja2.ChoiceLoader(
-            [
-                app.jinja_loader,
-                jinja2.FileSystemLoader([str(site_path), str(root_path)]),
-            ]
-        )
+        custom_loader = jinja2.ChoiceLoader([
+            app.jinja_loader,
+            jinja2.FileSystemLoader([str(site_path), str(root_path)]),
+        ])
         app.jinja_loader = custom_loader
         app.jinja_env.loader = custom_loader
 

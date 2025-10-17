@@ -13,6 +13,7 @@ from pprint import pformat
 import marshmallow as ma
 import pytest
 from flask import current_app
+from flask_principal import Identity
 from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
@@ -22,25 +23,40 @@ from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_rdm_records, current_rdm_records_service
 from invenio_rdm_records.records.api import RDMRecord
 from invenio_rdm_records.utils import get_or_create_user
+from invenio_requests.proxies import current_requests_service
 from invenio_records_resources.services.uow import UnitOfWork
 from invenio_search.proxies import current_search_client
 
 
 def add_community_to_record(
-    db: SQLAlchemy, record: RDMRecord, community_id: str, default: bool = False
+    db: SQLAlchemy,
+    record: RDMRecord,
+    community_id: str,
+    identity: Identity = system_identity,
+    default: bool = False,
 ) -> None:
     """Add a community to a record."""
     current_search_client.indices.refresh(index="*rdmrecords-records*")
 
-    # Use UnitOfWork to ensure proper transaction handling
     with UnitOfWork(db.session) as uow:
-        current_rdm_records.record_communities_service.add(
-            system_identity,
+        result = current_rdm_records.record_communities_service.add(
+            identity,
             record.pid.pid_value,  # type: ignore
             data={"communities": [{"id": str(community_id)}]},
             uow=uow,
         )
-        # Commit the transaction
+
+        request = result[0][0]
+        if request and "request_id" in request:
+            request_id = request["request_id"]
+            request_status = request["request"]["status"]
+
+            if request_status == "submitted":
+                current_requests_service.execute_action(
+                    system_identity, request_id, "accept", uow=uow
+                )
+                current_app.logger.error(f"Accepted request: {request_id}")
+
         uow.commit()
 
     # Get the updated record from the database

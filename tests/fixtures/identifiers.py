@@ -147,6 +147,23 @@ test_config_identifiers = {
             "validator": always_valid,
             "datacite": "Other",
         },
+        # KCWorks custom identifier schemes
+        "hclegacy-pid": {
+            "label": _("Humanities Commons Legacy PID"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
+        "hclegacy-record-id": {
+            "label": _("Humanities Commons Legacy Record ID"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
+        # Import schemes
+        "import-recid": {
+            "label": _("Import record ID"),
+            "validator": always_valid,
+            "datacite": "Other",
+        },
     },
     "RDM_RECORDS_PERSONORG_SCHEMES": {
         **RDM_RECORDS_PERSONORG_SCHEMES,
@@ -158,6 +175,12 @@ test_config_identifiers = {
         "email": {
             "label": _("Email"),
             "validator": is_email,
+            "datacite": "Other",
+        },
+        # KCWorks custom person/org identifier schemes
+        "hc_username": {
+            "label": _("KC member"),
+            "validator": always_valid,
             "datacite": "Other",
         },
     },

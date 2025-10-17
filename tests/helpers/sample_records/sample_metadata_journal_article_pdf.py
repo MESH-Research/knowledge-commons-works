@@ -1,3 +1,5 @@
+"""Sample Journal Article Metadata."""
+
 sample_metadata_journal_article_pdf = {
     "input": {
         "access": {

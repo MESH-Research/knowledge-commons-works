@@ -248,9 +248,11 @@ def superuser_role_need(db):
 
 
 @pytest.fixture(scope="function")
-def superuser_identity(admin: AugmentedUserFixture, superuser_role_need) -> Identity:
+def superuser_identity(admin: AugmentedUserFixture, superuser_role_need, db) -> Identity:
     """Superuser identity fixture."""
-    identity = admin.identity
+    # Merge the user to ensure it's attached to the current session
+    merged_user = db.session.merge(admin.user)
+    identity = get_identity(merged_user)
     identity.provides.add(superuser_role_need)
     return identity
 

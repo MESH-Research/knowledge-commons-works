@@ -35,6 +35,7 @@ dependencies = [
     "isbnlib",
     "langdetect",
     "lxml==5.2.1",
+    "openpyxl",
     "pip",
     "pluggy>=0.12,<2.0",
     "python-dotenv",

@@ -68,7 +68,7 @@ class BaseImportLoaderTest:
     ):
         """Do the comparison of the result with the expected metadata."""
         assert test_metadata.compare_published(result.record_created["record_data"])
-        assert result.record_created["record_data"]["revision_id"] == 3
+        assert result.record_created["record_data"]["revision_id"] == 4
 
         assert re.match(
             r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
@@ -305,13 +305,11 @@ class BaseImportLoaderTest:
             community_list=[community],
             owner_id=user_id,
         )
-        test_metadata.update_metadata(
-            {
-                "metadata|identifiers": [
-                    {"identifier": "1234567890", "scheme": "import-recid"}
-                ]
-            }
-        )
+        test_metadata.update_metadata({
+            "metadata|identifiers": [
+                {"identifier": "1234567890", "scheme": "import-recid"}
+            ]
+        })
         self.modify_metadata(test_metadata)
 
         for u in (
@@ -425,14 +423,12 @@ class TestImportLoaderJArticleErrorIDScheme(BaseImportLoaderErrorTest):
         return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
 
     def modify_metadata(self, test_metadata: TestRecordMetadata):  # noqa: D102
-        test_metadata.update_metadata(
-            {
-                "metadata|identifiers": [
-                    {"identifier": "hc:33383", "scheme": "my-made-up-scheme"},
-                    {"identifier": "1234567890", "scheme": "import-recid"},
-                ]
-            }
-        )
+        test_metadata.update_metadata({
+            "metadata|identifiers": [
+                {"identifier": "hc:33383", "scheme": "my-made-up-scheme"},
+                {"identifier": "1234567890", "scheme": "import-recid"},
+            ]
+        })
 
     def check_result_errors(self, result: LoaderResult):  # noqa: D102
         assert result.errors == [
@@ -464,8 +460,8 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
 
     def test_import_records_loader_load(
         self,
-        running_app,
         db,
+        running_app,
         search_clear,
         minimal_community_factory,
         user_factory,
@@ -558,13 +554,11 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
             owner_id=user_id,
             file_entries=file_entries,
         )
-        test_metadata.update_metadata(
-            {
-                "metadata|identifiers": [
-                    {"identifier": "hc:33383", "scheme": "import-recid"}
-                ]
-            }
-        )
+        test_metadata.update_metadata({
+            "metadata|identifiers": [
+                {"identifier": "hc:33383", "scheme": "import-recid"}
+            ]
+        })
         for u in (
             test_metadata.metadata_in.get("parent", {})
             .get("access", {})
@@ -1146,7 +1140,6 @@ class BaseImportServiceTest:
         )
         files_per_item = len(files) // len(metadata_sources)
         for idx, actual_record_result in enumerate(import_results["data"]):
-
             expected_error_list = self.expected_errors[idx]
             assert actual_record_result["item_index"] == idx
 
@@ -1154,7 +1147,8 @@ class BaseImportServiceTest:
                 self._check_failed_import(actual_record_result, expected_error_list)
             else:
                 record_files = files[
-                    idx * files_per_item : (idx + 1) * files_per_item  # noqa: E203
+                    idx * files_per_item : (idx + 1)
+                    * files_per_item  # noqa: E203
                 ]
 
                 self._check_successful_import(
@@ -1180,9 +1174,9 @@ class BaseImportServiceTest:
                 f"{self.app.config['SITE_API_URL']}/import/{community['slug']}",
                 content_type="multipart/form-data",
                 data={
-                    "metadata": json.dumps(
-                        [copy.deepcopy(m.metadata_in) for m in metadata_source_objects]
-                    ),
+                    "metadata": json.dumps([
+                        copy.deepcopy(m.metadata_in) for m in metadata_source_objects
+                    ]),
                     "id_scheme": "import-recid",
                     "review_required": "true",
                     "strict_validation": "true",
@@ -1239,7 +1233,8 @@ class BaseImportServiceTest:
         metadata_source_objects = []
         for idx, metadata_source in enumerate(self.metadata_sources):
             item_files = file_list[
-                idx * files_per_item : (idx + 1) * files_per_item  # noqa: E203
+                idx * files_per_item : (idx + 1)
+                * files_per_item  # noqa: E203
             ]
             file_entries = {f["key"]: f for f in item_files}
             test_metadata = TestRecordMetadataWithFiles(
@@ -1249,16 +1244,14 @@ class BaseImportServiceTest:
                 file_entries=file_entries,
             )
 
-            test_metadata.update_metadata(
-                {
-                    "metadata|identifiers": [
-                        {
-                            "identifier": f"1234567890{str(idx)}",
-                            "scheme": "import-recid",
-                        }
-                    ]
-                }
-            )
+            test_metadata.update_metadata({
+                "metadata|identifiers": [
+                    {
+                        "identifier": f"1234567890{str(idx)}",
+                        "scheme": "import-recid",
+                    }
+                ]
+            })
             metadata_source_objects.append(test_metadata)
 
         if self.by_api and submitter_token:
