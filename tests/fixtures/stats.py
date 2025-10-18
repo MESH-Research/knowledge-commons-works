@@ -17,11 +17,9 @@
 
 import json
 import os
-from typing import TYPE_CHECKING, Callable
 
 import pytest
 from flask import current_app
-from flask_sqlalchemy import SQLAlchemy
 from invenio_rdm_records.resources.stats.event_builders import (
     build_record_unique_id,
 )
@@ -39,10 +37,6 @@ from invenio_stats_dashboard.aggregations import (
 )
 from invenio_stats_dashboard.config import COMMUNITY_STATS_QUERIES
 from invenio_stats_dashboard.utils.usage_events import UsageEventFactory
-
-# RunningApp type is defined in conftest.py but imported here to avoid circular imports
-if TYPE_CHECKING:
-    from tests.conftest import RunningApp
 
 AllowAllPermission = type(
     "Allow",
@@ -70,9 +64,9 @@ test_config_stats["STATS_REGISTER_INDEX_TEMPLATES"] = True
 
 test_config_stats["STATS_EVENTS"] = {
     "file-download": {
-        "templates": "kcworks.services.search.index_templates.stats.file_download",
-        # "templates": "invenio_rdm_records.records.stats.templates."
-        # "events.file_download",
+        "templates": (
+            "invenio_stats_dashboard.search_indices.search_templates.file_download"
+        ),
         "event_builders": [
             "invenio_rdm_records.resources.stats.file_download_event_builder",
             "invenio_rdm_records.resources.stats.check_if_via_api",
@@ -87,9 +81,9 @@ test_config_stats["STATS_EVENTS"] = {
         },
     },
     "record-view": {
-        "templates": "kcworks.services.search.index_templates.stats.record_view",
-        # "templates": "invenio_rdm_records.records.stats.templates."
-        # "events.record_view",
+        "templates": (
+            "invenio_stats_dashboard.search_indices.search_templates.record_view"
+        ),
         "event_builders": [
             "invenio_rdm_records.resources.stats.record_view_event_builder",
             "invenio_rdm_records.resources.stats.check_if_via_api",
@@ -339,7 +333,7 @@ def put_old_stats_templates():
             if isinstance(template_result, dict):
                 for index_name, template_file_path in template_result.items():
                     if os.path.exists(template_file_path):
-                        with open(template_file_path, "r") as f:
+                        with open(template_file_path) as f:
                             template_content = json.load(f)
 
                         prefix = current_app.config.get("SEARCH_INDEX_PREFIX", "")

@@ -5,6 +5,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Integration tests for usage stats operations."""
+
 import uuid
 from pprint import pformat
 
@@ -52,6 +53,7 @@ def test_stats_backend_processing(
     which is tested in test_stats_events_creation.py
     """
     app = running_app.app
+    app.logger.error(f"STATS_EVENTS {app.config['STATS_EVENTS']}")
     metadata = TestRecordMetadata(app=app)
     draft = current_rdm_records_service.create(system_identity, metadata.metadata_in)
     published = current_rdm_records_service.publish(system_identity, draft["id"])
@@ -87,6 +89,7 @@ def test_stats_backend_processing(
             {
                 "timestamp": dt.naive.isoformat(),
                 "bucket_id": bucket_id,
+                "community_id": "abcdef",
                 "file_id": file_id,
                 "file_key": "file_key",
                 "size": 100,
@@ -112,6 +115,7 @@ def test_stats_backend_processing(
                 "recid": record_id,
                 "parent_recid": metadata_record["parent"]["id"],
                 "unique_id": f"ui_{record_id}",
+                "community_id": "abcdef",
                 "is_robot": False,
                 "user_id": record_view_uid,
                 "session_id": record_view_uid,

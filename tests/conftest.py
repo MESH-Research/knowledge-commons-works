@@ -91,7 +91,7 @@ test_config = {
         "RDM_PERSISTENT_IDENTIFIER_PROVIDERS"
     ],
     **test_config_fields,
-    **test_config_stats,
+    **test_config_stats,  # FIXME: get these settings from invenio.cfg
     **test_config_saml,
     "SQLALCHEMY_DATABASE_URI": (
         "postgresql+psycopg2://kcworks:kcworks@localhost:5432/kcworks"
