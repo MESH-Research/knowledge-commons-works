@@ -95,13 +95,13 @@ uv run sphinx-build -b html docs/source/ docs/build/
 # Check for running docker-compose projects before starting services
 check_docker_compose_running
 
-# Check if tests_stats_dashboard/.env exists and set env_file_arg accordingly
-if [ -f "tests_stats_dashboard/.env" ]; then
-  env_file_arg="--env-file tests_stats_dashboard/.env"
-  echo "Using tests_stats_dashboard/.env file for environment variables"
+# Check if tests/.env exists and set env_file_arg accordingly
+if [ -f "tests/.env" ]; then
+  env_file_arg="--env-file tests/.env"
+  echo "Using tests/.env file for environment variables"
 else
   env_file_arg=""
-  echo "No tests_stats_dashboard/.env file found, using default environment"
+  echo "No tests/.env file found, using default environment"
 fi
 
 # Start the services and get their environment variables
