@@ -243,11 +243,10 @@ addopts = """
 --ignore=site/kcworks/dependencies/invenio-records-resources
 --ignore=site/kcworks/dependencies/invenio-remote-api-provisioner
 --ignore=site/kcworks/dependencies/invenio-remote-user-data-kcworks
---ignore=site/kcworks/dependencies/invenio-stats-dashboard
 --ignore=site/kcworks/dependencies/invenio-requests
 --ignore=site/kcworks/dependencies/invenio-vocabularies
 --ignore=site/kcworks/services/search/index_templates
---cov=kcworks --cov-report=term-missing
+--cov=kcworks --cov=invenio_stats_dashboard --cov-report=term-missing
 """
 norecursedirs = ["site/kcworks/services/search/index_templates/records/os-v2"]
 log_cli_level = "DEBUG"
