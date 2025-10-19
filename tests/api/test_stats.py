@@ -89,7 +89,7 @@ def test_stats_backend_processing(
             {
                 "timestamp": dt.naive.isoformat(),
                 "bucket_id": bucket_id,
-                "community_id": "abcdef",
+                "community_ids": ["abcdef"],
                 "file_id": file_id,
                 "file_key": "file_key",
                 "size": 100,
@@ -115,7 +115,7 @@ def test_stats_backend_processing(
                 "recid": record_id,
                 "parent_recid": metadata_record["parent"]["id"],
                 "unique_id": f"ui_{record_id}",
-                "community_id": "abcdef",
+                "community_ids": ["abcdef"],
                 "is_robot": False,
                 "user_id": record_view_uid,
                 "session_id": record_view_uid,
@@ -131,20 +131,6 @@ def test_stats_backend_processing(
     events = process_events(["file-download", "record-view"])
 
     current_search.flush_and_refresh(index="*")
-    # app.logger.debug(
-    #     f"events: {pformat(current_search_client.indices.get('*record-view*'))}"
-    # )
-    # app.logger.debug(
-    #     f"events: {pformat(current_search_client.indices.get('*file-download*'))}"
-    # )
-    # view_records = current_search_client.search(
-    #     index="events-stats-record-view", body={}
-    # )
-    # app.logger.debug(f"view_records: {pformat(view_records)}")
-    # download_records = current_search_client.search(
-    #     index="events-stats-file-download", body={}
-    # )
-    # app.logger.debug(f"download_records: {pformat(download_records)}")
 
     # check that events are in search index
     assert len(events) == 2
@@ -153,13 +139,17 @@ def test_stats_backend_processing(
 
     # Process the aggregations
     agg_task = aggregate_events.si(
-        list(current_stats.aggregations.keys()),
+        # Only running aggregations for views and downloads
+        ["file-download-agg", "record-view-agg"],
         start_date=None,
         end_date=None,
         update_bookmark=True,
     )
     aggs = agg_task.apply(throw=True)
-    assert aggs.result == [[(1, 0)], [(0, 0), (1, 0)]]
+    assert aggs.result == [
+        [(1, 0)],
+        [(0, 0), (1, 0)],
+    ]
 
     # Check that the stats are available on the record
 

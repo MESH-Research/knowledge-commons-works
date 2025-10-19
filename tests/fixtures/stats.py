@@ -51,6 +51,9 @@ def AllowAllPermissionFactory(obj_id, action):
     Parameters:
         obj_id: The object id.
         action: The action.
+
+    Returns:
+        AllowAllPermission: The permission class
     """
     return AllowAllPermission
 
@@ -62,6 +65,8 @@ test_config_stats = {}
 test_config_stats["STATS_REGISTER_INDEX_TEMPLATES"] = True
 
 
+# This STATS_EVENTS config is only used in packages that don't have
+# access to the KCWorks invenio.cfg
 test_config_stats["STATS_EVENTS"] = {
     "file-download": {
         "templates": (
@@ -100,6 +105,8 @@ test_config_stats["STATS_EVENTS"] = {
     },
 }
 
+# This STATS_AGGREGATIONS config is only used in packages that don't have
+# access to the KCWorks invenio.cfg
 test_config_stats["STATS_AGGREGATIONS"] = {
     "file-download-agg": {
         "templates": "kcworks.services.search.index_templates.stats.aggr_file_download",
@@ -195,6 +202,8 @@ def create_stats_indices(app):
         print(e)
 
 
+# This STATS_QUERIES config is only used in packages that don't have
+# access to the KCWorks invenio.cfg
 test_config_stats["STATS_QUERIES"] = {
     "record-view": {
         "cls": TermsQuery,

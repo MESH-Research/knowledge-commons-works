@@ -1,3 +1,5 @@
+"""Helper service utilities for working with KCWorks records."""
+
 import os
 import tempfile
 import time
@@ -8,7 +10,10 @@ from invenio_record_importer_kcworks.types import FileData
 
 
 class KCWorksRecordsAPIHelper:
+    """Utility class for making records api requests."""
+
     def __init__(self, api_token: str | None = None, api_url: str | None = None):
+        """Initialize a KCWorksRecordsAPIHelper instance."""
         self.api_token = api_token or os.getenv("API_TOKEN")
         self.api_url = api_url or app.config["SITE_API_URL"]
 
@@ -44,7 +49,8 @@ class KCWorksRecordsAPIHelper:
         Returns:
             tuple: A tuple containing:
                 - List of record metadata dictionaries that were successfully fetched
-                - List of error messages describing any records that couldn't be accessed
+                - List of error messages describing any records that couldn't be
+                    accessed
         """
         start_time = time.time()
         url = self.api_url + "/records"
@@ -94,13 +100,16 @@ class KCWorksRecordsAPIHelper:
                 return [], [error_msg]
             elif response.status_code == 410:
                 error_msg = (
-                    f"Resource gone (410) for API request. The requested records may have been "
-                    f"deleted. Request URL: {url}, Params: {params}"
+                    f"Resource gone (410) for API request. The requested records may "
+                    f"have been deleted. Request URL: {url}, Params: {params}"
                 )
                 app.logger.warning(error_msg)
                 return [], [error_msg]
             elif response.status_code != 200:
-                app.logger.error(f"API request failed with status {response.status_code}: {response.text}")
+                app.logger.error(
+                    f"API request failed with status {response.status_code}: "
+                    f"{response.text}"
+                )
                 response.raise_for_status()
 
             # Get all hits and slice to get exactly count records starting from offset
@@ -123,22 +132,25 @@ class KCWorksRecordsAPIHelper:
 
         if count_response.status_code == 403:
             error_msg = (
-                f"Access forbidden (403) for count request. This may be due to "
-                f"restricted records or insufficient permissions."
+                "Access forbidden (403) for count request. This may be due to "
+                "restricted records or insufficient permissions."
             )
             app.logger.warning(error_msg)
             return [], [error_msg]
         elif count_response.status_code == 410:
             error_msg = (
-                f"Resource gone (410) for count request. The requested records may have been "
-                f"deleted."
+                "Resource gone (410) for count request. The requested records may "
+                "have been deleted."
             )
             app.logger.warning(error_msg)
             return [], [error_msg]
         elif count_response.status_code != 200:
-            app.logger.error(f"Count request failed with status {count_response.status_code}: {count_response.text}")
+            app.logger.error(
+                f"Count request failed with status {count_response.status_code}: "
+                f"{count_response.text}"
+            )
             count_response.raise_for_status()
-        
+
         total_records = count_response.json()["hits"]["total"]
         app.logger.info(f"Total records in date range: {total_records}")
 
@@ -178,17 +190,26 @@ class KCWorksRecordsAPIHelper:
             app.logger.info(f"Page {page} request took {page_time:.2f} seconds")
 
             if response.status_code == 403:
-                error_msg = f"Access forbidden (403) for page {page} request. Skipping this page."
+                error_msg = (
+                    f"Access forbidden (403) for page {page} request. "
+                    "Skipping this page."
+                )
                 app.logger.warning(error_msg)
                 errors.append(error_msg)
                 continue
             elif response.status_code == 410:
-                error_msg = f"Resource gone (410) for page {page} request. Records may have been deleted. Skipping this page."
+                error_msg = (
+                    f"Resource gone (410) for page {page} request. Records may "
+                    "have been deleted. Skipping this page."
+                )
                 app.logger.warning(error_msg)
                 errors.append(error_msg)
                 continue
             elif response.status_code != 200:
-                app.logger.error(f"Page {page} request failed with status {response.status_code}: {response.text}")
+                app.logger.error(
+                    f"Page {page} request failed with status {response.status_code}: "
+                    f"{response.text}"
+                )
                 response.raise_for_status()
 
             hits = response.json()["hits"]["hits"]
@@ -226,20 +247,35 @@ class KCWorksRecordsAPIHelper:
         response = requests.get(url, stream=True, allow_redirects=True, headers=headers)
 
         if response.status_code == 403:
-            raise ValueError(f"Access forbidden (403) when downloading file {filename}. This may be due to restricted file access.")
+            raise ValueError(
+                f"Access forbidden (403) when downloading file {filename}. This may be "
+                "due to restricted file access."
+            )
         elif response.status_code == 410:
-            raise ValueError(f"Resource gone (410) when downloading file {filename}. The file may have been deleted.")
+            raise ValueError(
+                f"Resource gone (410) when downloading file {filename}. The file may "
+                "have been deleted."
+            )
         elif response.status_code != 200:
-            app.logger.error(f"File download failed with status {response.status_code}: {response.text}")
+            app.logger.error(
+                f"File download failed with status {response.status_code}: "
+                f"{response.text}"
+            )
             response.raise_for_status()
 
         # If we got a Location header but no redirect, follow it manually
         if response.status_code == 200 and "Location" in response.headers:
             response = requests.get(response.headers["Location"], stream=True)
             if response.status_code == 403:
-                raise ValueError(f"Access forbidden (403) when downloading file {filename} from redirect location.")
+                raise ValueError(
+                    f"Access forbidden (403) when downloading file {filename} from "
+                    "redirect location."
+                )
             elif response.status_code == 410:
-                raise ValueError(f"Resource gone (410) when downloading file {filename} from redirect location. The file may have been deleted.")
+                raise ValueError(
+                    f"Resource gone (410) when downloading file {filename} from "
+                    "redirect location. The file may have been deleted."
+                )
             elif response.status_code != 200:
                 response.raise_for_status()
 
@@ -266,7 +302,9 @@ class KCWorksRecordsAPIHelper:
             stream=temp_file,
         )
 
-    def fetch_record_files(self, records: list[dict]) -> tuple[list[FileData], list[str]]:
+    def fetch_record_files(
+        self, records: list[dict]
+    ) -> tuple[list[FileData], list[str]]:
         """Get the files for a test record.
 
         Args:
@@ -292,21 +330,32 @@ class KCWorksRecordsAPIHelper:
 
                 files_url = record["links"]["files"]
                 files_api_response = requests.get(files_url, headers=headers)
-                
+
                 if files_api_response.status_code == 403:
-                    error_msg = f"Access forbidden (403) for files API request for record {record['id']}. Skipping files for this record."
+                    error_msg = (
+                        f"Access forbidden (403) for files API request for record "
+                        f"{record['id']}. Skipping files for this record."
+                    )
                     app.logger.warning(error_msg)
                     errors.append(error_msg)
                     continue
                 elif files_api_response.status_code == 410:
-                    error_msg = f"Resource gone (410) for files API request for record {record['id']}. Record may have been deleted. Skipping files for this record."
+                    error_msg = (
+                        f"Resource gone (410) for files API request for record "
+                        f"{record['id']}. Record may have been deleted. Skipping files "
+                        "for this record."
+                    )
                     app.logger.warning(error_msg)
                     errors.append(error_msg)
                     continue
                 elif files_api_response.status_code != 200:
-                    app.logger.error(f"Files API request failed for record {record['id']} with status {files_api_response.status_code}: {files_api_response.text}")
+                    app.logger.error(
+                        f"Files API request failed for record {record['id']} with "
+                        f"status {files_api_response.status_code}: "
+                        f"{files_api_response.text}"
+                    )
                     files_api_response.raise_for_status()
-                
+
                 files_api_response_json = files_api_response.json()
                 for file_entry in record["files"]["entries"].values():
                     matching_file_entry = next(
@@ -328,7 +377,10 @@ class KCWorksRecordsAPIHelper:
                             file_data_object = self.download_file(file_url, filename)
                             file_data.append(file_data_object)
                         except Exception as e:
-                            error_msg = f"Failed to download file {filename} for record {record['id']}: {str(e)}"
+                            error_msg = (
+                                f"Failed to download file {filename} for "
+                                f"record {record['id']}: {str(e)}"
+                            )
                             app.logger.error(error_msg, exc_info=True)
                             errors.append(error_msg)
         return file_data, errors

@@ -153,6 +153,10 @@ group-collections = "kcworks.cli:group_collections"
 line-length = 88
 target-version = "py312"
 
+[tool.ruff.lint.isort]
+# Ensure consistent import sorting - explicitly declare tests as first-party
+known-first-party = ["invenio_stats_dashboard", "tests"]
+
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "D104", "E402"]
 "tests/api/test_stats.py" = ["C416"]
@@ -160,6 +164,7 @@ target-version = "py312"
 [tool.ruff.lint]
 # temporarily removed C for complexity checks
 select = ["E", "F", "I", "B", "UP", "D", "DOC"]
+preview = true
 # Now Ruff handles formatting, so enable formatting rules
 ignore = [
     # Keep some warnings disabled
