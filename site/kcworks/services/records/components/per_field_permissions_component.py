@@ -117,6 +117,10 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
         Returns a tuple of two lists: the first is a list of path strings without
         bracketed conditions, and the second is a list of tuples, each containing
         the base part of the path, the conditions, and the full restricted path.
+        
+        Returns:
+            tuple[list[str], list[tuple[str, str, str]]]: Tuple containing simple
+                fields and fields with conditions.
         """
         restricted_fields_with_conditions = []
         simple_restricted_fields = []
@@ -140,6 +144,9 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
         """Check if the changed field matches the restricted field.
 
         Returns True if the fields match, False otherwise.
+        
+        Returns:
+            bool: True if fields match, False otherwise.
         """
         if not matched_parts:
             matched_parts = matching_list_parts_skip_digits(

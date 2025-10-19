@@ -30,7 +30,11 @@ class MemberQueryParser(QueryParser):
     """
 
     def parse(self, query_str: str):
-        """Parse the query."""
+        """Parse the query.
+        
+        Returns:
+            Any: The parsed query result.
+        """
         try:
             # We parse the Lucene query syntax in Python, so we know upfront
             # if the syntax is correct before executing it in the search engine

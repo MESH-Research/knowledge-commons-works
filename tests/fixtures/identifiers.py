@@ -18,7 +18,11 @@ from tests.helpers.fake_datacite_client import FakeDataCiteClient
 
 
 def is_email(value):
-    """Simple email validation function."""
+    """Simple email validation function.
+    
+    Returns:
+        bool: True if value is a valid email, False otherwise.
+    """
     import re
 
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
@@ -26,7 +30,11 @@ def is_email(value):
 
 
 def _(x):
-    """Identity function for string extraction."""
+    """Identity function for string extraction.
+    
+    Returns:
+        str: The input string unchanged.
+    """
     return x
 
 

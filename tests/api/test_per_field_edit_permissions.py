@@ -47,13 +47,21 @@ from ..fixtures.users import get_authenticated_identity
 
 @pytest.fixture  # type: ignore
 def per_field_component() -> PerFieldEditPermissionsComponent:
-    """Fixture to set up the PerFieldEditPermissionsComponent."""
+    """Fixture to set up the PerFieldEditPermissionsComponent.
+    
+    Returns:
+        PerFieldEditPermissionsComponent: The configured component.
+    """
     return PerFieldEditPermissionsComponent(service=current_rdm_records_service)
 
 
 @pytest.fixture  # type: ignore
 def community_change_permissions_component() -> CommunityChangePermissionsComponent:
-    """Fixture to set up the CommunityChangePermissionsComponent."""
+    """Fixture to set up the CommunityChangePermissionsComponent.
+    
+    Returns:
+        CommunityChangePermissionsComponent: The configured component.
+    """
     return CommunityChangePermissionsComponent(
         service=current_record_communities_service
     )

@@ -240,6 +240,9 @@ class KCWorksRecordsAPIHelper:
 
         Returns:
             FileData: Object containing the file data and metadata.
+        
+        Raises:
+            ValueError: If the URL is invalid or file download fails.
         """
         headers = {}
         if self.api_token:

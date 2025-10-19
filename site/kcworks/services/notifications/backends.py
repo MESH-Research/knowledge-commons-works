@@ -24,8 +24,9 @@ from invenio_i18n import force_locale, get_locale
 from invenio_i18n.proxies import current_i18n
 from invenio_mail.tasks import send_email
 from invenio_notifications.backends.base import NotificationBackend
-from kcworks.proxies import current_internal_notifications
 from marshmallow_utils.html import strip_html
+
+from kcworks.proxies import current_internal_notifications
 
 
 class CustomJinjaTemplateLoaderMixin:
@@ -40,6 +41,9 @@ class CustomJinjaTemplateLoaderMixin:
         the template blocks.
         More specific templates take precedence over less specific ones.
         Rendered template will also take the locale into account.
+
+        Returns:
+            dict: Dictionary containing rendered template blocks.
         """
         # Take recipient locale into account. Fallback to default locale
         # (set via config variable)
@@ -51,27 +55,23 @@ class CustomJinjaTemplateLoaderMixin:
         # Not clear why the jinja loaders aren't being set properly.
         site_path = Path(__file__).parent.parent.parent
         templates_path = site_path / "templates" / "semantic-ui"
-        custom_loader = jinja2.ChoiceLoader(
-            [
-                current_app.jinja_loader,
-                jinja2.FileSystemLoader([str(templates_path)]),
-            ]
-        )
+        custom_loader = jinja2.ChoiceLoader([
+            current_app.jinja_loader,
+            jinja2.FileSystemLoader([str(templates_path)]),
+        ])
         assert templates_path.exists()
         current_app.jinja_loader = custom_loader
         current_app.jinja_env.loader = custom_loader
 
-        template = current_app.jinja_env.select_template(
-            [
-                # Backend-specific templates first, e.g notifications/
-                # email/comment_edit.jinja
-                f"{self.template_folder}/{self.id}/{notification.type}.{locale}.jinja",  # type: ignore
-                f"{self.template_folder}/{self.id}/{notification.type}.jinja",  # type: ignore
-                # Default templates, e.g notifications/comment_edit.jinja
-                f"{self.template_folder}/{notification.type}.{locale}.jinja",
-                f"{self.template_folder}/{notification.type}.jinja",
-            ]
-        )
+        template = current_app.jinja_env.select_template([
+            # Backend-specific templates first, e.g notifications/
+            # email/comment_edit.jinja
+            f"{self.template_folder}/{self.id}/{notification.type}.{locale}.jinja",  # type: ignore
+            f"{self.template_folder}/{self.id}/{notification.type}.jinja",  # type: ignore
+            # Default templates, e.g notifications/comment_edit.jinja
+            f"{self.template_folder}/{notification.type}.{locale}.jinja",
+            f"{self.template_folder}/{notification.type}.jinja",
+        ])
         ctx = template.new_context(
             {
                 "notification": notification,
@@ -99,21 +99,23 @@ class EmailNotificationBackend(NotificationBackend, CustomJinjaTemplateLoaderMix
     id = "email"
 
     def send(self, notification, recipient):
-        """Mail sending implementation."""
+        """Mail sending implementation.
+
+        Returns:
+            Response: Email sending response.
+        """
         content = self.render_template(notification, recipient)
 
-        resp = send_email(
-            {
-                "subject": content["subject"],
-                "html": content["html_body"],
-                "body": strip_html(content["plain_body"]),
-                "recipients": [
-                    recipient.data.get("email") or recipient.data.get("email_hidden")
-                ],
-                "sender": current_app.config["MAIL_DEFAULT_SENDER"],
-                "reply_to": current_app.config["MAIL_DEFAULT_REPLY_TO"],
-            }
-        )
+        resp = send_email({
+            "subject": content["subject"],
+            "html": content["html_body"],
+            "body": strip_html(content["plain_body"]),
+            "recipients": [
+                recipient.data.get("email") or recipient.data.get("email_hidden")
+            ],
+            "sender": current_app.config["MAIL_DEFAULT_SENDER"],
+            "reply_to": current_app.config["MAIL_DEFAULT_REPLY_TO"],
+        })
         return resp  # TODO: what would a "delivery" result be
 
 
@@ -124,7 +126,11 @@ class InternalNotificationBackend(NotificationBackend):
     """Unique id of the backend."""
 
     def send(self, notification, recipient):
-        """Send the notification message to the user's in-app notifications."""
+        """Send the notification message to the user's in-app notifications.
+
+        Returns:
+            Any: Result of the notification update operation.
+        """
         updated = current_internal_notifications.update_unread(
             identity=system_identity,
             user_id=recipient.data["id"],

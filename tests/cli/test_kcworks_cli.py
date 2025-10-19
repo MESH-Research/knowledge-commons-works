@@ -125,7 +125,11 @@ MOCK_RECORDS = [
 
 @pytest.fixture(scope="module")
 def cli_runner(base_app):
-    """Create a CLI runner for testing a CLI command."""
+    """Create a CLI runner for testing a CLI command.
+
+    Returns:
+        function: CLI runner function.
+    """
 
     def cli_invoke(command, *args, input=None):
         return base_app.test_cli_runner().invoke(command, args, input=input)
@@ -395,9 +399,9 @@ def test_import_test_records_command(
             "KCWorksRecordsAPIHelper.fetch_record_files"
         ) as mock_get_files,
     ):
-        mock_fetch.return_value = MOCK_RECORDS[:3]  # Use first 3 records
+        mock_fetch.return_value = (MOCK_RECORDS[:3], [])  # (records, errors)
         mock_download.side_effect = create_file_data
-        mock_get_files.return_value = [create_file_data(), create_file_data()]
+        mock_get_files.return_value = ([create_file_data(), create_file_data()], [])
 
         # Test importing 3 records
         result = cli_runner(
@@ -469,7 +473,7 @@ def test_import_test_records_with_options(
             "KCWorksRecordsAPIHelper.fetch_record_files"
         ) as mock_get_files,
     ):
-        mock_fetch.return_value = MOCK_RECORDS[:2]  # Use first 2 records
+        mock_fetch.return_value = (MOCK_RECORDS[:2], [])  # (records, errors)
 
         # Create a function that will create a new FileData object each time it's called
         def create_file_data(filename: str = "sample.pdf") -> FileData:
@@ -486,9 +490,9 @@ def test_import_test_records_with_options(
                 )
 
         # Create fresh file data for each test
-        def get_fresh_files(records: list[dict]) -> list[FileData]:
+        def get_fresh_files(records: list[dict]) -> tuple[list[FileData], list[str]]:
             files = [create_file_data(), create_file_data()]
-            return files
+            return (files, [])
 
         mock_download.side_effect = create_file_data
         mock_get_files.side_effect = get_fresh_files
@@ -507,7 +511,12 @@ def test_import_test_records_with_options(
         assert "All records were successfully imported" in result.output
         assert "Successfully imported 2 records" in result.output
         mock_fetch.assert_called_with(
-            count=2, offset=1, start_date=None, end_date=None, spread_dates=False
+            count=2,
+            offset=1,
+            record_ids=None,
+            start_date=None,
+            end_date=None,
+            spread_dates=False,
         )
 
         # Test importing with date range
@@ -528,6 +537,7 @@ def test_import_test_records_with_options(
         mock_fetch.assert_called_with(
             count=2,
             offset=0,
+            record_ids=None,
             start_date="2024-01-01",
             end_date="2024-12-31",
             spread_dates=False,
@@ -546,39 +556,50 @@ def test_import_test_records_with_options(
         assert "All records were successfully imported" in result.output
         assert "Successfully imported 2 records" in result.output
         mock_fetch.assert_called_with(
-            count=2, offset=0, start_date=None, end_date=None, spread_dates=True
+            count=2,
+            offset=0,
+            record_ids=None,
+            start_date=None,
+            end_date=None,
+            spread_dates=True,
         )
 
-        # Test importing with review required
         result = cli_runner(
             kcworks_records,
             "import-test-records",
             "test@example.com",
             "2",
-            "--review-required",
         )
 
         assert result.exit_code == 0
         assert "All records were successfully imported" in result.output
         assert "Successfully imported 2 records" in result.output
         mock_fetch.assert_called_with(
-            count=2, offset=0, start_date=None, end_date=None, spread_dates=False
+            count=2,
+            offset=0,
+            record_ids=None,
+            start_date=None,
+            end_date=None,
+            spread_dates=False,
         )
 
-        # Test importing with strict validation
         result = cli_runner(
             kcworks_records,
             "import-test-records",
             "test@example.com",
             "2",
-            "--strict-validation",
         )
 
         assert result.exit_code == 0
         assert "All records were successfully imported" in result.output
         assert "Successfully imported 2 records" in result.output
         mock_fetch.assert_called_with(
-            count=2, offset=0, start_date=None, end_date=None, spread_dates=False
+            count=2,
+            offset=0,
+            record_ids=None,
+            start_date=None,
+            end_date=None,
+            spread_dates=False,
         )
 
         # Verify records were imported

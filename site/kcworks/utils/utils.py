@@ -29,6 +29,9 @@ def update_nested_dict(starting_value: Any, updates: Any) -> Any:
     The two starting values must have lists and dictionaries in compatible locations
     in the structure. If one has a list where the other has a dictionary, the function
     will raise a TypeError.
+    
+    Returns:
+        Any: The updated nested dictionary.
     """
     if isinstance(updates, dict):
         for key, value in updates.items():
@@ -123,7 +126,8 @@ def get_changed_fields(
         separator: The separator to use between segments in the field paths. Used
             internally and in the output list.
 
-    Returns a list of field paths that have been changed.
+    Returns:
+        list: A list of field paths that have been changed.
     """
     changed_field_paths = []
     existing_data_val = existing_data
@@ -240,8 +244,8 @@ def get_value_by_path(data: dict[str, Any], path: str, separator: str = ".") -> 
 
     Raises a KeyError if the path is not found.
 
-    Returns the value at the end of the path.
-
+    Returns:
+        Any: The value at the end of the path.
     """
     path_segments = path.split(separator)
     result: Any = data

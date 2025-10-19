@@ -5,7 +5,7 @@ from pprint import pformat
 
 import click
 from flask.cli import with_appcontext
-from invenio_record_importer_kcworks.types import APIResponsePayload
+
 from kcworks.services.records.bulk_operations import update_community_records_metadata
 from kcworks.services.records.export import KCWorksRecordsExporter
 from kcworks.services.records.test_data import import_test_records
@@ -92,13 +92,22 @@ def import_test_records_command(
     --end-date TEXT      End date for the records to import
     --record-ids TEXT    Comma-separated list of record IDs to import
     --spread-dates       Whether to spread the records over a range of dates
+
+    Raises:
+        click.Abort: If email is not provided or other validation fails.
     """
     if not email:
         click.secho("Error: Email address is required!", fg="red", err=True)
-        click.secho("Usage: invenio kcworks-users import-test-records <EMAIL> [COUNT]", fg="yellow")
-        click.secho("Example: invenio kcworks-users import-test-records user@example.com 10", fg="yellow")
+        click.secho(
+            "Usage: invenio kcworks-users import-test-records <EMAIL> [COUNT]",
+            fg="yellow",
+        )
+        click.secho(
+            "Example: invenio kcworks-users import-test-records user@example.com 10",
+            fg="yellow",
+        )
         raise click.Abort()
-    
+
     click.secho(
         f"Starting import of {count} production records as {email}...", fg="blue"
     )
@@ -139,18 +148,18 @@ def import_test_records_command(
             for r in results["errors"]
             if r["metadata"] and "id" in r["metadata"]
         ]
-        
+
         if len(successes) > 0:
             click.secho(f"Successfully imported {len(successes)} records: ", fg="green")
             click.secho(pformat(successes), fg="green")
-            
+
         if len(failures) > 0:
             click.secho(f"Failed to import {len(failures)} records: ", fg="red")
             click.secho(pformat(failures), fg="red")
-            
+
         # Report warnings about restricted records
         if "warnings" in results and results["warnings"]:
-            click.secho(f"\nWarnings (restricted records/files skipped):", fg="yellow")
+            click.secho("\nWarnings (restricted records/files skipped):", fg="yellow")
             for warning in results["warnings"]:
                 click.secho(f"  • {warning}", fg="yellow")
 
@@ -262,6 +271,9 @@ def export_records(
 
         # Export records within a date range
         flask export-records --start-date 2024-01-01 --end-date 2024-12-31
+
+    Raises:
+        click.Abort: If export operation fails.
     """
     click.secho(
         f"Exporting records from community {community_id}",
@@ -305,4 +317,4 @@ def export_records(
             )
     except Exception as e:
         click.secho(f"Error exporting records: {e}", fg="red")
-        raise click.Abort()
+        raise click.Abort() from e

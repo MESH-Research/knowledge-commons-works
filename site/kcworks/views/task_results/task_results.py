@@ -29,6 +29,10 @@ class TaskResults(MethodView):
         self.template = "kcworks/view_templates/task_results.html"
 
     def get(self, task_id):
-        """Render the template for GET requests."""
+        """Render the template for GET requests.
+        
+        Returns:
+            str: Rendered template with task result.
+        """
         task_result = AsyncResult(task_id)
         return render_template(self.template, task_result=task_result)

@@ -58,8 +58,6 @@ class CommunityChangePermissionsComponent(ServiceComponent):
 
         Raises:
             PermissionDeniedError: If the identity doesn't have permission
-            SetDefaultCommunityError: If the identity doesn't have permission to change
-                the default community
         """
         if not (
             record.parent

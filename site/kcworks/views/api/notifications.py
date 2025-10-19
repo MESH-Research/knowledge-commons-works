@@ -5,9 +5,9 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """View for the internal notifications API endpoint."""
-from flask import Response
+
+from flask import Response, jsonify, request
 from flask import current_app as app
-from flask import jsonify, request
 from flask.views import MethodView
 from flask_login import current_user
 from invenio_access.utils import get_identity

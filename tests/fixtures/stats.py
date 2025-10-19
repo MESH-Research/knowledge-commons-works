@@ -32,6 +32,7 @@ from invenio_search.utils import prefix_index
 from invenio_stats.contrib.event_builders import build_file_unique_id
 from invenio_stats.processors import EventsIndexer, anonymize_user, flag_robots
 from invenio_stats.queries import TermsQuery
+
 from invenio_stats_dashboard.aggregations import (
     register_aggregations as register_community_aggregations,
 )
@@ -418,5 +419,8 @@ def usage_event_factory():
 
     Returns a factory function that can create view and download events
     for testing usage statistics.
+
+    Returns:
+        UsageEventFactory: Factory for creating usage events.
     """
     return UsageEventFactory()

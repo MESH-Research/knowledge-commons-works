@@ -91,7 +91,7 @@ HCLEGACY_CUSTOM_FIELDS = [
         field_cls=SanitizedUnicode,
     ),
     TextCF(name="hclegacy:record_change_date"),
-    TextCF(  # FIXME: This should be date formatted, but EDTFDateString doesn't accept time
+    TextCF(  # FIXME: Should be date formatted, but EDTFDateString doesn't accept time
         name="hclegacy:record_creation_date"
         # field_cls=EDTFDateString,
     ),

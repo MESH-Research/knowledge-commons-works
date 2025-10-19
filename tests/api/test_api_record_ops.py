@@ -208,7 +208,7 @@ class TestDraftCreationError(TestDraftCreation):
 
     @property
     def metadata_source(self) -> dict:  # noqa: D102
-        metadata = copy.deepcopy(sample_metadata_book_pdf["input"])
+        metadata = copy.deepcopy(sample_metadata_book_pdf)
         metadata["metadata"]["title"] = ""
         metadata["metadata"]["resource_type"] = None
         del metadata["metadata"]["publication_date"]
@@ -244,7 +244,7 @@ class TestDraftCreationErrorApi(TestDraftCreationApi):
 
     @property
     def metadata_source(self) -> dict:  # noqa: D102
-        metadata = copy.deepcopy(sample_metadata_book_pdf["input"])
+        metadata = copy.deepcopy(sample_metadata_book_pdf)
         metadata["metadata"]["title"] = ""
         metadata["metadata"]["resource_type"] = None
         del metadata["metadata"]["publication_date"]

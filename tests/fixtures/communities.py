@@ -8,7 +8,6 @@
 
 import traceback
 from collections.abc import Callable
-from pprint import pformat
 
 import marshmallow as ma
 import pytest
@@ -23,8 +22,8 @@ from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_rdm_records, current_rdm_records_service
 from invenio_rdm_records.records.api import RDMRecord
 from invenio_rdm_records.utils import get_or_create_user
+from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
 from invenio_requests.proxies import current_requests_service
-from invenio_records_resources.services.uow import UnitOfWork
 from invenio_search.proxies import current_search_client
 
 
@@ -80,7 +79,11 @@ def make_community_member(user_id: int, role: str, community_id: str) -> None:
 
 @pytest.fixture(scope="function")
 def communities_links_factory():
-    """Create links for communities for testing."""
+    """Create links for communities for testing.
+    
+    Returns:
+        function: Function to assemble community links.
+    """
 
     def assemble_links(community_id: str, slug: str):
         return {
@@ -109,10 +112,18 @@ def communities_links_factory():
 
 @pytest.fixture(scope="function")
 def group_communities_data_factory():
-    """Create metadata for group collections for testing."""
+    """Create metadata for group collections for testing.
+    
+    Returns:
+        function: Function to assemble group communities data.
+    """
 
     def assemble_data() -> list[dict]:
-        """Create metadata for group collections for testing."""
+        """Create metadata for group collections for testing.
+        
+        Returns:
+            list[dict]: List of community metadata dictionaries.
+        """
         communities_data = []
         groups_data = {
             "knowledgeCommons": [
@@ -212,9 +223,12 @@ def minimal_community_factory(
     app, db, user_factory, create_communities_custom_fields, requests_mock, monkeypatch
 ):
     """Create a minimal community for testing.
-
+    
     Returns a function that can be called to create a minimal community
     for testing. That function returns the created community record.
+    
+    Returns:
+        function: Function to create minimal communities.
     """
 
     def create_minimal_community(
@@ -225,13 +239,17 @@ def minimal_community_factory(
         custom_fields: dict | None = None,
         members: dict | None = None,
         mock_search_api: bool = True,
+        created: str | None = None,
     ) -> Community:
         """Create a minimal community for testing.
-
+        
         Allows overriding of default metadata, access, and custom fields values.
         Also allows specifying the members of the community with their roles.
-
+        
         If no owner is specified, a new user is created and used as the owner.
+        
+        Returns:
+            Community: The created community record.
         """
         metadata = metadata or {}
         access = access or {}
@@ -309,6 +327,15 @@ def minimal_community_factory(
             identity=owner_identity, data=community_data
         )
         community_id = community_rec.id
+
+        # Handle created timestamp if provided
+        if created:
+            community_record = Community.get_record(community_id)
+            community_record.model.created = created  # type: ignore
+            uow = UnitOfWork(db.session)
+            uow.register(RecordCommitOp(community_record))
+            uow.commit()
+            current_communities.service.indexer.index(community_record)
 
         for m in members.keys():
             for user_id in members[m]:

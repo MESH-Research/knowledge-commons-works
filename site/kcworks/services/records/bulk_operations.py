@@ -1,6 +1,5 @@
 """Bulk operations for records."""
 
-from pprint import pformat
 from typing import Any, TypedDict
 
 from flask import current_app
@@ -10,8 +9,9 @@ from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from invenio_search.proxies import current_search_client
-from kcworks.utils.utils import get_value_by_path
 from opensearchpy.helpers.search import Search
+
+from kcworks.utils.utils import get_value_by_path
 
 
 class UpdateResult(TypedDict):
@@ -46,6 +46,9 @@ def update_community_records_metadata(
                 - old_value (any)
                 - new_value (any)
             - errors (list[str]): List of error messages for failed updates
+
+    Raises:
+        ValueError: If the metadata field path is invalid or community is not found.
     """
     results: UpdateResult = {
         "total_record_count": 0,
@@ -81,14 +84,12 @@ def update_community_records_metadata(
             )
             current_rdm_records_service.publish(system_identity, draft.id)
             results["updated_record_count"] += 1
-            results["updated_records"].append(
-                {
-                    "id": hit["id"],
-                    "metadata_field": metadata_field,
-                    "old_value": old_value,
-                    "new_value": new_value,
-                }
-            )
+            results["updated_records"].append({
+                "id": hit["id"],
+                "metadata_field": metadata_field,
+                "old_value": old_value,
+                "new_value": new_value,
+            })
 
         except Exception as e:
             results["failed_record_count"] += 1

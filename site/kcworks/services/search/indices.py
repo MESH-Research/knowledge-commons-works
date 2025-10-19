@@ -30,11 +30,10 @@ def delete_index(
         ignore (list[int] | None, optional): The list of error codes to ignore.
             Defaults to None.
 
-    Returns:
-        None | Generator[tuple[str, dict], None, None]: A generator of the deleted
-            indices and their responses. If any indices are not found, they are
-            added to the list of failed indices. If no indices are found, the
-            function returns None.
+    Yields:
+        tuple[str, dict]: A generator of tuples containing the deleted index name
+            and its response. If any indices are not found, they are added to the
+            list of failed indices.
 
     Note:
         The indices are specified by their aliases. These must be complete aliases

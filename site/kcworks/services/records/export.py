@@ -1,3 +1,5 @@
+"""Record export functionality for KCWorks."""
+
 import json
 import os
 import shutil
@@ -8,16 +10,21 @@ import arrow
 from flask import current_app
 from invenio_accounts.proxies import current_datastore as accounts_datastore
 from invenio_files_rest.helpers import compute_md5_checksum
+
 from kcworks.services.records.service import KCWorksRecordsAPIHelper
 from kcworks.services.users.service import UserSearchHelper
 
 
 class KCWorksRecordsExporter:
-    """
-    Exports records from KCWorks.
-    """
+    """Exports records from KCWorks."""
 
     def __init__(self, api_token: str | None = None, api_url: str | None = None):
+        """Initialize the exporter.
+
+        Args:
+            api_token: API token for authentication.
+            api_url: Base URL for the KCWorks API.
+        """
         self.config = current_app.config
         self.api_helper = KCWorksRecordsAPIHelper(
             api_token=api_token or os.getenv("API_TOKEN"),
@@ -42,8 +49,7 @@ class KCWorksRecordsExporter:
         output_path: str = "",
         archive_name: str = "kcworks-records-export",
     ) -> dict[str, list[str] | str]:
-        """
-        Exports records from KCWorks.
+        """Exports records from KCWorks.
 
         Note that you can supply either owner information, or contributor information,
         or a community id, or a search string. These filtering methods are mutually
@@ -148,9 +154,9 @@ class KCWorksRecordsExporter:
                 )
                 try:
                     record_id: str = record_data["id"]
-                    record_files, file_errors = self.api_helper.fetch_record_files(
-                        [record_data]
-                    )
+                    record_files, file_errors = self.api_helper.fetch_record_files([
+                        record_data
+                    ])
 
                     if file_errors:
                         current_app.logger.warning(
@@ -193,7 +199,7 @@ class KCWorksRecordsExporter:
                     failed_records.append(record_data["id"])
                     current_app.logger.error(
                         f"Error exporting record {record_data['id']}: {e}",
-                        exc_info=True
+                        exc_info=True,
                     )
             else:
                 current_app.logger.info(

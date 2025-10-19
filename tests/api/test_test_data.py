@@ -82,7 +82,11 @@ MOCK_RECORD = {
 
 
 def create_file_data(filename: str = "sample.pdf") -> FileData:
-    """Create a FileData object for testing."""
+    """Create a FileData object for testing.
+    
+    Returns:
+        FileData: The created file data object.
+    """
     myfile = Path(__file__).parent.parent / "helpers" / "sample_files" / filename
     with myfile.open("rb") as file_bytes:
         temp_file = SpooledTemporaryFile()
