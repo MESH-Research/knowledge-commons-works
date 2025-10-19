@@ -58,6 +58,7 @@ from invenio_users_resources.notifications.generators import (
     IfEmailRecipient,
     UserRecipient,
 )
+
 from kcworks.services.accounts.api import UserAPI
 from kcworks.services.notifications.backends import (
     EmailNotificationBackend,
@@ -73,7 +74,11 @@ class UserInternalBackend(RecipientBackendGenerator):
     """User related internal backend generator for a notification."""
 
     def __call__(self, notification, recipient, backends):
-        """Add backend id to backends."""
+        """Add backend id to backends.
+
+        Returns:
+            str: The backend ID that was added.
+        """
         backend_id = InternalNotificationBackend.id
         backends.append(backend_id)
         return backend_id
@@ -83,7 +88,11 @@ class UserEmailBackend(RecipientBackendGenerator):
     """User related email backend generator for a notification."""
 
     def __call__(self, notification, recipient, backends):
-        """Add backend id to backends."""
+        """Add backend id to backends.
+
+        Returns:
+            str: The backend ID that was added.
+        """
         backend_id = EmailNotificationBackend.id
         backends.append(backend_id)
         return backend_id
@@ -266,7 +275,11 @@ class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
 
     @classmethod
     def build(cls, data: dict, record: RDMDraft, sender: User):
-        """Build notification with context."""
+        """Build notification with context.
+
+        Returns:
+            Notification: The built notification object.
+        """
         return Notification(
             type=cls.type,
             context={
@@ -328,8 +341,12 @@ class FirstRecordPublishedNotificationBuilder(NotificationBuilder):
     type = "user-first-record.publish"
 
     @classmethod
-    def build(cls, draft: RDMDraft, record: RDMRecord, sender: User):
-        """Build notification with context."""
+    def build(cls, draft: RDMDraft, record: RDMRecord, sender: User) -> Notification:
+        """Build notification with context.
+
+        Returns:
+            Notification: The built Notification instance.
+        """
         return Notification(
             type=cls.type,
             context={

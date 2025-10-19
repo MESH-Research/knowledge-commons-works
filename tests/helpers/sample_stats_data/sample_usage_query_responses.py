@@ -1,8 +1,14 @@
+# Part of the Invenio-Stats-Dashboard extension for InvenioRDM
+# Copyright (C) 2025 Mesh Research
+#
+# Invenio-Stats-Dashboard is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
+
 """Sample usage query responses."""
 
 MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
     "aggregations": {
-        "by_access_statuses": {
+        "access_statuses": {
             "buckets": [
                 {
                     "doc_count": 60,
@@ -24,7 +30,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_affiliations_id": {
+        "affiliations_id": {
             "buckets": [
                 {
                     "key": "013v4ng57",
@@ -104,7 +110,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_affiliations_name": {
+        "affiliations_name": {
             "buckets": [
                 {
                     "key": "Henry Ford College",
@@ -279,7 +285,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_countries": {
+        "countries": {
             "buckets": [
                 {
                     "doc_count": 44,
@@ -325,7 +331,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_file_types": {
+        "file_types": {
             "buckets": [
                 {
                     "doc_count": 60,
@@ -339,7 +345,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funders_id": {
+        "funders_id": {
             "buckets": [
                 {
                     "doc_count": 40,
@@ -373,7 +379,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funders_name": {
+        "funders_name": {
             "buckets": [
                 {
                     "doc_count": 40,
@@ -407,7 +413,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_languages": {
+        "languages": {
             "buckets": [
                 {
                     "doc_count": 40,
@@ -441,7 +447,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_rights": {
+        "rights": {
             "buckets": [
                 {
                     "doc_count": 20,
@@ -486,7 +492,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_periodicals": {
+        "periodicals": {
             "buckets": [
                 {
                     "doc_count": 20,
@@ -500,7 +506,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_publishers": {
+        "publishers": {
             "buckets": [
                 {
                     "doc_count": 40,
@@ -530,7 +536,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_referrers": {
+        "referrers": {
             "buckets": [
                 {
                     "doc_count": 20,
@@ -568,7 +574,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_resource_types": {
+        "resource_types": {
             "buckets": [
                 {
                     "doc_count": 40,
@@ -661,7 +667,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_subjects": {
+        "subjects": {
             "buckets": [
                 {
                     "doc_count": 20,
@@ -2247,7 +2253,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
 
 MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
     "aggregations": {
-        "by_access_statuses": {
+        "access_statuses": {
             "buckets": [
                 {
                     "doc_count": 60,
@@ -2263,7 +2269,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_affiliations_id": {
+        "affiliations_id": {
             "buckets": [
                 {
                     "key": "013v4ng57",
@@ -2306,7 +2312,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_affiliations_name": {
+        "affiliations_name": {
             "buckets": [
                 {
                     "key": "Henry Ford College",
@@ -2409,7 +2415,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_countries": {
+        "countries": {
             "buckets": [
                 {
                     "doc_count": 35,
@@ -2465,7 +2471,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_file_types": {
+        "file_types": {
             "buckets": [
                 {
                     "doc_count": 60,
@@ -2481,7 +2487,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funders_id": {
+        "funders_id": {
             "buckets": [
                 {
                     "key": "00k4n6c31",
@@ -2517,7 +2523,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_funders_name": {
+        "funders_name": {
             "buckets": [
                 {
                     "doc_count": 20,
@@ -2553,7 +2559,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_languages": {
+        "languages": {
             "buckets": [
                 {
                     "doc_count": 40,
@@ -2589,7 +2595,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_rights": {
+        "rights": {
             "buckets": [
                 {
                     "doc_count": 20,
@@ -2636,7 +2642,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_periodicals": {
+        "periodicals": {
             "buckets": [
                 {
                     "doc_count": 20,
@@ -2652,7 +2658,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_publishers": {
+        "publishers": {
             "buckets": [
                 {
                     "doc_count": 40,
@@ -2678,7 +2684,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_referrers": {
+        "referrers": {
             "buckets": [
                 {
                     "doc_count": 20,
@@ -2714,7 +2720,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_resource_types": {
+        "resource_types": {
             "buckets": [
                 {
                     "doc_count": 40,
@@ -2782,7 +2788,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "by_subjects": {
+        "subjects": {
             "buckets": [
                 {
                     "doc_count": 20,
@@ -2802,20 +2808,20 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
                                                 ),
-                                                "subject": "Library " "science",
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
                                                 ),
-                                                "subject": "Mass " "incarceration",
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science " "literature"
+                                                    "Library science literature"
                                                 ),
                                             },
                                             {
@@ -2823,7 +2829,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                     "http://id.worldcat.org/fast/997974"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science--Standards"
+                                                    "Library science--Standards"
                                                 ),
                                             },
                                             {
@@ -2882,20 +2888,20 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
                                                 ),
-                                                "subject": "Library " "science",
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
                                                 ),
-                                                "subject": "Mass " "incarceration",
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science " "literature"
+                                                    "Library science literature"
                                                 ),
                                             },
                                             {
@@ -2903,7 +2909,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                     "http://id.worldcat.org/fast/997974"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science--Standards"
+                                                    "Library science--Standards"
                                                 ),
                                             },
                                             {
@@ -2963,10 +2969,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                     "http://id.worldcat.org/fast/973589"
                                                 ),
                                                 "subject": (
-                                                    "Inklings "
-                                                    "(Group "
-                                                    "of "
-                                                    "writers)"
+                                                    "Inklings (Group of writers)"
                                                 ),
                                             }
                                         ]
@@ -3002,20 +3005,20 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
                                                 ),
-                                                "subject": "Library " "science",
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
                                                 ),
-                                                "subject": "Mass " "incarceration",
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science " "literature"
+                                                    "Library science literature"
                                                 ),
                                             },
                                             {
@@ -3023,7 +3026,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                     "http://id.worldcat.org/fast/997974"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science--Standards"
+                                                    "Library science--Standards"
                                                 ),
                                             },
                                             {
@@ -3082,20 +3085,20 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
                                                 ),
-                                                "subject": "Library " "science",
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
                                                 ),
-                                                "subject": "Mass " "incarceration",
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science " "literature"
+                                                    "Library science literature"
                                                 ),
                                             },
                                             {
@@ -3103,7 +3106,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                     "http://id.worldcat.org/fast/997974"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science--Standards"
+                                                    "Library science--Standards"
                                                 ),
                                             },
                                             {
@@ -3162,20 +3165,20 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
                                                 ),
-                                                "subject": "Library " "science",
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
                                                 ),
-                                                "subject": "Mass " "incarceration",
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science " "literature"
+                                                    "Library science literature"
                                                 ),
                                             },
                                             {
@@ -3183,7 +3186,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                     "http://id.worldcat.org/fast/997974"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science--Standards"
+                                                    "Library science--Standards"
                                                 ),
                                             },
                                             {
@@ -3242,20 +3245,20 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997916"
                                                 ),
-                                                "subject": "Library " "science",
+                                                "subject": "Library science",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/2060143"
                                                 ),
-                                                "subject": "Mass " "incarceration",
+                                                "subject": "Mass incarceration",
                                             },
                                             {
                                                 "id": (
                                                     "http://id.worldcat.org/fast/997987"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science " "literature"
+                                                    "Library science literature"
                                                 ),
                                             },
                                             {
@@ -3263,7 +3266,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                                     "http://id.worldcat.org/fast/997974"
                                                 ),
                                                 "subject": (
-                                                    "Library " "science--Standards"
+                                                    "Library science--Standards"
                                                 ),
                                             },
                                             {

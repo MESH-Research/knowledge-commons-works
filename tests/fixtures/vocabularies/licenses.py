@@ -15,7 +15,11 @@ from invenio_vocabularies.records.api import Vocabulary
 
 @pytest.fixture(scope="module")
 def licenses(app):
-    """Fixture to create the licenses vocabulary type."""
+    """Fixture to create the licenses vocabulary type.
+    
+    Returns:
+        VocabularyType: The created licenses vocabulary type.
+    """
     return vocabulary_service.create_type(system_identity, "licenses", "lic")
 
 

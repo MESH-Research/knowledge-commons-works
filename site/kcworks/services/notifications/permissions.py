@@ -23,8 +23,13 @@ from invenio_records_permissions.generators import Generator, SystemProcess
 class SpecificUser(Generator):
     """Allows a specific user."""
 
-    def needs(self, user_id=None, **kwargs):
-        """Enabling Needs."""
+    def needs(self, user_id=None, **kwargs) -> list[UserNeed]:
+        """Enabling Needs.
+
+        Returns:
+            list[UserNeed]: A list of the UserNeed objects for the
+                specified user
+        """
         if user_id is None:
             # 'user_id' is required, so if not passed we default to empty
             # array, i.e. superuser-access.

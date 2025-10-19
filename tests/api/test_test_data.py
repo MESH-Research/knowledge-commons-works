@@ -29,13 +29,14 @@ def test_fetch_records(running_app: RunningApp):
     """Test fetching records from production."""
     api_url = "https://works.hcommons.org/api"
     api_token = os.getenv("API_TOKEN_PRODUCTION")
-    records = KCWorksRecordsAPIHelper(
+    records, errors = KCWorksRecordsAPIHelper(
         api_url=api_url, api_token=api_token
     ).fetch_records(count=5)
     assert len(records) == 5
     for record in records:
         assert "metadata" in record
         assert "title" in record["metadata"]
+    assert len(errors) == 0
 
 
 # Mock data based on real production record but using test fixture values
@@ -81,7 +82,11 @@ MOCK_RECORD = {
 
 
 def create_file_data(filename: str = "sample.pdf") -> FileData:
-    """Create a FileData object for testing."""
+    """Create a FileData object for testing.
+    
+    Returns:
+        FileData: The created file data object.
+    """
     myfile = Path(__file__).parent.parent / "helpers" / "sample_files" / filename
     with myfile.open("rb") as file_bytes:
         temp_file = SpooledTemporaryFile()
@@ -115,7 +120,7 @@ def test_import_test_records(
     with patch(
         "kcworks.services.records.test_data.KCWorksRecordsAPIHelper.fetch_records"
     ) as mock_fetch:
-        mock_fetch.return_value = mock_records
+        mock_fetch.return_value = (mock_records, [])
 
         with (
             patch(
@@ -134,7 +139,7 @@ def test_import_test_records(
                 create_file_data(),
                 create_file_data(),
             ]
-            mock_get_files.return_value = file_data_objects
+            mock_get_files.return_value = (file_data_objects, [])
 
             # Create a user to import the records
             submitter = user_factory(

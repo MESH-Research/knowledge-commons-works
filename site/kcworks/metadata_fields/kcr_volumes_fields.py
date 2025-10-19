@@ -56,7 +56,7 @@ KCR_VOLUMES_FIELDS_UI = [
             "volume": {
                 "label": _("Volume"),
                 "placeholder": "",
-                # "description": _("The number or label of the volume containing this deposit")
+                # "description": _("The volume number or label containing this deposit")
                 "icon": "book",
             },
         },

@@ -15,7 +15,11 @@ from invenio_vocabularies.records.api import Vocabulary
 
 @pytest.fixture(scope="module")
 def date_type_type(app):
-    """Fixture to create the date type vocabulary type."""
+    """Fixture to create the date type vocabulary type.
+    
+    Returns:
+        VocabularyType: The created date type vocabulary type.
+    """
     return vocabulary_service.create_type(system_identity, "datetypes", "dat")
 
 

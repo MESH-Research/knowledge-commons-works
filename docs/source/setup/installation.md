@@ -77,33 +77,56 @@ This setup will allow you to make changes to the core Knowledge Commons Works co
 
 ## Full local development setup
 
-You will need to take some further steps if you want to
-    - Make and test changes to the various invenio modules that are included as git submodules.
-    - View and insert debugging statements into the code of the various core Invenio packages installed into the python environment.
+You will need to take some further steps if you want to - Make and test changes to the various invenio modules that are included as git submodules. - View and insert debugging statements into the code of the various core Invenio packages installed into the python environment.
 To do this, you will need to do the following:
 
 1. Ensure the required git submodules are cloned by running the following commands in the `knowledge-commons-works` folder:
-    ```shell
-    git submodule update --init
-    ```
-    This will clone the following repositories:
-    ```shell
-    main git@github.com:MESH-Research/invenio-record-importer-kcworks.git
-    main git@github.com:MESH-Research/invenio-group-collections-kcworks.git
-    main git@github.com:MESH-Research/invenio-modular-deposit-form.git
-    main git@github.com:MESH-Research/invenio-modular-detail-page.git
-    main git@github.com:MESH-Research/invenio-remote-api-provisioner.git
-    main git@github.com:MESH-Research/invenio-remote-user-data-kcworks.git
-    local-working git@github.com:MESH-Research/invenio-communities.git
-    local-working git@github.com:MESH-Research/invenio-rdm-records.git
-    local-working git@github.com:MESH-Research/invenio-records-resources.git
-    local-working git@github.com:MESH-Research/invenio-vocabularies.git
-    ```
-    These cloned repositories should then appear under the `knowledge-commons-works/site/kcworks/dependencies` folder.
+   ```shell
+   git submodule update --init
+   ```
+   This will clone the following repositories:
+   ```shell
+   main git@github.com:MESH-Research/invenio-record-importer-kcworks.git
+   main git@github.com:MESH-Research/invenio-group-collections-kcworks.git
+   main git@github.com:MESH-Research/invenio-modular-deposit-form.git
+   main git@github.com:MESH-Research/invenio-modular-detail-page.git
+   main git@github.com:MESH-Research/invenio-remote-api-provisioner.git
+   main git@github.com:MESH-Research/invenio-remote-user-data-kcworks.git
+   local-working git@github.com:MESH-Research/invenio-communities.git
+   local-working git@github.com:MESH-Research/invenio-rdm-records.git
+   local-working git@github.com:MESH-Research/invenio-records-resources.git
+   local-working git@github.com:MESH-Research/invenio-vocabularies.git
+   ```
+   These cloned repositories should then appear under the `knowledge-commons-works/site/kcworks/dependencies` folder.
 2. Install the python packages required by Knowldge Commons Works locally by running `uv sync --all-extras` in the `knowledge-commons-works` folder.
-3. When you start up the docker compose project, add an additional project file to the command:
-    - `docker-compose --file docker-compose.yml --file docker-compose.dev.yml up -d`
-This will mount a variety of local package folders as bind mounts in your running containers. This will allow you to make changes to the python code, both in the cloned repositories and in the `knowledge-commons-works/.venv` virtual environment, and see those changes reflected in the running Knowledge Commons Works instance.
+3. When you start up the docker compose project, add an additional project file to the command: - `docker-compose --file docker-compose.yml --file docker-compose.dev.yml up -d`
+   This will mount a variety of local package folders as bind mounts in your running containers. This will allow you to make changes to the python code, both in the cloned repositories and in the `knowledge-commons-works/.venv` virtual environment, and see those changes reflected in the running Knowledge Commons Works instance.
+
+### Troubleshooting and Workarounds
+
+#### MacOS cairo error
+
+The `invenio-formatter` package relies on `cairoffi` for generating svg badges, which in turn relies on having the `cairo` rendering library accessible on your local machine. _This should only be necessary if you are running tests locally_, since otherwise the library is already installed in the service containers. But you can install this locally with homebrew by running
+
+```shell
+brew install cairo
+```
+
+On MacOS machines with Apple Silicon chips (all modern macs now) the python library may still not be able to _find_ your Homebrew-installed packages. The workaround for this is to add your homebrew binary directory to your system path. In your `.zshrc` (or other shell environment file) add this line:
+
+```shell
+export DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_FALLBACK_LIBRARY_PATH"
+```
+
+This will allow your terminal system to find any binary files in the `/opt/homebrew/lib` folder, the standard installation location on Apple Silicon Macs.
+
+If that doesn't work, you can add these lines to your `tests/.env` testing environment file:
+
+```
+PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
+DYLD_LIBRARY_PATH="/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_LIBRARY_PATH"
+DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_FALLBACK_LIBRARY_PATH"
+```
 
 ## Controlling the KCWorks (Flask) application
 
@@ -112,6 +135,7 @@ The application instance and its services can be started and stopped by starting
 ```shell
 docker-compose --file docker-compose.yml up -d
 ```
+
 ```shell
 docker-compose --file docker-compose.yml stop
 ```
@@ -131,6 +155,7 @@ Similarly, the REST API can be restarted by running the following command inside
 ```shell
 uwsgi --reload /tmp/uwsgi_api.pid
 ```
+
 But these commands should not be necessary in normal operation.
 
 ## Setting up configuration files

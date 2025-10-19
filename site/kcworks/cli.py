@@ -1,5 +1,3 @@
-# Part of Knowledge Commons Works
-# Copyright (C) 2023-2025 MESH Research
 #
 # KCWorks is free software; you can redistribute it and/or modify it under the
 # terms of the MIT License; see LICENSE file for more details.
@@ -20,6 +18,7 @@ import sys
 import click
 from flask.cli import with_appcontext
 from invenio_search.cli import abort_if_false, search_version_check
+
 from kcworks.services.communities.cli import check_group_memberships
 from kcworks.services.records.cli import bulk_update as bulk_update_command
 from kcworks.services.records.cli import export_records as export_records_command

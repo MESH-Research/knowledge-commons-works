@@ -95,6 +95,8 @@ def knowledgeCommons_account_setup(user: User, account_info: dict) -> bool:
     The default only links ``User`` and ``UserIdentity``. This
     also ensures that the user is activated once
 
+    Returns:
+        bool: True if setup was successful, False otherwise.
     """
     try:
         account_link_external_id(
@@ -142,10 +144,15 @@ def knowledgeCommons_account_info(attributes: dict, remote_app: str) -> dict:
     is to account for the case mismatch between the KC IDMS (Comanage) which is
     not case sensitive and the KC Wordpress instance which is case sensitive.
 
-    :param attributes: (dict) dictionary of data returned by identity provider.
-    :param remote_app: (str) Identity provider key.
+    Args:
+        attributes: Dictionary of data returned by identity provider.
+        remote_app: Identity provider key.
 
-    :returns: (dict) A dictionary representing user to create or update.
+    Returns:
+        A dictionary representing user to create or update.
+
+    Raises:
+        ValueError: If required data is missing from the SAML response.
     """
     remote_app_config = current_app.config["SSO_SAML_IDPS"][remote_app]
 
@@ -220,47 +227,48 @@ def acs_handler_factory(
         way the information is extracted and processed from the IdP will be
         different.
 
-    :param remote_app: string representing the name of the identity provider.
+    Args:
+        remote_app: String representing the name of the identity provider.
+        account_info: Callable to extract the account information from a
+            dict like object. ``mappings`` key is required when using it.
+            This function is expected to return a dictionary similar to this:
 
-    :param account_info: callable to extract the account information from a
-        dict like object. ``mappings`` key is required whe using it.
-        This function is expected to return a dictionary similar to this:
+            .. code-block:: python
 
-        .. code-block:: python
+                dict(
+                    user=dict(
+                        email='federico@example.com',
+                        profile=dict(username='federico',
+                                     full_name='Federico Fernandez'),
+                    ),
+                    external_id='12345679abcdf',
+                    external_method='example',
+                    active=True
+                 )
 
-            dict(
-                user=dict(
-                    email='federico@example.com',
-                    profile=dict(username='federico',
-                                 full_name='Federico Fernandez'),
-                ),
-                external_id='12345679abcdf',
-                external_method='example',
-                active=True
-             )
+            Where ``external_id`` is the ID provided by the IdP and
+            ``external_method`` is the name of the IdP as in the configuration
+            file (not mandatory but recommended).
+        account_setup: Callable to setup the user account with the
+            corresponding IdP account information. Typically this means creating a
+            new row under ``UserIdentity`` and maybe extending  ``g.identity``.
+        user_lookup: Callable to retrieve any user whose information matches
+            what is returned by the `account_info` callable. This then returns a
+            User object if a match is present and None if no match is found.
 
-        Where ``external_id`` is the ID provided by the IdP and
-        ``external_method`` is the name of the IdP as in the configuration
-        file (not mandatory but recommended).
-
-    :param account_setup: callable to setup the user account with the
-        corresponding IdP account information. Typically this means creating a
-        new row under ``UserIdentity`` and maybe extending  ``g.identity``.
-
-    :param user_lookup: callable to retrieve any user whose information matches
-        what is returned by the `account_info` callable. This then returns a
-        User object if a match is present and None if no match is found.
-
-    :return: function to be used as ACS handler
+    Returns:
+        ACS handler function.
     """
 
     def default_acs_handler(auth, next_url):
         """Default ACS handler.
 
-        :para auth: A :class:`invenio_saml.utils.SAMLAuth` instance.
-        :param next_url: String with the next URL to redirect to.
+        Args:
+            auth: A :class:`invenio_saml.utils.SAMLAuth` instance.
+            next_url: String with the next URL to redirect to.
 
-        :return: Next URL
+        Returns:
+            Next URL to redirect to.
         """
         if not current_user.is_authenticated:
             _account_info = account_info(auth.get_attributes(), remote_app)

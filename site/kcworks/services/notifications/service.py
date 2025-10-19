@@ -24,6 +24,7 @@ from invenio_accounts.proxies import current_accounts
 from invenio_notifications.models import Notification
 from invenio_records_resources.services import Service, ServiceConfig  # noqa
 from invenio_records_resources.services.base.config import ConfiguratorMixin
+
 from kcworks.services.notifications.permissions import (
     InternalNotificationPermissionPolicy,
 )
@@ -244,9 +245,6 @@ class InternalNotificationService(Service):
                            of unread requests.
 
         Raises:
-            PermissionDeniedError: If the identity is not the system
-                                      identity or the identity of the user
-                                      whose notifications are being modified.
             ValueError: If the comment_id parameter is provided without the
                              request_id parameter.
 

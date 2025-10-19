@@ -59,14 +59,12 @@ def test_community_members_generator(
 
     assert Permission(*needs).allows(identity)
     assert Permission(*needs).allows(identity2) is False
-    assert Counter(needs) == Counter(
-        [
-            CommunityRoleNeed(value=community.id, role="owner"),
-            CommunityRoleNeed(value=community.id, role="manager"),
-            CommunityRoleNeed(value=community.id, role="curator"),
-            CommunityRoleNeed(value=community.id, role="reader"),
-        ]
-    )
+    assert Counter(needs) == Counter([
+        CommunityRoleNeed(value=community.id, role="owner"),
+        CommunityRoleNeed(value=community.id, role="manager"),
+        CommunityRoleNeed(value=community.id, role="curator"),
+        CommunityRoleNeed(value=community.id, role="reader"),
+    ])
     assert Counter(excludes) == Counter([])
 
 
@@ -90,13 +88,11 @@ def test_community_curators_generator(
     excludes = generator.excludes(record=community._record, community_id=community.id)
     assert Permission(*needs).allows(identity)
     assert Permission(*needs).allows(identity2) is False
-    assert Counter(needs) == Counter(
-        [
-            CommunityRoleNeed(value=community.id, role="curator"),
-            CommunityRoleNeed(value=community.id, role="manager"),
-            CommunityRoleNeed(value=community.id, role="owner"),
-        ]
-    )
+    assert Counter(needs) == Counter([
+        CommunityRoleNeed(value=community.id, role="curator"),
+        CommunityRoleNeed(value=community.id, role="manager"),
+        CommunityRoleNeed(value=community.id, role="owner"),
+    ])
     assert Counter(excludes) == Counter([])
 
 
@@ -120,12 +116,10 @@ def test_community_managers_generator(
     excludes = generator.excludes(record=community._record, community_id=community.id)
     assert Permission(*needs).allows(identity)
     assert Permission(*needs).allows(identity2) is False
-    assert Counter(needs) == Counter(
-        [
-            CommunityRoleNeed(value=community.id, role="manager"),
-            CommunityRoleNeed(value=community.id, role="owner"),
-        ]
-    )
+    assert Counter(needs) == Counter([
+        CommunityRoleNeed(value=community.id, role="manager"),
+        CommunityRoleNeed(value=community.id, role="owner"),
+    ])
     assert Counter(excludes) == Counter([])
 
 
@@ -149,11 +143,9 @@ def test_community_owners_generator(
     excludes = generator.excludes(record=community._record, community_id=community.id)
     assert Permission(*needs).allows(identity)
     assert Permission(*needs).allows(identity2) is False
-    assert Counter(needs) == Counter(
-        [
-            CommunityRoleNeed(value=community.id, role="owner"),
-        ]
-    )
+    assert Counter(needs) == Counter([
+        CommunityRoleNeed(value=community.id, role="owner"),
+    ])
     assert Counter(excludes) == Counter([])
 
 
@@ -170,6 +162,7 @@ def test_per_field_edit_permission_factory_community_string_roles(
         CommunityRoleNeed(value=community.id, role="manager"),
         CommunityRoleNeed(value=community.id, role="owner"),
         Need(method="role", value="administration-access"),
+        Need(method="role", value="superuser-access"),
         Need(method="system_role", value="system_process"),
     }
     assert set(g for g in policy.needs) == expected_needs
@@ -193,6 +186,7 @@ def test_per_field_edit_permission_factory_community_generator_roles(
         CommunityRoleNeed(value=community.id, role="manager"),
         CommunityRoleNeed(value=community.id, role="owner"),
         Need(method="role", value="administration-access"),
+        Need(method="role", value="superuser-access"),
         Need(method="system_role", value="system_process"),
     }
     assert set(g for g in policy.needs) == expected_generators
@@ -208,6 +202,7 @@ def test_per_field_edit_permission_factory_default_community(
     assert isinstance(policy, Permission)
     expected_generators = {
         Need(method="role", value="administration-access"),
+        Need(method="role", value="superuser-access"),
         Need(method="system_role", value="system_process"),
     }
     assert set(policy.needs) == expected_generators
@@ -231,6 +226,7 @@ def test_per_field_edit_permission_factory_default_community2(
         CommunityRoleNeed(value="default", role="manager"),
         CommunityRoleNeed(value="default", role="owner"),
         Need(method="role", value="administration-access"),
+        Need(method="role", value="superuser-access"),
         Need(method="system_role", value="system_process"),
     }
     assert set(policy.needs) == expected_generators
@@ -246,6 +242,7 @@ def test_per_field_edit_permission_factory_community_empty_roles(
     assert isinstance(policy, Permission)
     expected_generators = {
         Need(method="role", value="administration-access"),
+        Need(method="role", value="superuser-access"),
         Need(method="system_role", value="system_process"),
         CommunityRoleNeed(value=community.id, role="manager"),
         CommunityRoleNeed(value=community.id, role="owner"),

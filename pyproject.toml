@@ -35,6 +35,7 @@ dependencies = [
     "isbnlib",
     "langdetect",
     "lxml==5.2.1",
+    "openpyxl",
     "pip",
     "pluggy>=0.12,<2.0",
     "python-dotenv",
@@ -152,6 +153,10 @@ group-collections = "kcworks.cli:group_collections"
 line-length = 88
 target-version = "py312"
 
+[tool.ruff.lint.isort]
+# Ensure consistent import sorting - explicitly declare tests as first-party
+known-first-party = ["invenio_stats_dashboard", "tests"]
+
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "D104", "E402"]
 "tests/api/test_stats.py" = ["C416"]
@@ -159,6 +164,7 @@ target-version = "py312"
 [tool.ruff.lint]
 # temporarily removed C for complexity checks
 select = ["E", "F", "I", "B", "UP", "D", "DOC"]
+preview = true
 # Now Ruff handles formatting, so enable formatting rules
 ignore = [
     # Keep some warnings disabled
@@ -228,7 +234,18 @@ addopts = """
 --ignore=node_modules
 --ignore=scripts
 --ignore=tests/helpers
---ignore=site/kcworks/dependencies
+--ignore=site/kcworks/dependencies/invenio-communities
+--ignore=site/kcworks/dependencies/invenio-group-collections-kcworks
+--ignore=site/kcworks/dependencies/invenio-modular-deposit-form
+--ignore=site/kcworks/dependencies/invenio-modular-detail-page
+--ignore=site/kcworks/dependencies/invenio-rdm-records
+--ignore=site/kcworks/dependencies/invenio-record-importer-kcworks
+--ignore=site/kcworks/dependencies/invenio-records-resources
+--ignore=site/kcworks/dependencies/invenio-remote-api-provisioner
+--ignore=site/kcworks/dependencies/invenio-remote-user-data-kcworks
+--ignore=site/kcworks/dependencies/invenio-stats-dashboard
+--ignore=site/kcworks/dependencies/invenio-requests
+--ignore=site/kcworks/dependencies/invenio-vocabularies
 --ignore=site/kcworks/services/search/index_templates
 --cov=kcworks --cov-report=term-missing
 """
@@ -278,7 +295,17 @@ dev = [
 
 [tool.coverage.run]
 omit = [
-    "site/kcworks/dependencies/*",
+    "site/kcworks/dependencies/invenio-communities/*",
+    "site/kcworks/dependencies/invenio-group-collections-kcworks/*",
+    "site/kcworks/dependencies/invenio-modular-deposit-form/*",
+    "site/kcworks/dependencies/invenio-modular-detail-page/*",
+    "site/kcworks/dependencies/invenio-rdm-records/*",
+    "site/kcworks/dependencies/invenio-record-importer-kcworks/*",
+    "site/kcworks/dependencies/invenio-records-resources/*",
+    "site/kcworks/dependencies/invenio-remote-api-provisioner/*",
+    "site/kcworks/dependencies/invenio-remote-user-data-kcworks/*",
+    "site/kcworks/dependencies/invenio-requests/*",
+    "site/kcworks/dependencies/invenio-vocabularies/*",
     "site/kcworks/views/task_results/*",
     "site/kcworks/services/search/index_templates/*",
 ]

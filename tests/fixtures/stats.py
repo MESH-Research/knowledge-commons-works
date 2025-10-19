@@ -17,11 +17,9 @@
 
 import json
 import os
-from typing import TYPE_CHECKING, Callable
 
 import pytest
 from flask import current_app
-from flask_sqlalchemy import SQLAlchemy
 from invenio_rdm_records.resources.stats.event_builders import (
     build_record_unique_id,
 )
@@ -34,15 +32,12 @@ from invenio_search.utils import prefix_index
 from invenio_stats.contrib.event_builders import build_file_unique_id
 from invenio_stats.processors import EventsIndexer, anonymize_user, flag_robots
 from invenio_stats.queries import TermsQuery
+
 from invenio_stats_dashboard.aggregations import (
     register_aggregations as register_community_aggregations,
 )
 from invenio_stats_dashboard.config import COMMUNITY_STATS_QUERIES
 from invenio_stats_dashboard.utils.usage_events import UsageEventFactory
-
-# RunningApp type is defined in conftest.py but imported here to avoid circular imports
-if TYPE_CHECKING:
-    from tests.conftest import RunningApp
 
 AllowAllPermission = type(
     "Allow",
@@ -57,6 +52,9 @@ def AllowAllPermissionFactory(obj_id, action):
     Parameters:
         obj_id: The object id.
         action: The action.
+
+    Returns:
+        AllowAllPermission: The permission class
     """
     return AllowAllPermission
 
@@ -68,11 +66,13 @@ test_config_stats = {}
 test_config_stats["STATS_REGISTER_INDEX_TEMPLATES"] = True
 
 
+# This STATS_EVENTS config is only used in packages that don't have
+# access to the KCWorks invenio.cfg
 test_config_stats["STATS_EVENTS"] = {
     "file-download": {
-        "templates": "kcworks.services.search.index_templates.stats.file_download",
-        # "templates": "invenio_rdm_records.records.stats.templates."
-        # "events.file_download",
+        "templates": (
+            "invenio_stats_dashboard.search_indices.search_templates.file_download"
+        ),
         "event_builders": [
             "invenio_rdm_records.resources.stats.file_download_event_builder",
             "invenio_rdm_records.resources.stats.check_if_via_api",
@@ -87,9 +87,9 @@ test_config_stats["STATS_EVENTS"] = {
         },
     },
     "record-view": {
-        "templates": "kcworks.services.search.index_templates.stats.record_view",
-        # "templates": "invenio_rdm_records.records.stats.templates."
-        # "events.record_view",
+        "templates": (
+            "invenio_stats_dashboard.search_indices.search_templates.record_view"
+        ),
         "event_builders": [
             "invenio_rdm_records.resources.stats.record_view_event_builder",
             "invenio_rdm_records.resources.stats.check_if_via_api",
@@ -106,6 +106,8 @@ test_config_stats["STATS_EVENTS"] = {
     },
 }
 
+# This STATS_AGGREGATIONS config is only used in packages that don't have
+# access to the KCWorks invenio.cfg
 test_config_stats["STATS_AGGREGATIONS"] = {
     "file-download-agg": {
         "templates": "kcworks.services.search.index_templates.stats.aggr_file_download",
@@ -201,6 +203,8 @@ def create_stats_indices(app):
         print(e)
 
 
+# This STATS_QUERIES config is only used in packages that don't have
+# access to the KCWorks invenio.cfg
 test_config_stats["STATS_QUERIES"] = {
     "record-view": {
         "cls": TermsQuery,
@@ -339,7 +343,7 @@ def put_old_stats_templates():
             if isinstance(template_result, dict):
                 for index_name, template_file_path in template_result.items():
                     if os.path.exists(template_file_path):
-                        with open(template_file_path, "r") as f:
+                        with open(template_file_path) as f:
                             template_content = json.load(f)
 
                         prefix = current_app.config.get("SEARCH_INDEX_PREFIX", "")
@@ -415,5 +419,8 @@ def usage_event_factory():
 
     Returns a factory function that can create view and download events
     for testing usage statistics.
+
+    Returns:
+        UsageEventFactory: Factory for creating usage events.
     """
     return UsageEventFactory()

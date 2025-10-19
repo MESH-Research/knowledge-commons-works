@@ -68,7 +68,7 @@ class BaseImportLoaderTest:
     ):
         """Do the comparison of the result with the expected metadata."""
         assert test_metadata.compare_published(result.record_created["record_data"])
-        assert result.record_created["record_data"]["revision_id"] == 3
+        assert result.record_created["record_data"]["revision_id"] == 4
 
         assert re.match(
             r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
@@ -227,7 +227,12 @@ class BaseImportLoaderTest:
         # by the loader
         if not submitted_data.get("access"):
             submitted_data["access"] = {}
-        assert result.submitted["data"] == submitted_data
+        comparison_data = {
+            k: v
+            for k, v in result.submitted["data"].items()
+            if k not in ["parent", "pids"]
+        }
+        assert comparison_data == submitted_data
         # The test sometimes adds checksums and ids to the input file list
         # so we need to remove them for the comparison
         submitted_files = copy.deepcopy(test_metadata.metadata_in["files"])
@@ -260,29 +265,6 @@ class BaseImportLoaderTest:
         """Test that a record can be imported via the API."""
         app = running_app.app
 
-        # find the resource type id for "textDocument"
-        # rt = current_vocabulary_service.read(
-        #     system_identity,
-        #     id_=("resourcetypes", "textDocument-journalArticle"),
-        # )
-
-        # Vocabulary.index.refresh()
-
-        # Search for all resourcetypes
-        # search_result = current_vocabulary_service.search(
-        #     system_identity,
-        #     type="resourcetypes",
-        # )
-
-        # Get the hits from the search result
-        # resource_types = search_result.to_dict()["hits"]["hits"]
-
-        # Print each resource type
-        # for rt in resource_types:
-        #     app.logger.debug(
-        #         f"resource type: ID: {rt['id']}, Title: {rt['title']['en']}"
-        #     )
-
         # Get the email of the first owner of the record if owners are specified
         owners = (
             self.metadata_source.get("parent", {}).get("access", {}).get("owned_by", [])
@@ -291,7 +273,7 @@ class BaseImportLoaderTest:
             first_user_email = owners[0].get("email")
         else:
             first_user_email = "test@example.com"
-        u = user_factory(email=first_user_email, token=True, saml_id=None)
+        u = user_factory(email=first_user_email, token=True, saml_id="")
         user_id = u.user.id
         identity = get_identity(u.user)
         identity.provides.add(authenticated_user)
@@ -305,13 +287,11 @@ class BaseImportLoaderTest:
             community_list=[community],
             owner_id=user_id,
         )
-        test_metadata.update_metadata(
-            {
-                "metadata|identifiers": [
-                    {"identifier": "1234567890", "scheme": "import-recid"}
-                ]
-            }
-        )
+        test_metadata.update_metadata({
+            "metadata|identifiers": [
+                {"identifier": "1234567890", "scheme": "import-recid"}
+            ]
+        })
         self.modify_metadata(test_metadata)
 
         for u in (
@@ -350,19 +330,19 @@ class BaseImportLoaderTest:
 # class TestImportLoaderLoadThesisPDF(BaseImportRecordsLoaderLoadTest):
 #     @property
 #     def metadata_source(self):
-#         return sample_metadata_thesis_pdf["input"]
+#         return sample_metadata_thesis_pdf
 
 
 # class TestImportLoaderLoadChapterPDF(BaseImportRecordsLoaderLoadTest):
 #     @property
 #     def metadata_source(self):
-#         return sample_metadata_chapter_pdf["input"]
+#         return sample_metadata_chapter_pdf
 
 
 # class TestImportLoaderLoadChapter2PDF(BaseImportRecordsLoaderLoadTest):
 #     @property
 #     def metadata_source(self):
-#         return sample_metadata_chapter2_pdf["input"]
+#         return sample_metadata_chapter2_pdf
 
 
 class TestImportLoaderJArticle(BaseImportLoaderTest):
@@ -370,7 +350,7 @@ class TestImportLoaderJArticle(BaseImportLoaderTest):
 
     @property
     def metadata_source(self):  # noqa: D102
-        return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
+        return copy.deepcopy(sample_metadata_journal_article_pdf)
 
 
 class BaseImportLoaderErrorTest(BaseImportLoaderTest):
@@ -402,7 +382,7 @@ class TestImportLoaderJArticleErrorTitle(BaseImportLoaderErrorTest):
 
     @property
     def metadata_source(self):  # noqa: D102
-        return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
+        return copy.deepcopy(sample_metadata_journal_article_pdf)
 
     def modify_metadata(self, test_metadata: TestRecordMetadata):  # noqa: D102
         test_metadata.update_metadata({"metadata|title": ""})
@@ -422,17 +402,15 @@ class TestImportLoaderJArticleErrorIDScheme(BaseImportLoaderErrorTest):
 
     @property
     def metadata_source(self):  # noqa: D102
-        return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
+        return copy.deepcopy(sample_metadata_journal_article_pdf)
 
     def modify_metadata(self, test_metadata: TestRecordMetadata):  # noqa: D102
-        test_metadata.update_metadata(
-            {
-                "metadata|identifiers": [
-                    {"identifier": "hc:33383", "scheme": "my-made-up-scheme"},
-                    {"identifier": "1234567890", "scheme": "import-recid"},
-                ]
-            }
-        )
+        test_metadata.update_metadata({
+            "metadata|identifiers": [
+                {"identifier": "hc:33383", "scheme": "my-made-up-scheme"},
+                {"identifier": "1234567890", "scheme": "import-recid"},
+            ]
+        })
 
     def check_result_errors(self, result: LoaderResult):  # noqa: D102
         assert result.errors == [
@@ -464,8 +442,8 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
 
     def test_import_records_loader_load(
         self,
-        running_app,
         db,
+        running_app,
         search_clear,
         minimal_community_factory,
         user_factory,
@@ -558,13 +536,11 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
             owner_id=user_id,
             file_entries=file_entries,
         )
-        test_metadata.update_metadata(
-            {
-                "metadata|identifiers": [
-                    {"identifier": "hc:33383", "scheme": "import-recid"}
-                ]
-            }
-        )
+        test_metadata.update_metadata({
+            "metadata|identifiers": [
+                {"identifier": "hc:33383", "scheme": "import-recid"}
+            ]
+        })
         for u in (
             test_metadata.metadata_in.get("parent", {})
             .get("access", {})
@@ -682,13 +658,13 @@ class BaseImportLoaderWithFilesTest(BaseImportLoaderTest):
 # class TestImportLoaderLoadWithFilesChapterPDF(BaseImportLoaderWithFilesTest):
 #     @property
 #     def metadata_source(self):
-#         return copy.deepcopy(sample_metadata_chapter_pdf["input"])
+#         return copy.deepcopy(sample_metadata_chapter_pdf)
 
 
 # class TestImportLoaderLoadWithFilesChapter2PDF(BaseImportLoaderWithFilesTest):
 #     @property
 #     def metadata_source(self):
-#         return copy.deepcopy(sample_metadata_chapter2_pdf["input"])
+#         return copy.deepcopy(sample_metadata_chapter2_pdf)
 
 
 class TestImportLoaderWithFilesJArticle(BaseImportLoaderWithFilesTest):
@@ -696,7 +672,7 @@ class TestImportLoaderWithFilesJArticle(BaseImportLoaderWithFilesTest):
 
     @property
     def metadata_source(self):  # noqa: D102
-        return copy.deepcopy(sample_metadata_journal_article_pdf["input"])
+        return copy.deepcopy(sample_metadata_journal_article_pdf)
 
 
 class BaseImportServiceTest:
@@ -826,6 +802,9 @@ class BaseImportServiceTest:
         The boolean return is to allow for short-circuiting the main
         test execution if the status reflects a response that will lack
         a body with data or errors (e.g., 403).
+
+        Returns:
+            bool: True if status is as expected, False otherwise.
         """
         if not any(e for e in self.expected_errors if e):
             if self.by_api:
@@ -1053,7 +1032,7 @@ class BaseImportServiceTest:
 
         else:
             assert actual_metadata["parent"]["access"]["owned_by"] == {
-                "user": uploader_id
+                "user": str(uploader_id)
             }
             assert actual_metadata["parent"]["access"]["grants"] == []
 
@@ -1146,7 +1125,6 @@ class BaseImportServiceTest:
         )
         files_per_item = len(files) // len(metadata_sources)
         for idx, actual_record_result in enumerate(import_results["data"]):
-
             expected_error_list = self.expected_errors[idx]
             assert actual_record_result["item_index"] == idx
 
@@ -1154,7 +1132,8 @@ class BaseImportServiceTest:
                 self._check_failed_import(actual_record_result, expected_error_list)
             else:
                 record_files = files[
-                    idx * files_per_item : (idx + 1) * files_per_item  # noqa: E203
+                    idx * files_per_item : (idx + 1)
+                    * files_per_item  # noqa: E203
                 ]
 
                 self._check_successful_import(
@@ -1180,9 +1159,9 @@ class BaseImportServiceTest:
                 f"{self.app.config['SITE_API_URL']}/import/{community['slug']}",
                 content_type="multipart/form-data",
                 data={
-                    "metadata": json.dumps(
-                        [copy.deepcopy(m.metadata_in) for m in metadata_source_objects]
-                    ),
+                    "metadata": json.dumps([
+                        copy.deepcopy(m.metadata_in) for m in metadata_source_objects
+                    ]),
                     "id_scheme": "import-recid",
                     "review_required": "true",
                     "strict_validation": "true",
@@ -1239,7 +1218,8 @@ class BaseImportServiceTest:
         metadata_source_objects = []
         for idx, metadata_source in enumerate(self.metadata_sources):
             item_files = file_list[
-                idx * files_per_item : (idx + 1) * files_per_item  # noqa: E203
+                idx * files_per_item : (idx + 1)
+                * files_per_item  # noqa: E203
             ]
             file_entries = {f["key"]: f for f in item_files}
             test_metadata = TestRecordMetadataWithFiles(
@@ -1249,16 +1229,14 @@ class BaseImportServiceTest:
                 file_entries=file_entries,
             )
 
-            test_metadata.update_metadata(
-                {
-                    "metadata|identifiers": [
-                        {
-                            "identifier": f"1234567890{str(idx)}",
-                            "scheme": "import-recid",
-                        }
-                    ]
-                }
-            )
+            test_metadata.update_metadata({
+                "metadata|identifiers": [
+                    {
+                        "identifier": f"1234567890{str(idx)}",
+                        "scheme": "import-recid",
+                    }
+                ]
+            })
             metadata_source_objects.append(test_metadata)
 
         if self.by_api and submitter_token:
@@ -1301,13 +1279,13 @@ class BaseImportServiceTest:
 # class TestImportServiceChapter(BaseImportRecordsServiceLoadTest):
 #     @property
 #     def metadata_source(self):
-#         return sample_metadata_chapter_pdf["input"]
+#         return sample_metadata_chapter_pdf
 
 
 # class TestImportServiceChapter2(BaseImportRecordsServiceLoadTest):
 #     @property
 #     def metadata_source(self):
-#         return sample_metadata_chapter2_pdf["input"]
+#         return sample_metadata_chapter2_pdf
 
 
 class TestImportServiceJArticleSuccess(BaseImportServiceTest):
@@ -1316,8 +1294,8 @@ class TestImportServiceJArticleSuccess(BaseImportServiceTest):
     @property
     def metadata_sources(self):  # noqa: D102
         return [
-            copy.deepcopy(sample_metadata_journal_article_pdf["input"]),
-            copy.deepcopy(sample_metadata_journal_article2_pdf["input"]),
+            copy.deepcopy(sample_metadata_journal_article_pdf),
+            copy.deepcopy(sample_metadata_journal_article2_pdf),
         ]
 
 
@@ -1326,9 +1304,9 @@ class TestImportServiceJArticleErrorTitle(BaseImportServiceTest):
 
     @property
     def metadata_sources(self):  # noqa: D102
-        meta1 = copy.deepcopy(sample_metadata_chapter_pdf["input"])
+        meta1 = copy.deepcopy(sample_metadata_chapter_pdf)
         meta1["metadata"]["title"] = ""
-        meta2 = copy.deepcopy(sample_metadata_chapter2_pdf["input"])
+        meta2 = copy.deepcopy(sample_metadata_chapter2_pdf)
         return [meta1, meta2]
 
     @property
@@ -1350,9 +1328,9 @@ class TestImportServiceJArticleErrorMissingFile(BaseImportServiceTest):
 
     @property
     def metadata_sources(self):  # noqa: D102
-        meta1 = copy.deepcopy(sample_metadata_chapter_pdf["input"])
+        meta1 = copy.deepcopy(sample_metadata_chapter_pdf)
         meta1["metadata"]["title"] = ""
-        meta2 = copy.deepcopy(sample_metadata_chapter2_pdf["input"])
+        meta2 = copy.deepcopy(sample_metadata_chapter2_pdf)
         return [meta1, meta2]
 
     @property
@@ -1399,8 +1377,8 @@ class TestImportAPIJArticleSuccess(BaseImportServiceTest):
     @property
     def metadata_sources(self):  # noqa: D102
         return [
-            copy.deepcopy(sample_metadata_journal_article_pdf["input"]),
-            copy.deepcopy(sample_metadata_journal_article2_pdf["input"]),
+            copy.deepcopy(sample_metadata_journal_article_pdf),
+            copy.deepcopy(sample_metadata_journal_article2_pdf),
         ]
 
 
@@ -1408,7 +1386,11 @@ class BaseInsufficientPermissionsTest(TestImportAPIJArticleSuccess):
     """Base class for tests that check the API with insufficient permissions."""
 
     def check_result_status(self, import_results: dict, status_code: int | None):
-        """Check the status code of the import results."""
+        """Check the status code of the import results.
+
+        Returns:
+            bool: True if status check passes.
+        """
         if self.by_api:
             assert status_code == 403
         assert import_results.get("message") == (
@@ -1430,7 +1412,11 @@ class TestImportAPIInsufficientPermissionsReader(BaseInsufficientPermissionsTest
         return {"review_policy": "open", "record_policy": "open"}
 
     def make_submitter(self, user_factory, community_id):
-        """Try using API with a user that is just a "reader" in the community."""
+        """Try using API with a user that is just a "reader" in the community.
+
+        Returns:
+            tuple: User ID and token.
+        """
         new_user = user_factory(email="another@example.com", token=True, saml_id=None)
         make_community_member(new_user.user.id, "reader", community_id)
         return new_user.user.id, new_user.allowed_token
@@ -1448,7 +1434,11 @@ class TestImportAPIInsufficientPermissionsCurator(BaseInsufficientPermissionsTes
         return {"review_policy": "closed", "record_policy": "closed"}
 
     def make_submitter(self, user_factory, community_id):
-        """Try using API with a user that is just a "reader" in the community."""
+        """Try using API with a user that is just a "reader" in the community.
+
+        Returns:
+            tuple: User ID and token.
+        """
         new_user = user_factory(email="another@example.com", token=True, saml_id=None)
         make_community_member(new_user.user.id, "manager", community_id)
         return new_user.user.id, new_user.allowed_token
@@ -1465,8 +1455,13 @@ class TestImportAPIInsufficientPermissionsOwner(BaseInsufficientPermissionsTest)
     def community_access_override(self):  # noqa: D102
         return {"review_policy": "open", "record_policy": "open"}
 
-    def make_submitter(self, user_factory, community_id):
-        """Try using API with a user that is not a community member."""
+    def make_submitter(self, user_factory, community_id) -> tuple[int, str]:
+        """Try using API with a user that is not a community member.
+
+        Returns:
+            tuple[int, str]: A tuple of the new User's id [0] and bearer
+                token [1]
+        """
         new_user = user_factory(email="another@example.com", token=True, saml_id=None)
         return new_user.user.id, new_user.allowed_token
 

@@ -47,7 +47,7 @@
         "user_id": {
           "type": "keyword"
         },
-        "session_id":{
+        "session_id": {
           "type": "keyword"
         },
         "record_id": {
@@ -63,6 +63,9 @@
           "type": "keyword"
         },
         "via_api": {
+          "type": "boolean"
+        },
+        "is_machine": {
           "type": "boolean"
         },
         "updated_timestamp": {

@@ -1,3 +1,9 @@
+# Part of the Invenio-Stats-Dashboard extension for InvenioRDM
+# Copyright (C) 2025 Mesh Research
+#
+# Invenio-Stats-Dashboard is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
+
 """Sample record delta docs."""
 
 MOCK_RECORD_DELTA_DOCS = [
@@ -21,8 +27,9 @@ MOCK_RECORD_DELTA_DOCS = [
                 "added": {"metadata_only": 0, "with_files": 2},
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
+            "uploaders": 1,
             "subcounts": {
-                "by_access_statuses": [
+                "access_statuses": [
                     {
                         "files": {
                             "added": {"data_volume": 59117831.0, "file_count": 2},
@@ -40,7 +47,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_affiliations_contributor": [
+                "affiliations": [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
@@ -56,9 +63,7 @@ MOCK_RECORD_DELTA_DOCS = [
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
                         },
-                    }
-                ],
-                "by_affiliations_creator": [
+                    },
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
@@ -74,9 +79,9 @@ MOCK_RECORD_DELTA_DOCS = [
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
                         },
-                    }
+                    },
                 ],
-                "by_file_types": [
+                "file_types": [
                     {
                         "files": {
                             "added": {"data_volume": 59117831.0, "file_count": 2},
@@ -94,8 +99,8 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_funders": [],
-                "by_languages": [
+                "funders": [],
+                "languages": [
                     {
                         "files": {
                             "added": {"data_volume": 458036.0, "file_count": 1},
@@ -113,9 +118,9 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [
+                "rights": [],
+                "periodicals": [],
+                "publishers": [
                     {
                         "files": {
                             "added": {"data_volume": 58659795.0, "file_count": 1},
@@ -149,7 +154,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     },
                 ],
-                "by_resource_types": [
+                "resource_types": [
                     {
                         "files": {
                             "added": {"data_volume": 58659795.0, "file_count": 1},
@@ -183,7 +188,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     },
                 ],
-                "by_subjects": [
+                "subjects": [
                     {
                         "files": {
                             "added": {"data_volume": 58659795.0, "file_count": 1},
@@ -324,17 +329,16 @@ MOCK_RECORD_DELTA_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations_contributor": [],
-                "by_affiliations_creator": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-06-05T18:45:58",
             "updated_timestamp": "2025-06-05T18:45:58",
@@ -362,17 +366,16 @@ MOCK_RECORD_DELTA_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations_contributor": [],
-                "by_affiliations_creator": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-06-05T18:45:58",
             "updated_timestamp": "2025-06-05T18:45:58",
@@ -400,17 +403,16 @@ MOCK_RECORD_DELTA_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_statuses": [],
-                "by_affiliations_contributor": [],
-                "by_affiliations_creator": [],
-                "by_file_types": [],
-                "by_funders": [],
-                "by_languages": [],
-                "by_rights": [],
-                "by_periodicals": [],
-                "by_publishers": [],
-                "by_resource_types": [],
-                "by_subjects": [],
+                "access_statuses": [],
+                "affiliations": [],
+                "file_types": [],
+                "funders": [],
+                "languages": [],
+                "rights": [],
+                "periodicals": [],
+                "publishers": [],
+                "resource_types": [],
+                "subjects": [],
             },
             "timestamp": "2025-06-05T18:45:58",
             "updated_timestamp": "2025-06-05T18:45:58",
@@ -438,7 +440,7 @@ MOCK_RECORD_DELTA_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 0},
             },
             "subcounts": {
-                "by_access_statuses": [
+                "access_statuses": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -472,7 +474,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     },
                 ],
-                "by_affiliations_contributor": [
+                "affiliations": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
@@ -481,34 +483,16 @@ MOCK_RECORD_DELTA_DOCS = [
                         "id": "03rmrcq20",
                         "label": "",
                         "parents": {
-                            "added": {"metadata_only": 0, "with_files": 1},
+                            "added": {"metadata_only": 1, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
                         },
                         "records": {
-                            "added": {"metadata_only": 0, "with_files": 1},
+                            "added": {"metadata_only": 1, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
                         },
                     }
                 ],
-                "by_affiliations_creator": [
-                    {
-                        "files": {
-                            "added": {"data_volume": 0.0, "file_count": 0},
-                            "removed": {"data_volume": 0.0, "file_count": 0},
-                        },
-                        "id": "03rmrcq20",
-                        "label": "",
-                        "parents": {
-                            "added": {"metadata_only": 1, "with_files": 0},
-                            "removed": {"metadata_only": 0, "with_files": 0},
-                        },
-                        "records": {
-                            "added": {"metadata_only": 1, "with_files": 0},
-                            "removed": {"metadata_only": 0, "with_files": 0},
-                        },
-                    }
-                ],
-                "by_file_types": [
+                "file_types": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
@@ -526,7 +510,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_funders": [
+                "funders": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
@@ -544,7 +528,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_languages": [
+                "languages": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
@@ -562,7 +546,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_rights": [
+                "rights": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
@@ -571,7 +555,8 @@ MOCK_RECORD_DELTA_DOCS = [
                         "id": "cc-by-sa-4.0",
                         "label": {
                             "en": (
-                                "Creative Commons Attribution-ShareAlike 4.0 International"
+                                "Creative Commons Attribution-ShareAlike 4.0"
+                                " International"
                             )
                         },
                         "parents": {
@@ -584,7 +569,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_periodicals": [
+                "periodicals": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
@@ -602,13 +587,13 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_publishers": [
+                "publishers": [
                     {
                         "files": {
                             "added": {"data_volume": 1984949.0, "file_count": 1},
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
-                        "id": "Knowledge " "Commons",
+                        "id": "Knowledge Commons",
                         "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
@@ -636,7 +621,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     },
                 ],
-                "by_resource_types": [
+                "resource_types": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -670,7 +655,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     },
                 ],
-                "by_subjects": [
+                "subjects": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -875,7 +860,7 @@ MOCK_RECORD_DELTA_DOCS = [
                 "removed": {"metadata_only": 0, "with_files": 1},
             },
             "subcounts": {
-                "by_access_statuses": [
+                "access_statuses": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -893,7 +878,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_affiliations_contributor": [
+                "affiliations": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -911,8 +896,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_affiliations_creator": [],
-                "by_file_types": [
+                "file_types": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -930,7 +914,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_funders": [
+                "funders": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -948,7 +932,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_languages": [
+                "languages": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -966,7 +950,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_rights": [
+                "rights": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -975,7 +959,8 @@ MOCK_RECORD_DELTA_DOCS = [
                         "id": "cc-by-sa-4.0",
                         "label": {
                             "en": (
-                                "Creative Commons Attribution-ShareAlike 4.0 International"
+                                "Creative Commons Attribution-ShareAlike 4.0"
+                                " International"
                             )
                         },
                         "parents": {
@@ -988,7 +973,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_periodicals": [
+                "periodicals": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -1006,13 +991,13 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_publishers": [
+                "publishers": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
-                        "id": "Knowledge " "Commons",
+                        "id": "Knowledge Commons",
                         "label": "",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
@@ -1024,7 +1009,7 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_resource_types": [
+                "resource_types": [
                     {
                         "files": {
                             "added": {"data_volume": 0.0, "file_count": 0},
@@ -1042,11 +1027,260 @@ MOCK_RECORD_DELTA_DOCS = [
                         },
                     }
                 ],
-                "by_subjects": [],
+                "subjects": [],
             },
             "timestamp": "2025-06-10T00:45:10",
             "updated_timestamp": "2025-06-10T00:45:10",
             "uploaders": 0,
+        },
+    },
+]
+
+MOCK_RECORD_DELTA_DOCS_2 = [
+    {
+        "period_start": "2025-05-30T00:00:00",
+        "records": {
+            "added": {"metadata_only": 0, "with_files": 2},
+            "removed": {"metadata_only": 0, "with_files": 0},
+        },
+        "parents": {
+            "added": {"metadata_only": 0, "with_files": 2},
+            "removed": {"metadata_only": 0, "with_files": 0},
+        },
+        "uploaders": 1,
+        "files": {
+            "added": {"data_volume": 59117831.0, "file_count": 2},
+            "removed": {"data_volume": 0.0, "file_count": 0},
+        },
+        "subcounts": {
+            "access_statuses": [
+                {
+                    "id": "open",
+                    "label": "",
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 2},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 2},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 59117831.0, "file_count": 2},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                }
+            ],
+            "resource_types": [
+                {
+                    "id": "textDocument-journalArticle",
+                    "label": {"en": "Journal Article"},
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 29558915.5, "file_count": 1},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                }
+            ],
+            "languages": [
+                {
+                    "id": "eng",
+                    "label": {"en": "English"},
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 2},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 2},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 59117831.0, "file_count": 2},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                }
+            ],
+            "subjects": [
+                {
+                    "id": "http://id.worldcat.org/fast/855500",
+                    "label": "Children of prisoners--Services for",
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 29558915.5, "file_count": 1},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                }
+            ],
+            "rights": [
+                {
+                    "id": "cc-by-sa-4.0",
+                    "label": {
+                        "en": (
+                            "Creative Commons Attribution-ShareAlike 4.0 International"
+                        )
+                    },
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 2},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 2},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 59117831.0, "file_count": 2},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                }
+            ],
+            "funders": [
+                {
+                    "id": "00k4n6c31",
+                    "label": "",
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 29558915.5, "file_count": 1},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                }
+            ],
+            "periodicals": [
+                {
+                    "id": "N/A",
+                    "label": "",
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 29558915.5, "file_count": 1},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                }
+            ],
+            "publishers": [
+                {
+                    "id": "Knowledge Commons",
+                    "label": "",
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 2},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 2},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 59117831.0, "file_count": 2},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                }
+            ],
+            "affiliations": [
+                {
+                    "id": "013v4ng57",
+                    "label": "",
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 29558915.5, "file_count": 1},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                },
+                {
+                    "id": "03rmrcq20",
+                    "label": "",
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 1},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 29558915.5, "file_count": 1},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                },
+            ],
+            "file_types": [
+                {
+                    "id": "pdf",
+                    "label": "",
+                    "records": {
+                        "added": {"metadata_only": 0, "with_files": 2},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "parents": {
+                        "added": {"metadata_only": 0, "with_files": 2},
+                        "removed": {"metadata_only": 0, "with_files": 0},
+                    },
+                    "files": {
+                        "added": {"data_volume": 59117831.0, "file_count": 2},
+                        "removed": {"data_volume": 0.0, "file_count": 0},
+                    },
+                }
+            ],
+        },
+    },
+    {
+        "period_start": "2025-05-31T00:00:00",
+        "records": {
+            "added": {"metadata_only": 0, "with_files": 0},
+            "removed": {"metadata_only": 0, "with_files": 0},
+        },
+        "parents": {
+            "added": {"metadata_only": 0, "with_files": 0},
+            "removed": {"metadata_only": 0, "with_files": 0},
+        },
+        "uploaders": 0,
+        "files": {
+            "added": {"data_volume": 0.0, "file_count": 0},
+            "removed": {"data_volume": 0.0, "file_count": 0},
+        },
+        "subcounts": {
+            "access_statuses": [],
+            "resource_types": [],
+            "languages": [],
+            "subjects": [],
+            "rights": [],
+            "funders": [],
+            "periodicals": [],
+            "publishers": [],
+            "affiliations": [],
+            "file_types": [],
         },
     },
 ]

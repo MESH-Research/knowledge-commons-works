@@ -1,5 +1,7 @@
+"""Utilities for importing test records from live site."""
+
 import os
-from typing import Optional
+
 from flask import current_app as app
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
@@ -12,6 +14,7 @@ from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_record_importer_kcworks.proxies import current_record_importer_service
 from invenio_record_importer_kcworks.types import APIResponsePayload
 from invenio_search.proxies import current_search_client
+
 from kcworks.services.records.service import KCWorksRecordsAPIHelper
 
 
@@ -97,13 +100,13 @@ def set_up_community(importing_user: User) -> dict:
 def import_test_records(
     count: int = 10,
     offset: int = 0,
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
     spread_dates: bool = False,
     review_required: bool = False,
     strict_validation: bool = False,
-    record_ids: Optional[list[str]] = None,
-    community_id: Optional[str] = None,
+    record_ids: list[str] | None = None,
+    community_id: str | None = None,
     importer_email: str = "test@example.com",
 ):
     """Import test records from production into the local instance.
@@ -194,17 +197,18 @@ def import_test_records(
             community_id=target_community["id"],
             review_required=review_required,
             strict_validation=strict_validation,
-            all_or_none=False,  # Allow partial success - don't rollback entire batch on individual failures
+            # Allow partial success - don't rollback entire batch on individual failures
+            all_or_none=False,
             notify_record_owners=False,
             no_updates=False,
         )
-        
+
         # Add fetch/file errors to the result
         if all_errors:
             if "warnings" not in result:
                 result["warnings"] = []
             result["warnings"].extend(all_errors)
-            
+
     except Exception as e:
         app.logger.error(f"Failed to import records: {str(e)}")
         result = {"status": "failure", "errors": [{"error": str(e)}]}

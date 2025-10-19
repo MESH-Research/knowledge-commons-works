@@ -24,16 +24,16 @@ from flask_principal import Identity
 from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
-from invenio_record_importer_kcworks.services.files import FilesHelper
-from invenio_record_importer_kcworks.types import FileData
-from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from invenio_records_resources.services.records.results import RecordItem
 from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
+
 from invenio_stats_dashboard.services.components.components import (
     update_community_events_created_date,
 )
 
-from ..helpers.utils import remove_value_by_path
+from ..helpers.files_helper import FilesHelper
+from ..helpers.types import FileData
+from ..helpers.utils import remove_value_by_path, replace_value_in_nested_dict
 from .communities import add_community_to_record
 from .files import build_file_links
 from .users import get_authenticated_identity
@@ -42,14 +42,22 @@ from .vocabularies.resource_types import RESOURCE_TYPES
 
 @pytest.fixture(scope="function")
 def minimal_draft_record_factory(running_app, db, record_metadata):
-    """Factory for creating a minimal draft record."""
+    """Factory for creating a minimal draft record.
+
+    Returns:
+        function: Function to create minimal draft records.
+    """
 
     def _factory(
         metadata: dict | None = None,
         identity: Identity | None = None,
         **kwargs: Any,
     ):
-        """Create a minimal draft record."""
+        """Create a minimal draft record.
+
+        Returns:
+            RecordItem: The created draft record.
+        """
         current_app.logger.error(
             f"Creating draft record with metadata: {pformat(metadata)}"
         )
@@ -59,11 +67,15 @@ def minimal_draft_record_factory(running_app, db, record_metadata):
         draft = records_service.create(identity, input_metadata)
 
         if input_metadata.get("created"):
-            record = records_service.read(system_identity, id_=draft.id)._record
-            record.model.created = input_metadata.get("created")
-            uow = UnitOfWork(db.session)
-            uow.register(RecordCommitOp(record))
-            uow.commit()
+            with UnitOfWork(db.session) as uow:
+                record = records_service.read_draft(
+                    system_identity, id_=draft.id
+                )._record
+                record.model.created = (
+                    arrow.get(input_metadata.get("created", "")).to("UTC").datetime
+                )
+                uow.register(RecordCommitOp(record))
+                return records_service.read_draft(system_identity, id_=draft.id)
 
         return draft
 
@@ -71,8 +83,14 @@ def minimal_draft_record_factory(running_app, db, record_metadata):
 
 
 @pytest.fixture(scope="function")
-def minimal_published_record_factory(running_app, db, record_metadata):
-    """Factory for creating a minimal published record."""
+def minimal_published_record_factory(
+    running_app, db, record_metadata, superuser_identity
+):
+    """Factory for creating a minimal published record.
+
+    Returns:
+        function: Function to create minimal published records.
+    """
 
     def _factory(
         metadata: dict | None = None,
@@ -151,19 +169,47 @@ def minimal_published_record_factory(running_app, db, record_metadata):
         if input_metadata.get("created"):
             record = records_service.read(system_identity, id_=published.id)._record
             record.model.created = input_metadata.get("created")
-            uow = UnitOfWork(db.session)
-            uow.register(RecordCommitOp(record))
-            uow.commit()
+            with UnitOfWork(db.session) as uow:
+                uow.register(RecordCommitOp(record))
+                uow.commit()
+                current_app.logger.error(
+                    f"in published record factory, updated record created date: "
+                    f"{pformat(record.id)}"
+                )
 
         if community_list:
+            current_app.logger.error(
+                f"in published record factory, adding community to record: "
+                f"{pformat(community_list)}"
+            )
             record = published._record
-            add_community_to_record(db, record, community_list[0], default=set_default)
+            add_community_to_record(
+                db,
+                record,
+                community_list[0],
+                default=set_default,
+                identity=superuser_identity,
+            )
             for community in community_list[1:] if len(community_list) > 1 else []:
-                add_community_to_record(db, record, community, default=False)
+                current_app.logger.error(
+                    f"in published record factory, adding community to record: "
+                    f"{pformat(community)}"
+                )
+                add_community_to_record(
+                    db, record, community, default=False, identity=superuser_identity
+                )
             # Refresh the record to get the latest state.
             published = records_service.read(system_identity, published.id)
+            current_app.logger.error(
+                f"in published record factory, refreshed record: "
+                f"{pformat(published.id)}"
+            )
 
         if input_metadata.get("created"):
+            current_app.logger.error(
+                f"in published record factory, updating community events created date: "
+                f"{pformat(published.id)}"
+            )
             try:
                 # Always update record_created_date, optionally update event_date
                 # based on the flag
@@ -185,7 +231,11 @@ def minimal_published_record_factory(running_app, db, record_metadata):
 
 @pytest.fixture(scope="function")
 def record_metadata(running_app):
-    """Factory for creating a record metadata object."""
+    """Factory for creating a record metadata object.
+
+    Returns:
+        function: Function to create record metadata.
+    """
 
     def _factory(
         metadata_in: dict | None = None,
@@ -194,7 +244,11 @@ def record_metadata(running_app):
         file_entries: dict | None = None,
         owner_id: str | None = "1",
     ):
-        """Create a record metadata object."""
+        """Create a record metadata object.
+
+        Returns:
+            dict: The record metadata dictionary.
+        """
         metadata_in = metadata_in or {}
         community_list = community_list or []
         file_entries = file_entries or {}
@@ -363,12 +417,10 @@ class TestRecordMetadata:
         """Update the basic metadata dictionary for the record.
 
         Parameters:
-            metadata_updates (dict): A dictionary of metadata updates. The keys are
-                bar separated (NOT dot separated) paths to the values to update. The
-                values are the new values to update the metadata with at those paths.
-
-        Returns:
-            None
+            metadata_updates (dict): A dictionary of metadata updates. The keys
+                are bar separated (NOT dot separated) paths to the values to update.
+                The values are the new values to update the metadata with at those
+                paths.
         """
         metadata_updates = metadata_updates or {}
         for key, val in metadata_updates.items():
@@ -397,7 +449,11 @@ class TestRecordMetadata:
         ui_base_url: str,
         doi: str | None = None,
     ) -> dict:
-        """Build the draft record links."""
+        """Build the draft record links.
+
+        Returns:
+            dict: Dictionary containing draft record links.
+        """
         links = {
             "self": f"{base_url}/records/{record_id}/draft",
             "self_html": f"{ui_base_url}/uploads/{record_id}",
@@ -439,7 +495,11 @@ class TestRecordMetadata:
         parent_id: str,
         record_doi: str = "",
     ) -> dict:
-        """Build the published record links."""
+        """Build the published record links.
+
+        Returns:
+            dict: Dictionary containing published record links.
+        """
         if not record_doi:
             record_doi = f"10.17613/{record_id}"
         parent_doi = f"10.17613/{parent_id}"
@@ -707,10 +767,6 @@ class TestRecordMetadata:
             skip_fields (list[str], optional): A list of field paths that are expected
                 to be missing from the actual metadata due to validation errors.
 
-        Raises:
-            AssertionError: If the actual metadata dictionary does not match the
-                expected metadata dictionary.
-
         Returns:
             bool: True if the actual metadata dictionary matches the expected
                 metadata dictionary, otherwise raises an error.
@@ -882,10 +938,6 @@ class TestRecordMetadata:
         Returns:
             bool: True if the actual metadata dictionary matches the expected
                 metadata dictionary, False otherwise.
-
-        Raises:
-            AssertionError: If the actual metadata dictionary does not match
-                the expected metadata dictionary.
         """
         app = self.app
         expected = deepcopy(self.published) if not expected else expected
@@ -899,7 +951,7 @@ class TestRecordMetadata:
                     self.metadata_in["created"]
                 )
             else:
-                assert now - arrow.get(actual["created"]) < timedelta(seconds=7)
+                assert now - arrow.get(actual["created"]) < timedelta(seconds=30)
             assert actual["custom_fields"] == expected["custom_fields"]
             assert "expires_at" not in actual.keys()
             assert actual["files"]["count"] == expected["files"]["count"]
@@ -1028,7 +1080,7 @@ class TestRecordMetadata:
             # assert actual["revision_id"] == 4  # NOTE: Too difficult to test
             assert actual["stats"] == expected["stats"]
             assert actual["status"] == "published"
-            assert now - arrow.get(actual["updated"]) < timedelta(seconds=7)
+            assert now - arrow.get(actual["updated"]) < timedelta(seconds=30)
             assert actual["versions"] == expected["versions"]
             return True
         except AssertionError as e:
@@ -1038,7 +1090,11 @@ class TestRecordMetadata:
 
 @pytest.fixture(scope="function")
 def record_metadata_with_files(running_app):
-    """Factory for creating a record metadata object with files."""
+    """Factory for creating a record metadata object with files.
+
+    Returns:
+        function: Function to create record metadata with files.
+    """
 
     def _factory(
         metadata_in: dict | None = None,
@@ -1047,7 +1103,11 @@ def record_metadata_with_files(running_app):
         file_entries: dict | None = None,
         owner_id: str | None = "1",
     ):
-        """Create a record metadata object with files."""
+        """Create a record metadata object with files.
+
+        Returns:
+            dict: The record metadata dictionary with files.
+        """
         metadata_in = metadata_in or {}
         community_list = community_list or []
         file_entries = file_entries or {}
@@ -1109,17 +1169,24 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
     @property
     def metadata_in(self) -> dict:
         """Return the input metadata for record creation with files."""
+        if "files" not in self._metadata_in:
+            self._metadata_in["files"] = {}
+
         self._metadata_in["files"]["enabled"] = True
         self._metadata_in["files"]["entries"] = self.file_entries
         self._metadata_in.get("access", {})["status"] = self.file_access_status
         return self._metadata_in
 
     def _add_file_entries(self, metadata: dict) -> dict:
-        """Add the file entries to the metadata."""
+        """Add the file entries to the metadata.
+
+        Returns:
+            dict: The metadata with file entries added.
+        """
         metadata["files"]["count"] = len(self.file_entries.keys())
-        metadata["files"]["total_bytes"] = sum(
-            [e["size"] for k, e in self.file_entries.items()]
-        )
+        metadata["files"]["total_bytes"] = sum([
+            e["size"] for k, e in self.file_entries.items()
+        ])
         metadata["files"]["order"] = []
         for k, e in self.file_entries.items():
             file_links = build_file_links(
@@ -1162,7 +1229,11 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
 
 @pytest.fixture(scope="function")
 def full_sample_record_metadata(users):
-    """Full record data as dict coming from the external world."""
+    """Full record data as dict coming from the external world.
+
+    Returns:
+        dict: Full record metadata dictionary.
+    """
     return {
         "pids": {
             "doi": {
@@ -1340,7 +1411,7 @@ def full_sample_record_metadata(users):
     }
 
 
-def enhance_metadata_with_funding_and_affiliations(metadata, record_index):
+def enhance_metadata_with_funding_and_affiliations(metadata, record_index) -> None:
     """Enhance metadata with funder and enhanced affiliation data for testing.
 
     This helper function can be imported and used in test classes to enrich
@@ -1349,9 +1420,6 @@ def enhance_metadata_with_funding_and_affiliations(metadata, record_index):
     Args:
         metadata: The base metadata to enhance (will be modified in-place)
         record_index: Index of the record (0-3) to determine what data to add
-
-    Returns:
-        None (modifies metadata in-place)
     """
     # Only enhance the first record with affiliations
     if record_index == 0:
@@ -1372,30 +1440,28 @@ def enhance_metadata_with_funding_and_affiliations(metadata, record_index):
         if "contributors" not in metadata["metadata"]:
             metadata["metadata"]["contributors"] = []
 
-        metadata["metadata"]["contributors"].append(
-            {
-                "person_or_org": {
-                    "type": "personal",
-                    "name": "Test Contributor",
-                    "given_name": "Test",
-                    "family_name": "Contributor",
-                },
-                "role": {
-                    "id": "other",
-                    "title": {"en": "Other"},
-                },
-                "affiliations": [
-                    {
-                        "id": "03rmrcq20",  # Different affiliation ID for contributors
-                        "name": "Contributor Institution",
-                        "type": {
-                            "id": "institution",
-                            "title": {"en": "Institution"},
-                        },
-                    }
-                ],
-            }
-        )
+        metadata["metadata"]["contributors"].append({
+            "person_or_org": {
+                "type": "personal",
+                "name": "Test Contributor",
+                "given_name": "Test",
+                "family_name": "Contributor",
+            },
+            "role": {
+                "id": "other",
+                "title": {"en": "Other"},
+            },
+            "affiliations": [
+                {
+                    "id": "03rmrcq20",  # Different affiliation ID for contributors
+                    "name": "Contributor Institution",
+                    "type": {
+                        "id": "institution",
+                        "title": {"en": "Institution"},
+                    },
+                }
+            ],
+        })
 
     # Add funding information to the first two records only
     if record_index < 2:

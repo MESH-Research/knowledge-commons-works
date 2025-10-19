@@ -24,7 +24,6 @@ from .fixtures.custom_fields import test_config_fields
 from .fixtures.frontend import MockManifestLoader
 from .fixtures.identifiers import test_config_identifiers
 from .fixtures.saml import test_config_saml
-from .fixtures.stats import test_config_stats
 
 
 def load_config():
@@ -32,6 +31,12 @@ def load_config():
 
     This is needed because we can't import the invenio.cfg file directly
     because it's not a Python module.
+
+    Returns:
+        dict: Dictionary of configuration variables.
+
+    Raises:
+        ValueError: If the configuration file is invalid.
     """
     config_path = Path(__file__).parent.parent / "invenio.cfg"
 
@@ -51,11 +56,13 @@ config = load_config()
 print("Config loaded successfully")
 
 pytest_plugins = (
-    "celery.contrib.pytest",
-    "tests.fixtures.files",
-    "tests.fixtures.mail",
     "tests.fixtures.communities",
     "tests.fixtures.custom_fields",
+    "tests.fixtures.files",
+    "tests.fixtures.frontend",
+    "tests.fixtures.identifiers",
+    "tests.fixtures.mail",
+    "celery.contrib.pytest",
     "tests.fixtures.records",
     "tests.fixtures.roles",
     "tests.fixtures.search_provisioning",
@@ -76,15 +83,24 @@ pytest_plugins = (
 
 
 def _(x):
-    """Identity function for string extraction."""
+    """Identity function for string extraction.
+
+    Returns:
+        Any: The input value unchanged.
+    """
     return x
 
 
 test_config = {
     **config,
-    **test_config_identifiers,
+    "RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS": test_config_identifiers[
+        "RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS"
+    ],
+    "RDM_PERSISTENT_IDENTIFIER_PROVIDERS": test_config_identifiers[
+        "RDM_PERSISTENT_IDENTIFIER_PROVIDERS"
+    ],
     **test_config_fields,
-    **test_config_stats,
+    # **test_config_stats,  # Now getting directly from invenio.cfg
     **test_config_saml,
     "SQLALCHEMY_DATABASE_URI": (
         "postgresql+psycopg2://kcworks:kcworks@localhost:5432/kcworks"
@@ -124,7 +140,8 @@ test_config = {
     "WEBPACKEXT_MANIFEST_LOADER": MockManifestLoader,
     "TESTING": True,
     "DEBUG": True,
-    "COMMUNITY_STATS_SCHEDULED_TASKS_ENABLED": True,
+    "COMMUNITY_STATS_SCHEDULED_AGG_TASKS_ENABLED": True,
+    "COMMUNITY_STATS_SCHEDULED_CACHE_TASKS_ENABLED": True,
 }
 
 parent_path = Path(__file__).parent
@@ -162,7 +179,11 @@ test_config["SITE_UI_URL"] = os.environ.get(
 
 @pytest.fixture(scope="module")
 def extra_entry_points() -> dict:
-    """Extra entry points fixture for KCWorks."""
+    """Extra entry points fixture for KCWorks.
+
+    Returns:
+        dict: Dictionary of extra entry points.
+    """
     return {
         # "invenio_base.api_apps": ["kcworks = kcworks.ext:KCWorks"],
         # "invenio_base.apps": ["kcworks = kcworks.ext:KCWorks"],
@@ -175,7 +196,11 @@ def extra_entry_points() -> dict:
 
 @pytest.fixture(scope="session")
 def celery_config(celery_config):
-    """Celery config fixture for KCWorks."""
+    """Celery config fixture for KCWorks.
+
+    Returns:
+        dict: Celery configuration dictionary.
+    """
     celery_config["logfile"] = str(log_folder_path / "celery.log")
     celery_config["loglevel"] = "DEBUG"
     celery_config["task_always_eager"] = True
@@ -188,7 +213,11 @@ def celery_config(celery_config):
 
 @pytest.fixture(scope="session")
 def celery_enable_logging():
-    """Celery enable logging fixture for KCWorks."""
+    """Celery enable logging fixture for KCWorks.
+
+    Returns:
+        bool: True to enable Celery logging.
+    """
     return True
 
 
@@ -213,6 +242,9 @@ def location(database):
     files-rest.readthedocs.io/en/latest/api.html#invenio_files_rest.models.
     Location>`_. The location will be a default location with the name
     ``pytest-location``.
+
+    Yields:
+        Location: The created test location.
     """
     from invenio_files_rest.models import Location
 
@@ -282,6 +314,9 @@ def running_app(
 
     All of these fixtures are often needed together, so collecting them
     under a semantic umbrella makes sense.
+
+    Returns:
+        RunningApp: The running application instance.
     """
     return RunningApp(
         app,
@@ -319,7 +354,15 @@ def search_clear(search_clear):
     this doesn't catch the stats indices, so we need to add an
     additional step to delete the stats indices and template manually.
     Otherwise, the stats indices aren't cleared between tests.
+
+    Yields:
+        None: Yields control to the test.
     """
+    # Clear identity cache before each test to prevent stale community role data
+    from invenio_communities.proxies import current_identities_cache
+
+    current_identities_cache.flush()
+
     yield search_clear
 
     # Delete stats indices and templates if they exist
@@ -329,7 +372,11 @@ def search_clear(search_clear):
 
 @pytest.fixture(scope="module")
 def template_loader():
-    """Fixture providing overloaded and custom templates to test app."""
+    """Fixture providing overloaded and custom templates to test app.
+
+    Returns:
+        Callable: Function to load templates.
+    """
 
     def load_tempates(app):
         """Load templates for the test app."""
@@ -346,12 +393,10 @@ def template_loader():
             root_path,
         ):
             assert path.exists()
-        custom_loader = jinja2.ChoiceLoader(
-            [
-                app.jinja_loader,
-                jinja2.FileSystemLoader([str(site_path), str(root_path)]),
-            ]
-        )
+        custom_loader = jinja2.ChoiceLoader([
+            app.jinja_loader,
+            jinja2.FileSystemLoader([str(site_path), str(root_path)]),
+        ])
         app.jinja_loader = custom_loader
         app.jinja_env.loader = custom_loader
 
@@ -374,6 +419,9 @@ def app(
     fixtures. This fixture sets up the basic functions like db, search,
     and template loader once per modules. The `running_app` fixture is function
     scoped and initializes all the fixtures that should be reset between tests.
+
+    Yields:
+        Flask: The Flask application instance.
     """
     current_queues.declare()
     template_loader(app)
@@ -382,7 +430,11 @@ def app(
 
 @pytest.fixture(scope="module")
 def app_config(app_config) -> dict:
-    """App config fixture for KCWorks."""
+    """App config fixture for KCWorks.
+
+    Returns:
+        dict: Application configuration dictionary.
+    """
     for k, v in test_config.items():
         app_config[k] = v
 
@@ -395,5 +447,8 @@ def create_app(instance_path, entry_points):
 
     This initializes the basic Flask app which will then be used
     to set up the `app` fixture with initialized services.
+
+    Returns:
+        Callable: Function to create the app.
     """
     return _create_app
