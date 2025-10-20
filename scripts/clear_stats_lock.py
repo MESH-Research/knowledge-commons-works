@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Script to clear stuck invenio-stats-dashboard task locks.
+"""Script to clear stuck invenio-stats-dashboard task locks.
 
 This script connects to the same Redis cache that invenio-stats-dashboard uses
 and manually removes the stuck lock keys that prevent aggregation tasks from running.
@@ -16,12 +15,11 @@ Examples:
 
 import argparse
 import sys
-from typing import Optional
 
 try:
     from flask import Flask
-    from invenio_cache import current_cache
     from invenio_app import create_app
+    from invenio_cache import current_cache
 except ImportError as e:
     print(f"Error: Could not import required modules: {e}")
     print("Make sure you're running this script from within your InvenioRDM environment")
@@ -30,8 +28,7 @@ except ImportError as e:
 
 
 def clear_lock(lock_name: str, dry_run: bool = False) -> bool:
-    """
-    Clear a specific lock from the cache.
+    """Clear a specific lock from the cache.
     
     Args:
         lock_name: The name of the lock to clear (without 'lock:' prefix)

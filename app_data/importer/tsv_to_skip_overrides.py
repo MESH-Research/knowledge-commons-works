@@ -13,7 +13,7 @@ def add_to_skip_overrides(input_file_path, output_file_path):
             existing_records[obj["source_id"]] = obj
 
     # Open the input TSV file
-    with open(input_file_path, "r") as input_file:
+    with open(input_file_path) as input_file:
         # Skip the header line
         next(input_file)
         # Iterate over each line in the input file

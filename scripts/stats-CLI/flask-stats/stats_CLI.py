@@ -6,9 +6,11 @@ from APIclient import APIclient
 
 token = os.environ['CLI_TOKEN']
 
+
 @click.group()
 def cli():
     pass
+
 
 @cli.command(name='total_deposits')
 @click.argument('freq', default=None, required=False)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Create just the languages vocabulary type and load its data."""
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add the project to the path
@@ -11,10 +11,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'site/kcworks'))
 try:
     from flask import current_app
     from invenio_access.permissions import system_identity
+    from invenio_rdm_records.fixtures.vocabularies import GenericVocabularyEntry
     from invenio_vocabularies.proxies import current_service as vocabulary_service
     from invenio_vocabularies.records.api import Vocabulary
-    from invenio_rdm_records.fixtures.vocabularies import GenericVocabularyEntry
-    import yaml
     
     with current_app.app_context():
         # Check if languages vocabulary type already exists
