@@ -245,6 +245,7 @@ addopts = """
 --ignore=site/kcworks/dependencies/invenio-remote-user-data-kcworks
 --ignore=site/kcworks/dependencies/invenio-requests
 --ignore=site/kcworks/dependencies/invenio-vocabularies
+--ignore=site/kcworks/dependencies/invenio-stats-dashboard/tests
 --ignore=site/kcworks/services/search/index_templates
 --cov=kcworks --cov=invenio_stats_dashboard --cov-report=term-missing
 """

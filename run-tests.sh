@@ -50,6 +50,34 @@ function check_docker_compose_running() {
   fi
 }
 
+# Create symlinks to submodule tests
+function create_test_symlinks() {
+  echo "Creating symlinks to submodule tests..."
+  
+  submodule_tests_dir="site/kcworks/dependencies/invenio-stats-dashboard/tests"
+  
+  if [ ! -d "$submodule_tests_dir" ]; then
+    echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
+    return 0
+  fi
+  
+  if [ -d "$submodule_tests_dir/api" ]; then
+    if [ -L "tests/api/stats_dashboard" ] || [ -e "tests/api/stats_dashboard" ]; then
+      rm -f "tests/api/stats_dashboard"
+    fi
+    ln -s "../../$submodule_tests_dir/api" "tests/api/stats_dashboard"
+    echo "Created symlink: tests/api/stats_dashboard -> $submodule_tests_dir/api"
+  fi
+  
+  if [ -d "$submodule_tests_dir/cli" ]; then
+    if [ -L "tests/cli/stats_dashboard" ] || [ -e "tests/cli/stats_dashboard" ]; then
+      rm -f "tests/cli/stats_dashboard"
+    fi
+    ln -s "../../$submodule_tests_dir/cli" "tests/cli/stats_dashboard"
+    echo "Created symlink: tests/cli/stats_dashboard -> $submodule_tests_dir/cli"
+  fi
+}
+
 # Check for arguments
 # Note: "-k" would clash with "pytest"
 keep_services=0
@@ -75,6 +103,9 @@ done
 if [[ ${keep_services} -eq 0 ]]; then
   trap cleanup EXIT
 fi
+
+# Create symlinks to submodule tests
+create_test_symlinks
 
 # Extract and compile translations from python files
 if [[ ${skip_translations} -eq 0 ]]; then
