@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Script to count subjects by scheme in the database."""
 
+from invenio_access.permissions import system_identity
+from invenio_records_resources.proxies import current_service_registry
 from invenio_vocabularies.records.models import SubjectMetadata
 from sqlalchemy import func
-from invenio_records_resources.proxies import current_service_registry
-from invenio_access.permissions import system_identity
 
 # Count subjects by scheme from the subject_metadata table
 schemes = SubjectMetadata.query.with_entities(

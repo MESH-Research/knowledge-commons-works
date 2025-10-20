@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 """Script to reload subjects vocabulary schemes individually."""
 
-import os
-import sys
 from pathlib import Path
 
-from flask import current_app
 from invenio_access.permissions import system_identity
-from invenio_db import db
-from invenio_rdm_records.fixtures.vocabularies import VocabularyEntryWithSchemes, create_iterator
-from invenio_rdm_records.fixtures.tasks import create_vocabulary_record
 from invenio_pidstore.errors import PIDAlreadyExists
-from sqlalchemy.orm.exc import NoResultFound
+from invenio_rdm_records.fixtures.tasks import create_vocabulary_record
+from invenio_rdm_records.fixtures.vocabularies import VocabularyEntryWithSchemes
 from marshmallow import ValidationError
+from sqlalchemy.orm.exc import NoResultFound
+
 
 def reload_subjects_vocabulary():
     """Reload missing subjects schemes individually."""
@@ -57,7 +54,7 @@ def reload_subjects_vocabulary():
     total_skipped = 0
     
     # First handle FAST-personal with offset (partially loaded)
-    print(f"\n=== Processing FAST-personal (offset: 647,000) ===")
+    print("\n=== Processing FAST-personal (offset: 647,000) ===")
     fast_personal_entry = VocabularyEntryWithSchemes("subjects", subjects_dir, "subjects", fast_personal_config)
     fast_personal_entry.pre_load(system_identity, ignore=set())
     
@@ -147,10 +144,11 @@ def reload_subjects_vocabulary():
         total_created += scheme_created
         total_skipped += scheme_skipped
     
-    print(f"\n=== FINAL SUMMARY ===")
+    print("\n=== FINAL SUMMARY ===")
     print(f"Total processed: {total_processed:,} records")
     print(f"Total created: {total_created:,} new records")
     print(f"Total skipped: {total_skipped:,} existing records")
+
 
 if __name__ == '__main__':
     reload_subjects_vocabulary()
