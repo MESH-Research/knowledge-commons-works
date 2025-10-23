@@ -18,7 +18,6 @@
 .invenio-page-body {
   .ui.container.page-subheader-outer {
     min-height: 8rem;
-    height: 8rem;
     padding-top: 0;
     background-color: @verdigris;
     background: radial-gradient(ellipse at 100% 0%, transparent, #fff 60%),
@@ -28,6 +27,10 @@
 
     @media all and (max-width: @largestMobileScreen) {
       text-align: center;
+    }
+
+    &.stats-dashboard-header {
+      height: 8rem;
     }
 
     .ui.container.page-subheader {
