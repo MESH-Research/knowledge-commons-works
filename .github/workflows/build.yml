@@ -147,7 +147,7 @@ jobs:
           echo "PR build completed successfully!"
           echo "Built images:"
           docker images | grep -E "(kcworks|IMAGE_NAME)" || echo "No images found"
-          echo "PR images are not pushed to registries.
+          echo "PR images are not pushed to registries to save storage costs"
 
       - name: Push production or staging image to Amazon ECR
         if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging'
