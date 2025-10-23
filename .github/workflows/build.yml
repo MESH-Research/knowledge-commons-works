@@ -71,6 +71,12 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
         run: |
           echo "RELEASE_VERSION=staging" >> $GITHUB_ENV
+      - name: Label pull request
+        if: github.event_name == 'pull_request'
+        run: |
+          # For pull requests, use a PR-specific tag format
+          pr_number=${{ github.event.number }}
+          echo "RELEASE_VERSION=pr-$pr_number" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -118,7 +124,7 @@ jobs:
       #     key: local-docker-directory
 
       - name: Build AMD Image for production or main
-        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest' || env.RELEASE_VERSION == 'staging' || startsWith(env.RELEASE_VERSION, 'dev')
+        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest' || env.RELEASE_VERSION == 'staging' || startsWith(env.RELEASE_VERSION, 'dev') || startsWith(env.RELEASE_VERSION, 'pr-')
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -128,11 +134,20 @@ jobs:
           docker image ls
 
       - name: Push Image to Docker Hub
+        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest' || env.RELEASE_VERSION == 'staging' || startsWith(env.RELEASE_VERSION, 'dev')
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME --all-tags
           docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend --all-tags
+
+      - name: Show PR Build Results
+        if: startsWith(env.RELEASE_VERSION, 'pr-')
+        run: |
+          echo "PR build completed successfully!"
+          echo "Built images:"
+          docker images | grep -E "(kcworks|IMAGE_NAME)" || echo "No images found"
+          echo "PR images are not pushed to registries.
 
       - name: Push production or staging image to Amazon ECR
         if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging'
