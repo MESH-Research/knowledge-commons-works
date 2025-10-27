@@ -27,6 +27,8 @@ services:
     extends:
       file: docker-compose.yml
       service: web-ui
+    environment:
+      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
     volumes:
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
@@ -61,6 +63,8 @@ services:
     extends:
       file: docker-compose.yml
       service: web-api
+    environment:
+      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
     volumes:
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
@@ -95,6 +99,8 @@ services:
     extends:
       file: docker-compose.yml
       service: worker
+    environment:
+      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
     volumes:
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities

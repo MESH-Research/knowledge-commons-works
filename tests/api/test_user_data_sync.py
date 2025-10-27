@@ -11,6 +11,7 @@ the Invenio app.
 
 
 """
+
 import json
 import os
 from collections.abc import Callable
@@ -142,11 +143,10 @@ def test_do_user_data_update_task(
     assert not mock_adapter.called
     assert mock_adapter.call_count == 0
 
-    result: tuple[User, dict, list[str], dict] = do_user_data_update(
+    result: tuple[int, dict, list[str], dict] = do_user_data_update(
         user_id=user_id, idp="knowledgeCommons", remote_id=user_data["saml_id"]
     )
-    assert isinstance(result[0], User)
-    # assert result[0].id == user_id  # FIXME: Why does this trigger detached error?
+    assert result[0] == user_id
 
     # the result[1] is a dictionary of the updated user data (including only
     # the changed keys and values).
@@ -239,9 +239,7 @@ def test_user_data_sync_on_login(
     assert u.user.email == user1_data["email"]
     profile = u.user.user_profile
     assert profile.get("full_name") == user1_data["name"]
-    assert (
-        profile.get("affiliations") == user1_data["institutional_affiliation"]
-    )  # noqa: E501
+    assert profile.get("affiliations") == user1_data["institutional_affiliation"]  # noqa: E501
     assert profile.get("identifier_orcid") == user1_data["orcid"]
     assert profile.get("identifier_kc_username") == user1_data["saml_id"]
     assert json.loads(profile.get("name_parts")) == {
@@ -250,12 +248,10 @@ def test_user_data_sync_on_login(
     }
 
     # Check that the user is a member of the linked communities
-    assert sorted([r.name for r in u.user.roles]) == sorted(
-        [
-            "knowledgeCommons---12345|administrator",
-            "knowledgeCommons---67891|member",
-        ]
-    )
+    assert sorted([r.name for r in u.user.roles]) == sorted([
+        "knowledgeCommons---12345|administrator",
+        "knowledgeCommons---67891|member",
+    ])
 
 
 @pytest.mark.skip(reason="Not implemented")
@@ -335,16 +331,14 @@ def test_user_data_sync_on_webhook(
     # Signal the webhook endpoint for update (data is sent)
     response2 = client.post(
         f"{app.config['SITE_API_URL']}/webhooks/user_data_update",
-        data=json.dumps(
-            {
-                "idp": "knowledgeCommons",
-                "updates": {
-                    "users": [
-                        {"id": user1_data["saml_id"], "event": "updated"},
-                    ],
-                },
-            }
-        ),
+        data=json.dumps({
+            "idp": "knowledgeCommons",
+            "updates": {
+                "users": [
+                    {"id": user1_data["saml_id"], "event": "updated"},
+                ],
+            },
+        }),
         headers={**headers, "Authorization": f"Bearer {token}"},
     )
     assert response2.status_code == 202
@@ -365,8 +359,7 @@ def test_user_data_sync_on_webhook(
     assert user.email == user1_data["email"]
     assert user.user_profile.get("full_name") == user1_data["name"]
     assert (
-        user.user_profile.get("identifier_kc_username")
-        == user1_data["saml_id"]  # noqa: E501
+        user.user_profile.get("identifier_kc_username") == user1_data["saml_id"]  # noqa: E501
     )  # noqa: E501
     assert user.user_profile.get("identifier_orcid") == user1_data["orcid"]
     assert json.loads(user.user_profile.get("name_parts")) == {
@@ -379,8 +372,7 @@ def test_user_data_sync_on_webhook(
         "knowledgeCommons---67891|member",
     ]
     assert (
-        user.user_profile.get("affiliations")
-        == user1_data["institutional_affiliation"]  # noqa: E501
+        user.user_profile.get("affiliations") == user1_data["institutional_affiliation"]  # noqa: E501
     )
 
 
@@ -440,8 +432,7 @@ def test_user_data_sync_on_account_setup(
     assert updated_user.user_profile.get("full_name") == "Test User"
     assert updated_user.user_profile.get("affiliations") == "Test University"
     assert (
-        updated_user.user_profile.get("identifier_orcid")
-        == "0000-0001-2345-6789"  # noqa: E501
+        updated_user.user_profile.get("identifier_orcid") == "0000-0001-2345-6789"  # noqa: E501
     )
     assert json.loads(updated_user.user_profile.get("name_parts")) == {
         "first": "Test",
