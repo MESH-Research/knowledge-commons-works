@@ -11,6 +11,16 @@
   }
 }
 
+#Contributors-tab-section {
+  .ui.card {
+    .extra {
+      a:not(.ui) {
+        padding-right: 1rem;
+      }
+    }
+  }
+}
+
 .ui.card.borderless.facet {
   background-color: @sidebarBackgroundColor;
   padding: 1rem;

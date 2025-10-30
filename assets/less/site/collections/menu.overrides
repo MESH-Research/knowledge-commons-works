@@ -12,6 +12,7 @@
       h2.header {
         @media all and (max-width: @largestTabletScreen) {
           margin-top: 0;
+          color: @primaryColor;
         }
       }
       #invenio-menu.ui.menu {
@@ -91,6 +92,8 @@
           color: @ivy80;
           @media screen and (max-width: @largestTabletScreen) {
             padding: 1.25rem 1.5rem;
+            width: 100%;
+            border-left: 2px solid transparent;
           }
           &::after {
             content: "";
@@ -120,6 +123,14 @@
             transform: scaleX(1);
             transform-origin: center;
           }
+
+          @media screen and (max-width: @largestTabletScreen) {
+            background-color: @mint80 !important;
+            border-left: 2px solid @primaryColor;
+            &::after {
+              display: none;
+            }
+          }
         }
         a.ui.button.basic {
           box-shadow: none;
@@ -134,14 +145,26 @@
             margin-top: 1.5rem;
             padding: 1.5rem 0;
           }
+          &> .item {
+            height: 100%;
+            @media screen and (max-width: @largestTabletScreen) {
+              height: unset;
+            }
+          }
           a,
           div[role="menuitem"] {
             background-color: @mint !important;
+            height: 100%;
+            display: flex;
+            align-items: center;
             &:hover,
             &:focus,
             &:active {
               background-color: @mint60 !important;
               z-index: 100;
+              @media screen and (max-width: @largestTabletScreen) {
+                background-color: @mint80 !important;
+              }
             }
           }
           a,
