@@ -13,7 +13,26 @@
 
 #Contributors-tab-section {
   .ui.card {
+    .description {
+      span, small {
+        &::after {
+          content: " · "
+        }
+        &:last-child {
+          &::after {
+            content: ""
+          }
+        }
+      }
+    }
     .extra {
+      a:not(.ui),
+      img {
+        small {
+          display: inline-block;
+          vertical-align: middle;
+        }
+      }
       a:not(.ui) {
         padding-right: 1rem;
       }
