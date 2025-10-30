@@ -131,7 +131,9 @@ def minimal_published_record_factory(
 
         # Enable files before creating draft if file_paths are provided
         if file_paths:
-            input_metadata["files"] = {"enabled": True}
+            files_block = input_metadata.get("files") or {}
+            files_block["enabled"] = True
+            input_metadata["files"] = files_block
 
         draft = records_service.create(identity, input_metadata)
 
