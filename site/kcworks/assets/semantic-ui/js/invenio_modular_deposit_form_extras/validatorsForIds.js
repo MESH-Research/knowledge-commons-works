@@ -171,13 +171,13 @@ function gndValidator(message) {
     }
 
     // GND must match one of these patterns:
-    // 1. Start with 1 or 10 followed by 7 digits and a check digit (X or number)
+    // 1. Start with 1 followed by optional 0, 1, or 2, then 7 digits and a check digit (X or number)
     // 2. Start with 4 or 7 followed by 6 digits and a hyphen and a digit
     // 3. Start with 1-9 followed by 0-7 digits and a hyphen and a check digit (X or number)
     // 4. Start with 3 followed by 7 digits and a check digit (X or number)
     const gndRegexp = new RegExp(
       "^(?:(?:gnd:|GND:)?)?(" +
-        "(?:1|10)\\d{7}[0-9X]|" +
+        "1[012]?\\d{7}[0-9X]|" +
         "(?:4|7)\\d{6}-\\d|" +
         "(?:[1-9])\\d{0,7}-[0-9X]|" +
         "(?:3)\\d{7}[0-9X]" +
