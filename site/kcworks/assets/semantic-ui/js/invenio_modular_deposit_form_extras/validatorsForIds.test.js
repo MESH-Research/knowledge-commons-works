@@ -104,14 +104,14 @@ describe("validatorsForIds", () => {
 
     it("should validate correct GND format", async () => {
       const validGNDs = [
-        // Pattern 1: Start with 1 or 10 followed by 7 digits and a check digit (X or number)
-        "100000000", // starts with 1
-        "10000000X", // starts with 1, X check digit
-        "101234567", // starts with 1, example with numbers
-        "10123456X", // starts with 1, X check digit
-        "100000000", // starts with 10
+        // Pattern 1: Start with 1 followed by optional 0, 1, or 2, then 7 digits and a check digit (X or number)
+        "123456789", // starts with 1, 9 digits total
+        "12345678X", // starts with 1, X check digit
+        "100000000", // starts with 10, 10 digits total
         "101234567", // starts with 10, example with numbers
         "10123456X", // starts with 10, X check digit
+        "111234567", // starts with 11, 10 digits total
+        "1270543776", // starts with 12, 10 digits total (real-world example)
 
         // Pattern 2: Start with 4 or 7 followed by 6 digits and a hyphen and a digit
         "4000000-0",  // starts with 4
