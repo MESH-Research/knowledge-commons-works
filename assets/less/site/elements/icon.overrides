@@ -1,6 +1,8 @@
 /* Icon theme overrides */
 
 .inline-id-icon {
+  display: inline-block;
+  vertical-align: middle;
   &.hc_username {
     margin-bottom: 2px;
   }
