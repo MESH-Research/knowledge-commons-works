@@ -346,7 +346,7 @@ user_data_set = {
     },
     "user3": {
         "saml_id": "gihctester",
-        "email": "ghosthc@lblyoehp.mailosaur.net",
+        "email": "ghosthc@email.ghostinspector.com",
         # FIXME: Unobfuscated email not sent by
         # KC because no email marked as official.
         # Also, different email address than shown in KC profile.

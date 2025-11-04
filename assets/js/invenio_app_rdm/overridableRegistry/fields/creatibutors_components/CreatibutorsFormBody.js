@@ -107,7 +107,16 @@ const makeIdEntry = (identifier) => {
     link = "https://orcid.org/" + identifier.identifier;
   } else if (identifier.scheme === "gnd") {
     icon = "/static/images/gnd-icon.svg";
-    link = "https://d-nb.info/gnd/" + identifier.identifier;
+		const rawIdentifier =
+			typeof identifier.identifier === "string"
+				? identifier.identifier.trim()
+				: identifier.identifier;
+		const normalizedIdentifier =
+			typeof rawIdentifier === "string" &&
+			rawIdentifier.toLowerCase().startsWith("gnd:")
+				? rawIdentifier.slice(rawIdentifier.indexOf(":") + 1)
+				: rawIdentifier;
+		link = "https://d-nb.info/gnd/" + normalizedIdentifier;
   } else if (identifier.scheme === "ror") {
     icon = "/static/images/ror-icon.svg";
     link = "https://ror.org/" + identifier.identifier;

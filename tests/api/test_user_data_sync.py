@@ -44,7 +44,7 @@ def test_user_data_kc_endpoint():
     assert response.status_code == 200
     actual_resp = response.json()
     assert actual_resp["username"] == "gihctester"
-    assert actual_resp["email"] == "ghosthc@lblyoehp.mailosaur.net"
+    assert actual_resp["email"] == "ghosthc@email.ghostinspector.com"
     assert actual_resp["name"] == "Ghost Hc"
     assert actual_resp["first_name"] == "Ghost"
     assert actual_resp["last_name"] == "Hc"
