@@ -37,6 +37,7 @@ module.exports = {
   testPathIgnorePatterns: [
     // '<rootDir>/site/kcworks/dependencies/invenio-stats-dashboard/',
     '<rootDir>/site/kcworks/dependencies/invenio-stats-dashboard/.venv/',
+    '/\\.venv/',
   ],
   collectCoverageFrom: [
     'assets/**/*.{js,jsx}',
