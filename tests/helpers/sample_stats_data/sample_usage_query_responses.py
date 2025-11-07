@@ -49,17 +49,13 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                     "_score": 1.006192,
                                     "_source": {
                                         "affiliations": [
-                                            [{"name": "San Francisco Public Library"}],
-                                            [{"name": "San Francisco Public Library"}],
-                                            [
-                                                {
-                                                    "name": (
-                                                        "San Francisco Public Library"
-                                                    ),
-                                                    "id": "013v4ng57",
-                                                }
-                                            ],
-                                            [{"name": "San Francisco Public Library"}],
+                                            {"name": "San Francisco Public Library"},
+                                            {"name": "San Francisco Public Library"},
+                                            {
+                                                "name": "San Francisco Public Library",
+                                                "id": "013v4ng57",
+                                            },
+                                            {"name": "San Francisco Public Library"},
                                         ]
                                     },
                                 }
@@ -84,21 +80,13 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                     "_score": 1.006192,
                                     "_source": {
                                         "affiliations": [
-                                            [
-                                                {
-                                                    "name": (
-                                                        "University Of British Columbia"
-                                                    )
-                                                }
-                                            ],
-                                            [
-                                                {
-                                                    "name": (
-                                                        "University of British Columbia"
-                                                    ),
-                                                    "id": "03rmrcq20",
-                                                }
-                                            ],
+                                            {
+                                                "name": "University Of British Columbia"
+                                            },
+                                            {
+                                                "name": "University of British Columbia",
+                                                "id": "03rmrcq20",
+                                            },
                                         ]
                                     },
                                 }
@@ -129,7 +117,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                     "_score": 1.006192,
                                     "_source": {
                                         "affiliations": [
-                                            [{"name": "Henry Ford College"}]
+                                            {"name": "Henry Ford College"}
                                         ]
                                     },
                                 }
@@ -154,17 +142,13 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                     "_score": 1.006192,
                                     "_source": {
                                         "affiliations": [
-                                            [{"name": "San Francisco Public Library"}],
-                                            [{"name": "San Francisco Public Library"}],
-                                            [
-                                                {
-                                                    "name": (
-                                                        "San Francisco Public Library"
-                                                    ),
-                                                    "id": "013v4ng57",
-                                                }
-                                            ],
-                                            [{"name": "San Francisco Public Library"}],
+                                            {"name": "San Francisco Public Library"},
+                                            {"name": "San Francisco Public Library"},
+                                            {
+                                                "name": "San Francisco Public Library",
+                                                "id": "013v4ng57",
+                                            },
+                                            {"name": "San Francisco Public Library"},
                                         ]
                                     },
                                 }
@@ -189,21 +173,13 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                     "_score": 1.006192,
                                     "_source": {
                                         "affiliations": [
-                                            [
-                                                {
-                                                    "name": (
-                                                        "University Of British Columbia"
-                                                    )
-                                                }
-                                            ],
-                                            [
-                                                {
-                                                    "name": (
-                                                        "University of British Columbia"
-                                                    ),
-                                                    "id": "03rmrcq20",
-                                                }
-                                            ],
+                                            {
+                                                "name": "University Of British Columbia"
+                                            },
+                                            {
+                                                "name": "University of British Columbia",
+                                                "id": "03rmrcq20",
+                                            },
                                         ]
                                     },
                                 }
@@ -228,21 +204,13 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                     "_score": 1.006192,
                                     "_source": {
                                         "affiliations": [
-                                            [
-                                                {
-                                                    "name": (
-                                                        "University Of British Columbia"
-                                                    )
-                                                }
-                                            ],
-                                            [
-                                                {
-                                                    "name": (
-                                                        "University of British Columbia"
-                                                    ),
-                                                    "id": "03rmrcq20",
-                                                }
-                                            ],
+                                            {
+                                                "name": "University Of British Columbia"
+                                            },
+                                            {
+                                                "name": "University of British Columbia",
+                                                "id": "03rmrcq20",
+                                            },
                                         ]
                                     },
                                 }
@@ -267,13 +235,9 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                     "_score": 1.006192,
                                     "_source": {
                                         "affiliations": [
-                                            [
-                                                {
-                                                    "name": (
-                                                        "University of Missouri - St. Louis"
-                                                    )
-                                                }
-                                            ]
+                                            {
+                                                "name": "University of Missouri - St. Louis"
+                                            }
                                         ]
                                     },
                                 }
@@ -2290,17 +2254,13 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                     "_score": 1.0082304,
                                     "_source": {
                                         "affiliations": [
-                                            [{"name": "San Francisco Public Library"}],
-                                            [{"name": "San Francisco Public Library"}],
-                                            [
-                                                {
-                                                    "name": (
-                                                        "San Francisco Public Library"
-                                                    ),
-                                                    "id": "013v4ng57",
-                                                }
-                                            ],
-                                            [{"name": "San Francisco Public Library"}],
+                                            {"name": "San Francisco Public Library"},
+                                            {"name": "San Francisco Public Library"},
+                                            {
+                                                "name": "San Francisco Public Library",
+                                                "id": "013v4ng57",
+                                            },
+                                            {"name": "San Francisco Public Library"},
                                         ]
                                     },
                                 }
@@ -2333,7 +2293,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                     "_score": 1.0082304,
                                     "_source": {
                                         "affiliations": [
-                                            [{"name": "Henry Ford College"}]
+                                            {"name": "Henry Ford College"}
                                         ]
                                     },
                                 }
@@ -2360,17 +2320,13 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                     "_score": 1.0082304,
                                     "_source": {
                                         "affiliations": [
-                                            [{"name": "San Francisco Public Library"}],
-                                            [{"name": "San Francisco Public Library"}],
-                                            [
-                                                {
-                                                    "name": (
-                                                        "San Francisco Public Library"
-                                                    ),
-                                                    "id": "013v4ng57",
-                                                }
-                                            ],
-                                            [{"name": "San Francisco Public Library"}],
+                                            {"name": "San Francisco Public Library"},
+                                            {"name": "San Francisco Public Library"},
+                                            {
+                                                "name": "San Francisco Public Library",
+                                                "id": "013v4ng57",
+                                            },
+                                            {"name": "San Francisco Public Library"},
                                         ]
                                     },
                                 }
@@ -2397,13 +2353,9 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                                     "_score": 1.0082304,
                                     "_source": {
                                         "affiliations": [
-                                            [
-                                                {
-                                                    "name": (
-                                                        "University of Missouri - St. Louis"
-                                                    )
-                                                }
-                                            ]
+                                            {
+                                                "name": "University of Missouri - St. Louis"
+                                            }
                                         ]
                                     },
                                 }
