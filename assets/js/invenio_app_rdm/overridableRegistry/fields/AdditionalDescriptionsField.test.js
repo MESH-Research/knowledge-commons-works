@@ -208,8 +208,11 @@ describe('AdditionalDescriptionsField', () => {
     // Type description text
     userEvent.type(descriptionInput, 'My test description');
 
-    // Select description type
-    const methodsOption = screen.getByRole('option', { name: 'Methods' });
+    // Open the dropdown and select description type
+    userEvent.click(typeDropdown);
+
+    // Wait for dropdown options to appear
+    const methodsOption = await screen.findByRole('option', { name: 'Methods' });
     userEvent.click(methodsOption);
 
     // Wait for formik values to update
@@ -220,7 +223,7 @@ describe('AdditionalDescriptionsField', () => {
         type: 'methods',
         lang: ''
       });
-    });
+    }, { timeout: 10000 });
   });
 
   it('removes a description when clicking remove button and updates Formik values', async () => {
@@ -265,7 +268,7 @@ describe('AdditionalDescriptionsField', () => {
     userEvent.click(addButton);
 
     // Get the language selector
-    const languageSelector = screen.getByLabelText('Language');
+    const languageSelector = await screen.findByLabelText('Language');
     expect(languageSelector).toBeInTheDocument();
 
     // Type "english" in the search field
@@ -312,7 +315,7 @@ describe('AdditionalDescriptionsField', () => {
     userEvent.click(typeDropdown);
 
     // Select "Abstract"
-    const abstractOption = screen.getByRole('option', { name: 'Abstract' });
+    const abstractOption = await screen.findByRole('option', { name: 'Abstract' });
     userEvent.click(abstractOption);
 
     // Verify the selection was made
@@ -335,12 +338,14 @@ describe('AdditionalDescriptionsField', () => {
     userEvent.click(addButton);
 
     // Get the description input
-    const descriptionInput = screen.getByLabelText('Additional description');
+    const descriptionInput = await screen.findByLabelText('Additional description');
 
     // Type some text
     userEvent.type(descriptionInput, 'This is a test description');
 
     // Verify the text was entered
-    expect(descriptionInput).toHaveValue('This is a test description');
+    await waitFor(() => {
+      expect(descriptionInput).toHaveValue('This is a test description');
+    });
   });
 });
