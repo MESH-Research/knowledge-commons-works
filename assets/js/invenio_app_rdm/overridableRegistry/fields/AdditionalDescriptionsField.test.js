@@ -311,7 +311,7 @@ describe('AdditionalDescriptionsField', () => {
     userEvent.click(addButton);
 
     // Get the type dropdown
-    const typeDropdown = screen.getByLabelText('Type of description');
+    const typeDropdown = await screen.findByLabelText('Type of description');
     userEvent.click(typeDropdown);
 
     // Select "Abstract"
@@ -319,13 +319,12 @@ describe('AdditionalDescriptionsField', () => {
     userEvent.click(abstractOption);
 
     // Verify the selection was made
-    const withinDropdown = within(typeDropdown);
-    const selectedLabel = withinDropdown.getByRole("alert");
-    expect(selectedLabel).toHaveTextContent('Abstract');
-
-    expect(abstractOption).toHaveClass('selected');
-    // Verify that the type dropdown is closed
     await waitFor(() => {
+      const withinDropdown = within(typeDropdown);
+      const selectedLabel = withinDropdown.getByRole("alert");
+      expect(selectedLabel).toHaveTextContent('Abstract');
+      expect(abstractOption).toHaveClass('selected');
+      // Verify that the type dropdown is closed
       expect(typeDropdown).toHaveAttribute('aria-expanded', 'false');
     });
   });
