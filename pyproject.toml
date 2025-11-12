@@ -250,7 +250,7 @@ addopts = """
 --cov=kcworks --cov=invenio_stats_dashboard --cov-report=term-missing
 """
 norecursedirs = [
-    "site/kcworks/services/search/index_templates/records/os-v2", 
+    "site/kcworks/services/search/index_templates/records/os-v2",
     "site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/patches"
 ]
 log_cli_level = "DEBUG"
@@ -278,6 +278,7 @@ plugins = [
     "tests.fixtures.vocabularies.roles",
     "tests.fixtures.vocabularies.subjects",
     "tests.fixtures.vocabularies.title_types",
+    "tests.pytest_plugins.pytest_live_status",
 ]
 
 [dependency-groups]

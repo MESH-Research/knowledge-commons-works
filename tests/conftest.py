@@ -80,6 +80,7 @@ pytest_plugins = (
     "tests.fixtures.vocabularies.roles",
     "tests.fixtures.vocabularies.subjects",
     "tests.fixtures.vocabularies.title_types",
+    "tests.pytest_plugins.pytest_live_status",
 )
 
 
