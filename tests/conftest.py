@@ -57,6 +57,7 @@ print("Config loaded successfully")
 
 pytest_plugins = (
     "tests.fixtures.communities",
+    "tests.fixtures.community_events",
     "tests.fixtures.custom_fields",
     "tests.fixtures.files",
     "tests.fixtures.fixtures",

@@ -76,6 +76,14 @@ function create_test_symlinks() {
     ln -s "../../$submodule_tests_dir/cli" "tests/cli/stats_dashboard"
     echo "Created symlink: tests/cli/stats_dashboard -> $submodule_tests_dir/cli"
   fi
+  
+  if [ -d "$submodule_tests_dir/ui" ]; then
+    if [ -L "tests/ui/stats_dashboard" ] || [ -e "tests/ui/stats_dashboard" ]; then
+      rm -f "tests/ui/stats_dashboard"
+    fi
+    ln -s "../../$submodule_tests_dir/ui" "tests/ui/stats_dashboard"
+    echo "Created symlink: tests/ui/stats_dashboard -> $submodule_tests_dir/ui"
+  fi
 }
 
 # Check for arguments

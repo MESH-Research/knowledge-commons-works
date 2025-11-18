@@ -31,6 +31,7 @@ class LiveTestStatusPlugin:
         self.xfailed = 0
         self.xpassed = 0
         self.total = 0
+        self.total_discovered = 0  # Total number of tests discovered during collection
         self.terminal = None
         self.is_tty = False
         self._status_lines = 2  # Number of lines to reserve at bottom
@@ -128,8 +129,13 @@ class LiveTestStatusPlugin:
                     fail_pct = (self.failed / self.total * 100)
                     status_parts.append(f"✗ {self.failed} failed ({fail_pct:.1f}%)")
                 status_msg = " | ".join(status_parts) if status_parts else "Starting..."
+                # Show progress if we know the total discovered count
+                if self.total_discovered > 0:
+                    total_msg = f"[{self.total}/{self.total_discovered} tests]"
+                else:
+                    total_msg = f"[{self.total} tests]"
                 if self.terminal:
-                    self.terminal.write_line(f"\n[{self.total} tests] {status_msg}\n")
+                    self.terminal.write_line(f"\n{total_msg} {status_msg}\n")
             return
 
         # Calculate percentages
@@ -162,7 +168,11 @@ class LiveTestStatusPlugin:
             status_parts.append(f"\033[32m✓ {self.xpassed} xpassed\033[0m")
 
         status_msg = " | ".join(status_parts) if status_parts else "Running tests..."
-        total_msg = f"\033[1m[{self.total} tests]\033[0m"
+        # Show progress if we know the total discovered count
+        if self.total_discovered > 0:
+            total_msg = f"\033[1m[{self.total}/{self.total_discovered} tests]\033[0m"
+        else:
+            total_msg = f"\033[1m[{self.total} tests]\033[0m"
 
         # Update the fixed status line at bottom
         import sys
@@ -174,6 +184,13 @@ class LiveTestStatusPlugin:
         sys.stderr.write(f"{total_msg} {status_msg}")
         sys.stderr.write("\0338")  # Restore cursor (DEC)
         sys.stderr.flush()
+
+    def pytest_collection_finish(self, session):
+        """Capture the total number of discovered tests after collection."""
+        # Store the total number of collected test items
+        self.total_discovered = len(session.items)
+        # Update display to show we know the total now
+        self._display_status()
 
     def pytest_sessionfinish(self, session):
         """Restore terminal when session finishes."""
