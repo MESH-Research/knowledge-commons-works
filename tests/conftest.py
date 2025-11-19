@@ -19,11 +19,13 @@ import pytest
 from invenio_app.factory import create_app as _create_app
 from invenio_queues import current_queues
 from invenio_search.proxies import current_search_client
+from jinja2 import PackageLoader
 
-from .fixtures.custom_fields import test_config_fields
-from .fixtures.frontend import MockManifestLoader
-from .fixtures.identifiers import test_config_identifiers
-from .fixtures.saml import test_config_saml
+# Imports after logging setup (E402 suppressed - logging must be set up first)
+from .fixtures.custom_fields import test_config_fields  # noqa: E402
+from .fixtures.frontend import MockManifestLoader  # noqa: E402
+from .fixtures.identifiers import test_config_identifiers  # noqa: E402
+from .fixtures.saml import test_config_saml  # noqa: E402
 
 
 def load_config():
@@ -390,70 +392,40 @@ def template_loader():
             Path(__file__).parent / "helpers" / "templates" / "semantic-ui"
         )
 
-        # Submodule templates (invenio-stats-dashboard)
-        stats_dashboard_path = (
-            project_root
-            / "site"
-            / "kcworks"
-            / "dependencies"
-            / "invenio-stats-dashboard"
-            / "invenio_stats_dashboard"
-            / "templates"
-            / "semantic-ui"
-        )
-
-        # Dependencies templates (invenio-communities)
-        communities_path = (
-            project_root
-            / "site"
-            / "kcworks"
-            / "dependencies"
-            / "invenio-communities"
-            / "invenio_communities"
-            / "templates"
-            / "semantic-ui"
-        )
-
-        # Find installed package template paths
-        theme_template_paths = []
-        package_template_paths = {
-            "invenio_theme": ["templates", "semantic-ui"],
-            "invenio_app_rdm": ["theme", "templates", "semantic-ui"],
-            "invenio_banners": ["templates", "semantic-ui"],
-        }
-        for package_name, path_parts in package_template_paths.items():
-            try:
-                package = __import__(package_name)
-                if hasattr(package, "__file__") and package.__file__:
-                    package_path = Path(package.__file__).parent
-                    template_path = package_path
-                    for part in path_parts:
-                        template_path = template_path / part
-                    if template_path.exists():
-                        theme_template_paths.append(template_path)
-            except (ImportError, AttributeError):
-                pass
-
-        # Build list of paths that exist
+        # Local template paths for overrides
         template_paths = []
         for path in (
             test_helpers_path,  # Main project test stubs (highest priority)
             site_path,
             root_path,
-            stats_dashboard_path,  # Submodule templates
-            communities_path,  # Dependencies templates
-            *theme_template_paths,  # Installed theme packages
         ):
             if path.exists():
                 template_paths.append(str(path))
-
-        custom_loader = jinja2.ChoiceLoader([
-            app.jinja_loader,
-            jinja2.FileSystemLoader(template_paths),
-        ])
+        
+        loaders = [jinja2.FileSystemLoader(template_paths)]
+        
+        package_configs = [
+            ("invenio_theme", "templates"),  # This finds macros
+            ("invenio_theme", "templates/semantic-ui"),  # This finds page templates
+            ("invenio_app_rdm", "theme/templates/semantic-ui"),
+            ("invenio_banners", "templates/semantic-ui"),
+            ("invenio_communities", "templates/semantic-ui"),
+            ("invenio_stats_dashboard", "templates/semantic-ui"),
+        ]
+        
+        for package_name, template_dir in package_configs:
+            try:
+                loader = PackageLoader(package_name, template_dir)
+                loaders.append(loader)
+            except (ImportError, ModuleNotFoundError, ValueError) as e:
+                app.logger.warning(
+                    f"Could not create PackageLoader for {package_name}: {e}"
+                )
+        
+        custom_loader = jinja2.ChoiceLoader(loaders)
         app.jinja_loader = custom_loader
         app.jinja_env.loader = custom_loader
-
+        
     return load_tempates
 
 
