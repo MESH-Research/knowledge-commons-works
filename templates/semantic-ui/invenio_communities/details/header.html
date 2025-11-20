@@ -9,31 +9,28 @@
   and/or modify them under the terms of the MIT License; see LICENSE file for
   more details.
 #}
-
 {%- from "invenio_theme/macros/truncate.html" import truncate_text %}
 {%- from "invenio_communities/details/macros/access-status-label.html"
 import access_status_label -%}
-
 {{ webpack['invenio-communities-header.js'] }}
-
-{# {{ permissions | pprint }} #}
-
-<div
-  class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile"
-  id="community-detail-header"
-  data-can-read="{{ permissions.can_read }}"
-  data-can-moderate="{{ permissions.can_moderate }}"
-  data-can-search-requests="{{ permissions.can_search_requests }}"
-  data-can-update="{{ permissions.can_update }}"
-  data-community-logo-url="{{ community.links.logo | resolve_community_logo(community.id) }}"
-  data-community-title="{{ community.metadata.get('title', '')  }}"
-  data-community-type="{{ community.ui['type']['title_l10n'] if community.ui.type else '' }}"
-  data-organizations='{{ community.metadata.get("organizations", []) | tojson }}'
-  data-ror-icon-url="{{ url_for('static', filename='images/ror-icon.svg') }}"
-  data-slug="{{ community.slug }}"
-  data-visibility="{{ community.access.get('visibility', '') }}"
-  data-website="{{ community.website if community.website else '' }}"
-  data-has-curation-policy-content="{{ community.metadata.get('curation_policy', '') }}"
-  data-has-about-content="{{ community.metadata.get('page', '') }}"
-  data-active-menu-item="{{ active_community_header_menu_item }}"
-></div>
+<div class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile"
+     id="community-detail-header"
+     data-active-menu-item="{{ active_community_header_menu_item }}"
+     data-can-read="{{ permissions.can_read }}"
+     data-can-moderate="{{ permissions.can_moderate }}"
+     data-can-search-requests="{{ permissions.can_search_requests }}"
+     data-can-update="{{ permissions.can_update }}"
+     data-community-logo-url="{{ community.links.logo | resolve_community_logo(community.id) }}"
+     data-community-title="{{ community.metadata.get('title', '') }}"
+     data-community-type="{{ community.ui['type']['title_l10n'] if community.ui.type else '' }}"
+     data-custom-fields='{{ community.custom_fields | tojson }}'
+     data-has-curation-policy-content="{{ community.metadata.get('curation_policy', '') }}"
+     data-has-about-content="{{ community.metadata.get('page', '') }}"
+     data-organizations='{{ community.metadata.get('organizations', []) | tojson }}'
+     data-ror-icon-url="{{ url_for('static', filename='images/ror-icon.svg') }}"
+     data-slug="{{ community.slug }}"
+     data-visibility="{{ community.access.get('visibility', '') }}"
+     data-website="{{ community.website if community.website else '' }}"
+     data-dashboard-enabled-community="{{ config.get("STATS_DASHBOARD_ENABLED_COMMUNITY") }}"
+     data-community-stats-enabled="{{ config.get("COMMUNITY_STATS_ENABLED") }}"
+     data-dashboard-community-opt-in="{{ config.get("STATS_DASHBOARD_COMMUNITY_OPT_IN") }}"></div>

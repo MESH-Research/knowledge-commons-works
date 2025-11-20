@@ -426,7 +426,6 @@ def test_get_given_name(name_parts, expected):
             '{"given": "John", "family": "Smith"',
             True,
             None,
-            marks=pytest.mark.xfail(raises=json.JSONDecodeError),
         ),
     ],
 )

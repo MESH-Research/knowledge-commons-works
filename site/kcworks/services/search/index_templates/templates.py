@@ -22,6 +22,9 @@ def get_index_templates():
     Note that we don't include the stats templates here since they are declared
     in the stats config objects and are registered with invenio_search by
     the stats extension.
+
+    Returns:
+        list[str]: List of index template module paths.
     """
     return [
         "kcworks.services.search.index_templates.drafts",

@@ -11,60 +11,48 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 59117831.0],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 59117831.0]
                 ],
                 "id": "open",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             }
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "open",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "open",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "open",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
@@ -73,112 +61,88 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 29558915.5],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 29558915.5]
                 ],
                 "id": "013v4ng57",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             },
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 29558915.5],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 29558915.5]
                 ],
                 "id": "03rmrcq20",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             },
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "013v4ng57",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             },
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "03rmrcq20",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             },
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "013v4ng57",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             },
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "03rmrcq20",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             },
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "013v4ng57",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             },
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "03rmrcq20",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             },
         ],
@@ -188,40 +152,26 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "metadata_only": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 0],
-                        "valueType": "number",
-                    },
-                    {
-                        "readableDate": "May 31, 2025",
-                        "value": ["2025-05-31", 0],
-                        "valueType": "number",
-                    },
+                    ["05-30", 0],
+                    ["05-31", 0],
                 ],
                 "id": "global",
                 "name": "Global",
                 "type": "bar",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "with_files": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    },
-                    {
-                        "readableDate": "May 31, 2025",
-                        "value": ["2025-05-31", 0],
-                        "valueType": "number",
-                    },
+                    ["05-30", 2],
+                    ["05-31", 0],
                 ],
                 "id": "global",
                 "name": "Global",
                 "type": "bar",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
@@ -230,60 +180,48 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 59117831.0],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 59117831.0]
                 ],
                 "id": "pdf",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             }
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "pdf",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "pdf",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "pdf",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
@@ -292,60 +230,48 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 29558915.5],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 29558915.5]
                 ],
                 "id": "00k4n6c31",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             }
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "00k4n6c31",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "00k4n6c31",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "00k4n6c31",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
@@ -354,100 +280,65 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 59117831.0],
-                        "valueType": "number",
-                    },
-                    {
-                        "readableDate": "May 31, 2025",
-                        "value": ["2025-05-31", 0.0],
-                        "valueType": "number",
-                    },
+                    ["05-30", 59117831.0],
+                    ["05-31", 0.0],
                 ],
                 "id": "global",
                 "name": "Global",
                 "type": "bar",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    },
-                    {
-                        "readableDate": "May 31, 2025",
-                        "value": ["2025-05-31", 0],
-                        "valueType": "number",
-                    },
+                    ["05-30", 2],
+                    ["05-31", 0],
                 ],
                 "id": "global",
                 "name": "Global",
                 "type": "bar",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    },
-                    {
-                        "readableDate": "May 31, 2025",
-                        "value": ["2025-05-31", 0],
-                        "valueType": "number",
-                    },
+                    ["05-30", 2],
+                    ["05-31", 0],
                 ],
                 "id": "global",
                 "name": "Global",
                 "type": "bar",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    },
-                    {
-                        "readableDate": "May 31, 2025",
-                        "value": ["2025-05-31", 0],
-                        "valueType": "number",
-                    },
+                    ["05-30", 2],
+                    ["05-31", 0],
                 ],
                 "id": "global",
                 "name": "Global",
                 "type": "bar",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "uploaders": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    },
-                    {
-                        "readableDate": "May 31, 2025",
-                        "value": ["2025-05-31", 0],
-                        "valueType": "number",
-                    },
+                    ["05-30", 1],
+                    ["05-31", 0],
                 ],
                 "id": "global",
                 "name": "Global",
                 "type": "bar",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
@@ -456,60 +347,48 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 59117831.0],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 59117831.0]
                 ],
                 "id": "eng",
-                "name": "{'en': 'English'}",
+                "name": {"en": "English"},
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             }
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "eng",
-                "name": "{'en': 'English'}",
+                "name": {"en": "English"},
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "eng",
-                "name": "{'en': 'English'}",
+                "name": {"en": "English"},
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "eng",
-                "name": "{'en': 'English'}",
+                "name": {"en": "English"},
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
@@ -518,60 +397,48 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 29558915.5],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 29558915.5]
                 ],
                 "id": "N/A",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             }
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "N/A",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "N/A",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "N/A",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
@@ -580,60 +447,48 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 59117831.0],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 59117831.0]
                 ],
                 "id": "Knowledge Commons",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             }
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "Knowledge Commons",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "Knowledge Commons",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "Knowledge Commons",
                 "name": "",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
@@ -643,60 +498,48 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 29558915.5],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 29558915.5]
                 ],
                 "id": "textDocument-journalArticle",
-                "name": "{'en': 'Journal Article'}",
+                "name": {"en": "Journal Article"},
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             }
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "textDocument-journalArticle",
-                "name": "{'en': 'Journal Article'}",
+                "name": {"en": "Journal Article"},
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "textDocument-journalArticle",
-                "name": "{'en': 'Journal Article'}",
+                "name": {"en": "Journal Article"},
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "textDocument-journalArticle",
-                "name": "{'en': 'Journal Article'}",
+                "name": {"en": "Journal Article"},
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
@@ -705,66 +548,50 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 59117831.0],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 59117831.0]
                 ],
                 "id": "cc-by-sa-4.0",
-                "name": "{'en': 'Creative Commons "
-                "Attribution-ShareAlike 4.0 "
-                "International'}",
+                "name": {"en": "Creative Commons Attribution-ShareAlike 4.0 International"},
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             }
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "cc-by-sa-4.0",
-                "name": "{'en': 'Creative Commons "
-                "Attribution-ShareAlike 4.0 "
-                "International'}",
+                "name": {"en": "Creative Commons Attribution-ShareAlike 4.0 International"},
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "cc-by-sa-4.0",
                 "name": "{'en': 'Creative Commons "
                 "Attribution-ShareAlike 4.0 International'}",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 2],
-                        "valueType": "number",
-                    }
+                    ["05-30", 2]
                 ],
                 "id": "cc-by-sa-4.0",
                 "name": "{'en': 'Creative Commons "
                 "Attribution-ShareAlike 4.0 International'}",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
@@ -773,60 +600,48 @@ MOCK_RECORD_DELTA_DATA_SERIES_SET = {
         "data_volume": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 29558915.5],
-                        "valueType": "filesize",
-                    }
+                    ["05-30", 29558915.5]
                 ],
                 "id": "http://id.worldcat.org/fast/855500",
                 "name": "Children of prisoners--Services for",
                 "type": "line",
+                "year": 2025,
                 "valueType": "filesize",
             }
         ],
         "file_count": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "http://id.worldcat.org/fast/855500",
                 "name": "Children of prisoners--Services for",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "parents": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "http://id.worldcat.org/fast/855500",
                 "name": "Children of prisoners--Services for",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],
         "records": [
             {
                 "data": [
-                    {
-                        "readableDate": "May 30, 2025",
-                        "value": ["2025-05-30", 1],
-                        "valueType": "number",
-                    }
+                    ["05-30", 1]
                 ],
                 "id": "http://id.worldcat.org/fast/855500",
                 "name": "Children of prisoners--Services for",
                 "type": "line",
+                "year": 2025,
                 "valueType": "number",
             }
         ],

@@ -353,6 +353,18 @@
   }
 }
 
+#record-details {
+  .header {
+    .icon {
+      font-size: 1rem;
+    }
+  }
+  .doi-copy-button {
+    top: -1rem;
+    position: relative;
+  }
+}
+
 .facet-container div.content h2.header .button.right.floated {
   visibility: hidden;
 }

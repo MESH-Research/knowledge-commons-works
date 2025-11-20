@@ -71,7 +71,9 @@ const AdditionalDescriptionsField = ({ fieldPath, options, recordUI = {}, editor
           const nodes = document.querySelectorAll(
             ".additional-description-item-row textarea"
           );
-          nodes[nodes.length - 1].focus();
+          if (nodes.length > 0) {
+            nodes[nodes.length - 1].focus();
+          }
         }, 200);
       }
     }

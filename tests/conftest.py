@@ -19,11 +19,13 @@ import pytest
 from invenio_app.factory import create_app as _create_app
 from invenio_queues import current_queues
 from invenio_search.proxies import current_search_client
+from jinja2 import PackageLoader
 
-from .fixtures.custom_fields import test_config_fields
-from .fixtures.frontend import MockManifestLoader
-from .fixtures.identifiers import test_config_identifiers
-from .fixtures.saml import test_config_saml
+# Imports after logging setup (E402 suppressed - logging must be set up first)
+from .fixtures.custom_fields import test_config_fields  # noqa: E402
+from .fixtures.frontend import MockManifestLoader  # noqa: E402
+from .fixtures.identifiers import test_config_identifiers  # noqa: E402
+from .fixtures.saml import test_config_saml  # noqa: E402
 
 
 def load_config():
@@ -57,6 +59,7 @@ print("Config loaded successfully")
 
 pytest_plugins = (
     "tests.fixtures.communities",
+    "tests.fixtures.community_events",
     "tests.fixtures.custom_fields",
     "tests.fixtures.files",
     "tests.fixtures.fixtures",
@@ -80,6 +83,7 @@ pytest_plugins = (
     "tests.fixtures.vocabularies.roles",
     "tests.fixtures.vocabularies.subjects",
     "tests.fixtures.vocabularies.title_types",
+    "tests.pytest_plugins.pytest_live_status",
 )
 
 
@@ -143,6 +147,9 @@ test_config = {
     "DEBUG": True,
     "COMMUNITY_STATS_SCHEDULED_AGG_TASKS_ENABLED": True,
     "COMMUNITY_STATS_SCHEDULED_CACHE_TASKS_ENABLED": True,
+    "STATS_DASHBOARD_ENABLED_GLOBAL": True,
+    "STATS_DASHBOARD_ENABLED_COMMUNITY": True,
+    "STATS_DASHBOARD_COMMUNITY_OPT_IN": False,
 }
 
 parent_path = Path(__file__).parent
@@ -381,23 +388,44 @@ def template_loader():
 
     def load_tempates(app):
         """Load templates for the test app."""
-        site_path = (
-            Path(__file__).parent.parent
-            / "site"
-            / "kcworks"
-            / "templates"
-            / "semantic-ui"
+        project_root = Path(__file__).parent.parent
+        site_path = project_root / "site" / "kcworks" / "templates" / "semantic-ui"
+        root_path = project_root / "templates"
+        test_helpers_path = (
+            Path(__file__).parent / "helpers" / "templates" / "semantic-ui"
         )
-        root_path = Path(__file__).parent.parent / "templates"
+
+        # Local template paths for overrides
+        template_paths = []
         for path in (
+            test_helpers_path,  # Main project test stubs (highest priority)
             site_path,
             root_path,
         ):
-            assert path.exists()
-        custom_loader = jinja2.ChoiceLoader([
-            app.jinja_loader,
-            jinja2.FileSystemLoader([str(site_path), str(root_path)]),
-        ])
+            if path.exists():
+                template_paths.append(str(path))
+
+        loaders = [jinja2.FileSystemLoader(template_paths)]
+
+        package_configs = [
+            ("invenio_theme", "templates"),  # This finds macros
+            ("invenio_theme", "templates/semantic-ui"),  # This finds page templates
+            ("invenio_app_rdm", "theme/templates/semantic-ui"),
+            ("invenio_banners", "templates/semantic-ui"),
+            ("invenio_communities", "templates/semantic-ui"),
+            ("invenio_stats_dashboard", "templates/semantic-ui"),
+        ]
+
+        for package_name, template_dir in package_configs:
+            try:
+                loader = PackageLoader(package_name, template_dir)
+                loaders.append(loader)
+            except (ImportError, ModuleNotFoundError, ValueError) as e:
+                app.logger.warning(
+                    f"Could not create PackageLoader for {package_name}: {e}"
+                )
+
+        custom_loader = jinja2.ChoiceLoader(loaders)
         app.jinja_loader = custom_loader
         app.jinja_env.loader = custom_loader
 
