@@ -147,6 +147,9 @@ test_config = {
     "DEBUG": True,
     "COMMUNITY_STATS_SCHEDULED_AGG_TASKS_ENABLED": True,
     "COMMUNITY_STATS_SCHEDULED_CACHE_TASKS_ENABLED": True,
+    "STATS_DASHBOARD_ENABLED_GLOBAL": True,
+    "STATS_DASHBOARD_ENABLED_COMMUNITY": True,
+    "STATS_DASHBOARD_COMMUNITY_OPT_IN": False,
 }
 
 parent_path = Path(__file__).parent
@@ -401,9 +404,9 @@ def template_loader():
         ):
             if path.exists():
                 template_paths.append(str(path))
-        
+
         loaders = [jinja2.FileSystemLoader(template_paths)]
-        
+
         package_configs = [
             ("invenio_theme", "templates"),  # This finds macros
             ("invenio_theme", "templates/semantic-ui"),  # This finds page templates
@@ -412,7 +415,7 @@ def template_loader():
             ("invenio_communities", "templates/semantic-ui"),
             ("invenio_stats_dashboard", "templates/semantic-ui"),
         ]
-        
+
         for package_name, template_dir in package_configs:
             try:
                 loader = PackageLoader(package_name, template_dir)
@@ -421,11 +424,11 @@ def template_loader():
                 app.logger.warning(
                     f"Could not create PackageLoader for {package_name}: {e}"
                 )
-        
+
         custom_loader = jinja2.ChoiceLoader(loaders)
         app.jinja_loader = custom_loader
         app.jinja_env.loader = custom_loader
-        
+
     return load_tempates
 
 
