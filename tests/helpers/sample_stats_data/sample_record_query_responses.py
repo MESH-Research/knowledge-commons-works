@@ -33,22 +33,12 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "affiliations_id": {
+                    "affiliations": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "affiliations_keyword": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "sum_other_doc_count": 0,
-                    },
-                    "affiliations_1_id": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "sum_other_doc_count": 0,
-                    },
-                    "affiliations_1_keyword": {
+                    "affiliations_1": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
@@ -113,7 +103,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                             {
                                 "doc_count": 1,
                                 "file_count": {"value": 1},
-                                "key": "Knowledge " "Commons",
+                                "key": "Knowledge Commons",
                                 "total_bytes": {"value": 458036.0},
                                 "with_files": {
                                     "doc_count": 1,
@@ -255,25 +245,13 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "affiliations_id": {
+                    "affiliations": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "affiliations_keyword": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "meta": {},
-                        "sum_other_doc_count": 0,
-                    },
-                    "affiliations_1_id": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "meta": {},
-                        "sum_other_doc_count": 0,
-                    },
-                    "affiliations_1_keyword": {
+                    "affiliations_1": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
@@ -351,25 +329,13 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "affiliations_id": {
+                    "affiliations": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "affiliations_keyword": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "meta": {},
-                        "sum_other_doc_count": 0,
-                    },
-                    "affiliations_1_id": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "meta": {},
-                        "sum_other_doc_count": 0,
-                    },
-                    "affiliations_1_keyword": {
+                    "affiliations_1": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
@@ -447,25 +413,13 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "affiliations_id": {
+                    "affiliations": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
                         "sum_other_doc_count": 0,
                     },
-                    "affiliations_keyword": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "meta": {},
-                        "sum_other_doc_count": 0,
-                    },
-                    "affiliations_1_id": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "meta": {},
-                        "sum_other_doc_count": 0,
-                    },
-                    "affiliations_1_keyword": {
+                    "affiliations_1": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "meta": {},
@@ -571,22 +525,12 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "affiliations_id": {
+                    "affiliations": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
                     },
-                    "affiliations_keyword": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "sum_other_doc_count": 0,
-                    },
-                    "affiliations_1_id": {
-                        "buckets": [],
-                        "doc_count_error_upper_bound": 0,
-                        "sum_other_doc_count": 0,
-                    },
-                    "affiliations_1_keyword": {
+                    "affiliations_1": {
                         "buckets": [],
                         "doc_count_error_upper_bound": 0,
                         "sum_other_doc_count": 0,
@@ -679,7 +623,7 @@ MOCK_RECORD_DELTA_QUERY_RESPONSE = {
                             {
                                 "doc_count": 1,
                                 "file_count": {"value": 1},
-                                "key": "Knowledge " "Commons",
+                                "key": "Knowledge Commons",
                                 "total_bytes": {"value": 1984949.0},
                                 "with_files": {
                                     "doc_count": 1,
