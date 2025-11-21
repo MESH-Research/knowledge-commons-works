@@ -30,7 +30,7 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "affiliations_id": {
+        "affiliations": {
             "buckets": [
                 {
                     "key": "013v4ng57",
@@ -87,157 +87,6 @@ MOCK_USAGE_QUERY_RESPONSE_VIEWS = {
                                                 "name": "University of British Columbia",
                                                 "id": "03rmrcq20",
                                             },
-                                        ]
-                                    },
-                                }
-                            ],
-                        }
-                    },
-                },
-            ],
-            "doc_count_error_upper_bound": 0,
-            "sum_other_doc_count": 0,
-        },
-        "affiliations_name": {
-            "buckets": [
-                {
-                    "key": "Henry Ford College",
-                    "doc_count": 20,
-                    "total_events": {"value": 20},
-                    "unique_parents": {"value": 1},
-                    "unique_records": {"value": 1},
-                    "unique_visitors": {"value": 20},
-                    "label": {
-                        "hits": {
-                            "total": {"value": 20, "relation": "eq"},
-                            "max_score": 1.006192,
-                            "hits": [
-                                {
-                                    "_index": "events-stats-record-view-2025-07",
-                                    "_score": 1.006192,
-                                    "_source": {
-                                        "affiliations": [
-                                            {"name": "Henry Ford College"}
-                                        ]
-                                    },
-                                }
-                            ],
-                        }
-                    },
-                },
-                {
-                    "key": "San Francisco Public Library",
-                    "doc_count": 20,
-                    "total_events": {"value": 20},
-                    "unique_parents": {"value": 1},
-                    "unique_records": {"value": 1},
-                    "unique_visitors": {"value": 20},
-                    "label": {
-                        "hits": {
-                            "total": {"value": 20, "relation": "eq"},
-                            "max_score": 1.006192,
-                            "hits": [
-                                {
-                                    "_index": "events-stats-record-view-2025-07",
-                                    "_score": 1.006192,
-                                    "_source": {
-                                        "affiliations": [
-                                            {"name": "San Francisco Public Library"},
-                                            {"name": "San Francisco Public Library"},
-                                            {
-                                                "name": "San Francisco Public Library",
-                                                "id": "013v4ng57",
-                                            },
-                                            {"name": "San Francisco Public Library"},
-                                        ]
-                                    },
-                                }
-                            ],
-                        }
-                    },
-                },
-                {
-                    "key": "University Of British Columbia",
-                    "doc_count": 20,
-                    "total_events": {"value": 20},
-                    "unique_parents": {"value": 1},
-                    "unique_records": {"value": 1},
-                    "unique_visitors": {"value": 20},
-                    "label": {
-                        "hits": {
-                            "total": {"value": 20, "relation": "eq"},
-                            "max_score": 1.006192,
-                            "hits": [
-                                {
-                                    "_index": "events-stats-record-view-2025-07",
-                                    "_score": 1.006192,
-                                    "_source": {
-                                        "affiliations": [
-                                            {
-                                                "name": "University Of British Columbia"
-                                            },
-                                            {
-                                                "name": "University of British Columbia",
-                                                "id": "03rmrcq20",
-                                            },
-                                        ]
-                                    },
-                                }
-                            ],
-                        }
-                    },
-                },
-                {
-                    "key": "University of British Columbia",
-                    "doc_count": 20,
-                    "total_events": {"value": 20},
-                    "unique_parents": {"value": 1},
-                    "unique_records": {"value": 1},
-                    "unique_visitors": {"value": 20},
-                    "label": {
-                        "hits": {
-                            "total": {"value": 20, "relation": "eq"},
-                            "max_score": 1.006192,
-                            "hits": [
-                                {
-                                    "_index": "events-stats-record-view-2025-07",
-                                    "_score": 1.006192,
-                                    "_source": {
-                                        "affiliations": [
-                                            {
-                                                "name": "University Of British Columbia"
-                                            },
-                                            {
-                                                "name": "University of British Columbia",
-                                                "id": "03rmrcq20",
-                                            },
-                                        ]
-                                    },
-                                }
-                            ],
-                        }
-                    },
-                },
-                {
-                    "key": "University of Missouri - St. Louis",
-                    "doc_count": 20,
-                    "total_events": {"value": 20},
-                    "unique_parents": {"value": 1},
-                    "unique_records": {"value": 1},
-                    "unique_visitors": {"value": 20},
-                    "label": {
-                        "hits": {
-                            "total": {"value": 20, "relation": "eq"},
-                            "max_score": 1.006192,
-                            "hits": [
-                                {
-                                    "_index": "events-stats-record-view-2025-07",
-                                    "_score": 1.006192,
-                                    "_source": {
-                                        "affiliations": [
-                                            {
-                                                "name": "University of Missouri - St. Louis"
-                                            }
                                         ]
                                     },
                                 }
@@ -2233,7 +2082,7 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
         },
-        "affiliations_id": {
+        "affiliations": {
             "buckets": [
                 {
                     "key": "013v4ng57",
@@ -2268,101 +2117,6 @@ MOCK_USAGE_QUERY_RESPONSE_DOWNLOADS = {
                         }
                     },
                 }
-            ],
-            "doc_count_error_upper_bound": 0,
-            "sum_other_doc_count": 0,
-        },
-        "affiliations_name": {
-            "buckets": [
-                {
-                    "key": "Henry Ford College",
-                    "doc_count": 20,
-                    "total_events": {"value": 20},
-                    "total_volume": {"value": 39698980.0},
-                    "unique_parents": {"value": 1},
-                    "unique_records": {"value": 1},
-                    "unique_visitors": {"value": 20},
-                    "unique_files": {"value": 1},
-                    "label": {
-                        "hits": {
-                            "total": {"value": 20, "relation": "eq"},
-                            "max_score": 1.0082304,
-                            "hits": [
-                                {
-                                    "_index": "events-stats-file-download-2025-07",
-                                    "_score": 1.0082304,
-                                    "_source": {
-                                        "affiliations": [
-                                            {"name": "Henry Ford College"}
-                                        ]
-                                    },
-                                }
-                            ],
-                        }
-                    },
-                },
-                {
-                    "key": "San Francisco Public Library",
-                    "doc_count": 20,
-                    "total_events": {"value": 20},
-                    "total_volume": {"value": 9160720.0},
-                    "unique_parents": {"value": 1},
-                    "unique_records": {"value": 1},
-                    "unique_visitors": {"value": 20},
-                    "unique_files": {"value": 1},
-                    "label": {
-                        "hits": {
-                            "total": {"value": 20, "relation": "eq"},
-                            "max_score": 1.0082304,
-                            "hits": [
-                                {
-                                    "_index": "events-stats-file-download-2025-07",
-                                    "_score": 1.0082304,
-                                    "_source": {
-                                        "affiliations": [
-                                            {"name": "San Francisco Public Library"},
-                                            {"name": "San Francisco Public Library"},
-                                            {
-                                                "name": "San Francisco Public Library",
-                                                "id": "013v4ng57",
-                                            },
-                                            {"name": "San Francisco Public Library"},
-                                        ]
-                                    },
-                                }
-                            ],
-                        }
-                    },
-                },
-                {
-                    "key": "University of Missouri - St. Louis",
-                    "doc_count": 20,
-                    "total_events": {"value": 20},
-                    "total_volume": {"value": 1173195900.0},
-                    "unique_parents": {"value": 1},
-                    "unique_records": {"value": 1},
-                    "unique_visitors": {"value": 20},
-                    "unique_files": {"value": 1},
-                    "label": {
-                        "hits": {
-                            "total": {"value": 20, "relation": "eq"},
-                            "max_score": 1.0082304,
-                            "hits": [
-                                {
-                                    "_index": "events-stats-file-download-2025-07",
-                                    "_score": 1.0082304,
-                                    "_source": {
-                                        "affiliations": [
-                                            {
-                                                "name": "University of Missouri - St. Louis"
-                                            }
-                                        ]
-                                    },
-                                }
-                            ],
-                        }
-                    },
-                },
             ],
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,

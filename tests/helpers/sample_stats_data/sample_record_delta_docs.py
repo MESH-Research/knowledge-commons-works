@@ -54,7 +54,7 @@ MOCK_RECORD_DELTA_DOCS = [
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "03rmrcq20",
-                        "label": "",
+                        "label": "University of British Columbia",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -70,7 +70,7 @@ MOCK_RECORD_DELTA_DOCS = [
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "013v4ng57",
-                        "label": "",
+                        "label": "San Francisco Public Library",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -481,7 +481,7 @@ MOCK_RECORD_DELTA_DOCS = [
                             "removed": {"data_volume": 0.0, "file_count": 0},
                         },
                         "id": "03rmrcq20",
-                        "label": "",
+                        "label": "University of British Columbia",
                         "parents": {
                             "added": {"metadata_only": 1, "with_files": 1},
                             "removed": {"metadata_only": 0, "with_files": 0},
@@ -885,7 +885,7 @@ MOCK_RECORD_DELTA_DOCS = [
                             "removed": {"data_volume": 1984949.0, "file_count": 1},
                         },
                         "id": "03rmrcq20",
-                        "label": "",
+                        "label": "University of British Columbia",
                         "parents": {
                             "added": {"metadata_only": 0, "with_files": 0},
                             "removed": {"metadata_only": 0, "with_files": 1},
@@ -1204,7 +1204,7 @@ MOCK_RECORD_DELTA_DOCS_2 = [
             "affiliations": [
                 {
                     "id": "013v4ng57",
-                    "label": "",
+                    "label": "San Francisco Public Library",
                     "records": {
                         "added": {"metadata_only": 0, "with_files": 1},
                         "removed": {"metadata_only": 0, "with_files": 0},
@@ -1220,7 +1220,7 @@ MOCK_RECORD_DELTA_DOCS_2 = [
                 },
                 {
                     "id": "03rmrcq20",
-                    "label": "",
+                    "label": "University of British Columbia",
                     "records": {
                         "added": {"metadata_only": 0, "with_files": 1},
                         "removed": {"metadata_only": 0, "with_files": 0},

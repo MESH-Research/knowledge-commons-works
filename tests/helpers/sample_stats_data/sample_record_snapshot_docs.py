@@ -73,7 +73,7 @@ MOCK_RECORD_SNAPSHOT_DOCS = [
                     {
                         "files": {"data_volume": 1984949.0, "file_count": 1},
                         "id": "03rmrcq20",
-                        "label": "",
+                        "label": "University of British Columbia",
                         "parents": {"metadata_only": 0, "with_files": 1},
                         "records": {"metadata_only": 0, "with_files": 1},
                     },
@@ -320,14 +320,14 @@ MOCK_RECORD_SNAPSHOT_DOCS = [
                     {
                         "files": {"data_volume": 1984949.0, "file_count": 1},
                         "id": "03rmrcq20",
-                        "label": "",
+                        "label": "University of British Columbia",
                         "parents": {"metadata_only": 0, "with_files": 1},
                         "records": {"metadata_only": 0, "with_files": 1},
                     },
                     {
                         "files": {"data_volume": 458036.0, "file_count": 1},
                         "id": "013v4ng57",
-                        "label": "",
+                        "label": "San Francisco Public Library",
                         "parents": {"metadata_only": 0, "with_files": 1},
                         "records": {"metadata_only": 0, "with_files": 1},
                     },
@@ -607,14 +607,14 @@ MOCK_RECORD_SNAPSHOT_DOCS = [
                     {
                         "files": {"data_volume": 1984949.0, "file_count": 1},
                         "id": "03rmrcq20",
-                        "label": "",
+                        "label": "University of British Columbia",
                         "parents": {"metadata_only": 0, "with_files": 1},
                         "records": {"metadata_only": 0, "with_files": 1},
                     },
                     {
                         "files": {"data_volume": 458036.0, "file_count": 1},
                         "id": "013v4ng57",
-                        "label": "",
+                        "label": "San Francisco Public Library",
                         "parents": {"metadata_only": 0, "with_files": 1},
                         "records": {"metadata_only": 0, "with_files": 1},
                     },
