@@ -363,6 +363,10 @@
           left: -200%;
           backdrop-filter: none;
           font-size: @medium;
+
+          &.visible {
+            left: 0;
+          }
         }
       }
     }
