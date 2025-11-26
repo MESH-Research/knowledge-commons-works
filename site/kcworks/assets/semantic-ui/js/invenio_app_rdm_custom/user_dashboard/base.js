@@ -123,7 +123,7 @@ export const DashboardSearchLayoutHOC = ({
             {/* End mobile/tablet search header */}
 
             {/* Desktop search header */}
-            <Grid.Row className="computer only">
+            <Grid.Row className="computer large-monitor only">
               <Grid.Column width={8} floated="right">
                 <SearchBar placeholder={searchBarPlaceholder} />
               </Grid.Column>

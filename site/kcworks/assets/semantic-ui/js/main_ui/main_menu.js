@@ -3,96 +3,7 @@ import ReactDOM from "react-dom";
 import { i18next } from "@translations/kcworks/i18next";
 import { Button, Label, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
-
-const MenuItem = ({ text, icon, url, tabIndex }) => {
-	return (
-		<a role="button" href={url} className="ui " tabIndex={tabIndex}>
-			<i className={`${icon} icon fitted`}></i>
-			<span className="inline">{text}</span>
-		</a>
-	);
-};
-
-const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
-	return (
-		<>
-			<Popup
-				content={text}
-				trigger={
-					<a
-						role="button"
-						href={url}
-						className="ui computer widescreen large-monitor only"
-						tabIndex={tabIndex}
-						aria-label={text}
-					>
-						<i className={`${icon} icon fitted`}></i>
-						{badge !== undefined && (
-							<Label
-								className="unread-notifications-badge"
-								color="orange"
-								floating
-							>
-								{badge}
-							</Label>
-						)}
-					</a>
-				}
-			/>
-
-			<a
-				role="button"
-				href={url}
-				className="ui tablet mobile only"
-				tabIndex={tabIndex}
-				aria-label={text}
-			>
-				<i className={`${icon} icon fitted`}></i>
-				<span className="inline">{text}</span>
-			</a>
-		</>
-	);
-};
-
-const CollapsingMenuItem = ({ text, icon, url, tabIndex }) => {
-	return (
-		<>
-			<Popup
-				content={text}
-				trigger={
-					<a
-						role="button"
-						href={url}
-						className="ui computer only"
-						tabIndex={tabIndex}
-					>
-						<i className={`${icon} icon fitted`}></i>
-					</a>
-				}
-			/>
-
-			<a
-				role="button"
-				href={url}
-				className="ui widescreen large-monitor only"
-				tabIndex={tabIndex}
-			>
-				<i className={`${icon} icon fitted`}></i>
-				<span className="inline">{text}</span>
-			</a>
-
-			<a
-				role="button"
-				href={url}
-				className="ui mobile only"
-				tabIndex={tabIndex}
-			>
-				<i className={`${icon} icon fitted`}></i>
-				<span className="inline">{text}</span>
-			</a>
-		</>
-	);
-};
+import { MenuItem, IconMenuItem } from "./menu_items";
 
 const SubMenu = ({ item, index }) => {
 	return (
@@ -541,16 +452,14 @@ const MainMenu = ({
 					/>
 				</div>
 
-				{/* Commented out hardcoded Insights menu item - can be re-enabled if needed
-        <div className={`item`} role="menuitem">
-          <IconMenuItem
-            text={i18next.t("Insights")}
-            url={"/stats"}
-            icon="chart line"
-            tabIndex={0}
-          />
-        </div>
-        */}
+				<div className={`item`} role="menuitem">
+					<IconMenuItem
+						text={i18next.t("Insights")}
+						url={"/stats"}
+						icon="chart line"
+						tabIndex={0}
+					/>
+				</div>
 
 				<div className={`item`} role="menuitem">
 					<IconMenuItem

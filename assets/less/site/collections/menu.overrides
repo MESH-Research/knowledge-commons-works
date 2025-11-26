@@ -371,3 +371,14 @@
       }
     }
   }
+
+// Collapsing menu items - hide computer only elements above 1200px
+.menu {
+  .item.collapsing {
+    &.computer.only:not(.large-monitor):not(.widescreen):not(.tablet):not(.mobile) {
+      @media all and (min-width: @largeMonitorBreakpoint) {
+        display: none !important;
+      }
+    }
+  }
+}

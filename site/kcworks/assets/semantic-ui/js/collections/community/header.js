@@ -19,6 +19,7 @@ import { AccessStatusLabel } from "./labels/AccessStatusLabel";
 import Geopattern from "geopattern";
 import { Dropdown } from "semantic-ui-react";
 import { PropTypes } from "prop-types";
+import { CollapsingMenuItem } from "../../main_ui/menu_items";
 
 const CommunityDetailsHeader = ({
 	activeMenuItem,
@@ -72,6 +73,10 @@ const CommunityDetailsHeader = ({
 	if (dashboardCommunityOptIn && !customFields["stats:dashboard_enabled"]) {
 		dashboardEnabled = false;
 	}
+	console.log("communityStatsEnabled", communityStatsEnabled);
+	console.log("dashboardEnabledCommunity", dashboardEnabledCommunity);
+	console.log("customFields", customFields["stats:dashboard_enabled"]);
+	console.log("dashboardEnabled", dashboardEnabled);
 
 	const stats_menu_item = dashboardEnabled
 		? {
@@ -282,21 +287,37 @@ const CommunityDetailsHeader = ({
         </div> */}
 
 			<div className="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary computer tablet widescreen large-monitor only">
-				{menu_items.map((item) => (
-					<a
-						key={item.name}
-						className={`item ${
-							activeMenuItem === item.name ||
-							(activeMenuItem === "search" && item.name === "records")
-								? "active"
-								: ""
-						}`}
-						href={item.url}
-					>
-						<i aria-hidden="true" className={`${item.icon} icon`}></i>
-						{item.text}
-					</a>
-				))}
+				{menu_items.map((item) =>
+					![
+						"curation policy",
+						"members",
+						"requests",
+						"settings",
+						"contribute",
+					].includes(item.text.toLowerCase()) ? (
+						<a
+							key={item.name}
+							className={`item ${
+								activeMenuItem === item.name ||
+								(activeMenuItem === "search" && item.name === "records")
+									? "active"
+									: ""
+							}`}
+							href={item.url}
+							role="button"
+						>
+							<i aria-hidden="true" className={`${item.icon} icon`}></i>
+							{item.text}
+						</a>
+					) : (
+						<CollapsingMenuItem
+							text={item.text}
+							icon={item.icon}
+							url={item.url}
+							classnames={"item"}
+						/>
+					),
+				)}
 			</div>
 		</div>
 	);

@@ -29,7 +29,7 @@
         {%- set plus_menu_items = current_menu.submenu('plus').children %}
 
         {# {%- if plus_menu_items %}
-          <div role="menuitem" class="rdm-plus-menu rdm-plus-menu-responsive ui dropdown floating pr-15 computer only" aria-label="{{ _("Quick create") }}">
+          <div role="menuitem" class="rdm-plus-menu rdm-plus-menu-responsive ui dropdown floating pr-15 computer large-monitor only" aria-label="{{ _("Quick create") }}">
               <i class="fitted plus icon"></i>
               <i class="fitted dropdown icon"></i>
               <div class="menu">
@@ -57,7 +57,7 @@
 
         <div class="item plus">
           <a role="menuitem" aria-label="{{ _('Quick create') }}" href="{{ plus_menu_items[0].url }}">
-            <i class="icons computer only">
+            <i class="icons computer large-monitor only">
               <i class="fitted plus icon mobile-hidden"></i>
               <i class="big circle outline icon mobile-hidden"></i>
             </i>
@@ -68,7 +68,7 @@
         </div>
 
         {%- if config.USERPROFILES and (current_user.roles | selectattr("name", "equalto", "admin") | list) %}
-          <div role="menuitem" id="user-profile-dropdown" class="ui floating dropdown computer only">
+          <div role="menuitem" id="user-profile-dropdown" class="ui floating dropdown computer large-monitor only">
             <button id="user-profile-dropdown-btn"
                     class="ui right labeled right floated icon button text"
                     aria-controls="user-profile-menu"
@@ -149,7 +149,7 @@
             <a class="inline" href="{{ config.get('KC_PROFILES_URL_BASE') }}">{{ current_user.email|truncate(31,true) }}</a>
           </div>
           <a role="button" href="{{ url_for_security('logout') }}" class="ui ">
-            <i class="icons computer only">
+            <i class="icons computer large-monitor only">
               <i class="sign-out icon fitted mobile-hidden"></i>
               <i class="big circle outline icon mobile-hidden"></i>
             </i>
