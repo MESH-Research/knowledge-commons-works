@@ -454,7 +454,7 @@ const MainMenu = ({
 
 				<div className={`item`} role="menuitem">
 					<IconMenuItem
-						text={i18next.t("Insights")}
+						text={i18next.t("Statistics")}
 						url={"/stats"}
 						icon="chart line"
 						tabIndex={0}

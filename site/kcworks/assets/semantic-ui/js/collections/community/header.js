@@ -81,7 +81,7 @@ const CommunityDetailsHeader = ({
 	const stats_menu_item = dashboardEnabled
 		? {
 				name: "stats",
-				text: "Insights",
+				text: "Statistics",
 				icon: "chart line",
 				permissions: canRead,
 				url: `/collections/${slug}/stats`,
