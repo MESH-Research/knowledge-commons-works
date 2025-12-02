@@ -58,6 +58,7 @@ config = load_config()
 print("Config loaded successfully")
 
 pytest_plugins = (
+    "tests.fixtures.caching",
     "tests.fixtures.communities",
     "tests.fixtures.community_events",
     "tests.fixtures.custom_fields",

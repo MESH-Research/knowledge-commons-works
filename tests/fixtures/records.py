@@ -33,7 +33,10 @@ from invenio_stats_dashboard.services.components.components import (
 
 from ..helpers.files_helper import FilesHelper
 from ..helpers.types import FileData
-from ..helpers.utils import remove_value_by_path, replace_value_in_nested_dict
+from ..helpers.utils import (
+    remove_value_by_path,
+    replace_value_in_nested_dict,
+)
 from .communities import add_community_to_record
 from .files import build_file_links
 from .users import get_authenticated_identity
@@ -94,6 +97,7 @@ def minimal_published_record_factory(
 
     def _factory(
         metadata: dict | None = None,
+        metadata_updates: dict | None = None,
         identity: Identity | None = None,
         community_list: list[str] | None = None,
         set_default: bool = False,
@@ -105,7 +109,22 @@ def minimal_published_record_factory(
 
         Parameters:
             metadata (dict, optional): The metadata of the record. If not provided,
-                the minimal record metadata will be used.
+                the minimal record metadata will be used. If provided, it completely
+                replaces the default metadata.
+            metadata_updates (dict, optional): Updates to apply to the default
+                metadata. This allows updating specific fields without replacing
+                the entire metadata structure. Ignored if metadata is provided.
+                
+                The dictionary keys should be bar-separated paths to the values to
+                update. For example:
+                - "created" to update the top-level created field
+                - "metadata|title" to update the title in the metadata dict
+                - "metadata|creators|0|name" to update the name of the first
+                  creator
+                
+                Numbers in the path are treated as list indices. The function
+                uses replace_value_in_nested_dict internally to apply these
+                updates.
             identity (Identity, optional): The identity of the user. If not provided,
                 the system identity will be used.
             community_list (list[str], optional): The list of community IDs to add to
@@ -122,7 +141,13 @@ def minimal_published_record_factory(
         Returns:
             The published record as a service layer RecordItem.
         """
-        input_metadata = metadata or deepcopy(record_metadata().metadata_in)
+        if metadata is not None:
+            input_metadata = deepcopy(metadata)
+        else:
+            input_metadata = deepcopy(record_metadata().metadata_in)
+            if metadata_updates:
+                for key, value in metadata_updates.items():
+                    replace_value_in_nested_dict(input_metadata, key, value)
 
         if identity:
             identity = get_authenticated_identity(identity)

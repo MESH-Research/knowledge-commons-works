@@ -12,7 +12,7 @@ from collections.abc import Callable
 
 import pytest
 from flask_login import login_user
-from flask_principal import Identity
+from flask_principal import AnonymousIdentity, Identity
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles, Role
 from invenio_access.permissions import any_user, authenticated_user, superuser_access
@@ -36,6 +36,18 @@ def get_authenticated_identity(user: User | Identity) -> Identity:
     identity = get_identity(user) if isinstance(user, User) else user
     identity.provides.add(any_user)
     identity.provides.add(authenticated_user)
+    return identity
+
+
+@pytest.fixture(scope="function")
+def anon_identity():
+    """Anonymous identity fixture for UI view tests.
+
+    Returns:
+        Identity: An anonymous identity with any_user need.
+    """
+    identity = AnonymousIdentity()
+    identity.provides.add(any_user)
     return identity
 
 
