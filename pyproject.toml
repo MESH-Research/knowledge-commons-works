@@ -152,6 +152,9 @@ group-collections = "kcworks.cli:group_collections"
 [tool.ruff]
 line-length = 88
 target-version = "py312"
+exclude = [
+    "**/*.ipynb",  # Exclude Jupyter notebook files
+]
 
 [tool.ruff.lint.isort]
 # Ensure consistent import sorting - explicitly declare tests as first-party
