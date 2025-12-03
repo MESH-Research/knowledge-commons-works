@@ -23,6 +23,7 @@ from kcworks.services.communities.cli import check_group_memberships
 from kcworks.services.records.cli import bulk_update as bulk_update_command
 from kcworks.services.records.cli import export_records as export_records_command
 from kcworks.services.records.cli import import_test_records_command
+from kcworks.services.records.cli import change_record_owner_command
 from kcworks.services.search.indices import delete_index
 from kcworks.services.users.cli import group_users as group_users_command
 from kcworks.services.users.cli import groups as groups_command
@@ -120,6 +121,7 @@ def kcworks_records():
 kcworks_records.add_command(bulk_update_command)
 kcworks_records.add_command(import_test_records_command)
 kcworks_records.add_command(export_records_command)
+kcworks_records.add_command(change_record_owner_command)
 
 
 @click.group()

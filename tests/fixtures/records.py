@@ -191,6 +191,19 @@ def minimal_published_record_factory(
                 files=file_objects,
             )
 
+        # Handle ownership if provided in metadata
+        owned_by = input_metadata.get("parent", {}).get("access", {}).get("owned_by")
+        if owned_by:
+            draft_record = draft._record
+            if isinstance(owned_by, dict) and "user" in owned_by:
+                # Get the user by ID
+                user_id = int(owned_by["user"])
+                user = current_accounts.datastore.get_user(user_id)
+                if user:
+                    draft_record.parent.access.owned_by = user
+                    draft_record.parent.commit()
+                    db.session.commit()
+
         current_app.logger.error(
             f"in published record factory, draft: {pformat(draft.to_dict())}"
         )

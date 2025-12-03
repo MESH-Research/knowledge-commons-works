@@ -1,11 +1,18 @@
 """CLI commands for record operations."""
 
 import ast
+import traceback
 from pprint import pformat
 
 import click
 from flask.cli import with_appcontext
 
+from invenio_access.permissions import system_identity
+from invenio_accounts.models import User
+from invenio_accounts.proxies import current_datastore
+from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from invenio_records_resources.services.records.results import RecordItem
+from invenio_record_importer_kcworks.services.records import RecordsHelper
 from kcworks.services.records.bulk_operations import update_community_records_metadata
 from kcworks.services.records.export import KCWorksRecordsExporter
 from kcworks.services.records.test_data import import_test_records
@@ -317,4 +324,61 @@ def export_records(
             )
     except Exception as e:
         click.secho(f"Error exporting records: {e}", fg="red")
+        raise click.Abort() from e
+
+
+@click.command("change-record-owner")
+@click.option("--record-id", "-r", type=str)
+@click.option("--new-owner-id", "-n", type=int, default=0)
+@click.option("--new-owner-email", "-e", type=str, default="")
+@with_appcontext
+def change_record_owner_command(record_id, new_owner_id, new_owner_email):
+    """Change a record's owner in KCWorks."""
+    click.echo("=======================================")
+    click.echo(f"Changing ownership of record {record_id}")
+    click.echo("=======================================")
+    try:
+        existing_record: RecordItem = records_service.read(
+            system_identity, id_=record_id
+        )
+        existing_record_dict: dict = existing_record.to_dict()
+        new_owner: User | None = None
+        if new_owner_id == 0 and new_owner_email != "":
+            new_owner = current_datastore.get_user_by_email(new_owner_email)
+            new_owner_id = new_owner.id
+        else:
+            new_owner = current_datastore.get_user_by_id(new_owner_id)
+        click.echo(f"Assigning to new owner {new_owner_id}")
+        click.echo(f"    email: {new_owner.email}")
+        click.echo(f"    username: {new_owner.username}\n")
+
+        submitted_owners = [
+            {
+                "user": str(new_owner.id),  # Fastest lookup for existing users
+                "email": new_owner.email,  # Fallback lookup for existing users
+            }
+        ]
+
+        assigned_owners = RecordsHelper.assign_record_ownership(
+            draft_id=record_id,
+            submitted_data=existing_record_dict,
+            user_id=0,  # System user performing the action (fallback only)
+            submitted_owners=submitted_owners,
+            collection_id=None,
+            existing_record=existing_record_dict,
+            notify_record_owners=False,
+        )
+
+        click.secho("Update complete", fg="green")
+        click.secho(
+            f"    new record owner id: {assigned_owners['owner_id']}", fg="green"
+        )
+        click.secho(
+            f"    record access grants: {pformat(assigned_owners['access_grants'])}",
+            fg="green",
+        )
+    except Exception as e:
+        click.secho("Something went wrong updating ownership:", fg="red")
+        click.secho(str(e), fg="red")
+        click.secho(traceback.format_exc(), fg="red")
         raise click.Abort() from e
