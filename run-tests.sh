@@ -54,35 +54,58 @@ function check_docker_compose_running() {
 function create_test_symlinks() {
   echo "Creating symlinks to submodule tests..."
   
+  # invenio-stats-dashboard
   submodule_tests_dir="site/kcworks/dependencies/invenio-stats-dashboard/tests"
   
   if [ ! -d "$submodule_tests_dir" ]; then
     echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
-    return 0
+  else
+    if [ -d "$submodule_tests_dir/api" ]; then
+      if [ -L "tests/api/stats_dashboard" ] || [ -e "tests/api/stats_dashboard" ]; then
+        rm -f "tests/api/stats_dashboard"
+      fi
+      ln -s "../../$submodule_tests_dir/api" "tests/api/stats_dashboard"
+      echo "Created symlink: tests/api/stats_dashboard -> $submodule_tests_dir/api"
+    fi
+    
+    if [ -d "$submodule_tests_dir/cli" ]; then
+      if [ -L "tests/cli/stats_dashboard" ] || [ -e "tests/cli/stats_dashboard" ]; then
+        rm -f "tests/cli/stats_dashboard"
+      fi
+      ln -s "../../$submodule_tests_dir/cli" "tests/cli/stats_dashboard"
+      echo "Created symlink: tests/cli/stats_dashboard -> $submodule_tests_dir/cli"
+    fi
+    
+    if [ -d "$submodule_tests_dir/ui" ]; then
+      if [ -L "tests/ui/stats_dashboard" ] || [ -e "tests/ui/stats_dashboard" ]; then
+        rm -f "tests/ui/stats_dashboard"
+      fi
+      ln -s "../../$submodule_tests_dir/ui" "tests/ui/stats_dashboard"
+      echo "Created symlink: tests/ui/stats_dashboard -> $submodule_tests_dir/ui"
+    fi
   fi
   
-  if [ -d "$submodule_tests_dir/api" ]; then
-    if [ -L "tests/api/stats_dashboard" ] || [ -e "tests/api/stats_dashboard" ]; then
-      rm -f "tests/api/stats_dashboard"
-    fi
-    ln -s "../../$submodule_tests_dir/api" "tests/api/stats_dashboard"
-    echo "Created symlink: tests/api/stats_dashboard -> $submodule_tests_dir/api"
-  fi
+  # invenio-record-importer-kcworks
+  submodule_tests_dir="site/kcworks/dependencies/invenio-record-importer-kcworks/tests"
   
-  if [ -d "$submodule_tests_dir/cli" ]; then
-    if [ -L "tests/cli/stats_dashboard" ] || [ -e "tests/cli/stats_dashboard" ]; then
-      rm -f "tests/cli/stats_dashboard"
+  if [ ! -d "$submodule_tests_dir" ]; then
+    echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
+  else
+    if [ -d "$submodule_tests_dir/api" ]; then
+      if [ -L "tests/api/record_importer" ] || [ -e "tests/api/record_importer" ]; then
+        rm -f "tests/api/record_importer"
+      fi
+      ln -s "../../$submodule_tests_dir/api" "tests/api/record_importer"
+      echo "Created symlink: tests/api/record_importer -> $submodule_tests_dir/api"
     fi
-    ln -s "../../$submodule_tests_dir/cli" "tests/cli/stats_dashboard"
-    echo "Created symlink: tests/cli/stats_dashboard -> $submodule_tests_dir/cli"
-  fi
-  
-  if [ -d "$submodule_tests_dir/ui" ]; then
-    if [ -L "tests/ui/stats_dashboard" ] || [ -e "tests/ui/stats_dashboard" ]; then
-      rm -f "tests/ui/stats_dashboard"
+    
+    if [ -d "$submodule_tests_dir/cli" ]; then
+      if [ -L "tests/cli/record_importer" ] || [ -e "tests/cli/record_importer" ]; then
+        rm -f "tests/cli/record_importer"
+      fi
+      ln -s "../../$submodule_tests_dir/cli" "tests/cli/record_importer"
+      echo "Created symlink: tests/cli/record_importer -> $submodule_tests_dir/cli"
     fi
-    ln -s "../../$submodule_tests_dir/ui" "tests/ui/stats_dashboard"
-    echo "Created symlink: tests/ui/stats_dashboard -> $submodule_tests_dir/ui"
   fi
 }
 

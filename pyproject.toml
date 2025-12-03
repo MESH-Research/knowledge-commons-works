@@ -155,7 +155,7 @@ target-version = "py312"
 
 [tool.ruff.lint.isort]
 # Ensure consistent import sorting - explicitly declare tests as first-party
-known-first-party = ["invenio_stats_dashboard", "tests"]
+known-first-party = ["invenio_stats_dashboard", "invenio_record_importer_kcworks", "tests"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "D104", "E402"]
@@ -247,7 +247,7 @@ addopts = """
 --ignore=site/kcworks/dependencies/invenio-vocabularies
 --ignore=site/kcworks/dependencies/invenio-stats-dashboard
 --ignore=site/kcworks/services/search/index_templates
---cov=kcworks --cov=invenio_stats_dashboard --cov-report=term-missing
+--cov=kcworks --cov=invenio_stats_dashboard --cov=invenio_record_importer_kcworks --cov-report=term-missing
 """
 norecursedirs = [
     "site/kcworks/services/search/index_templates/records/os-v2",
