@@ -806,7 +806,7 @@ rec22647 = {
             "subjects": [
                 {
                     "id": "http://id.worldcat.org/fast/863509",
-                    "subject": "Human-machine systems--Planning",
+                    "subject": "Classical literature",
                     "scheme": "FAST-topical",
                 },
                 {

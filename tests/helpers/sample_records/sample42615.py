@@ -25,8 +25,8 @@ rec42615 = {
             ),
             "hclegacy:submitter_id": "1011841",
             "hclegacy:submitter_org_memberships": ["hc", "sah"],
-            "hclegacy:total_views": 108,
-            "hclegacy:total_downloads": 168,
+            "hclegacy:total_views": 20,
+            "hclegacy:total_downloads": 20,
             "journal:journal": {
                 "issn": "2660-583X",
                 "issue": "2",
@@ -233,8 +233,8 @@ rec42615 = {
             ),
             "hclegacy:submitter_id": "1011841",
             "hclegacy:submitter_org_memberships": ["hc", "sah"],
-            "hclegacy:total_views": 108,
-            "hclegacy:total_downloads": 168,
+            "hclegacy:total_views": 20,
+            "hclegacy:total_downloads": 20,
             "journal:journal": {
                 "issn": "2660-583X",
                 "issue": "2",
@@ -421,8 +421,8 @@ rec42615 = {
             ),
             "hclegacy:submitter_id": "1011841",
             "hclegacy:submitter_org_memberships": ["hc", "sah"],
-            "hclegacy:total_views": 108,
-            "hclegacy:total_downloads": 168,
+            "hclegacy:total_views": 20,
+            "hclegacy:total_downloads": 20,
             "journal:journal": {
                 "issn": "2660-583X",
                 "issue": "2",

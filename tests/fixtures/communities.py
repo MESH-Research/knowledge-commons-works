@@ -404,3 +404,42 @@ def sample_communities_factory(
             pass
 
     return create_communities
+
+
+@pytest.fixture(scope="function")
+def sample_community_with_group_id(
+    app, db, search_clear, create_communities_custom_fields, minimal_community_factory
+):
+    """Create a sample community with kcr:commons_group_id for testing.
+    
+    Yields:
+        dict: Dictionary containing:
+            - id (str): The community ID
+            - group_id (str): The kcr:commons_group_id value
+            - community: The community service item
+    """
+    community = minimal_community_factory(
+        metadata={
+            "title": "Test Community with Group ID",
+            "description": "A test community for created date testing",
+            "type": {"id": "organization"},
+        },
+        access={
+            "visibility": "public",
+            "member_policy": "open",
+            "record_policy": "open",
+        },
+        custom_fields={
+            "kcr:commons_group_id": "test-group-123",
+        },
+    )
+    community_dict = community.to_dict()
+    community_id = community_dict["id"]
+
+    group_id = community_dict.get("custom_fields", {}).get("kcr:commons_group_id")
+
+    yield {
+        "id": community_id,
+        "group_id": group_id,
+        "community": community,
+    }
