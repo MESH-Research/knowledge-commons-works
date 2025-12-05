@@ -70,7 +70,7 @@ test_config_saml = {
                         # the HTTP-Redirect binding
                         # only for this endpoint.
                         "binding": (
-                            "urn:oasis:names:tc:SAML:2.0:bindings:" "HTTP-Redirect"
+                            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                         ),
                     },
                     # SLO endpoint info of the IdP.
@@ -83,7 +83,7 @@ test_config_saml = {
                         # the HTTP-Redirect binding
                         # only for this endpoint.
                         "binding": (
-                            "urn:oasis:names:tc:SAML:2.0:bindings:" "HTTP-Redirect"
+                            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                         ),
                     },
                     # Public X.509 certificate of the IdP

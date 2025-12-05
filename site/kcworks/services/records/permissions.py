@@ -65,7 +65,7 @@ def per_field_edit_permission_factory(
 
     Returns:
         A permission policy for the community's restricted fields.
-    
+
     Raises:
         PermissionError: If there's an error creating the permission policy.
     """

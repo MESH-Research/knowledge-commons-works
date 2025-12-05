@@ -101,13 +101,15 @@ class CommunityGroupMembershipChecker:
                     )
                     commons_group_id = group_id
 
-                    communities.append({
-                        "id": community_data["id"],
-                        "slug": community_data["slug"],
-                        "group_id": group_id,
-                        "commons_instance": commons_instance,
-                        "commons_group_id": commons_group_id,
-                    })
+                    communities.append(
+                        {
+                            "id": community_data["id"],
+                            "slug": community_data["slug"],
+                            "group_id": group_id,
+                            "commons_instance": commons_instance,
+                            "commons_group_id": commons_group_id,
+                        }
+                    )
 
             return communities
 

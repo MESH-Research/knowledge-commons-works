@@ -248,10 +248,12 @@ def test_user_data_sync_on_login(
     }
 
     # Check that the user is a member of the linked communities
-    assert sorted([r.name for r in u.user.roles]) == sorted([
-        "knowledgeCommons---12345|administrator",
-        "knowledgeCommons---67891|member",
-    ])
+    assert sorted([r.name for r in u.user.roles]) == sorted(
+        [
+            "knowledgeCommons---12345|administrator",
+            "knowledgeCommons---67891|member",
+        ]
+    )
 
 
 @pytest.mark.skip(reason="Not implemented")
@@ -331,14 +333,16 @@ def test_user_data_sync_on_webhook(
     # Signal the webhook endpoint for update (data is sent)
     response2 = client.post(
         f"{app.config['SITE_API_URL']}/webhooks/user_data_update",
-        data=json.dumps({
-            "idp": "knowledgeCommons",
-            "updates": {
-                "users": [
-                    {"id": user1_data["saml_id"], "event": "updated"},
-                ],
-            },
-        }),
+        data=json.dumps(
+            {
+                "idp": "knowledgeCommons",
+                "updates": {
+                    "users": [
+                        {"id": user1_data["saml_id"], "event": "updated"},
+                    ],
+                },
+            }
+        ),
         headers={**headers, "Authorization": f"Bearer {token}"},
     )
     assert response2.status_code == 202

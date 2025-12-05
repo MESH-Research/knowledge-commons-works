@@ -10,7 +10,7 @@ from kcworks.cli import group_collections
 @pytest.fixture(scope="module")
 def cli_runner(base_app):
     """Create a CLI runner for testing a CLI command.
-    
+
     Returns:
         function: CLI runner function.
     """

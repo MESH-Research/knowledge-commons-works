@@ -124,7 +124,7 @@ KCR_CHAPTER_LABEL_FIELD_UI = {
     "ui_widget": "TextField",
     "props": {
         "label": _("Chapter"),
-        "description": "The number or title of the chapter " "being deposited",
+        "description": "The number or title of the chapter being deposited",
     },
     "icon": "book",
 }
@@ -154,7 +154,7 @@ KCR_EDITION_FIELD_UI = {
     "ui_widget": "EditionField",
     "props": {
         "label": _("Edition"),
-        "description": "The edition of the item " "being deposited",
+        "description": "The edition of the item being deposited",
     },
     "icon": "book",
 }
@@ -165,7 +165,7 @@ KCR_COMMONS_DOMAIN_FIELD_UI = {
     "props": {
         "label": _("Commons domain"),
         "description": (
-            "The Knowledge Commons domain from which the " "deposit is uploaded"
+            "The Knowledge Commons domain from which the deposit is uploaded"
         ),
     },
     "icon": "world",

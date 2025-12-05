@@ -20,8 +20,8 @@ from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
-from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 
+from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from tests.conftest import RunningApp
 
 from ..fixtures.records import TestRecordMetadata, TestRecordMetadataWithFiles
@@ -857,12 +857,14 @@ def test_record_view_api(
         record = record_response.json
 
         # Add title to resource type (updated by system after draft creation)
-        metadata.update_metadata({
-            "metadata|resource_type": {
-                "id": "image-photograph",
-                "title": {"en": "Photo"},
-            },
-        })
+        metadata.update_metadata(
+            {
+                "metadata|resource_type": {
+                    "id": "image-photograph",
+                    "title": {"en": "Photo"},
+                },
+            }
+        )
         metadata.compare_published(actual=record, by_api=True)
         assert record["revision_id"] == 4
 

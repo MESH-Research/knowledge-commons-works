@@ -31,7 +31,7 @@ def mock_send_remote_api_update(
     **kwargs,
 ):
     """Mock the send_remote_api_update task.
-    
+
     Returns:
         None: This is a mock function that doesn't return anything.
     """
@@ -59,7 +59,7 @@ def mock_send_remote_api_update_fixture(mocker):
 @pytest.fixture
 def mock_search_api_request(requests_mock):
     """Mock the sending of search API requests.
-    
+
     Returns:
         function: Mock request function.
     """
@@ -71,7 +71,7 @@ def mock_search_api_request(requests_mock):
         api_url: str,
     ):
         """Mock the sending of search API requests.
-        
+
         Returns:
             dict: Mock response data.
         """

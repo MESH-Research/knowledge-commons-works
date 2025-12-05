@@ -29,7 +29,7 @@ KCR_MEDIA_SECTION_UI = {
                 ),
                 "icon": "tags",
                 "description": (
-                    "The media and materials used in the production of the" " work."
+                    "The media and materials used in the production of the work."
                 ),
             },
         }

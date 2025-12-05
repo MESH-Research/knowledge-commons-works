@@ -34,4 +34,3 @@ def registry(running_app):
     yield reg
     # Cleanup after test completes - clear ALL keys
     reg.clear_all("*")
-

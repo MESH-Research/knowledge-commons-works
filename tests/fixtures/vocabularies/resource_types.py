@@ -20,7 +20,7 @@ from invenio_vocabularies.records.models import VocabularyMetadata
 @pytest.fixture(scope="module")
 def resource_type_type(app):
     """Resource type vocabulary type.
-    
+
     Returns:
         VocabularyType: The created resource type vocabulary type.
     """
@@ -286,7 +286,7 @@ RESOURCE_TYPES = [
 @pytest.fixture(scope="module")
 def resource_types():
     """Fixture to create the resource type vocabulary.
-    
+
     Returns:
         dict: Resource types vocabulary data.
     """

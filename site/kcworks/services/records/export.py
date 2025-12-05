@@ -154,9 +154,9 @@ class KCWorksRecordsExporter:
                 )
                 try:
                     record_id: str = record_data["id"]
-                    record_files, file_errors = self.api_helper.fetch_record_files([
-                        record_data
-                    ])
+                    record_files, file_errors = self.api_helper.fetch_record_files(
+                        [record_data]
+                    )
 
                     if file_errors:
                         current_app.logger.warning(

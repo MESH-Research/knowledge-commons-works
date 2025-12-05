@@ -17,7 +17,7 @@ from invenio_vocabularies.contrib.funders.api import Funder
 @pytest.fixture(scope="module")
 def funders_v(app):
     """Fixture to create the funder vocabulary records.
-    
+
     Returns:
         list: List of created funder vocabulary records.
     """
@@ -60,7 +60,7 @@ def funders_v(app):
 @pytest.fixture(scope="module")
 def awards_v(app, funders_v):
     """Funder vocabulary record.
-    
+
     Returns:
         list: List of created award vocabulary records.
     """

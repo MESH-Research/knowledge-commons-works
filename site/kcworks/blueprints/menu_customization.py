@@ -13,7 +13,7 @@ from flask import Blueprint
 #
 def create_blueprint(app):
     """Register blueprint routes on app.
-    
+
     Returns:
         Blueprint: The configured blueprint.
     """

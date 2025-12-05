@@ -26,7 +26,6 @@ from invenio_communities.records.records.systemfields.communities.manager import
 )
 from invenio_rdm_records.proxies import current_rdm_records_service as record_service
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
-from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from invenio_records_permissions.generators import SystemProcess
 from invenio_records_resources.services.records.components.base import ServiceComponent
 from kcworks.services.records.permissions import per_field_edit_permission_factory
@@ -35,6 +34,8 @@ from kcworks.utils.utils import (
     get_value_by_path,
     matching_list_parts_skip_digits,
 )
+
+from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 
 
 class PerFieldEditPermissionsComponent(ServiceComponent):
@@ -117,7 +118,7 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
         Returns a tuple of two lists: the first is a list of path strings without
         bracketed conditions, and the second is a list of tuples, each containing
         the base part of the path, the conditions, and the full restricted path.
-        
+
         Returns:
             tuple[list[str], list[tuple[str, str, str]]]: Tuple containing simple
                 fields and fields with conditions.
@@ -144,7 +145,7 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
         """Check if the changed field matches the restricted field.
 
         Returns True if the fields match, False otherwise.
-        
+
         Returns:
             bool: True if fields match, False otherwise.
         """
@@ -317,10 +318,10 @@ class PerFieldEditPermissionsComponent(ServiceComponent):
 
         # only apply if there is a previous published version
         if (record.is_published or record.versions.index > 1) and record.parent:
-            community_config: (
-                dict | None
-            ) = PerFieldEditPermissionsComponent.get_permissions_config(
-                record.parent.communities  # type: ignore
+            community_config: dict | None = (
+                PerFieldEditPermissionsComponent.get_permissions_config(
+                    record.parent.communities  # type: ignore
+                )
             )
 
             if community_config:

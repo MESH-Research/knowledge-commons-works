@@ -5,4 +5,3 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """UI tests for Knowledge Commons Works."""
-

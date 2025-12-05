@@ -46,7 +46,7 @@ class AdminLogin(MethodView):
 
     def get(self) -> Response | WerkzeugResponse:
         """Render the template for GET requests.
-        
+
         Returns:
             Response | WerkzeugResponse: The rendered template response.
         """

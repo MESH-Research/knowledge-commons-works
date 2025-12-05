@@ -16,7 +16,7 @@ import pytest
 @pytest.fixture(scope="module")
 def test_sample_files_folder():
     """Fixture allowing for flexible sample files location.
-    
+
     Returns:
         Path: Path to the sample files directory.
     """
@@ -28,7 +28,7 @@ def test_sample_files_folder():
 
 def file_md5(bytes_object):
     """Calculate the MD5 hash of a bytes object.
-    
+
     Returns:
         str: MD5 hash as hexadecimal string.
     """
@@ -37,7 +37,7 @@ def file_md5(bytes_object):
 
 def build_file_links(record_id, base_api_url, filename):
     """Build the file links for a record.
-    
+
     Returns:
         dict: Dictionary containing file links.
     """
@@ -48,17 +48,19 @@ def build_file_links(record_id, base_api_url, filename):
         "self": f"{base_api_url}/records/{record_id}/files/{filename}",
     }
     if extension not in [".csv", ".zip"]:
-        links.update({
-            "iiif_api": (
-                f"{base_api_url}/iiif/record:{record_id}:{filename}/full/full/0/"
-                "default.png"
-            ),
-            "iiif_base": f"{base_api_url}/iiif/record:{record_id}:{filename}",
-            "iiif_canvas": (
-                f"{base_api_url}/iiif/record:{record_id}/canvas/{filename}"
-            ),
-            "iiif_info": (
-                f"{base_api_url}/iiif/record:{record_id}:{filename}/info.json"
-            ),
-        })
+        links.update(
+            {
+                "iiif_api": (
+                    f"{base_api_url}/iiif/record:{record_id}:{filename}/full/full/0/"
+                    "default.png"
+                ),
+                "iiif_base": f"{base_api_url}/iiif/record:{record_id}:{filename}",
+                "iiif_canvas": (
+                    f"{base_api_url}/iiif/record:{record_id}/canvas/{filename}"
+                ),
+                "iiif_info": (
+                    f"{base_api_url}/iiif/record:{record_id}:{filename}/info.json"
+                ),
+            }
+        )
     return links

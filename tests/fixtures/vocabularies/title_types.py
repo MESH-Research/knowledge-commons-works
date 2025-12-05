@@ -18,7 +18,7 @@ from invenio_vocabularies.records.models import VocabularyMetadata
 @pytest.fixture(scope="module")
 def title_type_type(app):
     """Fixture to create the title type vocabulary type.
-    
+
     Returns:
         VocabularyType: The created title type vocabulary type.
     """

@@ -155,6 +155,22 @@ line-length = 88
 target-version = "py312"
 exclude = [
     "**/*.ipynb",  # Exclude Jupyter notebook files
+    "app_data",
+    "docs",
+    "node_modules",
+    "scripts",
+    "tests/helpers",
+    "site/kcworks/dependencies/invenio-communities",
+    "site/kcworks/dependencies/invenio-group-collections-kcworks",
+    "site/kcworks/dependencies/invenio-modular-deposit-form",
+    "site/kcworks/dependencies/invenio-modular-detail-page",
+    "site/kcworks/dependencies/invenio-rdm-records",
+    "site/kcworks/dependencies/invenio-records-resources",
+    "site/kcworks/dependencies/invenio-remote-api-provisioner",
+    "site/kcworks/dependencies/invenio-remote-user-data-kcworks",
+    "site/kcworks/dependencies/invenio-requests",
+    "site/kcworks/dependencies/invenio-vocabularies",
+    "site/kcworks/services/search/index_templates",
 ]
 
 [tool.ruff.lint.isort]

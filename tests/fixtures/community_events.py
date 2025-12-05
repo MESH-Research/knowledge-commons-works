@@ -83,4 +83,3 @@ def create_community_events(running_app, create_stats_indices, search_clear):
         return event_ids if return_ids else None
 
     return _create_events
-

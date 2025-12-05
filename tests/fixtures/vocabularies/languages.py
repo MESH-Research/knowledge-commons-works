@@ -18,7 +18,7 @@ from invenio_vocabularies.records.models import VocabularyMetadata
 @pytest.fixture(scope="module")
 def language_type(app):
     """Fixture to create the language vocabulary type.
-    
+
     Returns:
         VocabularyType: The created language vocabulary type.
     """

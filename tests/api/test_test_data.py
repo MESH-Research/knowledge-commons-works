@@ -18,10 +18,10 @@ from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_communities.utils import load_community_needs
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
-from invenio_record_importer_kcworks.types import FileData
 from kcworks.services.records.service import KCWorksRecordsAPIHelper
 from kcworks.services.records.test_data import import_test_records
 
+from invenio_record_importer_kcworks.types import FileData
 from tests.conftest import RunningApp
 
 
@@ -83,7 +83,7 @@ MOCK_RECORD = {
 
 def create_file_data(filename: str = "sample.pdf") -> FileData:
     """Create a FileData object for testing.
-    
+
     Returns:
         FileData: The created file data object.
     """

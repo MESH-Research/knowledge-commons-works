@@ -30,7 +30,7 @@ class TaskResults(MethodView):
 
     def get(self, task_id):
         """Render the template for GET requests.
-        
+
         Returns:
             str: Rendered template with task result.
         """

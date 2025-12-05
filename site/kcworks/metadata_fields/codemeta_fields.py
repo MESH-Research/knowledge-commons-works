@@ -48,7 +48,7 @@ KCR_CODEMETA_CUSTOM_FIELDS_UI = {
                 "label": "Runtime platform",
                 "icon": "cog",
                 "description": (
-                    "Repository runtime platform or script interpreter" " dependencies."
+                    "Repository runtime platform or script interpreter dependencies."
                 ),
                 "placeholder": "Java v1, Python2.3, .Net Framework 3.0 ...",
             },

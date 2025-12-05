@@ -29,7 +29,7 @@ def update_nested_dict(starting_value: Any, updates: Any) -> Any:
     The two starting values must have lists and dictionaries in compatible locations
     in the structure. If one has a list where the other has a dictionary, the function
     will raise a TypeError.
-    
+
     Returns:
         Any: The updated nested dictionary.
     """

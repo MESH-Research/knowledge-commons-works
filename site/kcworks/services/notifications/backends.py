@@ -55,23 +55,27 @@ class CustomJinjaTemplateLoaderMixin:
         # Not clear why the jinja loaders aren't being set properly.
         site_path = Path(__file__).parent.parent.parent
         templates_path = site_path / "templates" / "semantic-ui"
-        custom_loader = jinja2.ChoiceLoader([
-            current_app.jinja_loader,
-            jinja2.FileSystemLoader([str(templates_path)]),
-        ])
+        custom_loader = jinja2.ChoiceLoader(
+            [
+                current_app.jinja_loader,
+                jinja2.FileSystemLoader([str(templates_path)]),
+            ]
+        )
         assert templates_path.exists()
         current_app.jinja_loader = custom_loader
         current_app.jinja_env.loader = custom_loader
 
-        template = current_app.jinja_env.select_template([
-            # Backend-specific templates first, e.g notifications/
-            # email/comment_edit.jinja
-            f"{self.template_folder}/{self.id}/{notification.type}.{locale}.jinja",  # type: ignore
-            f"{self.template_folder}/{self.id}/{notification.type}.jinja",  # type: ignore
-            # Default templates, e.g notifications/comment_edit.jinja
-            f"{self.template_folder}/{notification.type}.{locale}.jinja",
-            f"{self.template_folder}/{notification.type}.jinja",
-        ])
+        template = current_app.jinja_env.select_template(
+            [
+                # Backend-specific templates first, e.g notifications/
+                # email/comment_edit.jinja
+                f"{self.template_folder}/{self.id}/{notification.type}.{locale}.jinja",  # type: ignore
+                f"{self.template_folder}/{self.id}/{notification.type}.jinja",  # type: ignore
+                # Default templates, e.g notifications/comment_edit.jinja
+                f"{self.template_folder}/{notification.type}.{locale}.jinja",
+                f"{self.template_folder}/{notification.type}.jinja",
+            ]
+        )
         ctx = template.new_context(
             {
                 "notification": notification,
@@ -106,16 +110,18 @@ class EmailNotificationBackend(NotificationBackend, CustomJinjaTemplateLoaderMix
         """
         content = self.render_template(notification, recipient)
 
-        resp = send_email({
-            "subject": content["subject"],
-            "html": content["html_body"],
-            "body": strip_html(content["plain_body"]),
-            "recipients": [
-                recipient.data.get("email") or recipient.data.get("email_hidden")
-            ],
-            "sender": current_app.config["MAIL_DEFAULT_SENDER"],
-            "reply_to": current_app.config["MAIL_DEFAULT_REPLY_TO"],
-        })
+        resp = send_email(
+            {
+                "subject": content["subject"],
+                "html": content["html_body"],
+                "body": strip_html(content["plain_body"]),
+                "recipients": [
+                    recipient.data.get("email") or recipient.data.get("email_hidden")
+                ],
+                "sender": current_app.config["MAIL_DEFAULT_SENDER"],
+                "reply_to": current_app.config["MAIL_DEFAULT_REPLY_TO"],
+            }
+        )
         return resp  # TODO: what would a "delivery" result be
 
 

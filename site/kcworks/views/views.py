@@ -60,10 +60,12 @@ def create_api_blueprint(app):
         blueprint.register_error_handler(
             Forbidden,
             lambda e: make_response(
-                jsonify({
-                    "message": "You are not authorized to perform this action",
-                    "status": 403,
-                }),
+                jsonify(
+                    {
+                        "message": "You are not authorized to perform this action",
+                        "status": 403,
+                    }
+                ),
                 403,
             ),
         )
@@ -76,10 +78,12 @@ def create_api_blueprint(app):
         blueprint.register_error_handler(
             PermissionDeniedError,
             lambda e: make_response(
-                jsonify({
-                    "message": "You are not authorized to perform this action",
-                    "status": 403,
-                }),
+                jsonify(
+                    {
+                        "message": "You are not authorized to perform this action",
+                        "status": 403,
+                    }
+                ),
                 403,
             ),
         )

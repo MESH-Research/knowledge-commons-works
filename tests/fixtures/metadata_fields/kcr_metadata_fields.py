@@ -107,7 +107,7 @@ KCR_CHAPTER_LABEL_FIELD_UI = {
     "ui_widget": "TextField",
     "props": {
         "label": _("Chapter"),
-        "description": "The number or title of the chapter " "being deposited",
+        "description": "The number or title of the chapter being deposited",
     },
     "icon": "book",
 }
@@ -137,7 +137,7 @@ KCR_EDITION_FIELD_UI = {
     "ui_widget": "EditionField",
     "props": {
         "label": _("Edition"),
-        "description": "The edition of the item " "being deposited",
+        "description": "The edition of the item being deposited",
     },
     "icon": "book",
 }
@@ -148,7 +148,7 @@ KCR_COMMONS_DOMAIN_FIELD_UI = {
     "props": {
         "label": _("Commons domain"),
         "description": (
-            "The Knowledge Commons domain from which the " "deposit is uploaded"
+            "The Knowledge Commons domain from which the deposit is uploaded"
         ),
     },
     "icon": "world",
@@ -183,7 +183,7 @@ KCR_PROJECT_TITLE_FIELD_UI = {
         "label": "Project title",
         "placeholder": "",
         "icon": "briefcase",
-        "description": "Title for the larger project of which this work " "is a part.",
+        "description": "Title for the larger project of which this work is a part.",
     },
 }
 
@@ -206,7 +206,7 @@ KCR_SUBMITTER_USERNAME_FIELD_UI = {
         "placeholder": "",
         "icon": "user",
         "description": (
-            "Knowledge Commons username for the person " "submitting this deposit"
+            "Knowledge Commons username for the person submitting this deposit"
         ),
     },
 }
@@ -216,7 +216,7 @@ KCR_MEETING_ORGANIZATION_FIELD_UI = {
     "ui_widget": "TextField",
     "props": {
         "label": _("Meeting organization"),
-        "description": "The organization sponsoring the meeting or " "conference",
+        "description": "The organization sponsoring the meeting or conference",
     },
     "icon": "group",
 }

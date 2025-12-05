@@ -169,11 +169,13 @@ class CustomRequestParticipantsRecipient(RecipientGenerator):
             extra_filter=dsl.Q("term", request_id=request["id"]),
         )
 
-        user_ids.update({
-            re["created_by"]["user"]
-            for re in request_events
-            if re["created_by"].get("user")
-        })
+        user_ids.update(
+            {
+                re["created_by"]["user"]
+                for re in request_events
+                if re["created_by"].get("user")
+            }
+        )
 
         # FIXME: This search query is not working in tests
         # possibly because the test users are not indexed?

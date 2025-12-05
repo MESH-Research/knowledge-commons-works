@@ -54,15 +54,13 @@ def anon_identity():
 @pytest.fixture(scope="function")
 def mock_user_data_api(requests_mock) -> Callable:
     """Mock the user data api.
-    
+
     Returns:
         Callable: Mock API call function.
     """
 
     def mock_api_call(saml_id: str, mock_remote_data: dict) -> Matcher:
-        protocol = os.environ.get(
-            "INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https"
-        )  # noqa: E501
+        protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https")  # noqa: E501
         base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
         remote_url = f"{base_url}/{saml_id}"
         mock_adapter = requests_mock.get(
@@ -77,7 +75,7 @@ def mock_user_data_api(requests_mock) -> Callable:
 @pytest.fixture(scope="function")
 def user_data_to_remote_data(requests_mock):
     """Factory fixture providing function to convert user data format.
-    
+
     Returns:
         function: Function to convert user data to remote data format.
     """
@@ -86,7 +84,7 @@ def user_data_to_remote_data(requests_mock):
         saml_id: str, email: str, user_data: dict
     ) -> dict[str, str | list[dict[str, str]]]:
         """Convert user fixture data to format for remote data.
-        
+
         Returns:
             dict: Converted user data in remote format.
         """
@@ -181,7 +179,9 @@ def user_factory(
 
         if token:
             u.allowed_token = Token.create_personal(
-                "webhook", u.id, scopes=[]  # , is_internal=False
+                "webhook",
+                u.id,
+                scopes=[],  # , is_internal=False
             ).access_token
 
         if admin:
@@ -220,12 +220,12 @@ def user_factory(
 @pytest.fixture(scope="function")
 def admin_role_need(db):
     """Store 1 role with 'superuser-access' ActionNeed.
-    
+
     WHY: This is needed because expansion of ActionNeed is
          done on the basis of a User/Role being associated with that Need.
          If no User/Role is associated with that Need (in the DB), the
          permission is expanded to an empty list.
-    
+
     Returns:
         Role: The created admin role.
     """
@@ -242,7 +242,7 @@ def admin_role_need(db):
 @pytest.fixture(scope="function")
 def admin(user_factory) -> AugmentedUserFixture:
     """Admin user for requests.
-    
+
     Returns:
         AugmentedUserFixture: Admin user fixture.
     """
@@ -261,12 +261,12 @@ def admin(user_factory) -> AugmentedUserFixture:
 @pytest.fixture(scope="function")
 def superuser_role_need(db):
     """Store 1 role with 'superuser-access' ActionNeed.
-    
+
     WHY: This is needed because expansion of ActionNeed is
          done on the basis of a User/Role being associated with that Need.
          If no User/Role is associated with that Need (in the DB), the
          permission is expanded to an empty list.
-    
+
     Returns:
         Role: The created superuser role.
     """
@@ -286,7 +286,7 @@ def superuser_identity(
     admin: AugmentedUserFixture, superuser_role_need, db
 ) -> Identity:
     """Superuser identity fixture.
-    
+
     Returns:
         Identity: Superuser identity.
     """
@@ -300,7 +300,7 @@ def superuser_identity(
 @pytest.fixture(scope="module")
 def user1_data() -> dict:
     """Data for user1.
-    
+
     Returns:
         dict: User data dictionary.
     """
@@ -478,9 +478,9 @@ user_data_set = {
 @pytest.fixture(scope="function")
 def client_with_login(requests_mock, app):
     """Log in a user to the client.
-    
+
     Returns a factory function that returns a client with a logged in user.
-    
+
     Returns:
         function: Function to log in a user to a client.
     """
@@ -490,11 +490,11 @@ def client_with_login(requests_mock, app):
         user: User,
     ):
         """Log in a user to the client.
-        
+
         Parameters:
             client: The client to log in with.
             user: The user to log in.
-        
+
         Returns:
             None: This function doesn't return anything.
         """

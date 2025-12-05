@@ -11,10 +11,10 @@ from invenio_communities.generators import CommunityRoleNeed
 from invenio_communities.members.errors import AlreadyMemberError
 from invenio_communities.proxies import current_communities
 from invenio_pidstore.errors import PIDDoesNotExistError
-from invenio_record_importer_kcworks.proxies import current_record_importer_service
-from invenio_record_importer_kcworks.types import APIResponsePayload
 from invenio_search.proxies import current_search_client
 
+from invenio_record_importer_kcworks.proxies import current_record_importer_service
+from invenio_record_importer_kcworks.types import APIResponsePayload
 from kcworks.services.records.service import KCWorksRecordsAPIHelper
 
 

@@ -399,4 +399,3 @@ def test_change_record_owner_same_owner(
     # Verify ownership is still the same
     updated_record = records_service.read(system_identity, id_=record.id)._record
     assert updated_record.parent.access.owned_by.owner_id == int(owner.id)
-

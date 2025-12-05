@@ -41,8 +41,9 @@ class LiveTestStatusPlugin:
         """Configure the plugin and check if we're in a TTY."""
         import os
         import sys
+
         self.terminal = config.pluginmanager.get_plugin("terminalreporter")
-        self.is_tty = hasattr(sys.stderr, 'isatty') and sys.stderr.isatty()
+        self.is_tty = hasattr(sys.stderr, "isatty") and sys.stderr.isatty()
 
         if self.is_tty:
             # Get terminal height
@@ -57,6 +58,7 @@ class LiveTestStatusPlugin:
     def _setup_scroll_region(self):
         """Set up terminal scroll region to keep status bar at bottom."""
         import sys
+
         # Set scroll region (top to height - status_lines)
         # Line numbers are 1-indexed
         scroll_bottom = self._terminal_height - self._status_lines
@@ -79,6 +81,7 @@ class LiveTestStatusPlugin:
     def _restore_scroll_region(self):
         """Restore normal terminal scrolling."""
         import sys
+
         sys.stderr.write("\033[r")  # Reset scroll region to full screen
         sys.stderr.write(f"\033[{self._terminal_height - 1};1H")  # Move to separator
         sys.stderr.write("\033[2K\n")  # Clear separator
@@ -126,7 +129,7 @@ class LiveTestStatusPlugin:
                 if self.passed > 0:
                     status_parts.append(f"✓ {self.passed} passed ({pass_pct:.1f}%)")
                 if self.failed > 0:
-                    fail_pct = (self.failed / self.total * 100)
+                    fail_pct = self.failed / self.total * 100
                     status_parts.append(f"✗ {self.failed} failed ({fail_pct:.1f}%)")
                 status_msg = " | ".join(status_parts) if status_parts else "Starting..."
                 # Show progress if we know the total discovered count
@@ -176,6 +179,7 @@ class LiveTestStatusPlugin:
 
         # Update the fixed status line at bottom
         import sys
+
         status_line_pos = self._terminal_height
         # Use DEC save/restore which works better with scroll regions
         sys.stderr.write("\0337")  # Save cursor (DEC)

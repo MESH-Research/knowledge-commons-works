@@ -31,7 +31,7 @@ class MemberQueryParser(QueryParser):
 
     def parse(self, query_str: str):
         """Parse the query.
-        
+
         Returns:
             Any: The parsed query result.
         """

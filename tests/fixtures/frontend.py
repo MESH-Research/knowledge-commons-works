@@ -18,7 +18,7 @@ class MockJinjaManifest(JinjaManifest):
 
     def __getitem__(self, key):
         """Get a manifest entry.
-        
+
         Returns:
             JinjaManifestEntry: The manifest entry.
         """
@@ -26,7 +26,7 @@ class MockJinjaManifest(JinjaManifest):
 
     def __getattr__(self, name):
         """Get a manifest entry.
-        
+
         Returns:
             JinjaManifestEntry: The manifest entry.
         """
@@ -38,7 +38,7 @@ class MockManifestLoader(JinjaManifestLoader):
 
     def load(self, filepath):
         """Load the manifest.
-        
+
         Returns:
             MockJinjaManifest: A mock manifest object.
         """

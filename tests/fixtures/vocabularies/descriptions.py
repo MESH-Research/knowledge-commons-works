@@ -16,7 +16,7 @@ from invenio_vocabularies.records.api import Vocabulary
 @pytest.fixture(scope="module")
 def description_type(app):
     """Fixture to create the descriptiontype vocabulary type.
-    
+
     Returns:
         VocabularyType: The created description type vocabulary type.
     """

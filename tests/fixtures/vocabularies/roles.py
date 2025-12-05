@@ -49,7 +49,7 @@ creatibutor_roles = [
 @pytest.fixture(scope="module")
 def creators_role_type(app):
     """Fixture to create the creator role vocabulary type.
-    
+
     Returns:
         VocabularyType: The created creator role vocabulary type.
     """
@@ -68,7 +68,7 @@ def creators_role_v(app, creators_role_type):
 @pytest.fixture(scope="module")
 def contributors_role_type(app):
     """Fixture to create the contributor role vocabulary type.
-    
+
     Returns:
         VocabularyType: The created contributor role vocabulary type.
     """

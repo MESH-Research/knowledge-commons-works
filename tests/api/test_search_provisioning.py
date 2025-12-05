@@ -146,12 +146,14 @@ def test_trigger_search_provisioning(
 
     # edited draft new version
     # no remote API operation should be prompted
-    metadata.update_metadata({
-        "metadata|title": "A Romans Story 3",
-        "metadata|publication_date": arrow.now().format("YYYY-MM-DD"),
-        # simulate the result of previous remote API operation
-        "custom_fields|kcr:commons_search_recid": remote_response["_id"],
-    })
+    metadata.update_metadata(
+        {
+            "metadata|title": "A Romans Story 3",
+            "metadata|publication_date": arrow.now().format("YYYY-MM-DD"),
+            # simulate the result of previous remote API operation
+            "custom_fields|kcr:commons_search_recid": remote_response["_id"],
+        }
+    )
     new_edited_version = service.update_draft(
         system_identity, new_version.id, metadata.metadata_in
     )

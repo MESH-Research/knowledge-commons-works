@@ -17,10 +17,10 @@ def get_full_name(name_parts: dict | str, json_input: bool = False) -> str:
     Args:
         name_parts (str): JSON string containing name components
         json_input (bool): Whether the input is a JSON string
-    
+
     Returns:
         str: Full name
-    
+
     Raises:
         ValueError: If name_parts is invalid.
     """
@@ -55,10 +55,10 @@ def get_full_name_inverted(name_parts: dict | str, json_input: bool = False) -> 
     Args:
         name_parts (str): JSON string containing name components
         json_input (bool): Whether the input is a JSON string
-    
+
     Returns:
         str: Inverted full name
-    
+
     Raises:
         ValueError: If name_parts is invalid.
     """

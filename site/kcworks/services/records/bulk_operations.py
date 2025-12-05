@@ -7,10 +7,10 @@ from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.proxies import current_rdm_records_service
-from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from invenio_search.proxies import current_search_client
 from opensearchpy.helpers.search import Search
 
+from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from kcworks.utils.utils import get_value_by_path
 
 
@@ -84,12 +84,14 @@ def update_community_records_metadata(
             )
             current_rdm_records_service.publish(system_identity, draft.id)
             results["updated_record_count"] += 1
-            results["updated_records"].append({
-                "id": hit["id"],
-                "metadata_field": metadata_field,
-                "old_value": old_value,
-                "new_value": new_value,
-            })
+            results["updated_records"].append(
+                {
+                    "id": hit["id"],
+                    "metadata_field": metadata_field,
+                    "old_value": old_value,
+                    "new_value": new_value,
+                }
+            )
 
         except Exception as e:
             results["failed_record_count"] += 1

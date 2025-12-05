@@ -80,7 +80,7 @@ def make_community_member(user_id: int, role: str, community_id: str) -> None:
 @pytest.fixture(scope="function")
 def communities_links_factory():
     """Create links for communities for testing.
-    
+
     Returns:
         function: Function to assemble community links.
     """
@@ -113,14 +113,14 @@ def communities_links_factory():
 @pytest.fixture(scope="function")
 def group_communities_data_factory():
     """Create metadata for group collections for testing.
-    
+
     Returns:
         function: Function to assemble group communities data.
     """
 
     def assemble_data() -> list[dict]:
         """Create metadata for group collections for testing.
-        
+
         Returns:
             list[dict]: List of community metadata dictionaries.
         """
@@ -223,10 +223,10 @@ def minimal_community_factory(
     app, db, user_factory, create_communities_custom_fields, requests_mock, monkeypatch
 ):
     """Create a minimal community for testing.
-    
+
     Returns a function that can be called to create a minimal community
     for testing. That function returns the created community record.
-    
+
     Returns:
         function: Function to create minimal communities.
     """
@@ -242,12 +242,12 @@ def minimal_community_factory(
         created: str | None = None,
     ) -> Community:
         """Create a minimal community for testing.
-        
+
         Allows overriding of default metadata, access, and custom fields values.
         Also allows specifying the members of the community with their roles.
-        
+
         If no owner is specified, a new user is created and used as the owner.
-        
+
         Returns:
             Community: The created community record.
         """
@@ -411,7 +411,7 @@ def sample_community_with_group_id(
     app, db, search_clear, create_communities_custom_fields, minimal_community_factory
 ):
     """Create a sample community with kcr:commons_group_id for testing.
-    
+
     Yields:
         dict: Dictionary containing:
             - id (str): The community ID

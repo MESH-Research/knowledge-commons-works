@@ -43,7 +43,7 @@ class UserProfileService:
 
         Returns:
             dict: A dictionary containing the name variants for the user.
-        
+
         Raises:
             ValueError: If user_id or user_profile is invalid.
         """
@@ -133,10 +133,10 @@ class UserSearchHelper:
         contributor_kc_username: str,
     ) -> str:
         """Returns a search string for all works by a contributor.
-        
+
         Returns:
             str: Search string for contributor's works.
-        
+
         Raises:
             ValueError: If contributor information is invalid.
         """

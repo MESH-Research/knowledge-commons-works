@@ -1,3 +1,18 @@
+from .sample583 import rec583
+
+# Legacy sample records from invenio-record-importer-kcworks
+from .sample11451 import rec11451
+from .sample16079 import rec16079
+from .sample22625 import rec22625
+from .sample22647 import rec22647
+from .sample28491 import rec28491
+from .sample33383 import rec33383
+from .sample34031 import rec34031
+from .sample38367 import rec38367
+from .sample42615 import rec42615
+from .sample44881 import rec44881
+from .sample45177 import rec45177
+from .sample48799 import rec48799
 from .sample_metadata_book_pdf import sample_metadata_book_pdf
 from .sample_metadata_chapter2_pdf import sample_metadata_chapter2_pdf
 from .sample_metadata_chapter3_pdf import sample_metadata_chapter3_pdf
@@ -24,18 +39,3 @@ from .sample_metadata_presentation_pdf import sample_metadata_presentation_pdf
 from .sample_metadata_thesis_pdf import sample_metadata_thesis_pdf
 from .sample_metadata_white_paper_pdf import sample_metadata_white_paper_pdf
 from .sample_record_view import sample_record_view
-
-# Legacy sample records from invenio-record-importer-kcworks
-from .sample11451 import rec11451
-from .sample16079 import rec16079
-from .sample22625 import rec22625
-from .sample22647 import rec22647
-from .sample28491 import rec28491
-from .sample33383 import rec33383
-from .sample34031 import rec34031
-from .sample38367 import rec38367
-from .sample42615 import rec42615
-from .sample44881 import rec44881
-from .sample45177 import rec45177
-from .sample48799 import rec48799
-from .sample583 import rec583

@@ -6,6 +6,7 @@ import time
 
 import requests
 from flask import current_app as app
+
 from invenio_record_importer_kcworks.types import FileData
 
 
@@ -240,7 +241,7 @@ class KCWorksRecordsAPIHelper:
 
         Returns:
             FileData: Object containing the file data and metadata.
-        
+
         Raises:
             ValueError: If the URL is invalid or file download fails.
         """

@@ -16,7 +16,7 @@ import pytest
 @pytest.fixture(scope="function")
 def headers():
     """Default headers for making requests.
-    
+
     Returns:
         dict: Dictionary of default headers.
     """
@@ -29,7 +29,7 @@ def headers():
 @pytest.fixture(scope="function")
 def headers_same_origin(headers, app_config):
     """Headers with Referrer-Policy and Referer set to the same origin.
-    
+
     Returns:
         dict: Dictionary of headers with same-origin policy.
     """

@@ -29,7 +29,6 @@ from invenio_rdm_records.proxies import (
     current_record_communities_service,
 )
 from invenio_rdm_records.records.api import RDMDraft
-from invenio_record_importer_kcworks.services.communities import CommunitiesHelper
 from invenio_records_permissions.generators import SystemProcess
 from invenio_records_resources.services.errors import PermissionDeniedError
 from kcworks.services.records.components.per_field_permissions_component import (
@@ -40,6 +39,8 @@ from kcworks.services.records.record_communities.community_change_permissions_co
 )
 from kcworks.utils.utils import get_value_by_path, update_nested_dict
 
+from invenio_record_importer_kcworks.services.communities import CommunitiesHelper
+
 from ..conftest import RunningApp
 from ..fixtures.communities import make_community_member
 from ..fixtures.users import get_authenticated_identity
@@ -48,7 +49,7 @@ from ..fixtures.users import get_authenticated_identity
 @pytest.fixture  # type: ignore
 def per_field_component() -> PerFieldEditPermissionsComponent:
     """Fixture to set up the PerFieldEditPermissionsComponent.
-    
+
     Returns:
         PerFieldEditPermissionsComponent: The configured component.
     """
@@ -58,7 +59,7 @@ def per_field_component() -> PerFieldEditPermissionsComponent:
 @pytest.fixture  # type: ignore
 def community_change_permissions_component() -> CommunityChangePermissionsComponent:
     """Fixture to set up the CommunityChangePermissionsComponent.
-    
+
     Returns:
         CommunityChangePermissionsComponent: The configured component.
     """
@@ -258,70 +259,72 @@ class BasePerFieldPermissionsTest(abc.ABC):
         # Create a draft record using the current_rdm_records_service
         # and publish it to the community
         draft_data = record_metadata(owner_id=user_id)
-        draft_data.update_metadata({
-            "metadata|funding": [
-                {
-                    "funder": {
-                        "id": "00k4n6c31",
+        draft_data.update_metadata(
+            {
+                "metadata|funding": [
+                    {
+                        "funder": {
+                            "id": "00k4n6c31",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755021",
+                                    "scheme": "url",
+                                }
+                            ],
+                            "number": "755021",
+                            "title": {"en": "Award 755021"},
+                        },
                     },
-                    "award": {
-                        "identifiers": [
-                            {
-                                "identifier": "https://sandbox.kcworks.org/755021",
-                                "scheme": "url",
-                            }
-                        ],
-                        "number": "755021",
-                        "title": {"en": "Award 755021"},
+                    {
+                        "funder": {
+                            "id": "00k4n6c32",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755022",
+                                    "scheme": "url",
+                                }
+                            ],
+                            "number": "755022",
+                            "title": {"en": "Award 755022"},
+                        },
                     },
-                },
-                {
-                    "funder": {
-                        "id": "00k4n6c32",
+                    {
+                        "funder": {
+                            "id": "00k4n6c33",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755023",
+                                    "scheme": "url",
+                                }
+                            ],
+                            "number": "755023",
+                            "title": {"en": "Award 755023"},
+                        },
                     },
-                    "award": {
-                        "identifiers": [
-                            {
-                                "identifier": "https://sandbox.kcworks.org/755022",
-                                "scheme": "url",
-                            }
-                        ],
-                        "number": "755022",
-                        "title": {"en": "Award 755022"},
+                    {
+                        "funder": {
+                            "id": "00k4n6c34",
+                        },
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755024",
+                                    "scheme": "url",
+                                }
+                            ],
+                            "number": "755024",
+                            "title": {"en": "Award 755024"},
+                        },
                     },
-                },
-                {
-                    "funder": {
-                        "id": "00k4n6c33",
-                    },
-                    "award": {
-                        "identifiers": [
-                            {
-                                "identifier": "https://sandbox.kcworks.org/755023",
-                                "scheme": "url",
-                            }
-                        ],
-                        "number": "755023",
-                        "title": {"en": "Award 755023"},
-                    },
-                },
-                {
-                    "funder": {
-                        "id": "00k4n6c34",
-                    },
-                    "award": {
-                        "identifiers": [
-                            {
-                                "identifier": "https://sandbox.kcworks.org/755024",
-                                "scheme": "url",
-                            }
-                        ],
-                        "number": "755024",
-                        "title": {"en": "Award 755024"},
-                    },
-                },
-            ]
-        })
+                ]
+            }
+        )
         draft = current_rdm_records_service.create(identity, draft_data.metadata_in)
 
         if self.record_is_published:
@@ -739,58 +742,60 @@ def test_per_field_permissions_find_changed_restricted_fields(
     }
 
     # Create a mock record with some data
-    record = RDMDraft.create({
-        "access": {"files": "restricted"},
-        "metadata": {
-            "title": "Original Title",
-            "description": "Original Description",
-            "creators": [
-                {"person_or_org": {"name": "Original Creator"}},
-                {"person_or_org": {"name": "Original Creator 2"}},
-            ],
-            "additional_titles": [
-                {"title": "Original Additional Title"},
-                {"title": "Original Additional Title 2"},
-            ],
-            "publication_date": "2023-01-01",  # Unrestricted field
-            "funding": [
-                {
-                    "funder": {"id": "00k4n6c33"},
-                    "award": {
-                        "identifiers": [
-                            {
-                                "identifier": "https://sandbox.kcworks.org/755023",
-                                "scheme": "url",
-                            },
-                        ]
+    record = RDMDraft.create(
+        {
+            "access": {"files": "restricted"},
+            "metadata": {
+                "title": "Original Title",
+                "description": "Original Description",
+                "creators": [
+                    {"person_or_org": {"name": "Original Creator"}},
+                    {"person_or_org": {"name": "Original Creator 2"}},
+                ],
+                "additional_titles": [
+                    {"title": "Original Additional Title"},
+                    {"title": "Original Additional Title 2"},
+                ],
+                "publication_date": "2023-01-01",  # Unrestricted field
+                "funding": [
+                    {
+                        "funder": {"id": "00k4n6c33"},
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755023",
+                                    "scheme": "url",
+                                },
+                            ]
+                        },
                     },
-                },
-                {
-                    "funder": {"id": "00k4n6c34"},
-                    "award": {
-                        "identifiers": [
-                            {
-                                "identifier": "https://sandbox.kcworks.org/755024",
-                                "scheme": "url",
-                            },
-                        ]
+                    {
+                        "funder": {"id": "00k4n6c34"},
+                        "award": {
+                            "identifiers": [
+                                {
+                                    "identifier": "https://sandbox.kcworks.org/755024",
+                                    "scheme": "url",
+                                },
+                            ]
+                        },
                     },
+                ],
+            },
+            "custom_fields": {
+                "test_field": {
+                    "id": "test_field",
+                    "value": "Original Value",
                 },
-            ],
-        },
-        "custom_fields": {
-            "test_field": {
-                "id": "test_field",
-                "value": "Original Value",
+                "test_field2": {
+                    "items": [
+                        {"value": "Original Value"},
+                        {"value": "Original Value 2"},
+                    ]
+                },
             },
-            "test_field2": {
-                "items": [
-                    {"value": "Original Value"},
-                    {"value": "Original Value 2"},
-                ]
-            },
-        },
-    })
+        }
+    )
 
     # New data with changes
     new_data = {

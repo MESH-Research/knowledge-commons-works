@@ -114,14 +114,14 @@ def minimal_published_record_factory(
             metadata_updates (dict, optional): Updates to apply to the default
                 metadata. This allows updating specific fields without replacing
                 the entire metadata structure. Ignored if metadata is provided.
-                
+
                 The dictionary keys should be bar-separated paths to the values to
                 update. For example:
                 - "created" to update the top-level created field
                 - "metadata|title" to update the title in the metadata dict
                 - "metadata|creators|0|name" to update the name of the first
                   creator
-                
+
                 Numbers in the path are treated as list indices. The function
                 uses replace_value_in_nested_dict internally to apply these
                 updates.
@@ -1228,9 +1228,9 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
             dict: The metadata with file entries added.
         """
         metadata["files"]["count"] = len(self.file_entries.keys())
-        metadata["files"]["total_bytes"] = sum([
-            e["size"] for k, e in self.file_entries.items()
-        ])
+        metadata["files"]["total_bytes"] = sum(
+            [e["size"] for k, e in self.file_entries.items()]
+        )
         metadata["files"]["order"] = []
         for k, e in self.file_entries.items():
             file_links = build_file_links(
@@ -1484,28 +1484,30 @@ def enhance_metadata_with_funding_and_affiliations(metadata, record_index) -> No
         if "contributors" not in metadata["metadata"]:
             metadata["metadata"]["contributors"] = []
 
-        metadata["metadata"]["contributors"].append({
-            "person_or_org": {
-                "type": "personal",
-                "name": "Test Contributor",
-                "given_name": "Test",
-                "family_name": "Contributor",
-            },
-            "role": {
-                "id": "other",
-                "title": {"en": "Other"},
-            },
-            "affiliations": [
-                {
-                    "id": "03rmrcq20",  # Different affiliation ID for contributors
-                    "name": "Contributor Institution",
-                    "type": {
-                        "id": "institution",
-                        "title": {"en": "Institution"},
-                    },
-                }
-            ],
-        })
+        metadata["metadata"]["contributors"].append(
+            {
+                "person_or_org": {
+                    "type": "personal",
+                    "name": "Test Contributor",
+                    "given_name": "Test",
+                    "family_name": "Contributor",
+                },
+                "role": {
+                    "id": "other",
+                    "title": {"en": "Other"},
+                },
+                "affiliations": [
+                    {
+                        "id": "03rmrcq20",  # Different affiliation ID for contributors
+                        "name": "Contributor Institution",
+                        "type": {
+                            "id": "institution",
+                            "title": {"en": "Institution"},
+                        },
+                    }
+                ],
+            }
+        )
 
     # Add funding information to the first two records only
     if record_index < 2:

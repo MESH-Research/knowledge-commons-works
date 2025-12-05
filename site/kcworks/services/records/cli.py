@@ -6,12 +6,12 @@ from pprint import pformat
 
 import click
 from flask.cli import with_appcontext
-
 from invenio_access.permissions import system_identity
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_datastore
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_records_resources.services.records.results import RecordItem
+
 from invenio_record_importer_kcworks.services.records import RecordsHelper
 from kcworks.services.records.bulk_operations import update_community_records_metadata
 from kcworks.services.records.export import KCWorksRecordsExporter
@@ -333,7 +333,11 @@ def export_records(
 @click.option("--new-owner-email", "-e", type=str, default="")
 @with_appcontext
 def change_record_owner_command(record_id, new_owner_id, new_owner_email):
-    """Change a record's owner in KCWorks."""
+    """Change a record's owner in KCWorks.
+
+    Raises:
+        click.Abort: If an error occurs during the ownership change operation.
+    """
     click.echo("=======================================")
     click.echo(f"Changing ownership of record {record_id}")
     click.echo("=======================================")

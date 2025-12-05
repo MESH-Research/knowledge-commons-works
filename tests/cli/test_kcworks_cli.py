@@ -7,8 +7,9 @@ from unittest.mock import patch
 import pytest
 from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_rdm_records_service
-from invenio_record_importer_kcworks.types import FileData
 from kcworks.cli import kcworks_records
+
+from invenio_record_importer_kcworks.types import FileData
 
 # Mock record data that matches the structure from the production API
 MOCK_RECORDS = [

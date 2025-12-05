@@ -1,7 +1,6 @@
 #! /usr/bin/python
 """Helper functions for working with org members' records."""
 
-import csv
 from pathlib import Path
 from typing import Any
 
@@ -9,10 +8,10 @@ import pandas as pd
 from invenio_access.permissions import system_identity
 from invenio_communities.communities.services.results import CommunityItem
 from invenio_communities.proxies import current_communities
-from invenio_rdm_records.proxies import current_rdm_records_service as records_service
-from invenio_record_importer_kcworks.services.communities import CommunitiesHelper
 from invenio_search.proxies import current_search_client
 from invenio_search.utils import prefix_index
+
+from invenio_record_importer_kcworks.services.communities import CommunitiesHelper
 
 
 class OrgMemberRecordIncluder:
@@ -42,6 +41,10 @@ class OrgMemberRecordIncluder:
                 Each tuple includes [0] a list of successfully
                 added record ids, and [1] a list of records that
                 failed during community addition.
+
+        Raises:
+            RuntimeError: If community review result status is not
+                accepted or already_included.
         """
         community_service = current_communities.service
         result: dict[str, Any] = {}

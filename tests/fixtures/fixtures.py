@@ -6,7 +6,7 @@ import pytest
 @pytest.fixture(scope="function")
 def set_app_config_fn_scoped(base_app):
     """Fixture to temporarily set app config values.
-    
+
     NOTE: Borrowed from invenio-rdm-records/tests/fixtures.py
 
     Oftentimes, tests set application configuration values but don't first
@@ -30,7 +30,7 @@ def set_app_config_fn_scoped(base_app):
             # SECRET_KEY = "foo" .
             # No other call is needed to revert values.
             # Other tests will see the original values for these configs.
-    
+
     Yields:
         function: Function to set config values temporarily.
     """

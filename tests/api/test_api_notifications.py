@@ -327,7 +327,7 @@ def test_notify_for_request_decline(
         }
 
         response = logged_in_client.put(
-            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/" "review",
+            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/review",
             data=json.dumps(review_body),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
@@ -527,7 +527,7 @@ def test_notify_for_request_cancellation(
         }
 
         response = logged_in_client.put(
-            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/" "review",
+            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/review",
             data=json.dumps(review_body),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
@@ -703,7 +703,7 @@ def test_notify_for_new_request_comment(
         }
 
         response = client.put(
-            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/" "review",
+            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/review",
             data=json.dumps(review_body),
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
@@ -1083,15 +1083,14 @@ def test_read_unread_notifications_by_view(
 
         # read the unread notifications
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{user.id}/" "notifications/unread/list"
+            f"{app.config['SITE_API_URL']}/users/{user.id}/notifications/unread/list"
         )
         assert response.status_code == 200
         assert len(json.loads(response.data)) == 2
 
         # try to read someone else's unread notifications
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{admin_id}/"
-            "notifications/unread/list"
+            f"{app.config['SITE_API_URL']}/users/{admin_id}/notifications/unread/list"
         )
         assert response.status_code == 403
         assert json.loads(response.data) == {
@@ -1105,7 +1104,7 @@ def test_read_unread_notifications_by_view(
     with app.test_client() as client:
         # NOTE: New client has its own session
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{user.id}/" "notifications/unread/list"
+            f"{app.config['SITE_API_URL']}/users/{user.id}/notifications/unread/list"
         )
         assert response.status_code == 401
         assert json.loads(response.data) == {
@@ -1196,8 +1195,7 @@ def test_clear_unread_notifications_by_view(
 
         # try to clear someone else's notifications
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{admin_id}/"
-            "notifications/unread/clear",
+            f"{app.config['SITE_API_URL']}/users/{admin_id}/notifications/unread/clear",
         )
         assert response.status_code == 403
         assert json.loads(response.data) == {
@@ -1210,8 +1208,7 @@ def test_clear_unread_notifications_by_view(
     # try to clear notifications without logging in
     with app.test_client() as client:
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{user.id}/"
-            "notifications/unread/clear",
+            f"{app.config['SITE_API_URL']}/users/{user.id}/notifications/unread/clear",
         )
         assert response.status_code == 401
         assert json.loads(response.data) == {
@@ -1326,7 +1323,7 @@ def test_unread_endpoint_bad_methods(
     headers = headers_same_origin
 
     response = client.post(
-        f"{app.config['SITE_API_URL']}/users/5/notifications/" "unread/list",
+        f"{app.config['SITE_API_URL']}/users/5/notifications/unread/list",
         data=json.dumps({}),
         headers=headers,
     )
@@ -1340,7 +1337,7 @@ def test_unread_endpoint_bad_methods(
     headers["X-CSRFToken"] = csrf_token
 
     response = client.put(
-        f"{app.config['SITE_API_URL']}/users/5/notifications/" "unread/clear",
+        f"{app.config['SITE_API_URL']}/users/5/notifications/unread/clear",
         data=json.dumps({}),
         headers=headers,
     )
@@ -1354,7 +1351,7 @@ def test_unread_endpoint_bad_methods(
     login_user_via_session(client, email=admin_email)
 
     response = client.post(
-        f"{app.config['SITE_API_URL']}/users/5/notifications/" "unread/list",
+        f"{app.config['SITE_API_URL']}/users/5/notifications/unread/list",
         data=json.dumps({}),
         headers=headers,
     )
@@ -1365,7 +1362,7 @@ def test_unread_endpoint_bad_methods(
     }
 
     response = client.put(
-        f"{app.config['SITE_API_URL']}/users/5/notifications/" "unread/list",
+        f"{app.config['SITE_API_URL']}/users/5/notifications/unread/list",
         data=json.dumps({}),
         headers=headers,
     )
@@ -1376,7 +1373,7 @@ def test_unread_endpoint_bad_methods(
     }
 
     response = client.patch(
-        f"{app.config['SITE_API_URL']}/users/5/notifications/" "unread/list",
+        f"{app.config['SITE_API_URL']}/users/5/notifications/unread/list",
         headers=headers,
     )
     assert response.status_code == 405
@@ -1507,8 +1504,7 @@ def test_notification_on_first_upload(
 
     # Publish the first draft
     draft1_publish_response = client.post(
-        f"{app.config['SITE_API_URL']}/records/{first_draft_id}/draft/"
-        "actions/publish",
+        f"{app.config['SITE_API_URL']}/records/{first_draft_id}/draft/actions/publish",
         headers={**headers, "Authorization": f"Bearer {token}"},
     )
     assert draft1_publish_response.status_code == 202
@@ -1525,7 +1521,7 @@ def test_notification_on_first_upload(
     app.logger.debug(f"email.body: {pformat(email.body)}")
     assert (
         f"<td><b>Work ID</b></td>\n        "
-        f"<td>{first_draft_id} (<a href=\"{app.config.get('SITE_UI_URL')}/records/"
+        f'<td>{first_draft_id} (<a href="{app.config.get("SITE_UI_URL")}/records/'
         f'{first_draft_id}">View work</a>)\n        </td>' in email.html
     )
     assert f"Work ID: {first_draft_id}" in email.body

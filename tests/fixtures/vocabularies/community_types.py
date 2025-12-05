@@ -16,7 +16,7 @@ from invenio_vocabularies.records.api import Vocabulary
 @pytest.fixture(scope="module")
 def community_type_type(app):
     """Fixture to create the community type vocabulary type.
-    
+
     Returns:
         VocabularyType: The created community type vocabulary type.
     """

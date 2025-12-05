@@ -14,7 +14,7 @@ previewable_extensions = ["pdf", "pdfa"]
 
 def can_preview(file):
     """Check if file can be previewed.
-    
+
     Returns:
         bool: True if file can be previewed, False otherwise.
     """
@@ -23,7 +23,7 @@ def can_preview(file):
 
 def preview(file):
     """Preview file.
-    
+
     Returns:
         str: Rendered template for file preview.
     """
