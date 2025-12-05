@@ -36,6 +36,7 @@ dependencies = [
     "langdetect",
     "lxml==5.2.1",
     "openpyxl",
+    "pandas",
     "pip",
     "pluggy>=0.12,<2.0",
     "python-dotenv",
