@@ -28,6 +28,7 @@ from invenio_requests.proxies import (
 )
 from invenio_requests.records.api import RequestEvent
 from invenio_users_resources.records.api import UserAggregate
+from invenio_users_resources.proxies import current_users_service
 from invenio_users_resources.services.users.tasks import reindex_users
 from kcworks.proxies import current_internal_notifications
 
@@ -758,6 +759,9 @@ def test_notify_for_new_request_comment(
 
         # add a comment by the owner to the request
         reindex_users([user.id])
+        current_users_service.indexer.process_bulk_queue()
+        # Wait a moment for indexing to complete
+        time.sleep(0.1)
         UserAggregate.index.refresh()
 
         reviewer_identity = get_identity(

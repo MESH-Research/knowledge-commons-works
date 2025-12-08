@@ -26,6 +26,7 @@ from invenio_accounts.proxies import current_accounts
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_records_resources.services.records.results import RecordItem
 from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
+from invenio_search.proxies import current_search_client
 
 from invenio_stats_dashboard.services.components.components import (
     update_community_events_created_date,
@@ -218,8 +219,12 @@ def minimal_published_record_factory(
                 uow.commit()
                 current_app.logger.error(
                     f"in published record factory, updated record created date: "
-                    f"{pformat(record.id)}"
+                    f"{pformat(record.id)}, {pformat(record.model.created)}"
                 )
+            new_record = records_service.read(system_identity, id_=published.id)._record
+            if records_service.indexer:
+                records_service.indexer.index(new_record)
+            current_search_client.indices.refresh("*rdmrecords*")
 
         if community_list:
             current_app.logger.error(
@@ -1228,9 +1233,9 @@ class TestRecordMetadataWithFiles(TestRecordMetadata):
             dict: The metadata with file entries added.
         """
         metadata["files"]["count"] = len(self.file_entries.keys())
-        metadata["files"]["total_bytes"] = sum(
-            [e["size"] for k, e in self.file_entries.items()]
-        )
+        metadata["files"]["total_bytes"] = sum([
+            e["size"] for k, e in self.file_entries.items()
+        ])
         metadata["files"]["order"] = []
         for k, e in self.file_entries.items():
             file_links = build_file_links(
@@ -1484,30 +1489,28 @@ def enhance_metadata_with_funding_and_affiliations(metadata, record_index) -> No
         if "contributors" not in metadata["metadata"]:
             metadata["metadata"]["contributors"] = []
 
-        metadata["metadata"]["contributors"].append(
-            {
-                "person_or_org": {
-                    "type": "personal",
-                    "name": "Test Contributor",
-                    "given_name": "Test",
-                    "family_name": "Contributor",
-                },
-                "role": {
-                    "id": "other",
-                    "title": {"en": "Other"},
-                },
-                "affiliations": [
-                    {
-                        "id": "03rmrcq20",  # Different affiliation ID for contributors
-                        "name": "Contributor Institution",
-                        "type": {
-                            "id": "institution",
-                            "title": {"en": "Institution"},
-                        },
-                    }
-                ],
-            }
-        )
+        metadata["metadata"]["contributors"].append({
+            "person_or_org": {
+                "type": "personal",
+                "name": "Test Contributor",
+                "given_name": "Test",
+                "family_name": "Contributor",
+            },
+            "role": {
+                "id": "other",
+                "title": {"en": "Other"},
+            },
+            "affiliations": [
+                {
+                    "id": "03rmrcq20",  # Different affiliation ID for contributors
+                    "name": "Contributor Institution",
+                    "type": {
+                        "id": "institution",
+                        "title": {"en": "Institution"},
+                    },
+                }
+            ],
+        })
 
     # Add funding information to the first two records only
     if record_index < 2:

@@ -19,7 +19,10 @@ import click
 from flask.cli import with_appcontext
 from invenio_search.cli import abort_if_false, search_version_check
 
-from kcworks.services.communities.cli import check_group_memberships
+from kcworks.services.communities.cli import (
+    assign_org_records,
+    check_group_memberships,
+)
 from kcworks.services.records.cli import bulk_update as bulk_update_command
 from kcworks.services.records.cli import (
     change_record_owner_command,
@@ -134,3 +137,4 @@ def group_collections():
 
 # Register the group collections command group
 group_collections.add_command(check_group_memberships)
+group_collections.add_command(assign_org_records)
