@@ -14,6 +14,9 @@ from invenio_search.proxies import current_search_client
 from invenio_search.utils import prefix_index
 
 from invenio_record_importer_kcworks.services.communities import CommunitiesHelper
+from invenio_stats_dashboard.services.components.components import (
+    update_community_events_created_date,
+)
 
 COLUMN_TO_SLUG: dict[str, str] = {
     "mla": "mla",
@@ -202,9 +205,26 @@ class OrgMemberRecordIncluder:
                             "accepted",
                             "already_included",
                         ]:
-                            result[column_name][username][1].append(
-                                result_record["_source"]["id"]
+                            record_id = result_record["_source"]["id"]
+                            result[column_name][username][1].append(record_id)
+                            
+                            # Update the community event's event_date to match the
+                            # record's created date
+                            record_created_date = result_record.get("_source", {}).get(
+                                "created"
                             )
+                            if record_created_date:
+                                try:
+                                    update_community_events_created_date(
+                                        record_id=str(record_id),
+                                        new_created_date=record_created_date,
+                                        update_event_date=True,
+                                    )
+                                except Exception as e:
+                                    current_app.logger.warning(
+                                        f"Failed to update community event date for "
+                                        f"record {record_id}: {e}"
+                                    )
                         else:
                             raise RuntimeError
                     except Exception as e:

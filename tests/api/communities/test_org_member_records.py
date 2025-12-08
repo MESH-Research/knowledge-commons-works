@@ -3,9 +3,12 @@
 import csv
 import time
 from pathlib import Path
+from unittest.mock import patch
 
+import arrow
 import pytest
 from invenio_search.proxies import current_search_client
+from invenio_search.utils import prefix_index
 from invenio_users_resources.proxies import current_users_service
 from invenio_users_resources.services.users.tasks import reindex_users
 from kcworks.services.communities.org_member_records import OrgMemberRecordIncluder
@@ -278,3 +281,168 @@ def test_include_org_member_records_record_already_in_community(
     success_list = user_result[1]
     # The record should be skipped, so success list should be empty
     assert len(success_list) == 0
+
+
+def test_include_org_member_records_event_date_updated(
+    running_app,
+    db,
+    search_clear,
+    csv_file_with_org_memberships,
+    published_record_for_user,
+    create_stats_indices,
+    celery_worker,
+    mock_search_api_request,
+):
+    """Test that community event event_date is set to record's created date."""
+    setup = csv_file_with_org_memberships
+    user1_id = setup["users"]["user1"]
+    org1 = setup["orgs"]["org1"]
+
+    # Create a record with a specific created date
+    created_date = "2023-06-15T10:30:00Z"
+    record = published_record_for_user(user1_id, created_date=created_date)
+
+    # Get the record's actual created date from the search index
+    record_search = current_search_client.search(
+        index=prefix_index("rdmrecords-records"),
+        body={"query": {"term": {"id": record.id}}},
+    )
+    record_hit = record_search["hits"]["hits"][0]
+    record_created_date = record_hit["_source"]["created"]
+
+    # Run the includer
+    includer = OrgMemberRecordIncluder()
+    results = includer.include_org_member_records(setup["csv_path"])
+
+    # Verify record was added successfully
+    assert "org1" in results
+    user_result = results["org1"]["testuser1"]
+    success_list = user_result[1]
+    assert record.id in success_list
+
+    # Refresh the stats-community-events index
+    current_search_client.indices.refresh(index="*stats-community-events*")
+
+    # Query the community events index for the "added" event
+    query = {
+        "query": {
+            "bool": {
+                "must": [
+                    {"term": {"record_id": record.id}},
+                    {"term": {"community_id": org1.id}},
+                    {"term": {"event_type": "added"}},
+                ]
+            }
+        },
+        "size": 10,
+    }
+
+    result = current_search_client.search(
+        index=prefix_index("stats-community-events"),
+        body=query,
+    )
+
+    # Verify we found the event
+    assert result["hits"]["total"]["value"] > 0
+
+    # Check that event_date matches the record's created date
+    for hit in result["hits"]["hits"]:
+        event = hit["_source"]
+        event_date = event.get("event_date")
+        record_created = event.get("record_created_date")
+
+        # Both event_date and record_created_date should be set
+        assert event_date is not None, "event_date should be set"
+        assert record_created is not None, "record_created_date should be set"
+
+        # event_date should match the record's created date (within a minute)
+        event_date_arrow = arrow.get(event_date)
+        record_created_arrow = arrow.get(record_created_date)
+        assert abs((event_date_arrow - record_created_arrow).total_seconds()) < 60, (
+            f"event_date '{event_date}' should match record created date "
+            f"'{record_created_date}' (within 1 minute)"
+        )
+
+        # record_created_date should also match
+        record_created_from_event_arrow = arrow.get(record_created)
+        assert (
+            abs(
+                (record_created_from_event_arrow - record_created_arrow).total_seconds()
+            )
+            < 60
+        ), (
+            f"record_created_date '{record_created}' should match record created date "
+            f"'{record_created_date}' (within 1 minute)"
+        )
+
+
+def test_include_org_member_records_notifications_suppressed(
+    running_app,
+    db,
+    search_clear,
+    csv_file_with_org_memberships,
+    published_record_for_user,
+    celery_worker,
+    mock_search_api_request,
+):
+    """Test that notifications are suppressed when adding records to communities."""
+    from invenio_notifications.services.uow import NotificationOp
+
+    from invenio_record_importer_kcworks.services.communities import (
+        CommunitiesHelper,
+    )
+
+    setup = csv_file_with_org_memberships
+    user1_id = setup["users"]["user1"]
+    org1 = setup["orgs"]["org1"]
+
+    # Create a record for user1
+    record = published_record_for_user(user1_id)
+
+    # Directly test that CommunitiesHelper suppresses notifications
+    # by checking the UOW operations
+    helper = CommunitiesHelper()
+    result, uow = helper.add_published_record_to_community(
+        record.id, community_id=org1.id, suppress_notifications=True
+    )
+
+    # Verify the record was added successfully
+    assert result["status"] in ["accepted", "already_included"]
+
+    # Verify that no NotificationOp instances are in the UOW operations
+    # when suppress_notifications=True
+    if uow and hasattr(uow, "_operations"):
+        notification_ops = [
+            op for op in uow._operations if isinstance(op, NotificationOp)
+        ]
+        assert len(notification_ops) == 0, (
+            "NotificationOp instances should be removed from UOW operations "
+            "when suppress_notifications=True"
+        )
+
+    # Now test through the OrgMemberRecordIncluder to ensure it also suppresses
+    # notifications. We'll mock the broadcast_notification task to verify it's
+    # never called when suppress_notifications=True
+    # Create a NEW record for this test since the first record is already in
+    # the community
+    record2 = published_record_for_user(user1_id)
+
+    # Patch where it's actually used (in NotificationOp.on_post_commit)
+    with patch(
+        "invenio_notifications.services.uow.broadcast_notification.delay"
+    ) as mock_broadcast:
+        includer = OrgMemberRecordIncluder()
+        results = includer.include_org_member_records(setup["csv_path"])
+
+        # Verify record was added successfully
+        assert "org1" in results
+        user_result = results["org1"]["testuser1"]
+        success_list = user_result[1]
+        assert record2.id in success_list
+
+        # Verify the broadcast_notification task was never called
+        # (notifications were suppressed)
+        assert mock_broadcast.call_count == 0, (
+            "broadcast_notification.delay should not be called when "
+            "suppress_notifications=True"
+        )
