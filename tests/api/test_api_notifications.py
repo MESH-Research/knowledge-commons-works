@@ -27,8 +27,8 @@ from invenio_requests.proxies import (
     current_requests_service,
 )
 from invenio_requests.records.api import RequestEvent
-from invenio_users_resources.records.api import UserAggregate
 from invenio_users_resources.proxies import current_users_service
+from invenio_users_resources.records.api import UserAggregate
 from invenio_users_resources.services.users.tasks import reindex_users
 from kcworks.proxies import current_internal_notifications
 
@@ -864,24 +864,22 @@ def test_read_unread_notifications_by_service(
 
     # add some unread notifications
     user.user_profile = {
-        "unread_notifications": json.dumps(
-            [
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "1",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["1"],
-                },
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "2",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["2"],
-                },
-            ]
-        )
+        "unread_notifications": json.dumps([
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "1",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["1"],
+            },
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "2",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["2"],
+            },
+        ])
     }
     db.session.commit()
 
@@ -942,24 +940,22 @@ def test_clear_unread_notifications_by_service(
 
     # add some unread notifications
     user.user_profile = {
-        "unread_notifications": json.dumps(
-            [
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "1",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["1"],
-                },
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "2",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["2"],
-                },
-            ]
-        )
+        "unread_notifications": json.dumps([
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "1",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["1"],
+            },
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "2",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["2"],
+            },
+        ])
     }
     db.session.commit()
 
@@ -994,24 +990,22 @@ def test_clear_unread_notifications_by_service(
 
     # add some unread notifications again
     user.user_profile = {
-        "unread_notifications": json.dumps(
-            [
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "1",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["1"],
-                },
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "2",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["2"],
-                },
-            ]
-        )
+        "unread_notifications": json.dumps([
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "1",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["1"],
+            },
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "2",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["2"],
+            },
+        ])
     }
     db.session.commit()
 
@@ -1056,24 +1050,22 @@ def test_read_unread_notifications_by_view(
 
     # add some unread notifications to the user
     user.user_profile = {
-        "unread_notifications": json.dumps(
-            [
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "1",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["1"],
-                },
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "2",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["2"],
-                },
-            ]
-        )
+        "unread_notifications": json.dumps([
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "1",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["1"],
+            },
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "2",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["2"],
+            },
+        ])
     }
     db.session.commit()
 
@@ -1153,24 +1145,22 @@ def test_clear_unread_notifications_by_view(
 
     # add some unread notifications
     user.user_profile = {
-        "unread_notifications": json.dumps(
-            [
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "1",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["1"],
-                },
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "2",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["2"],
-                },
-            ]
-        )
+        "unread_notifications": json.dumps([
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "1",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["1"],
+            },
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "2",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["2"],
+            },
+        ])
     }
     db.session.commit()
 
@@ -1256,24 +1246,22 @@ def test_clear_one_unread_notification_by_view(
 
     # add some unread notifications
     user.user_profile = {
-        "unread_notifications": json.dumps(
-            [
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "1",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["1"],
-                },
-                {
-                    "notification_type": "comment-request-event.create",
-                    "request_id": "2",
-                    "request_type": "community-submission",
-                    "request_status": "submitted",
-                    "unread_comments": ["2"],
-                },
-            ]
-        )
+        "unread_notifications": json.dumps([
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "1",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["1"],
+            },
+            {
+                "notification_type": "comment-request-event.create",
+                "request_id": "2",
+                "request_type": "community-submission",
+                "request_status": "submitted",
+                "unread_comments": ["2"],
+            },
+        ])
     }
     db.session.commit()
 
