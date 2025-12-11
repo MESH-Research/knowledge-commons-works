@@ -160,3 +160,4 @@ site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*
 biome.json
 .ropeproject/autoimport.db-journal
 tests/.env
+app_data/importer/user_memberships.csv
