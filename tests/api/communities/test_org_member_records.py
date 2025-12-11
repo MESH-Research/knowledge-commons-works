@@ -56,8 +56,8 @@ def csv_file_with_org_memberships(user_factory, minimal_community_factory, tmp_p
     csv_path = tmp_path / "org_memberships.csv"
     with open(csv_path, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["username", "org1", "org2"])
-        writer.writerow(["testuser1", "True", "False"])
+        writer.writerow(["'username'", "'org1'", "'org2'"])
+        writer.writerow(["'testuser1'", "'True'", "'False'"])
         writer.writerow(["testuser2", "False", "True"])
 
     return {

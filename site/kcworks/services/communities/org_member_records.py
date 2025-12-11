@@ -3,6 +3,7 @@
 
 import json
 from pathlib import Path
+from pprint import pformat
 from typing import Any
 
 import pandas as pd
@@ -28,6 +29,32 @@ COLUMN_TO_SLUG: dict[str, str] = {
     "stemedplus": "stemedplus",
 }
 """Mapping from CSV column names to org community slugs."""
+
+
+def _clean_csv_value(val: Any) -> str | bool:
+    """Clean CSV value by stripping quotes, converting True/False to booleans.
+    
+    This prevents pandas from inferring boolean types during CSV reading,
+    but then converts "True"/"False" strings to actual booleans after cleaning.
+    Other values are kept as strings.
+    
+    Args:
+        val: The value from the CSV (may be any type due to pandas inference)
+        
+    Returns:
+        str | bool: The cleaned value (boolean for True/False, string otherwise)
+    """
+    if pd.isna(val):
+        return ""
+    # Convert to string first to handle pandas boolean type inference
+    s = str(val)
+    cleaned = s.strip("'").strip('"')
+    # Convert "True"/"False" to actual booleans
+    if cleaned.lower() == "true":
+        return True
+    elif cleaned.lower() == "false":
+        return False
+    return cleaned
 
 
 class OrgMemberRecordIncluder:
@@ -80,7 +107,9 @@ class OrgMemberRecordIncluder:
                 correspond to a column name and/or org slug.
         """
         community_service = current_communities.service
-        member_rows = pd.read_csv(Path(file_path))
+        temp_df = pd.read_csv(Path(file_path), nrows=0)
+        converters = {col: _clean_csv_value for col in temp_df.columns}
+        member_rows = pd.read_csv(Path(file_path), converters=converters)
         result: dict[str, Any] = {}
 
         # Limit rows if max_rows is specified
@@ -91,9 +120,10 @@ class OrgMemberRecordIncluder:
         column_to_slug_map: dict[str, str] = {}
 
         # Build mapping from column names to community slugs
-        org_column_names = member_rows.columns.tolist()[1:]
-        
-        # If org_slug is specified, filter to only that org
+        org_column_names = [
+            col.strip("'").strip('"') for col in member_rows.columns.tolist()[1:]
+        ]
+
         if org_slug:
             # Find the column name that maps to this org_slug
             matching_column = None
@@ -102,24 +132,23 @@ class OrgMemberRecordIncluder:
                 if community_slug == org_slug:
                     matching_column = column_name
                     break
-            
+
             if matching_column:
                 org_column_names = [matching_column]
             else:
-                # If no matching column found, return empty result
-                current_app.logger.warning(
+                current_app.logger.error(
                     f"Org slug '{org_slug}' not found in CSV columns. "
                     f"Available columns: {org_column_names}"
                 )
                 return result
 
         for column_name in org_column_names:
-            # Use mapping if available, otherwise use column name as slug
             community_slug = COLUMN_TO_SLUG.get(column_name, column_name)
             column_to_slug_map[column_name] = community_slug
             org_dict[column_name] = community_service.read(
                 system_identity, community_slug
             )
+        current_app.logger.info(f"org_dict {org_dict}")
 
         for row in member_rows.itertuples():
             # row[0] is the index, row[1] is the username (first column)
@@ -132,12 +161,15 @@ class OrgMemberRecordIncluder:
             try:
                 hits = members_search["hits"]["hits"]
                 if not hits:
+                    current_app.logger.warning(f"No users match {row}")
                     continue
                 member_hit: dict[str, Any] = hits[0]
                 member_dict: dict[str, Any] = member_hit.get("_source", {})
                 if not member_dict or "id" not in member_dict:
+                    current_app.logger.warning(f"No user data in hit matching {row}")
                     continue
             except (KeyError, IndexError):
+                current_app.logger.warning(f"No users match {row}")
                 continue
 
             filter_clauses: list[dict[str, Any]] = [
@@ -154,10 +186,22 @@ class OrgMemberRecordIncluder:
                 if date_range:
                     filter_clauses.append({"range": {"created": date_range}})
 
-            member_record_results = current_search_client.search(
+            member_record_query = current_search_client.search(
                 index=prefix_index("rdmrecords-records"),
                 body={"query": {"bool": {"filter": filter_clauses}}},
-            )["hits"]["hits"]
+            )
+
+            member_record_results = member_record_query["hits"]["hits"]
+
+            current_app.logger.info(f"Filter clauses for {username}: {filter_clauses}")
+            current_app.logger.info(
+                f"Member_record_results: "
+                f"{pformat([r['_source']['id'] for r in member_record_results])}"
+            )
+            if len(member_record_results) == 0:
+                current_app.logger.warning(
+                    f"No record hits for user {member_dict['id']}, {username}"
+                )
 
             for idx, column_name in enumerate(org_column_names, start=2):
                 if idx >= len(row):
@@ -170,11 +214,20 @@ class OrgMemberRecordIncluder:
                     [],
                 )
 
-                # Skip empty values
-                if not org_value or pd.isna(org_value) or org_value == "":
+                if (
+                    org_value == ""
+                    or org_value is False
+                ):
+                    current_app.logger.warning(
+                        f"User {member_dict['id']} not in community {column_name}: "
+                        f"{org_value}"
+                    )
                     continue
 
                 for result_record in member_record_results:
+                    current_app.logger.info(
+                        f"Processing record {result_record['_source']['id']}"
+                    )
                     try:
                         if column_name not in org_dict:
                             raise KeyError(
@@ -192,6 +245,10 @@ class OrgMemberRecordIncluder:
                             and len(existing_communities) > 0
                             and org_item.id in existing_communities
                         ):
+                            current_app.logger.warning(
+                                f"Record {result_record['_source']['id']} "
+                                "already in community"
+                            )
                             continue
 
                         community_review_result, _ = (
@@ -207,7 +264,7 @@ class OrgMemberRecordIncluder:
                         ]:
                             record_id = result_record["_source"]["id"]
                             result[column_name][username][1].append(record_id)
-                            
+
                             # Update the community event's event_date to match the
                             # record's created date
                             record_created_date = result_record.get("_source", {}).get(
@@ -225,6 +282,10 @@ class OrgMemberRecordIncluder:
                                         f"Failed to update community event date for "
                                         f"record {record_id}: {e}"
                                     )
+                            current_app.logger.info(
+                                f"successfully added record {record_id} to community "
+                                f"{org_item.id}"
+                            )
                         else:
                             raise RuntimeError
                     except Exception as e:
@@ -261,7 +322,7 @@ class OrgMemberRecordIncluder:
                     log_data: dict[str, Any] = json.load(f)
                     return log_data
             except (json.JSONDecodeError, OSError) as e:
-                current_app.logger.warning(
+                current_app.logger.error(
                     f"Error reading log file {log_file_path}: {e}. "
                     "Starting with empty log."
                 )
