@@ -291,6 +291,7 @@ const CommunityDetailsHeader = ({
 					![
 						"curation policy",
 						"members",
+						"statistics",
 						"requests",
 						"settings",
 						"contribute",
