@@ -184,6 +184,9 @@ const ComputerTabletUploadsItem = ({
 								/>
 							</small>
 						) : null}
+						{!!result.pids?.doi?.identifier ? (
+							<small className="mr-10">DOI: {result.pids.doi.identifier}</small>
+						) : null}
 						{createdDate && (
 							<small className="created-date">
 								{i18next.t("Uploaded on {{uploadDate}}", {
