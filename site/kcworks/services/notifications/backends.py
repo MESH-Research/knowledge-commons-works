@@ -24,8 +24,9 @@ from invenio_i18n import force_locale, get_locale
 from invenio_i18n.proxies import current_i18n
 from invenio_mail.tasks import send_email
 from invenio_notifications.backends.base import NotificationBackend
-from kcworks.proxies import current_internal_notifications
 from marshmallow_utils.html import strip_html
+
+from kcworks.proxies import current_internal_notifications
 
 
 class CustomJinjaTemplateLoaderMixin:
@@ -40,6 +41,9 @@ class CustomJinjaTemplateLoaderMixin:
         the template blocks.
         More specific templates take precedence over less specific ones.
         Rendered template will also take the locale into account.
+
+        Returns:
+            dict: Dictionary containing rendered template blocks.
         """
         # Take recipient locale into account. Fallback to default locale
         # (set via config variable)
@@ -99,7 +103,11 @@ class EmailNotificationBackend(NotificationBackend, CustomJinjaTemplateLoaderMix
     id = "email"
 
     def send(self, notification, recipient):
-        """Mail sending implementation."""
+        """Mail sending implementation.
+
+        Returns:
+            Response: Email sending response.
+        """
         content = self.render_template(notification, recipient)
 
         resp = send_email(
@@ -124,7 +132,11 @@ class InternalNotificationBackend(NotificationBackend):
     """Unique id of the backend."""
 
     def send(self, notification, recipient):
-        """Send the notification message to the user's in-app notifications."""
+        """Send the notification message to the user's in-app notifications.
+
+        Returns:
+            Any: Result of the notification update operation.
+        """
         updated = current_internal_notifications.update_unread(
             identity=system_identity,
             user_id=recipient.data["id"],

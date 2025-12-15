@@ -77,7 +77,11 @@ from .metadata_fields.kcr_volumes_fields import (
 
 
 def _(x):
-    """Identity function for string extraction."""
+    """Identity function for string extraction.
+
+    Returns:
+        str: The input string unchanged.
+    """
     return x
 
 

@@ -1,6 +1,5 @@
 """Bulk operations for records."""
 
-from pprint import pformat
 from typing import Any, TypedDict
 
 from flask import current_app
@@ -8,10 +7,11 @@ from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.proxies import current_rdm_records_service
-from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from invenio_search.proxies import current_search_client
-from kcworks.utils.utils import get_value_by_path
 from opensearchpy.helpers.search import Search
+
+from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
+from kcworks.utils.utils import get_value_by_path
 
 
 class UpdateResult(TypedDict):
@@ -46,6 +46,9 @@ def update_community_records_metadata(
                 - old_value (any)
                 - new_value (any)
             - errors (list[str]): List of error messages for failed updates
+
+    Raises:
+        ValueError: If the metadata field path is invalid or community is not found.
     """
     results: UpdateResult = {
         "total_record_count": 0,
@@ -66,7 +69,6 @@ def update_community_records_metadata(
 
     # Use scan (scroll) to allow for more than 10k records
     for hit in search.scan():
-        current_app.logger.error(f"Processing page {pformat(hit)}")
         results["total_record_count"] += 1
 
         try:

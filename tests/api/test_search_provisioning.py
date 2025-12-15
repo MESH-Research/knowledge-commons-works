@@ -367,7 +367,7 @@ def test_trigger_search_provisioning(
                 "provider": "oai",
             },
         },
-        "revision_id": 6,
+        "revision_id": 7,
         "stats": {
             "all_versions": {
                 "data_volume": 0.0,
@@ -528,9 +528,9 @@ def test_trigger_community_provisioning(
         remote_response["_id"]
     )
     minimal_edited_timestamp = arrow.utcnow().format("YYYY-MM-DDTHH:mm:ssZ")
-    minimal_edited_payload["custom_fields"][
-        "kcr:commons_search_updated"
-    ] = minimal_edited_timestamp
+    minimal_edited_payload["custom_fields"]["kcr:commons_search_updated"] = (
+        minimal_edited_timestamp
+    )
 
     # Set up mock remote API response
     requests_mock.put(
@@ -561,9 +561,9 @@ def test_trigger_community_provisioning(
 
     # simulate the result of previous remote API operation
     edited_new2_datestamp = arrow.utcnow().format("YYYY-MM-DDTHH:mm:ssZ")
-    edited_new2.data["custom_fields"][
-        "kcr:commons_search_updated"
-    ] = edited_new2_datestamp
+    edited_new2.data["custom_fields"]["kcr:commons_search_updated"] = (
+        edited_new2_datestamp
+    )
 
     event_sent = json.loads(os.getenv("MOCK_SIGNAL_SUBSCRIBER") or "")
     assert event_sent["service_type"] == "community"

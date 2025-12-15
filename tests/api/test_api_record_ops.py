@@ -20,8 +20,8 @@ from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
-from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 
+from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from tests.conftest import RunningApp
 
 from ..fixtures.records import TestRecordMetadata, TestRecordMetadataWithFiles
@@ -60,16 +60,60 @@ class TestDraftCreation:
         """
         return []
 
-    def test_draft_creation_api(
+    def test_draft_creation(
         self,
         running_app: RunningApp,
         db: SQLAlchemy,
-        user_factory: Callable,
         client_with_login: Callable,
         headers: dict,
+        user_factory: Callable,
         record_metadata: Callable,
         search_clear: Callable,
+        reindex_resource_types: Callable,
         celery_worker: Callable,
+        minimal_draft_record_factory: Callable,
+    ):
+        """Test that a system user can create a draft record internally.
+
+        Checks that the created record metadata structure is correct for
+        the input metadata. Checks the same fields as the `test_draft_creation_api`
+        test.
+        """
+        u = user_factory(
+            email=user_data_set["user1"]["email"],
+        )
+        user_id = u.user.id
+        login_user(u.user)
+
+        metadata = record_metadata(metadata_in=self.metadata_source, owner_id=user_id)
+        result = minimal_draft_record_factory(metadata=metadata.metadata_in)
+        actual_draft = result.to_dict()
+        assert metadata.compare_draft(
+            actual_draft, by_api=False, skip_fields=self.skip_fields
+        )
+        if "errors" in actual_draft.keys() or self.errors:
+            assert actual_draft["errors"] == self.errors
+
+        read_result = records_service.read_draft(system_identity, actual_draft["id"])
+        actual_read = read_result.to_dict()
+        assert actual_read["id"] == actual_draft["id"]
+
+
+class TestDraftCreationApi(TestDraftCreation):
+    """Test that a user can create a draft record."""
+
+    def test_draft_creation(
+        self,
+        running_app: RunningApp,
+        db: SQLAlchemy,
+        client_with_login: Callable,
+        headers: dict,
+        user_factory: Callable,
+        record_metadata: Callable,
+        search_clear: Callable,
+        reindex_resource_types: Callable,
+        celery_worker: Callable,
+        mock_send_remote_api_update_fixture: Callable,
     ):
         """Test that a user can create a draft record."""
         app = running_app.app
@@ -113,12 +157,12 @@ class TestDraftCreation:
             #     "publication_date_l10n_long"
             # ] == publication_date.format("MMMM D, YYYY")
             # created_date = arrow.get(actual_draft["created"])
-            # assert actual_draft["ui"]["created_date_l10n_long"] == created_date.format(
-            #     "MMMM D, YYYY"
+            # assert actual_draft["ui"]["created_date_l10n_long"] == (
+            #     created_date.format("MMMM D, YYYY")
             # )
             # updated_date = arrow.get(actual_draft["updated"])
-            # assert actual_draft["ui"]["updated_date_l10n_long"] == updated_date.format(
-            #     "MMMM D, YYYY"
+            # assert actual_draft["ui"]["updated_date_l10n_long"] == (
+            #     updated_date.format("MMMM D, YYYY")
             # )
             # assert actual_draft["ui"]["resource_type"] == {
             #     "id": "image-photograph",
@@ -155,43 +199,6 @@ class TestDraftCreation:
             # assert actual_draft["ui"]["version"] == "v1"
             # assert actual_draft["ui"]["is_draft"]
 
-    def test_draft_creation_service(
-        self,
-        running_app: RunningApp,
-        db: SQLAlchemy,
-        client_with_login: Callable,
-        headers: dict,
-        user_factory: Callable,
-        record_metadata: Callable,
-        search_clear: Callable,
-        celery_worker: Callable,
-        minimal_draft_record_factory: Callable,
-    ):
-        """Test that a system user can create a draft record internally.
-
-        Checks that the created record metadata structure is correct for
-        the input metadata. Checks the same fields as the `test_draft_creation_api`
-        test.
-        """
-        u = user_factory(
-            email=user_data_set["user1"]["email"],
-        )
-        user_id = u.user.id
-        login_user(u.user)
-
-        metadata = record_metadata(metadata_in=self.metadata_source, owner_id=user_id)
-        result = minimal_draft_record_factory(metadata=metadata.metadata_in)
-        actual_draft = result.to_dict()
-        assert metadata.compare_draft(
-            actual_draft, by_api=False, skip_fields=self.skip_fields
-        )
-        if "errors" in actual_draft.keys() or self.errors:
-            assert actual_draft["errors"] == self.errors
-
-        read_result = records_service.read_draft(system_identity, actual_draft["id"])
-        actual_read = read_result.to_dict()
-        assert actual_read["id"] == actual_draft["id"]
-
 
 class TestDraftCreationError(TestDraftCreation):
     """Test that creating a draft record with invalid metadata returns errors.
@@ -201,7 +208,43 @@ class TestDraftCreationError(TestDraftCreation):
 
     @property
     def metadata_source(self) -> dict:  # noqa: D102
-        metadata = copy.deepcopy(sample_metadata_book_pdf["input"])
+        metadata = copy.deepcopy(sample_metadata_book_pdf)
+        metadata["metadata"]["title"] = ""
+        metadata["metadata"]["resource_type"] = None
+        del metadata["metadata"]["publication_date"]
+        del metadata["created"]
+        return metadata
+
+    @property
+    def errors(self) -> list[dict]:  # noqa: D102
+        return [
+            {"field": "metadata.resource_type", "messages": ["Field may not be null."]},
+            {
+                "field": "metadata.title",
+                "messages": ["Title cannot be a blank string."],
+            },
+            {
+                "field": "metadata.publication_date",
+                "messages": ["Missing data for required field."],
+            },
+            {"field": "metadata.rights.0.icon", "messages": ["Unknown field."]},
+        ]
+
+    @property
+    def skip_fields(self) -> list[str]:  # noqa: D102
+        return ["metadata.title", "metadata.resource_type"]
+
+
+@pytest.mark.usefixtures("reindex_resource_types")
+class TestDraftCreationErrorApi(TestDraftCreationApi):
+    """Test that creating a draft record with invalid metadata returns errors.
+
+    The errors are returned in the response metadata object's "errors" field.
+    """
+
+    @property
+    def metadata_source(self) -> dict:  # noqa: D102
+        metadata = copy.deepcopy(sample_metadata_book_pdf)
         metadata["metadata"]["title"] = ""
         metadata["metadata"]["resource_type"] = None
         del metadata["metadata"]["publication_date"]
@@ -227,12 +270,6 @@ class TestDraftCreationError(TestDraftCreation):
         return ["metadata.title", "metadata.resource_type"]
 
 
-@pytest.fixture
-def db_session_options():
-    """Configure database session options."""
-    return {"expire_on_commit": False}
-
-
 def test_record_publication_api(
     running_app: RunningApp,
     db: SQLAlchemy,
@@ -240,9 +277,9 @@ def test_record_publication_api(
     headers: dict,
     user_factory: Callable,
     search_clear: Callable,
+    reindex_resource_types: Callable,
     celery_worker: Callable,
     mock_send_remote_api_update_fixture: Callable,
-    db_session_options: dict,
 ):
     """Test that a user can publish a draft record via the API."""
     app = running_app.app
@@ -802,6 +839,7 @@ def test_record_view_api(
     db,
     minimal_published_record_factory,
     search_clear,
+    reindex_resource_types,
     celery_worker,
     mock_send_remote_api_update_fixture,
 ):
@@ -828,7 +866,7 @@ def test_record_view_api(
             }
         )
         metadata.compare_published(actual=record, by_api=True)
-        assert record["revision_id"] == 3
+        assert record["revision_id"] == 4
 
 
 def test_records_api_endpoint_not_found(running_app):

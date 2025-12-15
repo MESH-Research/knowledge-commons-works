@@ -13,12 +13,20 @@ previewable_extensions = ["pdf", "pdfa"]
 
 
 def can_preview(file):
-    """Check if file can be previewed."""
+    """Check if file can be previewed.
+
+    Returns:
+        bool: True if file can be previewed, False otherwise.
+    """
     return file.has_extensions(".pdf", ".pdfa")
 
 
 def preview(file):
-    """Preview file."""
+    """Preview file.
+
+    Returns:
+        str: Rendered template for file preview.
+    """
     return render_template(
         "custom_previewers/invenio_custom_pdf_viewer/pdfjs.html",
         file=file,

@@ -29,7 +29,6 @@ from invenio_rdm_records.proxies import (
     current_record_communities_service,
 )
 from invenio_rdm_records.records.api import RDMDraft
-from invenio_record_importer_kcworks.services.communities import CommunitiesHelper
 from invenio_records_permissions.generators import SystemProcess
 from invenio_records_resources.services.errors import PermissionDeniedError
 from kcworks.services.records.components.per_field_permissions_component import (
@@ -40,6 +39,8 @@ from kcworks.services.records.record_communities.community_change_permissions_co
 )
 from kcworks.utils.utils import get_value_by_path, update_nested_dict
 
+from invenio_record_importer_kcworks.services.communities import CommunitiesHelper
+
 from ..conftest import RunningApp
 from ..fixtures.communities import make_community_member
 from ..fixtures.users import get_authenticated_identity
@@ -47,13 +48,21 @@ from ..fixtures.users import get_authenticated_identity
 
 @pytest.fixture  # type: ignore
 def per_field_component() -> PerFieldEditPermissionsComponent:
-    """Fixture to set up the PerFieldEditPermissionsComponent."""
+    """Fixture to set up the PerFieldEditPermissionsComponent.
+
+    Returns:
+        PerFieldEditPermissionsComponent: The configured component.
+    """
     return PerFieldEditPermissionsComponent(service=current_rdm_records_service)
 
 
 @pytest.fixture  # type: ignore
 def community_change_permissions_component() -> CommunityChangePermissionsComponent:
-    """Fixture to set up the CommunityChangePermissionsComponent."""
+    """Fixture to set up the CommunityChangePermissionsComponent.
+
+    Returns:
+        CommunityChangePermissionsComponent: The configured component.
+    """
     return CommunityChangePermissionsComponent(
         service=current_record_communities_service
     )
@@ -916,7 +925,11 @@ class TestCollectionRemoveRestricted:
                         "XXXX. Please contact the collection owner or "
                         "manager for assistance."
                     ),
-                }
+                },
+                {
+                    "community": "9c59aaee-2ce0-4719-ad2d-ba036b88fb3a",
+                    "message": "Permission denied.",
+                },
             ],
         }
 
@@ -971,9 +984,10 @@ class TestCollectionRemoveRestricted:
         new_result = current_rdm_records_service.read(identity, id_=record.id)
         if new_result._record.parent.communities.default:
             assert str(new_result._record.parent.communities.default.id) == community.id
-        assert len(new_result._record.parent.communities) == len(
-            self.expected["errors"]
-        )
+        assert (
+            len(new_result._record.parent.communities.ids)
+            == len(self.expected["errors"]) / 2
+        )  # because now 2 errors per permission failure
 
 
 class TestCollectionRemoveRestrictedAllowed(TestCollectionRemoveRestricted):
@@ -1011,7 +1025,7 @@ class TestCollectionRemoveUnRestricted(TestCollectionRemoveRestricted):
 
 
 class TestCollectionChangeDefaultRestricted:
-    """Test that a community is not changed from the default if the field is restricted."""
+    """Test that a community is not changed from default if the field is restricted."""
 
     @property
     def permissions_config(self) -> dict:  # noqa: D102
@@ -1066,6 +1080,7 @@ class TestCollectionChangeDefaultRestricted:
         )
         result = current_rdm_records_service.record_cls.pid.resolve(record.data["id"])
         assert str(result.parent.communities.default.id) == community.id
+        running_app.app.logger.error(f"test-community id: {community.id}")
 
         # Change the default community
         if self.error_expected:

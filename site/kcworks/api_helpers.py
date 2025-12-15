@@ -14,6 +14,7 @@
 # invenio-app-rdm package for more details.
 
 """Handler classes for invenio-remote-api-provisioner."""
+
 import os
 import re
 import time
@@ -81,7 +82,11 @@ def format_commons_search_payload(
     draft: dict | None = None,
     **kwargs,
 ) -> dict:
-    """Format payload for external service."""
+    """Format payload for external service.
+
+    Returns:
+        dict: Formatted payload dictionary.
+    """
     record = record if record else {}
     owner = owner if owner else {}
     draft = draft if draft else {}
@@ -198,7 +203,11 @@ def format_commons_search_collection_payload(
     draft: dict | None = None,
     **kwargs,
 ) -> dict:
-    """Format payload for a collection to be sent to Commons Central Search."""
+    """Format payload for a collection to be sent to Commons Central Search.
+
+    Returns:
+        dict: Formatted payload dictionary for Commons Central Search.
+    """
     record = record if record else {}
     owner = owner if owner else {}
     draft = draft if draft else {}
@@ -316,9 +325,9 @@ def record_commons_search_recid(
     if record.get("access", {}).get("record") != "public":
         if search_id:
             new_metadata["custom_fields"].pop("kcr:commons_search_recid")
-            new_metadata["custom_fields"][
-                "kcr:commons_search_updated"
-            ] = arrow.utcnow().isoformat()
+            new_metadata["custom_fields"]["kcr:commons_search_updated"] = (
+                arrow.utcnow().isoformat()
+            )
             record_changes = True
 
     if response_json.get("_id"):  # NOTE: No id is returned for updates
@@ -326,9 +335,9 @@ def record_commons_search_recid(
             new_metadata["custom_fields"]["kcr:commons_search_recid"] = response_json[
                 "_id"
             ]
-            new_metadata["custom_fields"][
-                "kcr:commons_search_updated"
-            ] = arrow.utcnow().isoformat()
+            new_metadata["custom_fields"]["kcr:commons_search_updated"] = (
+                arrow.utcnow().isoformat()
+            )
             record_changes = True
 
     if record_changes:
@@ -418,7 +427,11 @@ def choose_record_publish_method(
     draft: dict | None = None,
     **kwargs,
 ) -> str:
-    """Choose the correct http method for publish RDMRecordService events."""
+    """Choose the correct http method for publish RDMRecordService events.
+
+    Returns:
+        str: HTTP method string (POST or PUT).
+    """
     http_method = "POST"
     if (
         record
@@ -437,7 +450,11 @@ def record_publish_url_factory(
     draft: dict | None = None,
     **kwargs,
 ) -> str:
-    """Create the correct url for publish RDMRecordService events."""
+    """Create the correct url for publish RDMRecordService events.
+
+    Returns:
+        str: Complete URL string for the event.
+    """
     protocol = current_app.config.get("COMMONS_API_REQUEST_PROTOCOL", "http")
     domain = current_app.config.get("KC_WORDPRESS_DOMAIN", "hcommons.org")
 

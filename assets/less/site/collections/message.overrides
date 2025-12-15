@@ -55,6 +55,11 @@
         color: @infoTextColor;
       }
     }
+    .close-btn {
+      .icon {
+        color: @white;
+      }
+    }
   }
 
   &.flashed {

@@ -67,7 +67,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-
   # UI Application
   # This container holds Python, pip, the virtualenv, and the invenio code,
   # Node.js, NPM and some standard libraries Invenio usually needs
@@ -78,15 +77,16 @@ services:
       service: app
     container_name: kcworks-ui
     command: ["/opt/invenio/var/instance/startup_ui_dev.sh"]
-    image: monotasker/kcworks:latest
+    image: monotasker/kcworks:${IMAGE_TAG:-latest}
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - INVENIO_LOGGING_CONSOLE=True
-      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_LOGGING_CONSOLE_LEVEL=INFO
       - INVENIO_COMMONS_API_REQUEST_PROTOCOL=https
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONNODONTWRITEBYTECODE=1
+      - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning
     ports:
       - "5000"
     volumes:
@@ -103,8 +103,6 @@ services:
       - ./docs:/opt/invenio/src/docs
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml
       - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./requirements.txt:/opt/invenio/src/requirements.txt
-      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
       - ./package.json:/opt/invenio/src/package.json
       - ./package-lock.json:/opt/invenio/src/package-lock.json
       - ./babel.config.js:/opt/invenio/src/babel.config.js
@@ -116,11 +114,10 @@ services:
       - ./.git:/opt/invenio/src/.git
       - ./.gitmodules:/opt/invenio/src/.gitmodules
       - ./.gitattributes:/opt/invenio/src/.gitattributes
-      - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
+      # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}
-
   # API Rest Application
   web-api:
     extends:
@@ -128,17 +125,18 @@ services:
       service: app
     container_name: kcworks-api
     command: ["/opt/invenio/var/instance/startup_api_dev.sh"]
-    image: monotasker/kcworks:latest
+    image: monotasker/kcworks:${IMAGE_TAG:-latest}
     ports:
       - "5001"
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - INVENIO_LOGGING_CONSOLE=True
-      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_LOGGING_CONSOLE_LEVEL=INFO
       - INVENIO_COMMONS_API_REQUEST_PROTOCOL=https
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONNODONTWRITEBYTECODE=1
+      - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning
     volumes:
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
@@ -152,8 +150,6 @@ services:
       - ./docs:/opt/invenio/src/docs
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml
       - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./requirements.txt:/opt/invenio/src/requirements.txt
-      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
       - ./package.json:/opt/invenio/src/package.json
       - ./package-lock.json:/opt/invenio/src/package-lock.json
       - ./babel.config.js:/opt/invenio/src/babel.config.js
@@ -165,7 +161,7 @@ services:
       - ./.git:/opt/invenio/src/.git
       - ./.gitmodules:/opt/invenio/src/.gitmodules
       - ./.gitattributes:/opt/invenio/src/.gitattributes
-      - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
+      # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}
@@ -176,18 +172,19 @@ services:
       service: app
     container_name: kcworks-worker
     command: ["/opt/invenio/var/instance/startup_worker_dev.sh"]
-    image: monotasker/kcworks:latest
+    image: monotasker/kcworks:${IMAGE_TAG:-latest}
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - INVENIO_LOGGING_CONSOLE=True
-      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_LOGGING_CONSOLE_LEVEL=INFO
       - INVENIO_COMMONS_API_REQUEST_PROTOCOL=https
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONNODONTWRITEBYTECODE=1
       # - INVENIO_LOGGING_FS_LEVEL=DEBUG
       # - INVENIO_LOGGING_FS_BACKUP_COUNT=10
       # - INVENIO_LOGGING_FS_LOGFILE=/opt/invenio/src/logs/invenio.log
+      - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning
     volumes:
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
@@ -201,8 +198,6 @@ services:
       - ./docs:/opt/invenio/src/docs
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml
       - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./requirements.txt:/opt/invenio/src/requirements.txt
-      - ./requirements-dev.txt:/opt/invenio/src/requirements-dev.txt
       - ./package.json:/opt/invenio/src/package.json
       - ./package-lock.json:/opt/invenio/src/package-lock.json
       - ./babel.config.js:/opt/invenio/src/babel.config.js
@@ -214,7 +209,7 @@ services:
       - ./.git:/opt/invenio/src/.git
       - ./.gitmodules:/opt/invenio/src/.gitmodules
       - ./.gitattributes:/opt/invenio/src/.gitattributes
-      - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
+      # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}

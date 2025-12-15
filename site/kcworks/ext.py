@@ -10,8 +10,11 @@ Initialize the main KCWorks extension object along with its services, blueprints
 and components.
 """
 
+import warnings
+
 from flask import Flask
 from invenio_rdm_records.services.components import DefaultRecordsComponents
+
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -48,7 +51,12 @@ class KCWorks:
             app (Flask): The Flask application object on which to initialize
                 the extension
         """
-        app.logger.debug("Initializing KCWorks extension")
+        warnings.filterwarnings(
+            "ignore",
+            message="pkg_resources is deprecated as an API.*",
+            category=UserWarning,
+        )
+
         self.init_services(app)
         self.init_components(app)
         self.init_template_filters(app)
@@ -69,22 +77,73 @@ class KCWorks:
         """Initialize service components for the KCWorks extension.
 
         Args:
-            app (Flask): The Flask application object on which to initialize
+            app: Flask application object on which to initialize
                 the extension service components
         """
-        components = app.config.get(
+        existing_rdm_record_components = app.config.get(
             "RDM_RECORDS_SERVICE_COMPONENTS", [*DefaultRecordsComponents]
         )
-        components += [FirstRecordComponent, PerFieldEditPermissionsComponent]
-        app.config["RDM_RECORDS_SERVICE_COMPONENTS"] = components
 
-        record_communities_components = app.config.get(
+        # Ensure the existing components list includes all defaults
+        # This is a hack to fix component corruption during testing
+        if app.config.get("TESTING", False):
+            existing_rdm_record_components = self._ensure_rdm_service_components(
+                app, existing_rdm_record_components
+            )
+
+        app.config["RDM_RECORDS_SERVICE_COMPONENTS"] = [
+            *existing_rdm_record_components,
+            FirstRecordComponent,
+            PerFieldEditPermissionsComponent,
+        ]
+
+        existing_record_communities_components = app.config.get(
             "RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS", []
         )
-        record_communities_components += [CommunityChangePermissionsComponent]
-        app.config["RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS"] = list(
-            set(record_communities_components)
-        )
+        app.config["RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS"] = [
+            *existing_record_communities_components,
+            CommunityChangePermissionsComponent,
+        ]
+
+    def _ensure_rdm_service_components(self, app, components_list):
+        """Ensure the components list includes all default RDM components.
+
+        Args:
+            app: Flask application
+            components_list: List of existing components
+
+        Returns:
+            List of components with defaults ensured
+        """
+        try:
+            component_names = [comp.__name__ for comp in components_list]
+            default_component_names = [
+                comp.__name__ for comp in DefaultRecordsComponents
+            ]
+
+            missing_components = [
+                name for name in default_component_names if name not in component_names
+            ]
+
+            if missing_components:
+                app.logger.warning(
+                    f"Missing default RDM components: {missing_components}"
+                )
+                app.logger.warning("Adding default RDM components to the list")
+                # Build corrected components list with defaults first
+                corrected_components = DefaultRecordsComponents.copy()
+                corrected_components.extend(components_list)
+                return corrected_components
+            else:
+                # All defaults present, return original list
+                return components_list
+
+        except Exception as e:
+            app.logger.error(f"Error ensuring RDM service components: {e}")
+            # Fallback: return list with defaults
+            corrected_components = DefaultRecordsComponents.copy()
+            corrected_components.extend(components_list)
+            return corrected_components
 
     def init_template_filters(self, app: Flask) -> None:
         """Initialize template filters.

@@ -118,23 +118,23 @@ def test_group_collections_service_automated_creation(
         # Verify administrator role has owner permissions
         admin_role_name = f"{instance_name}---{group_id}|administrator"
         assert admin_role_name in found_roles, "Administrator role should be a member"
-        assert (
-            found_roles[admin_role_name] == "owner"
-        ), "Administrator role should have owner permissions"
+        assert found_roles[admin_role_name] == "owner", (
+            "Administrator role should have owner permissions"
+        )
 
         # Verify member role has reader permissions (default for non-admin/moderator)
         member_role_name = f"{instance_name}---{group_id}|member"
         assert member_role_name in found_roles, "Member role should be a member"
-        assert (
-            found_roles[member_role_name] == "reader"
-        ), "Member role should have reader permissions"
+        assert found_roles[member_role_name] == "reader", (
+            "Member role should have reader permissions"
+        )
 
         # Verify moderator role has curator permissions
         moderator_role_name = f"{instance_name}---{group_id}|moderator"
         assert moderator_role_name in found_roles, "Moderator role should be a member"
-        assert (
-            found_roles[moderator_role_name] == "curator"
-        ), "Moderator role should have curator permissions"
+        assert found_roles[moderator_role_name] == "curator", (
+            "Moderator role should have curator permissions"
+        )
 
         # Check that admin user is owner
         admin_members = [
@@ -144,9 +144,9 @@ def test_group_collections_service_automated_creation(
             and m["member"]["id"] == str(admin_user.user.id)
         ]
         assert len(admin_members) == 1, "Admin user should be a member"
-        assert (
-            admin_members[0]["role"] == "owner"
-        ), "Admin user should have owner permissions"
+        assert admin_members[0]["role"] == "owner", (
+            "Admin user should have owner permissions"
+        )
 
         # Check that admin role is owner
         admin_role_members = [
@@ -156,9 +156,9 @@ def test_group_collections_service_automated_creation(
             and m["member"]["id"] == str(admin_role.id)
         ]
         assert len(admin_role_members) == 1, "Admin role should be a member"
-        assert (
-            admin_role_members[0]["role"] == "owner"
-        ), "Admin role should have owner permissions"
+        assert admin_role_members[0]["role"] == "owner", (
+            "Admin role should have owner permissions"
+        )
 
         # Verify the collection has the correct access settings
         assert collection.data["access"]["visibility"] == "public"

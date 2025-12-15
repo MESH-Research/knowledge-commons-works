@@ -34,8 +34,13 @@ class RoleRecipient(RecipientGenerator):
         """Constructor."""
         self.key = key
 
-    def __call__(self, notification, recipients: dict):
-        """Fetch users with a specified role and add as recipients."""
+    def __call__(self, notification, recipients: dict) -> dict[str, Recipient]:
+        """Fetch users with a specified role and add as recipients.
+
+        Returns:
+            dict[str, Recipient]: A dictionary of user ids and the
+                corresponding Recipient objects.
+        """
         user_ids = set()
 
         role = current_accounts.datastore.find_role(self.key)
@@ -71,8 +76,13 @@ class ModeratorRoleRecipient(RecipientGenerator):
     app config.
     """
 
-    def __call__(self, notification, recipients: dict):
-        """Fetch users with a specified role and add as recipients."""
+    def __call__(self, notification, recipients: dict) -> dict[str, Recipient]:
+        """Fetch users with a specified role and add as recipients.
+
+        Returns:
+            dict[str, Recipient]: A dictionary of user ids and the
+                corresponding Recipient objects.
+        """
         user_ids = set()
 
         rolename = current_app.config.get(
@@ -110,8 +120,12 @@ class CustomRequestParticipantsRecipient(RecipientGenerator):
         """Ctor."""
         self.key = key
 
-    def _get_user_id(self, request_field):
-        """Checking if entities are users for (non)-expanded requests."""
+    def _get_user_id(self, request_field) -> str | None:
+        """Checking if entities are users for (non)-expanded requests.
+
+        Returns:
+            str | None: The user's id if available, otherwise None
+        """
         if not isinstance(request_field, dict):
             # e.g. resolved email entity
             return None
@@ -127,8 +141,13 @@ class CustomRequestParticipantsRecipient(RecipientGenerator):
         )
         return non_expanded_id or expanded_id
 
-    def __call__(self, notification, recipients: dict):
-        """Fetch users involved in request and add as recipients."""
+    def __call__(self, notification, recipients: dict) -> dict[str, Recipient]:
+        """Fetch users involved in request and add as recipients.
+
+        Returns:
+            dict[str, Recipient]: A dictionary of user ids and the
+                corresponding Recipient objects.
+        """
         request = dict_lookup(notification.context, self.key)
 
         # checking if entities are users. If not, we will not add them.

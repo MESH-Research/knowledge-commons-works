@@ -16,5 +16,6 @@
 
 """Knowledge Commons Repository task results module.
 
-Exposes a URL endpoint for the Knowledge Commons Repository to receive task results from the Knowledge Commons Repository's Celery workers.
+Exposes a URL endpoint for the Knowledge Commons Repository to receive task
+results from the Celery workers.
 """

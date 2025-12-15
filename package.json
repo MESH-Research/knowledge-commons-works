@@ -9,11 +9,14 @@
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-react": "^7.18.6",
+    "@internationalized/date": "^3.8.2",
     "@reduxjs/toolkit": "^2.6.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^12.8.3",
     "babel-jest": "^29.5.0",
+    "echarts": "^5.6.0",
+    "echarts-for-react": "^3.0.2",
     "formik": "^2.2.9",
     "geopattern": "^1.2.3",
     "i18next": "^20.6.1",
@@ -49,6 +52,7 @@
     "test:file": "jest --testPathPattern"
   },
   "dependencies": {
-    "orcid-utils": "^1.2.2"
+    "orcid-utils": "^1.2.2",
+    "pako": "^2.1.0"
   }
 }

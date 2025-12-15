@@ -11,27 +11,60 @@ from collections.abc import Callable
 
 import marshmallow as ma
 import pytest
+from flask import current_app
+from flask_principal import Identity
 from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_communities.communities.records.api import Community
 from invenio_communities.proxies import current_communities
-from invenio_rdm_records.proxies import (
-    current_rdm_records_service,
-)
+from invenio_rdm_records.proxies import current_rdm_records, current_rdm_records_service
 from invenio_rdm_records.records.api import RDMRecord
 from invenio_rdm_records.utils import get_or_create_user
+from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
+from invenio_requests.proxies import current_requests_service
+from invenio_search.proxies import current_search_client
 
 
 def add_community_to_record(
-    db: SQLAlchemy, record: RDMRecord, community_id: str, default: bool = False
+    db: SQLAlchemy,
+    record: RDMRecord,
+    community_id: str,
+    identity: Identity = system_identity,
+    default: bool = False,
 ) -> None:
     """Add a community to a record."""
-    record.parent.communities.add(community_id, default=default)  # type: ignore
-    record.parent.commit()  # type: ignore
-    db.session.commit()  # type: ignore
-    current_rdm_records_service.indexer.index(record, arguments={"refresh": True})
+    current_search_client.indices.refresh(index="*rdmrecords-records*")
+
+    with UnitOfWork(db.session) as uow:
+        result = current_rdm_records.record_communities_service.add(
+            identity,
+            record.pid.pid_value,  # type: ignore
+            data={"communities": [{"id": str(community_id)}]},
+            uow=uow,
+        )
+
+        request = result[0][0]
+        if request and "request_id" in request:
+            request_id = request["request_id"]
+            request_status = request["request"]["status"]
+
+            if request_status == "submitted":
+                current_requests_service.execute_action(
+                    system_identity, request_id, "accept", uow=uow
+                )
+                current_app.logger.error(f"Accepted request: {request_id}")
+
+        uow.commit()
+
+    # Get the updated record from the database
+    updated_record = current_rdm_records_service.record_cls.get_record(record.id)
+
+    # Now index the updated record
+    current_rdm_records_service.indexer.index(
+        updated_record, arguments={"refresh": True}
+    )
 
 
 def make_community_member(user_id: int, role: str, community_id: str) -> None:
@@ -46,7 +79,11 @@ def make_community_member(user_id: int, role: str, community_id: str) -> None:
 
 @pytest.fixture(scope="function")
 def communities_links_factory():
-    """Create links for communities for testing."""
+    """Create links for communities for testing.
+
+    Returns:
+        function: Function to assemble community links.
+    """
 
     def assemble_links(community_id: str, slug: str):
         return {
@@ -75,10 +112,18 @@ def communities_links_factory():
 
 @pytest.fixture(scope="function")
 def group_communities_data_factory():
-    """Create metadata for group collections for testing."""
+    """Create metadata for group collections for testing.
+
+    Returns:
+        function: Function to assemble group communities data.
+    """
 
     def assemble_data() -> list[dict]:
-        """Create metadata for group collections for testing."""
+        """Create metadata for group collections for testing.
+
+        Returns:
+            list[dict]: List of community metadata dictionaries.
+        """
         communities_data = []
         groups_data = {
             "knowledgeCommons": [
@@ -181,6 +226,9 @@ def minimal_community_factory(
 
     Returns a function that can be called to create a minimal community
     for testing. That function returns the created community record.
+
+    Returns:
+        function: Function to create minimal communities.
     """
 
     def create_minimal_community(
@@ -191,6 +239,7 @@ def minimal_community_factory(
         custom_fields: dict | None = None,
         members: dict | None = None,
         mock_search_api: bool = True,
+        created: str | None = None,
     ) -> Community:
         """Create a minimal community for testing.
 
@@ -198,6 +247,9 @@ def minimal_community_factory(
         Also allows specifying the members of the community with their roles.
 
         If no owner is specified, a new user is created and used as the owner.
+
+        Returns:
+            Community: The created community record.
         """
         metadata = metadata or {}
         access = access or {}
@@ -276,6 +328,15 @@ def minimal_community_factory(
         )
         community_id = community_rec.id
 
+        # Handle created timestamp if provided
+        if created:
+            community_record = Community.get_record(community_id)
+            community_record.model.created = created  # type: ignore
+            uow = UnitOfWork(db.session)
+            uow.register(RecordCommitOp(community_record))
+            uow.commit()
+            current_communities.service.indexer.index(community_record)
+
         for m in members.keys():
             for user_id in members[m]:
                 current_communities.service.members.add(
@@ -343,3 +404,42 @@ def sample_communities_factory(
             pass
 
     return create_communities
+
+
+@pytest.fixture(scope="function")
+def sample_community_with_group_id(
+    app, db, search_clear, create_communities_custom_fields, minimal_community_factory
+):
+    """Create a sample community with kcr:commons_group_id for testing.
+
+    Yields:
+        dict: Dictionary containing:
+            - id (str): The community ID
+            - group_id (str): The kcr:commons_group_id value
+            - community: The community service item
+    """
+    community = minimal_community_factory(
+        metadata={
+            "title": "Test Community with Group ID",
+            "description": "A test community for created date testing",
+            "type": {"id": "organization"},
+        },
+        access={
+            "visibility": "public",
+            "member_policy": "open",
+            "record_policy": "open",
+        },
+        custom_fields={
+            "kcr:commons_group_id": "test-group-123",
+        },
+    )
+    community_dict = community.to_dict()
+    community_id = community_dict["id"]
+
+    group_id = community_dict.get("custom_fields", {}).get("kcr:commons_group_id")
+
+    yield {
+        "id": community_id,
+        "group_id": group_id,
+        "community": community,
+    }

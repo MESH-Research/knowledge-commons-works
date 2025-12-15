@@ -2,16 +2,19 @@
 
 from flask import Blueprint, jsonify, make_response
 from invenio_records_resources.services.errors import PermissionDeniedError
+from werkzeug.exceptions import Forbidden, MethodNotAllowed
+
 from kcworks.views.admin_login.admin_login import AdminLogin
 from kcworks.views.api.notifications import InternalNotifications
 from kcworks.views.task_results.task_results import TaskResults
-from werkzeug.exceptions import Forbidden, MethodNotAllowed
 
 
 def create_blueprint(app):
-    """Register blueprint routes on app."""
-    app.logger.debug("create_blueprint")
+    """Register blueprint routes on app.
 
+    Returns:
+        Blueprint: The configured blueprint.
+    """
     blueprint = Blueprint(
         "kcworks",
         __name__,
@@ -35,7 +38,11 @@ def create_blueprint(app):
 
 
 def create_api_blueprint(app):
-    """Register API blueprint routes on app."""
+    """Register API blueprint routes on app.
+
+    Returns:
+        Blueprint: The configured API blueprint.
+    """
     with app.app_context():
         blueprint = Blueprint(
             "kcworks_api",

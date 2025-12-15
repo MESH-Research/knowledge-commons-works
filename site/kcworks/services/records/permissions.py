@@ -65,6 +65,9 @@ def per_field_edit_permission_factory(
 
     Returns:
         A permission policy for the community's restricted fields.
+
+    Raises:
+        PermissionError: If there's an error creating the permission policy.
     """
     role_generators = [  # Default even if no community ID or roles
         SystemProcess,

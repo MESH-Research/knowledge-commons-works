@@ -1,13 +1,14 @@
-import requests
-import numpy as np
-import json
 import calendar
 import datetime
-from datetime import date
+import json
+
+import numpy as np
+import requests
 
 # create class for managing stats queried from Invenio API response
 
-class APIclient():
+
+class APIclient:
     # constructor: an APIResponse object keeps track of headers for the API request, the JSON response from
     # the records endpoint, and a dictionary mapping id->deposit info
     def __init__(self, bearer_token):
@@ -25,7 +26,6 @@ class APIclient():
         self.records_url = 'https://invenio-dev.hcommons-staging.org/api/records'
         self.stats_url = 'https://invenio-dev.hcommons-staging.org/api/stats'
 
-
     # function that returns JSON string from a GET request to records endpoint
     # also creates dictionary mapping deposit ID to dictionary of deposit info (from records endpoint)
     def get_records(self, version):
@@ -39,7 +39,6 @@ class APIclient():
                 id = item['parent']['id']
             self.deposits[id] = item
             
-
     # function that returns the number of deposits, either over time or total
     def total_deposits(self, freq):
         if self.records == None:
@@ -79,7 +78,6 @@ class APIclient():
         else:
             return self.records['hits']['total']
         
-    
     # function that returns the total num of views of a deposit
     def total_views(self, id, version, start_date, end_date, freq, unique):
         if id == 'all':
@@ -205,7 +203,7 @@ class APIclient():
                     if day_of_week == 6:
                         init_delta = datetime.timedelta(days=6)
                     else:
-                        init_delta = datetime.timedelta(days=5-day_of_week)
+                        init_delta = datetime.timedelta(days=5 - day_of_week)
                     start_week = start_datetime
                     end_week = start_datetime + init_delta
                     delta = datetime.timedelta(days=6)
@@ -260,7 +258,6 @@ class APIclient():
                         start_datetime += delta
 
                     return views_over_time
-
 
     # function that returns the average num of views across all deposits (can handle over time)
     def avg_views(self, version, start_date, end_date, freq, unique):
@@ -438,7 +435,7 @@ class APIclient():
             if day_of_week == 6:
                 init_delta = datetime.timedelta(days=6)
             else:
-                init_delta = datetime.timedelta(days=5-day_of_week)
+                init_delta = datetime.timedelta(days=5 - day_of_week)
             start_week = start_datetime
             end_week = start_datetime + init_delta
             delta = datetime.timedelta(days=6)
@@ -510,7 +507,6 @@ class APIclient():
 
             return avg_views
 
-    
     # function that returns the total num of downloads of a deposit
     def total_downloads(self, id, version, start_date, end_date, freq, unique):
         if id == 'all':
@@ -621,7 +617,7 @@ class APIclient():
                 if day_of_week == 6:
                     init_delta = datetime.timedelta(days=6)
                 else:
-                    init_delta = datetime.timedelta(days=5-day_of_week)
+                    init_delta = datetime.timedelta(days=5 - day_of_week)
                 start_week = start_datetime
                 end_week = start_datetime + init_delta
                 delta = datetime.timedelta(days=6)
@@ -631,19 +627,19 @@ class APIclient():
                     if version.lower() == "current":
                         self.payload = json.dumps({"downloads": {"stat": "record-download", 
                                                 "params": {"start_date": start_week.strftime("%Y-%m-%d"), 
-                                                            "end_date": (end_datetime.strftime("%Y-%m-%d") if end_week > end_datetime \
+                                                            "end_date": (end_datetime.strftime("%Y-%m-%d") if end_week > end_datetime 
                                                                          else end_week.strftime("%Y-%m-%d")), 
                                                             "recid": id}}})
                     else:
                         self.payload = json.dumps({"downloads": {"stat": "record-download-all-versions", 
                                                 "params": {"start_date": start_week.strftime("%Y-%m-%d"), 
-                                                            "end_date": (end_datetime.strftime("%Y-%m-%d") if end_week > end_datetime \
+                                                            "end_date": (end_datetime.strftime("%Y-%m-%d") if end_week > end_datetime 
                                                                          else end_week.strftime("%Y-%m-%d")), 
                                                             "parent_recid": id}}})
                     response = requests.post(self.stats_url, headers=self.headers, data=self.payload, verify=False).json()
-                    date_key = "Week of " + start_week.strftime("%Y-%m-%d") + " - " + (end_datetime.strftime("%Y-%m-%d") if end_week > end_datetime \
+                    date_key = "Week of " + start_week.strftime("%Y-%m-%d") + " - " + (end_datetime.strftime("%Y-%m-%d") if end_week > end_datetime 
                                                                                            else end_week.strftime("%Y-%m-%d"))
-                    #print(response)
+                    # print(response)
                     if unique:
                         downloads_over_time[date_key] = response["downloads"]["unique_downloads"]
                     else:
@@ -677,7 +673,6 @@ class APIclient():
 
                 return downloads_over_time
         
-
     # function that returns the average num of downloads across all deposits (can handle over time)
     def avg_downloads(self, version, start_date, end_date, freq, unique):
         if self.records == None:
@@ -846,7 +841,7 @@ class APIclient():
             if day_of_week == 6:
                 init_delta = datetime.timedelta(days=6)
             else:
-                init_delta = datetime.timedelta(days=5-day_of_week)
+                init_delta = datetime.timedelta(days=5 - day_of_week)
             start_week = start_datetime
             end_week = start_datetime + init_delta
             delta = datetime.timedelta(days=6)
@@ -918,7 +913,6 @@ class APIclient():
 
             return avg_downloads
         
-
     # return a dictionary of deposits and number of downloads, sorted
     def top_downloads(self):
         if self.records == None:

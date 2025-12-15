@@ -15,7 +15,11 @@ from invenio_vocabularies.records.api import Vocabulary
 
 @pytest.fixture(scope="module")
 def licenses(app):
-    """Fixture to create the licenses vocabulary type."""
+    """Fixture to create the licenses vocabulary type.
+
+    Returns:
+        VocabularyType: The created licenses vocabulary type.
+    """
     return vocabulary_service.create_type(system_identity, "licenses", "lic")
 
 
@@ -80,6 +84,22 @@ LICENSE_DATA = [
             "en": (
                 "The Creative Commons Attribution-NonCommercial"
                 "-NoDerivatives license allows"
+                " re-distribution and re-use of a licensed work on"
+                " the condition that the creator is appropriately credited."
+            )
+        },
+    },
+    {
+        "id": "cc-by-sa-4.0",
+        "props": {
+            "url": "https://creativecommons.org/licenses/by-sa/4.0/legalcode",
+            "scheme": "spdx",
+            "osi_approved": "",
+        },
+        "title": {"en": "Creative Commons Attribution-ShareAlike 4.0 International"},
+        "description": {
+            "en": (
+                "The Creative Commons Attribution-ShareAlike license allows"
                 " re-distribution and re-use of a licensed work on"
                 " the condition that the creator is appropriately credited."
             )

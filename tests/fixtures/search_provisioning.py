@@ -30,7 +30,11 @@ def mock_send_remote_api_update(
     service_method: str = "",
     **kwargs,
 ):
-    """Mock the send_remote_api_update task."""
+    """Mock the send_remote_api_update task.
+
+    Returns:
+        None: This is a mock function that doesn't return anything.
+    """
     record = record or {}
     if service_type == "rdm_record" and service_method == "publish":
         # Simulate a successful remote API update
@@ -54,7 +58,11 @@ def mock_send_remote_api_update_fixture(mocker):
 
 @pytest.fixture
 def mock_search_api_request(requests_mock):
-    """Mock the sending of search API requests."""
+    """Mock the sending of search API requests.
+
+    Returns:
+        function: Mock request function.
+    """
 
     def mock_request(
         http_method: str,
@@ -62,7 +70,11 @@ def mock_search_api_request(requests_mock):
         metadata: dict,
         api_url: str,
     ):
-        """Mock the sending of search API requests."""
+        """Mock the sending of search API requests.
+
+        Returns:
+            dict: Mock response data.
+        """
         mock_response = {
             "_internal_id": draft_id,
             "_id": "y-5ExZIBwjeO8JmmunDd",
@@ -108,7 +120,11 @@ def mock_search_api_request(requests_mock):
 #             app_obj.logger.debug("Mocked remote_api_provisioning_triggered")
 #             app_obj.logger.debug("Events:")
 #             app_obj.logger(
-#                 pformat(current_queues.queues["remote-api-provisioning-events"].events)
+#                 pformat(
+#                     current_queues.queues[
+#                         "remote-api-provisioning-events"
+#                     ].events
+#                 )
 #             )
 #             raise RuntimeError("Mocked remote_api_provisioning_triggered")
 

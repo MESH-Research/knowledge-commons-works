@@ -5,6 +5,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Integration tests for the accounts API."""
+
 import datetime
 import json
 from collections.abc import Callable
@@ -15,7 +16,6 @@ import pytz
 from flask import Flask
 from invenio_accounts import current_accounts
 from invenio_accounts.models import User
-from invenio_record_importer_kcworks.services.users import UsersHelper
 from kcworks.services.accounts.saml import (
     acs_handler_factory,
     knowledgeCommons_account_get_user,
@@ -23,6 +23,8 @@ from kcworks.services.accounts.saml import (
     knowledgeCommons_account_setup,
 )
 from requests_mock.adapter import _Matcher as Matcher
+
+from invenio_record_importer_kcworks.services.users import UsersHelper
 
 from ..fixtures.saml import idp_responses
 from ..fixtures.users import AugmentedUserFixture, user_data_set
@@ -81,9 +83,7 @@ def test_knowledgeCommons_account_info(
     assert mock_adapter.call_count == 1
 
     expected_result_email: str = (
-        output["user"]["email"]
-        if output["user"]["email"]
-        else user_data["email"]
+        output["user"]["email"] if output["user"]["email"] else user_data["email"]
         # To handle the case where the IDP response does not have an email
         # and we are retrieving it from the api
     )

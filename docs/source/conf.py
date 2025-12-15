@@ -9,7 +9,7 @@
 project = "Knowledge Commons Works"
 copyright = "2025, Mesh Research"
 author = "Mesh Research"
-release = "0.5.6"
+release = "0.7.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

@@ -2,7 +2,7 @@ import json
 
 
 def convert_json(input_file, output_file):
-    with open(input_file, "r") as f:
+    with open(input_file) as f:
         data = json.load(f)
 
     with open(output_file, "w") as f:

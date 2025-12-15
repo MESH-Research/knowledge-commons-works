@@ -23,12 +23,20 @@ previewable_extensions = [".pptx", ".ppt"]
 
 
 def can_preview(file):
-    """Check if file can be previewed."""
+    """Check if file can be previewed.
+
+    Returns:
+        bool: True if file can be previewed, False otherwise.
+    """
     return file.has_extensions(*previewable_extensions)
 
 
 def preview(file):
-    """Preview file."""
+    """Preview file.
+
+    Returns:
+        str: Rendered template for file preview.
+    """
     return render_template(
         "custom_previewers/invenio_custom_pptx_viewer/pptx_viewer.html",
         file=file,

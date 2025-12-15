@@ -15,7 +15,7 @@
 
 """Service component allowing fine-grained control of changing record communities."""
 
-from typing import Any
+from typing import Any, cast
 
 from flask_principal import Identity
 from invenio_access.permissions import system_identity
@@ -58,8 +58,6 @@ class CommunityChangePermissionsComponent(ServiceComponent):
 
         Raises:
             PermissionDeniedError: If the identity doesn't have permission
-            SetDefaultCommunityError: If the identity doesn't have permission to change
-                the default community
         """
         if not (
             record.parent
@@ -94,14 +92,11 @@ class CommunityChangePermissionsComponent(ServiceComponent):
                 )
         return True
 
-    def remove(
+    def remove_community(
         self,
         identity: Identity,
-        record: RDMRecord,
-        communities: list[dict[str, Any]],
-        errors: list[dict[str, Any]],
         uow: UnitOfWork | None = None,
-        **kwargs: Any,
+        **kwargs: dict[str, Any],
     ) -> None:
         """Prevent unauthorized removal of the default community from a record.
 
@@ -110,16 +105,16 @@ class CommunityChangePermissionsComponent(ServiceComponent):
 
         Parameters:
             identity (Any): The identity performing the action
-            _id (str): The record ID
-            data (dict[str, Any]): The data containing the communities to remove
-            errors (list[dict[str, Any]]): The errors to add to
             uow (UnitOfWork | None, optional): The unit of work manager. Defaults
                 to None.
             **kwargs (Any): Additional keyword arguments
         """
-        communities_to_remove = [c["id"] for c in communities]
+        record = cast(RDMRecord, kwargs.get("record"))
+        errors = cast(list, kwargs.get("errors"))
+        # valid_data = kwargs.get("valid_data")
+        communities_to_remove = [kwargs.get("community", {}).get("id")]
         if (
-            record.parent
+            record.parent is not None
             and record.parent.communities  # type: ignore
             and record.parent.communities.default  # type: ignore
         ):
@@ -130,14 +125,7 @@ class CommunityChangePermissionsComponent(ServiceComponent):
             if str(default_community.id) in communities_to_remove:
                 try:
                     self._check_default_community_permission(identity, record, "remove")
-                except PermissionDeniedError:
-                    communities.remove(
-                        next(
-                            c
-                            for c in communities
-                            if c["id"] == str(default_community.id)
-                        )
-                    )
+                except PermissionDeniedError as e:
                     errors.append(
                         {
                             "field": "parent.communities.default",
@@ -149,13 +137,14 @@ class CommunityChangePermissionsComponent(ServiceComponent):
                             ),
                         }
                     )
+                    raise e
 
     def set_default(
         self,
         identity: Identity,
-        record: RDMRecord,
-        default_community_id: str | None,
-        valid_data: dict[str, Any],
+        record: RDMRecord | None = None,
+        default_community_id: str | None = None,
+        valid_data: dict[str, Any] | None = None,
         uow: UnitOfWork | None = None,
         **kwargs: Any,
     ) -> None:
@@ -181,7 +170,7 @@ class CommunityChangePermissionsComponent(ServiceComponent):
             SetDefaultCommunityError: If the identity doesn't have permission to change
                 the default community
         """
-        if record.is_published:
+        if record and record.is_published:
             published_version_rec = RDMRecord.get_latest_published_by_parent(
                 record.parent
             )

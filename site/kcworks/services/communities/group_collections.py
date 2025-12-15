@@ -52,7 +52,11 @@ class CommunityGroupMembershipChecker:
         self.results: list[CheckResult] = []
 
     def run_checks(self) -> list[CheckResult]:
-        """Run checks on all communities with group IDs."""
+        """Run checks on all communities with group IDs.
+
+        Returns:
+            list[CheckResult]: List of check results for all communities.
+        """
         print("Finding communities with group IDs...")
         communities = self._find_communities_with_group_id()
         print(f"Found {len(communities)} communities with group IDs")
@@ -66,7 +70,11 @@ class CommunityGroupMembershipChecker:
         return self.results
 
     def _find_communities_with_group_id(self) -> list[dict]:
-        """Find all communities that have a group ID in their custom fields."""
+        """Find all communities that have a group ID in their custom fields.
+
+        Returns:
+            list[dict]: List of community dictionaries with group IDs.
+        """
         try:
             # Search for communities with group ID in custom fields
             search = Search(
@@ -110,7 +118,11 @@ class CommunityGroupMembershipChecker:
             return []
 
     def _check_community(self, community: dict) -> CheckResult:
-        """Check a single community's group memberships."""
+        """Check a single community's group memberships.
+
+        Returns:
+            CheckResult: Result of the community check.
+        """
         community_id = community["id"]
         community_slug = community["slug"]
         commons_instance = community["commons_instance"]
@@ -181,6 +193,9 @@ class CommunityGroupMembershipChecker:
 
         We may want to fetch from the remote API and config. For now, we'll
         create the standard role structure.
+
+        Returns:
+            dict[str, list[str]]: The expected roles for the group.
         """
         slug = f"{commons_instance}---{commons_group_id}"
 
@@ -200,7 +215,11 @@ class CommunityGroupMembershipChecker:
     def _check_existing_roles_and_memberships(
         self, community_id: str, expected_roles: dict[str, list[str]]
     ) -> tuple[list[str], list[str]]:
-        """Check which roles exist and which are members of the community."""
+        """Check which roles exist and which are members of the community.
+
+        Returns:
+            tuple[list[str], list[str]]: Tuple of (existing_roles, member_roles).
+        """
         existing_roles = []
         member_roles = []
 
@@ -236,7 +255,11 @@ class CommunityGroupMembershipChecker:
     def _create_missing_roles(
         self, expected_roles: dict[str, list[str]], existing_roles: list[str]
     ) -> list[str]:
-        """Create missing roles."""
+        """Create missing roles.
+
+        Returns:
+            list[str]: List of missing role names.
+        """
         created_roles = []
         all_expected_roles = []
         for role_list in expected_roles.values():
@@ -261,7 +284,11 @@ class CommunityGroupMembershipChecker:
         expected_roles: dict[str, list[str]],
         member_roles: list[str],
     ) -> list[str]:
-        """Add missing roles as members of the community, and fix wrong permissions."""
+        """Add missing roles as members of the community, and fix wrong permissions.
+
+        Returns:
+            list[str]: A list of the added community roles.
+        """
         added_roles = []
 
         # Get current member roles and their permissions
@@ -328,7 +355,12 @@ class CommunityGroupMembershipChecker:
     def _verify_role_memberships(
         self, community_id: str, expected_roles: dict[str, list[str]]
     ) -> bool:
-        """Verify that all expected roles are members of the community."""
+        """Verify that all expected roles are members of the community.
+
+        Returns:
+            bool: True if all roles are members of the community, False
+                  if not.
+        """
         try:
             members = self.communities_service.service.members.search(
                 system_identity, community_id
@@ -379,7 +411,11 @@ class CommunityGroupMembershipChecker:
     def _check_user_assignments(
         self, expected_roles: dict[str, list[str]]
     ) -> list[str]:
-        """Check which users are assigned to the expected roles."""
+        """Check which users are assigned to the expected roles.
+
+        Returns:
+            list[str]: A list of the users assigned to the roles.
+        """
         users_found = []
         all_expected_roles = []
         for role_list in expected_roles.values():

@@ -45,7 +45,11 @@ class AdminLogin(MethodView):
         self.template = "kcworks/view_templates/admin_login.html"
 
     def get(self) -> Response | WerkzeugResponse:
-        """Render the template for GET requests."""
+        """Render the template for GET requests.
+
+        Returns:
+            Response | WerkzeugResponse: The rendered template response.
+        """
         form_class = _security.login_form
         current_app.logger.info("form_class", form_class)
 

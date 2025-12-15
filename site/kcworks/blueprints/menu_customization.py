@@ -12,7 +12,11 @@ from flask import Blueprint
 # Registration
 #
 def create_blueprint(app):
-    """Register blueprint routes on app."""
+    """Register blueprint routes on app.
+
+    Returns:
+        Blueprint: The configured blueprint.
+    """
 
     def inner_create_blueprint(app):
         blueprint = Blueprint(

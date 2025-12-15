@@ -19,7 +19,10 @@ ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     LC_ALL=en_US.UTF-8 \
     UV_PROJECT_ENVIRONMENT=/opt/invenio/src/.venv \
     VIRTUAL_ENV=/opt/invenio/src/.venv \
-    PATH="/opt/invenio/src/.venv/bin:${PATH}"
+    PATH="/opt/invenio/src/.venv/bin:${PATH}" \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONNODONTWRITEBYTECODE=1 \
+    PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning
 
 # Create instance path and set working directory
 RUN mkdir -p ${INVENIO_INSTANCE_PATH} && \
@@ -97,6 +100,8 @@ RUN sed -i '/"axios": "^0.21.0"/d' .venv/lib/python*/site-packages/invenio_searc
 
 # Build assets
 RUN . .venv/bin/activate && \
+    # Ensure invenio-stats-dashboard is properly installed before webpack build
+    uv pip install -e ./site/kcworks/dependencies/invenio-stats-dashboard && \
     invenio collect --verbose && \
     invenio webpack clean create && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less && \
