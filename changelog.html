@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Development Roadmap" href="roadmap.html"><link rel="prev" title="Feature Highlights" href="feature_highlights.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
-        <title>Changes - Knowledge Commons Works 0.5.6 documentation</title>
+        <title>Changes - Knowledge Commons Works 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=acfd86a5" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Knowledge Commons Works 0.5.6 documentation</div></a>
+      <a href="index.html"><div class="brand">Knowledge Commons Works 0.7.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.5.6 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.7.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -270,7 +270,113 @@
 <section id="changes">
 <h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
 <section id="id1">
-<h2>0.5.6 (2025-09-30)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>0.7.0 (2025-12-15)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Major new feature: Stats dashboards for collections and KCWorks as a whole</p></li>
+<li><p>Other misc. user-facing improvements and bug fixes:</p>
+<ul>
+<li><p>user dashboard uploads tab</p>
+<ul>
+<li><p>added badge to indicate when listed published work has a draft</p></li>
+<li><p>changed stats display to be hidden for drafts (that have no stats)</p></li>
+</ul>
+</li>
+<li><p>search</p>
+<ul>
+<li><p>updated search result items to include DOI</p></li>
+</ul>
+</li>
+<li><p>work detail pages</p>
+<ul>
+<li><p>make DOIs in detail page sidebar clickable links with accessible copy buttons</p></li>
+<li><p>fix URL encoding of special characters in previewer URL (occasionally
+broke preview for some files)</p></li>
+<li><p>fix URLs for users’ GND identifiers</p></li>
+<li><p>layout tweaks to contributor/creator display</p></li>
+</ul>
+</li>
+<li><p>upload form</p>
+<ul>
+<li><p>fix validation of contributors’ GND identifiers</p></li>
+</ul>
+</li>
+<li><p>theming</p>
+<ul>
+<li><p>fix styling of close button in info messages-</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Back-end updates and improvements:</p>
+<ul>
+<li><p>record importer</p>
+<ul>
+<li><p>significant refactoring</p></li>
+<li><p>fix updating of “created” date during import</p></li>
+<li><p>other minor bug fixes</p></li>
+</ul>
+</li>
+<li><p>core</p>
+<ul>
+<li><p>improve the way KCWorks extends the default service component lists</p></li>
+</ul>
+</li>
+<li><p>build</p>
+<ul>
+<li><p>change submodule dependency path handling for locally forked modules in
+invenio-record-importer-kcworks (provides a model for handling with other
+packages that have nested dependencies)</p></li>
+<li><p>solve cairo dependency issue on Macos and documented fix for dev setup.</p></li>
+<li><p>solve initial service setup issue on fast processors, where messaging
+queue and opensearch would get overwhelmed</p></li>
+</ul>
+</li>
+<li><p>cli</p>
+<ul>
+<li><p>new cli commands to manage community stats and dashboards</p></li>
+<li><p>new cli commands to change work owners</p></li>
+<li><p>new cli commands to assign org members’ records to org communities</p></li>
+<li><p>new cli command to update “created” dates in existing records</p></li>
+<li><p>new cli command to import production records into a testing instance</p></li>
+</ul>
+</li>
+<li><p>docs</p>
+<ul>
+<li><p>cleanup duplication in import API docs</p></li>
+<li><p>updated README pages</p></li>
+</ul>
+</li>
+<li><p>misc</p>
+<ul>
+<li><p>new script to count subjects by scheme in the database</p></li>
+</ul>
+</li>
+<li><p>testing</p>
+<ul>
+<li><p>greatly expanded jest test coverage for javascript components</p></li>
+<li><p>improved test fixtures (records, caching, users, jinja templates, sample
+records)</p></li>
+<li><p>integrated test suites for invenio-stats-dashboard and
+invenio-record-importer-kcworks via symlinks into the main
+KCWorks test suite</p></li>
+<li><p>new pytest plugin to maintain</p></li>
+<li><p>migration from black to ruff for linting and code style</p></li>
+<li><p>major cleanup of tests, including resolving all mypy and ruff issues</p></li>
+<li><p>major reorganization of tests</p></li>
+<li><p>make test environment use actual production settings by default, for
+better simulation of production conditions</p></li>
+<li><p>improve test runner scripts, with safer handling of container conflicts,
+better handling of test .env files</p></li>
+<li><p>fixtures to ensure various vocabularies are loaded when tests need them</p></li>
+<li><p>fixture to allow function-scoped config changes during tests</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id2">
+<h2>0.5.6 (2025-09-30)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Upload form</p>
 <ul>
@@ -279,8 +385,8 @@
 </li>
 </ul>
 </section>
-<section id="id2">
-<h2>0.5.5 (2025-09-10)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h2>0.5.5 (2025-09-10)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Upload form</p>
 <ul>
@@ -289,8 +395,8 @@
 </li>
 </ul>
 </section>
-<section id="id3">
-<h2>0.5.4 (2025-08-14)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<section id="id4">
+<h2>0.5.4 (2025-08-14)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fixes</p>
 <ul>
@@ -306,8 +412,8 @@
 </li>
 </ul>
 </section>
-<section id="id4">
-<h2>0.5.3 (2025-07-17)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<section id="id5">
+<h2>0.5.3 (2025-07-17)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Group collections</p>
 <ul>
@@ -353,15 +459,15 @@
 <li><p>Public roadmap updates</p></li>
 </ul>
 </section>
-<section id="id5">
-<h2>0.5.2 (2025-05-29)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<section id="id6">
+<h2>0.5.2 (2025-05-29)<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added a new CLI command to allow admins to bulk update a single metadata field to a single new fixed value for every record in a collection.</p></li>
 <li><p>Added public roadmap to the documentation.</p></li>
 </ul>
 </section>
-<section id="id6">
-<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<section id="id7">
+<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Removed BETA status from the site.</p>
 <ul>
@@ -816,12 +922,13 @@ or creating a new version</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changes</a><ul>
-<li><a class="reference internal" href="#id1">0.5.6 (2025-09-30)</a></li>
-<li><a class="reference internal" href="#id2">0.5.5 (2025-09-10)</a></li>
-<li><a class="reference internal" href="#id3">0.5.4 (2025-08-14)</a></li>
-<li><a class="reference internal" href="#id4">0.5.3 (2025-07-17)</a></li>
-<li><a class="reference internal" href="#id5">0.5.2 (2025-05-29)</a></li>
-<li><a class="reference internal" href="#id6">0.5.1 (2025-05-13)</a></li>
+<li><a class="reference internal" href="#id1">0.7.0 (2025-12-15)</a></li>
+<li><a class="reference internal" href="#id2">0.5.6 (2025-09-30)</a></li>
+<li><a class="reference internal" href="#id3">0.5.5 (2025-09-10)</a></li>
+<li><a class="reference internal" href="#id4">0.5.4 (2025-08-14)</a></li>
+<li><a class="reference internal" href="#id5">0.5.3 (2025-07-17)</a></li>
+<li><a class="reference internal" href="#id6">0.5.2 (2025-05-29)</a></li>
+<li><a class="reference internal" href="#id7">0.5.1 (2025-05-13)</a></li>
 <li><a class="reference internal" href="#beta13-2025-05-05">0.5.0-beta13 (2025-05-05)</a></li>
 <li><a class="reference internal" href="#beta12-2025-04-30">0.4.0-beta12 (2025-04-30)</a></li>
 <li><a class="reference internal" href="#beta11-2025-03-14">0.3.8-beta11 (2025-03-14)</a></li>
@@ -844,7 +951,7 @@ or creating a new version</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=722679d6"></script>
+</div><script src="_static/documentation_options.js?v=fe7df9b0"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

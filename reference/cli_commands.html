@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Customizations to InvenioRDM" href="../customizations.html"><link rel="prev" title="API" href="api.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
-        <title>CLI Commands - Knowledge Commons Works 0.5.6 documentation</title>
+        <title>CLI Commands - Knowledge Commons Works 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=acfd86a5" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.5.6 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.7.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.5.6 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.7.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -328,6 +328,88 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 <ul class="simple">
 <li><p><strong>provided by the main KCWorks package</strong> (kcworks/site/cli.py and kcworks/services/records/cli.py)</p></li>
 </ul>
+<section id="invenio-kcworks-records-export-records">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">export-records</span></code><a class="headerlink" href="#invenio-kcworks-records-export-records" title="Link to this heading">¶</a></h4>
+<p>Bulk exports records from the KCWorks instance. This command is used to export a subset of KCWorks records to an archive file in a local directory.</p>
+<p>The set of exported records can be filtered by a number of criteria, including:</p>
+<ul class="simple">
+<li><p>the owner of the records</p></li>
+<li><p>the contributor of the records</p></li>
+<li><p>the community/collection to export records from</p></li>
+<li><p>the date range to export records from</p></li>
+<li><p>the sort order for the records</p></li>
+</ul>
+<p>Alternately, a search string can be provided to filter the records to export. This search string is in the standard query string format used by the KCWorks record search API. The options identifying the owner, contributor, and community/collection are mutually exclusive and cannot be combined. If you wish to combine them, you can use the search string option and construct the filters by hand.</p>
+<p>The date range is inclusive and may be combined with any of the other filtering options. They starting and ending dates in the range may be formatted as YYYY-MM-DD.</p>
+<p>If you specify a sorting order with the <code class="docutils literal notranslate"><span class="pre">--sort</span></code> option must be one of the options available for the KCWorks record search API. The default is “newest” and is a descending sort by creation date.</p>
+<p>The archive file will be saved in the directory specified by the <code class="docutils literal notranslate"><span class="pre">RECORD_EXPORTER_DATA_DIR</span></code> configuration variable. By default this is <code class="docutils literal notranslate"><span class="pre">/opt/invenio/import_data</span></code>. Unless an archive name is specified using the <code class="docutils literal notranslate"><span class="pre">--archive-name</span></code> option, the archive file will be named “kcworks-records-export” and will have a timestamp and extension appended. The archive file will be a zip file by default, although you may specify any format supported by the <code class="docutils literal notranslate"><span class="pre">shutil.make_archive</span></code> function (using the <code class="docutils literal notranslate"><span class="pre">--archive-format</span></code> option).</p>
+<p>The files for the exported records will be included in the archive file. These are in a nested folder structure with top-level folders for each year, subfolders for each month, and then one subfolder for each record (named by its record ID). All of the files for a record are included in the same record subfolder. The metadata for all of the exported records is included in a single JSON file in the top-level folder of the archive.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">owner_id</span></code> (optional): the ID of the owner of the records to export.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">owner_email</span></code> (optional): the email address of the owner of the records to export.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contributor_id</span></code> (optional): the ID of the contributor of the records to export.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contributor_email</span></code> (optional): the email address of the contributor of the records to export.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contributor_orcid</span></code> (optional): the ORCID of the contributor of the records to export.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contributor_kc_username</span></code> (optional): the username of the contributor of the records to export.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">community_id</span></code> (optional): the ID of the community to export records from.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search_string</span></code> (optional): a search string to filter the records to export.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">count</span></code> (optional): the number of records to export. Defaults to 1000.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (optional): the start date to export records from. Defaults to None.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code> (optional): the end date to export records to. Defaults to None.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sort</span></code> (optional): the sort order for the records. Defaults to “newest”.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">archive_format</span></code> (optional): the format of the archive file. Defaults to “zip”.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output_path</span></code> (optional): the path to the directory where the archive file will be saved. Defaults to the directory specified by the <code class="docutils literal notranslate"><span class="pre">RECORD_EXPORTER_DATA_DIR</span></code> configuration variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">api_token</span></code> (optional): the API token to use for the KCWorks instance. Defaults to the value of the <code class="docutils literal notranslate"><span class="pre">KC_API_TOKEN</span></code> environment variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">api_url</span></code> (optional): the API URL to use for the KCWorks instance. Defaults to the value of the <code class="docutils literal notranslate"><span class="pre">KC_API_URL</span></code> environment variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">archive_name</span></code> (optional): the name of the archive file. Defaults to “kcworks-records-export”.</p></li>
+</ul>
+<p>Example exporting a user’s records from the last year:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>export-records<span class="w"> </span>--owner-id<span class="w"> </span><span class="m">1234567890</span><span class="w"> </span>--start-date<span class="w"> </span><span class="m">2024</span>-01-01<span class="w"> </span>--end-date<span class="w"> </span><span class="m">2024</span>-12-31
+</pre></div>
+</div>
+<p>Example exporting all of a collection’s records:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>export-records<span class="w"> </span>--community-id<span class="w"> </span><span class="m">1234567890</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">export-records</span></code> command is generally used to export records from the same instance on which the command is run. It is
+possible to export records from a remote KCWorks instance, but the API url and authentication token for the remote instance must be provided using the <code class="docutils literal notranslate"><span class="pre">--api-url</span></code> and <code class="docutils literal notranslate"><span class="pre">--api-token</span></code> options. When exporting from a remote instance, the archive will still be saved locally on the machine running the command.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When exporting records from a remote KCWorks instance, the filtering options by contributor are not currently supported. In other words, these options will only work if the CLI command is exporting from the same KCWorks instance as the one being exported from.</p>
+</div>
+</section>
+<section id="invenio-kcworks-records-import-test-data">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">import-test-data</span></code><a class="headerlink" href="#invenio-kcworks-records-import-test-data" title="Link to this heading">¶</a></h4>
+<p>Imports test data into the KCWorks instance.</p>
+<p>By default the import query is ordered by <code class="docutils literal notranslate"><span class="pre">newest</span></code>, a descending sort based on the <code class="docutils literal notranslate"><span class="pre">created</span></code> field. If a date range is provided, the records within that range will still be ordered by <code class="docutils literal notranslate"><span class="pre">newest</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">count</span></code> argument gives the number of results from that query that will actually be imported. The <code class="docutils literal notranslate"><span class="pre">offset</span></code> argument gives the number of results to skip before starting to import.</p>
+<p>Sometimes it is useful to import a subset of the production data with a wider range of dates than would result from a simple <code class="docutils literal notranslate"><span class="pre">newest</span></code> query. The <code class="docutils literal notranslate"><span class="pre">spread_dates</span></code> argument can be used to spread the records as evenly as possible over a range of dates.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">count</span></code> (optional): the number of records to import. Defaults to 10.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code> (optional): the offset from the start of the query results to start importing from. Defaults to 0.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (optional): the start date to import records from. Defaults to None.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code> (optional): the end date to import records to. Defaults to None.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">spread_dates</span></code> (optional): whether to spread the records over a range of dates. Defaults to False.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">record_ids</span></code> (optional): a comma-separated list of record IDs to import. Defaults to None.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">import-test-data</span></code> command is idempotent, meaning that if a result has already been imported it will not be imported again. (It may, however, be updated if changes have been made to the production record.) The command output will treat these as successful imports, although the detailed import counts presented in the command line output (before the final summary) will specify how many records were new, updated, already existed, etc.</p>
+</div>
+<p>Example of importing 10 records with evenly spread dates over the year 2024:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>import-test-data<span class="w"> </span>--count<span class="w"> </span><span class="m">10</span><span class="w"> </span>--start-date<span class="w"> </span><span class="m">2024</span>-01-01<span class="w"> </span>--end-date<span class="w"> </span><span class="m">2024</span>-12-31<span class="w"> </span>--spread-dates
+</pre></div>
+</div>
+<p>Example of importing 2 records with specific record IDs:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>import-test-data<span class="w"> </span>--count<span class="w"> </span><span class="m">2</span><span class="w"> </span>--record-ids<span class="w"> </span><span class="s2">&quot;1234567890,1234567891&quot;</span>
+</pre></div>
+</div>
+</section>
 <section id="invenio-kcworks-records-bulk-update">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">bulk-update</span></code><a class="headerlink" href="#invenio-kcworks-records-bulk-update" title="Link to this heading">¶</a></h4>
 <p>Updates a single metadata field to a single new fixed value for <strong>every</strong> record in a community.</p>
@@ -389,11 +471,7 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 </section>
 <section id="invenio-kcworks-users-groups">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">groups</span></code><a class="headerlink" href="#invenio-kcworks-users-groups" title="Link to this heading">¶</a></h4>
-<p>Lists the groups that a KCWorks user belongs to.</p>
-<p>Arguments:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--email</span></code> (-e): the email address of the user to list groups for.</p></li>
-</ul>
+<p>Lists all the groups (flask-security roles) available in the KCWorks instance.</p>
 </section>
 <section id="invenio-kcworks-users-group-users">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">group-users</span></code><a class="headerlink" href="#invenio-kcworks-users-group-users" title="Link to this heading">¶</a></h4>
@@ -518,6 +596,8 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 <li><a class="reference internal" href="#invenio-importer"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">importer</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-index-destroy"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-index</span> <span class="pre">destroy</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span></code></a><ul>
+<li><a class="reference internal" href="#invenio-kcworks-records-export-records"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">export-records</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-records-import-test-data"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">import-test-data</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records-bulk-update"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">bulk-update</span></code></a></li>
 </ul>
 </li>
@@ -547,7 +627,7 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=722679d6"></script>
+</div><script src="../_static/documentation_options.js?v=fe7df9b0"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

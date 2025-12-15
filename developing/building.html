@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Stats and Analytics" href="stats.html"><link rel="prev" title="How Tos" href="how_tos.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
-        <title>Build Processes - Knowledge Commons Works 0.5.6 documentation</title>
+        <title>Build Processes - Knowledge Commons Works 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=acfd86a5" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.5.6 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.7.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.5.6 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.7.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -267,6 +267,18 @@
         <article role="main" id="furo-main-content">
           <section id="build-processes">
 <h1>Build Processes<a class="headerlink" href="#build-processes" title="Link to this heading">¶</a></h1>
+<section id="building-the-kcworks-container">
+<h2>Building the KCWorks Container<a class="headerlink" href="#building-the-kcworks-container" title="Link to this heading">¶</a></h2>
+<p>The KCWorks and KCWorks-frontend containers are built automatically on every push to Github or a PR is submitted to the <code class="docutils literal notranslate"><span class="pre">main</span></code>, <code class="docutils literal notranslate"><span class="pre">staging</span></code>, or <code class="docutils literal notranslate"><span class="pre">production</span></code> branches. The build is triggered by the <code class="docutils literal notranslate"><span class="pre">build.yml</span></code> workflow.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">.github/workflows/build.yml</span>
+</pre></div>
+</div>
+<p>If the push is to the <code class="docutils literal notranslate"><span class="pre">staging</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code> branch, the build will be tagged with the branch name and pushed to AWS Elastic Container Registry (ECR) as well as to the “monotasker/kcworks” Docker Hub repository. If the push is to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch, the build will be tagged with <code class="docutils literal notranslate"><span class="pre">latest</span></code> and pushed just to the “monotasker/kcworks” Docker Hub repository. If the build is triggered by a push to a branch with a name that starts with <code class="docutils literal notranslate"><span class="pre">dev/</span></code>, the build will be given a tag starting with <code class="docutils literal notranslate"><span class="pre">dev-</span></code> and pushed just to the “monotasker/kcworks” Docker Hub repository. E.g., a push to the <code class="docutils literal notranslate"><span class="pre">dev/my-feature</span></code> branch will be tagged with <code class="docutils literal notranslate"><span class="pre">dev-my-feature</span></code> and pushed to the “monotasker/kcworks” Docker Hub repository.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The local docker-compose.yml file is configured to use the “latest” container from Docker Hub by default. If you need to use a container build from a dev branch you can specify the image tag with the <code class="docutils literal notranslate"><span class="pre">IMAGE_TAG</span></code> environment variable. E.g., <code class="docutils literal notranslate"><span class="pre">IMAGE_TAG=dev-my-feature</span> <span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span> <span class="pre">-d</span></code> will use the container tagged “dev-my-feature”.</p>
+</div>
+</section>
 <section id="building-the-documentation">
 <h2>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Link to this heading">¶</a></h2>
 <p>The documentation is built using Sphinx. The documentation source files are located in the <code class="docutils literal notranslate"><span class="pre">docs/source</span></code> directory.</p>
@@ -433,6 +445,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Build Processes</a><ul>
+<li><a class="reference internal" href="#building-the-kcworks-container">Building the KCWorks Container</a></li>
 <li><a class="reference internal" href="#building-the-documentation">Building the Documentation</a></li>
 <li><a class="reference internal" href="#building-js-css-and-other-static-assets">Building JS, CSS, and Other Static Assets</a><ul>
 <li><a class="reference internal" href="#build-script-and-cli-commands">Build script and CLI commands</a><ul>
@@ -459,7 +472,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=722679d6"></script>
+</div><script src="../_static/documentation_options.js?v=fe7df9b0"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

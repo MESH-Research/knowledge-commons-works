@@ -1,12 +1,15 @@
 # About
 
-![Tests](https://github.com/mesh-research/knowledge-commons-works/actions/workflows/tests.yml/badge.svg)
-![Container build](https://github.com/mesh-research/knowledge-commons-works/actions/workflows/CI.yml/badge.svg)
-![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
+![Tests](https://img.shields.io/github/actions/workflow/status/mesh-research/knowledge-commons-works/tests.yml?label=tests&style=flat-square&logo=github&logoColor=white&color=6c7839)
+![Container Build](https://img.shields.io/github/actions/workflow/status/mesh-research/knowledge-commons-works/build.yml?label=build&style=flat-square&logo=docker&logoColor=white&color=6c7839)
+![Python](https://img.shields.io/badge/python-3.12+-276F86?style=flat-square&logo=python&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-D9B01C?style=flat-square&logo=opensourceinitiative&logoColor=white)
+![Ruff](https://img.shields.io/badge/code%20style-ruff-e47719?style=flat-square&logo=python&logoColor=white)
+![MyPy](https://img.shields.io/badge/type%20checking-mypy-547d7d?style=flat-square&logo=python&logoColor=white)
 
 ![KCWorks logo](../../static/images/kc_works_logos/SVG/kc_works_logo_wordmark.svg)
 
-Version 0.5.6
+Version 0.7.0
 
 Knowledge Commons Works is a collaborative platform for storing and sharing academic research. It is part of [Knowledge Commons](https://about.hcommons.org/) and is built on an instance of the [InvenioRDM](https://inveniordm.docs.cern.ch/) repository system.
 
