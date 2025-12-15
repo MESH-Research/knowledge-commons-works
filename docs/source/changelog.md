@@ -3,6 +3,68 @@
 
 # Changes
 
+## 0.7.0 (2025-12-15)
+
+- Major new feature: Stats dashboards for collections and KCWorks as a whole
+- Other misc. user-facing improvements and bug fixes:
+  - user dashboard uploads tab
+    - added badge to indicate when listed published work has a draft
+    - changed stats display to be hidden for drafts (that have no stats)
+  - search
+    - updated search result items to include DOI
+  - work detail pages
+    - make DOIs in detail page sidebar clickable links with accessible copy buttons
+    - fix URL encoding of special characters in previewer URL (occasionally
+      broke preview for some files)
+    - fix URLs for users' GND identifiers
+    - layout tweaks to contributor/creator display
+  - upload form
+    - fix validation of contributors' GND identifiers
+  - theming
+    - fix styling of close button in info messages-
+- Back-end updates and improvements:
+  - record importer
+    - significant refactoring
+    - fix updating of "created" date during import
+    - other minor bug fixes
+  - core
+    - improve the way KCWorks extends the default service component lists
+  - build
+    - change submodule dependency path handling for locally forked modules in
+      invenio-record-importer-kcworks (provides a model for handling with other
+      packages that have nested dependencies)
+    - solve cairo dependency issue on Macos and documented fix for dev setup.
+    - solve initial service setup issue on fast processors, where messaging
+      queue and opensearch would get overwhelmed
+  - cli
+    - new cli commands to manage community stats and dashboards
+    - new cli commands to change work owners
+    - new cli commands to assign org members' records to org communities
+    - new cli command to update "created" dates in existing records
+    - new cli command to import production records into a testing instance
+  - docs
+    - cleanup duplication in import API docs
+    - updated README pages
+  - misc
+    - new script to count subjects by scheme in the database
+  - testing
+    - greatly expanded jest test coverage for javascript components
+    - improved test fixtures (records, caching, users, jinja templates, sample
+      records)
+    - integrated test suites for invenio-stats-dashboard and
+      invenio-record-importer-kcworks via symlinks into the main
+      KCWorks test suite
+    - new pytest plugin to maintain
+    - migration from black to ruff for linting and code style
+    - major cleanup of tests, including resolving all mypy and ruff issues
+    - major reorganization of tests
+    - make test environment use actual production settings by default, for
+      better simulation of production conditions
+    - improve test runner scripts, with safer handling of container conflicts,
+      better handling of test .env files
+    - fixtures to ensure various vocabularies are loaded when tests need them
+    - fixture to allow function-scoped config changes during tests
+
 ## 0.5.6 (2025-09-30)
 
 - Upload form
