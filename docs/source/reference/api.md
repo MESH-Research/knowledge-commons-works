@@ -107,6 +107,10 @@ In order to streamline the process of uploading works to KCWorks, particularly f
 
 Why is this API needed? The InvenioRDM REST API can be fragile and difficult to use, particularly for clients who are not familiar with the system. The creation and acceptance of a review request is redundant where collection administrators are uploading works for a collection they administer. The file upload steps are also not truly stateless, introducing the possibility of a file upload being interrupted and left incomplete, even if the upload of the file's content was successful.
 
+```{note}
+KCWorks provides a standalone Python script (`scripts/user_resources/kcworks_api_importer.py`) that simplifies using the import API. The script handles authentication, file uploads, and response formatting automatically. See {ref}`the script documentation <api:kcworks-api-importer-script>` below for details.
+```
+
 ### Who can use the import API?
 
 The import API is available to authorized organizations who have obtained an OAuth token for API operations. The import API places the works directly in a collection, without passing through the review process. So, the user to whom the token is issued must have sufficient permissions to publish directly in the collection. The exact role required depends on the collection's review policy:
@@ -340,6 +344,92 @@ curl -X POST https://works.hcommons.org/api/import/my-collection-id \
 ```
 
 Of course, in most cases the request will be made programmatically, not via a command line tool. The syntax for the request will vary depending on the programming language and tools being used.
+
+### Using the KCWorks API Importer Script
+
+(kcworks-api-importer-script)=
+
+KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script (`scripts/user_resources/kcworks_api_importer.py`) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
+
+#### Requirements
+
+The script requires Python 3.9 or later and the `requests` library. It can be run standalone from the KCWorks project directory or copied to any location where Python 3.9+ is available.
+
+#### Command-Line Arguments
+
+The script accepts the following command-line arguments:
+
+| Argument | Description |
+|----------|-------------|
+| `--api-key KEY` | API key for authentication. If not provided, checks `KCWORKS_IMPORT_API_KEY` environment variable, or prompts interactively. |
+| `--collection-id ID` | Collection ID or slug to import records into. If not provided, checks `KCWORKS_IMPORT_COLLECTION_ID` environment variable, or prompts interactively. |
+| `--metadata PATH` | Path to the metadata JSON file. The metadata must be a JSON array of metadata objects, even if importing a single record. If not provided, checks `KCWORKS_IMPORT_METADATA_PATH` environment variable, or prompts interactively. |
+| `--files PATH [PATH ...]` | One or more file paths to upload with the records. Multiple files can be specified by providing multiple arguments. If not provided, checks `KCWORKS_IMPORT_FILES_PATH` environment variable (comma or space-separated), or prompts interactively. |
+| `--output PATH` | Optional path to save the API response as JSON. If not provided, checks `KCWORKS_IMPORT_OUTPUT_PATH` environment variable, or prompts interactively (can be skipped by pressing Enter). |
+
+#### Environment Variables
+
+All command-line arguments can also be provided via environment variables:
+
+- `KCWORKS_IMPORT_API_KEY` - API key for authentication
+- `KCWORKS_IMPORT_COLLECTION_ID` - Collection ID or slug
+- `KCWORKS_IMPORT_METADATA_PATH` - Path to metadata JSON file
+- `KCWORKS_IMPORT_FILES_PATH` - File paths, comma or space-separated
+- `KCWORKS_IMPORT_OUTPUT_PATH` - Path to save response JSON
+
+#### Usage Examples
+
+**Basic usage with all arguments:**
+
+```bash
+python scripts/user_resources/kcworks_api_importer.py \
+  --api-key "your-api-key" \
+  --collection-id "my-collection" \
+  --metadata "metadata.json" \
+  --files "file1.pdf" "file2.docx" \
+  --output "response.json"
+```
+
+**Using environment variables:**
+
+```bash
+export KCWORKS_IMPORT_API_KEY="your-api-key"
+export KCWORKS_IMPORT_COLLECTION_ID="my-collection"
+export KCWORKS_IMPORT_METADATA_PATH="metadata.json"
+export KCWORKS_IMPORT_FILES_PATH="file1.pdf file2.docx"
+python scripts/user_resources/kcworks_api_importer.py --output "response.json"
+```
+
+**Interactive mode (will prompt for missing values):**
+
+```bash
+python scripts/user_resources/kcworks_api_importer.py
+```
+
+**Single file upload:**
+
+```bash
+python scripts/user_resources/kcworks_api_importer.py \
+  --api-key "your-api-key" \
+  --collection-id "my-collection" \
+  --metadata "metadata.json" \
+  --files "document.pdf"
+```
+
+#### Response Handling
+
+The script provides human-readable output for both successful and failed imports:
+
+- **Success (201)**: Shows checkmark, number of records imported, record IDs, and URLs
+- **Partial success (207)**: Shows warning, lists successful and failed records with error details
+- **Failure (400, 403, 500)**: Shows error message, explains the issue, and lists failed records with specific errors
+
+If an output path is provided, the full API response is also saved to that file as formatted JSON (or plain text if the response is not JSON).
+
+#### Exit Codes
+
+- `0` - Success
+- `1` - Error (invalid input, file not found, API error, etc.)
 
 ### A successful import response
 
