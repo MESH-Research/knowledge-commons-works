@@ -25,7 +25,8 @@ from jinja2 import PackageLoader
 from .fixtures.custom_fields import test_config_fields  # noqa: E402
 from .fixtures.frontend import MockManifestLoader  # noqa: E402
 from .fixtures.identifiers import test_config_identifiers  # noqa: E402
-from .fixtures.saml import test_config_saml  # noqa: E402
+
+# from .fixtures.saml import test_config_saml  # noqa: E402
 
 
 def load_config():
@@ -107,7 +108,7 @@ test_config = {
     ],
     **test_config_fields,
     # **test_config_stats,  # Now getting directly from invenio.cfg
-    **test_config_saml,
+    # **test_config_saml,
     "SQLALCHEMY_DATABASE_URI": (
         "postgresql+psycopg2://kcworks:kcworks@localhost:5432/kcworks"
     ),
