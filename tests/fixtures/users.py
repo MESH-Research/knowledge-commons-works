@@ -7,7 +7,6 @@
 
 """User related pytest fixtures for testing."""
 
-import os
 from collections.abc import Callable
 
 import pytest
@@ -15,7 +14,11 @@ from flask_login import login_user
 from flask_principal import AnonymousIdentity, Identity
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles, Role
-from invenio_access.permissions import any_user, authenticated_user, superuser_access
+from invenio_access.permissions import (
+    any_user,
+    authenticated_user,
+    superuser_access,
+)
 from invenio_access.utils import get_identity
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_accounts
@@ -60,9 +63,7 @@ def mock_user_data_api(requests_mock) -> Callable:
     """
 
     def mock_api_call(saml_id: str, mock_remote_data: dict) -> Matcher:
-        protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https")  # noqa: E501
-        base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
-        remote_url = f"{base_url}/{saml_id}"
+        remote_url = f"https://profile.hcommons.org/api/v1/subs/?sub={saml_id}"
         mock_adapter = requests_mock.get(
             remote_url,
             json=mock_remote_data,
@@ -83,23 +84,64 @@ def user_data_to_remote_data(requests_mock):
     def convert_user_data_to_remote_data(
         saml_id: str, email: str, user_data: dict
     ) -> dict[str, str | list[dict[str, str]]]:
-        """Convert user fixture data to format for remote data.
+        """Convert user fixture data to format for remote data."""
+        if user_data.get("first_name", "") != "":
+            mock_remote_data = {
+                "data": [
+                    {
+                        "sub": "user1",
+                        "profile": {
+                            "username": saml_id,
+                            "email": email,
+                            "name": user_data.get("name", ""),
+                            "first_name": user_data.get("first_name", ""),
+                            "last_name": user_data.get("last_name", ""),
+                            "institutional_affiliation": user_data.get(
+                                "institutional_affiliation", ""
+                            ),
+                            "orcid": user_data.get("orcid", ""),
+                            "preferred_language": user_data.get(
+                                "preferred_language", ""
+                            ),
+                            "time_zone": user_data.get("time_zone", ""),
+                            "groups": user_data.get("groups", ""),
+                        },
+                    }
+                ],
+                "next": None,
+                "previous": None,
+                "meta": {"authorized": True},
+            }
+        else:
+            try:
+                profile = user_data.get("data", [])[0].get("profile", {})
+            except IndexError:
+                profile = {}
 
-        Returns:
-            dict: Converted user data in remote format.
-        """
-        mock_remote_data = {
-            "username": saml_id,
-            "email": email,
-            "name": user_data.get("name", ""),
-            "first_name": user_data.get("first_name", ""),
-            "last_name": user_data.get("last_name", ""),
-            "institutional_affiliation": user_data.get("institutional_affiliation", ""),
-            "orcid": user_data.get("orcid", ""),
-            "preferred_language": user_data.get("preferred_language", ""),
-            "time_zone": user_data.get("time_zone", ""),
-            "groups": user_data.get("groups", ""),
-        }
+            mock_remote_data = {
+                "data": [
+                    {
+                        "sub": "user1",
+                        "profile": {
+                            "username": saml_id,
+                            "email": email,
+                            "name": profile.get("name", ""),
+                            "first_name": profile.get("first_name", ""),
+                            "last_name": profile.get("last_name", ""),
+                            "institutional_affiliation": profile.get(
+                                "institutional_affiliation", ""
+                            ),
+                            "orcid": profile.get("orcid", ""),
+                            "preferred_language": profile.get("preferred_language", ""),
+                            "time_zone": profile.get("time_zone", ""),
+                            "groups": profile.get("groups", []),
+                        },
+                    }
+                ],
+                "next": None,
+                "previous": None,
+                "meta": {"authorized": True},
+            }
         return mock_remote_data
 
     return convert_user_data_to_remote_data
@@ -209,6 +251,8 @@ def user_factory(
             UserIdentity.create(u.user, saml_src, saml_id)
             u.mock_adapter = mock_adapter
 
+        u.user.mock = True
+
         current_accounts.datastore.commit()
         db.session.commit()
 
@@ -305,19 +349,29 @@ def user1_data() -> dict:
         dict: User data dictionary.
     """
     return {
-        "saml_id": "user1",
-        "email": "user1@inveniosoftware.org",
-        "name": "User Number One",
-        "first_name": "User Number",
-        "last_name": "One",
-        "institutional_affiliation": "Michigan State University",
-        "orcid": "0000-0002-1825-0097",  # official dummy orcid
-        "preferred_language": "en",
-        "time_zone": "UTC",
-        "groups": [
-            {"id": 12345, "name": "awesome-mock", "role": "administrator"},
-            {"id": 67891, "name": "admin", "role": "member"},
+        "data": [
+            {
+                "sub": "user1",
+                "profile": {
+                    "saml_id": "user1",
+                    "email": "user1@inveniosoftware.org",
+                    "name": "User Number One",
+                    "first_name": "User Number",
+                    "last_name": "One",
+                    "institutional_affiliation": "Michigan State University",
+                    "orcid": "0000-0002-1825-0097",  # official dummy orcid
+                    "preferred_language": "en",
+                    "time_zone": "UTC",
+                    "groups": [
+                        {"id": 12345, "name": "awesome-mock", "role": "admin"},
+                        {"id": 67891, "name": "admin", "role": "member"},
+                    ],
+                },
+            }
         ],
+        "next": None,
+        "previous": None,
+        "meta": {"authorized": True},
     }
 
 
@@ -367,98 +421,110 @@ user_data_set = {
         "last_name": "Hc",
         "groups": [
             {"id": 1004089, "name": "Teaching and Learning", "role": "member"},
-            {"id": 1004090, "name": "Humanities, Arts, and Media", "role": "member"},
+            {
+                "id": 1004090,
+                "name": "Humanities, Arts, and Media",
+                "role": "member",
+            },
             {
                 "id": 1004091,
                 "name": "Technology, Networks, and Sciences",
                 "role": "member",
             },
-            {"id": 1004092, "name": "Social and Political Issues", "role": "member"},
+            {
+                "id": 1004092,
+                "name": "Social and Political Issues",
+                "role": "member",
+            },
             {
                 "id": 1004093,
                 "name": "Educational and Cultural Institutions",
                 "role": "member",
             },
-            {"id": 1004094, "name": "Publishing and Archives", "role": "member"},
+            {
+                "id": 1004094,
+                "name": "Publishing and Archives",
+                "role": "member",
+            },
             {
                 "id": 1004651,
                 "name": "Hidden Testing Group New Name",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004939,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004940,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004941,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004942,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004943,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004944,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004945,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004946,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004947,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004948,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004949,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004950,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004951,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004952,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
             {
                 "id": 1004953,
                 "name": "GI Hidden Group for testing",
-                "role": "administrator",
+                "role": "admin",
             },
         ],
     },

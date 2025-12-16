@@ -28,7 +28,7 @@
 	branch = main
 [submodule "site/kcworks/dependencies/invenio-remote-user-data-kcworks"]
 	path = site/kcworks/dependencies/invenio-remote-user-data-kcworks
-	url = https://github.com/MESH-Research/invenio-remote-user-data-kcworks.git
+	url = git@github.com:MESH-Research/invenio-remote-user-data-kcworks.git
 	branch = main
 [submodule "site/kcworks/dependencies/invenio-group-collections-kcworks"]
 	path = site/kcworks/dependencies/invenio-group-collections-kcworks

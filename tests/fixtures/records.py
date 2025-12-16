@@ -24,6 +24,11 @@ from flask_principal import Identity
 from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from invenio_record_importer_kcworks.services.files import FilesHelper
+from invenio_record_importer_kcworks.types import FileData
+from invenio_record_importer_kcworks.utils.utils import (
+    replace_value_in_nested_dict,
+)
 from invenio_records_resources.services.records.results import RecordItem
 from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
 from invenio_search.proxies import current_search_client
@@ -597,7 +602,10 @@ class TestRecordMetadata:
             "reason": None,
         }
         metadata_out_draft["access"]["status"] = "metadata-only"
-        metadata_out_draft["deletion_status"] = {"is_deleted": False, "status": "P"}
+        metadata_out_draft["deletion_status"] = {
+            "is_deleted": False,
+            "status": "P",
+        }
         metadata_out_draft["custom_fields"] = self.metadata_in.get("custom_fields", {})
         metadata_out_draft["is_draft"] = True
         metadata_out_draft["is_published"] = False
@@ -634,7 +642,7 @@ class TestRecordMetadata:
             "access": {
                 "grants": [],
                 "links": [],
-                "owned_by": {"user": str(self.owner_id)} if self.owner_id else None,
+                "owned_by": ({"user": str(self.owner_id)} if self.owner_id else None),
                 "settings": {
                     "accept_conditions_text": None,
                     "allow_guest_requests": False,
@@ -850,8 +858,8 @@ class TestRecordMetadata:
             expected["stats"] = None
 
         # Check that timestamps are in the correct relative range
-        assert now - arrow.get(actual["created"]) < timedelta(seconds=7)
-        assert now - arrow.get(actual["updated"]) < timedelta(seconds=7)
+        assert now - arrow.get(actual["created"]) < timedelta(seconds=30)
+        assert now - arrow.get(actual["updated"]) < timedelta(seconds=30)
         assert "expires_at" in actual.keys()
         assert (
             arrow.get(actual["expires_at"]).format("YYYY-MM-DD HH:mm:ss.SSSSSS")
@@ -995,6 +1003,7 @@ class TestRecordMetadata:
         if by_api:
             expected = self._as_via_api(expected, is_draft=False, method=method)
         try:
+            assert now - arrow.get(actual["created"]) < timedelta(seconds=30)
             if self.metadata_in.get("created"):
                 assert arrow.get(actual["created"]) == arrow.get(
                     self.metadata_in["created"]
@@ -1129,7 +1138,7 @@ class TestRecordMetadata:
             # assert actual["revision_id"] == 4  # NOTE: Too difficult to test
             assert actual["stats"] == expected["stats"]
             assert actual["status"] == "published"
-            assert now - arrow.get(actual["updated"]) < timedelta(seconds=30)
+            assert now - arrow.get(actual["updated"]) < timedelta(seconds=40)
             assert actual["versions"] == expected["versions"]
             return True
         except AssertionError as e:

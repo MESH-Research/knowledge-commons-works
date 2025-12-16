@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/site/kcworks/dependencies/invenio-communities" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/site/kcworks/dependencies/invenio-group-collections-kcworks" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/site/kcworks/dependencies/invenio-modular-deposit-form" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/site/kcworks/dependencies/invenio-modular-detail-page" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/site/kcworks/dependencies/invenio-rdm-records" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/site/kcworks/dependencies/invenio-record-importer-kcworks" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/site/kcworks/dependencies/invenio-records-resources" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/site/kcworks/dependencies/invenio-remote-api-provisioner" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/site/kcworks/dependencies/invenio-remote-user-data-kcworks" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/site/kcworks/dependencies/invenio-vocabularies" vcs="Git" />
+  </component>
+</project>
