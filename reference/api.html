@@ -530,6 +530,10 @@
 <h2>Streamlined Import API<a class="headerlink" href="#streamlined-import-api" title="Link to this heading">¶</a></h2>
 <p>In order to streamline the process of uploading works to KCWorks, particularly for works intended for publication in a collection, KCWorks provides a streamlined import API. This API allows clients to upload a work and its files in a single step, without the need to create a draft record, initialize file uploads, commit file uploads, or submit a review request.</p>
 <p>Why is this API needed? The InvenioRDM REST API can be fragile and difficult to use, particularly for clients who are not familiar with the system. The creation and acceptance of a review request is redundant where collection administrators are uploading works for a collection they administer. The file upload steps are also not truly stateless, introducing the possibility of a file upload being interrupted and left incomplete, even if the upload of the file’s content was successful.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>KCWorks provides a standalone Python script (<code class="docutils literal notranslate"><span class="pre">scripts/user_resources/kcworks_api_importer.py</span></code>) that simplifies using the import API. The script handles authentication, file uploads, and response formatting automatically. See <span class="xref std std-ref">the script documentation</span> below for details.</p>
+</div>
 <section id="who-can-use-the-import-api">
 <h3>Who can use the import API?<a class="headerlink" href="#who-can-use-the-import-api" title="Link to this heading">¶</a></h3>
 <p>The import API is available to authorized organizations who have obtained an OAuth token for API operations. The import API places the works directly in a collection, without passing through the review process. So, the user to whom the token is issued must have sufficient permissions to publish directly in the collection. The exact role required depends on the collection’s review policy:</p>
@@ -828,6 +832,104 @@ Authorization: Bearer &lt;your-api-key&gt;
 </pre></div>
 </div>
 <p>Of course, in most cases the request will be made programmatically, not via a command line tool. The syntax for the request will vary depending on the programming language and tools being used.</p>
+</section>
+</section>
+<section id="using-the-kcworks-api-importer-script">
+<h3>Using the KCWorks API Importer Script<a class="headerlink" href="#using-the-kcworks-api-importer-script" title="Link to this heading">¶</a></h3>
+<p id="kcworks-api-importer-script">KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script (<code class="docutils literal notranslate"><span class="pre">scripts/user_resources/kcworks_api_importer.py</span></code>) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.</p>
+<section id="requirements">
+<h4>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h4>
+<p>The script requires Python 3.9 or later and the <code class="docutils literal notranslate"><span class="pre">requests</span></code> library. It can be run standalone from the KCWorks project directory or copied to any location where Python 3.9+ is available.</p>
+</section>
+<section id="command-line-arguments">
+<h4>Command-Line Arguments<a class="headerlink" href="#command-line-arguments" title="Link to this heading">¶</a></h4>
+<p>The script accepts the following command-line arguments:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--api-key</span> <span class="pre">KEY</span></code></p></td>
+<td><p>API key for authentication. If not provided, checks <code class="docutils literal notranslate"><span class="pre">KCWORKS_IMPORT_API_KEY</span></code> environment variable, or prompts interactively.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--collection-id</span> <span class="pre">ID</span></code></p></td>
+<td><p>Collection ID or slug to import records into. If not provided, checks <code class="docutils literal notranslate"><span class="pre">KCWORKS_IMPORT_COLLECTION_ID</span></code> environment variable, or prompts interactively.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--metadata</span> <span class="pre">PATH</span></code></p></td>
+<td><p>Path to the metadata JSON file. The metadata must be a JSON array of metadata objects, even if importing a single record. If not provided, checks <code class="docutils literal notranslate"><span class="pre">KCWORKS_IMPORT_METADATA_PATH</span></code> environment variable, or prompts interactively.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--files</span> <span class="pre">PATH</span> <span class="pre">[PATH</span> <span class="pre">...]</span></code></p></td>
+<td><p>One or more file paths to upload with the records. Multiple files can be specified by providing multiple arguments. If not provided, checks <code class="docutils literal notranslate"><span class="pre">KCWORKS_IMPORT_FILES_PATH</span></code> environment variable (comma or space-separated), or prompts interactively.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--output</span> <span class="pre">PATH</span></code></p></td>
+<td><p>Optional path to save the API response as JSON. If not provided, checks <code class="docutils literal notranslate"><span class="pre">KCWORKS_IMPORT_OUTPUT_PATH</span></code> environment variable, or prompts interactively (can be skipped by pressing Enter).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="environment-variables">
+<h4>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h4>
+<p>All command-line arguments can also be provided via environment variables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_IMPORT_API_KEY</span></code> - API key for authentication</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_IMPORT_COLLECTION_ID</span></code> - Collection ID or slug</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_IMPORT_METADATA_PATH</span></code> - Path to metadata JSON file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_IMPORT_FILES_PATH</span></code> - File paths, comma or space-separated</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_IMPORT_OUTPUT_PATH</span></code> - Path to save response JSON</p></li>
+</ul>
+</section>
+<section id="usage-examples">
+<h4>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading">¶</a></h4>
+<p><strong>Basic usage with all arguments:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>scripts/user_resources/kcworks_api_importer.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--api-key<span class="w"> </span><span class="s2">&quot;your-api-key&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--collection-id<span class="w"> </span><span class="s2">&quot;my-collection&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--metadata<span class="w"> </span><span class="s2">&quot;metadata.json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--files<span class="w"> </span><span class="s2">&quot;file1.pdf&quot;</span><span class="w"> </span><span class="s2">&quot;file2.docx&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span><span class="s2">&quot;response.json&quot;</span>
+</pre></div>
+</div>
+<p><strong>Using environment variables:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">KCWORKS_IMPORT_API_KEY</span><span class="o">=</span><span class="s2">&quot;your-api-key&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">KCWORKS_IMPORT_COLLECTION_ID</span><span class="o">=</span><span class="s2">&quot;my-collection&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">KCWORKS_IMPORT_METADATA_PATH</span><span class="o">=</span><span class="s2">&quot;metadata.json&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">KCWORKS_IMPORT_FILES_PATH</span><span class="o">=</span><span class="s2">&quot;file1.pdf file2.docx&quot;</span>
+python<span class="w"> </span>scripts/user_resources/kcworks_api_importer.py<span class="w"> </span>--output<span class="w"> </span><span class="s2">&quot;response.json&quot;</span>
+</pre></div>
+</div>
+<p><strong>Interactive mode (will prompt for missing values):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>scripts/user_resources/kcworks_api_importer.py
+</pre></div>
+</div>
+<p><strong>Single file upload:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>scripts/user_resources/kcworks_api_importer.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--api-key<span class="w"> </span><span class="s2">&quot;your-api-key&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--collection-id<span class="w"> </span><span class="s2">&quot;my-collection&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--metadata<span class="w"> </span><span class="s2">&quot;metadata.json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--files<span class="w"> </span><span class="s2">&quot;document.pdf&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="response-handling">
+<h4>Response Handling<a class="headerlink" href="#response-handling" title="Link to this heading">¶</a></h4>
+<p>The script provides human-readable output for both successful and failed imports:</p>
+<ul class="simple">
+<li><p><strong>Success (201)</strong>: Shows checkmark, number of records imported, record IDs, and URLs</p></li>
+<li><p><strong>Partial success (207)</strong>: Shows warning, lists successful and failed records with error details</p></li>
+<li><p><strong>Failure (400, 403, 500)</strong>: Shows error message, explains the issue, and lists failed records with specific errors</p></li>
+</ul>
+<p>If an output path is provided, the full API response is also saved to that file as formatted JSON (or plain text if the response is not JSON).</p>
+</section>
+<section id="exit-codes">
+<h4>Exit Codes<a class="headerlink" href="#exit-codes" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code> - Success</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">1</span></code> - Error (invalid input, file not found, API error, etc.)</p></li>
+</ul>
 </section>
 </section>
 <section id="a-successful-import-response">
@@ -2280,6 +2382,15 @@ automatically purged entirely from the database. There is also no API mechanism 
 <li><a class="reference internal" href="#example-import-request">Example import request</a><ul>
 <li><a class="reference internal" href="#metadata-json-object">Metadata JSON object</a></li>
 <li><a class="reference internal" href="#id6">Request</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-the-kcworks-api-importer-script">Using the KCWorks API Importer Script</a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#command-line-arguments">Command-Line Arguments</a></li>
+<li><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+<li><a class="reference internal" href="#usage-examples">Usage Examples</a></li>
+<li><a class="reference internal" href="#response-handling">Response Handling</a></li>
+<li><a class="reference internal" href="#exit-codes">Exit Codes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#a-successful-import-response">A successful import response</a></li>
