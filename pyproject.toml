@@ -62,7 +62,6 @@ dependencies = [
 ]
 
 optional-dependencies.dev = [
-  "black>=25.1",
   "check-manifest>=0.25",
   "djlint>=1.36.4",
   "docker-services-cli",
@@ -79,7 +78,6 @@ optional-dependencies.dev = [
   "sphinx-copybutton>=0.5.2",
 ]
 optional-dependencies.tests = [
-  "pytest-black>=0.6",
   "pytest-cov>=6.2.1",
   "pytest-invenio>=2.2.2,<3",
   "pytest-isort>=4",
@@ -110,13 +108,11 @@ entry-points."invenio_search.index_templates".kcworks = "kcworks.services.search
 
 [dependency-groups]
 dev = [
-  "black>=25.1",
   "check-manifest>=0.25",
   "djlint>=1.36.4",
   "docker-services-cli",
   "mypy>=1.8",
   "psycopg2-binary>=2.9.10",
-  "pytest-black>=0.6",
   "pytest-isort>=4",
   "pytest-mock",
   "requests-mock",
