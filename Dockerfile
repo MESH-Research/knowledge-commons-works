@@ -36,11 +36,6 @@ RUN apt-get update && apt-get install -y \
     git \
     libxml2 \
     libxml2-dev \
-    libxmlsec1 \
-    libxmlsec1-dev \
-    libxmlsec1-openssl \
-    libxmlsec1-gnutls \
-    xmlsec1 \
     libssl-dev \
     libltdl-dev \
     libpq-dev \
@@ -72,11 +67,9 @@ COPY . .
 # Install python dependencies in virtual environment
 RUN uv venv && \
     . .venv/bin/activate && \
-    # First install lxml and xmlsec with system libxml2
-    # Then install the rest of the dependencies without reinstall
     uv sync --frozen --compile-bytecode && \
     export CFLAGS="-Wno-error=incompatible-pointer-types" && \
-    uv pip install --reinstall --no-binary=lxml --no-binary=xmlsec "lxml==5.2.1" "xmlsec==1.3.14" && \
+    uv pip install --reinstall --no-binary=lxml "lxml==5.2.1" && \
     uv clean
 
 RUN echo "[cli]" >> .invenio.private && \

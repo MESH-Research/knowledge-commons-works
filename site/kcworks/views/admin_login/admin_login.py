@@ -16,7 +16,7 @@
 
 """Administrative login view for Knowledge Commons Repository.
 
-Normal users authenticate in KCR using SAML and a commons as identity provider.
+Normal users authenticate in KCR using OAuth (CILogon) with a commons as identity provider.
 This hidden login page is used by administrators to log in using a username and
 password. It is not linked to from any other page in the repository.
 """

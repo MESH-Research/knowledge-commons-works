@@ -71,7 +71,7 @@ def get_commons_user_from_contributor(contributor: dict) -> str:
 
 # FIXME: implement
 def get_user_by_commons_username(commons_username: str) -> User | None:
-    """Get a kcworks user by their Commons username based on saml login.
+    """Get a kcworks user by their Commons username based on external authentication.
 
     Parameters:
         commons_username: The Commons username to search for.

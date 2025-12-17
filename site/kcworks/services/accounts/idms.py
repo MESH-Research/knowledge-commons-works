@@ -36,10 +36,9 @@ def link_user_to_oauth_identifier(
 
 
 def knowledgeCommons_account_setup(user: User, account_info: dict) -> bool:
-    """SAML account setup which extends invenio_saml default.
+    """Account setup for external authentication (OAuth/CILogon).
 
-    The default only links ``User`` and ``UserIdentity``. This
-    also ensures that the user is activated once
+    Links ``User`` and ``UserIdentity`` and ensures that the user is activated once
 
     """
     try:

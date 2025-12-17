@@ -35,7 +35,7 @@ class UserProfileService:
         This returns the user's full name in standard order, along with the inverted
         version of the name (as in last-name-first bibliographic order). If the user
         has locally customized name parts, those will be used first but variants will
-        also be included using the name parts as provided by SAML login.
+        also be included using the name parts as provided by external authentication (OAuth).
 
         Args:
             user_id: The ID of the user.
