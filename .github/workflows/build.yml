@@ -1,5 +1,4 @@
 name: Container Build
-
 on:
   # Allow manual triggering of the workflow
   workflow_dispatch:
@@ -18,7 +17,6 @@ on:
       - main
       - production
       - staging
-
 env:
   DOCKER_BUILDKIT: 1
   TARGET_PLATFORMS: linux/amd64,linux/arm64
@@ -26,18 +24,22 @@ env:
   GITHUB_REGISTRY: ghcr.io
   IMAGE_NAME: kcworks
   RELEASE_VERSION: unset
-  INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR: ${{vars.INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}}
+  CILOGON_CLIENT_ID: ${{vars.CILOGON_CLIENT_ID}}
+  CILOGON_CLIENT_SECRET: ${{vars.CILOGON_CLIENT_SECRET}}
+  INVENIO_RECORD_IMPORTER_LOCAL_DATA_DSECRET: ${{vars.CILOGON_CLIENT_SECRET}}
   INVENIO_RECORD_IMPORTER_DATA_DIR: ${{vars.INVENIO_RECORD_IMPORTER_DATA_DIR}}
   INVENIO_SEARCH_DOMAIN: ${{vars.INVENIO_SEARCH_DOMAIN}}
   INVENIO_INSTANCE_PATH: ${{vars.INVENIO_INSTANCE_PATH}}
   INVENIO_SECRET_KEY: ${{secrets.INVENIO_SECRET_KEY}}
-  REDIS_DOMAIN: ${{vars.REDIS_DOMAIN}}
   INVENIO_SQLALCHEMY_DATABASE_URI: ${{vars.INVENIO_SQLALCHEMY_DATABASE_URI}}
   POSTGRES_USER: ${{vars.POSTGRES_USER}}
   POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
   POSTGRES_DB: ${{vars.POSTGRES_DB}}
   PGADMIN_DEFAULT_EMAIL: ${{secrets.PGADMIN_DEFAULT_EMAIL}}
   PGADMIN_DEFAULT_PASSWORD: ${{secrets.PGADMIN_DEFAULT_PASSWORD}}
+  REDIS_DOMAIN: ${{vars.REDIS_DOMAIN}}
+  STATIC_API_BEARER: ${{vars.STATIC_API_BEARER}}
+  WEBHOOK_TOKEN: ${{vars.WEBHOOK_TOKEN}}
 jobs:
   build_and_release:
     runs-on: ubuntu-latest
@@ -77,44 +79,36 @@ jobs:
           # For pull requests, use a PR-specific tag format
           pr_number=${{ github.event.number }}
           echo "RELEASE_VERSION=pr-$pr_number" >> $GITHUB_ENV
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         with:
           mask-password: true
-
       # Checks-out your repository under $GITHUB_WORKSPACE
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
-
       # Set up Python 3.12 environment
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12.x"
-
       # Cache docker images so they don't rebuild every time
       # - name: Cache Local Images
       #   id: local-images
@@ -122,7 +116,6 @@ jobs:
       #   with:
       #     path: /var/lib/docker/
       #     key: local-docker-directory
-
       - name: Build AMD Image for production or main
         if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest' || env.RELEASE_VERSION == 'staging' || startsWith(env.RELEASE_VERSION, 'dev') || startsWith(env.RELEASE_VERSION, 'pr-')
         env:
@@ -132,7 +125,6 @@ jobs:
           docker build . --file Dockerfile --platform=linux/amd64 --progress=plain --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $ECR_REGISTRY/kcworks:$RELEASE_VERSION
           docker build ./docker/nginx_production/ --platform=linux/amd64 --progress=plain --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend:$RELEASE_VERSION --tag $ECR_REGISTRY/$IMAGE_NAME-frontend:$RELEASE_VERSION
           docker image ls
-
       - name: Push Image to Docker Hub
         if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest' || env.RELEASE_VERSION == 'staging' || startsWith(env.RELEASE_VERSION, 'dev')
         env:
@@ -140,7 +132,6 @@ jobs:
         run: |
           docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME --all-tags
           docker push $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend --all-tags
-
       - name: Show PR Build Results
         if: startsWith(env.RELEASE_VERSION, 'pr-')
         run: |
@@ -148,7 +139,6 @@ jobs:
           echo "Built images:"
           docker images | grep -E "(kcworks|IMAGE_NAME)" || echo "No images found"
           echo "PR images are not pushed to registries to save storage costs"
-
       - name: Push production or staging image to Amazon ECR
         if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging'
         env:
@@ -157,7 +147,6 @@ jobs:
         run: |
           docker push $ECR_REGISTRY/kcworks:$RELEASE_VERSION
           docker push $ECR_REGISTRY/$IMAGE_NAME-frontend:$RELEASE_VERSION
-
       - name: Start containers
         if: always()
         run: |
@@ -167,13 +156,10 @@ jobs:
           touch tests/.env
           touch .env
           docker compose --file docker-compose.yml up -d
-
       - name: Destroy containers
         if: always()
         run: |
           touch .env
           docker compose --file docker-compose.yml down
-
       - name: Prune Docker
         run: docker system prune -af
-
