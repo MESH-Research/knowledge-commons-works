@@ -349,7 +349,7 @@ Of course, in most cases the request will be made programmatically, not via a co
 
 (kcworks-api-importer-script)=
 
-KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script (`scripts/user_resources/kcworks_api_importer.py`) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
+KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script ([https://github.com/MESH-Research/knowledge-commons-works/blob/main/scripts/user_resources/kcworks_api_importer.py](https://github.com/MESH-Research/knowledge-commons-works/blob/main/scripts/user_resources/kcworks_api_importer.py)) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
 
 #### Requirements
 
@@ -359,13 +359,13 @@ The script requires Python 3.9 or later and the `requests` library. It can be ru
 
 The script accepts the following command-line arguments:
 
-| Argument | Description |
-|----------|-------------|
-| `--api-key KEY` | API key for authentication. If not provided, checks `KCWORKS_IMPORT_API_KEY` environment variable, or prompts interactively. |
-| `--collection-id ID` | Collection ID or slug to import records into. If not provided, checks `KCWORKS_IMPORT_COLLECTION_ID` environment variable, or prompts interactively. |
-| `--metadata PATH` | Path to the metadata JSON file. The metadata must be a JSON array of metadata objects, even if importing a single record. If not provided, checks `KCWORKS_IMPORT_METADATA_PATH` environment variable, or prompts interactively. |
+| Argument                  | Description                                                                                                                                                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--api-key KEY`           | API key for authentication. If not provided, checks `KCWORKS_IMPORT_API_KEY` environment variable, or prompts interactively.                                                                                                                       |
+| `--collection-id ID`      | Collection ID or slug to import records into. If not provided, checks `KCWORKS_IMPORT_COLLECTION_ID` environment variable, or prompts interactively.                                                                                               |
+| `--metadata PATH`         | Path to the metadata JSON file. The metadata must be a JSON array of metadata objects, even if importing a single record. If not provided, checks `KCWORKS_IMPORT_METADATA_PATH` environment variable, or prompts interactively.                   |
 | `--files PATH [PATH ...]` | One or more file paths to upload with the records. Multiple files can be specified by providing multiple arguments. If not provided, checks `KCWORKS_IMPORT_FILES_PATH` environment variable (comma or space-separated), or prompts interactively. |
-| `--output PATH` | Optional path to save the API response as JSON. If not provided, checks `KCWORKS_IMPORT_OUTPUT_PATH` environment variable, or prompts interactively (can be skipped by pressing Enter). |
+| `--output PATH`           | Optional path to save the API response as JSON. If not provided, checks `KCWORKS_IMPORT_OUTPUT_PATH` environment variable, or prompts interactively (can be skipped by pressing Enter).                                                            |
 
 #### Environment Variables
 
