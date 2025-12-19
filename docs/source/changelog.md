@@ -3,6 +3,15 @@
 
 # Changes
 
+## 0.7.1 (2025-12-19)
+
+- Bug fix
+  - Clicking on stats dashboard chart items sometimes led to search
+    results that weren't filtered by community properly.
+- User script for import API
+- Back-end
+  - Added initial Agents.md file.
+
 ## 0.7.0 (2025-12-15)
 
 - Major new feature: Stats dashboards for collections and KCWorks as a whole
