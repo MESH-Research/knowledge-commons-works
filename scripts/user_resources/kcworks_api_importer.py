@@ -114,7 +114,7 @@ if sys.version_info < (3, 9):  # noqa: PLR2004, SIM108
 import requests
 
 
-def get_api_key(args: argparse.Namespace) -> str:
+def _get_api_key(args: argparse.Namespace) -> str:
     """Get API key for authentication with KCWorks.
 
     Args:
@@ -144,7 +144,7 @@ def get_api_key(args: argparse.Namespace) -> str:
     return api_key
 
 
-def get_collection_id(args: argparse.Namespace) -> str:
+def _get_collection_id(args: argparse.Namespace) -> str:
     """Get collection ID to which records will be imported.
 
     Args:
@@ -173,7 +173,7 @@ def get_collection_id(args: argparse.Namespace) -> str:
     return collection_id
 
 
-def get_metadata_path(args: argparse.Namespace) -> str:
+def _get_metadata_path(args: argparse.Namespace) -> str:
     """Get path to the metadata JSON file for the records to be imported.
 
     Args:
@@ -209,7 +209,7 @@ def get_metadata_path(args: argparse.Namespace) -> str:
     return metadata_path
 
 
-def get_files_paths(args: argparse.Namespace) -> list[str]:
+def _get_files_paths(args: argparse.Namespace) -> list[str]:
     """Get paths to the files for the records to be imported.
 
     Args:
@@ -253,7 +253,7 @@ def get_files_paths(args: argparse.Namespace) -> list[str]:
     return validated_paths
 
 
-def get_mime_type(file_path: str) -> str:
+def _get_mime_type(file_path: str) -> str:
     """Get MIME type for a file based on its extension.
 
     Args:
@@ -269,7 +269,7 @@ def get_mime_type(file_path: str) -> str:
     return "application/octet-stream"
 
 
-def get_output_path(args: argparse.Namespace) -> Optional[str]:  # noqa: UP007
+def _get_output_path(args: argparse.Namespace) -> Optional[str]:  # noqa: UP007
     """Get optional path to save the response JSON.
 
     Args:
@@ -308,7 +308,7 @@ def get_output_path(args: argparse.Namespace) -> Optional[str]:  # noqa: UP007
     return output_path
 
 
-def format_response_message(response_json: dict[str, Any], status_code: int) -> str:
+def _format_response_message(response_json: dict[str, Any], status_code: int) -> str:
     """Format a human-readable message from the API response.
 
     Args:
@@ -482,7 +482,7 @@ def import_works(
 
             # Get filename from path
             filename = os.path.basename(file_path)
-            mime_type = get_mime_type(file_path)
+            mime_type = _get_mime_type(file_path)
 
             files.append(("files", (filename, file_handle, mime_type)))
 
@@ -499,7 +499,7 @@ def import_works(
                 api_url, headers=headers, files=files, data=data, verify=verify_ssl
             )
 
-        print("\n=" * 70)
+        print("=" * 70)
         print("Import Result")
         print("=" * 70)
 
@@ -508,7 +508,7 @@ def import_works(
             response_json = response.json()
 
             # Print human-readable message
-            message = format_response_message(response_json, response.status_code)
+            message = _format_response_message(response_json, response.status_code)
             print(message)
 
             # Save to output file if provided
@@ -539,7 +539,7 @@ def import_works(
 def _print_startup_info(
     collection_id: str,
     metadata_path: str,
-    files_count: int,
+    files_count: int = 0,
     testing: bool = False,
     notify_owners: bool = False,
 ) -> None:
@@ -565,6 +565,7 @@ def main() -> None:
     Parses command-line arguments, gathers required parameters, and executes
     the import operation.
     """
+    lines = []
     lines.append("=" * 70)
     lines.append("KCWorks API Import")
     lines.append("=" * 70)
@@ -614,18 +615,18 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    api_key = get_api_key(args)
-    collection_id = get_collection_id(args)
-    metadata_path = get_metadata_path(args)
-    files_paths = get_files_paths(args)
-    output_path = get_output_path(args)
+    api_key = _get_api_key(args)
+    collection_id = _get_collection_id(args)
+    metadata_path = _get_metadata_path(args)
+    files_paths = _get_files_paths(args)
+    output_path = _get_output_path(args)
 
     _print_startup_info(
         collection_id,
         metadata_path,
-        files_count,
-        args.testing,
-        args.notify_record_owners,
+        files_count=len(files_paths),
+        testing=args.testing,
+        notify_owners=args.notify_record_owners,
     )
 
     import_works(
