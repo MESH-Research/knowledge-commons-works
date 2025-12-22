@@ -76,7 +76,7 @@ Usage Examples:
 Documentation:
     For complete API documentation including metadata format, API structure, request
     format, response format, and authentication requirements, see:
-    
+
     https://mesh-research.github.io/knowledge-commons-works/reference/api.html
 
 Response:
@@ -98,6 +98,8 @@ import os
 import sys
 from typing import Any, Optional
 
+from halo import Halo
+
 # Check Python version
 # Note: This script is designed to work with Python 3.9+ for standalone use,
 # even though the KCWorks project requires Python 3.12+
@@ -112,74 +114,74 @@ if sys.version_info < (3, 9):  # noqa: PLR2004, SIM108
 import requests
 
 
-def get_api_key(args: argparse.Namespace) -> str:
+def _get_api_key(args: argparse.Namespace) -> str:
     """Get API key for authentication with KCWorks.
-    
+
     Args:
         args: Parsed command-line arguments.
-    
+
     Returns:
         API key string.
-    
+
     Exits:
         SystemExit: If API key cannot be obtained from any source.
     """
     # Priority: command line argument > environment variable > interactive prompt
     if args.api_key:
         return str(args.api_key)
-    
+
     api_key = os.getenv("KCWORKS_IMPORT_API_KEY")
     if api_key:
         assert isinstance(api_key, str)  # Type narrowing for mypy
         return api_key
-    
+
     # If neither is provided, prompt the user
     api_key = input("Enter your KCWorks API key: ").strip()
     if not api_key:
         print("Error: API key is required.", file=sys.stderr)
         sys.exit(1)
-    
+
     return api_key
 
 
-def get_collection_id(args: argparse.Namespace) -> str:
+def _get_collection_id(args: argparse.Namespace) -> str:
     """Get collection ID to which records will be imported.
-    
+
     Args:
         args: Parsed command-line arguments.
-    
+
     Returns:
         Collection ID or slug string.
-    
+
     Exits:
         SystemExit: If collection ID cannot be obtained from any source.
     """
     if args.collection_id:
         return str(args.collection_id)
-    
+
     collection_id = os.getenv("KCWORKS_IMPORT_COLLECTION_ID")
     if collection_id:
         assert isinstance(collection_id, str)  # Type narrowing for mypy
         return collection_id
-    
+
     # If neither is provided, prompt the user
     collection_id = input("Enter the KCWorks collection ID for the import: ").strip()
     if not collection_id:
         print("Error: Collection ID is required.", file=sys.stderr)
         sys.exit(1)
-    
+
     return collection_id
 
 
-def get_metadata_path(args: argparse.Namespace) -> str:
+def _get_metadata_path(args: argparse.Namespace) -> str:
     """Get path to the metadata JSON file for the records to be imported.
-    
+
     Args:
         args: Parsed command-line arguments.
-    
+
     Returns:
         Path to metadata JSON file.
-    
+
     Exits:
         SystemExit: If metadata path cannot be obtained or is invalid.
     """
@@ -203,19 +205,19 @@ def get_metadata_path(args: argparse.Namespace) -> str:
     if not os.path.isfile(metadata_path):
         print(f"Error: Metadata path is not a file: {metadata_path}", file=sys.stderr)
         sys.exit(1)
-    
+
     return metadata_path
 
-    
-def get_files_paths(args: argparse.Namespace) -> list[str]:
+
+def _get_files_paths(args: argparse.Namespace) -> list[str]:
     """Get paths to the files for the records to be imported.
-    
+
     Args:
         args: Parsed command-line arguments.
-    
+
     Returns:
         List of validated file paths.
-    
+
     Exits:
         SystemExit: If file paths cannot be obtained or are invalid.
     """
@@ -225,7 +227,7 @@ def get_files_paths(args: argparse.Namespace) -> list[str]:
         files_path_env = os.getenv("KCWORKS_IMPORT_FILES_PATH")
         if files_path_env:
             # Environment variable can be comma-separated or space-separated
-            files_paths = [p.strip() for p in files_path_env.replace(',', ' ').split()]
+            files_paths = [p.strip() for p in files_path_env.replace(",", " ").split()]
         else:
             # If neither is provided, prompt the user
             prompt = "Enter the path(s) to the files (space-separated): "
@@ -234,48 +236,49 @@ def get_files_paths(args: argparse.Namespace) -> list[str]:
                 print("Error: At least one file path is required.", file=sys.stderr)
                 sys.exit(1)
             files_paths = [p.strip() for p in files_input.split()]
-    
+
     # Validate all file paths
     validated_paths = []
     for file_path in files_paths:
         if not os.path.exists(file_path):
             print(f"Error: File path does not exist: {file_path}", file=sys.stderr)
             sys.exit(1)
-        
+
         if not os.path.isfile(file_path):
             print(f"Error: Path is not a file: {file_path}", file=sys.stderr)
             sys.exit(1)
-        
+
         validated_paths.append(file_path)
-    
+
     return validated_paths
 
 
-def get_mime_type(file_path: str) -> str:
+def _get_mime_type(file_path: str) -> str:
     """Get MIME type for a file based on its extension.
-    
+
     Args:
         file_path: Path to the file.
-    
+
     Returns:
         MIME type string, or 'application/octet-stream' if unknown.
     """
     mime_type, _ = mimetypes.guess_type(file_path)
     if mime_type:
         return mime_type
+
     # Default to application/octet-stream if we can't determine
-    return 'application/octet-stream'
+    return "application/octet-stream"
 
 
-def get_output_path(args: argparse.Namespace) -> Optional[str]:  # noqa: UP007
+def _get_output_path(args: argparse.Namespace) -> Optional[str]:  # noqa: UP007
     """Get optional path to save the response JSON.
-    
+
     Args:
         args: Parsed command-line arguments.
-    
+
     Returns:
         Output file path, or None if not provided.
-    
+
     Exits:
         SystemExit: If output directory does not exist.
     """
@@ -294,7 +297,7 @@ def get_output_path(args: argparse.Namespace) -> Optional[str]:  # noqa: UP007
             output_path = input(prompt).strip()
             if not output_path:
                 return None
-    
+
     # If provided, validate the parent directory exists
     if output_path:
         parent_dir = os.path.dirname(output_path)
@@ -302,69 +305,68 @@ def get_output_path(args: argparse.Namespace) -> Optional[str]:  # noqa: UP007
             error_msg = f"Error: Output directory does not exist: {parent_dir}"
             print(error_msg, file=sys.stderr)
             sys.exit(1)
-    
+
     return output_path
 
 
-def format_response_message(response_json: dict[str, Any], status_code: int) -> str:
+def _format_response_message(response_json: dict[str, Any], status_code: int) -> str:
     """Format a human-readable message from the API response.
-    
+
     Args:
         response_json: JSON response from the API as a dictionary.
         status_code: HTTP status code from the response.
-    
+
     Returns:
         Formatted human-readable message string.
     """
-    data = response_json.get('data', [])
-    errors = response_json.get('errors', [])
-    message = response_json.get('message', '')
-    
+    data = response_json.get("data", [])
+    errors = response_json.get("errors", [])
+    message = response_json.get("message", "")
+
     lines = []
-    
+
     # Handle different status codes
     if status_code == 201:
-        lines.append("✓ Import successful!")
         lines.append("")
         if data:
             lines.append(f"Successfully imported {len(data)} record(s):")
             for item in data:
-                record_id = item.get('record_id', 'N/A')
-                record_url = item.get('record_url', 'N/A')
-                item_index = item.get('item_index', 'N/A')
+                record_id = item.get("record_id", "N/A")
+                record_url = item.get("record_url", "N/A")
+                item_index = item.get("item_index", "N/A")
                 lines.append(f"  • Record {item_index}: {record_id}")
-                if record_url and record_url != 'N/A':
+                if record_url and record_url != "N/A":
                     lines.append(f"    URL: {record_url}")
         if message:
             lines.append("")
-            lines.append(f"Message: {message}")
+            lines.append(f"✓ {message}")
     elif status_code == 207:
         lines.append("⚠ Partial success - some records imported, some failed")
         lines.append("")
         if data:
             lines.append(f"Successfully imported {len(data)} record(s):")
             for item in data:
-                record_id = item.get('record_id', 'N/A')
-                record_url = item.get('record_url', 'N/A')
-                item_index = item.get('item_index', 'N/A')
+                record_id = item.get("record_id", "N/A")
+                record_url = item.get("record_url", "N/A")
+                item_index = item.get("item_index", "N/A")
                 lines.append(f"  • Record {item_index}: {record_id}")
-                if record_url and record_url != 'N/A':
+                if record_url and record_url != "N/A":
                     lines.append(f"    URL: {record_url}")
         if errors:
             lines.append("")
             lines.append(f"Failed to import {len(errors)} record(s):")
             for error_item in errors:
-                item_index = error_item.get('item_index', 'N/A')
-                error_list = error_item.get('errors', [])
+                item_index = error_item.get("item_index", "N/A")
+                error_list = error_item.get("errors", [])
                 lines.append(f"  • Record {item_index}:")
                 for err in error_list:
-                    if 'field' in err and 'message' in err:
+                    if "field" in err and "message" in err:
                         lines.append(f"    - {err['field']}: {err['message']}")
-                    elif 'validation_error' in err:
-                        val_err = err['validation_error']
+                    elif "validation_error" in err:
+                        val_err = err["validation_error"]
                         lines.append(f"    - Validation error: {val_err}")
-                    elif 'file upload failures' in err:
-                        upload_errs = err['file upload failures']
+                    elif "file upload failures" in err:
+                        upload_errs = err["file upload failures"]
                         lines.append(f"    - File upload failures: {upload_errs}")
                     else:
                         lines.append(f"    - {err}")
@@ -380,31 +382,29 @@ def format_response_message(response_json: dict[str, Any], status_code: int) -> 
             )
             lines.append("permissions for this collection.")
         elif status_code == 400:
-            lines.append(
-                "Error: Bad request. The request was malformed or invalid."
-            )
+            lines.append("Error: Bad request. The request was malformed or invalid.")
         elif status_code == 500:
             lines.append(
                 "Error: Server error. The server encountered an error processing"
             )
             lines.append("your request.")
-        
+
         if errors:
             lines.append("")
             lines.append(f"Failed to import {len(errors)} record(s):")
             for error_item in errors:
-                item_index = error_item.get('item_index', 'N/A')
-                error_list = error_item.get('errors', [])
+                item_index = error_item.get("item_index", "N/A")
+                error_list = error_item.get("errors", [])
                 lines.append(f"  • Record {item_index}:")
                 for err in error_list:
                     if isinstance(err, dict):
-                        if 'field' in err and 'message' in err:
+                        if "field" in err and "message" in err:
                             lines.append(f"    - {err['field']}: {err['message']}")
-                        elif 'validation_error' in err:
-                            val_err = err['validation_error']
+                        elif "validation_error" in err:
+                            val_err = err["validation_error"]
                             lines.append(f"    - Validation error: {val_err}")
-                        elif 'file upload failures' in err:
-                            upload_errs = err['file upload failures']
+                        elif "file upload failures" in err:
+                            upload_errs = err["file upload failures"]
                             lines.append(f"    - File upload failures: {upload_errs}")
                         else:
                             lines.append(f"    - {err}")
@@ -421,8 +421,20 @@ def format_response_message(response_json: dict[str, Any], status_code: int) -> 
             lines.append(f"Successfully imported: {len(data)} record(s)")
         if errors:
             lines.append(f"Failed: {len(errors)} record(s)")
-    
+
     return "\n".join(lines)
+
+
+def _print_error(message: str, details: str | None = None) -> None:
+    """Print formatted error message to stderr."""
+    print("", file=sys.stderr)
+    print("✗ ERROR", file=sys.stderr)
+    print("-" * 70, file=sys.stderr)
+    print(f"  {message}", file=sys.stderr)
+    if details:
+        print(f"  Details: {details}", file=sys.stderr)
+    print("-" * 70, file=sys.stderr)
+    print("", file=sys.stderr)
 
 
 def import_works(
@@ -431,25 +443,30 @@ def import_works(
     metadata_path: str,
     files_paths: list[str],
     output_path: Optional[str] = None,  # noqa: UP007
+    testing: bool = False,
+    notify_owners: bool = False,
 ) -> None:
     """Import works to the collection.
-    
+
     Args:
         api_key: API key for authentication.
         collection_id: Collection ID or slug to import into.
         metadata_path: Path to metadata JSON file.
         files_paths: List of file paths to upload.
         output_path: Optional path to save the response JSON.
-    
+        testing: Optional flag to use a local testing KCWorks instance
+            instead of the production instance. (Defaults to False)
+        notify_owners: Optional flag to enable email notification of
+            users identified as record owners.
+
     Exits:
         SystemExit: If request fails with a network error.
     """
     api_url = f"https://works.hcommons.org/api/import/{collection_id}"
-    
-    headers = {
-        "Accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
+    if testing:
+        api_url = f"https://localhost/api/import/{collection_id}"
+
+    headers = {"Accept": "application/json", "Authorization": f"Bearer {api_key}"}
 
     # Load metadata from JSON file as a string
     with open(metadata_path) as metadata_file:
@@ -458,50 +475,61 @@ def import_works(
     # Open all files and prepare file list
     file_handles = []
     files = []
-    
+
     try:
         for file_path in files_paths:
-            file_handle = open(file_path, 'rb')
+            file_handle = open(file_path, "rb")
             file_handles.append(file_handle)
-            
+
             # Get filename from path
             filename = os.path.basename(file_path)
-            mime_type = get_mime_type(file_path)
-            
-            files.append(('files', (filename, file_handle, mime_type)))
-        
+            mime_type = _get_mime_type(file_path)
+
+            files.append(("files", (filename, file_handle, mime_type)))
+
         data = {
-            'metadata': metadata_json
+            "metadata": metadata_json,
+            "notify_record_owners": str(notify_owners).lower(),
         }
-        
-        response = requests.post(api_url, headers=headers, files=files, data=data)
+        # Disable SSL verification when testing
+        verify_ssl = not testing
+
+        print(" ")
+        with Halo("Importing records...", spinner="dots"):
+            response = requests.post(
+                api_url, headers=headers, files=files, data=data, verify=verify_ssl
+            )
+
+        print("=" * 70)
+        print("Import Result")
+        print("=" * 70)
 
         # Try to parse as JSON
         try:
             response_json = response.json()
-            
+
             # Print human-readable message
-            message = format_response_message(response_json, response.status_code)
+            message = _format_response_message(response_json, response.status_code)
             print(message)
-            
+
             # Save to output file if provided
             if output_path:
-                with open(output_path, 'w') as output_file:
+                with open(output_path, "w") as output_file:
                     json.dump(response_json, output_file, indent=2)
                 print(f"\nFull response saved to: {output_path}")
         except ValueError:
             # Response is not JSON, handle as text
-            print(f"✗ Request failed with status {response.status_code}")
-            print("")
-            print("Response:")
-            print(response.text)
+            _print_error(
+                f"Request failed with status {response.status_code}", response.text
+            )
             # If output path is provided but response isn't JSON, save as text
             if output_path:
-                with open(output_path, 'w') as output_file:
+                with open(output_path, "w") as output_file:
                     output_file.write(response.text)
                 print(f"\nResponse saved to: {output_path}")
+            sys.exit(1)
     except requests.exceptions.RequestException as e:
-        print(f"✗ Request failed: {str(e)}")
+        _print_error(f"✗ Request failed", str(e))
         sys.exit(1)
     finally:
         # Close all file handles
@@ -509,50 +537,109 @@ def import_works(
             file_handle.close()
 
 
+def _print_startup_info(
+    collection_id: str,
+    metadata_path: str,
+    files_count: int = 0,
+    testing: bool = False,
+    notify_owners: bool = False,
+) -> None:
+    """Print startup configuration information."""
+    lines = []
+    lines.append("")
+    lines.append("=" * 70)
+    lines.append(f"Collection ID: {collection_id}")
+    lines.append(f"Metadata file: {metadata_path}")
+    lines.append(f"Files to upload: {files_count}")
+    lines.append(f"Environment: {'Testing (localhost)' if testing else 'Production'}")
+    lines.append(
+        f"Notify record owners by email? {'No' if not notify_owners else 'Yes'}"
+    )
+    lines.append("=" * 70)
+    lines.append("")
+    print("\n".join(lines))
+
+
 def main() -> None:
     """Main entry point for the script.
-    
+
     Parses command-line arguments, gathers required parameters, and executes
     the import operation.
     """
-    parser = argparse.ArgumentParser(
-        description="Import works to a KCWorks collection"
-    )
+    lines = []
+    lines.append("=" * 70)
+    lines.append("KCWorks API Import")
+    lines.append("=" * 70)
+    print("\n".join(lines))
+
+    parser = argparse.ArgumentParser(description="Import works to a KCWorks collection")
     parser.add_argument(
         "--api-key",
-        help="API key for authentication (or set KCWORKS_IMPORT_API_KEY env var)"
+        help="API key for authentication (or set KCWORKS_IMPORT_API_KEY env var)",
     )
     parser.add_argument(
         "--collection-id",
-        help="Collection ID or slug (or set KCWORKS_IMPORT_COLLECTION_ID env var)"
+        help="Collection ID or slug (or set KCWORKS_IMPORT_COLLECTION_ID env var)",
     )
     parser.add_argument(
         "--metadata",
-        help="Path to metadata JSON file (or set KCWORKS_IMPORT_METADATA_PATH env var)"
+        help="Path to metadata JSON file (or set KCWORKS_IMPORT_METADATA_PATH env var)",
     )
     parser.add_argument(
         "--files",
-        nargs='+',
-        help="Path(s) to file(s) to upload (can specify multiple files)"
+        nargs="+",
+        help="Path(s) to file(s) to upload (can specify multiple files)",
     )
     parser.add_argument(
         "--output",
         help=(
             "Optional path to save the response JSON "
             "(or set KCWORKS_IMPORT_OUTPUT_PATH env var)"
-        )
+        ),
     )
-    
+    parser.add_argument(
+        "--testing",
+        action="store_true",
+        help=(
+            "Optional flag to use a local testing KCWorks instance instead of "
+            "the production instance. (Defaults to False)"
+        ),
+    )
+    parser.add_argument(
+        "--notify-record-owners",
+        action="store_true",
+        help=(
+            "Optional flag to enable email notification of users designated as "
+            "record owners. (Defaults to False)"
+        ),
+    )
+
     args = parser.parse_args()
-    
-    api_key = get_api_key(args)
-    collection_id = get_collection_id(args)
-    metadata_path = get_metadata_path(args)
-    files_paths = get_files_paths(args)
-    output_path = get_output_path(args)
-    import_works(api_key, collection_id, metadata_path, files_paths, output_path)
+
+    api_key = _get_api_key(args)
+    collection_id = _get_collection_id(args)
+    metadata_path = _get_metadata_path(args)
+    files_paths = _get_files_paths(args)
+    output_path = _get_output_path(args)
+
+    _print_startup_info(
+        collection_id,
+        metadata_path,
+        files_count=len(files_paths),
+        testing=args.testing,
+        notify_owners=args.notify_record_owners,
+    )
+
+    import_works(
+        api_key,
+        collection_id,
+        metadata_path,
+        files_paths,
+        output_path,
+        args.testing,
+        args.notify_record_owners,
+    )
 
 
 if __name__ == "__main__":
     main()
-

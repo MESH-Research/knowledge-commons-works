@@ -349,7 +349,7 @@ Of course, in most cases the request will be made programmatically, not via a co
 
 (kcworks-api-importer-script)=
 
-KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script ([https://github.com/MESH-Research/knowledge-commons-works/blob/main/scripts/user_resources/kcworks_api_importer.py](https://github.com/MESH-Research/knowledge-commons-works/blob/main/scripts/user_resources/kcworks_api_importer.py)) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
+KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script (`scripts/user_resources/kcworks_api_importer.py`) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
 
 #### Requirements
 
