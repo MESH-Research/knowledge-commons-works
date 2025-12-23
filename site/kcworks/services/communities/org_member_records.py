@@ -33,14 +33,14 @@ COLUMN_TO_SLUG: dict[str, str] = {
 
 def _clean_csv_value(val: Any) -> str | bool:
     """Clean CSV value by stripping quotes, converting True/False to booleans.
-    
+
     This prevents pandas from inferring boolean types during CSV reading,
     but then converts "True"/"False" strings to actual booleans after cleaning.
     Other values are kept as strings.
-    
+
     Args:
         val: The value from the CSV (may be any type due to pandas inference)
-        
+
     Returns:
         str | bool: The cleaned value (boolean for True/False, string otherwise)
     """
@@ -153,23 +153,34 @@ class OrgMemberRecordIncluder:
         for row in member_rows.itertuples():
             # row[0] is the index, row[1] is the username (first column)
             username = row[1]
-
-            members_search: dict[str, Any] = current_search_client.search(
-                index=prefix_index("users"),
-                body={"query": {"term": {"identities.knowledgeCommons": username}}},
-            )
-            try:
-                hits = members_search["hits"]["hits"]
-                if not hits:
+            idps = list(current_app.config.get("OAUTH_REMOTE_APPS", {}).keys())
+            member_dict = {}
+            for idp in idps:
+                members_search: dict[str, Any] = current_search_client.search(
+                    index=prefix_index("users"),
+                    body={"query": {"term": {f"identities.{idp}": username}}},
+                )
+                try:
+                    hits = members_search["hits"]["hits"]
+                    if not hits:
+                        current_app.logger.warning(f"No users match {row}")
+                        continue
+                    member_hit: dict[str, Any] = hits[0]
+                    member_dict: dict[str, Any] = member_hit.get("_source", {})
+                    if not member_dict or "id" not in member_dict:
+                        current_app.logger.warning(
+                            f"No user data in hit matching {row}"
+                        )
+                        continue
+                    break
+                except (KeyError, IndexError):
                     current_app.logger.warning(f"No users match {row}")
                     continue
-                member_hit: dict[str, Any] = hits[0]
-                member_dict: dict[str, Any] = member_hit.get("_source", {})
-                if not member_dict or "id" not in member_dict:
-                    current_app.logger.warning(f"No user data in hit matching {row}")
-                    continue
-            except (KeyError, IndexError):
-                current_app.logger.warning(f"No users match {row}")
+
+            if not member_dict or "id" not in member_dict:
+                current_app.logger.warning(
+                    f"No valid user found for {username} across all idps."
+                )
                 continue
 
             filter_clauses: list[dict[str, Any]] = [
@@ -214,10 +225,7 @@ class OrgMemberRecordIncluder:
                     [],
                 )
 
-                if (
-                    org_value == ""
-                    or org_value is False
-                ):
+                if org_value == "" or org_value is False:
                     current_app.logger.warning(
                         f"User {member_dict['id']} not in community {column_name}: "
                         f"{org_value}"

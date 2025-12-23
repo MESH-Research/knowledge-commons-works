@@ -11,10 +11,12 @@ from pprint import pprint
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
-from invenio_accounts.models import Role, UserIdentity
+from invenio_accounts.models import Role, User, UserIdentity
 from invenio_accounts.proxies import current_accounts
+from invenio_db import db
 from invenio_users_resources.proxies import current_users_service
 from kcworks.services.users.service import UserProfileService
+from sqlalchemy import select
 
 
 @click.command("name-parts")
@@ -162,7 +164,10 @@ def read(user_id: str | None, email: str | None, kc_id: str | None) -> None:
             user = users["hits"]["hits"][0]
             user2 = current_accounts.datastore.get_user_by_email(email)
     elif kc_id:
-        user = UserIdentity.get_user("knowledgeCommons", kc_id)
+        stmt = select(User).where(
+            User._user_profile.op("->>")("identifier_kc_username") == kc_id
+        )
+        user = db.session.execute(stmt).scalar_one_or_none()
         if user is None:
             pprint(f"No user found with KC ID {kc_id}.")
             return
@@ -172,12 +177,7 @@ def read(user_id: str | None, email: str | None, kc_id: str | None) -> None:
     else:
         print("No user ID, email, or KC ID provided.")
         return
-    kc_username = (
-        user2.external_identifiers[0].id
-        if user2.external_identifiers
-        and user2.external_identifiers[0].method == "knowledgeCommons"
-        else None
-    )
+    kc_username = user2.user_profile.get("identifier_kc_username", None)
     print(
         f"User data for user: {user['id']}, email: {user['email']}, "
         f"KC username: {kc_username}"
@@ -246,14 +246,15 @@ def user_groups(
         return_user = current_accounts.datastore.get_user_by_email(email)
         identifier = ("email", email)
     elif kc_id:
-        user_identity = UserIdentity.get_user("knowledgeCommons", kc_id)
-        if user_identity is None:
+        stmt = select(User).where(
+            User._user_profile.op("->>")("identifier_kc_username") == kc_id
+        )
+        user_result = db.session.execute(stmt).scalar_one_or_none()
+        if user_result is None:
             pprint(f"No user found with KC ID {kc_id}.")
             return
         else:
-            return_user = current_accounts.datastore.get_user_by_id(
-                user_identity.id_user
-            )
+            return_user = current_accounts.datastore.get_user_by_id(user_result.id)
             identifier = ("kc_id", kc_id)
     else:
         pprint("No user ID, email, or KC ID provided.")

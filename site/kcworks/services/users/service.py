@@ -152,14 +152,10 @@ class UserSearchHelper:
                 User._user_profile.op("->>")("identifier_orcid") == contributor_orcid
             ).one_or_none()
         elif contributor_kc_username:
-            kc_username_match = User.query.filter_by(
-                username=f"knowledgeCommons-{contributor_kc_username}"
+            kc_username_match = User.query.filter(
+                User._user_profile.op("->>")("identifier_kc_username")
+                == contributor_kc_username
             ).one_or_none()
-            if not kc_username_match:
-                kc_username_match = User.query.filter(
-                    User._user_profile.op("->>")("identifier_kc_username")
-                    == contributor_kc_username
-                ).one_or_none()
             if kc_username_match:
                 user_object = kc_username_match
 
