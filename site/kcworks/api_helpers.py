@@ -103,7 +103,7 @@ def format_commons_search_payload(
             "SITE_API_URL", "https://works.kcommons.org/api"
         )
     PROFILES_URL_BASE = current_app.config.get(
-        "KC_PROFILES_URL_BASE", "http://hcommons.org/profiles"
+        "KC_PROFILES_URL_BASE", "https://profiles.hcommons.org/members/"
     )
 
     payload = {
@@ -219,7 +219,7 @@ def format_commons_search_collection_payload(
     #     "INVENIO_SITE_API_URL", "http://works.kcommons.org/api"
     # )
     PROFILES_URL_BASE = current_app.config.get(
-        "KC_PROFILES_URL_BASE", "http://hcommons.org/profiles"
+        "KC_PROFILES_URL_BASE", "https://profiles.hcommons.org/members/"
     )
 
     try:
@@ -251,7 +251,7 @@ def format_commons_search_collection_payload(
             payload["owner"] = {
                 "name": owner.get("full_name", ""),
                 "username": owner.get("id_from_idp"),
-                "url": f"{PROFILES_URL_BASE}/{owner.get('id_from_idp')}",
+                "url": f"{PROFILES_URL_BASE}{owner.get('id_from_idp')}",
             }
         if data.get("metadata", {}):
             meta = {

@@ -40,6 +40,12 @@ def knowledgeCommons_account_setup(user: User, account_info: dict) -> bool:
 
     Links ``User`` and ``UserIdentity`` and ensures that the user is activated once
 
+    Args:
+        user(User): The user object to be linked with an external account.
+        account_info(dict): The external account info to use in the linking.
+
+    Returns:
+        bool: True if the account was set up successfully, otherwise False
     """
     try:
         link_user_to_oauth_identifier(
