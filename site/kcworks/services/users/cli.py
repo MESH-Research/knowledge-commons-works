@@ -11,7 +11,7 @@ from pprint import pprint
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
-from invenio_accounts.models import Role, User, UserIdentity
+from invenio_accounts.models import Role, User
 from invenio_accounts.proxies import current_accounts
 from invenio_db import db
 from invenio_users_resources.proxies import current_users_service

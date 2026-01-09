@@ -175,9 +175,9 @@ def get_changed_fields(
                     ),
                     value,
                     separator=separator,
-                    current_field_path=separator.join(
-                        [p for p in [current_field_path, str(key)] if p]
-                    ),
+                    current_field_path=separator.join([
+                        p for p in [current_field_path, str(key)] if p
+                    ]),
                 )
             )
         # Check for keys in existing_data that are missing from new_data
@@ -205,9 +205,9 @@ def get_changed_fields(
                     existing_value,
                     value,
                     separator=separator,
-                    current_field_path=separator.join(
-                        [p for p in [current_field_path, str(index)] if p]
-                    ),
+                    current_field_path=separator.join([
+                        p for p in [current_field_path, str(index)] if p
+                    ]),
                 )
             )
         # handle the case where the existing data is longer than the new data
@@ -217,13 +217,9 @@ def get_changed_fields(
             else []
         ):
             changed_field_paths.append(
-                separator.join(
-                    [
-                        p
-                        for p in [current_field_path, str(index + len(new_data_val))]
-                        if p
-                    ]
-                )
+                separator.join([
+                    p for p in [current_field_path, str(index + len(new_data_val))] if p
+                ])
             )
     else:
         if existing_data_val != new_data_val:

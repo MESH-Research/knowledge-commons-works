@@ -154,7 +154,7 @@ class OrgMemberRecordIncluder:
             # row[0] is the index, row[1] is the username (first column)
             username = row[1]
             idps = list(current_app.config.get("OAUTH_REMOTE_APPS", {}).keys())
-            member_dict = {}
+            member_dict: dict[str, Any] = {}
             for idp in idps:
                 members_search: dict[str, Any] = current_search_client.search(
                     index=prefix_index("users"),
@@ -166,7 +166,7 @@ class OrgMemberRecordIncluder:
                         current_app.logger.warning(f"No users match {row}")
                         continue
                     member_hit: dict[str, Any] = hits[0]
-                    member_dict: dict[str, Any] = member_hit.get("_source", {})
+                    member_dict = member_hit.get("_source", {})
                     if not member_dict or "id" not in member_dict:
                         current_app.logger.warning(
                             f"No user data in hit matching {row}"
