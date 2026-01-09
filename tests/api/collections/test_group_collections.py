@@ -35,7 +35,7 @@ def test_group_collections_service_automated_creation(
     app = running_app.app
 
     # Create test data
-    admin_user = user_factory(email="admin@example.com")
+    admin_user = user_factory(email="admin@example.com", oauth_id=None)
 
     # Find or create the admin role
     admin_role = accounts_datastore.find_role("admin")

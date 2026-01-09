@@ -51,6 +51,7 @@ def test_trigger_search_provisioning(
     monkeypatch.setenv("MOCK_SIGNAL_SUBSCRIBER", "True")
     kc_domain = app.config["KC_WORDPRESS_DOMAIN"]
     kc_protocol = app.config["COMMONS_API_REQUEST_PROTOCOL"]
+    kc_profiles_base = app.config["KC_PROFILES_URL_BASE"]
     works_url = app.config["SITE_UI_URL"]
 
     rec_url = list(app.config["REMOTE_API_PROVISIONER_EVENTS"]["rdm_record"].keys())[0]
@@ -104,7 +105,7 @@ def test_trigger_search_provisioning(
         "owner": {
             "name": "",
             "owner_username": None,
-            "url": f"{kc_protocol}://{kc_domain}/members/None",
+            "url": f"{kc_profiles_base}None",
         },
         "content": "",
         "contributors": [
@@ -146,14 +147,12 @@ def test_trigger_search_provisioning(
 
     # edited draft new version
     # no remote API operation should be prompted
-    metadata.update_metadata(
-        {
-            "metadata|title": "A Romans Story 3",
-            "metadata|publication_date": arrow.now().format("YYYY-MM-DD"),
-            # simulate the result of previous remote API operation
-            "custom_fields|kcr:commons_search_recid": remote_response["_id"],
-        }
-    )
+    metadata.update_metadata({
+        "metadata|title": "A Romans Story 3",
+        "metadata|publication_date": arrow.now().format("YYYY-MM-DD"),
+        # simulate the result of previous remote API operation
+        "custom_fields|kcr:commons_search_recid": remote_response["_id"],
+    })
     new_edited_version = service.update_draft(
         system_identity, new_version.id, metadata.metadata_in
     )
@@ -224,7 +223,7 @@ def test_trigger_search_provisioning(
         "owner": {
             "name": "",
             "owner_username": None,
-            "url": f"{kc_protocol}://{kc_domain}/members/None",
+            "url": f"{kc_profiles_base}None",
         },
         "primary_url": f"{works_url}/records/" + new_published_version.data["id"],
         "publication_date": new_published_version.data["metadata"]["publication_date"],

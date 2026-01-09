@@ -6,7 +6,6 @@
 
 """Top-level pytest configuration for KCWorks tests."""
 
-import importlib
 import importlib.util
 import os
 import shutil
@@ -25,6 +24,7 @@ from jinja2 import PackageLoader
 from .fixtures.custom_fields import test_config_fields  # noqa: E402
 from .fixtures.frontend import MockManifestLoader  # noqa: E402
 from .fixtures.identifiers import test_config_identifiers  # noqa: E402
+
 
 def load_config():
     """Load the invenio.cfg file and return a dictionary of its variables.

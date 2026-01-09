@@ -35,14 +35,16 @@ def csv_file_with_org_memberships(user_factory, minimal_community_factory, tmp_p
     # Create users with KC usernames
     user1 = user_factory(
         email="user1@example.com",
-        saml_src="knowledgeCommons",
-        saml_id="testuser1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="testuser1",
     )
     user1_id = user1.user.id
     user2 = user_factory(
         email="user2@example.com",
-        saml_src="knowledgeCommons",
-        saml_id="testuser2",
+        oauth_src="cilogon",
+        oauth_id="2",
+        kc_username="testuser2",
     )
     user2_id = user2.user.id
 
@@ -239,8 +241,9 @@ def test_assign_org_records_command_invalid_org_slug(
     # Create user
     user_factory(
         email="user1@example.com",
-        saml_src="knowledgeCommons",
-        saml_id="testuser1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="testuser1",
     )
 
     # Create CSV with invalid org slug
@@ -274,4 +277,3 @@ def test_assign_org_records_command_no_records(
     assert "ASSIGNMENT SUMMARY" in result.output
     # Should show 0 records assigned
     assert "0 records assigned" in result.output or "0 records added" in result.output
-

@@ -8,8 +8,10 @@
 """User related pytest fixtures for testing."""
 
 from collections.abc import Callable
+from copy import deepcopy
 
 import pytest
+from flask import current_app
 from flask_login import login_user
 from flask_principal import AnonymousIdentity, Identity
 from flask_security.utils import hash_password
@@ -62,13 +64,23 @@ def mock_user_data_api(requests_mock) -> Callable:
         Callable: Mock API call function.
     """
 
-    def mock_api_call(saml_id: str, mock_remote_data: dict) -> Matcher:
-        remote_url = f"https://profile.hcommons.org/api/v1/subs/?sub={saml_id}"
-        mock_adapter = requests_mock.get(
-            remote_url,
-            json=mock_remote_data,
+    def mock_api_call(
+        kc_username: str,
+        oauth_id: str,
+        mock_remote_data_subs: dict,
+        mock_remote_data_members: dict,
+    ) -> tuple[Matcher, Matcher]:
+        base_url = current_app.config.get("IDMS_BASE_API_URL")
+
+        mock_adapter_members = requests_mock.get(
+            f"{base_url}members/{kc_username}",
+            json=mock_remote_data_members,
         )
-        return mock_adapter
+        mock_adapter_subs = requests_mock.get(
+            f"{base_url}subs/?sub={oauth_id}",
+            json=mock_remote_data_subs,
+        )
+        return mock_adapter_subs, mock_adapter_members
 
     return mock_api_call
 
@@ -82,16 +94,24 @@ def user_data_to_remote_data(requests_mock):
     """
 
     def convert_user_data_to_remote_data(
-        saml_id: str, email: str, user_data: dict
-    ) -> dict[str, str | list[dict[str, str]]]:
-        """Convert user fixture data to format for remote data."""
+        kc_username: str, email: str, user_data: dict, oauth_id: str = ""
+    ) -> tuple[
+        dict[str, str | list[dict[str, str]]], dict[str, str | list[dict[str, str]]]
+    ]:
+        """Convert user fixture data to format for remote data.
+
+        Returns:
+            tuple[dict, dict]: Returns two dictionaries with the same user data: [0] in
+                the shape returned from the "subs" endpoint and [1] in the shape
+                returned from the "members" endpoint.
+        """
         if user_data.get("first_name", "") != "":
             mock_remote_data = {
                 "data": [
                     {
-                        "sub": "user1",
+                        "sub": oauth_id if oauth_id else user_data.get("oauth_id"),
                         "profile": {
-                            "username": saml_id,
+                            "username": kc_username,
                             "email": email,
                             "name": user_data.get("name", ""),
                             "first_name": user_data.get("first_name", ""),
@@ -105,7 +125,9 @@ def user_data_to_remote_data(requests_mock):
                             ),
                             "time_zone": user_data.get("time_zone", ""),
                             "groups": user_data.get("groups", ""),
+                            "memberships": [],
                         },
+                        "idp_name": "Michigan State University",
                     }
                 ],
                 "next": None,
@@ -123,7 +145,7 @@ def user_data_to_remote_data(requests_mock):
                     {
                         "sub": "user1",
                         "profile": {
-                            "username": saml_id,
+                            "username": oauth_id,
                             "email": email,
                             "name": profile.get("name", ""),
                             "first_name": profile.get("first_name", ""),
@@ -135,14 +157,19 @@ def user_data_to_remote_data(requests_mock):
                             "preferred_language": profile.get("preferred_language", ""),
                             "time_zone": profile.get("time_zone", ""),
                             "groups": profile.get("groups", []),
+                            "memberships": [],
                         },
+                        "idp_name": "Michigan State University",
                     }
                 ],
                 "next": None,
                 "previous": None,
                 "meta": {"authorized": True},
             }
-        return mock_remote_data
+
+        profile = mock_remote_data["data"][0]["profile"]
+        mock_remote_data_members = {"results": profile}
+        return mock_remote_data, mock_remote_data_members
 
     return convert_user_data_to_remote_data
 
@@ -177,10 +204,10 @@ def user_factory(
         password: str = "password",
         token: bool = False,
         admin: bool = False,
-        saml_src: str | None = "knowledgeCommons",
-        saml_id: str | None = "myuser",
+        oauth_src: str | None = "cilogon",
+        oauth_id: str | None = "1234",
         orcid: str | None = "",
-        kc_username: str | None = "",
+        kc_username: str | None = "myuser",
         new_remote_data: dict | None = None,
     ) -> AugmentedUserFixture:
         """Create an augmented pytest-invenio user fixture.
@@ -190,8 +217,10 @@ def user_factory(
             password: The password of the user.
             token: Whether the user should have a token.
             admin: Whether the user should have admin access.
-            saml_src: The source of the user's saml authentication.
-            saml_id: The user's ID for saml authentication.
+            oauth_src: The source of the user's oauth authentication.
+            oauth_id: The user's ID for oauth authentication.
+            kc_username: The user's username on Knowledge Commons.
+            new_remote_data: The user's remote data for mocking api responses.
 
         Returns:
             The created UserFixture object. This has the following attributes:
@@ -204,11 +233,16 @@ def user_factory(
         new_remote_data = new_remote_data or {}
 
         # Mock remote data that's already in the user fixture.
-        mock_remote_data = user_data_to_remote_data(
-            saml_id, new_remote_data.get("email") or email, new_remote_data
+        mock_remote_data_subs, mock_remote_data_members = user_data_to_remote_data(
+            kc_username,
+            new_remote_data.get("email") or email,
+            new_remote_data,
+            oauth_id,
         )
         # Mock the remote api call.
-        mock_adapter = mock_user_data_api(saml_id, mock_remote_data)
+        mock_adapter_subs, mock_adapter_members = mock_user_data_api(
+            kc_username, oauth_id, mock_remote_data_subs, mock_remote_data_members
+        )
 
         if not orcid and new_remote_data.get("orcid"):
             orcid = new_remote_data.get("orcid")
@@ -243,13 +277,14 @@ def user_factory(
             profile["identifier_kc_username"] = kc_username
             u.user.user_profile = profile
 
-        if u.user and saml_src and saml_id:
-            u.user.username = f"{saml_src}-{saml_id}"
+        if u.user and oauth_src and oauth_id:
+            u.user.username = f"{oauth_src}-{oauth_id}"
             profile = u.user.user_profile
-            profile["identifier_kc_username"] = saml_id
+            profile["identifier_kc_username"] = oauth_id
             u.user.user_profile = profile
-            UserIdentity.create(u.user, saml_src, saml_id)
-            u.mock_adapter = mock_adapter
+            UserIdentity.create(u.user, oauth_src, oauth_id)
+            u.mock_adapter_members = mock_adapter_members
+            u.mock_adapter_subs = mock_adapter_subs
 
         u.user.mock = True
 
@@ -295,8 +330,8 @@ def admin(user_factory) -> AugmentedUserFixture:
         password="password",
         admin=True,
         token=True,
-        saml_src="knowledgeCommons",
-        saml_id="admin",
+        oauth_src="knowledgeCommons",
+        oauth_id="admin",
     )
 
     return u
@@ -353,7 +388,8 @@ def user1_data() -> dict:
             {
                 "sub": "user1",
                 "profile": {
-                    "saml_id": "user1",
+                    "oauth_id": "1",
+                    "username": "user1",
                     "email": "user1@inveniosoftware.org",
                     "name": "User Number One",
                     "first_name": "User Number",
@@ -377,7 +413,8 @@ def user1_data() -> dict:
 
 user_data_set = {
     "joanjett": {
-        "saml_id": "joanjett",
+        "oauth_id": "joanjett1",
+        "kc_username": "joanjett",
         "email": "jj@inveniosoftware.com",
         "name": "Joan Jett",
         "first_name": "Joan",
@@ -387,7 +424,8 @@ user_data_set = {
         "groups": [],
     },
     "user1": {
-        "saml_id": "user1",
+        "oauth_id": "id1",
+        "kc_username": "user1",
         "email": "user1@inveniosoftware.org",
         "name": "User Number One",
         "first_name": "User Number",
@@ -402,7 +440,8 @@ user_data_set = {
         ],
     },
     "user2": {
-        "saml_id": "janedoe",
+        "oauth_id": "doe2",
+        "kc_username": "janedoe",
         "email": "jane.doe@msu.edu",
         "name": "Jane Doe",
         "first_name": "Jane",
@@ -411,7 +450,8 @@ user_data_set = {
         "orcid": "0000-0002-1825-0097",  # official dummy orcid
     },
     "user3": {
-        "saml_id": "gihctester",
+        "oauth_id": "gihctester3",
+        "kc_username": "gihctester",
         "email": "ghosthc@email.ghostinspector.com",
         # FIXME: Unobfuscated email not sent by
         # KC because no email marked as official.
@@ -529,7 +569,8 @@ user_data_set = {
         ],
     },
     "user4": {
-        "saml_id": "ghostrjtester",
+        "oauth_id": "ghostrjtester4",
+        "kc_username": "ghostrjtester",
         "email": "jrghosttester@email.ghostinspector.com",
         "name": "Ghost Tester",
         "first_name": "Ghost",

@@ -33,14 +33,14 @@ def test_change_record_owner_by_id(
     original_owner = user_factory(
         email="original@example.com",
         password="test",
-        saml_src="",
-        saml_id="",
+        oauth_src="",
+        oauth_id="",
     )
     new_owner = user_factory(
         email="newowner@example.com",
         password="test",
-        saml_src="",
-        saml_id="",
+        oauth_src="",
+        oauth_id="",
     )
 
     # Create a record with ownership in metadata
@@ -113,14 +113,14 @@ def test_change_record_owner_by_email(
     original_owner = user_factory(
         email="original2@example.com",
         password="test",
-        saml_src="",
-        saml_id="",
+        oauth_src="",
+        oauth_id="",
     )
     new_owner = user_factory(
         email="newowner2@example.com",
         password="test",
-        saml_src="",
-        saml_id="",
+        oauth_src="",
+        oauth_id="",
     )
 
     # Create a record with ownership in metadata
@@ -191,8 +191,8 @@ def test_change_record_owner_nonexistent_record(
     new_owner = user_factory(
         email="newowner3@example.com",
         password="test",
-        saml_src="",
-        saml_id="",
+        oauth_src="",
+        oauth_id="",
     )
 
     # Run the CLI command with a nonexistent record ID
@@ -222,8 +222,8 @@ def test_change_record_owner_nonexistent_user_by_id(
     original_owner = user_factory(
         email="original4@example.com",
         password="test",
-        saml_src="",
-        saml_id="",
+        oauth_src="",
+        oauth_id="",
     )
 
     # Create a record with ownership in metadata
@@ -283,8 +283,8 @@ def test_change_record_owner_nonexistent_user_by_email(
     original_owner = user_factory(
         email="original5@example.com",
         password="test",
-        saml_src="",
-        saml_id="",
+        oauth_src="",
+        oauth_id="",
     )
 
     # Create a record with ownership in metadata
@@ -344,8 +344,8 @@ def test_change_record_owner_same_owner(
     owner = user_factory(
         email="owner6@example.com",
         password="test",
-        saml_src="",
-        saml_id="",
+        oauth_src="",
+        oauth_id="",
     )
 
     # Create a record with ownership in metadata

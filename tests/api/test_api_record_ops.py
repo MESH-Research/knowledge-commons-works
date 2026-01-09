@@ -288,8 +288,8 @@ def test_record_publication_api(
         password="test",
         admin=False,
         token=True,
-        saml_src=None,
-        saml_id=None,
+        oauth_src=None,
+        oauth_id=None,
     )
     user = u.user
     token = u.allowed_token
@@ -857,14 +857,12 @@ def test_record_view_api(
         record = record_response.json
 
         # Add title to resource type (updated by system after draft creation)
-        metadata.update_metadata(
-            {
-                "metadata|resource_type": {
-                    "id": "image-photograph",
-                    "title": {"en": "Photo"},
-                },
-            }
-        )
+        metadata.update_metadata({
+            "metadata|resource_type": {
+                "id": "image-photograph",
+                "title": {"en": "Photo"},
+            },
+        })
         metadata.compare_published(actual=record, by_api=True)
         assert record["revision_id"] == 4
 

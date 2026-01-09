@@ -146,7 +146,7 @@ def test_import_test_records(
                 email="test@example.com",
                 password="test",
                 saml_src="",
-                saml_id="",
+                oauth_id="",
             )
             identity = get_identity(submitter.user)
             identity.provides.add(authenticated_user)

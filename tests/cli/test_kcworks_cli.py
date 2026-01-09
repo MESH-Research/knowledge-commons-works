@@ -367,8 +367,8 @@ def test_import_test_records_command(
     user_factory(
         email="test@example.com",
         password="test",
-        saml_src="",
-        saml_id="",
+        oauth_src="",
+        oauth_id="",
     )
 
     # Get the sample file path
@@ -455,8 +455,8 @@ def test_import_test_records_with_options(
     user_factory(
         email="test@example.com",
         password="test",
-        saml_src="",
-        saml_id="",
+        oauth_src="",
+        oauth_id="",
     )
 
     # Get the sample file path
