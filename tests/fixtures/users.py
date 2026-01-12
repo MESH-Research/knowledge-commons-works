@@ -278,10 +278,7 @@ def user_factory(
             u.user.user_profile = profile
 
         if u.user and oauth_src and oauth_id:
-            u.user.username = f"{oauth_src}-{oauth_id}"
-            profile = u.user.user_profile
-            profile["identifier_kc_username"] = oauth_id
-            u.user.user_profile = profile
+            u.user.username = f"knowledgeCommons-{oauth_id}"
             UserIdentity.create(u.user, oauth_src, oauth_id)
             u.mock_adapter_members = mock_adapter_members
             u.mock_adapter_subs = mock_adapter_subs
