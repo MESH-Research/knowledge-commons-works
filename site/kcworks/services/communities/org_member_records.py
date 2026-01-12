@@ -152,13 +152,21 @@ class OrgMemberRecordIncluder:
 
         for row in member_rows.itertuples():
             # row[0] is the index, row[1] is the username (first column)
+            current_app.logger.error(f"row: {row}")
             username = row[1]
-            idps = list(current_app.config.get("OAUTH_REMOTE_APPS", {}).keys())
+            idps = list(current_app.config.get("OAUTHCLIENT_REMOTE_APPS", {}).keys())
+            current_app.logger.error(
+                f"idps: {current_app.config.get('OAUTHCLIENT_REMOTE_APPS')}"
+            )
             member_dict: dict[str, Any] = {}
-            for idp in idps:
+            for _ in idps:
+                # FIXME: We're currently hard-coding the identifier since we
+                # only have one auth idp
                 members_search: dict[str, Any] = current_search_client.search(
                     index=prefix_index("users"),
-                    body={"query": {"term": {f"identities.{idp}": username}}},
+                    body={
+                        "query": {"term": {"profile.identifier_kc_username": username}}
+                    },
                 )
                 try:
                     hits = members_search["hits"]["hits"]

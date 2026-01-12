@@ -3,10 +3,12 @@
 import csv
 import time
 from pathlib import Path
+from pprint import pformat
 from unittest.mock import patch
 
 import arrow
 import pytest
+from invenio_accounts.proxies import current_accounts
 from invenio_search.proxies import current_search_client
 from invenio_search.utils import prefix_index
 from invenio_users_resources.proxies import current_users_service
@@ -25,14 +27,14 @@ def csv_file_with_org_memberships(user_factory, minimal_community_factory, tmp_p
     user1 = user_factory(
         email="user1@example.com",
         oauth_src="cilogon",
-        oauth_id="1",
+        oauth_id="id1",
         kc_username="testuser1",
     )
     user1_id = user1.user.id
     user2 = user_factory(
         email="user2@example.com",
         oauth_src="cilogon",
-        oauth_id="2",
+        oauth_id="id2",
         kc_username="testuser2",
     )
     user2_id = user2.user.id
@@ -95,6 +97,7 @@ def published_record_for_user(
 
 def test_include_org_member_records_basic(
     running_app,
+    app_config,
     db,
     search_clear,
     csv_file_with_org_memberships,
@@ -105,6 +108,7 @@ def test_include_org_member_records_basic(
     """Test basic functionality of include_org_member_records."""
     setup = csv_file_with_org_memberships
     user1_id = setup["users"]["user1"]
+    user1 = current_accounts.datastore.get_user_by_id(user1_id)
 
     # Create a record for user1
     record = published_record_for_user(user1_id)
