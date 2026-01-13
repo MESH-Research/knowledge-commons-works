@@ -3,12 +3,10 @@
 import csv
 import time
 from pathlib import Path
-from pprint import pformat
 from unittest.mock import patch
 
 import arrow
 import pytest
-from invenio_accounts.proxies import current_accounts
 from invenio_search.proxies import current_search_client
 from invenio_search.utils import prefix_index
 from invenio_users_resources.proxies import current_users_service
@@ -108,7 +106,6 @@ def test_include_org_member_records_basic(
     """Test basic functionality of include_org_member_records."""
     setup = csv_file_with_org_memberships
     user1_id = setup["users"]["user1"]
-    user1 = current_accounts.datastore.get_user_by_id(user1_id)
 
     # Create a record for user1
     record = published_record_for_user(user1_id)
