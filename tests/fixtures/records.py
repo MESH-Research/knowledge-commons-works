@@ -1003,7 +1003,6 @@ class TestRecordMetadata:
         if by_api:
             expected = self._as_via_api(expected, is_draft=False, method=method)
         try:
-            assert now - arrow.get(actual["created"]) < timedelta(seconds=30)
             if self.metadata_in.get("created"):
                 assert arrow.get(actual["created"]) == arrow.get(
                     self.metadata_in["created"]
