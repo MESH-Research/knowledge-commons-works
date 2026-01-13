@@ -46,3 +46,6 @@
 	path = site/kcworks/dependencies/invenio-stats-dashboard
 	url = https://github.com/MESH-Research/invenio-stats-dashboard.git
 	branch = main
+[submodule "tests/fixtures"]
+	path = tests/fixtures
+	url = git@github.com:MESH-Research/kcworks-test-fixtures.git
