@@ -64,9 +64,7 @@ def test_stats_backend_processing(
     # ensure that the stats queue is empty
     # before we add any events to it
     old_view_events = [p for p in current_stats.consume("record-view")]  # noqa: C416
-    old_download_events = [  # noqa: C4
-        p for p in current_stats.consume("file-download")
-    ]
+    old_download_events = [p for p in current_stats.consume("file-download")]
     app.logger.debug(f"pre-existing view events: {pformat(old_view_events)}")
     app.logger.debug(f"pre-existing download events: {pformat(old_download_events)}")
 
