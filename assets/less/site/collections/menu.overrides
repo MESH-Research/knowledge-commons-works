@@ -1,3 +1,43 @@
+.ui.menu.pagination {
+  box-shadow: none;
+  border: 1px solid @formInputBorderColor;
+  .item {
+    border-top: none;
+    border-bottom: none;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: @mint80;
+    }
+    &.active {
+      background-color: @sidebarBackgroundColor;
+      & + .item {
+        &::before {
+          background: @sidebarBorderColor;
+        }
+      }
+      &::before {
+        background: @sidebarBorderColor;
+      }
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: @mint80;
+      }
+    }
+
+    &[type*="ellipsisItem"],
+    &[type*="prevItem"],
+    &[type*="nextItem"] {
+      @media all and (max-width: @largestMobileScreen) {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        min-width: 1.5rem;
+      }
+    }
+  }
+}
+
 .outer-navbar {
   border-color: transparent;
   background-color: transparent;
