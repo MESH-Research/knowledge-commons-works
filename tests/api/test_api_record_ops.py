@@ -12,6 +12,7 @@ import re
 from collections.abc import Callable
 from datetime import timedelta
 from pathlib import Path
+from unittest.mock import patch
 
 import arrow
 import pytest
@@ -553,14 +554,22 @@ def test_record_file_upload_api_not_enabled(
         )
         draft_id = draft_result.id
 
-        # logged_in_client = client_with_login(client, user)
-
         headers.update({"content-type": "application/json"})
-        response = client.post(
-            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files",
-            data=json.dumps(file_list),
-            headers={**headers, "Authorization": f"Bearer {token}"},
-        )
+        # FIXME: This patch is necessary because the current_user's User object
+        # is sometimes ending up in a different ORM session than the rollback
+        # operation, but somehow still being in that rollback session's relation
+        # map. So it gets caught in the rollback but the current_user object
+        # isn't cleaned up. Hence we get an error when the request finalization
+        # checks for current_user, finds one, and tries to access its properties.
+        # The patch works around this by preventing the current_user check that would
+        # fail.
+        with patch("invenio_accounts.utils.current_user"):
+            response = client.post(
+                f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files",
+                data=json.dumps(file_list),
+                headers={**headers, "Authorization": f"Bearer {token}"},
+            )
+
         assert response.status_code == 403
 
 
