@@ -36,6 +36,7 @@ RUN apt-get update && apt-get install -y \
     git \
     libxml2 \
     libxml2-dev \
+    libxslt1-dev \
     libssl-dev \
     libltdl-dev \
     libpq-dev \

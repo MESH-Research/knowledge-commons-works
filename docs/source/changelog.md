@@ -3,6 +3,29 @@
 
 # Changes
 
+## 0.7.2 (2026-01-20)
+
+- Search paging and navigation improvements
+  - Made search results scroll to top of page when a new page is loaded.
+  - Added pager widget and page-size selector to top of results list (as
+    well as at bottom).
+  - Made pager widget full-size for accessibility
+  - Made mobile pager widget include first and last page links (previously
+    lacked them).
+  - Modified result count badge and page size selector to make the display
+    more responsive.
+  - Improved aria-properties and labelling of page selector widget
+- Collection works list filter and sort improvements
+  - Expanded sort options for collection works pages to include all options
+    available on main search page (including "earliest published" and "latest
+    published")
+  - Expanded search filter options for collection works pages (includes
+    file type and resource type)
+- Bug fixes
+  - Fix stats dashboard chart link bug that caused linked search results to
+    open in many tabs at once.
+  - Bug fixes and improvements to stand-alone importer script.
+
 ## 0.7.1 (2025-12-19)
 
 - Bug fix
