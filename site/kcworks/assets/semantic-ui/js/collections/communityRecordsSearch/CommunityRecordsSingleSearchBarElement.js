@@ -15,14 +15,17 @@ export const CommunityRecordsSingleSearchBarElement = withState(
     queryString,
     onInputChange,
     updateQueryState,
+    currentQueryState,
   }) => {
     const placeholder = passedPlaceholder || i18next.t("Search");
     const onBtnSearchClick = () => {
-      updateQueryState({ queryString, filters: [] });
+      // Preserve current query state (including page and size) when updating search
+      updateQueryState({ ...currentQueryState, queryString, filters: [] });
     };
     const onKeyPress = (event) => {
       if (event.key === "Enter") {
-        updateQueryState({ queryString, filters: [] });
+        // Preserve current query state (including page and size) when updating search
+        updateQueryState({ ...currentQueryState, queryString, filters: [] });
       }
     };
     return (

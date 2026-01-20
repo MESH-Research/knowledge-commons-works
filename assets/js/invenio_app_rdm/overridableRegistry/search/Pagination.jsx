@@ -10,170 +10,198 @@
  */
 
 import PropTypes from "prop-types";
-import React, { Component, useContext } from "react";
+import React, { Component, useContext, useEffect, useRef } from "react";
 import Overridable from "react-overridable";
 import { Pagination as Paginator } from "semantic-ui-react";
 import { AppContext } from "react-searchkit";
 import ShouldRender from "./ShouldRender";
 
-
 const defaultOptions = {
-  boundaryRangeCount: 1,
-  siblingRangeCount: 1,
-  showEllipsis: true,
-  showFirst: true,
-  showLast: true,
-  showPrev: true,
-  showNext: true,
-  size: "large",
+	boundaryRangeCount: 1,
+	siblingRangeCount: 1,
+	showEllipsis: true,
+	showFirst: true,
+	showLast: true,
+	showPrev: true,
+	showNext: true,
+	size: "large",
 };
 
 class Pagination extends Component {
-  constructor(props) {
-    super(props);
-    this.updateQueryPage = props.updateQueryPage;
-    this.options = props.options
-      ? { ...defaultOptions, ...props.options }
-      : defaultOptions;
-  }
+	constructor(props) {
+		super(props);
+		this.updateQueryPage = props.updateQueryPage;
+		this.options = props.options
+			? { ...defaultOptions, ...props.options }
+			: defaultOptions;
+	}
 
-  onPageChange = (activePage) => {
-    const { currentPage } = this.props;
-    if (activePage === currentPage) return;
-    this.updateQueryPage(activePage);
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    });
-  };
+	onPageChange = (activePage) => {
+		const { currentPage } = this.props;
+		if (activePage === currentPage) return;
+		this.updateQueryPage(activePage);
+		window.scrollTo({
+			top: 0,
+			left: 0,
+			behavior: "smooth",
+		});
+	};
 
-  render() {
-    const {
-      loading,
-      totalResults,
-      currentPage,
-      currentSize,
-      overridableId,
-      showWhenOnlyOnePage,
-    } = this.props;
-    return (
-      <ShouldRender
-        condition={
-          !loading && currentPage > -1 && currentSize > -1 && showWhenOnlyOnePage
-            ? totalResults > 0
-            : totalResults > currentSize
-        }
-      >
-        <Element
-          currentPage={currentPage}
-          currentSize={currentSize}
-          totalResults={totalResults}
-          onPageChange={this.onPageChange}
-          options={this.options}
-          overridableId={overridableId}
-          maxTotalResults={this.options.maxTotalResults}
-        />
-      </ShouldRender>
-    );
-  }
+	render() {
+		const {
+			loading,
+			totalResults,
+			currentPage,
+			currentSize,
+			overridableId,
+			showWhenOnlyOnePage,
+		} = this.props;
+		return (
+			<ShouldRender
+				condition={
+					!loading &&
+					currentPage > -1 &&
+					currentSize > -1 &&
+					showWhenOnlyOnePage
+						? totalResults > 0
+						: totalResults > currentSize
+				}
+			>
+				<Element
+					currentPage={currentPage}
+					currentSize={currentSize}
+					totalResults={totalResults}
+					onPageChange={this.onPageChange}
+					options={this.options}
+					overridableId={overridableId}
+					maxTotalResults={this.options.maxTotalResults}
+				/>
+			</ShouldRender>
+		);
+	}
 }
 
 Pagination.propTypes = {
-  options: PropTypes.shape({
-    boundaryRangeCount: PropTypes.number,
-    siblingRangeCount: PropTypes.number,
-    showEllipsis: PropTypes.bool,
-    showFirst: PropTypes.bool,
-    showLast: PropTypes.bool,
-    showPrev: PropTypes.bool,
-    showNext: PropTypes.bool,
-    size: PropTypes.oneOf(["mini", "tiny", "small", "large", "huge", "massive"]),
-    maxTotalResults: PropTypes.number,
-  }),
-  overridableId: PropTypes.string,
-  showWhenOnlyOnePage: PropTypes.bool,
-  /* REDUX */
-  currentPage: PropTypes.number.isRequired,
-  currentSize: PropTypes.number.isRequired,
-  loading: PropTypes.bool.isRequired,
-  totalResults: PropTypes.number.isRequired,
-  updateQueryPage: PropTypes.func.isRequired,
+	options: PropTypes.shape({
+		boundaryRangeCount: PropTypes.number,
+		siblingRangeCount: PropTypes.number,
+		showEllipsis: PropTypes.bool,
+		showFirst: PropTypes.bool,
+		showLast: PropTypes.bool,
+		showPrev: PropTypes.bool,
+		showNext: PropTypes.bool,
+		size: PropTypes.oneOf([
+			"mini",
+			"tiny",
+			"small",
+			"large",
+			"huge",
+			"massive",
+		]),
+		maxTotalResults: PropTypes.number,
+	}),
+	overridableId: PropTypes.string,
+	showWhenOnlyOnePage: PropTypes.bool,
+	/* REDUX */
+	currentPage: PropTypes.number.isRequired,
+	currentSize: PropTypes.number.isRequired,
+	loading: PropTypes.bool.isRequired,
+	totalResults: PropTypes.number.isRequired,
+	updateQueryPage: PropTypes.func.isRequired,
 };
 
 Pagination.defaultProps = {
-  options: {},
-  overridableId: "",
-  showWhenOnlyOnePage: true,
+	options: {},
+	overridableId: "",
+	showWhenOnlyOnePage: true,
 };
 
 const Element = ({
-  overridableId,
-  currentPage,
-  currentSize,
-  totalResults,
-  onPageChange,
-  options,
-  maxTotalResults,
-  ...props
+	overridableId,
+	currentPage,
+	currentSize,
+	totalResults,
+	onPageChange,
+	options,
+	maxTotalResults,
+	...props
 }) => {
-  const boundaryRangeCount = options.boundaryRangeCount;
-  const siblingRangeCount = options.siblingRangeCount;
-  const showEllipsis = options.showEllipsis;
-  const showFirst = options.showFirst;
-  const showLast = options.showLast;
-  const showPrev = options.showPrev;
-  const showNext = options.showNext;
-  const size = options.size;
+	const boundaryRangeCount = options.boundaryRangeCount;
+	const siblingRangeCount = options.siblingRangeCount;
+	const showEllipsis = options.showEllipsis;
+	const showFirst = options.showFirst;
+	const showLast = options.showLast;
+	const showPrev = options.showPrev;
+	const showNext = options.showNext;
+	const size = options.size;
+	const maxTotalPages = Math.floor(maxTotalResults / currentSize);
+	const pages = Math.ceil(totalResults / currentSize);
+	const totalDisplayedPages = Math.min(pages, maxTotalPages);
+	const { buildUID } = useContext(AppContext);
 
-  const maxTotalPages = Math.floor(maxTotalResults / currentSize);
-  const pages = Math.ceil(totalResults / currentSize);
-  const totalDisplayedPages = Math.min(pages, maxTotalPages);
+	// Fix: Move page correction to useEffect to avoid setState during render
+	// Use ref to track last correction to prevent infinite loops
+	const lastCorrectedPageRef = useRef(null);
+	useEffect(() => {
+		if (
+			pages > 0 &&
+			currentPage > pages &&
+			lastCorrectedPageRef.current !== pages
+		) {
+			lastCorrectedPageRef.current = pages;
+			onPageChange(pages);
+		}
+		// Reset ref when pages changes (new search results)
+		if (
+			lastCorrectedPageRef.current !== null &&
+			lastCorrectedPageRef.current !== pages
+		) {
+			lastCorrectedPageRef.current = null;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentPage, pages]);
 
-  const { buildUID } = useContext(AppContext);
-  if (currentPage > pages) onPageChange(pages);
-
-  return (
-    <Overridable
-      id={buildUID("Pagination.element", overridableId)}
-      currentPage={currentPage}
-      currentSize={currentSize}
-      totalResults={totalResults}
-      options={options}
-      onPageChange={onPageChange}
-    >
-      <Paginator
-        activePage={currentPage}
-        totalPages={totalDisplayedPages}
-        onPageChange={(_, { activePage }) => onPageChange(activePage)}
-        boundaryRange={boundaryRangeCount}
-        siblingRange={siblingRangeCount}
-        ellipsisItem={showEllipsis ? undefined : null}
-        firstItem={showFirst ? undefined : null}
-        lastItem={showLast ? undefined : null}
-        prevItem={showPrev ? undefined : null}
-        nextItem={showNext ? undefined : null}
-        size={size}
-        {...props}
-      />
-    </Overridable>
-  );
+	return (
+		<Overridable
+			id={buildUID("Pagination.element", overridableId)}
+			currentPage={currentPage}
+			currentSize={currentSize}
+			totalResults={totalResults}
+			options={options}
+			onPageChange={onPageChange}
+		>
+			<Paginator
+				activePage={currentPage}
+				totalPages={totalDisplayedPages}
+				onPageChange={(_, { activePage }) => onPageChange(activePage)}
+				boundaryRange={boundaryRangeCount}
+				siblingRange={siblingRangeCount}
+				ellipsisItem={showEllipsis ? undefined : null}
+				firstItem={showFirst ? undefined : null}
+				lastItem={showLast ? undefined : null}
+				prevItem={showPrev ? undefined : null}
+				nextItem={showNext ? undefined : null}
+				size={size}
+				{...props}
+			/>
+		</Overridable>
+	);
 };
 
 Element.propTypes = {
-  currentPage: PropTypes.number.isRequired,
-  currentSize: PropTypes.number.isRequired,
-  totalResults: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  options: PropTypes.object,
-  overridableId: PropTypes.string,
-  maxTotalResults: PropTypes.number,
+	currentPage: PropTypes.number.isRequired,
+	currentSize: PropTypes.number.isRequired,
+	totalResults: PropTypes.number.isRequired,
+	onPageChange: PropTypes.func.isRequired,
+	options: PropTypes.object,
+	overridableId: PropTypes.string,
+	maxTotalResults: PropTypes.number,
 };
 
 Element.defaultProps = {
-  options: {},
-  overridableId: "",
-  maxTotalResults: 10000,
+	options: {},
+	overridableId: "",
+	maxTotalResults: 10000,
 };
 
-export default Overridable.component("Pagination", Pagination);
+export default Pagination;

@@ -6,57 +6,58 @@
 
 import { createSearchAppInit } from "@js/invenio_search_ui";
 import {
-  RDMCountComponent,
-  RDMEmptyResults,
-  RDMErrorComponent,
-  RDMRecordResultsGridItem,
-  RDMToggleComponent,
+	RDMCountComponent,
+	RDMEmptyResults,
+	RDMErrorComponent,
+	RDMRecordResultsGridItem,
+	RDMToggleComponent,
 } from "@js/invenio_app_rdm/search/components";
 import RecordsResultsListItem from "@js/invenio_app_rdm/components/RecordsResultsListItem";
 import {
-  CommunityRecordsSearchAppLayout,
-  CommunityRecordsSearchBarElement,
-  CommunityRecordsSearchEmptyResults,
+	CommunityRecordsSearchAppLayoutWithState,
+	CommunityRecordsSearchBarElement,
+	CommunityRecordsSearchEmptyResults,
 } from "./components";
 import { parametrize, overrideStore } from "react-overridable";
 import {
-  ContribSearchAppFacets,
-  ContribBucketAggregationElement,
-  ContribBucketAggregationValuesElement,
+	ContribSearchAppFacets,
+	ContribBucketAggregationElement,
+	ContribBucketAggregationValuesElement,
 } from "@js/invenio_search_ui/components";
 
 const appName = "InvenioCommunities.DetailsSearch";
 
 const ContribSearchAppFacetsWithConfig = parametrize(ContribSearchAppFacets, {
-  toggle: true,
+	toggle: true,
 });
 
 const CommunityRecordSearchAppLayoutWAppName = parametrize(
-  CommunityRecordsSearchAppLayout,
-  {
-    appName: appName,
-  }
+	CommunityRecordsSearchAppLayoutWithState,
+	{
+		appName: appName,
+	},
 );
 
 const defaultComponents = {
-  [`${appName}.BucketAggregation.element`]: ContribBucketAggregationElement,
-  [`${appName}.BucketAggregationValues.element`]: ContribBucketAggregationValuesElement,
-  [`${appName}.ResultsGrid.item`]: RDMRecordResultsGridItem,
-  [`${appName}.EmptyResults.element`]: CommunityRecordsSearchEmptyResults,
-  [`${appName}.ResultsList.item`]: RecordsResultsListItem,
-  [`${appName}.SearchApp.facets`]: ContribSearchAppFacetsWithConfig,
-  [`${appName}.SearchApp.layout`]: CommunityRecordSearchAppLayoutWAppName,
-  [`${appName}.SearchBar.element`]: CommunityRecordsSearchBarElement,
-  [`${appName}.Count.element`]: RDMCountComponent,
-  [`${appName}.Error.element`]: RDMErrorComponent,
-  [`${appName}.SearchFilters.Toggle.element`]: RDMToggleComponent,
+	[`${appName}.BucketAggregation.element`]: ContribBucketAggregationElement,
+	[`${appName}.BucketAggregationValues.element`]:
+		ContribBucketAggregationValuesElement,
+	[`${appName}.ResultsGrid.item`]: RDMRecordResultsGridItem,
+	[`${appName}.EmptyResults.element`]: CommunityRecordsSearchEmptyResults,
+	[`${appName}.ResultsList.item`]: RecordsResultsListItem,
+	[`${appName}.SearchApp.facets`]: ContribSearchAppFacetsWithConfig,
+	[`${appName}.SearchApp.layout`]: CommunityRecordSearchAppLayoutWAppName,
+	[`${appName}.SearchBar.element`]: CommunityRecordsSearchBarElement,
+	[`${appName}.Count.element`]: RDMCountComponent,
+	[`${appName}.Error.element`]: RDMErrorComponent,
+	[`${appName}.SearchFilters.Toggle.element`]: RDMToggleComponent,
 };
 
 const overriddenComponents = overrideStore.getAll();
 
 createSearchAppInit(
-  { ...defaultComponents, ...overriddenComponents },
-  true,
-  "invenio-search-config",
-  true
+	{ ...defaultComponents, ...overriddenComponents },
+	true,
+	"invenio-search-config",
+	true,
 );

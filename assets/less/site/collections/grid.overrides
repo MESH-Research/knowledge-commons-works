@@ -136,7 +136,7 @@
       }
       &.search-results-options-count {
         @media all and (max-width: @largestMobileScreen) {
-          margin-bottom: -1rem;
+          padding-right: 0;
         }
       }
     }
