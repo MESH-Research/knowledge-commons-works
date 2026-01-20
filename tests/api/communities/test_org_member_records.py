@@ -47,6 +47,8 @@ def csv_file_with_org_memberships(user_factory, minimal_community_factory, tmp_p
         metadata={"title": "Organization 2"},
     )
 
+    _ = org1.id  # NOTE: access to cache id on object (detached session in test func)
+
     # Index users so their identities are included in the search index
     reindex_users([user1.user.id, user2.user.id])
     current_users_service.indexer.process_bulk_queue()
