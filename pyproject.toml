@@ -234,6 +234,7 @@ plugins = [
   "tests.fixtures.saml",
   "tests.fixtures.search_provisioning",
   "tests.fixtures.stats",
+  "tests.fixtures.uow",
   "tests.fixtures.users",
   "tests.fixtures.vocabularies.affiliations",
   "tests.fixtures.vocabularies.community_types",
