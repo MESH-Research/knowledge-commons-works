@@ -70,6 +70,7 @@ pytest_plugins = (
     "tests.fixtures.roles",
     "tests.fixtures.search_provisioning",
     "tests.fixtures.stats",
+    "tests.fixtures.uow",
     "tests.fixtures.users",
     "tests.fixtures.vocabularies.affiliations",
     "tests.fixtures.vocabularies.community_types",
@@ -108,7 +109,7 @@ test_config = {
     "SQLALCHEMY_DATABASE_URI": (
         "postgresql+psycopg2://kcworks:kcworks@localhost:5432/kcworks"
     ),
-    "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+    # "SQLALCHEMY_TRACK_MODIFICATIONS": False,
     "SEARCH_INDEX_PREFIX": "",  # TODO: Search index prefix triggers errors
     "POSTGRES_USER": "kcworks",
     "POSTGRES_PASSWORD": "kcworks",
@@ -265,6 +266,23 @@ def location(database):
     # TODO: Submit PR to pytest-invenio to fix the below line in the stock fixture
     shutil.rmtree(uri)
 
+
+# @pytest.fixture(scope="function")
+# def db_session_options():
+#     """Database session options.
+#
+#     Use to override options like ``expire_on_commit`` for the database session, which
+#     helps with ``sqlalchemy.orm.exc.DetachedInstanceError`` when models are not bound
+#     to the session between transactions/requests/service-calls.
+#
+#     .. code-block:: python
+#
+#         @pytest.fixture(scope='function')
+#         def db_session_options():
+#             return dict(expire_on_commit=False)
+#     """
+#     return {"expire_on_commit": False}
+#
 
 # This is a namedtuple that holds all the fixtures we're likely to need
 # in a single test.

@@ -103,7 +103,7 @@ def format_commons_search_payload(
             "SITE_API_URL", "https://works.kcommons.org/api"
         )
     PROFILES_URL_BASE = current_app.config.get(
-        "KC_PROFILES_URL_BASE", "https://profiles.hcommons.org/members/"
+        "KC_PROFILES_URL_BASE", "https://profile.hcommons.org/members/"
     )
 
     payload = {
@@ -219,7 +219,7 @@ def format_commons_search_collection_payload(
     #     "INVENIO_SITE_API_URL", "http://works.kcommons.org/api"
     # )
     PROFILES_URL_BASE = current_app.config.get(
-        "KC_PROFILES_URL_BASE", "https://profiles.hcommons.org/members/"
+        "KC_PROFILES_URL_BASE", "https://profile.hcommons.org/members/"
     )
 
     try:
