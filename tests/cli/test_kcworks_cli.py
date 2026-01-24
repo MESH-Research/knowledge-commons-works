@@ -126,6 +126,8 @@ MOCK_RECORDS = [
 def test_bulk_update_command(
     running_app,
     db,
+    nested_unit_of_work,
+    monkeypatch,
     minimal_published_record_factory,
     minimal_community_factory,
     search_clear,
@@ -134,6 +136,10 @@ def test_bulk_update_command(
     cli_runner,
 ):
     """Test the bulk-update command."""
+    monkeypatch.setattr(
+        "invenio_records_resources.services.uow.UnitOfWork",
+        nested_unit_of_work,
+    )
     # Create a test community
     community = minimal_community_factory(
         metadata={"title": "Test Community"},
@@ -189,6 +195,8 @@ def test_bulk_update_command(
 def test_bulk_update_nested_field(
     running_app,
     db,
+    nested_unit_of_work,
+    monkeypatch,
     minimal_published_record_factory,
     minimal_community_factory,
     search_clear,
@@ -197,6 +205,10 @@ def test_bulk_update_nested_field(
     cli_runner,
 ):
     """Test the bulk-update command with a nested field."""
+    monkeypatch.setattr(
+        "invenio_records_resources.services.uow.UnitOfWork",
+        nested_unit_of_work,
+    )
     # Create a test community
     community = minimal_community_factory(
         metadata={"title": "Test Community"},
@@ -259,6 +271,8 @@ def test_bulk_update_nested_field(
 def test_bulk_update_plain_string(
     running_app,
     db,
+    nested_unit_of_work,
+    monkeypatch,
     minimal_published_record_factory,
     minimal_community_factory,
     search_clear,
@@ -267,6 +281,10 @@ def test_bulk_update_plain_string(
     cli_runner,
 ):
     """Test the bulk-update command with a plain string value."""
+    monkeypatch.setattr(
+        "invenio_records_resources.services.uow.UnitOfWork",
+        nested_unit_of_work,
+    )
     # Create a test community
     community = minimal_community_factory(
         metadata={"title": "Test Community"},
@@ -341,6 +359,8 @@ def test_bulk_update_nonexistent_community(
 def test_import_test_records_command(
     running_app,
     db,
+    nested_unit_of_work,
+    monkeypatch,
     search_clear,
     celery_worker,
     mock_send_remote_api_update_fixture,
@@ -348,6 +368,10 @@ def test_import_test_records_command(
     user_factory,
 ):
     """Test the import-test-records command."""
+    monkeypatch.setattr(
+        "invenio_records_resources.services.uow.UnitOfWork",
+        nested_unit_of_work,
+    )
     # Create a test user
     user_factory(
         email="test@example.com",
