@@ -1,23 +1,8 @@
 """Tests for change-record-owner CLI command."""
 
-import pytest
 from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from kcworks.cli import kcworks_records
-
-
-@pytest.fixture(scope="module")
-def cli_runner(base_app):
-    """Create a CLI runner for testing a CLI command.
-
-    Returns:
-        function: CLI runner function.
-    """
-
-    def cli_invoke(command, *args, input=None):
-        return base_app.test_cli_runner().invoke(command, args, input=input)
-
-    return cli_invoke
 
 
 def test_change_record_owner_by_id(
@@ -36,12 +21,16 @@ def test_change_record_owner_by_id(
         oauth_src="",
         oauth_id="",
     )
+    original_owner_id = original_owner.id
+
     new_owner = user_factory(
         email="newowner@example.com",
         password="test",
         oauth_src="",
         oauth_id="",
     )
+    new_owner_id = new_owner.id
+    new_owner_email = new_owner.user.email
 
     # Create a record with ownership in metadata
     record = minimal_published_record_factory(
@@ -67,7 +56,7 @@ def test_change_record_owner_by_id(
             },
             "parent": {
                 "access": {
-                    "owned_by": {"user": str(original_owner.id)},
+                    "owned_by": {"user": str(original_owner_id)},
                 },
             },
         },
@@ -75,7 +64,7 @@ def test_change_record_owner_by_id(
 
     # Verify original ownership
     record_obj = records_service.read(system_identity, id_=record.id)._record
-    assert record_obj.parent.access.owned_by.owner_id == int(original_owner.id)
+    assert record_obj.parent.access.owned_by.owner_id == int(original_owner_id)
 
     # Run the CLI command
     result = cli_runner(
@@ -84,20 +73,20 @@ def test_change_record_owner_by_id(
         "--record-id",
         record.id,
         "--new-owner-id",
-        str(new_owner.id),
+        str(new_owner_id),
     )
 
     assert result.exit_code == 0
     assert f"Changing ownership of record {record.id}" in result.output
-    assert f"Assigning to new owner {new_owner.id}" in result.output
-    assert f"email: {new_owner.email}" in result.output
+    assert f"Assigning to new owner {new_owner_id}" in result.output
+    assert f"email: {new_owner_email}" in result.output
     assert "Update complete" in result.output
-    assert f"new record owner id: {new_owner.id}" in result.output
+    assert f"new record owner id: {new_owner_id}" in result.output
 
     # Verify ownership was changed
     updated_record = records_service.read(system_identity, id_=record.id)._record
-    assert updated_record.parent.access.owned_by.owner_id == int(new_owner.id)
-    assert updated_record.parent.access.owned_by.owner_id != int(original_owner.id)
+    assert updated_record.parent.access.owned_by.owner_id == int(new_owner_id)
+    assert updated_record.parent.access.owned_by.owner_id != int(original_owner_id)
 
 
 def test_change_record_owner_by_email(
@@ -116,12 +105,16 @@ def test_change_record_owner_by_email(
         oauth_src="",
         oauth_id="",
     )
+    original_owner_id = original_owner.id
+
     new_owner = user_factory(
         email="newowner2@example.com",
         password="test",
         oauth_src="",
         oauth_id="",
     )
+    new_owner_id = new_owner.id
+    new_owner_email = new_owner.user.email
 
     # Create a record with ownership in metadata
     record = minimal_published_record_factory(
@@ -147,7 +140,7 @@ def test_change_record_owner_by_email(
             },
             "parent": {
                 "access": {
-                    "owned_by": {"user": str(original_owner.id)},
+                    "owned_by": {"user": str(original_owner_id)},
                 },
             },
         },
@@ -155,7 +148,7 @@ def test_change_record_owner_by_email(
 
     # Verify original ownership
     record_obj = records_service.read(system_identity, id_=record.id)._record
-    assert record_obj.parent.access.owned_by.owner_id == int(original_owner.id)
+    assert record_obj.parent.access.owned_by.owner_id == int(original_owner_id)
 
     # Run the CLI command
     result = cli_runner(
@@ -164,20 +157,20 @@ def test_change_record_owner_by_email(
         "--record-id",
         record.id,
         "--new-owner-email",
-        new_owner.email,
+        new_owner_email,
     )
 
     assert result.exit_code == 0
     assert f"Changing ownership of record {record.id}" in result.output
-    assert f"Assigning to new owner {new_owner.id}" in result.output
-    assert f"email: {new_owner.email}" in result.output
+    assert f"Assigning to new owner {new_owner_id}" in result.output
+    assert f"email: {new_owner_email}" in result.output
     assert "Update complete" in result.output
-    assert f"new record owner id: {new_owner.id}" in result.output
+    assert f"new record owner id: {new_owner_id}" in result.output
 
     # Verify ownership was changed
     updated_record = records_service.read(system_identity, id_=record.id)._record
-    assert updated_record.parent.access.owned_by.owner_id == int(new_owner.id)
-    assert updated_record.parent.access.owned_by.owner_id != int(original_owner.id)
+    assert updated_record.parent.access.owned_by.owner_id == int(new_owner_id)
+    assert updated_record.parent.access.owned_by.owner_id != int(original_owner_id)
 
 
 def test_change_record_owner_nonexistent_record(

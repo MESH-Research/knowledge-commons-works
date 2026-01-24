@@ -11,20 +11,6 @@ from invenio_users_resources.services.users.tasks import reindex_users
 from kcworks.cli import group_collections
 
 
-@pytest.fixture(scope="module")
-def cli_runner(base_app):
-    """Create a CLI runner for testing a CLI command.
-
-    Returns:
-        function: CLI runner function.
-    """
-
-    def cli_invoke(command, *args, input=None):
-        return base_app.test_cli_runner().invoke(command, args, input=input)
-
-    return cli_invoke
-
-
 @pytest.fixture
 def csv_file_with_org_memberships(user_factory, minimal_community_factory, tmp_path):
     """Create a CSV file with user-org mappings.

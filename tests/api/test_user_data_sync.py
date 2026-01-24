@@ -268,7 +268,7 @@ def test_user_data_sync_on_webhook(
     with patch("invenio_accounts.utils.current_user"):
         response2 = client.post(
             f"{app.config['SITE_API_URL']}/webhooks/user_data_update",
-            data=json.dumps({
+            json={
                 "idp": "knowledgeCommons",
                 "updates": {
                     "users": [
@@ -278,7 +278,7 @@ def test_user_data_sync_on_webhook(
                         },
                     ],
                 },
-            }),
+            },
             headers={**headers, "Authorization": f"Bearer {token}"},
         )
 
