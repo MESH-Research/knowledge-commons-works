@@ -4,7 +4,6 @@ from pathlib import Path
 from tempfile import SpooledTemporaryFile
 from unittest.mock import patch
 
-import pytest
 from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_rdm_records_service
 from kcworks.cli import kcworks_records
@@ -124,23 +123,11 @@ MOCK_RECORDS = [
 ]
 
 
-@pytest.fixture(scope="module")
-def cli_runner(base_app):
-    """Create a CLI runner for testing a CLI command.
-
-    Returns:
-        function: CLI runner function.
-    """
-
-    def cli_invoke(command, *args, input=None):
-        return base_app.test_cli_runner().invoke(command, args, input=input)
-
-    return cli_invoke
-
-
 def test_bulk_update_command(
     running_app,
     db,
+    nested_unit_of_work,
+    monkeypatch,
     minimal_published_record_factory,
     minimal_community_factory,
     search_clear,
@@ -149,6 +136,10 @@ def test_bulk_update_command(
     cli_runner,
 ):
     """Test the bulk-update command."""
+    monkeypatch.setattr(
+        "invenio_records_resources.services.uow.UnitOfWork",
+        nested_unit_of_work,
+    )
     # Create a test community
     community = minimal_community_factory(
         metadata={"title": "Test Community"},
@@ -204,6 +195,8 @@ def test_bulk_update_command(
 def test_bulk_update_nested_field(
     running_app,
     db,
+    nested_unit_of_work,
+    monkeypatch,
     minimal_published_record_factory,
     minimal_community_factory,
     search_clear,
@@ -212,6 +205,10 @@ def test_bulk_update_nested_field(
     cli_runner,
 ):
     """Test the bulk-update command with a nested field."""
+    monkeypatch.setattr(
+        "invenio_records_resources.services.uow.UnitOfWork",
+        nested_unit_of_work,
+    )
     # Create a test community
     community = minimal_community_factory(
         metadata={"title": "Test Community"},
@@ -274,6 +271,8 @@ def test_bulk_update_nested_field(
 def test_bulk_update_plain_string(
     running_app,
     db,
+    nested_unit_of_work,
+    monkeypatch,
     minimal_published_record_factory,
     minimal_community_factory,
     search_clear,
@@ -282,6 +281,10 @@ def test_bulk_update_plain_string(
     cli_runner,
 ):
     """Test the bulk-update command with a plain string value."""
+    monkeypatch.setattr(
+        "invenio_records_resources.services.uow.UnitOfWork",
+        nested_unit_of_work,
+    )
     # Create a test community
     community = minimal_community_factory(
         metadata={"title": "Test Community"},
@@ -356,6 +359,8 @@ def test_bulk_update_nonexistent_community(
 def test_import_test_records_command(
     running_app,
     db,
+    nested_unit_of_work,
+    monkeypatch,
     search_clear,
     celery_worker,
     mock_send_remote_api_update_fixture,
@@ -363,6 +368,10 @@ def test_import_test_records_command(
     user_factory,
 ):
     """Test the import-test-records command."""
+    monkeypatch.setattr(
+        "invenio_records_resources.services.uow.UnitOfWork",
+        nested_unit_of_work,
+    )
     # Create a test user
     user_factory(
         email="test@example.com",
@@ -444,6 +453,7 @@ def test_import_test_records_command(
 def test_import_test_records_with_options(
     running_app,
     db,
+    nested_unit_of_work,
     search_clear,
     celery_worker,
     mock_send_remote_api_update_fixture,
@@ -473,6 +483,7 @@ def test_import_test_records_with_options(
             "kcworks.services.records.test_data."
             "KCWorksRecordsAPIHelper.fetch_record_files"
         ) as mock_get_files,
+        patch("invenio_records_resources.services.uow.UnitOfWork", nested_unit_of_work),
     ):
         mock_fetch.return_value = (MOCK_RECORDS[:2], [])  # (records, errors)
 

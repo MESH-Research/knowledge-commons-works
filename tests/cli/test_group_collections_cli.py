@@ -1,24 +1,9 @@
 """Tests for KCWorks group-collections CLI commands."""
 
-import pytest
 from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_accounts
 from invenio_communities.proxies import current_communities
 from kcworks.cli import group_collections
-
-
-@pytest.fixture(scope="module")
-def cli_runner(base_app):
-    """Create a CLI runner for testing a CLI command.
-
-    Returns:
-        function: CLI runner function.
-    """
-
-    def cli_invoke(command, *args, input=None):
-        return base_app.test_cli_runner().invoke(command, args, input=input)
-
-    return cli_invoke
 
 
 def test_check_group_memberships_command_success(

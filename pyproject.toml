@@ -224,6 +224,8 @@ norecursedirs = [
 log_cli_level = "DEBUG"
 isort_show_files = true
 plugins = [
+  "tests.fixtures.caching",
+  "tests.fixtures.cli",
   "tests.fixtures.communities",
   "tests.fixtures.custom_fields",
   "tests.fixtures.identifiers",
@@ -231,7 +233,6 @@ plugins = [
   "tests.fixtures.metadata_fields",
   "tests.fixtures.records",
   "tests.fixtures.roles",
-  "tests.fixtures.saml",
   "tests.fixtures.search_provisioning",
   "tests.fixtures.stats",
   "tests.fixtures.uow",
