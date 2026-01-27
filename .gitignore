@@ -8,9 +8,6 @@ __pycache__/
 # vi(m) swap files
 *.swp
 
-# pyenv version files
-.python-version
-
 # VSCode workspace config
 *.code-workspace
 *.vscode
