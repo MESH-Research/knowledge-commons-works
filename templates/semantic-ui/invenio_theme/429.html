@@ -1,0 +1,26 @@
+{# -*- coding: utf-8 -*-
+
+This file is part of Invenio.
+Copyright (C) 2019 CERN.
+
+Customized for knowledge-commons-works
+Copyright (C) 2026 MESH Research
+
+Invenio is free software; you can redistribute it and/or modify it under the terms of
+the MIT License; see LICENSE file for more details.
+
+#}
+{% extends config.THEME_ERROR_TEMPLATE %}
+{% block message %}
+  <h1>
+    <i class="fa fa-flash"></i> {{ _("Too many requests") }}
+  </h1>
+  <p>
+    {% if error_message %}
+      {{ error_message }}
+    {% else %}
+      {{ _("You have made too many consecutive requests, please try again later.")
+      }}
+    {% endif %}
+  </p>
+{% endblock message %}

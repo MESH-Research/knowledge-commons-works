@@ -1,0 +1,22 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2015-2018 CERN.
+
+  Customized from knowledge-commons-works
+  Copyright (C) 2026 MESH Research
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+{% extends config.THEME_ERROR_TEMPLATE %}
+{% block message %}
+  {% if error_message %}
+    {{ error_message }}
+  {% else %}
+    <h1>
+      <i class="fa fa-exclamation-circle"></i> {{ _("Unauthorized") }}
+    </h1>
+    <p>{{ _("You need to be authenticated to view this page.") }}</p>
+  {% endif %}
+{% endblock message %}

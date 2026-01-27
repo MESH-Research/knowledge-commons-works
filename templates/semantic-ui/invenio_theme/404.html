@@ -1,0 +1,26 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2015-2018 CERN.
+
+  Customized from knowledge-commons-works
+  Copyright (C) 2026 MESH Research
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+{% extends config.THEME_ERROR_TEMPLATE %}
+{% block message %}
+  <h1>
+    <i class="fa fa-question-circle"></i> {{ _("Page not found") }}
+  </h1>
+  {% if error_message %}
+    <p>{{ error_message }}</p>
+  {% else %}
+    <p>{{ _("Sorry, we couldn't find what you're looking for.") }}</p>
+    <p>
+      {{ _("You can report bugs and request help") }} <a href="{{ config.KC_HELP_URL }}">{{ _("here") }}</a> {{ _("or email") }}
+      <a href="mailto:hello@hcommons.org">hello@hcommons.org</a>.
+    </p>
+  {% endif %}
+{% endblock message %}
