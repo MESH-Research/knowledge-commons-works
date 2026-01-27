@@ -294,9 +294,6 @@ ignore_errors = true
 ignore_missing_imports = true
 follow_imports = "skip"
 
-[tool.uv]
-python = "3.12"
-
 [tool.uv.sources]
 kcworks = { path = "./site", editable = true }
 invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
