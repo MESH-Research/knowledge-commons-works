@@ -2240,6 +2240,7 @@ requires-dist = [
     { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "<13.0.0" },
     { name = "invenio-cli" },
     { name = "invenio-communities" },
+    { name = "invenio-remote-user-data-kcworks", marker = "extra == 'tests'", editable = "site/kcworks/dependencies/invenio-remote-user-data-kcworks" },
     { name = "opensearch-dsl" },
     { name = "pip-tools", marker = "extra == 'dev'" },
     { name = "psycopg2-binary" },
@@ -3404,7 +3405,7 @@ wheels = [
 
 [[package]]
 name = "kcworks"
-version = "0.7.1"
+version = "0.7.2"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
