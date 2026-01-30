@@ -11,7 +11,13 @@ From there, installation involves these steps. Each one is further explained bel
 ### 1. Clone the git repository
 
 - From your command line, navigate to the parent folder where you want the cloned repository code to live
-- Clone the knowledge-commons-works repository with `git clone git@github.com:MESH-Research/knowledge-commons-works.git && git submodule update --init`
+- Clone the knowledge-commons-works repository with
+
+```shell
+git clone git@github.com:MESH-Research/knowledge-commons-works.git
+cd knowledge-commons-works
+git submodule update --init
+```
 
 ```{note}
 Do not use the `--recurse-submodules` option when cloning the repository or the `--recursive` option when initializing the submodules. This will clone redundant copies of the inter-dependent submodules.
@@ -127,6 +133,31 @@ PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
 DYLD_LIBRARY_PATH="/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_LIBRARY_PATH"
 DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_FALLBACK_LIBRARY_PATH"
 ```
+
+## Running multiple KCWorks instances on the same machine
+
+It is perfectly feasible to run multiple KCWorks instances on the same machine. The only change necessary in this case is to edit the docker-compose.yml and docker-services.yml files to change the _container_ names (NOT the _service_ names) so that the additional instances each uses its own set of unique containers. For example, we can make the following changes:
+
+"kcworks-frontend" --> "kcworks-next-frontend"
+"kcworks-ui" --> "kcworks-next-ui"
+"kcworks-api" --> "kcworks-next-api"
+"kcworks-worker" --> "kcworks-next-api"
+
+```{caution}
+Do not run multiple KCWorks instances on the same computer at the *same time*. This will produce conflicts in docker compose orchestration.
+```
+
+```{caution}
+Do not modify the names of the services, like "web-ui", "web-api", and "web-worker". These can remain the same since only one instance's containers will be running at a time.
+```
+
+You will also need to ensure that the following environment variables point to the correct KCWorks instance folder for each instance:
+
+PYTHON_LOCAL_SITE_PACKAGES_PATH
+INVENIO_LOCAL_DEPENDENCIES_PATH
+INVENIO_LOCAL_SITE_PATH
+INVENIO_LOCAL_INSTANCE_PATH
+INVENIO_INSTANCE_PATH
 
 ## Controlling the KCWorks (Flask) application
 
