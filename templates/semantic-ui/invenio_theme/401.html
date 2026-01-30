@@ -11,12 +11,23 @@
 #}
 {% extends config.THEME_ERROR_TEMPLATE %}
 {% block message %}
-  {% if error_message %}
-    {{ error_message }}
-  {% else %}
-    <h1>
-      <i class="fa fa-exclamation-circle"></i> {{ _("Unauthorized") }}
-    </h1>
-    <p>{{ _("You need to be authenticated to view this page.") }}</p>
-  {% endif %}
+  <h1 class="rel-mb-1">
+    <i class="fa fa-exclamation-circle icon exclamation circle"></i>
+    {% if error_header %}
+      {{ error_header }}
+    {% else %}
+      {{ _("Not logged in") }}
+    {% endif %}
+  </h1>
+  <p class="ml-25 pl-30">
+    {% if error_message %}
+      {{ error_message |safe }}
+    {% else %}
+      {{ _("You need to be logged in to view this page.") }}
+    {% endif %}
+  </p>
+  <p class="ml-25 pl-30">
+    {{ _("You can report bugs and request help") }} <a href="{{ config.KC_HELP_URL }}">{{ _("here") }}</a> {{ _("or email") }}
+    <a href="mailto:hello@hcommons.org">hello@hcommons.org</a>.
+  </p>
 {% endblock message %}

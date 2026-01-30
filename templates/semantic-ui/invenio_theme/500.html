@@ -11,20 +11,27 @@
 #}
 {% extends config.THEME_ERROR_TEMPLATE %}
 {% block message %}
-  <h1>
-    <i class="fa fa-exclamation-triangle"></i> {{ _("Internal server error") }}
+  <h1 class="rel-mb-1">
+    <i class="fa fa-exclamation-triangle icon exclamation triangle"></i>
+    {% if error_header %}
+      {{ error_header }}
+    {% else %}
+      {{ _("Error") }}
+    {% endif %}
   </h1>
-  <p>
+  <p class="ml-25 pl-30">
     {% if error_message %}
       {{ error_message }}
     {% else %}
-      {{ _("Something went wrong on our end. Please try again later. You can report bugs
-            and request help") }} <a href="{{ config.KC_HELP_URL }}">{{ _("here") }}</a> {{ _("or email") }}
-      <a href="mailto:hello@hcommons.org">hello@hcommons.org</a>.
+      {{ _("Oops! Something went wrong on our end. Please try again later.") }}
     {% endif %}
   </p>
+  <p class="ml-25 pl-30">
+    {{ _("You can report bugs and request help") }} <a href="{{ config.KC_HELP_URL }}">{{ _("here") }}</a> {{ _("or email") }}
+    <a href="mailto:hello@hcommons.org">hello@hcommons.org</a>.
+  </p>
   {% if g.sentry_event_id %}
-    <p>
+    <p class="ml-25 pl-30">
       <small class="text-muted">{{ _("Error identifier") }}: {{ g.sentry_event_id }}</small>
     </p>
   {% endif %}
