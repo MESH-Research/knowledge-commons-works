@@ -276,8 +276,13 @@
 <h3>1. Clone the git repository<a class="headerlink" href="#clone-the-git-repository" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>From your command line, navigate to the parent folder where you want the cloned repository code to live</p></li>
-<li><p>Clone the knowledge-commons-works repository with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:MESH-Research/knowledge-commons-works.git</span> <span class="pre">&amp;&amp;</span> <span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span></code></p></li>
+<li><p>Clone the knowledge-commons-works repository with</p></li>
 </ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:MESH-Research/knowledge-commons-works.git
+<span class="nb">cd</span><span class="w"> </span>knowledge-commons-works
+git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Do not use the <code class="docutils literal notranslate"><span class="pre">--recurse-submodules</span></code> option when cloning the repository or the <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> option when initializing the submodules. This will clone redundant copies of the inter-dependent submodules.</p>
@@ -400,6 +405,28 @@ This will mount a variety of local package folders as bind mounts in your runnin
 </div>
 </section>
 </section>
+</section>
+<section id="running-multiple-kcworks-instances-on-the-same-machine">
+<h2>Running multiple KCWorks instances on the same machine<a class="headerlink" href="#running-multiple-kcworks-instances-on-the-same-machine" title="Link to this heading">¶</a></h2>
+<p>It is perfectly feasible to run multiple KCWorks instances on the same machine. The only change necessary in this case is to edit the docker-compose.yml and docker-services.yml files to change the <em>container</em> names (NOT the <em>service</em> names) so that the additional instances each uses its own set of unique containers. For example, we can make the following changes:</p>
+<p>“kcworks-frontend” –&gt; “kcworks-next-frontend”
+“kcworks-ui” –&gt; “kcworks-next-ui”
+“kcworks-api” –&gt; “kcworks-next-api”
+“kcworks-worker” –&gt; “kcworks-next-api”</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Do not run multiple KCWorks instances on the same computer at the <em>same time</em>. This will produce conflicts in docker compose orchestration.</p>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Do not modify the names of the services, like “web-ui”, “web-api”, and “web-worker”. These can remain the same since only one instance’s containers will be running at a time.</p>
+</div>
+<p>You will also need to ensure that the following environment variables point to the correct KCWorks instance folder for each instance:</p>
+<p>PYTHON_LOCAL_SITE_PACKAGES_PATH
+INVENIO_LOCAL_DEPENDENCIES_PATH
+INVENIO_LOCAL_SITE_PATH
+INVENIO_LOCAL_INSTANCE_PATH
+INVENIO_INSTANCE_PATH</p>
 </section>
 <section id="controlling-the-kcworks-flask-application">
 <h2>Controlling the KCWorks (Flask) application<a class="headerlink" href="#controlling-the-kcworks-flask-application" title="Link to this heading">¶</a></h2>
@@ -569,6 +596,7 @@ This will mount a variety of local package folders as bind mounts in your runnin
 </li>
 </ul>
 </li>
+<li><a class="reference internal" href="#running-multiple-kcworks-instances-on-the-same-machine">Running multiple KCWorks instances on the same machine</a></li>
 <li><a class="reference internal" href="#controlling-the-kcworks-flask-application">Controlling the KCWorks (Flask) application</a></li>
 <li><a class="reference internal" href="#setting-up-configuration-files">Setting up configuration files</a><ul>
 <li><a class="reference internal" href="#configuring-your-env-file">Configuring your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</a><ul>
