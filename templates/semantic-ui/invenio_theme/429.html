@@ -1,0 +1,34 @@
+{# -*- coding: utf-8 -*-
+
+This file is part of Invenio.
+Copyright (C) 2019 CERN.
+
+Customized for knowledge-commons-works
+Copyright (C) 2026 MESH Research
+
+Invenio is free software; you can redistribute it and/or modify it under the terms of
+the MIT License; see LICENSE file for more details.
+
+#}
+{% extends config.THEME_ERROR_TEMPLATE %}
+{% block message %}
+  <h1 class="rel-mb-1">
+    <i class="fa fa-exclamation-circle icon flash"></i>
+    {% if error_header %}
+      {{ error_header }}
+    {% else %}
+      {{ _("You must be exhausted!") }}
+    {% endif %}
+  </h1>
+  <p class="ml-25 pl-30">
+    {% if error_message %}
+      {{ error_message |safe }}
+    {% else %}
+      {{ _("You've made too many consecutive requests, please try again later.") }}
+    {% endif %}
+  </p>
+  <p class="ml-25 pl-30">
+    {{ _("You can report bugs and request help") }} <a href="{{ config.KC_HELP_URL }}">{{ _("here") }}</a> {{ _("or email") }}
+    <a href="mailto:hello@hcommons.org">hello@hcommons.org</a>.
+  </p>
+{% endblock message %}
