@@ -22,7 +22,7 @@ the MIT License; see LICENSE file for more details.
   </h1>
   <p class="ml-25 pl-30">
     {% if error_message %}
-      {{ error_message }}
+      {{ error_message |safe }}
     {% else %}
       {{ _("You've made too many consecutive requests, please try again later.") }}
     {% endif %}

@@ -14,6 +14,13 @@ import warnings
 
 from flask import Flask
 from invenio_rdm_records.services.components import DefaultRecordsComponents
+from invenio_remote_user_data_kcworks.errors import (
+    IDTokenInvalid,
+    NoIDPFoundError,
+    StateTokenInvalid,
+    UserDataRequestFailed,
+    UserDataRequestTimeout,
+)
 from werkzeug.exceptions import (
     Forbidden,
     InternalServerError,
@@ -172,3 +179,8 @@ def finalize_app(app: Flask) -> None:
     app.register_error_handler(NotFound, oauth_404_handler)
     app.register_error_handler(Forbidden, oauth_403_handler)
     app.register_error_handler(InternalServerError, oauth_500_handler)
+    app.register_error_handler(NoIDPFoundError, oauth_401_handler)
+    app.register_error_handler(StateTokenInvalid, oauth_401_handler)
+    app.register_error_handler(IDTokenInvalid, oauth_401_handler)
+    app.register_error_handler(UserDataRequestFailed, oauth_401_handler)
+    app.register_error_handler(UserDataRequestTimeout, oauth_401_handler)

@@ -21,7 +21,7 @@
   </h1>
   <p class="ml-25 pl-30">
     {% if error_message %}
-      {{ error_message }}
+      {{ error_message |safe }}
     {% else %}
       {{ __("You don't have permission to view this page.") }}
     {% endif %}

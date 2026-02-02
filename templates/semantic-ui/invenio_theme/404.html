@@ -21,12 +21,13 @@
   </h1>
   <p class="ml-25 pl-30">
     {% if error_message %}
-      {{ error_message }}
+      {{ error_message |safe }}
     {% else %}
       {{ _("Sorry, we couldn't find what you're looking for.") }}
     {% endif %}
-    <p class="ml-25 pl-30">
-      {{ _("You can report bugs and request help") }} <a href="{{ config.KC_HELP_URL }}">{{ _("here") }}</a> {{ _("or email") }}
-      <a href="mailto:hello@hcommons.org">hello@hcommons.org</a>.
-    </p>
-  {% endblock message %}
+  </p>
+  <p class="ml-25 pl-30">
+    {{ _("You can report bugs and request help") }} <a href="{{ config.KC_HELP_URL }}">{{ _("here") }}</a> {{ _("or email") }}
+    <a href="mailto:hello@hcommons.org">hello@hcommons.org</a>.
+  </p>
+{% endblock message %}

@@ -16,11 +16,12 @@ def oauth_401_handler(error):
     Manually registered on the authorized blueprint
     in ext.py.
     """
-    app.logger.debug(f"401 handler fired with description {error.description}")
+    header = getattr(error, "header", None)
+    message = getattr(error, "description", None) or getattr(error, "messages", None)
     return render_template(
         app.config.get("THEME_401_TEMPLATE", "invenio_theme/401.html"),
-        error_header="Something went wrong...",
-        error_message=error.description or "We couldn't log you in.",
+        error_header=header,
+        error_message=message or "We couldn't log you in.",
     ), 401
 
 
@@ -29,10 +30,12 @@ def oauth_404_handler(error):
 
     Manually registered on the authorized blueprint in ext.py.
     """
+    header = getattr(error, "header", None)
+    message = getattr(error, "description", None) or getattr(error, "messages", None)
     return render_template(
         app.config.get("THEME_404_TEMPLATE", "invenio_theme/404.html"),
-        error_message=error.description
-        or "The requested OAuth provider was not found.",
+        error_header=header,
+        error_message=message or "We couldn't find that resource.",
     ), 404
 
 
@@ -41,10 +44,12 @@ def oauth_403_handler(error):
 
     Manually registered on the authorized blueprint in ext.py.
     """
+    header = getattr(error, "header", None)
+    message = getattr(error, "description", None) or getattr(error, "messages", None)
     return render_template(
         app.config.get("THEME_403_TEMPLATE", "invenio_theme/403.html"),
-        error_message=error.description
-        or "You don't have permission to access this login content.",
+        error_header=header,
+        error_message=message or "We couldn't find that resource.",
     ), 403
 
 
@@ -53,7 +58,10 @@ def oauth_500_handler(error):
 
     Manually registered on the authorized blueprint in ext.py.
     """
+    header = getattr(error, "header", None)
+    message = getattr(error, "description", None) or getattr(error, "messages", None)
     return render_template(
         app.config.get("THEME_500_TEMPLATE", "invenio_theme/500.html"),
-        error_message=error.description or "Something went wrong.",
+        error_header=header,
+        error_message=message or "Oops! Something went wrong on our end.",
     ), 500

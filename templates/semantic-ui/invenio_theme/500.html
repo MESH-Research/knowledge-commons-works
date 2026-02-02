@@ -21,7 +21,7 @@
   </h1>
   <p class="ml-25 pl-30">
     {% if error_message %}
-      {{ error_message }}
+      {{ error_message |safe }}
     {% else %}
       {{ _("Oops! Something went wrong on our end. Please try again later.") }}
     {% endif %}
