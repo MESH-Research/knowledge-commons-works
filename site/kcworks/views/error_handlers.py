@@ -17,7 +17,9 @@ def oauth_401_handler(error):
     in ext.py.
     """
     header = getattr(error, "header", None)
-    message = getattr(error, "description", None) or getattr(error, "messages", None)
+    message = getattr(error, "description", None) or getattr(error, "message", None)
+    app.logger.debug(f"DEBUG: in handler: {header}")
+    app.logger.debug(f"DEBUG: in handler: {message}")
     return render_template(
         app.config.get("THEME_401_TEMPLATE", "invenio_theme/401.html"),
         error_header=header,
@@ -31,7 +33,7 @@ def oauth_404_handler(error):
     Manually registered on the authorized blueprint in ext.py.
     """
     header = getattr(error, "header", None)
-    message = getattr(error, "description", None) or getattr(error, "messages", None)
+    message = getattr(error, "description", None) or getattr(error, "message", None)
     return render_template(
         app.config.get("THEME_404_TEMPLATE", "invenio_theme/404.html"),
         error_header=header,
@@ -45,7 +47,7 @@ def oauth_403_handler(error):
     Manually registered on the authorized blueprint in ext.py.
     """
     header = getattr(error, "header", None)
-    message = getattr(error, "description", None) or getattr(error, "messages", None)
+    message = getattr(error, "description", None) or getattr(error, "message", None)
     return render_template(
         app.config.get("THEME_403_TEMPLATE", "invenio_theme/403.html"),
         error_header=header,
@@ -59,7 +61,7 @@ def oauth_500_handler(error):
     Manually registered on the authorized blueprint in ext.py.
     """
     header = getattr(error, "header", None)
-    message = getattr(error, "description", None) or getattr(error, "messages", None)
+    message = getattr(error, "description", None) or getattr(error, "message", None)
     return render_template(
         app.config.get("THEME_500_TEMPLATE", "invenio_theme/500.html"),
         error_header=header,
