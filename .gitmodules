@@ -20,7 +20,7 @@
 	branch = main
 [submodule "site/kcworks/dependencies/invenio-modular-deposit-form"]
 	path = site/kcworks/dependencies/invenio-modular-deposit-form
-	url = https://github.com/MESH-Research/invenio-modular-deposit-form.git
+	url = git@github.com:MESH-Research/invenio-modular-deposit-form.git
 	branch = main
 [submodule "site/kcworks/dependencies/invenio-modular-detail-page"]
 	path = site/kcworks/dependencies/invenio-modular-detail-page
