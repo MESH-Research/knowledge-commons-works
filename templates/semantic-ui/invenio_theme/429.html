@@ -12,22 +12,24 @@ the MIT License; see LICENSE file for more details.
 #}
 {% extends config.THEME_ERROR_TEMPLATE %}
 {% block message %}
-  <h1 class="rel-mb-1">
-    <i class="fa fa-exclamation-circle icon flash"></i>
+  <div class="centered rel-mt-1">
+    <i class="fa fa-exclamation-circle icon huge exclamation circle"></i>
+  </div>
+  <h1 class="rel-mb-1 centered">
     {% if error_header %}
       {{ error_header }}
     {% else %}
       {{ _("You must be exhausted!") }}
     {% endif %}
   </h1>
-  <p class="ml-25 pl-30">
+  <p class="">
     {% if error_message %}
       {{ error_message |safe }}
     {% else %}
       {{ _("You've made too many consecutive requests, please try again later.") }}
     {% endif %}
   </p>
-  <p class="ml-25 pl-30">
+  <p class=" ui positive message">
     {{ _("You can report bugs and request help") }} <a href="{{ config.KC_HELP_URL }}">{{ _("here") }}</a> {{ _("or email") }}
     <a href="mailto:hello@hcommons.org">hello@hcommons.org</a>.
   </p>
