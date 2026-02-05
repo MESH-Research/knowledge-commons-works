@@ -1567,4 +1567,87 @@ The `updates` object should be identical to the `updates` object provided in the
 
 #### Error responses
 
-If multiple update signals are received in one `POST` request, it is possible that only some of the updates can be processed. The request might, for example, provide `updated` event signals for a number of entities, some of whose ids do not exist in KC Works. In this case the response code will be `207 Multi-Status` and the response payload will be a JSON object
+If multiple update signals are received in one `POST` request, it is possible that only some of the updates can be processed. The request might, for example, provide `updated` event signals for a number of entities, some of whose ids do not exist in KC Works. In this case the response code will be `207 Multi-Status` and the response payload will be a JSON object (documented in the source).
+
+## Central User Logout Receiver (Internal Only)
+
+```
+https://works.hcommons.org/api/webhooks/users/logout
+```
+
+```{warning}
+This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.
+```
+
+The endpoint `/api/webhooks/users/logout` allows the central Knowledge Commons identity/service layer to signal that a user has logged out on another application in the network. KCWorks will then invalidate all of that user's KCWorks sessions so they are logged out of KCWorks as well (single sign-out style behavior).
+
+### Authentication and authorization
+
+Requests must include a Bearer token in the `Authorization` header. The token must belong to an identity that has permission to trigger user logout (for example, a user with the `administration` role).
+
+### GET requests
+
+A `GET` request can be used to check that the endpoint is available. The response has status `200` and a JSON body:
+
+```json
+{
+  "message": "Webhook receiver is active",
+  "status": 200
+}
+```
+
+### POST requests
+
+A `POST` request triggers logout for a single user. The user is identified by the **KC username** (Commons username), passed as a query parameter.
+
+**Query parameters**
+
+| Parameter  | Type   | Description                                      | Required |
+| ---------- | ------ | ------------------------------------------------ | -------- |
+| `username` | string | The KC (Commons) username of the user to log out | Y        |
+
+**Example**
+
+```bash
+curl -X POST "https://works.hcommons.org/api/webhooks/users/logout?username=john_doe" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+#### Success response (200 OK)
+
+If the user exists in KCWorks and their sessions were invalidated successfully:
+
+```json
+{
+  "message": "User john_doe logged out",
+  "status": "success"
+}
+```
+
+#### User not found (404 Not Found)
+
+If no KCWorks user exists for the given username:
+
+```json
+{
+  "message": "User john_doe not found in KCWorks; no sessions invalidated",
+  "status": "not found"
+}
+```
+
+#### Server error (500 Internal Server Error)
+
+If session invalidation fails (for example, a database or session-store error):
+
+```json
+{
+  "message": "Failed to log out john_doe",
+  "status": "error"
+}
+```
+
+#### Other error responses
+
+- **400 Bad Request**: The `username` query parameter is missing.
+- **403 Forbidden**: The Bearer token is missing, invalid, or the identity does not have permission to trigger user logout.
