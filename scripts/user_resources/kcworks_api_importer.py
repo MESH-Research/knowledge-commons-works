@@ -96,9 +96,8 @@ import json
 import mimetypes
 import os
 import sys
+import threading
 from typing import Any, Optional
-
-from halo import Halo
 
 # Check Python version
 # Note: This script is designed to work with Python 3.9+ for standalone use,
@@ -494,11 +493,30 @@ def import_works(
         # Disable SSL verification when testing
         verify_ssl = not testing
 
+        def _run_spinner(stop: threading.Event, message: str = "Importing records...") -> None:
+            chars = ["|", "/", "-", "\\"]
+            i = 0
+            while not stop.is_set():
+                sys.stdout.write(f"\r{message} {chars[i % len(chars)]}")
+                sys.stdout.flush()
+                i += 1
+                stop.wait(0.1)
+
         print(" ")
-        with Halo("Importing records...", spinner="dots"):
+        stop_spinner = threading.Event()
+        spinner_thread = threading.Thread(
+            target=_run_spinner, args=(stop_spinner,), daemon=True
+        )
+        spinner_thread.start()
+        try:
             response = requests.post(
                 api_url, headers=headers, files=files, data=data, verify=verify_ssl
             )
+        finally:
+            stop_spinner.set()
+            spinner_thread.join()
+            sys.stdout.write("\r" + " " * 30 + "\r")
+            sys.stdout.flush()
 
         print("=" * 70)
         print("Import Result")
