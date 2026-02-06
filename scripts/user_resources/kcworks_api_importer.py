@@ -47,6 +47,10 @@ Environment Variables:
     KCWORKS_IMPORT_OUTPUT_PATH
         Path to save response JSON (alternative to --output)
 
+    KCWORKS_IMPORT_API_URL
+        Override the import API base URL (e.g. http://127.0.0.1:8000/api/import).
+        Used for testing. When set, SSL verification is disabled.
+
 Usage Examples:
     # Basic usage with all arguments
     python scripts/user_resources/kcworks_api_importer.py \\
@@ -461,9 +465,17 @@ def import_works(
     Exits:
         SystemExit: If request fails with a network error.
     """
-    api_url = f"https://works.hcommons.org/api/import/{collection_id}"
-    if testing:
-        api_url = f"https://localhost/api/import/{collection_id}"
+    api_url_env = os.getenv("KCWORKS_IMPORT_API_URL")
+    # Used with test server in automated testing that
+    # assigns an arbitrary port.
+    if api_url_env:
+        api_url = f"{api_url_env.rstrip('/')}/{collection_id}"
+        verify_ssl = False
+    else:
+        api_url = f"https://works.hcommons.org/api/import/{collection_id}"
+        if testing:  # in manual testing
+            api_url = f"https://localhost/api/import/{collection_id}"
+        verify_ssl = not testing
 
     headers = {"Accept": "application/json", "Authorization": f"Bearer {api_key}"}
 
@@ -490,10 +502,10 @@ def import_works(
             "metadata": metadata_json,
             "notify_record_owners": str(notify_owners).lower(),
         }
-        # Disable SSL verification when testing
-        verify_ssl = not testing
 
-        def _run_spinner(stop: threading.Event, message: str = "Importing records...") -> None:
+        def _run_spinner(
+            stop: threading.Event, message: str = "Importing records..."
+        ) -> None:
             chars = ["|", "/", "-", "\\"]
             i = 0
             while not stop.is_set():
