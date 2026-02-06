@@ -6,8 +6,8 @@
 
 """KCWorks error handler views."""
 
+from flask import Response, render_template
 from flask import current_app as app
-from flask import render_template, Response
 
 
 def oauth_401_handler(error) -> Response:
