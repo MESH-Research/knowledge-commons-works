@@ -174,7 +174,7 @@ class KCWorks:
 
 
 def finalize_app(app: Flask) -> None:
-    """Entry point for invenio_base.finalize_app. Registers OAuth error handlers."""
+    """Entry point for invenio_base.finalize_app (UI app). Registers OAuth/UI error handlers."""
     app.register_error_handler(Unauthorized, oauth_401_handler)
     app.register_error_handler(NotFound, oauth_404_handler)
     app.register_error_handler(Forbidden, oauth_403_handler)
@@ -184,3 +184,8 @@ def finalize_app(app: Flask) -> None:
     app.register_error_handler(IDTokenInvalid, oauth_401_handler)
     app.register_error_handler(UserDataRequestFailed, oauth_401_handler)
     app.register_error_handler(UserDataRequestTimeout, oauth_401_handler)
+
+
+def api_finalize_app(app: Flask) -> None:
+    """Entry point for invenio_base.api_finalize_app (API app). No UI error handlers."""
+    pass

@@ -18,7 +18,6 @@ dependencies = [
   "flask-breadcrumbs",
   "flask-iiif",
   "flask-principal",
-  "halo",
   "invenio-app-rdm[opensearch2]==12.1",
   "invenio-communities==13.0.3",
   "invenio-group-collections-kcworks",
@@ -63,7 +62,6 @@ optional-dependencies.dev = [
   "djlint>=1.36.4",
   "docker-services-cli",
   "furo",
-  "halo",
   "jsonlines",
   "mypy>=1.8",
   "myst-parser",
@@ -93,7 +91,7 @@ entry-points."flask.commands".kcworks-users = "kcworks.cli:kcworks_users"
 entry-points."invenio_assets.webpack".kcworks_theme = "kcworks.webpack:theme"
 entry-points."invenio_base.api_apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.api_blueprints".kcworks_api = "kcworks.views.views:create_api_blueprint"
-entry-points."invenio_base.api_finalize_app".kcworks = "kcworks.ext:finalize_app"
+entry-points."invenio_base.api_finalize_app".kcworks = "kcworks.ext:api_finalize_app"
 entry-points."invenio_base.apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.blueprints".kcworks_views = "kcworks.views.views:create_blueprint"
 entry-points."invenio_base.blueprints".knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
