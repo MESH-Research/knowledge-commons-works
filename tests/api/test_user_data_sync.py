@@ -407,7 +407,7 @@ def test_user_data_sync_on_account_setup(
     # Verify that the user was activated and updated
     updated_user = current_accounts.datastore.get_user_by_id(user_id)
     assert updated_user.active
-    assert updated_user.username == "knowledgeCommons-testuser"
+    assert updated_user.username == "testuser"
     assert updated_user.email == "testuser@example.com"
     assert updated_user.user_profile.get("full_name") == "Test User"
     assert updated_user.user_profile.get("affiliations") == "Test University"

@@ -3,7 +3,7 @@
   Copyright (C) 2022 CERN.
 
   Modifications for Knowledge Commons Works
-  Copyright (C) 2024 Mesh
+  Copyright (C) 2024-2026 Mesh
 
   Invenio App RDM and Knowledge Commons Works are both free software; you
   can redistribute and/or modify them under the terms of the MIT License;
@@ -14,28 +14,24 @@
   - Keep menu from stacking on mobile
   - Add "My Works" to the menu with link to search for works by the current user
 #}
-
-
 {% set cu = current_userprofile %}
 {% set cu_dict = current_userprofile | user_profile_dict %}
-
-{% set my_works_url = url_for('invenio_search_ui.search') + '?q=metadata.creators.person_or_org.name:%22' + cu_dict.get('full_name') + '%22' %}
+{% set my_works_url = url_for('invenio_search_ui.search') + '?q=metadata.creators.person_or_org.name:%22' + (cu_dict.get('full_name') or '') + '%22' %}
 {% if cu_dict.get('full_name_alt') %}
-  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.name:%22' + cu_dict.get('full_name_alt') + '%22' %}
+  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.name:%22' + (cu_dict.get('full_name_alt') or '') + '%22' %}
 {% endif %}
 {% if cu_dict.get('full_name_alt_b') %}
-  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.name:%22' + cu_dict.get('full_name_alt_b') + '%22' %}
+  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.name:%22' + (cu_dict.get('full_name_alt_b') or '') + '%22' %}
 {% endif %}
 {% if cu_dict.get('identifier_orcid') %}
-  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.identifiers.identifier:%22' + cu_dict.get('identifier_orcid') + '%22' %}
+  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.identifiers.identifier:%22' + (cu_dict.get('identifier_orcid') or '') + '%22' %}
 {% endif %}
 {% if cu_dict.get('identifier_kc_username') %}
-  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.identifiers.identifier:%22' + cu_dict.get('identifier_kc_username') + '%22' %}
+  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.identifiers.identifier:%22' + (cu_dict.get('identifier_kc_username') or '') + '%22' %}
 {% endif %}
 {% if cu_dict.get('identifier_email') %}
-  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.identifiers.identifier:%22' + cu_dict.get('identifier_email') + '%22' %}
+  {% set my_works_url = my_works_url + '%20OR%20metadata.creators.person_or_org.identifiers.identifier:%22' + (cu_dict.get('identifier_email') or '') + '%22' %}
 {% endif %}
-
 <div class="ui container fluid page-subheader-outer shadowless with-submenu ml-0-mobile mr-0-mobile mb-0 rel-pt-2"
      id="dashboard-user-header-container">
   <div class="ui container relaxed grid page-subheader dashboard-user-header mr-0-mobile ml-0-mobile">
@@ -49,45 +45,42 @@
         <div class="ui items unstackable m-0">
           <div class="item">
             <div class="middle aligned content">
-              <h1 class="ui medium header" aria-label="{{ _('My dashboard') }}">
-                {{ current_userprofile.full_name or current_user.username or current_userprofile.email or _("Anonymous user") }}
+              <h1 class="ui medium header" aria-label="{{ _("My dashboard") }}">
+                {{ (current_userprofile.full_name | default('', true) ) or (current_user.username | default('', true)) or (current_userprofile.email | default('', true)) or _("Anonymous user") }}
               </h1>
-              {% if current_userprofile.affiliations %}<div class="meta">{{ current_userprofile.affiliations }}</div>{% endif %}
+              {% if current_userprofile.affiliations | default('', true) %}
+                <div class="meta">{{ current_userprofile.affiliations }}</div>
+              {% endif %}
             </div>
           </div>
         </div>
       </div>
       {# <div class="ui column flex sixteen wide mobile sixteen wide tablet four wide computer align-items-center justify-space-around"> #}
-        {# {% if active_dashboard_menu_item == "uploads" %} #}
-          {# <a class="ui tiny button positive left labeled icon m-0" #}
-            {# href="/uploads/new">  noqa #}
-            {# <i class="upload icon" aria-hidden="true"></i> #}
-            {# {{ _("Add a work") }} #}
-          {# </a> #}
-        {# {% endif %} #}
-        {# {% if active_dashboard_menu_item == "communities" %} #}
-          {# <a class="ui tiny button positive left labeled icon m-0" #}
-            {# href="/collections/new"> #}
-            {# <i class="plus icon" aria-hidden="true"></i> #}
-            {# {{ _("Create a collection") }} #}
-          {# </a> #}
-        {# {% endif %} #}
+      {# {% if active_dashboard_menu_item == "uploads" %} #}
+      {# <a class="ui tiny button positive left labeled icon m-0" #}
+      {# href="/uploads/new">  noqa #}
+      {# <i class="upload icon" aria-hidden="true"></i> #}
+      {# {{ _("Add a work") }} #}
+      {# </a> #}
+      {# {% endif %} #}
+      {# {% if active_dashboard_menu_item == "communities" %} #}
+      {# <a class="ui tiny button positive left labeled icon m-0" #}
+      {# href="/collections/new"> #}
+      {# <i class="plus icon" aria-hidden="true"></i> #}
+      {# {{ _("Create a collection") }} #}
+      {# </a> #}
+      {# {% endif %} #}
       {# </div> #}
-
       <div class="column sixteen wide pl-0 pt-15">
         <div class="ui container secondary pointing menu pl-0 pr-0 theme-primary">
           {# FIXME: This is a temporary fix to replace 'Communities' with 'Collections' and 'Uploads' with 'Works' in the dashboard menu #}
           {% for item in current_menu.submenu('dashboard').children %}
             <a class="item {{ 'active' if active_dashboard_menu_item == item.name }} {{ 'disabled' if not item.url }}"
-              href="{{ item.url | replace('communities', 'collections') }}">{{ item.text | replace('Communities', 'My Collections') | replace('Uploads', 'My Uploads') | replace('Requests', 'My Requests') }}</a>
+               href="{{ item.url | replace('communities', 'collections') }}">{{ item.text | replace('Communities', 'My Collections') | replace('Uploads', 'My Uploads') | replace('Requests', 'My Requests') }}</a>
           {% endfor %}
-          <a class="item"
-            href="{{ my_works_url }}">
-            {% trans %}My Works{% endtrans %}
-          </a>
+          <a class="item" href="{{ my_works_url }}">{% trans %}My Works{% endtrans %}</a>
         </div>
       </div>
-
     </div>
   </div>
 </div>

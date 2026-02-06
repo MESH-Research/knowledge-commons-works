@@ -1038,6 +1038,7 @@ def test_read_unread_notifications_by_view(
     headers,
     admin,
     search_clear,
+    mock_logout_signal_receiver,
 ):
     """Test that the user's unread notifications are read by the view."""
     app = running_app.app
@@ -1054,6 +1055,8 @@ def test_read_unread_notifications_by_view(
         new_remote_data={"name": "Test User"},
     )
     user = u.user
+
+    mock_logout_signal_receiver(u.user.username)
 
     # add some unread notifications to the user
     user.user_profile = {
@@ -1133,6 +1136,7 @@ def test_clear_unread_notifications_by_view(
     admin,
     mailbox,
     enable_mail_sending,
+    mock_logout_signal_receiver,
 ):
     """Test that the user's unread notifications are cleared by the view."""
     app = running_app.app
@@ -1150,6 +1154,8 @@ def test_clear_unread_notifications_by_view(
         new_remote_data={"name": "Test User"},
     )
     user = u.user
+
+    mock_logout_signal_receiver(u.user.username)
 
     # add some unread notifications
     user.user_profile = {

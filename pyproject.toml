@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = [ "babel>2.8", "setuptools>=61", "wheel" ]
+requires = ["babel>2.8", "setuptools>=61", "wheel"]
 
 [project]
 name = "kcworks"
@@ -18,7 +18,6 @@ dependencies = [
   "flask-breadcrumbs",
   "flask-iiif",
   "flask-principal",
-  "halo",
   "invenio-app-rdm[opensearch2]==12.1",
   "invenio-communities==13.0.3",
   "invenio-group-collections-kcworks",
@@ -63,7 +62,6 @@ optional-dependencies.dev = [
   "djlint>=1.36.4",
   "docker-services-cli",
   "furo",
-  "halo",
   "jsonlines",
   "mypy>=1.8",
   "myst-parser",
@@ -93,9 +91,11 @@ entry-points."flask.commands".kcworks-users = "kcworks.cli:kcworks_users"
 entry-points."invenio_assets.webpack".kcworks_theme = "kcworks.webpack:theme"
 entry-points."invenio_base.api_apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.api_blueprints".kcworks_api = "kcworks.views.views:create_api_blueprint"
+entry-points."invenio_base.api_finalize_app".kcworks = "kcworks.ext:api_finalize_app"
 entry-points."invenio_base.apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.blueprints".kcworks_views = "kcworks.views.views:create_blueprint"
 entry-points."invenio_base.blueprints".knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
+entry-points."invenio_base.finalize_app".kcworks = "kcworks.ext:finalize_app"
 entry-points."invenio_previewer.previewers".custom_default_viewer = "kcworks.views.previewers.invenio_custom_default_viewer.custom_default_viewer"
 entry-points."invenio_previewer.previewers".custom_docx_viewer = "kcworks.views.previewers.invenio_custom_docx_viewer.custom_docx_viewer"
 entry-points."invenio_previewer.previewers".custom_latex_viewer = "kcworks.views.previewers.invenio_custom_latex_viewer.custom_latex_viewer"
@@ -121,13 +121,28 @@ dev = [
 package-dir = { "" = "site" }
 
 [tool.setuptools.package-data]
-"*" = [ "*.po", "*.pot", "*.mo" ]
+"*" = ["*.po", "*.pot", "*.mo"]
 
 [tool.hatch.build.targets.wheel]
-packages = [ "site" ]
+packages = ["site"]
 
 [tool.hatch.metadata]
 allow-direct-references = true
+
+[tool.uv.sources]
+kcworks = { path = "./site", editable = true }
+invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
+invenio-group-collections-kcworks = { path = "./site/kcworks/dependencies/invenio-group-collections-kcworks", editable = true }
+invenio-modular-deposit-form = { path = "./site/kcworks/dependencies/invenio-modular-deposit-form", editable = true }
+invenio-modular-detail-page = { path = "./site/kcworks/dependencies/invenio-modular-detail-page", editable = true }
+invenio-rdm-records = { path = "./site/kcworks/dependencies/invenio-rdm-records", editable = true }
+invenio-records-resources = { path = "./site/kcworks/dependencies/invenio-records-resources", editable = true }
+invenio-remote-api-provisioner = { path = "./site/kcworks/dependencies/invenio-remote-api-provisioner", editable = true }
+invenio-record-importer-kcworks = { path = "./site/kcworks/dependencies/invenio-record-importer-kcworks", editable = true }
+invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
+invenio-requests = { path = "./site/kcworks/dependencies/invenio-requests", editable = true }
+invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
+invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
 
 [tool.ruff]
 target-version = "py312"
@@ -155,7 +170,7 @@ exclude = [
 ]
 
 # temporarily removed C for complexity checks
-lint.select = [ "B", "D", "DOC", "E", "F", "I", "UP" ]
+lint.select = ["B", "D", "DOC", "E", "F", "I", "UP"]
 # Now Ruff handles formatting, so enable formatting rules
 lint.ignore = [
   "D412", # Missing blank line before closing docstring
@@ -164,10 +179,14 @@ lint.ignore = [
   "W2", # Whitespace warnings
   "W3", # Blank line warnings
 ]
-lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401" ]
-lint.per-file-ignores."tests/api/test_stats.py" = [ "C416" ]
+lint.per-file-ignores."__init__.py" = ["D104", "E402", "F401"]
+lint.per-file-ignores."tests/api/test_stats.py" = ["C416"]
 # Ensure consistent import sorting - explicitly declare tests as first-party
-lint.isort.known-first-party = [ "invenio_stats_dashboard", "invenio_record_importer_kcworks", "tests" ]
+lint.isort.known-first-party = [
+  "invenio_stats_dashboard",
+  "invenio_record_importer_kcworks",
+  "tests",
+]
 lint.pydocstyle.convention = "google"
 lint.preview = true
 
@@ -228,6 +247,7 @@ plugins = [
   "tests.fixtures.communities",
   "tests.fixtures.custom_fields",
   "tests.fixtures.identifiers",
+  "tests.fixtures.idms",
   "tests.fixtures.mail",
   "tests.fixtures.metadata_fields",
   "tests.fixtures.records",
@@ -293,21 +313,6 @@ module = "kcworks.services.search.index_templates.*"
 ignore_errors = true
 ignore_missing_imports = true
 follow_imports = "skip"
-
-[tool.uv.sources]
-kcworks = { path = "./site", editable = true }
-invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
-invenio-group-collections-kcworks = { path = "./site/kcworks/dependencies/invenio-group-collections-kcworks", editable = true }
-invenio-modular-deposit-form = { path = "./site/kcworks/dependencies/invenio-modular-deposit-form", editable = true }
-invenio-modular-detail-page = { path = "./site/kcworks/dependencies/invenio-modular-detail-page", editable = true }
-invenio-rdm-records = { path = "./site/kcworks/dependencies/invenio-rdm-records", editable = true }
-invenio-records-resources = { path = "./site/kcworks/dependencies/invenio-records-resources", editable = true }
-invenio-remote-api-provisioner = { path = "./site/kcworks/dependencies/invenio-remote-api-provisioner", editable = true }
-invenio-record-importer-kcworks = { path = "./site/kcworks/dependencies/invenio-record-importer-kcworks", editable = true }
-invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
-invenio-requests = { path = "./site/kcworks/dependencies/invenio-requests", editable = true }
-invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
-invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
 
 [tool.babel.compile_catalog]
 directory = "translations/"

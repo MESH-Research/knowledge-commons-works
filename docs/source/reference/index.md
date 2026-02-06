@@ -6,5 +6,6 @@ Reference
 
 metadata
 api
+outgoing_signals
 cli_commands
 ```

@@ -11,16 +11,25 @@
 #}
 {% extends config.THEME_ERROR_TEMPLATE %}
 {% block message %}
-  <h1>
-    <i class="fa fa-question-circle"></i> {{ _("Page not found") }}
+  <div class="centered rel-mt-1">
+    <i class="fa fa-exclamation-circle icon huge exclamation circle"></i>
+  </div>
+  <h1 class="rel-mb-1 centered">
+    {% if error_header %}
+      {{ error_header }}
+    {% else %}
+      {{ _("We couldn't find that") }}
+    {% endif %}
   </h1>
-  {% if error_message %}
-    <p>{{ error_message }}</p>
-  {% else %}
-    <p>{{ _("Sorry, we couldn't find what you're looking for.") }}</p>
-    <p>
-      {{ _("You can report bugs and request help") }} <a href="{{ config.KC_HELP_URL }}">{{ _("here") }}</a> {{ _("or email") }}
-      <a href="mailto:hello@hcommons.org">hello@hcommons.org</a>.
-    </p>
-  {% endif %}
+  <p class="">
+    {% if error_message %}
+      {{ error_message |safe }}
+    {% else %}
+      {{ _("Sorry, we couldn't find what you're looking for.") }}
+    {% endif %}
+  </p>
+  <p class=" ui positive message">
+    {{ _("You can report bugs and request help") }} <a href="{{ config.KC_HELP_URL }}">{{ _("here") }}</a> {{ _("or email") }}
+    <a href="mailto:hello@hcommons.org">hello@hcommons.org</a>.
+  </p>
 {% endblock message %}

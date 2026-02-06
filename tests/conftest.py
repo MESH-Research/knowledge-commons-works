@@ -65,6 +65,7 @@ pytest_plugins = (
     "tests.fixtures.fixtures",
     "tests.fixtures.frontend",
     "tests.fixtures.identifiers",
+    "tests.fixtures.idms",
     "tests.fixtures.mail",
     "celery.contrib.pytest",
     "tests.fixtures.records",
