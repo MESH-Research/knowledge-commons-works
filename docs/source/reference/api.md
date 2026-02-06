@@ -108,7 +108,7 @@ In order to streamline the process of uploading works to KCWorks, particularly f
 Why is this API needed? The InvenioRDM REST API can be fragile and difficult to use, particularly for clients who are not familiar with the system. The creation and acceptance of a review request is redundant where collection administrators are uploading works for a collection they administer. The file upload steps are also not truly stateless, introducing the possibility of a file upload being interrupted and left incomplete, even if the upload of the file's content was successful.
 
 ```{note}
-KCWorks provides a standalone Python script (`scripts/user_resources/kcworks_api_importer.py`) that simplifies using the import API. The script handles authentication, file uploads, and response formatting automatically. See {ref}`the script documentation <api:kcworks-api-importer-script>` below for details.
+KCWorks provides a standalone Python script ([scripts/user_resources/kcworks_api_importer.py](https://github.com/MESH-Research/knowledge-commons-works/tree/main/scripts/user_resources/kcworks_api_importer.py)) that simplifies using the import API. The script handles authentication, file uploads, and response formatting automatically. See {ref}`the script documentation <api:kcworks-api-importer-script>` below for details.
 ```
 
 ### Who can use the import API?
@@ -349,7 +349,7 @@ Of course, in most cases the request will be made programmatically, not via a co
 
 (kcworks-api-importer-script)=
 
-KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script (`scripts/user_resources/kcworks_api_importer.py`) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
+KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script ([scripts/user_resources/kcworks_api_importer.py](https://github.com/MESH-Research/knowledge-commons-works/tree/main/scripts/user_resources/kcworks_api_importer.py)) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
 
 #### Requirements
 
