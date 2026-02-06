@@ -2480,7 +2480,7 @@ requires-dist = [
     { name = "ipykernel", marker = "extra == 'dev'" },
     { name = "isbnlib" },
     { name = "jsonlines" },
-    { name = "kcworks", editable = "." },
+    { name = "kcworks" },
     { name = "langdetect" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.8.0" },
     { name = "pip-tools", marker = "extra == 'dev'" },
