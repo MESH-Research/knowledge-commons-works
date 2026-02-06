@@ -7,14 +7,17 @@
 """KCWorks error handler views."""
 
 from flask import current_app as app
-from flask import render_template
+from flask import render_template, Response
 
 
-def oauth_401_handler(error):
+def oauth_401_handler(error) -> Response:
     """Custom 401 handler for OAuth login errors.
 
     Manually registered on the authorized blueprint
     in ext.py.
+
+    Returns:
+        Response: The http response with html error page.
     """
     header = getattr(error, "header", None)
     message = getattr(error, "description", None) or getattr(error, "message", None)
@@ -27,10 +30,13 @@ def oauth_401_handler(error):
     ), 401
 
 
-def oauth_404_handler(error):
+def oauth_404_handler(error) -> Response:
     """Custom 404 handler for OAuth login errors.
 
     Manually registered on the authorized blueprint in ext.py.
+
+    Returns:
+        Response: The http response with html error page.
     """
     header = getattr(error, "header", None)
     message = getattr(error, "description", None) or getattr(error, "message", None)
@@ -41,10 +47,13 @@ def oauth_404_handler(error):
     ), 404
 
 
-def oauth_403_handler(error):
+def oauth_403_handler(error) -> Response:
     """Custom 403 handler for OAuth login errors.
 
     Manually registered on the authorized blueprint in ext.py.
+
+    Returns:
+        Response: The http response with html error page.
     """
     header = getattr(error, "header", None)
     message = getattr(error, "description", None) or getattr(error, "message", None)
@@ -55,10 +64,13 @@ def oauth_403_handler(error):
     ), 403
 
 
-def oauth_500_handler(error):
+def oauth_500_handler(error) -> Response:
     """Custom 500 handler for OAuth login errors.
 
     Manually registered on the authorized blueprint in ext.py.
+
+    Returns:
+        Response: The http response with html error page.
     """
     header = getattr(error, "header", None)
     message = getattr(error, "description", None) or getattr(error, "message", None)
