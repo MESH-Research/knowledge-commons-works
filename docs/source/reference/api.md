@@ -1583,7 +1583,7 @@ The endpoint `/api/webhooks/users/logout` allows the central Knowledge Commons i
 
 ### Authentication and authorization
 
-Requests must include a Bearer token in the `Authorization` header. The token must belong to an identity that has permission to trigger user logout (for example, a user with the `administration` role).
+The endpoint is protected by a static Bearer token. Requests must include this token in the `Authorization` header (e.g. `Authorization: Bearer <token>`). The token is configured per deployment via the `COMMONS_PROFILES_API_TOKEN` environment variable and must match exactly; it is not an OAuth or user-identity token.
 
 ### GET requests
 
@@ -1650,4 +1650,4 @@ If session invalidation fails (for example, a database or session-store error):
 #### Other error responses
 
 - **400 Bad Request**: The `username` query parameter is missing.
-- **403 Forbidden**: The Bearer token is missing, invalid, or the identity does not have permission to trigger user logout.
+- **401 Unauthorized**: The Bearer token is missing or does not match the configured static token (`COMMONS_PROFILES_API_TOKEN`).
