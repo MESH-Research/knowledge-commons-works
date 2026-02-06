@@ -198,6 +198,9 @@ The `.env` file is used to configure the Knowledge Commons Works application. It
 These are the minimal variables that you need to set in your `.env` file to get the application running. For local development you should use the default values for all variables except the ones with comments:
 
 ```shell
+# Optional: base name for Docker container names (default: kcworks). Set to e.g. kcworks-next when
+# running a second instance on the same host to avoid container name conflicts.
+# KCWORKS_CONTAINERS_BASE_NAME=kcworks
 FLASK_DEBUG=1
 INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
 INVENIO_LOGGING_CONSOLE=True
@@ -231,6 +234,16 @@ INVENIO_LOCAL_INSTANCE_PATH=/opt/invenio/var/instance
 ```{note}
 Don't forget to change the `PASSWORDHERE` values to the actual passwords you use for your admin user and pgAdmin. This includes replacing `PASSWORDHERE` in the `INVENIO_SQLALCHEMY_DATABASE_URI` variable.
 ```
+
+#### Running a second instance on the same machine
+
+If you run another copy of KCWorks on the same host (e.g. a second clone for a different branch), set a unique base name in that copy's `.env` so Docker container names do not clash:
+
+```shell
+KCWORKS_CONTAINERS_BASE_NAME=kcworks-next
+```
+
+Use any distinct value (e.g. `kcworks-next`, `kcworks-dev2`). Container names will become `kcworks-next-ui`, `kcworks-next-db`, and so on. If both instances need to run at once, you must also avoid port conflicts: use a separate Compose project (e.g. `docker-compose -p kcworks-next --file docker-compose.yml up -d`) and/or override published ports (e.g. in a `docker-compose.override.yml` or env) for the second instance.
 
 #### Generating random secrets
 
