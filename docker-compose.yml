@@ -55,7 +55,7 @@ services:
     extends:
       file: docker-services.yml
       service: frontend
-    container_name: kcworks-frontend
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-frontend
     build: ./docker/nginx_local/
     volumes:
       - ./docker/nginx_local/nginx.conf:/etc/nginx/nginx.conf
@@ -75,7 +75,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    container_name: kcworks-ui
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-ui
     command: ["/opt/invenio/var/instance/startup_ui_dev.sh"]
     image: monotasker/kcworks:${IMAGE_TAG:-latest}
     environment:
@@ -123,7 +123,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    container_name: kcworks-api
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-api
     command: ["/opt/invenio/var/instance/startup_api_dev.sh"]
     image: monotasker/kcworks:${IMAGE_TAG:-latest}
     ports:
@@ -170,7 +170,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    container_name: kcworks-worker
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-worker
     command: ["/opt/invenio/var/instance/startup_worker_dev.sh"]
     image: monotasker/kcworks:${IMAGE_TAG:-latest}
     environment:

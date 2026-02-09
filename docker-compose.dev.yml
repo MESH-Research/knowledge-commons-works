@@ -58,7 +58,6 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
-
   web-api:
     extends:
       file: docker-compose.yml
@@ -94,7 +93,6 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
-
   worker:
     extends:
       file: docker-compose.yml
@@ -130,3 +128,4 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
+

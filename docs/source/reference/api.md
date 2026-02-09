@@ -1466,9 +1466,13 @@ Required request headers:
 
 ## User and Group Data Updates (Internal Only)
 
+**Preferred endpoint:**
+
 ```
-https://works.hcommons.org/api/webhooks/user_data_update
+https://works.hcommons.org/api/webhooks/users/update
 ```
+
+**Deprecated (still operational):** ``/api/webhooks/user_data_update``
 
 ```{warning}
 This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.
@@ -1478,7 +1482,7 @@ This API endpoint is intended for internal use only. It is not intended to be us
 This API was implemented with a distributed network of independent Commons instances in mind. Currently, only the Knowledge Commons instance exists and is supported as a SAML IDP by KCWorks.
 ```
 
-The api endpoint `/api/webhooks/user_data_update` is provided for Knowledge Commons applications and instances to signal that user or group metadata has been changed. These endpoints do not receive the actual updated data. They only receive notices _that_ the metadata for a user or group has changed. KCWorks will then query the Commons instance's endpoint to retrieve current metadata for the user or group.
+The endpoint `/api/webhooks/users/update` (and the deprecated `/api/webhooks/user_data_update`) is provided for Knowledge Commons applications and instances to signal that user or group metadata has been changed. These endpoints do not receive the actual updated data. They only receive notices _that_ the metadata for a user or group has changed. KCWorks will then query the Commons instance's endpoint to retrieve current metadata for the user or group.
 
 ### User/Groups Metadata updates and SAML authentication
 
@@ -1486,7 +1490,7 @@ It is assumed that Commons instances have registered a SAML authentication IDP w
 
 ### GET requests
 
-A `GET` request to this endpoint can be used to check that the endpoint is available and receiving messages. The response should have a `200` status code and should carry the following JSON response body:
+A `GET` request to either endpoint can be used to check that the webhook receiver is available and receiving messages. The response should have a `200` status code and should carry the following JSON response body:
 
 ```json
 {
@@ -1499,7 +1503,7 @@ A `GET` request to this endpoint can be used to check that the endpoint is avail
 
 #### Payload objects
 
-Update notices should be sent via a `POST` request with a JSON payload object shaped like this:
+Update notices should be sent via a `POST` request to `/api/webhooks/users/update` (or the deprecated `/api/webhooks/user_data_update`) with a JSON payload object shaped like this:
 
 ```json
 {
