@@ -69,10 +69,14 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/production'
         run: |
           echo "RELEASE_VERSION=production" >> $GITHUB_ENV
+          echo "ECR_APP_REPO=${{ env.IMAGE_NAME }}/production" >> $GITHUB_ENV
+          echo "ECR_FRONTEND_REPO=${{ env.IMAGE_NAME }}/production-frontend" >> $GITHUB_ENV
       - name: Label staging
         if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
         run: |
           echo "RELEASE_VERSION=staging" >> $GITHUB_ENV
+          echo "ECR_APP_REPO=${{ env.IMAGE_NAME }}/staging" >> $GITHUB_ENV
+          echo "ECR_FRONTEND_REPO=${{ env.IMAGE_NAME }}/staging-frontend" >> $GITHUB_ENV
       - name: Label pull request
         if: github.event_name == 'pull_request'
         run: |
@@ -122,8 +126,21 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker build . --file Dockerfile --platform=linux/amd64 --progress=plain --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION --tag $ECR_REGISTRY/kcworks:$RELEASE_VERSION
-          docker build ./docker/nginx_production/ --platform=linux/amd64 --progress=plain --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend:$RELEASE_VERSION --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend:$RELEASE_VERSION --tag $ECR_REGISTRY/$IMAGE_NAME-frontend:$RELEASE_VERSION
+          if [ -n "${{ env.ECR_APP_REPO }}" ]; then
+            ECR_APP_TAG="$ECR_REGISTRY/${{ env.ECR_APP_REPO }}:latest"
+            ECR_FRONTEND_TAG="$ECR_REGISTRY/${{ env.ECR_FRONTEND_REPO }}:latest"
+          else
+            ECR_APP_TAG=""
+            ECR_FRONTEND_TAG=""
+          fi
+          docker build . --file Dockerfile --platform=linux/amd64 --progress=plain \
+            --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION \
+            --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION \
+            $([ -n "$ECR_APP_TAG" ] && echo "--tag $ECR_APP_TAG")
+          docker build ./docker/nginx_production/ --platform=linux/amd64 --progress=plain \
+            --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend:$RELEASE_VERSION \
+            --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend:$RELEASE_VERSION \
+            $([ -n "$ECR_FRONTEND_TAG" ] && echo "--tag $ECR_FRONTEND_TAG")
           docker image ls
       - name: Push Image to Docker Hub
         if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest' || env.RELEASE_VERSION == 'staging' || startsWith(env.RELEASE_VERSION, 'dev')
@@ -137,16 +154,17 @@ jobs:
         run: |
           echo "PR build completed successfully!"
           echo "Built images:"
-          docker images | grep -E "(kcworks|IMAGE_NAME)" || echo "No images found"
+          docker images | grep "$IMAGE_NAME" || echo "No images found"
           echo "PR images are not pushed to registries to save storage costs"
       - name: Push production or staging image to Amazon ECR
         if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          ECR_APP_REPO: ${{ env.ECR_APP_REPO }}
+          ECR_FRONTEND_REPO: ${{ env.ECR_FRONTEND_REPO }}
         run: |
-          docker push $ECR_REGISTRY/kcworks:$RELEASE_VERSION
-          docker push $ECR_REGISTRY/$IMAGE_NAME-frontend:$RELEASE_VERSION
+          docker push $ECR_REGISTRY/$ECR_APP_REPO:latest
+          docker push $ECR_REGISTRY/$ECR_FRONTEND_REPO:latest
       - name: Start containers
         if: always()
         run: |
