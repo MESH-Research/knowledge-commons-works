@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Development Roadmap" href="roadmap.html"><link rel="prev" title="Feature Highlights" href="feature_highlights.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Changes - Knowledge Commons Works 0.7.2 documentation</title>
+        <title>Changes - Knowledge Commons Works 0.7.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=acfd86a5" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Knowledge Commons Works 0.7.2 documentation</div></a>
+      <a href="index.html"><div class="brand">Knowledge Commons Works 0.7.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.7.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.7.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -270,7 +270,46 @@
 <section id="changes">
 <h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
 <section id="id1">
-<h2>0.7.2 (2026-01-20)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>0.7.3 (2026-02-12)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>Bug fix release</p>
+<ul class="simple">
+<li><p>Collections</p>
+<ul>
+<li><p>Fix bug that prevented uploaded a new collection logo if
+one had previously been deleted for the collection.</p>
+<ul>
+<li><p>Involves a patch to our forked invenio-communities.</p></li>
+<li><p>Includes a utility script to clean up orphaned logo
+files that might exist from before this fix.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Upload form:</p>
+<ul>
+<li><p>Fix broken upload form submission when submitting record
+for publication review by a collection.</p></li>
+<li><p>Typo fix and “Duration/Size” field description tweaks
+for audiovisual resource types on the detail page.</p></li>
+</ul>
+</li>
+<li><p>Utility improvements</p>
+<ul>
+<li><p>Update Github workflow action versions</p></li>
+<li><p>Move to using separate ECR production and staging repos
+to facilitate easier emergency rollbacks.</p></li>
+</ul>
+</li>
+<li><p>Documentation improvements</p>
+<ul>
+<li><p>Updates installation documentation with info on installing
+multiple instances on the same machine.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id2">
+<h2>0.7.2 (2026-01-20)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Search paging and navigation improvements</p>
 <ul>
@@ -303,8 +342,8 @@ open in many tabs at once.</p></li>
 </li>
 </ul>
 </section>
-<section id="id2">
-<h2>0.7.1 (2025-12-19)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h2>0.7.1 (2025-12-19)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fix</p>
 <ul>
@@ -320,8 +359,8 @@ results that weren’t filtered by community properly.</p></li>
 </li>
 </ul>
 </section>
-<section id="id3">
-<h2>0.7.0 (2025-12-15)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<section id="id4">
+<h2>0.7.0 (2025-12-15)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Major new feature: Stats dashboards for collections and KCWorks as a whole</p></li>
 <li><p>Other misc. user-facing improvements and bug fixes:</p>
@@ -426,8 +465,8 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id4">
-<h2>0.5.6 (2025-09-30)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<section id="id5">
+<h2>0.5.6 (2025-09-30)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Upload form</p>
 <ul>
@@ -436,8 +475,8 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id5">
-<h2>0.5.5 (2025-09-10)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<section id="id6">
+<h2>0.5.5 (2025-09-10)<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Upload form</p>
 <ul>
@@ -446,8 +485,8 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id6">
-<h2>0.5.4 (2025-08-14)<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<section id="id7">
+<h2>0.5.4 (2025-08-14)<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fixes</p>
 <ul>
@@ -463,8 +502,8 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id7">
-<h2>0.5.3 (2025-07-17)<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<section id="id8">
+<h2>0.5.3 (2025-07-17)<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Group collections</p>
 <ul>
@@ -510,15 +549,15 @@ better handling of test .env files</p></li>
 <li><p>Public roadmap updates</p></li>
 </ul>
 </section>
-<section id="id8">
-<h2>0.5.2 (2025-05-29)<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<section id="id9">
+<h2>0.5.2 (2025-05-29)<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added a new CLI command to allow admins to bulk update a single metadata field to a single new fixed value for every record in a collection.</p></li>
 <li><p>Added public roadmap to the documentation.</p></li>
 </ul>
 </section>
-<section id="id9">
-<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<section id="id10">
+<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Removed BETA status from the site.</p>
 <ul>
@@ -973,15 +1012,16 @@ or creating a new version</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changes</a><ul>
-<li><a class="reference internal" href="#id1">0.7.2 (2026-01-20)</a></li>
-<li><a class="reference internal" href="#id2">0.7.1 (2025-12-19)</a></li>
-<li><a class="reference internal" href="#id3">0.7.0 (2025-12-15)</a></li>
-<li><a class="reference internal" href="#id4">0.5.6 (2025-09-30)</a></li>
-<li><a class="reference internal" href="#id5">0.5.5 (2025-09-10)</a></li>
-<li><a class="reference internal" href="#id6">0.5.4 (2025-08-14)</a></li>
-<li><a class="reference internal" href="#id7">0.5.3 (2025-07-17)</a></li>
-<li><a class="reference internal" href="#id8">0.5.2 (2025-05-29)</a></li>
-<li><a class="reference internal" href="#id9">0.5.1 (2025-05-13)</a></li>
+<li><a class="reference internal" href="#id1">0.7.3 (2026-02-12)</a></li>
+<li><a class="reference internal" href="#id2">0.7.2 (2026-01-20)</a></li>
+<li><a class="reference internal" href="#id3">0.7.1 (2025-12-19)</a></li>
+<li><a class="reference internal" href="#id4">0.7.0 (2025-12-15)</a></li>
+<li><a class="reference internal" href="#id5">0.5.6 (2025-09-30)</a></li>
+<li><a class="reference internal" href="#id6">0.5.5 (2025-09-10)</a></li>
+<li><a class="reference internal" href="#id7">0.5.4 (2025-08-14)</a></li>
+<li><a class="reference internal" href="#id8">0.5.3 (2025-07-17)</a></li>
+<li><a class="reference internal" href="#id9">0.5.2 (2025-05-29)</a></li>
+<li><a class="reference internal" href="#id10">0.5.1 (2025-05-13)</a></li>
 <li><a class="reference internal" href="#beta13-2025-05-05">0.5.0-beta13 (2025-05-05)</a></li>
 <li><a class="reference internal" href="#beta12-2025-04-30">0.4.0-beta12 (2025-04-30)</a></li>
 <li><a class="reference internal" href="#beta11-2025-03-14">0.3.8-beta11 (2025-03-14)</a></li>
@@ -1004,7 +1044,7 @@ or creating a new version</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=6dfdf7c3"></script>
+</div><script src="_static/documentation_options.js?v=c98573da"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
