@@ -4,11 +4,13 @@ requires = ["babel>2.8", "setuptools>=61", "wheel"]
 
 [project]
 name = "kcworks"
-version = "0.7.2"
-requires-python = ">=3.12,<3.13"
+version = "0.7.3"
+requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
   "aiohttp>=3.11.15",
