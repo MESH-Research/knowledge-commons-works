@@ -3357,7 +3357,7 @@ requires-dist = [
     { name = "djlint", marker = "extra == 'dev'", specifier = ">=1.36.4" },
     { name = "docker-services-cli", marker = "extra == 'dev'" },
     { name = "furo", marker = "extra == 'docs'" },
-    { name = "invenio-app-rdm", extras = ["opensearch2", "s3", "tests"], specifier = "==13.0.8,<14" },
+    { name = "invenio-app-rdm", extras = ["opensearch2", "s3", "tests"], specifier = "~=13.0.0" },
     { name = "invenio-communities", editable = "site/kcworks/dependencies/invenio-communities" },
     { name = "invenio-group-collections-kcworks", editable = "site/kcworks/dependencies/invenio-group-collections-kcworks" },
     { name = "invenio-logging", extras = ["sentry"], specifier = ">=4,<5" },

@@ -13,7 +13,7 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-  "invenio-app-rdm[opensearch2,s3,tests]==13.0.8,<14",
+  "invenio-app-rdm[opensearch2,s3,tests]~=13.0.0",
   "invenio-communities>=19,<20",
   "invenio-group-collections-kcworks",
   "invenio-logging[sentry]>=4,<5",
