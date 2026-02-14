@@ -154,7 +154,6 @@ exclude = [
   "site/kcworks/dependencies/invenio-modular-detail-page",
   "site/kcworks/dependencies/invenio-rdm-records",
   "site/kcworks/dependencies/invenio-record-importer-kcworks",
-  "site/kcworks/dependencies/invenio-records-resources",
   "site/kcworks/dependencies/invenio-remote-api-provisioner",
   "site/kcworks/dependencies/invenio-remote-user-data-kcworks",
   "site/kcworks/dependencies/invenio-stats-dashboard",
