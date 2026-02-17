@@ -3,6 +3,29 @@
 
 # Changes
 
+## 0.7.3 (2026-02-12)
+
+Bug fix release
+
+- Collections
+  - Fix bug that prevented uploaded a new collection logo if
+    one had previously been deleted for the collection.
+    - Involves a patch to our forked invenio-communities.
+    - Includes a utility script to clean up orphaned logo
+      files that might exist from before this fix.
+- Upload form:
+  - Fix broken upload form submission when submitting record
+    for publication review by a collection.
+  - Typo fix and "Duration/Size" field description tweaks
+    for audiovisual resource types on the detail page.
+- Utility improvements
+  - Update Github workflow action versions
+  - Move to using separate ECR production and staging repos
+    to facilitate easier emergency rollbacks.
+- Documentation improvements
+  - Updates installation documentation with info on installing
+    multiple instances on the same machine.
+
 ## 0.7.2 (2026-01-20)
 
 - Search paging and navigation improvements

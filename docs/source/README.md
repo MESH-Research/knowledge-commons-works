@@ -9,7 +9,7 @@
 
 ![KCWorks logo](../../static/images/kc_works_logos/SVG/kc_works_logo_wordmark.svg)
 
-Version 0.7.2
+Version 0.7.3
 
 Knowledge Commons Works is a collaborative platform for storing and sharing academic research. It is part of [Knowledge Commons](https://about.hcommons.org/) and is built on an instance of the [InvenioRDM](https://inveniordm.docs.cern.ch/) repository system.
 
