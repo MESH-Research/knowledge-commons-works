@@ -5,7 +5,11 @@ requires = ["babel>2.8", "setuptools>=61", "wheel"]
 [project]
 name = "kcworks"
 version = "0.7.3"
+
+license = { file = "LICENSE" }
+authors = [{ name = "Mesh Research", email = "scottia4@msu.edu" }]
 requires-python = ">=3.12"
+
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.12",
@@ -52,7 +56,9 @@ optional-dependencies.docs = [
   "sphinx-copybutton>=0.5.2",
 ]
 optional-dependencies.tests = [
+  "coverage",
   "mypy>=1.8",
+  "pytest",
   "pytest-cov>=6.2.1",
   "pytest-invenio>=3.3,<4",
   "pytest-isort>=4",
@@ -63,10 +69,12 @@ optional-dependencies.tests = [
   "ruff>=0.3",
   "selenium",
 ]
+
 scripts.group-collections = "kcworks.cli:group_collections"
 scripts.kcworks-index = "kcworks.cli:kcworks_index"
 scripts.kcworks-records = "kcworks.cli:kcworks_records"
 scripts.kcworks-users = "kcworks.cli:kcworks_users"
+
 entry-points."flask.commands".group-collections = "kcworks.cli:group_collections"
 entry-points."flask.commands".kcworks-index = "kcworks.cli:kcworks_index"
 entry-points."flask.commands".kcworks-records = "kcworks.cli:kcworks_records"
@@ -120,12 +128,6 @@ package-dir = { "" = "site" }
 [tool.setuptools.package-data]
 "*" = ["*.po", "*.pot", "*.mo"]
 
-[tool.hatch.build.targets.wheel]
-packages = ["site"]
-
-[tool.hatch.metadata]
-allow-direct-references = true
-
 [tool.uv.sources]
 kcworks = { path = "./site", editable = true }
 invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
@@ -161,7 +163,6 @@ exclude = [
   "site/kcworks/services/search/index_templates",
   "tests/helpers",
 ]
-
 # temporarily removed C for complexity checks
 lint.select = ["B", "D", "DOC", "E", "F", "I", "UP"]
 # Now Ruff handles formatting, so enable formatting rules
@@ -195,10 +196,9 @@ ensure_newline_before_comments = true
 split_on_trailing_comma = true
 skip = [
   "site/kcworks/dependencies/invenio-rdm-records",
-  "site/kcworks/dependencies/invenio-records-resources",
   "site/kcworks/dependencies/invenio-vocabularies",
   "site/kcworks/dependencies/invenio-communities",
-  "__pycache__",                                         # Skip cache directories
+  "__pycache__",                                    # Skip cache directories
   # ".venv",  # Skip virtual environment
   # "node_modules",  # Skip node modules
 ]
@@ -218,7 +218,6 @@ addopts = """
 --ignore=site/kcworks/dependencies/invenio-modular-detail-page
 --ignore=site/kcworks/dependencies/invenio-rdm-records
 --ignore=site/kcworks/dependencies/invenio-record-importer-kcworks
---ignore=site/kcworks/dependencies/invenio-records-resources
 --ignore=site/kcworks/dependencies/invenio-remote-api-provisioner
 --ignore=site/kcworks/dependencies/invenio-remote-user-data-kcworks
 --ignore=site/kcworks/dependencies/invenio-vocabularies
@@ -269,7 +268,6 @@ omit = [
   "site/kcworks/dependencies/invenio-modular-detail-page/*",
   "site/kcworks/dependencies/invenio-rdm-records/*",
   "site/kcworks/dependencies/invenio-record-importer-kcworks/*",
-  "site/kcworks/dependencies/invenio-records-resources/*",
   "site/kcworks/dependencies/invenio-remote-api-provisioner/*",
   "site/kcworks/dependencies/invenio-remote-user-data-kcworks/*",
   "site/kcworks/dependencies/invenio-vocabularies/*",
@@ -302,6 +300,7 @@ exclude = [
 module = "kcworks.services.search.index_templates.*"
 ignore_errors = true
 ignore_missing_imports = true
+
 follow_imports = "skip"
 
 [tool.babel.compile_catalog]
