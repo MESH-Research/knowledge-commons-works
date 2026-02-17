@@ -1,7 +1,3 @@
-[submodule "site/kcworks/dependencies/invenio-records-resources"]
-	path = site/kcworks/dependencies/invenio-records-resources
-	url = https://github.com/MESH-Research/invenio-records-resources.git
-	branch = local-working
 [submodule "site/kcworks/dependencies/invenio-rdm-records"]
 	path = site/kcworks/dependencies/invenio-rdm-records
 	url = https://github.com/MESH-Research/invenio-rdm-records.git
