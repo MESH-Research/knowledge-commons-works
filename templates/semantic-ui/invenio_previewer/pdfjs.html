@@ -1,0 +1,122 @@
+{# -*- coding: utf-8 -*-
+
+  Based on invenio_previewer PDF.js template.
+  Copyright (C) 2015-2025 CERN, (C) 2022-2024 TU Wien.
+
+  KCWorks override: uses upstream PDF viewer and adds KCWorks toolbar styling.
+#}
+
+{%- extends config.PREVIEWER_ABSTRACT_TEMPLATE %}
+
+{%- block html_tags %}
+  {{ html_tags|safe }}
+{%- endblock %}
+
+{%- block head %}
+  {{ super() }}
+  <meta name="google" content="notranslate">
+  <link rel="resource" type="application/l10n" href="{{ url_for('static', filename='js/pdfjs/web/locale/locale.properties') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='js/pdfjs/web/pdf_viewer.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pdfjs.css') }}" />
+  {{ webpack['pdf_viewer_overrides_css.css'] }}
+  <script src="{{ url_for('static', filename='js/pdfjs/build/pdf.min.mjs') }}" type="module"></script>
+  <script src="{{ url_for('static', filename='js/pdfjs/web/pdf_viewer.mjs') }}" type="module"></script>
+  <script src="{{ url_for('static', filename='js/open_pdf.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/fullscreen.js') }}" defer></script>
+{%- endblock %}
+
+{%- block panel %}
+
+<input id="pdf-file-uri" type="hidden" value="{{ file.uri }}" />
+<input id="pdf-enable-scripting" type="hidden" value="{{ config.PREVIEWER_PDF_JS_ENABLE_SCRIPTING|default(false)|lower }}" />
+<input id="pdf-document-init-params" type="hidden" value='{{ config.PREVIEWER_PDF_JS_DOCUMENT_INIT_PARAMS|default({})|tojson }}' />
+
+  <div id="outerContainer">
+      <div id="mainContainer">
+        <div class="toolbar">
+          <div id="toolbarContainer">
+            <div id="toolbarViewer" class="toolbarHorizontalGroup">
+
+              <div id="toolbarViewerLeft" class="toolbarHorizontalGroup">
+                <div class="toolbarHorizontalGroup hiddenSmallView">
+                  <button class="toolbarButton" title="Previous Page" type="button" id="previous" tabindex="0" data-l10n-id="pdfjs-previous-button">
+                    <span data-l10n-id="pdfjs-previous-button-label">{{ _("Previous") }}</span>
+                  </button>
+                  <div class="splitToolbarButtonSeparator"></div>
+                </div>
+                <div class="toolbarHorizontalGroup">
+                  <span class="loadingInput start toolbarHorizontalGroup">
+                    <input type="number" id="pageNumber" class="toolbarField" title="Page" value="1" min="1" tabindex="0" data-l10n-id="pdfjs-page-input" autocomplete="off">
+                  </span>
+                  <span id="numPages" class="toolbarLabel"></span>
+                </div>
+                <div class="toolbarHorizontalGroup hiddenSmallView">
+                  <div class="splitToolbarButtonSeparator"></div>
+                  <button class="toolbarButton" type="button" title="Next Page" id="next" tabindex="0" data-l10n-id="pdfjs-next-button">
+                    <span data-l10n-id="pdfjs-next-button-label">{{ _("Next") }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div id="toolbarViewerMiddle" class="toolbarHorizontalGroup">
+                <div class="toolbarHorizontalGroup">
+                  <button id="zoomOutButton" class="toolbarButton" type="button" title="Zoom Out" tabindex="0" data-l10n-id="pdfjs-zoom-out-button">
+                    <span data-l10n-id="pdfjs-zoom-out-button-label">{{ _("Zoom Out") }}</span>
+                  </button>
+                  <div class="splitToolbarButtonSeparator"></div>
+                </div>
+                <span id="scaleSelectContainer" class="dropdownToolbarButton">
+                  <select id="scaleSelect" title="Zoom" tabindex="0" data-l10n-id="pdfjs-zoom-select">
+                    <option id="pageAutoOption" title="" value="auto" selected="selected" data-l10n-id="pdfjs-page-scale-auto">{{ _("Automatic Zoom") }}</option>
+                    <option id="pageActualOption" title="" value="page-actual" data-l10n-id="pdfjs-page-scale-actual">{{ _("Actual Size") }}</option>
+                    <option id="pageFitOption" title="" value="page-fit" data-l10n-id="pdfjs-page-scale-fit">{{ _("Page Fit") }}</option>
+                    <option id="pageWidthOption" title="" value="page-width" data-l10n-id="pdfjs-page-scale-width">{{ _("Page Width") }}</option>
+                    <option id="customScaleOption" title="" value="custom" disabled="disabled" hidden="true" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 0 }'>{{ _("0%%") }}</option>
+                    <option title="" value="0.5" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 50 }'>{{ _("50%%") }}</option>
+                    <option title="" value="0.75" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 75 }'>{{ _("75%%") }}</option>
+                    <option title="" value="1" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 100 }'>{{ _("100%%") }}</option>
+                    <option title="" value="1.25" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 125 }'>{{ _("125%%") }}</option>
+                    <option title="" value="1.5" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 150 }'>{{ _("150%%") }}</option>
+                    <option title="" value="2" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 200 }'>{{ _("200%%") }}</option>
+                    <option title="" value="3" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 300 }'>{{ _("300%%") }}</option>
+                    <option title="" value="4" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 400 }'>{{ _("400%%") }}</option>
+                  </select>
+                </span>
+                <div class="toolbarHorizontalGroup">
+                  <div class="splitToolbarButtonSeparator"></div>
+                  <button id="zoomInButton" class="toolbarButton" type="button" title="Zoom In" tabindex="0" data-l10n-id="pdfjs-zoom-in-button">
+                    <span data-l10n-id="pdfjs-zoom-in-button-label">{{ _("Zoom In") }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div id="toolbarViewerRight" class="toolbarHorizontalGroup">
+                <div id="downloadContainer" class="toolbarHorizontalGroup">
+                  <button id="downloadButton" class="toolbarButton presentationMode" title="{{ _("Download PDF file") }}">
+                    <span>{{ _("Download PDF file") }}</span>
+                  </button>
+                </div>
+                <div id="fullScreenModeContainer" class="toolbarHorizontalGroup">
+                  <button id="fullScreenMode" class="toolbarButton presentationMode visibleLargeView" title="Toggle Fullscreen Mode" tabindex="0">
+                    <span>{{ _("Toggle Fullscreen Mode") }}</span>
+                  </button>
+                </div>
+            </div>
+            </div>
+
+            <div id="loadingBar">
+              <div class="progress">
+                <div class="glimmer">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="viewerContainer" tabindex="0">
+          <div id="viewer" class="pdfViewer"></div>
+        </div>
+      </div> <!-- mainContainer -->
+
+    </div> <!-- outerContainer -->
+{%- endblock %}

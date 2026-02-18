@@ -1,0 +1,18 @@
+/**
+ * KCWorks PDF viewer style overrides.
+ *
+ * Preserves the previous custom toolbar/sidebar color (#626262) when using
+ * the upstream invenio_previewer PDF.js viewer (which uses CSS variables).
+ * Without this, the default toolbar is light/dark theme.
+ */
+:root {
+  --sidebar-toolbar-bg-color: #626262;
+  --toolbar-bg-color: #626262;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sidebar-toolbar-bg-color: #626262;
+    --toolbar-bg-color: #626262;
+  }
+}

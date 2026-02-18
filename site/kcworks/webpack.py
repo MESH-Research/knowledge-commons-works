@@ -17,8 +17,9 @@ theme = WebpackThemeBundle(
     themes={
         "semantic-ui": {
             "entry": {
-                "custom_pdf_viewer_js": "./js/invenio_custom_pdf_viewer/pdfjs.js",
-                "custom_pdf_viewer_css": "./scss/invenio_custom_pdf_viewer/pdfjs.scss",
+                "pdf_viewer_overrides_css": (
+                    "./scss/invenio_custom_pdf_viewer/pdfjs_overrides.scss"
+                ),
                 "custom_default_viewer_css": (
                     "./less/site/views/previewers/custom_default_viewer.less"
                 ),
@@ -38,9 +39,9 @@ theme = WebpackThemeBundle(
                 "invenio-app-rdm-community-records-search-custom": (
                     "./js/collections/communityRecordsSearch/index.js"
                 ),
-                "invenio-communities-header": "./js/collections/community/header.js",
-                # "invenio-communities-profile-custom": "./js/collections/"
-                # "settings/profile/index.js",
+                "invenio-communities-header-custom": (
+                    "./js/collections/community/header.js"
+                ),
                 "invenio-app-rdm-frontpage-custom": (
                     "./js/invenio_app_rdm_custom/frontpage/index.js"
                 ),
