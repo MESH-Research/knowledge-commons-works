@@ -37,7 +37,7 @@ MIT License; see LICENSE file for more details.
 {%- for item in current_menu.submenu('profile-admin').children %}
   {% set _ = admin_menu_items.append(dict(text=item.text, url=item.url, visible=item.visible, order=item.order)) %}
 {% endfor %}
-{% set external_identifiers = dict(external_id=current_user.user_profile["identifier_kc_username"], auth_method=current_user.external_identifiers[0].method) if current_user and current_user.user_profile.get("identifier_kc_username") else {} %}
+{% set external_identifiers = dict(external_id=current_user.user_profile["identifier_kc_username"], auth_method=current_user.external_identifiers[0].method) if current_user and current_user.user_profile and current_user.user_profile.get("identifier_kc_username") else {} %}
 <div>
   <header class="theme header">
     {%- block site_banner %}
