@@ -47,6 +47,7 @@ optional-dependencies.dev = [
   "docker-services-cli",
   "jsonlines",
   "psycopg2-binary>=2.9.10",
+  "types-requests",
 ]
 optional-dependencies.docs = [
   "furo",
@@ -302,6 +303,21 @@ ignore_errors = true
 ignore_missing_imports = true
 
 follow_imports = "skip"
+
+# Pylsp/Jedi: so "go to definition" and "find references" resolve in local dependencies
+[tool.pylsp.plugins.jedi]
+extra_paths = [
+  "site/kcworks/dependencies/invenio-communities",
+  "site/kcworks/dependencies/invenio-group-collections-kcworks",
+  "site/kcworks/dependencies/invenio-modular-deposit-form",
+  "site/kcworks/dependencies/invenio-modular-detail-page",
+  "site/kcworks/dependencies/invenio-rdm-records",
+  "site/kcworks/dependencies/invenio-remote-api-provisioner",
+  "site/kcworks/dependencies/invenio-record-importer-kcworks",
+  "site/kcworks/dependencies/invenio-remote-user-data-kcworks",
+  "site/kcworks/dependencies/invenio-stats-dashboard",
+  "site/kcworks/dependencies/invenio-vocabularies",
+]
 
 [tool.babel.compile_catalog]
 directory = "translations/"
