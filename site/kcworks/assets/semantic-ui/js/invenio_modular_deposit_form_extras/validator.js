@@ -26,6 +26,9 @@ addMethod(yupString, "isni", isniValidator);
 
 addMethod(yupString, "kc_username", kcUsernameValidator);
 
+// Must match RDM_RECORDS_MAX_TITLE_LENGTH in invenio.cfg (metadata validation)
+const TITLE_MAX_LENGTH = 260;
+
 addMethod(yupString, "dateInSequence", function () {
   return this.test("test-name", function (value) {
     const { path, createError } = this;
@@ -203,11 +206,16 @@ const validationSchema = yupObject().shape({
         .required("A publication date is required"),
       title: yupString()
         .matches(/(?!\s).+/, "Title cannot be blank")
-        .min(3, "Title must be at least 3 characters")
+        .min(1, "Title must be at least 1 character")
+        .max(TITLE_MAX_LENGTH, `Title must be at most ${TITLE_MAX_LENGTH} characters`)
         .required("A title is required"),
       additional_titles: yupArray().of(
         yupObject().shape({
-          title: yupString().required("A title is required"),
+          title: yupString()
+            .matches(/(?!\s).+/, "Title cannot be blank")
+            .min(1, "Title must be at least 1 character")
+            .max(TITLE_MAX_LENGTH, `Title must be at most ${TITLE_MAX_LENGTH} characters`)
+            .required("A title is required"),
           type: yupString().required("A type is required"),
           lang: mixed().test('lang-format', 'Invalid language format', function(value) {
             if (!value) return true;
