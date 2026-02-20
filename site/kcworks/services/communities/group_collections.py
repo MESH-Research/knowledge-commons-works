@@ -12,6 +12,7 @@ from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_datastore as accounts_datastore
 from invenio_communities.proxies import current_communities
 from invenio_search.proxies import current_search_client
+from invenio_search.utils import prefix_index
 from opensearchpy.helpers.search import Search
 
 
@@ -79,7 +80,7 @@ class CommunityGroupMembershipChecker:
             # Search for communities with group ID in custom fields
             search = Search(
                 using=current_search_client,
-                index="communities-communities-v1.0.0",
+                index=prefix_index("communities-communities*"),
             )
             search = search.filter("exists", field="custom_fields.kcr:commons_group_id")
             search = search.params(size=1000)  # Get all communities
@@ -101,15 +102,13 @@ class CommunityGroupMembershipChecker:
                     )
                     commons_group_id = group_id
 
-                    communities.append(
-                        {
-                            "id": community_data["id"],
-                            "slug": community_data["slug"],
-                            "group_id": group_id,
-                            "commons_instance": commons_instance,
-                            "commons_group_id": commons_group_id,
-                        }
-                    )
+                    communities.append({
+                        "id": community_data["id"],
+                        "slug": community_data["slug"],
+                        "group_id": group_id,
+                        "commons_instance": commons_instance,
+                        "commons_group_id": commons_group_id,
+                    })
 
             return communities
 

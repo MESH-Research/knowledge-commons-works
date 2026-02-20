@@ -473,9 +473,11 @@ def test_record_published_update_service(
     mock_send_remote_api_update_fixture: Callable,
 ):
     """Test that a user can update a published record via the API."""
+    # FIXME: Why is there a user already at this point?!!
     u = user_factory(
         email=user_data_set["user1"]["email"],
         password="test",
+        kc_username="another_user",
         token=True,
         admin=True,
     )
@@ -645,6 +647,7 @@ def test_record_file_upload_api(
             "key": "sample.pdf",
             "metadata": None,
             "status": "pending",
+            "transfer": {"type": "L"},
             "links": {
                 "content": (
                     f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/"

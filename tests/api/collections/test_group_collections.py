@@ -163,5 +163,5 @@ def test_group_collections_service_automated_creation(
         # Verify the collection has the correct access settings
         assert collection.data["access"]["visibility"] == "public"
         assert collection.data["access"]["member_policy"] == "closed"
-        assert collection.data["access"]["record_policy"] == "closed"
+        assert collection.data["access"]["record_submission_policy"] == "closed"
         assert collection.data["access"]["review_policy"] == "closed"

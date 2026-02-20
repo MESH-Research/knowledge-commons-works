@@ -1340,7 +1340,8 @@ def test_unread_endpoint_bad_methods(
         "status": 405,
     }
 
-    csrf_token = next(c.value for c in client.cookie_jar if c.name == "csrftoken")
+    csrf_token = client.get_cookie("csrftoken").decoded_value
+    app.logger.error(f"DEBUG: csrf_token: {csrf_token}")
     headers["X-CSRFToken"] = csrf_token
 
     response = client.put(

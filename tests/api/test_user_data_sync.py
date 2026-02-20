@@ -129,6 +129,9 @@ def test_user_data_sync_on_login(
     The actual api call is mocked, so this tests that the api request is made
     and that the user data is updated in Invenio.
 
+    - Includes test of username updating if the remote username
+      has changed.
+
     Also tests that the api call does *not* happen for simple programmatic
     user creation. It only happens when the user logs in.
     """
@@ -140,12 +143,14 @@ def test_user_data_sync_on_login(
     # The user is created with a saml auth record because oauth_src
     # and oauth_id are supplied.
     u = user_factory(
-        email=new_data_payload["email"],
+        email="originalemail@kcommons.org",
         oauth_src="cilogon",
         oauth_id=new_data_payload["oauth_id"],
         kc_username=new_data_payload["kc_username"],
         new_remote_data=new_data_payload,
     )
+    user_id = u.user.id
+    old_username = u.user.username
 
     for mock_adapter in u.mock_adapter_subs, u.mock_adapter_members:
         assert not mock_adapter.called
@@ -156,9 +161,21 @@ def test_user_data_sync_on_login(
     assert not u.mock_adapter_members.called
     assert u.mock_adapter_members.call_count == 0
 
-    assert u.user.email == new_data_payload["email"]
+    # Celery task updates the user in another db session;
+    # expire the test session's cached user so get_user_by_email
+    # loads fresh data from the DB.
+    db.session.expire(u.user)
 
-    profile: UserProfileDict = u.user.user_profile
+    refreshed_user = current_accounts.datastore.get_user_by_id(user_id)
+
+    # Ensure that remote email changes are propagated.
+    assert refreshed_user.email == new_data_payload["email"]
+    assert refreshed_user.email != "originalemail@kcommons.org"
+    # Ensure that remote username changes are propagated.
+    assert refreshed_user.username == new_data_payload["kc_username"]
+    assert refreshed_user.username != old_username
+    # Ensure that remote profile data is propagated.
+    profile: UserProfileDict = refreshed_user.user_profile
     assert profile.get("full_name") == new_data_payload["name"]
     assert profile.get("affiliations") == new_data_payload["institutional_affiliation"]  # noqa: E501
     assert profile.get("identifier_orcid") == new_data_payload["orcid"]
@@ -168,10 +185,8 @@ def test_user_data_sync_on_login(
         "last": new_data_payload["last_name"],
     }
 
-    merged_user = db.session.merge(u.user)
-
     # Check that the user is a member of the linked communities
-    assert sorted([r.name for r in merged_user.roles]) == sorted([
+    assert sorted([r.name for r in refreshed_user.roles]) == sorted([
         "knowledgeCommons---12345|administrator",
         "knowledgeCommons---67891|member",
     ])

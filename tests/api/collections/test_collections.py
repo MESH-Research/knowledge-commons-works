@@ -50,7 +50,7 @@ def test_collection_submission_by_owner_open(
     collection_rec = minimal_community_factory(
         owner=admin_id,
         access={
-            "record_policy": "open",
+            "record_submission_policy": "open",
             "review_policy": "closed",
         },
     )
@@ -181,7 +181,7 @@ def test_collection_submission_by_curator_closed(
 
     collection_rec = minimal_community_factory(
         owner=admin_u.user.id,
-        access={"record_policy": "open", "review_policy": "closed"},
+        access={"record_submission_policy": "open", "review_policy": "closed"},
         members={"curator": [u.user.id]},
     )
     collection_meta = collection_rec.to_dict()
@@ -270,12 +270,12 @@ def test_group_collection_read_all(
         assert response.json["links"] == {
             "next": (
                 f"{app.config['SITE_API_URL']}/communities?"
-                "page=2&q=%2B_exists_%3Acustom_fields.kcr%5C%3Acommons_instance%20"
+                "page=2&q=%2B_exists_:custom_fields.kcr%5C:commons_instance+"
                 "&size=4&sort=updated-desc"
             ),
             "self": (
                 f"{app.config['SITE_API_URL']}/communities?"
-                "page=1&q=%2B_exists_%3Acustom_fields.kcr%5C%3Acommons_instance%20"
+                "page=1&q=%2B_exists_:custom_fields.kcr%5C:commons_instance+"
                 "&size=4&sort=updated-desc"
             ),
         }
@@ -287,7 +287,7 @@ def test_group_collection_read_all(
             assert hit["access"] == {
                 "member_policy": "open",
                 "members_visibility": "public",
-                "record_policy": "open",
+                "record_submission_policy": "open",
                 "review_policy": "closed",
                 "visibility": "public",
             }
