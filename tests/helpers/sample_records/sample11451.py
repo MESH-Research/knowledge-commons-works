@@ -19,9 +19,7 @@ rec11451 = {
             "hclegacy:groups_for_deposit": [
                 {
                     "group_identifier": "174",
-                    "group_name": (
-                        "East Asian Languages and Literatures after 1900"
-                    ),
+                    "group_name": ("East Asian Languages and Literatures after 1900"),
                 },
                 {
                     "group_identifier": "246",
@@ -328,8 +326,7 @@ rec11451 = {
             ],
             "publisher": "Palgrave",
             "title": (
-                "The Paradox of Female Agency: Ophelia and East Asian "
-                "Sensibilities"
+                "The Paradox of Female Agency: Ophelia and East Asian Sensibilities"
             ),
         },
         "parent": {"access": {"owned_by": [{"user": "49"}]}},
@@ -345,6 +342,7 @@ rec11451 = {
                 "provider": "datacite",
             }
         },
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -356,9 +354,7 @@ rec11451 = {
             "hclegacy:groups_for_deposit": [
                 {
                     "group_identifier": "174",
-                    "group_name": (
-                        "East Asian Languages and Literatures after 1900"
-                    ),
+                    "group_name": ("East Asian Languages and Literatures after 1900"),
                 },
                 {
                     "group_identifier": "246",
@@ -523,8 +519,7 @@ rec11451 = {
             ],
             "publisher": "Palgrave",
             "title": (
-                "The Paradox of Female Agency: Ophelia and East Asian "
-                "Sensibilities"
+                "The Paradox of Female Agency: Ophelia and East Asian Sensibilities"
             ),
         },
         "parent": {"access": {"owned_by": [{"user": "49"}]}},
@@ -540,6 +535,7 @@ rec11451 = {
                 "provider": "datacite",
             }
         },
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -551,9 +547,7 @@ rec11451 = {
             "hclegacy:groups_for_deposit": [
                 {
                     "group_identifier": "174",
-                    "group_name": (
-                        "East Asian Languages and Literatures after 1900"
-                    ),
+                    "group_name": ("East Asian Languages and Literatures after 1900"),
                 },
                 {
                     "group_identifier": "246",
@@ -763,8 +757,7 @@ rec11451 = {
                     "props": {
                         "scheme": "spdx",
                         "url": (
-                            "https://creativecommons.org/licenses/by-nc/4.0/"
-                            "legalcode"
+                            "https://creativecommons.org/licenses/by-nc/4.0/legalcode"
                         ),
                     },
                     "title": {
@@ -799,8 +792,7 @@ rec11451 = {
             ],
             "publisher": "Palgrave",
             "title": (
-                "The Paradox of Female Agency: Ophelia and East Asian "
-                "Sensibilities"
+                "The Paradox of Female Agency: Ophelia and East Asian Sensibilities"
             ),
         },
         "parent": {"access": {"owned_by": [{"user": "49"}]}},

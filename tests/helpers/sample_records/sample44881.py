@@ -202,6 +202,7 @@ rec44881 = {
             }
         },
         "created": "2022-03-08T21:57:49Z",
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:file_location": (
                 "/srv/www/commons/current/web/app/"
@@ -376,6 +377,7 @@ rec44881 = {
             }
         },
         "created": "2022-03-08T21:57:49Z",
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:file_location": (
                 "/srv/www/commons/current/web/app/"

@@ -18,9 +18,7 @@ rec28491 = {
                 },
                 {
                     "group_identifier": "1003089",
-                    "group_name": (
-                        "Foreign Language Teaching and the Environment"
-                    ),
+                    "group_name": ("Foreign Language Teaching and the Environment"),
                 },
                 {
                     "group_identifier": "1003408",
@@ -203,8 +201,7 @@ rec28491 = {
             "publication_date": "2008",
             "resource_type": {"id": "textDocument-book"},
             "publisher": (
-                "Editorial ACRIBIA, S. A., Apartado 466, 50080, "
-                "Zaragoza, Espana."
+                "Editorial ACRIBIA, S. A., Apartado 466, 50080, Zaragoza, Espana."
             ),
             "rights": [
                 {
@@ -218,9 +215,7 @@ rec28491 = {
                     "id": "arr",
                     "icon": "copyright",
                     "props": {
-                        "url": (
-                            "https://en.wikipedia.org/wiki/All_rights_reserved"
-                        )
+                        "url": ("https://en.wikipedia.org/wiki/All_rights_reserved")
                     },
                     "title": {"en": "All Rights Reserved"},
                 }
@@ -238,8 +233,7 @@ rec28491 = {
                 },
             ],
             "title": (
-                "TRATAMIENTO de los RESIDUOS de la INDUSTRIA del "
-                "PROCESADO de ALIMENTOS"
+                "TRATAMIENTO de los RESIDUOS de la INDUSTRIA del PROCESADO de ALIMENTOS"
             ),
         },
         "updated": "2020-01-30T16:46:54Z",
@@ -255,6 +249,7 @@ rec28491 = {
     "expected_serialized": {
         "record_source": "knowledgeCommons",
         "created": "2020-01-30T16:46:54Z",
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -272,9 +267,7 @@ rec28491 = {
                 },
                 {
                     "group_identifier": "1003089",
-                    "group_name": (
-                        "Foreign Language Teaching and the Environment"
-                    ),
+                    "group_name": ("Foreign Language Teaching and the Environment"),
                 },
                 {
                     "group_identifier": "1003408",
@@ -423,8 +416,7 @@ rec28491 = {
             "publication_date": "2008",
             "resource_type": {"id": "textDocument-book"},
             "publisher": (
-                "Editorial ACRIBIA, S. A., Apartado 466, 50080, "
-                "Zaragoza, Espana."
+                "Editorial ACRIBIA, S. A., Apartado 466, 50080, Zaragoza, Espana."
             ),
             "rights": [{"id": "arr"}],
             "subjects": [
@@ -440,8 +432,7 @@ rec28491 = {
                 },
             ],
             "title": (
-                "TRATAMIENTO de los RESIDUOS de la INDUSTRIA del "
-                "PROCESADO de ALIMENTOS"
+                "TRATAMIENTO de los RESIDUOS de la INDUSTRIA del PROCESADO de ALIMENTOS"
             ),
         },
         "updated": "2020-01-30T16:46:54Z",
@@ -457,6 +448,7 @@ rec28491 = {
     "expected_loaded": {
         "record_source": "knowledgeCommons",
         "created": "2020-01-30T16:46:54Z",
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -474,9 +466,7 @@ rec28491 = {
                 },
                 {
                     "group_identifier": "1003089",
-                    "group_name": (
-                        "Foreign Language Teaching and the Environment"
-                    ),
+                    "group_name": ("Foreign Language Teaching and the Environment"),
                 },
                 {
                     "group_identifier": "1003408",
@@ -668,8 +658,7 @@ rec28491 = {
                 "title": {"en": "Book"},
             },
             "publisher": (
-                "Editorial ACRIBIA, S. A., Apartado 466, 50080, "
-                "Zaragoza, Espana."
+                "Editorial ACRIBIA, S. A., Apartado 466, 50080, Zaragoza, Espana."
             ),
             "rights": [
                 {
@@ -695,8 +684,7 @@ rec28491 = {
                 },
             ],
             "title": (
-                "TRATAMIENTO de los RESIDUOS de la INDUSTRIA del "
-                "PROCESADO de ALIMENTOS"
+                "TRATAMIENTO de los RESIDUOS de la INDUSTRIA del PROCESADO de ALIMENTOS"
             ),
         },
         "updated": "2020-01-30T16:46:54Z",

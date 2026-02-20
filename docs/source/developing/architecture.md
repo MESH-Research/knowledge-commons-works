@@ -5,24 +5,24 @@
 InvenioRDM employs a layered architecture with:
 
 1. Data layer
-    - Low-level data storage and retrieval.
-        - Primarily SQLAlchemy model classes.
-    - High-level data API classes that provide a Pythonic interface to the data layer.
-        - Validate data before storing it.
+   - Low-level data storage and retrieval.
+     - Primarily SQLAlchemy model classes.
+   - High-level data API classes that provide a Pythonic interface to the data layer.
+     - Validate data before storing it.
 2. Service layer
-    - Retrieves and modifies data from the data layer, either for a view or for another service.
-        - Providing abstract CRUD methods for operating on the data layer's API classes.
-        - Providing abstracted "result items" and "result lists"
-    - Enforces permission and access control policies.
+   - Retrieves and modifies data from the data layer, either for a view or for another service.
+     - Providing abstract CRUD methods for operating on the data layer's API classes.
+     - Providing abstracted "result items" and "result lists"
+   - Enforces permission and access control policies.
 3. View layer
-    - Consists of
-        - Flask views (registered as Blueprints)
-        - rendering either
-            - Jinja2 templates to produce HTML
-            - JSON to produce API responses
-        - in some cases, React components embedded in the Jinja2 templates
-            - These are rendered on the client side
-            - Data is passed from the Jinja2 templates to the React components via HTML data attributes
+   - Consists of
+     - Flask views (registered as Blueprints)
+     - rendering either
+       - Jinja2 templates to produce HTML
+       - JSON to produce API responses
+     - in some cases, React components embedded in the Jinja2 templates
+       - These are rendered on the client side
+       - Data is passed from the Jinja2 templates to the React components via HTML data attributes
 
 ## InvenioRDM Services
 
@@ -35,72 +35,68 @@ An InvenioRDM service is a class that provides methods for interacting with the 
 The base Service class is defined in `invenio_records_resources.services.base.Service`. It defines methods for:
 
 - Getting the service ID
-    - `id(self)`: Return the id of the service from config.
+  - `id(self)`: Return the id of the service from config.
 - Permissions checking
-    - `permission_policy(self, action_name, **kwargs)`: Factory for a permission policy instance.
-    - `check_permission(self, identity, action_name, **kwargs)`: Check a permission against the identity.
-    - `require_permission(self, identity, action_name, **kwargs)`: Require a specific permission from the permission policy.
+  - `permission_policy(self, action_name, **kwargs)`: Factory for a permission policy instance.
+  - `check_permission(self, identity, action_name, **kwargs)`: Check a permission against the identity.
+  - `require_permission(self, identity, action_name, **kwargs)`: Require a specific permission from the permission policy.
 - Handling service components
-    - `components(self)`: Return initialized instances of the service's component classes.
-    - `run_components(self, action, *args, **kwargs)`: Run components for a given action.
+  - `components(self)`: Return initialized instances of the service's component classes.
+  - `run_components(self, action, *args, **kwargs)`: Run components for a given action.
 - Producing result items and lists
-    - `result_item(self, *args, **kwargs)`: Create a new instance of the resource unit, i.e. whatever the service provides.
-    - `result_list(self, *args, **kwargs)`: Create a new list of resource units. In some cases this is a simple iterable of resource units, but in other cases it is a more complex object that includes additional data.
+  - `result_item(self, *args, **kwargs)`: Create a new instance of the resource unit, i.e. whatever the service provides.
+  - `result_list(self, *args, **kwargs)`: Create a new list of resource units. In some cases this is a simple iterable of resource units, but in other cases it is a more complex object that includes additional data.
 
 #### RecordService
 
 Services dealing with InvenioRDM records of some kind (e.g. records, drafts, communities, etc.) inherit from the `RecordService` class defined in `invenio_records_resources.services.records.service`. This class adds:
 
 - properties and methods related to the service's related data-layer API class
-    - A `schema` property that returns a `ServiceSchemaWrapper` instance.
-    - A `record_cls` property that returns the record class for the service.
-    - A `links_item_tpl` property that returns a `LinksTemplate` instance for constructing links to a resource unit.
-    - An `expandable_fields` property that returns a list of expandable fields for the service's data-layer API class.
+  - A `schema` property that returns a `ServiceSchemaWrapper` instance.
+  - A `record_cls` property that returns the record class for the service.
+  - A `links_item_tpl` property that returns a `LinksTemplate` instance for constructing links to a resource unit.
+  - An `expandable_fields` property that returns a list of expandable fields for the service's data-layer API class.
 - Methods for creating searches
-    - `create_search(self, identity, record_cls, search_opts, permission_action="read", preference=None, extra_filter=None, versioning=True)`: Instantiate a search class.
-    - `search_records(self, identity, params, **kwargs)`: A low-level method to create an OpenSearch DSL instance for searching records.
-    - `search(self, identity, params=None, search_preference=None, expand=False, **kwargs)`: A high-level method to search for records matching the querystring.
-    - `scan(self, identity, params=None, search_preference=None, expand=False, **kwargs)`: A high-level method to perform a rolling "scroll" search for records matching the querystring. (This is used for searching through large numbers of records, since OpenSearch will not return more than 10,000 records at a time.)
+  - `create_search(self, identity, record_cls, search_opts, permission_action="read", preference=None, extra_filter=None, versioning=True)`: Instantiate a search class.
+  - `search_records(self, identity, params, **kwargs)`: A low-level method to create an OpenSearch DSL instance for searching records.
+  - `search(self, identity, params=None, search_preference=None, expand=False, **kwargs)`: A high-level method to search for records matching the querystring.
+  - `scan(self, identity, params=None, search_preference=None, expand=False, **kwargs)`: A high-level method to perform a rolling "scroll" search for records matching the querystring. (This is used for searching through large numbers of records, since OpenSearch will not return more than 10,000 records at a time.)
 - Methods for indexing records
-    - `reindex(self, identity, params=None, search_preference=None, search_query=None, extra_filter=None, **kwargs)`: A high-level method to reindex records matching the query parameters.
-    - `rebuild_index(self, identity, uow=None)`: A high-level method to reindex all records managed by this service.
+  - `reindex(self, identity, params=None, search_preference=None, search_query=None, extra_filter=None, **kwargs)`: A high-level method to reindex records matching the query parameters.
+  - `rebuild_index(self, identity, uow=None)`: A high-level method to reindex all records managed by this service.
 - CRUD methods
-    - `create(self, identity, data, uow=None, expand=False)`: Create a record.
-    - `exists(self, identity, id_)`: Check if the record exists and user has permission. (Does *not* use the search index.)
-    - `read(self, identity, id_, expand=False, action="read")`: Retrieve a record. (Does *not* use the search index.)
-    - `read_many(self, identity, ids, expand=False, action="read")`: Retrieve multiple records using the search index.
-    - `read_all(self, identity, params=None, search_preference=None, expand=False, **kwargs)`: Retrieve all records matching the query parameters using the search index.
-    - `update(self, identity, id_, data, uow=None, expand=False)`: Update a record.
-    - `delete(self, identity, id_, uow=None)`: Delete a record.
+  - `create(self, identity, data, uow=None, expand=False)`: Create a record.
+  - `exists(self, identity, id_)`: Check if the record exists and user has permission. (Does _not_ use the search index.)
+  - `read(self, identity, id_, expand=False, action="read")`: Retrieve a record. (Does _not_ use the search index.)
+  - `read_many(self, identity, ids, expand=False, action="read")`: Retrieve multiple records using the search index.
+  - `read_all(self, identity, params=None, search_preference=None, expand=False, **kwargs)`: Retrieve all records matching the query parameters using the search index.
+  - `update(self, identity, id_, data, uow=None, expand=False)`: Update a record.
+  - `delete(self, identity, id_, uow=None)`: Delete a record.
 - Helper methods for record management
-    - `check_revision_id(self, record, expected_revision_id)`: Validate the given revision_id with current record's one.
-    - `on_relation_update(self, identity, record_type, records_info, notif_time, limit=100)`: Handles the update of a related field record when the related field is updated.
+  - `check_revision_id(self, record, expected_revision_id)`: Validate the given revision_id with current record's one.
+  - `on_relation_update(self, identity, record_type, records_info, notif_time, limit=100)`: Handles the update of a related field record when the related field is updated.
 
 #### Augmented RecordService
 
 The `invenio_drafts_resources` package then overrides this with a `RecordService` class that adds (a) a distinction between published and draft records, (b) record versioning and a parent-child record relationship, and (c) file attachments to service records. This adds the following properties and methods to the `RecordService` class:
 
 - Properties and methods for draft records
-    - `draft_cls(self)`: Return the record class for the service.
-    - `draft_files(self)`: Return the draft files service for the service.
-    - `draft_indexer(self)`: A factory for creating an indexer instance.
-    - `search_drafts(self, identity, params=None, search_preference=None, expand=False, extra_filter=None, **kwargs)`: Search for draft records matching the querystring.
-    - `read_draft(self, identity, id_, expand=False)`: Retrieve a draft record.
-    - `update_draft(self, identity, id_, data, revision_id=None, uow=None, expand=False)`: Replace a draft.
-    - `edit(self, identity, id_, uow=None, expand=False)`: Creates a new revision of a draft or a draft for an existing published record.
-    - `publish(self, identity, id_, uow=None, expand=False)`: Publishes a draft record.
-    - `delete_draft(self, identity, id_, revision_id=None, uow=None)`: Deletes a draft record. (Defaults to a soft delete, so the record is not actually deleted from the database or search index until a later cleanup operation.)
-    - `validate_draft(self, identity, id_, ignore_field_permissions=False)`: Validate a draft.
-    - `cleanup_drafts(self, timedelta, uow=None, search_gc_deletes=60)`: Hard delete of soft deleted drafts.
+  - `draft_cls(self)`: Return the record class for the service.
+  - `draft_files(self)`: Return the draft files service for the service.
+  - `draft_indexer(self)`: A factory for creating an indexer instance.
+  - `search_drafts(self, identity, params=None, search_preference=None, expand=False, extra_filter=None, **kwargs)`: Search for draft records matching the querystring.
+  - `read_draft(self, identity, id_, expand=False)`: Retrieve a draft record.
+  - `update_draft(self, identity, id_, data, revision_id=None, uow=None, expand=False)`: Replace a draft.
+  - `edit(self, identity, id_, uow=None, expand=False)`: Creates a new revision of a draft or a draft for an existing published record.
+  - `publish(self, identity, id_, uow=None, expand=False)`: Publishes a draft record.
+  - `delete_draft(self, identity, id_, revision_id=None, uow=None)`: Deletes a draft record. (Defaults to a soft delete, so the record is not actually deleted from the database or search index until a later cleanup operation.)
+  - `validate_draft(self, identity, id_, ignore_field_permissions=False)`: Validate a draft.
+  - `cleanup_drafts(self, timedelta, uow=None, search_gc_deletes=60)`: Hard delete of soft deleted drafts.
 - Properties and methods for files
-    - `files(self)`: Return the files service for the service.
-    - `import_files(self, identity, id_, uow=None)`: Import files from previous record version.
-- Properties and methods for versions and parent records
-    - `schema_parent(self)`: Return the parent schema for the service.
-    - `search_versions(self, identity, id_, params=None, search_preference=None, expand=False, permission_action="read", **kwargs)`: Search for record's versions.
-    - `read_latest(self, identity, id_, expand=False)`: Retrieve the latest version of a record.
-    - `new_version(self, identity, id_, uow=None, expand=False)`: Creates a new version of a record.
-This overridden `RecordService` class also modifies the CRUD methods to enforce a workflow in which records are only modified via their draft records. This involves overriding:
+  - `files(self)`: Return the files service for the service.
+  - `import_files(self, identity, id_, uow=None)`: Import files from previous record version.
+- Properties and methods for versions and parent records - `schema_parent(self)`: Return the parent schema for the service. - `search_versions(self, identity, id_, params=None, search_preference=None, expand=False, permission_action="read", **kwargs)`: Search for record's versions. - `read_latest(self, identity, id_, expand=False)`: Retrieve the latest version of a record. - `new_version(self, identity, id_, uow=None, expand=False)`: Creates a new version of a record.
+  This overridden `RecordService` class also modifies the CRUD methods to enforce a workflow in which records are only modified via their draft records. This involves overriding:
 
 - `update(self, identity, id_, data, uow=None, expand=False)`: Now raises a `NotImplementedError` error.
 - `create(self, identity, data, uow=None, expand=False)`: Now creates a draft record.
@@ -111,38 +107,38 @@ This overridden `RecordService` class also modifies the CRUD methods to enforce 
 The `invenio_rdm_records` package provides an `RDMRecordService` class that inherits from the `RecordService` class and adds:
 
 - Additional properties for accessing subservices
-    - `access`: Return the access service for the service.
-    - `pids`: Return the PIDs service for the service.
-    - `review`: Return the review service for the service.
+  - `access`: Return the access service for the service.
+  - `pids`: Return the PIDs service for the service.
+  - `review`: Return the review service for the service.
 - Methods for embargo handling
-    - `lift_embargo(self, identity, _id, uow=None)`: Lifts an embargo from the record and draft (if exists).
-    - `scan_expired_embargos(self, identity)`: Scan for records with an expired embargo.
+  - `lift_embargo(self, identity, _id, uow=None)`: Lifts an embargo from the record and draft (if exists).
+  - `scan_expired_embargos(self, identity)`: Scan for records with an expired embargo.
 - Properties and methods for file quota handling
-    - `schema_quota`: Return the schema for quota information.
-    - `set_quota(self, identity, id_, data, files_attr="files", uow=None)`: Set the quota values for a record.
-    - `set_user_quota(self, identity, id_, data, uow=None)`: Set the user files quota.
+  - `schema_quota`: Return the schema for quota information.
+  - `set_quota(self, identity, id_, data, files_attr="files", uow=None)`: Set the quota values for a record.
+  - `set_user_quota(self, identity, id_, data, uow=None)`: Set the user files quota.
 - Properties and methods for deletion of published records
-    - `schema_tombstone`: Return the schema for tombstone information.
-    - `delete_record(self, identity, id_, data, expand=False, uow=None, revision_id=None)`: Re-introduces soft-deletion of published records (which were previously removed by the `RecordService` class).
-    - `update_tombstone(self, identity, id_, data, expand=False, uow=None)`: Update the tombstone information for the (soft) deleted record.
-    - `cleanup_record(self, identity, id_, uow=None)`: Clean up a (soft) deleted record.
-    - `restore_record(self, identity, id_, expand=False, uow=None)`: Restore a record that has been (soft) deleted.
-    - `mark_record_for_purge(self, identity, id_, expand=False, uow=None)`: Mark a (soft) deleted record for purge.
-    - `unmark_record_for_purge(self, identity, id_, expand=False, uow=None)`: Remove the mark for deletion from a record, returning it to deleted state.
-    - `purge_record(self, identity, id_, uow=None)`: Purge a record that has been marked.
+  - `schema_tombstone`: Return the schema for tombstone information.
+  - `delete_record(self, identity, id_, data, expand=False, uow=None, revision_id=None)`: Re-introduces soft-deletion of published records (which were previously removed by the `RecordService` class).
+  - `update_tombstone(self, identity, id_, data, expand=False, uow=None)`: Update the tombstone information for the (soft) deleted record.
+  - `cleanup_record(self, identity, id_, uow=None)`: Clean up a (soft) deleted record.
+  - `restore_record(self, identity, id_, expand=False, uow=None)`: Restore a record that has been (soft) deleted.
+  - `mark_record_for_purge(self, identity, id_, expand=False, uow=None)`: Mark a (soft) deleted record for purge.
+  - `unmark_record_for_purge(self, identity, id_, expand=False, uow=None)`: Remove the mark for deletion from a record, returning it to deleted state.
+  - `purge_record(self, identity, id_, uow=None)`: Purge a record that has been marked.
 - Overridden methods to add deletion-related functionality
-    - `read(self, identity, id_, expand=False, action="read", include_deleted=False)`: Adds an `include_deleted` argument to the read method, and a check for the `read_deleted` permission if it is set to `True`.
-    - `read_draft(self, identity, id_, expand=False)`: Prevents reading a draft if there is a published deleted record. (410 response.)
-    - `search(self, identity, params=None, search_preference=None, expand=False, extra_filter=None, **kwargs)`: Adds a "read_deleted" permission action to the search method.
-    - `search_drafts(self, identity, params=None, search_preference=None, expand=False, extra_filter=None, **kwargs)`: Adds a filter to exclude soft-deleted records from the search results.
-    - `search_versions(self, identity, id_, params=None, search_preference=None, expand=False, permission_action="read", **kwargs)`: Adds a "read_deleted" permission action to the search method.
+  - `read(self, identity, id_, expand=False, action="read", include_deleted=False)`: Adds an `include_deleted` argument to the read method, and a check for the `read_deleted` permission if it is set to `True`.
+  - `read_draft(self, identity, id_, expand=False)`: Prevents reading a draft if there is a published deleted record. (410 response.)
+  - `search(self, identity, params=None, search_preference=None, expand=False, extra_filter=None, **kwargs)`: Adds a "read_deleted" permission action to the search method.
+  - `search_drafts(self, identity, params=None, search_preference=None, expand=False, extra_filter=None, **kwargs)`: Adds a filter to exclude soft-deleted records from the search results.
+  - `search_versions(self, identity, id_, params=None, search_preference=None, expand=False, permission_action="read", **kwargs)`: Adds a "read_deleted" permission action to the search method.
 - Additional overridden methods for other functionality
-    - `publish(self, identity, id_, uow=None, expand=False)`: Adds a check prior to the original publish method to allow enforcement of a config setting that requires a community to be present on a record before it can be published.
-    - `update_draft(self, identity, id_, data, revision_id=None, uow=None, expand=False)`: Adds a check prior to the original update_draft method to allow enforcement of a config setting that prevents a record from being restricted after the grace period.
+  - `publish(self, identity, id_, uow=None, expand=False)`: Adds a check prior to the original publish method to allow enforcement of a config setting that requires a community to be present on a record before it can be published.
+  - `update_draft(self, identity, id_, data, revision_id=None, uow=None, expand=False)`: Adds a check prior to the original update_draft method to allow enforcement of a config setting that prevents a record from being restricted after the grace period.
 - Additional new methods for other functionality
-    - `expandable_fields`: Expands the `communities` field to return community details.
-    - `oai_result_item(self, identity, oai_record_source)`: Get a result item from a record source in the OAI server.
-    - `scan_versions(self, identity, id_, params=None, search_preference=None, expand=False, permission_action="read_deleted", **kwargs)`: Search for record's versions using a "scroll" search.
+  - `expandable_fields`: Expands the `communities` field to return community details.
+  - `oai_result_item(self, identity, oai_record_source)`: Get a result item from a record source in the OAI server.
+  - `scan_versions(self, identity, id_, params=None, search_preference=None, expand=False, permission_action="read_deleted", **kwargs)`: Search for record's versions using a "scroll" search.
 
 ### Service Configuration
 
@@ -195,7 +191,6 @@ The `RDMRecordServiceConfig` class adds the following additional configuration a
 - `schema_request_access`: The schema for request access.
 - `schema_tombstone`: The schema for tombstone.
 - `schema_quota`: The schema for quota.
-
 
 Additional common configration attributes are added by inheriting from additional mixin classes.
 
@@ -293,8 +288,8 @@ The `invenio_records_resources` package provides the following components for th
 
 - `DataServiceComponent` (create, update): Adds data to the record.
 - `BaseRecordFilesComponent` (create, update):
-    - Handles enabling/disabling files for a record.
-    - Handles setting the default preview file for a record.
+  - Handles enabling/disabling files for a record.
+  - Handles setting the default preview file for a record.
 - `MetadataComponent` (create, update): Adds metadata to the new/updated record from the input data.
 - `RelationsComponent` (read): Dereferences a record's related fields in order to provide the data from the related records in a read result.
 - `ChangeNotificationsComponent` (update): Emits a change notification for the updated record.
@@ -364,6 +359,7 @@ An object representing a persistent identifier for a record. It has the followin
 #### `RDMDraft` (`invenio_rdm_records.records.api.RDMDraft`)
 
 The `RDMDraft` object is a subclass of the `Record` object (defined in `invenio_records.api.Record`) and includes all of the submitted metadata values, along with the keys:
+
 - `$schema`
 - `id`
 - `created`
@@ -374,7 +370,7 @@ The `RDMDraft` object is a subclass of the `Record` object (defined in `invenio_
 - `media_files` (if not present in `data`)
 - `custom_fields` (if not present in `data`)
 
-Its __dict__ has the following shape (these values are available by key and *also* as dot properties):
+Its **dict** has the following shape (these values are available by key and _also_ as dot properties):
 
 ```python
 {
@@ -424,8 +420,8 @@ The `RDMDraft` also has the following properties:
 - 'bucket',
 - 'bucket_id',
 - 'created',
--  'dumper',
--  'expires_at',
+- 'dumper',
+- 'expires_at',
 - 'fork_version_id',
 - 'format_checker',
 - 'has_draft',
@@ -449,6 +445,7 @@ The `RDMDraft` also has the following properties:
 - 'versions_model_cls'
 
 And the following methods (among others, including standard `dict` methods)
+
 - 'cleanup_drafts',
 - 'clear',
 - 'clear_none',
@@ -482,7 +479,6 @@ draft = RDMDraft.create({
     }
 })
 ```
-
 
 #### `RDMRecord` (`invenio_rdm_records.records.api.RDMRecord`)
 
@@ -567,6 +563,7 @@ The `RDMRecord` object also has methods that perform actions on the record. Thes
 - 'validate',
 
 Since the `RDMRecord` object can present values as if it were a dictionary, it also has the following methods:
+
 - 'keys'
 - 'items'
 - 'values',
@@ -579,15 +576,15 @@ The `RDMParent` object is the parent record for an `RDMRecord` instance. It is a
 
 The `RDMParent` object has the following properties containing record metadata that appears in the `parent` field of an `RDMRecord` or `RDMDraft` instance:
 
-| Property | Accessible by key | Description |
-|----------|-------------|
-| `access` | Yes | Access control settings. The value is a `ParentRecordAccess` object with `grants`, `links`, `owned_by`, `owner`, and `settings` properties (among others). |
-| `communities` | Yes | Associated communities. The value is a `invenio_communities.records.records.systemfields.communities.manager.CommunitiesRelationManager` object with `ids`, `default`, and `entries` properties. (No values are accessible by key.) |
-| `created` | No | Creation timestamp |
-| `id` | Yes | Record identifier |
-| `metadata` | No | Record metadata |
-| `pids` | Yes | Public-facing persistent identifiers, including the primary DOI |
-| `updated` | No | Last updated timestamp |
+| Property      | Accessible by key | Description                                                                                                                                                                                                                         |
+| ------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `access`      | Yes               | Access control settings. The value is a `ParentRecordAccess` object with `grants`, `links`, `owned_by`, `owner`, and `settings` properties (among others).                                                                          |
+| `communities` | Yes               | Associated communities. The value is a `invenio_communities.records.records.systemfields.communities.manager.CommunitiesRelationManager` object with `ids`, `default`, and `entries` properties. (No values are accessible by key.) |
+| `created`     | No                | Creation timestamp                                                                                                                                                                                                                  |
+| `id`          | Yes               | Record identifier                                                                                                                                                                                                                   |
+| `metadata`    | No                | Record metadata                                                                                                                                                                                                                     |
+| `pids`        | Yes               | Public-facing persistent identifiers, including the primary DOI                                                                                                                                                                     |
+| `updated`     | No                | Last updated timestamp                                                                                                                                                                                                              |
 
 The object instance also has the key `$schema` which is not accessible as a dot property. It provides the name of the schema used to validate the RDMRecord instance prior to publication. The actual schema object is stored in the `schema` property.
 
@@ -608,35 +605,35 @@ The `RDMParent` object also has the following properties that are not part of th
 
 The `RDMParent` object also has the following methods:
 
-| Property | Description |
-|----------|-------------|
-| `clear` | Method to clear record data |
-| `clear_none` | Method to clear None values |
-| `commit` | Method to commit changes |
-| `copy` | Method to copy record |
-| `create` | Method to create record |
-| `delete` | Method to delete record |
-| `dumps` | Method to serialize record |
-| `enable_jsonref` | JSON reference flag |
-| `fromkeys` | Dictionary method |
-| `get` | Dictionary get method |
-| `get_record` | Method to retrieve record |
-| `get_records` | Method to retrieve multiple records |
-| `items` | Dictionary items method |
-| `keys` | Dictionary keys method |
-| `loads` | Method to deserialize record |
-| `patch` | Method to patch record |
-| `pop` | Dictionary pop method |
-| `popitem` | Dictionary popitem method |
-| `replace_refs` | Method to replace references |
-| `revert` | Method to revert changes |
-| `revision_id` | Revision identifier |
-| `send_signals` | Method to send signals |
-| `setdefault` | Dictionary setdefault method |
-| `undelete` | Method to undelete record |
-| `update` | Method to update record |
-| `validate` | Method to validate record |
-| `values` | Dictionary values method |
+| Property         | Description                         |
+| ---------------- | ----------------------------------- |
+| `clear`          | Method to clear record data         |
+| `clear_none`     | Method to clear None values         |
+| `commit`         | Method to commit changes            |
+| `copy`           | Method to copy record               |
+| `create`         | Method to create record             |
+| `delete`         | Method to delete record             |
+| `dumps`          | Method to serialize record          |
+| `enable_jsonref` | JSON reference flag                 |
+| `fromkeys`       | Dictionary method                   |
+| `get`            | Dictionary get method               |
+| `get_record`     | Method to retrieve record           |
+| `get_records`    | Method to retrieve multiple records |
+| `items`          | Dictionary items method             |
+| `keys`           | Dictionary keys method              |
+| `loads`          | Method to deserialize record        |
+| `patch`          | Method to patch record              |
+| `pop`            | Dictionary pop method               |
+| `popitem`        | Dictionary popitem method           |
+| `replace_refs`   | Method to replace references        |
+| `revert`         | Method to revert changes            |
+| `revision_id`    | Revision identifier                 |
+| `send_signals`   | Method to send signals              |
+| `setdefault`     | Dictionary setdefault method        |
+| `undelete`       | Method to undelete record           |
+| `update`         | Method to update record             |
+| `validate`       | Method to validate record           |
+| `values`         | Dictionary values method            |
 
 #### `Community` (`invenio_communities.communities.records.api.Community`)
 
@@ -661,6 +658,7 @@ Unlike some `Record` object types, the `Community` object does not expose most i
 - 'updated'
 
 Other properties are provided for internal manipulation and management of the `Community` object:
+
 - 'bucket'
 - 'bucket_id'
 - 'dumper'
@@ -676,6 +674,7 @@ Other properties are provided for internal manipulation and management of the `C
 - 'validator'
 
 The `Community` object also provides the following methods:
+
 - 'clear'
 - 'clear_none'
 - 'commit'
@@ -717,25 +716,24 @@ The `RecordItem` object is the service-level response object for a record, used 
 
 The `RecordItem` object has the following properties:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `_data` | `dict` | The `_data` property does *not* return the same dictionary as the `to_dict()` method. It appears to be None for published records. |
-| `_errors` | `list` | Any validation errors |
-| `_expand` | `dict` | The expand options for the record |
-| `_fields_resolver` | `dict` | The fields resolver for the record |
-| `_identity` | `dict` | The identity for the record |
-| `_links_tpl` | `dict` | The links template for the record |
-| `_nested_links_item` | `dict` | The nested links item for the record |
-| `_obj` | `dict` | The object for the record |
-| `_record` | `invenio_rdm_records.records.api.RDMRecord` | The underlying api-level `RDMRecord` record object |
-| `_schema` | `dict` | The schema for the record |
-| `_service` | `invenio_rdm_records.services.RDMRecordService` | The service for the record |
-| `data` | `dict` | The record data represented as a dictionary. This is the same dictionary returned by the `to_dict()` method. |
-| `errors` | `list` | Any validation errors |
-| `has_permissions_to` | `dict` | Permission checks |
-| `id` | `str` | The record identifier |
-| `links` | `dict` | Related URLs. The same as the `links` property of the `_record` object and the "links" value of the `data` dictionary. |
-
+| Property             | Type                                            | Description                                                                                                                        |
+| -------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `_data`              | `dict`                                          | The `_data` property does _not_ return the same dictionary as the `to_dict()` method. It appears to be None for published records. |
+| `_errors`            | `list`                                          | Any validation errors                                                                                                              |
+| `_expand`            | `dict`                                          | The expand options for the record                                                                                                  |
+| `_fields_resolver`   | `dict`                                          | The fields resolver for the record                                                                                                 |
+| `_identity`          | `dict`                                          | The identity for the record                                                                                                        |
+| `_links_tpl`         | `dict`                                          | The links template for the record                                                                                                  |
+| `_nested_links_item` | `dict`                                          | The nested links item for the record                                                                                               |
+| `_obj`               | `dict`                                          | The object for the record                                                                                                          |
+| `_record`            | `invenio_rdm_records.records.api.RDMRecord`     | The underlying api-level `RDMRecord` record object                                                                                 |
+| `_schema`            | `dict`                                          | The schema for the record                                                                                                          |
+| `_service`           | `invenio_rdm_records.services.RDMRecordService` | The service for the record                                                                                                         |
+| `data`               | `dict`                                          | The record data represented as a dictionary. This is the same dictionary returned by the `to_dict()` method.                       |
+| `errors`             | `list`                                          | Any validation errors                                                                                                              |
+| `has_permissions_to` | `dict`                                          | Permission checks                                                                                                                  |
+| `id`                 | `str`                                           | The record identifier                                                                                                              |
+| `links`              | `dict`                                          | Related URLs. The same as the `links` property of the `_record` object and the "links" value of the `data` dictionary.             |
 
 The `RecordItem` object also has the `to_dict()` method, which returns a representation of the record as a dictionary. For a published record, the `to_dict()` method returns a dictionary with the following shape:
 
@@ -808,7 +806,7 @@ The `RecordItem` object also has the `to_dict()` method, which returns a represe
             'communities': {'default': '00c10e5a-cfb6-4c4d-ab7e-3894b5930181',
                             'entries': [{'access': {'member_policy': 'open',
                                                     'members_visibility': 'public',
-                                                    'record_policy': 'open',
+                                                    'record_submission_policy': 'open',
                                                     'review_policy': 'open',
                                                     'visibility': 'public'},
                                          'children': {'allow': False},
@@ -856,7 +854,7 @@ The `RecordItem` object also has the `to_dict()` method, which returns a represe
  'status': 'published',
  'updated': '2025-03-19T20:49:34.451290+00:00',
  'versions': {'index': 1, 'is_latest': True, 'is_latest_draft': True}}
- ```
+```
 
 #### `CommunityItem` (`invenio_communities.records.api.CommunityItem`)
 
@@ -864,14 +862,14 @@ The `CommunityItem` object is the service-level response object for a community.
 
 The `CommunityItem` object has the following properties:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `_record` | `invenio_communities.records.api.Community` | The underlying api-level `Community` record object |
-| `data` | `dict` | The record data as a dictionary |
-| `errors` | `list` | Any validation errors |
-| `has_permissions_to` | `dict` | Permission checks |
-| `id` | `str` | The record identifier |
-| `links` | `dict` | Related URLs. The same as the `links` property of the `_record` object and the "links" value of the `data` dictionary. |
+| Property             | Type                                        | Description                                                                                                            |
+| -------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `_record`            | `invenio_communities.records.api.Community` | The underlying api-level `Community` record object                                                                     |
+| `data`               | `dict`                                      | The record data as a dictionary                                                                                        |
+| `errors`             | `list`                                      | Any validation errors                                                                                                  |
+| `has_permissions_to` | `dict`                                      | Permission checks                                                                                                      |
+| `id`                 | `str`                                       | The record identifier                                                                                                  |
+| `links`              | `dict`                                      | Related URLs. The same as the `links` property of the `_record` object and the "links" value of the `data` dictionary. |
 
 Its `data` property is a dictionary identical to the `to_dict()` method's return value. It has the following shape:
 
@@ -912,7 +910,7 @@ Its `data` property is a dictionary identical to the `to_dict()` method's return
         'visibility': 'public',
         'members_visibility': 'public',
         'member_policy': 'open',
-        'record_policy': 'open',
+        'record_submission_policy': 'open',
         'review_policy': 'open'
     },
     'custom_fields': {},

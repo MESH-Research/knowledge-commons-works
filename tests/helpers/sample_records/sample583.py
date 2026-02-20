@@ -13,9 +13,7 @@ rec583 = {
             "hclegacy:groups_for_deposit": [
                 {
                     "group_identifier": "69",
-                    "group_name": (
-                        "HEP Part-Time and Contingent Faculty Issues"
-                    ),
+                    "group_name": ("HEP Part-Time and Contingent Faculty Issues"),
                 },
                 {
                     "group_identifier": "47",
@@ -69,8 +67,7 @@ rec583 = {
                 "dates": "10 January 2016",
                 "place": "Marriott Hotel, Austin, Texas",
                 "title": (
-                    "131st Annual Convention of the Modern Languages "
-                    "Association"
+                    "131st Annual Convention of the Modern Languages Association"
                 ),
             },
         },
@@ -192,9 +189,7 @@ rec583 = {
                     "id": "arr",
                     "icon": "copyright",
                     "props": {
-                        "url": (
-                            "https://en.wikipedia.org/wiki/All_rights_reserved"
-                        )
+                        "url": ("https://en.wikipedia.org/wiki/All_rights_reserved")
                     },
                     "title": {"en": "All Rights Reserved"},
                 }
@@ -235,6 +230,7 @@ rec583 = {
     "expected_serialized": {
         "record_source": "knowledgeCommons",
         "created": "2016-02-29T13:11:39Z",
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:collection": "mlacollection:1",
             "hclegacy:file_location": (
@@ -247,9 +243,7 @@ rec583 = {
             "hclegacy:groups_for_deposit": [
                 {
                     "group_identifier": "69",
-                    "group_name": (
-                        "HEP Part-Time and Contingent Faculty " "Issues"
-                    ),
+                    "group_name": ("HEP Part-Time and Contingent Faculty Issues"),
                 },
                 {
                     "group_identifier": "47",
@@ -303,8 +297,7 @@ rec583 = {
                 "dates": "10 January 2016",
                 "place": "Marriott Hotel, Austin, Texas",
                 "title": (
-                    "131st Annual Convention of the Modern Languages "
-                    "Association"
+                    "131st Annual Convention of the Modern Languages Association"
                 ),
             },
         },
@@ -451,6 +444,7 @@ rec583 = {
     "expected_loaded": {
         "record_source": "knowledgeCommons",
         "created": "2016-02-29T13:11:39Z",
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:collection": "mlacollection:1",
             "hclegacy:file_location": (
@@ -463,9 +457,7 @@ rec583 = {
             "hclegacy:groups_for_deposit": [
                 {
                     "group_identifier": "69",
-                    "group_name": (
-                        "HEP Part-Time and Contingent Faculty Issues"
-                    ),
+                    "group_name": ("HEP Part-Time and Contingent Faculty Issues"),
                 },
                 {
                     "group_identifier": "47",
@@ -519,8 +511,7 @@ rec583 = {
                 "dates": "10 January 2016",
                 "place": "Marriott Hotel, Austin, Texas",
                 "title": (
-                    "131st Annual Convention of the Modern Languages "
-                    "Association"
+                    "131st Annual Convention of the Modern Languages Association"
                 ),
             },
         },
@@ -646,9 +637,7 @@ rec583 = {
                     "id": "arr",
                     "props": {
                         "scheme": "spdx",
-                        "url": (
-                            "https://arr.org/licenses/" "all-rights-reserved"
-                        ),
+                        "url": ("https://arr.org/licenses/all-rights-reserved"),
                     },
                     "title": {"en": "All Rights Reserved"},
                 }

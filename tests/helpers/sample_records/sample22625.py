@@ -222,6 +222,7 @@ rec22625 = {
     "expected_serialized": {
         "record_source": "knowledgeCommons",
         "created": "2019-01-29T03:57:00Z",
+        "internal_notes": [],
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -388,6 +389,7 @@ rec22625 = {
     "expected_loaded": {
         "record_source": "knowledgeCommons",
         "created": "2019-01-29T03:57:00Z",
+        "internal_notes": [],
         "pids": {
             "doi": {
                 "client": "datacite",

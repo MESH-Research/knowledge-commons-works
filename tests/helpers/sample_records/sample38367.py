@@ -42,9 +42,9 @@ rec38367 = {
                 "macroeconomics",
                 "modelling",
             ],
-            "thesis:university": (
-                "Universidad Nacional Autónoma de México (UNAM)"
-            ),
+            "thesis:thesis": {
+                "university": ("Universidad Nacional Autónoma de México (UNAM)")
+            },
         },
         "files": {
             "default_preview": (
@@ -54,8 +54,7 @@ rec38367 = {
             "entries": {
                 "system-dynamics-growth-distribution-and-financialization.pdf": {  # noqa: E501
                     "key": (
-                        "system-dynamics-growth-distribution-and-financ"
-                        "ialization.pdf"
+                        "system-dynamics-growth-distribution-and-financialization.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -132,9 +131,7 @@ rec38367 = {
             ],
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "Université Sorbonne Paris Nord"}
-                    ],
+                    "affiliations": [{"name": "Université Sorbonne Paris Nord"}],
                     "person_or_org": {
                         "family_name": "Martínez Hernández",
                         "given_name": "Alberto-Gabino",
@@ -228,9 +225,7 @@ rec38367 = {
                     "id": "arr",
                     "icon": "copyright",
                     "props": {
-                        "url": (
-                            "https://en.wikipedia.org/wiki/All_rights_reserved"
-                        )
+                        "url": ("https://en.wikipedia.org/wiki/All_rights_reserved")
                     },
                     "title": {"en": "All Rights Reserved"},
                 }
@@ -272,6 +267,7 @@ rec38367 = {
     "expected_serialized": {
         "record_source": "knowledgeCommons",
         "created": "2021-04-26T05:57:56Z",
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -313,9 +309,9 @@ rec38367 = {
                 "macroeconomics",
                 "modelling",
             ],
-            "thesis:university": (
-                "Universidad Nacional Autónoma de México (UNAM)"
-            ),
+            "thesis:thesis": {
+                "university": ("Universidad Nacional Autónoma de México (UNAM)")
+            },
         },
         "files": {
             "default_preview": (
@@ -325,8 +321,7 @@ rec38367 = {
             "entries": {
                 "system-dynamics-growth-distribution-and-financialization.pdf": {  # noqa: E501
                     "key": (
-                        "system-dynamics-growth-distribution-and-financ"
-                        "ialization.pdf"
+                        "system-dynamics-growth-distribution-and-financialization.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -336,9 +331,7 @@ rec38367 = {
         "metadata": {
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "Université Sorbonne Paris Nord"}
-                    ],
+                    "affiliations": [{"name": "Université Sorbonne Paris Nord"}],
                     "person_or_org": {
                         "family_name": "Martínez Hernández",
                         "given_name": "Alberto-Gabino",
@@ -525,6 +518,7 @@ rec38367 = {
     "expected_loaded": {
         "record_source": "knowledgeCommons",
         "created": "2021-04-26T05:57:56Z",
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -566,9 +560,9 @@ rec38367 = {
                 "macroeconomics",
                 "modelling",
             ],
-            "thesis:university": (
-                "Universidad Nacional Autónoma de México (UNAM)"
-            ),
+            "thesis:thesis": {
+                "university": ("Universidad Nacional Autónoma de México (UNAM)")
+            },
         },
         "files": {
             "default_preview": (
@@ -578,8 +572,7 @@ rec38367 = {
             "entries": {
                 "system-dynamics-growth-distribution-and-financialization.pdf": {  # noqa: E501
                     "key": (
-                        "system-dynamics-growth-distribution-and-financ"
-                        "ialization.pdf"
+                        "system-dynamics-growth-distribution-and-financialization.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -596,9 +589,7 @@ rec38367 = {
         "metadata": {
             "creators": [
                 {
-                    "affiliations": [
-                        {"name": "Université Sorbonne Paris Nord"}
-                    ],
+                    "affiliations": [{"name": "Université Sorbonne Paris Nord"}],
                     "person_or_org": {
                         "family_name": "Martínez Hernández",
                         "given_name": "Alberto-Gabino",

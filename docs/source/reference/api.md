@@ -858,7 +858,7 @@ GET https://works.hcommons.org/api/group_collections HTTP/1.1
                 "id": "5402d72b-b144-4891-aa8e-1038515d68f7",
                 "access": {
                     "member_policy": "open",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "closed",
                     "visibility": "public",
                 },
@@ -910,7 +910,7 @@ GET https://works.hcommons.org/api/group_collections HTTP/1.1
                 "access": {
                     "visibility": "public",
                     "member_policy": "closed",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "open",
                 }
             },
@@ -988,7 +988,7 @@ GET https://works.hcommons.org/api/group_collections?commons_instance=knowledgeC
                 "id": "5402d72b-b144-4891-aa8e-1038515d68f7",
                 "access": {
                     "member_policy": "open",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "closed",
                     "visibility": "public",
                 },
@@ -1040,7 +1040,7 @@ GET https://works.hcommons.org/api/group_collections?commons_instance=knowledgeC
                 "access": {
                     "visibility": "public",
                     "member_policy": "closed",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "open",
                 }
             },
@@ -1120,7 +1120,7 @@ GET https://works.hcommons.org/api/group_collections?commons_instance=knowledgeC
                 "id": "5402d72b-b144-4891-aa8e-1038515d68f7",
                 "access": {
                     "member_policy": "open",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "closed",
                     "visibility": "public",
                 },
@@ -1172,7 +1172,7 @@ GET https://works.hcommons.org/api/group_collections?commons_instance=knowledgeC
                 "access": {
                     "visibility": "public",
                     "member_policy": "closed",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "open",
                 }
             },
@@ -1263,7 +1263,7 @@ GET https://works.hcommons.org/api/group_collections/my-collection-slug HTTP/1.1
     "access": {
         "visibility": "public",
         "member_policy": "closed",
-        "record_policy": "open",
+        "record_submission_policy": "open",
         "review_policy": "open",
     }
 }
@@ -1472,7 +1472,7 @@ Required request headers:
 https://works.hcommons.org/api/webhooks/users/update
 ```
 
-**Deprecated (still operational):** ``/api/webhooks/user_data_update``
+**Deprecated (still operational):** `/api/webhooks/user_data_update`
 
 ```{warning}
 This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.

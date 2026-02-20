@@ -46,8 +46,7 @@ rec34031 = {
             "entries": {
                 "gnosticism-theorized-major-trends-and-approaches-dillon.pdf": {  # noqa: E501
                     "key": (
-                        "gnosticism-theorized-major-trends-and-approaches-"
-                        "dillon.pdf"
+                        "gnosticism-theorized-major-trends-and-approaches-dillon.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -123,9 +122,7 @@ rec34031 = {
                     "id": "arr",
                     "icon": "copyright",
                     "props": {
-                        "url": (
-                            "https://en.wikipedia.org/wiki/All_rights_reserved"
-                        )
+                        "url": ("https://en.wikipedia.org/wiki/All_rights_reserved")
                     },
                     "title": {"en": "All Rights Reserved"},
                 }
@@ -163,6 +160,7 @@ rec34031 = {
     "expected_serialized": {
         "record_source": "knowledgeCommons",
         "created": "2021-01-11T23:48:41Z",
+        "internal_notes": [],
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -208,8 +206,7 @@ rec34031 = {
             "entries": {
                 "gnosticism-theorized-major-trends-and-approaches-dillon.pdf": {  # noqa: E501
                     "key": (
-                        "gnosticism-theorized-major-trends-and-approaches-"
-                        "dillon.pdf"
+                        "gnosticism-theorized-major-trends-and-approaches-dillon.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -307,6 +304,7 @@ rec34031 = {
     "expected_loaded": {
         "record_source": "knowledgeCommons",
         "created": "2021-01-11T23:48:41Z",
+        "internal_notes": [],
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -352,8 +350,7 @@ rec34031 = {
             "entries": {
                 "gnosticism-theorized-major-trends-and-approaches-dillon.pdf": {  # noqa: E501
                     "key": (
-                        "gnosticism-theorized-major-trends-and-approaches-"
-                        "dillon.pdf"
+                        "gnosticism-theorized-major-trends-and-approaches-dillon.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",

@@ -41,7 +41,9 @@ sample_metadata_thesis_pdf = {
             "macroeconomics",
             "modelling",
         ],
-        "thesis:university": ("Universidad Nacional Autónoma de México (UNAM)"),
+        "thesis:thesis": {
+            "university": ("Universidad Nacional Autónoma de México (UNAM)")
+        },
     },
     "files": {
         "default_preview": (

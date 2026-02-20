@@ -286,6 +286,7 @@ rec22647 = {
     "expected_serialized": {
         "record_source": "knowledgeCommons",
         "created": "2019-02-01T19:30:52Z",
+        "internal_notes": [],
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -555,6 +556,7 @@ rec22647 = {
     "expected_loaded": {
         "record_source": "knowledgeCommons",
         "created": "2019-02-01T19:30:52Z",
+        "internal_notes": [],
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -836,9 +838,7 @@ rec22647 = {
                 },
             ],
             "publisher": "Oxford University Press",
-            "title": (
-                "Unfixing Epic: Homeric Orality and Contemporary Performance"
-            ),
+            "title": ("Unfixing Epic: Homeric Orality and Contemporary Performance"),
         },
         "parent": {"access": {"owned_by": [{"user": "1012453"}]}},
         "updated": "2019-02-01T19:30:52Z",
