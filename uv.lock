@@ -193,6 +193,15 @@ wheels = [
 ]
 
 [[package]]
+name = "annotated-doc"
+version = "0.0.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/57/ba/046ceea27344560984e26a590f90bc7f4a75b06701f653222458922b558c/annotated_doc-0.0.4.tar.gz", hash = "sha256:fbcda96e87e9c92ad167c2e53839e57503ecfda18804ea28102353485033faa4", size = 7288, upload-time = "2025-11-10T22:07:42.062Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1e/d3/26bf1008eb3d2daa8ef4cacc7f3bfdc11818d111f7e2d0201bc6e3b49d45/annotated_doc-0.0.4-py3-none-any.whl", hash = "sha256:571ac1dc6991c450b25a9c2d84a3705e2ae7a53467b5d111c24fa8baabbed320", size = 5303, upload-time = "2025-11-10T22:07:40.673Z" },
+]
+
+[[package]]
 name = "annotated-types"
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2404,33 +2413,35 @@ dependencies = [
     { name = "invenio-communities" },
     { name = "opensearch-dsl" },
     { name = "psycopg2-binary" },
+    { name = "standard-pkg-resources" },
     { name = "unidecode" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "alembic" },
-    { name = "check-manifest", marker = "extra == 'dev'" },
     { name = "click", specifier = ">=7" },
     { name = "docker-services-cli" },
     { name = "invenio-administration" },
     { name = "invenio-app-rdm", extras = ["opensearch2"] },
     { name = "invenio-cli" },
-    { name = "invenio-communities" },
+    { name = "invenio-communities", editable = "site/kcworks/dependencies/invenio-communities" },
+    { name = "mypy", marker = "extra == 'tests'", specifier = ">=1.8" },
     { name = "opensearch-dsl" },
-    { name = "pip-tools", marker = "extra == 'dev'" },
     { name = "psycopg2-binary" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.3.2" },
-    { name = "pytest", marker = "extra == 'tests'", specifier = ">=7.3.2" },
-    { name = "pytest-invenio", marker = "extra == 'dev'", specifier = ">=3.3,<4" },
-    { name = "pytest-invenio", marker = "extra == 'tests'" },
-    { name = "pytest-runner", marker = "extra == 'dev'" },
-    { name = "pytest-runner", marker = "extra == 'tests'" },
-    { name = "requests-mock", marker = "extra == 'dev'" },
+    { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=6.2.1" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.3,<4" },
+    { name = "pytest-isort", marker = "extra == 'tests'", specifier = ">=4" },
+    { name = "pytest-mock", marker = "extra == 'tests'" },
+    { name = "pytest-mypy", marker = "extra == 'tests'", specifier = ">=0.10" },
+    { name = "pytest-ruff", marker = "extra == 'tests'", specifier = ">=0.1" },
     { name = "requests-mock", marker = "extra == 'tests'" },
+    { name = "ruff", marker = "extra == 'tests'", specifier = ">=0.3" },
+    { name = "selenium", marker = "extra == 'tests'" },
+    { name = "standard-pkg-resources" },
     { name = "unidecode" },
 ]
-provides-extras = ["dev", "tests"]
+provides-extras = ["tests"]
 
 [[package]]
 name = "invenio-i18n"
@@ -2535,12 +2546,37 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "invenio-app-rdm" },
-    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.3" },
+    { name = "invenio-app-rdm", specifier = "<14" },
+    { name = "mypy", marker = "extra == 'tests'", specifier = ">=1.8" },
+    { name = "pytest", marker = "extra == 'tests'", specifier = ">=7.3.2" },
+    { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=6.2.1" },
     { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.3,<4" },
-    { name = "sphinx", marker = "extra == 'dev'", specifier = ">=4.5" },
+    { name = "pytest-isort", marker = "extra == 'tests'", specifier = ">=4" },
+    { name = "pytest-mock", marker = "extra == 'tests'" },
+    { name = "pytest-mypy", marker = "extra == 'tests'", specifier = ">=0.10" },
+    { name = "pytest-ruff", marker = "extra == 'tests'", specifier = ">=0.1" },
+    { name = "requests-mock", marker = "extra == 'tests'" },
+    { name = "ruff", marker = "extra == 'tests'", specifier = ">=0.3" },
+    { name = "selenium", marker = "extra == 'tests'" },
+    { name = "sphinx", marker = "extra == 'docs'", specifier = ">=4.5" },
 ]
-provides-extras = ["dev", "tests"]
+provides-extras = ["docs", "tests"]
+
+[package.metadata.requires-dev]
+docs = [{ name = "sphinx", specifier = ">=4.5" }]
+tests = [
+    { name = "mypy", specifier = ">=1.8" },
+    { name = "pytest", specifier = ">=7.3.2" },
+    { name = "pytest-cov", specifier = ">=6.2.1" },
+    { name = "pytest-invenio", specifier = ">=3.3,<4" },
+    { name = "pytest-isort", specifier = ">=4" },
+    { name = "pytest-mock" },
+    { name = "pytest-mypy", specifier = ">=0.10" },
+    { name = "pytest-ruff", specifier = ">=0.1" },
+    { name = "requests-mock" },
+    { name = "ruff", specifier = ">=0.3" },
+    { name = "selenium" },
+]
 
 [[package]]
 name = "invenio-modular-detail-page"
@@ -2554,15 +2590,19 @@ dependencies = [
 requires-dist = [
     { name = "bumpver", marker = "extra == 'dev'" },
     { name = "check-manifest", marker = "extra == 'dev'" },
-    { name = "coverage", marker = "extra == 'test'" },
-    { name = "docker-services-cli", marker = "extra == 'test'" },
     { name = "invenio-app-rdm", specifier = "<14" },
     { name = "ipykernel", marker = "extra == 'dev'" },
+    { name = "mypy", marker = "extra == 'test'", specifier = ">=1.8" },
     { name = "pip-tools", marker = "extra == 'dev'" },
-    { name = "pytest-black", marker = "extra == 'test'" },
+    { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=6.2.1" },
     { name = "pytest-invenio", marker = "extra == 'test'", specifier = ">=3.3,<4" },
+    { name = "pytest-isort", marker = "extra == 'test'", specifier = ">=4" },
+    { name = "pytest-mock", marker = "extra == 'test'" },
+    { name = "pytest-mypy", marker = "extra == 'test'", specifier = ">=0.10" },
+    { name = "pytest-ruff", marker = "extra == 'test'", specifier = ">=0.1" },
+    { name = "requests-mock", marker = "extra == 'test'" },
+    { name = "ruff", marker = "extra == 'test'", specifier = ">=0.3" },
     { name = "selenium", marker = "extra == 'test'" },
-    { name = "sphinx", marker = "extra == 'test'", specifier = ">=4.5" },
 ]
 provides-extras = ["dev", "test"]
 
@@ -2828,7 +2868,6 @@ requires-dist = [
     { name = "check-manifest", marker = "extra == 'dev'" },
     { name = "click" },
     { name = "coverage", marker = "extra == 'test'" },
-    { name = "docker-services-cli", marker = "extra == 'test'" },
     { name = "halo" },
     { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "<14" },
     { name = "invenio-communities", editable = "site/kcworks/dependencies/invenio-communities" },
@@ -2843,25 +2882,28 @@ requires-dist = [
     { name = "jsonlines" },
     { name = "kcworks", editable = "." },
     { name = "langdetect" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.8" },
-    { name = "pip-tools", marker = "extra == 'dev'" },
+    { name = "mypy", marker = "extra == 'test'", specifier = ">=1.8" },
     { name = "pydantic" },
     { name = "pytest", marker = "extra == 'test'" },
+    { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=6.2.1" },
     { name = "pytest-invenio", marker = "extra == 'test'", specifier = ">=3.3,<4" },
+    { name = "pytest-isort", marker = "extra == 'test'", specifier = ">=4" },
     { name = "pytest-mock", marker = "extra == 'test'" },
     { name = "pytest-mypy", marker = "extra == 'test'", specifier = ">=0.10" },
+    { name = "pytest-ruff", marker = "extra == 'test'", specifier = ">=0.1" },
     { name = "python-dateutil" },
     { name = "python-iso639" },
     { name = "python-stdnum" },
     { name = "pytz" },
     { name = "requests" },
     { name = "requests-mock", marker = "extra == 'test'" },
+    { name = "ruff", marker = "extra == 'test'", specifier = ">=0.3" },
     { name = "selenium", marker = "extra == 'test'" },
     { name = "timefhuman" },
     { name = "titlecase" },
     { name = "unidecode" },
     { name = "validators" },
-    { name = "wheel", marker = "extra == 'dev'" },
+    { name = "wheel", marker = "extra == 'test'" },
 ]
 provides-extras = ["dev", "test"]
 
@@ -2981,9 +3023,11 @@ source = { editable = "site/kcworks/dependencies/invenio-remote-api-provisioner"
 dependencies = [
     { name = "click" },
     { name = "invenio-app-rdm", extra = ["opensearch2"] },
+    { name = "kcworks" },
     { name = "opensearch-dsl" },
     { name = "psycopg2-binary" },
     { name = "python-iso639" },
+    { name = "standard-pkg-resources" },
 ]
 
 [package.metadata]
@@ -2991,18 +3035,29 @@ requires-dist = [
     { name = "bumpver", marker = "extra == 'dev'" },
     { name = "check-manifest", marker = "extra == 'dev'" },
     { name = "click" },
-    { name = "docker-services-cli", marker = "extra == 'dev'" },
+    { name = "coverage", marker = "extra == 'tests'" },
+    { name = "docker-services-cli", marker = "extra == 'tests'" },
     { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "<14" },
+    { name = "kcworks", editable = "." },
+    { name = "mypy", marker = "extra == 'tests'", specifier = ">=1.8" },
     { name = "opensearch-dsl" },
-    { name = "pip-tools", marker = "extra == 'dev'" },
+    { name = "pip-tools", marker = "extra == 'tests'" },
     { name = "psycopg2-binary" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.3.2" },
-    { name = "pytest-invenio", marker = "extra == 'dev'", specifier = ">=3.3,<4" },
-    { name = "pytest-runner", marker = "extra == 'dev'" },
+    { name = "pytest", marker = "extra == 'tests'" },
+    { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=6.2.1" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.3,<4" },
+    { name = "pytest-isort", marker = "extra == 'tests'", specifier = ">=4" },
+    { name = "pytest-mock", marker = "extra == 'tests'" },
+    { name = "pytest-mypy", marker = "extra == 'tests'", specifier = ">=0.10" },
+    { name = "pytest-ruff", marker = "extra == 'tests'", specifier = ">=0.1" },
+    { name = "pytest-runner", marker = "extra == 'tests'" },
     { name = "python-iso639" },
-    { name = "requests-mock", marker = "extra == 'dev'" },
+    { name = "requests-mock", marker = "extra == 'tests'" },
+    { name = "ruff", marker = "extra == 'tests'", specifier = ">=0.3" },
+    { name = "selenium", marker = "extra == 'tests'" },
+    { name = "standard-pkg-resources" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "tests"]
 
 [[package]]
 name = "invenio-remote-user-data-kcworks"
@@ -3013,34 +3068,43 @@ dependencies = [
     { name = "click" },
     { name = "deepdiff" },
     { name = "invenio-app-rdm" },
+    { name = "invenio-communities" },
     { name = "invenio-group-collections-kcworks" },
     { name = "invenio-queues" },
     { name = "invenio-search" },
     { name = "invenio-utilities-tuw" },
+    { name = "marshmallow-utils" },
     { name = "opensearch-dsl" },
+    { name = "pydantic" },
+    { name = "standard-pkg-resources" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "celery" },
-    { name = "check-manifest", marker = "extra == 'dev'" },
+    { name = "check-manifest", marker = "extra == 'tests'" },
     { name = "click" },
-    { name = "coverage", marker = "extra == 'test'" },
+    { name = "coverage", marker = "extra == 'tests'" },
     { name = "deepdiff" },
     { name = "invenio-app-rdm", specifier = "<14" },
+    { name = "invenio-communities", editable = "site/kcworks/dependencies/invenio-communities" },
     { name = "invenio-group-collections-kcworks", editable = "site/kcworks/dependencies/invenio-group-collections-kcworks" },
     { name = "invenio-queues" },
     { name = "invenio-search" },
+    { name = "invenio-stats-dashboard", marker = "extra == 'tests'", editable = "site/kcworks/dependencies/invenio-stats-dashboard" },
     { name = "invenio-utilities-tuw" },
+    { name = "marshmallow-utils", specifier = ">=0.12" },
     { name = "opensearch-dsl" },
-    { name = "pip-tools", marker = "extra == 'dev'" },
-    { name = "pipenv", marker = "extra == 'dev'" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.3.2" },
-    { name = "pytest-invenio", marker = "extra == 'dev'", specifier = ">=3.3,<4" },
-    { name = "pytest-runner", marker = "extra == 'dev'" },
-    { name = "requests-mock", marker = "extra == 'dev'" },
+    { name = "pip-tools", marker = "extra == 'tests'" },
+    { name = "pipenv", marker = "extra == 'tests'" },
+    { name = "pydantic" },
+    { name = "pytest", marker = "extra == 'tests'", specifier = ">=7.3.2" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.3,<4" },
+    { name = "pytest-runner", marker = "extra == 'tests'" },
+    { name = "requests-mock", marker = "extra == 'tests'" },
+    { name = "standard-pkg-resources" },
 ]
-provides-extras = ["dev", "test"]
+provides-extras = ["tests"]
 
 [[package]]
 name = "invenio-requests"
@@ -3412,6 +3476,42 @@ wheels = [
 ]
 
 [[package]]
+name = "jaraco-context"
+version = "6.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/9c/a788f5bb29c61e456b8ee52ce76dbdd32fd72cd73dd67bc95f42c7a8d13c/jaraco_context-6.1.0.tar.gz", hash = "sha256:129a341b0a85a7db7879e22acd66902fda67882db771754574338898b2d5d86f", size = 15850, upload-time = "2026-01-13T02:53:53.847Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8d/48/aa685dbf1024c7bd82bede569e3a85f82c32fd3d79ba5fea578f0159571a/jaraco_context-6.1.0-py3-none-any.whl", hash = "sha256:a43b5ed85815223d0d3cfdb6d7ca0d2bc8946f28f30b6f3216bda070f68badda", size = 7065, upload-time = "2026-01-13T02:53:53.031Z" },
+]
+
+[[package]]
+name = "jaraco-functools"
+version = "4.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "more-itertools" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0f/27/056e0638a86749374d6f57d0b0db39f29509cce9313cf91bdc0ac4d91084/jaraco_functools-4.4.0.tar.gz", hash = "sha256:da21933b0417b89515562656547a77b4931f98176eb173644c0d35032a33d6bb", size = 19943, upload-time = "2025-12-21T09:29:43.6Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fd/c4/813bb09f0985cb21e959f21f2464169eca882656849adf727ac7bb7e1767/jaraco_functools-4.4.0-py3-none-any.whl", hash = "sha256:9eec1e36f45c818d9bf307c8948eb03b2b56cd44087b3cdc989abca1f20b9176", size = 10481, upload-time = "2025-12-21T09:29:42.27Z" },
+]
+
+[[package]]
+name = "jaraco-text"
+version = "4.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jaraco-context" },
+    { name = "jaraco-functools" },
+    { name = "more-itertools" },
+    { name = "typer-slim" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f2/20/f071dfb40f06fd0395167a40218c10adb7164635f65ebdafe45e0c714935/jaraco_text-4.2.0.tar.gz", hash = "sha256:194e386aa5b15a6616019df87a6b29c00fd3c9c8b0475731b64633ca7afd495b", size = 20077, upload-time = "2026-02-09T23:30:06.845Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/39/6d/628f347098059957987596123b3992120c673d17e8ce560185b1d6b88a27/jaraco_text-4.2.0-py3-none-any.whl", hash = "sha256:034408ef073f72de919124e9934a12acd50d10bd139bea47732620fa964b0144", size = 13267, upload-time = "2026-02-09T23:30:05.517Z" },
+]
+
+[[package]]
 name = "jedi"
 version = "0.19.2"
 source = { registry = "https://pypi.org/simple" }
@@ -3616,7 +3716,6 @@ dependencies = [
     { name = "pandas" },
     { name = "pydantic" },
     { name = "sentry-sdk", extra = ["flask"] },
-    { name = "setuptools" },
     { name = "sqlalchemy", extra = ["asyncio"] },
     { name = "tqdm" },
     { name = "uwsgi" },
@@ -3629,6 +3728,7 @@ dev = [
     { name = "docker-services-cli" },
     { name = "jsonlines" },
     { name = "psycopg2-binary" },
+    { name = "types-requests" },
 ]
 docs = [
     { name = "furo" },
@@ -3638,7 +3738,9 @@ docs = [
     { name = "sphinx-copybutton" },
 ]
 tests = [
+    { name = "coverage" },
     { name = "mypy" },
+    { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-invenio" },
     { name = "pytest-isort" },
@@ -3681,6 +3783,7 @@ tests = [
 [package.metadata]
 requires-dist = [
     { name = "check-manifest", marker = "extra == 'dev'", specifier = ">=0.25" },
+    { name = "coverage", marker = "extra == 'tests'" },
     { name = "djlint", marker = "extra == 'dev'", specifier = ">=1.36.4" },
     { name = "docker-services-cli", marker = "extra == 'dev'" },
     { name = "furo", marker = "extra == 'docs'" },
@@ -3707,6 +3810,7 @@ requires-dist = [
     { name = "pandas" },
     { name = "psycopg2-binary", marker = "extra == 'dev'", specifier = ">=2.9.10" },
     { name = "pydantic" },
+    { name = "pytest", marker = "extra == 'tests'" },
     { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=6.2.1" },
     { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.3,<4" },
     { name = "pytest-isort", marker = "extra == 'tests'", specifier = ">=4" },
@@ -3717,11 +3821,11 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'tests'", specifier = ">=0.3" },
     { name = "selenium", marker = "extra == 'tests'" },
     { name = "sentry-sdk", extras = ["flask"], specifier = ">=1,<2" },
-    { name = "setuptools", specifier = ">=61" },
     { name = "sphinx", marker = "extra == 'docs'" },
     { name = "sphinx-copybutton", marker = "extra == 'docs'", specifier = ">=0.5.2" },
     { name = "sqlalchemy", extras = ["asyncio"] },
     { name = "tqdm" },
+    { name = "types-requests", marker = "extra == 'dev'" },
     { name = "uwsgi", specifier = ">=2.0.23" },
 ]
 provides-extras = ["dev", "docs", "tests"]
@@ -4170,6 +4274,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d7/02/a7fb8b21d4d55ac93cdcde9d3638da5dd0ebdd3a4fed76c7725e10b81cbe/mistune-3.1.4.tar.gz", hash = "sha256:b5a7f801d389f724ec702840c11d8fc48f2b33519102fc7ee739e8177b672164", size = 94588, upload-time = "2025-08-29T07:20:43.594Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7a/f0/8282d9641415e9e33df173516226b404d367a0fc55e1a60424a152913abc/mistune-3.1.4-py3-none-any.whl", hash = "sha256:93691da911e5d9d2e23bc54472892aff676df27a75274962ff9edc210364266d", size = 53481, upload-time = "2025-08-29T07:20:42.218Z" },
+]
+
+[[package]]
+name = "more-itertools"
+version = "10.8.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/5d/38b681d3fce7a266dd9ab73c66959406d565b3e85f21d5e66e1181d93721/more_itertools-10.8.0.tar.gz", hash = "sha256:f638ddf8a1a0d134181275fb5d58b086ead7c6a72429ad725c67503f13ba30bd", size = 137431, upload-time = "2025-09-02T15:23:11.018Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a4/8e/469e5a4a2f5855992e425f3cb33804cc07bf18d48f2db061aec61ce50270/more_itertools-10.8.0-py3-none-any.whl", hash = "sha256:52d4362373dcf7c52546bc4af9a86ee7c4579df9a8dc268be0a2f949d376cc9b", size = 69667, upload-time = "2025-09-02T15:23:09.635Z" },
 ]
 
 [[package]]
@@ -6057,6 +6170,15 @@ wheels = [
 ]
 
 [[package]]
+name = "shellingham"
+version = "1.5.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/15/8b3609fd3830ef7b27b655beb4b4e9c62313a4e8da8c676e142cc210d58e/shellingham-1.5.4.tar.gz", hash = "sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de", size = 10310, upload-time = "2023-10-24T04:13:40.426Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e0/f9/0595336914c5619e5f28a1fb793285925a8cd4b432c9da0a987836c7f822/shellingham-1.5.4-py2.py3-none-any.whl", hash = "sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686", size = 9755, upload-time = "2023-10-24T04:13:38.866Z" },
+]
+
+[[package]]
 name = "simplejson"
 version = "3.20.2"
 source = { registry = "https://pypi.org/simple" }
@@ -6345,6 +6467,20 @@ wheels = [
 ]
 
 [[package]]
+name = "standard-pkg-resources"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jaraco-text" },
+    { name = "packaging" },
+    { name = "platformdirs" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/90/c4/67af0b5472eb8ac0839e4a58803d9db08149226b1fa21d4c34dcd51a6869/standard_pkg_resources-1.0.0.tar.gz", hash = "sha256:d1f41b46d91e4c22edce2419edd5661673e81242715fa97703bb7cd7287a0e88", size = 58661, upload-time = "2026-02-11T13:16:28.159Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fb/5c/09da2f62b0257ba3e4a79fd4501915a87752b3440fa42d8a5d910e4223bf/standard_pkg_resources-1.0.0-py3-none-any.whl", hash = "sha256:4cb8701c863000f60637495427121c0da697b395c9088dff7e864bc741a3f2e8", size = 60125, upload-time = "2026-02-11T13:16:26.28Z" },
+]
+
+[[package]]
 name = "termcolor"
 version = "3.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -6549,6 +6685,33 @@ wheels = [
 ]
 
 [[package]]
+name = "typer"
+version = "0.24.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "annotated-doc" },
+    { name = "click" },
+    { name = "rich" },
+    { name = "shellingham" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5a/b6/3e681d3b6bb22647509bdbfdd18055d5adc0dce5c5585359fa46ff805fdc/typer-0.24.0.tar.gz", hash = "sha256:f9373dc4eff901350694f519f783c29b6d7a110fc0dcc11b1d7e353b85ca6504", size = 118380, upload-time = "2026-02-16T22:08:48.496Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/85/d0/4da85c2a45054bb661993c93524138ace4956cb075a7ae0c9d1deadc331b/typer-0.24.0-py3-none-any.whl", hash = "sha256:5fc435a9c8356f6160ed6e85a6301fdd6e3d8b2851da502050d1f92c5e9eddc8", size = 56441, upload-time = "2026-02-16T22:08:47.535Z" },
+]
+
+[[package]]
+name = "typer-slim"
+version = "0.24.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typer" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a7/a7/e6aecc4b4eb59598829a3b5076a93aff291b4fdaa2ded25efc4e1f4d219c/typer_slim-0.24.0.tar.gz", hash = "sha256:f0ed36127183f52ae6ced2ecb2521789995992c521a46083bfcdbb652d22ad34", size = 4776, upload-time = "2026-02-16T22:08:51.2Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a7/24/5480c20380dfd18cf33d14784096dca45a24eae6102e91d49a718d3b6855/typer_slim-0.24.0-py3-none-any.whl", hash = "sha256:d5d7ee1ee2834d5020c7c616ed5e0d0f29b9a4b1dd283bdebae198ec09778d0e", size = 3394, upload-time = "2026-02-16T22:08:49.92Z" },
+]
+
+[[package]]
 name = "types-beautifulsoup4"
 version = "4.12.0.20250516"
 source = { registry = "https://pypi.org/simple" }
@@ -6588,6 +6751,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/7e/69/3c51b36d04da19b92f9e815be12753125bd8bc247ba0470a982e6979e71c/types_pyyaml-6.0.12.20250915.tar.gz", hash = "sha256:0f8b54a528c303f0e6f7165687dd33fafa81c807fcac23f632b63aa624ced1d3", size = 17522, upload-time = "2025-09-15T03:01:00.728Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bd/e0/1eed384f02555dde685fff1a1ac805c1c7dcb6dd019c916fe659b1c1f9ec/types_pyyaml-6.0.12.20250915-py3-none-any.whl", hash = "sha256:e7d4d9e064e89a3b3cae120b4990cd370874d2bf12fa5f46c97018dd5d3c9ab6", size = 20338, upload-time = "2025-09-15T03:00:59.218Z" },
+]
+
+[[package]]
+name = "types-requests"
+version = "2.32.4.20260107"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0f/f3/a0663907082280664d745929205a89d41dffb29e89a50f753af7d57d0a96/types_requests-2.32.4.20260107.tar.gz", hash = "sha256:018a11ac158f801bfa84857ddec1650750e393df8a004a8a9ae2a9bec6fcb24f", size = 23165, upload-time = "2026-01-07T03:20:54.091Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1c/12/709ea261f2bf91ef0a26a9eed20f2623227a8ed85610c1e54c5805692ecb/types_requests-2.32.4.20260107-py3-none-any.whl", hash = "sha256:b703fe72f8ce5b31ef031264fe9395cac8f46a04661a79f7ed31a80fb308730d", size = 20676, upload-time = "2026-01-07T03:20:52.929Z" },
 ]
 
 [[package]]
