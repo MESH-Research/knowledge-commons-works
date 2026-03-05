@@ -313,7 +313,7 @@ def test_user_data_sync_on_webhook(
         "last": profile_data["last_name"],
     }
     assert [r.name for r in user.roles] == [
-        "administration-access",
+        "administration",
         "knowledgeCommons---12345|administrator",
         "knowledgeCommons---67891|member",
     ]
