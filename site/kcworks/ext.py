@@ -17,7 +17,16 @@ from flask import Flask, current_app, g, request
 from flask_principal import Identity, identity_changed
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_datastore
+from invenio_communities.communities.services.components import (
+    CommunityAccessComponent as BaseCommunityAccessComponent,
+)
 from invenio_oauth2server.proxies import current_oauth2server
+from invenio_rdm_records.services.communities.components import (
+    CommunityAccessComponent as RDMCommunityAccessComponent,
+)
+from invenio_rdm_records.services.communities.components import (
+    CommunityServiceComponents,
+)
 from invenio_rdm_records.services.components import DefaultRecordsComponents
 from invenio_remote_user_data_kcworks.errors import (
     IDTokenInvalid,
@@ -38,6 +47,9 @@ from werkzeug.exceptions import (
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
+)
+from kcworks.services.records.community_inclusion.community_access import (
+    patch_community_access_restriction_check,
 )
 from kcworks.services.records.components.first_record_component import (
     FirstRecordComponent,
@@ -125,6 +137,18 @@ class KCWorks:
             app: Flask application object on which to initialize
                 the extension service components
         """
+        # Communities service: use RDM components but replace RDM's
+        # CommunityAccessComponent (which blocks restricting a community
+        # when it has public records) with the base one, so e.g. remote
+        # group visibility sync can change community visibility.
+        _community_components = [
+            BaseCommunityAccessComponent if c is RDMCommunityAccessComponent else c
+            for c in CommunityServiceComponents
+        ]
+        app.config["COMMUNITIES_SERVICE_COMPONENTS"] = _community_components
+
+        patch_community_access_restriction_check()
+
         existing_rdm_record_components = app.config.get(
             "RDM_RECORDS_SERVICE_COMPONENTS", [*DefaultRecordsComponents]
         )
@@ -274,9 +298,7 @@ def _static_token_before_request() -> None:
     # Same as invenio_oauth2server: set request user and notify Principal without
     # triggering user_logged_in (no login_user()).
     g._login_user = user
-    identity_changed.send(
-        current_app._get_current_object(), identity=Identity(user.id)
-    )
+    identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
     # Provide the OAuth stand-in objects for the request.
     scopes = {sid for sid, _ in current_oauth2server.scope_choices()}
     request.oauth = OAuthStandIn(
