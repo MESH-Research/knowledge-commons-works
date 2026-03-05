@@ -45,7 +45,7 @@ const PlusMenu = ({ plusMenuItems, baseTabIndex }) => {
     //         <i class="fitted dropdown icon"></i>
     //         <div class="menu">
     //             {%- for item in plus_menu_items if item.visible %}
-    //             {%- if item.text != "New community" or (current_user.roles | selectattr("name", "equalto", "administrator") | list) %}
+    //             {%- if item.text != "New community" or (current_user.roles | selectattr("name", "equalto", "administration") | list) %}
     //               <a class="item" href="{{ item.url }}">{{ item.text|safe }} </a>
     //             {%- endif %}
     //             {%- endfor %}
@@ -57,7 +57,7 @@ const PlusMenu = ({ plusMenuItems, baseTabIndex }) => {
     //       <h2 class="ui small header">{{ _("Actions") }}</h2>
 
     //       {%- for item in plus_menu_items if item.visible %}
-    //       {%- if item.text != "New community" or (current_user.roles | selectattr("name", "equalto", "administrator") | list) %}
+    //       {%- if item.text != "New community" or (current_user.roles | selectattr("name", "equalto", "administration") | list) %}
     //         <a role="menuitem" class="item" href="{{ item.url }}">
     //           <i class="plus icon"></i>
     //           {{ item.text|safe }}
