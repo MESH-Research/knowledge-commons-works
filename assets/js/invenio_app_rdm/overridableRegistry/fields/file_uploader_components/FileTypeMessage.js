@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
+import { useStore } from "react-redux";
 import { Accordion, Icon, Table, Message } from "semantic-ui-react";
 import { i18next } from "@translations/i18next";
-import { FormUIStateContext } from "@js/invenio_modular_deposit_form/InnerDepositForm";
 import PropTypes from "prop-types";
 import { supportedExtensions, unsupportedExtensions } from "./index";
 
@@ -83,7 +83,9 @@ FileTypeRow.propTypes = {
 };
 
 const FileTypeMessage = () => {
-  const { previewableExtensions } = useContext(FormUIStateContext);
+  const store = useStore();
+  const previewableExtensions =
+    store.getState().deposit.config?.previewable_extensions ?? [];
   const [isOpen, setIsOpen] = useState(false);
 
   if (!previewableExtensions || previewableExtensions.length === 0)

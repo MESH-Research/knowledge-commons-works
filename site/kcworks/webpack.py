@@ -55,9 +55,6 @@ theme = WebpackThemeBundle(
                 "orcid-utils": "^1.2.2",
             },
             "aliases": {
-                "@js/invenio_modular_deposit_form_extras": (
-                    "js/invenio_modular_deposit_form_extras"
-                ),
                 "@js/kcworks/collections": "js/collections",
                 "@translations/kcworks": "translations/kcworks",
                 "@translations": "translations",

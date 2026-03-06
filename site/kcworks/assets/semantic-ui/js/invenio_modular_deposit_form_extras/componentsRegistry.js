@@ -18,7 +18,7 @@ import { SeriesComponent } from "./components/SeriesComponent";
 import { SponsoringInstitutionComponent } from "./components/SponsoringInstitutionComponent";
 import { VolumeComponent } from "./components/VolumeComponent";
 
-const componentsMap = {
+const componentsRegistry = {
   AdminMetadataComponent: [
     AdminMetadataComponent,
     ["kcr:commons_domain", "kcr:submitter_email", "kcr:submitter_username"],
@@ -92,4 +92,4 @@ const componentsMap = {
   VolumeComponent: [VolumeComponent, ["custom_fields.kcr:volumes"]],
 };
 
-export { componentsMap };
+export { componentsRegistry };

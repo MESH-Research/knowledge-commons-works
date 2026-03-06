@@ -16,7 +16,7 @@ import PropTypes from "prop-types";
 
 import { CreatibutorsFieldItem } from "./creatibutors_components/CreatibutorsFieldItem";
 import { CREATIBUTOR_TYPE } from "./types";
-import { FormUIStateContext } from "@js/invenio_modular_deposit_form/InnerDepositForm";
+import { FormUIStateContext } from "@js/invenio_modular_deposit_form/FormLayoutContainer";
 import { i18next } from "@translations/i18next";
 import { getFamilyName, getGivenName } from "../../../kcworks/names";
 
