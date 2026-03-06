@@ -2420,28 +2420,34 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "alembic" },
+    { name = "check-manifest", marker = "extra == 'dev'" },
     { name = "click", specifier = ">=7" },
     { name = "docker-services-cli" },
     { name = "invenio-administration" },
-    { name = "invenio-app-rdm", extras = ["opensearch2"] },
+    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "<14" },
     { name = "invenio-cli" },
     { name = "invenio-communities", editable = "site/kcworks/dependencies/invenio-communities" },
     { name = "mypy", marker = "extra == 'tests'", specifier = ">=1.8" },
     { name = "opensearch-dsl" },
+    { name = "pip-tools", marker = "extra == 'dev'" },
     { name = "psycopg2-binary" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.3.2" },
     { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=6.2.1" },
+    { name = "pytest-invenio", marker = "extra == 'dev'" },
     { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.3,<4" },
     { name = "pytest-isort", marker = "extra == 'tests'", specifier = ">=4" },
     { name = "pytest-mock", marker = "extra == 'tests'" },
     { name = "pytest-mypy", marker = "extra == 'tests'", specifier = ">=0.10" },
     { name = "pytest-ruff", marker = "extra == 'tests'", specifier = ">=0.1" },
+    { name = "pytest-runner", marker = "extra == 'dev'" },
+    { name = "requests-mock", marker = "extra == 'dev'" },
     { name = "requests-mock", marker = "extra == 'tests'" },
     { name = "ruff", marker = "extra == 'tests'", specifier = ">=0.3" },
     { name = "selenium", marker = "extra == 'tests'" },
     { name = "standard-pkg-resources" },
     { name = "unidecode" },
 ]
-provides-extras = ["tests"]
+provides-extras = ["dev", "tests"]
 
 [[package]]
 name = "invenio-i18n"
@@ -3222,7 +3228,7 @@ wheels = [
 
 [[package]]
 name = "invenio-stats-dashboard"
-version = "0.1.0a1"
+version = "0.5.0"
 source = { editable = "site/kcworks/dependencies/invenio-stats-dashboard" }
 dependencies = [
     { name = "arrow" },
