@@ -26,8 +26,8 @@ def test_group_collections_service_automated_creation(
     This test verifies that when a group collection is created:
     1. The correct roles are created based on remote group roles
     2. The roles are added as members with correct permissions
-    3. The admin user is assigned as owner
-    4. The admin role is added as owner
+    3. The administration user is assigned as owner
+    4. The administration role is added as owner
     """
     # Use the proxy service
     service = current_group_collections_service
@@ -35,12 +35,16 @@ def test_group_collections_service_automated_creation(
     app = running_app.app
 
     # Create test data
+    # Service.create() assigns an owner: either GROUP_COLLECTIONS_ADMIN_EMAIL or
+    # the first user with the "administration" role; it also adds the administration
+    # role as owner. We create them here so the service succeeds and so we can
+    # assert they are members.
     admin_user = user_factory(email="admin@example.com", oauth_id=None)
 
-    # Find or create the admin role
-    admin_role = accounts_datastore.find_role("admin")
+    # Find or create the administration role
+    admin_role = accounts_datastore.find_role("administration")
     if not admin_role:
-        admin_role = accounts_datastore.create_role(name="admin")
+        admin_role = accounts_datastore.create_role(name="administration")
 
     accounts_datastore.add_role_to_user(admin_user.user, admin_role)
     accounts_datastore.commit()
@@ -68,7 +72,7 @@ def test_group_collections_service_automated_creation(
             "knowledgeCommons"
         ]["url"]
         requests_mock.get(
-            update_url.replace("{id}", group_id),
+            update_url + group_id,
             json=api_response,
         )
         requests_mock.get(
@@ -143,7 +147,7 @@ def test_group_collections_service_automated_creation(
             if m["member"]["type"] == "user"
             and m["member"]["id"] == str(admin_user.user.id)
         ]
-        assert len(admin_members) == 1, "Admin user should be a member"
+        assert len(admin_members) == 1, "Administration user should be a member"
         assert admin_members[0]["role"] == "owner", (
             "Admin user should have owner permissions"
         )
@@ -155,7 +159,7 @@ def test_group_collections_service_automated_creation(
             if m["member"]["type"] == "group"
             and m["member"]["id"] == str(admin_role.id)
         ]
-        assert len(admin_role_members) == 1, "Admin role should be a member"
+        assert len(admin_role_members) == 1, "Administration role should be a member"
         assert admin_role_members[0]["role"] == "owner", (
             "Admin role should have owner permissions"
         )
@@ -165,3 +169,75 @@ def test_group_collections_service_automated_creation(
         assert collection.data["access"]["member_policy"] == "closed"
         assert collection.data["access"]["record_submission_policy"] == "closed"
         assert collection.data["access"]["review_policy"] == "closed"
+
+
+def test_create_restricted_visibility_for_hidden_group(
+    running_app,
+    db,
+    search_clear,
+    headers,
+    user_factory,
+    requests_mock,
+    mock_send_remote_api_update_fixture,
+):
+    """Test that a 'hidden' group with creates a community with restricted access.
+
+    When the remote API returns visibility 'hidden', the group collection
+    should be created with access.visibility 'restricted' and the raw
+    value stored in custom_fields kcr:commons_group_visibility.
+    """
+    service = current_group_collections_service
+    app = running_app.app
+
+    # Service.create() requires an administration user to assign as collection
+    # owner (see service GROUP_COLLECTIONS_ADMIN_EMAIL / administration role logic).
+    # Create one so create() succeeds.
+    admin_user = user_factory(email="admin@example.com", oauth_id=None)
+    admin_role = accounts_datastore.find_role("administration")
+    if not admin_role:
+        admin_role = accounts_datastore.create_role(name="administration")
+    accounts_datastore.add_role_to_user(admin_user.user, admin_role)
+    accounts_datastore.commit()
+
+    group_id = "67890"
+    instance_name = "knowledgeCommons"
+    api_response = {
+        "id": group_id,
+        "name": "Hidden Research Group",
+        "description": "A hidden group for testing",
+        "visibility": "hidden",
+        "url": "https://hcommons.org/groups/hidden-research-group/",
+        "avatar": (
+            "https://hcommons.org/app/plugins/buddypress/bp-core/"
+            "images/mystery-group.png"
+        ),
+        "upload_roles": ["member"],
+        "moderate_roles": ["administrator"],
+    }
+
+    with app.app_context():
+        update_url = app.config["GROUP_COLLECTIONS_METADATA_ENDPOINTS"][
+            "knowledgeCommons"
+        ]["url"]
+        requests_mock.get(
+            update_url + group_id,
+            json=api_response,
+        )
+        requests_mock.get(
+            "https://hcommons.org/app/plugins/buddypress/bp-core/"
+            "images/mystery-group.png",
+            status_code=404,
+        )
+
+        collection = service.create(
+            system_identity,
+            group_id,
+            instance_name,
+        )
+
+        assert collection is not None
+        assert collection.data["access"]["visibility"] == "restricted"
+        assert (
+            collection.data["custom_fields"]["kcr:commons_group_visibility"] == "hidden"
+        )
+        assert collection.data["custom_fields"]["kcr:commons_group_id"] == group_id
