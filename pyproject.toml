@@ -58,17 +58,16 @@ optional-dependencies.docs = [
 ]
 optional-dependencies.tests = [
   "coverage",
-  "mypy>=1.8",
   "pytest",
   "pytest-cov>=6.2.1",
   "pytest-invenio>=3.3,<4",
   "pytest-isort>=4",
   "pytest-mock",
-  "pytest-mypy>=0.10",
   "pytest-ruff>=0.1",
   "requests-mock",
   "ruff>=0.3",
   "selenium",
+  "ty",
 ]
 
 scripts.group-collections = "kcworks.cli:group_collections"
@@ -113,16 +112,15 @@ docs = [
   "sphinx-copybutton>=0.5.2",
 ]
 tests = [
-  "mypy>=1.8",
   "pytest-cov>=6.2.1",
   "pytest-invenio>=3.3,<4",
   "pytest-isort>=4",
   "pytest-mock",
-  "pytest-mypy>=0.10",
   "pytest-ruff>=0.1",
   "requests-mock",
   "ruff>=0.3",
   "selenium",
+  "ty",
 ]
 
 [tool.setuptools]
@@ -278,35 +276,42 @@ omit = [
   "site/kcworks/services/search/index_templates/*",
 ]
 
-[tool.mypy]
-python_version = "3.12"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-check_untyped_defs = true
-disallow_untyped_decorators = false
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = false
-warn_no_return = false
-ignore_missing_imports = true
-follow_imports = "skip"
-allow_untyped_globals = true
-exclude = [
-  '^tests/',
-  '^site/kcworks/dependencies/',
-  '^site/kcworks/services/search/index_templates/',
-]
+[tool.ty.analysis]
+# Type checking with ty (replaces mypy)
+[tool.ty.environment]
+python-version = "3.12"
 
-[[tool.mypy.overrides]]
-module = "kcworks.services.search.index_templates.*"
-ignore_errors = true
-ignore_missing_imports = true
+# Exclude these paths from type checking (.gitignore-style patterns)
+# Broaden if you need to allow specific third-party modules, e.g.:
+# allowed-unresolved-imports = ["some_untyped_lib.**"]
 
-follow_imports = "skip"
+[[tool.ty.overrides]]
+include = ["site/kcworks/services/search/index_templates/**"]
+[tool.ty.overrides.rules]
+# ignore_errors = true for this tree
+all = "ignore"
 
 # Pylsp/Jedi: so "go to definition" and "find references" resolve in local dependencies
+# Rule severities (ty uses rule names; mypy options translated below)
+[tool.ty.rules]
+# warn_redundant_casts = true
+redundant-cast = "warn"
+# warn_unused_ignores = false → don't warn about unused type: ignore
+unused-ignore-comment = "ignore"
+unused-type-ignore-comment = "ignore"
+# ignore_missing_imports = true → suppress unresolved-import
+unresolved-import = "ignore"
+# allow_untyped_globals = true → don't error on undeclared globals
+unresolved-global = "ignore"
+
+# Suppress unresolved-import for modules we don't type-check (optional extra)
+[tool.ty.src]
+exclude = [
+  "tests",
+  "site/kcworks/dependencies",
+  "site/kcworks/services/search/index_templates",
+]
+
 [tool.pylsp.plugins.jedi]
 extra_paths = [
   "site/kcworks/dependencies/invenio-communities",

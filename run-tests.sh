@@ -53,10 +53,10 @@ function check_docker_compose_running() {
 # Create symlinks to submodule tests
 function create_test_symlinks() {
   echo "Creating symlinks to submodule tests..."
-  
+
   # invenio-stats-dashboard
   submodule_tests_dir="site/kcworks/dependencies/invenio-stats-dashboard/tests"
-  
+
   if [ ! -d "$submodule_tests_dir" ]; then
     echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
   else
@@ -67,7 +67,7 @@ function create_test_symlinks() {
       ln -s "../../$submodule_tests_dir/api" "tests/api/stats_dashboard"
       echo "Created symlink: tests/api/stats_dashboard -> $submodule_tests_dir/api"
     fi
-    
+
     if [ -d "$submodule_tests_dir/cli" ]; then
       if [ -L "tests/cli/stats_dashboard" ] || [ -e "tests/cli/stats_dashboard" ]; then
         rm -f "tests/cli/stats_dashboard"
@@ -75,7 +75,7 @@ function create_test_symlinks() {
       ln -s "../../$submodule_tests_dir/cli" "tests/cli/stats_dashboard"
       echo "Created symlink: tests/cli/stats_dashboard -> $submodule_tests_dir/cli"
     fi
-    
+
     if [ -d "$submodule_tests_dir/ui" ]; then
       if [ -L "tests/ui/stats_dashboard" ] || [ -e "tests/ui/stats_dashboard" ]; then
         rm -f "tests/ui/stats_dashboard"
@@ -84,10 +84,10 @@ function create_test_symlinks() {
       echo "Created symlink: tests/ui/stats_dashboard -> $submodule_tests_dir/ui"
     fi
   fi
-  
+
   # invenio-record-importer-kcworks
   submodule_tests_dir="site/kcworks/dependencies/invenio-record-importer-kcworks/tests"
-  
+
   if [ ! -d "$submodule_tests_dir" ]; then
     echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
   else
@@ -98,7 +98,7 @@ function create_test_symlinks() {
       ln -s "../../$submodule_tests_dir/api" "tests/api/record_importer"
       echo "Created symlink: tests/api/record_importer -> $submodule_tests_dir/api"
     fi
-    
+
     if [ -d "$submodule_tests_dir/cli" ]; then
       if [ -L "tests/cli/record_importer" ] || [ -e "tests/cli/record_importer" ]; then
         rm -f "tests/cli/record_importer"
@@ -175,8 +175,8 @@ unset SQLALCHEMY_DATABASE_URI
 unset INVENIO_SQLALCHEMY_DATABASE_URI
 
 # Run mypy
-echo "Running mypy on the site directory"
-uv run mypy --config-file pyproject.toml site/
+echo "Running ty on the site directory"
+uv run ty check site/
 
 # Note: expansion of pytest_args looks like below to not cause an unbound
 # variable error when 1) "nounset" and 2) the array is empty.
