@@ -1,16 +1,10 @@
 import React from "react";
 import { Segment } from "semantic-ui-react";
-// import { CustomFieldSectionInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
+// When implemented: use CustomField for each hclegacy field, or a section
+// that renders multiple CustomField components for "Commons legacy info".
 
 const CommonsLegacyInfoComponent = ({ ...extraProps }) => {
-  return (
-    <span>Not implemented</span>
-    // <CustomFieldSectionInjector
-    //   sectionName="Commons legacy info"
-    //   idString="HCLegacyFields"
-    //   {...extraProps}
-    // />
-  );
+  return <span>Not implemented</span>;
 };
 
 export { CommonsLegacyInfoComponent };

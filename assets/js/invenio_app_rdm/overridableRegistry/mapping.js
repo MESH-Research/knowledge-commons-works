@@ -9,6 +9,14 @@ import { parametrize } from "react-overridable";
 import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/i18next";
 
+import {
+  OverrideAdditionalDatesComponent,
+  OverrideCommunitiesComponent,
+  OverrideDoiComponent,
+  OverrideLanguagesComponent,
+  OverrideResourceTypeComponent,
+  OverrideSubmissionComponent,
+} from "@js/invenio_modular_deposit_form/field_components/overridable";
 import { AccessRightField } from "./fields/AccessRightField";
 import { CreatibutorsField } from "./fields/CreatibutorsField";
 import { ContribSearchAppFacets } from "@js/invenio_search_ui/components/common/facets";
@@ -122,6 +130,12 @@ export const overriddenComponents = {
 	"InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
 	"InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
 	"InvenioAppRdm.Deposit.VersionField.container": VersionField,
+	"InvenioAppRdm.Deposit.DateField.container": OverrideAdditionalDatesComponent,
+	"InvenioAppRdm.Deposit.CommunityHeader.container": OverrideCommunitiesComponent,
+	"InvenioAppRdm.Deposit.PIDField.container": OverrideDoiComponent,
+	"InvenioAppRdm.Deposit.LanguagesField.container": OverrideLanguagesComponent,
+	"InvenioAppRdm.Deposit.ResourceTypeField.container": OverrideResourceTypeComponent,
+	"InvenioAppRdm.Deposit.CardDepositStatusBox.container": OverrideSubmissionComponent,
 	"InvenioAppRdm.RecordsList.RecordsResultsListItem.layout":
 		RecordsResultsListItem,
 	"InvenioAppRDM.RecordsList.RecordsResultsListItem.layout":

@@ -1,10 +1,10 @@
 import React from "react";
-import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
+import { CustomField } from "@js/invenio_modular_deposit_form/field_components/CustomField";
 
 const AIComponent = ({ ...extraProps }) => {
   return (
-    <CustomFieldInjector
-      sectionName="AI Usage"
+    <CustomField
+      uiConfigSectionName="AI Usage"
       fieldName="kcr:ai_usage"
       idString="AIUsageField"
       {...extraProps}

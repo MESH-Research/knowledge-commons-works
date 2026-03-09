@@ -1,11 +1,10 @@
 import React from "react";
-import { Segment } from "semantic-ui-react";
-import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
+import { CustomField } from "@js/invenio_modular_deposit_form/field_components/CustomField";
 
 const SeriesComponent = ({ ...extraProps }) => {
   return (
-    <CustomFieldInjector
-      sectionName="Series"
+    <CustomField
+      uiConfigSectionName="Series"
       fieldName="kcr:book_series"
       idString="KcrBookSeries"
       icon="list"

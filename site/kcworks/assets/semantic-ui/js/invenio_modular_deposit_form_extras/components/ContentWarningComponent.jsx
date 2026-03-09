@@ -1,11 +1,11 @@
 import React from "react";
-import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
+import { CustomField } from "@js/invenio_modular_deposit_form/field_components/CustomField";
 
 const ContentWarningComponent = ({ ...extraProps }) => {
   return (
-    <CustomFieldInjector
+    <CustomField
+      uiConfigSectionName="Content warning"
       fieldName="kcr:content_warning"
-      sectionName="Content warning"
       idString="ContentWarning"
       editorConfig={{
         removePlugins: [

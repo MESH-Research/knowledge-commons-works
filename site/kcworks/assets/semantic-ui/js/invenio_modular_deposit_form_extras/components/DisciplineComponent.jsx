@@ -1,13 +1,13 @@
 import React from "react";
-import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
+import { CustomField } from "@js/invenio_modular_deposit_form/field_components/CustomField";
 
 const DisciplineComponent = ({ ...extraProps }) => {
   return (
-    <CustomFieldInjector
-      sectionName="KCR thesis information"
+    <CustomField
+      uiConfigSectionName="KCR thesis information"
       fieldName="kcr:discipline"
       idString="DisciplineField"
-      description={""}
+      description=""
       {...extraProps}
     />
   );

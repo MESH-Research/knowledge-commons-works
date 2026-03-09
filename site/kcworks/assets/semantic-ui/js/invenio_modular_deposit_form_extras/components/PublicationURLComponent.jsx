@@ -1,14 +1,14 @@
 import React from "react";
-import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
+import { CustomField } from "@js/invenio_modular_deposit_form/field_components/CustomField";
 
 const PublicationURLComponent = ({ ...extraProps }) => {
   return (
-    <CustomFieldInjector
-      sectionName="KCR journal information"
+    <CustomField
+      uiConfigSectionName="KCR journal information"
       fieldName="kcr:publication_url"
       idString="PublicationURLField"
-      description={""}
-      icon={"linkify"}
+      description=""
+      icon="linkify"
       {...extraProps}
     />
   );
