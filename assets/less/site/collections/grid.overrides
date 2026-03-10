@@ -83,7 +83,7 @@
       margin-top: 0;
 
       .row {
-        &.deposit-form-header {
+        &.deposit-form-title {
           flex-direction: column;
           align-items: flex-start;
         }

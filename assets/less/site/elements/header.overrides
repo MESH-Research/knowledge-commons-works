@@ -2,7 +2,7 @@ h1.ui.header {
   color: @verdigris;
   margin-top: 2rem;
 }
-.deposit-form-header {
+.deposit-form-title {
   h1.ui.header {
     margin-bottom: 0;
   }

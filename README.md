@@ -5,7 +5,7 @@
 ![Python](https://img.shields.io/badge/python-3.12+-276F86?style=flat-square&logo=python&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-D9B01C?style=flat-square&logo=opensourceinitiative&logoColor=white)
 ![Ruff](https://img.shields.io/badge/code%20style-ruff-e47719?style=flat-square&logo=python&logoColor=white)
-![MyPy](https://img.shields.io/badge/type%20checking-mypy-547d7d?style=flat-square&logo=python&logoColor=white)
+![Ty](https://img.shields.io/badge/type%20checking-ty-547d7d?style=flat-square&logo=python&logoColor=white)
 
 ![KCWorks logo](static/images/kc_works_logos/SVG/kc_works_logo_wordmark.svg)
 

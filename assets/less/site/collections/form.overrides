@@ -164,7 +164,7 @@ textarea {
         }
       }
     }
-    .deposit-form-header {
+    .deposit-form-title {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
