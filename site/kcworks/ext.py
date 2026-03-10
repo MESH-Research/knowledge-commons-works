@@ -298,16 +298,18 @@ def _static_token_before_request() -> None:
     # Same as invenio_oauth2server: set request user and notify Principal without
     # triggering user_logged_in (no login_user()).
     g._login_user = user
-    identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
+    identity_changed.send(
+        current_app._get_current_object(), identity=Identity(user.id)  # type: ignore
+    )
     # Provide the OAuth stand-in objects for the request.
     scopes = {sid for sid, _ in current_oauth2server.scope_choices()}
-    request.oauth = OAuthStandIn(
+    request.oauth = OAuthStandIn(  # type: ignore[attr-defined]
         user=user,
         access_token=AccessTokenStandIn(scopes=scopes),
     )
     # Skip CSRF and OAuth verification.
-    request.skip_csrf_check = True
-    request.oauth_verify_has_run = True
+    request.skip_csrf_check = True  # type: ignore[attr-defined]
+    request.oauth_verify_has_run = True  # type: ignore[attr-defined]
 
 
 def api_finalize_app(app: Flask) -> None:

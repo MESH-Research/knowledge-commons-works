@@ -138,25 +138,25 @@ class InternalNotificationService(Service):
             "community-inclusion.create",
             "community-inclusion.cancel",
         ] and str(request_creator_id) != str(user.id):
-            return cast(list[UnreadNotification], unread)
+            return unread
         elif notification_type in [
             "community-invitation.accept",
             "community-invitation.decline",
             "community-invitation.expire",
         ] and str(request_receiver_id) != str(user.id):
-            return cast(list[UnreadNotification], unread)
+            return unread
         elif (
             notification_type == "comment-request-event.create"
             and request_type in ["community-submission", "community-inclusion"]
             and str(request_creator_id) != str(user.id)
         ):
-            return cast(list[UnreadNotification], unread)
+            return unread
         elif (
             notification_type == "comment-request-event.create"
             and request_type == "community-invitation"
             and str(request_receiver_id) != str(user.id)
         ):
-            return cast(list[UnreadNotification], unread)
+            return unread
 
         existing_request = None
         for index, item in enumerate(unread):
@@ -185,7 +185,7 @@ class InternalNotificationService(Service):
                 new_item["unread_comments"].append(comment_id)
             unread.append(new_item)
 
-        return cast(list[UnreadNotification], unread)
+        return unread
 
     def read_unread(self, identity: Identity, user_id: int) -> list[UnreadNotification]:
         """Read the unread notifications for a user.
@@ -218,7 +218,7 @@ class InternalNotificationService(Service):
             ]  # Filter out non-dict items in case of a bad update
         except TypeError:  # because the field is not set
             unread_notifications = []
-        return cast(list[UnreadNotification], unread_notifications)
+        return unread_notifications
 
     def clear_unread(
         self,
@@ -290,7 +290,7 @@ class InternalNotificationService(Service):
         user.user_profile = profile
         current_accounts.datastore.commit()
 
-        return cast(list[UnreadNotification], unread)
+        return unread
 
     def update_unread(
         self, identity: Identity, user_id: int, notification: Notification

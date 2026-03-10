@@ -16,6 +16,7 @@
 
 from collections.abc import Sequence
 from functools import reduce
+from typing import cast
 
 from flask_principal import Need
 from invenio_access.permissions import Permission, system_identity
@@ -69,7 +70,7 @@ def per_field_edit_permission_factory(
     Raises:
         PermissionError: If there's an error creating the permission policy.
     """
-    role_generators = [  # Default even if no community ID or roles
+    role_generators: list[type[Generator] | Generator] = [
         SystemProcess,
         Administration,
     ]
@@ -90,7 +91,9 @@ def per_field_edit_permission_factory(
                     [g for r, g in community_role_generators.items() if r in roles]
                 )
             else:
-                role_generators.extend(roles)
+                role_generators.extend(
+                    cast(Sequence[type[Generator] | Generator], roles)
+                )
 
         # Handle community ID
         if community_id and community_id != "default":

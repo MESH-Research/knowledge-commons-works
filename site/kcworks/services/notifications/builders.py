@@ -29,6 +29,8 @@
 # UserAccessRequestSubmitNotificationBuilder,
 """
 
+from typing import TypedDict, Unpack
+
 from invenio_accounts.models import User
 from invenio_communities.notifications.builders import (
     CommunityInvitationAcceptNotificationBuilder,
@@ -274,12 +276,17 @@ class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
     type = "user-first-record.create"
 
     @classmethod
-    def build(cls, data: dict, record: RDMDraft, sender: User):
+    def build(
+        cls, **kwargs: Unpack["_FirstRecordCreatedBuildKwargs"]
+    ) -> Notification:
         """Build notification with context.
 
         Returns:
             Notification: The built notification object.
         """
+        data = kwargs["data"]
+        record = kwargs["record"]
+        sender = kwargs["sender"]
         return Notification(
             type=cls.type,
             context={
@@ -335,18 +342,39 @@ class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
     ]
 
 
+class _FirstRecordCreatedBuildKwargs(TypedDict):
+    """Keyword arguments for FirstRecordCreatedNotificationBuilder.build."""
+
+    data: dict
+    record: RDMDraft
+    sender: User
+
+
+class _FirstRecordPublishedBuildKwargs(TypedDict):
+    """Keyword arguments for FirstRecordPublishedNotificationBuilder.build."""
+
+    draft: RDMDraft
+    record: RDMRecord
+    sender: User
+
+
 class FirstRecordPublishedNotificationBuilder(NotificationBuilder):
     """Notification builder for first record published action."""
 
     type = "user-first-record.publish"
 
     @classmethod
-    def build(cls, draft: RDMDraft, record: RDMRecord, sender: User) -> Notification:
+    def build(
+        cls, **kwargs: Unpack["_FirstRecordPublishedBuildKwargs"]
+    ) -> Notification:
         """Build notification with context.
 
         Returns:
             Notification: The built Notification instance.
         """
+        draft = kwargs["draft"]
+        record = kwargs["record"]
+        sender = kwargs["sender"]
         return Notification(
             type=cls.type,
             context={

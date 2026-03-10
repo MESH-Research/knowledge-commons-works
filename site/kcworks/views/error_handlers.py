@@ -6,7 +6,7 @@
 
 """KCWorks error handler views."""
 
-from flask import Response, render_template
+from flask import Response, make_response, render_template
 from flask import current_app as app
 
 
@@ -23,11 +23,14 @@ def oauth_401_handler(error) -> Response:
     message = getattr(error, "description", None) or getattr(error, "message", None)
     app.logger.debug(f"DEBUG: in handler: {header}")
     app.logger.debug(f"DEBUG: in handler: {message}")
-    return render_template(
-        app.config.get("THEME_401_TEMPLATE", "invenio_theme/401.html"),
-        error_header=header,
-        error_message=message or "We couldn't log you in.",
-    ), 401
+    return make_response(
+        render_template(
+            app.config.get("THEME_401_TEMPLATE", "invenio_theme/401.html"),
+            error_header=header,
+            error_message=message or "We couldn't log you in.",
+        ),
+        401,
+    )
 
 
 def oauth_404_handler(error) -> Response:
@@ -40,11 +43,14 @@ def oauth_404_handler(error) -> Response:
     """
     header = getattr(error, "header", None)
     message = getattr(error, "description", None) or getattr(error, "message", None)
-    return render_template(
-        app.config.get("THEME_404_TEMPLATE", "invenio_theme/404.html"),
-        error_header=header,
-        error_message=message or "We couldn't find that resource.",
-    ), 404
+    return make_response(
+        render_template(
+            app.config.get("THEME_404_TEMPLATE", "invenio_theme/404.html"),
+            error_header=header,
+            error_message=message or "We couldn't find that resource.",
+        ),
+        404,
+    )
 
 
 def oauth_403_handler(error) -> Response:
@@ -57,11 +63,14 @@ def oauth_403_handler(error) -> Response:
     """
     header = getattr(error, "header", None)
     message = getattr(error, "description", None) or getattr(error, "message", None)
-    return render_template(
-        app.config.get("THEME_403_TEMPLATE", "invenio_theme/403.html"),
-        error_header=header,
-        error_message=message or "We couldn't find that resource.",
-    ), 403
+    return make_response(
+        render_template(
+            app.config.get("THEME_403_TEMPLATE", "invenio_theme/403.html"),
+            error_header=header,
+            error_message=message or "We couldn't find that resource.",
+        ),
+        403,
+    )
 
 
 def oauth_500_handler(error) -> Response:
@@ -74,8 +83,11 @@ def oauth_500_handler(error) -> Response:
     """
     header = getattr(error, "header", None)
     message = getattr(error, "description", None) or getattr(error, "message", None)
-    return render_template(
-        app.config.get("THEME_500_TEMPLATE", "invenio_theme/500.html"),
-        error_header=header,
-        error_message=message or "Oops! Something went wrong on our end.",
-    ), 500
+    return make_response(
+        render_template(
+            app.config.get("THEME_500_TEMPLATE", "invenio_theme/500.html"),
+            error_header=header,
+            error_message=message or "Oops! Something went wrong on our end.",
+        ),
+        500,
+    )

@@ -15,7 +15,7 @@
 
 """Permission policies for notifications."""
 
-from flask_principal import UserNeed
+from flask_principal import Need, UserNeed
 from invenio_records_permissions import BasePermissionPolicy
 from invenio_records_permissions.generators import Generator, SystemProcess
 
@@ -23,11 +23,11 @@ from invenio_records_permissions.generators import Generator, SystemProcess
 class SpecificUser(Generator):
     """Allows a specific user."""
 
-    def needs(self, user_id=None, **kwargs) -> list[UserNeed]:
+    def needs(self, user_id=None, **kwargs) -> list[Need]:
         """Enabling Needs.
 
         Returns:
-            list[UserNeed]: A list of the UserNeed objects for the
+            list[Need]: A list of the Need objects for the
                 specified user
         """
         if user_id is None:
