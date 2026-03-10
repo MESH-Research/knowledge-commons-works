@@ -1,5 +1,6 @@
 import React from "react";
 import { CustomField } from "@js/invenio_modular_deposit_form/field_components/CustomField";
+import { useCustomFieldSectionName } from "@js/invenio_modular_deposit_form/hooks/useCustomFieldSectionName";
 
 /**
  * Renders the Commons admin info custom fields (commons domain, submitter email,
@@ -7,24 +8,28 @@ import { CustomField } from "@js/invenio_modular_deposit_form/field_components/C
  * custom_fields.ui (Commons admin info section).
  */
 const AdminMetadataComponent = ({ ...extraProps }) => {
+  const uiConfigSectionName = useCustomFieldSectionName(
+    "AdminMetadataComponent",
+    "Commons admin info"
+  );
   return (
     <>
       <CustomField
-        uiConfigSectionName="Commons admin info"
+        uiConfigSectionName={uiConfigSectionName}
         fieldName="kcr:commons_domain"
         idString="CommonsDomainField"
         description=""
         {...extraProps}
       />
       <CustomField
-        uiConfigSectionName="Commons admin info"
+        uiConfigSectionName={uiConfigSectionName}
         fieldName="kcr:submitter_email"
         idString="SubmitterEmailField"
         description=""
         {...extraProps}
       />
       <CustomField
-        uiConfigSectionName="Commons admin info"
+        uiConfigSectionName={uiConfigSectionName}
         fieldName="kcr:submitter_username"
         idString="SubmitterUsernameField"
         description=""
