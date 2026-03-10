@@ -2552,8 +2552,11 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "furo", marker = "extra == 'docs'", specifier = ">=2023" },
     { name = "invenio-app-rdm", specifier = "<14" },
+    { name = "linkify-it-py", marker = "extra == 'docs'", specifier = ">=0.2" },
     { name = "mypy", marker = "extra == 'tests'", specifier = ">=1.8" },
+    { name = "myst-parser", marker = "extra == 'docs'", specifier = ">=2" },
     { name = "pytest", marker = "extra == 'tests'", specifier = ">=7.3.2" },
     { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=6.2.1" },
     { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.3,<4" },
@@ -2564,12 +2567,23 @@ requires-dist = [
     { name = "requests-mock", marker = "extra == 'tests'" },
     { name = "ruff", marker = "extra == 'tests'", specifier = ">=0.3" },
     { name = "selenium", marker = "extra == 'tests'" },
-    { name = "sphinx", marker = "extra == 'docs'", specifier = ">=4.5" },
+    { name = "sphinx", marker = "extra == 'docs'", specifier = ">=7" },
+    { name = "sphinx-copybutton", marker = "extra == 'docs'", specifier = ">=0.5" },
+    { name = "sphinx-design", marker = "extra == 'docs'", specifier = ">=0.3" },
+    { name = "uc-micro-py", marker = "extra == 'docs'", specifier = ">=1" },
 ]
 provides-extras = ["docs", "tests"]
 
 [package.metadata.requires-dev]
-docs = [{ name = "sphinx", specifier = ">=4.5" }]
+docs = [
+    { name = "furo", specifier = ">=2023" },
+    { name = "linkify-it-py", specifier = ">=0.2" },
+    { name = "myst-parser", specifier = ">=2" },
+    { name = "sphinx", specifier = ">=7" },
+    { name = "sphinx-copybutton", specifier = ">=0.5" },
+    { name = "sphinx-design", specifier = ">=0.3" },
+    { name = "uc-micro-py", specifier = ">=1" },
+]
 tests = [
     { name = "mypy", specifier = ">=1.8" },
     { name = "pytest", specifier = ">=7.3.2" },
