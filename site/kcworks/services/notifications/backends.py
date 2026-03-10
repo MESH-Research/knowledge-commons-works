@@ -55,12 +55,12 @@ class CustomJinjaTemplateLoaderMixin:
         # Not clear why the jinja loaders aren't being set properly.
         site_path = Path(__file__).parent.parent.parent
         templates_path = site_path / "templates" / "semantic-ui"
-        custom_loader = jinja2.ChoiceLoader(
-            [
-                current_app.jinja_loader,
-                jinja2.FileSystemLoader([str(templates_path)]),
-            ]
-        )
+        loaders: list[jinja2.BaseLoader] = [
+            jinja2.FileSystemLoader([str(templates_path)]),
+        ]
+        if current_app.jinja_loader is not None:
+            loaders.insert(0, current_app.jinja_loader)
+        custom_loader = jinja2.ChoiceLoader(loaders)
         assert templates_path.exists()
         current_app.jinja_loader = custom_loader
         current_app.jinja_env.loader = custom_loader
