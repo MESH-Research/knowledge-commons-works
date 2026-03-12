@@ -72,6 +72,16 @@ invenio roles add <email> administration
 invenio roles add <email> administration-moderation
 ```
 
+- assign an admin user to receive moderation notices:
+
+```shell
+invenio roles add <email> admin-moderator
+```
+
+```{note}
+The "admin-moderator" role (distinct from "administration-moderation") designates the one user who should receive email notices of first-time uploads and publications by new KCWorks users. This role may be assigned to a different user later on, but it should only be held by one user.
+```
+
 ### 6. View the application
 
 - The Knowledge Commons Works app is now running at `https://localhost`
