@@ -1,5 +1,6 @@
 [cli]
 flavour = RDM
+javascript_package_manager = pnpm
 logfile = /logs/invenio-cli.log
 
 [cookiecutter]
