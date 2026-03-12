@@ -344,6 +344,16 @@ invenio<span class="w"> </span>roles<span class="w"> </span>add<span class="w"> 
 invenio<span class="w"> </span>roles<span class="w"> </span>add<span class="w"> </span>&lt;email&gt;<span class="w"> </span>administration-moderation
 </pre></div>
 </div>
+<ul class="simple">
+<li><p>assign an admin user to receive moderation notices:</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>roles<span class="w"> </span>add<span class="w"> </span>&lt;email&gt;<span class="w"> </span>admin-moderator
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The “admin-moderator” role (distinct from “administration-moderation”) designates the one user who should receive email notices of first-time uploads and publications by new KCWorks users. This role may be assigned to a different user later on, but it should only be held by one user.</p>
+</div>
 </section>
 <section id="view-the-application">
 <h3>6. View the application<a class="headerlink" href="#view-the-application" title="Link to this heading">¶</a></h3>
