@@ -289,32 +289,22 @@ omit = [
   "site/kcworks/services/search/index_templates/*",
 ]
 
-[tool.mypy]
-python_version = "3.12"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-check_untyped_defs = true
-disallow_untyped_decorators = false
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = false
-warn_no_return = false
-ignore_missing_imports = true
-follow_imports = "skip"
-allow_untyped_globals = true
+[tool.ty.environment]
+python-version = "3.12"
+
+[tool.ty.src]
 exclude = [
-  '^tests/',
-  '^site/kcworks/dependencies/',
-  '^site/kcworks/services/search/index_templates/',
+  "**/tests/**",
+  "**/site/kcworks/dependencies/**",
+  "**/site/kcworks/services/search/index_templates/**",
 ]
 
-[[tool.mypy.overrides]]
-module = "kcworks.services.search.index_templates.*"
-ignore_errors = true
-ignore_missing_imports = true
-follow_imports = "skip"
+[tool.ty.rules]
+unresolved-import = "ignore"
+
+[[tool.ty.overrides]]
+include = ["**/kcworks/services/search/index_templates/**"]
+rules = { unresolved-attribute = "ignore", invalid-assignment = "ignore", unresolved-import = "ignore" }
 
 [tool.babel.compile_catalog]
 directory = "translations/"
