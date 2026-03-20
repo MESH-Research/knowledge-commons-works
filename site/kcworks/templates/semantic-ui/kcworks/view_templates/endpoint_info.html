@@ -1,0 +1,71 @@
+{% extends "invenio_theme/page.html" %}
+
+{% block javascript %}
+  {{ super() }}
+  {{ webpack['file_tree_js.js'] }}
+{% endblock %}
+
+{% block page_body %}
+  <div class="ui container" style="padding: 2em;">
+    <h1 class="ui header">Your Globus Endpoints</h1>
+
+    <div id="globus-collection-selector" 
+         data-endpoints='{{ endpoints_json | safe }}'
+         data-has-token='{{ "true" if has_token else "false" }}'>
+    </div>
+    
+    <div class="ui divider"></div>
+
+    <div id="file-tree-app" 
+         data-initial-files='{{ initial_files | safe }}'
+         data-endpoint-id="{{ endpoints[0].id if endpoints else '' }}">
+    </div>
+
+    {# Error message if something went wrong: #}
+    {% if error %}
+      <div class="ui negative message">
+        <div class="header">
+            Failed to load Endpoint info
+        </div>
+        <p>{{ error }}</p>
+      </div>
+    {% endif %}
+
+    {# List of endpoints: #}
+    {% if endpoints %}
+      <table class="ui celled table">
+        <thead>
+          <tr>
+            <th>Display Name</th>
+            <th>Endpoint ID</th>
+            <th>Owner</th>
+            <th>Organization</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ep in endpoints %}
+            <tr>
+              <td>{{ ep.display_name }}</td>
+              <td>{{ ep.id }}</td>
+              <td>{{ ep.owner_string or 'N/A' }}</td>
+              <td>{{ ep.organization or 'N/A' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% elif not error %}
+      {# If there's no error but also no endpoints: #}
+      <div class="ui info message">
+        <div class="header">
+            No Endpoints Found
+        </div>
+        <p>You do not have any Globus endpoints associated with your account.</p>
+    {% endif %}
+
+    <a class="ui large button"
+        href="{{ url_for('kcworks.globus_login') }}">
+      Back to Login
+    </a>
+    
+</div>
+{% endblock %}

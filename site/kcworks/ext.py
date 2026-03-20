@@ -44,6 +44,7 @@ from werkzeug.exceptions import (
     Unauthorized,
 )
 
+from kcworks.views.views import create_blueprint, create_api_blueprint
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -118,6 +119,11 @@ class KCWorks:
         self.init_components(app)
         self.init_template_filters(app)
         app.extensions["kcworks"] = self
+        # app.register_blueprint(create_blueprint(app))
+        # app.register_blueprint(
+        #     create_api_blueprint(app),
+        #     url_prefix=app.config.get("APP_RDM_API_URL_PREFIX", "/api"),
+        # )
 
     def init_services(self, app: Flask) -> None:
         """Initialize services for the KCWorks extension.

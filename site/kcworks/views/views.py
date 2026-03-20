@@ -7,6 +7,10 @@ from werkzeug.exceptions import Forbidden, MethodNotAllowed
 from kcworks.views.admin_login.admin_login import AdminLogin
 from kcworks.views.api.notifications import InternalNotifications
 from kcworks.views.task_results.task_results import TaskResults
+from kcworks.views.globus.globus_login import GlobusLogin, GlobusStart
+from kcworks.views.globus.globus_callback import GlobusCallback
+from kcworks.views.globus.globus_endpoints import GlobusEndpointInfo, GlobusFolderLS
+from werkzeug.exceptions import Forbidden, MethodNotAllowed
 
 
 def create_blueprint(app):
@@ -31,6 +35,29 @@ def create_blueprint(app):
         view_func=AdminLogin.as_view("admin_login"),
     )
 
+    blueprint.add_url_rule(
+        "/globus/login",
+        view_func=GlobusLogin.as_view("globus_login"),
+        methods=["GET"],
+    )
+
+    blueprint.add_url_rule(
+        "/globus/callback",
+        view_func=GlobusCallback.as_view("globus_callback"),
+        methods=["GET"],
+    )
+
+    blueprint.add_url_rule(
+        "/globus/login/start",
+        view_func=GlobusStart.as_view("globus_start"))
+    
+    blueprint.add_url_rule(
+        "/globus/endpoints",
+        view_func = GlobusEndpointInfo.as_view("globus_endpoint_info"),
+        methods=["GET"],
+    )
+
+
     # Register context processor
     # blueprint.app_context_processor(search_app_context)
 
@@ -54,6 +81,12 @@ def create_api_blueprint(app):
             "/users/<int:user_id>/notifications/unread/<string:action>",
             view_func=InternalNotifications.as_view("internal_notifications"),
             methods=["GET", "DELETE"],
+        )
+
+        blueprint.add_url_rule(
+            "/globus/ls/<string:endpoint_id>",
+            view_func=GlobusFolderLS.as_view("globus_folder_ls"),
+            methods=["GET"],
         )
 
         # Register error handlers

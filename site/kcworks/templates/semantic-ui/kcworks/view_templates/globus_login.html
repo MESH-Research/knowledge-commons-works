@@ -1,0 +1,15 @@
+{% extends "invenio_theme/page.html" %}
+
+{% block page_body %}
+  <div class="ui container" style="padding: 2em;">
+    <a class="ui large primary button"
+       href="{{ url_for('kcworks.globus_start') }}">
+      <i class="external alternate icon"></i>
+      Sign in with Globus
+    </a>
+    <a class="ui large button"
+       href="{{ url_for('kcworks.globus_endpoint_info') }}">
+      Get Endpoint Info
+    </a>
+  </div>
+{% endblock %}
