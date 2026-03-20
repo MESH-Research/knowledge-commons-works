@@ -1,6 +1,6 @@
 from flask import redirect, request, session, url_for
 from flask.views import View
-from kcworks.auth_helpers import exchange_authorization_code
+from kcworks.services.remote_data_collections.auth_helpers import exchange_authorization_code
 
 class GlobusCallback(View):
     """Handle the redirect back from Globus Auth."""

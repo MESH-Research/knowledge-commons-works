@@ -1,6 +1,6 @@
 from flask import redirect, render_template, session, url_for, request
 from flask.views import View
-from kcworks.auth_helpers import get_authorize_url
+from kcworks.services.remote_data_collections.auth_helpers import get_authorize_url
 
 class GlobusLogin(View):
     """When the user hits /globus/login, redirect them to Globus Auth."""
