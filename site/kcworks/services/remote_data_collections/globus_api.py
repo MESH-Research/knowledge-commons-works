@@ -29,23 +29,23 @@ class GlobusAPIOAuthSettingsHelper(OAuthSettingsHelper):
         
         # Configure handlers for API access (not login)
         self._handlers = dict(
-            authorized_handler="kcworks.services.accounts.globus_api:api_authorized_handler",
+            authorized_handler="kcworks.services.remote_data_collections.globus_api:api_authorized_handler",
             disconnect_handler="invenio_oauthclient.contrib.globus:disconnect_handler",
             signup_handler=dict(
-                info="kcworks.services.accounts.globus_api:api_account_info",
-                setup="kcworks.services.accounts.globus_api:api_account_setup",
-                view="kcworks.services.accounts.globus_api:signup_handler",
+                info="kcworks.services.remote_data_collections.globus_api:api_account_info",
+                setup="kcworks.services.remote_data_collections.globus_api:api_account_setup",
+                view="kcworks.services.remote_data_collections.globus_api:signup_handler",
             ),
         )
 
         self._rest_handlers = dict(
-            authorized_handler="kcworks.services.accounts.globus_api:api_authorized_handler",
+            authorized_handler="kcworks.services.remote_data_collections.globus_api:api_authorized_handler",
             disconnect_handler="invenio_oauthclient.contrib.globus:disconnect_handler",
             signup_handler=dict(
-                info="kcworks.services.accounts.globus_api:api_account_info",
+                info="kcworks.services.remote_data_collections.globus_api:api_account_info",
                 info_serializer="invenio_oauthclient.contrib.globus:account_info_serializer",
-                setup="kcworks.services.accounts.globus_api:api_account_setup",
-                view="kcworks.services.accounts.globus_api:signup_handler",
+                setup="kcworks.services.remote_data_collections.globus_api:api_account_setup",
+                view="kcworks.services.remote_data_collections.globus_api:signup_handler",
             ),
             response_handler="invenio_oauthclient.handlers.rest:default_remote_response_handler",
             authorized_redirect_url="https://localhost/globus/login",

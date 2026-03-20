@@ -7,9 +7,9 @@ from werkzeug.exceptions import Forbidden, MethodNotAllowed
 from kcworks.views.admin_login.admin_login import AdminLogin
 from kcworks.views.api.notifications import InternalNotifications
 from kcworks.views.task_results.task_results import TaskResults
-from kcworks.views.globus.globus_login import GlobusLogin, GlobusStart
-from kcworks.views.globus.globus_callback import GlobusCallback
-from kcworks.views.globus.globus_endpoints import GlobusEndpointInfo, GlobusFolderLS
+from kcworks.views.remote_data_collections.globus_login import GlobusLogin, GlobusStart
+from kcworks.views.remote_data_collections.globus_callback import GlobusCallback
+from kcworks.views.remote_data_collections.globus_endpoints import GlobusEndpointInfo, GlobusFolderLS
 from werkzeug.exceptions import Forbidden, MethodNotAllowed
 
 

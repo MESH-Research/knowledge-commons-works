@@ -5,7 +5,7 @@ from kcworks.services.remote_data_collections.auth_helpers import get_authorize_
 class GlobusLogin(View):
     """When the user hits /globus/login, redirect them to Globus Auth."""
     def dispatch_request(self):
-        return render_template("kcworks/view_templates/globus_login.html")
+        return render_template("kcworks/remote_data_collections/globus_login.html")
     
 class GlobusStart(View):
     """GET /globus/login/start -> delegate to invenio_oauthclient.login."""

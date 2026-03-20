@@ -113,7 +113,7 @@ class GlobusEndpointInfo(View):
                 current_app.logger.error(f"LS failed: {ls_response.data}")
 
         return render_template(
-            "kcworks/view_templates/endpoint_info.html",
+            "kcworks/remote_data_collections/endpoint_info.html",
             endpoints=endpoint_data,
             error=error_message,
             initial_files=json.dumps(root_files),
