@@ -2968,7 +2968,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "invenio-remote-user-data-kcworks"
-version = "0.6.1b3"
+version = "1.0.0"
 source = { editable = "site/kcworks/dependencies/invenio-remote-user-data-kcworks" }
 dependencies = [
     { name = "celery" },
@@ -2984,13 +2984,14 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "bumpver", marker = "extra == 'dev'" },
     { name = "celery" },
     { name = "check-manifest", marker = "extra == 'dev'" },
     { name = "click" },
     { name = "coverage", marker = "extra == 'test'" },
     { name = "deepdiff" },
-    { name = "invenio-app-rdm", specifier = "<13.0.0" },
-    { name = "invenio-group-collections-kcworks" },
+    { name = "invenio-app-rdm", specifier = "<13" },
+    { name = "invenio-group-collections-kcworks", editable = "site/kcworks/dependencies/invenio-group-collections-kcworks" },
     { name = "invenio-queues" },
     { name = "invenio-search" },
     { name = "invenio-utilities-tuw" },
@@ -3003,6 +3004,9 @@ requires-dist = [
     { name = "requests-mock", marker = "extra == 'dev'" },
 ]
 provides-extras = ["dev", "test"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "bumpver", specifier = ">=2025.1131" }]
 
 [[package]]
 name = "invenio-requests"
