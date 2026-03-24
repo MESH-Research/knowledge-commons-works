@@ -58,7 +58,6 @@ dependencies = [
   "unidecode",
   "uwsgi>=2.0.23",
 ]
-
 optional-dependencies.dev = [
   "check-manifest>=0.25",
   "djlint>=1.36.4",
@@ -81,6 +80,7 @@ optional-dependencies.tests = [
   "pytest-mock",
   "pytest-mypy>=0.10",
   "pytest-ruff>=0.1",
+  "ty",
 ]
 scripts.group-collections = "kcworks.cli:group_collections"
 scripts.kcworks-index = "kcworks.cli:kcworks_index"
@@ -121,30 +121,26 @@ dev = [
 
 [tool.setuptools]
 package-dir = { "" = "site" }
+package-data."*" = ["*.po", "*.pot", "*.mo"]
 
-[tool.setuptools.package-data]
-"*" = ["*.po", "*.pot", "*.mo"]
+[tool.hatch]
+build.targets.wheel.packages = ["site"]
+metadata.allow-direct-references = true
 
-[tool.hatch.build.targets.wheel]
-packages = ["site"]
-
-[tool.hatch.metadata]
-allow-direct-references = true
-
-[tool.uv.sources]
-kcworks = { path = "./site", editable = true }
-invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
-invenio-group-collections-kcworks = { path = "./site/kcworks/dependencies/invenio-group-collections-kcworks", editable = true }
-invenio-modular-deposit-form = { path = "./site/kcworks/dependencies/invenio-modular-deposit-form", editable = true }
-invenio-modular-detail-page = { path = "./site/kcworks/dependencies/invenio-modular-detail-page", editable = true }
-invenio-rdm-records = { path = "./site/kcworks/dependencies/invenio-rdm-records", editable = true }
-invenio-records-resources = { path = "./site/kcworks/dependencies/invenio-records-resources", editable = true }
-invenio-remote-api-provisioner = { path = "./site/kcworks/dependencies/invenio-remote-api-provisioner", editable = true }
-invenio-record-importer-kcworks = { path = "./site/kcworks/dependencies/invenio-record-importer-kcworks", editable = true }
-invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
-invenio-requests = { path = "./site/kcworks/dependencies/invenio-requests", editable = true }
-invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
-invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
+[tool.uv]
+sources.invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
+sources.invenio-group-collections-kcworks = { path = "./site/kcworks/dependencies/invenio-group-collections-kcworks", editable = true }
+sources.invenio-modular-deposit-form = { path = "./site/kcworks/dependencies/invenio-modular-deposit-form", editable = true }
+sources.invenio-modular-detail-page = { path = "./site/kcworks/dependencies/invenio-modular-detail-page", editable = true }
+sources.invenio-rdm-records = { path = "./site/kcworks/dependencies/invenio-rdm-records", editable = true }
+sources.invenio-record-importer-kcworks = { path = "./site/kcworks/dependencies/invenio-record-importer-kcworks", editable = true }
+sources.invenio-records-resources = { path = "./site/kcworks/dependencies/invenio-records-resources", editable = true }
+sources.invenio-remote-api-provisioner = { path = "./site/kcworks/dependencies/invenio-remote-api-provisioner", editable = true }
+sources.invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
+sources.invenio-requests = { path = "./site/kcworks/dependencies/invenio-requests", editable = true }
+sources.invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
+sources.invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
+sources.kcworks = { path = "./site", editable = true }
 
 [tool.ruff]
 target-version = "py312"
@@ -170,7 +166,6 @@ exclude = [
   "site/kcworks/services/search/index_templates",
   "tests/helpers",
 ]
-
 # temporarily removed C for complexity checks
 lint.select = ["B", "D", "DOC", "E", "F", "I", "UP"]
 # Now Ruff handles formatting, so enable formatting rules
@@ -213,8 +208,48 @@ skip = [
   # "node_modules",  # Skip node modules
 ]
 
-[tool.pytest.ini_options]
-addopts = """
+[tool.ty]
+environment.python-version = "3.12"
+rules.unresolved-import = "ignore"
+src.exclude = [
+  "**/tests/**",
+  "**/site/kcworks/dependencies/**",
+  "**/site/kcworks/services/search/index_templates/**",
+]
+
+[[tool.ty.overrides]]
+include = ["**/kcworks/services/search/index_templates/**"]
+rules = { unresolved-attribute = "ignore", invalid-assignment = "ignore", unresolved-import = "ignore" }
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = false
+warn_no_return = false
+ignore_missing_imports = true
+follow_imports = "skip"
+allow_untyped_globals = true
+exclude = [
+  "^tests/",
+  "^site/kcworks/dependencies/",
+  "^site/kcworks/services/search/index_templates/",
+]
+
+[[tool.mypy.overrides]]
+module = "kcworks.services.search.index_templates.*"
+ignore_errors = true
+ignore_missing_imports = true
+follow_imports = "skip"
+
+[tool.pytest]
+ini_options.addopts = """
 --ruff --doctest-modules
 --log-cli-level=DEBUG
 --ignore=app_data
@@ -237,13 +272,14 @@ addopts = """
 --ignore=site/kcworks/services/search/index_templates
 --cov=kcworks --cov=invenio_stats_dashboard --cov=invenio_record_importer_kcworks --cov-report=term-missing
 """
-norecursedirs = [
+ini_options.norecursedirs = [
   "site/kcworks/services/search/index_templates/records/os-v2",
   "site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/patches",
+  "site/kcworks/**/os-v1",
 ]
-log_cli_level = "DEBUG"
-isort_show_files = true
-plugins = [
+ini_options.log_cli_level = "DEBUG"
+ini_options.isort_show_files = true
+ini_options.plugins = [
   "tests.fixtures.caching",
   "tests.fixtures.cli",
   "tests.fixtures.communities",
@@ -272,8 +308,8 @@ plugins = [
   "tests.pytest_plugins.pytest_live_status",
 ]
 
-[tool.coverage.run]
-omit = [
+[tool.coverage]
+run.omit = [
   "site/kcworks/dependencies/invenio-communities/*",
   "site/kcworks/dependencies/invenio-group-collections-kcworks/*",
   "site/kcworks/dependencies/invenio-modular-deposit-form/*",
@@ -285,42 +321,19 @@ omit = [
   "site/kcworks/dependencies/invenio-remote-user-data-kcworks/*",
   "site/kcworks/dependencies/invenio-requests/*",
   "site/kcworks/dependencies/invenio-vocabularies/*",
-  "site/kcworks/views/task_results/*",
   "site/kcworks/services/search/index_templates/*",
+  "site/kcworks/views/task_results/*",
 ]
 
-[tool.ty.environment]
-python-version = "3.12"
-
-[tool.ty.src]
-exclude = [
-  "**/tests/**",
-  "**/site/kcworks/dependencies/**",
-  "**/site/kcworks/services/search/index_templates/**",
-]
-
-[tool.ty.rules]
-unresolved-import = "ignore"
-
-[[tool.ty.overrides]]
-include = ["**/kcworks/services/search/index_templates/**"]
-rules = { unresolved-attribute = "ignore", invalid-assignment = "ignore", unresolved-import = "ignore" }
-
-[tool.babel.compile_catalog]
-directory = "translations/"
-use-fuzzy = true
-
-[tool.babel.extract_messages]
-copyright_holder = "Mesh Research"
-msgid_bugs_address = "scottia4@msu.edu"
-mapping-file = "translations/babel.ini"
-output-file = "translations/messages.pot"
-add-comments = "NOTE"
-
-[tool.babel.init_catalog]
-input-file = "translations/messages.pot"
-output-dir = "translations/"
-
-[tool.babel.update_catalog]
-input-file = "translations/messages.pot"
-output-dir = "translations/"
+[tool.babel]
+compile_catalog.directory = "translations/"
+compile_catalog.use-fuzzy = true
+extract_messages.copyright_holder = "Mesh Research"
+extract_messages.msgid_bugs_address = "scottia4@msu.edu"
+extract_messages.mapping-file = "translations/babel.ini"
+extract_messages.output-file = "translations/messages.pot"
+extract_messages.add-comments = "NOTE"
+init_catalog.input-file = "translations/messages.pot"
+init_catalog.output-dir = "translations/"
+update_catalog.input-file = "translations/messages.pot"
+update_catalog.output-dir = "translations/"
