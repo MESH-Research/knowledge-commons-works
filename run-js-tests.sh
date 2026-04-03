@@ -1,4 +1,4 @@
 #!/bin/bash
 
-# Run the tests
-npm run test
+# Root Jest suite — use pnpm (see package.json packageManager / preinstall).
+pnpm run test

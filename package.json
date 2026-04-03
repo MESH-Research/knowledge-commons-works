@@ -4,6 +4,16 @@
       "en"
     ]
   },
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=10.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "fsevents"
+    ]
+  },
   "devDependencies": {
     "@artsy/fresnel": "^6.1.0",
     "@babel/core": "^7.26.10",
@@ -45,6 +55,7 @@
     "semantic-ui-react": "^2.1.4"
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",

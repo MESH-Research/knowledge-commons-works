@@ -3,7 +3,7 @@
 # This image installs all Python dependencies for Knowledge Commons Works.
 # It's based
 # on Almalinux (https://github.com/inveniosoftware/docker-invenio)
-# and includes Pip, Pipenv, Node.js, NPM and some few standard libraries
+# and includes Pip, Pipenv, Node.js, Corepack/pnpm, npm (Invenio webpack), and standard libraries
 # Invenio usually needs.
 #
 # Note: It is important to keep the commands in this file in sync with your
@@ -57,6 +57,11 @@ RUN apt-get update && apt-get install -y \
     && apt-get update \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
+
+# pnpm via Corepack (matches root package.json packageManager). Invenio
+# `webpack install` / build may still invoke npm internally.
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 
 # Configure npm to install packages locally
 RUN npm config set prefix '/opt/invenio/src/node_modules' && \
