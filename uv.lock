@@ -2547,14 +2547,17 @@ name = "invenio-modular-deposit-form"
 version = "0.3.4.dev0"
 source = { editable = "site/kcworks/dependencies/invenio-modular-deposit-form" }
 dependencies = [
-    { name = "invenio-app-rdm" },
+    { name = "invenio-app-rdm", extra = ["opensearch2"] },
+    { name = "marshmallow-utils" },
+    { name = "setuptools" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "furo", marker = "extra == 'docs'", specifier = ">=2023" },
-    { name = "invenio-app-rdm", specifier = "<14" },
+    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "<14" },
     { name = "linkify-it-py", marker = "extra == 'docs'", specifier = ">=0.2" },
+    { name = "marshmallow-utils", specifier = ">=0.12" },
     { name = "mypy", marker = "extra == 'tests'", specifier = ">=1.8" },
     { name = "myst-parser", marker = "extra == 'docs'", specifier = ">=2" },
     { name = "pytest", marker = "extra == 'tests'", specifier = ">=7.3.2" },
@@ -2567,6 +2570,7 @@ requires-dist = [
     { name = "requests-mock", marker = "extra == 'tests'" },
     { name = "ruff", marker = "extra == 'tests'", specifier = ">=0.3" },
     { name = "selenium", marker = "extra == 'tests'" },
+    { name = "setuptools", specifier = ">=61,<82" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=7" },
     { name = "sphinx-copybutton", marker = "extra == 'docs'", specifier = ">=0.5" },
     { name = "sphinx-design", marker = "extra == 'docs'", specifier = ">=0.3" },
