@@ -4,7 +4,7 @@
 
 These instructions allow you to run Knowledge Commons Works for local development. The app source files are copied onto your system, but the Flask application and other services (database, search, etc.) are run in Docker containers. The application is served to your browser by an nginx web server running in a separate container.
 
-First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+) and Python (3.12.0+). You will also need to have Python's `uv` package manager installed (see [the uv docs](https://docs.astral.sh/uv/getting-started/installation/) for details). If you are going to run frontend development tests you will also need to have Node.js (20+) and npm (10.9.0+) installed.
+First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+) and Python (3.12.0+). You will also need to have Python's `uv` package manager installed (see [the uv docs](https://docs.astral.sh/uv/getting-started/installation/) for details). If you are going to run **frontend / JavaScript tests** against the root `package.json`, install **Node.js (20+)** and enable **Corepack** (bundled with Node) once per Node install: `corepack enable`. The repo uses **[pnpm](https://pnpm.io/)**; the exact version is set in **`package.json`** as **`packageManager`**. Install dependencies with **`pnpm install`** from the repository root (see `pnpm-lock.yaml`).
 
 From there, installation involves these steps. Each one is further explained below, but here is a quick reference:
 

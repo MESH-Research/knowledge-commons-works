@@ -100,18 +100,23 @@ Pytest does not directly test custom javascript files or React components. In or
 ```console
 bash run-js-tests.sh
 ```
-These tests are run using the jest test runner, configured in the packages.json file in the root knowledge-commons-works folder.
+These tests are run using the Jest test runner, configured in the root `package.json` file.
 
-This is equivalent to running
-```console
-npm run test
-```
-
-Note that these tests run using a local npm configuration in the knowledge-commons-works folder. Any packages that are normally available to InvenioRDM must be added to the local package.json configuration and will be installed in the local node_modules folder. Since this folder is not included in GIT version control, before you run the javascript tests you must ensure the required packages are installed locally by running
+Enable **Corepack** once per Node.js install (`corepack enable`) so the **`pnpm`** CLI matches the version pinned in **`packageManager`**. Installing dependencies is equivalent to running:
 
 ```console
-npm install
+pnpm install
 ```
+
+For CI and reproducible installs, use **`pnpm install --frozen-lockfile`** with the committed **`pnpm-lock.yaml`**.
+
+This is equivalent to running:
+
+```console
+pnpm run test
+```
+
+Note that these tests use a **local pnpm** setup in the knowledge-commons-works folder. Any packages that are normally available to InvenioRDM must be added to the local `package.json` and will be installed under `node_modules`. Since that folder is not included in git, run **`pnpm install`** in the repo root before you run the JavaScript tests.
 
 ## Ghost Inspector tests
 
