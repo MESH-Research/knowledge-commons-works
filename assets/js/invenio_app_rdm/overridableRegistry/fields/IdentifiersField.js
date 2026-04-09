@@ -49,7 +49,7 @@ export const IdentifiersField = ({
   const addButtonLabel = i18next.t("Add identifier");
 
   useEffect(() => {
-    if (!!haveChangedNumber) {
+    if (haveChangedNumber) {
       if (identifiersLength < 0) {
         document.getElementById(`${fieldPath}.add-url-button`)?.focus();
       } else {
@@ -142,7 +142,7 @@ export const IdentifiersField = ({
                   label={!isUrl ? i18next.t("Identifier") : i18next.t("URL")}
                   required={!isUrl && hasScheme}
                   id={`${fieldPathPrefix}.identifier`}
-                  width={!!isUrl ? 14 : 9}
+                  width={isUrl ? 14 : 9}
                   fluid={false}
                   onBlur={(e) => {
                     filterEmptyIdentifiers(e);

@@ -119,8 +119,8 @@ InvitationResultItem.propTypes = {
 };
 
 const dataAttr = document.getElementById("community-invitations-search-root")?.dataset;
-const community = !!dataAttr ? JSON.parse(dataAttr.community) : {};
-const communitiesRolesCanInvite = !!dataAttr ? JSON.parse(dataAttr.communitiesRolesCanInvite) : {};
+const community = dataAttr ? JSON.parse(dataAttr.community) : {};
+const communitiesRolesCanInvite = dataAttr ? JSON.parse(dataAttr.communitiesRolesCanInvite) : {};
 
 const InvitationResultItemWithConfig = parametrize(InvitationResultItem, {
   config: { rolesCanInvite: communitiesRolesCanInvite },

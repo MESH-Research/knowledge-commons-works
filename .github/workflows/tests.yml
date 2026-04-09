@@ -48,6 +48,8 @@ jobs:
         with:
           node-version: 20.x
           cache: pnpm
+      - name: Enable Corepack (pnpm from package.json packageManager)
+        run: corepack enable
       - name: Create config files
         run: |
           echo "[cli]" >> .invenio.private && \
@@ -83,17 +85,14 @@ jobs:
       # - name: Run translations test
       #   run: ./run-i18n-tests.sh
       - name: Install deps for frontend tests
-        # TODO: Add frontend tests
-        # - name: Run eslint test
-        #   run: ./run-js-linter.sh -i
-
         working-directory: .
-        run: |
-          corepack enable
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
+      - name: Lint JavaScript
+        working-directory: .
+        run: pnpm run lint
       # - name: Install deps for frontend tests - translations
       #   working-directory: ./translations/kcworks
-      #   run: npm install
+      #   run: pnpm install --frozen-lockfile
       - name: Run frontend tests
         working-directory: .
         run: |-

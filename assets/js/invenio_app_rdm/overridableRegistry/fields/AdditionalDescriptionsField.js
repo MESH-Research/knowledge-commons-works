@@ -63,7 +63,7 @@ const AdditionalDescriptionsField = ({ fieldPath, options, recordUI = {}, editor
   // Timeout is necessary to ensure that the textarea is focused after the new row
   // is added
   useLayoutEffect(() => {
-    if (!!haveChangedNumber) {
+    if (haveChangedNumber) {
       if (descriptionsLength < 0) {
         document.getElementById(`${fieldPath}.add-button`)?.focus();
       } else {

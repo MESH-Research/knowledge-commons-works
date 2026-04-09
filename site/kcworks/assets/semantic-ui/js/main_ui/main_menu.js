@@ -218,7 +218,7 @@ const LoginMenu = ({
   return (
     !!accountsEnabled &&
     (!userAuthenticated ? (
-      <form class="mt-0">
+      <form className="mt-0">
         <a href={loginURL} className="ui basic button" tabIndex={tabIndex}>
           <i className="fitted sign-in icon"></i>
           {i18next.t("Log in")}
@@ -414,7 +414,7 @@ const MainMenu = ({
 
         {/* "Main" menu, including collections */}
         {mainItems.map((item, index) =>
-          !!item.children ? (
+          item.children ? (
             <div className="item" key={index}>
               <SubMenu item={item} index={0} />
             </div>

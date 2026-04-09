@@ -1,0 +1,8 @@
+node_modules
+.venv
+coverage
+pnpm-lock.yaml
+**/node_modules
+site/kcworks/dependencies
+invenio-app-rdm-master
+invenio-rdm-records-master

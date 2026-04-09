@@ -10,7 +10,7 @@
 - **Python tests**: Run using `./run-tests.sh`. Before running Python tests, always ask the user whether they want to run them (do not run automatically).
 
 ## JavaScript (root project)
-Use **[pnpm](https://pnpm.io/)** for the repository root `package.json` (not `npm install`). The root **`packageManager`** field pins the pnpm version; **`preinstall`** rejects other package managers; **`.npmrc`** sets **`engine-strict=true`**.
+Use **[pnpm](https://pnpm.io/)** for the repository root `package.json` (not `npm install`). The root **`packageManager`** field pins the pnpm version; **`preinstall`** rejects other package managers; Use *only* the Node/pnpm versions in root **`package.json`** `engines`.
 
 **One-time per Node.js install:** enable Corepack (ships with Node 18+) so `pnpm` matches the pinned version:
 

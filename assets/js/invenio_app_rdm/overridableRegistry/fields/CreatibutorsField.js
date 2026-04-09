@@ -244,12 +244,12 @@ const CreatibutorsField = ({
         setFieldTouched(`${fieldPath}.${i}.role`, true);
         for (let j = 0; j < getIn(values, `${fieldPath}.${i}.affiliations`, []).length; j++) {
           setFieldTouched(`${fieldPath}.${i}.affiliations.${j}.name`, true);
-        };
+        }
         for (let j = 0; j < getIn(values, `${fieldPath}.${i}.person_or_org.identifiers`, []).length; j++) {
           setFieldTouched(`${fieldPath}.${i}.person_or_org.identifiers.${j}.identifier`, true);
           setFieldTouched(`${fieldPath}.${i}.person_or_org.identifiers.${j}.scheme`, true);
-        };
-      };
+        }
+      }
     }
   };
 
@@ -258,7 +258,7 @@ const CreatibutorsField = ({
     handleCloseForm(undefined, index, "cancel");
     if ( newItemIndex === index ) {
       removeFunc(index);
-    };
+    }
     setNewItemIndex(-1);
   };
 
@@ -311,6 +311,7 @@ const CreatibutorsField = ({
               const displayName = creatibutorNameDisplay(value);
               return (
                 <CreatibutorsFieldItem
+                  key={fieldPathPrefix}
                   {...otherProps}
                   {...{
                     addCreatibutor: arrayHelpers.push,
@@ -332,7 +333,6 @@ const CreatibutorsField = ({
                     index,
                     isNewItem: newItemIndex === index,
                     itemError: creatibutorsError ? error?.[index] : null,
-                    key: index,
                     moveCreatibutor: arrayHelpers.move,
                     removeCreatibutor: arrayHelpers.remove,
                     replaceCreatibutor: arrayHelpers.replace,

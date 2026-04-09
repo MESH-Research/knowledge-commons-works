@@ -99,22 +99,22 @@ const CreatibutorsFieldItem = ({
 
   function getErrorMessages(itemErrors) {
     let errorMessages = [];
-    if ( typeof itemErrors === "array" ) {
+    if (Array.isArray(itemErrors)) {
       itemErrors.forEach((error) => {
         errorMessages.push(...getErrorMessages(error));
       });
     } else if ((typeof itemErrors === "object") && (Object.keys(itemErrors).length > 0)) {
       for ( const [key, value] of Object.entries(itemErrors)) {
-        if (["object", "array"].includes(typeof value)) {
+        if (value !== null && typeof value === "object") {
           errorMessages.push(...getErrorMessages(value));
         } else if (typeof value === "string") {
           errorMessages.push(value);
-        };
-      };
-    };
+        }
+      }
+    }
     return errorMessages;
-  };
-  const errorMessages = !!itemError ? getErrorMessages(itemError) : [];
+  }
+  const errorMessages = itemError ? getErrorMessages(itemError) : [];
 
   // Initialize the ref explicitely
   drop(dropRef);
@@ -240,7 +240,9 @@ const CreatibutorsFieldItem = ({
             {errorMessages.length > 0 && !showEditForms.includes(index) && (
               <Label pointing prompt>
                 <List>
-                  {errorMessages.map(e => <List.Item>{e}</List.Item>)}
+                  {errorMessages.map((e, errIdx) => (
+                    <List.Item key={`${fieldPathPrefix}-err-${errIdx}`}>{e}</List.Item>
+                  ))}
                 </List>
               </Label>
             )}

@@ -127,7 +127,7 @@ const RequestMetadata = ({ request }) => {
 
   const userToClear = shouldClear(request);
 
-  if (!!userToClear) {
+  if (userToClear) {
 
     const apiConfig = {
       withCredentials: true,

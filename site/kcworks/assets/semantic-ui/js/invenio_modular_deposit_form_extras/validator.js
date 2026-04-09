@@ -34,7 +34,7 @@ addMethod(yupString, "dateInSequence", function () {
     const { path, createError } = this;
     let outOfSequence = false;
 
-    if (!!value) {
+    if (value) {
       const dateParts = value.split("/");
       if (dateParts?.length > 1) {
         const aDate = new Date(dateParts[0]);

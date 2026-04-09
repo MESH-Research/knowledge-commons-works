@@ -36,10 +36,9 @@ const RequestActions = ({ request, actions, size }) => {
       <MediaContextProvider>
         <Media greaterThanOrEqual="tablet" className="media-inline-block">
           {actions.map((action) => (
-            <I18nextProvider i18n={i18n_requests}>
+            <I18nextProvider key={action} i18n={i18n_requests}>
               <RequestAction
                 action={action}
-                key={action}
                 requestType={request.type}
                 size={size}
               />
@@ -58,9 +57,8 @@ const RequestActions = ({ request, actions, size }) => {
             <Dropdown.Menu>
               {actions.map((action) => {
                 return (
-                  <I18nextProvider i18n={i18n_requests}>
+                  <I18nextProvider key={action} i18n={i18n_requests}>
                     <RequestAction
-                      key={action}
                       action={action}
                       requestType={request.type}
                     />

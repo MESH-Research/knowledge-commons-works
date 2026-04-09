@@ -56,7 +56,7 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
   const [haveChangedNumber, setHaveChangedNumber] = useState(false);
 
   useEffect(() => {
-    if (!!haveChangedNumber) {
+    if (haveChangedNumber) {
       if (titlesLength < 0) {
         document.getElementById(`${fieldPath}.add-translated-button`)?.focus();
       } else {

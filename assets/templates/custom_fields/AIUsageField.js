@@ -32,7 +32,7 @@ const AIUsageField = ({
         value={getIn(values, `${fieldPath}.ai_used`, false)}
         initialValue={getIn(values, `${fieldPath}.ai_used`, false)}
       />
-      {!!values.custom_fields
+      {values.custom_fields
         ? values.custom_fields["kcr:ai_usage"]?.ai_used === true && (
             <TextArea
               fieldPath={`${fieldPath}.ai_description`}

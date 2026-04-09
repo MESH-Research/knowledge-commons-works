@@ -126,7 +126,7 @@ const CommunityDetailsHeader = ({
 			url: `/uploads/new?community=${slug}`,
 		},
 	];
-	if (!!hasCurationPolicyContent) {
+	if (hasCurationPolicyContent) {
 		all_menu_items = [
 			...all_menu_items.slice(0, 1),
 			{
@@ -139,7 +139,7 @@ const CommunityDetailsHeader = ({
 			...all_menu_items.slice(1),
 		];
 	}
-	if (!!hasAboutContent) {
+	if (hasAboutContent) {
 		all_menu_items = [
 			{
 				name: "about",
@@ -234,7 +234,7 @@ const CommunityDetailsHeader = ({
 														"profile",
 													)}`}
 													title={`${org.name}'s ROR ${i18next.t("profile")}`}
-													target="_blank"
+													target="_blank" rel="noreferrer"
 												>
 													<img
 														className="inline-id-icon"
@@ -312,6 +312,7 @@ const CommunityDetailsHeader = ({
 						</a>
 					) : (
 						<CollapsingMenuItem
+							key={item.name}
 							text={item.text}
 							icon={item.icon}
 							url={item.url}

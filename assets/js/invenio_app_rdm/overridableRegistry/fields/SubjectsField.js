@@ -44,7 +44,7 @@ const SubjectsField = ({
     const subs = subjects.map((subject) => {
       const scheme = subject.scheme ? `(${subject.scheme}) ` : "";
       return {
-        text: !!hideSchemeLabels ? subject.subject : scheme + subject.subject,
+        text: hideSchemeLabels ? subject.subject : scheme + subject.subject,
         value: subject.subject,
         key: subject.subject,
         ...(subject.id ? { id: subject.id } : {}),

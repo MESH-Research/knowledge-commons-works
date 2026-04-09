@@ -43,7 +43,7 @@ const RelatedWorksField = ({
   const [haveChangedNumber, setHaveChangedNumber] = useState(false);
 
   useEffect(() => {
-    if (!!haveChangedNumber) {
+    if (haveChangedNumber) {
       if (relatedWorksLength < 0) {
         document.getElementById(`${fieldPath}.add-button`)?.focus();
       } else {

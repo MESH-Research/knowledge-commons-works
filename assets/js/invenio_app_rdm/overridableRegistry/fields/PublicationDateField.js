@@ -113,7 +113,7 @@ const PublicationDateField = ({
     let newDateValue = [yearValue, monthValue, dayValue]
       .filter((v) => !!v)
       .join("-");
-    if (!!endYearValue) {
+    if (endYearValue) {
       newDateValue +=
         "/" +
         [endYearValue, endMonthValue, endDayValue]
