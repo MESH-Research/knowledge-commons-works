@@ -12,8 +12,8 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-python@a26af69 # v5.6.0
       - name: Install dependencies
         run: |
           pip install sphinx furo myst-parser sphinx-copybutton
@@ -21,7 +21,7 @@ jobs:
         run: |
           sphinx-build docs/source docs/build
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@4f9cc66 # v4.0.0
         if: github.ref == 'refs/heads/main'
         with:
           publish_branch: gh_pages
