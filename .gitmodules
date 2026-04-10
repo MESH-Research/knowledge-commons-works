@@ -16,7 +16,7 @@
 	branch = main
 [submodule "site/kcworks/dependencies/invenio-modular-deposit-form"]
 	path = site/kcworks/dependencies/invenio-modular-deposit-form
-	url = git@github.com:MESH-Research/invenio-modular-deposit-form.git
+	url = https://github.com/MESH-Research/invenio-modular-deposit-form.git
 	branch = main
 [submodule "site/kcworks/dependencies/invenio-modular-detail-page"]
 	path = site/kcworks/dependencies/invenio-modular-detail-page
@@ -24,7 +24,7 @@
 	branch = main
 [submodule "site/kcworks/dependencies/invenio-remote-user-data-kcworks"]
 	path = site/kcworks/dependencies/invenio-remote-user-data-kcworks
-	url = git@github.com:MESH-Research/invenio-remote-user-data-kcworks.git
+	url = https://github.com/MESH-Research/invenio-remote-user-data-kcworks.git
 	branch = main
 [submodule "site/kcworks/dependencies/invenio-group-collections-kcworks"]
 	path = site/kcworks/dependencies/invenio-group-collections-kcworks
@@ -40,5 +40,5 @@
 	branch = main
 [submodule "tests/fixtures"]
 	path = tests/fixtures
-	url = git@github.com:MESH-Research/kcworks-test-fixtures.git
+	url = https://github.com/MESH-Research/kcworks-test-fixtures.git
 	branch = dev/cilogon-merge
