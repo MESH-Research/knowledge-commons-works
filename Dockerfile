@@ -1,10 +1,9 @@
 # Dockerfile that builds a fully functional image of Knowledge Commons Works
 #
 # This image installs all Python dependencies for Knowledge Commons Works.
-# It's based
-# on Almalinux (https://github.com/inveniosoftware/docker-invenio)
-# and includes Pip, Pipenv, Node.js, Corepack/pnpm, npm (Invenio webpack), and standard libraries
-# Invenio usually needs.
+# It's based on Debian Bookworm (via ghcr.io/astral-sh/uv) and includes
+# Python/uv, Node.js, Corepack/pnpm (Invenio webpack via PNPMPackage), and
+# standard libraries Invenio usually needs.
 #
 # Note: It is important to keep the commands in this file in sync with your
 # bootstrap script located in ./scripts/bootstrap.
@@ -58,17 +57,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# pnpm via Corepack (matches root package.json packageManager). Invenio
-# `webpack install` / build may still invoke npm internally.
+# pnpm via Corepack (matches root package.json packageManager).
+# invenio webpack install uses PNPMPackage (WEBPACKEXT_NPM_PKG_CLS in invenio.cfg).
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 
-# Configure npm to install packages locally
-RUN npm config set prefix '/opt/invenio/src/node_modules' && \
-    npm config set global false
-
 # Copy all source files needed for dependencies and webpack
-COPY . .
+COPY --chown=invenio:invenio . .
 
 # Install python dependencies in virtual environment
 RUN uv venv && \
@@ -109,5 +104,12 @@ RUN . .venv/bin/activate && \
     invenio webpack install && \
     invenio shell /opt/invenio/src/scripts/symlink_assets.py && \
     invenio webpack build
+
+# Drop to non-root user for runtime. All installs and file copies above run as
+# root; ownership is fixed via COPY --chown and chown below.
+RUN useradd --system --create-home --home-dir /opt/invenio \
+        --shell /usr/sbin/nologin invenio \
+    && chown -R invenio:invenio /opt/invenio
+USER invenio
 
 ENTRYPOINT ["/bin/bash", "-c"]
