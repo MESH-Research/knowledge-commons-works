@@ -1,5 +1,5 @@
-# Ignore local virtualenv (if present)
-.venv
+# Ignore local virtualenv (if present) — root and under dependency checkouts
+**/.venv
 
 # Python bytecode and compiled files
 __pycache__/
@@ -8,13 +8,24 @@ __pycache__/
 .Python
 *.so
 
-# Private files
+# Private / secrets — dotenv-style files anywhere (do not bake into images)
+.env
+**/.env
 .env*
 **/.env*
+**/.envrc
+
 .invenio.private*
 docker/nginx_local/samlPrivateKey.key
 docker/nginx_local/samlCertificate.key
 docker-compose*
+
+# Node — reinstalled during image build; huge if copied from dev machines
+node_modules
+**/node_modules
+
+# pnpm content-addressable store inside dependency checkouts
+**/.pnpm-store
 
 # Cache directories
 .mypy_cache/
@@ -23,6 +34,10 @@ docker-compose*
 **/.pytest_cache/
 .ruff_cache/
 **/.ruff_cache/
+**/.coverage
+htmlcov/
+**/htmlcov/
+**/.tox
 
 # Git and vscode directories
 .git/
@@ -56,3 +71,15 @@ static/templates
 static/vendor
 static/xsl
 
+# Tests & docs — not used by Dockerfile (uv sync + webpack); CI uses full checkout
+tests/
+docs/
+docs/private/
+
+# Path dependencies under site/kcworks/dependencies: tests, nested fixtures, docs,
+# and legacy nested submodule dirs (monorepo uses sibling ../ peers; Docker only needs uv+webpack)
+site/kcworks/dependencies/**/tests/
+site/kcworks/dependencies/**/tests/fixtures/
+site/kcworks/dependencies/**/docs/
+site/kcworks/dependencies/**/invenio_record_importer_kcworks/dependencies/
+site/kcworks/dependencies/**/invenio_group_collections_kcworks/dependencies/

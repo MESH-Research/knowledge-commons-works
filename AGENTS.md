@@ -1,5 +1,13 @@
 # AGENTS.md
 
+This file is the **canonical** reference for tooling and agent workflows. Cursor loads complementary rules from [`.cursor/rules/`](.cursor/rules/).
+
+## Security & secrets (agents)
+
+- **Do not read, search, or open** secret or environment files unless the user explicitly asks you to edit or audit those files. Examples: `.env`, `.env.*`, `.envrc`, `.invenio.private`, private keys under `docker/nginx_local/`, and other credential stores.
+- **Never** emit real secrets in chat, diffs, comments, or logs; use placeholders in examples.
+- If work requires a secret’s *presence* (e.g. “is `INVENIO_SECRET_KEY` set?”), reason from **names and docs**, not by opening the file.
+
 ## Python environment
 - **Package management**: This project uses [uv](https://github.com/astral-sh/uv) for Python package and virtualenv management. The root `.venv` is managed by uv.
 - **Installed packages**: Find installed Python packages in the root project's `.venv` (e.g. `./.venv/bin/pip list`, or `uv pip list` with the project venv, or inspect `.venv/lib/python*/site-packages/`). Use the project venv for running Python, linting, and tests.
@@ -30,7 +38,7 @@ Then from the repo root:
 - **JS/TS**: ES2020, camelCase vars, PascalCase components. Alphabetized imports.
 - **Types**: TypeScript interfaces for public API shapes; Python type checking via [ty](https://github.com/astral-sh/ty) (not mypy).
 - **Error Handling**: `try/catch` blocks, context-rich logs, never log secrets.
-- **Copilot/Cursor**: Check `.github/copilot-instructions.md` and `.cursor/rules/` for team rules.
+- **Cursor**: Project rules live in [`.cursor/rules/`](.cursor/rules/) (especially `project-agents.mdc`); keep them aligned when you change agent or security policy here.
 
 ## Agent Collaboration Rules
 - **Approval before edits**: The agent must explain the suspected root cause and proposed fix before making any code changes, and must get explicit user authorization before editing files.

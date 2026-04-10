@@ -69,6 +69,7 @@ coverage.xml
 
 # Sphinx documentation
 docs/build/
+docs/private/
 
 # PyBuilder
 # target/
@@ -109,8 +110,10 @@ site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 
 # Docker private environment variables
 .env
+**/.env
 .env.private
 .env-tests
+.envrc
 
 # S3 default bucket location
 data/default/*

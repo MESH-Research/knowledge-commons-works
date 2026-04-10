@@ -1,0 +1,26 @@
+---
+description: KC Works agent collaboration, security, and alignment with AGENTS.md
+alwaysApply: true
+---
+
+# KC Works — agent rules (harmonized with AGENTS.md)
+
+Canonical **commands and toolchain** (uv, pnpm, ruff, ty, test scripts) live in the repository root **`AGENTS.md`**. Follow that file for install, build, lint, and test invocation.
+
+## Secrets and local credentials
+
+- **Do not read, search, or open** environment or secret files except when the user explicitly asks you to work on those files. This includes: `.env`, `.env.*`, `.envrc`, `.invenio.private`, `*.pem`, `*.key`, SAML keys under `docker/nginx_local/`, cloud credential files, and similar.
+- **Never** paste secret values, tokens, or passwords into chat, commits, logs, or code. If configuration examples are needed, use placeholders (e.g. `YOUR_SECRET_HERE`).
+- Prefer documenting **variable names** and where to set them, not real values.
+
+## Collaboration
+
+- Explain suspected root cause and proposed fix **before** editing; get **explicit approval** before substantive code changes when the task is ambiguous or high-risk.
+- Prefer the **smallest** fix that addresses the request; avoid speculative refactors.
+- For **submodules**: run `git log`, `git status`, etc. from the **submodule** repository root when inspecting history of files inside that submodule, unless the user asks otherwise.
+
+## Style and tooling
+
+- **Python**: PEP 8, type hints, imports at top (stdlib → third-party → local).
+- **JS/TS**: ES2020, camelCase / PascalCase, alphabetized imports where consistent with the file.
+- **Error handling**: meaningful context in logs; never log secrets.
