@@ -1,6 +1,13 @@
-// kcworks override for the community selection search in the deposit modal.
-// Reintroduces ResultsList.item parametrization with a kcworks-specific list item
-// that uses CommunityCompactItem from @js/kcworks/collections/...
+// This file is part of Invenio-RDM-Records
+// Copyright (C) 2020-2023 CERN.
+// Copyright (C) 2020-2022 Northwestern University.
+//
+// Customized for Knowledge Commons Works
+// Copyright (C) 2024 Mesh Research
+//
+// Invenio-RDM-Records and Knowledge Commons Works are free software;
+// you can redistribute and/or modify them under the terms of the MIT License;
+// see LICENSE file for more details.
 
 import { i18next } from "@translations/invenio_modular_deposit_form/i18next";
 import React, { Component, useState, useEffect, useRef } from "react";
@@ -15,62 +22,9 @@ import {
   ResultsLoader,
   withState,
 } from "react-searchkit";
-import { Grid, Input, Menu, Modal, Button, Icon, Label } from "semantic-ui-react";
-import _capitalize from "lodash/capitalize";
-import { CommunityCompactItem } from "@js/kcworks/collections/community/communitiesItems/CommunityCompactItem";
-import { CommunityContext } from "@js/invenio_rdm_records/src/deposit/components/CommunitySelectionModal/CommunityContext";
+import { Grid, Input, Menu, Modal } from "semantic-ui-react";
+import { CommunityListItem } from "./CommunityListItem";
 import PropTypes from "prop-types";
-
-const KcworksCommunityListItem = ({ result, permissionsPerField }) => {
-  const {
-    setLocalCommunity,
-    getChosenCommunity,
-    userCommunitiesMemberships,
-    displaySelected,
-  } = React.useContext(CommunityContext);
-
-  const { metadata } = result;
-  const itemSelected = getChosenCommunity()?.id === result.id;
-  const userMembership = userCommunitiesMemberships[result["id"]];
-
-  const actions = (
-    <Button
-      content={
-        displaySelected && itemSelected ? i18next.t("Selected") : i18next.t("Select")
-      }
-      size="small"
-      positive={displaySelected && itemSelected}
-      onClick={() => setLocalCommunity(result)}
-      aria-label={i18next.t("Select {{title}}", { title: metadata.title })}
-    />
-  );
-
-  const extraLabels = userMembership && (
-    <Label size="small" horizontal color="teal">
-      <Icon name="key" />
-      {_capitalize(userMembership)}
-    </Label>
-  );
-
-  return (
-    <CommunityCompactItem
-      result={result}
-      actions={actions}
-      extraLabels={extraLabels}
-      showPermissionLabel
-      permissionsPerField={permissionsPerField}
-    />
-  );
-};
-
-KcworksCommunityListItem.propTypes = {
-  result: PropTypes.object.isRequired,
-  permissionsPerField: PropTypes.object,
-};
-
-KcworksCommunityListItem.defaultProps = {
-  permissionsPerField: undefined,
-};
 
 const Element = ({
   actionProps,
@@ -117,7 +71,7 @@ const CommunitySearchBarElement = ({
 
   const executeSearch = () => {
     // Allow for '/' in query string, e.g. for ARLIS/NA
-    currentQueryState["queryString"] = currentValue.replace('/', '%2F');
+    currentQueryState["queryString"] = currentValue.replace("/", "%2F");
     // FIXME: Hack to remove sortBy from currentQueryState to avoid it
     // constantly reverting to "newest" when searching from deposit form.
     currentQueryState["sortBy"] = null;
@@ -175,24 +129,20 @@ export class CommunitySelectionSearch extends Component {
         toggleText,
       },
     } = this.state;
-
     const {
       apiConfigs: { allCommunities, myCommunities },
       record,
       isInitialSubmission,
       permissionsPerField,
     } = this.props;
-
     const searchApi = new InvenioSearchApi(selectedsearchApi);
-
     const overriddenComponents = {
-      [`${selectedAppId}.ResultsList.item`]: parametrize(KcworksCommunityListItem, {
+      [`${selectedAppId}.ResultsList.item`]: parametrize(CommunityListItem, {
         record: record,
         isInitialSubmission: isInitialSubmission,
         permissionsPerField: permissionsPerField,
       }),
     };
-
     return (
       <OverridableContext.Provider value={overriddenComponents}>
         <ReactSearchKit
@@ -304,6 +254,8 @@ CommunitySelectionSearch.propTypes = {
 };
 
 CommunitySelectionSearch.defaultProps = {
+  isInitialSubmission: true,
+  permissionsPerField: undefined,
   apiConfigs: {
     allCommunities: {
       initialQueryState: { size: 5, page: 1, sortBy: "bestmatch" },
@@ -329,4 +281,3 @@ CommunitySelectionSearch.defaultProps = {
     },
   },
 };
-

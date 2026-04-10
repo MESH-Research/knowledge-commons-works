@@ -17,7 +17,6 @@ import { i18next } from "@translations/i18next";
 //   OverrideResourceTypeComponent,
 //   OverrideSubmissionComponent,
 // } from "@js/invenio_modular_deposit_form/field_components/overridable";
-import { CommunitySelectionSearch as KcworksCommunitySelectionSearch } from "./collections/CommunitySelectionModal/CommunitySelectionSearch";
 // import { AccessRightField } from "./fields/AccessRightField";
 // import { CreatibutorsField } from "./fields/CreatibutorsField";
 import { ContribSearchAppFacets } from "@js/invenio_search_ui/components/common/facets";
@@ -166,5 +165,4 @@ export const overriddenComponents = {
   "InvenioRequests.RequestActions.layout": RequestActions,
   "InvenioRequest.RequestMetadata.Layout": RequestMetadata,
   // "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,
-  "InvenioRdmRecords.CommunityHeader.CommunitySelectionSearch": KcworksCommunitySelectionSearch,
 };

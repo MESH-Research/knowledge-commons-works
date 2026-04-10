@@ -1,4 +1,5 @@
 import { AdminMetadataComponent } from "./components/AdminMetadataComponent";
+import { CommunitiesAlternateComponent } from "./components/CommunitiesAlternateComponent";
 import { AIComponent } from "./components/AIComponent";
 import { ChapterLabelComponent } from "./components/ChapterLabelComponent";
 import { CommonsLegacyInfoComponent } from "./components/CommonsLegacyInfoComponent";
@@ -19,6 +20,7 @@ import { SponsoringInstitutionComponent } from "./components/SponsoringInstituti
 import { VolumeComponent } from "./components/VolumeComponent";
 
 const componentsRegistry = {
+  CommunitiesAlternateComponent: [CommunitiesAlternateComponent, []],
   AdminMetadataComponent: [
     AdminMetadataComponent,
     ["kcr:commons_domain", "kcr:submitter_email", "kcr:submitter_username"],
