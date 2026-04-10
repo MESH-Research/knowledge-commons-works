@@ -77,34 +77,34 @@
   }
 }
 
-.ui.form {
-  #rdm-deposit-form {
-    .ui.grid {
-      margin-top: 0;
-
-      .row {
-        &.deposit-form-title {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-      }
-    }
-    .column {
-      &.justify-space-between {
-        justify-content: space-between;
-      }
-      &.storage-col {
-        padding-top: 0;
-        padding-bottom: 1rem;
-      }
-    }
-    fieldset.communities {
-      .ui.grid {
-        margin-bottom: 0;
-      }
-    }
-  }
-}
+// .ui.form {
+//   #rdm-deposit-form {
+//     .ui.grid {
+//       margin-top: 0;
+//
+//       .row {
+//         &.deposit-form-title {
+//           flex-direction: column;
+//           align-items: flex-start;
+//         }
+//       }
+//     }
+//     .column {
+//       &.justify-space-between {
+//         justify-content: space-between;
+//       }
+//       &.storage-col {
+//         padding-top: 0;
+//         padding-bottom: 1rem;
+//       }
+//     }
+//     fieldset.communities {
+//       .ui.grid {
+//         margin-bottom: 0;
+//       }
+//     }
+//   }
+// }
 
 .ui.grid {
   .row {

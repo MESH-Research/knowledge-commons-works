@@ -386,43 +386,43 @@
   }
 }
 
-#deposit-form .ui.form .formpageWrapper fieldset.ui.segment {
-  .add-btn {
-    margin: -0.5em 0.5em 0 0;
-    font-weight: normal;
-  }
-
-  &.creators {
-    .ui.form .creatibutors-identifiers-add-button {
-      margin-top: 0;
-      margin-bottom: 0.5rem;
-    }
-    .creatibutors-item-form-buttons {
-      justify-content: space-between;
-      background-color: @sidebarBackgroundColor;
-    }
-    &.error .creatibutors-item-form-buttons {
-      border: 1px solid @errorColor;
-      border-top: 0;
-    }
-
-  }
-
-  &.licenses {
-    .add-btn {
-      margin-top: 0;
-    }
-  }
-
-  &.communities {
-    .fields {
-      .ui.icon.button.close-btn {
-        margin-top: 0;
-        float: none;
-      }
-      .right-btn-column {
-        text-align: right;
-      }
-    }
-  }
-}
+// #deposit-form .ui.form .formpageWrapper fieldset.ui.segment {
+//   .add-btn {
+//     margin: -0.5em 0.5em 0 0;
+//     font-weight: normal;
+//   }
+//
+//   &.creators {
+//     .ui.form .creatibutors-identifiers-add-button {
+//       margin-top: 0;
+//       margin-bottom: 0.5rem;
+//     }
+//     .creatibutors-item-form-buttons {
+//       justify-content: space-between;
+//       background-color: @sidebarBackgroundColor;
+//     }
+//     &.error .creatibutors-item-form-buttons {
+//       border: 1px solid @errorColor;
+//       border-top: 0;
+//     }
+//
+//   }
+//
+//   &.licenses {
+//     .add-btn {
+//       margin-top: 0;
+//     }
+//   }
+//
+//   &.communities {
+//     .fields {
+//       .ui.icon.button.close-btn {
+//         margin-top: 0;
+//         float: none;
+//       }
+//       .right-btn-column {
+//         text-align: right;
+//       }
+//     }
+//   }
+// }

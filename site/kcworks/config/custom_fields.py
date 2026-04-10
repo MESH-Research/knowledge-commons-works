@@ -1,0 +1,252 @@
+# Part of Knowledge Commons Works
+# Copyright (C) 2023-2026 MESH Research
+#
+# Knowledge Commons Works is built on an instance of InvenioRDM
+# Copyright (C) CERN
+#
+# KCWorks is free software; you can redistribute it and/or modify it under the
+# terms of the MIT License; see LICENSE file for more details.
+
+"""Record and community custom field definitions for KCWorks."""
+
+from invenio_i18n import lazy_gettext as _
+from invenio_rdm_records.contrib.codemeta import (
+    CODEMETA_CUSTOM_FIELDS,
+    CODEMETA_NAMESPACE,
+)
+from invenio_rdm_records.contrib.imprint import (
+    IMPRINT_CUSTOM_FIELDS,
+    IMPRINT_NAMESPACE,
+)
+from invenio_rdm_records.contrib.journal import (
+    JOURNAL_CUSTOM_FIELDS,
+    JOURNAL_NAMESPACE,
+)
+from invenio_rdm_records.contrib.meeting import (
+    MEETING_CUSTOM_FIELDS,
+    MEETING_NAMESPACE,
+)
+from invenio_rdm_records.contrib.thesis import (
+    THESIS_CUSTOM_FIELDS,
+    THESIS_CUSTOM_FIELDS_UI,
+    THESIS_NAMESPACE,
+)
+from invenio_records_resources.services.custom_fields import TextCF
+
+from invenio_stats_dashboard.records.communities.custom_fields.custom_fields import (
+    COMMUNITIES_NAMESPACES as STATS_COMMUNITIES_NAMESPACES,
+)
+from kcworks.metadata_fields.codemeta_fields import (
+    KCR_CODEMETA_CUSTOM_FIELDS_UI,
+)
+from kcworks.metadata_fields.hclegacy_groups_for_deposit import (
+    HCLEGACY_GROUPS_FOR_DEPOSIT_FIELD,
+)
+from kcworks.metadata_fields.hclegacy_metadata_fields import (
+    HCLEGACY_CUSTOM_FIELDS,
+    HCLEGACY_INFO_SECTION_UI,
+    HCLEGACY_NAMESPACE,
+)
+from kcworks.metadata_fields.imprint_fields import (
+    KCR_IMPRINT_CUSTOM_FIELDS_UI,
+)
+from kcworks.metadata_fields.journal_fields import (
+    KCR_JOURNAL_CUSTOM_FIELDS_UI,
+)
+from kcworks.metadata_fields.kcr_ai_field import (
+    KCR_AI_USAGE_FIELDS,
+    KCR_AI_USAGE_FIELDS_UI,
+)
+from kcworks.metadata_fields.kcr_media_field import (
+    KCR_MEDIA_FIELD,
+    KCR_MEDIA_SECTION_UI,
+)
+from kcworks.metadata_fields.kcr_metadata_fields import (
+    KCR_ADMIN_INFO_SECTION_UI,
+    KCR_CONTENT_WARNING_FIELD_UI,
+    KCR_COURSE_SECTION_UI,
+    KCR_CUSTOM_FIELDS,
+    KCR_IMPRINT_SECTION_EXTRAS_UI,
+    KCR_JOURNAL_SECTION_EXTRAS_UI,
+    KCR_MEETING_SECTION_EXTRAS_UI,
+    KCR_NAMESPACE,
+    KCR_PROJECT_SECTION_UI,
+    KCR_THESIS_SECTION_EXTRAS_UI,
+)
+from kcworks.metadata_fields.kcr_notes_fields import (
+    KCR_NOTES_FIELDS,
+    KCR_NOTES_SECTION_UI,
+)
+from kcworks.metadata_fields.kcr_series_field import (
+    KCR_SERIES_FIELDS,
+    KCR_SERIES_FIELDS_UI,
+)
+from kcworks.metadata_fields.kcr_user_tags_fields import (
+    KCR_USER_TAGS_FIELDS,
+    KCR_USER_TAGS_SECTION_UI,
+)
+from kcworks.metadata_fields.kcr_volumes_fields import (
+    KCR_VOLUMES_FIELDS,
+    KCR_VOLUMES_FIELDS_UI,
+)
+from kcworks.metadata_fields.meeting_fields import (
+    KCR_MEETING_CUSTOM_FIELDS_UI,
+)
+
+from .site_urls import SITE_UI_URL
+
+RDM_NAMESPACES = {
+    **JOURNAL_NAMESPACE,
+    **IMPRINT_NAMESPACE,
+    **THESIS_NAMESPACE,
+    **MEETING_NAMESPACE,
+    **CODEMETA_NAMESPACE,
+    **KCR_NAMESPACE,
+    **HCLEGACY_NAMESPACE,
+}
+
+RDM_CUSTOM_FIELDS = [
+    *JOURNAL_CUSTOM_FIELDS,
+    *MEETING_CUSTOM_FIELDS,
+    *IMPRINT_CUSTOM_FIELDS,
+    *THESIS_CUSTOM_FIELDS,
+    *CODEMETA_CUSTOM_FIELDS,
+    *KCR_CUSTOM_FIELDS,
+    *KCR_VOLUMES_FIELDS,
+    *KCR_MEDIA_FIELD,
+    *KCR_NOTES_FIELDS,
+    *KCR_USER_TAGS_FIELDS,
+    *HCLEGACY_CUSTOM_FIELDS,
+    *HCLEGACY_GROUPS_FOR_DEPOSIT_FIELD,
+    *KCR_AI_USAGE_FIELDS,
+    *KCR_SERIES_FIELDS,
+]
+
+RDM_CUSTOM_FIELDS_UI = [
+    THESIS_CUSTOM_FIELDS_UI,
+    {
+        "section": _("KCR thesis information"),
+        "hidden": False,
+        "fields": [
+            *KCR_THESIS_SECTION_EXTRAS_UI,
+        ],
+    },
+    KCR_JOURNAL_CUSTOM_FIELDS_UI,
+    {
+        "section": _("KCR journal information"),
+        "hidden": False,
+        "fields": [
+            *KCR_JOURNAL_SECTION_EXTRAS_UI,
+        ],
+    },
+    KCR_IMPRINT_CUSTOM_FIELDS_UI,
+    KCR_SERIES_FIELDS_UI,
+    {
+        "section": _("KCR Book information"),
+        "hidden": False,
+        "fields": [*KCR_IMPRINT_SECTION_EXTRAS_UI, *KCR_VOLUMES_FIELDS_UI],
+    },
+    KCR_MEETING_CUSTOM_FIELDS_UI,
+    {
+        "section": _("KCR Conference information"),
+        "fields": [*KCR_MEETING_SECTION_EXTRAS_UI],
+    },
+    {
+        "section": _("Content warning"),
+        "fields": [KCR_CONTENT_WARNING_FIELD_UI],
+    },
+    KCR_ADMIN_INFO_SECTION_UI,
+    KCR_MEDIA_SECTION_UI,
+    KCR_NOTES_SECTION_UI,
+    KCR_PROJECT_SECTION_UI,
+    KCR_USER_TAGS_SECTION_UI,
+    KCR_CODEMETA_CUSTOM_FIELDS_UI,
+    KCR_AI_USAGE_FIELDS_UI,
+    HCLEGACY_INFO_SECTION_UI,
+    KCR_COURSE_SECTION_UI,
+]
+
+# FIXME: provide proper namespace url
+COMMUNITIES_NAMESPACES = {
+    "kcr": f"{SITE_UI_URL}/terms/",
+    **STATS_COMMUNITIES_NAMESPACES,
+}
+
+COMMUNITIES_CUSTOM_FIELDS = [
+    TextCF(name="kcr:commons_instance"),
+    TextCF(name="kcr:commons_group_id"),
+    TextCF(name="kcr:commons_group_name"),
+    TextCF(name="kcr:commons_group_description"),
+    TextCF(name="kcr:commons_group_visibility"),
+    TextCF(name="kcr:commons_search_recid"),
+    TextCF(name="kcr:commons_search_updated"),
+    # *COMMUNITY_STATS_FIELDS,
+]
+
+COMMUNITIES_CUSTOM_FIELDS_UI = [
+    {
+        "section": "Linked Commons Group",
+        "hidden": False,
+        "description": "Information about a Commons group that owns the collection",
+        "fields": [
+            {
+                "field": "kcr:commons_group_name",
+                "ui_widget": "Input",
+                "props": {
+                    "label": "Commons Group Name",
+                    "placeholder": "",
+                    "icon": "",
+                    # "description": ("Name of the Commons group."),
+                    "disabled": True,
+                },
+            },
+            {
+                "field": "kcr:commons_group_description",
+                "ui_widget": "Input",
+                "props": {
+                    "label": "Commons Group Description",
+                    "placeholder": "",
+                    "icon": "",
+                    # "description": ("Description of the Commons group."),
+                    "disabled": True,
+                },
+            },
+            {
+                "field": "kcr:commons_group_id",
+                "ui_widget": "Input",
+                "props": {
+                    "label": "Commons Group ID",
+                    "placeholder": "",
+                    "icon": "",
+                    "disabled": True,
+                },
+            },
+            {
+                "field": "kcr:commons_instance",
+                "ui_widget": "Input",
+                "props": {
+                    "label": "Commons Instance",
+                    "placeholder": "",
+                    "icon": "",
+                    # "description": (
+                    #     "The Commons to which the group belongs (e.g., "
+                    #     "STEMEd+ Commons, MLA Commons, Humanities Commons)"
+                    # ),
+                    "disabled": True,
+                },
+            },
+            {
+                "field": "kcr:commons_group_visibility",
+                "ui_widget": "Input",
+                "props": {
+                    "label": "Commons Group Visibility",
+                    "placeholder": "",
+                    "icon": "",
+                    # "description": ("Visibility of the Commons group."),
+                    "disabled": True,
+                },
+            },
+        ],
+    },
+    # COMMUNITY_STATS_FIELDS_UI(),  # needs app context for defaults
+]

@@ -1,5 +1,5 @@
 # Part of Knowledge Commons Works
-# Copyright (C) 2023-2025 MESH Research
+# Copyright (C) 2023-2026 MESH Research
 #
 # KCWorks is free software; you can redistribute it and/or modify it under the
 # terms of the MIT License; see LICENSE file for more details.
@@ -299,7 +299,8 @@ def _static_token_before_request() -> None:
     # triggering user_logged_in (no login_user()).
     g._login_user = user
     identity_changed.send(
-        current_app._get_current_object(), identity=Identity(user.id)  # type: ignore
+        current_app._get_current_object(),
+        identity=Identity(user.id),  # type: ignore
     )
     # Provide the OAuth stand-in objects for the request.
     scopes = {sid for sid, _ in current_oauth2server.scope_choices()}
