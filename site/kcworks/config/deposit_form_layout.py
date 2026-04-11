@@ -130,6 +130,21 @@ _FORM_FOOTER = {
 }
 
 
+_LANGUAGE_FIELD = (
+    {
+        "section": "language",
+        "label": _("Languages"),
+        "component": "LanguagesComponent",
+        "placeholder": _("e.g., English, French, Swahili"),
+        "description": _(
+            "Search for the language(s) of the resource (e.g.,"
+            ' "en", "fre", "Swahili"). Press enter to '
+            "select each language."
+        ),
+    },
+)
+
+
 _FORM_PAGES = {
     "section": "pages",
     "component": "FormPages",
@@ -370,17 +385,7 @@ _FORM_PAGES = {
                     "show_heading": True,
                     "classnames": "basic",
                     "subsections": [
-                        {
-                            "section": "language",
-                            "label": _("Languages"),
-                            "component": "LanguagesComponent",
-                            "placeholder": _("e.g., English, French, Swahili"),
-                            "description": _(
-                                "Search for the language(s) of the resource (e.g.,"
-                                ' "en", "fre", "Swahili"). Press enter to '
-                                "select each language."
-                            ),
-                        },
+                        _LANGUAGE_FIELD,
                         {
                             "section": "publisher",
                             "label": _("Publisher"),
