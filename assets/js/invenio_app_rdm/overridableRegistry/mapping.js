@@ -50,6 +50,7 @@ import { RequestsResultsItemTemplateDashboard } from "./user_dashboard/RequestsR
 import { RequestsResultsItemTemplateWithCommunity } from "./collections/members/requests/RequestsResultsItemTemplate";
 import { RequestsSearchLayout } from "./requests/search/RequestsSearchLayout";
 // import { RelatedWorksField } from "./fields/RelatedWorksField";
+import { KcworksSubmitReviewModal } from "./deposit/SubmitReviewModal";
 import { RequestActions } from "./requests/actions/RequestActions";
 import { ResultOptionsWithState } from "./search/ResultOptions";
 import { Results } from "./search/Results";
@@ -162,6 +163,7 @@ export const overriddenComponents = {
   "InvenioModularDetailPage.MobileActionMenu.container": MobileActionMenu,
   // "InvenioAppRdm.Deposit.ResourceTypeField.container": ResourceTypeField
   // InvenioCommunities.Search.SearchApp.layout: CommunityRecordsSearchAppLayout,
+  "InvenioRdmRecords.SubmitReviewModal.container": KcworksSubmitReviewModal,
   "InvenioRequests.RequestActions.layout": RequestActions,
   "InvenioRequest.RequestMetadata.Layout": RequestMetadata,
   // "ReactInvenioDeposit.MetadataOnlyToggle.layout": MetadataOnlyToggle,

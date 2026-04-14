@@ -44,3 +44,12 @@ def get_components_registry_js_path() -> str:
         Absolute filesystem path to ``componentsRegistry.js``.
     """
     return str(_extras_js_dir() / "componentsRegistry.js")
+
+
+def get_transformations_js_path() -> str:
+    """Resolve ``transformations.js`` for the transformations webpack alias.
+
+    Returns:
+        Absolute filesystem path to ``transformations.js``.
+    """
+    return str(_extras_js_dir() / "transformations.js")
