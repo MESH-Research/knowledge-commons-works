@@ -14,10 +14,7 @@ import { ContribSearchAppFacets } from "@js/invenio_search_ui/components/common/
 import { CommunityPrivilegesFormLayout } from "./collections/settings/privileges/CommunityPrivilegesFormLayout";
 import { CurationPolicyFormLayout } from "./collections/settings/curation_policy/CurationPolicyFormLayout";
 import { DangerZone } from "./collections/settings/profile/DangerZone";
-// import { FileUploader } from "./fields/file_uploader_components/index";
-// import { IdentifiersField } from "./fields/IdentifiersField";
 import { InvitationResultItemWithConfig } from "./collections/invitations/InvitationResultItemWithConfig";
-// import { LicenseField } from "./fields/LicenseField";
 import { LogoUploader } from "./collections/settings/profile/LogoUploader";
 import { ManagerMembersResultItemWithConfig } from "./collections/members/manager_view/ManagerMembersResultItem";
 import { MembersEmptyResults } from "./collections/members/components/MembersEmptyResults";
@@ -40,9 +37,8 @@ import { RequestActions } from "./requests/actions/RequestActions";
 import { ResultOptionsWithState } from "./search/ResultOptions";
 import { Results } from "./search/Results";
 import { SearchAppLayout } from "./search/SearchAppLayout";
-// import { SubjectsField } from "./fields/SubjectsField";
-// import { TitlesField } from "./fields/TitlesField";
-// import { VersionField } from "./fields/VersionField";
+import { SubjectsField } from "./fields/SubjectsField";
+import { TitlesField } from "./fields/TitlesField";
 
 const MobileActionMenu = () => {
   return (
@@ -94,12 +90,9 @@ export const overriddenComponents = {
   "InvenioAppRdm.DashboardUploads.SearchBar.element": DashboardSearchBarElementWithConfig,
   "InvenioAppRdm.DashboardUploads.ResultsList.item": RecordResultsListItemDashboard,
   // "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
-  // "InvenioAppRdm.Deposit.IdentifiersField.container": IdentifiersField,
-  // "InvenioAppRdm.Deposit.LicenseField.container": LicenseField,
   // "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
-  // "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
-  // "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
-  // "InvenioAppRdm.Deposit.VersionField.container": VersionField,
+  "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
+  "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
   "InvenioAppRdm.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRDM.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Search.RecordsResultsListItem.layout": RecordsResultsListItem,

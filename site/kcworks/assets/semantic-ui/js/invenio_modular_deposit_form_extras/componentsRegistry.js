@@ -1,5 +1,6 @@
 import { AdminMetadataComponent } from "./components/AdminMetadataComponent";
 import { FileTypeMessageComponent } from "./components/FileTypeMessageComponent";
+import { IdentifiersComponent } from "./components/IdentifiersComponent";
 import { CommunitiesAlternateComponent } from "./components/CommunitiesAlternateComponent";
 import { AIComponent } from "./components/AIComponent";
 import { ChapterLabelComponent } from "./components/ChapterLabelComponent";
@@ -22,6 +23,7 @@ import { VolumeComponent } from "./components/VolumeComponent";
 
 const componentsRegistry = {
   CommunitiesAlternateComponent: [CommunitiesAlternateComponent, []],
+  AlternateIdentifiersComponent: [IdentifiersComponent, []],
   FileTypeMessageComponent: [FileTypeMessageComponent, []],
   AdminMetadataComponent: [
     AdminMetadataComponent,
