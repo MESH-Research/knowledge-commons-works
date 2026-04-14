@@ -9,12 +9,10 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, Icon } from "semantic-ui-react";
-import {
-  SelectField,
-  TextField,
-} from "@js/invenio_modular_deposit_form/replacement_components";
+import { SelectField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/SelectField";
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/TextField";
 import { i18next } from "@translations/i18next";
-import { FieldArray, useFormikContext } from "formik";
+import { FieldArray, getIn, useFormikContext } from "formik";
 import { SingleLanguageSelector } from "./shared_components/SingleLanguageSelector";
 
 const emptyAlternateTitle = {
@@ -84,7 +82,7 @@ const AdditionalTitlesField = ({ fieldPath, options, recordUI }) => {
       className="additional-titles"
       render={(arrayHelpers) => (
         <>
-          {values.metadata.additional_titles.map((value, index) => {
+          {(getIn(values, fieldPath) ?? []).map((value, index) => {
             const fieldPathPrefix = `${fieldPath}.${index}`;
             let titleWord =
               value.type === "translated-title" ? "Translated" : "Additional";

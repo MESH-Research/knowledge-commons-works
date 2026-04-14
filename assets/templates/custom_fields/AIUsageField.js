@@ -3,7 +3,7 @@ import { i18next } from "@translations/i18next";
 import { getIn, useFormikContext } from "formik";
 import { Form } from "semantic-ui-react";
 import { BooleanCheckbox, FieldLabel } from "react-invenio-forms";
-import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/TextArea";
+import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/TextArea";
 import PropTypes from "prop-types";
 
 const AIUsageField = ({
