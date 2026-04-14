@@ -188,6 +188,11 @@ _FORM_PAGES = {
                                 "safely be uploaded at once."
                             ),
                         },
+                        {
+                            "section": "file_type_message",
+                            "label": None,
+                            "component": "FileTypeMessageComponent",
+                        },
                     ],
                 },
                 {

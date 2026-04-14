@@ -1,4 +1,5 @@
 import { AdminMetadataComponent } from "./components/AdminMetadataComponent";
+import { FileTypeMessageComponent } from "./components/FileTypeMessageComponent";
 import { CommunitiesAlternateComponent } from "./components/CommunitiesAlternateComponent";
 import { AIComponent } from "./components/AIComponent";
 import { ChapterLabelComponent } from "./components/ChapterLabelComponent";
@@ -21,6 +22,7 @@ import { VolumeComponent } from "./components/VolumeComponent";
 
 const componentsRegistry = {
   CommunitiesAlternateComponent: [CommunitiesAlternateComponent, []],
+  FileTypeMessageComponent: [FileTypeMessageComponent, []],
   AdminMetadataComponent: [
     AdminMetadataComponent,
     ["kcr:commons_domain", "kcr:submitter_email", "kcr:submitter_username"],
