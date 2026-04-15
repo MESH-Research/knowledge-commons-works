@@ -2780,7 +2780,7 @@ wheels = [
 [[package]]
 name = "invenio-rdm-records"
 version = "19.6.3"
-source = { editable = "site/kcworks/dependencies/invenio-rdm-records" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "arrow" },
     { name = "babel-edtf" },
@@ -2811,49 +2811,10 @@ dependencies = [
     { name = "pytz" },
     { name = "pyyaml" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "arrow", specifier = ">=0.17.0" },
-    { name = "babel-edtf", specifier = ">=1.2.0" },
-    { name = "citeproc-py", specifier = ">=0.6.0" },
-    { name = "citeproc-py-styles", specifier = ">=0.1.2,<1.0.0" },
-    { name = "commonmeta-py", specifier = ">=0.8.4,<0.182" },
-    { name = "datacite", specifier = ">=1.1.1,<2.0.0" },
-    { name = "dcxml", specifier = ">=0.1.2,<1.0.0" },
-    { name = "faker", specifier = ">=2.0.3" },
-    { name = "flask-iiif", specifier = ">=1.0.0,<2.0.0" },
-    { name = "invenio-administration", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=2.1.0,<3.0.0" },
-    { name = "invenio-base", specifier = ">=2.3.0,<3.0.0" },
-    { name = "invenio-checks", specifier = ">=0.5.0,<1.0.0" },
-    { name = "invenio-communities", specifier = ">=19.0.0,<20.0.0" },
-    { name = "invenio-db", extras = ["mysql", "postgresql"], marker = "extra == 'tests'", specifier = ">=2.0.0,<3.0.0" },
-    { name = "invenio-drafts-resources", specifier = ">=7.0.0,<8.0.0" },
-    { name = "invenio-github", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-i18n", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-jobs", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-oaiserver", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-oauth2server", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-records-resources", specifier = ">=8.0.0,<9.0.0" },
-    { name = "invenio-search", extras = ["elasticsearch7"], marker = "extra == 'elasticsearch7'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-stats", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-vocabularies", specifier = ">=8.0.0,<9.0.0" },
-    { name = "nameparser", specifier = ">=1.1.1" },
-    { name = "pycountry", specifier = ">=22.3.5" },
-    { name = "pydash", specifier = ">=6.0.0,<7.0.0" },
-    { name = "pytest-black-ng", marker = "extra == 'tests'", specifier = ">=0.4.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "pytest-mock", marker = "extra == 'tests'", specifier = ">=1.6.0" },
-    { name = "python-slugify", specifier = ">=8.0.1" },
-    { name = "pytz", specifier = ">=2020.4" },
-    { name = "pyyaml", specifier = ">=5.4.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5.0" },
-    { name = "tripoli", marker = "extra == 'tests'", specifier = ">=2.0.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/50/55/fbf440363b58fa98b1d7f3f331df71e921902da84f3a83b2ab73acc4c924/invenio_rdm_records-19.6.3.tar.gz", hash = "sha256:ecaddaafd50169169ab8351ca7f0614fd7e8e767d9779fcaf76b0f6a145d3885", size = 1267028, upload-time = "2026-01-16T15:33:31.193Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c2/31/c7110fa11a40a8a9a2c83c706575729efa51a0d7c7740cdf53a567829c58/invenio_rdm_records-19.6.3-py2.py3-none-any.whl", hash = "sha256:7a1f8585ae6e17b4e65417e809b9474646ead01859cbb310ca5c55e38e7ed336", size = 1801523, upload-time = "2026-01-16T15:33:28.513Z" },
 ]
-provides-extras = ["tests", "elasticsearch7", "opensearch1", "opensearch2"]
 
 [[package]]
 name = "invenio-record-importer-kcworks"
@@ -3815,7 +3776,7 @@ requires-dist = [
     { name = "invenio-logging", extras = ["sentry"], specifier = ">=4,<5" },
     { name = "invenio-modular-deposit-form", editable = "site/kcworks/dependencies/invenio-modular-deposit-form" },
     { name = "invenio-modular-detail-page", editable = "site/kcworks/dependencies/invenio-modular-detail-page" },
-    { name = "invenio-rdm-records", editable = "site/kcworks/dependencies/invenio-rdm-records" },
+    { name = "invenio-rdm-records", specifier = ">=19,<20" },
     { name = "invenio-record-importer-kcworks", editable = "site/kcworks/dependencies/invenio-record-importer-kcworks" },
     { name = "invenio-remote-api-provisioner", editable = "site/kcworks/dependencies/invenio-remote-api-provisioner" },
     { name = "invenio-remote-user-data-kcworks", editable = "site/kcworks/dependencies/invenio-remote-user-data-kcworks" },

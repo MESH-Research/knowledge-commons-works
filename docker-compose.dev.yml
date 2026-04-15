@@ -35,7 +35,6 @@ services:
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
-      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
@@ -53,6 +52,7 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio-rdm-records
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
@@ -70,7 +70,6 @@ services:
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
-      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
@@ -88,6 +87,7 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio-rdm-records
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
@@ -105,7 +105,6 @@ services:
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
-      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
@@ -123,9 +122,9 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio-rdm-records
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
-
