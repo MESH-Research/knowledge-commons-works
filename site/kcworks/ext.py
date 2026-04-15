@@ -10,8 +10,6 @@ Initialize the main KCWorks extension object along with its services, blueprints
 and components.
 """
 
-import marshmallow
-import marshmallow_utils.fields
 import os
 import warnings
 
@@ -30,8 +28,6 @@ from invenio_rdm_records.services.communities.components import (
     CommunityServiceComponents,
 )
 from invenio_rdm_records.services.components import DefaultRecordsComponents
-from invenio_rdm_records.services.schemas import metadata as invenio_rdm_records_metadata
-from invenio_i18n import lazy_gettext as _
 from invenio_remote_user_data_kcworks.errors import (
     IDTokenInvalid,
     NoIDPFoundError,
@@ -228,7 +224,7 @@ class KCWorks:
 
 
 def finalize_app(app: Flask) -> None:
-    """Registers OAuth/UI error handlers and patches RDM schemas (UI app)."""
+    """Registers OAuth/UI error handlers (UI app)."""
     app.register_error_handler(Unauthorized, oauth_401_handler)
     app.register_error_handler(NotFound, oauth_404_handler)
     app.register_error_handler(Forbidden, oauth_403_handler)
@@ -238,9 +234,6 @@ def finalize_app(app: Flask) -> None:
     app.register_error_handler(IDTokenInvalid, oauth_401_handler)
     app.register_error_handler(UserDataRequestFailed, oauth_401_handler)
     app.register_error_handler(UserDataRequestTimeout, oauth_401_handler)
-
-    # Patch title validation to use configurable max length
-    _patch_rdm_title_validation(app)
 
 
 def _route_token_env_for_request(path: str, routes_map: dict[str, str]) -> str | None:
@@ -332,42 +325,3 @@ def api_finalize_app(app: Flask) -> None:
 
     funcs = app.before_request_funcs.get(None, [])
     app.before_request_funcs[None] = [_static_token_before_request] + funcs
-
-
-def _patch_rdm_title_validation(app: Flask) -> None:
-    """Patch invenio_rdm_records title validation to use configurable max length.
-
-    Replaces the stock min=3 validation with a custom validator that:
-    - Requires minimum 1 character (not blank)
-    - Enforces maximum length from RDM_RECORDS_MAX_TITLE_LENGTH config (default 260)
-    - Provides localized error messages
-
-    This runtime patch eliminates the need to fork invenio-rdm-records for this fix.
-    """
-
-    def _validate_title_length(value):
-        """Validate title length using RDM_RECORDS_MAX_TITLE_LENGTH from config."""
-        max_len = app.config.get("RDM_RECORDS_MAX_TITLE_LENGTH", 260)
-        if len(value) < 1:
-            raise marshmallow.ValidationError([_("Title cannot be a blank string.")])
-        if len(value) > max_len:
-            raise marshmallow.ValidationError(
-                [_("Title cannot be longer than {max_len} characters.").format(max_len=max_len)]
-            )
-
-    # Patch both main title and additional titles
-    invenio_rdm_records_metadata.MetadataSchema.fields["title"] = (
-        marshmallow_utils.fields.SanitizedUnicode(
-            required=True, validate=_validate_title_length
-        )
-    )
-    invenio_rdm_records_metadata.TitleSchema.fields["title"] = (
-        marshmallow_utils.fields.SanitizedUnicode(
-            required=True, validate=_validate_title_length
-        )
-    )
-
-    app.logger.debug(
-        "Patched RDM title validation: min=1, max=%s",
-        app.config.get("RDM_RECORDS_MAX_TITLE_LENGTH", 260),
-    )
