@@ -20,7 +20,7 @@ import { Image } from "react-invenio-forms";
 import Overridable from "react-overridable";
 import { Button, Icon, Form, Grid, Header, Message } from "semantic-ui-react";
 
-import { FormUIStateContext } from "@js/invenio_modular_deposit_form/InnerDepositForm";
+import { FormUIStateContext } from "@js/invenio_modular_deposit_form/FormUIStateManager";
 import { getReadableFields } from "@js/invenio_modular_deposit_form/utils";
 import { CommunitySelectionModal } from "./CommunitySelectionModal/CommunitySelectionModal";
 

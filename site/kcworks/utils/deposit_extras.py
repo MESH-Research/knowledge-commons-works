@@ -8,51 +8,37 @@
 Webpack aliases (see modular deposit form ``webpack.py``) must resolve to **files**:
 ``validator.js`` ``transformations.js`` and ``componentsRegistry.js``. Each entry
 point needs its own callable.
+
+Return **webpack request strings** (``@js/kcworks/...``) so resolution stays under
+the merged instance ``build.context``; see ``kcworks.webpack`` theme alias
+``@js/kcworks`` → ``js``.
 """
 
-from pathlib import Path
-
-
-def _extras_js_dir() -> Path:
-    """Path to JS extras folder (validator + components registry).
-
-    Returns:
-        Path to ``invenio_modular_deposit_form_extras``.
-    """
-    # ``__file__`` is ``kcworks/utils/deposit_extras.py``; assets live under
-    # ``kcworks/assets/``, not ``kcworks/utils/assets/``.
-    kcworks_pkg = Path(__file__).resolve().parent.parent
-    return (
-        kcworks_pkg
-        / "assets"
-        / "semantic-ui"
-        / "js"
-        / "invenio_modular_deposit_form_extras"
-    )
+_EXTRAS_PREFIX = "@js/kcworks/invenio_modular_deposit_form_extras"
 
 
 def get_validator_js_path() -> str:
     """Resolve ``validator.js`` for the modular deposit form webpack alias.
 
     Returns:
-        Absolute filesystem path to ``validator.js``.
+        Webpack request for ``validator.js`` (theme alias ``@js/kcworks``).
     """
-    return str(_extras_js_dir() / "validator.js")
+    return f"{_EXTRAS_PREFIX}/validator.js"
 
 
 def get_components_registry_js_path() -> str:
     """Resolve ``componentsRegistry.js`` for the components registry webpack alias.
 
     Returns:
-        Absolute filesystem path to ``componentsRegistry.js``.
+        Webpack request for ``componentsRegistry.js``.
     """
-    return str(_extras_js_dir() / "componentsRegistry.js")
+    return f"{_EXTRAS_PREFIX}/componentsRegistry.js"
 
 
 def get_transformations_js_path() -> str:
     """Resolve ``transformations.js`` for the transformations webpack alias.
 
     Returns:
-        Absolute filesystem path to ``transformations.js``.
+        Webpack request for ``transformations.js``.
     """
-    return str(_extras_js_dir() / "transformations.js")
+    return f"{_EXTRAS_PREFIX}/transformations.js"

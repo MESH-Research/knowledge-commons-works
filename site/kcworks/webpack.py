@@ -53,8 +53,10 @@ theme = WebpackThemeBundle(
             "dependencies": {
                 "geopattern": "^1.2.3",
                 "orcid-utils": "^1.2.2",
+                "yup": "^0.32.11",
             },
             "aliases": {
+                "@js/kcworks": "js",
                 "@js/kcworks/collections": "js/collections",
                 "@translations/kcworks": "translations/kcworks",
                 "@translations": "translations",
