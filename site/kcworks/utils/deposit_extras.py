@@ -6,8 +6,8 @@
 """Path helpers for invenio-modular-deposit-form entry points.
 
 Webpack aliases (see modular deposit form ``webpack.py``) must resolve to **files**:
-``validator.js`` and ``componentsRegistry.js``. Each entry point needs its own
-callable so resolution matches upstream docs.
+``validator.js`` ``transformations.js`` and ``componentsRegistry.js``. Each entry
+point needs its own callable.
 """
 
 from pathlib import Path
@@ -19,8 +19,11 @@ def _extras_js_dir() -> Path:
     Returns:
         Path to ``invenio_modular_deposit_form_extras``.
     """
+    # ``__file__`` is ``kcworks/utils/deposit_extras.py``; assets live under
+    # ``kcworks/assets/``, not ``kcworks/utils/assets/``.
+    kcworks_pkg = Path(__file__).resolve().parent.parent
     return (
-        Path(__file__).resolve().parent
+        kcworks_pkg
         / "assets"
         / "semantic-ui"
         / "js"
