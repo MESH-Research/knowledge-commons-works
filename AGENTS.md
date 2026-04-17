@@ -4,9 +4,10 @@ This file is the **canonical** reference for tooling and agent workflows. Cursor
 
 ## Security & secrets (agents)
 
-- **Do not read, search, or open** secret or environment files unless the user explicitly asks you to edit or audit those files. Examples: `.env`, `.env.*`, `.envrc`, `.invenio.private`, private keys under `docker/nginx_local/`, and other credential stores.
-- **Never** emit real secrets in chat, diffs, comments, or logs; use placeholders in examples.
-- If work requires a secret’s *presence* (e.g. “is `INVENIO_SECRET_KEY` set?”), reason from **names and docs**, not by opening the file.
+- **Do not read, search, or open** credential-bearing paths: `.env`, `.env.*`, `.envrc`, `.invenio.private`, private keys under `docker/nginx_local/`, cloud credential files, Secrets Manager temp env paths, and similar. **Do not** `cat`, `head`, or `tail` those paths.
+- **Never** emit real secrets in chat, diffs, comments, or logs; use placeholders in examples. Questions about whether a variable is set: use **names and docs** only—**not** by reading credential files in the agent.
+- **Never run** `docker compose … config`, `docker compose config`, `printenv`, unrestricted `env`, or any command whose primary effect is to print or resolve full process environment or fully-resolved Compose. **Never read** that output; capture can exfiltrate secrets before any chat paste. Compose layout: **tracked** YAML and public docs only.
+- **Never read or ingest** terminal output, logs, or files expected to contain credentials or full environment dumps.
 
 ## Python environment
 - **Package management**: This project uses [uv](https://github.com/astral-sh/uv) for Python package and virtualenv management. The root `.venv` is managed by uv.
@@ -41,8 +42,7 @@ Then from the repo root:
 - **Cursor**: Project rules live in [`.cursor/rules/`](.cursor/rules/) (especially `project-agents.mdc`); keep them aligned when you change agent or security policy here.
 
 ## Agent Collaboration Rules
-- **Approval before edits**: The agent must explain the suspected root cause and proposed fix before making any code changes, and must get explicit user authorization before editing files.
-- **No speculative complexity**: Prefer the smallest validated fix first. If a fix is based on inference rather than reproduction, state that clearly and ask for approval before implementing.
-- **Brief options first**: Before edits, provide a short options list (2-4 approaches) with tradeoffs and a recommended path, then wait for user approval.
-- **Submodule-aware git history**: When checking git history/status/log for files in a submodule, run git commands from the closest submodule repository root (not the parent repository), unless explicitly asked otherwise.
+- **Approval before edits (mandatory)**: Explain the issue and proposed change **before** editing; prefer the smallest validated fix; avoid speculative refactors. **Do not edit** without explicit authorization for **that** change. Silence, venting, or more chat is not authorization. If the request is ambiguous or inference-based, give 2–4 options with tradeoffs (or state the inference gap), then **wait** for a clear yes before implementing.
+- **After a mistake**: Stop unapproved edits; acknowledge plainly; offer revert. Do not compensate with more unapproved changes.
+- **Submodule-aware git history**: When checking git history/status/log for files in a submodule, run git commands from the closest submodule repository root (not the parent repository).
 

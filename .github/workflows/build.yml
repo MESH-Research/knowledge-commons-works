@@ -176,11 +176,13 @@ jobs:
           echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
           touch tests/.env
           touch .env
+          install -m 600 /dev/null /tmp/kcworks-runtime-secrets.env
           docker compose --file docker-compose.yml up -d
       - name: Destroy containers
         if: always()
         run: |
           touch .env
+          install -m 600 /dev/null /tmp/kcworks-runtime-secrets.env
           docker compose --file docker-compose.yml down
       - name: Prune Docker
         run: docker system prune -af

@@ -74,10 +74,10 @@ invenio roles add <email> administration-moderation
 
 ### 6. View the application
 
-- The Knowledge Commons Works app is now running at `https://localhost`
-- The REST API is running at `https://localhost/api`
-- pgAdmin is running at `https://localhost/pgadmin`
-- OpenSearch Dashboards is running at `https://localhost:5601`
+- The Knowledge Commons Works app is now running at `https://localhost` (if you set `KCWORKS_NGINX_HTTPS_HOST_PORT` to something other than `443`, use that port in the URL, e.g. `https://localhost:8443`, and set `INVENIO_SITE_UI_URL` / `INVENIO_SITE_API_URL` to match — see [Host port overrides](#host-port-overrides))
+- The REST API is running at the same origin under `/api`
+- pgAdmin is proxied at `https://localhost/pgadmin` (direct UI port defaults to host `5050` mapped to the pgAdmin container)
+- OpenSearch Dashboards defaults to `http://localhost:5601` unless you override `KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT`
 
 This setup will allow you to make changes to the core Knowledge Commons Works codebase and see those changes reflected in the running application.
 
@@ -136,28 +136,79 @@ DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_
 
 ## Running multiple KCWorks instances on the same machine
 
-It is perfectly feasible to run multiple KCWorks instances on the same machine. The only change necessary in this case is to edit the docker-compose.yml and docker-services.yml files to change the _container_ names (NOT the _service_ names) so that the additional instances each uses its own set of unique containers. For example, we can make the following changes:
+You can run several clones (for example `knowledge-commons-works`, `kcworks-next`, and `v13test`) at once if each project uses:
 
-"kcworks-frontend" --> "kcworks-next-frontend"
-"kcworks-ui" --> "kcworks-next-ui"
-"kcworks-api" --> "kcworks-next-api"
-"kcworks-worker" --> "kcworks-next-api"
+1. A distinct **`KCWORKS_CONTAINERS_BASE_NAME`** in its `.env` so Docker container names do not collide.
+2. Distinct **published host ports** for every service that binds to the host (see [Host port overrides](#host-port-overrides)). Compose variable defaults preserve the original single-instance ports when you omit the overrides.
 
-```{caution}
-Do not run multiple KCWorks instances on the same computer at the *same time*. This will produce conflicts in docker compose orchestration.
+Keep **service** names in `docker-compose.yml` as `web-ui`, `web-api`, `worker`, `cache`, `db`, etc. Only container display names and host ports need to differ per clone.
+
+For `docker-compose.dev.yml`, ensure these point at the correct clone for that project:
+
+- `PYTHON_LOCAL_SITE_PACKAGES_PATH`
+- `INVENIO_LOCAL_DEPENDENCIES_PATH`
+- `INVENIO_LOCAL_SITE_PATH`
+- `INVENIO_LOCAL_INSTANCE_PATH`
+- `INVENIO_INSTANCE_PATH`
+
+### Host port overrides
+
+Set these in each clone’s **`.env`** in the repository root (same directory as `docker-compose.yml`). Docker Compose reads this file for `${VAR:-default}` substitution. **Defaults** match the historical ports; omit a variable to keep the default.
+
+| Variable | Default | Container port | Purpose |
+|----------|---------|------------------|---------|
+| `KCWORKS_NGINX_HTTP_HOST_PORT` | `80` | `80` | HTTP (nginx) |
+| `KCWORKS_NGINX_HTTPS_HOST_PORT` | `443` | `443` | HTTPS (nginx) |
+| `KCWORKS_REDIS_HOST_PORT` | `6379` | `6379` | Redis (host access / tools) |
+| `KCWORKS_POSTGRES_HOST_PORT` | `5432` | `5432` | PostgreSQL |
+| `KCWORKS_PGADMIN_HOST_PORT` | `5050` | `80` (pgAdmin listens on 80 in-container) | pgAdmin web UI (host) |
+| `KCWORKS_RABBITMQ_AMQP_HOST_PORT` | `5672` | `5672` | AMQP |
+| `KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT` | `15672` | `15672` | RabbitMQ management UI |
+| `KCWORKS_OPENSEARCH_HTTP_HOST_PORT` | `9200` | `9200` | OpenSearch HTTP |
+| `KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT` | `9600` | `9600` | OpenSearch Performance Analyzer |
+| `KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT` | `5601` | `5601` | OpenSearch Dashboards |
+
+**Do not change** `REDIS_DOMAIN`, `INVENIO_SEARCH_DOMAIN`, or the host in `INVENIO_SQLALCHEMY_DATABASE_URI` for normal Docker Compose use: apps inside the stack should keep using Docker service names (for example `REDIS_DOMAIN='cache:6379'`, `INVENIO_SEARCH_DOMAIN='search:9200'`, `...@db/kcworks`). Host-port overrides only change how ports are published **to your Mac**, not how containers talk to each other.
+
+If you change nginx HTTPS (or HTTP) host ports, update **`INVENIO_SITE_UI_URL`** and **`INVENIO_SITE_API_URL`** in that clone’s `.env` so the app generates correct links (for example `INVENIO_SITE_UI_URL="https://localhost:8443"` and `INVENIO_SITE_API_URL="https://localhost:8443/api"`).
+
+**Example — second instance (`kcworks-next`)** so it can run alongside defaults on `knowledge-commons-works`:
+
+```shell
+KCWORKS_CONTAINERS_BASE_NAME=kcworks-next
+KCWORKS_NGINX_HTTP_HOST_PORT=8080
+KCWORKS_NGINX_HTTPS_HOST_PORT=8443
+KCWORKS_REDIS_HOST_PORT=6380
+KCWORKS_POSTGRES_HOST_PORT=5433
+KCWORKS_PGADMIN_HOST_PORT=5051
+KCWORKS_RABBITMQ_AMQP_HOST_PORT=5673
+KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT=15673
+KCWORKS_OPENSEARCH_HTTP_HOST_PORT=9201
+KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT=9601
+KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT=5602
+INVENIO_SITE_UI_URL="https://localhost:8443"
+INVENIO_SITE_API_URL="https://localhost:8443/api"
 ```
 
-```{caution}
-Do not modify the names of the services, like "web-ui", "web-api", and "web-worker". These can remain the same since only one instance's containers will be running at a time.
+**Example — third instance (`v13test`)** alongside the above (pick unused ports on your machine):
+
+```shell
+KCWORKS_CONTAINERS_BASE_NAME=v13test
+KCWORKS_NGINX_HTTP_HOST_PORT=9080
+KCWORKS_NGINX_HTTPS_HOST_PORT=9443
+KCWORKS_REDIS_HOST_PORT=6381
+KCWORKS_POSTGRES_HOST_PORT=5434
+KCWORKS_PGADMIN_HOST_PORT=5052
+KCWORKS_RABBITMQ_AMQP_HOST_PORT=5674
+KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT=15674
+KCWORKS_OPENSEARCH_HTTP_HOST_PORT=9202
+KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT=9602
+KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT=5603
+INVENIO_SITE_UI_URL="https://localhost:9443"
+INVENIO_SITE_API_URL="https://localhost:9443/api"
 ```
 
-You will also need to ensure that the following environment variables point to the correct KCWorks instance folder for each instance:
-
-PYTHON_LOCAL_SITE_PACKAGES_PATH
-INVENIO_LOCAL_DEPENDENCIES_PATH
-INVENIO_LOCAL_SITE_PATH
-INVENIO_LOCAL_INSTANCE_PATH
-INVENIO_INSTANCE_PATH
+Leave **one** instance (typically your primary clone) with no `KCWORKS_*_HOST_PORT` lines so it keeps ports `80`, `443`, `6379`, `5432`, and so on.
 
 ## Controlling the KCWorks (Flask) application
 
@@ -243,7 +294,9 @@ If you run another copy of KCWorks on the same host (e.g. a second clone for a d
 KCWORKS_CONTAINERS_BASE_NAME=kcworks-next
 ```
 
-Use any distinct value (e.g. `kcworks-next`, `kcworks-dev2`). Container names will become `kcworks-next-ui`, `kcworks-next-db`, and so on. If both instances need to run at once, you must also avoid port conflicts: use a separate Compose project (e.g. `docker-compose -p kcworks-next --file docker-compose.yml up -d`) and/or override published ports (e.g. in a `docker-compose.override.yml` or env) for the second instance.
+Use any distinct value (e.g. `kcworks-next`, `kcworks-dev2`). Container names will become `kcworks-next-ui`, `kcworks-next-db`, and so on.
+
+If **more than one** stack should run **at the same time**, also assign a non-overlapping set of [Host port overrides](#host-port-overrides) in each clone’s `.env` (and matching `INVENIO_SITE_*_URL` values when nginx ports change). Optionally set **`COMPOSE_PROJECT_NAME`** (or `docker compose -p <name>`) per clone so Compose project labels and default network names stay distinct; that is separate from host port binding.
 
 #### Generating random secrets
 

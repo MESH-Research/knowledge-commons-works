@@ -4,16 +4,15 @@
 #
 #   $ docker-compose --file docker-compose.yml up -d
 #
-# Following services are included:
-# - Frontend: Nginx (exposed ports: 80 and 443)
-# - Cache: Redis (exposed port: 6379)
-# - UI application: UWSGI (not exposed)
-# - API application: UWSGI (not exposed)
-# - Cache: Redis (exposed port: 6379)
-# - DB: (PostgresSQL) (exposed port: 5432 or 3306)
-# - Message queue: RabbitMQ (exposed ports: 5672, 15672)
-# - Search platform: (OpenSearch) (exposed ports: 9200, 9300)
-# - OpenSearch Dashboard (view OS indices) (exposed ports: 5601)
+# Following services are included (host ports configurable via .env; see docker-services.yml header):
+# - Frontend: Nginx (defaults: 80, 443 — KCWORKS_NGINX_HTTP_HOST_PORT / KCWORKS_NGINX_HTTPS_HOST_PORT)
+# - Cache: Redis (default host: 6379)
+# - UI application: UWSGI (ephemeral publish port)
+# - API application: UWSGI (ephemeral publish port)
+# - DB: PostgreSQL (default host: 5432)
+# - Message queue: RabbitMQ (defaults: 5672, 15672)
+# - Search platform: OpenSearch (defaults: 9200, 9600)
+# - OpenSearch Dashboard (default host: 5601)
 #
 services:
   cache:
@@ -65,8 +64,8 @@ services:
       - web-ui
       - web-api
     ports:
-      - "80:80"
-      - "443:443"
+      - "${KCWORKS_NGINX_HTTP_HOST_PORT:-80}:80"
+      - "${KCWORKS_NGINX_HTTPS_HOST_PORT:-443}:443"
   # UI Application
   # This container holds Python, pip, the virtualenv, and the invenio code,
   # Node.js, NPM and some standard libraries Invenio usually needs

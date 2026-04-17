@@ -9,15 +9,16 @@ Canonical **commands and toolchain** (uv, pnpm, ruff, ty, test scripts) live in 
 
 ## Secrets and local credentials
 
-- **Do not read, search, or open** environment or secret files except when the user explicitly asks you to work on those files. This includes: `.env`, `.env.*`, `.envrc`, `.invenio.private`, `*.pem`, `*.key`, SAML keys under `docker/nginx_local/`, cloud credential files, and similar.
-- **Never** paste secret values, tokens, or passwords into chat, commits, logs, or code. If configuration examples are needed, use placeholders (e.g. `YOUR_SECRET_HERE`).
-- Prefer documenting **variable names** and where to set them, not real values.
+- **Do not read, search, or open** credential-bearing paths: `.env`, `.env.*`, `.envrc`, `.invenio.private`, `*.pem`, `*.key`, SAML material under `docker/nginx_local/`, cloud credential files, Secrets Manager temp env paths, and similar. **Do not** `cat`, `head`, `tail`, or `less` those paths.
+- **Never** emit secret values in chat, commits, logs, or code; use placeholders. Document **variable names** and where humans set them—**not** by reading those files in the agent.
+- **Never run** `docker compose … config`, `docker compose config`, `printenv`, unrestricted `env`, or any command whose primary effect is to print or resolve full process environment or fully-resolved Compose. **Never read** that output; tooling capture can exfiltrate secrets before anything is pasted to chat. For layout and wiring, use **tracked** compose YAML and public docs only.
+- **Never read or ingest** terminal output, logs, or files expected to contain credentials or full environment dumps.
 
 ## Collaboration
 
-- Explain suspected root cause and proposed fix **before** editing; get **explicit approval** before substantive code changes when the task is ambiguous or high-risk.
-- Prefer the **smallest** fix that addresses the request; avoid speculative refactors.
-- For **submodules**: run `git log`, `git status`, etc. from the **submodule** repository root when inspecting history of files inside that submodule, unless the user asks otherwise.
+- **Approval before edits (mandatory)**: Explain cause and proposed fix **before** editing; prefer the **smallest** fix; avoid speculative refactors. **Do not edit** without explicit authorization for **this** change. Silence, frustration, or more chat is not authorization. If ambiguous or inference-based, give a short plan and 2–4 options (or state the gap), then **stop** until the user chooses.
+- If you edited without approval or misled the user: **stop**, say so plainly, offer revert—do not “fix forward” with more unapproved edits.
+- For **submodules**: run `git log`, `git status`, etc. from the **submodule** repository root when inspecting history of files inside that submodule.
 
 ## Style and tooling
 
