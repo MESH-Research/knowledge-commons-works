@@ -126,12 +126,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpcre3 \
     libssl3 \
     libffi8 \
+    libcairo2 \
     locales \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
     && locale-gen \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user before COPY so --chown can reference the name.
 RUN useradd --system --no-create-home --home-dir /opt/invenio \
         --shell /usr/sbin/nologin invenio
 
