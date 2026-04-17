@@ -171,9 +171,6 @@ jobs:
           STATIC_API_BEARER: ${{ secrets.STATIC_API_BEARER }}
           WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
         run: |
-          echo "[cli]" >> .invenio.private && \
-          echo "services_setup=False" >> .invenio.private && \
-          echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
           touch tests/.env
           touch .env
           install -m 600 /dev/null /tmp/kcworks-runtime-secrets.env

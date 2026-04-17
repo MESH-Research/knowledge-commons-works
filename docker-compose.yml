@@ -1,6 +1,14 @@
-# Local development stack for Knowledge Commons Works
+# Compose stack for Knowledge Commons Works.
 #
-# Usage::
+# Base file (this): app services use the image's invenio.cfg, app_data, and
+# .env/.invenio* under /opt/invenio; only named data volumes and the importer
+# bind remain here. Host overlays for instance files and repo source are in
+# docker-compose.dev.yml. CI (e.g. .github/workflows/build.yml) uses this file alone.
+#
+# Local live checkout / hot reload: also pass --file docker-compose.dev.yml
+# (see that file and kcworks-startup.sh).
+#
+# Usage (image + data volumes only)::
 #
 #   $ docker-compose --file docker-compose.yml up -d
 #
@@ -89,30 +97,6 @@ services:
     ports:
       - "5000"
     volumes:
-      - ./logs/invenio.log:/opt/invenio/src/logs/invenio.log
-      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
-      - ./app_data:/opt/invenio/var/instance/app_data
-      - ./static:/opt/invenio/var/instance/static
-      - ./templates:/opt/invenio/var/instance/templates
-      - ./translations:/opt/invenio/var/instance/translations
-      - ./assets:/opt/invenio/src/assets
-      - ./scripts:/opt/invenio/src/scripts
-      - ./site:/opt/invenio/src/site
-      - ./workflows:/opt/invenio/src/workflows
-      - ./docs:/opt/invenio/src/docs
-      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
-      - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./package.json:/opt/invenio/src/package.json
-      - ./package-lock.json:/opt/invenio/src/package-lock.json
-      - ./babel.config.js:/opt/invenio/src/babel.config.js
-      - ./README.md:/opt/invenio/src/README.md
-      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
-      - ./.env:/opt/invenio/src/.env
-      - ./.invenio:/opt/invenio/src/.invenio
-      - ./.invenio.private:/opt/invenio/src/.invenio.private
-      - ./.git:/opt/invenio/src/.git
-      - ./.gitmodules:/opt/invenio/src/.gitmodules
-      - ./.gitattributes:/opt/invenio/src/.gitattributes
       # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
@@ -137,29 +121,6 @@ services:
       - PYTHONNODONTWRITEBYTECODE=1
       - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning
     volumes:
-      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
-      - ./app_data:/opt/invenio/var/instance/app_data
-      - ./static:/opt/invenio/var/instance/static
-      - ./templates:/opt/invenio/var/instance/templates
-      - ./translations:/opt/invenio/var/instance/translations
-      - ./assets:/opt/invenio/src/assets
-      - ./scripts:/opt/invenio/src/scripts
-      - ./site:/opt/invenio/src/site
-      - ./workflows:/opt/invenio/src/workflows
-      - ./docs:/opt/invenio/src/docs
-      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
-      - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./package.json:/opt/invenio/src/package.json
-      - ./package-lock.json:/opt/invenio/src/package-lock.json
-      - ./babel.config.js:/opt/invenio/src/babel.config.js
-      - ./README.md:/opt/invenio/src/README.md
-      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
-      - ./.env:/opt/invenio/src/.env
-      - ./.invenio:/opt/invenio/src/.invenio
-      - ./.invenio.private:/opt/invenio/src/.invenio.private
-      - ./.git:/opt/invenio/src/.git
-      - ./.gitmodules:/opt/invenio/src/.gitmodules
-      - ./.gitattributes:/opt/invenio/src/.gitattributes
       # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
@@ -185,29 +146,6 @@ services:
       # - INVENIO_LOGGING_FS_LOGFILE=/opt/invenio/src/logs/invenio.log
       - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning
     volumes:
-      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
-      - ./app_data:/opt/invenio/var/instance/app_data
-      - ./static:/opt/invenio/var/instance/static
-      - ./templates:/opt/invenio/var/instance/templates
-      - ./translations:/opt/invenio/var/instance/translations
-      - ./assets:/opt/invenio/src/assets
-      - ./scripts:/opt/invenio/src/scripts
-      - ./site:/opt/invenio/src/site
-      - ./workflows:/opt/invenio/src/workflows
-      - ./docs:/opt/invenio/src/docs
-      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
-      - ./uv.lock:/opt/invenio/src/uv.lock
-      - ./package.json:/opt/invenio/src/package.json
-      - ./package-lock.json:/opt/invenio/src/package-lock.json
-      - ./babel.config.js:/opt/invenio/src/babel.config.js
-      - ./README.md:/opt/invenio/src/README.md
-      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
-      - ./.env:/opt/invenio/src/.env
-      - ./.invenio:/opt/invenio/src/.invenio
-      - ./.invenio.private:/opt/invenio/src/.invenio.private
-      - ./.git:/opt/invenio/src/.git
-      - ./.gitmodules:/opt/invenio/src/.gitmodules
-      - ./.gitattributes:/opt/invenio/src/.gitattributes
       # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data

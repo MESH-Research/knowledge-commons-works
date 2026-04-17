@@ -22,6 +22,12 @@
 # the installed python files. This allows for development of the KCWorks modules
 # without having to rebuild the container.
 #
+# Host instance overlays (not in docker-compose.yml): invenio.cfg, app_data,
+# .env, .invenio, .invenio.private — plus repo source overlays: live static,
+# templates, translations, assets, scripts, workflows, docs, pyproject/uv lock,
+# README/LICENSE, git metadata, optional UI log file, and the JS/pnpm toolchain.
+# CI using docker-compose.yml alone relies on the image for app instance paths.
+#
 services:
   web-ui:
     extends:
@@ -30,6 +36,11 @@ services:
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
     volumes:
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app_data:/opt/invenio/var/instance/app_data
+      - ./.env:/opt/invenio/src/.env
+      - ./.invenio:/opt/invenio/src/.invenio
+      - ./.invenio.private:/opt/invenio/src/.invenio.private
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
@@ -58,6 +69,24 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
+      - ./package.json:/opt/invenio/src/package.json
+      - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml
+      - ./babel.config.js:/opt/invenio/src/babel.config.js
+      - ./logs/invenio.log:/opt/invenio/src/logs/invenio.log
+      - ./static:/opt/invenio/var/instance/static
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
+      - ./assets:/opt/invenio/src/assets
+      - ./scripts:/opt/invenio/src/scripts
+      - ./workflows:/opt/invenio/src/workflows
+      - ./docs:/opt/invenio/src/docs
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
+      - ./uv.lock:/opt/invenio/src/uv.lock
+      - ./README.md:/opt/invenio/src/README.md
+      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
+      - ./.git:/opt/invenio/src/.git
+      - ./.gitmodules:/opt/invenio/src/.gitmodules
+      - ./.gitattributes:/opt/invenio/src/.gitattributes
   web-api:
     extends:
       file: docker-compose.yml
@@ -65,6 +94,11 @@ services:
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
     volumes:
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app_data:/opt/invenio/var/instance/app_data
+      - ./.env:/opt/invenio/src/.env
+      - ./.invenio:/opt/invenio/src/.invenio
+      - ./.invenio.private:/opt/invenio/src/.invenio.private
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
@@ -93,6 +127,23 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
+      - ./package.json:/opt/invenio/src/package.json
+      - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml
+      - ./babel.config.js:/opt/invenio/src/babel.config.js
+      - ./static:/opt/invenio/var/instance/static
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
+      - ./assets:/opt/invenio/src/assets
+      - ./scripts:/opt/invenio/src/scripts
+      - ./workflows:/opt/invenio/src/workflows
+      - ./docs:/opt/invenio/src/docs
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
+      - ./uv.lock:/opt/invenio/src/uv.lock
+      - ./README.md:/opt/invenio/src/README.md
+      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
+      - ./.git:/opt/invenio/src/.git
+      - ./.gitmodules:/opt/invenio/src/.gitmodules
+      - ./.gitattributes:/opt/invenio/src/.gitattributes
   worker:
     extends:
       file: docker-compose.yml
@@ -100,6 +151,11 @@ services:
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
     volumes:
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app_data:/opt/invenio/var/instance/app_data
+      - ./.env:/opt/invenio/src/.env
+      - ./.invenio:/opt/invenio/src/.invenio
+      - ./.invenio.private:/opt/invenio/src/.invenio.private
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
@@ -128,3 +184,20 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
+      - ./package.json:/opt/invenio/src/package.json
+      - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml
+      - ./babel.config.js:/opt/invenio/src/babel.config.js
+      - ./static:/opt/invenio/var/instance/static
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
+      - ./assets:/opt/invenio/src/assets
+      - ./scripts:/opt/invenio/src/scripts
+      - ./workflows:/opt/invenio/src/workflows
+      - ./docs:/opt/invenio/src/docs
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
+      - ./uv.lock:/opt/invenio/src/uv.lock
+      - ./README.md:/opt/invenio/src/README.md
+      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
+      - ./.git:/opt/invenio/src/.git
+      - ./.gitmodules:/opt/invenio/src/.gitmodules
+      - ./.gitattributes:/opt/invenio/src/.gitattributes
