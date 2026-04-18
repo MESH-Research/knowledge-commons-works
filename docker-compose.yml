@@ -45,6 +45,15 @@ services:
     extends:
       file: docker-services.yml
       service: search
+    # Incident (2026-04): after compose refactor + custom host ports (e.g. 9201),
+    # `search` sometimes had host publish mappings missing on full project stop/start
+    # (curl to 127.0.0.1:9201 failed; `docker inspect` showed PortBindings intent but
+    # empty NetworkSettings.Ports). Recreating only `search` temporarily fixed it.
+    # Fix: declare `ports` here on the stack file alongside `volumes`, not only on
+    # the extended service in docker-services.yml, so bindings stay applied across cycles.
+    ports:
+      - "${KCWORKS_OPENSEARCH_HTTP_HOST_PORT:-9200}:9200"
+      - "${KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT:-9600}:9600"
     volumes:
       - search_data:/usr/share/opensearch/data
   opensearch-dashboards:

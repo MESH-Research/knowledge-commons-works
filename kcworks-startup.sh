@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
-# KC Works — local development: fetch a slice of keys from AWS Secrets Manager into a
-# fixed-path host env file, then run docker compose up -d for this repository.
+# KCWorks startup script for local development.
 #
-# Host path (second env_file in docker-services.yml for app, db, pgadmin):
-#   /tmp/kcworks-runtime-secrets.env
-# The file is chmod 600, overwritten each run, and removed when this script exits.
-# Predictable /tmp path is a tradeoff (simple compose); single-user dev is typical.
-# To run docker compose without this script, create an empty file first:
-#   install -m 600 /dev/null /tmp/kcworks-runtime-secrets.env
+# To facilitate more secure handling of secrets in local development, this script
 #
-# Public vars stay in ./.env (first env_file on those services). Compose uses ./.env
-# for ${VAR} substitution in the project directory when present.
+# - Fetches a slice of keys from AWS Secrets Manager into a temporary env file
+# - Runs `docker compose up -d` with the standard *and* dev docker compose files
+#   - Pulls secrets from the temp env file
+#   - Pulls non-secret env vars from ./.env
 #
 # Run from the repository (package) root:
 #   ./kcworks-startup.sh
@@ -18,29 +14,22 @@
 # This script always runs:
 #   docker compose --file docker-compose.yml --file docker-compose.dev.yml up -d
 #
-# Optional compose passthrough (not read from Secrets Manager): set in the shell or via flag.
-# web-ui / web-api / worker use monotasker/kcworks:${IMAGE_TAG:-latest} (see docker-compose.yml).
-# Examples:
-#   IMAGE_TAG=dev-next ./kcworks-startup.sh
-#   ./kcworks-startup.sh --image-tag dev-next
-#
 # Default SM target when you do not set KCWORKS_SM_* or pass flags (edit if your clone differs):
 #   Secret id: staging/kcworks
 #   Keys:      (see DEFAULT_SM_KEYS in this file; must match keys in your SM JSON)
 #
-# Optional flags (Secrets Manager only):
+# Optional flags for Secrets Manager request:
 #   --secret-id ID       Override secret (else KCWORKS_SM_SECRET_ID, else defaults above)
 #   --keys A,B,C         Override key list (else KCWORKS_SM_KEYS, else defaults above)
 #   --region REGION      Passed to aws (e.g. us-east-1)
 #   --allow-missing      Warn instead of failing if a listed key is absent from the secret
 #
-# Optional flags (docker compose):
+# Optional flags for docker compose:
 #   --image-tag TAG      Sets IMAGE_TAG for this run (same as IMAGE_TAG=TAG in the environment)
 #
-# Env: KCWORKS_SM_SECRET_ID, KCWORKS_SM_KEYS; optional IMAGE_TAG for compose image tag
-# Requires: aws CLI, ./.venv/bin/python at repo root (uv sync; see AGENTS.md).
-#           Default AWS credentials unless AWS_PROFILE is set.
-# This is a laptop/local automation entrypoint — not intended for CI (use GitHub Secrets, etc.).
+# Requires aws CLI be configured on the host machine
+#
+# This is a laptop/local automation entrypoint — not intended for CI where we use GitHub Secrets.
 
 set -euo pipefail
 REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)

@@ -80,6 +80,7 @@ services:
       - "${KCWORKS_RABBITMQ_AMQP_HOST_PORT:-5672}:5672"
   search:
     container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-search
+    hostname: search
     image: opensearchproject/opensearch:2.3.0
     restart: "unless-stopped"
     environment:
@@ -110,9 +111,7 @@ services:
     # This leaves ~5GB for other containers and the host system
     mem_limit: ${OPENSEARCH_MEMORY_LIMIT:-2g}
     # cpus: ${OPENSEARCH_CPUS:-1.5}  # Commented out to avoid GitHub build CPU limit issues (4-CPU environment)
-    ports:
-      - "${KCWORKS_OPENSEARCH_HTTP_HOST_PORT:-9200}:9200"
-      - "${KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT:-9600}:9600"
+    # Host ports for search are declared in docker-compose.yml (extends merge).
   opensearch-dashboards:
     container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-opensearch-dashboards
     image: opensearchproject/opensearch-dashboards:2.3.0
