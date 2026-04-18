@@ -4,6 +4,10 @@
 
 When a user creates their first draft deposit, an email message is sent automatically to the moderation email address (currently `hello@hcommons.org`). This message includes a link to the draft deposit. A second email is sent when the user first publishes a work. Currently the works are not held in any moderation queue, but they may be checked manually by the moderators.
 
+```{note}
+The moderation email address is the one that belongs to the user with the "admin-moderator" role in KCWorks. (Not the "administration-moderation" role.) If you wish to change the receipient of these notifications, ask a KCWorks administrator to give this role to a different user account.
+```
+
 ## Handling Inappropriate Content
 
 ### Removing Records
@@ -30,7 +34,7 @@ If a record has been soft-deleted, it can be restored from the "Records" tab of 
 
 In general, user accounts are never deleted from KCWorks. Instead their accounts and access are frozen by either "blocking" or "deactivating" the user.
 
-- **Deactivating** a user prevents them from creating new content (works, communities, etc.) or participate in any activities like commenting on collection submissions, moderating collections, etc. They also lose access to any access-restricted content to which they might have previously been granted access: restricted collections, restricted records, etc.Deactivated users *can* still log in, allowing them time to appeal the deactivation.
+- **Deactivating** a user prevents them from creating new content (works, communities, etc.) or participate in any activities like commenting on collection submissions, moderating collections, etc. They also lose access to any access-restricted content to which they might have previously been granted access: restricted collections, restricted records, etc.Deactivated users _can_ still log in, allowing them time to appeal the deactivation.
 - **Blocking** a user does everything that deactivating a user does, but it also removes the user's content from KCWorks and blocks them from logging in. Each of their published works is soft-deleted and removed from search results. If the work's page is accessed directly (e.g., via the work's DOI), the user will see a tombstone page that includes the work's title, authors, and a message that the uploader has been blocked.
 
 #### How do I block or deactivate a user?

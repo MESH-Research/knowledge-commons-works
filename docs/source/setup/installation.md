@@ -72,6 +72,16 @@ invenio roles add <email> administration
 invenio roles add <email> administration-moderation
 ```
 
+- assign an admin user to receive moderation notices:
+
+```shell
+invenio roles add <email> admin-moderator
+```
+
+```{note}
+The "admin-moderator" role (distinct from "administration-moderation") designates the one user who should receive email notices of first-time uploads and publications by new KCWorks users. This role may be assigned to a different user later on, but it should only be held by one user.
+```
+
 ### 6. View the application
 
 - The Knowledge Commons Works app is now running at `https://localhost` (if you set `KCWORKS_NGINX_HTTPS_HOST_PORT` to something other than `443`, use that port in the URL, e.g. `https://localhost:8443`, and set `INVENIO_SITE_UI_URL` / `INVENIO_SITE_API_URL` to match — see [Host port overrides](#host-port-overrides))
@@ -155,18 +165,18 @@ For `docker-compose.dev.yml`, ensure these point at the correct clone for that p
 
 Set these in each clone’s **`.env`** in the repository root (same directory as `docker-compose.yml`). Docker Compose reads this file for `${VAR:-default}` substitution. **Defaults** match the historical ports; omit a variable to keep the default.
 
-| Variable | Default | Container port | Purpose |
-|----------|---------|------------------|---------|
-| `KCWORKS_NGINX_HTTP_HOST_PORT` | `80` | `80` | HTTP (nginx) |
-| `KCWORKS_NGINX_HTTPS_HOST_PORT` | `443` | `443` | HTTPS (nginx) |
-| `KCWORKS_REDIS_HOST_PORT` | `6379` | `6379` | Redis (host access / tools) |
-| `KCWORKS_POSTGRES_HOST_PORT` | `5432` | `5432` | PostgreSQL |
-| `KCWORKS_PGADMIN_HOST_PORT` | `5050` | `80` (pgAdmin listens on 80 in-container) | pgAdmin web UI (host) |
-| `KCWORKS_RABBITMQ_AMQP_HOST_PORT` | `5672` | `5672` | AMQP |
-| `KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT` | `15672` | `15672` | RabbitMQ management UI |
-| `KCWORKS_OPENSEARCH_HTTP_HOST_PORT` | `9200` | `9200` | OpenSearch HTTP |
-| `KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT` | `9600` | `9600` | OpenSearch Performance Analyzer |
-| `KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT` | `5601` | `5601` | OpenSearch Dashboards |
+| Variable                                     | Default | Container port                            | Purpose                         |
+| -------------------------------------------- | ------- | ----------------------------------------- | ------------------------------- |
+| `KCWORKS_NGINX_HTTP_HOST_PORT`               | `80`    | `80`                                      | HTTP (nginx)                    |
+| `KCWORKS_NGINX_HTTPS_HOST_PORT`              | `443`   | `443`                                     | HTTPS (nginx)                   |
+| `KCWORKS_REDIS_HOST_PORT`                    | `6379`  | `6379`                                    | Redis (host access / tools)     |
+| `KCWORKS_POSTGRES_HOST_PORT`                 | `5432`  | `5432`                                    | PostgreSQL                      |
+| `KCWORKS_PGADMIN_HOST_PORT`                  | `5050`  | `80` (pgAdmin listens on 80 in-container) | pgAdmin web UI (host)           |
+| `KCWORKS_RABBITMQ_AMQP_HOST_PORT`            | `5672`  | `5672`                                    | AMQP                            |
+| `KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT`      | `15672` | `15672`                                   | RabbitMQ management UI          |
+| `KCWORKS_OPENSEARCH_HTTP_HOST_PORT`          | `9200`  | `9200`                                    | OpenSearch HTTP                 |
+| `KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT` | `9600`  | `9600`                                    | OpenSearch Performance Analyzer |
+| `KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT`    | `5601`  | `5601`                                    | OpenSearch Dashboards           |
 
 **Do not change** `REDIS_DOMAIN`, `INVENIO_SEARCH_DOMAIN`, or the host in `INVENIO_SQLALCHEMY_DATABASE_URI` for normal Docker Compose use: apps inside the stack should keep using Docker service names (for example `REDIS_DOMAIN='cache:6379'`, `INVENIO_SEARCH_DOMAIN='search:9200'`, `...@db/kcworks`). Host-port overrides only change how ports are published **to your Mac**, not how containers talk to each other.
 
