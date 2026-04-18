@@ -3046,7 +3046,7 @@ provides-extras = ["dev", "tests"]
 
 [[package]]
 name = "invenio-remote-user-data-kcworks"
-version = "0.6.1b3"
+version = "1.0.0"
 source = { editable = "site/kcworks/dependencies/invenio-remote-user-data-kcworks" }
 dependencies = [
     { name = "celery" },
@@ -3059,29 +3059,27 @@ dependencies = [
     { name = "invenio-search" },
     { name = "invenio-utilities-tuw" },
     { name = "marshmallow-utils" },
-    { name = "opensearch-dsl" },
     { name = "pydantic" },
     { name = "standard-pkg-resources" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "bumpver", marker = "extra == 'dev'" },
     { name = "celery" },
-    { name = "check-manifest", marker = "extra == 'tests'" },
+    { name = "check-manifest", marker = "extra == 'dev'" },
     { name = "click" },
     { name = "coverage", marker = "extra == 'tests'" },
     { name = "deepdiff" },
     { name = "invenio-app-rdm", specifier = "<14" },
-    { name = "invenio-communities", editable = "site/kcworks/dependencies/invenio-communities" },
+    { name = "invenio-communities" },
     { name = "invenio-group-collections-kcworks", editable = "site/kcworks/dependencies/invenio-group-collections-kcworks" },
     { name = "invenio-queues" },
     { name = "invenio-search" },
-    { name = "invenio-stats-dashboard", marker = "extra == 'tests'", editable = "site/kcworks/dependencies/invenio-stats-dashboard" },
     { name = "invenio-utilities-tuw" },
     { name = "marshmallow-utils", specifier = ">=0.12" },
-    { name = "opensearch-dsl" },
-    { name = "pip-tools", marker = "extra == 'tests'" },
-    { name = "pipenv", marker = "extra == 'tests'" },
+    { name = "pip-tools", marker = "extra == 'dev'" },
+    { name = "pipenv", marker = "extra == 'dev'" },
     { name = "pydantic" },
     { name = "pytest", marker = "extra == 'tests'", specifier = ">=7.3.2" },
     { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.3,<4" },
@@ -3089,7 +3087,10 @@ requires-dist = [
     { name = "requests-mock", marker = "extra == 'tests'" },
     { name = "standard-pkg-resources" },
 ]
-provides-extras = ["tests"]
+provides-extras = ["dev", "tests"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "bumpver", specifier = ">=2025.1131" }]
 
 [[package]]
 name = "invenio-requests"
