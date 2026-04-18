@@ -28,21 +28,8 @@ from invenio_rdm_records.services.communities.components import (
     CommunityServiceComponents,
 )
 from invenio_rdm_records.services.components import DefaultRecordsComponents
-from invenio_remote_user_data_kcworks.errors import (
-    IDTokenInvalid,
-    NoIDPFoundError,
-    StateTokenInvalid,
-    UserDataRequestFailed,
-    UserDataRequestTimeout,
-)
 from invenio_remote_user_data_kcworks.utils import extract_bearer_token
 from pydantic import BaseModel, ConfigDict
-from werkzeug.exceptions import (
-    Forbidden,
-    InternalServerError,
-    NotFound,
-    Unauthorized,
-)
 
 from kcworks.services.notifications.service import (
     InternalNotificationService,
@@ -61,12 +48,7 @@ from kcworks.services.records.record_communities.community_change_permissions_co
     CommunityChangePermissionsComponent,
 )
 from kcworks.templates.template_filters import user_profile_dict
-from kcworks.views.error_handlers import (
-    oauth_401_handler,
-    oauth_403_handler,
-    oauth_404_handler,
-    oauth_500_handler,
-)
+from kcworks.views.error_handlers import register_themed_error_handlers
 
 # Stand-ins for request.oauth in the static-token flow. Real OAuth flow sets
 # request.oauth to an oauthlib.common.Request with .user (User), .access_token
@@ -224,16 +206,8 @@ class KCWorks:
 
 
 def finalize_app(app: Flask) -> None:
-    """Registers OAuth/UI error handlers (UI app)."""
-    app.register_error_handler(Unauthorized, oauth_401_handler)
-    app.register_error_handler(NotFound, oauth_404_handler)
-    app.register_error_handler(Forbidden, oauth_403_handler)
-    app.register_error_handler(InternalServerError, oauth_500_handler)
-    app.register_error_handler(NoIDPFoundError, oauth_401_handler)
-    app.register_error_handler(StateTokenInvalid, oauth_401_handler)
-    app.register_error_handler(IDTokenInvalid, oauth_401_handler)
-    app.register_error_handler(UserDataRequestFailed, oauth_401_handler)
-    app.register_error_handler(UserDataRequestTimeout, oauth_401_handler)
+    """Register KCWorks UI error handlers."""
+    register_themed_error_handlers(app)
 
 
 def _route_token_env_for_request(path: str, routes_map: dict[str, str]) -> str | None:
@@ -316,8 +290,14 @@ def _static_token_before_request() -> None:
 def api_finalize_app(app: Flask) -> None:
     """Entry point for invenio_base.api_finalize_app (API app).
 
-    Registers API app finalization only; no UI error handlers.
+    Registers the same exception routing as the UI app, but with
+    ``by_api=True`` so every handler always returns JSON instead of
+    attempting to render UI templates (which the API app doesn't have
+    fully wired up). Also installs the static-token before-request hook
+    when configured.
     """
+    register_themed_error_handlers(app, by_api=True)
+
     routes_map = app.config.get("STATIC_API_TOKEN_ROUTES") or {}
     static_user_id = app.config.get("STATIC_API_TOKEN_USER_ID")
     if not routes_map or static_user_id is None:
