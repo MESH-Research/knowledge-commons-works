@@ -82,11 +82,10 @@ RUN cp ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini && 
     cp -r ./templates ${INVENIO_INSTANCE_PATH}/templates && \
     cp -r ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data
 
-# FIXME: Temporary fix for axios requirement in invenio_search_ui/webpack.py.
-# Remove axios requirement before webpack build to prevent merge conflicts.
-RUN sed -i '/"axios": "^0.21.0"/d' .venv/lib/python*/site-packages/invenio_search_ui/webpack.py
-
 # Build frontend assets. Node/pnpm are present here but won't be in the runtime image.
+# `invenio webpack ...` here routes through the rspack project + PNPMPackage that
+# invenio.cfg selects via WEBPACKEXT_PROJECT and WEBPACKEXT_NPM_PKG_CLS — see the
+# explanatory comment in scripts/build-assets.sh for details.
 RUN . .venv/bin/activate && \
     uv pip install -e ./site/kcworks/dependencies/invenio-stats-dashboard && \
     invenio collect --verbose && \
