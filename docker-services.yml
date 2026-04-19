@@ -81,7 +81,7 @@ services:
   search:
     container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-search
     hostname: search
-    image: opensearchproject/opensearch:2.3.0
+    image: opensearchproject/opensearch:2.17.1
     restart: "unless-stopped"
     environment:
       # settings only for development. DO NOT use in production!
@@ -114,7 +114,7 @@ services:
     # Host ports for search are declared in docker-compose.yml (extends merge).
   opensearch-dashboards:
     container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-opensearch-dashboards
-    image: opensearchproject/opensearch-dashboards:2.3.0
+    image: opensearchproject/opensearch-dashboards:2.17.1
     ports:
       - "${KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT:-5601}:5601"
     expose:
