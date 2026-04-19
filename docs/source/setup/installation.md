@@ -53,7 +53,40 @@ The container name may be different depending on your local docker setup. You ca
 Some of the commands in this script may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
 ```
 
-### 5. Create your own admin user
+### 5. (Optional) Seed the funders vocabulary from ROR and schedule recurring updates
+
+The `funders` vocabulary is **not** populated by `invenio rdm-records fixtures` (which only loads the entries declared in `app_data/vocabularies.yaml`). To populate it you must trigger an import explicitly. The funders pipeline is configured upstream in `invenio-vocabularies` (`contrib/funders/datastreams.py` `DATASTREAM_CONFIG`) and uses the `ror-http` reader, which downloads the latest ROR data dump directly from Zenodo over HTTP — no local data file is required.
+
+From inside the `web-ui` container:
+
+```shell
+# One-time seed: pull funders from ROR and load them into the vocabulary.
+# Uses the upstream contrib config: ror-http (downloads the latest ROR dump
+# from Zenodo) -> zip -> json -> ror-funders transformer -> async
+# funders-service writer.
+invenio vocabularies import -v funders
+
+# Register a recurring weekly refresh as an invenio-jobs Job. The dedicated
+# `scheduler` compose service (celery beat with RunScheduler) will pick it up.
+invenio kcworks-jobs upsert process_ror_funders \
+    --title "Load ROR funders" \
+    --schedule "crontab:minute=0,hour=3,day_of_week=0" \
+    --queue celery
+```
+
+```{note}
+Without the seed step, `funders` will be empty until the first scheduled run completes (which can take a while because it pulls the full ROR dump). Running `invenio vocabularies import -v funders` once at install time ensures the funder field in the deposit form is usable immediately.
+```
+
+```{note}
+The container running the import needs network egress to `doi.org` and `zenodo.org`. The full ROR ZIP is held in memory during the import.
+```
+
+```{note}
+The `process_ror_funders` job uses the upstream `JobType` (registered via the `invenio_jobs.jobs` entry point by `invenio-vocabularies`). It uses its own hardcoded datastream config — equivalent to the contrib default but with a `since` parameter passed to the `ror-http` reader so subsequent scheduled runs only fetch the latest dump if it postdates the previous successful run. The writer defaults to `update: false`, so scheduled runs add new ROR records but do not overwrite existing funder entries (mirroring upstream behavior, since `invenio-vocabularies` has no logic yet to re-index dependent records on funder updates).
+```
+
+### 6. Create your own admin user
 
 - enter the `web-ui` container by running `docker exec -it kcworks-ui bash`
 
@@ -82,7 +115,7 @@ invenio roles add <email> admin-moderator
 The "admin-moderator" role (distinct from "administration-moderation") designates the one user who should receive email notices of first-time uploads and publications by new KCWorks users. This role may be assigned to a different user later on, but it should only be held by one user.
 ```
 
-### 6. View the application
+### 7. View the application
 
 - The Knowledge Commons Works app is now running at `https://localhost` (if you set `KCWORKS_NGINX_HTTPS_HOST_PORT` to something other than `443`, use that port in the URL, e.g. `https://localhost:8443`, and set `INVENIO_SITE_UI_URL` / `INVENIO_SITE_API_URL` to match — see [Host port overrides](#host-port-overrides))
 - The REST API is running at the same origin under `/api`

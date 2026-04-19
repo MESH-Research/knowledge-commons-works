@@ -223,6 +223,42 @@ Arguments:
 - `--kc-id` (-k): the username of the KC user to list groups for.
 - `--collection-role` (-r): the name of the collection role to list groups for.
 
+### `invenio kcworks-jobs`
+
+- **provided by the main KCWorks package** (`site/kcworks/cli.py`)
+- thin wrapper around the `invenio-jobs` `JobsService` for declarative, idempotent management of `Job` rows at deploy time. `invenio-jobs` itself ships no CLI; this command lets a Job row (which the `RunScheduler` beat picks up) be created or updated from a script without going through the admin UI.
+
+#### `invenio kcworks-jobs upsert`
+
+Creates or updates a single `invenio-jobs` `Job` row for a registered task. The lookup key is `(task, title)`; if a row matches, it is updated in place, otherwise a new row is created. Uses `current_jobs_service` with the system identity.
+
+Arguments:
+
+- `TASK` (positional, required): the registered task id, e.g. `process_ror_funders`. Must match a task registered via the `invenio_jobs.jobs` entry point.
+
+Named options:
+
+- `--title TEXT`: the Job title (also part of the upsert key). Defaults to the task id.
+- `--description TEXT`: optional human-readable description.
+- `--schedule TEXT`: schedule expression. Two forms are accepted:
+  - `crontab:minute=0,hour=3,day_of_week=0` (fields are strings, mirroring `celery.schedules.crontab`)
+  - `interval:days=7` or `interval:hours=6,minutes=30` (fields are integers, mirroring `datetime.timedelta`)
+  - Omit for a manual-only Job (no automatic runs).
+- `--queue TEXT`: Celery queue name (must be a key in `JOBS_QUEUES`).
+- `--active / --inactive`: whether the Job is active (i.e. eligible to be picked up by the scheduler). Defaults to `--active`.
+
+Example — create or update the recurring ROR funders refresh:
+
+```shell
+invenio kcworks-jobs upsert process_ror_funders \
+    --title "Load ROR funders" \
+    --schedule "crontab:minute=0,hour=3,day_of_week=0" \
+    --queue celery
+```
+
+```{note}
+For the scheduled run to actually fire, the `scheduler` service in `docker-compose.yml` (which runs `celery beat --scheduler invenio_jobs.services.scheduler:RunScheduler`) must be up. That is the standard upstream setup for `invenio-jobs`.
+```
 
 ### `invenio group-collections`
 

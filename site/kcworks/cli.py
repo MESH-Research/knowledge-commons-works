@@ -17,6 +17,10 @@ import sys
 
 import click
 from flask.cli import with_appcontext
+from invenio_access.permissions import system_identity
+from invenio_db import db
+from invenio_jobs.models import Job
+from invenio_jobs.proxies import current_jobs_service
 from invenio_search.cli import abort_if_false, search_version_check
 
 from kcworks.services.communities.cli import (
@@ -138,3 +142,125 @@ def group_collections():
 # Register the group collections command group
 group_collections.add_command(check_group_memberships)
 group_collections.add_command(assign_org_records)
+
+
+# `kcworks-jobs`: thin wrapper over invenio-jobs' JobsService for declarative,
+# idempotent Job-row management at deploy time. invenio-jobs ships no CLI of
+# its own (verified across all installed flask.commands entry points), and the
+# job system requires a DB-backed Job row to be picked up by the dedicated
+# RunScheduler beat (see docker-compose.yml `scheduler` service).
+def _parse_schedule(value):
+    """Parse a --schedule string into invenio-jobs' JSON schedule shape.
+
+    Accepted forms:
+      crontab:minute=0,hour=3,day_of_week=0
+      interval:days=7
+      interval:hours=6,minutes=30
+
+    Crontab fields are strings (per CrontabScheduleSchema); interval fields
+    are integers (per IntervalScheduleSchema).
+
+    Returns:
+        ``None`` if ``value`` is empty, else a dict with a ``type`` key of
+        ``"crontab"`` or ``"interval"`` plus the parsed schedule fields.
+
+    Raises:
+        click.BadParameter: if ``value`` is non-empty but cannot be parsed as
+            one of the accepted forms (wraps the underlying ``ValueError``).
+    """
+    if not value:
+        return None
+    kind, _, rest = value.partition(":")
+    kind = kind.strip().lower()
+    if kind not in ("crontab", "interval"):
+        raise click.BadParameter(
+            f"Invalid --schedule value {value!r}: unknown schedule type {kind!r}"
+        )
+    result = {"type": kind}
+    if not rest:
+        return result
+    for part in rest.split(","):
+        k, _eq, v = part.partition("=")
+        k = k.strip()
+        v = v.strip()
+        if not k:
+            continue
+        if kind == "interval":
+            try:
+                result[k] = int(v)
+            except ValueError as exc:
+                raise click.BadParameter(
+                    f"Invalid --schedule value {value!r}: "
+                    f"interval field {k}={v!r} is not an integer"
+                ) from exc
+        else:
+            result[k] = v
+    return result
+
+
+@click.group("kcworks-jobs")
+def kcworks_jobs():
+    """Manage invenio-jobs Job rows declaratively (idempotent)."""
+    pass
+
+
+@kcworks_jobs.command("upsert")
+@click.argument("task")
+@click.option(
+    "--title",
+    default=None,
+    help=(
+        "Job title used as the upsert key together with the task id. "
+        "Defaults to the task id."
+    ),
+)
+@click.option(
+    "--description",
+    default=None,
+    help="Optional human-readable description.",
+)
+@click.option(
+    "--schedule",
+    default=None,
+    help=(
+        "Schedule, e.g. 'crontab:minute=0,hour=3,day_of_week=0' or "
+        "'interval:days=7'. Omit for an unscheduled (manual-only) job."
+    ),
+)
+@click.option(
+    "--queue",
+    default=None,
+    help="Celery queue name (must be a key in JOBS_QUEUES).",
+)
+@click.option(
+    "--active/--inactive",
+    default=True,
+    help="Whether the job is active (picked up by the scheduler).",
+)
+@with_appcontext
+def kcworks_jobs_upsert(task, title, description, schedule, queue, active):
+    """Create or update a Job row for TASK (an invenio-jobs registered task id).
+
+    Idempotent: looks up existing Job by (task, title) and updates in place if
+    found, otherwise creates. Uses invenio-jobs' JobsService with system
+    identity rather than direct DB writes.
+    """
+    title = title or task
+    payload = {"title": title, "task": task, "active": active}
+    if description is not None:
+        payload["description"] = description
+    if queue is not None:
+        payload["default_queue"] = queue
+    parsed_schedule = _parse_schedule(schedule)
+    if parsed_schedule is not None:
+        payload["schedule"] = parsed_schedule
+
+    existing = Job.query.filter_by(task=task, title=title).first()
+    if existing is None:
+        result = current_jobs_service.create(system_identity, payload)
+        db.session.commit()
+        click.echo(f"Created job {result.id} (task={task!r}, title={title!r}).")
+    else:
+        result = current_jobs_service.update(system_identity, existing.id, payload)
+        db.session.commit()
+        click.echo(f"Updated job {result.id} (task={task!r}, title={title!r}).")

@@ -68,10 +68,12 @@ optional-dependencies.tests = [
 ]
 scripts.group-collections = "kcworks.cli:group_collections"
 scripts.kcworks-index = "kcworks.cli:kcworks_index"
+scripts.kcworks-jobs = "kcworks.cli:kcworks_jobs"
 scripts.kcworks-records = "kcworks.cli:kcworks_records"
 scripts.kcworks-users = "kcworks.cli:kcworks_users"
 entry-points."flask.commands".group-collections = "kcworks.cli:group_collections"
 entry-points."flask.commands".kcworks-index = "kcworks.cli:kcworks_index"
+entry-points."flask.commands".kcworks-jobs = "kcworks.cli:kcworks_jobs"
 entry-points."flask.commands".kcworks-records = "kcworks.cli:kcworks_records"
 entry-points."flask.commands".kcworks-users = "kcworks.cli:kcworks_users"
 entry-points."invenio_assets.webpack".kcworks_theme = "kcworks.webpack:theme"
