@@ -7,37 +7,35 @@
 # KCWorks is free software; you can redistribute it and/or modify it under the
 # terms of the MIT License; see LICENSE file for more details.
 
-"""Record and community custom field definitions for KCWorks."""
+"""Record and community custom field definitions for KCWorks.
+
+The five upstream-contrib custom field sets (codemeta, journal, imprint,
+meeting, thesis) — both their Python definitions and their UI configs — are
+delegated to ``invenio-modular-deposit-form``. We import its
+``RDM_NAMESPACES`` / ``RDM_CUSTOM_FIELDS`` / ``RDM_CUSTOM_FIELDS_UI`` directly
+and concatenate KCR/HCLEGACY pieces on top, instead of relying on the
+package's ``finalize_app`` "if still empty" gate (which would never fire here
+because we set non-empty config for KCR/HCLEGACY anyway).
+
+KCR additions to the upstream sections (formerly inlined as section-extras
+between upstream sections in ``RDM_CUSTOM_FIELDS_UI``) are now standalone
+sections appended after the modular sections, not interleaved with them.
+"""
 
 from invenio_i18n import lazy_gettext as _
-from invenio_rdm_records.contrib.codemeta import (
-    CODEMETA_CUSTOM_FIELDS,
-    CODEMETA_NAMESPACE,
+from invenio_modular_deposit_form.config.config import (
+    RDM_CUSTOM_FIELDS as MODULAR_RDM_CUSTOM_FIELDS,
 )
-from invenio_rdm_records.contrib.imprint import (
-    IMPRINT_CUSTOM_FIELDS,
-    IMPRINT_NAMESPACE,
+from invenio_modular_deposit_form.config.config import (
+    RDM_CUSTOM_FIELDS_UI as MODULAR_RDM_CUSTOM_FIELDS_UI,
 )
-from invenio_rdm_records.contrib.journal import (
-    JOURNAL_CUSTOM_FIELDS,
-    JOURNAL_NAMESPACE,
-)
-from invenio_rdm_records.contrib.meeting import (
-    MEETING_CUSTOM_FIELDS,
-    MEETING_NAMESPACE,
-)
-from invenio_rdm_records.contrib.thesis import (
-    THESIS_CUSTOM_FIELDS,
-    THESIS_CUSTOM_FIELDS_UI,
-    THESIS_NAMESPACE,
+from invenio_modular_deposit_form.config.config import (
+    RDM_NAMESPACES as MODULAR_RDM_NAMESPACES,
 )
 from invenio_records_resources.services.custom_fields import TextCF
 
 from invenio_stats_dashboard.records.communities.custom_fields.custom_fields import (
     COMMUNITIES_NAMESPACES as STATS_COMMUNITIES_NAMESPACES,
-)
-from kcworks.metadata_fields.codemeta_fields import (
-    KCR_CODEMETA_CUSTOM_FIELDS_UI,
 )
 from kcworks.metadata_fields.hclegacy_groups_for_deposit import (
     HCLEGACY_GROUPS_FOR_DEPOSIT_FIELD,
@@ -46,12 +44,6 @@ from kcworks.metadata_fields.hclegacy_metadata_fields import (
     HCLEGACY_CUSTOM_FIELDS,
     HCLEGACY_INFO_SECTION_UI,
     HCLEGACY_NAMESPACE,
-)
-from kcworks.metadata_fields.imprint_fields import (
-    KCR_IMPRINT_CUSTOM_FIELDS_UI,
-)
-from kcworks.metadata_fields.journal_fields import (
-    KCR_JOURNAL_CUSTOM_FIELDS_UI,
 )
 from kcworks.metadata_fields.kcr_ai_field import (
     KCR_AI_USAGE_FIELDS,
@@ -89,28 +81,17 @@ from kcworks.metadata_fields.kcr_volumes_fields import (
     KCR_VOLUMES_FIELDS,
     KCR_VOLUMES_FIELDS_UI,
 )
-from kcworks.metadata_fields.meeting_fields import (
-    KCR_MEETING_CUSTOM_FIELDS_UI,
-)
 
 from .site_urls import SITE_UI_URL
 
 RDM_NAMESPACES = {
-    **JOURNAL_NAMESPACE,
-    **IMPRINT_NAMESPACE,
-    **THESIS_NAMESPACE,
-    **MEETING_NAMESPACE,
-    **CODEMETA_NAMESPACE,
+    **MODULAR_RDM_NAMESPACES,
     **KCR_NAMESPACE,
     **HCLEGACY_NAMESPACE,
 }
 
 RDM_CUSTOM_FIELDS = [
-    *JOURNAL_CUSTOM_FIELDS,
-    *MEETING_CUSTOM_FIELDS,
-    *IMPRINT_CUSTOM_FIELDS,
-    *THESIS_CUSTOM_FIELDS,
-    *CODEMETA_CUSTOM_FIELDS,
+    *MODULAR_RDM_CUSTOM_FIELDS,
     *KCR_CUSTOM_FIELDS,
     *KCR_VOLUMES_FIELDS,
     *KCR_MEDIA_FIELD,
@@ -123,30 +104,23 @@ RDM_CUSTOM_FIELDS = [
 ]
 
 RDM_CUSTOM_FIELDS_UI = [
-    THESIS_CUSTOM_FIELDS_UI,
+    *MODULAR_RDM_CUSTOM_FIELDS_UI,
     {
         "section": _("KCR thesis information"),
         "hidden": False,
-        "fields": [
-            *KCR_THESIS_SECTION_EXTRAS_UI,
-        ],
+        "fields": [*KCR_THESIS_SECTION_EXTRAS_UI],
     },
-    KCR_JOURNAL_CUSTOM_FIELDS_UI,
     {
         "section": _("KCR journal information"),
         "hidden": False,
-        "fields": [
-            *KCR_JOURNAL_SECTION_EXTRAS_UI,
-        ],
+        "fields": [*KCR_JOURNAL_SECTION_EXTRAS_UI],
     },
-    KCR_IMPRINT_CUSTOM_FIELDS_UI,
     KCR_SERIES_FIELDS_UI,
     {
         "section": _("KCR Book information"),
         "hidden": False,
         "fields": [*KCR_IMPRINT_SECTION_EXTRAS_UI, *KCR_VOLUMES_FIELDS_UI],
     },
-    KCR_MEETING_CUSTOM_FIELDS_UI,
     {
         "section": _("KCR Conference information"),
         "fields": [*KCR_MEETING_SECTION_EXTRAS_UI],
@@ -160,7 +134,6 @@ RDM_CUSTOM_FIELDS_UI = [
     KCR_NOTES_SECTION_UI,
     KCR_PROJECT_SECTION_UI,
     KCR_USER_TAGS_SECTION_UI,
-    KCR_CODEMETA_CUSTOM_FIELDS_UI,
     KCR_AI_USAGE_FIELDS_UI,
     HCLEGACY_INFO_SECTION_UI,
     KCR_COURSE_SECTION_UI,
