@@ -154,8 +154,18 @@ fi
 rm -f "$RAWFILE"
 RAWFILE=""
 
+# IMAGE_TAG precedence: --image-tag flag > existing env > current git branch.
+# Mirrors CI's per-branch tagging so local builder images cache per branch
+# (monotasker/kcworks-dev:<branch>) instead of clobbering a single :latest.
+# CI uses slash-to-dash sanitization with no SHA suffix; matched here verbatim.
 if [[ -n "$IMAGE_TAG_ARG" ]]; then
   export IMAGE_TAG="$IMAGE_TAG_ARG"
+elif [[ -z "${IMAGE_TAG:-}" ]]; then
+  if branch=$(git -C "$REPO_ROOT" symbolic-ref --short HEAD 2>/dev/null); then
+    export IMAGE_TAG="${branch//\//-}"
+  else
+    echo "Note: not on a branch (detached HEAD or non-git tree); IMAGE_TAG unset, compose will use ':latest'." >&2
+  fi
 fi
 
 docker compose \

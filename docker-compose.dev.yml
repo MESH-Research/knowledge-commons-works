@@ -33,6 +33,14 @@ services:
     extends:
       file: docker-compose.yml
       service: web-ui
+    # Dev uses the Dockerfile's `builder` stage (Node + pnpm + uv toolchain)
+    # so `invenio webpack install/build` can shell out to `pnpm` via PNPMPackage.
+    # Tagged with a dev-only name so the slim runtime image stays untouched.
+    # Built locally on first `up`; rebuild with `docker compose ... build web-ui`.
+    image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: builder
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
     volumes:
@@ -91,6 +99,11 @@ services:
     extends:
       file: docker-compose.yml
       service: web-api
+    # See web-ui above for the dev-image rationale.
+    image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: builder
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
     volumes:
@@ -148,6 +161,11 @@ services:
     extends:
       file: docker-compose.yml
       service: worker
+    # See web-ui above for the dev-image rationale.
+    image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: builder
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
     volumes:
