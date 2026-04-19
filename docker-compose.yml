@@ -168,6 +168,18 @@ services:
         condition: service_started
       mq:
         condition: service_started
+  # Jobs scheduler
+  scheduler:
+    extends:
+      file: docker-services.yml
+      service: app
+    command: ["celery -A invenio_app.celery beat --scheduler invenio_jobs.services.scheduler:RunScheduler --loglevel=INFO"]
+    image: monotasker/kcworks:${IMAGE_TAG:-latest}
+    depends_on:
+      mq:
+        condition: service_started
+      db:
+        condition: service_started
 volumes:
   archived_data:
   static_data:
