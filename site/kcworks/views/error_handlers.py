@@ -11,7 +11,9 @@ lives in :func:`register_themed_error_handlers` below. Per-handler logic
 (status code, template, fallback copy) stays in the individual handlers.
 """
 
+import functools
 from functools import partial
+from types import TracebackType
 from typing import Any
 
 from flask import Flask, Response, jsonify, make_response, render_template, request
@@ -26,6 +28,7 @@ from invenio_remote_user_data_kcworks.errors import (
 from werkzeug.exceptions import (
     Forbidden,
     Gone,
+    HTTPException,
     InternalServerError,
     NotFound,
     TooManyRequests,
@@ -318,3 +321,130 @@ def register_themed_error_handlers(
         target_app.register_error_handler(exc_cls, _bind(handler))
 
     target_app.register_error_handler(Exception, _bind(oauth_500_handler))
+
+
+def _deepest_traceback_frame_location(
+    tb: TracebackType | None,
+) -> tuple[str | None, int | None]:
+    """Return ``(filename, lineno)`` of the deepest frame in a traceback.
+
+    Used to point at the actual raise site without dumping the full traceback
+    (which may include exception messages containing user-supplied data).
+
+    Args:
+        tb: The traceback object, typically ``error.__traceback__``.
+
+    Returns:
+        ``(filename, lineno)`` for the deepest frame, or ``(None, None)`` when
+        no traceback is available (e.g. exceptions constructed without being
+        raised).
+    """
+    if tb is None:
+        return None, None
+    while tb.tb_next is not None:
+        tb = tb.tb_next
+    return tb.tb_frame.f_code.co_filename, tb.tb_lineno
+
+
+def _make_logging_wrapper(
+    target_app: Flask,
+    orig_handler: Any,
+    bp_name: str,
+    exc_cls: type,
+) -> Any:
+    """Build a wrapper that logs the original exception, then delegates.
+
+    Logs at WARNING with a one-line summary that names the exception type,
+    the blueprint, the request method+path, and the deepest-frame file:line.
+    Logs the full traceback (including the exception's ``__str__()``, which
+    may carry user-supplied values for some exception classes) at DEBUG only.
+
+    Args:
+        target_app: The Flask app whose logger we use.
+        orig_handler: The original blueprint-scoped error handler to delegate to.
+        bp_name: The name of the blueprint that registered ``orig_handler``.
+        exc_cls: The exception class the handler was registered for. Included
+            here for future per-class log-level tuning; not currently used.
+
+    Returns:
+        A new callable with the same shape as ``orig_handler`` that performs
+        logging then returns whatever ``orig_handler`` returns.
+    """
+    del exc_cls  # reserved for future per-class log routing
+
+    @functools.wraps(orig_handler)
+    def _logged(error: BaseException) -> Any:
+        filename, lineno = _deepest_traceback_frame_location(
+            getattr(error, "__traceback__", None)
+        )
+        target_app.logger.warning(
+            "Blueprint error handler caught %s in blueprint=%s for %s %s "
+            "(handler=%s.%s, raised at %s:%s). "
+            "Themed response will be rendered; enable DEBUG for full traceback.",
+            type(error).__name__,
+            bp_name,
+            request.method,
+            request.path,
+            getattr(orig_handler, "__module__", "?"),
+            getattr(orig_handler, "__qualname__", "?"),
+            filename or "?",
+            lineno or "?",
+        )
+        target_app.logger.debug(
+            "Full traceback for %s caught by blueprint=%s on %s %s",
+            type(error).__name__,
+            bp_name,
+            request.method,
+            request.path,
+            exc_info=error,
+        )
+        return orig_handler(error)
+
+    _logged._kcworks_logged = True  # type: ignore[attr-defined]
+    return _logged
+
+
+def wrap_blueprint_error_handlers_with_logging(target_app: Flask) -> None:
+    """Log the original exception when a blueprint-scoped error handler fires.
+
+    Several upstream Invenio blueprints (notably ``invenio_app_rdm.records_ui``,
+    ``requests_ui``, ``users_ui``, ``communities_ui``, and
+    ``invenio_communities``) register blueprint-scoped error handlers that map
+    programmer errors like ``NoResultFound``, ``KeyError``,
+    ``PIDDoesNotExistError``, ``PIDUnregistered``, and ``FileKeyNotFoundError``
+    directly to themed 404/403/410 responses without logging the underlying
+    cause. Flask's ``got_request_exception`` signal does not fire for handled
+    exceptions, so the original error is otherwise invisible.
+
+    This walks ``app.error_handler_spec`` and replaces each blueprint-scoped
+    handler with a wrapper that logs (WARNING summary, DEBUG full traceback)
+    before delegating. App-wide handlers (including the ones registered by
+    :func:`register_themed_error_handlers`) are intentionally skipped: those
+    are our own handlers and add their own logging where appropriate, and
+    Flask logs uncaught exceptions before invoking the app-wide
+    ``Exception`` handler anyway.
+
+    Handlers registered for ``werkzeug.exceptions.HTTPException`` subclasses
+    are skipped: those represent intentional, routine HTTP responses (real
+    client 404s, 405s, etc.), not buried programmer errors. Wrapping them
+    would produce a WARNING for every routine client error.
+
+    Idempotent: handlers are tagged after wrapping so re-runs are no-ops.
+
+    Args:
+        target_app: The Flask app whose blueprint error handlers should be
+            instrumented. Typically called once from ``finalize_app`` after
+            :func:`register_themed_error_handlers`.
+    """
+    for bp_name, code_map in list(target_app.error_handler_spec.items()):
+        if bp_name is None:
+            continue
+        for _code, exc_map in list(code_map.items()):
+            for exc_cls, handler in list(exc_map.items()):
+                if getattr(handler, "_kcworks_logged", False):
+                    continue
+                if isinstance(exc_cls, type) and issubclass(exc_cls, HTTPException):
+                    continue
+                exc_map[exc_cls] = _make_logging_wrapper(
+                    target_app, handler, bp_name, exc_cls
+                )

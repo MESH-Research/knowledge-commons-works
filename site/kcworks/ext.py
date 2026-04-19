@@ -48,7 +48,10 @@ from kcworks.services.records.record_communities.community_change_permissions_co
     CommunityChangePermissionsComponent,
 )
 from kcworks.templates.template_filters import user_profile_dict
-from kcworks.views.error_handlers import register_themed_error_handlers
+from kcworks.views.error_handlers import (
+    register_themed_error_handlers,
+    wrap_blueprint_error_handlers_with_logging,
+)
 
 # Stand-ins for request.oauth in the static-token flow. Real OAuth flow sets
 # request.oauth to an oauthlib.common.Request with .user (User), .access_token
@@ -206,8 +209,18 @@ class KCWorks:
 
 
 def finalize_app(app: Flask) -> None:
-    """Register KCWorks UI error handlers."""
+    """Register KCWorks UI error handlers and instrument blueprint ones.
+
+    The wrap step must run after every other extension's ``finalize_app`` /
+    ``api_finalize_app`` has had a chance to register its blueprints and
+    blueprint-scoped error handlers; entry-point ordering means this isn't
+    fully guaranteed, but in practice all relevant invenio extensions have
+    registered theirs by the time KCWorks' ``finalize_app`` runs. Any
+    blueprint that registers handlers later than this would simply be
+    skipped (still works, just no logging).
+    """
     register_themed_error_handlers(app)
+    wrap_blueprint_error_handlers_with_logging(app)
 
 
 def _route_token_env_for_request(path: str, routes_map: dict[str, str]) -> str | None:
