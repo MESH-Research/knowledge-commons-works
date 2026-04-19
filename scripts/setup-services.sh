@@ -80,9 +80,37 @@ then
         printf "\b%c" "${sp:i++%4:1}"
         sleep 0.1
     done
+    # Seed ROR-backed vocabularies (funders, affiliations) from live ROR via
+    # Zenodo. These are not in vocabularies.yaml and so are not loaded by
+    # `invenio rdm-records fixtures`; without this step the deposit form's
+    # funder and affiliation fields are empty until the first scheduled
+    # process_ror_{funders,affiliations} job run. Eager mode mirrors the
+    # surrounding fixtures invocation so writers run inline rather than
+    # flooding the broker.
+    echo -e "${yellow}Seeding ROR-backed vocabularies (funders, affiliations) from Zenodo (this requires network egress to doi.org and zenodo.org)...${clear}"
+    INVENIO_CELERY_TASK_ALWAYS_EAGER=True INVENIO_CELERY_TASK_EAGER_PROPAGATES=True \
+        invenio vocabularies import -v funders
+    INVENIO_CELERY_TASK_ALWAYS_EAGER=True INVENIO_CELERY_TASK_EAGER_PROPAGATES=True \
+        invenio vocabularies import -v affiliations
 else
     echo -e "${yellow}Skipping setting up fixtures (-f flag was not passed)...${clear}"
 fi
+
+# Register recurring ROR vocabulary refresh jobs as invenio-jobs Job rows.
+# Idempotent: re-running upserts in place. Safe to run regardless of the -f
+# flag because it does not load data; it only records the schedule that the
+# `scheduler` compose service (celery beat with RunScheduler) will dispatch.
+# Schedules are offset by an hour so the two ROR pulls don't overlap.
+echo -e "${yellow}Registering scheduled ROR vocabulary refresh jobs...${clear}"
+invenio kcworks-jobs upsert process_ror_funders \
+    --title "Load ROR funders" \
+    --schedule "crontab:minute=0,hour=3,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert process_ror_affiliations \
+    --title "Load ROR affiliations" \
+    --schedule "crontab:minute=0,hour=4,day_of_week=0" \
+    --queue celery
+
 echo -e "${green}All done setting up services."
 echo -e "${green}Building and symlinking assets..."
 bash ./scripts/build-assets.sh

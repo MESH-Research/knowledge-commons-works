@@ -53,38 +53,46 @@ The container name may be different depending on your local docker setup. You ca
 Some of the commands in this script may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
 ```
 
-### 5. (Optional) Seed the funders vocabulary from ROR and schedule recurring updates
+### 5. ROR-backed vocabularies (funders and affiliations) — automatic seed and refresh
 
-The `funders` vocabulary is **not** populated by `invenio rdm-records fixtures` (which only loads the entries declared in `app_data/vocabularies.yaml`). To populate it you must trigger an import explicitly. The funders pipeline is configured upstream in `invenio-vocabularies` (`contrib/funders/datastreams.py` `DATASTREAM_CONFIG`) and uses the `ror-http` reader, which downloads the latest ROR data dump directly from Zenodo over HTTP — no local data file is required.
+Neither the `funders` nor the `affiliations` vocabulary is populated by `invenio rdm-records fixtures` (which only loads entries declared in `app_data/vocabularies.yaml`, and we deliberately omit both). Both are sourced from live ROR via the upstream contrib datastream pipelines (`invenio-vocabularies/contrib/funders/datastreams.py` and `.../affiliations/datastreams.py` `DATASTREAM_CONFIG`), which use the `ror-http` reader to download the latest ROR data dump directly from Zenodo over HTTP — no local data file is required.
 
-From inside the `web-ui` container:
+If you ran `bash ./scripts/setup-services.sh -f` in step 4, **both the initial seed and the recurring refresh schedule are already in place** — there is nothing extra to do here. Specifically, the script:
+
+- Runs `invenio vocabularies import -v funders` and `invenio vocabularies import -v affiliations` (gated on the `-f` flag, alongside the other fixtures), each downloading the current ROR dump from Zenodo and loading it through the upstream contrib pipeline.
+- Runs `invenio kcworks-jobs upsert process_ror_funders ...` and `invenio kcworks-jobs upsert process_ror_affiliations ...` (always, regardless of `-f`), which idempotently insert/update two `invenio-jobs` `Job` rows. The dedicated `scheduler` compose service (`celery beat` with `RunScheduler`) reads those rows and dispatches the jobs on schedule. The defaults are weekly on Sunday at 03:00 UTC (funders) and 04:00 UTC (affiliations), offset by an hour so the two ROR pulls don't overlap.
+
+```{note}
+The container running the seed step needs network egress to `doi.org` and `zenodo.org`. The full ROR ZIP is held in memory during each import.
+```
+
+```{note}
+Both jobs use upstream `JobType`s (`process_ror_funders` and `process_ror_affiliations`, registered via the `invenio_jobs.jobs` entry point by `invenio-vocabularies`). Each uses its own hardcoded datastream config — equivalent to the contrib default but with a `since` parameter passed to the `ror-http` reader so subsequent scheduled runs only fetch the latest dump if it postdates the previous successful run. The writer defaults to `update: false`, so scheduled runs add new ROR records but do not overwrite existing entries (mirroring upstream behavior, since `invenio-vocabularies` has no logic yet to re-index dependent records on funder/affiliation updates).
+```
+
+````{note}
+If you ran `setup-services.sh` without `-f`, the recurring jobs are still registered but the initial seed was skipped — the funder and affiliation fields in the deposit form will be empty until the next scheduled run completes (up to a week away). To seed manually:
 
 ```shell
-# One-time seed: pull funders from ROR and load them into the vocabulary.
-# Uses the upstream contrib config: ror-http (downloads the latest ROR dump
-# from Zenodo) -> zip -> json -> ror-funders transformer -> async
-# funders-service writer.
 invenio vocabularies import -v funders
+invenio vocabularies import -v affiliations
+```
+````
 
-# Register a recurring weekly refresh as an invenio-jobs Job. The dedicated
-# `scheduler` compose service (celery beat with RunScheduler) will pick it up.
+````{note}
+To change a schedule (or to register the jobs on a custom deploy that doesn't use `setup-services.sh`), run `invenio kcworks-jobs upsert` manually. It is idempotent — it looks up the `Job` row by `(task, title)` and updates in place if found, or creates if not. See `invenio kcworks-jobs upsert --help` for options.
+
+```shell
 invenio kcworks-jobs upsert process_ror_funders \
     --title "Load ROR funders" \
     --schedule "crontab:minute=0,hour=3,day_of_week=0" \
     --queue celery
+invenio kcworks-jobs upsert process_ror_affiliations \
+    --title "Load ROR affiliations" \
+    --schedule "crontab:minute=0,hour=4,day_of_week=0" \
+    --queue celery
 ```
-
-```{note}
-Without the seed step, `funders` will be empty until the first scheduled run completes (which can take a while because it pulls the full ROR dump). Running `invenio vocabularies import -v funders` once at install time ensures the funder field in the deposit form is usable immediately.
-```
-
-```{note}
-The container running the import needs network egress to `doi.org` and `zenodo.org`. The full ROR ZIP is held in memory during the import.
-```
-
-```{note}
-The `process_ror_funders` job uses the upstream `JobType` (registered via the `invenio_jobs.jobs` entry point by `invenio-vocabularies`). It uses its own hardcoded datastream config — equivalent to the contrib default but with a `since` parameter passed to the `ror-http` reader so subsequent scheduled runs only fetch the latest dump if it postdates the previous successful run. The writer defaults to `update: false`, so scheduled runs add new ROR records but do not overwrite existing funder entries (mirroring upstream behavior, since `invenio-vocabularies` has no logic yet to re-index dependent records on funder updates).
-```
+````
 
 ### 6. Create your own admin user
 

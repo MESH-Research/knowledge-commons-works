@@ -34,14 +34,8 @@ subjects:
 titletypes:
   pid-type: ttyp
   data-file: vocabularies/title_types.yaml
-# TODO: Make sure this old way of defining affiliations isn't needed
-# affiliations:
-#   pid-type: aff
-#   schemes:
-#     - id: ROR
-#       name: Research Organization Registry
-#       uri: "https://ror.org/"
-#       data-file: vocabularies/affiliations_ror.yaml
-affiliations:
-  pid-type: aff
-  data-file: vocabularies/affiliations_ror.yaml
+# Note: `affiliations` is intentionally not declared here. It is seeded from
+# live ROR via `invenio vocabularies import -v affiliations` (uses the
+# upstream contrib ROR HTTP datastream pipeline) and refreshed on a schedule
+# by the `process_ror_affiliations` invenio-jobs Job. See
+# docs/source/setup/installation.md, step 5, for the seed/bootstrap commands.
