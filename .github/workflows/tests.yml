@@ -60,6 +60,10 @@ jobs:
           touch tests/.env
       - name: Run tests
         env:
+          # CI gets test secrets from GitHub Actions secrets (this env: block),
+          # not from AWS Secrets Manager. Disable the launcher's SM lookup so
+          # run-tests.sh skips the AWS path and relies on the values below.
+          KCWORKS_TEST_SM_DISABLE: "1"
           CILOGON_CLIENT_ID: ${{ secrets.CILOGON_CLIENT_ID }}
           CILOGON_CLIENT_SECRET: ${{ secrets.CILOGON_CLIENT_SECRET }}
           COMMONS_API_TOKEN: ${{ secrets.TEST_COMMONS_API_TOKEN }}
