@@ -89,16 +89,34 @@ then
     echo -e "${yellow}Seeding ROR-backed vocabularies (funders, affiliations) from Zenodo (this requires network egress to doi.org and zenodo.org)...${clear}"
     invenio vocabularies import -v funders
     invenio vocabularies import -v affiliations
+    # Seed the awards vocabulary from OpenAIRE Graph (via Zenodo). Unlike
+    # funders/affiliations, the upstream `awards` DATASTREAM_CONFIG has no
+    # HTTP reader, so `invenio vocabularies import -v awards` would not pull
+    # data; the HTTP-driven config lives only in the import_awards_openaire
+    # JobType. The schedule is also registered (idempotently) below regardless
+    # of -f, but for fresh installs we also fire one immediate run with
+    # --run-now so the awards field in the deposit form is populated without
+    # waiting up to a week for the next scheduled run.
+    echo -e "${yellow}Seeding awards vocabulary from OpenAIRE (this requires network egress to zenodo.org and may transfer multi-GB data)...${clear}"
+    invenio kcworks-jobs upsert import_awards_openaire \
+        --title "Import Awards OpenAIRE" \
+        --schedule "crontab:minute=0,hour=5,day_of_week=0" \
+        --queue celery \
+        --run-now
 else
     echo -e "${yellow}Skipping setting up fixtures (-f flag was not passed)...${clear}"
 fi
 
-# Register recurring ROR vocabulary refresh jobs as invenio-jobs Job rows.
+# Register recurring vocabulary refresh jobs as invenio-jobs Job rows.
 # Idempotent: re-running upserts in place. Safe to run regardless of the -f
-# flag because it does not load data; it only records the schedule that the
-# `scheduler` compose service (celery beat with RunScheduler) will dispatch.
-# Schedules are offset by an hour so the two ROR pulls don't overlap.
-echo -e "${yellow}Registering scheduled ROR vocabulary refresh jobs...${clear}"
+# flag because (without --run-now) it does not load data; it only records the
+# schedule that the `scheduler` compose service (celery beat with
+# RunScheduler) will dispatch. Schedules are offset by an hour so the four
+# heavy network/index pulls don't overlap. The CORDIS pass is scheduled an
+# hour after OpenAIRE because it only augments existing award records (its
+# writer runs with insert=False, update=True), so it depends on the OpenAIRE
+# pass having loaded the master award list first.
+echo -e "${yellow}Registering scheduled vocabulary refresh jobs...${clear}"
 invenio kcworks-jobs upsert process_ror_funders \
     --title "Load ROR funders" \
     --schedule "crontab:minute=0,hour=3,day_of_week=0" \
@@ -106,6 +124,14 @@ invenio kcworks-jobs upsert process_ror_funders \
 invenio kcworks-jobs upsert process_ror_affiliations \
     --title "Load ROR affiliations" \
     --schedule "crontab:minute=0,hour=4,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert import_awards_openaire \
+    --title "Import Awards OpenAIRE" \
+    --schedule "crontab:minute=0,hour=5,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert update_awards_cordis \
+    --title "Update Awards CORDIS" \
+    --schedule "crontab:minute=0,hour=6,day_of_week=0" \
     --queue celery
 
 echo -e "${green}All done setting up services."

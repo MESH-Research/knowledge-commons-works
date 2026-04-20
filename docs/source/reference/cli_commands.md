@@ -246,6 +246,7 @@ Named options:
   - Omit for a manual-only Job (no automatic runs).
 - `--queue TEXT`: Celery queue name (must be a key in `JOBS_QUEUES`).
 - `--active / --inactive`: whether the Job is active (i.e. eligible to be picked up by the scheduler). Defaults to `--active`.
+- `--run-now`: after upserting the Job row, also dispatch one immediate run, in addition to the normal schedule. Useful on fresh installs to bootstrap data for vocabularies (e.g. `awards`) whose datastream config only exists inside a `JobType` and that therefore can't be seeded with `invenio vocabularies import`. Mirrors the upstream `RunScheduler.create_run` pattern (creates a `Run` row with NULL `started_by_id` and dispatches `execute_run` on the job's `default_queue`).
 
 Example — create or update the recurring ROR funders refresh:
 
@@ -256,8 +257,18 @@ invenio kcworks-jobs upsert process_ror_funders \
     --queue celery
 ```
 
+Example — register the awards-from-OpenAIRE schedule and trigger an immediate first run (e.g. on a fresh install):
+
+```shell
+invenio kcworks-jobs upsert import_awards_openaire \
+    --title "Import Awards OpenAIRE" \
+    --schedule "crontab:minute=0,hour=5,day_of_week=0" \
+    --queue celery \
+    --run-now
+```
+
 ```{note}
-For the scheduled run to actually fire, the `scheduler` service in `docker-compose.yml` (which runs `celery beat --scheduler invenio_jobs.services.scheduler:RunScheduler`) must be up. That is the standard upstream setup for `invenio-jobs`.
+For the scheduled run to actually fire, the `scheduler` service in `docker-compose.yml` (which runs `celery beat --scheduler invenio_jobs.services.scheduler:RunScheduler`) must be up. That is the standard upstream setup for `invenio-jobs`. `--run-now`, by contrast, dispatches a one-off run via the regular Celery worker queue and does not depend on the scheduler service.
 ```
 
 ### `invenio group-collections`

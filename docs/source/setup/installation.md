@@ -53,34 +53,44 @@ The container name may be different depending on your local docker setup. You ca
 Some of the commands in this script may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
 ```
 
-### 5. ROR-backed vocabularies (funders and affiliations) — automatic seed and refresh
+### 5. Externally-sourced vocabularies (funders, affiliations, awards) — automatic seed and refresh
 
-Neither the `funders` nor the `affiliations` vocabulary is populated by `invenio rdm-records fixtures` (which only loads entries declared in `app_data/vocabularies.yaml`, and we deliberately omit both). Both are sourced from live ROR via the upstream contrib datastream pipelines (`invenio-vocabularies/contrib/funders/datastreams.py` and `.../affiliations/datastreams.py` `DATASTREAM_CONFIG`), which use the `ror-http` reader to download the latest ROR data dump directly from Zenodo over HTTP — no local data file is required.
+Three vocabularies are not populated by `invenio rdm-records fixtures` (which only loads entries declared in `app_data/vocabularies.yaml`, and we deliberately omit them all). Each is sourced from a live external dataset and refreshed on a schedule by `invenio-jobs`:
 
-If you ran `bash ./scripts/setup-services.sh -f` in step 4, **both the initial seed and the recurring refresh schedule are already in place** — there is nothing extra to do here. Specifically, the script:
+- **`funders`** — from the ROR data dump on Zenodo, via the upstream `invenio-vocabularies/contrib/funders/datastreams.py` `DATASTREAM_CONFIG` (`ror-http` reader). The job task id is `process_ror_funders`.
+- **`affiliations`** — from the same ROR dump, via the equivalent affiliations contrib config. The job task id is `process_ror_affiliations`.
+- **`awards`** — from the OpenAIRE Graph "diff" project dataset on Zenodo (master record list), augmented weekly by CORDIS for European Commission projects (subjects, participating organizations, program codes). The two job task ids are `import_awards_openaire` and `update_awards_cordis`.
 
-- Runs `invenio vocabularies import -v funders` and `invenio vocabularies import -v affiliations` (gated on the `-f` flag, alongside the other fixtures), each downloading the current ROR dump from Zenodo and loading it through the upstream contrib pipeline.
-- Runs `invenio kcworks-jobs upsert process_ror_funders ...` and `invenio kcworks-jobs upsert process_ror_affiliations ...` (always, regardless of `-f`), which idempotently insert/update two `invenio-jobs` `Job` rows. The dedicated `scheduler` compose service (`celery beat` with `RunScheduler`) reads those rows and dispatches the jobs on schedule. The defaults are weekly on Sunday at 03:00 UTC (funders) and 04:00 UTC (affiliations), offset by an hour so the two ROR pulls don't overlap.
+If you ran `bash ./scripts/setup-services.sh -f` in step 4, **all initial seeds and the recurring refresh schedules are already in place** — there is nothing extra to do here. Specifically, the script:
+
+- Runs `invenio vocabularies import -v funders` and `invenio vocabularies import -v affiliations` (gated on `-f`, alongside the other fixtures), each downloading the current ROR dump from Zenodo and loading it through the upstream contrib pipeline.
+- Runs `invenio kcworks-jobs upsert import_awards_openaire ... --run-now` (also gated on `-f`), which both registers the schedule and immediately dispatches one run to bootstrap the awards data. This `--run-now` step is necessary because the upstream `awards` `DATASTREAM_CONFIG` has no HTTP reader — the HTTP-driven config lives only inside the `import_awards_openaire` `JobType` — so `invenio vocabularies import -v awards` cannot be used here.
+- Runs `invenio kcworks-jobs upsert ...` for all four jobs (always, regardless of `-f`), which idempotently insert/update four `invenio-jobs` `Job` rows. The dedicated `scheduler` compose service (`celery beat` with `RunScheduler`) reads those rows and dispatches the jobs on schedule. The defaults are weekly on Sunday at 03:00 UTC (funders), 04:00 UTC (affiliations), 05:00 UTC (awards from OpenAIRE), and 06:00 UTC (awards from CORDIS), offset by an hour each so the four heavy network pulls don't overlap. The CORDIS pass is scheduled after the OpenAIRE pass because its writer runs with `insert=False, update=True` — it only augments existing award records loaded by the OpenAIRE pass.
 
 ```{note}
-The container running the seed step needs network egress to `doi.org` and `zenodo.org`. The full ROR ZIP is held in memory during each import.
+The container running the seed step needs network egress to `doi.org` and `zenodo.org` (and, for the CORDIS schedule once it fires, to `cordis.europa.eu`). The full ROR ZIP and the OpenAIRE project tarball are each held in memory during their respective imports; the OpenAIRE dataset can be multi-GB.
 ```
 
 ```{note}
-Both jobs use upstream `JobType`s (`process_ror_funders` and `process_ror_affiliations`, registered via the `invenio_jobs.jobs` entry point by `invenio-vocabularies`). Each uses its own hardcoded datastream config — equivalent to the contrib default but with a `since` parameter passed to the `ror-http` reader so subsequent scheduled runs only fetch the latest dump if it postdates the previous successful run. The writer defaults to `update: false`, so scheduled runs add new ROR records but do not overwrite existing entries (mirroring upstream behavior, since `invenio-vocabularies` has no logic yet to re-index dependent records on funder/affiliation updates).
+All four jobs use upstream `JobType`s registered via the `invenio_jobs.jobs` entry point by `invenio-vocabularies`. Each uses its own hardcoded datastream config — for ROR, equivalent to the contrib default but with a `since` parameter on the `ror-http` reader so subsequent scheduled runs only fetch the latest dump if it postdates the previous successful run. The ROR writers default to `update: false`, so scheduled runs add new records but do not overwrite existing entries (mirroring upstream behavior, since `invenio-vocabularies` has no logic yet to re-index dependent records on funder/affiliation updates).
 ```
 
 ````{note}
-If you ran `setup-services.sh` without `-f`, the recurring jobs are still registered but the initial seed was skipped — the funder and affiliation fields in the deposit form will be empty until the next scheduled run completes (up to a week away). To seed manually:
+If you ran `setup-services.sh` without `-f`, the recurring jobs are still registered but the initial seeds were skipped — the funder, affiliation, and award fields in the deposit form will be empty until the next scheduled run completes (up to a week away). To seed manually:
 
 ```shell
 invenio vocabularies import -v funders
 invenio vocabularies import -v affiliations
+invenio kcworks-jobs upsert import_awards_openaire \
+    --title "Import Awards OpenAIRE" \
+    --schedule "crontab:minute=0,hour=5,day_of_week=0" \
+    --queue celery \
+    --run-now
 ```
 ````
 
 ````{note}
-To change a schedule (or to register the jobs on a custom deploy that doesn't use `setup-services.sh`), run `invenio kcworks-jobs upsert` manually. It is idempotent — it looks up the `Job` row by `(task, title)` and updates in place if found, or creates if not. See `invenio kcworks-jobs upsert --help` for options.
+To change a schedule (or to register the jobs on a custom deploy that doesn't use `setup-services.sh`), run `invenio kcworks-jobs upsert` manually. It is idempotent — it looks up the `Job` row by `(task, title)` and updates in place if found, or creates if not. See `invenio kcworks-jobs upsert --help` for options (including `--run-now` to dispatch a one-off run on top of the schedule).
 
 ```shell
 invenio kcworks-jobs upsert process_ror_funders \
@@ -90,6 +100,14 @@ invenio kcworks-jobs upsert process_ror_funders \
 invenio kcworks-jobs upsert process_ror_affiliations \
     --title "Load ROR affiliations" \
     --schedule "crontab:minute=0,hour=4,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert import_awards_openaire \
+    --title "Import Awards OpenAIRE" \
+    --schedule "crontab:minute=0,hour=5,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert update_awards_cordis \
+    --title "Update Awards CORDIS" \
+    --schedule "crontab:minute=0,hour=6,day_of_week=0" \
     --queue celery
 ```
 ````

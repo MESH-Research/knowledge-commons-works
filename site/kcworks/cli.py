@@ -14,13 +14,15 @@
 """KCWorks CLI."""
 
 import sys
+import uuid
 
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
 from invenio_db import db
-from invenio_jobs.models import Job
+from invenio_jobs.models import Job, Run
 from invenio_jobs.proxies import current_jobs_service
+from invenio_jobs.tasks import execute_run
 from invenio_search.cli import abort_if_false, search_version_check
 
 from kcworks.services.communities.cli import (
@@ -237,8 +239,17 @@ def kcworks_jobs():
     default=True,
     help="Whether the job is active (picked up by the scheduler).",
 )
+@click.option(
+    "--run-now",
+    is_flag=True,
+    default=False,
+    help=(
+        "After upserting, immediately dispatch one run of the job "
+        "(in addition to its normal schedule)."
+    ),
+)
 @with_appcontext
-def kcworks_jobs_upsert(task, title, description, schedule, queue, active):
+def kcworks_jobs_upsert(task, title, description, schedule, queue, active, run_now):
     """Create or update a Job row for TASK (an invenio-jobs registered task id).
 
     Idempotent: looks up existing Job by (task, title) and updates in place if
@@ -264,3 +275,23 @@ def kcworks_jobs_upsert(task, title, description, schedule, queue, active):
         result = current_jobs_service.update(system_identity, existing.id, payload)
         db.session.commit()
         click.echo(f"Updated job {result.id} (task={task!r}, title={title!r}).")
+
+    if run_now:
+        # Mirror invenio_jobs.services.scheduler.RunScheduler.create_run/apply_entry:
+        # create a Run row with a fresh task_id and dispatch execute_run.
+        # Bypassing RunsService.create() avoids its identity.id integer-FK
+        # mismatch (system_identity.id is the string "system"); the scheduler
+        # itself leaves started_by_id NULL, which is what we do here.
+        job = db.session.get(Job, result.id)
+        run = Run.create(job=job, task_id=uuid.uuid4())
+        db.session.add(run)
+        db.session.commit()
+        execute_run.apply_async(
+            args=(str(run.id),),
+            task_id=str(run.task_id),
+            queue=job.default_queue,
+        )
+        click.echo(
+            f"Dispatched immediate run {run.id} for job {job.id} "
+            f"(task_id={run.task_id})."
+        )
