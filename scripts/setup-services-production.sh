@@ -21,8 +21,8 @@ cyan='\033[0;36m'
 # Clear the color after that
 clear='\033[0m'
 
-local fixtures=0
-local destroy=0
+fixtures=0
+destroy=0
 
 while getopts 'fd' flag
 do
@@ -34,7 +34,7 @@ do
     esac
 done
 
-if [ $destroy==1 ]
+if [ "$destroy" -eq 1 ]
 then
     echo -e "${yellow}Destroying the database...${clear}"
     invenio db destroy --yes-i-know
@@ -68,7 +68,7 @@ echo -e "${yellow}Compiling translations...${clear}"
 pybabel compile -d /opt/invenio/src/translations
 echo -e "${yellow}Setting up task queues...${clear}"
 invenio queues declare
-if [ $fixtures==1 ]
+if [ "$fixtures" -eq 1 ]
 then
     echo -e "${yellow}Setting up fixtures in two stages (this may take a long time!!)...${clear}"
     invenio rdm fixtures
@@ -86,17 +86,34 @@ then
     # `invenio rdm-records fixtures`; without this step the deposit form's
     # funder and affiliation fields are empty until the first scheduled
     # process_ror_{funders,affiliations} job run.
+    #
+    # We use `kcworks-jobs upsert ... --run-now` rather than
+    # `invenio vocabularies import -v {funders,affiliations}` for two reasons:
+    #
+    # (a) The upstream `invenio vocabularies import` CLI unconditionally
+    #     requires `--filepath` or `--origin` even though `RORHTTPReader`
+    #     ignores `origin` and downloads from a hardcoded Zenodo DOI.
+    # (b) `--run-now` both registers the recurring schedule AND immediately
+    #     dispatches one run, so a fresh install gets seeded data without
+    #     waiting up to a week for the next scheduled tick. This matches the
+    #     pattern already used for awards below.
     echo -e "${yellow}Seeding ROR-backed vocabularies (funders, affiliations) from Zenodo (this requires network egress to doi.org and zenodo.org)...${clear}"
-    invenio vocabularies import -v funders
-    invenio vocabularies import -v affiliations
-    # Seed the awards vocabulary from OpenAIRE Graph (via Zenodo). Unlike
-    # funders/affiliations, the upstream `awards` DATASTREAM_CONFIG has no
-    # HTTP reader, so `invenio vocabularies import -v awards` would not pull
-    # data; the HTTP-driven config lives only in the import_awards_openaire
-    # JobType. The schedule is also registered (idempotently) below regardless
-    # of -f, but for fresh installs we also fire one immediate run with
-    # --run-now so the awards field in the deposit form is populated without
-    # waiting up to a week for the next scheduled run.
+    invenio kcworks-jobs upsert process_ror_funders \
+        --title "Load ROR funders" \
+        --schedule "crontab:minute=0,hour=3,day_of_week=0" \
+        --queue celery \
+        --run-now
+    invenio kcworks-jobs upsert process_ror_affiliations \
+        --title "Load ROR affiliations" \
+        --schedule "crontab:minute=0,hour=4,day_of_week=0" \
+        --queue celery \
+        --run-now
+    # Seed the awards vocabulary from OpenAIRE Graph (via Zenodo). Same
+    # upsert + --run-now pattern as the ROR vocabs above. For awards this is
+    # the *only* available bootstrap path: the upstream `awards`
+    # DATASTREAM_CONFIG has no HTTP reader, so `invenio vocabularies import
+    # -v awards` would not pull data — the HTTP-driven config lives only
+    # inside the import_awards_openaire JobType.
     echo -e "${yellow}Seeding awards vocabulary from OpenAIRE (this requires network egress to zenodo.org and may transfer multi-GB data)...${clear}"
     invenio kcworks-jobs upsert import_awards_openaire \
         --title "Import Awards OpenAIRE" \
