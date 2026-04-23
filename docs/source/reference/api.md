@@ -1484,9 +1484,13 @@ This API was implemented with a distributed network of independent Commons insta
 
 The endpoint `/api/webhooks/users/update` (and the deprecated `/api/webhooks/user_data_update`) is provided for Knowledge Commons applications and instances to signal that user or group metadata has been changed. These endpoints do not receive the actual updated data. They only receive notices _that_ the metadata for a user or group has changed. KCWorks will then query the Commons instance's endpoint to retrieve current metadata for the user or group.
 
+In addition to ordinary metadata-change notifications, this endpoint also accepts `created` events for newly-registered Commons users so that KCWorks can lazily provision a matching local user account on demand. There is no corresponding `deleted` event for users -- see [No `deleted` event for users](#no-deleted-event-for-users) below for the rationale.
+
 ### User/Groups Metadata updates and SAML authentication
 
-It is assumed that Commons instances have registered a SAML authentication IDP with KCWorks. The Commons identifiers for users in metadata update signals must be the same identifiers provided by the instance's SAML IDP. This allows KCWorks to reliably identify the correct KCWorks user account, even if the same identifier happens to be used internally by multiple Commons instances. It also allows KCWorks to store Commons instance user ids in one central place within KCWorks, minimizing the chances of those links between a Commons instance user account and a KCWorks user account becoming corrupted.
+It is assumed that Commons instances have registered a SAML authentication IDP with KCWorks. The Commons identifiers for users in metadata update signals must be the **OAuth `sub`** values that the instance's SAML/OAuth IDP issues for those users -- i.e. the same identifier KCWorks stores as `UserIdentity.id` when the user logs in. They are **not** Commons usernames. This allows KCWorks to reliably identify the correct KCWorks user account, even if the same identifier happens to be used internally by multiple Commons instances. It also allows KCWorks to store Commons instance user ids in one central place within KCWorks, minimizing the chances of those links between a Commons instance user account and a KCWorks user account becoming corrupted.
+
+When KCWorks needs to address a status callback to the Commons-side `/api/v1/members/{member_name}/works/status` endpoint, it resolves the KC member name (Commons username) locally from the `sub` via `UserIdentity` -> `User.user_profile["identifier_kc_username"]`. If no local member name can yet be resolved (e.g. the very first attempt to provision a brand-new user failed before the local row was created), the callback URL falls back to the literal slug `unknown` and the request body still carries the raw `sub` so the Profiles operator can correlate manually. See [Status callback](#status-callback) below.
 
 ### GET requests
 
@@ -1507,15 +1511,15 @@ Update notices should be sent via a `POST` request to `/api/webhooks/users/updat
 
 ```json
 {
-	"idp": "knowledgeCommons",
-	"updates": {
-		"users": [
-			{"id": "myusername", "event": "updated"},
-			{"id": "anotherusername", "event": "created"},
-		],
-		"groups": [{"id": "1234", "event": "updated"}],
-	},
-},
+  "idp": "knowledgeCommons",
+  "updates": {
+    "users": [
+      {"id": "auth0|abc123", "event": "updated"},
+      {"id": "auth0|def456", "event": "created"}
+    ],
+    "groups": [{"id": "1234", "event": "updated"}]
+  }
+}
 ```
 
 Top level payload object properties:
@@ -1536,18 +1540,65 @@ Top level payload object properties:
 A valid payload *must* provide either a `users` array or a `groups` array with at least one member. Requests providing neither `users` nor `groups`, or providing only empty arrays, will result in an error response.
 ```
 
-`users` and `groups` object properties
+`users` and `groups` object properties:
 
-| Property | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                           | Required |
-| -------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| `id`     | number | The local identifier of the user or group on the Commons instance. This must be the same identifier that can be used to retrieve the entity's metadata at the corresponding endpoint on the Commons instance.                                                                                                                                                                                         | Y        |
-| `event`  | string | The nature of the metadata change for the entity. Must be one of `updated`, `created`, or `deleted`. The `updated` and `deleted` event types should be sent when an entity is first created or is deleted entirely from the Commons instance. These will trigger the creation or deletion of corresponding entities (a user or a group) on KC Works. All other metadata changes are `updated` events. | Y        |
+| Property | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Required |
+| -------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `id`     | string | For `users`: the OAuth `sub` for the user as issued by the Commons instance's IDP (the same value KCWorks stores as `UserIdentity.id`). **Not** a Commons username. For `groups`: the local identifier of the group on the Commons instance, used to retrieve the group's metadata at the corresponding endpoint.                                                                                                                                                                                                       | Y        |
+| `event`  | string | The nature of the metadata change for the entity. For `users`: `created` or `updated` (see [Per-event behaviour](#per-event-behaviour) below for what each does, and why no `deleted` event is supported). For `groups`: `created`, `updated`, or `deleted`.                                                                                                                                                                                                                                                            | Y        |
 
 NOTE: A valid payload's user and/or group objects must each include _both_ an `id` _and_ an `event` value.
 
+#### Per-event behaviour
+
+For `users` events:
+
+- **`created`** — KCWorks treats this as a request to lazily provision a local user matching the supplied OAuth `sub`. KCWorks queries the Commons instance for the user's full profile, then either matches an existing local user (by external id, ORCID, KC username, or email) and links the OAuth identity, or creates a new local user from the profile data. The provisioning is idempotent: re-sending `created` for a sub that's already linked just refreshes the user's profile data via the `updated` path.
+- **`updated`** — KCWorks queries the Commons instance for the user's current profile and applies any changes (profile fields, group memberships, etc.) to the matching local user. If the supplied `sub` does not correspond to any known local user, KCWorks **automatically converts the event to `created`** and provisions the user lazily. A warning is logged so operators can spot cases where a `created` event was missed earlier; no separate response code is returned.
+- **`deleted`** — *Not supported.* See [No `deleted` event for users](#no-deleted-event-for-users).
+
+For `groups` events:
+
+- **`created`** and **`updated`** are processed; KCWorks fetches the group's current metadata from the Commons instance and updates (or creates) the corresponding KCWorks group collection.
+- **`deleted`** is currently dropped at the dispatcher with a warning logged; deletion of group collections is handled by the operator-driven `invenio_group_collections_kcworks` flow rather than by automatic webhook deletion.
+
+#### No `deleted` event for users
+
+KCWorks intentionally does **not** implement automatic deletion of local users in response to `users.deleted` webhook events. KCWorks records (deposits, drafts, communities, comments) created by a user on KCWorks belong to that user even after the user has left the originating Commons instance, and we do not want a remote deletion to silently orphan or remove them. If a Commons instance does send a `users.deleted` event for a user, KCWorks will accept the payload (the event passes payload validation) but the dispatcher will log a warning and take no further action on the local user account.
+
+User account removal in KCWorks should instead be handled by an operator-driven flow that explicitly decides what to do with each user's items (transfer ownership, mark as community-owned, archive, anonymise, etc.) before deleting the local account.
+
 #### Event timing
 
-There may be some delay between KC Works' receiving an update signal and the updating of the corresponding entity's metadata in KC Works. The actual updates are handled by background workers and in some cases there may be a slight delay before a worker is free. Usually this will only be a fraction of a second, but if intensive background tasks (like indexing) are ongoing it could be several minutes. The update also depends on a successful callback request from KC Works to the Commons instance's endpoint for serving user or group metadata. If that request fails, it is possible for an update to fail even though the webhook signal was received successfully.
+There may be some delay between KC Works' receiving an update signal and the updating of the corresponding entity's metadata in KC Works. The actual updates are handled by background workers and in some cases there may be a slight delay before a worker is free. Usually this will only be a fraction of a second, but if intensive background tasks (like indexing) are ongoing it could be several minutes. The update also depends on a successful callback request from KC Works to the Commons instance's endpoint for serving user or group metadata. If that request fails, the metadata update can fail even though the webhook signal itself was received and acknowledged successfully. KCWorks applies bounded exponential-backoff retries (5 attempts, 30s -> 600s) followed by a long-delay reschedule (default 1 hour) when the Commons-side metadata endpoint is unreachable, and reports each transition via the [status callback](#status-callback).
+
+#### Status callback
+
+For each `users` event KCWorks accepts (whether `created`, `updated`, or an `updated`-converted-to-`created`), KCWorks fires a best-effort callback to the Commons-side `/api/v1/members/{member_name}/works/status` endpoint once the work item has been resolved. This lets the Commons side correlate each webhook it sent with KCWorks' eventual outcome.
+
+The callback URL uses the **resolved KC member name** (Commons username) for `member_name`, looked up locally from the `sub` via `UserIdentity` -> `User.user_profile["identifier_kc_username"]`. If no local member name can be resolved (typically only on the very first failed attempt to provision a brand-new user), the URL falls back to the literal slug `unknown` and the body still carries the raw `sub` so a Profiles operator can correlate manually.
+
+The callback request uses the static bearer token configured via `COMMONS_PROFILES_API_TOKEN` and sends a JSON body of the form:
+
+```json
+{
+  "username": "myusername",
+  "sub": "auth0|abc123",
+  "status": "PROCESSED",
+  "event": "created",
+  "retry_at": "2026-04-21T16:30:00+00:00",
+  "note": "profiles_api:Timeout"
+}
+```
+
+| Field      | Type           | Description                                                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `username` | string \| null | The resolved KC member name. `null` when the member name cannot yet be resolved.                                                                                                                                                                                                                                             |
+| `sub`      | string         | The OAuth `sub` from the original webhook event. Always present.                                                                                                                                                                                                                                                             |
+| `status`   | string         | `"PROCESSED"` for successful resolution, `"FAILED"` for any failure (including transient failures that KCWorks will retry).                                                                                                                                                                                                  |
+| `event`    | string         | `"created"` or `"updated"`, mirroring the inbound webhook `event` field (after any `updated`-to-`created` conversion described above).                                                                                                                                                                                       |
+| `retry_at` | string \| null | When `status` is `"FAILED"` and another attempt is already scheduled, an ISO 8601 UTC timestamp for that next attempt (so the Profiles side can avoid prompting an operator while a retry is pending). Omitted when no retry is scheduled.                                                                                   |
+| `note`     | string \| null | Optional freeform diagnostic, typically the failing exception class (e.g. `profiles_api:Timeout`, `profiles_api:Timeout:retries_exhausted_rescheduled`, `integrity_error_unresolved`, `no_profile_data`). Omitted on success.                                                                                                |
 
 #### Success responses
 
@@ -1555,23 +1606,23 @@ If a signal is received successfully, the response will have a status of `202` a
 
 ```json
 {
-  "message": "Webhook received",
+  "message": "Webhook notification accepted",
   "status": 202,
   "updates": {
     "users": [
-      { "id": "myusername", "event": "updated" },
-      { "id": "anotherusername", "event": "created" }
+      { "id": "auth0|abc123", "event": "updated" },
+      { "id": "auth0|def456", "event": "created" }
     ],
     "groups": [{ "id": "1234", "event": "updated" }]
   }
 }
 ```
 
-The `updates` object should be identical to the `updates` object provided in the `POST` request. This confirms that the correct events have all been received and are being sent for processing.
+The `updates` object echoes the `updates` object provided in the `POST` request. A `202` response only confirms that the notification was accepted and queued; the actual outcome of each per-user resolution is reported asynchronously via the [status callback](#status-callback).
 
 #### Error responses
 
-If multiple update signals are received in one `POST` request, it is possible that only some of the updates can be processed. The request might, for example, provide `updated` event signals for a number of entities, some of whose ids do not exist in KC Works. In this case the response code will be `207 Multi-Status` and the response payload will be a JSON object (documented in the source).
+If multiple update signals are received in one `POST` request, it is possible that only some of the updates can be processed. The request might, for example, provide `updated` event signals for a number of entities, some of whose ids do not exist in KC Works. In this case the response code will be `207 Multi-Status` and the response payload will be a JSON object (documented in the source). Note that for `users` events, an `updated` signal for an unknown sub is **not** an error -- it is silently converted to `created` and provisioning proceeds (a warning is logged on the KCWorks side).
 
 ## Central User Logout Receiver (Internal Only)
 
