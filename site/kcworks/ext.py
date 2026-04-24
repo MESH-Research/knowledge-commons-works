@@ -28,7 +28,7 @@ from invenio_rdm_records.services.communities.components import (
     CommunityServiceComponents,
 )
 from invenio_rdm_records.services.components import DefaultRecordsComponents
-from invenio_remote_user_data_kcworks.utils import extract_bearer_token
+from invenio_remote_user_data_kcworks.utils.broker import extract_bearer_token
 from pydantic import BaseModel, ConfigDict
 
 from kcworks.services.notifications.service import (

@@ -20,7 +20,10 @@ from typing import Any, cast
 
 from invenio_accounts.models import User, UserProfileDict
 from invenio_accounts.proxies import current_accounts
-from kcworks.utils.names import get_full_name, get_full_name_inverted
+from invenio_remote_user_data_kcworks.utils.names import (
+    get_full_name,
+    get_full_name_inverted,
+)
 
 
 class UserProfileService:

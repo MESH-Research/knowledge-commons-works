@@ -4,7 +4,10 @@ This module contains custom Jinja2 template filters for KCWorks.
 """
 
 from flask import current_app
-from kcworks.utils.names import get_full_name, get_full_name_inverted
+from invenio_remote_user_data_kcworks.utils.names import (
+    get_full_name,
+    get_full_name_inverted,
+)
 
 
 def user_profile_dict(user_profile):

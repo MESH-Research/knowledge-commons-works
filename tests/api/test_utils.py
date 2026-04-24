@@ -18,7 +18,7 @@
 import json
 
 import pytest
-from kcworks.utils.names import (
+from invenio_remote_user_data_kcworks.utils.names import (
     get_family_name,
     get_full_name,
     get_full_name_inverted,
