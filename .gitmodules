@@ -37,4 +37,4 @@
 [submodule "tests/fixtures"]
 	path = tests/fixtures
 	url = https://github.com/MESH-Research/kcworks-test-fixtures.git
-	branch = dev/cilogon-merge
+	branch = dev/next

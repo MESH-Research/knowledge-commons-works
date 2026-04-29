@@ -112,6 +112,29 @@ function create_test_symlinks() {
       echo "Created symlink: tests/cli/record_importer -> $submodule_tests_dir/cli"
     fi
   fi
+
+  # invenio-remote-user-data-kcworks
+  submodule_tests_dir="site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests"
+
+  if [ ! -d "$submodule_tests_dir" ]; then
+    echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
+  else
+    if [ -d "$submodule_tests_dir/api" ]; then
+      if [ -L "tests/api/remote_user_data" ] || [ -e "tests/api/remote_user_data" ]; then
+        rm -f "tests/api/remote_user_data"
+      fi
+      ln -s "../../$submodule_tests_dir/api" "tests/api/remote_user_data"
+      echo "Created symlink: tests/api/remote_user_data -> $submodule_tests_dir/api"
+    fi
+
+    if [ -d "$submodule_tests_dir/cli" ]; then
+      if [ -L "tests/cli/remote_user_data" ] || [ -e "tests/cli/remote_user_data" ]; then
+        rm -f "tests/cli/remote_user_data"
+      fi
+      ln -s "../../$submodule_tests_dir/cli" "tests/cli/remote_user_data"
+      echo "Created symlink: tests/cli/remote_user_data -> $submodule_tests_dir/cli"
+    fi
+  fi
 }
 
 # Check for arguments
