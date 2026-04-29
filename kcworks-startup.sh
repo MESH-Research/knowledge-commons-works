@@ -53,6 +53,7 @@ KEYS=""
 REGION=()
 ALLOW_MISSING=0
 IMAGE_TAG_ARG=""
+BUILD_ARG=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -71,6 +72,10 @@ while [[ $# -gt 0 ]]; do
   --region)
     REGION=(--region "${2:-}")
     shift 2 || usage
+    ;;
+  --build)
+    BUILD_ARG=1
+    shift
     ;;
   --allow-missing)
     ALLOW_MISSING=1
@@ -168,10 +173,15 @@ elif [[ -z "${IMAGE_TAG:-}" ]]; then
   fi
 fi
 
+BUILD_FLAGS=()
+if [[ "$BUILD_ARG" -eq 1 ]]; then
+  BUILD_FLAGS+=(--build)
+fi
+
 docker compose \
   --file docker-compose.yml \
   --file docker-compose.dev.yml \
-  up -d
+  up -d "${BUILD_FLAGS[@]}"
 compose_status=$?
 
 exit "$compose_status"
