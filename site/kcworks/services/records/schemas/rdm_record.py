@@ -6,11 +6,11 @@
 
 """RDM record Marshmallow schemas with KCWorks title validation.
 
-Upstream ``MetadataSchema`` / ``TitleSchema`` use ``validate.Length(min=3)`` for
-titles. KCWorks uses ``RDM_RECORDS_MAX_TITLE_LENGTH`` and a minimum of one
+Upstream `MetadataSchema` / `TitleSchema` use `validate.Length(min=3)` for
+titles. KCWorks uses `RDM_RECORDS_MAX_TITLE_LENGTH` and a minimum of one
 non-empty character, aligned with the modular deposit form client schema.
 
-Set ``RDM_RECORD_SCHEMA`` in ``invenio.cfg`` to :class:`KCWorksRDMRecordSchema`.
+Set `RDM_RECORD_SCHEMA` in `invenio.cfg` to `KCWorksRDMRecordSchema`.
 """
 
 from flask import current_app
@@ -20,9 +20,11 @@ from invenio_rdm_records.services.schemas.record import RDMRecordSchema
 from marshmallow import ValidationError, fields
 from marshmallow_utils.fields import NestedAttribute, SanitizedUnicode
 
+from .person_or_org import KCWorksContributorSchema, KCWorksCreatorSchema
+
 
 def validate_title_length(value: str) -> None:
-    """Reject blank titles and enforce ``RDM_RECORDS_MAX_TITLE_LENGTH``.
+    """Reject blank titles and enforce `RDM_RECORDS_MAX_TITLE_LENGTH`.
 
     Raises:
         ValidationError: If the title is blank or over the limit.
@@ -44,13 +46,15 @@ class KCWorksTitleSchema(TitleSchema):
 
 
 class KCWorksMetadataSchema(MetadataSchema):
-    """Metadata with KCWorks title length rules (main and additional titles)."""
+    """Metadata with KCWorks title length rules and `name`-preserving creators."""
 
     title = SanitizedUnicode(required=True, validate=validate_title_length)
     additional_titles = fields.List(fields.Nested(KCWorksTitleSchema))
+    creators = fields.List(fields.Nested(KCWorksCreatorSchema))
+    contributors = fields.List(fields.Nested(KCWorksContributorSchema))
 
 
 class KCWorksRDMRecordSchema(RDMRecordSchema):
-    """RDM record schema using :class:`KCWorksMetadataSchema` for ``metadata``."""
+    """RDM record schema using `KCWorksMetadataSchema` for `metadata`."""
 
     metadata = NestedAttribute(KCWorksMetadataSchema)
