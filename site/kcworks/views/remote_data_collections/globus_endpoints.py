@@ -28,31 +28,6 @@ class GlobusEndpointInfo(View):
                 user_id=current_user.get_id(),
                 client_id=globus_remote.consumer_key
             )
-            current_app.logger.info("remote account properties: %s", dir(remote_account))
-            current_app.logger.info("remote account : %s", remote_account.extra_data)
-            current_app.logger.info("remote account property values: %s", remote_account.client_id)
-            current_app.logger.info("remote account property values: %s",remote_account.create)
-            current_app.logger.info("remote account property values: %s",remote_account.created)
-            current_app.logger.info("remote account property values: %s",remote_account.delete)
-            current_app.logger.info("remote account property values: %s",remote_account.extra_data)
-            current_app.logger.info("remote account property values: %s",remote_account.get)
-            current_app.logger.info("remote account property values: %s",remote_account.id)
-            current_app.logger.info("remote account property values: %s",remote_account.metadata)
-            current_app.logger.info("remote account property values: %s",remote_account.query)
-            current_app.logger.info("remote account property values: %s",remote_account.query_class)
-            current_app.logger.info("remote account property values: %s",remote_account.registry)
-            current_app.logger.info("remote account property values: %s",remote_account.remote_tokens)
-            current_app.logger.info("remote account property values: %s",remote_account.updated)
-            current_app.logger.info("remote account property values: %s",remote_account.user)
-            current_app.logger.info("remote account property values: %s",remote_account.user_id)
-            current_app.logger.info(f"remote tokens properties: {dir(remote_account.remote_tokens[0])}")
-            current_app.logger.info("remote token property values: %s", remote_account.remote_tokens[0].access_token)
-            current_app.logger.info("remote token property values: %s", remote_account.remote_tokens[0].created)
-            current_app.logger.info("remote token property values: %s", remote_account.remote_tokens[0].id_remote_account)
-            current_app.logger.info("remote token property values: %s", remote_account.remote_tokens[0].remote_account)
-            current_app.logger.info("remote token property values: %s", remote_account.remote_tokens[0].token())
-            current_app.logger.info("remote token property values: %s", remote_account.remote_tokens[0].update_token)
-            current_app.logger.info("remote token property values: %s", remote_account.remote_tokens[0].updated)
 
             if not remote_account or 'globus_id' not in remote_account.extra_data:
                 raise Exception("globus user ID not found in current user.")
@@ -65,7 +40,6 @@ class GlobusEndpointInfo(View):
                 f"?filter_owner_id={globus_user_id}"
             )
 
-            current_app.logger.info("Attempting to fetch 'transfer' token.")
             transfer_token = RemoteToken.get(
                 user_id=current_user.get_id(),
                 client_id=globus_remote.consumer_key,
@@ -97,29 +71,17 @@ class GlobusEndpointInfo(View):
                 data = response.data
                 current_app.logger.info("endpoint response data: %s", data)
                 endpoint_data = data.get('DATA', [])
+                
+                return jsonify({
+                    "endpoints": endpoint_data,
+                    "has_token": True
+                }), 200
         except Exception as e:
             current_app.logger.error("Exception occurred: %s", str(e))
-            error_message = str(e)
-
-        if endpoint_data:
-            default_endpoint_id = endpoint_data[0]['id']
-            
-            ls_url = f"https://transfer.api.globus.org/v0.10/operation/endpoint/{default_endpoint_id}/ls?path=/"
-            ls_response = globus_remote.get(ls_url, token=transfer_token.token())
-            current_app.logger.info("LS response data: %s", ls_response.data)
-            if ls_response.status == 200:
-                root_files = ls_response.data.get('DATA', [])
-            else:
-                current_app.logger.error(f"LS failed: {ls_response.data}")
-
-        return render_template(
-            "kcworks/remote_data_collections/endpoint_info.html",
-            endpoints=endpoint_data,
-            error=error_message,
-            initial_files=json.dumps(root_files),
-            endpoints_json=json.dumps(endpoint_data),
-            has_token=has_token
-        )
+            return jsonify({
+                "error": str(e), 
+                "has_token": False
+            }), 401
     
 class GlobusFolderLS(View):
     """API view to fetch directory contents dynamically."""

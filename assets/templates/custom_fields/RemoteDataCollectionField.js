@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import apiClient from "./apiClient";
-import { Accordion, AccordionTitle, AccordionContent, Icon } from "semantic-ui-react";
+import apiClient from "@js/kcworks/utils/apiClient";
+import { Accordion, AccordionTitle, AccordionContent, Icon, Popup } from "semantic-ui-react";
+import { FieldLabel } from "react-invenio-forms";
+import { useFormikContext, getIn } from "formik";
 
-const TreeItem = ({ item, endpointId, path = "/", depth = 0, autoOpen = false }) => {
+export const TreeItem = ({ item, endpointId, path = "/", depth = 0, autoOpen = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [children, setChildren] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -102,14 +104,15 @@ if (!isDirectory) {
     return (
       <div style={{ padding: '5px 0', marginLeft: `${depth > 0 ? 25 : 0}px`, display: 'flex', alignItems: 'center' }}>
         <Icon name="file outline" />
-        {item.name}
-        <a 
-          href={globusFileManagerUrl} 
-          onClick={handleGlobusLinkClick}
-          title="Open parent folder in Globus File Manager"
-        >
-          <Icon name="external alternate" style={{ marginLeft: '10px', color: '#2185d0' }} />
-        </a>
+        <span style={{ flexGrow: 1, textAlign: "left" }}>{item.name}</span>
+        <Popup
+          content="Open in Globus"
+          trigger={
+            <a href={globusFileManagerUrl} onClick={handleGlobusLinkClick}>
+              <Icon name="external alternate" style={{ marginLeft: '12px', color: '#2185d0' }} />
+            </a>
+          }
+        />
       </div>
     );
   }
@@ -117,23 +120,30 @@ if (!isDirectory) {
   return (
     <Accordion style={{ marginLeft: `${depth > 0 ? 15 : 0}px`, marginTop: '0' }}>
       <AccordionTitle
+        as="button"
+        type="button"
         active={isOpen}
         onClick={handleToggle}
-        style={{ display: 'flex', alignItems: 'center', padding: '5px 0' }}
+        className="ui fluid transparent button file-tree-btn"
+        style={{ padding: "5px 0", display: "flex", alignItems: "center" }}
       >
-        <Icon name={isOpen ? "angle down" : "angle right"} />
-        <Icon name={isOpen ? "folder open" : "folder"} color="yellow" />
+        <Icon 
+          name={isOpen ? "angle down" : "angle right"} 
+          style={{ minWidth: '20px', textAlign: 'center' }} 
+        />
+        <Icon name={isOpen ? "folder open" : "folder"} color="yellow" style={{ marginLeft: '4px', marginRight: '8px' }} />
         <span style={{ flexGrow: 1 }}>{item.name}</span>
         {isOpen && !loading && children.length === 0 && (
           <span style={{ fontSize: '0.8em', color: 'gray', marginLeft: '10px' }}>(Empty)</span>
         )}
-        <a 
-          href={globusFileManagerUrl} 
-          onClick={handleGlobusLinkClick}
-          title="Open in Globus File Manager"
-        >
-          <Icon name="external alternate" style={{ marginLeft: '10px', color: '#2185d0' }} />
-        </a>
+        <Popup
+          content="Open in Globus"
+          trigger={
+            <a href={globusFileManagerUrl} onClick={handleGlobusLinkClick}>
+              <Icon name="external alternate" style={{ marginLeft: '12px', color: '#2185d0' }} />
+            </a>
+          }
+        />
       </AccordionTitle>
       
       <AccordionContent active={isOpen} style={{ paddingTop: '0', paddingBottom: '0' }}>
@@ -158,10 +168,16 @@ if (!isDirectory) {
   );
 };
 
-const FileTree = ({ initialFiles, endpointId }) => {
+export const FileTree = ({ initialFiles, endpointId, fieldPath }) => {
   return (
-    <div>
-      <h3 className="ui header"><i className="sitemap icon"></i> Collection File Tree</h3>
+    <div className="field">
+      <div 
+        className="field-label-class invenio-field-label rel-mb-2" 
+        id={`${fieldPath}.fileTree.label`}
+        style={{ fontWeight: "bold" }}
+      >
+        <Icon name="sitemap" /> Collection File Tree
+      </div>
       <div style={{ marginTop: '10px' }}>
         {initialFiles && initialFiles.length > 0 ? (
           initialFiles.map((item, index) => (
@@ -175,39 +191,87 @@ const FileTree = ({ initialFiles, endpointId }) => {
   );
 };
 
-const CollectionSelector = ({ endpoints, hasToken }) => {
-  const [selectedCollection, setSelectedCollection] = useState("");
+const RemoteDataCollectionField = ({ fieldPath }) => {
+  const { values, setFieldValue } = useFormikContext();
+
+  const [endpoints, setEndpoints] = useState([]);
+  const [hasToken, setHasToken] = useState(false);
+  const [loadingInitial, setLoadingInitial] = useState(true);
+
+  const [selectedCollection, setSelectedCollection] = useState(null);
   const [rootFiles, setRootFiles] = useState([]);
   const [loadingTree, setLoadingTree] = useState(false);
   const [treeError, setTreeError] = useState(null);
 
-    useEffect(() => {
-        if (!selectedCollection) return;
+  useEffect(() => {
+    const initialFormikValue = getIn(values, fieldPath, null);
+    if (initialFormikValue) {
+      setSelectedCollection(initialFormikValue);
+    }
+  }, []);
 
-        setLoadingTree(true);
-        setTreeError(null);
+  useEffect(() => {
+    apiClient.get('/globus/endpoints')
+      .then((response) => {
+        setHasToken(true);
+        setEndpoints(response.data.endpoints || []);
+      })
+      .catch((err) => {
+        setHasToken(false);
+      })
+      .finally(() => {
+        setLoadingInitial(false);
+      });
+  }, []);
 
-        apiClient.get(`/api/globus/ls/${selectedCollection}`, { params: { path: "/" } })
-        .then((response) => {
-            setRootFiles(response.data);
-        })
-        .catch((err) => {
-            console.error("Failed to fetch root files for selected endpoint:", err);
-            setTreeError("Failed to load directory contents. You may not have permission.");
-        })
-        .finally(() => {
-            setLoadingTree(false);
-        });
-    }, [selectedCollection]);
+  useEffect(() => {
+      if (!selectedCollection) return;
+
+      setLoadingTree(true);
+      setTreeError(null);
+
+      apiClient.get(`/api/globus/ls/${selectedCollection}`, { params: { path: "/" } })
+      .then((response) => {
+          setRootFiles(response.data);
+      })
+      .catch((err) => {
+          console.error("Failed to fetch root files for selected endpoint:", err);
+          setTreeError("Failed to load directory contents. You may not have permission.");
+      })
+      .finally(() => {
+          setLoadingTree(false);
+      });
+  }, [selectedCollection]);
+
+  if (loadingInitial) {
+    return (
+      <div className="field mb-20">
+        <FieldLabel
+          htmlFor={fieldPath}
+          id={`${fieldPath}.label`}
+          icon="database"
+          label="Globus Collection"
+        />
+        <div className="ui active centered inline loader"></div>
+      </div>
+    );
+  }
 
   if (!hasToken) {
+    const currentURL = window.location.pathname + window.location.search;
+    const nextUrl = encodeURIComponent(currentURL);
     return (
-      <div className="ui segment">
-        <h3 className="ui header">Select a Globus Collection</h3>
+      <div className="field mb-20">
+        <FieldLabel
+          htmlFor={fieldPath}
+          id={`${fieldPath}.label`}
+          icon="database"
+          label="Globus Collection"
+        />
         <div className="ui warning message">
           <p>You must connect your Globus account to upload a dataset.</p>
         </div>
-        <a href="/globus/login" className="ui primary button">
+        <a href={`/globus/login/start?next=${nextUrl}`} className="ui primary button">
           Log in with Globus
         </a>
       </div>
@@ -215,11 +279,22 @@ const CollectionSelector = ({ endpoints, hasToken }) => {
   }
 
   return (
-    <div className="ui segment">
-      <h3 className="ui header">Select a Globus Collection</h3>
-      
+    <div className="field mb-20">
+      <FieldLabel
+        htmlFor={endpoints.length > 0 ? `radio-${endpoints[0].id}` : fieldPath}
+        id={`${fieldPath}.label`}
+        icon="database"
+        label="Globus Collection"
+      />
+
       <div className="ui form">
-        <div className="grouped fields" style={{ maxHeight: "200px", overflowY: "auto", paddingRight: "10px" }}>
+        <div 
+          className="grouped fields" 
+          role="radiogroup"
+          aria-labelledby={`${fieldPath}.label`}
+          aria-describedby={selectedCollection ? `${fieldPath}.selectedMessage ${fieldPath}.fileTree.label` : undefined}
+          style={{ maxHeight: "200px", overflowY: "auto", paddingRight: "10px" }}
+        >
           {endpoints && endpoints.length > 0 ? (
             endpoints.map((ep) => (
               <div className="field" key={ep.id}>
@@ -230,7 +305,17 @@ const CollectionSelector = ({ endpoints, hasToken }) => {
                     id={`radio-${ep.id}`}
                     value={ep.id}
                     checked={selectedCollection === ep.id}
-                    onChange={(e) => setSelectedCollection(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSelectedCollection(val);
+                      setFieldValue(fieldPath, val); 
+                    }}
+                    onClick={(e) => {
+                      if (selectedCollection === ep.id) {
+                        setSelectedCollection("");
+                        setFieldValue(fieldPath, "");
+                      }
+                    }}
                     style={{ cursor: "pointer" }}
                   />
                   <label htmlFor={`radio-${ep.id}`} style={{ cursor: "pointer" }}>
@@ -245,8 +330,11 @@ const CollectionSelector = ({ endpoints, hasToken }) => {
       </div>
 
       {selectedCollection && (
-        <div className="ui segment" style={{ marginTop: "15px" }}>
-          <div style={{ padding: "10px", backgroundColor: "#f8f8f9", border: "1px solid #d4d4d5", borderRadius: "4px", marginBottom: "15px" }}>
+        <div className="field pl-15" style={{ marginTop: "15px" }}>
+          <div 
+            id={`${fieldPath}.selectedMessage`}
+            style={{ padding: "10px", backgroundColor: "#f8f8f9", border: "1px solid #d4d4d5", borderRadius: "4px", marginBottom: "15px" }}
+          >
             <strong>Selected Collection ID:</strong> <br/>
             {selectedCollection}
           </div>
@@ -255,7 +343,11 @@ const CollectionSelector = ({ endpoints, hasToken }) => {
             ) : treeError ? (
                 <div className="ui negative message">{treeError}</div>
             ) : (
-                <FileTree initialFiles={rootFiles} endpointId={selectedCollection} />
+                <FileTree 
+                    initialFiles={rootFiles} 
+                    endpointId={selectedCollection} 
+                    fieldPath={fieldPath} 
+                />
             )}
         </div>
       )}
@@ -263,19 +355,4 @@ const CollectionSelector = ({ endpoints, hasToken }) => {
   );
 };
 
-// --- MOUNTING LOGIC ---
-
-const selectorElement = document.getElementById("globus-collection-selector");
-if (selectorElement) {
-  try {
-    const endpointsData = JSON.parse(selectorElement.dataset.endpoints || "[]");
-    const hasToken = selectorElement.dataset.hasToken === "true";
-
-    ReactDOM.render(
-      <CollectionSelector endpoints={endpointsData} hasToken={hasToken} />,
-      selectorElement
-    );
-  } catch (err) {
-    console.error("Failed to initialize CollectionSelector:", err);
-  }
-}
+export default RemoteDataCollectionField;

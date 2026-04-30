@@ -48,7 +48,6 @@ theme = WebpackThemeBundle(
                     "./js/invenio_app_rdm_custom/user_dashboard/communities.js"
                 ),
                 "main_ui_main_menu": "./js/main_ui/main_menu.js",
-                "file_tree_js": "./js/file_tree/index.js",
             },
             "dependencies": {
                 "geopattern": "^1.2.3",
@@ -61,6 +60,7 @@ theme = WebpackThemeBundle(
                 "@js/kcworks/collections": "js/collections",
                 "@translations/kcworks": "translations/kcworks",
                 "@translations": "translations",
+                "@js/kcworks/utils": "js/kcworks/utils"
             },
         },
     },

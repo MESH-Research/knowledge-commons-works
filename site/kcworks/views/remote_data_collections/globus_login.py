@@ -10,7 +10,8 @@ class GlobusLogin(View):
 class GlobusStart(View):
     """GET /globus/login/start -> delegate to invenio_oauthclient.login."""
     def dispatch_request(self):
-        next_url = request.args.get("next")
+        next_url = request.args.get("next", "/uploads/new")
+        session["after_globus"] = next_url
         return redirect(
             url_for(
                 "invenio_oauthclient.login",
