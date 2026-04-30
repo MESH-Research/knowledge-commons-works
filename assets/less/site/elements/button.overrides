@@ -156,6 +156,19 @@
   }
 }
 
+.ui.button.file-tree-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.5em 0;
+  text-align: left;
+  font-family: inherit;
+  
+  /* Ensure the icon doesn't have a weird background since it's inside a button */
+  > .icon {
+    background: transparent;
+  }
+}
+
 .ui.buttons > .ui.button.basic:not(.inverted),
 .ui.buttons.basic:not(.inverted) > .ui.button,
 .ui.button.basic {

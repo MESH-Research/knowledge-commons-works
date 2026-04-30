@@ -17,6 +17,7 @@ import { PublicationURLComponent } from "./components/PublicationURLComponent";
 import { SeriesComponent } from "./components/SeriesComponent";
 import { SponsoringInstitutionComponent } from "./components/SponsoringInstitutionComponent";
 import { VolumeComponent } from "./components/VolumeComponent";
+import { RemoteDataCollectionComponent } from "./components/RemoteDataCollectionComponent";
 
 const componentsMap = {
   AdminMetadataComponent: [
@@ -83,6 +84,10 @@ const componentsMap = {
   PublicationURLComponent: [
     PublicationURLComponent,
     ["custom_fields.kcr:publication_url"],
+  ],
+  RemoteDataCollectionComponent: [
+    RemoteDataCollectionComponent,
+    ["custom_fields.kcr:remote_data_collection"],
   ],
   SeriesComponent: [SeriesComponent, ["custom_fields.kcr:book_series"]],
   SponsoringInstitutionComponent: [

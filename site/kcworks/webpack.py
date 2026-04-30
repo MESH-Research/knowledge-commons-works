@@ -60,6 +60,7 @@ theme = WebpackThemeBundle(
                 "@js/kcworks/collections": "js/collections",
                 "@translations/kcworks": "translations/kcworks",
                 "@translations": "translations",
+                "@js/kcworks/utils": "js/kcworks/utils"
             },
         },
     },
