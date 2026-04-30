@@ -1010,6 +1010,12 @@ _FORM_PAGES = {
                     "classnames": "basic pt-0 mt-0",
                 },
                 {
+                    "section": "remote_data_collection",
+                    "label": _("Remote Data Collection"),
+                    "component": "RemoteDataCollectionComponent",
+                    "classnames": "basic prominent-field-label",
+                },
+                {
                     "section": "rights",
                     "label": _("Rights and Permissions"),
                     "icon": "copyright outline",

@@ -66,6 +66,7 @@ from kcworks.metadata_fields.kcr_metadata_fields import (
     KCR_MEETING_SECTION_EXTRAS_UI,
     KCR_NAMESPACE,
     KCR_PROJECT_SECTION_UI,
+    KCR_REMOTE_DATA_COLLECTION_SECTION_UI,
     KCR_THESIS_SECTION_EXTRAS_UI,
 )
 from kcworks.metadata_fields.kcr_notes_fields import (
@@ -140,6 +141,7 @@ RDM_CUSTOM_FIELDS_UI = [
     KCR_AI_USAGE_FIELDS_UI,
     HCLEGACY_INFO_SECTION_UI,
     KCR_COURSE_SECTION_UI,
+    KCR_REMOTE_DATA_COLLECTION_SECTION_UI,
 ]
 
 # FIXME: provide proper namespace url

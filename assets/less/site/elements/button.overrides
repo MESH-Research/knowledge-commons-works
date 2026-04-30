@@ -521,6 +521,36 @@
       margin-top: 1.7rem;
     }
   }
+
+  // Data Hub work
+  .ui.button.file-tree-btn {
+    display: flex;
+    align-items: center;
+    padding: 0.5em 0;
+    text-align: left;
+    font-family: inherit;
+    
+    /* Ensure the icon doesn't have a weird background since it's inside a button */
+    > .icon {
+      background: transparent;
+    }
+  }
+
+  .ui.buttons > .ui.button.basic:not(.inverted),
+  .ui.buttons.basic:not(.inverted) > .ui.button,
+  .ui.button.basic {
+    background-color: @white;
+    color: @ivy !important;
+    box-shadow: 0px 0px 0px 1px @ivy30 inset, 0px 0em 0px 0px @ivyRgba10 inset;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: @mint50 !important;
+      color: @ivy !important;
+      box-shadow: 0px 0px 0px 1px @ivy40 inset,
+        0px 0em 0px 0px @ivyRgba10 inset;
+    }
+  }
 }
 
 // Basic
