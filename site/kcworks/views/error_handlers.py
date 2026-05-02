@@ -1,5 +1,5 @@
 # Part of Knowledge Commons Works
-# Copyright (C) 2023-2025 MESH Research
+# Copyright (C) 2023-2026 MESH Research
 #
 # KCWorks is free software; you can redistribute it and/or modify it under the
 # terms of the MIT License; see LICENSE file for more details.
@@ -18,13 +18,6 @@ from typing import Any
 
 from flask import Flask, Response, jsonify, make_response, render_template, request
 from flask import current_app as app
-from invenio_remote_user_data_kcworks.errors import (
-    IDTokenInvalid,
-    NoIDPFoundError,
-    StateTokenInvalid,
-    UserDataRequestFailed,
-    UserDataRequestTimeout,
-)
 from werkzeug.exceptions import (
     Forbidden,
     Gone,
@@ -33,6 +26,21 @@ from werkzeug.exceptions import (
     NotFound,
     TooManyRequests,
     Unauthorized,
+)
+
+from invenio_remote_user_data_kcworks.errors import (
+    BrokerExpiryValueError,
+    BrokerNonceValidationError,
+    BrokerPayloadExpiredError,
+    BrokerPayloadProcessingError,
+    BrokerTokenDecryptionError,
+    BrokerTokenMissingError,
+    IDTokenInvalid,
+    NoIDPFoundError,
+    StateTokenInvalid,
+    UserCreationFailed,
+    UserDataRequestFailed,
+    UserDataRequestTimeout,
 )
 
 
@@ -268,9 +276,7 @@ def oauth_500_handler(
     )
 
 
-def register_themed_error_handlers(
-    target_app: Flask, *, by_api: bool = False
-) -> None:
+def register_themed_error_handlers(target_app: Flask, *, by_api: bool = False) -> None:
     """Register every werkzeug/KCWorks exception we want themed.
 
     All cross-class routing (which exception goes to which handler) lives
@@ -297,10 +303,17 @@ def register_themed_error_handlers(
     """
     routes: dict[type[Exception], Any] = {
         # 401 family — auth required / OAuth/SSO-specific failures
-        Unauthorized: oauth_401_handler,
+        BrokerTokenMissingError: oauth_401_handler,
+        BrokerTokenDecryptionError: oauth_401_handler,
+        BrokerPayloadExpiredError: oauth_401_handler,
+        BrokerExpiryValueError: oauth_401_handler,
+        BrokerNonceValidationError: oauth_401_handler,
+        BrokerPayloadProcessingError: oauth_401_handler,
+        IDTokenInvalid: oauth_401_handler,
         NoIDPFoundError: oauth_401_handler,
         StateTokenInvalid: oauth_401_handler,
-        IDTokenInvalid: oauth_401_handler,
+        Unauthorized: oauth_401_handler,
+        UserCreationFailed: oauth_401_handler,
         UserDataRequestFailed: oauth_401_handler,
         UserDataRequestTimeout: oauth_401_handler,
         # 403
