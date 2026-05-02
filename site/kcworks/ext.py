@@ -28,27 +28,8 @@ from invenio_rdm_records.services.communities.components import (
     CommunityServiceComponents,
 )
 from invenio_rdm_records.services.components import DefaultRecordsComponents
-from invenio_remote_user_data_kcworks.errors import (
-    BrokerTokenMissingError,
-    BrokerTokenDecryptionError,
-    BrokerPayloadExpiredError,
-    BrokerExpiryValueError,
-    BrokerNonceValidationError,
-    BrokerPayloadProcessingError,
-    IDTokenInvalid,
-    NoIDPFoundError,
-    StateTokenInvalid,
-    UserDataRequestFailed,
-    UserDataRequestTimeout,
-)
 from invenio_remote_user_data_kcworks.utils import extract_bearer_token
 from pydantic import BaseModel, ConfigDict
-from werkzeug.exceptions import (
-    Forbidden,
-    InternalServerError,
-    NotFound,
-    Unauthorized,
-)
 
 from kcworks.services.notifications.service import (
     InternalNotificationService,
@@ -68,10 +49,8 @@ from kcworks.services.records.record_communities.community_change_permissions_co
 )
 from kcworks.templates.template_filters import user_profile_dict
 from kcworks.views.error_handlers import (
-    oauth_401_handler,
-    oauth_403_handler,
-    oauth_404_handler,
-    oauth_500_handler,
+    register_themed_error_handlers,
+    wrap_blueprint_error_handlers_with_logging,
 )
 
 # Stand-ins for request.oauth in the static-token flow. Real OAuth flow sets
@@ -230,22 +209,18 @@ class KCWorks:
 
 
 def finalize_app(app: Flask) -> None:
-    """Registers OAuth/UI error handlers (UI app)."""
-    app.register_error_handler(BrokerTokenMissingError, oauth_403_handler)
-    app.register_error_handler(BrokerTokenDecryptionError, oauth_403_handler)
-    app.register_error_handler(BrokerPayloadExpiredError, oauth_403_handler)
-    app.register_error_handler(BrokerExpiryValueError, oauth_403_handler)
-    app.register_error_handler(BrokerNonceValidationError, oauth_403_handler)
-    app.register_error_handler(BrokerPayloadProcessingError, oauth_403_handler)
-    app.register_error_handler(Forbidden, oauth_403_handler)
-    app.register_error_handler(IDTokenInvalid, oauth_401_handler)
-    app.register_error_handler(InternalServerError, oauth_500_handler)
-    app.register_error_handler(NoIDPFoundError, oauth_401_handler)
-    app.register_error_handler(NotFound, oauth_404_handler)
-    app.register_error_handler(StateTokenInvalid, oauth_401_handler)
-    app.register_error_handler(Unauthorized, oauth_401_handler)
-    app.register_error_handler(UserDataRequestFailed, oauth_401_handler)
-    app.register_error_handler(UserDataRequestTimeout, oauth_401_handler)
+    """Register KCWorks UI error handlers and instrument blueprint ones.
+
+    The wrap step must run after every other extension's ``finalize_app`` /
+    ``api_finalize_app`` has had a chance to register its blueprints and
+    blueprint-scoped error handlers; entry-point ordering means this isn't
+    fully guaranteed, but in practice all relevant invenio extensions have
+    registered theirs by the time KCWorks' ``finalize_app`` runs. Any
+    blueprint that registers handlers later than this would simply be
+    skipped (still works, just no logging).
+    """
+    register_themed_error_handlers(app)
+    wrap_blueprint_error_handlers_with_logging(app)
 
 
 def _route_token_env_for_request(path: str, routes_map: dict[str, str]) -> str | None:
@@ -325,8 +300,14 @@ def _static_token_before_request() -> None:
 def api_finalize_app(app: Flask) -> None:
     """Entry point for invenio_base.api_finalize_app (API app).
 
-    Registers API app finalization only; no UI error handlers.
+    Registers the same exception routing as the UI app, but with
+    ``by_api=True`` so every handler always returns JSON instead of
+    attempting to render UI templates (which the API app doesn't have
+    fully wired up). Also installs the static-token before-request hook
+    when configured.
     """
+    register_themed_error_handlers(app, by_api=True)
+
     routes_map = app.config.get("STATIC_API_TOKEN_ROUTES") or {}
     static_user_id = app.config.get("STATIC_API_TOKEN_USER_ID")
     if not routes_map or static_user_id is None:
