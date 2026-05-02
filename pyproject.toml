@@ -174,6 +174,7 @@ lint.per-file-ignores."tests/api/test_stats.py" = ["C416"]
 lint.isort.known-first-party = [
   "invenio_stats_dashboard",
   "invenio_record_importer_kcworks",
+  "invenio_remote_user_data_kcworks",
   "tests",
 ]
 lint.pydocstyle.convention = "google"
