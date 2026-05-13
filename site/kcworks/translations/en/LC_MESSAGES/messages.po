@@ -1,0 +1,271 @@
+# KCWorks gettext bundle — loads after `invenio_i18n.translations`, before
+# `<app.root_path>/translations`. Manual overrides for Python/Jinja; msgids
+# must match upstream exactly.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kcworks 0.7.3\n"
+"Report-Msgid-Bugs-To: scottia4@msu.edu\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "A community must have at least one owner."
+msgstr "A collection must have at least one owner."
+
+msgid "A community with this identifier already exists."
+msgstr "A collection with this identifier already exists."
+
+msgid "A public record cannot be included in a restricted community."
+msgstr "A public record cannot be included in a restricted collection."
+
+msgid "A record should be part of at least 1 community."
+msgstr "A record should be part of at least 1 collection."
+
+msgid ""
+"All authenticated users can submit records to the community. If the "
+"community is restricted, then only members can submit records to it."
+msgstr ""
+"All authenticated users can submit records to the collection. If the "
+"collection is restricted, then only members can submit records to it."
+
+msgid "All submissions to the community must be reviewed."
+msgstr "All submissions to the collection must be reviewed."
+
+msgid "Assigned parent community cannot also have a parent."
+msgstr "Assigned parent collection cannot also have a parent."
+
+msgid "Assigned parent community cannot be the same as child."
+msgstr "Assigned parent collection cannot be the same as child."
+
+msgid "Assigned parent community does not exist."
+msgstr "Assigned parent collection does not exist."
+
+#, python-format
+msgid "Cannot modify community visibility: %(reason)s"
+msgstr "Cannot modify collection visibility: %(reason)s"
+
+msgid "Cannot publish without a community."
+msgstr "Cannot publish without a collection."
+
+msgid "Cannot publish without selecting a community."
+msgstr "Cannot publish without selecting a collection."
+
+msgid "Cannot restrict a community with public records."
+msgstr "Cannot restrict a collection with public records."
+
+msgid ""
+"Cannot set community as the default. The record has not been added to the "
+"community."
+msgstr ""
+"Cannot set collection as the default. The record has not been added to the "
+"collection."
+
+msgid "Communities"
+msgstr "Collections"
+
+msgid "Community"
+msgstr "Collection"
+
+msgid "Community allowed to be a parent can't be a child."
+msgstr "Collection allowed to be a parent can't be a child."
+
+msgid "Community already included."
+msgstr "Collection already included."
+
+msgid "Community inclusion"
+msgstr "Collection inclusion"
+
+msgid "Community invitation"
+msgstr "Collection invitation"
+
+msgid "Community manage record"
+msgstr "Collection manage record"
+
+msgid ""
+"Community managers and administrators can enable the dashboard from the "
+"community settings page"
+msgstr ""
+"Collection managers and administrators can enable the dashboard from the "
+"collection settings page"
+
+msgid "Community must be defined."
+msgstr "Collection must be defined."
+
+msgid "Community not found."
+msgstr "Collection not found."
+
+msgid "Community submission"
+msgstr "Collection submission"
+
+msgid "Community visibility"
+msgstr "Collection visibility"
+
+msgid "Deleted community"
+msgstr "Deleted collection"
+
+msgid "Either community_id or community should be provided."
+msgstr "Either collection_id or collection should be provided."
+
+msgid ""
+"Enable the 'Insights' tab that displays a community statistics dashboard."
+msgstr ""
+"Enable the 'Insights' tab that displays a collection statistics dashboard."
+
+msgid "Featured communities"
+msgstr "Featured collections"
+
+msgid "Full administrative access to the entire community."
+msgstr "Full administrative access to the entire collection."
+
+msgid "In this community"
+msgstr "In this collection"
+
+msgid "Inclusion of subcommunity \"%(community)s\""
+msgstr "Inclusion of child collection \"%(community)s\""
+
+msgid "Invitation to join \"%(community)s\""
+msgstr "Invitation to join \"%(community)s\""
+
+msgid "Manage community"
+msgstr "Manage collection"
+
+msgid ""
+"Members in your community are only visible to other members of the "
+"community."
+msgstr ""
+"Members in your collection are only visible to other members of the "
+"collection."
+
+msgid "My communities"
+msgstr "My collections"
+
+msgid "New community"
+msgstr "New collection"
+
+msgid "New communities"
+msgstr "New collections"
+
+msgid "New subcommunity"
+msgstr "New child collection"
+
+msgid "No logo exists for this community."
+msgstr "No logo exists for this collection."
+
+msgid "Only members can submit records to the community."
+msgstr "Only members can submit records to the collection."
+
+msgid "Parent community does not accept subcommunities."
+msgstr "Parent collection does not accept child collections."
+
+msgid "Request to join \"%(community)s\""
+msgstr "Request to join \"%(community)s\""
+
+msgid "Search communities"
+msgstr "Search collections"
+
+msgid "Subcommunities"
+msgstr "Child collections"
+
+msgid "Subcommunity"
+msgstr "Child collection"
+
+msgid "Subcommunity invitation"
+msgstr "Child collection invitation"
+
+msgid "Subcommunity request"
+msgstr "Child collection request"
+
+msgid ""
+"Submission to this community is only allowed to community members."
+msgstr ""
+"Submission to this collection is only allowed to collection members."
+
+msgid ""
+"Submissions to the community by default requires review, but all community "
+"members can publish directly without review."
+msgstr ""
+"Submissions to the collection by default requires review, but all collection "
+"members can publish directly without review."
+
+msgid ""
+"Submissions to the community by default requires review, but curators, "
+"managers and owners can publish directly without review."
+msgstr ""
+"Submissions to the collection by default requires review, but curators, "
+"managers and owners can publish directly without review."
+
+msgid "The community is not public."
+msgstr "The collection is not public."
+
+msgid "The community is restricted to users with access."
+msgstr "The collection is restricted to users with access."
+
+msgid "The community was deleted."
+msgstr "The collection was deleted."
+
+#, python-format
+msgid "The record %(rec_id)s in not included in the community %(com_id)s."
+msgstr "The record %(rec_id)s in not included in the collection %(com_id)s."
+
+msgid "The record is already included in this community."
+msgstr "The record is already included in this collection."
+
+msgid "The subjects related to the community"
+msgstr "The subjects related to the collection"
+
+#, python-format
+msgid ""
+"There is %(num)s request open for this community. Please, resolve it before "
+"deleting this community."
+msgid_plural ""
+"There are %(num)s requests open for this community. Please, resolve all of "
+"them before deleting this community."
+msgstr[0] ""
+"There is %(num)s request open for this collection. Please, resolve it "
+"before deleting this collection."
+msgstr[1] ""
+"There are %(num)s requests open for this collection. Please, resolve all of "
+"them before deleting this collection."
+
+msgid "There is already an open inclusion request for this community."
+msgstr "There is already an open inclusion request for this collection."
+
+msgid "This community has no subcommunities"
+msgstr "This collection has no child collections"
+
+msgid "This is the community stats dashboard."
+msgstr "This is the collection stats dashboard."
+
+msgid ""
+"This request has been automatically accepted, as the uploader can submit to "
+"community directly without review."
+msgstr ""
+"This request has been automatically accepted, as the uploader can submit to "
+"collection directly without review."
+
+msgid "Users can request to join your community."
+msgstr "Users can request to join your collection."
+
+msgid ""
+"Users cannot request to join your community. Only invited users can become "
+"members of your community."
+msgstr ""
+"Users cannot request to join your collection. Only invited users can become "
+"members of your collection."
+
+msgid "Verified community"
+msgstr "Verified collection"
+
+msgid "View Community"
+msgstr "View Collection"
+
+msgid ""
+"Your community is publicly accessible and shows up in search results."
+msgstr ""
+"Your collection is publicly accessible and shows up in search results."
+
+msgid "Your community is restricted to users with access."
+msgstr "Your collection is restricted to users with access."

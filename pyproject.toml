@@ -84,13 +84,13 @@ entry-points."invenio_base.apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.blueprints".kcworks_views = "kcworks.views.views:create_blueprint"
 entry-points."invenio_base.blueprints".knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
 entry-points."invenio_base.finalize_app".kcworks = "kcworks.ext:finalize_app"
+entry-points."invenio_i18n.translations_bundle".kcworks = "kcworks"
 entry-points."invenio_modular_deposit_form.components_registry".kcworks = "kcworks.utils.deposit_extras:get_components_registry_js_path"
 entry-points."invenio_modular_deposit_form.transformations".kcworks = "kcworks.utils.deposit_extras:get_transformations_js_path"
 entry-points."invenio_modular_deposit_form.validator".kcworks = "kcworks.utils.deposit_extras:get_validator_js_path"
 entry-points."invenio_previewer.previewers".custom_default_viewer = "kcworks.views.previewers.invenio_custom_default_viewer.custom_default_viewer"
 entry-points."invenio_previewer.previewers".custom_docx_viewer = "kcworks.views.previewers.invenio_custom_docx_viewer.custom_docx_viewer"
 entry-points."invenio_previewer.previewers".custom_latex_viewer = "kcworks.views.previewers.invenio_custom_latex_viewer.custom_latex_viewer"
-entry-points."invenio_previewer.previewers".custom_pdf_viewer = "kcworks.views.previewers.invenio_custom_pdf_viewer.custom_pdf_viewer"
 entry-points."invenio_previewer.previewers".custom_pptx_viewer = "kcworks.views.previewers.invenio_custom_pptx_viewer.custom_pptx_viewer"
 entry-points."invenio_search.index_templates".kcworks = "kcworks.services.search.index_templates.templates:get_index_templates"
 
@@ -124,6 +124,11 @@ tests = [
 [tool.setuptools]
 package-dir = { "" = "site" }
 package-data."*" = ["*.po", "*.pot", "*.mo"]
+package-data.kcworks = [
+  "translations/**/*.po",
+  "translations/**/*.pot",
+  "translations/**/*.mo",
+]
 
 [tool.uv]
 sources.invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
@@ -231,6 +236,7 @@ src.exclude = [
 [tool.pytest]
 ini_options.addopts = """
 --ruff --doctest-modules
+--log-cli
 --log-cli-level=DEBUG
 --ignore=app_data
 --ignore=docs
@@ -256,16 +262,23 @@ ini_options.norecursedirs = [
 ini_options.log_cli_level = "DEBUG"
 ini_options.isort_show_files = true
 ini_options.plugins = [
+  "celery.contrib.pytest",
   "tests.fixtures.caching",
   "tests.fixtures.cli",
   "tests.fixtures.communities",
+  "tests.fixtures.community_events",
   "tests.fixtures.custom_fields",
+  "tests.fixtures.files",
+  "tests.fixtures.fixtures",
+  "tests.fixtures.frontend",
   "tests.fixtures.identifiers",
   "tests.fixtures.idms",
+  "tests.fixtures.logging",
   "tests.fixtures.mail",
-  "tests.fixtures.metadata_fields",
+  "tests.fixtures.names",
   "tests.fixtures.records",
   "tests.fixtures.roles",
+  "tests.fixtures.search",
   "tests.fixtures.search_provisioning",
   "tests.fixtures.stats",
   "tests.fixtures.uow",
