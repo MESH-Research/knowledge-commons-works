@@ -28,9 +28,12 @@ from invenio_rdm_records.services.communities.components import (
     CommunityServiceComponents,
 )
 from invenio_rdm_records.services.components import DefaultRecordsComponents
-from invenio_remote_user_data_kcworks.utils.broker import extract_bearer_token
 from pydantic import BaseModel, ConfigDict
 
+from invenio_remote_user_data_kcworks.services.components import (
+    CitedNamesUpsertComponent,
+)
+from invenio_remote_user_data_kcworks.utils.broker import extract_bearer_token
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -149,6 +152,7 @@ class KCWorks:
             *existing_rdm_record_components,
             FirstRecordComponent,
             PerFieldEditPermissionsComponent,
+            CitedNamesUpsertComponent,
         ]
 
         existing_record_communities_components = app.config.get(
