@@ -23,12 +23,22 @@ echo -e "${yellow}Building assets for Knowledge Commons Works instance...${clear
 # wrapper — those env vars only matter when subprocesses pick up the package
 # manager from $PATH/env; PNPMPackage invokes pnpm directly via subprocess.
 
+cd /opt/invenio/src
+
+echo -e "${yellow}Compiling Python translation catalogs...${clear}"
+pybabel compile -d /opt/invenio/src/translations --use-fuzzy
+pybabel compile -d /opt/invenio/src/site/kcworks/translations --use-fuzzy
+
+echo -e "${yellow}Distributing JS translation overrides...${clear}"
+# Do this before `webpack clean create` so the assembled asset tree includes
+# the rewritten per-package translation catalogs.
+invenio i18n js-translation build --all-packages -o /opt/invenio/src/js-translations
+
 echo -e "${yellow}Collecting static files...${clear}"
 invenio collect -v
 echo -e "${yellow}Building assets...${clear}"
 invenio webpack clean create
 invenio webpack install
-cd /opt/invenio/src
 invenio shell ./scripts/symlink_assets.py
 invenio webpack build
 echo -e "${green}All done building assets...${clear}"
