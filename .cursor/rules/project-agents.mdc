@@ -20,8 +20,15 @@ Canonical **commands and toolchain** (uv, pnpm, ruff, ty, test scripts) live in 
 - If you edited without approval or misled the user: **stop**, say so plainly, offer revert—do not “fix forward” with more unapproved edits.
 - For **submodules**: run `git log`, `git status`, etc. from the **submodule** repository root when inspecting history of files inside that submodule.
 
+### Tone and reasoning
+
+- Be direct and non-patronizing; the maintainer is a peer.
+- **Acknowledge what is already correct** in what they said, then **add precision or missing detail**—do not “correct” them when nothing needed fixing.
+- **Do not invent** problems, edge cases, or scope stories that aren’t grounded in the codebase, their stated intent, or a concrete risk they asked about.
+
 ## Style and tooling
 
 - **Python**: PEP 8, type hints, imports at top (stdlib → third-party → local).
-- **JS/TS**: ES2020, camelCase / PascalCase, alphabetized imports where consistent with the file.
+- **Python docstrings**: **Google-style** (for example `Args`, `Returns`, `Raises`). Use **Markdown** in docstrings for formatting (lists, `` `inline code` ``, links) where it improves readability.
+- **JS/TS**: ES2020, camelCase / PascalCase, alphabetized imports where consistent with the file. Use **JSDoc** where it adds clarity (for example `@param`, `@returns`, `@typedef`, `@template`), especially for exports and plain JavaScript.
 - **Error handling**: meaningful context in logs; never log secrets.

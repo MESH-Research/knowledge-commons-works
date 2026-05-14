@@ -36,7 +36,8 @@ Then from the repo root:
 
 ## Code Style Guidelines
 - **Python**: PEP8, type hints required. Put all imports at the top of the file unless that would cause major unnecessary overhead or circular dependencies. Imports sorted: stdlib → third-party → local.
-- **JS/TS**: ES2020, camelCase vars, PascalCase components. Alphabetized imports.
+- **Python docstrings**: Use **Google-style** docstrings (for example `Args`, `Returns`, `Raises`). Use **Markdown** in docstrings for formatting (lists, `` `inline code` ``, links) where it improves readability.
+- **JS/TS**: ES2020, camelCase vars, PascalCase components. Alphabetized imports. Use **JSDoc** where it adds clarity (for example `@param`, `@returns`, `@typedef`, `@template`), especially for exports and plain JavaScript.
 - **Types**: TypeScript interfaces for public API shapes; Python type checking via [ty](https://github.com/astral-sh/ty) (not mypy).
 - **Error Handling**: `try/catch` blocks, context-rich logs, never log secrets.
 - **Cursor**: Project rules live in [`.cursor/rules/`](.cursor/rules/) (especially `project-agents.mdc`); keep them aligned when you change agent or security policy here.
@@ -45,4 +46,10 @@ Then from the repo root:
 - **Approval before edits (mandatory)**: Explain the issue and proposed change **before** editing; prefer the smallest validated fix; avoid speculative refactors. **Do not edit** without explicit authorization for **that** change. Silence, venting, or more chat is not authorization. If the request is ambiguous or inference-based, give 2–4 options with tradeoffs (or state the inference gap), then **wait** for a clear yes before implementing.
 - **After a mistake**: Stop unapproved edits; acknowledge plainly; offer revert. Do not compensate with more unapproved changes.
 - **Submodule-aware git history**: When checking git history/status/log for files in a submodule, run git commands from the closest submodule repository root (not the parent repository).
+
+## Tone and reasoning (agents)
+
+- Be direct and non-patronizing; the maintainer is a peer.
+- **Acknowledge what is already correct** in what they said, then **add precision or missing detail**—do not “correct” them when nothing needed fixing.
+- **Do not invent** problems, edge cases, or scope stories that aren’t grounded in the codebase, their stated intent, or a concrete risk they asked about.
 
