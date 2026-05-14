@@ -16,6 +16,14 @@ resource type, for invenio-modular-deposit-form.
 from invenio_i18n import lazy_gettext as _
 
 
+PRIORITY_TYPES_CONFIG = [
+    "textDocument-journalArticle",
+    "textDocument-review",
+    "textDocument-book",
+    "textDocument-bookSection",
+    "instructionalResource-syllabus",
+]
+
 _FORM_TITLE = {
     "component": "FormTitle",
     "classnames": "default-layout",
@@ -598,7 +606,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Duration"),
-                                    "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g. 30 min (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                                 {
@@ -658,7 +668,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -695,7 +707,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Duration"),
-                                    "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g. 30 min (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                                 {
@@ -756,7 +770,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -793,7 +809,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Duration"),
-                                    "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g. 30 min (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                                 {
@@ -854,7 +872,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -880,7 +900,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Duration"),
-                                    "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g. 30 min (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                                 {
@@ -952,7 +974,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -988,7 +1012,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Duration"),
-                                    "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g. 30 min (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                                 {
@@ -1062,7 +1088,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -1088,7 +1116,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Duration"),
-                                    "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g. 30 min (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                                 {
@@ -1151,7 +1181,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -1188,7 +1220,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Duration"),
-                                    "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g. 30 min (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                                 {
@@ -1251,7 +1285,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -1288,7 +1324,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Record count"),
-                                    "placeholder": _("e.g. 1.4M rows (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g. 1.4M rows (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                             ],
@@ -1346,7 +1384,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -1382,7 +1422,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Dimensions"),
-                                    "placeholder": _("e.g. 32 x 40 cm (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g. 32 x 40 cm (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                                 {
@@ -1442,7 +1484,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -1550,7 +1594,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
                 {
@@ -1618,14 +1664,18 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Duration"),
-                                    "placeholder": _("e.g. 30 min (press enter to add)"),
+                                    "placeholder": _(
+                                        "e.g. 30 min (press enter to add)"
+                                    ),
                                     "description": "",
                                 },
                                 {
                                     "section": "media",
                                     "component": "MediaComponent",
                                     "label": _("Media or materials used"),
-                                    "placeholder": _("e.g., PowerPoint, handouts (press enter to add)"),
+                                    "placeholder": _(
+                                        "e.g., PowerPoint, handouts (press enter to add)"
+                                    ),
                                 },
                             ],
                             "classnames": "equal width",
@@ -1714,7 +1764,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -1802,7 +1854,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "operating_system",
                                     "component": "CodeOperatingSystemComponent",
                                     "label": _("Operating systems"),
-                                    "placeholder": _("e.g., Linux, Mac OS 14+, Android 7+"),
+                                    "placeholder": _(
+                                        "e.g., Linux, Mac OS 14+, Android 7+"
+                                    ),
                                     "icon": "laptop",
                                 },
                             ],
@@ -1879,7 +1933,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Natural (Human) Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -1949,7 +2005,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Post length"),
-                                    "placeholder": _("e.g., 400 words (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g., 400 words (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                                 {
@@ -2009,7 +2067,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -2085,7 +2145,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
                 {
@@ -2249,7 +2311,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -2355,7 +2419,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
                 {
@@ -2438,7 +2504,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
                 {
@@ -2544,7 +2612,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
                 {
@@ -2652,7 +2722,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -2768,7 +2840,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Language"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -2845,7 +2919,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Language"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
                 {
@@ -2893,7 +2969,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "media",
                                     "component": "MediaComponent",
                                     "label": _("Catalogued materials or formats"),
-                                    "placeholder": _("e.g., books, maps, etc. (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g., books, maps, etc. (press 'enter' to add)"
+                                    ),
                                 },
                                 {
                                     "section": "version",
@@ -2917,7 +2995,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Record counts"),
-                                    "placeholder": _("e.g., 1000 maps (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g., 1000 maps (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                             ],
@@ -2975,7 +3055,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -3001,7 +3083,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "media",
                                     "component": "MediaComponent",
                                     "label": _("Materials included, formats, etc."),
-                                    "placeholder": _("e.g., books, maps, etc. (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g., books, maps, etc. (press 'enter' to add)"
+                                    ),
                                 },
                             ],
                             "classnames": "equal width",
@@ -3018,7 +3102,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Item counts"),
-                                    "placeholder": _("e.g., 1000 books (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g., 1000 books (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                             ],
@@ -3076,7 +3162,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -3170,7 +3258,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -3247,7 +3337,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
                 {
@@ -3388,7 +3480,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Language"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -3482,7 +3576,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Language"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
@@ -3509,7 +3605,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "media",
                                     "component": "MediaComponent",
                                     "label": _("Materials or media"),
-                                    "placeholder": _("e.g., paper, glass (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g., paper, glass (press 'enter' to add)"
+                                    ),
                                 },
                             ],
                             "classnames": "equal width",
@@ -3526,7 +3624,9 @@ FIELDS_BY_TYPE_CONFIG = {
                                     "section": "sizes",
                                     "component": "SizesComponent",
                                     "label": _("Dimensions, weight, etc."),
-                                    "placeholder": _("e.g. 10 cm (press 'enter' to add)"),
+                                    "placeholder": _(
+                                        "e.g. 10 cm (press 'enter' to add)"
+                                    ),
                                     "description": "",
                                 },
                             ],
@@ -3585,7 +3685,9 @@ FIELDS_BY_TYPE_CONFIG = {
                     "label": _("Languages"),
                     "component": "LanguagesComponent",
                     "placeholder": _("e.g., English, French, Swahili"),
-                    "description": _("Search for the language(s) of the resource (e.g., \"en\", \"fre\", \"Swahili\"). Press enter to select each language."),
+                    "description": _(
+                        'Search for the language(s) of the resource (e.g., "en", "fre", "Swahili"). Press enter to select each language.'
+                    ),
                     "wrapped": True,
                 },
             ],
