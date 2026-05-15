@@ -1,5 +1,5 @@
 # Part of Knowledge Commons Works
-# Copyright (C) 2024-2025 MESH Research
+# Copyright (C) 2024-2026 Research
 #
 # KCWorks is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -23,6 +23,7 @@ from jinja2 import PackageLoader
 # Imports after logging setup (E402 suppressed - logging must be set up first)
 from .fixtures.custom_fields import test_config_fields  # noqa: E402
 from .fixtures.frontend import MockManifestLoader  # noqa: E402
+from .fixtures.logging import log_folder_path, test_config_logging
 from .fixtures.identifiers import test_config_identifiers  # noqa: E402
 
 
@@ -56,6 +57,8 @@ config = load_config()
 print("Config loaded successfully")
 
 pytest_plugins = (
+    "celery.contrib.pytest",
+    "tests.fixtures.bootstrap",
     "tests.fixtures.caching",
     "tests.fixtures.cli",
     "tests.fixtures.communities",
@@ -66,10 +69,11 @@ pytest_plugins = (
     "tests.fixtures.frontend",
     "tests.fixtures.identifiers",
     "tests.fixtures.idms",
+    "tests.fixtures.logging",
     "tests.fixtures.mail",
-    "celery.contrib.pytest",
     "tests.fixtures.records",
     "tests.fixtures.roles",
+    "tests.fixtures.search",
     "tests.fixtures.search_provisioning",
     "tests.fixtures.stats",
     "tests.fixtures.uow",
@@ -100,13 +104,10 @@ def _(x):
 
 test_config = {
     **config,
-    "RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS": test_config_identifiers[
-        "RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS"
-    ],
-    "RDM_PERSISTENT_IDENTIFIER_PROVIDERS": test_config_identifiers[
-        "RDM_PERSISTENT_IDENTIFIER_PROVIDERS"
-    ],
     **test_config_fields,
+    **test_config_identifiers,
+    **test_config_fields,
+    **test_config_logging,
     # **test_config_stats,  # Now getting directly from invenio.cfg
     "SQLALCHEMY_DATABASE_URI": (
         "postgresql+psycopg2://kcworks:kcworks@localhost:5432/kcworks"
@@ -243,32 +244,6 @@ def celery_enable_logging():
 #         yield worker
 
 
-@pytest.yield_fixture(scope="module")
-def location(database):
-    """Creates a simple default location for a test.
-
-    Use this fixture if your test requires a `files location <https://invenio-
-    files-rest.readthedocs.io/en/latest/api.html#invenio_files_rest.models.
-    Location>`_. The location will be a default location with the name
-    ``pytest-location``.
-
-    Yields:
-        Location: The created test location.
-    """
-    from invenio_files_rest.models import Location
-
-    uri = tempfile.mkdtemp()
-    location_obj = Location(name="pytest-location", uri=uri, default=True)
-
-    database.session.add(location_obj)
-    database.session.commit()
-
-    yield location_obj
-
-    # TODO: Submit PR to pytest-invenio to fix the below line in the stock fixture
-    shutil.rmtree(uri)
-
-
 # @pytest.fixture(scope="function")
 # def db_session_options():
 #     """Database session options.
@@ -294,20 +269,6 @@ RunningApp = namedtuple(
         "app",
         "location",
         "cache",
-        "affiliations_v",
-        "awards_v",
-        "community_type_v",
-        "contributors_role_v",
-        "creators_role_v",
-        "date_type_v",
-        "description_type_v",
-        "funders_v",
-        "language_v",
-        "licenses_v",
-        # "relation_type_v",
-        "resource_type_v",
-        "subject_v",
-        "title_type_v",
         "create_communities_custom_fields",
         "create_records_custom_fields",
     ],
@@ -319,20 +280,6 @@ def running_app(
     app,
     location,
     cache,
-    affiliations_v,
-    awards_v,
-    community_type_v,
-    contributors_role_v,
-    creators_role_v,
-    date_type_v,
-    description_type_v,
-    funders_v,
-    language_v,
-    licenses_v,
-    # relation_type_v,
-    resource_type_v,
-    subject_v,
-    title_type_v,
     create_communities_custom_fields,
     create_records_custom_fields,
 ):
@@ -348,20 +295,6 @@ def running_app(
         app,
         location,
         cache,
-        affiliations_v,
-        awards_v,
-        community_type_v,
-        contributors_role_v,
-        creators_role_v,
-        date_type_v,
-        description_type_v,
-        funders_v,
-        language_v,
-        licenses_v,
-        # relation_type_v,
-        resource_type_v,
-        subject_v,
-        title_type_v,
         create_communities_custom_fields,
         create_records_custom_fields,
     )
@@ -456,6 +389,7 @@ def app(
     app_config,
     database,
     search,
+    bootstrap_vocabularies,
     template_loader,
     admin_roles,
 ):
@@ -470,7 +404,8 @@ def app(
     Yields:
         Flask: The Flask application instance.
     """
-    current_queues.declare()
+    with app.app_context():
+        current_queues.declare()
     template_loader(app)
     yield app
 

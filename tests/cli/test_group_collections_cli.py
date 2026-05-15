@@ -5,6 +5,23 @@ from invenio_accounts.proxies import current_accounts
 from invenio_communities.proxies import current_communities
 from kcworks.cli import group_collections
 
+# Matches invenio.cfg / tests ``group_roles`` for knowledgeCommons.
+EXPECTED_KC_TEST_GROUP_ROLES = [
+    "knowledgeCommons---test-group-123|admin",
+    "knowledgeCommons---test-group-123|administrator",
+    "knowledgeCommons---test-group-123|editor",
+    "knowledgeCommons---test-group-123|moderator",
+    "knowledgeCommons---test-group-123|member",
+]
+
+EXPECTED_MSU_TEST_GROUP_ROLES = [
+    "msuCommons---test-group-456|admin",
+    "msuCommons---test-group-456|administrator",
+    "msuCommons---test-group-456|editor",
+    "msuCommons---test-group-456|moderator",
+    "msuCommons---test-group-456|member",
+]
+
 
 def test_check_group_memberships_command_success(
     running_app,
@@ -123,11 +140,7 @@ def test_check_group_memberships_command_creates_roles(
     )
 
     # Verify that the expected roles don't exist initially
-    expected_role_names = [
-        "knowledgeCommons---test-group-123|administrator",
-        "knowledgeCommons---test-group-123|moderator",
-        "knowledgeCommons---test-group-123|member",
-    ]
+    expected_role_names = list(EXPECTED_KC_TEST_GROUP_ROLES)
 
     for role_name in expected_role_names:
         role = current_accounts.datastore.find_role(role_name)
@@ -181,11 +194,7 @@ def test_check_group_memberships_command_adds_memberships(
             if role:
                 member_roles.append(role.name)
 
-    expected_role_names = [
-        "knowledgeCommons---test-group-123|administrator",
-        "knowledgeCommons---test-group-123|moderator",
-        "knowledgeCommons---test-group-123|member",
-    ]
+    expected_role_names = list(EXPECTED_KC_TEST_GROUP_ROLES)
 
     for role_name in expected_role_names:
         assert role_name in member_roles, f"Role {role_name} should be a member"
@@ -213,11 +222,7 @@ def test_check_group_memberships_command_with_existing_roles(
     )
 
     # Manually create the roles but don't add them to the community
-    role_names = [
-        "knowledgeCommons---test-group-123|administrator",
-        "knowledgeCommons---test-group-123|moderator",
-        "knowledgeCommons---test-group-123|member",
-    ]
+    role_names = list(EXPECTED_KC_TEST_GROUP_ROLES)
 
     for role_name in role_names:
         current_accounts.datastore.create_role(name=role_name)
@@ -264,11 +269,7 @@ def test_check_group_memberships_command_fixes_wrong_permissions(
     )
 
     # Create roles and add them with wrong permissions
-    role_names = [
-        "knowledgeCommons---test-group-123|administrator",
-        "knowledgeCommons---test-group-123|moderator",
-        "knowledgeCommons---test-group-123|member",
-    ]
+    role_names = list(EXPECTED_KC_TEST_GROUP_ROLES)
 
     for role_name in role_names:
         role = current_accounts.datastore.create_role(name=role_name)
@@ -299,7 +300,9 @@ def test_check_group_memberships_command_fixes_wrong_permissions(
     assert (
         role_permissions["knowledgeCommons---test-group-123|administrator"] == "owner"
     )
+    assert role_permissions["knowledgeCommons---test-group-123|admin"] == "owner"
     assert role_permissions["knowledgeCommons---test-group-123|moderator"] == "curator"
+    assert role_permissions["knowledgeCommons---test-group-123|editor"] == "curator"
     assert role_permissions["knowledgeCommons---test-group-123|member"] == "reader"
 
 
@@ -330,11 +333,7 @@ def test_check_group_memberships_command_with_different_commons_instance(
     assert result.exit_code == 0
 
     # Verify that the roles were created with the correct instance prefix
-    expected_role_names = [
-        "msuCommons---test-group-456|administrator",
-        "msuCommons---test-group-456|moderator",
-        "msuCommons---test-group-456|member",
-    ]
+    expected_role_names = list(EXPECTED_MSU_TEST_GROUP_ROLES)
 
     for role_name in expected_role_names:
         role = current_accounts.datastore.find_role(role_name)

@@ -236,7 +236,6 @@ src.exclude = [
 [tool.pytest]
 ini_options.addopts = """
 --ruff --doctest-modules
---log-cli
 --log-cli-level=DEBUG
 --ignore=app_data
 --ignore=docs
