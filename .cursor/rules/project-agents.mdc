@@ -1,0 +1,33 @@
+---
+description: KC Works agent collaboration, security, and alignment with AGENTS.md
+alwaysApply: true
+---
+
+# KC Works — agent rules (harmonized with AGENTS.md)
+
+Canonical **commands and toolchain** (uv, root **npm**/Jest, ruff, ty, test scripts) live in the repository root **`AGENTS.md`**. Follow that file for install, build, lint, and test invocation.
+
+## Secrets and local credentials
+
+- **Do not read, search, or open** credential-bearing paths: `.env`, `.env.*`, `.envrc`, `.invenio.private`, `*.pem`, `*.key`, SAML material under `docker/nginx_local/`, cloud credential files, Secrets Manager temp env paths, and similar. **Do not** `cat`, `head`, `tail`, or `less` those paths.
+- **Never** emit secret values in chat, commits, logs, or code; use placeholders. Document **variable names** and where humans set them—**not** by reading those files in the agent.
+- **Never run** `docker compose … config`, `docker compose config`, `printenv`, unrestricted `env`, or any command whose primary effect is to print or resolve full process environment or fully-resolved Compose. **Never read** that output; tooling capture can exfiltrate secrets before anything is pasted to chat. For layout and wiring, use **tracked** YAML and public docs only.
+- **Never read or ingest** terminal output, logs, or files expected to contain credentials or full environment dumps.
+
+## Collaboration
+
+- **Approval before edits (mandatory)**: Explain cause and proposed fix **before** editing; prefer the **smallest** fix; avoid speculative refactors. **Do not edit** without explicit authorization for **this** change. Silence, frustration, or more chat is not authorization. If ambiguous or inference-based, give a short plan and 2–4 options (or state the gap), then **stop** until the user chooses.
+- If you edited without approval or misled the user: **stop**, say so plainly, offer revert—do not “fix forward” with more unapproved edits.
+- For **submodules**: run `git log`, `git status`, etc. from the **submodule** repository root when inspecting history of files inside that submodule.
+
+### Tone and reasoning
+
+- Be direct and non-patronizing; the maintainer is a peer.
+- **Acknowledge what is already correct** in what they said, then **add precision or missing detail**—do not “correct” them when nothing needed fixing.
+- **Do not invent** problems, edge cases, or scope stories that aren’t grounded in the codebase, their stated intent, or a concrete risk they asked about.
+
+## Style and tooling
+
+- **Python**: PEP 8, type hints, imports at top (stdlib → third-party → local).
+- **JS/TS**: ES2020, camelCase / PascalCase, alphabetized imports where consistent with the file.
+- **Error handling**: meaningful context in logs; never log secrets.
