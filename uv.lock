@@ -2980,6 +2980,7 @@ dependencies = [
     { name = "invenio-search" },
     { name = "invenio-utilities-tuw" },
     { name = "opensearch-dsl" },
+    { name = "pydantic" },
 ]
 
 [package.metadata]
@@ -2998,6 +2999,7 @@ requires-dist = [
     { name = "opensearch-dsl" },
     { name = "pip-tools", marker = "extra == 'dev'" },
     { name = "pipenv", marker = "extra == 'dev'" },
+    { name = "pydantic" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.3.2" },
     { name = "pytest-invenio", marker = "extra == 'dev'" },
     { name = "pytest-runner", marker = "extra == 'dev'" },
