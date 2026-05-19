@@ -108,6 +108,10 @@ class CommunityChangePermissionsComponent(ServiceComponent):
             uow (UnitOfWork | None, optional): The unit of work manager. Defaults
                 to None.
             **kwargs (Any): Additional keyword arguments
+
+        Raises:
+            PermissionDeniedError: If the Identity doesn't have the permissions
+                required to remove the work from the collection.
         """
         record = cast(RDMRecord, kwargs.get("record"))
         errors = cast(list, kwargs.get("errors"))
@@ -126,17 +130,15 @@ class CommunityChangePermissionsComponent(ServiceComponent):
                 try:
                     self._check_default_community_permission(identity, record, "remove")
                 except PermissionDeniedError as e:
-                    errors.append(
-                        {
-                            "field": "parent.communities.default",
-                            "message": (
-                                "You do not have permission to remove this work from "
-                                f"{default_community_title}. "
-                                "Please contact the collection"
-                                " owner or manager for assistance."
-                            ),
-                        }
-                    )
+                    errors.append({
+                        "field": "parent.communities.default",
+                        "message": (
+                            "You do not have permission to remove this work from "
+                            f"{default_community_title}. "
+                            "Please contact the collection"
+                            " owner or manager for assistance."
+                        ),
+                    })
                     raise e
 
     def set_default(

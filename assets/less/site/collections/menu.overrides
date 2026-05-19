@@ -48,6 +48,13 @@
     }
     box-shadow: none;
 
+    #rdm-burger-toggle {
+      #rdm-burger-menu-icon {
+        padding-top: 1.7rem;
+        padding-bottom: 1.7rem;
+      }
+    }
+
     &.active {
       h2.header {
         @media all and (max-width: @largestTabletScreen) {
@@ -184,6 +191,12 @@
             border-left: 0;
             margin-top: 1.5rem;
             padding: 1.5rem 0;
+          }
+          &.logged-out:hover,
+          &.logged-out:focus,
+          &.logged-out:active {
+            background-color: @mint60;
+            border-color: @mint60;
           }
           &> .item {
             height: 100%;

@@ -14,48 +14,115 @@ the Invenio app.
 
 import json
 import os
-from collections.abc import Callable
+from unittest.mock import patch
 
 import pytest
 import requests
 from flask_login import login_user
-from invenio_accounts.models import User
+from invenio_access.permissions import system_identity
+from invenio_accounts.profiles import UserProfileDict
 from invenio_accounts.proxies import current_accounts
-from invenio_remote_user_data_kcworks.tasks import do_user_data_update
-from kcworks.services.accounts.saml import knowledgeCommons_account_setup
-from requests_mock.adapter import _Matcher as Matcher
+from invenio_communities.proxies import current_communities
+from invenio_rdm_records.proxies import (
+    current_community_records_service,
+    current_rdm_records_service,
+)
+from invenio_remote_user_data_kcworks.proxies import (
+    current_remote_group_service as group_data_service,
+)
+from kcworks.services.accounts.idms import knowledgeCommons_account_setup
 
-from ..fixtures.users import AugmentedUserFixture, user_data_set
+from ..fixtures.users import user_data_set
 
 
-def test_user_data_kc_endpoint():
+def test_user_data_kc_endpoint_members(running_app):
     """Test that the production kc endpoint returns the correct data.
 
     The focus here is on the json schema being returned
     """
-    protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https")
-    base_url = f"{protocol}://hcommons.org/wp-json/commons/v1/users"
-    url = f"{base_url}/gihctester"
-    token = os.environ.get("COMMONS_API_TOKEN_PROD")
+    base_url = running_app.app.config.get("IDMS_BASE_API_URL")
+    url = f"{base_url}members/gihctester/"
+    token = os.environ.get("COMMONS_PROFILES_API_TOKEN")
     headers = {"Authorization": f"Bearer {token}"}
 
     response = requests.get(url, headers=headers)
 
     assert response.status_code == 200
     actual_resp = response.json()
-    assert actual_resp["username"] == "gihctester"
-    assert actual_resp["email"] == "ghosthc@email.ghostinspector.com"
-    assert actual_resp["name"] == "Ghost Hc"
-    assert actual_resp["first_name"] == "Ghost"
-    assert actual_resp["last_name"] == "Hc"
-    assert actual_resp["institutional_affiliation"] == ""
-    for g in actual_resp["groups"]:
-        assert list(g.keys()) == ["id", "name", "role"]
+    actual_data = actual_resp["results"]
+    assert actual_data["username"] == "gihctester"
+    assert actual_data["email"] == "gihctester@gmail.com"
+    assert actual_data["name"] == "Ghost Hc"
+    assert actual_data["first_name"] == "Ghost"
+    assert actual_data["last_name"] == "Hc"
+    assert not actual_data["institutional_affiliation"]
+    assert "gravatar" in actual_data["avatar"]
+    for g in actual_data["groups"]:
+        assert list(g.keys()) == [
+            "id",
+            "group_name",
+            "role",
+            "url",
+            "status",
+            "avatar",
+            "inviter_id",
+            "inviter",
+        ]
         assert isinstance(g["id"], int)
-        if g["name"]:
-            assert isinstance(g["name"], str)
-    # TODO: add orcid to the api call
-    # assert actual_resp["orcid"] == "0000-0000-0000-0000"
+        if g["group_name"]:
+            assert isinstance(g["group_name"], str)
+    assert not actual_data["orcid"]
+    assert "MLA" in actual_data["memberships"].keys()
+
+
+def test_user_data_kc_endpoint_subs(running_app):
+    """Test that the production kc endpoint returns the correct data.
+
+    The focus here is on the json schema being returned
+    """
+    base_url = running_app.app.config.get("IDMS_BASE_API_URL")
+    url = f"{base_url}subs/ianscott/"
+    token = os.environ.get("COMMONS_PROFILES_API_TOKEN")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = requests.get(url, headers=headers)
+
+    assert response.status_code == 200
+    actual_resp = response.json()
+    target_data = [
+        d for d in actual_resp["data"] if d["profile"]["username"] == "ianscott"
+    ]
+    oauth_id = target_data[0]["sub"]
+
+    response2 = requests.get(f"{base_url}subs/?sub={oauth_id}", headers=headers)
+    actual_resp2 = response2.json()
+    running_app.app.logger.error(actual_resp2)
+    actual_data = actual_resp2["data"][0]["profile"]
+    assert actual_data["username"] == "ianscott"
+    assert "scottianw" in actual_data["email"]
+    assert actual_data["name"] == "Ian W. Scott"
+    assert actual_data["first_name"] == "Ian W."
+    assert actual_data["last_name"] == "Scott"
+    assert (
+        actual_data["institutional_affiliation"]
+        == "MESH Research, Michigan State University"
+    )
+    for g in actual_data["groups"]:
+        assert list(g.keys()) == [
+            "id",
+            "group_name",
+            "role",
+            "url",
+            "status",
+            "avatar",
+            "inviter_id",
+            "inviter",
+        ]
+        assert isinstance(g["id"], int)
+        if g["group_name"]:
+            assert isinstance(g["group_name"], str)
+    assert "0000-0002-0722" in actual_data["orcid"]
+    assert "MLA" in actual_data["memberships"].keys()
 
 
 @pytest.mark.skip(reason="Not implemented")
@@ -67,143 +134,10 @@ def test_group_data_kc_endpoint():
     raise NotImplementedError
 
 
-@pytest.mark.parametrize(
-    "starting_email,user_data,groups_changes",
-    [
-        (
-            user_data_set["user1"]["email"],
-            user_data_set["user1"],
-            {
-                "added_groups": [
-                    "knowledgeCommons---12345|administrator",
-                    "knowledgeCommons---67891|member",
-                ],
-                "dropped_groups": [],
-                "unchanged_groups": [],
-            },
-        ),
-        (
-            "emailtobechanged@example.com",
-            user_data_set["user2"],
-            {
-                "added_groups": [],
-                "dropped_groups": [],
-                "unchanged_groups": [],
-            },
-        ),
-    ],
-)
-def test_do_user_data_update_task(
-    running_app,
-    appctx,
-    db,
-    user_factory: Callable,
-    starting_email: str,
-    user_data: dict,
-    groups_changes: dict,
-    user_data_to_remote_data: Callable,
-    requests_mock,
-    celery_worker,
-    search_clear,
-):
-    """Test that the do_user_data_update task does what it's supposed to do.
-
-    - It should return the correct data
-    - It should call the remote api if the user has an IDP
-    - It should update the user in the db if the user has an IDP
-    """
-    # Mock additional user data from the remote service
-    # api response
-    new_data_payload = user_data_to_remote_data(
-        user_data["saml_id"], user_data["email"], user_data
-    )
-    # Create a test user
-    u: AugmentedUserFixture = user_factory(
-        email=starting_email,
-        saml_src="knowledgeCommons",
-        saml_id=user_data["saml_id"],
-        new_remote_data=new_data_payload,
-    )
-    assert isinstance(u.user, User)
-    user = u.user
-    # strip the user_profile and username to make sure all the parts update
-    # otherwise identifier_kc_username and identifier_orcid as well as username
-    # will be set already at account creation time
-    user.user_profile = {}
-    user.username = None
-    current_accounts.datastore.commit()
-
-    user_id: int = user.id
-    assert user.username is None
-    assert user.email == starting_email
-    assert user.user_profile == {}
-    assert user.roles == []
-    assert isinstance(u.mock_adapter, Matcher)
-    mock_adapter: Matcher = u.mock_adapter
-    assert not mock_adapter.called
-    assert mock_adapter.call_count == 0
-
-    result: tuple[int, dict, list[str], dict] = do_user_data_update(
-        user_id=user_id, idp="knowledgeCommons", remote_id=user_data["saml_id"]
-    )
-    assert result[0] == user_id
-
-    # the result[1] is a dictionary of the updated user data (including only
-    # the changed keys and values).
-    expected_updated_data = {
-        "user_profile": {
-            "affiliations": user_data["institutional_affiliation"],
-            "full_name": user_data["name"],
-            "identifier_kc_username": user_data["saml_id"],
-            "identifier_orcid": user_data["orcid"],
-            "name_parts": (
-                '{"first": "'
-                + user_data["first_name"]
-                + '", "last": "'
-                + user_data["last_name"]
-                + '"}'
-            ),
-        },
-        "username": f"knowledgeCommons-{user_data['saml_id']}",
-    }
-    if starting_email != user_data["email"]:
-        expected_updated_data["email"] = user_data["email"]
-    assert result[1] == expected_updated_data
-    # the result[2] is a complete list of the updated user's group memberships.
-    assert result[2] == (
-        [f"knowledgeCommons---{g['id']}|{g['role']}" for g in user_data["groups"]]
-        if "groups" in user_data.keys() and user_data["groups"]
-        else []
-    )
-    # the result[3] is a dictionary of the changes to the user's group
-    # memberships (with the keys "added_groups", "dropped_groups", and
-    # "unchanged_groups").
-    assert result[3] == groups_changes
-    assert mock_adapter.called
-    assert mock_adapter.call_count == 1
-
-    # Check that the user data was updated in the db
-    user = current_accounts.datastore.get_user_by_id(user_id)
-    assert user.email == user_data["email"]
-    assert user.user_profile.get("full_name") == user_data["name"]
-    assert user.user_profile.get("identifier_kc_username") == user_data["saml_id"]
-    assert user.user_profile.get("identifier_orcid") == user_data["orcid"]
-    assert json.loads(user.user_profile.get("name_parts")) == {
-        "first": user_data["first_name"],
-        "last": user_data["last_name"],
-    }
-    assert [r.name for r in user.roles] == (
-        [f"knowledgeCommons---{g['id']}|{g['role']}" for g in user_data["groups"]]
-        if "groups" in user_data.keys()
-        else []
-    )
-
-
 def test_user_data_sync_on_login(
     running_app,
     db,
     user_factory,
-    user1_data,
     search_clear,
     celery_worker,
     mock_send_remote_api_update_fixture,
@@ -218,42 +152,47 @@ def test_user_data_sync_on_login(
     """
     # Mock additional user data from the remote service
     # api response
-    new_data_payload = {k: v for k, v in user1_data.items() if k != "saml_id"}
-    new_data_payload["username"] = user1_data["saml_id"]
+    new_data_payload = user_data_set["user1"]
 
     # Create a user
-    # The user is created with a saml auth record because saml_src
-    # and saml_id are supplied.
+    # The user is created with a saml auth record because oauth_src
+    # and oauth_id are supplied.
     u = user_factory(
-        email=user1_data["email"],
-        saml_src="knowledgeCommons",
-        saml_id=user1_data["saml_id"],
+        email=new_data_payload["email"],
+        oauth_src="cilogon",
+        oauth_id=new_data_payload["oauth_id"],
+        kc_username=new_data_payload["kc_username"],
         new_remote_data=new_data_payload,
     )
-    assert not u.mock_adapter.called
-    assert u.mock_adapter.call_count == 0
-    login_user(u.user)
-    assert u.mock_adapter.called
-    assert u.mock_adapter.call_count == 1
 
-    assert u.user.email == user1_data["email"]
-    profile = u.user.user_profile
-    assert profile.get("full_name") == user1_data["name"]
-    assert profile.get("affiliations") == user1_data["institutional_affiliation"]  # noqa: E501
-    assert profile.get("identifier_orcid") == user1_data["orcid"]
-    assert profile.get("identifier_kc_username") == user1_data["saml_id"]
+    for mock_adapter in u.mock_adapter_subs, u.mock_adapter_members:
+        assert not mock_adapter.called
+        assert mock_adapter.call_count == 0
+    login_user(u.user)
+    assert u.mock_adapter_subs.called
+    assert u.mock_adapter_subs.call_count == 1
+    assert not u.mock_adapter_members.called
+    assert u.mock_adapter_members.call_count == 0
+
+    assert u.user.email == new_data_payload["email"]
+
+    profile: UserProfileDict = u.user.user_profile
+    assert profile.get("full_name") == new_data_payload["name"]
+    assert profile.get("affiliations") == new_data_payload["institutional_affiliation"]  # noqa: E501
+    assert profile.get("identifier_orcid") == new_data_payload["orcid"]
+    assert profile.get("identifier_kc_username") == new_data_payload["kc_username"]
     assert json.loads(profile.get("name_parts")) == {
-        "first": user1_data["first_name"],
-        "last": user1_data["last_name"],
+        "first": new_data_payload["first_name"],
+        "last": new_data_payload["last_name"],
     }
 
+    merged_user = db.session.merge(u.user)
+
     # Check that the user is a member of the linked communities
-    assert sorted([r.name for r in u.user.roles]) == sorted(
-        [
-            "knowledgeCommons---12345|administrator",
-            "knowledgeCommons---67891|member",
-        ]
-    )
+    assert sorted([r.name for r in merged_user.roles]) == sorted([
+        "knowledgeCommons---12345|administrator",
+        "knowledgeCommons---67891|member",
+    ])
 
 
 @pytest.mark.skip(reason="Not implemented")
@@ -271,13 +210,13 @@ def test_user_data_sync_on_webhook(
     running_app,
     db,
     user_factory,
-    user1_data,
     client,
     requests_mock,
     headers,
     search_clear,
     celery_worker,
     mock_send_remote_api_update_fixture,
+    user_data_to_remote_data,
 ):
     """Test that the user data is synced when a user logs in.
 
@@ -288,34 +227,44 @@ def test_user_data_sync_on_webhook(
     user creation. It only happens when the user logs in.
     """
     app = running_app.app
+
+    profile_data = user_data_set["user1"]
+
     # Create a user
-    # The user is created with a saml auth record because saml_src
     u = user_factory(
-        email=user1_data["email"],
-        saml_src="knowledgeCommons",
-        saml_id=user1_data["saml_id"],
+        email=profile_data["email"],
+        oauth_src="cilogon",
+        oauth_id=profile_data["oauth_id"],
+        kc_username=profile_data["kc_username"],
         new_remote_data={},
         token=True,
         admin=True,
     )
     token = u.allowed_token
     user_id = u.user.id
-    assert not u.mock_adapter.called  # no call to the remote api yet
-    assert u.mock_adapter.call_count == 0
+    for mock_adapter in u.mock_adapter_subs, u.mock_adapter_members:
+        assert not mock_adapter.called  # no call to the remote api yet
+        assert mock_adapter.call_count == 0
 
     # Mock additional user data from the remote service
     # api response
-    mock_remote_data = {k: v for k, v in user1_data.items() if k != "saml_id"}
-    mock_remote_data["username"] = user1_data["saml_id"]
+    base_url = app.config.get("IDMS_BASE_API_URL")
 
-    # Mock the remote api call.
-    protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https")
-    base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
-    remote_url = f"{base_url}/{user1_data['saml_id']}"
-    mock_adapter = requests_mock.get(
-        remote_url,
-        json=mock_remote_data,
-        headers={"Authorization": f"Bearer {token}"},
+    mock_remote_data_subs, mock_remote_data_members = user_data_to_remote_data(
+        kc_username=profile_data["kc_username"],
+        email=profile_data["email"],
+        user_data=profile_data,
+        oauth_id=profile_data["oauth_id"],
+    )
+    app.logger.error(f"test: mock remote data members: {mock_remote_data_members}")
+
+    mock_adapter_members = requests_mock.get(
+        f"{base_url}members/{profile_data['kc_username']}",
+        json=mock_remote_data_members,
+    )
+    mock_adapter_subs = requests_mock.get(
+        f"{base_url}subs/?sub={profile_data['oauth_id']}",
+        json=mock_remote_data_subs,
     )
 
     # Ping the webhook endpoint (no data is sent)
@@ -331,52 +280,64 @@ def test_user_data_sync_on_webhook(
     assert mock_adapter.call_count == 0
 
     # Signal the webhook endpoint for update (data is sent)
-    response2 = client.post(
-        f"{app.config['SITE_API_URL']}/webhooks/user_data_update",
-        data=json.dumps(
-            {
+    # we patch the current user so that the webhook does not
+    # try to access it in invenio_accounts.utils.set_session_info
+    # thereby triggering a detached session exception in SQLAlchemy
+    with patch("invenio_accounts.utils.current_user"):
+        response2 = client.post(
+            f"{app.config['SITE_API_URL']}/webhooks/user_data_update",
+            json={
                 "idp": "knowledgeCommons",
                 "updates": {
                     "users": [
-                        {"id": user1_data["saml_id"], "event": "updated"},
+                        {
+                            "id": profile_data["oauth_id"],
+                            "event": "updated",
+                        },
                     ],
                 },
-            }
-        ),
-        headers={**headers, "Authorization": f"Bearer {token}"},
-    )
+            },
+            headers={**headers, "Authorization": f"Bearer {token}"},
+        )
+
     assert response2.status_code == 202
     assert response2.json == {
         "message": "Webhook notification accepted",
         "status": 202,
         "updates": {
             "users": [
-                {"id": user1_data["saml_id"], "event": "updated"},
+                {
+                    "id": profile_data["oauth_id"],
+                    "event": "updated",
+                },
             ],
         },
     }
-    assert mock_adapter.called
-    assert mock_adapter.call_count == 1  # only one call to the remote api
+
+    assert mock_adapter_subs.called
+    assert mock_adapter_subs.call_count == 1  # only one call to the remote api
+    assert not mock_adapter_members.called
 
     # Check that the user data was updated in the db
     user = current_accounts.datastore.get_user_by_id(user_id)
-    assert user.email == user1_data["email"]
-    assert user.user_profile.get("full_name") == user1_data["name"]
+    assert user.email == profile_data["email"]
+    assert user.user_profile.get("full_name") == profile_data["name"]
     assert (
-        user.user_profile.get("identifier_kc_username") == user1_data["saml_id"]  # noqa: E501
+        user.user_profile.get("identifier_kc_username") == profile_data["kc_username"]  # noqa: E501
     )  # noqa: E501
-    assert user.user_profile.get("identifier_orcid") == user1_data["orcid"]
+    assert user.user_profile.get("identifier_orcid") == profile_data["orcid"]
     assert json.loads(user.user_profile.get("name_parts")) == {
-        "first": user1_data["first_name"],
-        "last": user1_data["last_name"],
+        "first": profile_data["first_name"],
+        "last": profile_data["last_name"],
     }
     assert [r.name for r in user.roles] == [
-        "administration-access",
+        "administration",
         "knowledgeCommons---12345|administrator",
         "knowledgeCommons---67891|member",
     ]
     assert (
-        user.user_profile.get("affiliations") == user1_data["institutional_affiliation"]  # noqa: E501
+        user.user_profile.get("affiliations")
+        == profile_data["institutional_affiliation"]  # noqa: E501
     )
 
 
@@ -389,23 +350,53 @@ def test_user_data_sync_on_account_setup(
     and that the user data is updated in Invenio.
     """
     # Mock the remote API endpoint
-    protocol = os.environ.get("INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https")
-    base_url = f"{protocol}://hcommons-dev.org/wp-json/commons/v1/users"
-    remote_url = f"{base_url}/testuser"
-    requests_mock.get(
-        remote_url,
+    base_url = running_app.app.config.get("IDMS_BASE_API_URL")
+    mock_adapter_members = requests_mock.get(
+        f"{base_url}members/testuser",
         json={
-            "username": "testuser",
-            "email": "testuser@example.com",
-            "name": "Test User",
-            "first_name": "Test",
-            "last_name": "User",
-            "institutional_affiliation": "Test University",
-            "orcid": "0000-0001-2345-6789",
-            "groups": [
-                {"id": 12345, "name": "test-group", "role": "member"},
-            ],
+            "results": [
+                {
+                    "username": "testuser",
+                    "email": "testuser@example.com",
+                    "name": "Test User",
+                    "first_name": "Test",
+                    "last_name": "User",
+                    "institutional_affiliation": "Test University",
+                    "orcid": "0000-0001-2345-6789",
+                    "groups": [
+                        {"id": 12345, "name": "test-group", "role": "member"},
+                    ],
+                }
+            ]
         },
+    )
+
+    mock_remote_data_subs = {
+        "data": [
+            {
+                "sub": "testuser",
+                "profile": {
+                    "username": "testuser",
+                    "email": "testuser@example.com",
+                    "name": "Test User",
+                    "first_name": "Test",
+                    "last_name": "User",
+                    "institutional_affiliation": "Test University",
+                    "orcid": "0000-0001-2345-6789",
+                    "groups": [
+                        {"id": 12345, "name": "test-group", "role": "member"},
+                    ],
+                },
+            }
+        ],
+        "next": None,
+        "previous": None,
+        "meta": {"authorized": True},
+    }
+
+    mock_adapter_subs = requests_mock.get(
+        f"{base_url}subs/?sub=testuser1",
+        json=mock_remote_data_subs,
     )
 
     # Create a new user
@@ -413,25 +404,28 @@ def test_user_data_sync_on_account_setup(
         email="testuser@example.com",
         token=False,
         admin=False,
-        saml_src=None,
-        saml_id=None,
+        oauth_src=None,
+        oauth_id=None,
     )
     user = u.user
     user_id = user.id
 
     # Prepare account_info
     account_info = {
-        "external_id": "testuser",
-        "external_method": "knowledgeCommons",
+        "external_id": "testuser1",
+        "external_method": "cilogon",
     }
 
     updated = knowledgeCommons_account_setup(user, account_info)
     assert updated
+    assert mock_adapter_subs.called
+    assert mock_adapter_subs.call_count == 1
+    assert not mock_adapter_members.called
 
     # Verify that the user was activated and updated
     updated_user = current_accounts.datastore.get_user_by_id(user_id)
     assert updated_user.active
-    assert updated_user.username == "knowledgeCommons-testuser"
+    assert updated_user.username == "testuser"
     assert updated_user.email == "testuser@example.com"
     assert updated_user.user_profile.get("full_name") == "Test User"
     assert updated_user.user_profile.get("affiliations") == "Test University"
@@ -476,3 +470,101 @@ def test_group_data_sync_on_webhook(running_app, search_clear):
     and that the group data is updated in Invenio.
     """
     pass
+
+
+def test_update_group_from_remote_changes_visibility_with_public_record(
+    running_app,
+    db,
+    search_clear,
+    requests_mock,
+    minimal_community_factory,
+    minimal_published_record_factory,
+):
+    """Remote group update can change community visibility to restricted.
+
+    The stock InvenioRDM policy forbids this when the community has a public
+    record. This test checks the group data update while also checking that
+    our override of that policy works. The final community visibility should
+    be different from the record's access status.
+
+    """
+    app = running_app.app
+    idp = "knowledgeCommons"
+    remote_group_id = "1004290"
+
+    community = minimal_community_factory(
+        slug="the-inklings",
+        metadata={
+            "title": "The Inklings",
+            "description": "A collection for testing.",
+            "curation_policy": "",
+            "page": "Page text.",
+            "website": "https://hcommons-dev.org/groups/the-inklings/",
+            "organizations": [
+                {"name": "The Inklings"},
+                {"name": "Knowledge Commons"},
+            ],
+        },
+        access={
+            "visibility": "public",
+            "member_policy": "closed",
+            "record_policy": "closed",
+        },
+        custom_fields={
+            "kcr:commons_instance": idp,
+            "kcr:commons_group_id": remote_group_id,
+            "kcr:commons_group_name": "The Inklings",
+            "kcr:commons_group_description": "",
+            "kcr:commons_group_visibility": "public",
+        },
+    )
+
+    record = minimal_published_record_factory(
+        community_list=[community.id],
+    )
+    record_ref = record._record
+
+    return_payload = {
+        "id": remote_group_id,
+        "name": "The Inklings",
+        "url": "https://hcommons-dev.org/groups/the-inklings/",
+        "visibility": "hidden",
+        "description": "Updated description.",
+        "avatar": "",
+        "groupblog": "",
+        "upload_roles": ["member", "moderator", "administrator"],
+        "moderate_roles": ["moderator", "administrator"],
+    }
+    base_url = app.config["REMOTE_USER_DATA_API_ENDPOINTS"][idp]["groups"][
+        "remote_endpoint"
+    ]
+    requests_mock.get(
+        f"{base_url}{remote_group_id}",
+        json=return_payload,
+    )
+
+    assert community["access"]["visibility"] == "public"
+    assert record_ref["access"]["record"] == "public"
+    assert (
+        current_community_records_service.search(
+            system_identity,
+            community_id=community.id,
+        ).total
+        == 1
+    )
+
+    actual = group_data_service.update_group_from_remote(
+        system_identity, idp, remote_group_id
+    )
+    assert actual is not None
+    assert community["slug"] in actual
+
+    updated = current_communities.service.read(system_identity, community.id)
+    assert updated["access"]["visibility"] == "restricted"
+    assert updated["custom_fields"]["kcr:commons_group_visibility"] == "hidden"
+
+    record_reread = current_rdm_records_service.read(
+        system_identity, record.id
+    ).to_dict()
+    assert record_reread["access"]["record"] == "public"
+    assert record_reread["access"]["record"] != updated["access"]["visibility"]

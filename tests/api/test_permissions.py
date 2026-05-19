@@ -169,7 +169,7 @@ def test_per_field_edit_permission_factory_community_string_roles(
     expected_needs = {
         CommunityRoleNeed(value=community.id, role="manager"),
         CommunityRoleNeed(value=community.id, role="owner"),
-        Need(method="role", value="administration-access"),
+        Need(method="role", value="administration"),
         Need(method="role", value="superuser-access"),
         Need(method="system_role", value="system_process"),
     }
@@ -193,7 +193,7 @@ def test_per_field_edit_permission_factory_community_generator_roles(
         CommunityRoleNeed(value=community.id, role="curator"),
         CommunityRoleNeed(value=community.id, role="manager"),
         CommunityRoleNeed(value=community.id, role="owner"),
-        Need(method="role", value="administration-access"),
+        Need(method="role", value="administration"),
         Need(method="role", value="superuser-access"),
         Need(method="system_role", value="system_process"),
     }
@@ -209,7 +209,7 @@ def test_per_field_edit_permission_factory_default_community(
 
     assert isinstance(policy, Permission)
     expected_generators = {
-        Need(method="role", value="administration-access"),
+        Need(method="role", value="administration"),
         Need(method="role", value="superuser-access"),
         Need(method="system_role", value="system_process"),
     }
@@ -233,7 +233,7 @@ def test_per_field_edit_permission_factory_default_community2(
     expected_generators = {
         CommunityRoleNeed(value="default", role="manager"),
         CommunityRoleNeed(value="default", role="owner"),
-        Need(method="role", value="administration-access"),
+        Need(method="role", value="administration"),
         Need(method="role", value="superuser-access"),
         Need(method="system_role", value="system_process"),
     }
@@ -249,7 +249,7 @@ def test_per_field_edit_permission_factory_community_empty_roles(
 
     assert isinstance(policy, Permission)
     expected_generators = {
-        Need(method="role", value="administration-access"),
+        Need(method="role", value="administration"),
         Need(method="role", value="superuser-access"),
         Need(method="system_role", value="system_process"),
         CommunityRoleNeed(value=community.id, role="manager"),

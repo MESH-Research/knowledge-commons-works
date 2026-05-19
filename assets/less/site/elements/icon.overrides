@@ -42,3 +42,9 @@
     }
   }
 }
+
+.error-page {
+  .icon.huge {
+    color: @gold50;
+  }
+}

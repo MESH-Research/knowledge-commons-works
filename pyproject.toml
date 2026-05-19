@@ -1,15 +1,16 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = [ "babel>2.8", "setuptools>=61", "wheel" ]
+requires = ["babel>2.8", "setuptools>=61", "wheel"]
 
 [project]
 name = "kcworks"
-version = "0.7.2"
+version = "0.7.3"
 requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
   "aiohttp>=3.11.15",
@@ -19,7 +20,6 @@ dependencies = [
   "flask-breadcrumbs",
   "flask-iiif",
   "flask-principal",
-  "halo",
   "invenio-app-rdm[opensearch2]==12.1",
   "invenio-communities==13.0.3",
   "invenio-group-collections-kcworks",
@@ -33,7 +33,6 @@ dependencies = [
   "invenio-remote-user-data-kcworks",
   "invenio-requests==4.1.4",
   "invenio-s3",
-  "invenio-saml",
   "invenio-search-ui==2.8.9",
   "invenio-stats-dashboard",
   "invenio-subjects-fast",
@@ -58,16 +57,12 @@ dependencies = [
   "tqdm",
   "unidecode",
   "uwsgi>=2.0.23",
-  "xmlsec==1.3.14",
 ]
-
 optional-dependencies.dev = [
-  "black>=25.1",
   "check-manifest>=0.25",
   "djlint>=1.36.4",
   "docker-services-cli",
   "furo",
-  "halo",
   "jsonlines",
   "mypy>=1.8",
   "myst-parser",
@@ -79,13 +74,13 @@ optional-dependencies.dev = [
   "sphinx-copybutton>=0.5.2",
 ]
 optional-dependencies.tests = [
-  "pytest-black>=0.6",
   "pytest-cov>=6.2.1",
   "pytest-invenio>=2.2.2,<3",
   "pytest-isort>=4",
   "pytest-mock",
   "pytest-mypy>=0.10",
   "pytest-ruff>=0.1",
+  "ty",
 ]
 scripts.group-collections = "kcworks.cli:group_collections"
 scripts.kcworks-index = "kcworks.cli:kcworks_index"
@@ -98,9 +93,11 @@ entry-points."flask.commands".kcworks-users = "kcworks.cli:kcworks_users"
 entry-points."invenio_assets.webpack".kcworks_theme = "kcworks.webpack:theme"
 entry-points."invenio_base.api_apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.api_blueprints".kcworks_api = "kcworks.views.views:create_api_blueprint"
+entry-points."invenio_base.api_finalize_app".kcworks = "kcworks.ext:api_finalize_app"
 entry-points."invenio_base.apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.blueprints".kcworks_views = "kcworks.views.views:create_blueprint"
 entry-points."invenio_base.blueprints".knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
+entry-points."invenio_base.finalize_app".kcworks = "kcworks.ext:finalize_app"
 entry-points."invenio_previewer.previewers".custom_default_viewer = "kcworks.views.previewers.invenio_custom_default_viewer.custom_default_viewer"
 entry-points."invenio_previewer.previewers".custom_docx_viewer = "kcworks.views.previewers.invenio_custom_docx_viewer.custom_docx_viewer"
 entry-points."invenio_previewer.previewers".custom_latex_viewer = "kcworks.views.previewers.invenio_custom_latex_viewer.custom_latex_viewer"
@@ -110,13 +107,11 @@ entry-points."invenio_search.index_templates".kcworks = "kcworks.services.search
 
 [dependency-groups]
 dev = [
-  "black>=25.1",
   "check-manifest>=0.25",
   "djlint>=1.36.4",
   "docker-services-cli",
   "mypy>=1.8",
   "psycopg2-binary>=2.9.10",
-  "pytest-black>=0.6",
   "pytest-isort>=4",
   "pytest-mock",
   "requests-mock",
@@ -126,15 +121,26 @@ dev = [
 
 [tool.setuptools]
 package-dir = { "" = "site" }
+package-data."*" = ["*.po", "*.pot", "*.mo"]
 
-[tool.setuptools.package-data]
-"*" = [ "*.po", "*.pot", "*.mo" ]
+[tool.hatch]
+build.targets.wheel.packages = ["site"]
+metadata.allow-direct-references = true
 
-[tool.hatch.build.targets.wheel]
-packages = [ "site" ]
-
-[tool.hatch.metadata]
-allow-direct-references = true
+[tool.uv]
+sources.invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
+sources.invenio-group-collections-kcworks = { path = "./site/kcworks/dependencies/invenio-group-collections-kcworks", editable = true }
+sources.invenio-modular-deposit-form = { path = "./site/kcworks/dependencies/invenio-modular-deposit-form", editable = true }
+sources.invenio-modular-detail-page = { path = "./site/kcworks/dependencies/invenio-modular-detail-page", editable = true }
+sources.invenio-rdm-records = { path = "./site/kcworks/dependencies/invenio-rdm-records", editable = true }
+sources.invenio-record-importer-kcworks = { path = "./site/kcworks/dependencies/invenio-record-importer-kcworks", editable = true }
+sources.invenio-records-resources = { path = "./site/kcworks/dependencies/invenio-records-resources", editable = true }
+sources.invenio-remote-api-provisioner = { path = "./site/kcworks/dependencies/invenio-remote-api-provisioner", editable = true }
+sources.invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
+sources.invenio-requests = { path = "./site/kcworks/dependencies/invenio-requests", editable = true }
+sources.invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
+sources.invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
+sources.kcworks = { path = "./site", editable = true }
 
 [tool.ruff]
 target-version = "py312"
@@ -150,17 +156,18 @@ exclude = [
   "site/kcworks/dependencies/invenio-modular-deposit-form",
   "site/kcworks/dependencies/invenio-modular-detail-page",
   "site/kcworks/dependencies/invenio-rdm-records",
+  "site/kcworks/dependencies/invenio-record-importer-kcworks",
   "site/kcworks/dependencies/invenio-records-resources",
   "site/kcworks/dependencies/invenio-remote-api-provisioner",
   "site/kcworks/dependencies/invenio-remote-user-data-kcworks",
   "site/kcworks/dependencies/invenio-requests",
+  "site/kcworks/dependencies/invenio-stats-dashboard",
   "site/kcworks/dependencies/invenio-vocabularies",
   "site/kcworks/services/search/index_templates",
   "tests/helpers",
 ]
-
 # temporarily removed C for complexity checks
-lint.select = [ "B", "D", "DOC", "E", "F", "I", "UP" ]
+lint.select = ["B", "D", "DOC", "E", "F", "I", "UP"]
 # Now Ruff handles formatting, so enable formatting rules
 lint.ignore = [
   "D412", # Missing blank line before closing docstring
@@ -169,10 +176,14 @@ lint.ignore = [
   "W2", # Whitespace warnings
   "W3", # Blank line warnings
 ]
-lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401" ]
-lint.per-file-ignores."tests/api/test_stats.py" = [ "C416" ]
+lint.per-file-ignores."__init__.py" = ["D104", "E402", "F401"]
+lint.per-file-ignores."tests/api/test_stats.py" = ["C416"]
 # Ensure consistent import sorting - explicitly declare tests as first-party
-lint.isort.known-first-party = [ "invenio_stats_dashboard", "invenio_record_importer_kcworks", "tests" ]
+lint.isort.known-first-party = [
+  "invenio_stats_dashboard",
+  "invenio_record_importer_kcworks",
+  "tests",
+]
 lint.pydocstyle.convention = "google"
 lint.preview = true
 
@@ -197,8 +208,48 @@ skip = [
   # "node_modules",  # Skip node modules
 ]
 
-[tool.pytest.ini_options]
-addopts = """
+[tool.ty]
+environment.python-version = "3.12"
+rules.unresolved-import = "ignore"
+src.exclude = [
+  "**/tests/**",
+  "**/site/kcworks/dependencies/**",
+  "**/site/kcworks/services/search/index_templates/**",
+]
+
+[[tool.ty.overrides]]
+include = ["**/kcworks/services/search/index_templates/**"]
+rules = { unresolved-attribute = "ignore", invalid-assignment = "ignore", unresolved-import = "ignore" }
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = false
+warn_no_return = false
+ignore_missing_imports = true
+follow_imports = "skip"
+allow_untyped_globals = true
+exclude = [
+  "^tests/",
+  "^site/kcworks/dependencies/",
+  "^site/kcworks/services/search/index_templates/",
+]
+
+[[tool.mypy.overrides]]
+module = "kcworks.services.search.index_templates.*"
+ignore_errors = true
+ignore_missing_imports = true
+follow_imports = "skip"
+
+[tool.pytest]
+ini_options.addopts = """
 --ruff --doctest-modules
 --log-cli-level=DEBUG
 --ignore=app_data
@@ -221,23 +272,27 @@ addopts = """
 --ignore=site/kcworks/services/search/index_templates
 --cov=kcworks --cov=invenio_stats_dashboard --cov=invenio_record_importer_kcworks --cov-report=term-missing
 """
-norecursedirs = [
+ini_options.norecursedirs = [
   "site/kcworks/services/search/index_templates/records/os-v2",
   "site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/patches",
+  "site/kcworks/**/os-v1",
 ]
-log_cli_level = "DEBUG"
-isort_show_files = true
-plugins = [
+ini_options.log_cli_level = "DEBUG"
+ini_options.isort_show_files = true
+ini_options.plugins = [
+  "tests.fixtures.caching",
+  "tests.fixtures.cli",
   "tests.fixtures.communities",
   "tests.fixtures.custom_fields",
   "tests.fixtures.identifiers",
+  "tests.fixtures.idms",
   "tests.fixtures.mail",
   "tests.fixtures.metadata_fields",
   "tests.fixtures.records",
   "tests.fixtures.roles",
-  "tests.fixtures.saml",
   "tests.fixtures.search_provisioning",
   "tests.fixtures.stats",
+  "tests.fixtures.uow",
   "tests.fixtures.users",
   "tests.fixtures.vocabularies.affiliations",
   "tests.fixtures.vocabularies.community_types",
@@ -253,8 +308,8 @@ plugins = [
   "tests.pytest_plugins.pytest_live_status",
 ]
 
-[tool.coverage.run]
-omit = [
+[tool.coverage]
+run.omit = [
   "site/kcworks/dependencies/invenio-communities/*",
   "site/kcworks/dependencies/invenio-group-collections-kcworks/*",
   "site/kcworks/dependencies/invenio-modular-deposit-form/*",
@@ -266,67 +321,19 @@ omit = [
   "site/kcworks/dependencies/invenio-remote-user-data-kcworks/*",
   "site/kcworks/dependencies/invenio-requests/*",
   "site/kcworks/dependencies/invenio-vocabularies/*",
-  "site/kcworks/views/task_results/*",
   "site/kcworks/services/search/index_templates/*",
+  "site/kcworks/views/task_results/*",
 ]
 
-[tool.mypy]
-python_version = "3.12"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-check_untyped_defs = true
-disallow_untyped_decorators = false
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = false
-warn_no_return = false
-ignore_missing_imports = true
-follow_imports = "skip"
-allow_untyped_globals = true
-exclude = [
-  '^tests/',
-  '^site/kcworks/dependencies/',
-  '^site/kcworks/services/search/index_templates/',
-]
-
-[[tool.mypy.overrides]]
-module = "kcworks.services.search.index_templates.*"
-ignore_errors = true
-ignore_missing_imports = true
-follow_imports = "skip"
-
-[tool.uv.sources]
-kcworks = { path = "./site", editable = true }
-invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
-invenio-group-collections-kcworks = { path = "./site/kcworks/dependencies/invenio-group-collections-kcworks", editable = true }
-invenio-modular-deposit-form = { path = "./site/kcworks/dependencies/invenio-modular-deposit-form", editable = true }
-invenio-modular-detail-page = { path = "./site/kcworks/dependencies/invenio-modular-detail-page", editable = true }
-invenio-rdm-records = { path = "./site/kcworks/dependencies/invenio-rdm-records", editable = true }
-invenio-records-resources = { path = "./site/kcworks/dependencies/invenio-records-resources", editable = true }
-invenio-remote-api-provisioner = { path = "./site/kcworks/dependencies/invenio-remote-api-provisioner", editable = true }
-invenio-record-importer-kcworks = { path = "./site/kcworks/dependencies/invenio-record-importer-kcworks", editable = true }
-invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
-invenio-requests = { path = "./site/kcworks/dependencies/invenio-requests", editable = true }
-invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
-invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
-
-[tool.babel.compile_catalog]
-directory = "translations/"
-use-fuzzy = true
-
-[tool.babel.extract_messages]
-copyright_holder = "Mesh Research"
-msgid_bugs_address = "scottia4@msu.edu"
-mapping-file = "translations/babel.ini"
-output-file = "translations/messages.pot"
-add-comments = "NOTE"
-
-[tool.babel.init_catalog]
-input-file = "translations/messages.pot"
-output-dir = "translations/"
-
-[tool.babel.update_catalog]
-input-file = "translations/messages.pot"
-output-dir = "translations/"
+[tool.babel]
+compile_catalog.directory = "translations/"
+compile_catalog.use-fuzzy = true
+extract_messages.copyright_holder = "Mesh Research"
+extract_messages.msgid_bugs_address = "scottia4@msu.edu"
+extract_messages.mapping-file = "translations/babel.ini"
+extract_messages.output-file = "translations/messages.pot"
+extract_messages.add-comments = "NOTE"
+init_catalog.input-file = "translations/messages.pot"
+init_catalog.output-dir = "translations/"
+update_catalog.input-file = "translations/messages.pot"
+update_catalog.output-dir = "translations/"

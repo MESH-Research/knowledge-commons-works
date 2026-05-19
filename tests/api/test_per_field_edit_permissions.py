@@ -222,13 +222,13 @@ class BasePerFieldPermissionsTest(abc.ABC):
     ) -> None:
         """Test the update_draft method of PerFieldEditPermissionsComponent."""
         # Create a user and get their identity
-        u = user_factory(saml_id="")
+        u = user_factory(oauth_id=None)
         app = running_app.app
         user_id = u.user.id
         identity = get_authenticated_identity(u.user)
 
         # Create a second user to own the community
-        u2 = user_factory(email="test2@example.com", saml_id="")
+        u2 = user_factory(email="test2@example.com", oauth_id="")
         user_id2 = u2.user.id
         identity2 = get_identity(u2.user)
 
@@ -259,72 +259,70 @@ class BasePerFieldPermissionsTest(abc.ABC):
         # Create a draft record using the current_rdm_records_service
         # and publish it to the community
         draft_data = record_metadata(owner_id=user_id)
-        draft_data.update_metadata(
-            {
-                "metadata|funding": [
-                    {
-                        "funder": {
-                            "id": "00k4n6c31",
-                        },
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755021",
-                                    "scheme": "url",
-                                }
-                            ],
-                            "number": "755021",
-                            "title": {"en": "Award 755021"},
-                        },
+        draft_data.update_metadata({
+            "metadata|funding": [
+                {
+                    "funder": {
+                        "id": "00k4n6c31",
                     },
-                    {
-                        "funder": {
-                            "id": "00k4n6c32",
-                        },
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755022",
-                                    "scheme": "url",
-                                }
-                            ],
-                            "number": "755022",
-                            "title": {"en": "Award 755022"},
-                        },
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755021",
+                                "scheme": "url",
+                            }
+                        ],
+                        "number": "755021",
+                        "title": {"en": "Award 755021"},
                     },
-                    {
-                        "funder": {
-                            "id": "00k4n6c33",
-                        },
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755023",
-                                    "scheme": "url",
-                                }
-                            ],
-                            "number": "755023",
-                            "title": {"en": "Award 755023"},
-                        },
+                },
+                {
+                    "funder": {
+                        "id": "00k4n6c32",
                     },
-                    {
-                        "funder": {
-                            "id": "00k4n6c34",
-                        },
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755024",
-                                    "scheme": "url",
-                                }
-                            ],
-                            "number": "755024",
-                            "title": {"en": "Award 755024"},
-                        },
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755022",
+                                "scheme": "url",
+                            }
+                        ],
+                        "number": "755022",
+                        "title": {"en": "Award 755022"},
                     },
-                ]
-            }
-        )
+                },
+                {
+                    "funder": {
+                        "id": "00k4n6c33",
+                    },
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755023",
+                                "scheme": "url",
+                            }
+                        ],
+                        "number": "755023",
+                        "title": {"en": "Award 755023"},
+                    },
+                },
+                {
+                    "funder": {
+                        "id": "00k4n6c34",
+                    },
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755024",
+                                "scheme": "url",
+                            }
+                        ],
+                        "number": "755024",
+                        "title": {"en": "Award 755024"},
+                    },
+                },
+            ]
+        })
         draft = current_rdm_records_service.create(identity, draft_data.metadata_in)
 
         if self.record_is_published:
@@ -742,60 +740,58 @@ def test_per_field_permissions_find_changed_restricted_fields(
     }
 
     # Create a mock record with some data
-    record = RDMDraft.create(
-        {
-            "access": {"files": "restricted"},
-            "metadata": {
-                "title": "Original Title",
-                "description": "Original Description",
-                "creators": [
-                    {"person_or_org": {"name": "Original Creator"}},
-                    {"person_or_org": {"name": "Original Creator 2"}},
-                ],
-                "additional_titles": [
-                    {"title": "Original Additional Title"},
-                    {"title": "Original Additional Title 2"},
-                ],
-                "publication_date": "2023-01-01",  # Unrestricted field
-                "funding": [
-                    {
-                        "funder": {"id": "00k4n6c33"},
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755023",
-                                    "scheme": "url",
-                                },
-                            ]
-                        },
+    record = RDMDraft.create({
+        "access": {"files": "restricted"},
+        "metadata": {
+            "title": "Original Title",
+            "description": "Original Description",
+            "creators": [
+                {"person_or_org": {"name": "Original Creator"}},
+                {"person_or_org": {"name": "Original Creator 2"}},
+            ],
+            "additional_titles": [
+                {"title": "Original Additional Title"},
+                {"title": "Original Additional Title 2"},
+            ],
+            "publication_date": "2023-01-01",  # Unrestricted field
+            "funding": [
+                {
+                    "funder": {"id": "00k4n6c33"},
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755023",
+                                "scheme": "url",
+                            },
+                        ]
                     },
-                    {
-                        "funder": {"id": "00k4n6c34"},
-                        "award": {
-                            "identifiers": [
-                                {
-                                    "identifier": "https://sandbox.kcworks.org/755024",
-                                    "scheme": "url",
-                                },
-                            ]
-                        },
+                },
+                {
+                    "funder": {"id": "00k4n6c34"},
+                    "award": {
+                        "identifiers": [
+                            {
+                                "identifier": "https://sandbox.kcworks.org/755024",
+                                "scheme": "url",
+                            },
+                        ]
                     },
-                ],
-            },
-            "custom_fields": {
-                "test_field": {
-                    "id": "test_field",
-                    "value": "Original Value",
                 },
-                "test_field2": {
-                    "items": [
-                        {"value": "Original Value"},
-                        {"value": "Original Value 2"},
-                    ]
-                },
+            ],
+        },
+        "custom_fields": {
+            "test_field": {
+                "id": "test_field",
+                "value": "Original Value",
             },
-        }
-    )
+            "test_field2": {
+                "items": [
+                    {"value": "Original Value"},
+                    {"value": "Original Value 2"},
+                ]
+            },
+        },
+    })
 
     # New data with changes
     new_data = {
@@ -949,7 +945,7 @@ class TestCollectionRemoveRestricted:
             "test-community": self.permissions_config
         }
         community = minimal_community_factory(slug="test-community")
-        u = user_factory(email="test@example.com", saml_id="")
+        u = user_factory(email="test@example.com", oauth_id="")
         identity = get_authenticated_identity(u.user)
 
         if self.user_community_role:
@@ -1057,7 +1053,7 @@ class TestCollectionChangeDefaultRestricted:
         client: FlaskClient,
     ) -> None:
         """Community is not changed from the default if the field is restricted."""
-        u = user_factory(email="test2@example.com", saml_id="")
+        u = user_factory(email="test2@example.com", oauth_id="")
         identity = get_authenticated_identity(u.user)
 
         community = minimal_community_factory(slug="test-community")
@@ -1151,7 +1147,7 @@ def test_community_change_permissions_check_default_permission(
 ) -> None:
     """Test the _check_default_community_permission method."""
     # Create a user and get their identity
-    u = user_factory(email="test@example.com", saml_id="")
+    u = user_factory(email="test@example.com", oauth_id="")
     identity = get_authenticated_identity(u.user)
 
     # Create a community

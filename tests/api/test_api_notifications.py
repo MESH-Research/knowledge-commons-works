@@ -74,8 +74,9 @@ def test_notify_for_request_acceptance(
         password="test",
         token=True,
         admin=True,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="user1",
         new_remote_data={"name": "Test User"},
     )
     user = u.user
@@ -286,8 +287,9 @@ def test_notify_for_request_decline(
         password="test",
         token=True,
         admin=True,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="user1",
         new_remote_data={"name": "Test User"},
     )
     user = u.user
@@ -486,8 +488,9 @@ def test_notify_for_request_cancellation(
         password="test",
         token=True,
         admin=True,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="user1",
         new_remote_data={"name": "Test User"},
     )
     user = u.user
@@ -665,8 +668,9 @@ def test_notify_for_new_request_comment(
         password="test",
         token=True,
         admin=True,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="user1",
         new_remote_data={"name": "Test User"},
     )
     user = u.user
@@ -856,8 +860,9 @@ def test_read_unread_notifications_by_service(
         password="test",
         token=False,
         admin=False,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="user1",
         new_remote_data={"name": "Test User"},
     )
     user = u.user
@@ -932,8 +937,9 @@ def test_clear_unread_notifications_by_service(
         password="test",
         token=False,
         admin=False,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="user1",
         new_remote_data={"name": "Test User"},
     )
     user = u.user
@@ -1032,6 +1038,7 @@ def test_read_unread_notifications_by_view(
     headers,
     admin,
     search_clear,
+    mock_logout_signal_receiver,
 ):
     """Test that the user's unread notifications are read by the view."""
     app = running_app.app
@@ -1042,11 +1049,14 @@ def test_read_unread_notifications_by_view(
         password="test",
         token=False,
         admin=False,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="user1",
         new_remote_data={"name": "Test User"},
     )
     user = u.user
+
+    mock_logout_signal_receiver(u.user.username)
 
     # add some unread notifications to the user
     user.user_profile = {
@@ -1126,6 +1136,7 @@ def test_clear_unread_notifications_by_view(
     admin,
     mailbox,
     enable_mail_sending,
+    mock_logout_signal_receiver,
 ):
     """Test that the user's unread notifications are cleared by the view."""
     app = running_app.app
@@ -1137,11 +1148,14 @@ def test_clear_unread_notifications_by_view(
         password="test",
         token=False,
         admin=False,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="user1",
         new_remote_data={"name": "Test User"},
     )
     user = u.user
+
+    mock_logout_signal_receiver(u.user.username)
 
     # add some unread notifications
     user.user_profile = {
@@ -1238,8 +1252,9 @@ def test_clear_one_unread_notification_by_view(
         password="test",
         token=False,
         admin=False,
-        saml_src="knowledgeCommons",
-        saml_id="user1",
+        oauth_src="cilogon",
+        oauth_id="1",
+        kc_username="user1",
         new_remote_data={"name": "Test User"},
     )
     user = u.user
@@ -1409,8 +1424,8 @@ def test_notification_on_first_upload(
         password="test",
         admin=False,
         token=True,
-        saml_src=None,
-        saml_id=None,
+        oauth_src=None,
+        oauth_id=None,
     )
     user = u.user
     username = user.username
@@ -1423,8 +1438,8 @@ def test_notification_on_first_upload(
         email="admin@example.com",
         password="admin",
         admin=True,
-        saml_src=None,
-        saml_id=None,
+        oauth_src=None,
+        oauth_id=None,
     )
     # admin_id = admin.user.id
     admin_role = current_accounts.datastore.find_or_create_role(name="admin-moderator")

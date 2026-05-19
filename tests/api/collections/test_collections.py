@@ -38,7 +38,7 @@ def test_collection_submission_by_owner_open(
     """
     app = running_app.app
 
-    collection_admin = user_factory(token=True)
+    collection_admin = user_factory(token=True, oauth_id=None)
     token = collection_admin.allowed_token
     admin_user = collection_admin.user
     admin_id = admin_user.id
@@ -63,14 +63,12 @@ def test_collection_submission_by_owner_open(
         create_review_response = client.put(
             f"{app.config['SITE_API_URL']}/records/{draft['id']}/draft/review",
             headers={**headers, "Authorization": f"Bearer {token}"},
-            data=json.dumps(
-                {
-                    "receiver": {
-                        "community": collection_meta["id"],
-                    },
-                    "type": "community-submission",
-                }
-            ),
+            data=json.dumps({
+                "receiver": {
+                    "community": collection_meta["id"],
+                },
+                "type": "community-submission",
+            }),
         )
 
         assert create_review_response.status_code == 200
@@ -131,14 +129,12 @@ def test_collection_submission_by_owner_open(
             f"{app.config['SITE_API_URL']}/records/{draft['id']}/draft/"
             "actions/submit-review",
             headers={**headers, "Authorization": f"Bearer {token}"},
-            data=json.dumps(
-                {
-                    "payload": {
-                        "content": "Thank you in advance for the review",
-                        "format": "html",
-                    }
+            data=json.dumps({
+                "payload": {
+                    "content": "Thank you in advance for the review",
+                    "format": "html",
                 }
-            ),
+            }),
         )
         assert submit_response.status_code == 202
 
@@ -173,12 +169,12 @@ def test_collection_submission_by_curator_closed(
     confirm that the record is published.
     """
     app = running_app.app
-    u = user_factory(email="test@example.com", token=True, saml_id=None)
+    u = user_factory(email="test@example.com", token=True, oauth_id=None)
     token = u.allowed_token
     identity = get_identity(u.user)
     identity.provides.add(authenticated_user)
 
-    admin_u = user_factory(email="admin@example.com", token=True, saml_id=None)
+    admin_u = user_factory(email="admin@example.com", token=True, oauth_id=None)
     admin_token = admin_u.allowed_token
     admin_identity = get_identity(admin_u.user)
     admin_identity.provides.add(authenticated_user)
@@ -196,12 +192,10 @@ def test_collection_submission_by_curator_closed(
         review_response = client.put(
             f"{app.config['SITE_API_URL']}/records/{draft['id']}/draft/review",
             headers={**headers, "Authorization": f"Bearer {token}"},
-            data=json.dumps(
-                {
-                    "receiver": {"community": collection_meta["id"]},
-                    "type": "community-submission",
-                }
-            ),
+            data=json.dumps({
+                "receiver": {"community": collection_meta["id"]},
+                "type": "community-submission",
+            }),
         )
         assert review_response.status_code == 200
         review_id = review_response.json["id"]

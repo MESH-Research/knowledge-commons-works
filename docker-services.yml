@@ -2,7 +2,6 @@
 # This should contain values for:
 # PGADMIN_DEFAULT_EMAIL
 # PGADMIN_DEFAULT_PASSWORD
-
 services:
   app:
     # build:
@@ -29,9 +28,9 @@ services:
       - "INVENIO_WSGI_PROXIES=2"
     env_file:
       - ./.env
-    # cpus: ${APP_CPUS:-2.0}  # Commented out to avoid GitHub build CPU limit issues (4-CPU environment)
+      # cpus: ${APP_CPUS:-2.0}  # Commented out to avoid GitHub build CPU limit issues (4-CPU environment)
   frontend:
-    container_name: kcworks-frontend:local
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-frontend:local
     build: ./docker/nginx_local/
     image: monotasker/kcworks-frontend:local
     restart: "unless-stopped"
@@ -41,14 +40,14 @@ services:
     env_file:
       - ./.env
   cache:
-    container_name: kcworks-cache
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-cache
     image: redis:7
     restart: "unless-stopped"
     read_only: true
     ports:
       - "6379:6379"
   db:
-    container_name: kcworks-db
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-db
     image: postgres:12.4
     restart: "unless-stopped"
     ports:
@@ -60,7 +59,7 @@ services:
     env_file:
       - ./.env
   pgadmin:
-    container_name: kcworks-pgadmin
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-pgadmin
     image: dpage/pgadmin4:6
     restart: "unless-stopped"
     ports:
@@ -73,14 +72,14 @@ services:
     volumes:
       - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
   mq:
-    container_name: kcworks-mq
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-mq
     image: rabbitmq:3-management
     restart: "unless-stopped"
     ports:
       - "15672:15672"
       - "5672:5672"
   search:
-    container_name: kcworks-search
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-search
     image: opensearchproject/opensearch:2.3.0
     restart: "unless-stopped"
     environment:
@@ -115,7 +114,7 @@ services:
       - "9200:9200"
       - "9600:9600"
   opensearch-dashboards:
-    container_name: kcworks-opensearch-dashboards
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-opensearch-dashboards
     image: opensearchproject/opensearch-dashboards:2.3.0
     ports:
       - "5601:5601"

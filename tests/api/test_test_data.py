@@ -145,8 +145,8 @@ def test_import_test_records(
             submitter = user_factory(
                 email="test@example.com",
                 password="test",
-                saml_src="",
-                saml_id="",
+                oauth_src="",
+                oauth_id="",
             )
             identity = get_identity(submitter.user)
             identity.provides.add(authenticated_user)

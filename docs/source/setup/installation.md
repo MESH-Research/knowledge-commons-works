@@ -11,7 +11,13 @@ From there, installation involves these steps. Each one is further explained bel
 ### 1. Clone the git repository
 
 - From your command line, navigate to the parent folder where you want the cloned repository code to live
-- Clone the knowledge-commons-works repository with `git clone git@github.com:MESH-Research/knowledge-commons-works.git && git submodule update --init`
+- Clone the knowledge-commons-works repository with
+
+```shell
+git clone git@github.com:MESH-Research/knowledge-commons-works.git
+cd knowledge-commons-works
+git submodule update --init
+```
 
 ```{note}
 Do not use the `--recurse-submodules` option when cloning the repository or the `--recursive` option when initializing the submodules. This will clone redundant copies of the inter-dependent submodules.
@@ -64,6 +70,16 @@ invenio access allow administration-access user <email>
 invenio access allow administration-moderation user <email>
 invenio roles add <email> administration
 invenio roles add <email> administration-moderation
+```
+
+- assign an admin user to receive moderation notices:
+
+```shell
+invenio roles add <email> admin-moderator
+```
+
+```{note}
+The "admin-moderator" role (distinct from "administration-moderation") designates the one user who should receive email notices of first-time uploads and publications by new KCWorks users. This role may be assigned to a different user later on, but it should only be held by one user.
 ```
 
 ### 6. View the application
@@ -128,6 +144,31 @@ DYLD_LIBRARY_PATH="/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_LIBRARY_P
 DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_FALLBACK_LIBRARY_PATH"
 ```
 
+## Running multiple KCWorks instances on the same machine
+
+It is perfectly feasible to run multiple KCWorks instances on the same machine. The only change necessary in this case is to edit the docker-compose.yml and docker-services.yml files to change the _container_ names (NOT the _service_ names) so that the additional instances each uses its own set of unique containers. For example, we can make the following changes:
+
+"kcworks-frontend" --> "kcworks-next-frontend"
+"kcworks-ui" --> "kcworks-next-ui"
+"kcworks-api" --> "kcworks-next-api"
+"kcworks-worker" --> "kcworks-next-api"
+
+```{caution}
+Do not run multiple KCWorks instances on the same computer at the *same time*. This will produce conflicts in docker compose orchestration.
+```
+
+```{caution}
+Do not modify the names of the services, like "web-ui", "web-api", and "web-worker". These can remain the same since only one instance's containers will be running at a time.
+```
+
+You will also need to ensure that the following environment variables point to the correct KCWorks instance folder for each instance:
+
+PYTHON_LOCAL_SITE_PACKAGES_PATH
+INVENIO_LOCAL_DEPENDENCIES_PATH
+INVENIO_LOCAL_SITE_PATH
+INVENIO_LOCAL_INSTANCE_PATH
+INVENIO_INSTANCE_PATH
+
 ## Controlling the KCWorks (Flask) application
 
 The application instance and its services can be started and stopped by starting and stopping the docker-compose project:
@@ -167,6 +208,9 @@ The `.env` file is used to configure the Knowledge Commons Works application. It
 These are the minimal variables that you need to set in your `.env` file to get the application running. For local development you should use the default values for all variables except the ones with comments:
 
 ```shell
+# Optional: base name for Docker container names (default: kcworks). Set to e.g. kcworks-next when
+# running a second instance on the same host to avoid container name conflicts.
+# KCWORKS_CONTAINERS_BASE_NAME=kcworks
 FLASK_DEBUG=1
 INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
 INVENIO_LOGGING_CONSOLE=True
@@ -200,6 +244,16 @@ INVENIO_LOCAL_INSTANCE_PATH=/opt/invenio/var/instance
 ```{note}
 Don't forget to change the `PASSWORDHERE` values to the actual passwords you use for your admin user and pgAdmin. This includes replacing `PASSWORDHERE` in the `INVENIO_SQLALCHEMY_DATABASE_URI` variable.
 ```
+
+#### Running a second instance on the same machine
+
+If you run another copy of KCWorks on the same host (e.g. a second clone for a different branch), set a unique base name in that copy's `.env` so Docker container names do not clash:
+
+```shell
+KCWORKS_CONTAINERS_BASE_NAME=kcworks-next
+```
+
+Use any distinct value (e.g. `kcworks-next`, `kcworks-dev2`). Container names will become `kcworks-next-ui`, `kcworks-next-db`, and so on. If both instances need to run at once, you must also avoid port conflicts: use a separate Compose project (e.g. `docker-compose -p kcworks-next --file docker-compose.yml up -d`) and/or override published ports (e.g. in a `docker-compose.override.yml` or env) for the second instance.
 
 #### Generating random secrets
 

@@ -24,14 +24,16 @@ def csv_file_with_org_memberships(user_factory, minimal_community_factory, tmp_p
     # Create users with KC usernames
     user1 = user_factory(
         email="user1@example.com",
-        saml_src="knowledgeCommons",
-        saml_id="testuser1",
+        oauth_src="cilogon",
+        oauth_id="id1",
+        kc_username="testuser1",
     )
     user1_id = user1.user.id
     user2 = user_factory(
         email="user2@example.com",
-        saml_src="knowledgeCommons",
-        saml_id="testuser2",
+        oauth_src="cilogon",
+        oauth_id="id2",
+        kc_username="testuser2",
     )
     user2_id = user2.user.id
 
@@ -44,6 +46,8 @@ def csv_file_with_org_memberships(user_factory, minimal_community_factory, tmp_p
         slug="org2",
         metadata={"title": "Organization 2"},
     )
+
+    _ = org1.id  # NOTE: access to cache id on object (detached session in test func)
 
     # Index users so their identities are included in the search index
     reindex_users([user1.user.id, user2.user.id])
@@ -93,6 +97,7 @@ def published_record_for_user(
 
 def test_include_org_member_records_basic(
     running_app,
+    app_config,
     db,
     search_clear,
     csv_file_with_org_memberships,
@@ -286,14 +291,19 @@ def test_include_org_member_records_record_already_in_community(
 def test_include_org_member_records_event_date_updated(
     running_app,
     db,
+    nested_unit_of_work,
     search_clear,
     csv_file_with_org_memberships,
     published_record_for_user,
     create_stats_indices,
     celery_worker,
     mock_search_api_request,
+    monkeypatch,
 ):
     """Test that community event event_date is set to record's created date."""
+    monkeypatch.setattr(
+        "invenio_records_resources.services.uow.UnitOfWork", nested_unit_of_work
+    )
     setup = csv_file_with_org_memberships
     user1_id = setup["users"]["user1"]
     org1 = setup["orgs"]["org1"]
@@ -379,17 +389,24 @@ def test_include_org_member_records_event_date_updated(
 def test_include_org_member_records_notifications_suppressed(
     running_app,
     db,
+    nested_unit_of_work,
     search_clear,
     csv_file_with_org_memberships,
     published_record_for_user,
     celery_worker,
     mock_search_api_request,
+    monkeypatch,
 ):
     """Test that notifications are suppressed when adding records to communities."""
     from invenio_notifications.services.uow import NotificationOp
 
     from invenio_record_importer_kcworks.services.communities import (
         CommunitiesHelper,
+    )
+
+    monkeypatch.setattr(
+        "invenio_records_resources.services.uow.UnitOfWork",
+        nested_unit_of_work,
     )
 
     setup = csv_file_with_org_memberships
