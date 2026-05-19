@@ -7,7 +7,7 @@
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Installation - Knowledge Commons Works 0.7.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=acfd86a5" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -222,6 +222,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
 </ul>
 </li>
@@ -467,7 +468,10 @@ INVENIO_INSTANCE_PATH</p>
 <h3>Configuring your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file<a class="headerlink" href="#configuring-your-env-file" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">.env</span></code> file is used to configure the Knowledge Commons Works application. It is a standard python environment file that is used to set the environment variables for the application.</p>
 <p>These are the minimal variables that you need to set in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file to get the application running. For local development you should use the default values for all variables except the ones with comments:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">FLASK_DEBUG</span><span class="o">=</span><span class="m">1</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Optional: base name for Docker container names (default: kcworks). Set to e.g. kcworks-next when</span>
+<span class="c1"># running a second instance on the same host to avoid container name conflicts.</span>
+<span class="c1"># KCWORKS_CONTAINERS_BASE_NAME=kcworks</span>
+<span class="nv">FLASK_DEBUG</span><span class="o">=</span><span class="m">1</span>
 <span class="nv">INVENIO_INSTANCE_PATH</span><span class="o">=</span>/opt/invenio/var/instance
 <span class="nv">INVENIO_LOGGING_CONSOLE</span><span class="o">=</span>True
 <span class="nv">INVENIO_LOGGING_CONSOLE_LEVEL</span><span class="o">=</span>DEBUG
@@ -501,6 +505,14 @@ INVENIO_INSTANCE_PATH</p>
 <p class="admonition-title">Note</p>
 <p>Don’t forget to change the <code class="docutils literal notranslate"><span class="pre">PASSWORDHERE</span></code> values to the actual passwords you use for your admin user and pgAdmin. This includes replacing <code class="docutils literal notranslate"><span class="pre">PASSWORDHERE</span></code> in the <code class="docutils literal notranslate"><span class="pre">INVENIO_SQLALCHEMY_DATABASE_URI</span></code> variable.</p>
 </div>
+<section id="running-a-second-instance-on-the-same-machine">
+<h4>Running a second instance on the same machine<a class="headerlink" href="#running-a-second-instance-on-the-same-machine" title="Link to this heading">¶</a></h4>
+<p>If you run another copy of KCWorks on the same host (e.g. a second clone for a different branch), set a unique base name in that copy’s <code class="docutils literal notranslate"><span class="pre">.env</span></code> so Docker container names do not clash:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">KCWORKS_CONTAINERS_BASE_NAME</span><span class="o">=</span>kcworks-next
+</pre></div>
+</div>
+<p>Use any distinct value (e.g. <code class="docutils literal notranslate"><span class="pre">kcworks-next</span></code>, <code class="docutils literal notranslate"><span class="pre">kcworks-dev2</span></code>). Container names will become <code class="docutils literal notranslate"><span class="pre">kcworks-next-ui</span></code>, <code class="docutils literal notranslate"><span class="pre">kcworks-next-db</span></code>, and so on. If both instances need to run at once, you must also avoid port conflicts: use a separate Compose project (e.g. <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">-p</span> <span class="pre">kcworks-next</span> <span class="pre">--file</span> <span class="pre">docker-compose.yml</span> <span class="pre">up</span> <span class="pre">-d</span></code>) and/or override published ports (e.g. in a <code class="docutils literal notranslate"><span class="pre">docker-compose.override.yml</span></code> or env) for the second instance.</p>
+</section>
 <section id="generating-random-secrets">
 <h4>Generating random secrets<a class="headerlink" href="#generating-random-secrets" title="Link to this heading">¶</a></h4>
 <p>Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal by running</p>
@@ -610,6 +622,7 @@ INVENIO_INSTANCE_PATH</p>
 <li><a class="reference internal" href="#controlling-the-kcworks-flask-application">Controlling the KCWorks (Flask) application</a></li>
 <li><a class="reference internal" href="#setting-up-configuration-files">Setting up configuration files</a><ul>
 <li><a class="reference internal" href="#configuring-your-env-file">Configuring your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</a><ul>
+<li><a class="reference internal" href="#running-a-second-instance-on-the-same-machine">Running a second instance on the same machine</a></li>
 <li><a class="reference internal" href="#generating-random-secrets">Generating random secrets</a></li>
 <li><a class="reference internal" href="#generating-an-api-token">Generating an API token</a></li>
 </ul>

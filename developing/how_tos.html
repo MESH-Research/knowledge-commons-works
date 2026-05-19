@@ -7,7 +7,7 @@
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>How Tos - Knowledge Commons Works 0.7.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=acfd86a5" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -222,6 +222,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
 </ul>
 </li>
@@ -386,7 +387,7 @@
 </section>
 <section id="creating-user">
 <h4>creating user<a class="headerlink" href="#creating-user" title="Link to this heading">¶</a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts</span> <span class="kn">import</span> <span class="n">current_accounts</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_accounts</span>
 <span class="n">new_user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">)</span>
 </pre></div>
 </div>
@@ -400,21 +401,21 @@
 </section>
 <section id="accessing-user-by-id">
 <h4>accessing user by id<a class="headerlink" href="#accessing-user-by-id" title="Link to this heading">¶</a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts</span> <span class="kn">import</span> <span class="n">current_accounts</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_accounts</span>
 <span class="n">user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">identity</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="accessing-user-by-email">
 <h4>accessing user by email<a class="headerlink" href="#accessing-user-by-email" title="Link to this heading">¶</a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts</span> <span class="kn">import</span> <span class="n">current_accounts</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_accounts</span>
 <span class="n">user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">get_user_by_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="accessing-user-based-on-external-auth-info">
 <h4>accessing user based on external auth info<a class="headerlink" href="#accessing-user-based-on-external-auth-info" title="Link to this heading">¶</a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts.models</span> <span class="kn">import</span> <span class="n">UserIdentity</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdentity</span>
 <span class="c1"># OR from invenio_oauthclient.models import UserIdentity</span>
 <span class="n">user</span> <span class="o">=</span> <span class="n">UserIdentity</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">external_id</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">],</span> <span class="n">external_id</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
 </pre></div>
@@ -423,9 +424,9 @@
 <section id="accessing-current-user">
 <h4>accessing current user<a class="headerlink" href="#accessing-current-user" title="Link to this heading">¶</a></h4>
 <p>Programmatically, the current user can be accessed via the <code class="docutils literal notranslate"><span class="pre">current_user</span></code> object.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_security</span> <span class="kn">import</span> <span class="n">current_user</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_security</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_user</span>
 <span class="c1"># OR</span>
-<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask_login</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_user</span>
 </pre></div>
 </div>
 <p>In jinja templates, the current user can be accessed via the <code class="docutils literal notranslate"><span class="pre">current_user</span></code> object
@@ -439,7 +440,7 @@ which is available in the template environment.</p>
 <h4>accessing current user profile<a class="headerlink" href="#accessing-current-user-profile" title="Link to this heading">¶</a></h4>
 <p>If you need to access the current user’s profile information, that is not available via the <code class="docutils literal notranslate"><span class="pre">current_user</span></code>
 object. You can do so via the <code class="docutils literal notranslate"><span class="pre">current_userprofile</span></code> object.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_userprofiles.api</span> <span class="kn">import</span> <span class="n">current_userprofile</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_userprofiles.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_userprofile</span>
 <span class="n">my_user_name</span> <span class="o">=</span> <span class="n">current_userprofile</span><span class="o">.</span><span class="n">full_name</span>
 <span class="n">my_user_affiliations</span> <span class="o">=</span> <span class="n">current_userprofile</span><span class="o">.</span><span class="n">affiliations</span>
 </pre></div>
@@ -455,12 +456,12 @@ which is available in the template environment.</p>
 <h4>accessing a user’s external authentication methods<a class="headerlink" href="#accessing-a-user-s-external-authentication-methods" title="Link to this heading">¶</a></h4>
 <p>If you need to access a user’s external authentication methods, you can look up the user’s UserIdentity objects
 which represent the correlation of user ids with external auth sources and identifiers from the <code class="docutils literal notranslate"><span class="pre">accounts_useridentity</span></code> db table.  The <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object is defined in <code class="docutils literal notranslate"><span class="pre">invenio_accounts</span></code> as model, but also defined in <code class="docutils literal notranslate"><span class="pre">invenio_oauthclient.models</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_access.utils</span> <span class="kn">import</span> <span class="n">get_identity</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_access.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_identity</span>
 <span class="n">my_identity</span> <span class="o">=</span> <span class="n">get_identity</span><span class="p">(</span><span class="n">myuser</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can also access the <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object by using the class’s query method:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts.models</span> <span class="kn">import</span> <span class="n">UserIdentity</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdentity</span>
 <span class="n">my_user_identity</span> <span class="o">=</span> <span class="n">UserIdentity</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span>
     <span class="n">id_user</span><span class="o">=</span><span class="n">identity</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
     <span class="n">method</span><span class="o">=</span><span class="s2">&quot;myIDP&quot;</span><span class="p">,</span>
@@ -478,7 +479,7 @@ which represent the correlation of user ids with external auth sources and ident
 <section id="link-a-user-with-an-external-auth-method">
 <h4>link a user with an external auth method<a class="headerlink" href="#link-a-user-with-an-external-auth-method" title="Link to this heading">¶</a></h4>
 <p>This can be done directly via the <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_accounts.models</span> <span class="kn">import</span> <span class="n">UserIdentity</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdentity</span>
 <span class="c1"># OR from invenio_oauthclient.models import UserIdentity</span>
 <span class="n">UserIdentity</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">myuser</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">idp</span> <span class="n">label</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="nb">id</span> <span class="n">on</span> <span class="n">idp</span><span class="o">&gt;</span><span class="p">)</span>
 </pre></div>
@@ -515,7 +516,7 @@ which represent the correlation of user ids with external auth sources and ident
 <section id="reading-deposit-records-rdmrecordservice">
 <h2>Reading Deposit Records (RDMRecordService)<a class="headerlink" href="#reading-deposit-records-rdmrecordservice" title="Link to this heading">¶</a></h2>
 <p>Note that, unlike most record service retrieval methods, the <code class="docutils literal notranslate"><span class="pre">read</span></code> method does not use the search index. It retrieves the record from the database directly with a SQLAlchemy query. This means, though, that it will not always include the latest data from the search index, and that updated information present in a <code class="docutils literal notranslate"><span class="pre">read</span></code> result may not yet be present in the search index.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records_service</span>
 
 <span class="n">one_record</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
 <span class="n">all_records</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
@@ -540,14 +541,14 @@ which represent the correlation of user ids with external auth sources and ident
 </section>
 <section id="create-a-draft-of-a-new-record">
 <h3>Create a draft of a new record<a class="headerlink" href="#create-a-draft-of-a-new-record" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records_service</span>
 <span class="n">draft</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="hard-delete-a-draft">
 <h3>Hard delete a draft<a class="headerlink" href="#hard-delete-a-draft" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records_service</span>
 
 <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">delete_draft</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span>
 </pre></div>
@@ -556,7 +557,7 @@ which represent the correlation of user ids with external auth sources and ident
 </section>
 <section id="update-an-unpublished-draft">
 <h3>Update an unpublished draft<a class="headerlink" href="#update-an-unpublished-draft" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records_service</span>
 <span class="n">draft_data</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">read_draft</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="c1"># update the metadata...</span>
 <span class="n">edited_draft</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">update_draft</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
@@ -565,7 +566,7 @@ which represent the correlation of user ids with external auth sources and ident
 </section>
 <section id="update-a-published-record-via-a-new-draft">
 <h3>Update a published record via a new draft<a class="headerlink" href="#update-a-published-record-via-a-new-draft" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records_service</span>
 
 <span class="c1"># create a draft of the published record</span>
 <span class="n">draft_of_published</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">edit</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span>
@@ -578,7 +579,7 @@ which represent the correlation of user ids with external auth sources and ident
 </section>
 <section id="create-a-new-version-of-a-published-record">
 <h3>Create a new version of a published record<a class="headerlink" href="#create-a-new-version-of-a-published-record" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records_service</span>
 
 <span class="n">new_version_draft</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">new_version</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span>
 </pre></div>
@@ -588,7 +589,7 @@ which represent the correlation of user ids with external auth sources and ident
 </section>
 <section id="soft-delete-a-published-record">
 <h3>Soft-delete a published record<a class="headerlink" href="#soft-delete-a-published-record" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records_service</span>
 
 <span class="n">tombstone_info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;no specific reason, tbh&quot;</span><span class="p">}</span>
 <span class="n">deleted_record</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">delete_record</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
@@ -598,7 +599,7 @@ which represent the correlation of user ids with external auth sources and ident
 </section>
 <section id="restore-a-soft-deleted-record">
 <h3>Restore a soft-deleted record<a class="headerlink" href="#restore-a-soft-deleted-record" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records_service</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records_service</span>
 
 <span class="n">restored_record</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">restore_record</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 </pre></div>
@@ -608,13 +609,13 @@ which represent the correlation of user ids with external auth sources and ident
 <h3>Add a record to a community/collection<a class="headerlink" href="#add-a-record-to-a-community-collection" title="Link to this heading">¶</a></h3>
 <section id="using-helper-class">
 <h4>Using helper class<a class="headerlink" href="#using-helper-class" title="Link to this heading">¶</a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_record_importer_kcworks.services.communities</span> <span class="kn">import</span> <span class="n">CommunitiesHelper</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_record_importer_kcworks.services.communities</span><span class="w"> </span><span class="kn">import</span> <span class="n">CommunitiesHelper</span>
 
 <span class="n">CommunitiesHelper</span><span class="p">()</span><span class="o">.</span><span class="n">publish_record_to_community</span><span class="p">(</span><span class="n">draft</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">community</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>or in tests</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tests.fixtures.communities</span> <span class="kn">import</span> <span class="n">add_community_to_record</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tests.fixtures.communities</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_community_to_record</span>
 
 <span class="n">add_community_to_record</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">community_id</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -622,9 +623,9 @@ which represent the correlation of user ids with external auth sources and ident
 </section>
 <section id="using-service-layer">
 <h4>Using service layer<a class="headerlink" href="#using-service-layer" title="Link to this heading">¶</a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records</span>
-<span class="kn">from</span> <span class="nn">invenio_requests.proxies</span> <span class="kn">import</span> <span class="n">current_requests_service</span>
-<span class="kn">from</span> <span class="nn">invenio_access.permissions</span> <span class="kn">import</span> <span class="n">system_identity</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">invenio_requests.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_requests_service</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">invenio_access.permissions</span><span class="w"> </span><span class="kn">import</span> <span class="n">system_identity</span>
 
 <span class="n">record_communities</span> <span class="o">=</span> <span class="n">current_rdm_records</span><span class="o">.</span><span class="n">record_communities_service</span>
 
@@ -661,8 +662,8 @@ which represent the correlation of user ids with external auth sources and ident
 </section>
 <section id="using-lower-level-api">
 <h4>Using lower-level API<a class="headerlink" href="#using-lower-level-api" title="Link to this heading">¶</a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">invenio_rdm_records.proxies</span> <span class="kn">import</span> <span class="n">current_rdm_records</span>
-<span class="kn">from</span> <span class="nn">invenio_db</span> <span class="kn">import</span> <span class="n">db</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">invenio_db</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
 
 <span class="n">record</span> <span class="o">=</span> <span class="n">current_rdm_records</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="n">pid</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">)</span><span class="o">.</span><span class="n">_record</span>
 <span class="c1"># OR</span>

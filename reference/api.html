@@ -3,11 +3,11 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="CLI Commands" href="cli_commands.html"><link rel="prev" title="Metadata Schema, Vocabularies, and Identifiers" href="metadata.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Outgoing Signals" href="outgoing_signals.html"><link rel="prev" title="Metadata Schema, Vocabularies, and Identifiers" href="metadata.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>API - Knowledge Commons Works 0.7.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=acfd86a5" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -222,6 +222,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Reference</a><input aria-label="Toggle navigation of Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli_commands.html">CLI Commands</a></li>
 </ul>
 </li>
@@ -532,7 +533,7 @@
 <p>Why is this API needed? The InvenioRDM REST API can be fragile and difficult to use, particularly for clients who are not familiar with the system. The creation and acceptance of a review request is redundant where collection administrators are uploading works for a collection they administer. The file upload steps are also not truly stateless, introducing the possibility of a file upload being interrupted and left incomplete, even if the upload of the file’s content was successful.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>KCWorks provides a standalone Python script (<code class="docutils literal notranslate"><span class="pre">scripts/user_resources/kcworks_api_importer.py</span></code>) that simplifies using the import API. The script handles authentication, file uploads, and response formatting automatically. See <span class="xref std std-ref">the script documentation</span> below for details.</p>
+<p>KCWorks provides a standalone Python script (<a class="reference external" href="https://github.com/MESH-Research/knowledge-commons-works/tree/main/scripts/user_resources/kcworks_api_importer.py">scripts/user_resources/kcworks_api_importer.py</a>) that simplifies using the import API. The script handles authentication, file uploads, and response formatting automatically. See <span class="xref std std-ref">the script documentation</span> below for details.</p>
 </div>
 <section id="who-can-use-the-import-api">
 <h3>Who can use the import API?<a class="headerlink" href="#who-can-use-the-import-api" title="Link to this heading">¶</a></h3>
@@ -836,7 +837,7 @@ Authorization: Bearer &lt;your-api-key&gt;
 </section>
 <section id="using-the-kcworks-api-importer-script">
 <h3>Using the KCWorks API Importer Script<a class="headerlink" href="#using-the-kcworks-api-importer-script" title="Link to this heading">¶</a></h3>
-<p id="kcworks-api-importer-script">KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script (<code class="docutils literal notranslate"><span class="pre">scripts/user_resources/kcworks_api_importer.py</span></code>) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.</p>
+<p id="kcworks-api-importer-script">KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script (<a class="reference external" href="https://github.com/MESH-Research/knowledge-commons-works/tree/main/scripts/user_resources/kcworks_api_importer.py">scripts/user_resources/kcworks_api_importer.py</a>) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.</p>
 <section id="requirements">
 <h4>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h4>
 <p>The script requires Python 3.9 or later and the <code class="docutils literal notranslate"><span class="pre">requests</span></code> library. It can be run standalone from the KCWorks project directory or copied to any location where Python 3.9+ is available.</p>
@@ -2127,9 +2128,11 @@ automatically purged entirely from the database. There is also no API mechanism 
 </section>
 <section id="user-and-group-data-updates-internal-only">
 <h2>User and Group Data Updates (Internal Only)<a class="headerlink" href="#user-and-group-data-updates-internal-only" title="Link to this heading">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">works</span><span class="o">.</span><span class="n">hcommons</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">webhooks</span><span class="o">/</span><span class="n">user_data_update</span>
+<p><strong>Preferred endpoint:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">works</span><span class="o">.</span><span class="n">hcommons</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">webhooks</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">update</span>
 </pre></div>
 </div>
+<p><strong>Deprecated (still operational):</strong> <code class="docutils literal notranslate"><span class="pre">/api/webhooks/user_data_update</span></code></p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.</p>
@@ -2138,14 +2141,14 @@ automatically purged entirely from the database. There is also no API mechanism 
 <p class="admonition-title">Note</p>
 <p>This API was implemented with a distributed network of independent Commons instances in mind. Currently, only the Knowledge Commons instance exists and is supported as a SAML IDP by KCWorks.</p>
 </div>
-<p>The api endpoint <code class="docutils literal notranslate"><span class="pre">/api/webhooks/user_data_update</span></code> is provided for Knowledge Commons applications and instances to signal that user or group metadata has been changed. These endpoints do not receive the actual updated data. They only receive notices <em>that</em> the metadata for a user or group has changed. KCWorks will then query the Commons instance’s endpoint to retrieve current metadata for the user or group.</p>
+<p>The endpoint <code class="docutils literal notranslate"><span class="pre">/api/webhooks/users/update</span></code> (and the deprecated <code class="docutils literal notranslate"><span class="pre">/api/webhooks/user_data_update</span></code>) is provided for Knowledge Commons applications and instances to signal that user or group metadata has been changed. These endpoints do not receive the actual updated data. They only receive notices <em>that</em> the metadata for a user or group has changed. KCWorks will then query the Commons instance’s endpoint to retrieve current metadata for the user or group.</p>
 <section id="user-groups-metadata-updates-and-saml-authentication">
 <h3>User/Groups Metadata updates and SAML authentication<a class="headerlink" href="#user-groups-metadata-updates-and-saml-authentication" title="Link to this heading">¶</a></h3>
 <p>It is assumed that Commons instances have registered a SAML authentication IDP with KCWorks. The Commons identifiers for users in metadata update signals must be the same identifiers provided by the instance’s SAML IDP. This allows KCWorks to reliably identify the correct KCWorks user account, even if the same identifier happens to be used internally by multiple Commons instances. It also allows KCWorks to store Commons instance user ids in one central place within KCWorks, minimizing the chances of those links between a Commons instance user account and a KCWorks user account becoming corrupted.</p>
 </section>
 <section id="get-requests">
 <h3>GET requests<a class="headerlink" href="#get-requests" title="Link to this heading">¶</a></h3>
-<p>A <code class="docutils literal notranslate"><span class="pre">GET</span></code> request to this endpoint can be used to check that the endpoint is available and receiving messages. The response should have a <code class="docutils literal notranslate"><span class="pre">200</span></code> status code and should carry the following JSON response body:</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">GET</span></code> request to either endpoint can be used to check that the webhook receiver is available and receiving messages. The response should have a <code class="docutils literal notranslate"><span class="pre">200</span></code> status code and should carry the following JSON response body:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Webhook receiver is active&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span>
@@ -2157,7 +2160,7 @@ automatically purged entirely from the database. There is also no API mechanism 
 <h3>POST requests<a class="headerlink" href="#post-requests" title="Link to this heading">¶</a></h3>
 <section id="payload-objects">
 <h4>Payload objects<a class="headerlink" href="#payload-objects" title="Link to this heading">¶</a></h4>
-<p>Update notices should be sent via a <code class="docutils literal notranslate"><span class="pre">POST</span></code> request with a JSON payload object shaped like this:</p>
+<p>Update notices should be sent via a <code class="docutils literal notranslate"><span class="pre">POST</span></code> request to <code class="docutils literal notranslate"><span class="pre">/api/webhooks/users/update</span></code> (or the deprecated <code class="docutils literal notranslate"><span class="pre">/api/webhooks/user_data_update</span></code>) with a JSON payload object shaped like this:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">	</span><span class="nt">&quot;idp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;knowledgeCommons&quot;</span><span class="p">,</span>
 <span class="w">	</span><span class="nt">&quot;updates&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -2272,7 +2275,98 @@ automatically purged entirely from the database. There is also no API mechanism 
 </section>
 <section id="error-responses">
 <h4>Error responses<a class="headerlink" href="#error-responses" title="Link to this heading">¶</a></h4>
-<p>If multiple update signals are received in one <code class="docutils literal notranslate"><span class="pre">POST</span></code> request, it is possible that only some of the updates can be processed. The request might, for example, provide <code class="docutils literal notranslate"><span class="pre">updated</span></code> event signals for a number of entities, some of whose ids do not exist in KC Works. In this case the response code will be <code class="docutils literal notranslate"><span class="pre">207</span> <span class="pre">Multi-Status</span></code> and the response payload will be a JSON object</p>
+<p>If multiple update signals are received in one <code class="docutils literal notranslate"><span class="pre">POST</span></code> request, it is possible that only some of the updates can be processed. The request might, for example, provide <code class="docutils literal notranslate"><span class="pre">updated</span></code> event signals for a number of entities, some of whose ids do not exist in KC Works. In this case the response code will be <code class="docutils literal notranslate"><span class="pre">207</span> <span class="pre">Multi-Status</span></code> and the response payload will be a JSON object (documented in the source).</p>
+</section>
+</section>
+</section>
+<section id="central-user-logout-receiver-internal-only">
+<h2>Central User Logout Receiver (Internal Only)<a class="headerlink" href="#central-user-logout-receiver-internal-only" title="Link to this heading">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">works</span><span class="o">.</span><span class="n">hcommons</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">webhooks</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">logout</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.</p>
+</div>
+<p>The endpoint <code class="docutils literal notranslate"><span class="pre">/api/webhooks/users/logout</span></code> allows the central Knowledge Commons identity/service layer to signal that a user has logged out on another application in the network. KCWorks will then invalidate all of that user’s KCWorks sessions so they are logged out of KCWorks as well (single sign-out style behavior).</p>
+<section id="authentication-and-authorization">
+<h3>Authentication and authorization<a class="headerlink" href="#authentication-and-authorization" title="Link to this heading">¶</a></h3>
+<p>The endpoint is protected by a static Bearer token. Requests must include this token in the <code class="docutils literal notranslate"><span class="pre">Authorization</span></code> header (e.g. <code class="docutils literal notranslate"><span class="pre">Authorization:</span> <span class="pre">Bearer</span> <span class="pre">&lt;token&gt;</span></code>). The token is configured per deployment via the <code class="docutils literal notranslate"><span class="pre">COMMONS_PROFILES_API_TOKEN</span></code> environment variable and must match exactly; it is not an OAuth or user-identity token.</p>
+</section>
+<section id="id31">
+<h3>GET requests<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h3>
+<p>A <code class="docutils literal notranslate"><span class="pre">GET</span></code> request can be used to check that the endpoint is available. The response has status <code class="docutils literal notranslate"><span class="pre">200</span></code> and a JSON body:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Webhook receiver is active&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id32">
+<h3>POST requests<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h3>
+<p>A <code class="docutils literal notranslate"><span class="pre">POST</span></code> request triggers logout for a single user. The user is identified by the <strong>KC username</strong> (Commons username), passed as a query parameter.</p>
+<p><strong>Query parameters</strong></p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Required</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">username</span></code></p></td>
+<td><p>string</p></td>
+<td><p>The KC (Commons) username of the user to log out</p></td>
+<td><p>Y</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://works.hcommons.org/api/webhooks/users/logout?username=john_doe&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer YOUR_TOKEN&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+</pre></div>
+</div>
+<section id="success-response-200-ok">
+<h4>Success response (200 OK)<a class="headerlink" href="#success-response-200-ok" title="Link to this heading">¶</a></h4>
+<p>If the user exists in KCWorks and their sessions were invalidated successfully:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User john_doe logged out&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="user-not-found-404-not-found">
+<h4>User not found (404 Not Found)<a class="headerlink" href="#user-not-found-404-not-found" title="Link to this heading">¶</a></h4>
+<p>If no KCWorks user exists for the given username:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User john_doe not found in KCWorks; no sessions invalidated&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;not found&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="server-error-500-internal-server-error">
+<h4>Server error (500 Internal Server Error)<a class="headerlink" href="#server-error-500-internal-server-error" title="Link to this heading">¶</a></h4>
+<p>If session invalidation fails (for example, a database or session-store error):</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Failed to log out john_doe&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;error&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="other-error-responses">
+<h4>Other error responses<a class="headerlink" href="#other-error-responses" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><strong>400 Bad Request</strong>: The <code class="docutils literal notranslate"><span class="pre">username</span></code> query parameter is missing.</p></li>
+<li><p><strong>401 Unauthorized</strong>: The Bearer token is missing or does not match the configured static token (<code class="docutils literal notranslate"><span class="pre">COMMONS_PROFILES_API_TOKEN</span></code>).</p></li>
+</ul>
 </section>
 </section>
 </section>
@@ -2311,12 +2405,12 @@ automatically purged entirely from the database. There is also no API mechanism 
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="cli_commands.html">
+          <a class="next-page" href="outgoing_signals.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">CLI Commands</div>
+                <div class="title">Outgoing Signals</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -2479,6 +2573,18 @@ automatically purged entirely from the database. There is also no API mechanism 
 <li><a class="reference internal" href="#event-timing">Event timing</a></li>
 <li><a class="reference internal" href="#success-responses">Success responses</a></li>
 <li><a class="reference internal" href="#error-responses">Error responses</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#central-user-logout-receiver-internal-only">Central User Logout Receiver (Internal Only)</a><ul>
+<li><a class="reference internal" href="#authentication-and-authorization">Authentication and authorization</a></li>
+<li><a class="reference internal" href="#id31">GET requests</a></li>
+<li><a class="reference internal" href="#id32">POST requests</a><ul>
+<li><a class="reference internal" href="#success-response-200-ok">Success response (200 OK)</a></li>
+<li><a class="reference internal" href="#user-not-found-404-not-found">User not found (404 Not Found)</a></li>
+<li><a class="reference internal" href="#server-error-500-internal-server-error">Server error (500 Internal Server Error)</a></li>
+<li><a class="reference internal" href="#other-error-responses">Other error responses</a></li>
 </ul>
 </li>
 </ul>

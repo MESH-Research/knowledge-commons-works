@@ -108,7 +108,7 @@ In order to streamline the process of uploading works to KCWorks, particularly f
 Why is this API needed? The InvenioRDM REST API can be fragile and difficult to use, particularly for clients who are not familiar with the system. The creation and acceptance of a review request is redundant where collection administrators are uploading works for a collection they administer. The file upload steps are also not truly stateless, introducing the possibility of a file upload being interrupted and left incomplete, even if the upload of the file's content was successful.
 
 ```{note}
-KCWorks provides a standalone Python script (`scripts/user_resources/kcworks_api_importer.py`) that simplifies using the import API. The script handles authentication, file uploads, and response formatting automatically. See {ref}`the script documentation <api:kcworks-api-importer-script>` below for details.
+KCWorks provides a standalone Python script ([scripts/user_resources/kcworks_api_importer.py](https://github.com/MESH-Research/knowledge-commons-works/tree/main/scripts/user_resources/kcworks_api_importer.py)) that simplifies using the import API. The script handles authentication, file uploads, and response formatting automatically. See {ref}`the script documentation <api:kcworks-api-importer-script>` below for details.
 ```
 
 ### Who can use the import API?
@@ -349,7 +349,7 @@ Of course, in most cases the request will be made programmatically, not via a co
 
 (kcworks-api-importer-script)=
 
-KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script (`scripts/user_resources/kcworks_api_importer.py`) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
+KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script ([scripts/user_resources/kcworks_api_importer.py](https://github.com/MESH-Research/knowledge-commons-works/tree/main/scripts/user_resources/kcworks_api_importer.py)) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
 
 #### Requirements
 
@@ -359,13 +359,13 @@ The script requires Python 3.9 or later and the `requests` library. It can be ru
 
 The script accepts the following command-line arguments:
 
-| Argument | Description |
-|----------|-------------|
-| `--api-key KEY` | API key for authentication. If not provided, checks `KCWORKS_IMPORT_API_KEY` environment variable, or prompts interactively. |
-| `--collection-id ID` | Collection ID or slug to import records into. If not provided, checks `KCWORKS_IMPORT_COLLECTION_ID` environment variable, or prompts interactively. |
-| `--metadata PATH` | Path to the metadata JSON file. The metadata must be a JSON array of metadata objects, even if importing a single record. If not provided, checks `KCWORKS_IMPORT_METADATA_PATH` environment variable, or prompts interactively. |
+| Argument                  | Description                                                                                                                                                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--api-key KEY`           | API key for authentication. If not provided, checks `KCWORKS_IMPORT_API_KEY` environment variable, or prompts interactively.                                                                                                                       |
+| `--collection-id ID`      | Collection ID or slug to import records into. If not provided, checks `KCWORKS_IMPORT_COLLECTION_ID` environment variable, or prompts interactively.                                                                                               |
+| `--metadata PATH`         | Path to the metadata JSON file. The metadata must be a JSON array of metadata objects, even if importing a single record. If not provided, checks `KCWORKS_IMPORT_METADATA_PATH` environment variable, or prompts interactively.                   |
 | `--files PATH [PATH ...]` | One or more file paths to upload with the records. Multiple files can be specified by providing multiple arguments. If not provided, checks `KCWORKS_IMPORT_FILES_PATH` environment variable (comma or space-separated), or prompts interactively. |
-| `--output PATH` | Optional path to save the API response as JSON. If not provided, checks `KCWORKS_IMPORT_OUTPUT_PATH` environment variable, or prompts interactively (can be skipped by pressing Enter). |
+| `--output PATH`           | Optional path to save the API response as JSON. If not provided, checks `KCWORKS_IMPORT_OUTPUT_PATH` environment variable, or prompts interactively (can be skipped by pressing Enter).                                                            |
 
 #### Environment Variables
 
@@ -1466,9 +1466,13 @@ Required request headers:
 
 ## User and Group Data Updates (Internal Only)
 
+**Preferred endpoint:**
+
 ```
-https://works.hcommons.org/api/webhooks/user_data_update
+https://works.hcommons.org/api/webhooks/users/update
 ```
+
+**Deprecated (still operational):** ``/api/webhooks/user_data_update``
 
 ```{warning}
 This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.
@@ -1478,7 +1482,7 @@ This API endpoint is intended for internal use only. It is not intended to be us
 This API was implemented with a distributed network of independent Commons instances in mind. Currently, only the Knowledge Commons instance exists and is supported as a SAML IDP by KCWorks.
 ```
 
-The api endpoint `/api/webhooks/user_data_update` is provided for Knowledge Commons applications and instances to signal that user or group metadata has been changed. These endpoints do not receive the actual updated data. They only receive notices _that_ the metadata for a user or group has changed. KCWorks will then query the Commons instance's endpoint to retrieve current metadata for the user or group.
+The endpoint `/api/webhooks/users/update` (and the deprecated `/api/webhooks/user_data_update`) is provided for Knowledge Commons applications and instances to signal that user or group metadata has been changed. These endpoints do not receive the actual updated data. They only receive notices _that_ the metadata for a user or group has changed. KCWorks will then query the Commons instance's endpoint to retrieve current metadata for the user or group.
 
 ### User/Groups Metadata updates and SAML authentication
 
@@ -1486,7 +1490,7 @@ It is assumed that Commons instances have registered a SAML authentication IDP w
 
 ### GET requests
 
-A `GET` request to this endpoint can be used to check that the endpoint is available and receiving messages. The response should have a `200` status code and should carry the following JSON response body:
+A `GET` request to either endpoint can be used to check that the webhook receiver is available and receiving messages. The response should have a `200` status code and should carry the following JSON response body:
 
 ```json
 {
@@ -1499,7 +1503,7 @@ A `GET` request to this endpoint can be used to check that the endpoint is avail
 
 #### Payload objects
 
-Update notices should be sent via a `POST` request with a JSON payload object shaped like this:
+Update notices should be sent via a `POST` request to `/api/webhooks/users/update` (or the deprecated `/api/webhooks/user_data_update`) with a JSON payload object shaped like this:
 
 ```json
 {
@@ -1567,4 +1571,87 @@ The `updates` object should be identical to the `updates` object provided in the
 
 #### Error responses
 
-If multiple update signals are received in one `POST` request, it is possible that only some of the updates can be processed. The request might, for example, provide `updated` event signals for a number of entities, some of whose ids do not exist in KC Works. In this case the response code will be `207 Multi-Status` and the response payload will be a JSON object
+If multiple update signals are received in one `POST` request, it is possible that only some of the updates can be processed. The request might, for example, provide `updated` event signals for a number of entities, some of whose ids do not exist in KC Works. In this case the response code will be `207 Multi-Status` and the response payload will be a JSON object (documented in the source).
+
+## Central User Logout Receiver (Internal Only)
+
+```
+https://works.hcommons.org/api/webhooks/users/logout
+```
+
+```{warning}
+This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.
+```
+
+The endpoint `/api/webhooks/users/logout` allows the central Knowledge Commons identity/service layer to signal that a user has logged out on another application in the network. KCWorks will then invalidate all of that user's KCWorks sessions so they are logged out of KCWorks as well (single sign-out style behavior).
+
+### Authentication and authorization
+
+The endpoint is protected by a static Bearer token. Requests must include this token in the `Authorization` header (e.g. `Authorization: Bearer <token>`). The token is configured per deployment via the `COMMONS_PROFILES_API_TOKEN` environment variable and must match exactly; it is not an OAuth or user-identity token.
+
+### GET requests
+
+A `GET` request can be used to check that the endpoint is available. The response has status `200` and a JSON body:
+
+```json
+{
+  "message": "Webhook receiver is active",
+  "status": 200
+}
+```
+
+### POST requests
+
+A `POST` request triggers logout for a single user. The user is identified by the **KC username** (Commons username), passed as a query parameter.
+
+**Query parameters**
+
+| Parameter  | Type   | Description                                      | Required |
+| ---------- | ------ | ------------------------------------------------ | -------- |
+| `username` | string | The KC (Commons) username of the user to log out | Y        |
+
+**Example**
+
+```bash
+curl -X POST "https://works.hcommons.org/api/webhooks/users/logout?username=john_doe" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+#### Success response (200 OK)
+
+If the user exists in KCWorks and their sessions were invalidated successfully:
+
+```json
+{
+  "message": "User john_doe logged out",
+  "status": "success"
+}
+```
+
+#### User not found (404 Not Found)
+
+If no KCWorks user exists for the given username:
+
+```json
+{
+  "message": "User john_doe not found in KCWorks; no sessions invalidated",
+  "status": "not found"
+}
+```
+
+#### Server error (500 Internal Server Error)
+
+If session invalidation fails (for example, a database or session-store error):
+
+```json
+{
+  "message": "Failed to log out john_doe",
+  "status": "error"
+}
+```
+
+#### Other error responses
+
+- **400 Bad Request**: The `username` query parameter is missing.
+- **401 Unauthorized**: The Bearer token is missing or does not match the configured static token (`COMMONS_PROFILES_API_TOKEN`).
