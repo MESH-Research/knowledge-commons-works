@@ -45,6 +45,12 @@ build/
 site/build
 site/kcworks.egg-info
 
+# Node modules (test-only installs in submodule translations folders that
+# would otherwise get copied into var/instance/assets/ and shadow the
+# hoisted i18next install)
+node_modules/
+**/node_modules/
+
 # Static files
 static/admin
 static/dist
