@@ -3515,7 +3515,7 @@ wheels = [
 
 [[package]]
 name = "kcworks"
-version = "0.7.3"
+version = "0.8.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
@@ -3587,6 +3587,7 @@ tests = [
     { name = "pytest-mock" },
     { name = "pytest-mypy" },
     { name = "pytest-ruff" },
+    { name = "pytest-timeout" },
     { name = "ty" },
 ]
 
@@ -3599,6 +3600,7 @@ dev = [
     { name = "psycopg2-binary" },
     { name = "pytest-isort" },
     { name = "pytest-mock" },
+    { name = "pytest-timeout" },
     { name = "requests-mock" },
     { name = "ruff" },
     { name = "selenium" },
@@ -3653,6 +3655,7 @@ requires-dist = [
     { name = "pytest-mock", marker = "extra == 'tests'" },
     { name = "pytest-mypy", marker = "extra == 'tests'", specifier = ">=0.10" },
     { name = "pytest-ruff", marker = "extra == 'tests'", specifier = ">=0.1" },
+    { name = "pytest-timeout", marker = "extra == 'tests'" },
     { name = "python-dotenv" },
     { name = "python-iso639" },
     { name = "python-stdnum" },
@@ -3682,6 +3685,7 @@ dev = [
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "pytest-isort", specifier = ">=4" },
     { name = "pytest-mock" },
+    { name = "pytest-timeout" },
     { name = "requests-mock" },
     { name = "ruff", specifier = ">=0.3" },
     { name = "selenium" },
@@ -5445,6 +5449,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/32/5a/bee55130757fb4a14e0ac5d2c6558323275b5dccfa2f5353f3893299ff7d/pytest_ruff-0.5.tar.gz", hash = "sha256:f611c780fc2b9b8d7041fa0e7589f0a9f352b288d0cfc330881101b35d382063", size = 3854, upload-time = "2025-06-19T07:26:24.607Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1d/ca/abfce6de0bb0f017ed05ef9f2330596235cc5a3341b4d8d40895682b3814/pytest_ruff-0.5-py3-none-any.whl", hash = "sha256:d9db170d86fb167008e6702b4d79e2cccd8287f069c3a57f9261831cebdc4a31", size = 4680, upload-time = "2025-06-19T07:26:23.897Z" },
+]
+
+[[package]]
+name = "pytest-timeout"
+version = "2.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ac/82/4c9ecabab13363e72d880f2fb504c5f750433b2b6f16e99f4ec21ada284c/pytest_timeout-2.4.0.tar.gz", hash = "sha256:7e68e90b01f9eff71332b25001f85c75495fc4e3a836701876183c4bcfd0540a", size = 17973, upload-time = "2025-05-05T19:44:34.99Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fa/b6/3127540ecdf1464a00e5a01ee60a1b09175f6913f0644ac748494d9c4b21/pytest_timeout-2.4.0-py3-none-any.whl", hash = "sha256:c42667e5cdadb151aeb5b26d114aff6bdf5a907f176a007a30b940d3d865b5c2", size = 14382, upload-time = "2025-05-05T19:44:33.502Z" },
 ]
 
 [[package]]
