@@ -4,7 +4,7 @@ requires = ["babel>2.8", "setuptools>=61", "wheel"]
 
 [project]
 name = "kcworks"
-version = "0.7.3"
+version = "0.8.0"
 license = { file = "LICENSE" }
 authors = [{ name = "Mesh Research", email = "scottia4@msu.edu" }]
 requires-python = ">=3.12"
@@ -61,6 +61,7 @@ optional-dependencies.tests = [
   "pytest-isort>=4",
   "pytest-mock",
   "pytest-ruff>=0.1",
+  "pytest-timeout",
   "requests-mock",
   "ruff>=0.3",
   "selenium",
@@ -115,6 +116,7 @@ tests = [
   "pytest-isort>=4",
   "pytest-mock",
   "pytest-ruff>=0.1",
+  "pytest-timeout",
   "requests-mock",
   "ruff>=0.3",
   "selenium",
@@ -260,6 +262,8 @@ ini_options.norecursedirs = [
 ]
 ini_options.log_cli_level = "DEBUG"
 ini_options.isort_show_files = true
+ini_options.timeout = 300
+ini_options.timeout_method = "thread"
 ini_options.plugins = [
   "celery.contrib.pytest",
   "tests.fixtures.caching",
