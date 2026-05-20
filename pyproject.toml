@@ -4,7 +4,7 @@ requires = ["babel>2.8", "setuptools>=61", "wheel"]
 
 [project]
 name = "kcworks"
-version = "0.7.3"
+version = "0.8.0"
 requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
@@ -80,6 +80,7 @@ optional-dependencies.tests = [
   "pytest-mock",
   "pytest-mypy>=0.10",
   "pytest-ruff>=0.1",
+  "pytest-timeout",
   "ty",
 ]
 scripts.group-collections = "kcworks.cli:group_collections"
@@ -114,6 +115,7 @@ dev = [
   "psycopg2-binary>=2.9.10",
   "pytest-isort>=4",
   "pytest-mock",
+  "pytest-timeout",
   "requests-mock",
   "ruff>=0.3",
   "selenium",
@@ -208,19 +210,6 @@ skip = [
   # "node_modules",  # Skip node modules
 ]
 
-[tool.ty]
-environment.python-version = "3.12"
-rules.unresolved-import = "ignore"
-src.exclude = [
-  "**/tests/**",
-  "**/site/kcworks/dependencies/**",
-  "**/site/kcworks/services/search/index_templates/**",
-]
-
-[[tool.ty.overrides]]
-include = ["**/kcworks/services/search/index_templates/**"]
-rules = { unresolved-attribute = "ignore", invalid-assignment = "ignore", unresolved-import = "ignore" }
-
 [tool.mypy]
 python_version = "3.12"
 warn_return_any = true
@@ -247,6 +236,19 @@ module = "kcworks.services.search.index_templates.*"
 ignore_errors = true
 ignore_missing_imports = true
 follow_imports = "skip"
+
+[tool.ty]
+environment.python-version = "3.12"
+rules.unresolved-import = "ignore"
+src.exclude = [
+  "**/tests/**",
+  "**/site/kcworks/dependencies/**",
+  "**/site/kcworks/services/search/index_templates/**",
+]
+
+[[tool.ty.overrides]]
+include = ["**/kcworks/services/search/index_templates/**"]
+rules = { unresolved-attribute = "ignore", invalid-assignment = "ignore", unresolved-import = "ignore" }
 
 [tool.pytest]
 ini_options.addopts = """
@@ -279,6 +281,8 @@ ini_options.norecursedirs = [
 ]
 ini_options.log_cli_level = "DEBUG"
 ini_options.isort_show_files = true
+ini_options.timeout = 300
+ini_options.timeout_method = "thread"
 ini_options.plugins = [
   "tests.fixtures.caching",
   "tests.fixtures.cli",
