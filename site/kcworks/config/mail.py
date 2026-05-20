@@ -45,4 +45,9 @@ GROUP_COLLECTIONS_ADMIN_EMAIL = os.getenv("INVENIO_ADMIN_EMAIL")  # admin owner 
 
 # Welcome email
 # -------------
-SECURITY_EMAIL_SUBJECT_REGISTER = _("Welcome to KCWorks!")
+# Plain str (not lazy_gettext): this value is read once at app config load,
+# outside any request/locale context, so lazy translation would not produce a
+# recipient-localized subject. A LazyString here also breaks Kombu when
+# Invenio-Accounts' delay_security_email pushes msg.__dict__ to Celery
+# (kombu.exceptions.EncodeError: can not serialize 'LazyString' object).
+SECURITY_EMAIL_SUBJECT_REGISTER = "Welcome to KCWorks!"
