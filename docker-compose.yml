@@ -110,6 +110,9 @@ services:
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}
+    depends_on:
+      search:
+        condition: service_healthy
   # API Rest Application
   web-api:
     extends:
@@ -134,6 +137,9 @@ services:
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}
+    depends_on:
+      search:
+        condition: service_healthy
   # Worker
   worker:
     extends:
@@ -161,7 +167,7 @@ services:
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR}
     depends_on:
       search:
-        condition: service_started
+        condition: service_healthy
       cache:
         condition: service_started
       db:

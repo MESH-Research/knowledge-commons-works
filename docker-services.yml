@@ -107,6 +107,20 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    # Healthcheck: confirms the OpenSearch HTTP API is actually serving (not just
+    # that the container's PID 1 is alive). Dependents that need search at boot
+    # (web-ui, web-api, worker) gate on `condition: service_healthy` in
+    # docker-compose.yml so they don't race the cluster start. `start_period`
+    # gives a generous grace window for cold starts on slow hosts (GitHub
+    # Actions) before failing probes count toward `retries`.
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "curl -fs 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s' >/dev/null"
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
     # Memory limit: 2GB (original conservative setting) works well for GitHub Actions (7GB RAM)
     # This leaves ~5GB for other containers and the host system
     mem_limit: ${OPENSEARCH_MEMORY_LIMIT:-2g}
