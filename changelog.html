@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Development Roadmap" href="roadmap.html"><link rel="prev" title="Feature Highlights" href="feature_highlights.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Changes - Knowledge Commons Works 0.7.3 documentation</title>
+        <title>Changes - Knowledge Commons Works 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Knowledge Commons Works 0.7.3 documentation</div></a>
+      <a href="index.html"><div class="brand">Knowledge Commons Works 0.8.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.7.3 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -270,58 +270,124 @@
 <!-- Copyright (C) 2024-2025 Mesh Research. -->
 <section id="changes">
 <h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
+<section id="unreleased">
+<h2>Unreleased<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
+</section>
 <section id="id1">
-<h2>0.7.3 (2026-02-12)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>0.8.0 (2026-05-19)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>Major feature release</p>
+<ul class="simple">
+<li><p>New single-sign-on login and user-data sync system based on KCProfiles and
+CILogon.</p>
+<ul>
+<li><p>Replace Comanage/WP SAML login with KC Profiles SSO broker</p></li>
+<li><p>Refactor user-data sync to communicate with KCProfiles</p></li>
+<li><p>Add central logout via Profiles webhooks and static-token routes</p></li>
+<li><p>Add silent SSO login via calls to the KCProfiles broker</p></li>
+</ul>
+</li>
+<li><p>Other app and UI changes</p>
+<ul>
+<li><p>Custom HTTP error pages and API error handling, improving UX on auth errors.</p></li>
+<li><p>Group collections and org membership aligned with Profiles API</p></li>
+<li><p>Collection search: additional sort/facet options</p></li>
+<li><p>Stats dashboard menu registration and documentation updates</p></li>
+<li><p>Relax record/collection visibility matching so that group-collection
+visibility sync and community inclusion aren’t blocked by public-vs-
+restricted checks.</p></li>
+<li><p>Standalone record importer gets tests and drops halo dependency</p></li>
+<li><p>Submodule updates (deposit form, remote-user-data, group-collections,
+rdm-records, stats-dashboard, shared test fixtures)</p></li>
+</ul>
+</li>
+<li><p>Bug fixes</p>
+<ul>
+<li><p>Header profile links fixed</p></li>
+<li><p>Deposit/upload form fixes (review submission, profile lookup, field labels
+and copy)</p></li>
+<li><p>Collection logo replacement bug fixed</p></li>
+<li><p>Collection search: pagination fixes</p></li>
+</ul>
+</li>
+<li><p>Documentation</p>
+<ul>
+<li><p>Clarifies admin-moderator role and difference from
+administration-moderation.</p></li>
+<li><p>Documents multiple-local-instance installation for development.</p></li>
+<li><p>Better documentation for record importer</p></li>
+<li><p>Better documentation for user-data and SSO logout webhooks</p></li>
+<li><p>New documentation of outgoing signals to other systems, including emitted
+SSO logout signals</p></li>
+</ul>
+</li>
+<li><p>Build and testing</p>
+<ul>
+<li><p>Brings requirements up to Python 3.12</p></li>
+<li><p>Now using uv with ty for faster type checking</p></li>
+<li><p>Drop invenio-saml and xmlsec dependencies</p></li>
+<li><p>CI: bump GitHub Actions in the build workflow; push production/staging
+images to separate ECR repo paths for clearer rollbacks</p></li>
+<li><p>Allow multiple local Docker stacks via KCWORKS_CONTAINERS_BASE_NAME in
+compose and configurable ports per-instance</p></li>
+<li><p>Broad test suite updates for broker auth, fixtures submodule, and
+user/community flows</p></li>
+<li><p>Added timeouts to pytest suite in case of hung CI runs.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id2">
+<h2>0.7.3 (2026-02-12)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
 <p>Bug fix release</p>
 <ul class="simple">
 <li><p>Collections</p>
 <ul>
-<li><p>Fix bug that prevented uploaded a new collection logo if
-one had previously been deleted for the collection.</p>
+<li><p>Fix bug that prevented uploaded a new collection logo if one had previously
+been deleted for the collection.</p>
 <ul>
 <li><p>Involves a patch to our forked invenio-communities.</p></li>
-<li><p>Includes a utility script to clean up orphaned logo
-files that might exist from before this fix.</p></li>
+<li><p>Includes a utility script to clean up orphaned logo files that might exist
+from before this fix.</p></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><p>Upload form:</p>
 <ul>
-<li><p>Fix broken upload form submission when submitting record
-for publication review by a collection.</p></li>
-<li><p>Typo fix and “Duration/Size” field description tweaks
-for audiovisual resource types on the detail page.</p></li>
+<li><p>Fix broken upload form submission when submitting record for publication
+review by a collection.</p></li>
+<li><p>Typo fix and “Duration/Size” field description tweaks for audiovisual
+resource types on the detail page.</p></li>
 </ul>
 </li>
 <li><p>Utility improvements</p>
 <ul>
 <li><p>Update Github workflow action versions</p></li>
-<li><p>Move to using separate ECR production and staging repos
-to facilitate easier emergency rollbacks.</p></li>
+<li><p>Move to using separate ECR production and staging repos to facilitate easier
+emergency rollbacks.</p></li>
 </ul>
 </li>
 <li><p>Documentation improvements</p>
 <ul>
-<li><p>Updates installation documentation with info on installing
-multiple instances on the same machine.</p></li>
+<li><p>Updates installation documentation with info on installing multiple
+instances on the same machine.</p></li>
 </ul>
 </li>
 </ul>
 </section>
-<section id="id2">
-<h2>0.7.2 (2026-01-20)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h2>0.7.2 (2026-01-20)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Search paging and navigation improvements</p>
 <ul>
 <li><p>Made search results scroll to top of page when a new page is loaded.</p></li>
-<li><p>Added pager widget and page-size selector to top of results list (as
-well as at bottom).</p></li>
+<li><p>Added pager widget and page-size selector to top of results list (as well as
+at bottom).</p></li>
 <li><p>Made pager widget full-size for accessibility</p></li>
 <li><p>Made mobile pager widget include first and last page links (previously
 lacked them).</p></li>
-<li><p>Modified result count badge and page size selector to make the display
-more responsive.</p></li>
+<li><p>Modified result count badge and page size selector to make the display more
+responsive.</p></li>
 <li><p>Improved aria-properties and labelling of page selector widget</p></li>
 </ul>
 </li>
@@ -330,26 +396,26 @@ more responsive.</p></li>
 <li><p>Expanded sort options for collection works pages to include all options
 available on main search page (including “earliest published” and “latest
 published”)</p></li>
-<li><p>Expanded search filter options for collection works pages (includes
-file type and resource type)</p></li>
+<li><p>Expanded search filter options for collection works pages (includes file
+type and resource type)</p></li>
 </ul>
 </li>
 <li><p>Bug fixes</p>
 <ul>
-<li><p>Fix stats dashboard chart link bug that caused linked search results to
-open in many tabs at once.</p></li>
+<li><p>Fix stats dashboard chart link bug that caused linked search results to open
+in many tabs at once.</p></li>
 <li><p>Bug fixes and improvements to stand-alone importer script.</p></li>
 </ul>
 </li>
 </ul>
 </section>
-<section id="id3">
-<h2>0.7.1 (2025-12-19)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<section id="id4">
+<h2>0.7.1 (2025-12-19)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fix</p>
 <ul>
-<li><p>Clicking on stats dashboard chart items sometimes led to search
-results that weren’t filtered by community properly.</p></li>
+<li><p>Clicking on stats dashboard chart items sometimes led to search results that
+weren’t filtered by community properly.</p></li>
 </ul>
 </li>
 <li><p>User script for import API</p></li>
@@ -360,8 +426,8 @@ results that weren’t filtered by community properly.</p></li>
 </li>
 </ul>
 </section>
-<section id="id4">
-<h2>0.7.0 (2025-12-15)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<section id="id5">
+<h2>0.7.0 (2025-12-15)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Major new feature: Stats dashboards for collections and KCWorks as a whole</p></li>
 <li><p>Other misc. user-facing improvements and bug fixes:</p>
@@ -379,7 +445,8 @@ results that weren’t filtered by community properly.</p></li>
 </li>
 <li><p>work detail pages</p>
 <ul>
-<li><p>make DOIs in detail page sidebar clickable links with accessible copy buttons</p></li>
+<li><p>make DOIs in detail page sidebar clickable links with accessible copy
+buttons</p></li>
 <li><p>fix URL encoding of special characters in previewer URL (occasionally
 broke preview for some files)</p></li>
 <li><p>fix URLs for users’ GND identifiers</p></li>
@@ -448,8 +515,8 @@ queue and opensearch would get overwhelmed</p></li>
 <li><p>improved test fixtures (records, caching, users, jinja templates, sample
 records)</p></li>
 <li><p>integrated test suites for invenio-stats-dashboard and
-invenio-record-importer-kcworks via symlinks into the main
-KCWorks test suite</p></li>
+invenio-record-importer-kcworks via symlinks into the main KCWorks test
+suite</p></li>
 <li><p>new pytest plugin to maintain</p></li>
 <li><p>migration from black to ruff for linting and code style</p></li>
 <li><p>major cleanup of tests, including resolving all mypy and ruff issues</p></li>
@@ -466,8 +533,8 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id5">
-<h2>0.5.6 (2025-09-30)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<section id="id6">
+<h2>0.5.6 (2025-09-30)<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Upload form</p>
 <ul>
@@ -476,23 +543,26 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id6">
-<h2>0.5.5 (2025-09-10)<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<section id="id7">
+<h2>0.5.5 (2025-09-10)<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Upload form</p>
 <ul>
-<li><p>Added explainer message to upload form collection field about delays for publication submissions.</p></li>
+<li><p>Added explainer message to upload form collection field about delays for
+publication submissions.</p></li>
 </ul>
 </li>
 </ul>
 </section>
-<section id="id7">
-<h2>0.5.4 (2025-08-14)<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<section id="id8">
+<h2>0.5.4 (2025-08-14)<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fixes</p>
 <ul>
-<li><p>Fixed a bug where a collection inclusion request’s detail page weren’t displaying properly when viewed from the collection page.</p></li>
-<li><p>Allowed proper display of special characters (slash, ampersand, etc.) in the publication information line of search result items.</p></li>
+<li><p>Fixed a bug where a collection inclusion request’s detail page weren’t
+displaying properly when viewed from the collection page.</p></li>
+<li><p>Allowed proper display of special characters (slash, ampersand, etc.) in the
+publication information line of search result items.</p></li>
 </ul>
 </li>
 <li><p>Footer</p>
@@ -503,31 +573,42 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id8">
-<h2>0.5.3 (2025-07-17)<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<section id="id9">
+<h2>0.5.3 (2025-07-17)<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Group collections</p>
 <ul>
-<li><p>Fixed a bug where the groups that facilitate proper permissions for group-based collections were not being assigned correctly as members of the collections.</p></li>
-<li><p>Added a new CLI command and service class to allow admins to check the group memberships of all communities and fix them if necessary.</p></li>
+<li><p>Fixed a bug where the groups that facilitate proper permissions for
+group-based collections were not being assigned correctly as members of the
+collections.</p></li>
+<li><p>Added a new CLI command and service class to allow admins to check the group
+memberships of all communities and fix them if necessary.</p></li>
 </ul>
 </li>
 <li><p>Remote user data service</p>
 <ul>
-<li><p>Centralized the creation of roles related to KC groups in invenio-group-collections-kcworks.</p></li>
-<li><p>Regularized the owner role name for linked group collections to use “administrator” where previously we had duplicated “admin” and “administrator” roles (because of API response inconsistency).</p></li>
+<li><p>Centralized the creation of roles related to KC groups in
+invenio-group-collections-kcworks.</p></li>
+<li><p>Regularized the owner role name for linked group collections to use
+“administrator” where previously we had duplicated “admin” and
+“administrator” roles (because of API response inconsistency).</p></li>
 </ul>
 </li>
 <li><p>Importer</p>
 <ul>
-<li><p>Fixed a bug where the importer was not correctly handling the case where a record was already published in a collection and the user was trying to add it to the same collection again.</p></li>
-<li><p>Added ability to override the auto-generated created date of a record when importing it.</p></li>
-<li><p>Added handling of community addition events for imported records (to support upcoming stats dashboard).</p></li>
+<li><p>Fixed a bug where the importer was not correctly handling the case where a
+record was already published in a collection and the user was trying to add
+it to the same collection again.</p></li>
+<li><p>Added ability to override the auto-generated created date of a record when
+importing it.</p></li>
+<li><p>Added handling of community addition events for imported records (to support
+upcoming stats dashboard).</p></li>
 </ul>
 </li>
 <li><p>Documentation</p>
 <ul>
-<li><p>Added developer documentation of the new group collections checking CLI command.</p></li>
+<li><p>Added developer documentation of the new group collections checking CLI
+command.</p></li>
 <li><p>Added developer documentation about working with user data.</p></li>
 <li><p>Minor updates to installation instructions.</p></li>
 </ul>
@@ -536,7 +617,8 @@ better handling of test .env files</p></li>
 <ul>
 <li><p>Added new -S flag to run-tests.sh to skip the translation build step.</p></li>
 <li><p>Silenced deprecation warnings during GH tests workflow.</p></li>
-<li><p>Test runner script now checks for running docker-compose projects and warns if they are found.</p></li>
+<li><p>Test runner script now checks for running docker-compose projects and warns
+if they are found.</p></li>
 <li><p>Added new integration tests for the new group collections checker.</p></li>
 <li><p>Updated tests related to group collection roles and permissions.</p></li>
 <li><p>Miscellaneous test fixture updates and test fixes.</p></li>
@@ -544,21 +626,23 @@ better handling of test .env files</p></li>
 </li>
 <li><p>Build</p>
 <ul>
-<li><p>Updated versions of forked Invenio dependencies: invenio-communities, invenio-rdm-records, invenio-vocabularies.</p></li>
+<li><p>Updated versions of forked Invenio dependencies: invenio-communities,
+invenio-rdm-records, invenio-vocabularies.</p></li>
 </ul>
 </li>
 <li><p>Public roadmap updates</p></li>
 </ul>
 </section>
-<section id="id9">
-<h2>0.5.2 (2025-05-29)<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<section id="id10">
+<h2>0.5.2 (2025-05-29)<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Added a new CLI command to allow admins to bulk update a single metadata field to a single new fixed value for every record in a collection.</p></li>
+<li><p>Added a new CLI command to allow admins to bulk update a single metadata field
+to a single new fixed value for every record in a collection.</p></li>
 <li><p>Added public roadmap to the documentation.</p></li>
 </ul>
 </section>
-<section id="id10">
-<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
+<section id="id11">
+<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Removed BETA status from the site.</p>
 <ul>
@@ -567,7 +651,8 @@ better handling of test .env files</p></li>
 </li>
 <li><p>Upload form</p>
 <ul>
-<li><p>Improved validation of the AdditionalTitlesField and AdditionalDescriptionsField.</p></li>
+<li><p>Improved validation of the AdditionalTitlesField and
+AdditionalDescriptionsField.</p></li>
 </ul>
 </li>
 <li><p>Bug fixes</p>
@@ -575,9 +660,12 @@ better handling of test .env files</p></li>
 <li><p>Improved the search used by the “My Works” dashboard tab.</p></li>
 <li><p>Fixed bugs in upload form error handling.</p></li>
 <li><p>Fixed minor layout issues in the upload form.</p></li>
-<li><p>Fixed a bug where the languages field was not being populated correctly from the client-side form state.</p></li>
-<li><p>Updated the language subfield of AdditionalTitlesField and AdditionalDescriptionsField to use a new SingleLanguageSelector component
-that also populates and preserves the value properly from the client-side form state.</p></li>
+<li><p>Fixed a bug where the languages field was not being populated correctly from
+the client-side form state.</p></li>
+<li><p>Updated the language subfield of AdditionalTitlesField and
+AdditionalDescriptionsField to use a new SingleLanguageSelector component
+that also populates and preserves the value properly from the client-side
+form state.</p></li>
 </ul>
 </li>
 <li><p>Themeing</p>
@@ -587,12 +675,15 @@ that also populates and preserves the value properly from the client-side form s
 </li>
 <li><p>Testing</p>
 <ul>
-<li><p>Added new jest tests for upload form validation, the languages field, the access rights field, and the additional descriptions and additional titles fields.</p></li>
+<li><p>Added new jest tests for upload form validation, the languages field, the
+access rights field, and the additional descriptions and additional titles
+fields.</p></li>
 </ul>
 </li>
 <li><p>Documentation</p>
 <ul>
-<li><p>Added developer documentation of workflow for adding a new custom extension to KCWorks.</p></li>
+<li><p>Added developer documentation of workflow for adding a new custom extension
+to KCWorks.</p></li>
 </ul>
 </li>
 </ul>
@@ -602,23 +693,27 @@ that also populates and preserves the value properly from the client-side form s
 <ul class="simple">
 <li><p>Dashboard</p>
 <ul>
-<li><p>Added a new “My Works” dashboard tab that links to a search for works the user has contributed to.</p></li>
+<li><p>Added a new “My Works” dashboard tab that links to a search for works the
+user has contributed to.</p></li>
 <li><p>Reworded other tabs to be clearer about what they contain.</p></li>
 </ul>
 </li>
 <li><p>Bug fixes</p>
 <ul>
 <li><p>Fixed missing “email” scheme for contributor identifiers.</p></li>
-<li><p>Fixed bug where users with permissions couldn’t see the action buttons to manage collections with editing restrictions on the detail page.</p></li>
-<li><p>Addressed complaints about non-primary contributors being displayed in the creators list under
-the detail page work title by truncating that list to the first three contributors. The full
-list is still displayed on the “Contributors” tab. Work owners can adjust the creators order
-on the upload form to determine which three contributors appear first.</p></li>
+<li><p>Fixed bug where users with permissions couldn’t see the action buttons to
+manage collections with editing restrictions on the detail page.</p></li>
+<li><p>Addressed complaints about non-primary contributors being displayed in the
+creators list under the detail page work title by truncating that list to
+the first three contributors. The full list is still displayed on the
+“Contributors” tab. Work owners can adjust the creators order on the upload
+form to determine which three contributors appear first.</p></li>
 </ul>
 </li>
 <li><p>Testing</p>
 <ul>
-<li><p>Added a new Github Actions workflow to run Ghost Inspector tests on the staging and production sites.</p></li>
+<li><p>Added a new Github Actions workflow to run Ghost Inspector tests on the
+staging and production sites.</p></li>
 </ul>
 </li>
 <li><p>Documentation</p>
@@ -631,35 +726,46 @@ on the upload form to determine which three contributors appear first.</p></li>
 <section id="beta12-2025-04-30">
 <h2>0.4.0-beta12 (2025-04-30)<a class="headerlink" href="#beta12-2025-04-30" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Per-field editing permissions for collections, along with UI for managing them.</p>
+<li><p>Per-field editing permissions for collections, along with UI for managing
+them.</p>
 <ul>
 <li><p>Before publishing to a collection or adding a work to a collection:</p>
 <ul>
 <li><p>Alerts users when a collection has editing restrictions for some fields.</p></li>
-<li><p>Alerts users when a collection will restrict removal of a work from the collection once it is published.</p></li>
-<li><p>Confirms the user’s acceptance of the collection’s editing restrictions before publishing or submitting a request.</p></li>
+<li><p>Alerts users when a collection will restrict removal of a work from the
+collection once it is published.</p></li>
+<li><p>Confirms the user’s acceptance of the collection’s editing restrictions
+before publishing or submitting a request.</p></li>
 </ul>
 </li>
 <li><p>After publishing or submitting a request:</p>
 <ul>
-<li><p>Displays appropriate reminders to users with the appropriate permissions to manage the collection.</p></li>
-<li><p>Displays error messages if the user attempts to edit restricted fields on the upload form.</p></li>
-<li><p>Displays a warning if the user attempts to remove a work from a collection that has restricted work removal.</p></li>
+<li><p>Displays appropriate reminders to users with the appropriate permissions
+to manage the collection.</p></li>
+<li><p>Displays error messages if the user attempts to edit restricted fields on
+the upload form.</p></li>
+<li><p>Displays a warning if the user attempts to remove a work from a collection
+that has restricted work removal.</p></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><p>Bug fixes</p>
 <ul>
-<li><p>Fixed a bug where an ORCID id was not accepted if it was formatted as a URL. These will not be accepted by the upload form.</p></li>
+<li><p>Fixed a bug where an ORCID id was not accepted if it was formatted as a URL.
+These will not be accepted by the upload form.</p></li>
 <li><p>Style fixes for some upload form widgets.</p></li>
 </ul>
 </li>
 <li><p>Stability</p>
 <ul>
-<li><p>Major refactoring of the upload form error handling and error messages. This includes more reliable integration of client-side validation with server-side validation.</p></li>
-<li><p>Major refactoring of the detail page to make state management more robust and maintainable.</p></li>
-<li><p>Project reorganization to move main project files (pyproject.toml, etc.) to the root directory.</p></li>
+<li><p>Major refactoring of the upload form error handling and error messages. This
+includes more reliable integration of client-side validation with
+server-side validation.</p></li>
+<li><p>Major refactoring of the detail page to make state management more robust
+and maintainable.</p></li>
+<li><p>Project reorganization to move main project files (pyproject.toml, etc.) to
+the root directory.</p></li>
 </ul>
 </li>
 <li><p>Documentation</p>
@@ -667,9 +773,12 @@ on the upload form to determine which three contributors appear first.</p></li>
 <li><p>Restructured the documentation for better navigation.</p></li>
 <li><p>Added documentation for content moderation for admins.</p></li>
 <li><p>Added documentation of known issues.</p></li>
-<li><p>Added documentation of the new per-field editing permissions for collections.</p></li>
-<li><p>Added more developer documentation, including updated installation instructions for python3.12 and uv.</p></li>
-<li><p>Added sphinx-copybutton to make it easier to copy code blocks from the documentation.</p></li>
+<li><p>Added documentation of the new per-field editing permissions for
+collections.</p></li>
+<li><p>Added more developer documentation, including updated installation
+instructions for python3.12 and uv.</p></li>
+<li><p>Added sphinx-copybutton to make it easier to copy code blocks from the
+documentation.</p></li>
 </ul>
 </li>
 <li><p>Build</p>
@@ -677,12 +786,14 @@ on the upload form to determine which three contributors appear first.</p></li>
 <li><p>Updated to use python3.12 and node 20.</p></li>
 <li><p>Updated the build system to use uv for dependency management.</p></li>
 <li><p>Added a mypy type-checking step to the test suite.</p></li>
-<li><p>Added a step to build the documentation and compile the translations to the test suite.</p></li>
+<li><p>Added a step to build the documentation and compile the translations to the
+test suite.</p></li>
 </ul>
 </li>
 <li><p>Testing</p>
 <ul>
-<li><p>Added the beginnings of a jest test suite for frontend code and added it to the test suite run on Github Actions.</p></li>
+<li><p>Added the beginnings of a jest test suite for frontend code and added it to
+the test suite run on Github Actions.</p></li>
 </ul>
 </li>
 </ul>
@@ -693,12 +804,15 @@ on the upload form to determine which three contributors appear first.</p></li>
 <li><p>File Uploads</p>
 <ul>
 <li><p>Fixed a bug causing large file uploads to fail.</p></li>
-<li><p>Partially fixed a bug causing some parallel file uploads to fail. (A complete fix will require changes to InvenioRDM.)</p></li>
-<li><p>Added a button to allow deleting files (and so retrying them) when an upload has failed.</p></li>
+<li><p>Partially fixed a bug causing some parallel file uploads to fail. (A
+complete fix will require changes to InvenioRDM.)</p></li>
+<li><p>Added a button to allow deleting files (and so retrying them) when an upload
+has failed.</p></li>
 <li><p>Minor UI improvements to the upload form file upload widget:</p>
 <ul>
 <li><p>layout improvements for the file list</p></li>
-<li><p>changed the “pending” label to “failed” when a file’s content upload has failed.</p></li>
+<li><p>changed the “pending” label to “failed” when a file’s content upload has
+failed.</p></li>
 <li><p>added a note advising against parallel uploads of large files</p></li>
 <li><p>added a flag in the file list if a file type cannot be previewed</p></li>
 </ul>
@@ -707,7 +821,8 @@ on the upload form to determine which three contributors appear first.</p></li>
 </li>
 <li><p>Search</p>
 <ul>
-<li><p>Added a note to the subjects widget of the upload form to advise users to select a subject category.</p></li>
+<li><p>Added a note to the subjects widget of the upload form to advise users to
+select a subject category.</p></li>
 </ul>
 </li>
 <li><p>Documentation</p>
@@ -717,13 +832,15 @@ on the upload form to determine which three contributors appear first.</p></li>
 </li>
 <li><p>Testing</p>
 <ul>
-<li><p>Several improvements to the test suite allowing the tests to pass on Github as well as locally.</p></li>
+<li><p>Several improvements to the test suite allowing the tests to pass on Github
+as well as locally.</p></li>
 </ul>
 </li>
 <li><p>Server</p>
 <ul>
 <li><p>Upgraded the nginx server to version 1.27.4</p></li>
-<li><p>Added automated building of the kcworks-frontend docker image on push to each branch, just as with the main kcworks image.</p></li>
+<li><p>Added automated building of the kcworks-frontend docker image on push to
+each branch, just as with the main kcworks image.</p></li>
 </ul>
 </li>
 </ul>
@@ -733,7 +850,8 @@ on the upload form to determine which three contributors appear first.</p></li>
 <ul class="simple">
 <li><p>Importer</p>
 <ul>
-<li><p>Added email notifications to the owners of records imported using the new importer API.</p></li>
+<li><p>Added email notifications to the owners of records imported using the new
+importer API.</p></li>
 <li><p>Added a new API flag to disable these email notifications.</p></li>
 </ul>
 </li>
@@ -749,8 +867,10 @@ on the upload form to determine which three contributors appear first.</p></li>
 </li>
 <li><p>Remote user data service</p>
 <ul>
-<li><p>Fixed bug where user profile data was not being updated because comparison with initial data was not being made correctly.</p></li>
-<li><p>Improved handling of timeout errors when fetching data from the remote source.</p></li>
+<li><p>Fixed bug where user profile data was not being updated because comparison
+with initial data was not being made correctly.</p></li>
+<li><p>Improved handling of timeout errors when fetching data from the remote
+source.</p></li>
 </ul>
 </li>
 <li><p>Documentation</p>
@@ -762,12 +882,14 @@ on the upload form to determine which three contributors appear first.</p></li>
 </li>
 <li><p>Email notifications</p>
 <ul>
-<li><p>Improved formatting of moderation email notifications for first uploads/publications.</p></li>
+<li><p>Improved formatting of moderation email notifications for first
+uploads/publications.</p></li>
 </ul>
 </li>
 <li><p>Testing</p>
 <ul>
-<li><p>Extensive improvements to the test suite, including new tests for the new importer API and remote user data service.</p></li>
+<li><p>Extensive improvements to the test suite, including new tests for the new
+importer API and remote user data service.</p></li>
 <li><p>Added workflow to run tests on Github</p></li>
 </ul>
 </li>
@@ -794,7 +916,8 @@ on the upload form to determine which three contributors appear first.</p></li>
 </li>
 <li><p>Account linking</p>
 <ul>
-<li><p>Now can link existing KCWorks accounts to KC accounts on login based on email address, ORCID id, or KC username.</p></li>
+<li><p>Now can link existing KCWorks accounts to KC accounts on login based on
+email address, ORCID id, or KC username.</p></li>
 </ul>
 </li>
 </ul>
@@ -814,18 +937,23 @@ on the upload form to determine which three contributors appear first.</p></li>
 <ul class="simple">
 <li><p>Upload form collection selector</p>
 <ul>
-<li><p>Fixed bug in collection selection modal where search results were always sorted by “newest” instead of “bestmatch” and so were useless for large result sets (original fix only worked in detail page)</p></li>
+<li><p>Fixed bug in collection selection modal where search results were always
+sorted by “newest” instead of “bestmatch” and so were useless for large
+result sets (original fix only worked in detail page)</p></li>
 </ul>
 </li>
 <li><p>Documentation</p>
 <ul>
-<li><p>Moved documentation from README.md and site/CHANGES.md into a static documentation site to be served by Github Pages.</p></li>
-<li><p>Added more documentation for cli commands, metadata/identifiers/vocabularies, installation, and version control.</p></li>
+<li><p>Moved documentation from README.md and site/CHANGES.md into a static
+documentation site to be served by Github Pages.</p></li>
+<li><p>Added more documentation for cli commands,
+metadata/identifiers/vocabularies, installation, and version control.</p></li>
 </ul>
 </li>
 <li><p>Build system</p>
 <ul>
-<li><p>Pinned the version of invenio-logging to less than 2.1.2 to avoid a webpack build conflict.</p></li>
+<li><p>Pinned the version of invenio-logging to less than 2.1.2 to avoid a webpack
+build conflict.</p></li>
 </ul>
 </li>
 </ul>
@@ -835,12 +963,21 @@ on the upload form to determine which three contributors appear first.</p></li>
 <ul class="simple">
 <li><p>Names</p>
 <ul>
-<li><p>Added the infrastructure to customize the division of users’ names into parts so that it can be divided as desired when, e.g., the user’s name is being auto-filled in the name fields of the upload form. This involves</p>
+<li><p>Added the infrastructure to customize the division of users’ names into
+parts so that it can be divided as desired when, e.g., the user’s name is
+being auto-filled in the name fields of the upload form. This involves</p>
 <ul>
-<li><p>a new “name_parts_local” field to the user profile schema. This field contains the user’s name parts if they have been modified within the KCWorks system. This is sometimes necessary when the user data synced from the remote user data service does not divide the user’s name correctly.</p></li>
+<li><p>a new “name_parts_local” field to the user profile schema. This field
+contains the user’s name parts if they have been modified within the
+KCWorks system. This is sometimes necessary when the user data synced from
+the remote user data service does not divide the user’s name correctly.</p></li>
 <li><p>a cli command to update the user’s name parts.</p></li>
-<li><p>a new “names” js module that contains functions to get the user’s full name, full name in inverted order, family name, and given name from the user’s name parts.</p></li>
-<li><p>updates to the CreatibutorsField component to use the new “names” js module and the customized name parts if they are present in a user’s profile.</p></li>
+<li><p>a new “names” js module that contains functions to get the user’s full
+name, full name in inverted order, family name, and given name from the
+user’s name parts.</p></li>
+<li><p>updates to the CreatibutorsField component to use the new “names” js
+module and the customized name parts if they are present in a user’s
+profile.</p></li>
 </ul>
 </li>
 </ul>
@@ -854,7 +991,8 @@ on the upload form to determine which three contributors appear first.</p></li>
 <ul>
 <li><p>Fixed wording of empty results message for collection members search</p>
 <ul>
-<li><p>Previously, the empty results message used “community” instead of “collection”.</p></li>
+<li><p>Previously, the empty results message used “community” instead of
+“collection”.</p></li>
 </ul>
 </li>
 <li><p>Tweaks to layout of collection detail page header</p></li>
@@ -862,7 +1000,10 @@ on the upload form to determine which three contributors appear first.</p></li>
 </li>
 <li><p>Remote user data service</p>
 <ul>
-<li><p>Fixed bug where user profile data was not being updated because comparison with initial data was not being made correctly. This means that, among other things, ORCID ids will now be added correctly when the user chooses “add self” on the upload form.</p></li>
+<li><p>Fixed bug where user profile data was not being updated because comparison
+with initial data was not being made correctly. This means that, among other
+things, ORCID ids will now be added correctly when the user chooses “add
+self” on the upload form.</p></li>
 </ul>
 </li>
 </ul>
@@ -874,7 +1015,8 @@ on the upload form to determine which three contributors appear first.</p></li>
 <li><p>Fixed line wrapping of long values in record sidebar details</p></li>
 <li><p>Added OpenGraph image metadata property to record detail page</p>
 <ul>
-<li><p>This allows social media platforms to display the KCWorks logo instead of a random image they might find on the page.</p></li>
+<li><p>This allows social media platforms to display the KCWorks logo instead of a
+random image they might find on the page.</p></li>
 </ul>
 </li>
 </ul>
@@ -885,14 +1027,22 @@ on the upload form to determine which three contributors appear first.</p></li>
 <li><p>Added sort options for publication date to record search</p>
 <ul>
 <li><p>This allows users to sort records by the date they were published.</p></li>
-<li><p>It also allows publication-date sorting in API requests to the search API. Among other things, this allows users’ KC profiles to display records in publication date order.</p></li>
+<li><p>It also allows publication-date sorting in API requests to the search API.
+Among other things, this allows users’ KC profiles to display records in
+publication date order.</p></li>
 </ul>
 </li>
 <li><p>Community selection modal bug fixes</p>
 <ul>
-<li><p>This affects the modal that appears both during record submission on the upload form and during collection management on the detail page.</p></li>
-<li><p>Fixed the sort order of search results in the modal. These were being sorted by record creation date, leading to a confusing sort order. It now sorts by “best match”. This allows, e.g., “Knowledge Commons” to find the main KC collection.</p></li>
-<li><p>Also fixed the handling of ‘/’ in the search query string. This allows, e.g., “ARLIS/NA” to find the ARLIS/NA collection, where previously it would produce an error.</p></li>
+<li><p>This affects the modal that appears both during record submission on the
+upload form and during collection management on the detail page.</p></li>
+<li><p>Fixed the sort order of search results in the modal. These were being sorted
+by record creation date, leading to a confusing sort order. It now sorts by
+“best match”. This allows, e.g., “Knowledge Commons” to find the main KC
+collection.</p></li>
+<li><p>Also fixed the handling of ‘/’ in the search query string. This allows,
+e.g., “ARLIS/NA” to find the ARLIS/NA collection, where previously it would
+produce an error.</p></li>
 </ul>
 </li>
 </ul>
@@ -904,26 +1054,36 @@ on the upload form to determine which three contributors appear first.</p></li>
 <ul>
 <li><p>Added ui for collection management</p>
 <ul>
-<li><p>A new menu appears in the detail page sidebar when a user has permission to edit a record. This
-allows users to manage the record’s collections right from the detail page.</p></li>
+<li><p>A new menu appears in the detail page sidebar when a user has permission
+to edit a record. This allows users to manage the record’s collections
+right from the detail page.</p></li>
 <li><p>With this menu users can now</p>
 <ul>
-<li><p>submit a request to have an existing published record added to a collection.</p></li>
+<li><p>submit a request to have an existing published record added to a
+collection.</p></li>
 <li><p>add a record to multiple collections</p></li>
 <li><p>remove a record from some or all of its collections</p></li>
 <li><p>view pending collection submissions for the record</p></li>
 </ul>
 </li>
-<li><p>change which collection appears as the primary collection for the record (i.e., the collection whose logo appears in the record’s detail page sidebar)</p></li>
+<li><p>change which collection appears as the primary collection for the record
+(i.e., the collection whose logo appears in the record’s detail page
+sidebar)</p></li>
 </ul>
 </li>
 <li><p>Refactored record management menu</p></li>
-<li><p>Refactored all sidebar menus (including the record management menu) to allow accessible
-keyboard navigation</p></li>
+<li><p>Refactored all sidebar menus (including the record management menu) to allow
+accessible keyboard navigation</p></li>
 <li><p>Fixed display of event metadata</p></li>
 <li><p>Added display for work doi as well as version doi</p>
 <ul>
-<li><p>Each record has at least two DOIs: a work DOI and a version DOI. The work DOI is the DOI for the record as a whole. It always points to the most recent version of the work, even if the user creates new versions in the future. The other identifier is the version DOI, which will always point to the specific version of the work that the user is currently viewing. Previously, only the version DOI was displayed, which could be confusing if the user created a new version of the work.</p></li>
+<li><p>Each record has at least two DOIs: a work DOI and a version DOI. The work
+DOI is the DOI for the record as a whole. It always points to the most
+recent version of the work, even if the user creates new versions in the
+future. The other identifier is the version DOI, which will always point
+to the specific version of the work that the user is currently viewing.
+Previously, only the version DOI was displayed, which could be confusing
+if the user created a new version of the work.</p></li>
 </ul>
 </li>
 </ul>
@@ -932,18 +1092,26 @@ keyboard navigation</p></li>
 <ul>
 <li><p>Added proper messages to collections widget for published records</p>
 <ul>
-<li><p>since collections for published records are now managed from the detail page, the collections widget now displays messages to users pointing them to the detail page to manage collections.</p></li>
+<li><p>since collections for published records are now managed from the detail
+page, the collections widget now displays messages to users pointing them
+to the detail page to manage collections.</p></li>
 </ul>
 </li>
-<li><p>Added clearer titles to form when editing an existing record
-or creating a new version</p>
+<li><p>Added clearer titles to form when editing an existing record or creating a
+new version</p>
 <ul>
-<li><p>Previously, the form would display “Editing Published Record” both when editing the metadata of an existing published version <em>and</em> when creating a new version. The header now displays “Creating New Version” when creating a new version, and “Editing Published Record” when editing the metadata of an existing published version.</p></li>
+<li><p>Previously, the form would display “Editing Published Record” both when
+editing the metadata of an existing published version <em>and</em> when creating
+a new version. The header now displays “Creating New Version” when
+creating a new version, and “Editing Published Record” when editing the
+metadata of an existing published version.</p></li>
 </ul>
 </li>
 <li><p>Changed default publisher from “unknown” to “Knowledge Commons”</p>
 <ul>
-<li><p>Previously, the default publisher was “unknown”. This was especially confusing for resource types where the publisher field is hidden on the upload form. Now, the default publisher is “Knowledge Commons”.</p></li>
+<li><p>Previously, the default publisher was “unknown”. This was especially
+confusing for resource types where the publisher field is hidden on the
+upload form. Now, the default publisher is “Knowledge Commons”.</p></li>
 </ul>
 </li>
 </ul>
@@ -1013,16 +1181,18 @@ or creating a new version</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changes</a><ul>
-<li><a class="reference internal" href="#id1">0.7.3 (2026-02-12)</a></li>
-<li><a class="reference internal" href="#id2">0.7.2 (2026-01-20)</a></li>
-<li><a class="reference internal" href="#id3">0.7.1 (2025-12-19)</a></li>
-<li><a class="reference internal" href="#id4">0.7.0 (2025-12-15)</a></li>
-<li><a class="reference internal" href="#id5">0.5.6 (2025-09-30)</a></li>
-<li><a class="reference internal" href="#id6">0.5.5 (2025-09-10)</a></li>
-<li><a class="reference internal" href="#id7">0.5.4 (2025-08-14)</a></li>
-<li><a class="reference internal" href="#id8">0.5.3 (2025-07-17)</a></li>
-<li><a class="reference internal" href="#id9">0.5.2 (2025-05-29)</a></li>
-<li><a class="reference internal" href="#id10">0.5.1 (2025-05-13)</a></li>
+<li><a class="reference internal" href="#unreleased">Unreleased</a></li>
+<li><a class="reference internal" href="#id1">0.8.0 (2026-05-19)</a></li>
+<li><a class="reference internal" href="#id2">0.7.3 (2026-02-12)</a></li>
+<li><a class="reference internal" href="#id3">0.7.2 (2026-01-20)</a></li>
+<li><a class="reference internal" href="#id4">0.7.1 (2025-12-19)</a></li>
+<li><a class="reference internal" href="#id5">0.7.0 (2025-12-15)</a></li>
+<li><a class="reference internal" href="#id6">0.5.6 (2025-09-30)</a></li>
+<li><a class="reference internal" href="#id7">0.5.5 (2025-09-10)</a></li>
+<li><a class="reference internal" href="#id8">0.5.4 (2025-08-14)</a></li>
+<li><a class="reference internal" href="#id9">0.5.3 (2025-07-17)</a></li>
+<li><a class="reference internal" href="#id10">0.5.2 (2025-05-29)</a></li>
+<li><a class="reference internal" href="#id11">0.5.1 (2025-05-13)</a></li>
 <li><a class="reference internal" href="#beta13-2025-05-05">0.5.0-beta13 (2025-05-05)</a></li>
 <li><a class="reference internal" href="#beta12-2025-04-30">0.4.0-beta12 (2025-04-30)</a></li>
 <li><a class="reference internal" href="#beta11-2025-03-14">0.3.8-beta11 (2025-03-14)</a></li>
@@ -1045,7 +1215,7 @@ or creating a new version</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=c98573da"></script>
+</div><script src="_static/documentation_options.js?v=486e5634"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
