@@ -11,6 +11,10 @@ from flask import Flask
 from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_datastore as accounts_datastore
 from invenio_communities.proxies import current_communities
+from invenio_group_collections_kcworks.utils import (
+    get_configured_remote_group_role_labels,
+    map_remote_roles_to_permissions,
+)
 from invenio_search.proxies import current_search_client
 from invenio_search.utils import prefix_index
 from opensearchpy.helpers.search import Search
@@ -188,28 +192,26 @@ class CommunityGroupMembershipChecker:
     def _get_expected_roles(
         self, commons_instance: str, commons_group_id: str
     ) -> dict[str, list[str]]:
-        """Get the expected roles for a group.
+        """Get the expected roles for a group from config (or a small fallback).
 
-        We may want to fetch from the remote API and config. For now, we'll
-        create the standard role structure.
+        When ``group_roles`` exists for ``commons_instance`` in
+        ``REMOTE_USER_DATA_API_ENDPOINTS``, this matches
+        ``GroupCollectionsService`` / ``map_remote_roles_to_permissions``.
+        Otherwise a fixed fallback list is used (e.g. tests with ad hoc IDPs).
 
         Returns:
-            dict[str, list[str]]: The expected roles for the group.
+            Mapping of community member permission level to Invenio accounts
+            role names for that KC group.
         """
         slug = f"{commons_instance}---{commons_group_id}"
-
-        # Create roles with remote role names based on permission levels.
-        # This matches the logic in GroupCollectionsService:
-        # - moderate_roles (highest level) -> "owner" permissions
-        # - upload_roles (moderate level) -> "curator" permissions
-        # - other_roles (basic level) -> "reader" permissions
-        expected_roles = {
+        labels = get_configured_remote_group_role_labels(commons_instance)
+        if labels:
+            return map_remote_roles_to_permissions(slug, sorted(labels))
+        return {
             "owner": [f"{slug}|administrator"],
             "curator": [f"{slug}|moderator", f"{slug}|editor"],
             "reader": [f"{slug}|member"],
         }
-
-        return expected_roles
 
     def _check_existing_roles_and_memberships(
         self, community_id: str, expected_roles: dict[str, list[str]]
