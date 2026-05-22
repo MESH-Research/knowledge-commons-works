@@ -1,53 +1,74 @@
+{%- if theme.mainHeaderBackgroundColor %}
 .page-subheader-outer {
-    background-color: {{ theme.mainHeaderBackgroundColor }} !important;
+  background-color: {{ theme.mainHeaderBackgroundColor }} !important;
 }
+{%- endif %}
 
+{%- if theme.secondaryColor or theme.secondaryTextColor %}
 .theme-secondary, .ui.secondary.button {
-  background-color: {{ theme.secondaryColor }} !important;
-  color: {{ theme.secondaryTextColor }} !important;
+  {% if theme.secondaryColor %}background-color: {{ theme.secondaryColor }} !important;{% endif %}
+  {% if theme.secondaryTextColor %}color: {{ theme.secondaryTextColor }} !important;{% endif %}
 }
 
 .invenio-page-body .ui.search.button {
-  background-color: {{ theme.secondaryColor }} !important;
-  color: {{ theme.secondaryTextColor }} !important;
+  {% if theme.secondaryColor %}background-color: {{ theme.secondaryColor }} !important;{% endif %}
+  {% if theme.secondaryTextColor %}color: {{ theme.secondaryTextColor }} !important;{% endif %}
 }
+{%- endif %}
 
+{%- if theme.primaryTextColor %}
 .theme-primary a, .theme-primary h1, .theme-primary h2, .theme-primary p {
   color: {{ theme.primaryTextColor }} !important;
 }
+{%- endif %}
 
+{%- if theme.secondaryColor %}
 .theme-primary.pointing.menu .item.active {
   border-color: {{ theme.secondaryColor }} !important;
 }
+{%- endif %}
 
+{%- if theme.primaryColor %}
 .theme-primary-menu .item.active {
   background-color: {{ theme.primaryColor }} !important;
 }
+{%- endif %}
 
-.theme-primary .item, .theme-primary-menu, .page-subheader-outer{
-  font-family: {{ theme.font.family }} !important;
-  font-weight: {{ theme.font.weight }} !important;
-  font-size: {{ theme.font.size }};
+{%- if theme.font.family or theme.font.weight or theme.font.size %}
+.theme-primary .item, .theme-primary-menu, .page-subheader-outer {
+  {% if theme.font.family %}font-family: {{ theme.font.family }} !important;{% endif %}
+  {% if theme.font.weight %}font-weight: {{ theme.font.weight }} !important;{% endif %}
+  {% if theme.font.size %}font-size: {{ theme.font.size }};{% endif %}
 }
+{%- endif %}
 
+{%- if theme.primaryColor %}
 .theme-primary {
   background-color: {{ theme.primaryColor }} !important;
 }
 
-.theme-primary-text a {
+.theme-primary-text a,
+.theme-primary-text h1 {
   color: {{ theme.primaryColor }} !important;
 }
+{%- endif %}
 
+{%- if theme.tertiaryColor or theme.tertiaryTextColor %}
 .theme-tertiary, .ui.tertiary.button {
-  background-color: {{ theme.tertiaryColor }} !important;
-  color: {{ theme.tertiaryTextColor }};
+  {% if theme.tertiaryColor %}background-color: {{ theme.tertiaryColor }} !important;{% endif %}
+  {% if theme.tertiaryTextColor %}color: {{ theme.tertiaryTextColor }};{% endif %}
 }
+{%- endif %}
 
-.invenio-accordion-field .title, .ui.primary.button{
-  background-color: {{ theme.primaryColor }} !important;
-  color: {{ theme.primaryTextColor }} !important;
+{%- if theme.primaryColor or theme.primaryTextColor %}
+.invenio-accordion-field .title, .ui.primary.button {
+  {% if theme.primaryColor %}background-color: {{ theme.primaryColor }} !important;{% endif %}
+  {% if theme.primaryTextColor %}color: {{ theme.primaryTextColor }} !important;{% endif %}
 }
+{%- endif %}
 
+{%- if theme.font.weight %}
 .theme-font h1 {
-  font-weight: {{theme.font.weight}} !important;
+  font-weight: {{ theme.font.weight }} !important;
 }
+{%- endif %}

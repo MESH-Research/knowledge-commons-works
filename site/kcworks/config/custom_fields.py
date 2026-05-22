@@ -160,6 +160,7 @@ COMMUNITIES_CUSTOM_FIELDS_UI = [
     {
         "section": "Linked Commons Group",
         "hidden": False,
+        "show_on_about": False,
         "description": "Information about a Commons group that owns the collection",
         "fields": [
             {

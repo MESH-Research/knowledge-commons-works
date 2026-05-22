@@ -16,6 +16,6 @@
 {%- block css %}
 {{ super() }}
 {% if community %}
-<link rel="stylesheet" type="text/css" href="/collections/{{community.slug}}/community-theme-{{ community.revision_id }}.css">
+<link rel="stylesheet" type="text/css" href="/communities/{{ community.slug }}/community-theme-{{ community.revision_id }}.css">
 {% endif %}
 {%- endblock css %}
