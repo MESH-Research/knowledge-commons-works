@@ -145,6 +145,7 @@ COMMUNITIES_NAMESPACES = {
     **STATS_COMMUNITIES_NAMESPACES,
 }
 
+
 COMMUNITIES_CUSTOM_FIELDS = [
     TextCF(name="kcr:commons_instance"),
     TextCF(name="kcr:commons_group_id"),
@@ -157,6 +158,31 @@ COMMUNITIES_CUSTOM_FIELDS = [
 ]
 
 COMMUNITIES_CUSTOM_FIELDS_UI = [
+    {
+        "section": _("Stats Dashboard Settings"),
+        "show_on_about": False,
+        "fields": [
+            {
+                "field": "stats:dashboard_enabled",
+                "ui_widget": "DashboardEnabledField",
+                "template": "dashboard_enabled.html",
+                "props": {
+                    "icon": "chart line",
+                    "label": _("Enable Dashboard"),
+                    "description": _(
+                        "Enable the 'Insights' tab that displays a "
+                        "statistics dashboard."
+                    ),
+                    "trueLabel": "Enable",
+                    "falseLabel": "Disable",
+                    "helpText": _(
+                        "It may take several hours before initial calculations "
+                        "are complete and your dashboard is fully functional."
+                    ),
+                },
+            },
+        ],
+    },
     {
         "section": "Linked Commons Group",
         "hidden": False,
@@ -222,5 +248,4 @@ COMMUNITIES_CUSTOM_FIELDS_UI = [
             },
         ],
     },
-    # COMMUNITY_STATS_FIELDS_UI(),  # needs app context for defaults
 ]
