@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2026-05-20 12:53-0400\n"
+"POT-Creation-Date: 2026-05-22 16:14-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.17.0\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: /Users/ianscott/Development/kcworks-next/invenio.cfg:124
 msgid "Discover"
@@ -47,6 +47,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config/config.py:138
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:171
 #: /Users/ianscott/Development/kcworks-next/invenio.cfg:390
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/custom_fields.py:171
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config/config.py:138
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:171
 msgid "Enable Dashboard"
@@ -501,49 +502,49 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:39
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:96
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1296
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1294
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:39
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:96
 msgid "Reader"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:97
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1297
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1295
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:97
 msgid "Can view restricted records."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:41
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:102
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1302
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1300
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:41
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:102
 msgid "Curator"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:103
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1303
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1301
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:103
 msgid "Can curate records and view restricted records."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:40
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:109
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1309
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1307
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:40
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:109
 msgid "Manager"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:111
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1311
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1309
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:111
 msgid "Can manage members, curate records and view restricted records."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:38
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:120
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1320
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1318
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/administration/records/records.py:43
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/administration/records/records.py:128
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/resources/serializers/ui/schema.py:443
@@ -553,7 +554,7 @@ msgid "Owner"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:121
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1321
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1319
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:121
 msgid "Full administrative access to the entire community."
 msgstr ""
@@ -564,8 +565,8 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:912
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:914
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:929
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1459
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4222
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1457
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4220
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:311
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:313
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:337
@@ -579,8 +580,8 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:330
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:915
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:930
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1460
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4223
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1458
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4221
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:314
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:338
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:915
@@ -597,22 +598,22 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1191
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:294
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:345
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1919
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1922
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1925
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1928
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1917
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1920
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1923
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1926
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1929
 #: /Users/ianscott/Development/kcworks-next/invenio.cfg:1931
 #: /Users/ianscott/Development/kcworks-next/invenio.cfg:1933
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1935
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1938
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1941
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2369
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2465
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2562
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2648
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2751
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2850
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2949
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1936
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1939
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2367
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2463
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2560
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2646
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2749
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2848
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2947
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:610
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:711
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:813
@@ -625,31 +626,31 @@ msgstr ""
 msgid "e.g. 30 min (press 'enter' to add)"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1944
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1942
 msgid "e.g. 32 cm, 1.5 GB (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:229
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1959
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1957
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/views/deposits.py:114
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:229
 msgid "Copy/paste your existing DOI here..."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:230
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1960
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1958
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:230
 msgid "Discard the reserved DOI."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:231
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1961
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1959
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:231
 msgid "Get a DOI now!"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:233
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1963
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1961
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:233
 msgid ""
 "Reserve a DOI by pressing the button (so it can be included in files "
@@ -657,7 +658,7 @@ msgid ""
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:243
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1968
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1966
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:243
 msgid ""
 "Only enter a DOI if you have already registered one with a DOI provider. "
@@ -667,7 +668,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1291
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:196
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3049
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3047
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1328
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:196
 msgid "e.g. 1.4M rows (press 'enter' to add)"
@@ -675,46 +676,46 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1385
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:243
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3144
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3142
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1426
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:243
 msgid "e.g. 32 x 40 cm (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1621
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3341
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3339
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1668
 msgid "e.g. 30 min (press enter to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1797
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:426
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3498
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3496
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1849
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:426
 msgid "e.g. 400 MB"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1952
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3631
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3629
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2009
 msgid "e.g., 400 words (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2920
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4539
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4537
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2999
 msgid "e.g., 1000 maps (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3021
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4643
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4641
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3106
 msgid "e.g., 1000 books (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3529
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:5149
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:5147
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3628
 msgid "e.g. 10 cm (press 'enter' to add)"
 msgstr ""
@@ -2009,7 +2010,6 @@ msgid "Object or collection location"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/mail.py:48
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/mail.py:48
 msgid "Welcome to KCWorks!"
 msgstr ""
 
@@ -2516,7 +2516,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:36
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:47
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:36
-#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/settings/base.html:25
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/settings/base.html:21
 msgid "Visibility"
 msgstr ""
 
@@ -3389,6 +3389,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/settings/base.html:23
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/imprint_fields.py:57
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/journal_fields.py:57
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/settings/base.html:23
 msgid "Pages"
 msgstr ""
 
@@ -3623,16 +3624,19 @@ msgid "deleted a comment"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:157
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/custom_fields.py:162
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:157
 msgid "Stats Dashboard Settings"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:176
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/custom_fields.py:173
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:176
 msgid "Enable the 'Insights' tab that displays a statistics dashboard."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:185
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/custom_fields.py:179
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:185
 msgid ""
 "It may take several hours before initial calculations are complete and "
@@ -6402,6 +6406,10 @@ msgstr ""
 msgid "Allow generation of granular access JWT tokens."
 msgstr ""
 
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/ext.py:243
+msgid "Contribute"
+msgstr ""
+
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/frontpage.html:31
 msgid ""
 "Organize, curate and collaborate on records for your institution, "
@@ -6465,12 +6473,12 @@ msgid " requests"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/settings/base.html:12
-#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/settings/base.html:16
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/settings/base.html:14
 msgid " settings"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/settings/base.html:20
-#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/settings/base.html:24
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/settings/base.html:20
 msgid "Profile"
 msgstr ""
 
@@ -6716,6 +6724,14 @@ msgid ""
 "        metadata of the collection is kept for archival purposes."
 msgstr ""
 
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/header.html:125
+msgid "Community navigation"
+msgstr ""
+
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/header.html:126
+msgid "Navigate"
+msgstr ""
+
 #: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/curation_policy/index.html:16
 msgid "Curation Policy"
 msgstr ""
@@ -6728,12 +6744,8 @@ msgstr ""
 msgid "The collection is restricted to users with access."
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/settings/base.html:26
-msgid "Review policy"
-msgstr ""
-
-#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/settings/base.html:27
-msgid "About and Curation"
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/settings/base.html:22
+msgid "Curation policies"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/macros/communities_carousel.html:14

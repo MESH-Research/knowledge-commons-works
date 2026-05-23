@@ -17,7 +17,6 @@ import React from "react";
 import { Image, InvenioPopup } from "react-invenio-forms";
 import { Icon, Label, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import GeoPattern from "geopattern";
 
 const CommunityCompactItemMobile = ({
   result,
@@ -30,11 +29,7 @@ const CommunityCompactItemMobile = ({
   restrictionsMessage,
 }) => {
   const communityType = result.ui?.type?.title_l10n;
-  const { metadata, ui, links, access, id, slug } = result;
-
-  const makePattern = (slug) => {
-    return GeoPattern.generate(encodeURI(slug)).toDataUri();
-  };
+  const { metadata, ui, links, access, id } = result;
 
   return (
     <div key={id} className={`community-item mobile only ${itemClassName}`}>
@@ -46,22 +41,34 @@ const CommunityCompactItemMobile = ({
             src={links.logo}
             alt={i18next.t("Community logo")}
             className="community-image rel-mr-1"
-            fallbackSrc={makePattern(slug)}
+            fallbackSrc="/static/images/square-placeholder.png"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = makePattern(slug);
+              e.target.src = "/static/images/square-placeholder.png";
             }}
           />
 
           <div className="flex align-items-center rel-mb-1">
             <a
-              href={detailUrl || links.self_html.replace('communities', 'collections')}
+              href={detailUrl || links.self_html}
               className="ui small header truncate-lines-2 m-0 mr-5"
               target="_blank"
               rel="noreferrer"
               aria-label={`${metadata.title} (${i18next.t("opens in new tab")})`}
             >
               {metadata.title}
+              {/* Show the icon for subcommunities */}
+              {result.parent && (
+                <p className="ml-5 display-inline-block">
+                  <Popup
+                    content={i18next.t("Verified community")}
+                    trigger={
+                      <Icon size="small" color="green" name="check circle outline" />
+                    }
+                    position="top center"
+                  />
+                </p>
+              )}
             </a>
             <i className="small icon external primary" aria-hidden="true" />
           </div>

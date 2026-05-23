@@ -30,9 +30,6 @@ theme = WebpackThemeBundle(
                 "invenio-communities-search-custom": (
                     "./js/collections/community/search.js"
                 ),
-                "invenio-communities-featured-custom": (
-                    "./js/collections/community/featuredCommunities/index.js"
-                ),
                 "invenio-communities-carousel-custom": (
                     "./js/collections/community/communitiesCarousel/index.js"
                 ),
@@ -51,7 +48,6 @@ theme = WebpackThemeBundle(
                 "main_ui_main_menu": "./js/main_ui/main_menu.js",
             },
             "dependencies": {
-                "geopattern": "^1.2.3",
                 "orcid-utils": "^1.2.2",
                 "yup": "^0.32.11",
             },

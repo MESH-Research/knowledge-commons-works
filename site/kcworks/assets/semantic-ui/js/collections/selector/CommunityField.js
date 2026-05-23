@@ -11,7 +11,6 @@
 // see LICENSE file for more details.
 
 import { i18next } from "@translations/invenio_modular_deposit_form/i18next";
-import GeoPattern from "geopattern";
 import PropTypes from "prop-types";
 import React, { useState, useContext } from "react";
 import { connect, useStore } from "react-redux";
@@ -37,18 +36,14 @@ export const changeSelectedCommunity = (community) => {
 };
 
 const CommunityListItem = ({ community }) => {
-  const pattern = community?.slug
-    ? GeoPattern.generate(community.slug)
-    : GeoPattern.generate("default");
-
   return (
     <>
       <Grid.Column width={2}>
         <Image
           size="tiny"
           className="community-header-logo"
-          src={community.links?.logo || pattern.toDataUri()}
-          fallbackSrc={pattern.toDataUri()}
+          src={community.links?.logo || "/static/images/square-placeholder.png"}
+          fallbackSrc="/static/images/square-placeholder.png"
         />
       </Grid.Column>
       <Grid.Column width={14}>

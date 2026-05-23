@@ -12,24 +12,12 @@ import { CommunityTypeLabel } from "../labels";
 import { RestrictedLabel } from "../labels";
 import React from "react";
 import { Image } from "react-invenio-forms";
-import { Button, Grid, Icon } from "semantic-ui-react";
+import { Button, Grid, Icon, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import GeoPattern from "geopattern";
 
 export const CommunityItemComputer = ({ result }) => {
   const communityType = result.ui?.type?.title_l10n;
   const canUpdate = result.ui?.permissions?.can_update;
-
-  const self_link = result.links.self_html.replace(
-    "communities",
-    "collections"
-  );
-  const settings_link = result.links.settings_html.replace(
-    "communities",
-    "collections"
-  );
-
-  const pattern = GeoPattern.generate(encodeURI(result.slug));
 
   return (
     <Grid className="computer tablet only item community-item">
@@ -46,7 +34,7 @@ export const CommunityItemComputer = ({ result }) => {
             size="tiny"
             className="community-image rel-mr-2"
             alt=""
-            fallbackSrc={pattern.toDataUri()}
+            fallbackSrc="/static/images/square-placeholder.png"
           />
           <div>
             {result.access.visibility === "restricted" && (
@@ -54,13 +42,33 @@ export const CommunityItemComputer = ({ result }) => {
                 <RestrictedLabel access={result.access.visibility} />
               </div>
             )}
-            <a className="ui medium header mb-0" href={self_link}>
+            <a className="ui medium header mb-0" href={result.links.self_html}>
               {result.metadata.title}
+              {/* Show the icon for subcommunities */}
+              {result.parent && (
+                <p className="ml-5 display-inline-block">
+                  <Popup
+                    content={i18next.t("Verified community")}
+                    trigger={
+                      <Icon size="small" color="green" name="check circle outline" />
+                    }
+                    position="top center"
+                  />
+                </p>
+              )}
             </a>
             {result.metadata.description && (
               <p className="truncate-lines-1 text size small text-muted mt-5">
                 {result.metadata.description}
               </p>
+            )}
+            {result.parent && (
+              <div className="sub header">
+                {i18next.t("Part of")}{" "}
+                <a href={`/collections/${result.parent.slug}`}>
+                  {result.parent.metadata.title}
+                </a>
+              </div>
             )}
 
             {(communityType ||
@@ -131,7 +139,7 @@ export const CommunityItemComputer = ({ result }) => {
             <Button
               compact
               size="small"
-              href={settings_link}
+              href={result.links.settings_html}
               className="mt-0 mr-0"
               labelPosition="left"
               icon="edit"

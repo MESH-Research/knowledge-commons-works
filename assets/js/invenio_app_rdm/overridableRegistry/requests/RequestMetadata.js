@@ -9,7 +9,6 @@ import axios from "axios";
 import { i18next } from "@translations/invenio_requests/i18next";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import GeoPattern from "geopattern";
 import { Image } from "react-invenio-forms";
 import Overridable from "react-overridable";
 import { Divider, Header, Icon, Message } from "semantic-ui-react";
@@ -35,9 +34,9 @@ const User = ({ user }) => (
     </span>
   </div>
 );
-const Community = ({ community, pattern }) => (
+const Community = ({ community }) => (
   <div className="flex">
-    <Image src={community.links.logo} avatar size="tiny" className="mr-5" ui={false} fallbackSrc={pattern.toDataUri()} />
+    <Image src={community.links.logo} avatar size="tiny" className="mr-5" ui={false} fallbackSrc="/static/images/square-placeholder.png" />
     <a href={`/collections/${community.slug}`}>{community.metadata.title}</a>
   </div>
 );
@@ -67,8 +66,7 @@ const EntityDetails = ({ userData, details }) => {
   if (isUser) {
     return <User user={details} />;
   } else if (isCommunity) {
-    const pattern = GeoPattern.generate(encodeURI(details.slug));
-    return <Community community={details} pattern={pattern} />;
+    return <Community community={details} />;
   } else if (isExternalEmail) {
     return <ExternalEmail email={details} />;
   } else if (isGroup) {

@@ -3859,6 +3859,7 @@ name = "kcworks"
 version = "0.8.0"
 source = { editable = "." }
 dependencies = [
+    { name = "cairosvg" },
     { name = "invenio-app-rdm", extra = ["opensearch2", "s3", "tests"] },
     { name = "invenio-communities" },
     { name = "invenio-group-collections-kcworks" },
@@ -3876,6 +3877,7 @@ dependencies = [
     { name = "langdetect" },
     { name = "lxml" },
     { name = "pandas" },
+    { name = "pillow" },
     { name = "pydantic" },
     { name = "sentry-sdk", extra = ["flask"] },
     { name = "sqlalchemy", extra = ["asyncio"] },
@@ -3944,6 +3946,7 @@ tests = [
 
 [package.metadata]
 requires-dist = [
+    { name = "cairosvg", specifier = ">=2.7" },
     { name = "check-manifest", marker = "extra == 'dev'", specifier = ">=0.25" },
     { name = "coverage", marker = "extra == 'tests'" },
     { name = "djlint", marker = "extra == 'dev'", specifier = ">=1.36.4" },
@@ -3969,6 +3972,7 @@ requires-dist = [
     { name = "lxml", specifier = "==5.2.1" },
     { name = "myst-parser", marker = "extra == 'docs'" },
     { name = "pandas" },
+    { name = "pillow", specifier = ">=11.0" },
     { name = "psycopg2-binary", marker = "extra == 'dev'", specifier = ">=2.9.10" },
     { name = "pydantic" },
     { name = "pytest", marker = "extra == 'tests'" },

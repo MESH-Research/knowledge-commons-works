@@ -14,12 +14,14 @@ import os
 import warnings
 
 from flask import Flask, current_app, g, request
+from flask_menu import current_menu  # type: ignore[import-untyped]
 from flask_principal import Identity, identity_changed
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_datastore
 from invenio_communities.communities.services.components import (
     CommunityAccessComponent as BaseCommunityAccessComponent,
 )
+from invenio_i18n import lazy_gettext as _  # type: ignore[import-untyped]
 from invenio_oauth2server.proxies import current_oauth2server
 from invenio_rdm_records.services.communities.components import (
     CommunityAccessComponent as RDMCommunityAccessComponent,
@@ -34,6 +36,9 @@ from invenio_remote_user_data_kcworks.services.components import (
     CitedNamesUpsertComponent,
 )
 from invenio_remote_user_data_kcworks.utils.broker import extract_bearer_token
+from kcworks.services.communities.default_branding import (
+    DefaultBrandingComponent,
+)
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -50,7 +55,10 @@ from kcworks.services.records.components.per_field_permissions_component import 
 from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
     CommunityChangePermissionsComponent,
 )
-from kcworks.templates.template_filters import user_profile_dict
+from kcworks.templates.template_filters import (
+    sort_menu_items_by_name,
+    user_profile_dict,
+)
 from kcworks.views.error_handlers import (
     register_themed_error_handlers,
     wrap_blueprint_error_handlers_with_logging,
@@ -133,6 +141,12 @@ class KCWorks:
             BaseCommunityAccessComponent if c is RDMCommunityAccessComponent else c
             for c in CommunityServiceComponents
         ]
+        # DefaultBrandingComponent must run AFTER PIDComponent (so
+        # record.id and record.slug are stable), OwnershipComponent, and
+        # CommunityThemeComponent (so any user-supplied theme survives
+        # and we only fill in missing keys). Appending last satisfies
+        # all three.
+        _community_components.append(DefaultBrandingComponent)
         app.config["COMMUNITIES_SERVICE_COMPONENTS"] = _community_components
 
         patch_community_access_restriction_check()
@@ -210,6 +224,28 @@ class KCWorks:
             app: Flask application
         """
         app.jinja_env.filters["user_profile_dict"] = user_profile_dict
+        app.jinja_env.filters["sort_menu_items_by_name"] = sort_menu_items_by_name
+
+
+def register_community_menu_items(_app: Flask) -> None:
+    """Register KCWorks-specific community header menu items.
+
+    Args:
+        _app: Flask application object.
+    """
+    def deposit_args():
+        """Return deposit query args for the current community page."""
+        pid_value = (request.view_args or {}).get("pid_value")
+        return {"community": pid_value} if pid_value else {}
+
+    current_menu.submenu("communities").submenu("contribute").register(
+        endpoint="invenio_app_rdm_records.deposit_create",
+        text=_("Contribute"),
+        order=70,
+        endpoint_arguments_constructor=deposit_args,
+        icon="plus",
+        permissions="can_submit_record",
+    )
 
 
 def finalize_app(app: Flask) -> None:
@@ -223,7 +259,8 @@ def finalize_app(app: Flask) -> None:
     blueprint that registers handlers later than this would simply be
     skipped (still works, just no logging).
     """
-    register_themed_error_handlers(app)
+    register_community_menu_items(app)
+    # register_themed_error_handlers(app)
     wrap_blueprint_error_handlers_with_logging(app)
 
 
