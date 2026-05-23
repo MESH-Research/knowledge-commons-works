@@ -29,8 +29,27 @@
     }
   }
 }
-.community-header .ui.image.community-image {
+.community-header .ui.image.community-image.community-header-logo {
   margin-top: 1rem;
+  width: 100%;
+  max-width: 100%;
+
+  @media (max-width: @largestMobileScreen) {
+    width: 5rem;
+    max-width: 5rem;
+  }
+
+  img {
+    width: 100%;
+    max-width: none;
+    max-height: none;
+  }
+}
+// also used elsewhere
+img.community-header-logo { 
+  border-radius: @defaultBorderRadius;
+  box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
+  border: 1px solid @sidebarBorderColor;
 }
 .communities-frontpage {
   .ui.icon.message > .icon:not(.close) {
@@ -49,11 +68,6 @@
   max-height: 40px;
   min-height: 40px;
   min-width: 40px;
-  box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
-  border: 1px solid @sidebarBorderColor;
-}
-img.community-header-logo {
-  border-radius: @defaultBorderRadius;
   box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
   border: 1px solid @sidebarBorderColor;
 }

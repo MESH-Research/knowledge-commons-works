@@ -97,6 +97,33 @@ a {
 
 // basic page structure
 
+@supports (view-transition-name: none) {
+  @view-transition {
+    navigation: auto;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    #community-detail-header {
+      view-transition-name: community-detail-header;
+      contain: layout;
+    }
+    main,
+    .community-detail-content,
+    .rel-mt-2.ui.container {
+      view-transition-name: community-detail-content;
+    }
+    ::view-transition-old(community-detail-content),
+    ::view-transition-new(community-detail-content) {
+      animation-duration: 180ms;
+      animation-timing-function: ease-out;
+    }
+    ::view-transition-old(community-detail-header),
+    ::view-transition-new(community-detail-header) {
+      animation-duration: 180ms;
+      animation-timing-function: ease-out;
+    }
+  }
+}
+
 #main {
   flex-grow: 1;
   display: flex;

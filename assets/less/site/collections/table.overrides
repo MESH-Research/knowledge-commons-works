@@ -1,7 +1,7 @@
 
 .ui.table {
     thead th {
-        background-color: @seafoam50;
+        background-color: transparent;  // @seafoam50;
         color: @ivy80;
         line-height: 1.15rem;
     }
@@ -19,12 +19,12 @@
         // }
         tr {
             td:first-child:not(.ignored) {
-            background-color: @seafoam50;
+            background-color: transparent; // @seafoam50;
             color: @ivy80;
             font-weight: normal;
             }
             td:nth-child(2) {
-                border-color: @borderColor;
+                border-color: transparent; // @borderColor;
             }
         }
     }
