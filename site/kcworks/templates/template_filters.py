@@ -1,13 +1,49 @@
+# Part of knowledge-commons-works
+
+# Copyright (C) 2023-2026, MESH Research
+#
+# knowledge-commons-works is free software; you can redistribute and/or
+# modify it under the terms of the MIT License; see LICENSE file for more details.
+
+
 """Template filters for KCWorks.
 
 This module contains custom Jinja2 template filters for KCWorks.
 """
 
 from flask import current_app
+
 from invenio_remote_user_data_kcworks.utils.names import (
     get_full_name,
     get_full_name_inverted,
 )
+
+
+def sort_menu_items_by_name(items, names):
+    """Sort menu items according to a preferred name order.
+
+    Items named in `names` are returned first in that order. Any remaining
+    items keep their existing order and are appended, so menu entries from
+    other extensions still render even when this template does not know about
+    them yet.
+
+    Args:
+        items: Iterable of menu items, such as
+            `current_menu.submenu(...).children`.
+        names: Preferred menu item names in display order.
+
+    Returns:
+        list: Menu items sorted by the preferred order.
+    """
+    menu_items = list(items)
+    menu_items_by_name = {item.name: item for item in menu_items}
+    ordered_items = [
+        menu_items_by_name[name] for name in names if name in menu_items_by_name
+    ]
+
+    remaining_items = [item for item in menu_items if item.name not in names]
+
+    return ordered_items + remaining_items
 
 
 def user_profile_dict(user_profile):

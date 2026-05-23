@@ -10,27 +10,158 @@
   more details.
 #}
 {%- from "invenio_theme/macros/truncate.html" import truncate_text %}
-{%- from "invenio_communities/details/macros/access-status-label.html"
-import access_status_label -%}
-{{ webpack['invenio-communities-header-custom.js'] }}
-<div class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile"
+{%- from "invenio_communities/details/macros/access-status-label.html" import access_status_label -%}
+<!-- NOTE: The javascript for the header is loaded in the base.html override template -->
+{% macro button_to_request_membership(community_ui) %}
+  {% if permissions.can_request_membership %}
+    {# TODO: Add relation_to_community for other flows #}
+    <div id="request-membership-app"
+         data-community='{{ community_ui | tojson }}'
+         class="display-inline-block"></div>
+  {% endif %}
+{% endmacro %}
+<div class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile pb-0"
      id="community-detail-header"
-     data-active-menu-item="{{ active_community_header_menu_item }}"
-     data-can-read="{{ permissions.can_read }}"
-     data-can-moderate="{{ permissions.can_moderate }}"
-     data-can-search-requests="{{ permissions.can_search_requests }}"
-     data-can-update="{{ permissions.can_update }}"
-     data-community-logo-url="{{ community.links.logo | resolve_community_logo(community.id) }}"
-     data-community-title="{{ community.metadata.get('title', '') }}"
-     data-community-type="{{ community.ui['type']['title_l10n'] if community.ui.type else '' }}"
-     data-custom-fields='{{ community.custom_fields | tojson }}'
-     data-has-curation-policy-content="{{ community.metadata.get('curation_policy', '') }}"
-     data-has-about-content="{{ community.metadata.get('page', '') }}"
-     data-organizations='{{ community.metadata.get('organizations', []) | tojson }}'
-     data-ror-icon-url="{{ url_for('static', filename='images/ror-icon.svg') }}"
-     data-slug="{{ community.slug }}"
-     data-visibility="{{ community.access.get('visibility', '') }}"
-     data-website="{{ community.website if community.website else '' }}"
-     data-dashboard-enabled-community="{{ config.get("STATS_DASHBOARD_ENABLED_COMMUNITY") }}"
-     data-community-stats-enabled="{{ config.get("COMMUNITY_STATS_ENABLED") }}"
-     data-dashboard-community-opt-in="{{ config.get("STATS_DASHBOARD_COMMUNITY_OPT_IN") }}"></div>
+     data-slug="{{ community_ui['slug'] }}"
+     data-community-logo-url="{{ community_ui['links']['logo'] | resolve_community_logo(community_ui['id']) }}">
+  <div class="ui container relaxed grid page-subheader community-header mr-0-mobile ml-0-mobile">
+    <div class="row pb-0 community-header">
+      <div class="sixteen wide mobile three wide tablet two wide computer column pt-5">
+        <div class="ui rounded image community-image community-header-logo">
+          <img src="{{ community_ui['links']['logo'] | resolve_community_logo(community_ui['id']) }}"
+               alt="logo for {{ community_ui['title'] }} collection"
+               class="rel-mb-1 ui image" />
+        </div>
+      </div>
+      <div class="sixteen wide mobile thirteen wide tablet twelve wide computer column">
+        <div class="flex align-items-center mb-5">
+          <div class="ui grid">
+            <div class="row">
+              <div class="column">
+                <h1 class="ui huge header mb-0">
+                  <a href="{{ url_for('invenio_app_rdm_communities.communities_detail', pid_value=community_ui['slug']) }}"
+                     class="ui small header">{{ community_ui["metadata"]["title"] }}</a>
+                  <!-- Show the icon for subcommunities -->
+                  {% if community_ui['parent'] %}
+                    <p class="ml-2 mb-0 display-inline-block">
+                      <i class="green check circle outline icon"></i>
+                    </p>
+                  {% endif %}
+                </h1>
+              </div>
+            </div>
+            {% if community_ui["access"]["visibility"] == 'restricted' %}
+              <div class="row">
+                <div class="column">
+                  <div class="rel-ml-0 rel-mb-1">{{ access_status_label() }}</div>
+                  <div class="mobile only rel-mb-1">{{ access_status_label() }}</div>
+                </div>
+              </div>
+            {% endif %}
+            {% if community_ui['parent'] %}
+              <div class="row">
+                <div class="column">
+                  <div class="inline-computer ">
+                    <span class="ui tiny header">Part of</span>
+                    <a href="{{ url_for('invenio_app_rdm_communities.communities_home', pid_value=community.parent.slug) }}">
+                      {{ community_ui["parent"]["metadata"]["title"] }}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            {% if community_ui["metadata"]["website"] %}
+              <div class="row collection-url">
+                <div class="column">
+                  <i class="linkify icon" aria-hidden="true"></i>
+                  <button class="ui simple button transparent"
+                          href="{{ community_ui["metadata"]["website"] }}">
+                    {{ community_ui["metadata"]["website"] }}
+                  </button>
+                </div>
+              </div>
+            {% endif %}
+            {% if community_ui["metadata"]["type"] is defined %}
+              <div class="row collection-type">
+                <div class="column">
+                  <i class="tag icon" aria-hidden="true"></i>
+                  <span class="label label-keyword">{{ community_ui["ui"]["type"]["title_l10n"] }}</span>
+                </div>
+              </div>
+            {% endif %}
+            {% if community_ui["metadata"]["organizations"] %}
+              <div class="row">
+                <div class="column">
+                  <div class="inline-computer"
+                       id="organizations-list"
+                       data-organizations='{{ community_ui["metadata"]["organizations"] | tojson }}'></div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="sixteen wide mobile sixteen wide tablet two wide computer right aligned middle aligned column">
+        {# Button to request membership is fully disabled until feature completely merged in v14. #}
+        {# {{ button_to_request_membership(community) }} #}
+        {% if permissions.can_moderate %}
+          <a href="{{ url_for('administration.communities', q='slug:'+community_ui['slug']) }}"
+             class="ui button icon rel-mt-1">
+            <i class="cog icon" aria-hidden="true"></i>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    {% if community_menu_active %}
+      {% set community_menu_order = ["about", "search", "requests", "members", "stats", "settings", "curation_policy", "contribute"] %}
+      {% set community_menu_items = current_menu.submenu('communities').children | sort_menu_items_by_name(community_menu_order) %}
+      {% set ns = namespace(active_url="") %}
+      {% for item in community_menu_items if (item.permissions == True or permissions[item.permissions]) and item.visible %}
+        {% if active_community_header_menu_item == item.name %}
+          {% set ns.active_url = item.url %}
+        {% endif %}
+      {% endfor %}
+      <select class="ui fluid dropdown community-header-mobile-menu mobile only rel-mt-1 rel-mb-1"
+              aria-label="{{ _("Community navigation") }}">
+        <option value="" disabled {{ 'selected' if not ns.active_url }}>{{ _("Navigate") }}
+        </option>
+        {% for item in community_menu_items if (item.permissions == True or permissions[item.permissions]) and item.visible %}
+          <option value="{{ item.url }}"
+                  {{ 'selected' if active_community_header_menu_item == item.name }}>
+            {{ item.text }}
+          </option>
+        {% endfor %}
+      </select>
+      <div class="ui container secondary pointing menu pl-0 pr-0 theme-primary tablet computer widescreen large-monitor only">
+        {% for item in community_menu_items if (item.permissions == True or permissions[item.permissions]) and item.visible %}
+          <a class="item {{ 'active' if active_community_header_menu_item == item.name }} {{ 'disabled' if not item.url }}"
+             href="{{ item.url }}">
+            <i aria-hidden="true" class="{{ item.icon }} icon"></i>
+            {{ item.text }}
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+<!-- <div class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile" -->
+<!--      id="community-detail-header" -->
+<!--      data-active-menu-item="{{ active_community_header_menu_item }}" -->
+<!--      data-can-read="{{ permissions.can_read }}" -->
+<!--      data-can-moderate="{{ permissions.can_moderate }}" -->
+<!--      data-can-search-requests="{{ permissions.can_search_requests }}" -->
+<!--      data-can-update="{{ permissions.can_update }}" -->
+<!--      data-community-logo-url="{{ community.links.logo | resolve_community_logo(community.id) }}" -->
+<!--      data-community-title="{{ community.metadata.get('title', '') }}" -->
+<!--      data-community-type="{{ community.ui['type']['title_l10n'] if community.ui.type else '' }}" -->
+<!--      data-custom-fields='{{ community.custom_fields | tojson }}' -->
+<!--      data-has-curation-policy-content="{{ community.metadata.get('curation_policy', '') }}" -->
+<!--      data-has-about-content="{{ community.metadata.get('page', '') }}" -->
+<!--      data-organizations='{{ community.metadata.get('organizations', []) | tojson }}' -->
+<!--      data-ror-icon-url="{{ url_for('static', filename='images/ror-icon.svg') }}" -->
+<!--      data-slug="{{ community.slug }}" -->
+<!--      data-visibility="{{ community.access.get('visibility', '') }}" -->
+<!--      data-website="{{ community.website if community.website else '' }}" -->
+<!--      data-dashboard-enabled-community="{{ config.get("STATS_DASHBOARD_ENABLED_COMMUNITY") }}" -->
+<!--      data-community-stats-enabled="{{ config.get("COMMUNITY_STATS_ENABLED") }}" -->
+<!--      data-dashboard-community-opt-in="{{ config.get("STATS_DASHBOARD_COMMUNITY_OPT_IN") }}"></div> -->

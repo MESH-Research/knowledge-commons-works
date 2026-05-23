@@ -13,6 +13,11 @@
 
 {% extends "invenio_communities/base.html" %}
 
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack['invenio-communities-header-custom.js'] }}
+{%- endblock javascript %}
+
 {%- block page_body %}
   {% set community_menu_active = True %}
   {% include "invenio_communities/details/header.html" %}
