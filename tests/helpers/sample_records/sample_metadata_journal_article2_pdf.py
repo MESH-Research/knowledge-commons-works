@@ -76,7 +76,7 @@ sample_metadata_journal_article2_pdf = {
                         "P. Palazzo"
                     ),  # FIXME: why is initial with family name?
                     "given_name": "Pedro",
-                    "identifiers": [{"identifier": "palazzo", "scheme": "hc_username"}],
+                    "identifiers": [{"identifier": "palazzo", "scheme": "kc_username"}],
                     "name": (
                         "P. Palazzo, Pedro"
                     ),  # Why is name switched to family, given?

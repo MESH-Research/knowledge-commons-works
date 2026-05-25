@@ -60,14 +60,12 @@ def test_update_community_records_metadata(
             },
             community_list=[community_id],
             file_paths=[
-                Path(
-                    Path(__file__).parent.parent
+                (
+                    Path(__file__).resolve().parents[2]
                     / "helpers"
                     / "sample_files"
                     / "sample.pdf"
-                )
-                .absolute()
-                .as_posix()
+                ).as_posix()
             ],
         )
         records.append(record)

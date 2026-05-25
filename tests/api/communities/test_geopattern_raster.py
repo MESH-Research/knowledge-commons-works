@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from io import BytesIO
+from typing import cast
 
 import pytest
 from kcworks.services.geopattern import generate, to_png
+from kcworks.services.geopattern.pattern import PATTERNS
 from kcworks.services.geopattern.raster import svg_to_png
 from PIL import Image
 
@@ -40,6 +42,20 @@ def test_svg_to_png_smoke() -> None:
     assert img.mode == "RGB"
 
 
+@pytest.mark.parametrize("generator", PATTERNS)
+def test_all_forced_generators_rasterize(generator: str) -> None:
+    """Every geopattern generator emits SVG that can be rasterized."""
+    pattern = generate("forced-generator-smoke", generator=generator)
+    assert pattern.name == generator
+    svg = pattern.to_svg()
+    assert svg.startswith("<svg")
+
+    png = svg_to_png(svg, width=96, height=96)
+    img = Image.open(BytesIO(png))
+    assert img.size == (96, 96)
+    assert img.mode == "RGB"
+
+
 def test_rasterized_pattern_includes_background_color() -> None:
     """At least one corner pixel should be close to `pattern.color`.
 
@@ -58,10 +74,10 @@ def test_rasterized_pattern_includes_background_color() -> None:
         "RGB"
     )
     samples = [
-        img.getpixel((1, 1)),
-        img.getpixel((198, 1)),
-        img.getpixel((1, 198)),
-        img.getpixel((198, 198)),
+        cast(tuple[int, int, int], img.getpixel((1, 1))),
+        cast(tuple[int, int, int], img.getpixel((198, 1))),
+        cast(tuple[int, int, int], img.getpixel((1, 198))),
+        cast(tuple[int, int, int], img.getpixel((198, 198))),
     ]
     tolerance = 12
 

@@ -13,7 +13,7 @@
 Flask's config loader picks them up as instance config.
 """
 
-import idutils
+from idutils import is_doi, is_gnd, is_isni, is_ror
 from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.config import (
     RDM_RECORDS_IDENTIFIERS_SCHEMES,
@@ -42,12 +42,12 @@ RDM_RECORDS_IDENTIFIERS_SCHEMES.update({
     },
     "datacite-doi": {
         "label": _("DOI (DataCite)"),
-        "validator": idutils.is_doi,
+        "validator": is_doi,
         "datacite": "DOI",
     },
     "alternate-doi:": {
         "label": _("Alternate DOI"),
-        "validator": idutils.is_doi,
+        "validator": is_doi,
         "datacite": "Other",
     },
     "import-recid": {
@@ -104,9 +104,9 @@ RDM_RECORDS_PERSONORG_SCHEMES.update({
 
 VOCABULARIES_IDENTIFIER_SCHEMES = {
     "grid": {"label": _("GRID"), "validator": lambda x: True},
-    "gnd": {"label": _("GND"), "validator": idutils.is_gnd},
-    "isni": {"label": _("ISNI"), "validator": idutils.is_isni},
-    "ror": {"label": _("ROR"), "validator": idutils.is_ror},
+    "gnd": {"label": _("GND"), "validator": is_gnd},
+    "isni": {"label": _("ISNI"), "validator": is_isni},
+    "ror": {"label": _("ROR"), "validator": is_ror},
 }
 """Generic identifier schemes, usable by other vocabularies."""
 
@@ -122,7 +122,7 @@ VOCABULARIES_NAMES_SCHEMES = {
 
 VOCABULARIES_FUNDER_SCHEMES = {
     **VOCABULARIES_IDENTIFIER_SCHEMES,
-    "doi": {"label": _("DOI"), "validator": idutils.is_doi},
+    "doi": {"label": _("DOI"), "validator": is_doi},
 }
 """Funders allowed identifier schemes."""
 

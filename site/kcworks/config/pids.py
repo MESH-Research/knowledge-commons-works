@@ -19,7 +19,7 @@ config surface; this module just supplies KCWorks' values.
 
 import os
 
-import idutils
+from idutils import is_doi, normalize_doi
 from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.services.pids import providers
 
@@ -63,8 +63,8 @@ RDM_PERSISTENT_IDENTIFIERS = {
         "providers": ["datacite", "external"],
         "required": True,
         "label": _("DOI"),
-        "validator": idutils.is_doi,
-        "normalizer": idutils.normalize_doi,
+        "validator": is_doi,
+        "normalizer": normalize_doi,
         "is_enabled": providers.DataCitePIDProvider.is_enabled,
     },
     "oai": {
@@ -82,8 +82,8 @@ RDM_PARENT_PERSISTENT_IDENTIFIERS = {
         "required": True,
         "condition": lambda rec: rec.pids.get("doi", {}).get("provider") == "datacite",
         "label": _("Concept DOI"),
-        "validator": idutils.is_doi,
-        "normalizer": idutils.normalize_doi,
+        "validator": is_doi,
+        "normalizer": normalize_doi,
         "is_enabled": providers.DataCitePIDProvider.is_enabled,
     },
 }

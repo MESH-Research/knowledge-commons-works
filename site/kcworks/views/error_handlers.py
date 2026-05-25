@@ -413,7 +413,7 @@ def _make_logging_wrapper(
         )
         return orig_handler(error)
 
-    _logged._kcworks_logged = True  # type: ignore[attr-defined]
+    _logged._kcworks_logged = True  # ty: ignore[unresolved-attribute]
     return _logged
 
 

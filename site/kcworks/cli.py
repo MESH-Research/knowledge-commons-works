@@ -265,6 +265,10 @@ def kcworks_jobs_upsert(task, title, description, schedule, queue, active, run_n
     Idempotent: looks up existing Job by (task, title) and updates in place if
     found, otherwise creates. Uses invenio-jobs' JobsService with system
     identity rather than direct DB writes.
+
+    Raises:
+        click.ClickException: If the newly upserted job cannot be reloaded from the
+          db session.
     """
     title = title or task
     payload = {"title": title, "task": task, "active": active}
@@ -293,6 +297,10 @@ def kcworks_jobs_upsert(task, title, description, schedule, queue, active, run_n
         # mismatch (system_identity.id is the string "system"); the scheduler
         # itself leaves started_by_id NULL, which is what we do here.
         job = db.session.get(Job, result.id)
+        if not job:
+            raise click.ClickException(
+                f"Job {result.id} could not be reloaded after upsert."
+            )
         run = Run.create(job=job, task_id=uuid.uuid4())
         db.session.add(run)
         db.session.commit()

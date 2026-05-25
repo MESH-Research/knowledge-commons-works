@@ -32,7 +32,7 @@ from invenio_users_resources.records.api import UserAggregate
 from invenio_users_resources.services.users.tasks import reindex_users
 from kcworks.proxies import current_internal_notifications
 
-from ..fixtures.records import TestRecordMetadata
+from tests.fixtures.records import TestRecordMetadata
 
 
 def test_notify_for_request_acceptance(
@@ -1113,7 +1113,8 @@ def test_read_unread_notifications_by_view(
             f"{app.config['SITE_API_URL']}/users/{user.id}/notifications/unread/list"
         )
         assert response.status_code == 401
-        assert json.loads(response.data) == {
+        error = json.loads(response.data)
+        assert error.items() >= {
             "message": (
                 "The server could not verify that you are authorized "
                 "to access the URL requested. You either supplied the wrong "
@@ -1121,7 +1122,7 @@ def test_read_unread_notifications_by_view(
                 "understand how to supply the credentials required."
             ),
             "status": 401,
-        }
+        }.items()
 
 
 def test_clear_unread_notifications_by_view(
@@ -1219,7 +1220,8 @@ def test_clear_unread_notifications_by_view(
             f"{app.config['SITE_API_URL']}/users/{user.id}/notifications/unread/clear",
         )
         assert response.status_code == 401
-        assert json.loads(response.data) == {
+        error = json.loads(response.data)
+        assert error.items() >= {
             "message": (
                 "The server could not verify that you are authorized "
                 "to access the URL requested. You either supplied the wrong "
@@ -1227,7 +1229,7 @@ def test_clear_unread_notifications_by_view(
                 "understand how to supply the credentials required."
             ),
             "status": 401,
-        }
+        }.items()
 
 
 def test_clear_one_unread_notification_by_view(

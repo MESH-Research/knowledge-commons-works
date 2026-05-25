@@ -94,7 +94,7 @@ sample_metadata_journal_article_with_contributors = {
                         "identifiers": [
                             {
                                 "identifier": "amroberts",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Roberts, Alexandre",
@@ -114,7 +114,7 @@ sample_metadata_journal_article_with_contributors = {
                         "identifiers": [
                             {
                                 "identifier": "jsmith",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Smith, Jane",

@@ -58,7 +58,7 @@ sample_metadata_journal_article_pdf = {
                     "identifiers": [
                         {
                             "identifier": "amroberts",
-                            "scheme": "hc_username",
+                            "scheme": "kc_username",
                         }
                     ],
                     "name": "Roberts, Alexandre",

@@ -135,7 +135,7 @@ sample_metadata_thesis_pdf = {
                     "identifiers": [
                         {
                             "identifier": "gabogabito123",
-                            "scheme": "hc_username",
+                            "scheme": "kc_username",
                         }
                     ],
                     "name": "Martínez Hernández, Alberto-Gabino",

@@ -129,7 +129,7 @@ sample_metadata_chapter3_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "stepheharrop",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Harrop, Stephe",
@@ -414,7 +414,7 @@ sample_metadata_chapter3_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "stepheharrop",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Harrop, Stephe",
@@ -690,7 +690,7 @@ sample_metadata_chapter3_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "stepheharrop",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Harrop, Stephe",

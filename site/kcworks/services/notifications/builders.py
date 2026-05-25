@@ -276,17 +276,18 @@ class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
     type = "user-first-record.create"
 
     @classmethod
-    def build(
-        cls, **kwargs: Unpack["_FirstRecordCreatedBuildKwargs"]
+    def build(  # ty: ignore[invalid-method-override]
+        cls,
+        *,
+        data: dict,
+        record: RDMDraft,
+        sender: User,
     ) -> Notification:
         """Build notification with context.
 
         Returns:
             Notification: The built notification object.
         """
-        data = kwargs["data"]
-        record = kwargs["record"]
-        sender = kwargs["sender"]
         return Notification(
             type=cls.type,
             context={
@@ -342,39 +343,24 @@ class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
     ]
 
 
-class _FirstRecordCreatedBuildKwargs(TypedDict):
-    """Keyword arguments for FirstRecordCreatedNotificationBuilder.build."""
-
-    data: dict
-    record: RDMDraft
-    sender: User
-
-
-class _FirstRecordPublishedBuildKwargs(TypedDict):
-    """Keyword arguments for FirstRecordPublishedNotificationBuilder.build."""
-
-    draft: RDMDraft
-    record: RDMRecord
-    sender: User
-
-
 class FirstRecordPublishedNotificationBuilder(NotificationBuilder):
     """Notification builder for first record published action."""
 
     type = "user-first-record.publish"
 
     @classmethod
-    def build(
-        cls, **kwargs: Unpack["_FirstRecordPublishedBuildKwargs"]
+    def build(  # ty: ignore[invalid-method-override]
+        cls,
+        *,
+        draft: RDMDraft,
+        record: RDMRecord,
+        sender: User,
     ) -> Notification:
         """Build notification with context.
 
         Returns:
             Notification: The built Notification instance.
         """
-        draft = kwargs["draft"]
-        record = kwargs["record"]
-        sender = kwargs["sender"]
         return Notification(
             type=cls.type,
             context={

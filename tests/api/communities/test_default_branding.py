@@ -23,13 +23,25 @@ gets called.
 
 from __future__ import annotations
 
+import hashlib
 from typing import Any
 
 import pytest
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
-from kcworks.services.communities.default_branding import apply_default_branding
-from kcworks.services.geopattern import derive_theme_colors
+from invenio_rdm_records.services.communities.components import (
+    CommunityAccessComponent as RDMCommunityAccessComponent,
+)
+from invenio_rdm_records.services.communities.components import (
+    CommunityServiceComponents,
+)
+from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
+from kcworks.services.communities.default_branding import (
+    DefaultBrandingComponent,
+    apply_default_branding,
+)
+from kcworks.services.communities.tasks import generate_default_branding
+from kcworks.services.geopattern import derive_theme_colors, to_png
 
 THEME_KEYS = (
     "primaryColor",
@@ -50,6 +62,19 @@ def _read_record(community_id: str) -> Any:
     return current_communities.service.record_cls.pid.resolve(community_id)
 
 
+def _stored_logo_sha256(record: Any) -> str:
+    """Return the SHA-256 hash of a community record's stored logo bytes."""
+    logo = record.files.get("logo")
+    assert logo is not None
+    with logo.open_stream("rb") as fp:
+        return hashlib.sha256(fp.read()).hexdigest()
+
+
+def _expected_logo_sha256(slug: str) -> str:
+    """Return the SHA-256 hash of the default logo generated for `slug`."""
+    return hashlib.sha256(to_png(slug, width=480, height=480)).hexdigest()
+
+
 @pytest.fixture(scope="function")
 def branded_community(minimal_community_factory):
     """Create a community via the standard service flow.
@@ -64,7 +89,31 @@ def branded_community(minimal_community_factory):
     return minimal_community_factory(slug="branded-test-community")
 
 
-def test_create_sets_logo_and_theme(branded_community) -> None:
+def test_ext_registers_default_branding_after_upstream(running_app) -> None:
+    """`DefaultBrandingComponent` runs after every upstream community component.
+
+    The KCWorks `init_components` hook appends `DefaultBrandingComponent` to the
+    list inherited from `invenio-rdm-records`'s `CommunityServiceComponents`
+    (with `RDMCommunityAccessComponent` swapped for the base one elsewhere).
+    The component's correctness depends on the upstream PID, ownership, and
+    theme components having already run; appending is what guarantees that.
+    """
+    components = running_app.app.config["COMMUNITIES_SERVICE_COMPONENTS"]
+    assert DefaultBrandingComponent in components
+    branding_idx = components.index(DefaultBrandingComponent)
+
+    for upstream in CommunityServiceComponents:
+        # `ext.py` swaps this one specifically; every other upstream
+        # component must still appear in the list and precede branding.
+        if upstream is RDMCommunityAccessComponent:
+            continue
+        assert upstream in components, f"{upstream.__name__} missing from list"
+        assert components.index(upstream) < branding_idx, (
+            f"{upstream.__name__} must run before DefaultBrandingComponent"
+        )
+
+
+def test_create_sets_logo_and_theme(running_app, db, branded_community) -> None:
     """A freshly-created community has a logo file and the three theme keys."""
     record = _read_record(branded_community.id)
     expected = derive_theme_colors("branded-test-community")
@@ -75,25 +124,29 @@ def test_create_sets_logo_and_theme(branded_community) -> None:
         )
     assert record["theme"].get("enabled") is True
     assert record.files.get("logo") is not None
+    assert _stored_logo_sha256(record) == _expected_logo_sha256(
+        "branded-test-community"
+    )
 
 
-def test_existing_logo_not_overwritten(branded_community) -> None:
+def test_existing_logo_not_overwritten(running_app, db, branded_community) -> None:
     """`apply_default_branding` on a record with a logo leaves the logo bytes alone."""
     original_record = _read_record(branded_community.id)
     original_logo = original_record.files.get("logo")
     assert original_logo is not None
-    # Capture a fingerprint of the existing logo file before we re-run.
-    # We compare the file objects' identity / file id since reading the
-    # stream is awkward; we mainly need to assert it didn't get replaced.
-    original_logo_repr = repr(original_logo)
+    original_object_version_id = original_logo.object_version_id
 
     apply_default_branding(original_record)
 
     refreshed = _read_record(branded_community.id)
-    assert repr(refreshed.files.get("logo")) == original_logo_repr
+    refreshed_logo = refreshed.files.get("logo")
+    assert refreshed_logo is not None
+    assert refreshed_logo.object_version_id == original_object_version_id
 
 
-def test_admin_theme_value_not_overwritten_on_top_up(branded_community) -> None:
+def test_admin_theme_value_not_overwritten_on_top_up(
+    running_app, db, branded_community
+) -> None:
     """Existing theme keys survive a `top up` (re-running the component update)."""
     record = _read_record(branded_community.id)
     record["theme"].setdefault("style", {})["primaryColor"] = "#123456"
@@ -110,7 +163,36 @@ def test_admin_theme_value_not_overwritten_on_top_up(branded_community) -> None:
     assert style["primaryTextColor"] == derived["primaryTextColor"]
 
 
-def test_delete_logo_regenerates_logo_and_theme(branded_community) -> None:
+def test_service_update_tops_up_missing_theme_keys(
+    running_app, db, branded_community
+) -> None:
+    """The component update hook fills missing theme keys after service update."""
+    read_result = current_communities.service.read(
+        system_identity, branded_community.id
+    )
+    update_data = dict(read_result.data)
+    update_data["theme"] = {
+        "enabled": True,
+        "style": {
+            "primaryColor": "#123456",
+        },
+    }
+
+    current_communities.service.update(
+        system_identity, branded_community.id, update_data
+    )
+
+    refreshed = _read_record(branded_community.id)
+    style = refreshed["theme"]["style"]
+    expected = derive_theme_colors("branded-test-community")
+    assert style["primaryColor"] == "#123456"
+    assert style["primaryTextColor"] == expected["primaryTextColor"]
+    assert style["mainHeaderBackgroundColor"] == expected["mainHeaderBackgroundColor"]
+
+
+def test_delete_logo_regenerates_logo_and_theme(
+    running_app, db, branded_community
+) -> None:
     """`service.delete_logo` re-creates the logo file and re-seeds theme.style.
 
     Replaces the slug-derived `primaryColor` with a custom hex via
@@ -122,9 +204,14 @@ def test_delete_logo_regenerates_logo_and_theme(branded_community) -> None:
     AND regenerate the logo file.
     """
     # 1) Push a custom theme value through the regular update path so we
-    #    can later assert it was reset.
-    current_record = _read_record(branded_community.id)
-    update_data = dict(current_record)
+    #    can later assert it was reset. Read via the service so `update_data`
+    #    is the schema-shaped payload (`slug`, `access`, `metadata`, ...);
+    #    the raw record dict from `pid.resolve` lacks those top-level fields
+    #    and the update schema rejects it.
+    read_result = current_communities.service.read(
+        system_identity, branded_community.id
+    )
+    update_data = dict(read_result.data)
     update_data["theme"] = {
         "enabled": True,
         "style": {
@@ -138,13 +225,23 @@ def test_delete_logo_regenerates_logo_and_theme(branded_community) -> None:
     )
     intermediate = _read_record(branded_community.id)
     assert intermediate["theme"]["style"]["primaryColor"] == "#abcdef"
+    original_logo = intermediate.files.get("logo")
+    assert original_logo is not None
+    original_object_version_id = original_logo.object_version_id
 
     # 2) Now delete the logo.
     current_communities.service.delete_logo(system_identity, branded_community.id)
 
     refreshed = _read_record(branded_community.id)
-    assert refreshed.files.get("logo") is not None, (
+    refreshed_logo = refreshed.files.get("logo")
+    assert refreshed_logo is not None, (
         "delete_logo should have regenerated the default-branding logo"
+    )
+    assert refreshed_logo.object_version_id != original_object_version_id, (
+        "regenerated logo should not be the same as the original"
+    )
+    assert _stored_logo_sha256(refreshed) == _expected_logo_sha256(
+        "branded-test-community"
     )
     expected = derive_theme_colors("branded-test-community")
     style = refreshed["theme"]["style"]
@@ -155,7 +252,7 @@ def test_delete_logo_regenerates_logo_and_theme(branded_community) -> None:
 
 
 def test_inline_failure_still_sets_theme_and_enqueues_celery(
-    minimal_community_factory, monkeypatch
+    running_app, db, minimal_community_factory, monkeypatch
 ) -> None:
     """An exception in the PNG pipeline is logged, theme still lands, Celery retried.
 
@@ -178,9 +275,7 @@ def test_inline_failure_still_sets_theme_and_enqueues_celery(
     monkeypatch.setattr(geopattern_mod, "to_png", boom)
     # The component imports `to_png` lazily inside apply_default_branding;
     # patching the module-level attribute is what the lazy import will pick up.
-    monkeypatch.setattr(
-        branding_mod.generate_default_branding, "delay", fake_delay
-    )
+    monkeypatch.setattr(branding_mod.generate_default_branding, "delay", fake_delay)
 
     item = minimal_community_factory(slug="branding-fail-test")
     record = _read_record(item.id)
@@ -194,3 +289,22 @@ def test_inline_failure_still_sets_theme_and_enqueues_celery(
 
     # The PNG raise must have triggered the Celery retry enqueue.
     assert captured["delay_called_with"] == str(record.id)
+
+
+def test_generate_default_branding_task_commits_missing_theme_key(
+    running_app, db, branded_community
+) -> None:
+    """The Celery task path applies branding inside its own unit of work."""
+    record = _read_record(branded_community.id)
+    record["theme"]["style"].pop("primaryTextColor", None)
+    with UnitOfWork(db.session) as uow:
+        uow.register(RecordCommitOp(record))
+        uow.commit()
+
+    generate_default_branding(str(record.id))
+
+    refreshed = _read_record(branded_community.id)
+    expected = derive_theme_colors("branded-test-community")
+    assert (
+        refreshed["theme"]["style"]["primaryTextColor"] == expected["primaryTextColor"]
+    )

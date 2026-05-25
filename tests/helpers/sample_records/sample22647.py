@@ -129,7 +129,7 @@ rec22647 = {
                         "identifiers": [
                             {
                                 "identifier": "stepheharrop",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Harrop, Stephe",
@@ -415,7 +415,7 @@ rec22647 = {
                         "identifiers": [
                             {
                                 "identifier": "stepheharrop",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Harrop, Stephe",
@@ -692,7 +692,7 @@ rec22647 = {
                         "identifiers": [
                             {
                                 "identifier": "stepheharrop",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Harrop, Stephe",

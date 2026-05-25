@@ -143,7 +143,7 @@ sample_metadata_book_pdf = {
                     "identifiers": [
                         {
                             "identifier": "lenoxinstitute100",
-                            "scheme": "hc_username",
+                            "scheme": "kc_username",
                         }
                     ],
                     "name": "Wang, Lawrence K",

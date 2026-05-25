@@ -33,7 +33,7 @@ dependencies = [
   "langdetect",
   "lxml==5.2.1",
   "pandas",
-  "Pillow>=11.0",
+  "pillow>=11",
   "pydantic",
   "sentry-sdk[flask]>=1,<2",
   "sqlalchemy[asyncio]",
@@ -89,7 +89,7 @@ entry-points."invenio_base.apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.blueprints".kcworks_views = "kcworks.views.views:create_blueprint"
 entry-points."invenio_base.blueprints".knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
 entry-points."invenio_base.finalize_app".kcworks = "kcworks.ext:finalize_app"
-entry-points."invenio_celery.tasks".kcworks_default_branding = "kcworks.services.communities.default_branding"
+entry-points."invenio_celery.tasks".kcworks_default_branding = "kcworks.services.communities.tasks"
 entry-points."invenio_i18n.translations_bundle".kcworks = "kcworks"
 entry-points."invenio_modular_deposit_form.components_registry".kcworks = "kcworks.utils.deposit_extras:get_components_registry_js_path"
 entry-points."invenio_modular_deposit_form.transformations".kcworks = "kcworks.utils.deposit_extras:get_transformations_js_path"
@@ -218,9 +218,6 @@ overrides = [
   # Exclude these paths from type checking (.gitignore-style patterns)
   # Broaden if you need to allow specific third-party modules, e.g.:
   # allowed-unresolved-imports = ["some_untyped_lib.**"]
-  { include = ["site/kcworks/services/search/index_templates/**"] },
-  # ignore_errors = true for this tree
-  { rules.all = "ignore" },
 ]
 # Pylsp/Jedi: so "go to definition" and "find references" resolve in local dependencies
 # Rule severities (ty uses rule names; mypy options translated below)

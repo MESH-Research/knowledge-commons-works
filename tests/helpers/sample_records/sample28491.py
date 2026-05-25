@@ -145,7 +145,7 @@ rec28491 = {
                         "identifiers": [
                             {
                                 "identifier": "lenoxinstitute100",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Wang, Lawrence K",
@@ -360,7 +360,7 @@ rec28491 = {
                         "identifiers": [
                             {
                                 "identifier": "lenoxinstitute100",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Wang, Lawrence K",
@@ -599,7 +599,7 @@ rec28491 = {
                         "identifiers": [
                             {
                                 "identifier": "lenoxinstitute100",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Wang, Lawrence K",

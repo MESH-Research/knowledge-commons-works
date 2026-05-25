@@ -205,9 +205,12 @@ def test_backfill_preserves_admin_theme_value(
 ) -> None:
     """An admin-customized theme key survives backfill (only missing keys filled)."""
     community = minimal_community_factory(slug="branded-admin-custom")
-    # Push a custom primary color through the regular update path.
-    current_record = _read_record(community.id)
-    update_data = dict(current_record)
+    # Push a custom primary color through the regular update path. Read via
+    # the service so `update_data` is the schema-shaped payload (`slug`,
+    # `access`, `metadata`, ...); the raw record dict from `pid.resolve`
+    # lacks those top-level fields and the update schema rejects it.
+    read_result = current_communities.service.read(system_identity, community.id)
+    update_data = dict(read_result.data)
     update_data["theme"] = {
         "enabled": True,
         "style": {"primaryColor": "#abcdef"},

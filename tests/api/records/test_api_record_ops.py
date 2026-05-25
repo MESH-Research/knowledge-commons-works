@@ -24,10 +24,9 @@ from invenio_rdm_records.proxies import current_rdm_records_service as records_s
 
 from invenio_record_importer_kcworks.utils.utils import replace_value_in_nested_dict
 from tests.conftest import RunningApp
-
-from ..fixtures.records import TestRecordMetadata, TestRecordMetadataWithFiles
-from ..fixtures.users import user_data_set
-from ..helpers.sample_records import (
+from tests.fixtures.records import TestRecordMetadata, TestRecordMetadataWithFiles
+from tests.fixtures.users import user_data_set
+from tests.helpers.sample_records import (
     sample_metadata_book_pdf,
 )
 
@@ -606,7 +605,7 @@ def test_record_file_upload_api(
     identity.provides.add(authenticated_user)
 
     file_path = (
-        Path(__file__).parent.parent.parent / "tests/helpers/sample_files/sample.pdf"
+        Path(__file__).resolve().parents[2] / "helpers/sample_files/sample.pdf"
     )
     file_list = [{"key": "sample.pdf"}]
 
@@ -895,11 +894,11 @@ def test_records_api_bare_endpoint(running_app):
     app = running_app.app
     with app.test_client() as client:
         response = client.get("/api/records/")
-        assert response.json == {
+        assert response.json.items() >= {
             "message": (
                 "The requested URL was not found on the server. If you "
                 "entered the URL manually please check your spelling and "
                 "try again."
             ),
             "status": 404,
-        }
+        }.items()

@@ -193,7 +193,7 @@ rec45177 = {
                         "family_name": "Provo",
                         "given_name": "Alexandra",
                         "identifiers": [
-                            {"identifier": "aprovo", "scheme": "hc_username"}
+                            {"identifier": "aprovo", "scheme": "kc_username"}
                         ],
                         "name": "Provo, Alexandra",
                         "type": "personal",
@@ -489,7 +489,7 @@ rec45177 = {
                         "family_name": "Provo",
                         "given_name": "Alexandra",
                         "identifiers": [
-                            {"identifier": "aprovo", "scheme": "hc_username"}
+                            {"identifier": "aprovo", "scheme": "kc_username"}
                         ],
                         "name": "Provo, Alexandra",
                         "type": "personal",
@@ -772,7 +772,7 @@ rec45177 = {
                         "family_name": "Provo",
                         "given_name": "Alexandra",
                         "identifiers": [
-                            {"identifier": "aprovo", "scheme": "hc_username"}
+                            {"identifier": "aprovo", "scheme": "kc_username"}
                         ],
                         "name": "Provo, Alexandra",
                         "type": "personal",

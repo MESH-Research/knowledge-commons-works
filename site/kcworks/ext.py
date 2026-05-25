@@ -12,6 +12,7 @@ and components.
 
 import os
 import warnings
+from typing import cast
 
 from flask import Flask, current_app, g, request
 from flask_menu import current_menu  # type: ignore[import-untyped]
@@ -31,6 +32,7 @@ from invenio_rdm_records.services.communities.components import (
 )
 from invenio_rdm_records.services.components import DefaultRecordsComponents
 from pydantic import BaseModel, ConfigDict
+from werkzeug.local import LocalProxy
 
 from invenio_remote_user_data_kcworks.services.components import (
     CitedNamesUpsertComponent,
@@ -233,6 +235,7 @@ def register_community_menu_items(_app: Flask) -> None:
     Args:
         _app: Flask application object.
     """
+
     def deposit_args():
         """Return deposit query args for the current community page."""
         pid_value = (request.view_args or {}).get("pid_value")
@@ -327,18 +330,18 @@ def _static_token_before_request() -> None:
     # triggering user_logged_in (no login_user()).
     g._login_user = user
     identity_changed.send(
-        current_app._get_current_object(),
+        cast(LocalProxy, current_app)._get_current_object(),
         identity=Identity(user.id),  # type: ignore
     )
     # Provide the OAuth stand-in objects for the request.
     scopes = {sid for sid, _ in current_oauth2server.scope_choices()}
-    request.oauth = OAuthStandIn(  # type: ignore[attr-defined]
+    request.oauth = OAuthStandIn(  # ty: ignore[unresolved-attribute]
         user=user,
         access_token=AccessTokenStandIn(scopes=scopes),
     )
     # Skip CSRF and OAuth verification.
-    request.skip_csrf_check = True  # type: ignore[attr-defined]
-    request.oauth_verify_has_run = True  # type: ignore[attr-defined]
+    request.skip_csrf_check = True  # ty: ignore[unresolved-attribute]
+    request.oauth_verify_has_run = True  # ty: ignore[unresolved-attribute]
 
 
 def api_finalize_app(app: Flask) -> None:

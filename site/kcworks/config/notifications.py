@@ -28,10 +28,13 @@ See https://inveniordm.docs.cern.ch/customize/notifications/ for the
 upstream config surface.
 """
 
+from typing import cast
+
 from invenio_app_rdm.config import (
     NOTIFICATIONS_BACKENDS,
     NOTIFICATIONS_BUILDERS,
 )
+from invenio_notifications.backends.base import NotificationBackend
 
 from kcworks.services.notifications.backends import (
     EmailNotificationBackend,
@@ -61,7 +64,7 @@ NOTIFICATIONS_MODERATOR_ROLE = "admin-moderator"
 # --------
 # Mutates the upstream dict in place so any code path that reads it
 # directly (rather than via ``current_app.config``) sees the additions.
-NOTIFICATIONS_BACKENDS.update({
+cast("dict[str, NotificationBackend]", NOTIFICATIONS_BACKENDS).update({
     InternalNotificationBackend.id: InternalNotificationBackend(),
     EmailNotificationBackend.id: EmailNotificationBackend(),
 })

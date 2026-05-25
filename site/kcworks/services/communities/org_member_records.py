@@ -154,36 +154,24 @@ class OrgMemberRecordIncluder:
             # row[0] is the index, row[1] is the username (first column)
             current_app.logger.error(f"row: {row}")
             username = row[1]
-            idps = list(current_app.config.get("OAUTHCLIENT_REMOTE_APPS", {}).keys())
-            current_app.logger.error(
-                f"idps: {current_app.config.get('OAUTHCLIENT_REMOTE_APPS')}"
-            )
             member_dict: dict[str, Any] = {}
-            for _ in idps:
-                # FIXME: We're currently hard-coding the identifier since we
-                # only have one auth idp
-                members_search: dict[str, Any] = current_search_client.search(
-                    index=prefix_index("users"),
-                    body={
-                        "query": {"term": {"profile.identifier_kc_username": username}}
-                    },
-                )
-                try:
-                    hits = members_search["hits"]["hits"]
-                    if not hits:
-                        current_app.logger.warning(f"No users match {row}")
-                        continue
-                    member_hit: dict[str, Any] = hits[0]
-                    member_dict = member_hit.get("_source", {})
-                    if not member_dict or "id" not in member_dict:
-                        current_app.logger.warning(
-                            f"No user data in hit matching {row}"
-                        )
-                        continue
-                    break
-                except (KeyError, IndexError):
+            members_search: dict[str, Any] = current_search_client.search(
+                index=prefix_index("users"),
+                body={"query": {"term": {"profile.identifier_kc_username": username}}},
+            )
+            try:
+                hits = members_search["hits"]["hits"]
+                if not hits:
                     current_app.logger.warning(f"No users match {row}")
                     continue
+                member_hit: dict[str, Any] = hits[0]
+                member_dict = member_hit.get("_source", {})
+                if not member_dict or "id" not in member_dict:
+                    current_app.logger.warning(f"No user data in hit matching {row}")
+                    continue
+            except (KeyError, IndexError):
+                current_app.logger.warning(f"No users match {row}")
+                continue
 
             if not member_dict or "id" not in member_dict:
                 current_app.logger.warning(
@@ -251,7 +239,8 @@ class OrgMemberRecordIncluder:
                             )
                         org_item = org_dict[column_name]
                         existing_communities = (
-                            result_record.get("_source", {})
+                            result_record
+                            .get("_source", {})
                             .get("parent", {})
                             .get("communities", {})
                             .get("ids")

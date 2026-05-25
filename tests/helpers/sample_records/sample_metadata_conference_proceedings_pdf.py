@@ -109,7 +109,7 @@ sample_metadata_conference_proceedings_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "woutdillen",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillen, Wout",
@@ -327,7 +327,7 @@ sample_metadata_conference_proceedings_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "woutdillen",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillen, Wout",
@@ -531,7 +531,7 @@ sample_metadata_conference_proceedings_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "woutdillen",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillen, Wout",

@@ -109,7 +109,7 @@ rec16079 = {
                         "identifiers": [
                             {
                                 "identifier": "woutdillen",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillen, Wout",
@@ -328,7 +328,7 @@ rec16079 = {
                         "identifiers": [
                             {
                                 "identifier": "woutdillen",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillen, Wout",
@@ -533,7 +533,7 @@ rec16079 = {
                         "identifiers": [
                             {
                                 "identifier": "woutdillen",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillen, Wout",

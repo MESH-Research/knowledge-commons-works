@@ -40,10 +40,9 @@ from kcworks.services.records.record_communities.community_change_permissions_co
 from kcworks.utils.utils import get_value_by_path, update_nested_dict
 
 from invenio_record_importer_kcworks.services.communities import CommunitiesHelper
-
-from ..conftest import RunningApp
-from ..fixtures.communities import make_community_member
-from ..fixtures.users import get_authenticated_identity
+from tests.conftest import RunningApp
+from tests.fixtures.communities import make_community_member
+from tests.fixtures.users import get_authenticated_identity
 
 
 @pytest.fixture  # type: ignore

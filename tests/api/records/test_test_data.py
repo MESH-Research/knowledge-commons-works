@@ -87,7 +87,9 @@ def create_file_data(filename: str = "sample.pdf") -> FileData:
     Returns:
         FileData: The created file data object.
     """
-    myfile = Path(__file__).parent.parent / "helpers" / "sample_files" / filename
+    myfile = (
+        Path(__file__).resolve().parents[2] / "helpers" / "sample_files" / filename
+    )
     with myfile.open("rb") as file_bytes:
         temp_file = SpooledTemporaryFile()
         temp_file.write(file_bytes.read())
