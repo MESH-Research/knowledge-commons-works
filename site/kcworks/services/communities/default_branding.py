@@ -26,16 +26,20 @@ This module is also the target of the
 from __future__ import annotations
 
 from io import BytesIO
-from typing import Any
+from typing import Any, Literal
 
-from celery import shared_task
 from flask import current_app
-from invenio_access.permissions import system_identity
-from invenio_communities.proxies import current_communities
 from invenio_records_resources.services.records.components import ServiceComponent
-from invenio_records_resources.services.uow import RecordCommitOp, unit_of_work
 
-_THEME_KEYS: tuple[str, str, str] = (
+from .tasks import generate_default_branding
+
+type ThemeColorKey = Literal[
+    "primaryColor",
+    "primaryTextColor",
+    "mainHeaderBackgroundColor",
+]
+
+_THEME_KEYS: tuple[ThemeColorKey, ...] = (
     "primaryColor",
     "primaryTextColor",
     "mainHeaderBackgroundColor",
@@ -162,9 +166,9 @@ class DefaultBrandingComponent(ServiceComponent):
             from kcworks.services.geopattern import derive_theme_colors
 
             colors = derive_theme_colors(record.slug)
-            record.setdefault("theme", {}).setdefault("style", {}).update(
-                {k: colors[k] for k in missing}
-            )
+            record.setdefault("theme", {}).setdefault("style", {}).update({
+                k: colors[k] for k in missing
+            })
             record["theme"].setdefault("enabled", True)
         except Exception:
             current_app.logger.exception(
@@ -205,44 +209,3 @@ class DefaultBrandingComponent(ServiceComponent):
                     "Default branding Celery enqueue failed for %s",
                     getattr(record, "id", "<unknown>"),
                 )
-
-
-@shared_task(
-    bind=True,
-    max_retries=3,
-    default_retry_delay=30,
-    name="kcworks.services.communities.default_branding.generate_default_branding",
-)
-def generate_default_branding(self: Any, community_id: str) -> None:
-    """Celery fallback: re-run the default-branding pipeline for `community_id`.
-
-    Only invoked when the inline component path raises. Runs the same
-    [`apply_default_branding`][kcworks.services.communities.default_branding.apply_default_branding]
-    inside a fresh unit of work so the changes get committed correctly
-    outside any active request UoW.
-
-    Args:
-        self: Celery `bind=True` task self-reference.
-        community_id: The community's UUID or slug. Resolved via the
-            standard PID resolver.
-
-    The Celery framework re-raises the result of `self.retry(...)` when
-    the inner pipeline raises (up to `max_retries` attempts with
-    `default_retry_delay` between).
-    """
-
-    @unit_of_work()
-    def _do(uow: Any = None) -> None:
-        record = current_communities.service.record_cls.pid.resolve(community_id)
-        apply_default_branding(record)
-        uow.register(RecordCommitOp(record))
-
-    try:
-        # `system_identity` is unused inside `_do` (we mutate directly),
-        # but keep the import-level reference to avoid removing it as
-        # "unused"; this also documents that the task runs as the
-        # trusted system process.
-        _ = system_identity
-        _do()
-    except Exception as exc:
-        raise self.retry(exc=exc) from exc

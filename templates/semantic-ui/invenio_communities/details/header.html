@@ -38,9 +38,9 @@
           <div class="ui grid">
             <div class="row">
               <div class="column">
-                <h1 class="ui huge header mb-0">
+                <h1 class="ui huge header mb-0 theme-primary-text">
                   <a href="{{ url_for('invenio_app_rdm_communities.communities_detail', pid_value=community_ui['slug']) }}"
-                     class="ui small header">{{ community_ui["metadata"]["title"] }}</a>
+                     class="ui small header theme-primary-text">{{ community_ui["metadata"]["title"] }}</a>
                   <!-- Show the icon for subcommunities -->
                   {% if community_ui['parent'] %}
                     <p class="ml-2 mb-0 display-inline-block">
@@ -132,13 +132,40 @@
           </option>
         {% endfor %}
       </select>
+      {% set collapsing_menu_items = ["curation_policy", "members", "stats", "requests", "settings", "contribute"] %}
       <div class="ui container secondary pointing menu pl-0 pr-0 theme-primary tablet computer widescreen large-monitor only">
         {% for item in community_menu_items if (item.permissions == True or permissions[item.permissions]) and item.visible %}
-          <a class="item {{ 'active' if active_community_header_menu_item == item.name }} {{ 'disabled' if not item.url }}"
-             href="{{ item.url }}">
-            <i aria-hidden="true" class="{{ item.icon }} icon"></i>
-            {{ item.text }}
-          </a>
+          {% set item_active_class = 'active' if active_community_header_menu_item == item.name else '' %}
+          {% set item_disabled_class = 'disabled' if not item.url else '' %}
+          {% if item.name in collapsing_menu_items %}
+            <a class="tablet only item collapsing {{ item_active_class }} {{ item_disabled_class }}"
+               href="{{ item.url }}"
+               role="button"
+               aria-label="{{ item.text }}"
+               data-tooltip="{{ item.text }}">
+              <i aria-hidden="true" class="{{ item.icon }} fitted icon"></i>
+            </a>
+            <a class="computer only item collapsing {{ item_active_class }} {{ item_disabled_class }}"
+               href="{{ item.url }}"
+               role="button"
+               aria-label="{{ item.text }}"
+               data-tooltip="{{ item.text }}">
+              <i aria-hidden="true" class="{{ item.icon }} fitted icon"></i>
+            </a>
+            <a class="widescreen large-monitor only item collapsing {{ item_active_class }} {{ item_disabled_class }}"
+               href="{{ item.url }}"
+               role="button">
+              <i aria-hidden="true" class="{{ item.icon }} icon"></i>
+              {{ item.text }}
+            </a>
+          {% else %}
+            <a class="item {{ item_active_class }} {{ item_disabled_class }}"
+               href="{{ item.url }}"
+               role="button">
+              <i aria-hidden="true" class="{{ item.icon }} icon"></i>
+              {{ item.text }}
+            </a>
+          {% endif %}
         {% endfor %}
       </div>
     {% endif %}

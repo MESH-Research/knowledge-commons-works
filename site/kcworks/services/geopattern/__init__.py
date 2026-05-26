@@ -84,11 +84,24 @@ def generate(
     )
 
 
-def to_svg(slug: str, **opts: object) -> str:
+def to_svg(
+    slug: str,
+    *,
+    base_color: str = "#933c3c",
+    color: str | None = None,
+    generator: str | None = None,
+    precomputed_hash: str | None = None,
+    **opts,
+) -> str:
     """Generate a pattern for `slug` and return its SVG markup.
 
     Args:
         slug: Slug to hash.
+        base_color: Fixed hex baseline for the hue/sat offset math
+            (default matches JS Geopattern's `DEFAULTS.baseColor`).
+        color: Verbatim background color override; almost never used.
+        generator: Override the pattern selector.
+        precomputed_hash: Skip SHA1; use this hex hash directly.
         **opts: Forwarded to [`generate`][kcworks.services.geopattern.generate].
 
     Returns:

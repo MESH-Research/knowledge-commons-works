@@ -59,6 +59,89 @@
   color: @negativeTextColor;
 }
 
+// CSS-only tooltips for menu items
+//
+// Semantic UI ships `[data-tooltip]` styles globally (via `popup.less`), so
+// tooltips work out of the box on most elements (e.g. `.ui.label`). They
+// break inside `.ui.menu .item` because the menu's own `:before`/`:after`
+// rules (item separators, the pointing-menu active indicator, etc.) outrank
+// the tooltip pseudo-elements on specificity and stomp critical properties
+// like `top`, `width`, `border`, and `transform`.
+//
+// The block below resets the menu-imposed properties at matching specificity
+// and renders a clean white tooltip above the menu item. Values are kept
+// minimal; we only handle the "above" position used in the community detail
+// header. Extend if other positions are needed later.
+
+.ui.menu .item[data-tooltip] {
+  &:before,
+  &:after {
+    display: block !important;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s ease, visibility 0.1s ease;
+  }
+
+  &:hover:before,
+  &:hover:after,
+  &:focus-visible:before,
+  &:focus-visible:after {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  // Tooltip bubble
+  &:after {
+    content: attr(data-tooltip) !important;
+    position: absolute !important;
+    z-index: 100;
+    bottom: 100% !important;
+    top: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 16rem;
+    margin: 0 0 0 0 !important;
+    padding: 0.5em 0.75em !important;
+    background: #fff !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    border: 1px solid #d4d4d5 !important;
+    border-radius: 0.25rem !important;
+    box-shadow: 0 2px 4px 0 rgba(34, 36, 38, 0.12),
+      0 2px 10px 0 rgba(34, 36, 38, 0.15) !important;
+    font-size: 0.85714rem !important;
+    font-weight: 400 !important;
+    line-height: 1.4 !important;
+    text-align: center;
+    text-transform: none;
+    white-space: nowrap;
+    transform: translateX(-50%) !important;
+  }
+
+  // Arrow
+  &:before {
+    content: "" !important;
+    position: absolute !important;
+    z-index: 101;
+    bottom: 90% !important;
+    top: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    width: 0.5rem !important;
+    height: 0.5rem !important;
+    margin: 0 0 0.3125rem 0 !important;
+    background: #fff !important;
+    border: 1px solid #d4d4d5 !important;
+    border-top: none !important;
+    border-left: none !important;
+    box-shadow: none !important;
+    transform: translateX(-50%) rotate(45deg) !important;
+  }
+}
+
 // links
 
 a {

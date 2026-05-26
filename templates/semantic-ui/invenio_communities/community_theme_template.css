@@ -28,24 +28,26 @@
 }
 {%- endif %}
 
-{%- if theme.primaryColor %}
-.theme-primary-menu .item.active {
-  background-color: {{ theme.primaryColor }} !important;
-}
-{%- endif %}
+/* {%- if theme.primaryColor %} */
+/* .theme-primary-menu .item.active { */
+/*   background-color: {{ theme.primaryColor }} !important; */
+/* } */
+/* {%- endif %} */
 
-{%- if theme.font.family or theme.font.weight or theme.font.size %}
+{% set font = theme.get("font", {}) %}
+
+{%- if font.family or font.weight or font.size %}
 .theme-primary .item, .theme-primary-menu, .page-subheader-outer {
-  {% if theme.font.family %}font-family: {{ theme.font.family }} !important;{% endif %}
-  {% if theme.font.weight %}font-weight: {{ theme.font.weight }} !important;{% endif %}
-  {% if theme.font.size %}font-size: {{ theme.font.size }};{% endif %}
+  {% if font.family %}font-family: {{ font.family }} !important;{% endif %}
+  {% if font.weight %}font-weight: {{ font.weight }} !important;{% endif %}
+  {% if font.size %}font-size: {{ font.size }};{% endif %}
 }
 {%- endif %}
 
-{%- if theme.primaryColor %}
-.theme-primary {
-  background-color: {{ theme.primaryColor }} !important;
-}
+/* {%- if theme.primaryColor %} */
+/* .theme-primary { */
+/*   background-color: {{ theme.primaryColor }} !important; */
+/* } */
 
 .theme-primary-text a,
 .theme-primary-text h1 {
@@ -61,14 +63,18 @@
 {%- endif %}
 
 {%- if theme.primaryColor or theme.primaryTextColor %}
-.invenio-accordion-field .title, .ui.primary.button {
-  {% if theme.primaryColor %}background-color: {{ theme.primaryColor }} !important;{% endif %}
+.invenio-accordion-field .title {
+  /* {% if theme.primaryColor %}background-color: {{ theme.primaryColor }} !important;{% endif %} */
   {% if theme.primaryTextColor %}color: {{ theme.primaryTextColor }} !important;{% endif %}
 }
+/* .ui.primary.button { */
+  /* {% if theme.primaryColor %}background-color: {{ theme.primaryColor }} !important;{% endif %} */
+  /* {% if theme.primaryTextColor %}color: {{ theme.primaryTextColor }} !important;{% endif %} */
+/* } */
 {%- endif %}
 
-{%- if theme.font.weight %}
+{%- if font.weight %}
 .theme-font h1 {
-  font-weight: {{ theme.font.weight }} !important;
+  font-weight: {{ font.weight }} !important;
 }
 {%- endif %}
