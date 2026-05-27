@@ -17,6 +17,9 @@ from invenio_remote_user_data_kcworks.utils.names import (
     get_full_name,
     get_full_name_inverted,
 )
+from invenio_stats_dashboard.templates.template_filters.community_dashboard_enabled import (  # noqa: E501
+    community_stats_dashboard_enabled,
+)
 
 
 def sort_menu_items_by_name(items, names):
@@ -44,6 +47,39 @@ def sort_menu_items_by_name(items, names):
     remaining_items = [item for item in menu_items if item.name not in names]
 
     return ordered_items + remaining_items
+
+
+def filter_visible_community_menu_items(items, permissions, community_ui):
+    """Filter a community header menu's items to those a viewer can see.
+
+    Applies the standard flask-menu permission and visibility checks, plus a
+    kcworks-specific gate that hides the `stats` item when the community
+    stats dashboard is not enabled for this community (see
+    `invenio_stats_dashboard.templates.template_filters
+    .community_dashboard_enabled.community_stats_dashboard_enabled`).
+
+    Args:
+        items: Iterable of menu items, such as
+            `current_menu.submenu('communities').children`.
+        permissions: Mapping of permission name to bool, as exposed to the
+            community details templates (e.g. `permissions["can_read"]`).
+        community_ui: The current community's UI dictionary (the
+            `to_dict()` shape used by community detail templates).
+
+    Returns:
+        list: Menu items that should be rendered for this viewer.
+    """
+    stats_dashboard_enabled = community_stats_dashboard_enabled(community_ui)
+    visible = []
+    for item in items:
+        if not item.visible:
+            continue
+        if item.permissions is not True and not permissions.get(item.permissions):
+            continue
+        if item.name == "stats" and not stats_dashboard_enabled:
+            continue
+        visible.append(item)
+    return visible
 
 
 def user_profile_dict(user_profile):
