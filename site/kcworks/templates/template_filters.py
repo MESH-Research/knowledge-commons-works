@@ -78,6 +78,10 @@ def filter_visible_community_menu_items(items, permissions, community_ui):
             continue
         if item.name == "stats" and not stats_dashboard_enabled:
             continue
+        if item.name == "search" and any(i for i in items if i.name == "home"):
+            continue
+        if item.name == "submit":
+            continue
         visible.append(item)
     return visible
 

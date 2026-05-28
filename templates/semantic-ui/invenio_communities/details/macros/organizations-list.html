@@ -1,0 +1,40 @@
+{# -*- coding: utf-8 -*-
+
+This file is part of Knowledge Commons Works.
+Copyright (C) 2026 Mesh Research.
+
+Knowledge Commons Works is free software; you can redistribute it and/or modify it
+under the terms of the MIT License; see LICENSE file for more details.
+#}
+{% macro organizations_list(organizations) %}
+  {% if organizations %}
+    <div class="row">
+      <i class="building outline icon" aria-hidden="true"></i>
+      <div class="ml-5">
+        {% if organizations[0].id %}
+          <a href="{{ organizations[0].url }}"
+             aria-label="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
+             title="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
+             target="_blank"
+             rel="noreferrer">{{
+            organizations[0].name }}<span>&nbsp;</span>
+            <img class="inline-id-icon"
+                 src="{{ organizations[0].icon }}"
+                 alt="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
+                 width="16"
+                 height="16" />
+          </a>
+        {% else %}
+          <span class="">{{ organizations[0].name }}</span>
+        {% endif %}
+        {% if organizations | length > 1 %}
+          <span class="ml-1">
+            &nbsp;{{ _("and") }}&nbsp;
+            <a href="#!" class="computer only">{{ _("%(count)s more organizations", count=(organizations | length - 1) ) }}</a>
+            <a href="#!" class="mobile tablet only">{{ _("%(count)s more", count=(organizations | length - 1) ) }}</a>
+          </span>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+{% endmacro %}

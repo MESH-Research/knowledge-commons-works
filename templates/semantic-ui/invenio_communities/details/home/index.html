@@ -1,0 +1,40 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Knowledge Commons Works.
+  Copyright (C) 2026 Mesh Research
+
+  Knowledge Commons Works is free software; you can redistribute it
+  and/or modify it under the terms of the MIT License; see LICENSE
+  file for more details.
+
+  Default community home page.
+
+  The `communities_home` view in `invenio-app-rdm` only renders this
+  template when `community.theme.enabled` is true; otherwise it redirects
+  to the community records search page. Upstream does not ship a default
+  `invenio_communities/details/home/index.html`, so this thin wrapper
+  renders the same records search app for themed communities.
+
+  To provide a custom home page for a specific themed community, override:
+      templates/themes/<brand>/invenio_communities/details/home/index.html
+#}
+
+{% extends "invenio_communities/details/base.html" %}
+
+{%- set title = community.metadata.title -%}
+
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack['invenio-app-rdm-community-records-search-custom.js'] }}
+{%- endblock %}
+
+{%- block page_body %}
+  {{ super() }}
+  <div id="communities-details-search"
+       data-invenio-search-config='{{
+         search_app_communities_records_config(
+           app_id="InvenioCommunities.DetailsSearch",
+           endpoint="/api/communities/" ~ community.id ~ "/records"
+         ) | tojson
+       }}'></div>
+{%- endblock page_body %}

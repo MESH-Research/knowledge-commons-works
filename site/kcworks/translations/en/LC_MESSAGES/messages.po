@@ -167,16 +167,16 @@ msgid "Search communities"
 msgstr "Search collections"
 
 msgid "Subcommunities"
-msgstr "Child collections"
+msgstr "Subcollections"
 
 msgid "Subcommunity"
-msgstr "Child collection"
+msgstr "Subcollection"
 
 msgid "Subcommunity invitation"
-msgstr "Child collection invitation"
+msgstr "Subcollection invitation"
 
 msgid "Subcommunity request"
-msgstr "Child collection request"
+msgstr "Subcollection request"
 
 msgid ""
 "Submission to this community is only allowed to community members."

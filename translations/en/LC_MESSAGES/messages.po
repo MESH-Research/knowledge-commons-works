@@ -2743,12 +2743,12 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/subcommunities/services/request.py:64
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/subcommunities/services/request.py:64
 msgid "Subcommunity request"
-msgstr "Child collection request"
+msgstr "Subcollection request"
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/subcommunities/services/request.py:151
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/subcommunities/services/request.py:151
 msgid "Subcommunity invitation"
-msgstr "Child collection invitation"
+msgstr "Subcollection invitation"
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/subcommunities/services/schema.py:50
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/subcommunities/services/schema.py:50
@@ -2758,13 +2758,13 @@ msgstr "Either community_id or collection should be provided."
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/subcommunities/services/service.py:85
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/subcommunities/services/service.py:85
 msgid "Parent community does not accept subcommunities."
-msgstr "Parent collection does not accept child collections."
+msgstr "Parent collection does not accept subcollections."
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/subcommunities/services/service.py:114
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/subcommunities/services/service.py:114
 #, python-format
 msgid "Inclusion of subcommunity \"%(community)s\""
-msgstr "Inclusion of child collection \"%(community)s\""
+msgstr "Inclusion of subcollection \"%(community)s\""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/views/communities.py:36
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/views/communities.py:36
@@ -4514,7 +4514,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/subcommunity/index.html:26
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/subcommunity/index.html:39
 msgid "Subcommunities"
-msgstr "Child collections"
+msgstr "Subcollections"
 
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/communities_ui/templates/semantic-ui/invenio_communities/details/browse/index.html:44
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/frontpage.html:73
@@ -4531,7 +4531,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/communities_ui/templates/semantic-ui/invenio_communities/details/browse/index.html:54
 msgid "This community has no subcommunities"
-msgstr "This collection has no child collections"
+msgstr "This collection has no subcollections"
 
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/communities_ui/templates/semantic-ui/invenio_communities/records/index.html:12
 #: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/records/index.html:12
@@ -6467,7 +6467,7 @@ msgstr "Manage collection"
 
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/new_subcommunity.html:12
 msgid "New subcommunity"
-msgstr "New child collection"
+msgstr "New subcollection"
 
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/about/index.html:20
 #: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/about/index.html:36
@@ -6514,7 +6514,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/details/subcommunity/index.html:15
 msgid " subcommunities"
-msgstr " child collections"
+msgstr " subcollections"
 
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/macros/communities_carousel.html:11
 msgid "Featured communities"
@@ -7179,8 +7179,8 @@ msgstr ""
 #~ "subcommunity of \"{parent_community_title}\"."
 #~ msgstr ""
 #~ "@{username} accepted the invitation for "
-#~ "\"{community_title}\" to join as a child"
-#~ " collection of \"{parent_community_title}\"."
+#~ "\"{community_title}\" to join as a "
+#~ "subcollection of \"{parent_community_title}\"."
 
 #~ msgid ""
 #~ "@{username} accepted the invitation the "
@@ -7190,7 +7190,7 @@ msgstr ""
 #~ msgstr ""
 #~ "@{username} accepted the invitation the "
 #~ "request for \"{community_title}\" to join "
-#~ "as a child collection of "
+#~ "as a subcollection of "
 #~ "\"{parent_community_title}\"."
 
 #~ msgid ""
@@ -7199,11 +7199,11 @@ msgstr ""
 #~ "subcommunity of \"{parent_community_title}\"."
 #~ msgstr ""
 #~ "@{username} declined the invitation for "
-#~ "\"{community_title}\" to join as a child"
-#~ " collection of \"{parent_community_title}\"."
+#~ "\"{community_title}\" to join as a "
+#~ "subcollection of \"{parent_community_title}\"."
 
 #~ msgid "Subcommunity"
-#~ msgstr "Child collection"
+#~ msgstr "Subcollection"
 
 #~ msgid ""
 #~ "The community \"{community_title}\" has "
@@ -7211,8 +7211,8 @@ msgstr ""
 #~ "of \"{parent_community_title}\""
 #~ msgstr ""
 #~ "The collection \"{community_title}\" has "
-#~ "requested to join as a child "
-#~ "collection of \"{parent_community_title}\""
+#~ "requested to join as a "
+#~ "subcollection of \"{parent_community_title}\""
 
 #~ msgid ""
 #~ "The community *{community_title}* has "
@@ -7220,8 +7220,8 @@ msgstr ""
 #~ "of *{parent_community_title}*"
 #~ msgstr ""
 #~ "The collection *{community_title}* has "
-#~ "requested to join as a child "
-#~ "collection of *{parent_community_title}*"
+#~ "requested to join as a "
+#~ "subcollection of *{parent_community_title}*"
 
 #~ msgid ""
 #~ "The community curator '@{curator_name}' "
@@ -7285,7 +7285,7 @@ msgstr ""
 #~ msgstr ""
 #~ "The collection manager @{username} accepted"
 #~ " the request for \"{community_title}\" to"
-#~ " join as a child collection of "
+#~ " join as a subcollection of "
 #~ "\"{parent_community_title}\"."
 
 #~ msgid ""
@@ -7296,7 +7296,7 @@ msgstr ""
 #~ msgstr ""
 #~ "The collection manager @{username} declined"
 #~ " the request for \"{community_title}\" to"
-#~ " join as a child collection of "
+#~ " join as a subcollection of "
 #~ "\"{parent_community_title}\"."
 
 #~ msgid ""
@@ -7439,7 +7439,7 @@ msgstr ""
 #~ msgstr ""
 #~ "We would like to invite your "
 #~ "collection \"{community_title}\" to join as"
-#~ " a child collection of "
+#~ " a subcollection of "
 #~ "\"{parent_community_title}\""
 
 #~ msgid "You have been invited to join community '{community_title}' as '{role}'"
@@ -7479,7 +7479,7 @@ msgstr ""
 #~ "{community_title} to join the "
 #~ "{parent_community_title} community"
 #~ msgstr ""
-#~ "⛔️ Child collection invitation declined "
+#~ "⛔️ Subcollection invitation declined "
 #~ "for {community_title} to join the "
 #~ "{parent_community_title} collection"
 
@@ -7488,7 +7488,7 @@ msgstr ""
 #~ "\"{community_title}\" to join "
 #~ "\"{parent_community_title}\""
 #~ msgstr ""
-#~ "⛔️ Child collection request declined for"
+#~ "⛔️ Subcollection request declined for"
 #~ " \"{community_title}\" to join "
 #~ "\"{parent_community_title}\""
 
@@ -7516,7 +7516,7 @@ msgstr ""
 #~ "\"{community_title}\" to join "
 #~ "\"{parent_community_title}\""
 #~ msgstr ""
-#~ "✅ Child collection request accepted for"
+#~ "✅ Subcollection request accepted for"
 #~ " \"{community_title}\" to join "
 #~ "\"{parent_community_title}\""
 
@@ -7540,7 +7540,7 @@ msgstr ""
 #~ "\"{community_title}\" to join "
 #~ "\"{parent_community_title}\""
 #~ msgstr ""
-#~ "📬 Child collection request for "
+#~ "📬 Subcollection request for "
 #~ "\"{community_title}\" to join "
 #~ "\"{parent_community_title}\""
 

@@ -11,6 +11,8 @@
 #}
 {%- from "invenio_theme/macros/truncate.html" import truncate_text %}
 {%- from "invenio_communities/details/macros/access-status-label.html" import access_status_label -%}
+{%- from "invenio_communities/details/macros/organizations-list.html" import organizations_list -%}
+{%- from "invenio_communities/details/macros/community-info.html" import community_info -%}
 <!-- NOTE: The javascript for the header is loaded in the base.html override template -->
 {% macro button_to_request_membership(community_ui) %}
   {% if permissions.can_request_membership %}
@@ -18,98 +20,6 @@
     <div id="request-membership-app"
          data-community='{{ community_ui | tojson }}'
          class="display-inline-block"></div>
-  {% endif %}
-{% endmacro %}
-{% macro render_community_info(community_ui) %}
-  {% if community_ui["access"]["visibility"] == 'restricted' %}
-    <div class="row pb-0 pt-0">
-      <div class="flex">
-        <div class="rel-ml-0 rel-mb-1">{{ access_status_label() }}</div>
-        <div class="mobile only rel-mb-1">{{ access_status_label() }}</div>
-      </div>
-    </div>
-  {% endif %}
-  {% set custom_fields = community_ui.get("custom_fields", {}) %}
-  {% if custom_fields['kcr:commons_group_id'] %}
-    <div class="row pb-0 pt-0">
-      <div class="flex">
-        <i class="users icon"></i>
-        <a href="{{ config.get('KC_GROUPS_URL_BASE', '') + custom_fields['kcr:commons_group_id'] }}"
-           class="ml-5">{{ custom_fields['kcr:commons_group_name'] }}</a>
-        <span class="ml-5">({{ _("a Knowledge Commons group") }})</span>
-      </div>
-    </div>
-  {% endif %}
-  {% if community_ui['parent'] %}
-    <div class="row pt-0 pb-0">
-      <div class="flex">
-        <div class="inline-computer ">
-          <span class="ui tiny header">Part of</span>
-          <a href="{{ url_for('invenio_app_rdm_communities.communities_home', pid_value=community.parent.slug) }}">
-            {{ community_ui["parent"]["metadata"]["title"] }}
-          </a>
-        </div>
-      </div>
-    </div>
-  {% endif %}
-  {% if community_ui["metadata"]["website"] %}
-    <div class="row collection-url pb-0 pt-0">
-      <div class="flex">
-        <i class="linkify icon" aria-hidden="true"></i>
-        <a class="ml-5" href="{{ community_ui["metadata"]["website"] }}">{{ community_ui["metadata"]["website"] }}</a>
-      </div>
-    </div>
-  {% endif %}
-  {% if community_ui["metadata"]["type"] is defined %}
-    <div class="row collection-type pb-0 pt-0">
-      <div class="flex">
-        <i class="tag icon" aria-hidden="true"></i>
-        <span class="ml-5 label label-keyword">{{ community_ui["ui"]["type"]["title_l10n"] }}</span>
-      </div>
-    </div>
-  {% endif %}
-  {% if community_ui["metadata"]["organizations"] %}
-    <div class="row pt-0 pb-0">
-      <div class="flex">
-        <div class="inline-computer"
-             id="organizations-list"
-             data-organizations='{{ community_ui["metadata"]["organizations"] | tojson }}'>
-          {{ render_organizations_list(community_ui["metadata"]["organizations"]) }}
-        </div>
-      </div>
-    </div>
-  {% endif %}
-{% endmacro %}
-{% macro render_organizations_list(organizations) %}
-  {% if organizations %}
-    <div>
-      <div>
-        <span class="org-list-inline">
-          <i class="building outline icon" aria-hidden="true"></i>
-          {% if organizations[0].id %}
-            <a href="{{ organizations[0].url }}"
-               class="ml-5"
-               aria-label="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
-               title="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
-               target="_blank"
-               rel="noreferrer">{{ organizations[0].name }}<span>&nbsp;</span>
-              <img class="inline-id-icon"
-                   src="{{ organizations[0].icon }}"
-                   alt="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
-                   width="16"
-                   height="16" />
-            </a>
-          {% else %}
-            <span class="ml-5">{{ organizations[0].name }}</span>
-          {% endif %}
-        </span>
-        {% if organizations | length > 1 %}
-          <span class="ml-1">
-            &nbsp;{{ _("and") }}&nbsp;<a href="#!">{{ _("%(count)s more organizations", count=(organizations | length - 1) ) }}</a>
-          </span>
-        {% endif %}
-      </div>
-    </div>
   {% endif %}
 {% endmacro %}
 <div class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile pb-0"
@@ -125,7 +35,7 @@
                class="rel-mb-1 ui image" />
         </div>
       </div>
-      <div class="sixteen wide mobile thirteen wide tablet ten wide computer column">
+      <div class="sixteen wide mobile ten wide tablet ten wide computer column">
         <div class="flex align-items-center mb-5">
           <div class="ui grid">
             <div class="row">
@@ -142,12 +52,14 @@
                 </h1>
               </div>
             </div>
-            {{ render_community_info(community_ui) }}
+            <div class="row mobile tablet only rel-ml-1">
+              <div class="column">{{ community_info(community_ui) }}</div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="sixteen wide mobile sixteen wide tablet four wide computer middle aligned column">
-        {{ render_community_info(community_ui) }}
+      <div class="four wide computer only middle aligned column">
+        {{ community_info(community_ui) }}
         {# Button to request membership is fully disabled until feature completely merged in v14. #}
         {# {{ button_to_request_membership(community) }} #}
         {% if permissions.can_moderate %}
@@ -159,7 +71,19 @@
       </div>
     </div>
     {% if community_menu_active %}
-      {% set community_menu_order = ["about", "search", "requests", "members", "stats", "settings", "curation_policy", "contribute"] %}
+      {% set community_menu_order = [
+        "home",
+        "about",
+        "browse",
+        "search",
+        "requests",
+        "members",
+        "stats",
+        "settings",
+        "curation_policy",
+        "submit",
+        "contribute"
+      ] %}
       {% set community_menu_items = current_menu.submenu('communities').children
               | sort_menu_items_by_name(community_menu_order)
             | filter_visible_community_menu_items(permissions, community_ui) %}
@@ -169,7 +93,6 @@
           {% set ns.active_url = item.url %}
         {% endif %}
       {% endfor %}
-      {{ community_menu_items | pprint }}
       <select class="ui fluid dropdown community-header-mobile-menu mobile only rel-mt-1 rel-mb-1"
               aria-label="{{ _("Community navigation") }}">
         <option value="" disabled {{ 'selected' if not ns.active_url }}>{{ _("Navigate") }}
@@ -181,7 +104,7 @@
           </option>
         {% endfor %}
       </select>
-      {% set collapsing_menu_items = ["curation_policy", "members", "stats", "requests", "settings"] %}
+      {% set collapsing_menu_items = ["curation_policy", "members", "stats", "requests", "settings", "submit"] %}
       <div class="ui container secondary pointing menu pl-0 pr-0 theme-primary tablet computer widescreen large-monitor only">
         {% for item in community_menu_items %}
           {% set item_active_class = 'active' if active_community_header_menu_item == item.name else '' %}
