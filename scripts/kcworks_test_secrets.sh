@@ -127,7 +127,7 @@ umask 077
 chmod 600 "$OUT_FILE"
 
 if ! aws secretsmanager get-secret-value \
-  "${REGION[@]}" \
+  ${REGION[@]+"${REGION[@]}"} \
   --secret-id "$SECRET_ID" \
   --query SecretString \
   --output text >"$RAWFILE"; then

@@ -137,7 +137,7 @@ chmod 600 "$RUNTIME_SECRET_HOST_FILE"
 
 # Fetch SecretString (must be a JSON object at top level: { "KEY": "value", ... })
 if ! aws secretsmanager get-secret-value \
-  "${REGION[@]}" \
+  ${REGION[@]+"${REGION[@]}"} \
   --secret-id "$SECRET_ID" \
   --query SecretString \
   --output text >"$RAWFILE"; then
