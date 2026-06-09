@@ -5,6 +5,12 @@
 
 ## Unreleased
 
+## 0.8.1 (2026-06-09)
+
+- Bug fix release
+  - Sanitize uploaded filenames to remove problem characters (,#;:%/\) that were
+    often causing "jammed" uploads.
+
 ## 0.8.0 (2026-05-19)
 
 Major feature release
