@@ -845,6 +845,179 @@ def test_record_file_upload_api(
         assert draft_after_delete["files"]["total_bytes"] == 0
 
 
+def test_record_file_upload_api_sanitizes_filename(
+    running_app,
+    db,
+    client_with_login,
+    headers,
+    user_factory,
+    search_clear,
+    minimal_draft_record_factory,
+    mock_send_remote_api_update_fixture,
+):
+    """Uploading a file with URL-hostile characters sanitizes the key.
+
+    Confirms that a draft file initialized with a ``?`` in its name is stored
+    under a sanitized key, that the links returned by the API reference the
+    sanitized key, and that the file can subsequently be uploaded, committed,
+    and downloaded again via those returned links.
+    """
+    app = running_app.app
+    u = user_factory(
+        email=user_data_set["user1"]["email"],
+        password="test",
+        token=True,
+        admin=True,
+    )
+    user = u.user
+    token = u.allowed_token
+    identity = get_identity(user)
+    identity.provides.add(authenticated_user)
+
+    file_path = (
+        Path(__file__).resolve().parents[2] / "helpers/sample_files/sample.pdf"
+    )
+    raw_key = "sa?mple.pdf"
+    sanitized_key = "sa_mple.pdf"
+
+    metadata = TestRecordMetadataWithFiles(app=app, file_entries={})
+
+    with app.test_client() as client:
+        draft_result = minimal_draft_record_factory(
+            identity=identity, metadata=metadata.metadata_in
+        )
+        draft_id = draft_result.id
+
+        # Initialize the file upload with a URL-hostile filename.
+        headers.update({"content-type": "application/json"})
+        response = client.post(
+            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files",
+            data=json.dumps([{"key": raw_key}]),
+            headers={**headers, "Authorization": f"Bearer {token}"},
+        )
+        assert response.status_code == 201
+        assert len(response.json["entries"]) == 1
+
+        entry = response.json["entries"][0]
+        # The persisted key is sanitized: the "?" is replaced with "_".
+        assert entry["key"] == sanitized_key
+
+        # Links derived from the initialized file reference the sanitized key,
+        # and never the raw "?" character.
+        entry_links = entry["links"]
+        assert entry_links["self"] == (
+            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files/"
+            f"{sanitized_key}"
+        )
+        assert entry_links["content"] == (
+            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files/"
+            f"{sanitized_key}/content"
+        )
+        assert entry_links["commit"] == (
+            f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files/"
+            f"{sanitized_key}/commit"
+        )
+        assert all("?" not in link for link in entry_links.values())
+
+        # Upload the file content using the returned (sanitized) content link.
+        with open(file_path, "rb") as binary_file_data:
+            binary_file_data.seek(0)
+            expected_bytes = binary_file_data.read()
+            binary_file_data.seek(0)
+
+            headers.update({"content-type": "application/octet-stream"})
+            upload_response = client.put(
+                entry_links["content"],
+                data=binary_file_data,
+                headers={**headers, "Authorization": f"Bearer {token}"},
+            )
+        assert upload_response.status_code == 200
+        assert upload_response.json["key"] == sanitized_key
+
+        # Commit the upload using the returned (sanitized) commit link.
+        headers.update({"content-type": "application/json"})
+        commit_response = client.post(
+            entry_links["commit"],
+            headers={**headers, "Authorization": f"Bearer {token}"},
+        )
+        assert commit_response.status_code == 200
+        assert commit_response.json["key"] == sanitized_key
+        assert commit_response.json["status"] == "completed"
+        assert commit_response.json["size"] == 13264
+
+        # The draft holds the file under the sanitized key only.
+        draft_after_upload = records_service.read_draft(
+            identity=system_identity, id_=draft_id
+        )
+        entries = draft_after_upload["files"]["entries"]
+        assert list(entries.keys()) == [sanitized_key]
+
+        # The file can be downloaded again via the sanitized content link.
+        download_response = client.get(
+            entry_links["content"],
+            headers={**headers, "Authorization": f"Bearer {token}"},
+        )
+        assert download_response.status_code == 200
+        assert download_response.data == expected_bytes
+
+
+def test_record_file_upload_api_sanitized_duplicate_rejected(
+    running_app,
+    db,
+    client_with_login,
+    headers,
+    user_factory,
+    search_clear,
+    minimal_draft_record_factory,
+    mock_send_remote_api_update_fixture,
+):
+    """Two filenames that sanitize to the same key are gracefully rejected.
+
+    When one initialization batch contains two filenames that collapse to the
+    same sanitized key, the second collides with the first and the request is
+    rejected with a 400 (rather than a 500 or a silent overwrite), leaving no
+    files persisted on the draft.
+    """
+    app = running_app.app
+    u = user_factory(
+        email=user_data_set["user1"]["email"],
+        password="test",
+        token=True,
+        admin=True,
+    )
+    user = u.user
+    token = u.allowed_token
+    identity = get_identity(user)
+    identity.provides.add(authenticated_user)
+
+    # Both keys sanitize to "a_b.pdf" (the "?" and ":" both become "_").
+    file_list = [{"key": "a?b.pdf"}, {"key": "a:b.pdf"}]
+
+    metadata = TestRecordMetadataWithFiles(app=app, file_entries={})
+
+    with app.test_client() as client:
+        draft_result = minimal_draft_record_factory(
+            identity=identity, metadata=metadata.metadata_in
+        )
+        draft_id = draft_result.id
+
+        headers.update({"content-type": "application/json"})
+        # FIXME: This patch mirrors `test_record_file_upload_api_not_enabled`.
+        # It works around a rollback/current_user session issue that surfaces
+        # when the request raises (here, the duplicate-key rejection).
+        with patch("invenio_accounts.utils.current_user"):
+            response = client.post(
+                f"{app.config['SITE_API_URL']}/records/{draft_id}/draft/files",
+                data=json.dumps(file_list),
+                headers={**headers, "Authorization": f"Bearer {token}"},
+            )
+
+        # Graceful client error, not a 500 or a 201.
+        assert response.status_code == 400
+        assert response.json["status"] == 400
+        assert response.json["message"] == "File with key a_b.pdf already exists."
+
+
 def test_record_view_api(
     running_app,
     db,

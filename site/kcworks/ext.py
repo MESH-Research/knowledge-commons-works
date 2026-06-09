@@ -31,6 +31,7 @@ from invenio_rdm_records.services.communities.components import (
     CommunityServiceComponents,
 )
 from invenio_rdm_records.services.components import DefaultRecordsComponents
+from invenio_rdm_records.services.config import FileServiceConfig
 from pydantic import BaseModel, ConfigDict
 from werkzeug.local import LocalProxy
 
@@ -53,6 +54,9 @@ from kcworks.services.records.components.first_record_component import (
 )
 from kcworks.services.records.components.per_field_permissions_component import (
     PerFieldEditPermissionsComponent,
+)
+from kcworks.services.records.components.sanitize_filenames_component import (
+    FileNameSanitizerComponent,
 )
 from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
     CommunityChangePermissionsComponent,
@@ -170,6 +174,21 @@ class KCWorks:
             FirstRecordComponent,
             PerFieldEditPermissionsComponent,
             CitedNamesUpsertComponent,
+        ]
+
+        existing_record_file_components = app.config.get(
+            "RDM_FILES_SERVICE_COMPONENTS", FileServiceConfig.components
+        )
+        existing_draft_file_components = app.config.get(
+            "RDM_DRAFT_FILES_SERVICE_COMPONENTS", FileServiceConfig.components
+        )
+        app.config["RDM_FILES_SERVICE_COMPONENTS"] = [
+            FileNameSanitizerComponent,
+            *existing_record_file_components,
+        ]
+        app.config["RDM_DRAFT_FILES_SERVICE_COMPONENTS"] = [
+            FileNameSanitizerComponent,
+            *existing_draft_file_components,
         ]
 
         existing_record_communities_components = app.config.get(

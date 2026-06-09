@@ -3856,7 +3856,7 @@ wheels = [
 
 [[package]]
 name = "kcworks"
-version = "0.8.0"
+version = "0.8.1"
 source = { editable = "." }
 dependencies = [
     { name = "cairosvg" },
@@ -3972,7 +3972,7 @@ requires-dist = [
     { name = "lxml", specifier = "==5.2.1" },
     { name = "myst-parser", marker = "extra == 'docs'" },
     { name = "pandas" },
-    { name = "pillow", specifier = ">=11.0" },
+    { name = "pillow", specifier = ">=11" },
     { name = "psycopg2-binary", marker = "extra == 'dev'", specifier = ">=2.9.10" },
     { name = "pydantic" },
     { name = "pytest", marker = "extra == 'tests'" },
