@@ -59,14 +59,12 @@ def test_community_members_generator(
 
     assert Permission(*needs).allows(identity)
     assert Permission(*needs).allows(identity2) is False
-    assert Counter(needs) == Counter(
-        [
-            CommunityRoleNeed(value=community.id, role="owner"),
-            CommunityRoleNeed(value=community.id, role="manager"),
-            CommunityRoleNeed(value=community.id, role="curator"),
-            CommunityRoleNeed(value=community.id, role="reader"),
-        ]
-    )
+    assert Counter(needs) == Counter([
+        CommunityRoleNeed(value=community.id, role="owner"),
+        CommunityRoleNeed(value=community.id, role="manager"),
+        CommunityRoleNeed(value=community.id, role="curator"),
+        CommunityRoleNeed(value=community.id, role="reader"),
+    ])
     assert Counter(excludes) == Counter([])
 
 
@@ -90,13 +88,11 @@ def test_community_curators_generator(
     excludes = generator.excludes(record=community._record, community_id=community.id)
     assert Permission(*needs).allows(identity)
     assert Permission(*needs).allows(identity2) is False
-    assert Counter(needs) == Counter(
-        [
-            CommunityRoleNeed(value=community.id, role="curator"),
-            CommunityRoleNeed(value=community.id, role="manager"),
-            CommunityRoleNeed(value=community.id, role="owner"),
-        ]
-    )
+    assert Counter(needs) == Counter([
+        CommunityRoleNeed(value=community.id, role="curator"),
+        CommunityRoleNeed(value=community.id, role="manager"),
+        CommunityRoleNeed(value=community.id, role="owner"),
+    ])
     assert Counter(excludes) == Counter([])
 
 
@@ -120,12 +116,10 @@ def test_community_managers_generator(
     excludes = generator.excludes(record=community._record, community_id=community.id)
     assert Permission(*needs).allows(identity)
     assert Permission(*needs).allows(identity2) is False
-    assert Counter(needs) == Counter(
-        [
-            CommunityRoleNeed(value=community.id, role="manager"),
-            CommunityRoleNeed(value=community.id, role="owner"),
-        ]
-    )
+    assert Counter(needs) == Counter([
+        CommunityRoleNeed(value=community.id, role="manager"),
+        CommunityRoleNeed(value=community.id, role="owner"),
+    ])
     assert Counter(excludes) == Counter([])
 
 
@@ -149,11 +143,9 @@ def test_community_owners_generator(
     excludes = generator.excludes(record=community._record, community_id=community.id)
     assert Permission(*needs).allows(identity)
     assert Permission(*needs).allows(identity2) is False
-    assert Counter(needs) == Counter(
-        [
-            CommunityRoleNeed(value=community.id, role="owner"),
-        ]
-    )
+    assert Counter(needs) == Counter([
+        CommunityRoleNeed(value=community.id, role="owner"),
+    ])
     assert Counter(excludes) == Counter([])
 
 

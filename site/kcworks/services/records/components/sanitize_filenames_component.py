@@ -5,6 +5,8 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
+"""File service component to sanitize upload file names."""
+
 import re
 
 from invenio_records_resources.services.files.components.base import (

@@ -61,11 +61,11 @@ from kcworks.services.records.community_inclusion.community_access import (
 from kcworks.services.records.components.first_record_component import (
     FirstRecordComponent,
 )
-from kcworks.services.records.components.sanitize_filenames_component import (
-    FileNameSanitizerComponent,
-)
 from kcworks.services.records.components.per_field_permissions_component import (
     PerFieldEditPermissionsComponent,
+)
+from kcworks.services.records.components.sanitize_filenames_component import (
+    FileNameSanitizerComponent,
 )
 from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
     CommunityChangePermissionsComponent,
