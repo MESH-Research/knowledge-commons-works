@@ -151,9 +151,12 @@ class KCWorks:
         # CommunityAccessComponent (which blocks restricting a community
         # when it has public records) with the base one, so e.g. remote
         # group visibility sync can change community visibility.
+        existing_communities_components = app.config.get(
+            "COMMUNITIES_SERVICE_COMPONENTS", CommunityServiceComponents
+        )
         _community_components = [
             BaseCommunityAccessComponent if c is RDMCommunityAccessComponent else c
-            for c in CommunityServiceComponents
+            for c in existing_communities_components
         ]
         app.config["COMMUNITIES_SERVICE_COMPONENTS"] = _community_components
 
