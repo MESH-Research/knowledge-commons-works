@@ -144,16 +144,23 @@ class KCWorks:
         # CommunityAccessComponent (which blocks restricting a community
         # when it has public records) with the base one, so e.g. remote
         # group visibility sync can change community visibility.
+        # Start from any components already configured (e.g. those appended
+        # by other extensions such as invenio-stats-dashboard's
+        # CommunityCustomFieldsDefaultsComponent) so we don't drop them.
+        existing_community_components = app.config.get(
+            "COMMUNITIES_SERVICE_COMPONENTS", CommunityServiceComponents
+        )
         _community_components = [
             BaseCommunityAccessComponent if c is RDMCommunityAccessComponent else c
-            for c in CommunityServiceComponents
+            for c in existing_community_components
         ]
         # DefaultBrandingComponent must run AFTER PIDComponent (so
         # record.id and record.slug are stable), OwnershipComponent, and
         # CommunityThemeComponent (so any user-supplied theme survives
         # and we only fill in missing keys). Appending last satisfies
         # all three.
-        _community_components.append(DefaultBrandingComponent)
+        if DefaultBrandingComponent not in _community_components:
+            _community_components.append(DefaultBrandingComponent)
         app.config["COMMUNITIES_SERVICE_COMPONENTS"] = _community_components
 
         patch_community_access_restriction_check()
