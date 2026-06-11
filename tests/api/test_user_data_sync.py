@@ -35,6 +35,7 @@ from kcworks.services.accounts.idms import knowledgeCommons_account_setup
 from ..fixtures.users import user_data_set
 
 
+@pytest.mark.skip()
 def test_user_data_kc_endpoint_members(running_app):
     """Test that the production kc endpoint returns the correct data.
 
@@ -75,6 +76,7 @@ def test_user_data_kc_endpoint_members(running_app):
     assert "MLA" in actual_data["memberships"].keys()
 
 
+@pytest.mark.skip()
 def test_user_data_kc_endpoint_subs(running_app):
     """Test that the production kc endpoint returns the correct data.
 

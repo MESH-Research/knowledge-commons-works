@@ -10,7 +10,9 @@ These tests run the script as a separate process (subprocess) to verify
 argument parsing, validation, and behavior of the real CLI.
 """
 
+import argparse
 import copy
+import importlib.util
 import json
 import subprocess
 import sys
@@ -185,41 +187,27 @@ def test_script_rejects_missing_api_key_when_prompted(
     )
 
 
-def test_script_accepts_api_key_via_env(metadata_json_file, sample_files_dir):
-    """Script uses KCWORKS_IMPORT_API_KEY when --api-key is not provided."""
-    sample_file = sample_files_dir / "sample.pdf"
-    if not sample_file.exists():
-        pytest.skip("Sample PDF not found")
-    env = {"KCWORKS_IMPORT_API_KEY": "env-key"}
-    # We still expect failure (no real server), but we should get past API key
-    # and fail on the request. So we need a mock server or we assert we don't
-    # get "API key is required". Easiest: run with mock server and env var for
-    # API key in the success test; here we only check that with env set we don't
-    # prompt and don't get "API key is required". So run with a bad metadata path
-    # to force early exit, but use env for api key - we should then get "Metadata
-    # path does not exist" (if we pass a bad path) or connection error (if we
-    # pass good path). So: pass good metadata and good file, set env API key,
-    # no mock server -> we get connection error, not "API key required". So
-    # returncode 1 and stderr should not contain "API key is required". Let's
-    # just run with valid args and env API key; without mock server we get
-    # connection error. So result.returncode == 1 and "API key" not in result.stderr
-    # (we might get "Request failed" or similar). Actually the script prints
-    # "✗ Request failed" to stderr. So assert "API key is required" not in
-    # result.stderr.
-    result = _run_script(
-        [
-            "--collection-id",
-            "my-collection",
-            "--metadata",
-            metadata_json_file,
-            "--files",
-            str(sample_file),
-        ],
-        env=env,
-    )
-    # Should fail on network, not on missing API key
-    assert "API key is required" not in result.stderr
-    assert result.returncode == 1
+def _load_importer_module():
+    """Load the standalone importer script as an importable module.
+
+    Returns:
+        ModuleType: The imported kcworks_api_importer module.
+    """
+    script = _script_path()
+    if not script.exists():
+        pytest.skip("Importer script not found")
+    spec = importlib.util.spec_from_file_location("kcworks_api_importer", str(script))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_get_api_key_uses_env_variable(monkeypatch):
+    """_get_api_key returns KCWORKS_IMPORT_API_KEY when --api-key is not given."""
+    module = _load_importer_module()
+    monkeypatch.setenv("KCWORKS_IMPORT_API_KEY", "env-key")
+    args = argparse.Namespace(api_key=None)
+    assert module._get_api_key(args) == "env-key"
 
 
 # ---- Full run against a mock HTTP server ----
