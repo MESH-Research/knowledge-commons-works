@@ -28,13 +28,14 @@ from invenio_rdm_records.services.communities.components import (
     CommunityServiceComponents,
 )
 from invenio_rdm_records.services.components import DefaultRecordsComponents
+from invenio_rdm_records.services.config import FileServiceConfig
 from invenio_remote_user_data_kcworks.errors import (
-    BrokerTokenMissingError,
-    BrokerTokenDecryptionError,
-    BrokerPayloadExpiredError,
     BrokerExpiryValueError,
     BrokerNonceValidationError,
+    BrokerPayloadExpiredError,
     BrokerPayloadProcessingError,
+    BrokerTokenDecryptionError,
+    BrokerTokenMissingError,
     IDTokenInvalid,
     NoIDPFoundError,
     StateTokenInvalid,
@@ -62,6 +63,9 @@ from kcworks.services.records.components.first_record_component import (
 )
 from kcworks.services.records.components.per_field_permissions_component import (
     PerFieldEditPermissionsComponent,
+)
+from kcworks.services.records.components.sanitize_filenames_component import (
+    FileNameSanitizerComponent,
 )
 from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
     CommunityChangePermissionsComponent,
@@ -147,9 +151,12 @@ class KCWorks:
         # CommunityAccessComponent (which blocks restricting a community
         # when it has public records) with the base one, so e.g. remote
         # group visibility sync can change community visibility.
+        existing_communities_components = app.config.get(
+            "COMMUNITIES_SERVICE_COMPONENTS", CommunityServiceComponents
+        )
         _community_components = [
             BaseCommunityAccessComponent if c is RDMCommunityAccessComponent else c
-            for c in CommunityServiceComponents
+            for c in existing_communities_components
         ]
         app.config["COMMUNITIES_SERVICE_COMPONENTS"] = _community_components
 
@@ -170,6 +177,21 @@ class KCWorks:
             *existing_rdm_record_components,
             FirstRecordComponent,
             PerFieldEditPermissionsComponent,
+        ]
+
+        existing_record_file_components = app.config.get(
+            "RDM_FILES_SERVICE_COMPONENTS", FileServiceConfig.components
+        )
+        existing_draft_file_components = app.config.get(
+            "RDM_DRAFT_FILES_SERVICE_COMPONENTS", FileServiceConfig.components
+        )
+        app.config["RDM_FILES_SERVICE_COMPONENTS"] = [
+            FileNameSanitizerComponent,
+            *existing_record_file_components,
+        ]
+        app.config["RDM_DRAFT_FILES_SERVICE_COMPONENTS"] = [
+            FileNameSanitizerComponent,
+            *existing_draft_file_components,
         ]
 
         existing_record_communities_components = app.config.get(
