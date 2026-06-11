@@ -5,6 +5,20 @@
 
 ## Unreleased
 
+- Bug fixes
+  - Fixes to several outdated tests.
+  - Fix to communities service component registration in exp.py.
+  - Fix to community member record assignment service (removing obsolete
+    reliance on oauth config).
+  - Improvements to test fixtures, including fixture to skip sso check and bug
+    fixes to fixtures for admin roles.
+
+## 0.8.1 (2026-06-09)
+
+- Bug fix release
+  - Sanitize uploaded filenames to remove problem characters (,#;:%/\) that were
+    often causing "jammed" uploads.
+
 ## 0.8.0 (2026-05-19)
 
 Major feature release
