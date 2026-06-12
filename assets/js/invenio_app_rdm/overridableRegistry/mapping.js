@@ -38,7 +38,7 @@ import { ResultOptionsWithState } from "./search/ResultOptions";
 import { Results } from "./search/Results";
 import { SearchAppLayout } from "./search/SearchAppLayout";
 import { SubjectsField } from "./fields/SubjectsField";
-import { TitlesField } from "./fields/TitlesField";
+// import { TitlesField } from "./fields/TitlesField";
 
 const MobileActionMenu = () => {
   return (
@@ -92,7 +92,7 @@ export const overriddenComponents = {
   // "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
   // "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
   "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
-  "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
+  // "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,
   "InvenioAppRdm.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRDM.RecordsList.RecordsResultsListItem.layout": RecordsResultsListItem,
   "InvenioAppRdm.Search.RecordsResultsListItem.layout": RecordsResultsListItem,
