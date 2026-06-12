@@ -5,6 +5,11 @@
 
 ## Unreleased
 
+- Docs
+  - Documentation for admins on executing cli commands via ssh and s3 bucket
+    commands.
+  - Documentation on required and recommended metadata fields in the KCWorks
+    schema
 - Bug fixes
   - Fixes to several outdated tests.
   - Fix to communities service component registration in exp.py.
