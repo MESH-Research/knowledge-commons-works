@@ -35,6 +35,7 @@ const AIUsageField = ({
       {values.custom_fields
         ? values.custom_fields["kcr:ai_usage"]?.ai_used === true && (
             <TextArea
+              classnames="rel-mt-1"
               fieldPath={`${fieldPath}.ai_description`}
               // label={ai_description.label}
               description={description}

@@ -113,8 +113,8 @@ const CategoryRow = ({ category, types }) => {
       <Table.Cell>
         <strong>{i18next.t(CATEGORY_LABELS[category] ?? category)}</strong>
       </Table.Cell>
-      <Table.Cell className="positive">{types.supported.join(", ")}</Table.Cell>
-      <Table.Cell className="negative">{types.unsupported.join(", ")}</Table.Cell>
+      <Table.Cell className="">{types.supported.join(", ")}</Table.Cell>
+      <Table.Cell className="">{types.unsupported.join(", ")}</Table.Cell>
     </Table.Row>
   );
 };
@@ -138,9 +138,7 @@ const FileTypeMessageComponent = () => {
 
   if (!previewableExtensions.length) return null;
 
-  const previewableSet = new Set(
-    previewableExtensions.map((e) => e.toLowerCase())
-  );
+  const previewableSet = new Set(previewableExtensions.map((e) => e.toLowerCase()));
 
   const nonPreviewableFiles = Object.values(fileEntries).filter((file) => {
     const ext = file.name?.split(".").pop()?.toLowerCase();
@@ -149,70 +147,68 @@ const FileTypeMessageComponent = () => {
 
   const fileCategories = categorizeExtensions(previewableExtensions);
 
+  console.log("nonPreviewableFiles", nonPreviewableFiles);
+  console.log("nonPreviewableFiles", nonPreviewableFiles.length);
+  console.log("nonPreviewableFiles", nonPreviewableFiles.length > 0);
+
   return (
-    <div className="file-type-message-component">
+    <>
       {nonPreviewableFiles.length > 0 && (
-        <Message warning icon className="mt-0 mb-5">
+        <Message icon className="negative mt-0 mb-0">
           <Icon name="warning sign" />
           <Message.Content>
-            <Message.Header>
-              {i18next.t("Some uploaded files will not be previewable")}
-            </Message.Header>
-            <p>
+            <Message.Header>{i18next.t("Some files will not be previewable")}</Message.Header>
+            <p className="mb-5">
               {i18next.t(
-                "The following files can be downloaded but will not be displayed on the work detail page:"
+                "The following files will be listed on the work detail page for download, but will not have a preview:"
               )}
             </p>
-            <ul>
+            <ul className="mt-0 mb-0 pl-15">
               {nonPreviewableFiles.map((f) => (
                 <li key={f.name}>
                   <strong>{f.name}</strong>
                 </li>
               ))}
             </ul>
+            <p className="mt-5">
+              {i18next.t("Please consider using supported file types instead (listed below).")}
+            </p>
           </Message.Content>
         </Message>
       )}
 
-      <Message info icon className="mt-0">
-        <Icon name="file" size="large" />
-        <Message.Content>
-          <Accordion>
-            <Accordion.Title active={isOpen} onClick={() => setIsOpen(!isOpen)}>
-              <Icon name="dropdown" />
-              {i18next.t("List of supported file types with KCWorks previews...")}
-            </Accordion.Title>
-            <Accordion.Content active={isOpen}>
-              <p>
-                {i18next.t("Supported file types ")}
-                <b>{i18next.t("can be previewed")}</b>
-                {i18next.t(" on the work detail page. Unsupported file types ")}
-                <b>{i18next.t("can still be uploaded")}</b>
-                {i18next.t(" but will not be displayed.")}
-              </p>
-              <Table celled>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>{i18next.t("File Type")}</Table.HeaderCell>
-                    <Table.HeaderCell className="positive">
-                      {i18next.t("Previewable")}
-                    </Table.HeaderCell>
-                    <Table.HeaderCell className="negative">
-                      {i18next.t("Not Previewable (Uploadable)")}
-                    </Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {Object.entries(fileCategories).map(([cat, types]) => (
-                    <CategoryRow key={cat} category={cat} types={types} />
-                  ))}
-                </Table.Body>
-              </Table>
-            </Accordion.Content>
-          </Accordion>
-        </Message.Content>
-      </Message>
-    </div>
+      <Accordion className="pl-0 pr-0 mt-0 message">
+        <Accordion.Title as="button" active={isOpen} onClick={() => setIsOpen(!isOpen)}>
+          <Icon name="dropdown" />
+          {i18next.t("Supported file types...")}
+        </Accordion.Title>
+        <Accordion.Content active={isOpen} className="rel-pl-1 rel-pr-1">
+          <p>
+            {i18next.t("Supported file types ")}
+            <b>{i18next.t("can be previewed")}</b>
+            {i18next.t(" on the work detail page. Unsupported file types ")}
+            <b>{i18next.t("can still be uploaded")}</b>
+            {i18next.t(" but will not be displayed.")}
+          </p>
+          <Table celled>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>{i18next.t("File Type")}</Table.HeaderCell>
+                <Table.HeaderCell className="">{i18next.t("Previewable")}</Table.HeaderCell>
+                <Table.HeaderCell className="">
+                  {i18next.t("Not Previewable (Uploadable)")}
+                </Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {Object.entries(fileCategories).map(([cat, types]) => (
+                <CategoryRow key={cat} category={cat} types={types} />
+              ))}
+            </Table.Body>
+          </Table>
+        </Accordion.Content>
+      </Accordion>
+    </>
   );
 };
 

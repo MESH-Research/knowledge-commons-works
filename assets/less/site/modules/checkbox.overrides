@@ -16,8 +16,8 @@
 }
 
 .ui.checkbox {
-  &.fitted {
-    label {
+  // &.fitted {
+  //   label {
       &::after {
         top: -8px;
         left: -8px;

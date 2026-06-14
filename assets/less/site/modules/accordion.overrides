@@ -72,18 +72,25 @@
   }
 }
 
-.file-type-message {
+#rdm-deposit-form .invenio-form-section.file_type_message {
+  .ui.message.danger {
+    border-radius: 0;
+  }
   .ui.accordion:not(.styled) {
-    margin-top: 0;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
     .title {
       font-size: 1rem;
       font-weight: normal;
-      color: @infoTextColor;
       border-bottom: none;
-      padding: 0;
     }
     .content.active {
-      padding-top: 1rem;
+      border-top: 1px solid @borderColor;
+      padding-bottom: 1rem;
+      .list {
+        padding-left: 1.5rem;
+        padding-top: 0;
+      }
     }
   }
 }

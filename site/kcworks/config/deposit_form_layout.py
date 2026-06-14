@@ -29,12 +29,18 @@ _FORM_TITLE = {
     "classnames": "default-layout",
     "subsections": [
         {
+            "component": "SpacerColumn",
+            "largeScreen": 1,
+            "widescreen": 2,
+            "only": "large screen",
+        },
+        {
             "component": "FormTitle",
             "mobile": 16,
             "tablet": 16,
             "computer": 16,
-            "largeScreen": 16,
-            "widescreen": 16,
+            "largeScreen": 15,
+            "widescreen": 14,
         },
     ],
 }
@@ -47,7 +53,7 @@ _FORM_HEADER_STEPPER_MOBILE_TABLET = {
     ],
 }
 
-_FORM_HEADER_STEPPER_TOP = {
+_PAGED_FORM_HEADER_STEPPER_TOP = {
     "component": "FormHeader",
     "subsections": [
         {
@@ -58,11 +64,17 @@ _FORM_HEADER_STEPPER_TOP = {
         },
         {
             "component": "FormStepper",
-            "classnames": "column",
-            "computer": 11,
-            "widescreen": 10,
+            "classnames": "column tablet mobile only",
             "mobile": 16,
             "tablet": 16,
+        },
+        {
+            "component": "FormStepper",
+            "classnames": "column",
+            "largeScreen": 11,
+            "widescreen": 10,
+            "computer": 11,
+            "only": "computer",
         },
         {
             "component": "SpacerColumn",
@@ -70,6 +82,18 @@ _FORM_HEADER_STEPPER_TOP = {
             "largeScreen": 4,
             "widescreen": 4,
             "only": "computer",
+        },
+        # Mobile/tablet only: FormFeedbackComponent shown full-width under the
+        # stepper. At computer+ widths it appears in the right sidebar (see
+        # `_PAGED_FORM_RIGHT_SIDEBAR.subsections.form_feedback`); the
+        # HorizontalSubmissionComponent (page-6 mobile/tablet view) deliberately
+        # omits it so the feedback is consistently anchored at the page header
+        # rather than buried mid-page next to the publish buttons.
+        {
+            "component": "FormFeedbackComponent",
+            "classnames": (
+                "sixteen wide column tablet mobile only rel-mt-1 pt-10 rel-mr-1 rel-ml-1"
+            ),
         },
     ],
 }
@@ -106,8 +130,7 @@ _FORM_RIGHT_SIDEBAR = {
     "component": "FormRightSidebar",
     "classnames": "default-layout",
     # Sidebar widths: 4 (widescreen), 4 (largeScreen), 5 (computer)
-    "mobile": 16,
-    "tablet": 16,
+    "only": "computer",
     "computer": 5,
     "largeScreen": 4,
     "widescreen": 4,
@@ -136,7 +159,6 @@ _FORM_FOOTER = {
         {"component": "FormPageNavigationBar"},
     ],
 }
-
 
 _LANGUAGE_FIELD = {
     "section": "language_section",
@@ -173,16 +195,18 @@ _FORM_PAGES = {
                     "section": "files",
                     "label": _("File Upload"),
                     "component": "FileUploadComponent",
-                    "classnames": "basic prominent-field-label mb-30 rel-pb-2",
+                    "classnames": "basic prominent-field-label mb-0 pb-0",
                 },
                 {
                     "section": "file_type_message",
                     "label": None,
                     "component": "FileTypeMessageComponent",
+                    "classnames": "basic pt-0 mt-0",
                 },
                 {
                     "section": "rights",
                     "label": _("Rights and Permissions"),
+                    "icon": "copyright",
                     "component": "FormSection",
                     "classnames": "basic",
                     "show_heading": True,
@@ -191,7 +215,11 @@ _FORM_PAGES = {
                             "section": "copyright",
                             "label": _("Copyright"),
                             "component": "CopyrightsComponent",
-                            "classnames": "basic",
+                            "classnames": "basic rel-mb-2",
+                            "description": _(
+                                "A copyright statement describing the ownership of the uploaded resource."
+                            ),
+                            "helpText": None,
                         },
                         {
                             "section": "licenses",
@@ -423,18 +451,22 @@ _FORM_PAGES = {
             "section": "6",
             "label": "Save & Publish",
             "component": "FormPage",
+            # Menu/stepper item only at tablet/mobile (the same components
+            # appear in the right sidebar at computer+ widths). The page
+            # itself stays navigable at all widths so hard links still work.
+            "menuItemClasses": "tablet mobile only",
             "subsections": [
                 {
-                    "section": "submit_actions",
-                    "label": "Publish",
-                    "component": "SubmissionComponent",
-                    "wrapped": False,
+                    "section": "submission_row_section",
+                    "component": "HorizontalSubmissionComponent",
+                    "label": None,
+                    "classnames": "basic",
                 },
                 {
-                    "section": "access",
-                    "label": "Access",
-                    "component": "AccessRightsComponent",
-                    "wrapped": True,
+                    "section": "access_row_section",
+                    "component": "HorizontalAccessComponent",
+                    "label": None,
+                    "classnames": "basic",
                 },
             ],
         },
@@ -443,7 +475,7 @@ _FORM_PAGES = {
 
 COMMON_FIELDS_CONFIG = [
     _FORM_TITLE,
-    _FORM_HEADER_STEPPER_TOP,
+    _PAGED_FORM_HEADER_STEPPER_TOP,
     _FORM_LEFT_SIDEBAR_EMPTY,
     _FORM_RIGHT_SIDEBAR,
     _FORM_FOOTER,
