@@ -5,7 +5,8 @@ requires = ["babel>2.8", "setuptools>=61", "wheel"]
 [project]
 name = "kcworks"
 version = "0.8.1"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
 authors = [{ name = "Mesh Research", email = "scottia4@msu.edu" }]
 requires-python = ">=3.12"
 classifiers = [
