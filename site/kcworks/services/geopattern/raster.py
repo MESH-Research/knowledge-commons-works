@@ -1,10 +1,9 @@
-"""Rasterize a geopattern SVG to PNG bytes.
+"""Rasterize a geopattern SVG tile to PNG bytes.
 
-The geopattern SVG already includes a full-canvas background `<rect>`, so
-there's normally no transparent area to flatten. We still re-encode the
-cairosvg output through Pillow with a white background as a safety net
-(future SVG tweaks shouldn't make the rasterized logo show through to the
-page background).
+The geopattern SVG is a single repeatable tile. Some pattern generators
+produce non-square tiles, so rasterization renders one undistorted tile,
+repeats it over the requested output canvas, clips to that canvas, and then
+flattens to RGB over white.
 
 Public surface is a single function:
 
@@ -15,6 +14,7 @@ Public surface is a single function:
 from __future__ import annotations
 
 from io import BytesIO
+from xml.etree import ElementTree
 
 
 def svg_to_png(svg: str, *, width: int = 480, height: int = 480) -> bytes:
@@ -37,14 +37,63 @@ def svg_to_png(svg: str, *, width: int = 480, height: int = 480) -> bytes:
     import cairosvg  # type: ignore[import-untyped]
     from PIL import Image
 
+    tile_width, tile_height = _svg_tile_size(svg) or (width, height)
+    scale = max(width, height) / max(tile_width, tile_height)
+    output_tile_width = max(1, round(tile_width * scale))
+    output_tile_height = max(1, round(tile_height * scale))
+
     raw = cairosvg.svg2png(
         bytestring=svg.encode("utf-8"),
-        output_width=width,
-        output_height=height,
+        output_width=output_tile_width,
+        output_height=output_tile_height,
     )
-    rgba = Image.open(BytesIO(raw)).convert("RGBA")
+    tile = Image.open(BytesIO(raw)).convert("RGBA")
+    rgba = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    for y in range(0, height, output_tile_height):
+        for x in range(0, width, output_tile_width):
+            rgba.alpha_composite(tile, (x, y))
+
     bg = Image.new("RGB", rgba.size, (255, 255, 255))
     bg.paste(rgba, mask=rgba.split()[3])
     out = BytesIO()
     bg.save(out, format="PNG", optimize=True)
     return out.getvalue()
+
+
+def _svg_tile_size(svg: str) -> tuple[int, int] | None:
+    """Return the SVG root's intrinsic tile size, if parseable.
+
+    Args:
+        svg: SVG document source.
+
+    Returns:
+        `(width, height)` for positive numeric root dimensions, otherwise
+        `None`.
+    """
+    try:
+        root = ElementTree.fromstring(svg)
+        width = _numeric_svg_length(root.attrib.get("width"))
+        height = _numeric_svg_length(root.attrib.get("height"))
+    except ElementTree.ParseError:
+        return None
+    if width is None or height is None:
+        return None
+    return width, height
+
+
+def _numeric_svg_length(value: str | None) -> int | None:
+    """Parse a positive numeric SVG length.
+
+    Args:
+        value: SVG length attribute value.
+
+    Returns:
+        Rounded positive integer length, otherwise `None`.
+    """
+    if value is None:
+        return None
+    try:
+        length = round(float(value))
+    except ValueError:
+        return None
+    return length if length > 0 else None

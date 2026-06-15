@@ -42,6 +42,20 @@ def test_svg_to_png_smoke() -> None:
     assert img.mode == "RGB"
 
 
+def test_non_square_tile_repeats_without_white_margin() -> None:
+    """A non-square tessellation tile should fill the full PNG canvas."""
+    png = to_png("my-collection-with-a-very-long-name", width=480, height=480)
+    img = Image.open(BytesIO(png)).convert("RGB")
+
+    # This slug produces a 67x78 tessellation tile. Before tiling, cairo
+    # centered it in the square output, leaving a near-white left margin.
+    left_edge_samples = [
+        cast(tuple[int, int, int], img.getpixel((1, y))) for y in (1, 120, 240, 360)
+    ]
+
+    assert all(max(sample) < 250 for sample in left_edge_samples), left_edge_samples
+
+
 @pytest.mark.parametrize("generator", PATTERNS)
 def test_all_forced_generators_rasterize(generator: str) -> None:
     """Every geopattern generator emits SVG that can be rasterized."""
