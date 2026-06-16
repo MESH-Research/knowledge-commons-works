@@ -152,7 +152,7 @@ class OrgMemberRecordIncluder:
 
         for row in member_rows.itertuples():
             # row[0] is the index, row[1] is the username (first column)
-            current_app.logger.error(f"row: {row}")
+            current_app.logger.info(f"Handling row: {row}")
             username = row[1]
             member_dict: dict[str, Any] = {}
             members_search: dict[str, Any] = current_search_client.search(
