@@ -426,3 +426,24 @@
 //     }
 //   }
 // }
+
+.ui.button.link-button {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: @linkColor;
+  font-weight: normal;
+  padding: 0;
+  vertical-align: baseline;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: transparent;
+    background-color: transparent !important;
+    height: 1.45em;
+    box-shadow: none;
+    color: @linkHoverColor;
+    text-decoration: underline;
+  }
+}

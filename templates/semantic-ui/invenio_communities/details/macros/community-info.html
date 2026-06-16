@@ -6,10 +6,28 @@ Copyright (C) 2026 Mesh Research.
 Knowledge Commons Works is free software; you can redistribute it and/or modify it
 under the terms of the MIT License; see LICENSE file for more details.
 #}
+{% macro community_type_icon(type) %}
+  {% if type == "commons" %}
+    <i class="globe icon" aria-hidden="true"></i>
+  {% elif type == "organization" %}
+    <i class="building icon" aria-hidden="true"></i>
+  {% elif type == "event" %}
+    <i class="calendar alternate icon" aria-hidden="true"></i>
+  {% elif type == "journal" %}
+    <i class="book icon" aria-hidden="true"></i>
+  {% elif type == "project" %}
+    <i class="tasks icon" aria-hidden="true"></i>
+  {% elif type == "topic" %}
+    <i class="hashtag icon" aria-hidden="true"></i>
+  {% else %}
+    <i class="tag icon" aria-hidden="true"></i>
+  {% endif %}
+{% endmacro %}
 {%- from "invenio_communities/details/macros/organizations-list.html" import organizations_list -%}
-{% macro community_info(community_ui) %}
+{%- from "invenio_communities/details/macros/access-status-label.html" import access_status_label -%}
+{% macro community_info(instance, community_ui) %}
   {% if community_ui["access"]["visibility"] == 'restricted' %}
-    <div class="row pb-0 pt-0">
+    <div class="row pb-5 pt-0">
       <div class="flex">
         <div class="rel-ml-0 rel-mb-1">{{ access_status_label() }}</div>
         <div class="mobile only rel-mb-1">{{ access_status_label() }}</div>
@@ -18,19 +36,18 @@ under the terms of the MIT License; see LICENSE file for more details.
   {% endif %}
   {% set custom_fields = community_ui.get("custom_fields", {}) %}
   {% if custom_fields['kcr:commons_group_id'] %}
-    <div class="row pb-0 pt-0">
+    <div class="row pb-5 pt-0">
       <div class="flex">
         <i class="users icon"></i>
         <span class="ml-5">
           <a href="{{ config.get('KC_GROUPS_URL_BASE', '') + custom_fields['kcr:commons_group_id'] }}"
-             class="">{{
-          custom_fields['kcr:commons_group_name'] }}</a>
+             class="">{{ custom_fields['kcr:commons_group_name'] }}</a>
         </span>
       </div>
     </div>
   {% endif %}
   {% if community_ui['parent'] %}
-    <div class="row pt-0 pb-0">
+    <div class="row pt-0 pb-5">
       <div class="flex">
         <div class="inline-computer ">
           <span class="ui tiny header">Part of</span>
@@ -41,31 +58,25 @@ under the terms of the MIT License; see LICENSE file for more details.
       </div>
     </div>
   {% endif %}
+  {% if community_ui["metadata"]["type"] is defined %}
+    <div class="row collection-type pb-5 pt-0">
+      <div class="flex">
+        {{ community_type_icon(community_ui["ui"]["type"]["id"]) }}
+        <span class="ml-5 label label-keyword">{{ community_ui["ui"]["type"]["title_l10n"] }}</span>
+      </div>
+    </div>
+  {% endif %}
   {% if community_ui["metadata"]["website"] %}
-    <div class="row collection-url pb-0 pt-0">
+    <div class="row collection-url pb-5 pt-0">
       <div class="flex">
         <i class="linkify icon" aria-hidden="true"></i>
         <a class="ml-5" href="{{ community_ui["metadata"]["website"] }}">{{ community_ui["metadata"]["website"] }}</a>
       </div>
     </div>
   {% endif %}
-  {% if community_ui["metadata"]["type"] is defined %}
-    <div class="row collection-type pb-0 pt-0">
-      <div class="flex">
-        <i class="tag icon" aria-hidden="true"></i>
-        <span class="ml-5 label label-keyword">{{ community_ui["ui"]["type"]["title_l10n"] }}</span>
-      </div>
-    </div>
-  {% endif %}
   {% if community_ui["metadata"]["organizations"] %}
     <div class="row pt-0 pb-0">
-      <div class="flex">
-        <div class="inline-computer"
-             id="organizations-list"
-             data-organizations="{{ community_ui["metadata"]["organizations"] | tojson }}">
-          {{ organizations_list(community_ui["metadata"]["organizations"]) }}
-        </div>
-      </div>
+      <div class="flex">{{ organizations_list(instance, community_ui["metadata"]["organizations"]) }}</div>
     </div>
   {% endif %}
 {% endmacro %}

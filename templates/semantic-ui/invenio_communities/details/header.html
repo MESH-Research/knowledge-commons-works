@@ -35,7 +35,7 @@
                class="rel-mb-1 ui image" />
         </div>
       </div>
-      <div class="sixteen wide mobile ten wide tablet ten wide computer column">
+      <div class="sixteen wide mobile thirteen wide tablet ten wide computer column">
         <div class="flex align-items-center mb-5">
           <div class="ui grid">
             <div class="row">
@@ -44,22 +44,22 @@
                   <a href="{{ url_for('invenio_app_rdm_communities.communities_detail', pid_value=community_ui['slug']) }}"
                      class="ui small header theme-primary-text">{{ community_ui["metadata"]["title"] }}</a>
                   <!-- Show the icon for subcommunities -->
-                  {% if community_ui['parent'] %}
-                    <p class="ml-2 mb-0 display-inline-block">
-                      <i class="green check circle outline icon"></i>
-                    </p>
-                  {% endif %}
+                  <!-- {% if community_ui['parent'] %} -->
+                  <!--   <p class="ml-2 mb-0 display-inline-block"> -->
+                  <!--     <i class="green check circle outline icon"></i> -->
+                  <!--   </p> -->
+                  <!-- {% endif %} -->
                 </h1>
               </div>
             </div>
             <div class="row mobile tablet only rel-ml-1">
-              <div class="column">{{ community_info(community_ui) }}</div>
+              <div class="column">{{ community_info("mobile", community_ui) }}</div>
             </div>
           </div>
         </div>
       </div>
       <div class="four wide computer only middle aligned column">
-        {{ community_info(community_ui) }}
+        {{ community_info("computer", community_ui) }}
         {# Button to request membership is fully disabled until feature completely merged in v14. #}
         {# {{ button_to_request_membership(community) }} #}
         {% if permissions.can_moderate %}

@@ -6,35 +6,66 @@ Copyright (C) 2026 Mesh Research.
 Knowledge Commons Works is free software; you can redistribute it and/or modify it
 under the terms of the MIT License; see LICENSE file for more details.
 #}
-{% macro organizations_list(organizations) %}
+{% macro organizations_list(instance, organizations) %}
   {% if organizations %}
-    <div class="row">
-      <i class="building outline icon" aria-hidden="true"></i>
-      <div class="ml-5">
-        {% if organizations[0].id %}
-          <a href="{{ organizations[0].url }}"
-             aria-label="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
-             title="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
-             target="_blank"
-             rel="noreferrer">{{
-            organizations[0].name }}<span>&nbsp;</span>
-            <img class="inline-id-icon"
-                 src="{{ organizations[0].icon }}"
-                 alt="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
-                 width="16"
-                 height="16" />
-          </a>
-        {% else %}
-          <span class="">{{ organizations[0].name }}</span>
-        {% endif %}
-        {% if organizations | length > 1 %}
-          <span class="ml-1">
-            &nbsp;{{ _("and") }}&nbsp;
-            <a href="#!" class="computer only">{{ _("%(count)s more organizations", count=(organizations | length - 1) ) }}</a>
-            <a href="#!" class="mobile tablet only">{{ _("%(count)s more", count=(organizations | length - 1) ) }}</a>
-          </span>
-        {% endif %}
-      </div>
+    <i class="building outline icon" aria-hidden="true"></i>
+    <div class="ml-5">
+      {% if organizations[0].id %}
+        <a href="{{ organizations[0].url }}"
+           aria-label="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
+           title="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
+           target="_blank"
+           rel="noreferrer">{{
+          organizations[0].name }}<span>&nbsp;</span>
+          <img class="inline-id-icon"
+               src="{{ organizations[0].icon }}"
+               alt="{{ organizations[0].name }}'s {{ organizations[0].label }} profile"
+               width="16"
+               height="16" />
+        </a>
+      {% else %}
+        <span class="">{{ organizations[0].name }}</span>
+      {% endif %}
+      {% if organizations | length > 1 %}
+        <span class="ml-1">
+          &nbsp;{{ _("and") }}&nbsp;
+          <button popovertarget="expanded-orgs-{{ instance }}"
+                  popovertargetaction="toggle"
+                  class="computer only ui button link-button">
+            {{ _("%(count)s more organizations", count=(organizations | length - 1) ) }}
+          </button>
+          <button popovertarget="expanded-orgs-{{ instance }}"
+                  popovertargetaction="toggle"
+                  class="mobile tablet only ui button link-button">
+            {{ _("%(count)s more", count=(organizations | length - 1) ) }}
+          </button>
+        </span>
+        <div id="expanded-orgs-{{ instance }}"
+             popover="auto"
+             class="ui popup top center native-popup-tooltip expanded-orgs">
+          <ul class="simple-list mt-0 mb-0">
+            {% for org in organizations[1:] %}
+              <li class="">
+                {% if org.id %}
+                  <a href="{{ org.url }}"
+                     aria-label="{{ org.name }}'s {{ org.label }} profile"
+                     title="{{ org.name }}'s {{ org.label }} profile"
+                     target="_blank"
+                     rel="noreferrer">
+                    {{ org.name }}<span>&nbsp;</span>
+                    <img class="inline-id-icon"
+                         src="{{ org.icon }}"
+                         alt="{{ org.name }}'s {{ org.label }} profile" />
+                  </a>
+                {% else %}
+                  {{ org.name }}
+                {% endif %}
+                {% if not loop.last %}<span>,&nbsp;</span>{% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
     </div>
   {% endif %}
 {% endmacro %}
