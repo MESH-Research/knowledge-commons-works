@@ -118,6 +118,9 @@ site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 .env-tests
 .envrc
 
+# Private files
+private/
+
 # S3 default bucket location
 data/default/*
 data/.minio.sys
