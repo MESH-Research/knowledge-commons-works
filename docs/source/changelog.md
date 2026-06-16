@@ -15,6 +15,8 @@
   - Fix to communities service component registration in exp.py.
   - Fix to community member record assignment service (removing obsolete
     reliance on oauth config).
+  - Reduce log noise from the `group-collections assign-org-records` command
+    (per-row progress logged at info instead of error).
   - Improvements to test fixtures, including fixture to skip sso check and bug
     fixes to fixtures for admin roles.
 
