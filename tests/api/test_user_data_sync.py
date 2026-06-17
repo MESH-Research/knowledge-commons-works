@@ -261,7 +261,7 @@ def test_user_data_sync_on_webhook(
     app.logger.error(f"test: mock remote data members: {mock_remote_data_members}")
 
     mock_adapter_members = requests_mock.get(
-        f"{base_url}members/{profile_data['kc_username']}",
+        f"{base_url}members/{profile_data['kc_username']}/",
         json=mock_remote_data_members,
     )
     mock_adapter_subs = requests_mock.get(
@@ -293,7 +293,7 @@ def test_user_data_sync_on_webhook(
                 "updates": {
                     "users": [
                         {
-                            "id": profile_data["oauth_id"],
+                            "id": profile_data["kc_username"],
                             "event": "updated",
                         },
                     ],
@@ -309,16 +309,16 @@ def test_user_data_sync_on_webhook(
         "updates": {
             "users": [
                 {
-                    "id": profile_data["oauth_id"],
+                    "id": profile_data["kc_username"],
                     "event": "updated",
                 },
             ],
         },
     }
 
-    assert mock_adapter_subs.called
-    assert mock_adapter_subs.call_count == 1  # only one call to the remote api
-    assert not mock_adapter_members.called
+    assert mock_adapter_members.called
+    assert mock_adapter_members.call_count == 1  # only one call to the remote api
+    assert not mock_adapter_subs.called
 
     # Check that the user data was updated in the db
     user = current_accounts.datastore.get_user_by_id(user_id)
