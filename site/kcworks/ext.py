@@ -22,6 +22,9 @@ from invenio_accounts.proxies import current_datastore
 from invenio_communities.communities.services.components import (
     CommunityAccessComponent as BaseCommunityAccessComponent,
 )
+from invenio_communities.communities.services.components import (
+    CommunityParentComponent as BaseCommunityParentComponent,
+)
 from invenio_i18n import lazy_gettext as _  # type: ignore[import-untyped]
 from invenio_oauth2server.proxies import current_oauth2server
 from invenio_rdm_records.services.communities.components import (
@@ -39,6 +42,9 @@ from invenio_remote_user_data_kcworks.services.components import (
     CitedNamesUpsertComponent,
 )
 from invenio_remote_user_data_kcworks.utils.broker import extract_bearer_token
+from kcworks.services.communities.community_parent import (
+    CommunityParentComponent as KCWorksCommunityParentComponent,
+)
 from kcworks.services.communities.default_branding import (
     DefaultBrandingComponent,
 )
@@ -150,9 +156,16 @@ class KCWorks:
         existing_community_components = app.config.get(
             "COMMUNITIES_SERVICE_COMPONENTS", CommunityServiceComponents
         )
+
+        def _replace_community_component(component):
+            if component is RDMCommunityAccessComponent:
+                return BaseCommunityAccessComponent
+            if component is BaseCommunityParentComponent:
+                return KCWorksCommunityParentComponent
+            return component
+
         _community_components = [
-            BaseCommunityAccessComponent if c is RDMCommunityAccessComponent else c
-            for c in existing_community_components
+            _replace_community_component(c) for c in existing_community_components
         ]
         # DefaultBrandingComponent must run AFTER PIDComponent (so
         # record.id and record.slug are stable), OwnershipComponent, and
