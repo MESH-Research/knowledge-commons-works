@@ -1,0 +1,565 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Organization Management" href="organization_management.html"><link rel="prev" title="File Storage Administration" href="file_storage.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>User Data Management - Knowledge Commons Works 0.8.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.8.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feature_highlights.html">Feature Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Development Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Administrator Guide</a><input aria-label="Toggle navigation of Administrator Guide" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="moderation.html">Content Moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_commands.html">Running Commands from the KCWorks Back End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">User Data Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="organization_management.html">Organization Management</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../setup/configuration.html">Configuration of KCWorks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup/installation.html">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../developing/index.html">Developing KCWorks</a><input aria-label="Toggle navigation of Developing KCWorks" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developing/architecture.html">KCWorks Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/code_standards.html">Development Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/source_control.html">Source Control and Versioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/workflow.html">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/stats.html">Stats and Analytics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/i18n.html">I18n</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/infrastructure.html">KCWorks Infrastructure</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/outgoing_signals.html">Outgoing Signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../customizations.html">Customizations to InvenioRDM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../in_depth.html">In-depth Installation Instructions (NEEDS UPDATING)</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/admin_guide/user_data_management.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="user-data-management">
+<h1>User Data Management<a class="headerlink" href="#user-data-management" title="Link to this heading">¶</a></h1>
+<p>KCWorks stores user profile data locally and keeps it in sync with the Knowledge
+Commons Profiles service. Administrators can provision users in bulk, inspect
+accounts, correct how a user’s name is divided into parts, and maintain the
+Names vocabulary that powers creator lookup in the upload form.</p>
+<p>All of the operations below are run from the KCWorks UI app container. See
+<a class="reference internal" href="running_commands.html#starting-interactive-shell"><span class="std std-ref">Starting an interactive shell</span></a>
+for how to open a shell session on staging or production.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">&lt;command&gt;</span> <span class="pre">--help</span></code> for the full list of options on any command
+described here. More reference detail is also available in the
+<a class="reference internal" href="../reference/cli_commands.html"><span class="std std-doc">CLI Commands</span></a> page.</p>
+</div>
+<section id="how-do-i-import-a-list-of-users-from-a-kc-csv-file">
+<h2>How do I import a list of users from a KC CSV file?<a class="headerlink" href="#how-do-i-import-a-list-of-users-from-a-kc-csv-file" title="Link to this heading">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">ingest-profiles-dump</span></code> to create or update local
+KCWorks accounts from a file of KC usernames. For each username, KCWorks fetches
+the user’s profile from the live Profiles API and provisions or updates the
+matching local account.</p>
+<ol class="arabic simple">
+<li><p>Prepare a CSV file with one KC username per line. A <code class="docutils literal notranslate"><span class="pre">username</span></code> header row is
+optional and is skipped automatically. Lines starting with <code class="docutils literal notranslate"><span class="pre">#</span></code> and blank
+lines are also ignored. If the file has extra columns, only the first column
+(the username) is used.</p></li>
+<li><p>Copy the file into the UI container, or place it somewhere already mounted
+inside the container (for example under <code class="docutils literal notranslate"><span class="pre">/opt/invenio/import_data</span></code>).</p></li>
+<li><p>Run the ingest command:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>ingest-profiles-dump<span class="w"> </span>/path/to/users.csv<span class="w"> </span>--format<span class="w"> </span>usernames
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">usernames</span></code> flag is optional when the file is clearly not JSONL;
+format auto-detection will choose <code class="docutils literal notranslate"><span class="pre">usernames</span></code> for a plain username list.</p>
+<p>Useful options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--limit</span> <span class="pre">N</span></code> — process only the first <em>N</em> rows (helpful for a trial run).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--rate-per-second</span> <span class="pre">2</span></code> — throttle live Profiles API calls (default <code class="docutils literal notranslate"><span class="pre">2</span></code>; set <code class="docutils literal notranslate"><span class="pre">0</span></code>
+to disable pacing; decimal numbers allow rates of less than 1/second).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--background</span></code> — enqueue the work as a Celery task and return immediately with
+a task id (recommended for large lists).</p></li>
+</ul>
+<p>When the command finishes synchronously, it prints a summary with counts of rows
+seen, processed, skipped, and errors.</p>
+</section>
+<section id="how-do-i-change-a-user-s-name-division">
+<h2>How do I change a user’s name division?<a class="headerlink" href="#how-do-i-change-a-user-s-name-division" title="Link to this heading">¶</a></h2>
+<p>When profile data synced from Knowledge Commons does not divide a user’s name
+correctly—for example, a compound surname or patronymic is split in the wrong
+place—administrators can override the division locally. KCWorks stores these
+overrides in the user’s <code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> profile field. The override is used
+when auto-filling creator fields on the upload form and when displaying the
+user’s name elsewhere in KCWorks.</p>
+<ol class="arabic simple">
+<li><p>Look up the user’s local Invenio user id (see
+<a class="reference internal" href="#how-do-i-retrieve-a-users-details-via-the-cli"><span class="xref myst">How do I retrieve a user’s details via the CLI?</span></a>
+below).</p></li>
+<li><p>To view the current local name parts without making changes, run:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-users<span class="w"> </span>name-parts<span class="w"> </span>&lt;user_id&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>To set one or more name parts, pass the relevant flags. Only the flags you
+supply are updated; omitted parts are left unchanged:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-users<span class="w"> </span>name-parts<span class="w"> </span>&lt;user_id&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--given<span class="w"> </span><span class="s2">&quot;María&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--family<span class="w"> </span><span class="s2">&quot;García López&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--family-prefix-fixed<span class="w"> </span><span class="s2">&quot;de la&quot;</span>
+</pre></div>
+</div>
+<p>Available name-part flags include <code class="docutils literal notranslate"><span class="pre">--given</span></code>, <code class="docutils literal notranslate"><span class="pre">--family</span></code>, <code class="docutils literal notranslate"><span class="pre">--middle</span></code>, <code class="docutils literal notranslate"><span class="pre">--suffix</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--family-prefix</span></code>, <code class="docutils literal notranslate"><span class="pre">--family-prefix-fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">--spousal</span></code>, <code class="docutils literal notranslate"><span class="pre">--parental</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--undivided</span></code>, and <code class="docutils literal notranslate"><span class="pre">--nickname</span></code>. Run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span> <span class="pre">--help</span></code>
+for descriptions of each.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After changing name parts, re-sync the user’s Names vocabulary entry so creator
+lookup reflects the new division (see the next section).</p>
+</div>
+</section>
+<section id="how-do-i-sync-a-user-s-data-and-names-vocabulary-entry-manually">
+<h2>How do I sync a user’s data and Names vocabulary entry manually?<a class="headerlink" href="#how-do-i-sync-a-user-s-data-and-names-vocabulary-entry-manually" title="Link to this heading">¶</a></h2>
+<p>Two steps are usually involved: pull the latest profile from Knowledge Commons,
+then refresh the local Names vocabulary record from the updated profile.</p>
+<section id="pull-profile-data-from-knowledge-commons">
+<h3>Pull profile data from Knowledge Commons<a class="headerlink" href="#pull-profile-data-from-knowledge-commons" title="Link to this heading">¶</a></h3>
+<p>Identify the user by local user id, KC username, or email address:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># By local user id</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;user_id&gt;
+
+<span class="c1"># By KC username</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;kc_username&gt;<span class="w"> </span>--by-username
+
+<span class="c1"># By email address</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>user@example.org<span class="w"> </span>--by-email
+</pre></div>
+</div>
+<p>You can update several users in one invocation by listing multiple ids. ID
+ranges are also accepted (for example <code class="docutils literal notranslate"><span class="pre">100-110</span></code>). The command prints a per-user
+result and a summary when it finishes.</p>
+</section>
+<section id="refresh-the-names-vocabulary-entry">
+<h3>Refresh the Names vocabulary entry<a class="headerlink" href="#refresh-the-names-vocabulary-entry" title="Link to this heading">¶</a></h3>
+<p>Re-derive the user’s Names record from the current local profile (no additional
+Profiles API call):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># By local user id</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>sync-now<span class="w"> </span>&lt;user_id&gt;
+
+<span class="c1"># By KC username</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>sync-now<span class="w"> </span>&lt;kc_username&gt;<span class="w"> </span>--by-username
+
+<span class="c1"># By email address</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>sync-now<span class="w"> </span>user@example.org<span class="w"> </span>--by-email
+</pre></div>
+</div>
+<p>Add <code class="docutils literal notranslate"><span class="pre">--background</span></code> to queue each upsert as a Celery task instead of running
+inline.</p>
+<p>To inspect the resulting Names record:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>show<span class="w"> </span>&lt;names_pid_or_orcid&gt;
+</pre></div>
+</div>
+</section>
+</section>
+<section id="how-do-i-retrieve-a-user-s-details-via-the-cli">
+<h2>How do I retrieve a user’s details via the CLI?<a class="headerlink" href="#how-do-i-retrieve-a-user-s-details-via-the-cli" title="Link to this heading">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code> to print a user’s KCWorks account data,
+including profile fields, KC username, and group/role memberships. Provide
+exactly one of <code class="docutils literal notranslate"><span class="pre">--user-id</span></code>, <code class="docutils literal notranslate"><span class="pre">--email</span></code>, or <code class="docutils literal notranslate"><span class="pre">--kc-id</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-users<span class="w"> </span><span class="nb">read</span><span class="w"> </span>--user-id<span class="w"> </span>&lt;user_id&gt;
+invenio<span class="w"> </span>kcworks-users<span class="w"> </span><span class="nb">read</span><span class="w"> </span>--email<span class="w"> </span>user@example.org
+invenio<span class="w"> </span>kcworks-users<span class="w"> </span><span class="nb">read</span><span class="w"> </span>--kc-id<span class="w"> </span>&lt;kc_username&gt;
+</pre></div>
+</div>
+<p>The command prints the full user record from the users service, the KC username,
+and a list of Flask-Security roles assigned to the account.</p>
+<p>Related commands for inspecting group membership:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># All groups (roles) in the instance</span>
+invenio<span class="w"> </span>kcworks-users<span class="w"> </span>groups
+
+<span class="c1"># Users belonging to a specific group/role</span>
+invenio<span class="w"> </span>kcworks-users<span class="w"> </span>group-users<span class="w"> </span>&lt;group_name&gt;
+
+<span class="c1"># Groups belonging to a specific user</span>
+invenio<span class="w"> </span>kcworks-users<span class="w"> </span>user-groups<span class="w"> </span>--kc-id<span class="w"> </span>&lt;kc_username&gt;
+</pre></div>
+</div>
+</section>
+<section id="how-do-i-backfill-or-refresh-the-names-vocabulary">
+<h2>How do I backfill or refresh the Names vocabulary?<a class="headerlink" href="#how-do-i-backfill-or-refresh-the-names-vocabulary" title="Link to this heading">¶</a></h2>
+<p>The Names vocabulary is an index of user identities used for user name searches,
+as in the “contributor” fields on the upload form. It includes names and
+metadata for every KCWorks user, along with the people listed in the
+creator/contributor fields of work records who have an ORCID identifier.</p>
+<p>Most day-to-day updates happen automatically when user profiles change, but
+administrators sometimes need to run a bulk backfill or refresh.</p>
+<section id="backfill-cited-names-from-published-records">
+<h3>Backfill cited names from published records<a class="headerlink" href="#backfill-cited-names-from-published-records" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">backfill-cited-from-records</span></code> scans published work
+records and creates Names index entries for each creator/contributor who is
+listed with an ORCIDs. This is idempotent: The Names index entries for existing
+KCWorks users are gap-filled from ORCID data where local metadata is missing,
+and existing ORCID-based Names entries are refreshed with live ORCID metadata.
+Missing entries are created from creator/contributor ORCID identifiers. Run it
+once after deployment to cover records published before the Names sync component
+existed.</p>
+<p>(Note: This command only pulls in Names entries based on ORCID identifiers,
+<em>not</em> KC usernames. Names entries for KC users are kept updated automatically
+through the usual user data sync/update process.)</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dry run — count what would change without writing</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>backfill-cited-from-records<span class="w"> </span>--dry-run
+
+<span class="c1"># Full backfill</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>backfill-cited-from-records
+
+<span class="c1"># Limit the scan to the first N published records</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>backfill-cited-from-records<span class="w"> </span>--limit<span class="w"> </span><span class="m">5000</span>
+</pre></div>
+</div>
+<p>Add <code class="docutils literal notranslate"><span class="pre">--background</span></code> to enqueue the backfill as a Celery task.</p>
+</section>
+<section id="refresh-names-entries-for-specific-users">
+<h3>Refresh Names entries for specific users<a class="headerlink" href="#refresh-names-entries-for-specific-users" title="Link to this heading">¶</a></h3>
+<p>To refresh one or more users’ Names records from their current local profiles
+without scanning all published records, use <code class="docutils literal notranslate"><span class="pre">sync-now</span></code> (see
+<a class="reference internal" href="#how-do-i-sync-a-users-data-and-names-vocabulary-entry-manually"><span class="xref myst">How do I sync a user’s data and Names vocabulary entry manually?</span></a>).</p>
+</section>
+<section id="consolidate-orcid-duplicates-before-review">
+<h3>Consolidate ORCID duplicates before review<a class="headerlink" href="#consolidate-orcid-duplicates-before-review" title="Link to this heading">¶</a></h3>
+<p>If multiple Names records share the same ORCID, run the auto-merge step before
+reviewing remaining duplicates:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>merge-orcid-duplicates
+</pre></div>
+</div>
+<p>Records that cannot be auto-merged (for example, when more than one USER record
+shares an ORCID) are left for manual review via
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">find-duplicates</span></code> and
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">list-duplicates</span></code>.</p>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="organization_management.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Organization Management</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="file_storage.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">File Storage Administration</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Mesh Research
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">User Data Management</a><ul>
+<li><a class="reference internal" href="#how-do-i-import-a-list-of-users-from-a-kc-csv-file">How do I import a list of users from a KC CSV file?</a></li>
+<li><a class="reference internal" href="#how-do-i-change-a-user-s-name-division">How do I change a user’s name division?</a></li>
+<li><a class="reference internal" href="#how-do-i-sync-a-user-s-data-and-names-vocabulary-entry-manually">How do I sync a user’s data and Names vocabulary entry manually?</a><ul>
+<li><a class="reference internal" href="#pull-profile-data-from-knowledge-commons">Pull profile data from Knowledge Commons</a></li>
+<li><a class="reference internal" href="#refresh-the-names-vocabulary-entry">Refresh the Names vocabulary entry</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-do-i-retrieve-a-user-s-details-via-the-cli">How do I retrieve a user’s details via the CLI?</a></li>
+<li><a class="reference internal" href="#how-do-i-backfill-or-refresh-the-names-vocabulary">How do I backfill or refresh the Names vocabulary?</a><ul>
+<li><a class="reference internal" href="#backfill-cited-names-from-published-records">Backfill cited names from published records</a></li>
+<li><a class="reference internal" href="#refresh-names-entries-for-specific-users">Refresh Names entries for specific users</a></li>
+<li><a class="reference internal" href="#consolidate-orcid-duplicates-before-review">Consolidate ORCID duplicates before review</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=ec16d22d"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>
