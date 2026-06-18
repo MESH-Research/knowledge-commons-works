@@ -4,10 +4,12 @@ import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
+from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_records_resources.services.uow import (
     RecordCommitOp,
     UnitOfWork,
 )
+from marshmallow.exceptions import ValidationError
 
 from kcworks.services.communities.default_branding import (
     apply_default_branding,
@@ -22,6 +24,160 @@ _THEME_KEYS: tuple[str, str, str] = (
     "primaryTextColor",
     "mainHeaderBackgroundColor",
 )
+
+
+def _resolve_community(identifier: str):
+    """Resolve a community by UUID or slug.
+
+    Args:
+        identifier: Community UUID or slug.
+
+    Returns:
+        The resolved Community record.
+    """
+    return current_communities.service.record_cls.pid.resolve(identifier)
+
+
+@click.command("set-parent")
+@click.argument("child", type=str)
+@click.argument("parent", required=False, default=None)
+@click.option(
+    "--clear",
+    is_flag=True,
+    default=False,
+    help="Remove the child's parent link instead of assigning one.",
+)
+@click.option(
+    "--enable-children",
+    is_flag=True,
+    default=False,
+    help=(
+        "If the parent does not allow children, set children.allow=true on "
+        "the parent before linking."
+    ),
+)
+@click.option(
+    "--force",
+    is_flag=True,
+    default=False,
+    help="Replace an existing parent link instead of refusing.",
+)
+@with_appcontext
+def set_parent(
+    child: str,
+    parent: str | None,
+    clear: bool,
+    enable_children: bool,
+    force: bool,
+) -> None:
+    """Assign or remove a community's parent.
+
+    CHILD and PARENT are community UUIDs or slugs. Use ``--clear`` to remove
+    an existing parent link; PARENT is not required in that case.
+
+    The parent community must have ``children.allow`` set. Pass
+    ``--enable-children`` to turn that on automatically when it is missing.
+
+    If the child already has a different parent, the command refuses unless
+    ``--force`` is passed.
+    """
+    if clear and parent:
+        click.echo(
+            "Error: --clear cannot be combined with a PARENT argument.",
+            err=True,
+        )
+        exit(1)
+    if not clear and not parent:
+        click.echo(
+            "Error: PARENT is required unless --clear is used.",
+            err=True,
+        )
+        exit(1)
+
+    service = current_communities.service
+
+    try:
+        child_record = _resolve_community(child)
+    except PIDDoesNotExistError:
+        click.echo(f"Error: child community not found: {child!r}", err=True)
+        exit(1)
+
+    child_label = child_record.slug or str(child_record.id)
+
+    if clear:
+        existing_parent = child_record.parent
+        if existing_parent is None:
+            click.echo(f"{child_label} has no parent; nothing to clear.")
+            return
+        parent_label = existing_parent.slug or str(existing_parent.id)
+        try:
+            child_data = dict(service.read(system_identity, child_record.id).data)
+            child_data["parent"] = None
+            service.update(system_identity, child_record.id, child_data)
+        except ValidationError as exc:
+            click.echo(f"Error clearing parent for {child_label}: {exc}", err=True)
+            exit(1)
+        click.echo(f"Cleared parent {parent_label!r} from {child_label!r}.")
+        return
+
+    assert parent is not None  # Required above when not using --clear.
+
+    try:
+        parent_record = _resolve_community(parent)
+    except PIDDoesNotExistError:
+        click.echo(f"Error: parent community not found: {parent!r}", err=True)
+        exit(1)
+
+    parent_label = parent_record.slug or str(parent_record.id)
+
+    if str(child_record.id) == str(parent_record.id):
+        click.echo("Error: child and parent cannot be the same community.", err=True)
+        exit(1)
+
+    existing_parent = child_record.parent
+    if existing_parent is not None:
+        existing_parent_id = str(existing_parent.id)
+        if existing_parent_id == str(parent_record.id):
+            click.echo(
+                f"{child_label!r} already has parent {parent_label!r}; "
+                "nothing to do."
+            )
+            return
+        if not force:
+            existing_label = existing_parent.slug or existing_parent_id
+            click.echo(
+                f"Error: {child_label!r} already has parent "
+                f"{existing_label!r}. Pass --force to replace it with "
+                f"{parent_label!r}.",
+                err=True,
+            )
+            exit(1)
+
+    try:
+        parent_data = dict(service.read(system_identity, parent_record.id).data)
+        if not parent_data.get("children", {}).get("allow"):
+            if not enable_children:
+                click.echo(
+                    f"Error: parent {parent_label!r} does not allow children. "
+                    "Pass --enable-children to set children.allow=true first.",
+                    err=True,
+                )
+                exit(1)
+            parent_data["children"] = {"allow": True}
+            service.update(system_identity, parent_record.id, parent_data)
+            click.echo(f"Enabled children.allow on parent {parent_label!r}.")
+
+        child_data = dict(service.read(system_identity, child_record.id).data)
+        child_data["parent"] = {"id": str(parent_record.id)}
+        service.update(system_identity, child_record.id, child_data)
+    except ValidationError as exc:
+        click.echo(
+            f"Error setting parent {parent_label!r} on {child_label!r}: {exc}",
+            err=True,
+        )
+        exit(1)
+
+    click.echo(f"Set parent of {child_label!r} to {parent_label!r}.")
 
 
 @click.command()
