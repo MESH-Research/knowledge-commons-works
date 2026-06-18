@@ -10,6 +10,8 @@
     commands.
   - Documentation on required and recommended metadata fields in the KCWorks
     schema
+  - Documentation on user management and org collection management.
+  - Documentation on recent added CLI commands.
 - Bug fixes
   - Fixes to several outdated tests.
   - Fix to communities service component registration in exp.py.
@@ -19,6 +21,12 @@
     (per-row progress logged at info instead of error).
   - Improvements to test fixtures, including fixture to skip sso check and bug
     fixes to fixtures for admin roles.
+- User data sync
+  - Improve bulk user ingest with rate limiting and count limits.
+  - Update bulk user ingest to handle users who haven't yet associated their
+    account with a cilogon authentication method (and so lack a sub id).
+- Collections/communities
+  - Added new CLI command to set the parent of a community.
 
 ## 0.8.1 (2026-06-09)
 

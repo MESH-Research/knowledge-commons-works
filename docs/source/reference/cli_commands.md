@@ -49,11 +49,19 @@ KCWorks includes a number of custom CLI commands that are not part of the core I
     - `invenio importer create-stats`: creates usage stats aggregations for the imported records to correspond to the records' usage before import.
     - `invenio importer aggregations`: aggregates the synthetic usage events for the imported records to produce usage stats for the imported records.
 
-### `invenio kcworks-index destroy`
+### `invenio kcworks-index destroy-indices`
 
-- **provided by the main KCWorks package** (kcworks/site/cli.py)
-- destroys search indices for the KCWorks instance that are *not* destroyed by the main KCWorks index destroy command. These are primarily the indices for storing usage events and aggregated usage data.
-- **WARNING:** This data *only* exists in the OpenSearch indices. It is not backed up by the database and will be lost if the indices are destroyed. Use this command with extreme caution.
+- **provided by the main KCWorks package** (`site/kcworks/cli.py`)
+- destroys search indices for the KCWorks instance that are *not* destroyed by the main Invenio search destroy command. These are primarily the indices for storing usage events and aggregated usage data.
+- **WARNING:** This data *only* exists in OpenSearch. It is not backed up by the database and will be lost if the indices are destroyed. Use this command with extreme caution.
+
+Requires interactive confirmation unless `--yes-i-know` is passed. Use `--force` to ignore 404 errors when an index is already gone.
+
+Example:
+
+```shell
+invenio kcworks-index destroy-indices --yes-i-know
+```
 
 ### `invenio kcworks-records`
 
@@ -119,9 +127,14 @@ possible to export records from a remote KCWorks instance, but the API url and a
 When exporting records from a remote KCWorks instance, the filtering options by contributor are not currently supported. In other words, these options will only work if the CLI command is exporting from the same KCWorks instance as the one being exported from.
 ```
 
-#### `invenio kcworks-records import-test-data`
+#### `invenio kcworks-records import-test-records`
 
-Imports test data into the KCWorks instance.
+Imports test data from production into the local KCWorks instance.
+
+Arguments:
+
+- `EMAIL` (required): email address of the user who will own the imported records.
+- `COUNT` (optional): number of records to import. Defaults to 10, or to the number of IDs in `--record-ids` when that option is used.
 
 By default the import query is ordered by `newest`, a descending sort based on the `created` field. If a date range is provided, the records within that range will still be ordered by `newest`.
 
@@ -130,25 +143,24 @@ The `count` argument gives the number of results from that query that will actua
 Sometimes it is useful to import a subset of the production data with a wider range of dates than would result from a simple `newest` query. The `spread_dates` argument can be used to spread the records as evenly as possible over a range of dates.
 
 Options:
-- `count` (optional): the number of records to import. Defaults to 10.
-- `offset` (optional): the offset from the start of the query results to start importing from. Defaults to 0.
-- `start_date` (optional): the start date to import records from. Defaults to None.
-- `end_date` (optional): the end date to import records to. Defaults to None.
-- `spread_dates` (optional): whether to spread the records over a range of dates. Defaults to False.
-- `record_ids` (optional): a comma-separated list of record IDs to import. Defaults to None.
+- `--offset`: the offset from the start of the query results to start importing from. Defaults to 0.
+- `--start-date`: the start date to import records from. Defaults to None.
+- `--end-date`: the end date to import records to. Defaults to None.
+- `--spread-dates`: whether to spread the records over a range of dates. Defaults to False.
+- `--record-ids`: a comma-separated list of record IDs to import. Defaults to None.
 
 ```{note}
-The `import-test-data` command is idempotent, meaning that if a result has already been imported it will not be imported again. (It may, however, be updated if changes have been made to the production record.) The command output will treat these as successful imports, although the detailed import counts presented in the command line output (before the final summary) will specify how many records were new, updated, already existed, etc.
+The `import-test-records` command is idempotent, meaning that if a result has already been imported it will not be imported again. (It may, however, be updated if changes have been made to the production record.) The command output will treat these as successful imports, although the detailed import counts presented in the command line output (before the final summary) will specify how many records were new, updated, already existed, etc.
 ```
 
 Example of importing 10 records with evenly spread dates over the year 2024:
 ```shell
-invenio kcworks-records import-test-data --count 10 --start-date 2024-01-01 --end-date 2024-12-31 --spread-dates
+invenio kcworks-records import-test-records user@example.com 10 --start-date 2024-01-01 --end-date 2024-12-31 --spread-dates
 ```
 
 Example of importing 2 records with specific record IDs:
 ```shell
-invenio kcworks-records import-test-data --count 2 --record-ids "1234567890,1234567891"
+invenio kcworks-records import-test-records user@example.com 2 --record-ids "1234567890,1234567891"
 ```
 
 
@@ -172,6 +184,22 @@ Note that the `new_value` argument may be either a python literal or a plain str
 
 ```{note}
 Also note that the `community_id` argument is the ID (the UUID) of the collection, not the collection name or its url slug. If you're not sure what the collection ID is, you can find it by looking at the api response for the collection.
+```
+
+#### `invenio kcworks-records change-record-owner`
+
+Changes the owner of a single record. Uses the record importer's ownership assignment logic so that access grants and parent-record ownership are updated consistently.
+
+Named options (one of the owner identifiers is required):
+
+- `--record-id` / `-r`: the record UUID to update.
+- `--new-owner-id` / `-n`: the local Invenio user id of the new owner.
+- `--new-owner-email` / `-e`: the email address of the new owner (used when `--new-owner-id` is not supplied).
+
+Example:
+
+```shell
+invenio kcworks-records change-record-owner --record-id abc123-def456 --new-owner-email user@example.org
 ```
 
 
@@ -271,6 +299,81 @@ invenio kcworks-jobs upsert import_awards_openaire \
 For the scheduled run to actually fire, the `scheduler` service in `docker-compose.yml` (which runs `celery beat --scheduler invenio_jobs.services.scheduler:RunScheduler`) must be up. That is the standard upstream setup for `invenio-jobs`. `--run-now`, by contrast, dispatches a one-off run via the regular Celery worker queue and does not depend on the scheduler service.
 ```
 
+### `invenio kcworks-communities`
+
+- **provided by the main KCWorks package** (`site/kcworks/cli.py` and `site/kcworks/services/communities/cli.py`)
+- administrative utilities for community (collection) management
+
+#### `invenio kcworks-communities set-parent`
+
+Assigns or removes a community's parent link, establishing or changing subcommunity hierarchy. The command runs with the system identity and uses the same community service path as the REST API (`CommunityService.update` with a `parent` field).
+
+KCWorks allows nested subcommunity hierarchies of arbitrary depth (unlike upstream Invenio Communities, which limits nesting to one level).
+
+Arguments:
+
+- `CHILD` (required): the child community to update, identified by slug or UUID.
+- `PARENT` (optional): the parent community to assign, identified by slug or UUID. Required when assigning a parent; omit when using `--clear`.
+
+Named options:
+
+- `--clear`: remove the child's existing parent link instead of assigning one. `PARENT` must not be supplied with this flag. If the child has no parent, the command succeeds with a no-op message.
+- `--enable-children`: if the proposed parent does not have `children.allow` set, enable it on the parent before linking the child. Without this flag, the command exits with an error when the parent is not allowed to have children.
+- `--force`: replace an existing parent with a different one. Without this flag, the command refuses when the child already has a parent other than the one requested. If the child already has the requested parent, the command succeeds as a no-op without requiring `--force`.
+
+Example — assign a parent by slug:
+
+```shell
+invenio kcworks-communities set-parent my-subcommunity my-parent-org
+```
+
+Example — assign a parent when the parent is not yet configured to allow children:
+
+```shell
+invenio kcworks-communities set-parent my-subcommunity my-parent-org --enable-children
+```
+
+Example — move a subcommunity to a different parent:
+
+```shell
+invenio kcworks-communities set-parent my-subcommunity new-parent-org --force
+```
+
+Example — remove a parent link:
+
+```shell
+invenio kcworks-communities set-parent my-subcommunity --clear
+```
+
+```{note}
+This command is intended for administrative use (for example, correcting hierarchy after import or migration). The normal UI workflow for joining a parent community is the subcommunity request/invitation flow in Invenio Communities.
+```
+
+#### `invenio kcworks-communities backfill-default-branding`
+
+Backfills default geopattern logos and theme colors on existing communities that are missing them.
+
+The command scans all communities and, for each one, fills in only what is currently absent:
+
+- **Logo**: adds a slug-derived geopattern PNG when `record.files["logo"]` is missing.
+- **Theme**: seeds any missing keys among `primaryColor`, `primaryTextColor`, and `mainHeaderBackgroundColor` on `record.theme.style`.
+
+User-uploaded logos and admin-customized theme values are never overwritten.
+
+Named options:
+
+- `--dry-run`: report what would change without writing.
+- `--limit`: stop after touching this many communities.
+- `--logo-only`: only generate missing logos; skip theme.
+- `--theme-only`: only seed missing theme colors; skip logo.
+- `--async`: enqueue a Celery task per needy community instead of applying inline (requires a worker).
+
+Example:
+
+```shell
+invenio kcworks-communities backfill-default-branding --dry-run
+```
+
 ### `invenio group-collections`
 
 - **provided by the main KCWorks package** (kcworks/site/cli.py and kcworks/services/communities/cli.py)
@@ -299,8 +402,101 @@ invenio group-collections check-group-memberships
 
 The command will output a summary showing how many communities were unchanged, fixed, or had errors. If any communities had errors, the command will exit with a non-zero status code.
 
-### `invenio user-data update`
+#### `invenio group-collections assign-org-records`
+
+Assigns published records owned by org members to the corresponding org communities, based on a CSV mapping file.
+
+Arguments:
+
+- `CSV_FILE`: path to a CSV file where the first column is the KC username and subsequent columns are org identifiers (column headers such as `mla` map to org community slugs).
+
+Named options:
+
+- `--org`: process only one org column.
+- `--start-date` / `--end-date`: include only records created within the date range (YYYY-MM-DD, inclusive).
+- `--max-rows`: process only the first _N_ rows of the CSV.
+- `--log-file`: write cumulative results to a JSON log file (merged with an existing log if present).
+
+Example:
+
+```shell
+invenio group-collections assign-org-records /path/to/org_members.csv
+```
+
+See [Organization Management](../admin_guide/organization_management.md) for CSV format and operational guidance.
+
+### `invenio community-stats`
+
+- **provided by the `invenio-stats-dashboard` package**
+- manages community statistics infrastructure: aggregation, cache, usage-event migration, community-event generation, and background process monitoring
+
+Top-level commands and groups (run `invenio community-stats --help` for the full tree):
+
+- `aggregate`, `aggregate-background`: run community statistics aggregation
+- `read`: display aggregated statistics
+- `status`: show aggregation bookmark and completeness status
+- `clear-bookmarks`: reset aggregation progress bookmarks
+- `clear-lock`: clear aggregation locks
+- `enable-dashboards`: enable dashboard configuration for communities
+- `destroy-indices`: destroy OpenSearch indices created by this package (**destructive**)
+- `cache`: cache generation and maintenance (`generate`, `clear-all`, `clear-pattern`, `clear-item`, `info`, `list`, `test`)
+- `community-events`: generate and inspect community add/remove events
+- `usage-events`: generate, migrate, and clean up usage (view/download) events
+- `processes`: monitor or cancel background jobs started by `*-background` commands
+
+Detailed option reference for these commands lives in the package source at `site/kcworks/dependencies/invenio-stats-dashboard/docs/source/cli.md`.
+
+### `invenio user-data`
 
 - **provided by the `invenio-remote-user-data-kcworks` package**
-- updates a single user's data from the remote KC user data service.
-- with the `--groups` option, updates a group collection's metadata from the remote KC group data service.
+- syncs user and group metadata from remote KC services and maintains the Names vocabulary
+
+Subgroups:
+
+- `invenio user-data users` — bulk user provisioning and re-pull from Profiles
+- `invenio user-data names` — Names vocabulary maintenance and duplicate review
+
+See [User Data Management](../admin_guide/user_data_management.md) for operational workflows.
+
+#### `invenio user-data users update`
+
+Re-pulls user (or group) metadata from the remote KC user data service for one or more identities.
+
+Arguments:
+
+- `IDS` (optional): one or more user ids, remote usernames, email addresses, or id ranges such as `1-10`. When omitted, all users are updated.
+
+Named options:
+
+- `--groups` / `-g`: update groups rather than users (group update is not yet implemented).
+- `--source` / `-s`: remote source name (default: `knowledgeCommons`). Should match the OAuth/SAML IDP in `UserIdentity.method`.
+- `--by-email` / `-e`: treat each ID as an email address.
+- `--by-username` / `-n`: treat each ID as a remote-side username.
+
+Examples:
+
+```shell
+invenio user-data users update 12345
+invenio user-data users update kcusername --by-username
+invenio user-data users update user@example.org --by-email
+```
+
+#### `invenio user-data users ingest-profiles-dump`
+
+Bulk-creates or updates local users from a Profiles API JSONL dump or a CSV of usernames. Accepts `--background` to queue the work on Celery instead of running synchronously.
+
+#### `invenio user-data names`
+
+Names vocabulary maintenance commands:
+
+- `sync-now`: re-sync a user's Names entry from Profiles (accepts the same `--by-email` / `--by-username` / `--source` flags as `users update`; supports `--background`)
+- `backfill-cited-from-records`: bulk backfill Names entries from published record metadata
+- `show`: inspect a Names record by pid or ORCID
+- `merge-orcid-duplicates`: auto-merge duplicate Names entries that share an ORCID
+- `find-duplicates`, `list-duplicates`, `dismiss-duplicate`, `undismiss-duplicate`, `list-dismissed-duplicates`: duplicate-review workflow
+
+Example:
+
+```shell
+invenio user-data names sync-now user@example.org --by-email
+```
