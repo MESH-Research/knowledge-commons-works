@@ -10,6 +10,9 @@
     commands.
   - Documentation on required and recommended metadata fields in the KCWorks
     schema
+- IDMS
+  - Automatically adds a user's newly associated login methods from Profiles
+    when they are made (via "associated" webhook messages).
 - Bug fixes
   - Fixes to several outdated tests.
   - Fix to communities service component registration in exp.py.
@@ -19,6 +22,11 @@
     (per-row progress logged at info instead of error).
   - Improvements to test fixtures, including fixture to skip sso check and bug
     fixes to fixtures for admin roles.
+  - User data sync fixes to prevent multiple user or group data updates from
+    colliding.
+- Testing
+  - Tests for new bug fixes and features
+  - Updates to the shared test fixtures
 
 ## 0.8.1 (2026-06-09)
 
