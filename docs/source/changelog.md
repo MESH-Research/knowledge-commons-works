@@ -5,6 +5,8 @@
 
 ## Unreleased
 
+## 0.8.2 (2026-06-19)
+
 - Docs
   - Documentation for admins on executing cli commands via ssh and s3 bucket
     commands.
