@@ -30,6 +30,9 @@ theme = WebpackThemeBundle(
                 "invenio-communities-search-custom": (
                     "./js/collections/community/search.js"
                 ),
+                "invenio-communities-subcommunities-custom": (
+                    "./js/collections/community/subcommunitySearch.js"
+                ),
                 "invenio-communities-carousel-custom": (
                     "./js/collections/community/communitiesCarousel/index.js"
                 ),
