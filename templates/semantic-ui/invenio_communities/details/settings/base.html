@@ -20,9 +20,10 @@
             'profile': (_('Profile'), url_for('invenio_communities.communities_settings', pid_value=community_ui["slug"])),
             'privileges': (_('Visibility'), url_for('invenio_communities.communities_settings_privileges', pid_value=community_ui['slug'])),
             'submission_policy': (_('Curation policies'), url_for('invenio_communities.communities_settings_submission_policy', pid_value=community_ui['slug'])),
+            'theme': (_('Theme'), url_for('invenio_communities.communities_settings_theme', pid_value=community_ui['slug'])),
             'pages': (_('Pages'), url_for('invenio_communities.communities_settings_pages', pid_value=community_ui["slug"])),
             } %}
-      <div class="sixteen wide mobile sixteen wide tablet three wide computer column">
+      <div class="sixteen wide mobile sixteen wide tablet three wide computer column pt-0"">
         <h2>Configuration</h2>
         <div role="tablist"
              class="ui vertical horizontal mobile tablet menu theme-primary-menu">

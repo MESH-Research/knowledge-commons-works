@@ -28,8 +28,8 @@
 {%- block page_body %}
   {{ super() }}
   {%- for tree_id, ctree in trees.items() -%}
-    <div class="ui container theme-font rel-mt-3 rel-mb-2">
-      <h2 class="ui medium header mb-0 align-self-center">
+    <div class="ui container theme-font rel-mt-2 rel-mb-2">
+      <h2 class="ui header mb-0 align-self-center">
         {{ ctree.title }}
       </h1>
       <div class="ui divider mt-0"></div>
@@ -40,9 +40,9 @@
       </div>
     </div>
   {%- endfor -%}
-  <div class="ui container theme-font communities-frontpage rel-mt-3 rel-mb-2">
+  <div class="ui container theme-font communities-frontpage rel-mt-2 rel-mb-2">
     <div class="flex">
-      <h2 class="ui medium header mb-0 align-self-center">
+      <h2 class="ui header mb-0 align-self-center">
         {{ config.get("APP_RDM_SUBCOMMUNITIES_LABEL", _("Subcommunities") ) }}
       </h2>
       {% if can_have_children %}

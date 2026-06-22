@@ -1,9 +1,13 @@
 .invenio-page-body:has(#community-detail-header) {
 --primaryFaintTransparency: rgb(from {{ theme.primaryColor }} r g b / 0.15);
 --primaryMidTransparency: rgb(from {{ theme.primaryColor }} r g b / 0.5);
+--bgMidDarkTransparency: rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.55);
 --bgMidTransparency: rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.5);
 --bgFaintTransparency: rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.1);
 }
+{# ------------------------------------------------------------------------ #}
+{# Page header area #}
+{# ------------------------------------------------------------------------ #}
 {%- if theme.mainHeaderBackgroundColor %}
   .page-subheader-outer {
   background-color: none;
@@ -24,7 +28,7 @@
   inset: 0;
   z-index: 0;
   mask: url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'> <path d='M 0 0 L 100 0 L 100 10 C 66 10 33 8 0 8 Z' fill='%23000' /> </svg>") 0 0 / 100% 100% no-repeat;
-  -webkit-mask: url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'> <path d='M 0 0 L 100 0 L 100 10 C 66 10 33 8 0 8 Z' fill='%23000' /> </svg> ") 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'> <path d='M 0 0 L 100 0 L 100 10 C 66 10 33 8 0 8 Z' fill='%23000' /> </svg>") 0 0 / 100% 100% no-repeat;
   }
   .page-subheader-outer::before {
   background-image: url("/api/communities/{{ request.view_args.pid_value }}/logo");
@@ -40,6 +44,9 @@
   background-repeat: no-repeat;
   }
 {%- endif %}
+{# ------------------------------------------------------------------------ #}
+{# Basic text elements #}
+{# ------------------------------------------------------------------------ #}
 {%- if theme.secondaryColor or theme.secondaryTextColor %}
   .theme-secondary, .ui.secondary.button {
   {% if theme.secondaryColor %}background-color: {{ theme.secondaryColor }} !important;{% endif %}
@@ -55,6 +62,10 @@
   color: {{ theme.primaryTextColor }} !important;
   }
 {%- endif %}
+
+{# ------------------------------------------------------------------------ #}
+{# Menu #}
+{# ------------------------------------------------------------------------ #}
 {%- if theme.secondaryColor %}
   .theme-primary.pointing.menu .item.active {
   border-color: {{ theme.secondaryColor }} !important;
@@ -74,6 +85,10 @@ border-radius: 0.5em;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   }
+
+  {# ------------------------------------------------------------------------ #}
+  {# General typography #}
+  {# ------------------------------------------------------------------------ #}
   {% set font = theme.get("font", {}) %}
   {%- if font.family or font.weight or font.size %}
     .theme-primary .item, .theme-primary-menu, .page-subheader-outer {
@@ -97,6 +112,19 @@ border-radius: 0.5em;
     {% if theme.tertiaryTextColor %}color: {{ theme.tertiaryTextColor }};{% endif %}
     }
   {%- endif %}
+
+  {# ------------------------------------------------------------------------ #}
+  {# H1 Headings #}
+  {# ------------------------------------------------------------------------ #}
+  {%- if font.weight %}
+    .theme-font h1 {
+    font-weight: {{ font.weight }} !important;
+    }
+  {%- endif %}
+
+  {# ------------------------------------------------------------------------ #}
+  {# Accordions #}
+  {# ------------------------------------------------------------------------ #}
   {%- if theme.primaryColor or theme.primaryTextColor %}
     .invenio-accordion-field .title {
     /*
@@ -113,8 +141,32 @@ border-radius: 0.5em;
     */
     /* } */
   {%- endif %}
-  {%- if font.weight %}
-    .theme-font h1 {
-    font-weight: {{ font.weight }} !important;
-    }
-  {%- endif %}
+
+  {# ------------------------------------------------------------------------ #}
+  {# Page controls #}
+  {# ------------------------------------------------------------------------ #}
+  .ui.card.borderless.facet {
+    background-color: #fafafa !important;
+    border-color: #ececec !important; 
+  }
+
+  .ui.buttons.basic>.ui.button.active.request-search-filter {
+    background-color: #efefef !important;
+  }
+
+  .communities-stats .ui.vertical.menu .item, .communities-settings .ui.vertical.menu .item, .communities-members .ui.vertical.menu .item {
+    border-left: 2px solid #eee !important
+  }
+  .communities-stats .ui.vertical.menu .item.active, .communities-settings .ui.vertical.menu .item.active, .communities-members .ui.vertical.menu .item.active {
+    border-left: 2px solid {{theme.primaryColor}} !important
+  }
+  .communities-stats .ui.vertical.menu .item:hover, .communities-settings .ui.vertical.menu .item:hover, .communities-members .ui.vertical.menu .item:hover {
+    background-color: var(--bgMidTransparency);
+  }
+  .communities-stats .ui.vertical.menu .item.active:hover, 
+  .communities-settings .ui.vertical.menu .item.active:hover, 
+  .communities-members .ui.vertical.menu .item.active:hover, 
+  .communities-members .ui.vertical.menu .item.active:active,
+  .communities-members .ui.vertical.menu .item.active:focus {
+    background-color: var(--bgMidDarkTransparency) !important;
+  }
