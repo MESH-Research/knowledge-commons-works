@@ -277,3 +277,8 @@
   left: 95%;
 }
 
+#community-detail-header .ui.label.access-status.restricted {
+    position: absolute;
+    left: -100%;
+    top: -50%;
+}

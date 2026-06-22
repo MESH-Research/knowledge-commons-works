@@ -33,9 +33,9 @@
 
 // @mobileBreakpoint: 320px;
 // @tabletBreakpoint: 768px;
-// @computerBreakpoint: 992px;
-// @largeMonitorBreakpoint: 1200px;
-// @widescreenMonitorBreakpoint: 1920px;
+@computerBreakpoint: 992px;
+@largeMonitorBreakpoint: 1200px;
+@widescreenMonitorBreakpoint: 1920px;
 
 /*-------------------
       Spacing
@@ -212,7 +212,7 @@
 
 @formInputBackgroundColor: @white;
 @formButtonColor: @sidebarBackgroundColor;
-@formInputBorderColor: @ivy30;
+@formInputBorderColor: @ivy10;
 @focusedFormBorderColor: #2185d0;
 @focusedFormMutedBorderColor: #2185d0;
 

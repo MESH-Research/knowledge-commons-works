@@ -12,6 +12,8 @@ This module contains custom Jinja2 template filters for KCWorks.
 """
 
 from flask import current_app
+from invenio_access.permissions import system_identity
+from invenio_communities.proxies import current_communities as communities
 
 from invenio_remote_user_data_kcworks.utils.names import (
     get_full_name,
@@ -20,6 +22,40 @@ from invenio_remote_user_data_kcworks.utils.names import (
 from invenio_stats_dashboard.templates.template_filters.community_dashboard_enabled import (  # noqa: E501
     community_stats_dashboard_enabled,
 )
+
+
+def community_breadcrumb_items(community_ui):
+    """Build a list of items for a breadcrumb menu based on current community.
+
+    Args:
+        community_ui: A dictionary containing the current community's metadata.
+
+    Returns:
+        list: A list of dictionaries for breadcrumb segments, ordered as they
+          would appear from left to right in a traditional breadcrumb.
+    """
+
+    def get_ancestors(community, accumulator):
+        parent = community.get("parent")
+        if not parent:
+            community_rec = communities.service.read(system_identity, community["id"])
+            if community_rec:
+                community = community_rec.to_dict()
+            parent = community.get("parent")
+        if parent:
+            accumulator.append({
+                "id": parent.get("id"),
+                "title": parent.get("metadata", {}).get("title", ""),
+                "description": parent.get("metadata", {}).get("description", ""),
+                "slug": parent.get("slug", ""),
+            })
+            return get_ancestors(parent, accumulator)
+        return accumulator
+
+    breadcrumb_items = get_ancestors(community_ui, [])
+    breadcrumb_items.reverse()
+
+    return breadcrumb_items
 
 
 def sort_menu_items_by_name(items, names):

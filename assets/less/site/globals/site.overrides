@@ -59,6 +59,85 @@
   color: @negativeTextColor;
 }
 
+#community-detail-header {
+  .breadcrumb-wrap {
+    container-type: inline-size;
+    min-width: 0;
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+
+  .ui.breadcrumb {
+    max-width: 100%;
+    overflow: visible;
+
+    a.section {
+      position: relative;
+      overflow: visible;
+      vertical-align: bottom;
+
+      .section-text {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &.ellipsis {
+        max-width: none;
+      }
+    }
+
+    &.truncate-1 {
+      a.section:not(.ellipsis) {
+        max-width: min(50cqi, 28ch);
+      }
+    }
+
+    &.truncate-2 a.section:not(.ellipsis) {
+      max-width: clamp(12ch, 25cqi, 18ch);
+    }
+
+    &.truncate-many a.section:not(.ellipsis) {
+      max-width: clamp(6ch, 12cqi, 10ch);
+    }
+  }
+}
+
+@media all and (min-width: @computerBreakpoint) {
+  #community-detail-header .ui.breadcrumb.truncate-1 a.section:not(.ellipsis) {
+    max-width: min(55cqi, 40ch);
+  }
+
+  #community-detail-header .ui.breadcrumb.truncate-2 a.section:not(.ellipsis) {
+    max-width: clamp(14ch, 30cqi, 24ch);
+  }
+
+  #community-detail-header .ui.breadcrumb.truncate-many a.section:not(.ellipsis) {
+    max-width: clamp(6ch, 12cqi, 12ch);
+  }
+}
+
+@media all and (min-width: @largeMonitorBreakpoint) {
+  #community-detail-header .ui.breadcrumb.truncate-1 a.section:not(.ellipsis) {
+    max-width: min(60cqi, 50ch);
+  }
+
+  #community-detail-header .ui.breadcrumb.truncate-2 a.section:not(.ellipsis) {
+    max-width: clamp(16ch, 35cqi, 32ch);
+  }
+
+  #community-detail-header .ui.breadcrumb.truncate-many a.section:not(.ellipsis) {
+    max-width: clamp(8ch, 14cqi, 14ch);
+  }
+}
+
+@media all and (min-width: @widescreenMonitorBreakpoint) {
+  #community-detail-header .ui.breadcrumb.truncate-many a.section:not(.ellipsis) {
+    max-width: clamp(10ch, 16cqi, 16ch);
+  }
+}
+
 // CSS-only tooltips for menu items
 //
 // Semantic UI ships `[data-tooltip]` styles globally (via `popup.less`), so
@@ -73,7 +152,10 @@
 // minimal; we only handle the "above" position used in the community detail
 // header. Extend if other positions are needed later.
 
-.ui.menu .item[data-tooltip] {
+.ui.menu .item[data-tooltip],
+#community-detail-header .ui.breadcrumb a.section[data-tooltip] {
+  position: relative;
+
   &:before,
   &:after {
     display: block !important;
@@ -139,6 +221,27 @@
     border-left: none !important;
     box-shadow: none !important;
     transform: translateX(-50%) rotate(45deg) !important;
+  }
+}
+
+#community-detail-header {
+  .community-header > .row {
+    overflow: visible;
+  }
+
+  .ui.breadcrumb a.section[data-tooltip] {
+    &:after {
+      bottom: calc(100% + 0.5625rem) !important;
+      max-width: none !important;
+      width: max-content !important;
+      white-space: nowrap !important;
+      word-break: normal !important;
+    }
+
+    &:before {
+      bottom: calc(100% + 0.125rem) !important;
+      margin: 0 !important;
+    }
   }
 }
 
@@ -1008,8 +1111,9 @@ html.cover-page {
 
 // Communities/Collections Interface
 
-#community-detail-header {
-  .ui.secondary.menu.page-subheader {
+.community-header-menus {
+  .ui.secondary.menu.page-subheader,
+  .ui.secondary.menu.community-header-menu {
     @media all and (max-width: @largeMonitorBreakpoint) {
       margin-left: 0 !important;
       width: 100%;

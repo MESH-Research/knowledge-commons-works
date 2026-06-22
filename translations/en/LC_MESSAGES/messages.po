@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2026-06-09 18:55-0400\n"
+"POT-Creation-Date: 2026-06-18 19:05-0400\n"
 "PO-Revision-Date: 2025-04-24 10:38-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -34,12 +34,12 @@ msgstr ""
 msgid "Collaborate"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:374
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:382
 #, python-format
 msgid "%(icon)s Statistics"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:386
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:394
 msgid ""
 "Collection managers and administrators can enable the statistics "
 "dashboard for this collection from the collection settings page"
@@ -47,14 +47,14 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config/config.py:138
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:171
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:391
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:399
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/custom_fields.py:171
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config/config.py:138
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:171
 msgid "Enable Dashboard"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:394
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:402
 msgid ""
 "Enable the 'Statistics' tab that displays a collection statistics "
 "dashboard."
@@ -71,7 +71,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/names/config.py:51
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/subjects/config.py:68
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/config.py:67
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:465
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:473
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/config.py:1534
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/config.py:364
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:66
@@ -98,7 +98,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/names/config.py:59
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/subjects/config.py:76
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/config.py:75
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:469
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:477
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/config.py:1538
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/config.py:368
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:70
@@ -124,7 +124,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/names/config.py:63
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/subjects/config.py:80
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/config.py:79
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:473
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:481
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/config.py:1542
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/config.py:372
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:74
@@ -140,11 +140,11 @@ msgstr ""
 msgid "Oldest"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:477
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:485
 msgid "Most recently published"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:481
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:489
 msgid "Earliest published"
 msgstr ""
 
@@ -155,146 +155,146 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3216
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3523
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:78
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:485
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:493
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/macros/version.html:13
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/config.py:376
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2016
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2691
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2979
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3099
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3306
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3621
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1951
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2626
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2914
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3034
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3241
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3556
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:78
 msgid "Version"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:82
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:489
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:497
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/config.py:380
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:82
 msgid "Recently updated"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:86
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:493
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:501
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/config.py:384
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:86
 msgid "Least recently updated"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:497
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:505
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/config.py:388
 msgid "Most viewed"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:500
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:508
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/config.py:391
 msgid "Most downloaded"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:565
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:574
 msgid "Help & FAQ"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:567
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:576
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/theme/templates/themes/default/invenio_app_rdm/site_footer.html:30
 msgid "Terms of use"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:571
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:580
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/theme/templates/themes/default/invenio_app_rdm/site_footer.html:29
 msgid "Privacy policy"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:575
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:584
 msgid "Guidelines for use"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:578
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:587
 msgid "Mesh Research"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:585
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:594
 msgid "Knowledge Commons"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:587
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:596
 msgid "LinkedIn"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:592
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:601
 msgid "hcommons.social"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:597
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:606
 msgid "Newsletter"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:605
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:614
 msgid "Supporters"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:614
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:623
 msgid "Michigan State University"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:616
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:625
 msgid "National Science Foundation"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:621
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:630
 msgid "National Endowment for the Humanities"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:16
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:632
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:641
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:16
 msgid "Manage"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:18
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:634
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:643
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/macros/files.html:153
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:18
 msgid "Download"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:639
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:648
 #: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/frontpage.html:15
 msgid "Collections"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:474
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:49
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:644
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:482
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:653
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:413
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:49
 msgid "Content Warning"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:357
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2576
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:648
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:365
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2646
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:657
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:312
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2581
 msgid "AI Use"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:43
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:652
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:661
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/side_bar/versions.html:12
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:43
 msgid "Versions"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:54
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:657
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:666
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:54
 msgid "Keywords & Subjects"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:60
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:662
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:671
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:60
 msgid "Cite this"
 msgstr ""
@@ -303,10 +303,10 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:948
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:66
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:169
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:667
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:735
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:676
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:744
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/side_bar/details.html:17
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:392
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:330
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:948
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:66
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:169
@@ -315,21 +315,21 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:213
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:860
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:688
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:221
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:697
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:226
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:860
 msgid "Licenses"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:92
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:693
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:702
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/side_bar/export.html:14
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:92
 msgid "Export"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:98
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:698
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:707
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:98
 msgid "Share"
 msgstr ""
@@ -340,7 +340,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:882
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:111
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/config.py:71
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:708
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:717
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/administration/moderation/requests.py:54
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/administration/records/records.py:42
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/administration/records/records.py:127
@@ -349,7 +349,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/templates/semantic-ui/imprint.html:22
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/templates/semantic-ui/journal.html:3
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/templates/semantic-ui/meeting.html:2
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:251
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:248
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/administration/communities.py:46
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/administration/communities.py:124
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:882
@@ -358,26 +358,26 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:712
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:721
 msgid "Creators and Contributors"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:133
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config/config.py:265
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:720
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:729
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:133
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config/config.py:265
 msgid "Content"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:137
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:724
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:733
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:137
 msgid "Descriptions"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:147
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:728
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:737
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/detail.html:117
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/macros/files.html:24
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/macros/files.html:149
@@ -388,8 +388,8 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:173
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:198
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:739
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:750
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:748
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:759
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:173
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:198
 msgid "Publication"
@@ -400,27 +400,27 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:116
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:191
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:270
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:743
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:850
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:752
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:859
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/creatibutors.html:34
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2631
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2635
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2566
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2570
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:116
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:191
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:270
 msgid "Contributors"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:779
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:788
 msgid "Technical specifications"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:787
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:796
 msgid "Project details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:214
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:795
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:804
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/details.html:55
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/details.html:73
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:214
@@ -428,7 +428,7 @@ msgid "Additional titles"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:220
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:801
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:810
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/details.html:180
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/details.html:198
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:220
@@ -436,7 +436,7 @@ msgid "Funding"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:224
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:805
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:814
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/details.html:98
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/details.html:116
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:224
@@ -444,13 +444,13 @@ msgid "Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:231
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:812
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:821
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:231
 msgid "Related"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:237
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:818
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:827
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/details.html:311
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/details.html:327
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:237
@@ -459,7 +459,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:243
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/metadata_fields/kcr_ai_field.py:60
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:824
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:833
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:243
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/metadata_fields/kcr_ai_field.py:60
 msgid "AI Usage"
@@ -467,8 +467,8 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:255
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:293
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:836
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:863
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:845
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:872
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:255
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:293
 msgid "Analytics"
@@ -478,11 +478,11 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:974
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:312
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/custom_fields/subject.py:50
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:875
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:884
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/services/facets.py:83
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/services/facets.py:93
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/services/facets.py:109
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:437
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:368
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:974
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:312
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/custom_fields/subject.py:50
@@ -490,7 +490,7 @@ msgid "Subjects"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-detail-page/invenio_modular_detail_page/config.py:325
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:886
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:895
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/administration/records/records.py:45
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/administration/records/records.py:130
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/detail.html:291
@@ -501,55 +501,55 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1254
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1263
 msgid "Subcollections"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:39
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:96
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1303
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1312
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:39
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:96
 msgid "Reader"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:97
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1304
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1313
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:97
 msgid "Can view restricted records."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:41
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:102
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1309
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1318
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:41
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:102
 msgid "Curator"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:103
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1310
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1319
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:103
 msgid "Can curate records and view restricted records."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:40
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:109
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1316
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1325
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:40
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:109
 msgid "Manager"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:111
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1318
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1327
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:111
 msgid "Can manage members, curate records and view restricted records."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:38
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:120
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1327
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1336
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/administration/records/records.py:43
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/administration/records/records.py:128
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/resources/serializers/ui/schema.py:443
@@ -559,7 +559,7 @@ msgid "Owner"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/config.py:121
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1328
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1337
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:121
 msgid "Full administrative access to the entire community."
 msgstr "Full administrative access to the entire collection."
@@ -570,11 +570,11 @@ msgstr "Full administrative access to the entire collection."
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:912
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:914
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:929
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1466
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4229
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:311
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:313
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:337
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1475
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4240
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:278
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:280
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:295
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:912
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:914
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:929
@@ -585,10 +585,10 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:330
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:915
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:930
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1467
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4230
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:314
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:338
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1476
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4241
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:281
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:296
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:915
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:930
 msgid "Edit Contributor"
@@ -603,59 +603,59 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1191
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:294
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:345
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1926
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1929
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1932
 #: /Users/ianscott/Development/kcworks-next/invenio.cfg:1935
 #: /Users/ianscott/Development/kcworks-next/invenio.cfg:1938
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1940
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1942
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1945
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1948
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2376
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2472
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2569
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2655
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2758
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2857
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2956
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:610
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:711
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:813
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:904
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1016
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1120
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1224
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1941
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1944
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1947
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1949
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1951
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1954
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1957
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2387
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2483
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2580
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2666
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2769
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2868
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:2967
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:545
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:646
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:748
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:839
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:951
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1055
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1159
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:294
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:345
 msgid "e.g. 30 min (press 'enter' to add)"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1951
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1960
 msgid "e.g. 32 cm, 1.5 GB (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:229
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1966
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1975
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/views/deposits.py:114
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:229
 msgid "Copy/paste your existing DOI here..."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:230
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1967
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1976
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:230
 msgid "Discard the reserved DOI."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:231
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1968
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1977
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:231
 msgid "Get a DOI now!"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:233
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1970
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1981
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:233
 msgid ""
 "Reserve a DOI by pressing the button (so it can be included in files "
@@ -663,7 +663,7 @@ msgid ""
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:243
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1975
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:1986
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:243
 msgid ""
 "Only enter a DOI if you have already registered one with a DOI provider. "
@@ -673,55 +673,55 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1291
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:196
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3056
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1328
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3067
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1263
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:196
 msgid "e.g. 1.4M rows (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1385
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:243
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3151
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1426
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3162
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1361
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:243
 msgid "e.g. 32 x 40 cm (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1621
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3348
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1668
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3359
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1603
 msgid "e.g. 30 min (press enter to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1797
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:426
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3505
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1849
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3516
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1784
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:426
 msgid "e.g. 400 MB"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1952
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3638
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2009
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:3649
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1944
 msgid "e.g., 400 words (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2920
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4546
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2999
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4557
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2934
 msgid "e.g., 1000 maps (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3021
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4650
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3106
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:4661
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3041
 msgid "e.g., 1000 books (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3529
-#: /Users/ianscott/Development/kcworks-next/invenio.cfg:5156
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3628
+#: /Users/ianscott/Development/kcworks-next/invenio.cfg:5167
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3563
 msgid "e.g. 10 cm (press 'enter' to add)"
 msgstr ""
 
@@ -754,7 +754,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:80
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:105
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:88
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:112
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:105
 msgid "Steps"
 msgstr ""
@@ -787,31 +787,31 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:162
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/side_bar/details.html:31
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/services/facets.py:57
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:144
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:557
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:668
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:770
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:872
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:974
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1088
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1181
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1285
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1384
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1484
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1594
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1764
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2067
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2145
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2311
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2419
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2504
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2612
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2722
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3055
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3162
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3258
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3337
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3685
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:165
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:492
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:603
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:705
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:807
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:909
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1023
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1116
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1220
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1319
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1419
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1529
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1699
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2002
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2080
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2246
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2354
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2439
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2547
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2657
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2990
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3097
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3193
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3272
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3620
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:162
 msgid "Languages"
 msgstr ""
@@ -847,36 +847,36 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3484
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3587
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:165
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:146
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:559
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:670
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:772
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:874
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:976
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1090
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1183
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1287
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1386
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1486
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1596
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1766
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1935
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2069
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2147
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2313
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2421
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2506
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2614
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2724
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2842
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2921
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3057
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3164
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3260
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3339
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3482
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3578
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3687
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:168
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:494
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:605
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:707
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:809
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:911
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1025
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1118
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1222
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1321
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1421
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1531
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1701
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1870
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2004
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2082
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2248
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2356
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2441
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2549
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2659
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2777
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2856
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2992
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3099
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3195
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3274
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3417
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3513
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3622
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:165
 msgid "e.g., English, French, Swahili"
 msgstr ""
@@ -912,36 +912,36 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3485
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3588
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:167
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:148
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:561
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:672
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:774
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:876
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:978
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1092
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1185
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1289
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1388
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1488
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1598
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1768
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1937
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2071
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2149
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2315
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2423
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2508
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2616
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2726
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2844
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2923
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3059
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3166
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3262
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3341
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3484
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3580
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3689
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:170
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:496
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:607
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:709
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:811
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:913
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1027
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1120
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1224
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1323
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1423
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1533
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1703
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1872
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2006
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2084
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2250
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2358
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2443
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2551
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2661
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2779
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2858
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2994
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3101
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3197
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3276
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3419
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3515
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3624
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:167
 msgid ""
 "Search for the language(s) of the resource (e.g., \"en\", \"fre\", "
@@ -950,27 +950,26 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:155
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:824
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:163
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:184
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:824
 msgid "Files and Rights"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:160
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:829
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:168
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:189
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:829
 msgid "Resource Type"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:176
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:836
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:184
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:196
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:836
 msgid "File Upload"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:186
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:194
 msgid ""
 "Very large files (200MB or larger) should be uploaded one at a time. "
 "Multiple smaller files may safely be uploaded at once."
@@ -985,14 +984,14 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:207
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:854
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:215
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:216
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:854
 msgid "Copyright"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:223
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:870
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:231
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:236
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:870
 msgid "Basics"
 msgstr ""
@@ -1000,7 +999,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:228
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:875
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/views/deposits.py:112
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:236
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:241
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:875
 msgid "Digital Object Identifier"
 msgstr ""
@@ -1012,34 +1011,32 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/details.html:241
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/contrib/meeting/custom_fields.py:115
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/templates/semantic-ui/meeting.html:12
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:266
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:620
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/meeting_fields.py:48
 msgid "Dates"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:273
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:281
 msgid "Abstract or Descriptions"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:289
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:904
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:297
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:270
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:904
 msgid "Contributors & Funding"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:294
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:909
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:302
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:275
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:909
 msgid "Primary Contributors"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:309
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:918
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:317
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:284
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:918
 msgid ""
 "These people will appear at the beginning of formatted citations and at "
@@ -1048,14 +1045,14 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:318
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:924
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:326
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:290
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:924
 msgid "Other Contributors"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:333
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:933
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:341
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:299
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:933
 msgid ""
 "These people may appear later on in formatted citations, depending on "
@@ -1065,7 +1062,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:343
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:940
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:351
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:306
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:940
 msgid "Funding and Awards"
 msgstr ""
@@ -1076,9 +1073,9 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:954
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/details/side_bar/details.html:26
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/templates/semantic-ui/imprint.html:2
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:404
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2708
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3323
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:336
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2643
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3258
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:954
 msgid "Publisher"
 msgstr ""
@@ -1088,30 +1085,30 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2592
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3164
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:960
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:410
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2658
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2662
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3252
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:342
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2593
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2597
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3187
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:960
 msgid "URL and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:412
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:969
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:420
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:351
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:969
 msgid "Make It Findable"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:417
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/requests/community_submission.py:182
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:425
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:356
 msgid "Community submission"
 msgstr "Collection submission"
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:439
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:978
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:447
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:378
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:978
 msgid ""
 "Search using full words and press enter to select. (For best results, "
@@ -1120,7 +1117,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:444
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:982
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:452
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:383
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:982
 msgid ""
 "These formal subject headings let people find your work in subject "
@@ -1129,19 +1126,19 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:448
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:985
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:456
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:387
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:985
 msgid "e.g., Nelson Mandela, Genetics,Shakespeare"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:455
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:463
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:394
 msgid "User-defined Keywords"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:497
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:989
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:505
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:436
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:989
 msgid "Related Works"
 msgstr ""
@@ -1150,8 +1147,8 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:580
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:278
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:283
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:583
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:588
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:518
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:523
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:278
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:283
 msgid "Media Details"
@@ -1167,14 +1164,14 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1620
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:293
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:344
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:608
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:709
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:811
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:902
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1014
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1118
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1222
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1666
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:543
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:644
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:746
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:837
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:949
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1053
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1157
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1601
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:293
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:344
 msgid "Duration"
@@ -1182,7 +1179,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:615
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:318
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:625
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:560
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:318
 msgid "Media URL and Other Identifiers"
 msgstr ""
@@ -1203,22 +1200,22 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3354
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3443
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3546
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:632
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:734
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:836
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:938
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1050
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1247
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1346
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1448
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1896
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2806
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3017
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3124
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3348
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3446
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3537
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3646
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:567
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:669
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:771
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:873
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:985
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1182
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1281
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1383
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1831
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2741
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2952
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3059
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3283
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3381
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3472
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3581
 msgid "Project Details"
 msgstr ""
 
@@ -1230,12 +1227,12 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1169
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:329
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:334
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:683
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:688
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:887
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:892
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1196
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1201
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:618
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:623
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:822
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:827
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1131
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1136
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:329
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:334
 msgid "Recording Details"
@@ -1243,16 +1240,16 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:686
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1008
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:698
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1034
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:633
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:969
 msgid "Media, instruments, etc."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:704
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1097
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:351
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:718
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1127
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:653
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1062
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:351
 msgid "Recording location"
 msgstr ""
@@ -1261,110 +1258,110 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:909
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1206
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:370
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:727
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:931
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1240
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:662
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:866
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1175
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:370
 msgid "Recording URL and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:769
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:774
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:785
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:790
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:720
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:725
 msgid "Documentary Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:784
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1179
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:800
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1211
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:735
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1146
 msgid "Media, technologies used, etc."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:802
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1197
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:820
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1231
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:755
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1166
 msgid "Production location"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:811
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:829
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:764
 msgid "Documentary URL and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:889
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:911
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:846
 msgid "Interview location"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:900
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:922
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:857
 msgid "Equipment used, etc."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:975
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:980
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:999
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1004
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:934
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:939
 msgid "Performance Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:997
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1023
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:958
 msgid "Performance location"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1017
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1043
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:978
 msgid "Performance URL and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1034
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1060
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:995
 msgid "Project or series title"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1039
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1065
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1000
 msgid "Project or series URL"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1075
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1080
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1103
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1108
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1038
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1043
 msgid "Episode Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1106
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1136
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1071
 msgid "URL and Other Identifiers for Episode"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1113
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1143
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1078
 msgid "Podcast Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1123
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1153
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1088
 msgid "Main podcast title"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1128
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1158
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1093
 msgid "Main podcast URL"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1237
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1271
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1206
 msgid "Production company/institution"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1242
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1276
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1211
 msgid "Production company/publisher"
 msgstr ""
 
@@ -1372,21 +1369,21 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1269
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:179
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:185
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1300
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1305
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1235
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1240
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:179
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:185
 msgid "Dataset Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1279
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1315
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1250
 msgid "Data formats, etc."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1290
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:195
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1326
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1261
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:195
 #, fuzzy
 msgid "Record count"
@@ -1394,7 +1391,7 @@ msgstr "Verified collection"
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1301
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:216
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1339
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1274
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:216
 msgid "Dataset URL and Other Identifiers"
 msgstr ""
@@ -1414,15 +1411,15 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:133
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:142
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:146
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1360
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1910
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2820
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3031
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3138
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3362
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3460
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3551
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3661
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1295
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1845
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2755
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2966
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3073
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3297
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3395
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3486
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3596
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:120
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:124
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:128
@@ -1433,7 +1430,7 @@ msgid "Project URL"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1337
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1375
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1310
 msgid "Project location"
 msgstr ""
 
@@ -1442,8 +1439,8 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:226
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:232
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:1068
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1399
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1404
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1334
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1339
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:226
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:232
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:1068
@@ -1452,14 +1449,14 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1384
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:242
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1424
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1359
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:242
 msgid "Dimensions"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1399
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:267
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1441
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1376
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:267
 msgid "Image URL and Other Identifiers"
 msgstr ""
@@ -1467,26 +1464,26 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1490
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1497
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3195
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1534
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1541
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3285
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1469
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1476
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3220
 msgid "Resource Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1509
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1553
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1488
 msgid "Course URL"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1520
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2805
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1564
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2879
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1499
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2814
 msgid "Institution"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1525
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1569
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1504
 msgid "Department or Discipline"
 msgstr ""
 
@@ -1495,19 +1492,19 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2446
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2552
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2853
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1604
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2429
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2514
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2622
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2929
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1539
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2364
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2449
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2557
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2864
 msgid "URLs and Alternate Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1589
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1594
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:1079
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1635
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1640
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1570
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1575
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:1079
 msgid "Presentation Details"
 msgstr ""
@@ -1516,7 +1513,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/meeting_fields.py:81
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/contrib/meeting/custom_fields.py:130
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/templates/semantic-ui/meeting.html:27
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1650
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1585
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/meeting_fields.py:81
 msgid "Session"
 msgstr ""
@@ -1524,23 +1521,23 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1609
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/meeting_fields.py:91
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/templates/semantic-ui/meeting.html:32
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1655
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1590
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/meeting_fields.py:91
 msgid "Session part"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1627
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1675
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1610
 msgid "Media or materials used"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1628
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1677
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1612
 msgid "e.g., PowerPoint, handouts (press enter to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1637
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1687
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1622
 msgid "Presentation URL and Other Identifiers"
 msgstr ""
 
@@ -1550,11 +1547,11 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3089
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3094
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:1047
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1694
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2171
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2176
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3177
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3182
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1629
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2106
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2111
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3112
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3117
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:1047
 msgid "Event Details"
 msgstr ""
@@ -1564,9 +1561,9 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3104
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:604
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/meeting_fields.py:28
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1704
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2186
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3192
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1639
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2121
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3127
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:604
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/meeting_fields.py:28
 msgid "Event title"
@@ -1575,18 +1572,18 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1665
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2135
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3115
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1715
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2197
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3203
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1650
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2132
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3138
 msgid "Event acronym"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1671
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2141
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3121
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1721
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2203
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3209
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1656
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2138
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3144
 msgid "Event dates"
 msgstr ""
 
@@ -1594,9 +1591,9 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2153
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3133
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:18
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1733
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2215
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3221
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1668
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2150
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3156
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:18
 msgid "Organization"
 msgstr ""
@@ -1608,12 +1605,12 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3309
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3467
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/metadata_fields/kcr_metadata_fields.py:245
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1738
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2220
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2761
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3226
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3401
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3561
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1673
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2155
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2696
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3161
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3336
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3496
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/metadata_fields/kcr_metadata_fields.py:245
 msgid "Sponsoring institution"
 msgstr ""
@@ -1622,9 +1619,9 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2170
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3150
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/meeting_fields.py:70
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1750
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2232
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3238
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1685
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2167
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3173
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/meeting_fields.py:70
 msgid "Event URL"
 msgstr ""
@@ -1632,9 +1629,9 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1705
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2175
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3155
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1755
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2237
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3243
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1690
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2172
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3178
 msgid "Event location"
 msgstr ""
 
@@ -1642,8 +1639,8 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1757
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:381
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:386
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1804
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1809
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1739
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1744
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:381
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:386
 msgid "Software Details"
@@ -1652,96 +1649,96 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1796
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:425
 #: /Users/ianscott/Development/kcworks-next/private/invenio-app-rdm-master/invenio_app_rdm/records_ui/templates/semantic-ui/invenio_app_rdm/records/macros/files.html:97
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1848
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1783
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:425
 msgid "Size"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1804
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1856
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1791
 msgid "Operating systems"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1805
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1858
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1793
 msgid "e.g., Linux, Mac OS 14+, Android 7+"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1818
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1872
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1807
 msgid "Runtimes or frameworks"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1819
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1873
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1808
 msgid "e.g., .Net 3.0, Flask, Node.js"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1825
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:434
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1879
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1814
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:434
 msgid "Programming languages"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1826
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:435
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1880
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1815
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:435
 msgid "e.g., Python, JavaScript, R"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1835
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:444
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1889
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1824
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:444
 msgid "Package URL and other identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1879
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1933
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1868
 msgid "Natural (Human) Languages"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1929
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1933
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1985
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1989
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1920
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1924
 msgid "Post URL and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1941
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1997
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1932
 msgid "Post Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1951
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2007
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1942
 msgid "Post length"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1969
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2027
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1962
 msgid "Blog Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1979
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2037
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1972
 msgid "Blog title"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1984
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2042
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1977
 msgid "Blog URL"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:1995
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2053
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1988
 msgid "Blog publisher"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2000
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2058
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:1993
 msgid "Blog publisher location"
 msgstr ""
 
@@ -1752,11 +1749,11 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2351
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:526
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:532
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2082
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2141
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2249
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2344
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2415
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2017
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2076
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2184
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2279
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2350
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:526
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:532
 msgid "Publication Details"
@@ -1767,7 +1764,7 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:577
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:680
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:754
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2155
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2090
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:515
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:577
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:680
@@ -1776,14 +1773,14 @@ msgid "URLs and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2243
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2305
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2240
 msgid "Proceedings URLs and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2345
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/metadata_fields/kcr_series_field.py:50
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/metadata_fields/kcr_series_field.py:57
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2409
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2344
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/metadata_fields/kcr_series_field.py:50
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/metadata_fields/kcr_series_field.py:57
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/templates/semantic-ui/kcworks/book_series_field.html:1
@@ -1796,52 +1793,52 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2540
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:455
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:462
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2445
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2500
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2548
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2608
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2380
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2435
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2483
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2543
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:455
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:462
 msgid "Periodical Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2600
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2670
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2605
 msgid "Online Publication Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2610
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3205
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2680
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3295
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2615
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3230
 msgid "Parent Site Title"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2627
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3222
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2697
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3312
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2632
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3247
 msgid "Parent Site URL"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2643
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3238
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2713
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3328
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2648
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3263
 msgid "Publisher location"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2675
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2682
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:1125
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2747
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2754
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2682
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2689
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:1125
 msgid "Report Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2727
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2799
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2734
 msgid "Report URLs and Other Identifiers"
 msgstr ""
 
@@ -1850,11 +1847,11 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3281
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3379
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3473
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2831
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3046
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3373
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3471
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3567
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2766
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2981
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3308
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3406
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3502
 msgid "Project or institution location"
 msgstr ""
 
@@ -1862,158 +1859,158 @@ msgstr ""
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2845
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3388
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3482
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2840
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2919
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3480
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3576
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2775
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2854
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3415
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3511
 msgid "Language"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2791
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2798
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2865
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2872
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2800
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2807
 msgid "Thesis or Dissertation Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2880
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2885
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2956
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2961
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2891
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2896
 msgid "Catalog Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2895
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2971
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2906
 msgid "Catalogued materials or formats"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2896
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3004
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2973
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3087
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2908
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3022
 msgid "e.g., books, maps, etc. (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2913
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2991
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2926
 msgid "Catalog location"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2919
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2997
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2932
 #, fuzzy
 msgid "Record counts"
 msgstr "Featured collections"
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2930
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3010
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:2945
 msgid "Catalog URL and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2988
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:2993
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3070
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3075
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3005
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3010
 msgid "Collection Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3003
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3085
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3020
 msgid "Materials included, formats, etc."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3020
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3104
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3039
 #, fuzzy
 msgid "Item counts"
 msgstr "View Collection"
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3031
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3117
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3052
 msgid "Collection URL and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3067
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3153
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3088
 msgid "Collection location"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3183
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3187
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3273
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3277
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3208
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3212
 msgid "Resource URL and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3295
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3302
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3387
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3394
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3322
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3329
 msgid "Notes Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3347
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3439
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3374
 msgid "URLs and Other Identifiers for Notes"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3401
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3408
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3495
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3502
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3430
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3437
 msgid "Patent Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3416
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3510
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3445
 msgid "Issuing authority"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3427
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3521
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3456
 msgid "Region or country"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3436
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3530
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3465
 msgid "Patent URL and Alternate Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3496
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3501
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3592
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3597
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3527
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3532
 msgid "Object Details"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3511
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3607
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3542
 msgid "Materials or media"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3512
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3609
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3544
 msgid "e.g., paper, glass (press 'enter' to add)"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3528
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3626
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3561
 msgid "Dimensions, weight, etc."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3539
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3639
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3574
 msgid "Object URL and Other Identifiers"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3556
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3656
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3591
 msgid "Project or collection title"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3576
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3676
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3611
 msgid "Object or collection location"
 msgstr ""
 
@@ -2477,6 +2474,7 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/components.py:320
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/components.py:320
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/services/communities/community_parent.py:45
 msgid "Assigned parent is not allowed to be a parent."
 msgstr ""
 
@@ -2492,11 +2490,13 @@ msgstr "Assigned parent collection cannot also have a parent."
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/components.py:332
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/components.py:332
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/services/communities/community_parent.py:50
 msgid "Assigned parent community cannot be the same as child."
 msgstr "Assigned parent collection cannot be the same as child."
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/components.py:335
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/components.py:335
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/services/communities/community_parent.py:55
 msgid "Assigned parent community does not exist."
 msgstr "Assigned parent collection does not exist."
 
@@ -2959,11 +2959,13 @@ msgid ""
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:889
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:255
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:889
 msgid "Publication Dates"
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:896
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:262
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:896
 msgid "Abstract and Descriptions"
 msgstr ""
@@ -6428,8 +6430,23 @@ msgstr ""
 msgid "Allow generation of granular access JWT tokens."
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/ext.py:269
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/ext.py:289
 msgid "Contribute"
+msgstr ""
+
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:220
+msgid "A copyright statement describing the ownership of the uploaded resource."
+msgstr ""
+
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:317
+msgid ""
+"Briefly describe how generative artificial intelligence tools (e.g., "
+"ChatGPT, MS Copilot, Adobe Firefly, Midjourney, etc.) were used in the "
+"production of this work."
+msgstr ""
+
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:323
+msgid "This text will be displayed on the detail page for the work."
 msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-communities/invenio_communities/templates/semantic-ui/invenio_communities/frontpage.html:31
@@ -6750,12 +6767,12 @@ msgid ""
 "        metadata of the collection is kept for archival purposes."
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/header.html:97
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/header.html:134
 #, fuzzy
 msgid "Community navigation"
 msgstr "Collection invitation"
 
-#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/header.html:98
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/header.html:135
 msgid "Navigate"
 msgstr ""
 
@@ -6771,16 +6788,16 @@ msgstr ""
 msgid "The collection is restricted to users with access."
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/macros/organizations-list.html:32
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/macros/organizations-list.html:31
 msgid "and"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/macros/organizations-list.html:33
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/macros/organizations-list.html:35
 #, python-format
 msgid "%(count)s more organizations"
 msgstr ""
 
-#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/macros/organizations-list.html:34
+#: /Users/ianscott/Development/kcworks-next/templates/semantic-ui/invenio_communities/details/macros/organizations-list.html:40
 #, python-format
 msgid "%(count)s more"
 msgstr ""

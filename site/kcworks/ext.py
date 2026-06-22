@@ -68,6 +68,7 @@ from kcworks.services.records.record_communities.community_change_permissions_co
     CommunityChangePermissionsComponent,
 )
 from kcworks.templates.template_filters import (
+    community_breadcrumb_items,
     filter_visible_community_menu_items,
     sort_menu_items_by_name,
     user_profile_dict,
@@ -265,6 +266,7 @@ class KCWorks:
         Args:
             app: Flask application
         """
+        app.jinja_env.filters["community_breadcrumb_items"] = community_breadcrumb_items
         app.jinja_env.filters["user_profile_dict"] = user_profile_dict
         app.jinja_env.filters["sort_menu_items_by_name"] = sort_menu_items_by_name
         app.jinja_env.filters["filter_visible_community_menu_items"] = (
