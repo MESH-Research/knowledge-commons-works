@@ -12,7 +12,11 @@ First you will need to have the correct versions of Docker (20.10.10+ with
 Docker Compose 1.17.0+) and Python (3.12.0+). You will also need to have
 Python's `uv` package manager installed (see
 [the uv docs](https://docs.astral.sh/uv/getting-started/installation/) for
-details). If you are going to run **frontend / JavaScript tests** against the
+details). For local development, the
+[AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+must be installed on your **host machine** (not inside the Docker containers) so
+`kcworks-startup.sh` can fetch secrets from AWS Secrets Manager. If you are going
+to run **frontend / JavaScript tests** against the
 root `package.json`, install **Node.js (20+)** and enable **Corepack** (bundled
 with Node) once per Node install: `corepack enable`. The repo uses
 **[pnpm](https://pnpm.io/)**; the exact version is set in **`package.json`** as
@@ -415,8 +419,6 @@ project:
 - `PYTHON_LOCAL_SITE_PACKAGES_PATH`
 - `INVENIO_LOCAL_DEPENDENCIES_PATH`
 - `INVENIO_LOCAL_SITE_PATH`
-- `INVENIO_LOCAL_INSTANCE_PATH`
-- `INVENIO_INSTANCE_PATH`
 
 ### Host port overrides
 
@@ -543,45 +545,62 @@ for all variables except the ones with comments:
 # Optional: base name for Docker container names (default: kcworks). Set to e.g. kcworks-next when
 # running a second instance on the same host to avoid container name conflicts.
 # KCWORKS_CONTAINERS_BASE_NAME=kcworks
-FLASK_DEBUG=1
-INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
-INVENIO_LOGGING_CONSOLE=True
-INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+INVENIO_ADMIN_EMAIL="myemail@sample.com"
 INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR=/
-INVENIO_RECORD_IMPORTER_DATA_DIR=/opt/invenio/var/import_data
-INVENIO_SEARCH_DOMAIN='search:9200'
-INVENIO_SITE_UI_URL="https://localhost"
-INVENIO_SITE_API_URL="https://localhost/api"
-REDIS_DOMAIN='cache:6379'
-INVENIO_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks" # THE PASSWORD HERE MUST MATCH THE POSTGRES_PASSWORD BELOW
-POSTGRES_USER=kcworks
-POSTGRES_DB=kcworks
+INVENIO_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks" # user/db default to kcworks in compose; password must match POSTGRES_PASSWORD below
 POSTGRES_PASSWORD=PASSWORDHERE
 INVENIO_CSRF_SECRET_SALT='GENERATE_IT_AS_PER_INSTRUCTIONS'
 INVENIO_SECURITY_LOGIN_SALT='GENERATE_IT_AS_PER_INSTRUCTIONS'
 INVENIO_SECRET_KEY='SECRET_KEY_VERY_SECRET'
 API_TOKEN=myapitoken # this can be generated after the instance is running, just leave as is
-API_TOKEN_PRODUCTION=myapitokenproduction # for importing test data in local development, this must be obtained from the KCWorks administrators - just leave as is for now
 INVENIO_LOCAL_SITE_PATH=/local/path/to/cloned/repository/knowledge-commons-works/site # set this to `site` under the base directory of your cloned repository
 INVENIO_LOCAL_DEPENDENCIES_PATH=/local/path/to/cloned/repository/knowledge-commons-works/site/kcworks/dependencies # set this to `site/kcworks/dependencies` under the base directory of your cloned repository
 PYTHON_LOCAL_SITE_PACKAGES_PATH=/local/path/to/cloned/repository/knowledge-commons-works/.venv/lib/python3.12/site-packages # you need this for dev
 PGADMIN_DEFAULT_EMAIL=your.email@example.com  # change this to your email address
 PGADMIN_DEFAULT_PASSWORD=PASSWORDHERE
-INVENIO_LOCAL_INSTANCE_PATH=/opt/invenio/var/instance
+# Optional: your personal Sentry dev-project DSN (see below). Omit to disable Sentry locally.
+# INVENIO_SENTRY_DSN="https://examplePublicKey@o0.ingest.sentry.io/0"
 ```
 
 A few other secret values are required but not stored locally in your .env file.
 If you start the KCWorks project in local development using the startup bash
-script, the values will be pulled automatically from AWS's Secrets Manager. You
-will need to authorize the aws cli with an AWS identity that has the required
-permissions. These remote secrets include:
+script (`kcworks-startup.sh` in the repository root), the values will be pulled
+automatically from AWS Secrets Manager. That script runs the AWS CLI on your
+**host machine**, so the CLI must be installed locally (see the Quickstart
+prerequisites above) and configured with an AWS identity that has
+`secretsmanager:GetSecretValue` permission on the target secret. These remote
+secrets include:
 
 ```shell
 COMMONS_SEARCH_API_TOKEN
 COMMONS_PROFILES_API_TOKEN
+SPARKPOST_USERNAME
 SPARKPOST_API_KEY
 INVENIO_DATACITE_PASSWORD
+API_TOKEN_PRODUCTION
 ```
+
+`SPARKPOST_USERNAME` and `SPARKPOST_API_KEY` are the SMTP credentials for outgoing
+mail (see `site/kcworks/config/mail.py`). `API_TOKEN_PRODUCTION` is used when
+importing test data from the production KCWorks API (see
+[Importing test data](#importing-test-data)).
+
+#### Optional: Sentry (local error reporting)
+
+Sentry is **optional** for local development. When you want it, create a **separate
+Sentry project** (or use a personal dev project) and set its DSN in your local
+`.env`:
+
+```shell
+INVENIO_SENTRY_DSN="https://examplePublicKey@o0.ingest.sentry.io/0"
+```
+
+- **Omit** `INVENIO_SENTRY_DSN` (or leave it unset) to disable Sentry locally.
+- **Do not commit** the DSN; keep it only in your untracked `.env`.
+
+Sentry behavior is configured in `invenio.cfg` (`LOGGING_SENTRY_LEVEL`,
+`LOGGING_SENTRY_INIT_KWARGS`, and related settings). The environment variable
+maps to Invenio's `SENTRY_DSN` config key via the usual `INVENIO_` prefix.
 
 ```{note}
 Don't forget to change the `PASSWORDHERE` values to the actual passwords you use

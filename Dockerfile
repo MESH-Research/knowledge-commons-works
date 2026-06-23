@@ -13,7 +13,7 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm AS builder
 
 ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     INVENIO_SITE_UI_URL=https://localhost \
-    INVENIO_SITE_API_URL=https://localhost \
+    INVENIO_SITE_API_URL=https://localhost/api \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
@@ -21,7 +21,6 @@ ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     VIRTUAL_ENV=/opt/invenio/src/.venv \
     PATH="/opt/invenio/src/.venv/bin:${PATH}" \
     PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONNODONTWRITEBYTECODE=1 \
     PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning
 
 RUN mkdir -p /opt/invenio/var/instance && \
@@ -105,7 +104,7 @@ FROM python:3.12-slim-bookworm AS runtime
 
 ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     INVENIO_SITE_UI_URL=https://localhost \
-    INVENIO_SITE_API_URL=https://localhost \
+    INVENIO_SITE_API_URL=https://localhost/api \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
@@ -113,7 +112,6 @@ ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     VIRTUAL_ENV=/opt/invenio/src/.venv \
     PATH="/opt/invenio/src/.venv/bin:${PATH}" \
     PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONNODONTWRITEBYTECODE=1 \
     PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning \
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 

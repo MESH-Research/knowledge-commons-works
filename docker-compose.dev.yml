@@ -43,6 +43,7 @@ services:
       target: builder
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_MAIL_SUPPRESS_SEND=True
     volumes:
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
@@ -106,6 +107,7 @@ services:
       target: builder
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_MAIL_SUPPRESS_SEND=True
     volumes:
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
@@ -168,6 +170,7 @@ services:
       target: builder
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_MAIL_SUPPRESS_SEND=True
     volumes:
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data

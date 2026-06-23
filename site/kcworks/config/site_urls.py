@@ -15,5 +15,5 @@ consistent (e.g. community custom-field namespace terms URL vs. app config).
 
 import os
 
-SITE_UI_URL = os.getenv("INVENIO_SITE_UI_URL", "https://localhost:5000")
-SITE_API_URL = os.getenv("INVENIO_SITE_API_URL", "https://localhost:5000/api")
+SITE_UI_URL = os.getenv("INVENIO_SITE_UI_URL", "https://localhost")
+SITE_API_URL = os.getenv("INVENIO_SITE_API_URL", "https://localhost/api")

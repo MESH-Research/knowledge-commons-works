@@ -9,6 +9,8 @@
 # Defaults match the historical fixed ports. Override in .env as needed; see
 # docs/source/setup/installation.md ("Host port overrides").
 # KCWORKS_NGINX_HTTP_HOST_PORT / KCWORKS_NGINX_HTTPS_HOST_PORT are set in docker-compose.yml.
+# Internal service DNS, container paths, and Postgres role/database name default in
+# compose below; override in .env only for non-standard layouts or alternate nginx ports.
 services:
   app:
     # build:
@@ -18,18 +20,20 @@ services:
     image: monotasker/kcworks:latest
     restart: "unless-stopped"
     environment:
-      - "INVENIO_CACHE_REDIS_URL=redis://${REDIS_DOMAIN}/0"
-      - "INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://${REDIS_DOMAIN}/1"
-      - "INVENIO_RATELIMIT_STORAGE_URI=redis://${REDIS_DOMAIN}/3"
-      - "INVENIO_RATELIMIT_STORAGE_URL=redis://${REDIS_DOMAIN}/3"
-      - "INVENIO_CELERY_RESULT_BACKEND=redis://${REDIS_DOMAIN}/2"
-      - "INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://${REDIS_DOMAIN}/4"
+      - "INVENIO_CACHE_REDIS_URL=redis://${REDIS_DOMAIN:-cache:6379}/0"
+      - "INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://${REDIS_DOMAIN:-cache:6379}/1"
+      - "INVENIO_RATELIMIT_STORAGE_URI=redis://${REDIS_DOMAIN:-cache:6379}/3"
+      - "INVENIO_RATELIMIT_STORAGE_URL=redis://${REDIS_DOMAIN:-cache:6379}/3"
+      - "INVENIO_CELERY_RESULT_BACKEND=redis://${REDIS_DOMAIN:-cache:6379}/2"
+      - "INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://${REDIS_DOMAIN:-cache:6379}/4"
       - "INVENIO_BROKER_URL=amqp://guest:guest@mq:5672/"
       - "INVENIO_CACHE_TYPE=redis"
       - "INVENIO_CELERY_BROKER_URL=amqp://guest:guest@mq:5672/"
-      - "INVENIO_SEARCH_HOSTS=['${INVENIO_SEARCH_DOMAIN}']"
-      # - "INVENIO_SEARCH_HOSTS=['search:9200']"
+      - "INVENIO_SEARCH_HOSTS=['${INVENIO_SEARCH_DOMAIN:-search:9200}']"
       - "INVENIO_WSGI_PROXIES=2"
+      - INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH:-/opt/invenio/var/instance}
+      - INVENIO_SITE_UI_URL=${INVENIO_SITE_UI_URL:-https://localhost}
+      - INVENIO_SITE_API_URL=${INVENIO_SITE_API_URL:-https://localhost/api}
     env_file:
       - ./.env
       - /tmp/kcworks-runtime-secrets.env
@@ -57,6 +61,9 @@ services:
     restart: "unless-stopped"
     ports:
       - "${KCWORKS_POSTGRES_HOST_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kcworks}
+      POSTGRES_DB: ${POSTGRES_DB:-kcworks}
     env_file:
       - ./.env
       - /tmp/kcworks-runtime-secrets.env
@@ -136,5 +143,5 @@ services:
     environment:
       # settings only for development. DO NOT use in production!
       # TODO: change in production
-      - 'OPENSEARCH_HOSTS=["http://${INVENIO_SEARCH_DOMAIN}"]'
+      - 'OPENSEARCH_HOSTS=["http://${INVENIO_SEARCH_DOMAIN:-search:9200}"]'
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
