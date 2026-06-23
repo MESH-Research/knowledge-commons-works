@@ -45,6 +45,9 @@ theme = WebpackThemeBundle(
                 "invenio-communities-browse-custom": (
                     "./js/collections/community/browse.js"
                 ),
+                "invenio-communities-theme-custom": (
+                    "./js/collections/community/settings/theme/index.js"
+                ),
                 "invenio-app-rdm-frontpage-custom": (
                     "./js/invenio_app_rdm_custom/frontpage/index.js"
                 ),

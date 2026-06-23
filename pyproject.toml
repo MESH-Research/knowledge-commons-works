@@ -88,6 +88,7 @@ entry-points."invenio_base.api_blueprints".kcworks_api = "kcworks.views.views:cr
 entry-points."invenio_base.api_finalize_app".kcworks = "kcworks.ext:api_finalize_app"
 entry-points."invenio_base.apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.blueprints".kcworks_views = "kcworks.views.views:create_blueprint"
+entry-points."invenio_base.blueprints".kcworks_communities_settings = "kcworks.views.communities_settings_ui:create_blueprint"
 entry-points."invenio_base.blueprints".knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
 entry-points."invenio_base.finalize_app".kcworks = "kcworks.ext:finalize_app"
 entry-points."invenio_celery.tasks".kcworks_default_branding = "kcworks.services.communities.tasks"

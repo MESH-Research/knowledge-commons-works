@@ -4,6 +4,18 @@
   border-right-color: transparent !important;
 }
 
+.ui.input.color-selector, .ui.input[type=color] {
+  width: 3em !important;
+  height: 40px;
+  border: @formInputBorderColor;
+  border-radius: @defaultBorderRadius;
+  cursor: "pointer";
+}
+
+.ui.input.w-rel-8 { 
+  max-width: 8em;
+};
+
 .invenio-page-body,
 .invenio-page-body .ui.form {
   .ui.input input[type="text"],

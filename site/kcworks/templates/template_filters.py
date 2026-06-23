@@ -122,6 +122,29 @@ def filter_visible_community_menu_items(items, permissions, community_ui):
     return visible
 
 
+COMMUNITY_THEME_SETTINGS_ENDPOINT = (
+    "kcworks_communities_settings.communities_settings_theme"
+)
+
+
+def community_theme_settings_menu_visible(community_ui: dict) -> bool:
+    """Whether the community settings Theme tab should appear in the menu.
+
+    Args:
+        community_ui: Community record dict from ``UICommunityJSONSerializer``
+            (top-level record fields such as ``theme`` are preserved).
+
+    Returns:
+        True when the theme settings route is registered and the community
+        record has ``theme.enabled``.
+    """
+    if COMMUNITY_THEME_SETTINGS_ENDPOINT not in current_app.view_functions:
+        return False
+
+    theme = community_ui.get("theme") or {}
+    return bool(theme.get("enabled"))
+
+
 def user_profile_dict(user_profile):
     """Convert a user profile object to a dictionary with all profile fields.
 
