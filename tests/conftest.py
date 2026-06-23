@@ -130,7 +130,9 @@ test_config = {
     "CELERY_LOGLEVEL": "DEBUG",
     #  'DEBUG_TB_ENABLED': False,
     "INVENIO_INSTANCE_PATH": "/opt/invenio/var/instance",
-    "MAIL_SUPPRESS_SEND": False,
+    # Suppress real SMTP by default; tests that assert on mail use the pytest-invenio
+    # `mailbox` fixture plus `enable_mail_sending` (see tests/fixtures/mail.py).
+    "MAIL_SUPPRESS_SEND": True,
     "MAIL_SERVER": "smtp.sparkpostmail.com",
     "MAIL_PORT": 587,
     "MAIL_USE_TLS": True,
