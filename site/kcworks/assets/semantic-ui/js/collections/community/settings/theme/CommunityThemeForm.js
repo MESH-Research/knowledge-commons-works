@@ -14,7 +14,7 @@ import _pickBy from "lodash/pickBy";
 import React, { Component } from "react";
 import { Button, Form, Grid, Header, Icon, Message } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { ColorField, InlineLabeledField, ThemeEnabledField } from "./ColorField";
+import { ColorField, InlineLabeledField, ToggleField } from "./ColorField";
 
 const OPTIONAL_STYLE_KEYS = [
   "secondaryColor",
@@ -89,7 +89,11 @@ export function sanitizeTheme(theme) {
 
   return {
     enabled: Boolean(theme.enabled),
-    style,
+    style: {
+      ...style,
+      mainHeaderUseLogo: Boolean(style.mainHeaderUseLogo),
+      mainHeaderUseGradient: Boolean(style.mainHeaderUseGradient),
+    },
   };
 }
 
@@ -112,6 +116,8 @@ class CommunityThemeForm extends Component {
           secondaryTextColor: "",
           tertiaryTextColor: "",
           mainHeaderBackgroundColor: "",
+          mainHeaderUseLogo: false,
+          mainHeaderUseGradient: false,
           font: {
             family: "",
             weight: "",
@@ -191,11 +197,16 @@ class CommunityThemeForm extends Component {
               <Header.Subheader className="mt-5">
                 {i18next.t("Customize colors and typography for this collection.")}
               </Header.Subheader>
+              <Header.Subheader className="mt-5">
+                {i18next.t(
+                  "Default colors are generated automatically based on your collection's unique default logo image."
+                )}
+              </Header.Subheader>
             </Header>
 
             {/* <ThemeEnabledField /> */}
 
-            <fieldset className="invenio-fieldset community-theme-colors">
+            <fieldset className="ui segment invenio-fieldset community-theme-colors">
               <legend className="rel-mb-1">
                 <Header as="h3">{i18next.t("Colors")}</Header>
               </legend>
@@ -220,12 +231,33 @@ class CommunityThemeForm extends Component {
               </Grid>
             </fieldset>
 
-            <fieldset className="invenio-fieldset community-theme-typography">
+            <fieldset className="ui segment invenio-fieldset community-theme-header">
+              <legend className="rel-mb-1">
+                <Header as="h3">{i18next.t("Header")}</Header>
+              </legend>
+
+              <ToggleField
+                fieldPath="theme.style.mainHeaderUseLogo"
+                label={i18next.t("Use logo as header background")}
+                description={i18next.t(
+                  "When enabled, the collection logo is tiled behind the header area."
+                )}
+              />
+              <ToggleField
+                fieldPath="theme.style.mainHeaderUseGradient"
+                label={i18next.t("Use gradient header background")}
+                description={i18next.t(
+                  "When disabled, the header uses a solid background color."
+                )}
+              />
+            </fieldset>
+
+            <fieldset className="ui segment invenio-fieldset community-theme-typography">
               <legend className="rel-mb-1">
                 <Header as="h3">{i18next.t("Typography")}</Header>
               </legend>
 
-              <Form.Group inline unstackable>
+              <Form.Group unstackable>
                 {FONT_KEYS.map((fontKey) => (
                   <InlineLabeledField
                     key={fontKey}
@@ -237,6 +269,7 @@ class CommunityThemeForm extends Component {
             </fieldset>
 
             <Button.Group>
+              <label className="helptext">Changes will be visible after you refresh the page</label>
               <Button
                 primary
                 icon

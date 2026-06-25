@@ -29,7 +29,17 @@ function toColorInputValue(value) {
 }
 
 /**
- * Text input with a clear button, for use inside a labeled field group.
+ * Whether the field has a user-set color value.
+ *
+ * @param {string|undefined|null} value - Hex color string.
+ * @returns {boolean} True when a non-empty value is present.
+ */
+function hasColorValue(value) {
+  return typeof value === "string" && value.trim() !== "";
+}
+
+/**
+ * Hex text field with a clear button (standard SUI action input).
  *
  * @param {object} props - Component props.
  * @param {string} props.id - Input element id.
@@ -37,54 +47,43 @@ function toColorInputValue(value) {
  * @param {string} props.value - Current value.
  * @param {string} props.ariaLabel - Accessible name for the input.
  * @param {string} [props.placeholder] - Input placeholder.
- * @param {object} [props.inputStyle] - Optional inline styles for the input.
- * @param {Function} props.onChange - SUI Input change handler.
+ * @param {Function} props.onChange - Called with the new string value.
  * @param {Function} props.onBlur - Input blur handler.
  * @param {Function} props.onClear - Clears the field value.
  * @returns {React.ReactElement} Input and clear control.
  */
 function ClearableTextInput({
   id,
-  action,
   name,
   value,
   ariaLabel,
   placeholder,
-  inputStyle,
-  onChange,
   onBlur,
+  onChange,
   onClear,
 }) {
   return (
-    <Form.Group unstackable inline>
-      <Form.Field>
-        <Input
-          id={id}
-          action={action}
-          actionPosition="left"
-          fluid={false}
-          value={value || ""}
-          onChange={onChange}
-          onBlur={onBlur}
-          name={name}
-          placeholder={placeholder}
-          aria-label={ariaLabel}
-          style={inputStyle}
-        />
-      </Form.Field>
-      <Form.Field>
-        <Button
-          type="button"
-          icon
-          className="close-btn no-label"
-          aria-label={i18next.t("Clear")}
-          disabled={!value}
-          onClick={onClear}
-        >
-          <Icon name="close" />
-        </Button>
-      </Form.Field>
-    </Form.Group>
+    <Input action fluid={false} className="w-rel-8">
+      <input
+        id={id}
+        value={value || ""}
+        name={name}
+        onChange={(event) => onChange(event.target.value)}
+        onBlur={onBlur}
+        type="text"
+        placeholder={placeholder}
+        aria-label={ariaLabel}
+      />
+      <Button
+        type="button"
+        icon
+        aria-label={i18next.t("Clear")}
+        disabled={!value}
+        onClick={onClear}
+      >
+        <Icon name="close" />
+      </Button>
+    </Input>
   );
 }
 
@@ -94,7 +93,6 @@ ClearableTextInput.propTypes = {
   value: PropTypes.string,
   ariaLabel: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
-  inputStyle: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   onBlur: PropTypes.func.isRequired,
   onClear: PropTypes.func.isRequired,
@@ -103,7 +101,6 @@ ClearableTextInput.propTypes = {
 ClearableTextInput.defaultProps = {
   value: "",
   placeholder: undefined,
-  inputStyle: undefined,
 };
 
 /**
@@ -121,40 +118,50 @@ export function ColorField({ fieldPath, label, description }) {
   const inputId = field.name.replace(/\./g, "-");
   const colorInputId = `${inputId}-color`;
   const hexInputId = `${inputId}-hex`;
+  const hasValue = hasColorValue(field.value);
+  const swatchColor = toColorInputValue(field.value);
 
   return (
     <Form.Field error={hasError}>
       <label htmlFor={hexInputId}>{label}</label>
-      <Form.Group unstackable>
-        {/*<Form.Field error={hasError}>
-          <label htmlFor={colorInputId}>{i18next.t("Color")}</label>
-        </Form.Field>*/}
-        <Form.Field error={hasError}>
-          <ClearableTextInput
-            id={hexInputId}
-            action={
-              <input
-                id={colorInputId}
-                type="color"
-                value={toColorInputValue(field.value)}
-                onChange={(event) => helpers.setValue(event.target.value)}
-                onBlur={field.onBlur}
-                aria-label={i18next.t("Color")}
-              />
-            }
-            className="ui input w-rel-8"
-            name={field.name}
-            value={field.value}
-            ariaLabel={label}
-            placeholder="#RRGGBB"
-            onChange={(_event, { value }) => helpers.setValue(value)}
-            onBlur={field.onBlur}
-            onClear={() => helpers.setValue("")}
-          />
-          <label htmlFor={hexInputId}>{i18next.t("Hex")}</label>
-        </Form.Field>
-      </Form.Group>
       {description ? <div className="helptext">{description}</div> : null}
+      <Input action labelPosition="left" fluid={false} className="theme-color-field">
+        <label
+          className={`ui label theme-color-swatch${hasValue ? "" : " theme-color-swatch-empty"}`}
+          style={hasValue ? { backgroundColor: swatchColor } : undefined}
+          aria-label={i18next.t("Pick color")}
+        >
+          <input
+            id={colorInputId}
+            type="color"
+            className="theme-color-input-native"
+            value={swatchColor}
+            onChange={(event) => helpers.setValue(event.target.value)}
+            onBlur={field.onBlur}
+            tabIndex={-1}
+            aria-hidden="true"
+          />
+        </label>
+        <input
+          id={hexInputId}
+          type="text"
+          name={field.name}
+          value={field.value || ""}
+          onChange={(event) => helpers.setValue(event.target.value)}
+          onBlur={field.onBlur}
+          placeholder="#RRGGBB"
+          aria-label={label}
+        />
+        <Button
+          type="button"
+          icon
+          aria-label={i18next.t("Clear")}
+          disabled={!field.value}
+          onClick={() => helpers.setValue("")}
+        >
+          <Icon name="close" />
+        </Button>
+      </Input>
       {hasError ? <div className="ui pointing above prompt label">{meta.error}</div> : null}
     </Form.Field>
   );
@@ -171,12 +178,12 @@ ColorField.defaultProps = {
 };
 
 /**
- * Inline text field with its label below the control.
+ * Text field with a clear button, label above the control.
  *
  * @param {object} props - Component props.
  * @param {string} props.fieldPath - Formik field path.
  * @param {string} props.label - Field label.
- * @returns {React.ReactElement} Inline text field.
+ * @returns {React.ReactElement} Labeled text field.
  */
 export function InlineLabeledField({ fieldPath, label }) {
   const [field, meta, helpers] = useField(fieldPath);
@@ -185,16 +192,16 @@ export function InlineLabeledField({ fieldPath, label }) {
 
   return (
     <Form.Field error={hasError}>
+      <label htmlFor={inputId}>{label}</label>
       <ClearableTextInput
         id={inputId}
         name={field.name}
         value={field.value}
         ariaLabel={label}
-        onChange={(_event, { value }) => helpers.setValue(value)}
+        onChange={(value) => helpers.setValue(value)}
         onBlur={field.onBlur}
         onClear={() => helpers.setValue("")}
       />
-      <label htmlFor={inputId}>{label}</label>
       {hasError ? <div className="ui pointing above prompt label">{meta.error}</div> : null}
     </Form.Field>
   );
@@ -203,6 +210,41 @@ export function InlineLabeledField({ fieldPath, label }) {
 InlineLabeledField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
+};
+
+/**
+ * Formik-bound toggle field.
+ *
+ * @param {object} props - Component props.
+ * @param {string} props.fieldPath - Formik field path.
+ * @param {string} props.label - Checkbox label.
+ * @param {string} [props.description] - Optional help text.
+ * @returns {React.ReactElement} Toggle field.
+ */
+export function ToggleField({ fieldPath, label, description }) {
+  const [field, , helpers] = useField({ name: fieldPath, type: "checkbox" });
+
+  return (
+    <Form.Field>
+      <Form.Checkbox
+        toggle
+        label={label}
+        checked={Boolean(field.value)}
+        onChange={(_event, { checked }) => helpers.setValue(checked)}
+      />
+      {description ? <div className="helptext">{description}</div> : null}
+    </Form.Field>
+  );
+}
+
+ToggleField.propTypes = {
+  fieldPath: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  description: PropTypes.string,
+};
+
+ToggleField.defaultProps = {
+  description: undefined,
 };
 
 /**

@@ -9,6 +9,17 @@ textarea {
   font-family: @fontName;
 }
 
+.invenio-page-body .ui.form fieldset.ui.segment {
+  min-width: 0;
+
+  legend {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+}
+
 
 // Forms
 // outside #rdm-deposit-form to include modal forms
