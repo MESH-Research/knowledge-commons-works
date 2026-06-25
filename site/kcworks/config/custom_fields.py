@@ -37,6 +37,9 @@ from invenio_records_resources.services.custom_fields import TextCF
 from invenio_stats_dashboard.records.communities.custom_fields.custom_fields import (
     COMMUNITIES_NAMESPACES as STATS_COMMUNITIES_NAMESPACES,
 )
+from invenio_stats_dashboard.records.communities.custom_fields.custom_fields import (
+    COMMUNITY_STATS_FIELDS,
+)
 from kcworks.metadata_fields.hclegacy_groups_for_deposit import (
     HCLEGACY_GROUPS_FOR_DEPOSIT_FIELD,
 )
@@ -154,7 +157,7 @@ COMMUNITIES_CUSTOM_FIELDS = [
     TextCF(name="kcr:commons_group_visibility"),
     TextCF(name="kcr:commons_search_recid"),
     TextCF(name="kcr:commons_search_updated"),
-    # *COMMUNITY_STATS_FIELDS,
+    *COMMUNITY_STATS_FIELDS,
 ]
 
 COMMUNITIES_CUSTOM_FIELDS_UI = [
