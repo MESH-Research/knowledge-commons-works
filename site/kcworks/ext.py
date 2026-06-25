@@ -45,6 +45,7 @@ from invenio_remote_user_data_kcworks.utils.broker import extract_bearer_token
 from kcworks.services.communities.community_parent import (
     CommunityParentComponent as KCWorksCommunityParentComponent,
 )
+from kcworks.services.communities.permissions import KCWorksCommunityPermissionPolicy
 from kcworks.services.communities.default_branding import (
     DefaultBrandingComponent,
 )
@@ -69,6 +70,7 @@ from kcworks.services.records.record_communities.community_change_permissions_co
 )
 from kcworks.templates.template_filters import (
     community_breadcrumb_items,
+    community_dashboard_request_url,
     community_theme_settings_menu_visible,
     filter_visible_community_menu_items,
     sort_menu_items_by_name,
@@ -177,6 +179,7 @@ class KCWorks:
         if DefaultBrandingComponent not in _community_components:
             _community_components.append(DefaultBrandingComponent)
         app.config["COMMUNITIES_SERVICE_COMPONENTS"] = _community_components
+        app.config["COMMUNITIES_PERMISSION_POLICY"] = KCWorksCommunityPermissionPolicy
 
         patch_community_access_restriction_check()
 
@@ -276,6 +279,7 @@ class KCWorks:
         app.jinja_env.filters["filter_visible_community_menu_items"] = (
             filter_visible_community_menu_items
         )
+        app.add_template_global(community_dashboard_request_url)
 
 
 def register_community_menu_items(_app: Flask) -> None:
