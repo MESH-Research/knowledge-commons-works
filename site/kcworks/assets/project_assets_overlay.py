@@ -85,19 +85,27 @@ def link_project_tree(project_dir: Path, instance_path: Path, name: str) -> list
     return linked
 
 
-def link_project_assets_and_static(project_dir: Path, instance_path: Path) -> None:
-    """Overlay repo ``assets/`` (and ``static/`` when separate) onto the instance.
+def _should_overlay_project_static(project_dir: Path, instance_path: Path) -> bool:
+    """Return whether repo ``static/`` should be symlinked into the instance.
 
-    KCWorks dev compose bind-mounts ``./static`` to ``var/instance/static``, so
-    project and instance static are the same directory; overlaying would replace
-    real files with self-referential symlinks.
+    KCWorks dev compose bind-mounts host ``./static`` onto
+    ``var/instance/static``. That path is a mount point in the container but
+    is not the same pathname as ``project_dir/static`` (image copy under
+    ``/opt/invenio/src/static``), so a naive ``resolve()`` comparison still
+    runs the overlay and replaces host files with symlinks into the image tree.
     """
-    link_project_tree(project_dir, instance_path, "assets")
-
     project_static = project_dir / "static"
     instance_static = instance_path / "static"
-    if (
-        project_static.is_dir()
-        and project_static.resolve() != instance_static.resolve()
-    ):
+    if not project_static.is_dir():
+        return False
+    if instance_static.is_dir() and instance_static.is_mount():
+        return False
+    return project_static.resolve() != instance_static.resolve()
+
+
+def link_project_assets_and_static(project_dir: Path, instance_path: Path) -> None:
+    """Overlay repo ``assets/`` (and ``static/`` when appropriate) onto the instance."""
+    link_project_tree(project_dir, instance_path, "assets")
+
+    if _should_overlay_project_static(project_dir, instance_path):
         link_project_tree(project_dir, instance_path, "static")
