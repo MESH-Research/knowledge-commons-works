@@ -6,6 +6,7 @@ from werkzeug.exceptions import Forbidden, MethodNotAllowed
 
 from kcworks.views.admin_login.admin_login import AdminLogin
 from kcworks.views.api.notifications import InternalNotifications
+from kcworks.views.dev_ui_gallery import dev_ui_gallery
 from kcworks.views.task_results.task_results import TaskResults
 
 
@@ -29,6 +30,12 @@ def create_blueprint(app):
     blueprint.add_url_rule(
         "/admin_login",
         view_func=AdminLogin.as_view("admin_login"),
+    )
+
+    blueprint.add_url_rule(
+        "/dev/ui-gallery",
+        view_func=dev_ui_gallery,
+        methods=["GET"],
     )
 
     # Register context processor
