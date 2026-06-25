@@ -28,6 +28,7 @@ static/admin/
 static/bootstrap/
 static/css/
 static/dist/
+static/images/pdfjs/
 static/js/
 static/templates/
 static/vendor/
