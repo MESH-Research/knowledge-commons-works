@@ -23,6 +23,8 @@
 
 {%- set title = community.metadata.title -%}
 
+{%- set active_community_header_menu_item = "home" -%}
+
 {%- block javascript %}
   {{ super() }}
   {{ webpack['invenio-app-rdm-community-records-search-custom.js'] }}
@@ -30,6 +32,7 @@
 
 {%- block page_body %}
   {{ super() }}
+
   <div id="communities-details-search"
        data-invenio-search-config='{{
          search_app_communities_records_config(
