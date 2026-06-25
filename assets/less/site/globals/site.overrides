@@ -16,15 +16,14 @@
     }
   }
 
-  //&.computer:not(.large-monitor):not(.widescreen):not(.tablet):not(.mobile) {
-  //  @media all and (max-width: @computerBreakpoint) {
-  //    display: none !important;
-  //  }
-    // FIXME: allow for hiding on larger screens
-    // @media all and (min-width: @widescreenMonitorBreakpoint) {
-    //   display: none !important;
-    // }
-  //}
+  &.computer-strict:not(.large-monitor):not(.widescreen):not(.tablet):not(.mobile) {
+    @media all and (max-width: @computerBreakpoint) {
+      display: none !important;
+    }
+    @media all and (min-width: @widescreenMonitorBreakpoint) {
+      display: none !important;
+    }
+  }
 }
 
 .mobile.hidden {
@@ -41,6 +40,27 @@
   }
 }
 
+// Spacing
+
+@media all and (max-width: @largestMobileScreen) {
+  .ml-0-mobile {
+    margin-left: 0 !important;
+  }
+
+  .mr-0-mobile {
+    margin-right: 0 !important;
+  }
+}
+
+// positioning
+
+.absolute-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+
 // alignments
 
 .justify-space-between {
@@ -48,6 +68,7 @@
 }
 
 // typography
+
 .breakable-text {
   word-break: break-all;
   white-space: normal;

@@ -4,17 +4,73 @@
   border-right-color: transparent !important;
 }
 
-.ui.input.color-selector, .ui.input[type=color] {
-  width: 3em !important;
-  height: 40px;
-  border: @formInputBorderColor;
-  border-radius: @defaultBorderRadius;
-  cursor: "pointer";
+.ui.input.w-rel-8 {
+  max-width: 8em;
 }
 
-.ui.input.w-rel-8 { 
-  max-width: 8em;
-};
+// Keep action-input clear buttons attached (overrides .close-btn float elsewhere).
+.ui.action.input > .button.icon:last-child {
+  float: none;
+  margin-top: 0;
+}
+
+// Theme settings: labeled swatch (left) + hex + clear action (right).
+.ui.labeled.action.input.theme-color-field {
+  > .label.theme-color-swatch {
+    position: relative;
+    width: 3em;
+    min-width: 3em;
+    padding: 0 !important;
+    margin: 0;
+    border: 0 transparent !important;
+    flex: 0 0 auto;
+    align-self: stretch;
+    cursor: pointer;
+    overflow: hidden;
+
+    .theme-color-input-native {
+      position: absolute !important;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      opacity: 0;
+      cursor: pointer;
+      border: 0 !important;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+  }
+
+  > .label.theme-color-swatch.theme-color-swatch-empty {
+    background-color: @inputBackground;
+    opacity: 0.65;
+    background-image:
+      linear-gradient(
+        to top left,
+        transparent calc(50% - 0.5px),
+        @formInputBorderColor calc(50% - 0.5px),
+        @formInputBorderColor calc(50% + 0.5px),
+        transparent calc(50% + 0.5px)
+      ),
+      linear-gradient(
+        to top right,
+        transparent calc(50% - 0.5px),
+        @formInputBorderColor calc(50% - 0.5px),
+        @formInputBorderColor calc(50% + 0.5px),
+        transparent calc(50% + 0.5px)
+      );
+  }
+
+  > input[type="text"] {
+    max-width: 8em;
+    flex: 0 1 auto;
+  }
+}
 
 .invenio-page-body,
 .invenio-page-body .ui.form {

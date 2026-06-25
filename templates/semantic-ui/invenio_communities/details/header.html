@@ -25,6 +25,9 @@
   <!--   </p> -->
   <!-- {% endif %} -->
 {% endmacro %}
+  <!-- -->
+  <!-- Type -->
+  <!-- -->
 {% macro button_to_request_membership(community_ui) %}
   {% if permissions.can_request_membership %}
     {# TODO: Add relation_to_community for other flows #}
@@ -38,7 +41,7 @@
   <!-- Type -->
   <!-- -->
   {% if community_ui["metadata"]["type"] is defined %}
-    <div class="inline-computer rel-ml-2">
+    <div class="inline-computer ml-25 ml-0-mobile">
       {{ community_type_icon(community_ui["ui"]["type"]["id"]) }}
       <span class="ml-5 label label-keyword">{{ community_ui["ui"]["type"]["title_l10n"] }}</span>
     </div>
@@ -129,28 +132,33 @@
             <h1 class="ui huge header mb-0 theme-primary-text mt-0 mobile only">{{ title_content(community_ui) }}</h1>
             <h1 class="ui huge header mb-0 theme-primary-text computer tablet only">{{ title_content(community_ui) }}</h1>
           </div>
+          <!-- -->
+          <!-- Info under title -->
+          <!-- -->
           <div class="row pl-5 pt-5 computer tablet only">{{ community_info("computer", community_ui) }}</div>
           <div class="row pl-5 pt-5 mobile only centered">{{ community_info("mobile", community_ui) }}</div>
         </div>
       </div>
-      <div class="one wide computer tablet only middle aligned column pr-0 pl-0">
+      <div class="one wide widescreen large-monitor only middle aligned column pr-0 pl-0">
         {# Button to request membership is fully disabled until feature completely merged in v14. #}
         {# {{ button_to_request_membership(community) }} #}
         {% if community_ui["access"]["visibility"] == 'restricted' %}
           <div class="row pb-5 pt-0">
             <div class="flex">
               <div class="rel-ml-0 rel-mb-1">{{ access_status_label() }}</div>
-              <div class="mobile only rel-mb-1">{{ access_status_label() }}</div>
             </div>
           </div>
         {% endif %}
-        {% if permissions.can_moderate %}
-          <a href="{{ url_for('administration.communities', q='slug:'+community_ui['slug']) }}"
-             class="ui button icon rel-mt-1">
-            <i class="cog icon" aria-hidden="true"></i>
-          </a>
-        {% endif %}
       </div>
+      <!-- -->
+      <!-- Admin floating cog icon -->
+      <!-- -->
+      {% if permissions.can_moderate %}
+        <a href="{{ url_for('administration.communities', q='slug:'+community_ui['slug']) }}"
+           class="ui button computer tablet only icon transparent rel-mt-1 absolute-top-right mr-25">
+          <i class="cog icon" aria-hidden="true"></i>
+        </a>
+      {% endif %}
     </div>
   </div>
 </div>
