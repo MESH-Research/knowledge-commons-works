@@ -38,3 +38,6 @@
 	path = tests/fixtures
 	url = https://github.com/MESH-Research/kcworks-test-fixtures.git
 	branch = dev/next
+[submodule "site/kcworks/dependencies/kc-knowledge-base-sync"]
+	path = site/kcworks/dependencies/kc-knowledge-base-sync
+	url = https://github.com/MESH-Research/kc-knowledge-base-sync.git

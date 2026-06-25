@@ -9,6 +9,7 @@ source_control.md
 workflow.md
 testing.md
 how_tos.md
+knowledge_base_sync.md
 building.md
 stats.md
 i18n.md

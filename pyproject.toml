@@ -108,6 +108,7 @@ dev = [
   "djlint>=1.36.4",
   "docker-services-cli",
   "jsonlines",
+  "kc-knowledge-base-sync",
   "psycopg2-binary>=2.9.10",
 ]
 docs = [
@@ -150,6 +151,7 @@ sources.invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/i
 sources.invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
 sources.invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
 sources.kcworks = { path = "./site", editable = true }
+sources.kc-knowledge-base-sync = { path = "./site/kcworks/dependencies/kc-knowledge-base-sync", editable = true }
 
 [tool.ruff]
 target-version = "py312"
@@ -169,6 +171,7 @@ exclude = [
   "site/kcworks/dependencies/invenio-remote-user-data-kcworks",
   "site/kcworks/dependencies/invenio-stats-dashboard",
   "site/kcworks/dependencies/invenio-vocabularies",
+  "site/kcworks/dependencies/kc-knowledge-base-sync",
   "site/kcworks/services/search/index_templates",
   "tests/helpers",
 ]
@@ -257,6 +260,7 @@ ini_options.addopts = """
 --ignore=site/kcworks/dependencies/invenio-remote-user-data-kcworks
 --ignore=site/kcworks/dependencies/invenio-vocabularies
 --ignore=site/kcworks/dependencies/invenio-stats-dashboard
+--ignore=site/kcworks/dependencies/kc-knowledge-base-sync
 --ignore=site/kcworks/services/search/index_templates
 --cov=kcworks --cov=invenio_stats_dashboard --cov=invenio_record_importer_kcworks --cov-report=term-missing
 """
@@ -314,6 +318,7 @@ run.omit = [
   "site/kcworks/dependencies/invenio-remote-api-provisioner/*",
   "site/kcworks/dependencies/invenio-remote-user-data-kcworks/*",
   "site/kcworks/dependencies/invenio-vocabularies/*",
+  "site/kcworks/dependencies/kc-knowledge-base-sync/*",
   "site/kcworks/services/search/index_templates/*",
   "site/kcworks/views/task_results/*",
 ]
