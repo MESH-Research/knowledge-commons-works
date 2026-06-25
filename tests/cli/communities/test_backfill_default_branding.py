@@ -23,12 +23,15 @@ from click.testing import CliRunner
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from kcworks.services.communities.cli import backfill_default_branding
+from kcworks.services.communities.default_branding import default_theme_style
 from kcworks.services.geopattern import derive_theme_colors
 
 THEME_KEYS = (
     "primaryColor",
     "primaryTextColor",
     "mainHeaderBackgroundColor",
+    "mainHeaderUseLogo",
+    "mainHeaderUseGradient",
 )
 
 
@@ -145,7 +148,7 @@ def test_backfill_inline_applies_logo_and_theme(three_communities) -> None:
     record = _read_record(three_communities["neither"].id)
     assert record.files.get("logo") is not None
     style = record["theme"]["style"]
-    expected = derive_theme_colors("branded-neither")
+    expected = default_theme_style("branded-neither")
     assert style["primaryColor"] == expected["primaryColor"]
     assert style["primaryTextColor"] == expected["primaryTextColor"]
     assert style["mainHeaderBackgroundColor"] == expected["mainHeaderBackgroundColor"]
@@ -189,7 +192,7 @@ def test_backfill_theme_only_skips_logo(three_communities) -> None:
 
     record = _read_record(three_communities["neither"].id)
     style = (record.get("theme") or {}).get("style") or {}
-    expected = derive_theme_colors("branded-neither")
+    expected = default_theme_style("branded-neither")
     assert style.get("primaryColor") == expected["primaryColor"]
     assert style.get("primaryTextColor") == expected["primaryTextColor"]
     assert (

@@ -39,6 +39,7 @@ from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
 from kcworks.services.communities.default_branding import (
     DefaultBrandingComponent,
     apply_default_branding,
+    default_theme_style,
 )
 from kcworks.services.communities.tasks import generate_default_branding
 from kcworks.services.geopattern import derive_theme_colors, to_png
@@ -47,6 +48,8 @@ THEME_KEYS = (
     "primaryColor",
     "primaryTextColor",
     "mainHeaderBackgroundColor",
+    "mainHeaderUseLogo",
+    "mainHeaderUseGradient",
 )
 
 
@@ -116,7 +119,7 @@ def test_ext_registers_default_branding_after_upstream(running_app) -> None:
 def test_create_sets_logo_and_theme(running_app, db, branded_community) -> None:
     """A freshly-created community has a logo file and the three theme keys."""
     record = _read_record(branded_community.id)
-    expected = derive_theme_colors("branded-test-community")
+    expected = default_theme_style("branded-test-community")
     style = (record.get("theme") or {}).get("style") or {}
     for key in THEME_KEYS:
         assert style.get(key) == expected[key], (
@@ -184,10 +187,37 @@ def test_service_update_tops_up_missing_theme_keys(
 
     refreshed = _read_record(branded_community.id)
     style = refreshed["theme"]["style"]
-    expected = derive_theme_colors("branded-test-community")
+    expected = default_theme_style("branded-test-community")
     assert style["primaryColor"] == "#123456"
     assert style["primaryTextColor"] == expected["primaryTextColor"]
     assert style["mainHeaderBackgroundColor"] == expected["mainHeaderBackgroundColor"]
+
+
+def test_service_update_preserves_false_header_flags(
+    running_app, db, branded_community
+) -> None:
+    """Saving theme with header toggles off does not re-seed them to True."""
+    read_result = current_communities.service.read(
+        system_identity, branded_community.id
+    )
+    update_data = dict(read_result.data)
+    update_data["theme"] = {
+        "enabled": True,
+        "style": {
+            **read_result.data["theme"]["style"],
+            "mainHeaderUseLogo": False,
+            "mainHeaderUseGradient": False,
+        },
+    }
+
+    current_communities.service.update(
+        system_identity, branded_community.id, update_data
+    )
+
+    refreshed = _read_record(branded_community.id)
+    style = refreshed["theme"]["style"]
+    assert style["mainHeaderUseLogo"] is False
+    assert style["mainHeaderUseGradient"] is False
 
 
 def test_delete_logo_regenerates_logo_and_theme(
@@ -218,6 +248,8 @@ def test_delete_logo_regenerates_logo_and_theme(
             "primaryColor": "#abcdef",
             "primaryTextColor": "#000001",
             "mainHeaderBackgroundColor": "#fffffe",
+            "mainHeaderUseLogo": False,
+            "mainHeaderUseGradient": False,
         },
     }
     current_communities.service.update(
@@ -243,7 +275,7 @@ def test_delete_logo_regenerates_logo_and_theme(
     assert _stored_logo_sha256(refreshed) == _expected_logo_sha256(
         "branded-test-community"
     )
-    expected = derive_theme_colors("branded-test-community")
+    expected = default_theme_style("branded-test-community")
     style = refreshed["theme"]["style"]
     for key in THEME_KEYS:
         assert style[key] == expected[key], (
@@ -304,7 +336,7 @@ def test_generate_default_branding_task_commits_missing_theme_key(
     generate_default_branding(str(record.id))
 
     refreshed = _read_record(branded_community.id)
-    expected = derive_theme_colors("branded-test-community")
+    expected = default_theme_style("branded-test-community")
     assert (
         refreshed["theme"]["style"]["primaryTextColor"] == expected["primaryTextColor"]
     )

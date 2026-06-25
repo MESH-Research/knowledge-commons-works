@@ -13,17 +13,12 @@ from marshmallow.exceptions import ValidationError
 
 from kcworks.services.communities.default_branding import (
     apply_default_branding,
+    default_theme_style,
     generate_default_branding,
 )
 
 from .group_collections import CommunityGroupMembershipChecker
 from .org_member_records import OrgMemberRecordIncluder
-
-_THEME_KEYS: tuple[str, str, str] = (
-    "primaryColor",
-    "primaryTextColor",
-    "mainHeaderBackgroundColor",
-)
 
 
 def _resolve_community(identifier: str):
@@ -354,18 +349,19 @@ def _needs_logo(record) -> bool:
 
 
 def _missing_theme_keys(record) -> list[str]:
-    """List which of the three theme.style keys are not set on `record`.
+    """List which default theme.style keys are not set on `record`.
 
     Args:
         record: A Community record.
 
     Returns:
         The list of `_THEME_KEYS` not currently present in
-        `record["theme"]["style"]`. Empty when all three are set.
+        `record["theme"]["style"]`. Empty when all defaults are set.
     """
     theme = record.get("theme") or {}
     style = theme.get("style") or {}
-    return [k for k in _THEME_KEYS if k not in style]
+    defaults = default_theme_style(record.slug)
+    return [k for k in defaults if k not in style]
 
 
 @click.command("backfill-default-branding")
@@ -420,9 +416,9 @@ def backfill_default_branding(
 
     - "Missing logo": no file at `record.files["logo"]`. Backfill adds a
       slug-derived geopattern PNG.
-    - "Missing theme": at least one of `primaryColor`, `primaryTextColor`,
-      `mainHeaderBackgroundColor` is unset on `record["theme"]["style"]`.
-      Backfill seeds the slug-derived defaults for the missing keys.
+    - "Missing theme": at least one default `theme.style` key is unset on
+      `record["theme"]["style"]`. Backfill seeds slug-derived colors and
+      service-default header flags for the missing keys.
 
     User-uploaded logos are never overwritten and admin-customized theme
     values are never replaced; backfill only ever fills in what is

@@ -13,7 +13,7 @@ from invenio_communities.views.communities import (
 from invenio_communities.views.decorators import pass_community
 from invenio_records_resources.services.errors import PermissionDeniedError
 
-from kcworks.services.geopattern import derive_theme_colors
+from kcworks.services.communities.default_branding import default_theme_style
 
 
 @pass_community(serialize=True)
@@ -37,7 +37,7 @@ def communities_settings_theme(pid_value, community, community_ui):
 
     default_theme = {
         "enabled": True,
-        "style": derive_theme_colors(community_ui["slug"]),
+        "style": default_theme_style(community_ui["slug"]),
     }
 
     return render_community_theme_template(

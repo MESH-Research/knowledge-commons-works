@@ -7,6 +7,8 @@ freshly-created community has, by the time the user sees its page:
 - A stored geopattern PNG in `record.files["logo"]`.
 - Three slug-derived theme fields on `record["theme"]["style"]`:
   `primaryColor`, `primaryTextColor`, `mainHeaderBackgroundColor`.
+- Default header presentation flags `mainHeaderUseLogo` and
+  `mainHeaderUseGradient`, both `True`.
 
 The component runs synchronously inside the create request so the typical
 case is "everything is set before the redirect". If the inline pipeline
@@ -17,7 +19,8 @@ is enqueued to retry the full pipeline outside the request.
 
 The component is also dispatched on `delete_logo` (via the patched
 [`CommunityService.delete_logo`][])
-so removing the custom logo re-applies the slug-derived defaults.
+so removing the custom logo re-applies slug-derived colors and the
+default header presentation flags.
 
 This module is also the target of the
 `invenio_celery.tasks` entry point declared in `pyproject.toml`.
@@ -26,24 +29,41 @@ This module is also the target of the
 from __future__ import annotations
 
 from io import BytesIO
-from typing import Any, Literal
+from typing import Any
 
 from flask import current_app
 from invenio_records_resources.services.records.components import ServiceComponent
 
 from .tasks import generate_default_branding
 
-type ThemeColorKey = Literal[
-    "primaryColor",
-    "primaryTextColor",
-    "mainHeaderBackgroundColor",
-]
-
-_THEME_KEYS: tuple[ThemeColorKey, ...] = (
+_THEME_COLOR_KEYS: tuple[str, ...] = (
     "primaryColor",
     "primaryTextColor",
     "mainHeaderBackgroundColor",
 )
+
+_DEFAULT_HEADER_STYLE: dict[str, bool] = {
+    "mainHeaderUseLogo": True,
+    "mainHeaderUseGradient": True,
+}
+
+
+def default_theme_style(slug: str) -> dict[str, str | bool]:
+    """Return the full default `theme.style` for a community.
+
+    Slug-derived colors come from
+    [`derive_theme_colors`][kcworks.services.geopattern.derive_theme_colors];
+    header presentation flags are fixed service defaults.
+
+    Args:
+        slug: Community slug.
+
+    Returns:
+        Default values for all keys seeded by default branding.
+    """
+    from kcworks.services.geopattern import derive_theme_colors
+
+    return {**derive_theme_colors(slug), **_DEFAULT_HEADER_STYLE}
 
 
 def apply_default_branding(
@@ -55,7 +75,7 @@ def apply_default_branding(
     """Set the geopattern logo and theme colors on `record`.
 
     Pure data-mutation: writes `record.files["logo"]` (a fresh `BytesIO`
-    of the slug-derived PNG) and ensures the three theme.style keys are
+    of the slug-derived PNG) and ensures the default theme.style keys are
     populated. Idempotent for the theme half; respects existing values
     unless `force_theme=True`. For the logo, only writes when missing
     unless `force_logo=True`.
@@ -71,10 +91,10 @@ def apply_default_branding(
     """
     # Imported lazily so the geopattern module's cairosvg/Pillow imports
     # don't fire during module-load of every Flask request.
-    from kcworks.services.geopattern import derive_theme_colors, to_png
+    from kcworks.services.geopattern import to_png
 
     slug = record.slug
-    theme_colors = derive_theme_colors(slug)
+    theme_style = default_theme_style(slug)
 
     # 1) Theme: only set missing keys unless `force_theme`. Mutating the
     # record's `theme` dict directly bypasses the `set_theme` permission
@@ -84,14 +104,14 @@ def apply_default_branding(
     record.setdefault("theme", {})
     style = record["theme"].setdefault("style", {})
     wrote_any_theme = False
-    for key in _THEME_KEYS:
+    for key, value in theme_style.items():
         if force_theme or key not in style:
-            style[key] = theme_colors[key]
+            style[key] = value
             wrote_any_theme = True
     if wrote_any_theme:
         record["theme"].setdefault("enabled", True)
 
-    # 2) Logo: only generate when missing unless forced. PNG bytes go
+    # 2) Logo: only generate when missing if forced. PNG bytes go
     # through `BytesIO` so the underlying files manager treats them as a
     # stream. `to_png` is the slowest call in this path (~50-300 ms in
     # practice for a 480x480 render); doing it after the early-return
@@ -107,14 +127,15 @@ class DefaultBrandingComponent(ServiceComponent):
 
     Behavior:
 
-    - `create`: always runs. Writes both the logo and the three theme
-      keys. Any inline failure is logged and a Celery retry task is
+    - `create`: always runs. Writes both the logo and the default theme
+      style keys. Any inline failure is logged and a Celery retry task is
       enqueued; the create itself never aborts because of branding.
-    - `update`: tops up any of the three theme keys that are missing.
-      Never touches the logo (the logo lifecycle has its own endpoints).
+    - `update`: tops up missing slug-derived color keys only. Header
+      presentation flags are seeded on create and reset on `delete_logo`,
+      not re-applied when absent from a user save.
     - `delete_logo`: re-runs the full pipeline with `force_logo=True`
       and `force_theme=True`, treating the explicit deletion as a
-      request to revert to slug-derived defaults.
+      request to revert to the full default theme style.
 
     Register this component AFTER `CommunityThemeComponent` in
     `COMMUNITIES_SERVICE_COMPONENTS` so user-supplied themes from
@@ -154,13 +175,13 @@ class DefaultBrandingComponent(ServiceComponent):
         record: Any = None,
         **kwargs: Any,
     ) -> None:
-        """Top up any missing theme.style keys; never touches the logo."""
+        """Top up missing slug-derived theme colors; never touches the logo."""
         if record is None:
             return
         try:
             theme = record.get("theme") or {}
             style = theme.get("style") or {}
-            missing = [k for k in _THEME_KEYS if k not in style]
+            missing = [k for k in _THEME_COLOR_KEYS if k not in style]
             if not missing:
                 return
             from kcworks.services.geopattern import derive_theme_colors
