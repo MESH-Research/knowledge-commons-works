@@ -25,10 +25,7 @@ const SubMenu = ({ item, index }) => {
         {item.children
           .sort((a, b) => a.order - b.order)
           .map((childItem, indexInner) => (
-            <li
-              className={`${childItem.active ? "active" : ""}`}
-              key={indexInner}
-            >
+            <li className={`${childItem.active ? "active" : ""}`} key={indexInner}>
               <MenuItem {...childItem} />
             </li>
           ))}
@@ -81,13 +78,7 @@ const PlusMenu = ({ plusMenuItems, baseTabIndex }) => {
   );
 };
 
-const UserMenu = ({
-  adminMenuItems,
-  logoutURL,
-  readableEmail,
-  settingsMenuItems,
-  tabIndex,
-}) => {
+const UserMenu = ({ adminMenuItems, logoutURL, readableEmail, settingsMenuItems, tabIndex }) => {
   const settingsItems = settingsMenuItems
     .sort((a, b) => a.order - b.order)
     .filter((item) => item.visible === true);
@@ -127,13 +118,7 @@ const UserMenu = ({
           aria-labelledby="user-profile-dropdown-btn"
         >
           {settingsItems.map((item, index) => (
-            <a
-              role="menuitem"
-              className="item"
-              href={item.url}
-              tabIndex={-1}
-              key={index}
-            >
+            <a role="menuitem" className="item" href={item.url} tabIndex={-1} key={index}>
               {item.text.replace(/<[^>]*>/g, "")}
             </a>
           ))}
@@ -141,13 +126,7 @@ const UserMenu = ({
           <div className="ui divider"></div>
 
           {adminItems.map((item, index) => (
-            <a
-              role="menuitem"
-              className="item"
-              href={item.url}
-              tabIndex={-1}
-              key={index}
-            >
+            <a role="menuitem" className="item" href={item.url} tabIndex={-1} key={index}>
               {item.text.replace(/<[^>]*>/g, "")}
             </a>
           ))}
@@ -158,13 +137,7 @@ const UserMenu = ({
         <h2 className="ui small header">{i18next.t("My account")}</h2>
 
         {settingsItems.map((item, index) => (
-          <a
-            role="menuitem"
-            className="item"
-            href={item.url}
-            key={index}
-            tabIndex={0}
-          >
+          <a role="menuitem" className="item" href={item.url} key={index} tabIndex={0}>
             {item.text.replace(/<[^>]*>/g, "")}
           </a>
         ))}
@@ -172,13 +145,7 @@ const UserMenu = ({
         <div className="ui divider"></div>
 
         {adminItems.map((item, index) => (
-          <a
-            role="menuitem"
-            className="item"
-            href={item.url}
-            key={index}
-            tabIndex={0}
-          >
+          <a role="menuitem" className="item" href={item.url} key={index} tabIndex={0}>
             {item.text.replace(/<[^>]*>/g, "")}
           </a>
         ))}
@@ -208,9 +175,7 @@ const LoginMenu = ({
   tabIndex,
 }) => {
   const readableEmail =
-    currentUserEmail.length >= 31
-      ? currentUserEmail.slice(31) + "..."
-      : currentUserEmail;
+    currentUserEmail.length >= 31 ? currentUserEmail.slice(31) + "..." : currentUserEmail;
   const profileURL = externalIdentifiers.external_id
     ? `${profilesURL}${externalIdentifiers.external_id}`
     : undefined;
@@ -331,9 +296,7 @@ const MainMenu = ({
   const [unreadNotifications, setUnreadNotifications] = useState([]);
 
   const fetchUnreadNotifications = async () => {
-    const response = await fetch(
-      `/api/users/${userId}/notifications/unread/list`
-    );
+    const response = await fetch(`/api/users/${userId}/notifications/unread/list`);
     const data = await response.json();
     // Store unread notifications in session storage.
     // This is to avoid fetching the same notifications in
@@ -345,9 +308,7 @@ const MainMenu = ({
   };
 
   const updateUnreadNotifications = () => {
-    const unreadFromStorage = JSON.parse(
-      sessionStorage.getItem(`unreadNotifications`)
-    );
+    const unreadFromStorage = JSON.parse(sessionStorage.getItem(`unreadNotifications`));
     setUnreadNotifications(unreadFromStorage);
   };
 
@@ -404,12 +365,7 @@ const MainMenu = ({
             )} */}
 
         <div className={`item`}>
-          <MenuItem
-            text={i18next.t("Search")}
-            url={"/search"}
-            icon="search"
-            tabIndex="0"
-          />
+          <MenuItem text={i18next.t("Search")} url={"/search"} icon="search" tabIndex="0" />
         </div>
 
         {/* "Main" menu, including collections */}
@@ -419,18 +375,11 @@ const MainMenu = ({
               <SubMenu item={item} index={0} />
             </div>
           ) : (
-            <div
-              className={`${item.active ? "item active" : " item"}`}
-              key={index}
-            >
+            <div className={`${item.active ? "item active" : " item"}`} key={index}>
               <MenuItem
                 url={item.url}
-                text={`${
-                  item.text === "Communities"
-                    ? i18next.t("Collections")
-                    : item.text
-                }`}
-                icon={item.text === "Communities" ? "copy" : item.icon}
+                text={item.text}
+                icon={["Communities", "Collections"].includes(item.text) ? "copy" : item.icon}
                 key={index}
                 tabIndex={0}
               />
@@ -471,10 +420,7 @@ const MainMenu = ({
         </div>
 
         {/* Right-aligned menu items */}
-        <div
-          className={`right menu item ${userAuthenticated ? "" : "logged-out"}`}
-          role="group"
-        >
+        <div className={`right menu item ${userAuthenticated ? "" : "logged-out"}`} role="group">
           <div className="menu item spacer mobile tablet only"></div>
           <LoginMenu
             accountsEnabled={accountsEnabled}
@@ -509,18 +455,10 @@ const MainMenu = ({
             notificationsItems.map((item, index) => (
               <div className="item inbox" key={index}>
                 <IconMenuItem
-                  text={
-                    item.text === "requests"
-                      ? i18next.t("My requests")
-                      : item.text
-                  }
+                  text={item.text === "requests" ? i18next.t("My requests") : item.text}
                   url={item.url}
                   icon={item.text === "requests" ? "inbox" : item.icon}
-                  badge={
-                    unreadNotifications?.length > 0
-                      ? unreadNotifications?.length
-                      : undefined
-                  }
+                  badge={unreadNotifications?.length > 0 ? unreadNotifications?.length : undefined}
                   tabIndex={0}
                 />
               </div>
@@ -567,8 +505,7 @@ MainMenu.propTypes = {
 const element = document.getElementById("main-nav-menu");
 
 // Get the data property from the element
-const accountsEnabled =
-  element.dataset.accountsEnabled === "True" ? true : false;
+const accountsEnabled = element.dataset.accountsEnabled === "True" ? true : false;
 const actionsMenuItems = JSON.parse(element.dataset.actionsMenuItems);
 const adminMenuItems = JSON.parse(element.dataset.adminMenuItems);
 const currentUserEmail = element.dataset.currentUserEmail;
@@ -579,24 +516,17 @@ const kcWorksHelpUrl = element.dataset.kcWorksHelpUrl;
 const loginURL = element.dataset.loginUrl;
 const logoutURL = element.dataset.logoutUrl;
 const mainMenuItems = JSON.parse(element.dataset.mainMenuItems);
-const notificationsMenuItems = JSON.parse(
-  element.dataset.notificationsMenuItems
-);
+const notificationsMenuItems = JSON.parse(element.dataset.notificationsMenuItems);
 const plusMenuItems = JSON.parse(element.dataset.plusMenuItems);
-const profilesEnabled =
-  element.dataset.profilesEnabled === "True" ? true : false;
+const profilesEnabled = element.dataset.profilesEnabled === "True" ? true : false;
 const profilesURL = element.dataset.profilesUrl;
 const settingsMenuItems = JSON.parse(element.dataset.settingsMenuItems);
 const themeLogoURL = element.dataset.themeLogoUrl;
 const themeSitename = element.dataset.themeSitename;
-const themeSearchbarEnabled =
-  element.dataset.themeSearchbarEnabled === "True" ? true : false;
+const themeSearchbarEnabled = element.dataset.themeSearchbarEnabled === "True" ? true : false;
 const userId = element.dataset.userId;
-const userAuthenticated =
-  element.dataset.userAuthenticated === "True" ? true : false;
-const userAdministrator = JSON.parse(element.dataset.userRoles).includes(
-  "administration"
-)
+const userAuthenticated = element.dataset.userAuthenticated === "True" ? true : false;
+const userAdministrator = JSON.parse(element.dataset.userRoles).includes("administration")
   ? true
   : false;
 
