@@ -15,6 +15,7 @@ import React, { Component } from "react";
 import { Button, Form, Grid, Header, Icon, Message } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { ColorField, InlineLabeledField, ToggleField } from "./ColorField";
+import { communityThemeValidationSchema } from "./themeValidationSchema";
 
 const OPTIONAL_STYLE_KEYS = [
   "secondaryColor",
@@ -185,7 +186,13 @@ class CommunityThemeForm extends Component {
     const hasError = error !== undefined;
 
     return (
-      <Formik initialValues={this.getInitialValues()} onSubmit={this.onSubmit}>
+      <Formik
+        initialValues={this.getInitialValues()}
+        validationSchema={communityThemeValidationSchema}
+        validateOnChange={false}
+        validateOnBlur
+        onSubmit={this.onSubmit}
+      >
         {({ handleSubmit, isSubmitting, setValues }) => (
           <Form onSubmit={handleSubmit}>
             <Message hidden={!hasError} negative>

@@ -45,6 +45,11 @@
     max-height: none;
   }
 }
+// preview in the community settings form
+.form.communities-profile .ui.image.community-logo img {
+  height: auto !important;
+  object-fit: fill;
+}
 // also used elsewhere
 img.community-header-logo { 
   border-radius: @defaultBorderRadius;

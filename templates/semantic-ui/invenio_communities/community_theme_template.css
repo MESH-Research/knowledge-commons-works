@@ -75,6 +75,9 @@
   color: {{ theme.primaryTextColor }} !important;
   }
 {%- endif %}
+section.right.floated h2.ui.small.header {
+  text-shadow: 0 -1px 2px @white;
+}
 
 {# ------------------------------------------------------------------------ #}
 {# Menu #}
@@ -194,13 +197,19 @@ border-radius: 0.5em;
   {# Sidebar menu #}
   {# ------------------------------------------------------------------------ #}
 
-  .communities-stats .ui.vertical.menu .item, .communities-settings .ui.vertical.menu .item, .communities-members .ui.vertical.menu .item {
+  .communities-stats .ui.vertical.menu .item, 
+  .communities-settings .ui.vertical.menu .item, 
+  .communities-members .ui.vertical.menu .item {
     border-left: 2px solid #eee !important
   }
-  .communities-stats .ui.vertical.menu .item.active, .communities-settings .ui.vertical.menu .item.active, .communities-members .ui.vertical.menu .item.active {
+  .communities-stats .ui.vertical.menu .item.active, 
+  .communities-settings .ui.vertical.menu .item.active, 
+  .communities-members .ui.vertical.menu .item.active {
     border-left: 2px solid {{theme.primaryColor}} !important
   }
-  .communities-stats .ui.vertical.menu .item:hover, .communities-settings .ui.vertical.menu .item:hover, .communities-members .ui.vertical.menu .item:hover {
+  .communities-stats .ui.vertical.menu .item:hover, 
+  .communities-settings .ui.vertical.menu .item:hover, 
+  .communities-members .ui.vertical.menu .item:hover {
     background-color: var(--bgMidTransparency);
   }
   .communities-stats .ui.vertical.menu .item.active:hover, 
@@ -223,7 +232,9 @@ border-radius: 0.5em;
       border-radius: 0.5em;
       {%- if theme.primaryColor %}box-shadow: 0 0 10px 0 rgb(from {{ theme.primaryColor }} r g b / 0.15);{%- endif %}
     }
-    .theme-primary-menu .item.active {
+    .communities-stats .ui.horizontal.menu .item.active,
+    .communities-settings .ui.horizontal.menu .item.active,
+    .communities-members .ui.horizontal.menu .item.active {
       background-color: rgba(255, 255, 255, 0.35) !important;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);

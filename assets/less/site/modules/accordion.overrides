@@ -108,5 +108,11 @@
       padding-bottom: 0;
       margin-bottom: 0;
     }
+    &[data-label="Linked Commons Group"] {
+      .content.active {
+        padding-left: 1rem;
+      }
+    }
   }
 }
+

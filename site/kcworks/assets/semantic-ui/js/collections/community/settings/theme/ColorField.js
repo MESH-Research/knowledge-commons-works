@@ -8,8 +8,7 @@ import { useField } from "formik";
 import React from "react";
 import { Form, Button, Icon, Input } from "semantic-ui-react";
 import PropTypes from "prop-types";
-
-const HEX_COLOR_PATTERN = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
+import { HEX_COLOR_PATTERN } from "@js/kcworks/utils/themeInputValidation";
 
 /**
  * Normalize a value for use with `<input type="color">`.
