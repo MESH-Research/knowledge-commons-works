@@ -5,6 +5,16 @@
 # bind remain here. Host overlays for instance files and repo source are in
 # docker-compose.dev.yml. CI (e.g. .github/workflows/build.yml) uses this file alone.
 #
+# Served static (collect, webpack dist, package symlinks) lives on the
+# static_data volume at /opt/invenio/var/instance/static (web-ui, frontend,
+# web-api, worker). The volume starts empty and hides image-baked static under
+# that path. Before the UI is usable, run in web-ui::
+#
+#   bash ./scripts/build-assets.sh
+#
+# (setup-services.sh runs this on fresh install.) Recreate or wipe the volume
+# and run build-assets again after asset changes.
+#
 # Local live checkout / hot reload: also pass --file docker-compose.dev.yml
 # (see that file and kcworks-startup.sh).
 #
@@ -76,7 +86,7 @@ services:
     volumes:
       - ./docker/nginx_local/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/nginx_local/conf.d:/etc/nginx/conf.d
-      - ./static:/opt/invenio/var/instance/static
+      - static_data:/opt/invenio/var/instance/static
     depends_on:
       - web-ui
       - web-api
@@ -108,6 +118,7 @@ services:
       # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
+      - static_data:/opt/invenio/var/instance/static
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR:-/opt/invenio/var/import_data}
     depends_on:
       search:
@@ -134,6 +145,7 @@ services:
       # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
+      - static_data:/opt/invenio/var/instance/static
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR:-/opt/invenio/var/import_data}
     depends_on:
       search:
@@ -161,6 +173,7 @@ services:
       # - ./celerybeat-schedule:/opt/invenio/src/celerybeat-schedule
       - archived_data:/opt/invenio/var/instance/archive
       - uploaded_data:/opt/invenio/var/instance/data
+      - static_data:/opt/invenio/var/instance/static
       - /${INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR}:${INVENIO_RECORD_IMPORTER_DATA_DIR:-/opt/invenio/var/import_data}
     depends_on:
       search:

@@ -61,6 +61,15 @@ instance_path = /opt/invenio/var/instance
 
 - `docker-compose --file docker-compose.yml up -d`
 
+```{note}
+The UI will not load CSS/JS correctly until step 4 builds static assets.
+Compose mounts an empty ``static_data`` volume over
+``/opt/invenio/var/instance/static`` (nginx and web-ui share it). Image-baked
+static at that path is hidden until you run ``bash ./scripts/build-assets.sh``
+in web-ui (included in ``setup-services.sh`` below). Same requirement when
+using ``docker-compose.dev.yml``.
+```
+
 ### 4. Initialize the database and other services, and build asset files
 
 - enter the `web-ui` container by running `docker exec -it kcworks-ui bash`

@@ -22,11 +22,14 @@
 # the installed python files. This allows for development of the KCWorks modules
 # without having to rebuild the container.
 #
-# Host instance overlays (not in docker-compose.yml): invenio.cfg, app_data,
-# .env, .invenio, .invenio.private — plus repo source overlays: live static,
-# templates, translations, assets, scripts, workflows, docs, pyproject/uv lock,
-# README/LICENSE, git metadata, optional UI log file, and the JS/pnpm toolchain.
-# CI using docker-compose.yml alone relies on the image for app instance paths.
+# Bind mounts from this repo (not in docker-compose.yml alone):
+#   var/instance/ — invenio.cfg, app_data, templates, translations
+#   src/ — .env, .invenio, .invenio.private, static, assets, scripts,
+#     workflows, docs, pyproject/uv lock, README/LICENSE, git metadata,
+#     optional UI log file, and the JS/pnpm toolchain.
+# Repo ./static mounts to src/static only; served static uses static_data
+# (see docker-compose.yml header).
+# CI using docker-compose.yml alone relies on the image for those paths.
 #
 services:
   web-ui:
@@ -47,6 +50,7 @@ services:
     volumes:
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
+      - static_data:/opt/invenio/var/instance/static
       - ./.env:/opt/invenio/src/.env
       - ./.invenio:/opt/invenio/src/.invenio
       - ./.invenio.private:/opt/invenio/src/.invenio.private
@@ -82,7 +86,7 @@ services:
       - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml
       - ./babel.config.js:/opt/invenio/src/babel.config.js
       - ./logs/invenio.log:/opt/invenio/src/logs/invenio.log
-      - ./static:/opt/invenio/var/instance/static
+      - ./static:/opt/invenio/src/static
       - ./templates:/opt/invenio/var/instance/templates
       - ./translations:/opt/invenio/var/instance/translations
       - ./assets:/opt/invenio/src/assets
@@ -111,6 +115,7 @@ services:
     volumes:
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
+      - static_data:/opt/invenio/var/instance/static
       - ./.env:/opt/invenio/src/.env
       - ./.invenio:/opt/invenio/src/.invenio
       - ./.invenio.private:/opt/invenio/src/.invenio.private
@@ -145,7 +150,7 @@ services:
       - ./package.json:/opt/invenio/src/package.json
       - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml
       - ./babel.config.js:/opt/invenio/src/babel.config.js
-      - ./static:/opt/invenio/var/instance/static
+      - ./static:/opt/invenio/src/static
       - ./templates:/opt/invenio/var/instance/templates
       - ./translations:/opt/invenio/var/instance/translations
       - ./assets:/opt/invenio/src/assets
@@ -174,6 +179,7 @@ services:
     volumes:
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
       - ./app_data:/opt/invenio/var/instance/app_data
+      - static_data:/opt/invenio/var/instance/static
       - ./.env:/opt/invenio/src/.env
       - ./.invenio:/opt/invenio/src/.invenio
       - ./.invenio.private:/opt/invenio/src/.invenio.private
@@ -208,7 +214,7 @@ services:
       - ./package.json:/opt/invenio/src/package.json
       - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml
       - ./babel.config.js:/opt/invenio/src/babel.config.js
-      - ./static:/opt/invenio/var/instance/static
+      - ./static:/opt/invenio/src/static
       - ./templates:/opt/invenio/var/instance/templates
       - ./translations:/opt/invenio/var/instance/translations
       - ./assets:/opt/invenio/src/assets

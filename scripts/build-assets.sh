@@ -1,4 +1,12 @@
 #! /bin/bash
+#
+# Build collect + webpack static into /opt/invenio/var/instance/static.
+#
+# Docker Compose mounts the static_data volume at that path on web-ui and
+# frontend (docker-compose.yml and docker-compose.dev.yml). The volume starts
+# empty and replaces image-baked static there, so the UI is not usable until
+# this script has been run at least once in web-ui after ``docker compose up``.
+# Re-run after asset or dependency static changes, or after removing the volume.
 
 # Color variables
 red='\033[0;31m'

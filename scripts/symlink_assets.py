@@ -13,15 +13,12 @@ from kcworks.assets.project_assets_overlay import link_project_assets_and_static
 
 
 def main():
-    """Symlink local instance assets into build context.
+    """Symlink repo assets/ and project static/ into the instance build tree.
 
-    The various extensions (that register entry points for theme bundles under
-    invenio_assets) all have their files collected earlier in the build process,
-    during `invenio collect` and `invenio webpack clean create`.
-
-    This file is specifically responsible for symlinking the non-extension assets
-    from the current instance's local static/ and assets/ directories into that
-    same collected build folder.
+    Invoked from ``scripts/build-assets.sh`` after collect and webpack create.
+    Writes under ``/opt/invenio/var/instance/`` (including the ``static_data``
+    Docker volume shared with nginx). That volume is empty on first ``compose
+    up``; run ``build-assets.sh`` in web-ui before the site is usable.
     """
     with current_app.app_context():
         config = CLIConfig()
