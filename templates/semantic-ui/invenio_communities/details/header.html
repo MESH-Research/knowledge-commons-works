@@ -165,22 +165,13 @@
 <!-- -->
 <!-- Menus (sibling of header outer so z-index lifts menus only, not ::before) -->
 <!-- -->
-{% set community_menu_order = [
-  "home",
-  "about",
-  "browse",
-  "search",
-  "requests",
-  "members",
-  "stats",
-  "settings",
-  "curation_policy",
-  "submit",
-  "contribute"
-] %}
-{% set community_menu_items = current_menu.submenu('communities').children
-  | sort_menu_items_by_name(community_menu_order)
-| filter_visible_community_menu_items(permissions, community_ui) %}
+{% set ns_menu = namespace(items=[]) %}
+{% for item in current_menu.submenu('communities').children %}
+  {% if (item.permissions == True or permissions[item.permissions]) and item.visible %}
+    {% set _ = ns_menu.items.append(item) %}
+  {% endif %}
+{% endfor %}
+{% set community_menu_items = ns_menu.items %}
 {% set ns = namespace(active_url="") %}
 {% for item in community_menu_items %}
   {% if active_community_header_menu_item == item.name %}

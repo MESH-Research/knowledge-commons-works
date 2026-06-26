@@ -45,10 +45,10 @@ from invenio_remote_user_data_kcworks.utils.broker import extract_bearer_token
 from kcworks.services.communities.community_parent import (
     CommunityParentComponent as KCWorksCommunityParentComponent,
 )
-from kcworks.services.communities.permissions import KCWorksCommunityPermissionPolicy
 from kcworks.services.communities.default_branding import (
     DefaultBrandingComponent,
 )
+from kcworks.services.communities.permissions import KCWorksCommunityPermissionPolicy
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -72,10 +72,9 @@ from kcworks.templates.template_filters import (
     community_breadcrumb_items,
     community_dashboard_request_url,
     community_theme_settings_menu_visible,
-    filter_visible_community_menu_items,
-    sort_menu_items_by_name,
     user_profile_dict,
 )
+from kcworks.utils.menu_utils import alter_menu_from_config
 from kcworks.views.error_handlers import (
     register_themed_error_handlers,
     wrap_blueprint_error_handlers_with_logging,
@@ -111,6 +110,7 @@ class KCWorks:
             app (Flask): The Flask application object on which to initialize
                 the extension
         """
+        self._community_menu_overrides_applied = False
         if app:
             self.init_app(app)
 
@@ -275,33 +275,41 @@ class KCWorks:
             community_theme_settings_menu_visible
         )
         app.jinja_env.filters["user_profile_dict"] = user_profile_dict
-        app.jinja_env.filters["sort_menu_items_by_name"] = sort_menu_items_by_name
-        app.jinja_env.filters["filter_visible_community_menu_items"] = (
-            filter_visible_community_menu_items
-        )
         app.add_template_global(community_dashboard_request_url)
 
 
-def register_community_menu_items(_app: Flask) -> None:
-    """Register KCWorks-specific community header menu items.
+def register_community_menu_items(app: Flask) -> None:
+    """Apply KCWorks community header menu overrides from config.
 
     Args:
-        _app: Flask application object.
+        app: Flask UI application object (unused; runs in app context so
+            ``current_menu`` resolves to this app's menu tree).
     """
-
-    def deposit_args():
-        """Return deposit query args for the current community page."""
-        pid_value = (request.view_args or {}).get("pid_value")
-        return {"community": pid_value} if pid_value else {}
-
-    current_menu.submenu("communities").submenu("contribute").register(
-        endpoint="invenio_app_rdm_records.deposit_create",
-        text=_("Contribute"),
-        order=70,
-        endpoint_arguments_constructor=deposit_args,
-        icon="plus",
-        permissions="can_submit_record",
+    app.logger.info("register_community_menu_items: applying COMMUNITIES_DETAIL_MENU_ITEMS")
+    alter_menu_from_config(
+        app, current_menu.submenu("communities"), "COMMUNITIES_DETAIL_MENU_ITEMS"
     )
+
+
+def _schedule_community_menu_overrides(app: Flask) -> None:
+    """Apply community menu config after every extension has registered menus.
+
+    ``invenio_base.finalize_app`` entry points run in undefined order. KCWorks
+    was running before ``invenio_app_rdm`` / ``invenio_communities`` had
+    registered ``communities`` children, so overrides targeted empty stubs and
+    were overwritten on the next hook. Defer until the first request instead.
+    """
+    @app.before_request
+    def _apply_community_menu_overrides_once() -> None:
+        kcworks_ext = app.extensions.get("kcworks")
+        if kcworks_ext is None or kcworks_ext._community_menu_overrides_applied:
+            return
+        app.logger.info(
+            "Applying COMMUNITIES_DETAIL_MENU_ITEMS on first request "
+            "(after all finalize_app menu registration)"
+        )
+        register_community_menu_items(app)
+        kcworks_ext._community_menu_overrides_applied = True
 
 
 def finalize_app(app: Flask) -> None:
@@ -315,7 +323,7 @@ def finalize_app(app: Flask) -> None:
     blueprint that registers handlers later than this would simply be
     skipped (still works, just no logging).
     """
-    register_community_menu_items(app)
+    _schedule_community_menu_overrides(app)
     # register_themed_error_handlers(app)
     wrap_blueprint_error_handlers_with_logging(app)
 
