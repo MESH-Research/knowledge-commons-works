@@ -2976,7 +2976,6 @@ dependencies = [
     { name = "deepdiff" },
     { name = "invenio-app-rdm" },
     { name = "invenio-group-collections-kcworks" },
-    { name = "invenio-queues" },
     { name = "invenio-search" },
     { name = "invenio-utilities-tuw" },
     { name = "opensearch-dsl" },
@@ -2992,7 +2991,6 @@ requires-dist = [
     { name = "deepdiff" },
     { name = "invenio-app-rdm", specifier = "<13" },
     { name = "invenio-group-collections-kcworks", editable = "site/kcworks/dependencies/invenio-group-collections-kcworks" },
-    { name = "invenio-queues" },
     { name = "invenio-search" },
     { name = "invenio-utilities-tuw" },
     { name = "opensearch-dsl" },
@@ -3515,7 +3513,7 @@ wheels = [
 
 [[package]]
 name = "kcworks"
-version = "0.8.1"
+version = "0.8.2"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
