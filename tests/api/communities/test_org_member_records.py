@@ -252,6 +252,7 @@ def test_include_org_member_records_no_records(
 
 def test_include_org_member_records_record_already_in_community(
     running_app,
+    reindex_resource_types,
     db,
     search_clear,
     csv_file_with_org_memberships,
