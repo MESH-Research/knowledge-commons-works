@@ -30,6 +30,7 @@ from kcworks.services.communities.cli import (
     backfill_default_branding,
     check_group_memberships,
     set_parent,
+    update_index_mapping,
 )
 from kcworks.services.records.cli import bulk_update as bulk_update_command
 from kcworks.services.records.cli import (
@@ -156,6 +157,7 @@ def kcworks_communities():
 
 kcworks_communities.add_command(backfill_default_branding)
 kcworks_communities.add_command(set_parent)
+kcworks_communities.add_command(update_index_mapping)
 
 
 # `kcworks-jobs`: thin wrapper over invenio-jobs' JobsService for declarative,
